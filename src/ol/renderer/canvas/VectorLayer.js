@@ -191,7 +191,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     } else {
       const resolution = frameState.viewState.resolution;
       const rotation = frameState.viewState.rotation;
-      const layer = this.getLayer();
+      const layer = /** @type {import("../../layer/Vector").default} */ (this.getLayer());
       /** @type {!Object<string, boolean>} */
       const features = {};
       const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
@@ -205,7 +205,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             features[key] = true;
             return callback(feature, layer);
           }
-        }, declutteredFeatures);
+        }, layer.getDeclutter() ? declutteredFeatures : null);
       return result;
     }
   }
