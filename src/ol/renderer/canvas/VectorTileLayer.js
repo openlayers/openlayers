@@ -357,7 +357,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
               features[key] = true;
               return callback(feature, layer);
             }
-          }, declutteredFeatures);
+          }, layer.getDeclutter() ? declutteredFeatures : null);
       }
     }
     return found;
