@@ -4,7 +4,7 @@
 // FIXME check order of async callbacks
 
 /**
- * See http://mapbox.com/developers/api/.
+ * See https://mapbox.com/developers/api/.
  */
 
 
