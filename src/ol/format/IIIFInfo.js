@@ -286,6 +286,7 @@ class IIIFInfo {
   /**
    * @param {Object|string} imageInfo Deserialized image information JSON response
    * object or JSON response as string
+   * @api
    */
   setImageInfo(imageInfo) {
     if (typeof imageInfo == 'string') {
@@ -297,6 +298,7 @@ class IIIFInfo {
 
   /**
    * @returns {Versions} Major IIIF version.
+   * @api
    */
   getImageApiVersion() {
     if (this.imageInfo === undefined) {
@@ -395,6 +397,7 @@ class IIIFInfo {
   /**
    * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
    * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   * @api
    */
   getTileSourceOptions(opt_preferredOptions) {
     const options = opt_preferredOptions || {},
