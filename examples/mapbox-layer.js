@@ -34,11 +34,6 @@ class Mapbox extends Layer {
     const view = map.getView();
     const center = toLonLat(view.getCenter(), view.getProjection());
 
-    this.centerLastRender = view.getCenter();
-    this.zoomLastRender = view.getZoom();
-    this.centerLastRender = view.getCenter();
-    this.zoomLastRender = view.getZoom();
-
     const options = assign(this.baseOptions, {
       attributionControl: false,
       boxZoom: false,
@@ -73,8 +68,6 @@ class Mapbox extends Layer {
     const map = this.map_;
     const view = map.getView();
 
-    this.centerNextRender = view.getCenter();
-
     // adjust view parameters in mapbox
     const rotation = frameState.viewState.rotation;
     if (rotation) {
@@ -82,7 +75,7 @@ class Mapbox extends Layer {
         animate: false
       });
     }
-    const center = toLonLat(this.centerNextRender, view.getProjection());
+    const center = toLonLat(view.getCenter(), view.getProjection());
     const zoom = view.getZoom() - 1;
     this.mbmap.jumpTo({
       center: center,
