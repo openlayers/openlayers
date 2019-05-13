@@ -58,7 +58,6 @@ class Mapbox extends Layer {
     this.mbmap = new mapboxgl.Map(options);
 
     this.mbmap.on('load', function() {
-      this.mbmap.getCanvas().remove();
       this.loaded = true;
       this.map_.render();
       this.mbmap.getContainer().querySelector('.mapboxgl-control-container').remove();
