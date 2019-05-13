@@ -10,6 +10,10 @@ import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
 
+/**
+ * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
+ */
+
 
 /**
  * @typedef {Object} Options
@@ -29,6 +33,8 @@ import SourceState from '../source/State.js';
  * the source can be set by calling {@link module:ol/layer/Layer#setSource layer.setSource(source)} after
  * construction.
  * @property {import("../PluggableMap.js").default} [map] Map.
+ * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
+ * HTML element. Will overwrite the default rendering for the layer.
  */
 
 
@@ -99,6 +105,11 @@ class Layer extends BaseLayer {
      * @type {import("../renderer/Layer.js").default}
      */
     this.renderer_ = null;
+
+    // Overwrite default render method with a custom one
+    if (options.render) {
+      this.render = options.render;
+    }
 
     if (options.map) {
       this.setMap(options.map);

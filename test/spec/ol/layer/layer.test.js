@@ -94,6 +94,16 @@ describe('ol.layer.Layer', function() {
       layer.dispose();
     });
 
+    it('accepts a custom render function', function() {
+      let called = false;
+      const layer = new Layer({
+        render: function() {
+          called = true;
+        }
+      });
+      layer.render();
+      expect(called).to.eql(true);
+    });
   });
 
   describe('visibleAtResolution', function() {
