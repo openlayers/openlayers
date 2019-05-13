@@ -56,6 +56,10 @@ function formatPercentage(percentage) {
  */
 class IIIF extends TileImage {
 
+  /**
+   * @param {Options} opt_options
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
