@@ -1,131 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer';
-import {assign} from '../src/ol/obj';
 import {toLonLat} from '../src/ol/proj';
-import SourceState from '../src/ol/source/State';
 import {Stroke, Style} from '../src/ol/style.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-
-class Mapbox extends Layer {
-
-  /**
-   * @param {import('../src/ol/layer/Layer').Options} options Layer options.
-   */
-  constructor(options) {
-    const baseOptions = assign({}, options);
-    super(baseOptions);
-
-    this.baseOptions = baseOptions;
-
-    /**
-     * @private
-     * @type boolean
-     */
-    this.loaded = false;
-
-    this.initMap();
-  }
-
-  initMap() {
-    const map = this.map_;
-    const view = map.getView();
-    const center = toLonLat(view.getCenter(), view.getProjection());
-
-    const options = assign(this.baseOptions, {
-      attributionControl: false,
-      boxZoom: false,
-      center,
-      container: map.getTargetElement(),
-      doubleClickZoom: false,
-      dragPan: false,
-      dragRotate: false,
-      interactive: false,
-      keyboard: false,
-      pitchWithRotate: false,
-      scrollZoom: false,
-      touchZoomRotate: false,
-      zoom: view.getZoom() - 1
-    });
-
-    this.mbmap = new mapboxgl.Map(options);
-
-    this.mbmap.on('load', function() {
-      this.loaded = true;
-      this.map_.render();
-      this.mbmap.getContainer().querySelector('.mapboxgl-control-container').remove();
-    }.bind(this));
-
-  }
-
-  /**
-   *
-   * @inheritDoc
-   */
-  render(frameState) {
-    const map = this.map_;
-    const view = map.getView();
-
-    // adjust view parameters in mapbox
-    const rotation = frameState.viewState.rotation;
-    if (rotation) {
-      this.mbmap.rotateTo(-rotation * 180 / Math.PI, {
-        animate: false
-      });
-    }
-    const center = toLonLat(view.getCenter(), view.getProjection());
-    const zoom = view.getZoom() - 1;
-    this.mbmap.jumpTo({
-      center: center,
-      zoom: zoom,
-      animate: false
-    });
-
-    // cancel the scheduled update & trigger synchronous redraw
-    // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
-    // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
-    if (this.mbmap._frame) {
-      this.mbmap._frame.cancel();
-      this.mbmap._frame = null;
-    }
-    this.mbmap._render();
-
-    return this.mbmap.getCanvas();
-  }
-
-  setVisible(visible) {
-    super.setVisible(visible);
-
-    const canvas = this.mbmap.getCanvas();
-    canvas.style.display = visible ? 'block' : 'none';
-  }
-
-  setOpacity(opacity) {
-    super.setOpacity(opacity);
-    const canvas = this.mbmap.getCanvas();
-    canvas.style.opacity = opacity;
-  }
-
-  setZIndex(zindex) {
-    super.setZIndex(zindex);
-    const canvas = this.mbmap.getCanvas();
-    canvas.style.zIndex = zindex;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getSourceState() {
-    return this.loaded ? SourceState.READY : SourceState.UNDEFINED;
-  }
-
-  setMap(map) {
-    this.map_ = map;
-  }
-
-}
 
 const style = new Style({
   stroke: new Stroke({
@@ -154,11 +34,71 @@ const map = new Map({
   })
 });
 
+
+// init Mapbox object
+
+const view = map.getView();
+const center = toLonLat(view.getCenter(), view.getProjection());
 const key = 'ER67WIiPdCQvhgsUjoWK';
-const mbLayer = new Mapbox({
-  map: map,
+
+const mbMap = new mapboxgl.Map({
+  style: 'https://maps.tilehosting.com/styles/bright/style.json?key=' + key,
+  attributionControl: false,
+  boxZoom: false,
+  center: center,
+  container: map.getTargetElement(),
+  doubleClickZoom: false,
+  dragPan: false,
+  dragRotate: false,
+  interactive: false,
+  keyboard: false,
+  pitchWithRotate: false,
+  scrollZoom: false,
+  touchZoomRotate: false,
+  zoom: view.getZoom() - 1
+});
+
+
+// init OL layers
+
+const mbLayer = new Layer({
   container: map.getTarget(),
-  style: 'https://maps.tilehosting.com/styles/bright/style.json?key=' + key
+  render: function(frameState) {
+    const canvas = mbMap.getCanvas();
+    const view = map.getView();
+
+    const visible = mbLayer.getVisible();
+    canvas.style.display = visible ? 'block' : 'none';
+
+    const opacity = mbLayer.getOpacity();
+    canvas.style.opacity = opacity;
+
+    // adjust view parameters in mapbox
+    const rotation = frameState.viewState.rotation;
+    if (rotation) {
+      mbMap.rotateTo(-rotation * 180 / Math.PI, {
+        animate: false
+      });
+    }
+    const center = toLonLat(view.getCenter(), view.getProjection());
+    const zoom = view.getZoom() - 1;
+    mbMap.jumpTo({
+      center: center,
+      zoom: zoom,
+      animate: false
+    });
+
+    // cancel the scheduled update & trigger synchronous redraw
+    // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
+    // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
+    if (mbMap._frame) {
+      mbMap._frame.cancel();
+      mbMap._frame = null;
+    }
+    mbMap._render();
+
+    return canvas;
+  }
 });
 
 map.addLayer(mbLayer);
