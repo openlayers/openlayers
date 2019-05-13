@@ -34,11 +34,6 @@ class Mapbox extends Layer {
     const view = map.getView();
     const center = toLonLat(view.getCenter(), view.getProjection());
 
-    this.centerLastRender = view.getCenter();
-    this.zoomLastRender = view.getZoom();
-    this.centerLastRender = view.getCenter();
-    this.zoomLastRender = view.getZoom();
-
     const options = assign(this.baseOptions, {
       attributionControl: false,
       boxZoom: false,
@@ -56,8 +51,8 @@ class Mapbox extends Layer {
     });
 
     this.mbmap = new mapboxgl.Map(options);
+
     this.mbmap.on('load', function() {
-      this.mbmap.getCanvas().remove();
       this.loaded = true;
       this.map_.render();
       this.mbmap.getContainer().querySelector('.mapboxgl-control-container').remove();
@@ -73,8 +68,6 @@ class Mapbox extends Layer {
     const map = this.map_;
     const view = map.getView();
 
-    this.centerNextRender = view.getCenter();
-
     // adjust view parameters in mapbox
     const rotation = frameState.viewState.rotation;
     if (rotation) {
@@ -82,7 +75,7 @@ class Mapbox extends Layer {
         animate: false
       });
     }
-    const center = toLonLat(this.centerNextRender, view.getProjection());
+    const center = toLonLat(view.getCenter(), view.getProjection());
     const zoom = view.getZoom() - 1;
     this.mbmap.jumpTo({
       center: center,
@@ -133,38 +126,6 @@ class Mapbox extends Layer {
   }
 
 }
-
-mapboxgl.Map.prototype._setupContainer = function _setupContainer() {
-  const container = this._container;
-  container.classList.add('mapboxgl-map');
-
-  const canvasContainer = this._canvasContainer = container.firstChild;
-
-  this._canvas = document.createElement('canvas');
-  canvasContainer.insertBefore(this._canvas, canvasContainer.firstChild);
-  this._canvas.style.position = 'absolute';
-  this._canvas.addEventListener('webglcontextlost', this._contextLost, false);
-  this._canvas.addEventListener('webglcontextrestored', this._contextRestored, false);
-  this._canvas.setAttribute('tabindex', '0');
-  this._canvas.setAttribute('aria-label', 'Map');
-  this._canvas.className = 'mapboxgl-canvas';
-
-  const dimensions = this._containerDimensions();
-  this._resizeCanvas(dimensions[0], dimensions[1]);
-
-  this._controlContainer = canvasContainer;
-  const controlContainer = this._controlContainer = document.createElement('div');
-  controlContainer.className = 'mapboxgl-control-container';
-  container.appendChild(controlContainer);
-
-  const positions = this._controlPositions = {};
-  ['top-left', 'top-right', 'bottom-left', 'bottom-right'].forEach(function(positionName) {
-    const elem = document.createElement('div');
-    elem.className = 'mapboxgl-ctrl-' + positionName;
-    controlContainer.appendChild(elem);
-    positions[positionName] = elem;
-  });
-};
 
 const style = new Style({
   stroke: new Stroke({
