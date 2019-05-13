@@ -97,9 +97,10 @@ import {assert} from '../asserts.js';
  */
 
 /**
-* @enum {string}
-*/
-export const Versions = {
+ * Enum representing the major IIIF Image API versions
+ * @enum {string}
+ */
+const Versions = {
   VERSION1: 'version1',
   VERSION2: 'version2',
   VERSION3: 'version3'
@@ -275,7 +276,7 @@ versionFunctions[Versions.VERSION3] = generateVersion3Options;
 class IIIFInfo {
 
   /**
-   * @param {ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3|string} imageInfo
+   * @param {string|ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3} imageInfo
    * Deserialized image information JSON response object or JSON response as string
    */
   constructor(imageInfo) {
@@ -283,8 +284,9 @@ class IIIFInfo {
   }
 
   /**
-   * @param {Object|string} imageInfo Deserialized image information JSON response
-   * object or JSON response as string
+   * @param {string|ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3} imageInfo
+   * Deserialized image information JSON response object or JSON response as string
+   * @api
    */
   setImageInfo(imageInfo) {
     if (typeof imageInfo == 'string') {
@@ -296,6 +298,7 @@ class IIIFInfo {
 
   /**
    * @returns {Versions} Major IIIF version.
+   * @api
    */
   getImageApiVersion() {
     if (this.imageInfo === undefined) {
@@ -394,6 +397,7 @@ class IIIFInfo {
   /**
    * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
    * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   * @api
    */
   getTileSourceOptions(opt_preferredOptions) {
     const options = opt_preferredOptions || {},
@@ -424,3 +428,4 @@ class IIIFInfo {
 }
 
 export default IIIFInfo;
+export {Versions};
