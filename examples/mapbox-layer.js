@@ -45,7 +45,7 @@ const mbMap = new mapboxgl.Map({
   style: 'https://maps.tilehosting.com/styles/bright/style.json?key=' + key,
   attributionControl: false,
   boxZoom: false,
-  center,
+  center: center,
   container: map.getTargetElement(),
   doubleClickZoom: false,
   dragPan: false,
