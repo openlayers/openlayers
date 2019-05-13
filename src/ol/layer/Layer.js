@@ -53,8 +53,10 @@ import SourceState from '../source/State.js';
 
 /**
  * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
+ * Base class from which all layer types are derived. This should only be instantiated
+ * in the case where a custom layer is be added to the map with a custom `render` function.
+ * Such a function can be specified in the `options` object, and is expected to return an HTML element.
+ *
  * A visual representation of raster or vector map data.
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
@@ -70,6 +72,7 @@ import SourceState from '../source/State.js';
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
  * @template {import("../source/Source.js").default} SourceType
+ * @api
  */
 class Layer extends BaseLayer {
   /**
