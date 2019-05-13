@@ -63,17 +63,6 @@ class Mapbox extends Layer {
       this.mbmap.getContainer().querySelector('.mapboxgl-control-container').remove();
     }.bind(this));
 
-    this.mbmap.on('render', function() {
-      // Reset offset
-      if (this.centerNextRender) {
-        this.centerLastRender = this.centerNextRender;
-      }
-      if (this.zoomNextRender) {
-        this.zoomLastRender = this.zoomNextRender;
-      }
-      this.updateRenderedPosition(0, 0, 1);
-    }.bind(this));
-
   }
 
   /**
@@ -85,34 +74,32 @@ class Mapbox extends Layer {
     const view = map.getView();
 
     this.centerNextRender = view.getCenter();
-    const lastRender = map.getPixelFromCoordinate(this.centerLastRender);
-    const nextRender = map.getPixelFromCoordinate(this.centerNextRender);
-    this.zoomNextRender = view.getZoom();
-    const scale = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
-    this.updateRenderedPosition(lastRender[0] - nextRender[0], lastRender[1] - nextRender[1], scale);
 
+    // adjust view parameters in mapbox
     const rotation = frameState.viewState.rotation;
     if (rotation) {
       this.mbmap.rotateTo(-rotation * 180 / Math.PI, {
         animate: false
       });
     }
-
-    // Re-render mbmap
     const center = toLonLat(this.centerNextRender, view.getProjection());
     const zoom = view.getZoom() - 1;
     this.mbmap.jumpTo({
       center: center,
-      zoom: zoom
+      zoom: zoom,
+      animate: false
     });
-    return this.mbmap.getCanvas();
-  }
 
-  updateRenderedPosition(left, top, scale) {
-    const style = this.mbmap.getCanvas().style;
-    style.left = Math.round(left) + 'px';
-    style.top = Math.round(top) + 'px';
-    style.transform = 'scale(' + scale + ')';
+    // cancel the scheduled update & trigger synchronous redraw
+    // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
+    // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
+    if (this.mbmap._frame) {
+      this.mbmap._frame.cancel();
+      this.mbmap._frame = null;
+    }
+    this.mbmap._render();
+
+    return this.mbmap.getCanvas();
   }
 
   setVisible(visible) {
