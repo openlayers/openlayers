@@ -276,7 +276,7 @@ versionFunctions[Versions.VERSION3] = generateVersion3Options;
 class IIIFInfo {
 
   /**
-   * @param {ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3|string} imageInfo
+   * @param {string|ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3} imageInfo
    * Deserialized image information JSON response object or JSON response as string
    */
   constructor(imageInfo) {
@@ -284,8 +284,8 @@ class IIIFInfo {
   }
 
   /**
-   * @param {Object|string} imageInfo Deserialized image information JSON response
-   * object or JSON response as string
+   * @param {string|ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3} imageInfo
+   * Deserialized image information JSON response object or JSON response as string
    * @api
    */
   setImageInfo(imageInfo) {
