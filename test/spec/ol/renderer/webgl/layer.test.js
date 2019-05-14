@@ -107,6 +107,32 @@ describe('ol.renderer.webgl.Layer', function() {
       expect(indexBuffer.getArray()[10]).to.eql(6);
       expect(indexBuffer.getArray()[11]).to.eql(7);
     });
+
+    it('correctly adds custom attributes', function() {
+      const feature = {
+        type: "Feature",
+        id: "AFG",
+        properties: {
+          color: [0.5, 1, 0.2, 0.7],
+          custom: 4,
+          customString: '5',
+          custom2: 12.4,
+          customString2: 'abc'
+        },
+        geometry: {
+          type: "Point",
+          coordinates: [ -75, 47 ]
+        }
+      };
+      const attributePerVertex = 16;
+      pushFeatureInBuffer(vertexBuffer, indexBuffer, feature, ['custom', 'custom2', 'customString', 'customString2']);
+      expect(vertexBuffer.getArray().length).to.eql(attributePerVertex * 4);
+      expect(indexBuffer.getArray().length).to.eql(6);
+      expect(vertexBuffer.getArray()[12]).to.eql(4);
+      expect(vertexBuffer.getArray()[13]).to.eql(12.4);
+      expect(vertexBuffer.getArray()[14]).to.eql(5);
+      expect(vertexBuffer.getArray()[15]).to.eql(0);
+    });
   });
 
   describe('getBlankTexture', function() {

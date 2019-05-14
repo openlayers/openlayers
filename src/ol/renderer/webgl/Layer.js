@@ -76,7 +76,8 @@ class WebGLLayerRenderer extends LayerRenderer {
  * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature in geojson format, coordinates
  * expressed in EPSG:4326.
  * @param {Array<string>} [opt_attributes] Custom attributes. An array of properties which will be read from the
- * feature and pushed in the buffer in the given order.
+ * feature and pushed in the buffer in the given order. Note: attributes can only be numerical! Any other type or
+ * NaN will result in `0` being pushed in the buffer.
  */
 export function pushFeatureInBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
   if (!geojsonFeature.geometry) {
@@ -88,6 +89,8 @@ export function pushFeatureInBuffer(vertexBuffer, indexBuffer, geojsonFeature, o
       return;
   }
 }
+
+const tmpArray_ = [];
 
 /**
  * Pushes a quad (two triangles) based on a point geometry
@@ -116,12 +119,26 @@ function pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_a
   const alpha = color[3];
   const baseIndex = vertexBuffer.getArray().length / stride;
 
-  vertexBuffer.getArray().push(
-    x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha,
-    x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha,
-    x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha,
-    x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha
-  );
+  // read custom numerical attributes on the feature
+  const customAttributeValues = tmpArray_;
+  customAttributeValues.length = opt_attributes ? opt_attributes.length : 0;
+  for (let i = 0; i < customAttributeValues.length; i++) {
+    customAttributeValues[i] = parseFloat(geojsonFeature.properties[opt_attributes[i]]) || 0;
+  }
+
+  // push vertices for each of the four quad corners (first standard then custom attributes)
+  vertexBuffer.getArray().push(x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
+  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+
+  vertexBuffer.getArray().push(x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
+  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+
+  vertexBuffer.getArray().push(x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
+  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+
+  vertexBuffer.getArray().push(x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
+  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+
   indexBuffer.getArray().push(
     baseIndex, baseIndex + 1, baseIndex + 3,
     baseIndex + 1, baseIndex + 2, baseIndex + 3
