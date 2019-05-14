@@ -619,10 +619,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const size = source.getTilePixelSize(z, pixelRatio, projection);
     context.canvas.width = size[0];
     context.canvas.height = size[1];
-    const canvasTransform = resetTransform(this.tmpTransform_);
     const renderScale = pixelRatio / renderPixelRatio;
-    scaleTransform(canvasTransform, renderScale, renderScale);
-    context.setTransform.apply(context, canvasTransform);
+    if (renderScale !== 1) {
+      const canvasTransform = resetTransform(this.tmpTransform_);
+      scaleTransform(canvasTransform, renderScale, renderScale);
+      context.setTransform.apply(context, canvasTransform);
+    }
     const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
       const executorGroup = executorGroups[i];
