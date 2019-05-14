@@ -9,15 +9,6 @@ import {clamp} from '../math.js';
 
 
 /**
- * @enum {string}
- */
-export const Mode = {
-  TRACKPAD: 'trackpad',
-  WHEEL: 'wheel'
-};
-
-
-/**
  * @typedef {Object} Options
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
@@ -106,12 +97,6 @@ class MouseWheelZoom extends Interaction {
      * @type {?}
      */
     this.timeoutId_;
-
-    /**
-     * @private
-     * @type {Mode|undefined}
-     */
-    this.mode_ = undefined;
 
     /**
      * Trackpad events separated by this delay will be considered separate
@@ -206,51 +191,16 @@ class MouseWheelZoom extends Interaction {
       this.startTime_ = now;
     }
 
-    if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
-      this.mode_ = Math.abs(delta) < 4 ?
-        Mode.TRACKPAD :
-        Mode.WHEEL;
-    }
-
-    if (this.mode_ === Mode.TRACKPAD) {
-      const view = map.getView();
-      if (this.trackpadTimeoutId_) {
-        clearTimeout(this.trackpadTimeoutId_);
-      } else {
-        view.beginInteraction();
-      }
-      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
-      view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
-      this.startTime_ = now;
-      return false;
-    }
-
-    this.totalDelta_ += delta;
-
-    const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
-
-    clearTimeout(this.timeoutId_);
-    this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
-
-    return false;
-  }
-
-  /**
-   * @private
-   * @param {import("../PluggableMap.js").default} map Map.
-   */
-  handleWheelZoom_(map) {
     const view = map.getView();
-    if (view.getAnimating()) {
-      view.cancelAnimations();
+    if (this.trackpadTimeoutId_) {
+      clearTimeout(this.trackpadTimeoutId_);
+    } else {
+      view.beginInteraction();
     }
-    const delta = clamp(this.totalDelta_, -this.maxDelta_, this.maxDelta_);
-    zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
-    this.mode_ = undefined;
-    this.totalDelta_ = 0;
-    this.lastAnchor_ = null;
-    this.startTime_ = undefined;
-    this.timeoutId_ = undefined;
+    this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
+    view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
+    this.startTime_ = now;
+    return false;
   }
 
   /**
