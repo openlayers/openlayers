@@ -1,5 +1,10 @@
 import WebGLHelper from '../../../../src/ol/webgl/Helper';
-import {create as createTransform} from '../../../../src/ol/transform';
+import {
+  create as createTransform,
+  multiply,
+  rotate as rotateTransform,
+  scale as scaleTransform, translate as translateTransform
+} from '../../../../src/ol/transform';
 
 
 const VERTEX_SHADER = `
@@ -182,6 +187,34 @@ describe('ol.webgl.WebGLHelper', function() {
 
       it('cannot find the uniform location', function() {
         expect(h.getUniformLocation('u_test')).to.eql(null);
+      });
+    });
+
+    describe('#makeProjectionTransform', function() {
+      let h;
+      let frameState;
+      beforeEach(function() {
+        h = new WebGLHelper();
+
+        frameState = {
+          size: [100, 150],
+          viewState: {
+            rotation: 0.4,
+            resolution: 2,
+            center: [10, 20]
+          }
+        }
+      });
+
+      it('gives out the correct transform', function() {
+        const scaleX = 2 / frameState.size[0] / frameState.viewState.resolution;
+        const scaleY = 2 / frameState.size[1] / frameState.viewState.resolution;
+        const given = createTransform();
+        const expected = createTransform();
+        scaleTransform(expected, scaleX, scaleY);
+        rotateTransform(expected, -frameState.viewState.rotation);
+        translateTransform(expected, -frameState.viewState.center[0], -frameState.viewState.center[1]);
+        expect(h.makeProjectionTransform(frameState, given)).to.eql(expected);
       });
     });
 

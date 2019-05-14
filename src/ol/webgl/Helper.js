@@ -277,12 +277,6 @@ class WebGLHelper extends Disposable {
      * @private
      * @type {import("../transform.js").Transform}
      */
-    this.projectionMatrix_ = createTransform();
-
-    /**
-     * @private
-     * @type {import("../transform.js").Transform}
-     */
     this.offsetRotateMatrix_ = createTransform();
 
     /**
@@ -514,14 +508,6 @@ class WebGLHelper extends Disposable {
   applyFrameState(frameState) {
     const size = frameState.size;
     const rotation = frameState.viewState.rotation;
-    const resolution = frameState.viewState.resolution;
-    const center = frameState.viewState.center;
-
-    // set the "uniform" values (coordinates 0,0 are the center of the view)
-    const projectionMatrix = resetTransform(this.projectionMatrix_);
-    scaleTransform(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-    rotateTransform(projectionMatrix, -rotation);
-    translateTransform(projectionMatrix, -center[0], -center[1]);
 
     const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
     scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
@@ -531,7 +517,6 @@ class WebGLHelper extends Disposable {
       rotateTransform(offsetRotateMatrix, -rotation);
     }
 
-    this.setUniformMatrixValue(DefaultUniform.PROJECTION_MATRIX, fromTransform(this.tmpMat4_, projectionMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, fromTransform(this.tmpMat4_, offsetScaleMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
   }
@@ -689,6 +674,28 @@ class WebGLHelper extends Disposable {
       this.attribLocations_[name] = this.getGL().getAttribLocation(this.currentProgram_, name);
     }
     return this.attribLocations_[name];
+  }
+
+  /**
+   * Modifies the given transform to apply the rotation/translation/scaling of the given frame state.
+   * The resulting transform can be used to convert world space coordinates to view coordinates.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../transform").Transform} transform Transform to update.
+   * @return {import("../transform").Transform} The updated transform object.
+   * @api
+   */
+  makeProjectionTransform(frameState, transform) {
+    const size = frameState.size;
+    const rotation = frameState.viewState.rotation;
+    const resolution = frameState.viewState.resolution;
+    const center = frameState.viewState.center;
+
+    resetTransform(transform);
+    scaleTransform(transform, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+    rotateTransform(transform, -rotation);
+    translateTransform(transform, -center[0], -center[1]);
+
+    return transform;
   }
 
   /**

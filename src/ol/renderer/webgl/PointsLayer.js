@@ -12,9 +12,7 @@ import ViewHint from '../../ViewHint';
 import {createEmpty, equals} from '../../extent';
 import {
   create as createTransform,
-  reset as resetTransform, rotate as rotateTransform,
-  scale as scaleTransform,
-  translate as translateTransform,
+  reset as resetTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   apply as applyTransform
@@ -269,6 +267,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.renderTransform_ = createTransform();
+
+    /**
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.invertRenderTransform_ = createTransform();
   }
 
   /**
@@ -321,20 +325,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.previousExtent_ = frameState.extent.slice();
     }
 
-    // regenerate the transform matrix
-    const size = frameState.size;
-    const rotation = frameState.viewState.rotation;
-    const resolution = frameState.viewState.resolution;
-    const center = frameState.viewState.center;
-
-    resetTransform(this.currentTransform_);
-    scaleTransform(this.currentTransform_, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-    rotateTransform(this.currentTransform_, -rotation);
-    translateTransform(this.currentTransform_, -center[0], -center[1]);
-
-    // the current transform
-    const inverseCurrentTransform = makeInverseTransform(createTransform(), this.renderTransform_);
-    this.currentTransform_ = multiplyTransform(this.currentTransform_, inverseCurrentTransform);
+    // apply the current projection transform with the invert of the one used to fill buffers
+    this.helper_.makeProjectionTransform(frameState, this.currentTransform_);
+    multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
 
     this.helper_.prepareDraw(frameState);
 
@@ -365,16 +358,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.verticesBuffer_.getArray().length = 0;
     this.indicesBuffer_.getArray().length = 0;
 
-    // regenerate the transform matrix
-    const size = frameState.size;
-    const rotation = frameState.viewState.rotation;
-    const resolution = frameState.viewState.resolution;
-    const center = frameState.viewState.center;
-
-    resetTransform(this.renderTransform_);
-    scaleTransform(this.renderTransform_, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-    rotateTransform(this.renderTransform_, -rotation);
-    translateTransform(this.renderTransform_, -center[0], -center[1]);
+    // saves the projection transform for the current frame state
+    this.helper_.makeProjectionTransform(frameState, this.renderTransform_);
+    makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
 
     // loop on features to fill the buffer
     const features = vectorSource.getFeatures();
@@ -382,7 +368,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     for (let i = 0; i < features.length; i++) {
       feature = features[i];
       if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
-        return;
+        continue;
       }
 
       let geojsonFeature = this.geojsonFeatureCache_[getUid(feature)];
