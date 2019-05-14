@@ -83,7 +83,7 @@ class GeolocationError extends Event {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
- * @fires error
+ * @fires module:ol/events/Event~Event#event:error
  * @api
  */
 class Geolocation extends BaseObject {
@@ -203,12 +203,6 @@ class Geolocation extends BaseObject {
     this.set(Property.ACCURACY_GEOMETRY, geometry);
     this.changed();
   }
-
-  /**
-   * Triggered when the Geolocation returns an error.
-   * @event error
-   * @api
-   */
 
   /**
    * @private
