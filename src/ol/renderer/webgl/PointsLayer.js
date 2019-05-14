@@ -12,7 +12,6 @@ import ViewHint from '../../ViewHint';
 import {createEmpty, equals} from '../../extent';
 import {
   create as createTransform,
-  reset as resetTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   apply as applyTransform
@@ -350,7 +349,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
-   * @param {import("../../PluggableMap.js").FrameState} frameState
+   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
    * @private
    */
   rebuildBuffers_(frameState) {

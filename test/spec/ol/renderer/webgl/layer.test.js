@@ -9,18 +9,18 @@ describe('ol.renderer.webgl.Layer', function() {
 
     let target;
 
-    beforeEach(function () {
+    beforeEach(function() {
       target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
     });
 
-    afterEach(function () {
+    afterEach(function() {
       document.body.removeChild(target);
     });
 
-    it('creates a new instance', function () {
+    it('creates a new instance', function() {
       const layer = new Layer({});
       const renderer = new WebGLLayerRenderer(layer);
       expect(renderer).to.be.a(WebGLLayerRenderer);
@@ -31,17 +31,17 @@ describe('ol.renderer.webgl.Layer', function() {
   describe('pushFeatureInBuffer', function() {
     let vertexBuffer, indexBuffer;
 
-    beforeEach(function () {
+    beforeEach(function() {
       vertexBuffer = new WebGLArrayBuffer();
       indexBuffer = new WebGLArrayBuffer();
     });
 
     it('does nothing if the feature has no geometry', function() {
       const feature = {
-        type: "Feature",
-        id: "AFG",
+        type: 'Feature',
+        id: 'AFG',
         properties: {
-          color:[0.5, 1, 0.2, 0.7],
+          color: [0.5, 1, 0.2, 0.7],
           size: 3
         },
         geometry: null
@@ -53,15 +53,15 @@ describe('ol.renderer.webgl.Layer', function() {
 
     it('adds two triangles with the correct attributes for a point geometry', function() {
       const feature = {
-        type: "Feature",
-        id: "AFG",
+        type: 'Feature',
+        id: 'AFG',
         properties: {
-          color:[0.5, 1, 0.2, 0.7],
+          color: [0.5, 1, 0.2, 0.7],
           size: 3
         },
         geometry: {
-          type: "Point",
-          coordinates: [ -75, 47 ]
+          type: 'Point',
+          coordinates: [-75, 47]
         }
       };
       const attributePerVertex = 12;
@@ -72,15 +72,15 @@ describe('ol.renderer.webgl.Layer', function() {
 
     it('correctly sets indices & coordinates for several features', function() {
       const feature = {
-        type: "Feature",
-        id: "AFG",
+        type: 'Feature',
+        id: 'AFG',
         properties: {
-          color:[0.5, 1, 0.2, 0.7],
+          color: [0.5, 1, 0.2, 0.7],
           size: 3
         },
         geometry: {
-          type: "Point",
-          coordinates: [ -75, 47 ]
+          type: 'Point',
+          coordinates: [-75, 47]
         }
       };
       const attributePerVertex = 12;
@@ -110,8 +110,8 @@ describe('ol.renderer.webgl.Layer', function() {
 
     it('correctly adds custom attributes', function() {
       const feature = {
-        type: "Feature",
-        id: "AFG",
+        type: 'Feature',
+        id: 'AFG',
         properties: {
           color: [0.5, 1, 0.2, 0.7],
           custom: 4,
@@ -120,8 +120,8 @@ describe('ol.renderer.webgl.Layer', function() {
           customString2: 'abc'
         },
         geometry: {
-          type: "Point",
-          coordinates: [ -75, 47 ]
+          type: 'Point',
+          coordinates: [-75, 47]
         }
       };
       const attributePerVertex = 16;

@@ -15,18 +15,18 @@ describe('ol.renderer.webgl.PointsLayer', function() {
 
     let target;
 
-    beforeEach(function () {
+    beforeEach(function() {
       target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
     });
 
-    afterEach(function () {
+    afterEach(function() {
       document.body.removeChild(target);
     });
 
-    it('creates a new instance', function () {
+    it('creates a new instance', function() {
       const layer = new VectorLayer({
         source: new VectorSource()
       });

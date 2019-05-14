@@ -1,7 +1,6 @@
 import WebGLHelper from '../../../../src/ol/webgl/Helper';
 import {
   create as createTransform,
-  multiply,
   rotate as rotateTransform,
   scale as scaleTransform, translate as translateTransform
 } from '../../../../src/ol/transform';
@@ -203,7 +202,7 @@ describe('ol.webgl.WebGLHelper', function() {
             resolution: 2,
             center: [10, 20]
           }
-        }
+        };
       });
 
       it('gives out the correct transform', function() {

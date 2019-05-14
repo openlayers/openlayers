@@ -83,9 +83,11 @@ export function pushFeatureInBuffer(vertexBuffer, indexBuffer, geojsonFeature, o
   if (!geojsonFeature.geometry) {
     return;
   }
-  switch(geojsonFeature.geometry.type) {
-    case "Point":
-      pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes)
+  switch (geojsonFeature.geometry.type) {
+    case 'Point':
+      pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes);
+      return;
+    default:
       return;
   }
 }
@@ -94,10 +96,10 @@ const tmpArray_ = [];
 
 /**
  * Pushes a quad (two triangles) based on a point geometry
- * @param vertexBuffer
- * @param indexBuffer
- * @param geojsonFeature
- * @param opt_attributes
+ * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer
+ * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer
+ * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature
+ * @param {Array<string>} [opt_attributes] Custom attributes
  * @private
  */
 function pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
