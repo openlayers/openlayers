@@ -38,7 +38,7 @@
   "dependencies": {
     "pbf": "3.2.0",
     "pixelworks": "1.1.0",
-    "rbush": "2.0.2"
+    "rbush": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
