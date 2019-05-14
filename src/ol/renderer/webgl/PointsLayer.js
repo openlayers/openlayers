@@ -9,6 +9,7 @@ import WebGLLayerRenderer, {getBlankTexture, pushFeatureInBuffer} from './Layer'
 import GeoJSON from '../../format/GeoJSON';
 import {getUid} from '../../util';
 import ViewHint from '../../ViewHint';
+import {createEmpty, equals} from '../../extent';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -240,6 +241,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.geojsonFeatureCache_ = {};
+
+    this.previousExtent_ = createEmpty();
   }
 
   /**
@@ -288,8 +291,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
     }
 
-    if (!frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING]) {
+    if (!frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING] &&
+      !equals(this.previousExtent_, frameState.extent)) {
       this.rebuildBuffers_(frameState);
+      this.previousExtent_ = frameState.extent.slice();
     }
 
     // write new data

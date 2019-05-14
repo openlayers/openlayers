@@ -107,6 +107,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
 
     it('rebuilds the buffers only when not interacting or animating', function() {
       const spy = sinon.spy(renderer, 'rebuildBuffers_');
+
       frameState.viewHints[ViewHint.INTERACTING] = 1;
       frameState.viewHints[ViewHint.ANIMATING] = 0;
       renderer.prepareFrame(frameState);
@@ -123,6 +124,19 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       expect(spy.called).to.be(true);
     });
 
+    it('rebuilds the buffers only when the frame extent changed', function() {
+      const spy = sinon.spy(renderer, 'rebuildBuffers_');
+
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(1);
+
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(1);
+
+      frameState.extent = [10, 20, 30, 40];
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(2);
+    });
   });
 
 });
