@@ -62,7 +62,6 @@ const mbMap = new mapboxgl.Map({
 // init OL layers
 
 const mbLayer = new Layer({
-  container: map.getTarget(),
   render: function(frameState) {
     const canvas = mbMap.getCanvas();
     const view = map.getView();
