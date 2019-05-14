@@ -1,5 +1,5 @@
 /**
- * @module ol/renderer/canvas/ImageLayer
+ * @module ol/renderer/canvas/VectorImageLayer
  */
 import ImageCanvas from '../../ImageCanvas.js';
 import ViewHint from '../../ViewHint.js';
