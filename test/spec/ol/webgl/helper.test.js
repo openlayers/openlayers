@@ -1,4 +1,5 @@
 import WebGLHelper from '../../../../src/ol/webgl/Helper';
+import {create as createTransform} from '../../../../src/ol/transform';
 
 
 const VERTEX_SHADER = `
@@ -95,7 +96,8 @@ describe('ol.webgl.WebGLHelper', function() {
           uniforms: {
             u_test1: 42,
             u_test2: [1, 3],
-            u_test3: document.createElement('canvas')
+            u_test3: document.createElement('canvas'),
+            u_test4: createTransform()
           }
         });
         h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
@@ -116,13 +118,15 @@ describe('ol.webgl.WebGLHelper', function() {
       });
 
       it('has processed uniforms', function() {
-        expect(h.uniforms_.length).to.eql(3);
+        expect(h.uniforms_.length).to.eql(4);
         expect(h.uniforms_[0].name).to.eql('u_test1');
         expect(h.uniforms_[1].name).to.eql('u_test2');
         expect(h.uniforms_[2].name).to.eql('u_test3');
+        expect(h.uniforms_[3].name).to.eql('u_test4');
         expect(h.uniforms_[0].location).to.not.eql(-1);
         expect(h.uniforms_[1].location).to.not.eql(-1);
         expect(h.uniforms_[2].location).to.not.eql(-1);
+        expect(h.uniforms_[3].location).to.not.eql(-1);
         expect(h.uniforms_[2].texture).to.not.eql(undefined);
       });
     });

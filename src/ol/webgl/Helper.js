@@ -62,7 +62,7 @@ export const DefaultAttrib = {
 };
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|import("../transform").Transform} UniformLiteralValue
  */
 
 /**
@@ -565,7 +565,9 @@ class WebGLHelper extends Disposable {
         // fill texture slots by increasing index
         gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
 
-      } else if (Array.isArray(value)) {
+      } else if (Array.isArray(value) && value.length === 6) {
+        this.setUniformMatrixValue(uniform.name, fromTransform(this.tmpMat4_, value));
+      } else if (Array.isArray(value) && value.length <= 4) {
         switch (value.length) {
           case 2:
             gl.uniform2f(this.getUniformLocation(uniform.name), value[0], value[1]);
