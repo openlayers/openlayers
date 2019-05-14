@@ -11,7 +11,6 @@ import {clamp, lerp} from '../src/ol/math';
 import Stamen from '../src/ol/source/Stamen';
 
 const vectorSource = new Vector({
-  features: [],
   attributions: 'NASA'
 });
 

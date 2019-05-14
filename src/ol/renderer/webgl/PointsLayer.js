@@ -7,6 +7,8 @@ import {DefaultAttrib} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
 import WebGLLayerRenderer, {getBlankTexture, pushFeatureInBuffer} from './Layer';
 import GeoJSON from '../../format/GeoJSON';
+import {getUid} from '../../util';
+import ViewHint from '../../ViewHint';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -232,6 +234,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     };
 
     this.geojsonFormat_ = new GeoJSON();
+
+    /**
+     * @type {Object<string, import("../../format/GeoJSON").GeoJSONFeature>}
+     * @private
+     */
+    this.geojsonFeatureCache_ = {};
   }
 
   /**
@@ -263,47 +271,25 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   prepareFrame(frameState) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = vectorLayer.getSource();
+    const viewState = frameState.viewState;
 
     // TODO: get this from somewhere...
     const stride = 12;
 
     this.helper_.prepareDraw(frameState);
 
+    // the source has changed: clear the feature cache & reload features
     if (this.sourceRevision_ < vectorSource.getRevision()) {
       this.sourceRevision_ = vectorSource.getRevision();
-      this.verticesBuffer_.getArray().length = 0;
-      this.indicesBuffer_.getArray().length = 0;
+      this.geojsonFeatureCache_ = {};
 
-      const viewState = frameState.viewState;
       const projection = viewState.projection;
       const resolution = viewState.resolution;
-
-      // loop on features to fill the buffer
       vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
-      vectorSource.forEachFeature((feature) => {
-        if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
-          return;
-        }
+    }
 
-        const geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
-
-        geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
-        geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
-        geojsonFeature.properties = geojsonFeature.properties || {};
-        geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
-        geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
-        geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
-        geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
-        geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
-        geojsonFeature.properties.size = this.sizeCallback_(feature);
-        geojsonFeature.properties.opacity = this.opacityCallback_(feature);
-        geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-
-        pushFeatureInBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
-      });
-
-      this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
-      this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+    if (!frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING]) {
+      this.rebuildBuffers_(frameState);
     }
 
     // write new data
@@ -319,6 +305,52 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper_.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
 
     return true;
+  }
+
+  /**
+   * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
+   * @param {import("../../PluggableMap.js").FrameState} frameState
+   * @private
+   */
+  rebuildBuffers_(frameState) {
+    const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const vectorSource = vectorLayer.getSource();
+
+    this.verticesBuffer_.getArray().length = 0;
+    this.indicesBuffer_.getArray().length = 0;
+
+    // loop on features to fill the buffer
+    const features = vectorSource.getFeatures();
+    let feature;
+    for (let i = 0; i < features.length; i++) {
+      feature = features[i];
+      if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
+        return;
+      }
+
+      let geojsonFeature = this.geojsonFeatureCache_[getUid(feature)];
+      if (!geojsonFeature) {
+        geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
+        this.geojsonFeatureCache_[getUid(feature)] = geojsonFeature;
+      }
+
+      geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
+      geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
+      geojsonFeature.properties = geojsonFeature.properties || {};
+      geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
+      geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
+      geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
+      geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
+      geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
+      geojsonFeature.properties.size = this.sizeCallback_(feature);
+      geojsonFeature.properties.opacity = this.opacityCallback_(feature);
+      geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
+
+      pushFeatureInBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
+    }
+
+    this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
+    this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
   }
 }
 

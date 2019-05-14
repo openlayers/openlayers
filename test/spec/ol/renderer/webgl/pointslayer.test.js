@@ -6,6 +6,7 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer';
 import {get as getProjection} from '../../../../../src/ol/proj';
 import Polygon from '../../../../../src/ol/geom/Polygon';
+import ViewHint from '../../../../../src/ol/ViewHint';
 
 
 describe('ol.renderer.webgl.PointsLayer', function() {
@@ -53,7 +54,8 @@ describe('ol.renderer.webgl.PointsLayer', function() {
           rotation: 0,
           center: [10, 10]
         },
-        size: [256, 256]
+        size: [256, 256],
+        extent: [-100, -100, 100, 100]
       };
     });
 
@@ -101,6 +103,24 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       const attributePerVertex = 12;
       expect(renderer.verticesBuffer_.getArray().length).to.eql(4 * attributePerVertex);
       expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+    });
+
+    it('rebuilds the buffers only when not interacting or animating', function() {
+      const spy = sinon.spy(renderer, 'rebuildBuffers_');
+      frameState.viewHints[ViewHint.INTERACTING] = 1;
+      frameState.viewHints[ViewHint.ANIMATING] = 0;
+      renderer.prepareFrame(frameState);
+      expect(spy.called).to.be(false);
+
+      frameState.viewHints[ViewHint.INTERACTING] = 0;
+      frameState.viewHints[ViewHint.ANIMATING] = 1;
+      renderer.prepareFrame(frameState);
+      expect(spy.called).to.be(false);
+
+      frameState.viewHints[ViewHint.INTERACTING] = 0;
+      frameState.viewHints[ViewHint.ANIMATING] = 0;
+      renderer.prepareFrame(frameState);
+      expect(spy.called).to.be(true);
     });
 
   });
