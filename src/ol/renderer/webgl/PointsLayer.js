@@ -3,13 +3,22 @@
  */
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
-import {DefaultAttrib} from '../../webgl/Helper';
+import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
 import WebGLLayerRenderer, {getBlankTexture, pushFeatureInBuffer} from './Layer';
 import GeoJSON from '../../format/GeoJSON';
 import {getUid} from '../../util';
 import ViewHint from '../../ViewHint';
 import {createEmpty, equals} from '../../extent';
+import {
+  create as createTransform,
+  reset as resetTransform, rotate as rotateTransform,
+  scale as scaleTransform,
+  translate as translateTransform,
+  makeInverse as makeInverseTransform,
+  multiply as multiplyTransform,
+  apply as applyTransform
+} from '../../transform';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -190,9 +199,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   constructor(vectorLayer, opt_options) {
     const options = opt_options || {};
 
-    // assign the `texture` uniform if not specified in the options
     const uniforms = options.uniforms || {};
     uniforms.u_texture = options.texture || getBlankTexture();
+    const projectionMatrixTransform = createTransform();
+    uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 
     super(vectorLayer, {
       uniforms: uniforms,
@@ -243,6 +253,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.geojsonFeatureCache_ = {};
 
     this.previousExtent_ = createEmpty();
+
+    /**
+     * This transform is updated on every frame and is the composition of:
+     * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
+     * - current world->screen transform
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.currentTransform_ = projectionMatrixTransform;
+
+    /**
+     * This transform is updated when buffers are rebuilt and converts world space coordinates to screen space
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.renderTransform_ = createTransform();
   }
 
   /**
@@ -279,8 +305,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     // TODO: get this from somewhere...
     const stride = 12;
 
-    this.helper_.prepareDraw(frameState);
-
     // the source has changed: clear the feature cache & reload features
     if (this.sourceRevision_ < vectorSource.getRevision()) {
       this.sourceRevision_ = vectorSource.getRevision();
@@ -296,6 +320,23 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.rebuildBuffers_(frameState);
       this.previousExtent_ = frameState.extent.slice();
     }
+
+    // regenerate the transform matrix
+    const size = frameState.size;
+    const rotation = frameState.viewState.rotation;
+    const resolution = frameState.viewState.resolution;
+    const center = frameState.viewState.center;
+
+    resetTransform(this.currentTransform_);
+    scaleTransform(this.currentTransform_, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+    rotateTransform(this.currentTransform_, -rotation);
+    translateTransform(this.currentTransform_, -center[0], -center[1]);
+
+    // the current transform
+    const inverseCurrentTransform = makeInverseTransform(createTransform(), this.renderTransform_);
+    this.currentTransform_ = multiplyTransform(this.currentTransform_, inverseCurrentTransform);
+
+    this.helper_.prepareDraw(frameState);
 
     // write new data
     this.helper_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
@@ -324,6 +365,17 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.verticesBuffer_.getArray().length = 0;
     this.indicesBuffer_.getArray().length = 0;
 
+    // regenerate the transform matrix
+    const size = frameState.size;
+    const rotation = frameState.viewState.rotation;
+    const resolution = frameState.viewState.resolution;
+    const center = frameState.viewState.center;
+
+    resetTransform(this.renderTransform_);
+    scaleTransform(this.renderTransform_, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+    rotateTransform(this.renderTransform_, -rotation);
+    translateTransform(this.renderTransform_, -center[0], -center[1]);
+
     // loop on features to fill the buffer
     const features = vectorSource.getFeatures();
     let feature;
@@ -341,6 +393,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
       geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
       geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
+      applyTransform(this.renderTransform_, geojsonFeature.geometry.coordinates);
       geojsonFeature.properties = geojsonFeature.properties || {};
       geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
       geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
