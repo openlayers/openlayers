@@ -59,6 +59,75 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 }
 
+
+/**
+ * Pushes vertices and indices in the given buffers using the geometry coordinates and the following properties
+ * from the feature:
+ * - `color`
+ * - `opacity`
+ * - `size` (for points)
+ * - `u0`, `v0`, `u1`, `v1` (for points)
+ * - `rotateWithView` (for points)
+ * - `width` (for lines)
+ * Custom attributes can be designated using the `opt_attributes` argument, otherwise other properties on the
+ * feature will be ignored.
+ * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer in which new vertices will be pushed.
+ * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer in which new indices will be pushed.
+ * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature in geojson format, coordinates
+ * expressed in EPSG:4326.
+ * @param {Array<string>} [opt_attributes] Custom attributes. An array of properties which will be read from the
+ * feature and pushed in the buffer in the given order.
+ */
+export function pushFeatureInBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
+  if (!geojsonFeature.geometry) {
+    return;
+  }
+  switch(geojsonFeature.geometry.type) {
+    case "Point":
+      pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes)
+      return;
+  }
+}
+
+/**
+ * Pushes a quad (two triangles) based on a point geometry
+ * @param vertexBuffer
+ * @param indexBuffer
+ * @param geojsonFeature
+ * @param opt_attributes
+ * @private
+ */
+function pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
+  const stride = 12 + (opt_attributes !== undefined ? opt_attributes.length : 0);
+
+  const x = geojsonFeature.geometry.coordinates[0];
+  const y = geojsonFeature.geometry.coordinates[1];
+  const u0 = geojsonFeature.properties.u0;
+  const v0 = geojsonFeature.properties.v0;
+  const u1 = geojsonFeature.properties.u1;
+  const v1 = geojsonFeature.properties.v1;
+  const size = geojsonFeature.properties.size;
+  const opacity = geojsonFeature.properties.opacity;
+  const rotateWithView = geojsonFeature.properties.rotateWithView;
+  const color = geojsonFeature.properties.color;
+  const red = color[0];
+  const green = color[1];
+  const blue = color[2];
+  const alpha = color[3];
+  const baseIndex = vertexBuffer.getArray().length / stride;
+
+  vertexBuffer.getArray().push(
+    x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha,
+    x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha,
+    x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha,
+    x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha
+  );
+  indexBuffer.getArray().push(
+    baseIndex, baseIndex + 1, baseIndex + 3,
+    baseIndex + 1, baseIndex + 2, baseIndex + 3
+  );
+}
+
 /**
  * Returns a texture of 1x1 pixel, white
  * @private
