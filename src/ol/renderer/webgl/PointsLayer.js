@@ -5,7 +5,8 @@ import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
 import {DefaultAttrib} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
-import WebGLLayerRenderer, {getBlankTexture} from './Layer';
+import WebGLLayerRenderer, {getBlankTexture, pushFeatureInBuffer} from './Layer';
+import GeoJSON from '../../format/GeoJSON';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -229,6 +230,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.rotateWithViewCallback_ = options.rotateWithViewCallback || function() {
       return false;
     };
+
+    this.geojsonFormat_ = new GeoJSON();
   }
 
   /**
@@ -261,6 +264,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = vectorLayer.getSource();
 
+    // TODO: get this from somewhere...
     const stride = 12;
 
     this.helper_.prepareDraw(frameState);
@@ -280,32 +284,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
           return;
         }
-        const x = this.coordCallback_(feature, 0);
-        const y = this.coordCallback_(feature, 1);
-        const u0 = this.texCoordCallback_(feature, 0);
-        const v0 = this.texCoordCallback_(feature, 1);
-        const u1 = this.texCoordCallback_(feature, 2);
-        const v1 = this.texCoordCallback_(feature, 3);
-        const size = this.sizeCallback_(feature);
-        const opacity = this.opacityCallback_(feature);
-        const rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-        const color = this.colorCallback_(feature, this.colorArray_);
-        const red = color[0];
-        const green = color[1];
-        const blue = color[2];
-        const alpha = color[3];
-        const baseIndex = this.verticesBuffer_.getArray().length / stride;
 
-        this.verticesBuffer_.getArray().push(
-          x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha,
-          x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha,
-          x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha,
-          x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha
-        );
-        this.indicesBuffer_.getArray().push(
-          baseIndex, baseIndex + 1, baseIndex + 3,
-          baseIndex + 1, baseIndex + 2, baseIndex + 3
-        );
+        const geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
+
+        geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
+        geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
+        geojsonFeature.properties = geojsonFeature.properties || {};
+        geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
+        geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
+        geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
+        geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
+        geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
+        geojsonFeature.properties.size = this.sizeCallback_(feature);
+        geojsonFeature.properties.opacity = this.opacityCallback_(feature);
+        geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
+
+        pushFeatureInBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
       });
 
       this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
