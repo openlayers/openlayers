@@ -1,11 +1,11 @@
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
-import LayerRenderer from '../Layer';
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
-import WebGLHelper, {DefaultAttrib} from '../../webgl/Helper';
+import {DefaultAttrib} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
+import WebGLLayerRenderer, {getBlankTexture} from './Layer';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -56,15 +56,6 @@ const FRAGMENT_SHADER = `
   }`;
 
 /**
- * @typedef {Object} PostProcessesOptions
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
- * the main canvas that will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
- */
-
-/**
  * @typedef {Object} Options
  * @property {function(import("../../Feature").default):number} [sizeCallback] Will be called on every feature in the
  * source to compute the size of the quad on screen (in pixels). This is only done on source change.
@@ -91,7 +82,7 @@ const FRAGMENT_SHADER = `
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot.
- * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
@@ -186,22 +177,22 @@ const FRAGMENT_SHADER = `
  *
  * @api
  */
-class WebGLPointsLayerRenderer extends LayerRenderer {
+class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
    * @param {Options=} [opt_options] Options.
    */
   constructor(vectorLayer, opt_options) {
-    super(vectorLayer);
-
     const options = opt_options || {};
 
+    // assign the `texture` uniform if not specified in the options
     const uniforms = options.uniforms || {};
-    uniforms.u_texture = options.texture || this.getDefaultTexture();
-    this.helper_ = new WebGLHelper({
-      postProcesses: options.postProcesses,
-      uniforms: uniforms
+    uniforms.u_texture = options.texture || getBlankTexture();
+
+    super(vectorLayer, {
+      uniforms: uniforms,
+      postProcesses: options.postProcesses
     });
 
     this.sourceRevision_ = -1;
@@ -334,27 +325,6 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.helper_.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
 
     return true;
-  }
-
-  /**
-   * Will return the last shader compilation errors. If no error happened, will return null;
-   * @return {string|null} Errors, or null if last compilation was successful
-   * @api
-   */
-  getShaderCompileErrors() {
-    return this.helper_.getShaderCompileErrors();
-  }
-
-  /**
-   * Returns a texture of 1x1 pixel, white
-   * @private
-   * @return {ImageData} Image data.
-   */
-  getDefaultTexture() {
-    const canvas = document.createElement('canvas');
-    const image = canvas.getContext('2d').createImageData(1, 1);
-    image.data[0] = image.data[1] = image.data[2] = image.data[3] = 255;
-    return image;
   }
 }
 
