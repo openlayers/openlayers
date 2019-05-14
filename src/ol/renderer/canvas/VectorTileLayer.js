@@ -626,12 +626,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       context.setTransform.apply(context, canvasTransform);
     }
     const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+    const pixelScale = renderPixelRatio / resolution;
+    const transform = resetTransform(this.tmpTransform_);
+    scaleTransform(transform, pixelScale, -pixelScale);
+    translateTransform(transform, -tileExtent[0], -tileExtent[3]);
     for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
       const executorGroup = executorGroups[i];
-      const pixelScale = renderPixelRatio / resolution;
-      const transform = resetTransform(this.tmpTransform_);
-      scaleTransform(transform, pixelScale, -pixelScale);
-      translateTransform(transform, -tileExtent[0], -tileExtent[3]);
       executorGroup.execute(context, transform, 0, {}, true, IMAGE_REPLAYS[layer.getRenderMode()]);
     }
     replayState.renderedTileResolution = tile.wantedResolution;
