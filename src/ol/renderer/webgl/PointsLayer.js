@@ -310,7 +310,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const stride = 12;
 
     // the source has changed: clear the feature cache & reload features
-    if (this.sourceRevision_ < vectorSource.getRevision()) {
+    const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
+    if (sourceChanged) {
       this.sourceRevision_ = vectorSource.getRevision();
       this.geojsonFeatureCache_ = {};
 
@@ -319,8 +320,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
     }
 
-    if (!frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING] &&
-      !equals(this.previousExtent_, frameState.extent)) {
+    const viewNotMoving = !frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING];
+    const extentChanged = !equals(this.previousExtent_, frameState.extent);
+    if ((sourceChanged || extentChanged) && viewNotMoving) {
       this.rebuildBuffers_(frameState);
       this.previousExtent_ = frameState.extent.slice();
     }
