@@ -26,7 +26,7 @@ const TierSizeCalculation = {
 export class CustomTile extends ImageTile {
 
   /**
-   * @param {number} tilePixelRatio Tile pixel ratio to disaply the tile
+   * @param {number} tilePixelRatio Tile pixel ratio to display the tile
    * @param {import("../tilegrid/TileGrid.js").default} tileGrid TileGrid that the tile belongs to.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
