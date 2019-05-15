@@ -69,7 +69,7 @@
     "istanbul-instrumenter-loader": "^3.0.1",
     "jquery": "3.4.1",
     "jsdoc": "3.6.2",
-    "jsdoc-plugin-typescript": "^2.0.0",
+    "jsdoc-plugin-typescript": "^2.0.1",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "2.2.0",
     "karma-coverage": "^1.1.2",
