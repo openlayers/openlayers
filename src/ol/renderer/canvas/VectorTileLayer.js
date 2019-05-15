@@ -582,8 +582,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     // Increase tile size when overzooming for low pixel ratio, to avoid blurry tiles
     pixelRatio = Math.max(pixelRatio, renderPixelRatio / pixelRatio);
     const size = source.getTilePixelSize(z, pixelRatio, projection);
-    context.canvas.width = size[0];
-    context.canvas.height = size[1];
+    if (context.canvas.width != size[0] || context.canvas.height != size[1]) {
+      context.canvas.width = size[0];
+      context.canvas.height = size[1];
+    } else {
+      context.clearRect(0, 0, size[0], size[1]);
+    }
     const renderScale = pixelRatio / renderPixelRatio;
     if (renderScale !== 1) {
       const canvasTransform = resetTransform(this.tmpTransform_);

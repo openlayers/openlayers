@@ -6,6 +6,10 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 
+/**
+ * @type {Array<CanvasRenderingContext2D>}
+ */
+const canvasContextPool = [];
 
 /**
  * @typedef {Object} ReplayState
@@ -111,8 +115,7 @@ class VectorRenderTile extends Tile {
   disposeInternal() {
     this.removeSourceTiles_(this);
     for (const key in this.context_) {
-      const canvas = this.context_[key].canvas;
-      canvas.width = canvas.height = 0;
+      canvasContextPool.push(this.context_[key]);
     }
     for (const key in this.executorGroups) {
       const executorGroups = this.executorGroups[key];
@@ -131,7 +134,7 @@ class VectorRenderTile extends Tile {
   getContext(layer) {
     const key = getUid(layer);
     if (!(key in this.context_)) {
-      this.context_[key] = createCanvasContext2D();
+      this.context_[key] = canvasContextPool.pop() || createCanvasContext2D();
     }
     return this.context_[key];
   }
