@@ -2,7 +2,7 @@
  * @module ol/structs/RBush
  */
 import {getUid} from '../util.js';
-import rbush from 'rbush';
+import RBush_ from 'rbush';
 import {createOrUpdate, equals} from '../extent.js';
 import {isEmpty} from '../obj.js';
 
@@ -31,7 +31,7 @@ class RBush {
     /**
      * @private
      */
-    this.rbush_ = rbush(opt_maxEntries, undefined);
+    this.rbush_ = new RBush_(opt_maxEntries);
 
     /**
      * A mapping between the objects added to this rbush wrapper

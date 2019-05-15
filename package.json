@@ -38,7 +38,7 @@
   "dependencies": {
     "pbf": "3.2.0",
     "pixelworks": "1.1.0",
-    "rbush": "2.0.2"
+    "rbush": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
@@ -47,7 +47,6 @@
     "@types/arcgis-rest-api": "^10.4.4",
     "@types/geojson": "^7946.0.7",
     "@types/pbf": "^3.0.1",
-    "@types/rbush": "^2.0.2",
     "@types/topojson-specification": "^1.0.1",
     "babel-loader": "^8.0.5",
     "buble": "^0.19.7",
