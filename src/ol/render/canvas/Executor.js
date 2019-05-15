@@ -193,9 +193,10 @@ class Executor extends Disposable {
       const width = measureTextWidths(textState.font, lines, widths);
       const lineHeight = measureTextHeight(textState.font);
       const height = lineHeight * numLines;
-      const renderWidth = (width + strokeWidth);
+      const renderWidth = width + strokeWidth;
       const context = createCanvasContext2D(
-        Math.ceil(renderWidth * scale),
+        // make canvas 2 pixels wider to account for italic text width measurement errors
+        Math.ceil((renderWidth + 2) * scale),
         Math.ceil((height + strokeWidth) * scale));
       label = context.canvas;
       labelCache.set(key, label);
@@ -220,7 +221,7 @@ class Executor extends Disposable {
       context.textBaseline = 'middle';
       context.textAlign = 'center';
       const leftRight = (0.5 - align);
-      const x = align * label.width / scale + leftRight * strokeWidth;
+      const x = align * renderWidth + leftRight * strokeWidth;
       let i;
       if (strokeKey) {
         for (i = 0; i < numLines; ++i) {
@@ -471,7 +472,9 @@ class Executor extends Disposable {
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
-    const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+    // Remove the 2 pixels we added in getTextImage() for the anchor
+    const width = label.width / pixelRatio - 2 * textState.scale;
+    const anchorX = align * width + 2 * (0.5 - align) * strokeWidth;
     const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
 
     return {
