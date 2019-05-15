@@ -62,7 +62,7 @@ export const DefaultAttrib = {
 };
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|import("../transform").Transform} UniformLiteralValue
  */
 
 /**
@@ -272,12 +272,6 @@ class WebGLHelper extends Disposable {
       this.handleWebGLContextLost, this);
     listen(this.canvas_, ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
-
-    /**
-     * @private
-     * @type {import("../transform.js").Transform}
-     */
-    this.projectionMatrix_ = createTransform();
 
     /**
      * @private
@@ -514,14 +508,6 @@ class WebGLHelper extends Disposable {
   applyFrameState(frameState) {
     const size = frameState.size;
     const rotation = frameState.viewState.rotation;
-    const resolution = frameState.viewState.resolution;
-    const center = frameState.viewState.center;
-
-    // set the "uniform" values (coordinates 0,0 are the center of the view)
-    const projectionMatrix = resetTransform(this.projectionMatrix_);
-    scaleTransform(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-    rotateTransform(projectionMatrix, -rotation);
-    translateTransform(projectionMatrix, -center[0], -center[1]);
 
     const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
     scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
@@ -531,7 +517,6 @@ class WebGLHelper extends Disposable {
       rotateTransform(offsetRotateMatrix, -rotation);
     }
 
-    this.setUniformMatrixValue(DefaultUniform.PROJECTION_MATRIX, fromTransform(this.tmpMat4_, projectionMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, fromTransform(this.tmpMat4_, offsetScaleMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
   }
@@ -565,7 +550,9 @@ class WebGLHelper extends Disposable {
         // fill texture slots by increasing index
         gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
 
-      } else if (Array.isArray(value)) {
+      } else if (Array.isArray(value) && value.length === 6) {
+        this.setUniformMatrixValue(uniform.name, fromTransform(this.tmpMat4_, value));
+      } else if (Array.isArray(value) && value.length <= 4) {
         switch (value.length) {
           case 2:
             gl.uniform2f(this.getUniformLocation(uniform.name), value[0], value[1]);
@@ -687,6 +674,28 @@ class WebGLHelper extends Disposable {
       this.attribLocations_[name] = this.getGL().getAttribLocation(this.currentProgram_, name);
     }
     return this.attribLocations_[name];
+  }
+
+  /**
+   * Modifies the given transform to apply the rotation/translation/scaling of the given frame state.
+   * The resulting transform can be used to convert world space coordinates to view coordinates.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../transform").Transform} transform Transform to update.
+   * @return {import("../transform").Transform} The updated transform object.
+   * @api
+   */
+  makeProjectionTransform(frameState, transform) {
+    const size = frameState.size;
+    const rotation = frameState.viewState.rotation;
+    const resolution = frameState.viewState.resolution;
+    const center = frameState.viewState.center;
+
+    resetTransform(transform);
+    scaleTransform(transform, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+    rotateTransform(transform, -rotation);
+    translateTransform(transform, -center[0], -center[1]);
+
+    return transform;
   }
 
   /**

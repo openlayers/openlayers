@@ -1,4 +1,9 @@
 import WebGLHelper from '../../../../src/ol/webgl/Helper';
+import {
+  create as createTransform,
+  rotate as rotateTransform,
+  scale as scaleTransform, translate as translateTransform
+} from '../../../../src/ol/transform';
 
 
 const VERTEX_SHADER = `
@@ -95,7 +100,8 @@ describe('ol.webgl.WebGLHelper', function() {
           uniforms: {
             u_test1: 42,
             u_test2: [1, 3],
-            u_test3: document.createElement('canvas')
+            u_test3: document.createElement('canvas'),
+            u_test4: createTransform()
           }
         });
         h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
@@ -116,13 +122,15 @@ describe('ol.webgl.WebGLHelper', function() {
       });
 
       it('has processed uniforms', function() {
-        expect(h.uniforms_.length).to.eql(3);
+        expect(h.uniforms_.length).to.eql(4);
         expect(h.uniforms_[0].name).to.eql('u_test1');
         expect(h.uniforms_[1].name).to.eql('u_test2');
         expect(h.uniforms_[2].name).to.eql('u_test3');
+        expect(h.uniforms_[3].name).to.eql('u_test4');
         expect(h.uniforms_[0].location).to.not.eql(-1);
         expect(h.uniforms_[1].location).to.not.eql(-1);
         expect(h.uniforms_[2].location).to.not.eql(-1);
+        expect(h.uniforms_[3].location).to.not.eql(-1);
         expect(h.uniforms_[2].texture).to.not.eql(undefined);
       });
     });
@@ -178,6 +186,34 @@ describe('ol.webgl.WebGLHelper', function() {
 
       it('cannot find the uniform location', function() {
         expect(h.getUniformLocation('u_test')).to.eql(null);
+      });
+    });
+
+    describe('#makeProjectionTransform', function() {
+      let h;
+      let frameState;
+      beforeEach(function() {
+        h = new WebGLHelper();
+
+        frameState = {
+          size: [100, 150],
+          viewState: {
+            rotation: 0.4,
+            resolution: 2,
+            center: [10, 20]
+          }
+        };
+      });
+
+      it('gives out the correct transform', function() {
+        const scaleX = 2 / frameState.size[0] / frameState.viewState.resolution;
+        const scaleY = 2 / frameState.size[1] / frameState.viewState.resolution;
+        const given = createTransform();
+        const expected = createTransform();
+        scaleTransform(expected, scaleX, scaleY);
+        rotateTransform(expected, -frameState.viewState.rotation);
+        translateTransform(expected, -frameState.viewState.center[0], -frameState.viewState.center[1]);
+        expect(h.makeProjectionTransform(frameState, given)).to.eql(expected);
       });
     });
 

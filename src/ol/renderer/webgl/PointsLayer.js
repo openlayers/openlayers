@@ -1,11 +1,21 @@
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
-import LayerRenderer from '../Layer';
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
-import WebGLHelper, {DefaultAttrib} from '../../webgl/Helper';
+import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
+import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from './Layer';
+import GeoJSON from '../../format/GeoJSON';
+import {getUid} from '../../util';
+import ViewHint from '../../ViewHint';
+import {createEmpty, equals} from '../../extent';
+import {
+  create as createTransform,
+  makeInverse as makeInverseTransform,
+  multiply as multiplyTransform,
+  apply as applyTransform
+} from '../../transform';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -56,15 +66,6 @@ const FRAGMENT_SHADER = `
   }`;
 
 /**
- * @typedef {Object} PostProcessesOptions
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
- * the main canvas that will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
- */
-
-/**
  * @typedef {Object} Options
  * @property {function(import("../../Feature").default):number} [sizeCallback] Will be called on every feature in the
  * source to compute the size of the quad on screen (in pixels). This is only done on source change.
@@ -91,7 +92,7 @@ const FRAGMENT_SHADER = `
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot.
- * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
@@ -186,22 +187,23 @@ const FRAGMENT_SHADER = `
  *
  * @api
  */
-class WebGLPointsLayerRenderer extends LayerRenderer {
+class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
    * @param {Options=} [opt_options] Options.
    */
   constructor(vectorLayer, opt_options) {
-    super(vectorLayer);
-
     const options = opt_options || {};
 
     const uniforms = options.uniforms || {};
-    uniforms.u_texture = options.texture || this.getDefaultTexture();
-    this.helper_ = new WebGLHelper({
-      postProcesses: options.postProcesses,
-      uniforms: uniforms
+    uniforms.u_texture = options.texture || getBlankTexture();
+    const projectionMatrixTransform = createTransform();
+    uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
+
+    super(vectorLayer, {
+      uniforms: uniforms,
+      postProcesses: options.postProcesses
     });
 
     this.sourceRevision_ = -1;
@@ -238,6 +240,38 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.rotateWithViewCallback_ = options.rotateWithViewCallback || function() {
       return false;
     };
+
+    this.geojsonFormat_ = new GeoJSON();
+
+    /**
+     * @type {Object<string, import("../../format/GeoJSON").GeoJSONFeature>}
+     * @private
+     */
+    this.geojsonFeatureCache_ = {};
+
+    this.previousExtent_ = createEmpty();
+
+    /**
+     * This transform is updated on every frame and is the composition of:
+     * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
+     * - current world->screen transform
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.currentTransform_ = projectionMatrixTransform;
+
+    /**
+     * This transform is updated when buffers are rebuilt and converts world space coordinates to screen space
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.renderTransform_ = createTransform();
+
+    /**
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.invertRenderTransform_ = createTransform();
   }
 
   /**
@@ -269,57 +303,34 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
   prepareFrame(frameState) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = vectorLayer.getSource();
+    const viewState = frameState.viewState;
 
+    // TODO: get this from somewhere...
     const stride = 12;
 
-    this.helper_.prepareDraw(frameState);
-
-    if (this.sourceRevision_ < vectorSource.getRevision()) {
+    // the source has changed: clear the feature cache & reload features
+    const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
+    if (sourceChanged) {
       this.sourceRevision_ = vectorSource.getRevision();
-      this.verticesBuffer_.getArray().length = 0;
-      this.indicesBuffer_.getArray().length = 0;
+      this.geojsonFeatureCache_ = {};
 
-      const viewState = frameState.viewState;
       const projection = viewState.projection;
       const resolution = viewState.resolution;
-
-      // loop on features to fill the buffer
       vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
-      vectorSource.forEachFeature((feature) => {
-        if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
-          return;
-        }
-        const x = this.coordCallback_(feature, 0);
-        const y = this.coordCallback_(feature, 1);
-        const u0 = this.texCoordCallback_(feature, 0);
-        const v0 = this.texCoordCallback_(feature, 1);
-        const u1 = this.texCoordCallback_(feature, 2);
-        const v1 = this.texCoordCallback_(feature, 3);
-        const size = this.sizeCallback_(feature);
-        const opacity = this.opacityCallback_(feature);
-        const rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-        const color = this.colorCallback_(feature, this.colorArray_);
-        const red = color[0];
-        const green = color[1];
-        const blue = color[2];
-        const alpha = color[3];
-        const baseIndex = this.verticesBuffer_.getArray().length / stride;
-
-        this.verticesBuffer_.getArray().push(
-          x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha,
-          x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha,
-          x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha,
-          x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha
-        );
-        this.indicesBuffer_.getArray().push(
-          baseIndex, baseIndex + 1, baseIndex + 3,
-          baseIndex + 1, baseIndex + 2, baseIndex + 3
-        );
-      });
-
-      this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
-      this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
     }
+
+    const viewNotMoving = !frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING];
+    const extentChanged = !equals(this.previousExtent_, frameState.extent);
+    if ((sourceChanged || extentChanged) && viewNotMoving) {
+      this.rebuildBuffers_(frameState);
+      this.previousExtent_ = frameState.extent.slice();
+    }
+
+    // apply the current projection transform with the invert of the one used to fill buffers
+    this.helper_.makeProjectionTransform(frameState, this.currentTransform_);
+    multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
+
+    this.helper_.prepareDraw(frameState);
 
     // write new data
     this.helper_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
@@ -337,24 +348,54 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * Will return the last shader compilation errors. If no error happened, will return null;
-   * @return {string|null} Errors, or null if last compilation was successful
-   * @api
-   */
-  getShaderCompileErrors() {
-    return this.helper_.getShaderCompileErrors();
-  }
-
-  /**
-   * Returns a texture of 1x1 pixel, white
+   * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
+   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
    * @private
-   * @return {ImageData} Image data.
    */
-  getDefaultTexture() {
-    const canvas = document.createElement('canvas');
-    const image = canvas.getContext('2d').createImageData(1, 1);
-    image.data[0] = image.data[1] = image.data[2] = image.data[3] = 255;
-    return image;
+  rebuildBuffers_(frameState) {
+    const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const vectorSource = vectorLayer.getSource();
+
+    this.verticesBuffer_.getArray().length = 0;
+    this.indicesBuffer_.getArray().length = 0;
+
+    // saves the projection transform for the current frame state
+    this.helper_.makeProjectionTransform(frameState, this.renderTransform_);
+    makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+
+    // loop on features to fill the buffer
+    const features = vectorSource.getFeatures();
+    let feature;
+    for (let i = 0; i < features.length; i++) {
+      feature = features[i];
+      if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
+        continue;
+      }
+
+      let geojsonFeature = this.geojsonFeatureCache_[getUid(feature)];
+      if (!geojsonFeature) {
+        geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
+        this.geojsonFeatureCache_[getUid(feature)] = geojsonFeature;
+      }
+
+      geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
+      geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
+      applyTransform(this.renderTransform_, geojsonFeature.geometry.coordinates);
+      geojsonFeature.properties = geojsonFeature.properties || {};
+      geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
+      geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
+      geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
+      geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
+      geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
+      geojsonFeature.properties.size = this.sizeCallback_(feature);
+      geojsonFeature.properties.opacity = this.opacityCallback_(feature);
+      geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
+
+      pushFeatureToBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
+    }
+
+    this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
+    this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
   }
 }
 
