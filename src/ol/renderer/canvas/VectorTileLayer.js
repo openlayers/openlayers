@@ -7,7 +7,7 @@ import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {listen, unlisten, unlistenByKey} from '../../events.js';
 import EventType from '../../events/EventType.js';
-import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
+import {buffer, containsCoordinate, equals, getIntersection, intersects} from '../../extent.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ReplayType from '../../render/canvas/BuilderType.js';
 import {labelCache} from '../../render/canvas.js';
@@ -17,7 +17,6 @@ import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '.
 import {
   apply as applyTransform,
   create as createTransform,
-  compose as composeTransform,
   reset as resetTransform,
   scale as scaleTransform,
   translate as translateTransform,
@@ -361,35 +360,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     return found;
-  }
-
-  /**
-   * @param {import("../../VectorTile.js").default} tile Tile.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @return {import("../../transform.js").Transform} transform Transform.
-   * @private
-   */
-  getReplayTransform_(tile, frameState) {
-    const layer = this.getLayer();
-    const source = layer.getSource();
-    const tileGrid = source.getTileGrid();
-    const tileCoord = tile.tileCoord;
-    const tileResolution = tileGrid.getResolution(tileCoord[0]);
-    const viewState = frameState.viewState;
-    const pixelRatio = frameState.pixelRatio;
-    const renderResolution = viewState.resolution / pixelRatio;
-    const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
-    const center = viewState.center;
-    const origin = getTopLeft(tileExtent);
-    const size = frameState.size;
-    const offsetX = Math.round(pixelRatio * size[0] / 2);
-    const offsetY = Math.round(pixelRatio * size[1] / 2);
-    return composeTransform(this.tmpTransform_,
-      offsetX, offsetY,
-      tileResolution / renderResolution, tileResolution / renderResolution,
-      viewState.rotation,
-      (origin[0] - center[0]) / tileResolution,
-      (center[1] - origin[1]) / tileResolution);
   }
 
   /**
