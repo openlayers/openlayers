@@ -14,6 +14,13 @@ export default {
    */
   CHANGE: 'change',
 
+  /**
+   * Generic error event. Triggered when an error occurs.
+   * @event module:ol/events/Event~Event#error
+   * @api
+   */
+  ERROR: 'error',
+
   CLEAR: 'clear',
   CONTEXTMENU: 'contextmenu',
   CLICK: 'click',
@@ -21,7 +28,6 @@ export default {
   DRAGENTER: 'dragenter',
   DRAGOVER: 'dragover',
   DROP: 'drop',
-  ERROR: 'error',
   KEYDOWN: 'keydown',
   KEYPRESS: 'keypress',
   LOAD: 'load',
