@@ -100,10 +100,50 @@ describe('ol.View', function() {
       describe('with no options', function() {
         it('gives a correct center constraint function', function() {
           const options = {};
+          const size = [512, 256];
+          const resolution = 1e5;
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0])).to.eql([0, 0]);
-          expect(fn(undefined)).to.eql(undefined);
-          expect(fn([42, -100])).to.eql([42, -100]);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([42, -100], resolution, size)).to.eql([42, -100]);
+        });
+      });
+
+      describe('panning off the edge of the world', function() {
+        it('disallows going north off the world', function() {
+          const options = {
+            projection: 'EPSG:4326'
+          };
+          const size = [360, 180];
+          const resolution = 0.5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([0, 60], resolution, size)).to.eql([0, 45]);
+          expect(fn([180, 60], resolution, size)).to.eql([180, 45]);
+          expect(fn([-180, 60], resolution, size)).to.eql([-180, 45]);
+        });
+
+        it('disallows going south off the world', function() {
+          const options = {
+            projection: 'EPSG:4326'
+          };
+          const size = [360, 180];
+          const resolution = 0.5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([0, -60], resolution, size)).to.eql([0, -45]);
+          expect(fn([180, -60], resolution, size)).to.eql([180, -45]);
+          expect(fn([-180, -60], resolution, size)).to.eql([-180, -45]);
+        });
+      });
+
+      describe('with multiWorld: true', function() {
+        it('gives a correct center constraint function', function() {
+          const options = {multiWorld: true};
+          const size = [512, 256];
+          const resolution = 1e5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([42, -100], resolution, size)).to.eql([42, -100]);
         });
       });
 

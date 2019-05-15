@@ -32,9 +32,9 @@ Previously, this options only constrained the view *center*. This behaviour can 
 
 As a side effect, the view `rotate` method is gone and has been replaced with `adjustRotation` which takes a delta as input.
 
-##### Zoom is constrained so only one world is visible
+##### The view is constrained so only one world is visible
 
-Previously, maps showed multiple worlds at low zoom levels. Now, the view is restricted to show only one world. To get the previous behavior, configure the `ol/View` with `multiWorld: true`.
+Previously, maps showed multiple worlds at low zoom levels. In addition, it used to be possible to pan off the north or south edge of the world.  Now, the view is restricted to show only one world, and you cannot pan off the edge. To get the previous behavior, configure the `ol/View` with `multiWorld: true`.
 
 ##### Removal of deprecated methods
 
