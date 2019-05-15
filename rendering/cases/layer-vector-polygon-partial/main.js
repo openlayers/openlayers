@@ -42,7 +42,8 @@ const layer = new VectorLayer({
 const view = new View({
   center: [-9.5, 78],
   zoom: 2,
-  projection: 'EPSG:4326'
+  projection: 'EPSG:4326',
+  multiWorld: true
 });
 new Map({
   pixelRatio: 1,
