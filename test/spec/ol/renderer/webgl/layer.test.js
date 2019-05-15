@@ -1,4 +1,4 @@
-import WebGLLayerRenderer, {getBlankTexture, pushFeatureInBuffer} from '../../../../../src/ol/renderer/webgl/Layer';
+import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from '../../../../../src/ol/renderer/webgl/Layer';
 import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer';
 import Layer from '../../../../../src/ol/layer/Layer';
 
@@ -28,7 +28,7 @@ describe('ol.renderer.webgl.Layer', function() {
 
   });
 
-  describe('pushFeatureInBuffer', function() {
+  describe('pushFeatureToBuffer', function() {
     let vertexBuffer, indexBuffer;
 
     beforeEach(function() {
@@ -46,7 +46,7 @@ describe('ol.renderer.webgl.Layer', function() {
         },
         geometry: null
       };
-      pushFeatureInBuffer(vertexBuffer, indexBuffer, feature);
+      pushFeatureToBuffer(vertexBuffer, indexBuffer, feature);
       expect(vertexBuffer.getArray().length).to.eql(0);
       expect(indexBuffer.getArray().length).to.eql(0);
     });
@@ -65,7 +65,7 @@ describe('ol.renderer.webgl.Layer', function() {
         }
       };
       const attributePerVertex = 12;
-      pushFeatureInBuffer(vertexBuffer, indexBuffer, feature);
+      pushFeatureToBuffer(vertexBuffer, indexBuffer, feature);
       expect(vertexBuffer.getArray().length).to.eql(attributePerVertex * 4);
       expect(indexBuffer.getArray().length).to.eql(6);
     });
@@ -84,8 +84,8 @@ describe('ol.renderer.webgl.Layer', function() {
         }
       };
       const attributePerVertex = 12;
-      pushFeatureInBuffer(vertexBuffer, indexBuffer, feature);
-      pushFeatureInBuffer(vertexBuffer, indexBuffer, feature);
+      pushFeatureToBuffer(vertexBuffer, indexBuffer, feature);
+      pushFeatureToBuffer(vertexBuffer, indexBuffer, feature);
       expect(vertexBuffer.getArray()[0]).to.eql(-75);
       expect(vertexBuffer.getArray()[1]).to.eql(47);
       expect(vertexBuffer.getArray()[0 + attributePerVertex]).to.eql(-75);
@@ -125,7 +125,7 @@ describe('ol.renderer.webgl.Layer', function() {
         }
       };
       const attributePerVertex = 16;
-      pushFeatureInBuffer(vertexBuffer, indexBuffer, feature, ['custom', 'custom2', 'customString', 'customString2']);
+      pushFeatureToBuffer(vertexBuffer, indexBuffer, feature, ['custom', 'custom2', 'customString', 'customString2']);
       expect(vertexBuffer.getArray().length).to.eql(attributePerVertex * 4);
       expect(indexBuffer.getArray().length).to.eql(6);
       expect(vertexBuffer.getArray()[12]).to.eql(4);

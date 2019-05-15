@@ -61,7 +61,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
 
 /**
- * Pushes vertices and indices in the given buffers using the geometry coordinates and the following properties
+ * Pushes vertices and indices to the given buffers using the geometry coordinates and the following properties
  * from the feature:
  * - `color`
  * - `opacity`
@@ -79,13 +79,13 @@ class WebGLLayerRenderer extends LayerRenderer {
  * feature and pushed in the buffer in the given order. Note: attributes can only be numerical! Any other type or
  * NaN will result in `0` being pushed in the buffer.
  */
-export function pushFeatureInBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
+export function pushFeatureToBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
   if (!geojsonFeature.geometry) {
     return;
   }
   switch (geojsonFeature.geometry.type) {
     case 'Point':
-      pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes);
+      pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes);
       return;
     default:
       return;
@@ -102,7 +102,7 @@ const tmpArray_ = [];
  * @param {Array<string>} [opt_attributes] Custom attributes
  * @private
  */
-function pushPointGeomInBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
+function pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
   const stride = 12 + (opt_attributes !== undefined ? opt_attributes.length : 0);
 
   const x = geojsonFeature.geometry.coordinates[0];

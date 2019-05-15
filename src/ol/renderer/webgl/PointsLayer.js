@@ -5,7 +5,7 @@ import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
 import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
-import WebGLLayerRenderer, {getBlankTexture, pushFeatureInBuffer} from './Layer';
+import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from './Layer';
 import GeoJSON from '../../format/GeoJSON';
 import {getUid} from '../../util';
 import ViewHint from '../../ViewHint';
@@ -391,7 +391,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       geojsonFeature.properties.opacity = this.opacityCallback_(feature);
       geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
 
-      pushFeatureInBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
+      pushFeatureToBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
     }
 
     this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
