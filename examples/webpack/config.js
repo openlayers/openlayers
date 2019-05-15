@@ -19,15 +19,24 @@ module.exports = {
   context: src,
   target: 'web',
   entry: entry,
+  stats: 'minimal',
   module: {
     rules: [{
+      test: /\.js$/,
       use: {
         loader: 'buble-loader'
       },
-      test: /\.js$/,
       include: [
         path.join(__dirname, '..', '..', 'src'),
         path.join(__dirname, '..')
+      ]
+    }, {
+      test: /\.js$/,
+      use: {
+        loader: path.join(__dirname, './worker-loader.js')
+      },
+      include: [
+        path.join(__dirname, '../../src/ol/worker')
       ]
     }]
   },
