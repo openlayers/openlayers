@@ -82,7 +82,7 @@ class ExecutorGroup extends Disposable {
      * @private
      * @type {CanvasRenderingContext2D}
      */
-    this.hitDetectionContext_;
+    this.hitDetectionContext_ = null;
 
     /**
      * @private
