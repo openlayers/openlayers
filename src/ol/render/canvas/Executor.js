@@ -21,7 +21,7 @@ import {
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import Disposable from '../../Disposable.js';
-import rbush from 'rbush';
+import RBush from 'rbush';
 
 
 /**
@@ -429,7 +429,7 @@ class Executor extends Disposable {
           value: feature
         };
         if (!declutterTree) {
-          declutterTree = rbush(9, undefined);
+          declutterTree = new RBush(9);
         }
         if (!declutterTree.collides(box)) {
           declutterTree.insert(box);
