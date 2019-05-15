@@ -82,7 +82,7 @@ class ExecutorGroup extends Disposable {
      * @private
      * @type {CanvasRenderingContext2D}
      */
-    this.hitDetectionContext_ = createCanvasContext2D(1, 1);
+    this.hitDetectionContext_;
 
     /**
      * @private
@@ -137,8 +137,11 @@ class ExecutorGroup extends Disposable {
         executors[key].disposeInternal();
       }
     }
-    const canvas = this.hitDetectionContext_.canvas;
-    canvas.width = canvas.height = 0;
+    if (this.hitDetectionContext_) {
+      const canvas = this.hitDetectionContext_.canvas;
+      canvas.width = canvas.height = 0;
+    }
+
     super.disposeInternal();
   }
 
@@ -187,6 +190,10 @@ class ExecutorGroup extends Disposable {
       1 / resolution, -1 / resolution,
       -rotation,
       -coordinate[0], -coordinate[1]);
+
+    if (!this.hitDetectionContext_) {
+      this.hitDetectionContext_ = createCanvasContext2D(contextSize, contextSize);
+    }
     const context = this.hitDetectionContext_;
 
     if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
