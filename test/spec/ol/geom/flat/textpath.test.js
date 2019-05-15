@@ -72,9 +72,11 @@ describe('ol.geom.flat.drawTextOnPath', function() {
     const instructions = drawTextOnPath(
       angled, 0, angled.length, 2, 'foo', startM, Infinity, 1, measureAndCacheTextWidth, '', {});
     expect(instructions[0][3]).to.eql(45 * Math.PI / 180);
-    expect(instructions[0][4]).to.be('fo');
-    expect(instructions[1][3]).to.eql(-45 * Math.PI / 180);
+    expect(instructions[0][4]).to.be('f');
+    expect(instructions[1][3]).to.eql(45 * Math.PI / 180);
     expect(instructions[1][4]).to.be('o');
+    expect(instructions[2][3]).to.eql(-45 * Math.PI / 180);
+    expect(instructions[2][4]).to.be('o');
   });
 
   it('respects maxAngle', function() {
