@@ -764,6 +764,21 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * @return {boolean} Layers have sources that are still loading.
+   */
+  getLoading() {
+    const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
+    for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+      const layer = layerStatesArray[i].layer;
+      const source = /** @type {import("./layer/Layer.js").default} */ (layer).getSource();
+      if (source && source.loading) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Get the pixel for a coordinate.  This takes a coordinate in the map view
    * projection and returns the corresponding pixel.
    * @param {import("./coordinate.js").Coordinate} coordinate A map coordinate.
@@ -950,7 +965,7 @@ class PluggableMap extends BaseObject {
     }
 
     if (frameState && this.hasListener(RenderEventType.RENDERCOMPLETE) && !frameState.animate &&
-        !this.tileQueue_.getTilesLoading() && !getLoading(this.getLayers().getArray())) {
+        !this.tileQueue_.getTilesLoading() && !this.getLoading()) {
       this.renderer_.dispatchRenderEvent(RenderEventType.RENDERCOMPLETE, frameState);
     }
 
@@ -1398,23 +1413,3 @@ function createOptionsInternal(options) {
 
 }
 export default PluggableMap;
-
-/**
- * @param  {Array<import("./layer/Base.js").default>} layers Layers.
- * @return {boolean} Layers have sources that are still loading.
- */
-function getLoading(layers) {
-  for (let i = 0, ii = layers.length; i < ii; ++i) {
-    const layer = layers[i];
-    if (typeof /** @type {?} */ (layer).getLayers === 'function') {
-      return getLoading(/** @type {LayerGroup} */ (layer).getLayers().getArray());
-    } else {
-      const source = /** @type {import("./layer/Layer.js").default} */ (
-        layer).getSource();
-      if (source && source.loading) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
