@@ -4,7 +4,7 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
-import {listenImage, unlistenImage} from './Image.js';
+import {listenImage} from './Image.js';
 
 
 class ImageTile extends Tile {
@@ -46,9 +46,9 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {function():void}
      */
-    this.imageListenerKeys_ = null;
+    this.unlisten_ = null;
 
     /**
      * @private
@@ -134,7 +134,7 @@ class ImageTile extends Tile {
       this.state = TileState.LOADING;
       this.changed();
       this.tileLoadFunction_(this, this.src_);
-      this.imageListenerKeys_ = listenImage(
+      this.unlisten_ = listenImage(
         this.image_,
         this.handleImageLoad_.bind(this),
         this.handleImageError_.bind(this)
@@ -148,7 +148,10 @@ class ImageTile extends Tile {
    * @private
    */
   unlistenImage_() {
-    unlistenImage(this.imageListenerKeys_);
+    if (this.unlisten_) {
+      this.unlisten_();
+      this.unlisten_ = null;
+    }
   }
 }
 

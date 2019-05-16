@@ -7,7 +7,7 @@ import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import {shared as iconImageCache} from './IconImageCache.js';
-import {listenImage, unlistenImage} from '../Image.js';
+import {listenImage} from '../Image.js';
 
 
 class IconImage extends EventTarget {
@@ -53,9 +53,9 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {Array<import("../events.js").EventsKey>}
+     * @type {function():void}
      */
-    this.imageListenerKeys_ = null;
+    this.unlisten_ = null;
 
     /**
      * @private
@@ -191,7 +191,7 @@ class IconImage extends EventTarget {
       } catch (e) {
         this.handleImageError_();
       }
-      this.imageListenerKeys_ = listenImage(
+      this.unlisten_ = listenImage(
         this.image_,
         this.handleImageLoad_.bind(this),
         this.handleImageError_.bind(this)
@@ -233,7 +233,10 @@ class IconImage extends EventTarget {
    * @private
    */
   unlistenImage_() {
-    unlistenImage(this.imageListenerKeys_);
+    if (this.unlisten_) {
+      this.unlisten_();
+      this.unlisten_ = null;
+    }
   }
 }
 
