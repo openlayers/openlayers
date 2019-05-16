@@ -294,6 +294,11 @@ class PluggableMap extends BaseObject {
     this.interactions = optionsInternal.interactions || new Collection();
 
     /**
+     * @type {import("./events.js").EventsKey}
+     */
+    this.labelCacheListenerKey_;
+
+    /**
      * @type {Collection<import("./Overlay.js").default>}
      * @private
      */
@@ -499,6 +504,24 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Attach a label cache for listening to font changes.
+   * @param {import("./events/Target.js").default} labelCache Label cache.
+   */
+  attachLabelCache(labelCache) {
+    this.detachLabelCache();
+    this.labelCacheListenerKey_ = listen(labelCache, EventType.CLEAR, this.redrawText.bind(this));
+  }
+
+  /**
+   * Detach the label cache, i.e. no longer listen to font changes.
+   */
+  detachLabelCache() {
+    if (this.labelCacheListenerKey_) {
+      unlistenByKey(this.labelCacheListenerKey_);
+    }
+  }
+
+  /**
    *
    * @inheritDoc
    */
@@ -515,6 +538,7 @@ class PluggableMap extends BaseObject {
       cancelAnimationFrame(this.animationDelayKey_);
       this.animationDelayKey_ = undefined;
     }
+    this.detachLabelCache();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -994,7 +1018,6 @@ class PluggableMap extends BaseObject {
     }
 
     if (!targetElement) {
-      this.renderer_.removeLayerRenderers();
       removeNode(this.viewport_);
       if (this.handleResize_ !== undefined) {
         removeEventListener(EventType.RESIZE, this.handleResize_, false);
@@ -1100,6 +1123,19 @@ class PluggableMap extends BaseObject {
       cancelAnimationFrame(this.animationDelayKey_);
     }
     this.animationDelay_();
+  }
+
+  /**
+   * Redraws all text after new fonts have loaded
+   */
+  redrawText() {
+    const layerStates = this.getLayerGroup().getLayerStatesArray();
+    for (let i = 0, ii = layerStates.length; i < ii; ++i) {
+      const layer = layerStates[i].layer;
+      if (layer.hasRenderer()) {
+        layer.getRenderer().handleFontsChanged();
+      }
+    }
   }
 
   /**

@@ -255,6 +255,13 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * @return {boolean} The layer has a renderer.
+   */
+  hasRenderer() {
+    return !!this.renderer_;
+  }
+
+  /**
    * Create a renderer for this layer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected

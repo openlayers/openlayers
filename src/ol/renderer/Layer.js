@@ -116,6 +116,12 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * @abstract
+   * Perform action necessary to get the layer rendered after new fonts have loaded
+   */
+  handleFontsChanged() {}
+
+  /**
    * Handle changes in image state.
    * @param {import("../events/Event.js").default} event Image change event.
    * @private

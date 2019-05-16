@@ -75,7 +75,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         style: layerStyle
       });
       map.addLayer(layer);
-      const spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
+      const spy = sinon.spy(layer.getRenderer(),
         'renderFeature');
       map.renderSync();
       expect(spy.getCall(0).args[3]).to.be(layerStyle);

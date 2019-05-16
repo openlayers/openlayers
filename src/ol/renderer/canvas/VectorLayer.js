@@ -3,10 +3,7 @@
  */
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
-import {listen, unlisten} from '../../events.js';
-import EventType from '../../events/EventType.js';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
-import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
@@ -68,16 +65,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.replayGroupChanged = true;
-
-    listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-    super.disposeInternal();
   }
 
   /**
@@ -211,9 +198,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../events/Event.js").default} event Event.
+   * @inheritDoc
    */
-  handleFontsChanged_(event) {
+  handleFontsChanged() {
     const layer = this.getLayer();
     if (layer.getVisible() && this.replayGroup_) {
       layer.changed();
