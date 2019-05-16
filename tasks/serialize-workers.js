@@ -29,25 +29,26 @@ async function build(input, {minify = true} = {}) {
           }
         ]
       ]
-    }),
-    {
-      name: 'serialize worker and export create function',
-      renderChunk(code) {
-        return `
-          const source = ${JSON.stringify(code)};
-          const blob = new Blob([source], {type: 'application/javascript'});
-          const url = URL.createObjectURL(blob);
-          export function create() {
-            return new Worker(url);
-          }
-        `;
-      }
-    }
+    })
   ];
 
   if (minify) {
     plugins.push(terser());
   }
+
+  plugins.push({
+    name: 'serialize worker and export create function',
+    renderChunk(code) {
+      return `
+        const source = ${JSON.stringify(code)};
+        const blob = new Blob([source], {type: 'application/javascript'});
+        const url = URL.createObjectURL(blob);
+        export function create() {
+          return new Worker(url);
+        }
+      `;
+    }
+  });
 
   const bundle = await rollup.rollup({input, plugins});
   const {output} = await bundle.generate({format: 'es'});
