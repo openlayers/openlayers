@@ -1597,6 +1597,39 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
+        it('can write ExtendedData after Style tag', function() {
+          const style = new Style({
+            stroke: new Stroke({
+              color: '#112233',
+              width: 2
+            })
+          });
+          const feature = new Feature();
+          feature.set('foo', null);
+          feature.setStyle([style]);
+          const features = [feature];
+          const node = format.writeFeaturesNode(features);
+          const text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <Style>' +
+              '      <LineStyle>' +
+              '        <color>ff332211</color>' +
+              '        <width>2</width>' +
+              '      </LineStyle>' +
+              '    </Style>' +
+              '    <ExtendedData>' +
+              '      <Data name="foo"/>' +
+              '    </ExtendedData>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(parse(text));
+        });
+
         it('can read ExtendedData', function() {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +

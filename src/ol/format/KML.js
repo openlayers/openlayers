@@ -2684,13 +2684,6 @@ function writePlacemark(node, feature, objectStack) {
     return !filter[v];
   });
 
-  if (keys.length > 0) {
-    const sequence = makeSequence(properties, keys);
-    const namesAndValues = {names: keys, values: sequence};
-    pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
-      EXTENDEDDATA_NODE_FACTORY, [namesAndValues], objectStack);
-  }
-
   const styleFunction = feature.getStyleFunction();
   if (styleFunction) {
     // FIXME the styles returned by the style function are supposed to be
@@ -2712,6 +2705,13 @@ function writePlacemark(node, feature, objectStack) {
   const values = makeSequence(properties, orderedKeys);
   pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+
+  if (keys.length > 0) {
+    const sequence = makeSequence(properties, keys);
+    const namesAndValues = {names: keys, values: sequence};
+    pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
+      EXTENDEDDATA_NODE_FACTORY, [namesAndValues], objectStack);
+  }
 
   // serialize geometry
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
