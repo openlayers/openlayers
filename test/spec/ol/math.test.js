@@ -1,4 +1,4 @@
-import {clamp, lerp, cosh, roundUpToPowerOfTwo, solveLinearSystem, toDegrees, toRadians, modulo} from '../../../src/ol/math.js';
+import {clamp, lerp, cosh, solveLinearSystem, toDegrees, toRadians, modulo} from '../../../src/ol/math.js';
 
 
 describe('ol.math.clamp', function() {
@@ -45,45 +45,6 @@ describe('ol.math.cosh', function() {
 
   it('returns the correct value at Infinity', function() {
     expect(cosh(Infinity)).to.eql(Infinity);
-  });
-
-});
-
-describe('ol.math.roundUpToPowerOfTwo', function() {
-
-  it('raises an exception when x is negative', function() {
-    expect(function() {
-      roundUpToPowerOfTwo(-1);
-    }).to.throwException();
-  });
-
-  it('raises an exception when x is zero', function() {
-    expect(function() {
-      roundUpToPowerOfTwo(0);
-    }).to.throwException();
-  });
-
-  it('returns the expected value for simple powers of two', function() {
-    expect(roundUpToPowerOfTwo(1)).to.be(1);
-    expect(roundUpToPowerOfTwo(2)).to.be(2);
-    expect(roundUpToPowerOfTwo(4)).to.be(4);
-    expect(roundUpToPowerOfTwo(8)).to.be(8);
-    expect(roundUpToPowerOfTwo(16)).to.be(16);
-    expect(roundUpToPowerOfTwo(32)).to.be(32);
-    expect(roundUpToPowerOfTwo(64)).to.be(64);
-    expect(roundUpToPowerOfTwo(128)).to.be(128);
-    expect(roundUpToPowerOfTwo(256)).to.be(256);
-  });
-
-  it('returns the expected value for simple powers of ten', function() {
-    expect(roundUpToPowerOfTwo(1)).to.be(1);
-    expect(roundUpToPowerOfTwo(10)).to.be(16);
-    expect(roundUpToPowerOfTwo(100)).to.be(128);
-    expect(roundUpToPowerOfTwo(1000)).to.be(1024);
-    expect(roundUpToPowerOfTwo(10000)).to.be(16384);
-    expect(roundUpToPowerOfTwo(100000)).to.be(131072);
-    expect(roundUpToPowerOfTwo(1000000)).to.be(1048576);
-    expect(roundUpToPowerOfTwo(10000000)).to.be(16777216);
   });
 
 });
