@@ -121,7 +121,7 @@ class ImageWrapper extends ImageBase {
       this.state = ImageState.LOADING;
       this.changed();
       this.imageLoadFunction_(this, this.src_);
-      this.imageListenerKeys_ = listenImage(
+      this.unlisten_ = listenImage(
         this.image_,
         this.handleImageLoad_.bind(this),
         this.handleImageError_.bind(this)
@@ -142,7 +142,10 @@ class ImageWrapper extends ImageBase {
    * @private
    */
   unlistenImage_() {
-    unlistenImage(this.imageListenerKeys_);
+    if (this.unlisten_) {
+      this.unlisten_();
+      this.unlisten_ = null;
+    }
   }
 }
 
@@ -150,31 +153,36 @@ class ImageWrapper extends ImageBase {
  * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image element.
  * @param {function():any} loadHandler Load callback function.
  * @param {function():any} errorHandler Error callback function.
- * @return {Array<import("./events.js").EventsKey>} listener keys.
+ * @return {function():void} Callback to stop listening.
  */
 export function listenImage(image, loadHandler, errorHandler) {
   const img = /** @type {HTMLImageElement} */ (image);
   if (img.decode) {
-    img.decode().then(loadHandler).catch(errorHandler);
-    return null;
-  } else {
-    const listenerKeys = [
-      listenOnce(img, EventType.LOAD, loadHandler),
-      listenOnce(img, EventType.ERROR, errorHandler)
-    ];
-    return listenerKeys;
+    const promise = img.decode();
+    let listening = true;
+    const unlisten = function() {
+      listening = false;
+    };
+    promise.then(function() {
+      if (listening) {
+        loadHandler();
+      }
+    }).catch(function(error) {
+      if (listening) {
+        errorHandler();
+      }
+    });
+    return unlisten;
   }
 
-}
-
-/**
- * @param {Array<import("./events.js").EventsKey>} listenerKeys listener keys.
- */
-export function unlistenImage(listenerKeys) {
-  if (listenerKeys) {
+  const listenerKeys = [
+    listenOnce(img, EventType.LOAD, loadHandler),
+    listenOnce(img, EventType.ERROR, errorHandler)
+  ];
+  return function unlisten() {
     listenerKeys.forEach(unlistenByKey);
-    listenerKeys = null;
-  }
+  };
 }
+
 
 export default ImageWrapper;
