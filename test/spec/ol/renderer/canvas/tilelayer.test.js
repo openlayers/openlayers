@@ -49,7 +49,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
       });
       source.updateParams({TIME: '1'});
       map.renderSync();
-      const tiles = map.getRenderer().getLayerRenderer(layer).renderedTiles;
+      const tiles = layer.getRenderer().renderedTiles;
       expect(tiles.length).to.be(1);
       expect(tiles[0]).to.equal(tile);
       expect(tile.inTransition()).to.be(true);

@@ -56,6 +56,13 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
    * @inheritDoc
    */
+  handleFontsChanged() {
+    this.vectorRenderer_.handleFontsChanged();
+  }
+
+  /**
+   * @inheritDoc
+   */
   prepareFrame(frameState, layerState) {
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;

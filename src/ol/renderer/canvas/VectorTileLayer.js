@@ -5,12 +5,11 @@ import {getUid} from '../../util.js';
 import {createCanvasContext2D} from '../../dom.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import {listen, unlisten, unlistenByKey} from '../../events.js';
+import {listen, unlistenByKey} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import {buffer, containsCoordinate, equals, getIntersection, intersects} from '../../extent.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ReplayType from '../../render/canvas/BuilderType.js';
-import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -132,16 +131,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     // Use nearest lower resolution.
     this.zDirection = 1;
-
-    listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-
   }
 
   /**
    * @inheritDoc
    */
   disposeInternal() {
-    unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
     this.overlayContext_.canvas.width = this.overlayContext_.canvas.height = 0;
     super.disposeInternal();
   }
@@ -363,9 +358,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../events/Event.js").default} event Event.
+   * @inheritDoc
    */
-  handleFontsChanged_(event) {
+  handleFontsChanged() {
     const layer = this.getLayer();
     if (layer.getVisible() && this.renderedLayerRevision_ !== undefined) {
       layer.changed();

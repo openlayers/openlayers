@@ -8,6 +8,7 @@ import RenderEventType from '../render/EventType.js';
 import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
 import {replaceChildren} from '../dom.js';
+import {labelCache} from '../render/canvas.js';
 
 
 /**
@@ -22,6 +23,7 @@ class CompositeMapRenderer extends MapRenderer {
    */
   constructor(map) {
     super(map);
+    map.attachLabelCache(labelCache);
 
     /**
      * @private
@@ -111,7 +113,6 @@ class CompositeMapRenderer extends MapRenderer {
       this.renderedVisible_ = true;
     }
 
-    this.scheduleRemoveUnusedLayerRenderers(frameState);
     this.scheduleExpireIconCache(frameState);
   }
 
@@ -128,11 +129,8 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = layerState.layer;
-      if (visibleAtResolution(layerState, viewResolution) && layerFilter(layer)) {
-        const layerRenderer = this.getLayerRenderer(layer);
-        if (!layerRenderer) {
-          continue;
-        }
+      if (layer.hasRenderer() && visibleAtResolution(layerState, viewResolution) && layerFilter(layer)) {
+        const layerRenderer = layer.getRenderer();
         const data = layerRenderer.getDataAtPixel(pixel, frameState, hitTolerance);
         if (data) {
           const result = callback(layer, data);
