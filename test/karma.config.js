@@ -86,6 +86,14 @@ module.exports = function(karma) {
             },
             include: path.resolve('src/ol/'),
             exclude: path.resolve('node_modules/')
+          }, {
+            test: /\.js$/,
+            use: {
+              loader: path.join(__dirname, '../examples/webpack/worker-loader.js')
+            },
+            include: [
+              path.join(__dirname, '../src/ol/worker')
+            ]
           }
         ]
       }
