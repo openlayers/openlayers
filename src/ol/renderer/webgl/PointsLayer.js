@@ -8,7 +8,7 @@ import GeometryType from '../../geom/GeometryType.js';
 import WebGLLayerRenderer, {
   getBlankTexture,
   POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
-  writePointFeatureInstructions, writePointFeatureToBuffers
+  writePointFeatureInstructions
 } from './Layer.js';
 import ViewHint from '../../ViewHint.js';
 import {createEmpty, equals} from '../../extent.js';
@@ -18,6 +18,7 @@ import {
   multiply as multiplyTransform,
   apply as applyTransform
 } from '../../transform.js';
+import {create as createWebGLWorker} from '../../worker/webgl.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -272,6 +273,26 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.renderInstructions_ = new Float32Array(0);
+
+    this.worker_ = createWebGLWorker();
+    this.worker_.addEventListener('message', function(event) {
+      if (event.data.type === 'buffers-generated') {
+        const vertexBuffer = Array.from(new Float32Array(event.data.vertexBuffer));
+        const indexBuffer = Array.from(new Uint32Array(event.data.indexBuffer));
+        const projectionTransform = event.data.projectionTransform;
+
+        // TODO: improve the WebGLBuffer private api: we shouldn't need to switch back to plain Arrays
+        // also we need to handle the case where Uint32 array cannot be used
+        this.verticesBuffer_.arr_ = vertexBuffer;
+        this.indicesBuffer_.arr_ = indexBuffer;
+        this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
+        this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+        // saves the projection transform for the current frame state
+        this.renderTransform_ = projectionTransform;
+        makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+      }
+    }.bind(this));
   }
 
   /**
@@ -396,31 +417,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       );
     }
 
-    const elementsCount = this.renderInstructions_.length / POINT_INSTRUCTIONS_COUNT;
-    const indexBuffer = new Uint32Array(elementsCount * 6);
-    const vertexBuffer = new Float32Array(elementsCount * 4 * POINT_VERTEX_STRIDE);
-
-    let bufferPositions = null;
-    for (let i = 0; i < this.renderInstructions_.length; i += POINT_INSTRUCTIONS_COUNT) {
-      bufferPositions = writePointFeatureToBuffers(
-        this.renderInstructions_,
-        i,
-        vertexBuffer,
-        indexBuffer,
-        bufferPositions,
-        POINT_INSTRUCTIONS_COUNT);
-    }
-
-    // TODO: improve the WebGLBuffer private api: we shouldn't need to switch back to plain Arrays
-    // also we need to handle the case where Uint32 array cannot be used
-    this.verticesBuffer_.arr_ = Array.from(vertexBuffer);
-    this.indicesBuffer_.arr_ = Array.from(indexBuffer);
-    this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
-    this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
-
-    this.renderTransform_ = projectionTransform;
-    makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+    this.worker_.postMessage({
+      type: 'generate-buffer',
+      renderInstructions: this.renderInstructions_.buffer,
+      projectionTransform: projectionTransform
+    }, [this.renderInstructions_.buffer]);
   }
+
+
 }
 
 export default WebGLPointsLayerRenderer;
