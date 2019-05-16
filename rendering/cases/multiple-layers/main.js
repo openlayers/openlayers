@@ -9,12 +9,6 @@ import Point from '../../../src/ol/geom/Point.js';
 
 const map = new Map({
   layers: [
-    new TileLayer({
-      source: new XYZ({
-        url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
-        maxZoom: 3
-      })
-    }),
     new VectorLayer({
       zIndex: 1,
       style: new Style({
@@ -26,6 +20,12 @@ const map = new Map({
       source: new VectorSource({
         url: '/data/countries.json',
         format: new GeoJSON()
+      })
+    }),
+    new TileLayer({
+      source: new XYZ({
+        url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
+        maxZoom: 3
       })
     })
   ],
