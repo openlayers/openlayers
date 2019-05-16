@@ -116,8 +116,8 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @abstract
    * Perform action necessary to get the layer rendered after new fonts have loaded
+   * @abstract
    */
   handleFontsChanged() {}
 
