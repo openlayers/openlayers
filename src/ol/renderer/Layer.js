@@ -41,9 +41,10 @@ class LayerRenderer extends Observable {
    * @abstract
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, layerState) {
+  renderFrame(frameState, layerState, target) {
     return abstract();
   }
 

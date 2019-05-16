@@ -137,8 +137,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @inheritDoc
    * @returns {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, layerState) {
-    const context = this.context;
+  renderFrame(frameState, layerState, target) {
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const viewResolution = viewState.resolution;
@@ -224,7 +223,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
 
-    const canvas = context.canvas;
     const canvasScale = tileResolution / viewResolution;
 
     // set forward and inverse pixel transforms
@@ -234,6 +232,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       rotation,
       -width / 2, -height / 2
     );
+
+    const context = this.useContext(this.getCanvas(target, this.pixelTransform_));
+    const canvas = context.canvas;
+
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
     // set scale transform for calculating tile positions on the canvas
@@ -247,8 +249,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-    } else {
-      context.clearRect(0, 0, width, height);
     }
 
     if (layerState.extent) {
@@ -270,6 +270,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     });
 
+    const clips = [];
+    let currentClip;
     for (let i = 0, ii = zs.length; i < ii; ++i) {
       const currentZ = zs[i];
       const currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
@@ -299,6 +301,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const w = nextX - x;
         const h = nextY - y;
 
+        currentClip = [x, y, w, h];
         this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, z === currentZ);
         this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
@@ -355,7 +358,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileSource = tileLayer.getSource();
     if (alpha === 1 && !tileSource.getOpaque(frameState.viewState.projection)) {
-      this.context.clearRect(x, y, w, h);
+      //this.context.clearRect(x, y, w, h);
     }
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {

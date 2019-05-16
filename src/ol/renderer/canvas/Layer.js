@@ -7,7 +7,8 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
+import ContextEventType from '../../webgl/ContextEventType.js';
 
 /**
  * @abstract
@@ -55,12 +56,49 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @protected
      * @type {CanvasRenderingContext2D}
      */
-    this.context = createCanvasContext2D();
+    this.context = null;
 
-    const canvas = this.context.canvas;
-    canvas.style.position = 'absolute';
-    canvas.style.transformOrigin = 'top left';
-    canvas.className = this.getLayer().getClassName();
+  }
+
+  /**
+   * Reuse the passed canvas's context, or create a new one.
+   * @protected
+   * @param {HTMLCanvasElement} canvas Canvas.
+   * @return {CanvasRenderingContext2D} context Context.
+   */
+  useContext(canvas) {
+    let context;
+    if (canvas) {
+      context = canvas.getContext('2d');
+    }
+    if (!context) {
+      context = createCanvasContext2D();
+      canvas = context.canvas;
+      canvas.style.position = 'absolute';
+      canvas.style.transformOrigin = 'top left';
+    }
+    canvas.classList.add(this.getLayer().getClassName());
+    this.context = context;
+    return context;
+  }
+
+  /**
+   * @param {HTMLElement} target Potential render target.
+   * @param {import("../../transform").Transform} transform Transform.
+   * @return {HTMLCanvasElement} Canvas.
+   */
+  getCanvas(target, transform) {
+    let canvas = null;
+    if (target) {
+      canvas = target.firstElementChild || target;
+      if (canvas && canvas instanceof HTMLCanvasElement && canvas.style.transform === transformToString(transform)) {
+        return canvas;
+      }
+    } else if (this.context) {
+      canvas = this.context.canvas;
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    return canvas;
   }
 
   /**

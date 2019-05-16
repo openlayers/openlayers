@@ -87,7 +87,7 @@ class CompositeMapRenderer extends MapRenderer {
     const viewResolution = frameState.viewState.resolution;
 
     this.children_.length = 0;
-    let element = null;
+    let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
       if (!visibleAtResolution(layerState, viewResolution) ||
@@ -96,9 +96,12 @@ class CompositeMapRenderer extends MapRenderer {
       }
 
       const layer = layerState.layer;
-      element = layer.render(frameState);
+      const element = layer.render(frameState, previousElement);
       if (element) {
-        this.children_.push(element);
+        previousElement = element;
+        if (element !== this.children_[this.children_.length - 1]) {
+          this.children_.push(element);
+        }
       }
     }
     super.renderFrame(frameState);
