@@ -30,8 +30,9 @@ onmessage = event => {
       type: 'buffers-generated',
       vertexBuffer: vertexBuffer.buffer,
       indexBuffer: indexBuffer.buffer,
+      renderInstructions: renderInstructions.buffer,
       projectionTransform
-    }, [vertexBuffer.buffer, indexBuffer.buffer]);
+    }, [vertexBuffer.buffer, indexBuffer.buffer, renderInstructions.buffer]);
   }
 };
 

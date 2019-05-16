@@ -291,6 +291,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         // saves the projection transform for the current frame state
         this.renderTransform_ = projectionTransform;
         makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+
+        this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
       }
     }.bind(this));
   }
