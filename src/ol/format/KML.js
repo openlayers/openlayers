@@ -2674,12 +2674,15 @@ function writePlacemark(node, feature, objectStack) {
   }
 
   // serialize properties (properties unknown to KML are not serialized)
-  let properties = feature.getProperties();
+  const properties = feature.getProperties();
 
   // don't export these to ExtendedData
   const filter = {'address': 1, 'description': 1, 'name': 1, 'open': 1,
     'phoneNumber': 1, 'styleUrl': 1, 'visibility': 1};
   filter[feature.getGeometryName()] = 1;
+  const keys = Object.keys(properties || {}).sort().filter(function(v) {
+    return !filter[v];
+  });
 
   const styleFunction = feature.getStyleFunction();
   if (styleFunction) {
@@ -2702,11 +2705,6 @@ function writePlacemark(node, feature, objectStack) {
   const values = makeSequence(properties, orderedKeys);
   pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
-
-  properties = feature.getProperties();
-  const keys = Object.keys(properties || {}).sort().filter(function(v) {
-    return !filter[v];
-  });
 
   if (keys.length > 0) {
     const sequence = makeSequence(properties, keys);
