@@ -6,7 +6,6 @@ import {VERSION} from '../util';
 
 onmessage = event => {
   console.log('version worker received message:', event.data); // eslint-disable-line
-  // @ts-ignore
   postMessage(`version: ${VERSION}`);
 };
 
