@@ -58,9 +58,9 @@ class ImageWrapper extends ImageBase {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {function():void}
      */
-    this.imageListenerKeys_ = null;
+    this.unlisten_ = null;
 
     /**
      * @protected
