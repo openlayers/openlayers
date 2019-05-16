@@ -5,7 +5,9 @@ import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
+import EventTarget from './events/Target.js';
 import {getHeight} from './extent.js';
+import {VOID} from './functions.js';
 
 
 /**
@@ -155,8 +157,27 @@ class ImageWrapper extends ImageBase {
 export function listenImage(image, loadHandler, errorHandler) {
   const img = /** @type {HTMLImageElement} */ (image);
   if (img.decode) {
-    img.decode().then(loadHandler).catch(errorHandler);
-    return null;
+    // create fake event target to be able to cancel the image decoding.
+    const target = new EventTarget();
+    const listenerKeys = [
+      listenOnce(target, EventType.LOAD, VOID),
+      listenOnce(target, EventType.ERROR, VOID)
+    ];
+    img.decode()
+      .then(function() {
+        if (target.hasListener(EventType.LOAD)) {
+          loadHandler();
+        }
+      })
+      .catch(function() {
+        if (target.hasListener(EventType.ERROR)) {
+          errorHandler();
+        }
+      })
+      .finally(function() {
+        listenerKeys.forEach(unlistenByKey);
+      });
+    return listenerKeys;
   } else {
     const listenerKeys = [
       listenOnce(img, EventType.LOAD, loadHandler),
