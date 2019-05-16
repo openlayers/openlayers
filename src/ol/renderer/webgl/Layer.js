@@ -61,90 +61,145 @@ class WebGLLayerRenderer extends LayerRenderer {
 
 
 /**
- * Pushes vertices and indices to the given buffers using the geometry coordinates and the following properties
- * from the feature:
- * - `color`
- * - `opacity`
- * - `size` (for points)
- * - `u0`, `v0`, `u1`, `v1` (for points)
- * - `rotateWithView` (for points)
- * - `width` (for lines)
- * Custom attributes can be designated using the `opt_attributes` argument, otherwise other properties on the
- * feature will be ignored.
- * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer in which new vertices will be pushed.
- * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer in which new indices will be pushed.
- * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature in geojson format, coordinates
- * expressed in EPSG:4326.
- * @param {Array<string>} [opt_attributes] Custom attributes. An array of properties which will be read from the
- * feature and pushed in the buffer in the given order. Note: attributes can only be numerical! Any other type or
- * NaN will result in `0` being pushed in the buffer.
+ * @param {Float32Array} instructions Instructons array in which to write.
+ * @param {number} elementIndex Index from which render instructions will be written.
+ * @param {number} x Point center X coordinate
+ * @param {number} y Point center Y coordinate
+ * @param {number} u0 Left texture coordinate
+ * @param {number} v0 Bottom texture coordinate
+ * @param {number} u1 Right texture coordinate
+ * @param {number} v1 Top texture coordinate
+ * @param {number} size Radius of the point
+ * @param {number} opacity Opacity
+ * @param {boolean} rotateWithView If true, the point will stay aligned with the view
+ * @param {Array<number>} color Array holding red, green, blue, alpha values
+ * @return {number} Index from which the next element should be written
+ * @private
  */
-export function pushFeatureToBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
-  if (!geojsonFeature.geometry) {
-    return;
-  }
-  switch (geojsonFeature.geometry.type) {
-    case 'Point':
-      pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes);
-      return;
-    default:
-      return;
-  }
+export function writePointFeatureInstructions(instructions, elementIndex, x, y, u0, v0, u1, v1, size, opacity, rotateWithView, color) {
+  let i = elementIndex;
+  instructions[i++] = x;
+  instructions[i++] = y;
+  instructions[i++] = u0;
+  instructions[i++] = v0;
+  instructions[i++] = u1;
+  instructions[i++] = v1;
+  instructions[i++] = size;
+  instructions[i++] = opacity;
+  instructions[i++] = rotateWithView ? 1 : 0;
+  instructions[i++] = color[0];
+  instructions[i++] = color[1];
+  instructions[i++] = color[2];
+  instructions[i++] = color[3];
+  return i;
 }
 
 const tmpArray_ = [];
+const bufferPositions_ = {vertexPosition: 0, indexPosition: 0};
+
+export const POINT_INSTRUCTIONS_COUNT = 13;
+export const POINT_VERTEX_STRIDE = 12;
+
+function writePointVertex(buffer, pos, x, y, offsetX, offsetY, u, v, opacity, rotateWithView, red, green, blue, alpha) {
+  buffer[pos + 0] = x;
+  buffer[pos + 1] = y;
+  buffer[pos + 2] = offsetX;
+  buffer[pos + 3] = offsetY;
+  buffer[pos + 4] = u;
+  buffer[pos + 5] = v;
+  buffer[pos + 6] = opacity;
+  buffer[pos + 7] = rotateWithView;
+  buffer[pos + 8] = red;
+  buffer[pos + 9] = green;
+  buffer[pos + 10] = blue;
+  buffer[pos + 11] = alpha;
+}
+
+function writeCustomAttrs(buffer, pos, customAttrs) {
+  if (customAttrs.length) {
+    buffer.set(customAttrs, pos);
+  }
+}
+
+/**
+ * An object holding positions both in an index and a vertex buffer.
+ * @typedef {Object} BufferPositions
+ * @property {number} vertexPosition Position in the vertex buffer
+ * @property {number} indexPosition Position in the index buffer
+ */
 
 /**
  * Pushes a quad (two triangles) based on a point geometry
- * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer
- * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer
- * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature
- * @param {Array<string>} [opt_attributes] Custom attributes
+ * @param {Float32Array} instructions Array of render instructions for points.
+ * @param {number} elementIndex Index from which render instructions will be read.
+ * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
+ * @param {Uint16Array|Uint32Array} indexBuffer Buffer in the form of a typed array.
+ * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
+ * @param {number} [count] Amount of render instructions that will be read. Default value is POINT_INSTRUCTIONS_COUNT
+ * but a higher value can be provided; all values beyond the default count will be put in the vertices buffer as
+ * is, thus allowing specifying custom attributes. Please note: this value should not vary inside the same buffer or
+ * rendering will break.
+ * @return {BufferPositions} New buffer positions where to write next
+ * @property {number} vertexPosition New position in the vertex buffer where future writes should start.
+ * @property {number} indexPosition New position in the index buffer where future writes should start.
  * @private
  */
-function pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
-  const stride = 12 + (opt_attributes !== undefined ? opt_attributes.length : 0);
+export function writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer, bufferPositions, count) {
+  const count_ = count > POINT_INSTRUCTIONS_COUNT ? count : POINT_INSTRUCTIONS_COUNT;
 
-  const x = geojsonFeature.geometry.coordinates[0];
-  const y = geojsonFeature.geometry.coordinates[1];
-  const u0 = geojsonFeature.properties.u0;
-  const v0 = geojsonFeature.properties.v0;
-  const u1 = geojsonFeature.properties.u1;
-  const v1 = geojsonFeature.properties.v1;
-  const size = geojsonFeature.properties.size;
-  const opacity = geojsonFeature.properties.opacity;
-  const rotateWithView = geojsonFeature.properties.rotateWithView;
-  const color = geojsonFeature.properties.color;
-  const red = color[0];
-  const green = color[1];
-  const blue = color[2];
-  const alpha = color[3];
-  const baseIndex = vertexBuffer.getArray().length / stride;
+  const x = instructions[elementIndex + 0];
+  const y = instructions[elementIndex + 1];
+  const u0 = instructions[elementIndex + 2];
+  const v0 = instructions[elementIndex + 3];
+  const u1 = instructions[elementIndex + 4];
+  const v1 = instructions[elementIndex + 5];
+  const size = instructions[elementIndex + 6];
+  const opacity = instructions[elementIndex + 7];
+  const rotateWithView = instructions[elementIndex + 8];
+  const red = instructions[elementIndex + 9];
+  const green = instructions[elementIndex + 10];
+  const blue = instructions[elementIndex + 11];
+  const alpha = instructions[elementIndex + 12];
+
+  // the default vertex buffer stride is 12, plus additional custom values if any
+  const baseStride = POINT_VERTEX_STRIDE;
+  const stride = baseStride + count_ - POINT_INSTRUCTIONS_COUNT;
 
   // read custom numerical attributes on the feature
-  const customAttributeValues = tmpArray_;
-  customAttributeValues.length = opt_attributes ? opt_attributes.length : 0;
-  for (let i = 0; i < customAttributeValues.length; i++) {
-    customAttributeValues[i] = parseFloat(geojsonFeature.properties[opt_attributes[i]]) || 0;
+  const customAttrs = tmpArray_;
+  customAttrs.length = count_ - POINT_INSTRUCTIONS_COUNT;
+  for (let i = 0; i < customAttrs.length; i++) {
+    customAttrs[i] = instructions[elementIndex + POINT_INSTRUCTIONS_COUNT + i];
   }
 
+  let vPos = bufferPositions ? bufferPositions.vertexPosition : 0;
+  let iPos = bufferPositions ? bufferPositions.indexPosition : 0;
+  const baseIndex = vPos / stride;
+
   // push vertices for each of the four quad corners (first standard then custom attributes)
-  vertexBuffer.getArray().push(x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
-  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+  writePointVertex(vertexBuffer, vPos, x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
+  writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+  vPos += stride;
 
-  vertexBuffer.getArray().push(x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
-  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+  writePointVertex(vertexBuffer, vPos, x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
+  writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+  vPos += stride;
 
-  vertexBuffer.getArray().push(x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
-  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+  writePointVertex(vertexBuffer, vPos, x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
+  writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+  vPos += stride;
 
-  vertexBuffer.getArray().push(x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
-  Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+  writePointVertex(vertexBuffer, vPos, x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
+  writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+  vPos += stride;
 
-  indexBuffer.getArray().push(
-    baseIndex, baseIndex + 1, baseIndex + 3,
-    baseIndex + 1, baseIndex + 2, baseIndex + 3
-  );
+  indexBuffer[iPos++] = baseIndex; indexBuffer[iPos++] = baseIndex + 1; indexBuffer[iPos++] = baseIndex + 3;
+  indexBuffer[iPos++] = baseIndex + 1; indexBuffer[iPos++] = baseIndex + 2; indexBuffer[iPos++] = baseIndex + 3;
+
+  bufferPositions_.vertexPosition = vPos;
+  bufferPositions_.indexPosition = iPos;
+
+  return bufferPositions_;
 }
 
 /**
