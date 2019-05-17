@@ -1,8 +1,8 @@
 /**
  * @module ol/control/OverviewMap
  */
-import Collection from '../Collection.js';
-import Map from '../Map.js';
+import PluggableMap from '../PluggableMap.js';
+import CompositeMapRenderer from '../renderer/Composite.js';
 import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
 import {getChangeEventType} from '../Object.js';
@@ -33,6 +33,13 @@ const MAX_RATIO = 0.75;
  * @type {number}
  */
 const MIN_RATIO = 0.1;
+
+
+class ControlledMap extends PluggableMap {
+  createRenderer() {
+    return new CompositeMapRenderer(this);
+  }
+}
 
 
 /**
@@ -143,12 +150,10 @@ class OverviewMap extends Control {
     this.ovmapDiv_.className = 'ol-overviewmap-map';
 
     /**
-     * @type {import("../Map.js").default}
+     * @type {ControlledMap}
      * @private
      */
-    this.ovmap_ = new Map({
-      controls: new Collection(),
-      interactions: new Collection(),
+    this.ovmap_ = new ControlledMap({
       view: options.view
     });
     const ovmap = this.ovmap_;
