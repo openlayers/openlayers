@@ -24,6 +24,12 @@ class CanvasLayerRenderer extends LayerRenderer {
 
     /**
      * @protected
+     * @type {HTMLElement}
+     */
+    this.container = null;
+
+    /**
+     * @protected
      * @type {number}
      */
     this.renderedResolution;
@@ -61,44 +67,47 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * Reuse the passed canvas's context, or create a new one.
-   * @protected
-   * @param {HTMLCanvasElement} canvas Canvas.
-   * @return {CanvasRenderingContext2D} context Context.
-   */
-  useContext(canvas) {
-    let context;
-    if (canvas) {
-      context = canvas.getContext('2d');
-    }
-    if (!context) {
-      context = createCanvasContext2D();
-      canvas = context.canvas;
-      canvas.style.position = 'absolute';
-      canvas.style.transformOrigin = 'top left';
-    }
-    canvas.classList.add(this.getLayer().getClassName());
-    this.context = context;
-    return context;
-  }
-
-  /**
+   * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
    * @param {import("../../transform").Transform} transform Transform.
-   * @return {HTMLCanvasElement} Canvas.
+   * @return {boolean} The target is reused for this layer.
    */
-  getCanvas(target, transform) {
-    let canvas = null;
+  useContainer(target, transform) {
+    let reused = false;
+    let container, context;
     if (target) {
-      canvas = target.firstElementChild || target;
-      if (canvas && canvas instanceof HTMLCanvasElement && canvas.style.transform === transformToString(transform)) {
-        return canvas;
+      const canvas = target.firstElementChild;
+      if (canvas instanceof HTMLCanvasElement) {
+        context = canvas.getContext('2d');
       }
-    } else if (this.context) {
-      canvas = this.context.canvas;
-      this.context.clearRect(0, 0, canvas.width, canvas.height);
     }
-    return canvas;
+    if (context && context.canvas.style.transform === transformToString(transform)) {
+      container = target;
+      reused = true;
+    } else {
+      container = this.container;
+      if (!container) {
+        container = document.createElement('div');
+        const style = container.style;
+        style.position = 'absolute';
+        style.width = '100%';
+        style.height = '100%';
+      }
+    }
+    if (container !== this.container) {
+      container.classList.add(this.getLayer().getClassName());
+      this.container = container;
+      if (!context) {
+        context = createCanvasContext2D();
+        const canvas = context.canvas;
+        container.appendChild(canvas);
+        const style = canvas.style;
+        style.position = 'absolute';
+        style.transformOrigin = 'top left';
+      }
+      this.context = context;
+    }
+    return reused;
   }
 
   /**

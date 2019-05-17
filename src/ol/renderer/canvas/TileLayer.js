@@ -7,6 +7,7 @@ import TileState from '../../TileState.js';
 import {createEmpty, equals, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
 import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
+import {numberSafeCompareFunction} from '../../array.js';
 
 /**
  * @classdesc
@@ -233,7 +234,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -width / 2, -height / 2
     );
 
-    const context = this.useContext(this.getCanvas(target, this.pixelTransform_));
+    const reused = this.useContainer(target, this.pixelTransform_);
+    const context = this.context;
     const canvas = context.canvas;
 
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
@@ -249,6 +251,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
+    } else if (!reused) {
+      context.clearRect(0, 0, width, height);
     }
 
     if (layerState.extent) {
@@ -259,7 +263,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.renderedTiles.length = 0;
     /** @type {Array<number>} */
-    const zs = Object.keys(tilesToDrawByZ).map(Number);
+    let zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(function(a, b) {
       if (a === z) {
         return 1;
@@ -270,9 +274,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     });
 
-    const clips = [];
-    const clipZs = [];
-    let currentClip;
+    let clips, clipZs, currentClip;
+    if (tileSource.getOpaque(frameState.viewState.projection)) {
+      zs = zs.reverse();
+    } else {
+      clips = [];
+      clipZs = [];
+    }
     for (let i = zs.length - 1; i >= 0; --i) {
       const currentZ = zs[i];
       const currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
@@ -302,30 +310,34 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const w = nextX - x;
         const h = nextY - y;
 
-        // Clip mask for regions in this tile that already filled by a lower z tile
-        context.save();
-        currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
-        for (let i = 0, ii = clips.length; i < ii; ++i) {
-          if (currentZ < clipZs[i]) {
-            const clip = clips[i];
-            context.beginPath();
-            // counter-clockwise (inner ring) for current tile
-            context.moveTo(currentClip[0], currentClip[1]);
-            context.lineTo(currentClip[2], currentClip[3]);
-            context.lineTo(currentClip[4], currentClip[5]);
-            context.lineTo(currentClip[6], currentClip[7]);
-            // clockwise (outer ring) for lower z tile
-            context.moveTo(clip[6], clip[7]);
-            context.lineTo(clip[4], clip[5]);
-            context.lineTo(clip[2], clip[3]);
-            context.lineTo(clip[0], clip[1]);
-            context.clip();
+        if (clips) {
+        // Clip mask for regions in this tile that already filled by a higher z tile
+          context.save();
+          currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
+          for (let i = 0, ii = clips.length; i < ii; ++i) {
+            if (z !== currentZ && currentZ < clipZs[i]) {
+              const clip = clips[i];
+              context.beginPath();
+              // counter-clockwise (outer ring) for current tile
+              context.moveTo(currentClip[0], currentClip[1]);
+              context.lineTo(currentClip[2], currentClip[3]);
+              context.lineTo(currentClip[4], currentClip[5]);
+              context.lineTo(currentClip[6], currentClip[7]);
+              // clockwise (inner ring) for higher z tile
+              context.moveTo(clip[6], clip[7]);
+              context.lineTo(clip[4], clip[5]);
+              context.lineTo(clip[2], clip[3]);
+              context.lineTo(clip[0], clip[1]);
+              context.clip();
+            }
           }
+          clips.push(currentClip);
+          clipZs.push(currentZ);
         }
-        clips.push(currentClip);
-        clipZs.push(currentZ);
         this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, z === currentZ);
-        context.restore();
+        if (clips) {
+          context.restore();
+        }
         this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
@@ -358,7 +370,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       canvas.style.transform = canvasTransform;
     }
 
-    return canvas;
+    return this.container;
   }
 
   /**
@@ -378,11 +390,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
     const uid = getUid(this);
     const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    const tileSource = tileLayer.getSource();
-    if (alpha === 1 && !tileSource.getOpaque(frameState.viewState.projection)) {
-      //this.context.clearRect(x, y, w, h);
-    }
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();

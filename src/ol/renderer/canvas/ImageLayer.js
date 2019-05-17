@@ -101,13 +101,15 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     );
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
+    this.useContainer(target, this.pixelTransform_);
+
     const context = this.context;
     const canvas = context.canvas;
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-    } else {
+    } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }
 

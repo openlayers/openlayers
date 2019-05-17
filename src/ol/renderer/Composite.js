@@ -9,6 +9,7 @@ import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
 import {replaceChildren} from '../dom.js';
 import {labelCache} from '../render/canvas.js';
+import {altShiftKeysOnly} from '../events/condition.js';
 
 
 /**
@@ -87,7 +88,7 @@ class CompositeMapRenderer extends MapRenderer {
     const viewResolution = frameState.viewState.resolution;
 
     this.children_.length = 0;
-    let previousElement = null;
+    const previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
       if (!visibleAtResolution(layerState, viewResolution) ||
@@ -97,11 +98,8 @@ class CompositeMapRenderer extends MapRenderer {
 
       const layer = layerState.layer;
       const element = layer.render(frameState, previousElement);
-      if (element) {
-        previousElement = element;
-        if (element !== this.children_[this.children_.length - 1]) {
-          this.children_.push(element);
-        }
+      if (element !== previousElement) {
+        this.children_.push(element);
       }
     }
     super.renderFrame(frameState);

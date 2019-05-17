@@ -24,7 +24,6 @@ import {
   makeInverse
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
-import {clear, isEmpty} from '../../obj.js';
 
 
 /**
@@ -59,32 +58,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   constructor(layer) {
     super(layer);
 
-    const baseCanvas = this.context.canvas;
-
     /**
      * @private
      * @type {CanvasRenderingContext2D}
      */
-    this.overlayContext_ = createCanvasContext2D();
-
-    const overlayCanvas = this.overlayContext_.canvas;
-    overlayCanvas.style.position = 'absolute';
-    overlayCanvas.style.transformOrigin = 'top left';
-
-    const container = document.createElement('div');
-    const style = container.style;
-    style.position = 'absolute';
-    style.width = '100%';
-    style.height = '100%';
-
-    container.appendChild(baseCanvas);
-    container.appendChild(overlayCanvas);
-
-    /**
-     * @private
-     * @type {HTMLElement}
-     */
-    this.container_ = container;
+    this.overlayContext_ = null;
 
     /**
      * The transform for rendered pixels to viewport CSS pixels for the overlay canvas.
@@ -139,6 +117,33 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   disposeInternal() {
     this.overlayContext_.canvas.width = this.overlayContext_.canvas.height = 0;
     super.disposeInternal();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  useContainer(target, transform) {
+    let context;
+    if (target && target.childElementCount === 2) {
+      context = target.lastElementChild.getContext('2d');
+      if (!context) {
+        target = null;
+      }
+    } else {
+      context = this.overlayContext_;
+      if (!this.overlayContext_) {
+        context = createCanvasContext2D();
+        const style = context.canvas.style;
+        style.position = 'absolute';
+        style.transformOrigin = 'top left';
+      }
+    }
+    const reused = super.useContainer(target, transform);
+    if (this.container.childElementCount === 1) {
+      this.container.appendChild(context.canvas);
+    }
+    this.overlayContext_ = context;
+    return reused;
   }
 
   /**
@@ -379,21 +384,24 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState) {
-    super.renderFrame(frameState, layerState);
-
-    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+  renderFrame(frameState, layerState, target) {
     const viewHints = frameState.viewHints;
     const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+    this.renderTileImages_(hifi, frameState);
+
+    super.renderFrame(frameState, layerState, target);
+
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
+
     if (renderMode === VectorTileRenderType.IMAGE) {
       this.renderTileImages_(hifi, frameState);
-      return this.container_;
+      return this.container;
     }
 
     if (!isEmpty(this.renderTileImageQueue_) && !this.extentChanged) {
       this.renderTileImages_(hifi, frameState);
-      return this.container_;
+      return this.container;
     }
 
     const context = this.overlayContext_;
@@ -492,7 +500,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     // for the next frame
     this.renderTileImages_(hifi, frameState);
 
-    return this.container_;
+    return this.container;
   }
 
   /**
@@ -500,14 +508,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
    */
   renderTileImages_(hifi, frameState) {
-    // When we don't have time to render hifi, only render tiles until we have used up
-    // half of the frame budget of 16 ms
     for (const uid in this.renderTileImageQueue_) {
-      if (!hifi && Date.now() - frameState.time > 8) {
-        break;
-      }
       const tile = this.renderTileImageQueue_[uid];
-      frameState.animate = true;
       delete this.renderTileImageQueue_[uid];
       const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
       const viewState = frameState.viewState;
@@ -516,7 +518,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const renderPixelRatio = frameState.pixelRatio / tile.wantedResolution * tileResolution;
       this.renderTileImage_(tile, frameState.pixelRatio, renderPixelRatio, viewState.projection);
     }
-    clear(this.renderTileImageQueue_);
   }
 
   /**
