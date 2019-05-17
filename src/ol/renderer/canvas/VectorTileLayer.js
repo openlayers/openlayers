@@ -426,6 +426,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     const clips = [];
+    const clipZs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[i]);
       if (tile.getState() == TileState.ABORT) {
@@ -436,6 +437,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];
       const transform = this.getRenderTransform(frameState, width, height, worldOffset);
       const executorGroups = tile.executorGroups[getUid(layer)];
+      let clipped = false;
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
         if (!executorGroup.hasExecutors(replayTypes)) {
@@ -443,9 +445,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           continue;
         }
         const currentZ = tile.tileCoord[0];
-        let zs, currentClip;
-        if (!declutterReplays) {
-          zs = [];
+        let currentClip;
+        if (!declutterReplays && !clipped) {
           currentClip = executorGroup.getClipCoords(transform);
           context.save();
 
@@ -453,7 +454,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           // already filled by a higher resolution tile
           for (let j = 0, jj = clips.length; j < jj; ++j) {
             const clip = clips[j];
-            if (currentZ < zs[j]) {
+            if (currentZ < clipZs[j]) {
               context.beginPath();
               // counter-clockwise (outer ring) for current tile
               context.moveTo(currentClip[0], currentClip[1]);
@@ -470,10 +471,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           }
         }
         executorGroup.execute(context, transform, rotation, {}, hifi, replayTypes, declutterReplays);
-        if (!declutterReplays) {
+        if (!declutterReplays && !clipped) {
           context.restore();
           clips.push(currentClip);
-          zs.push(currentZ);
+          clipZs.push(currentZ);
+          clipped = true;
         }
       }
     }
