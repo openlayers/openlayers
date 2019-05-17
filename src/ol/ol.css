@@ -127,11 +127,6 @@
   right: .5em;
   top: .5em;
 }
-@media print {
-  .ol-control {
-    display: none;
-  }
-}
 
 .ol-control button {
   display: block;
