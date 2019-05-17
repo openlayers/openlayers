@@ -1,5 +1,6 @@
 .fullscreen:-webkit-full-screen {
   height: 100%;
+  margin: 0;
 }
 .fullscreen:-ms-fullscreen {
   height: 100%;

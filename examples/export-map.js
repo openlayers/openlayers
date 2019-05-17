@@ -1,5 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import Overlay from '../src/ol/Overlay.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
@@ -25,11 +26,17 @@ const map = new Map({
   })
 });
 
+map.addOverlay(new Overlay({
+  position: [0, 0],
+  element: document.getElementById('null')
+}));
+
+
 // export options for html-to-image.
 // See: https://github.com/bubkoo/html-to-image#options
 const exportOptions = {
   filter: function(element) {
-    return element.className.indexOf('ol-control') === -1;
+    return element.className ? element.className.indexOf('ol-control') === -1 : true;
   }
 };
 
