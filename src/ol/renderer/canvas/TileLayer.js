@@ -271,8 +271,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     });
 
     const clips = [];
+    const clipZs = [];
     let currentClip;
-    for (let i = 0, ii = zs.length; i < ii; ++i) {
+    for (let i = zs.length - 1; i >= 0; --i) {
       const currentZ = zs[i];
       const currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
       const currentResolution = tileGrid.getResolution(currentZ);
@@ -301,8 +302,30 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const w = nextX - x;
         const h = nextY - y;
 
-        currentClip = [x, y, w, h];
+        // Clip mask for regions in this tile that already filled by a lower z tile
+        context.save();
+        currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
+        for (let i = 0, ii = clips.length; i < ii; ++i) {
+          if (currentZ < clipZs[i]) {
+            const clip = clips[i];
+            context.beginPath();
+            // counter-clockwise (inner ring) for current tile
+            context.moveTo(currentClip[0], currentClip[1]);
+            context.lineTo(currentClip[2], currentClip[3]);
+            context.lineTo(currentClip[4], currentClip[5]);
+            context.lineTo(currentClip[6], currentClip[7]);
+            // clockwise (outer ring) for lower z tile
+            context.moveTo(clip[6], clip[7]);
+            context.lineTo(clip[4], clip[5]);
+            context.lineTo(clip[2], clip[3]);
+            context.lineTo(clip[0], clip[1]);
+            context.clip();
+          }
+        }
+        clips.push(currentClip);
+        clipZs.push(currentZ);
         this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, z === currentZ);
+        context.restore();
         this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
