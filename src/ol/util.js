@@ -25,7 +25,6 @@ let uidCounter_ = 0;
  *
  * @param {Object} obj The object to get the unique ID for.
  * @return {string} The unique ID for the object.
- * @function module:ol.getUid
  * @api
  */
 export function getUid(obj) {
