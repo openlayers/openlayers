@@ -25,7 +25,7 @@ rome.setStyle(new Style({
   image: new Icon({
     color: '#8959A8',
     crossOrigin: 'anonymous',
-    src: 'data/dot.png'
+    src: 'data/square.svg'
   })
 }));
 
