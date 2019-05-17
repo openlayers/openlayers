@@ -85,7 +85,7 @@ const map = new Map({
 /**
  * Load the topojson data and create an ol/layer/Image for that data.
  */
-d3.json('data/topojson/us.json', function(error, us) {
+d3.json('data/topojson/us.json').then(function(us) {
 
   const layer = new CanvasLayer({
     features: topojson.feature(us, us.objects.counties)
