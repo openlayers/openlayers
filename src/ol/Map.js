@@ -2,7 +2,7 @@
  * @module ol/Map
  */
 import PluggableMap from './PluggableMap.js';
-import {defaults as defaultControls} from './control/util.js';
+import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
 import CompositeMapRenderer from './renderer/Composite.js';
