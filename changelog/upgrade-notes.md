@@ -4,6 +4,18 @@
 
 #### Backwards incompatible changes
 
+#### Removal of CSS print rules
+
+The CSS media print rules were removed from the `ol.css` file. To get the previous behavior, use the following CSS:
+
+```css
+@media print {
+  .ol-control {
+    display: none;
+  }
+}
+```
+
 #### Removal of optional this arguments
 
 The optional this (i.e. opt_this) arguments were removed from the following methods.
