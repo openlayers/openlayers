@@ -5,6 +5,7 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import ViewHint from '../../../../../src/ol/ViewHint.js';
+import {POINT_VERTEX_STRIDE, WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
 
 
 describe('ol.renderer.webgl.PointsLayer', function() {
@@ -63,7 +64,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       expect(spy.called).to.be(true);
     });
 
-    it('fills up a buffer with 2 triangles per point', function() {
+    it('fills up a buffer with 2 triangles per point', function(done) {
       layer.getSource().addFeature(new Feature({
         geometry: new Point([10, 20])
       }));
@@ -73,16 +74,23 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       renderer.prepareFrame(frameState);
 
       const attributePerVertex = POINT_VERTEX_STRIDE;
-      expect(renderer.verticesBuffer_.getArray().length).to.eql(2 * 4 * attributePerVertex);
-      expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
 
-      expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
-      expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
-      expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]).to.eql(30);
-      expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]).to.eql(40);
+      renderer.worker_.addEventListener('message', function(event) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+          return;
+        }
+        expect(renderer.verticesBuffer_.getArray().length).to.eql(2 * 4 * attributePerVertex);
+        expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
+
+        expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
+        expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
+        expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]).to.eql(30);
+        expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]).to.eql(40);
+        done();
+      });
     });
 
-    it('clears the buffers when the features are gone', function() {
+    it('clears the buffers when the features are gone', function(done) {
       const source = layer.getSource();
       source.addFeature(new Feature({
         geometry: new Point([10, 20])
@@ -93,9 +101,15 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       }));
       renderer.prepareFrame(frameState);
 
-      const attributePerVertex = 12;
-      expect(renderer.verticesBuffer_.getArray().length).to.eql(4 * attributePerVertex);
-      expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+      renderer.worker_.addEventListener('message', function(event) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+          return;
+        }
+        const attributePerVertex = 12;
+        expect(renderer.verticesBuffer_.getArray().length).to.eql(4 * attributePerVertex);
+        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+        done();
+      });
     });
 
     it('rebuilds the buffers only when not interacting or animating', function() {

@@ -383,7 +383,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const features = vectorSource.getFeatures();
     const totalInstructionsCount = POINT_INSTRUCTIONS_COUNT * features.length;
-    if (this.renderInstructions_.length !== totalInstructionsCount) {
+    if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
       this.renderInstructions_ = new Float32Array(totalInstructionsCount);
     }
 
@@ -427,6 +427,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     message['projectionTransform'] = projectionTransform;
 
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
+    this.renderInstructions_ = null;
   }
 
 
