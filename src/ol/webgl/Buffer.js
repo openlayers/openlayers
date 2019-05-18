@@ -2,6 +2,9 @@
  * @module ol/webgl/Buffer
  */
 import {STATIC_DRAW, STREAM_DRAW, DYNAMIC_DRAW} from '../webgl.js';
+import {includes} from '../array.js';
+import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
+import {assert} from '../asserts.js';
 
 /**
  * Used to describe the intended usage for the data: `STATIC_DRAW`, `STREAM_DRAW`
@@ -17,43 +20,110 @@ export const BufferUsage = {
 /**
  * @classdesc
  * Object used to store an array of data as well as usage information for that data.
- * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData) for more info.
+ * Stores typed arrays internally, either Float32Array or Uint16/32Array depending on
+ * the buffer type (ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER) and available extensions.
+ *
+ * To populate the array, you can either use:
+ * * A size using `#ofSize(buffer)`
+ * * An `ArrayBuffer` object using `#fromArrayBuffer(buffer)`
+ * * A plain array using `#fromArray(array)`
+ *
+ * Note:
+ * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)
+ * for more info on buffer usage.
  * @api
  */
 class WebGLArrayBuffer {
 
   /**
-   * @param {Array<number>=} opt_arr Array.
-   * @param {number=} opt_usage Usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`. Default is `DYNAMIC_DRAW`.
+   * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+   * @param {number=} opt_usage Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
+   * Default is `DYNAMIC_DRAW`.
    */
-  constructor(opt_arr, opt_usage) {
+  constructor(type, opt_usage) {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Float32Array|Uint32Array|Uint16Array}
      */
-    this.arr_ = opt_arr !== undefined ? opt_arr : [];
+    this.array = null;
 
     /**
      * @private
      * @type {number}
      */
-    this.usage_ = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
+    this.type = type;
 
+    assert(type === ARRAY_BUFFER || type === ELEMENT_ARRAY_BUFFER, 62);
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.usage = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
   }
 
   /**
-   * @return {Array<number>} Array.
+   * Populates the buffer with an array of the given size (all values will be zeroes).
+   * @param {number} size Array size
+   */
+  ofSize(size) {
+    this.array = new (getArrayClassForType(this.type))(size);
+  }
+
+  /**
+   * Populates the buffer with an array of the given size (all values will be zeroes).
+   * @param {Array<number>} array Numerical array
+   */
+  fromArray(array) {
+    this.array = (getArrayClassForType(this.type)).from(array);
+  }
+
+  /**
+   * Populates the buffer with a raw binary array buffer.
+   * @param {ArrayBuffer} buffer Raw binary buffer to populate the array with. Note that this buffer must have been
+   * initialized for the same typed array class.
+   */
+  fromArrayBuffer(buffer) {
+    this.array = new (getArrayClassForType(this.type))(buffer);
+  }
+
+  /**
+   * @return {number} Buffer type.
+   */
+  getType() {
+    return this.type;
+  }
+
+  /**
+   * @return {Float32Array|Uint32Array|Uint16Array} Array.
    */
   getArray() {
-    return this.arr_;
+    return this.array;
   }
 
   /**
    * @return {number} Usage.
    */
   getUsage() {
-    return this.usage_;
+    return this.usage;
+  }
+}
+
+/**
+ * Returns a typed array constructor based on the given buffer type
+ * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+ * @returns {Float32ArrayConstructor|Uint16ArrayConstructor|Uint32ArrayConstructor} The typed array class to use for this buffer.
+ */
+export function getArrayClassForType(type) {
+  switch (type) {
+    case ARRAY_BUFFER:
+      return Float32Array;
+    case ELEMENT_ARRAY_BUFFER:
+      const hasExtension = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
+      return hasExtension ? Uint32Array : Uint16Array;
+    default:
+      return Float32Array;
   }
 }
 

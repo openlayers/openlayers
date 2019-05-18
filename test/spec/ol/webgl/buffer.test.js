@@ -1,51 +1,82 @@
-import WebGLArrayBuffer from '../../../../src/ol/webgl/Buffer.js';
+import WebGLArrayBuffer, {getArrayClassForType} from '../../../../src/ol/webgl/Buffer.js';
+import {
+  ARRAY_BUFFER,
+  ELEMENT_ARRAY_BUFFER,
+  EXTENSIONS as WEBGL_EXTENSIONS,
+  STATIC_DRAW,
+  STREAM_DRAW
+} from '../../../../src/ol/webgl.js';
 
 
 describe('ol.webgl.Buffer', function() {
 
   describe('constructor', function() {
 
-    describe('without an argument', function() {
-
-      let b;
-      beforeEach(function() {
-        b = new WebGLArrayBuffer();
-      });
-
-      it('constructs an empty instance', function() {
-        expect(b.getArray()).to.be.empty();
-      });
-
+    it('sets the default usage when not specified', function() {
+      const b = new WebGLArrayBuffer(ARRAY_BUFFER);
+      expect(b.getUsage()).to.be(STATIC_DRAW);
     });
 
-    describe('with a single array argument', function() {
-
-      let b;
-      beforeEach(function() {
-        b = new WebGLArrayBuffer([0, 1, 2, 3]);
-      });
-
-      it('constructs a populated instance', function() {
-        expect(b.getArray()).to.eql([0, 1, 2, 3]);
-      });
-
+    it('sets the given usage when specified', function() {
+      const b = new WebGLArrayBuffer(ARRAY_BUFFER, STREAM_DRAW);
+      expect(b.getUsage()).to.be(STREAM_DRAW);
     });
 
+    it('raises an error if an incorrect type is used', function(done) {
+      try {
+        new WebGLArrayBuffer(1234);
+      } catch (e) {
+        done();
+      }
+      done(true);
+    });
   });
 
-  describe('with an empty instance', function() {
+  describe('#getArrayClassForType', function() {
+    it('returns the correct typed array constructor', function() {
+      expect(getArrayClassForType(ARRAY_BUFFER)).to.be(Float32Array);
+      expect(getArrayClassForType(ELEMENT_ARRAY_BUFFER)).to.be(Uint32Array);
+    });
+
+    it('returns the correct typed array constructor (without OES uint extension)', function() {
+      WEBGL_EXTENSIONS.length = 0;
+      expect(getArrayClassForType(ELEMENT_ARRAY_BUFFER)).to.be(Uint16Array);
+    });
+  });
+
+  describe('populate methods', function() {
 
     let b;
     beforeEach(function() {
-      b = new WebGLArrayBuffer();
+      b = new WebGLArrayBuffer(ARRAY_BUFFER);
     });
 
-    describe('getArray', function() {
+    it('initializes the array using a size', function() {
+      b.ofSize(12);
+      expect(b.getArray().length).to.be(12);
+      expect(b.getArray()[0]).to.be(0);
+      expect(b.getArray()[11]).to.be(0);
+    });
 
-      it('returns an empty array', function() {
-        expect(b.getArray()).to.be.empty();
-      });
+    it('initializes the array using an array', function() {
+      b.fromArray([1, 2, 3, 4, 5]);
+      expect(b.getArray().length).to.be(5);
+      expect(b.getArray()[0]).to.be(1);
+      expect(b.getArray()[1]).to.be(2);
+      expect(b.getArray()[2]).to.be(3);
+      expect(b.getArray()[3]).to.be(4);
+      expect(b.getArray()[4]).to.be(5);
+    });
 
+    it('initializes the array using a size', function() {
+      const a = Float32Array.of(1, 2, 3, 4, 5);
+      b.fromArrayBuffer(a.buffer);
+      expect(b.getArray().length).to.be(5);
+      expect(b.getArray()[0]).to.be(1);
+      expect(b.getArray()[1]).to.be(2);
+      expect(b.getArray()[2]).to.be(3);
+      expect(b.getArray()[3]).to.be(4);
+      expect(b.getArray()[4]).to.be(5);
     });
 
   });

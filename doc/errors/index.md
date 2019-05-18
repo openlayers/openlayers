@@ -228,3 +228,7 @@ Missing or invalid `size`.
 ### 61
 
 Cannot determine IIIF Image API version from provided image information JSON.
+
+### 62
+
+A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUFFER`.
