@@ -1,5 +1,8 @@
 import {create} from '../../../../src/ol/worker/webgl.js';
-import {WebGLWorkerMessageType, writePointFeatureInstructions} from '../../../../src/ol/renderer/webgl/Layer';
+import {
+  POINT_INSTRUCTIONS_COUNT,
+  WebGLWorkerMessageType
+} from '../../../../src/ol/renderer/webgl/Layer.js';
 
 
 describe('ol/worker/webgl', function() {
@@ -17,29 +20,50 @@ describe('ol/worker/webgl', function() {
   });
 
   describe('messaging', function() {
-    it('responds to GENERATE_BUFFERS message type', function(done) {
-      worker.addEventListener('error', done);
+    describe('GENERATE_BUFFERS', function() {
+      it('responds with buffer data', function(done) {
+        worker.addEventListener('error', done);
 
-      worker.addEventListener('message', function(event) {
-        expect(event.data.type).to.eql(WebGLWorkerMessageType.GENERATE_BUFFERS);
-        expect(event.data.renderInstructions.byteLength).to.greaterThan(0);
-        expect(event.data.indexBuffer.byteLength).to.greaterThan(0);
-        expect(event.data.vertexBuffer.byteLength).to.greaterThan(0);
-        expect(event.data.testInt).to.be(101);
-        expect(event.data.testString).to.be('abcd');
-        done();
+        worker.addEventListener('message', function(event) {
+          expect(event.data.type).to.eql(WebGLWorkerMessageType.GENERATE_BUFFERS);
+          expect(event.data.renderInstructions.byteLength).to.greaterThan(0);
+          expect(event.data.indexBuffer.byteLength).to.greaterThan(0);
+          expect(event.data.vertexBuffer.byteLength).to.greaterThan(0);
+          expect(event.data.testInt).to.be(101);
+          expect(event.data.testString).to.be('abcd');
+          done();
+        });
+
+        const instructions = new Float32Array(POINT_INSTRUCTIONS_COUNT);
+
+        const message = {
+          type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+          renderInstructions: instructions,
+          testInt: 101,
+          testString: 'abcd'
+        };
+
+        worker.postMessage(message);
       });
 
-      const instructions = new Float32Array(100);
+      it('responds with buffer data (fallback to Uint16Array)', function(done) {
+        worker.addEventListener('error', done);
 
-      const message = {
-        type: WebGLWorkerMessageType.GENERATE_BUFFERS,
-        renderInstructions: instructions,
-        testInt: 101,
-        testString: 'abcd'
-      };
+        worker.addEventListener('message', function(event) {
+          expect(event.data.indexBuffer).to.eql(Uint16Array.BYTES_PER_ELEMENT * 6);
+          done();
+        });
 
-      worker.postMessage(message);
+        const instructions = new Float32Array(POINT_INSTRUCTIONS_COUNT);
+
+        const message = {
+          type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+          renderInstructions: instructions,
+          useShortIndices: true
+        };
+
+        worker.postMessage(message);
+      });
     });
   });
 

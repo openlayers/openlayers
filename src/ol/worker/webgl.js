@@ -16,10 +16,13 @@ onmessage = event => {
     const renderInstructions = new Float32Array(received.renderInstructions);
     const customAttributesCount = received.customAttributesCount || 0;
     const instructionsCount = POINT_INSTRUCTIONS_COUNT + customAttributesCount;
+    const useShort = received.useShortIndices;
 
     const elementsCount = renderInstructions.length / instructionsCount;
-    const indexBuffer = new Uint32Array(elementsCount * 6);
-    const vertexBuffer = new Float32Array(elementsCount * 4 * (POINT_VERTEX_STRIDE + customAttributesCount));
+    const indicesCount = elementsCount * 6;
+    const verticesCount = elementsCount * 4 * (POINT_VERTEX_STRIDE + customAttributesCount);
+    const indexBuffer = useShort ? new Uint16Array(indicesCount) : new Uint32Array(indicesCount);
+    const vertexBuffer = new Float32Array(verticesCount);
 
     let bufferPositions = null;
     for (let i = 0; i < renderInstructions.length; i += instructionsCount) {

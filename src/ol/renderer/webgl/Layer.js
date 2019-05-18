@@ -20,9 +20,10 @@ export const WebGLWorkerMessageType = {
  * Note that any addition properties present in the message *will* be sent back to the main thread.
  * @property {WebGLWorkerMessageType} type Message type
  * @property {ArrayBuffer} renderInstructions Render instructions raw binary buffer.
- * @property {ArrayBuffer=} vertexBuffer Vertices array raw binary buffer (sent by the worker).
- * @property {ArrayBuffer=} indexBuffer Indices array raw binary buffer (sent by the worker).
- * @property {number=} customAttributesCount Amount of custom attributes count in the render instructions.
+ * @property {ArrayBuffer} [vertexBuffer] Vertices array raw binary buffer (sent by the worker).
+ * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
+ * @property {number} [customAttributesCount] Amount of custom attributes count in the render instructions.
+ * @property {boolean} [useShortIndices] If true, Uint16Array will be used instead of Uint32Array for index buffers.
  */
 
 /**
