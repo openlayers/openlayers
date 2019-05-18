@@ -41,15 +41,6 @@ export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 
 
 /**
- * Is HTML5 geolocation supported in the current browser?
- * @const
- * @type {boolean}
- * @api
- */
-export const GEOLOCATION = 'geolocation' in navigator;
-
-
-/**
  * True if browser supports touch events.
  * @const
  * @type {boolean}
