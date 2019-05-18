@@ -7,7 +7,7 @@ import Disposable from '../Disposable.js';
 import {includes} from '../array.js';
 import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
-import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
+import {TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import {
   create as createTransform,
@@ -347,11 +347,10 @@ class WebGLHelper extends Disposable {
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
-   * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
    * @param {import("./Buffer").default} buffer Buffer.
    * @api
    */
-  bindBuffer(target, buffer) {
+  bindBuffer(buffer) {
     const gl = this.getGL();
     const bufferKey = getUid(buffer);
     let bufferCache = this.bufferCache_[bufferKey];
@@ -362,28 +361,19 @@ class WebGLHelper extends Disposable {
         webGlBuffer: webGlBuffer
       };
     }
-    gl.bindBuffer(target, bufferCache.webGlBuffer);
+    gl.bindBuffer(buffer.getType(), bufferCache.webGlBuffer);
   }
 
   /**
    * Update the data contained in the buffer array; this is required for the
    * new data to be rendered
-   * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
    * @param {import("./Buffer").default} buffer Buffer.
    * @api
    */
-  flushBufferData(target, buffer) {
+  flushBufferData(buffer) {
     const gl = this.getGL();
-    const arr = buffer.getArray();
-    this.bindBuffer(target, buffer);
-    let /** @type {ArrayBufferView} */ arrayBuffer;
-    if (target == ARRAY_BUFFER) {
-      arrayBuffer = new Float32Array(arr);
-    } else if (target == ELEMENT_ARRAY_BUFFER) {
-      arrayBuffer = this.hasOESElementIndexUint ?
-        new Uint32Array(arr) : new Uint16Array(arr);
-    }
-    gl.bufferData(target, arrayBuffer, buffer.getUsage());
+    this.bindBuffer(buffer);
+    gl.bufferData(buffer.getType(), buffer.getArray(), buffer.getUsage());
   }
 
   /**

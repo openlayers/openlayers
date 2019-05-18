@@ -211,8 +211,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.sourceRevision_ = -1;
 
-    this.verticesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
-    this.indicesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+    this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
+    this.indicesBuffer_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW);
 
     this.program_ = this.helper_.getProgram(
       options.fragmentShader || FRAGMENT_SHADER,
@@ -277,16 +277,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener('message', function(event) {
       if (event.data.type === 'buffers-generated') {
-        const vertexBuffer = Array.from(new Float32Array(event.data.vertexBuffer));
-        const indexBuffer = Array.from(new Uint32Array(event.data.indexBuffer));
         const projectionTransform = event.data.projectionTransform;
-
-        // TODO: improve the WebGLBuffer private api: we shouldn't need to switch back to plain Arrays
-        // also we need to handle the case where Uint32 array cannot be used
-        this.verticesBuffer_.arr_ = vertexBuffer;
-        this.indicesBuffer_.arr_ = indexBuffer;
-        this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
-        this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+        this.verticesBuffer_.fromArrayBuffer(event.data.vertexBuffer);
+        this.indicesBuffer_.fromArrayBuffer(event.data.indexBuffer);
+        this.helper_.flushBufferData(this.verticesBuffer_);
+        this.helper_.flushBufferData(this.indicesBuffer_);
 
         // saves the projection transform for the current frame state
         this.renderTransform_ = projectionTransform;
@@ -308,11 +303,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState) {
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    this.helper_.drawElements(0, this.indicesBuffer_.getArray().length);
+    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    this.helper_.drawElements(0, renderCount);
     this.helper_.finalizeDraw(frameState);
     const canvas = this.helper_.getCanvas();
 
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const opacity = layerState.opacity;
     if (opacity !== parseFloat(canvas.style.opacity)) {
       canvas.style.opacity = opacity;
@@ -356,8 +352,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper_.prepareDraw(frameState);
 
     // write new data
-    this.helper_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
-    this.helper_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+    this.helper_.bindBuffer(this.verticesBuffer_);
+    this.helper_.bindBuffer(this.indicesBuffer_);
 
     const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
     this.helper_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * stride, 0);
