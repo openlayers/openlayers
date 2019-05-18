@@ -6,6 +6,26 @@ import WebGLHelper from '../../webgl/Helper.js';
 
 
 /**
+ * @enum {string}
+ */
+export const WebGLWorkerMessageType = {
+  GENERATE_BUFFERS: 'GENERATE_BUFFERS'
+};
+
+/**
+ * @typedef {Object} WebGLWorkerGenerateBuffersMessage
+ * This message will trigger the generation of a vertex and an index buffer based on the given render instructions.
+ * When the buffers are generated, the worked will send a message of the same type to the main thread, with
+ * the generated buffers in it.
+ * Note that any addition properties present in the message *will* be sent back to the main thread.
+ * @property {WebGLWorkerMessageType} type Message type
+ * @property {ArrayBuffer} renderInstructions Render instructions raw binary buffer.
+ * @property {ArrayBuffer=} vertexBuffer Vertices array raw binary buffer (sent by the worker).
+ * @property {ArrayBuffer=} indexBuffer Indices array raw binary buffer (sent by the worker).
+ * @property {number=} customAttributesCount Amount of custom attributes count in the render instructions.
+ */
+
+/**
  * @typedef {Object} PostProcessesOptions
  * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).

@@ -7,7 +7,7 @@ import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
 import WebGLLayerRenderer, {
   getBlankTexture,
-  POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
+  POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, WebGLWorkerMessageType,
   writePointFeatureInstructions
 } from './Layer.js';
 import ViewHint from '../../ViewHint.js';
@@ -276,10 +276,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener('message', function(event) {
-      if (event.data.type === 'buffers-generated') {
-        const projectionTransform = event.data.projectionTransform;
-        this.verticesBuffer_.fromArrayBuffer(event.data.vertexBuffer);
-        this.indicesBuffer_.fromArrayBuffer(event.data.indexBuffer);
+      const received = event.data;
+      if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        const projectionTransform = received.projectionTransform;
+        this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+        this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
         this.helper_.flushBufferData(this.verticesBuffer_);
         this.helper_.flushBufferData(this.indicesBuffer_);
 
@@ -415,11 +416,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       );
     }
 
-    this.worker_.postMessage({
-      type: 'generate-buffer',
-      renderInstructions: this.renderInstructions_.buffer,
-      projectionTransform: projectionTransform
-    }, [this.renderInstructions_.buffer]);
+    /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
+    const message = {
+      type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+      renderInstructions: this.renderInstructions_.buffer
+    };
+    // additional properties will be sent back as-is by the worker
+    message['projectionTransform'] = projectionTransform;
+
+    this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
   }
 
 

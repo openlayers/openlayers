@@ -1,15 +1,21 @@
 /**
+ * A worker that does cpu-heavy tasks related to webgl rendering.
  * @module ol/worker/webgl
- * A worker that does cpu-heavy tasks related to webgl rendering
  */
-import {POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, writePointFeatureToBuffers} from '../renderer/webgl/Layer.js';
+import {
+  POINT_INSTRUCTIONS_COUNT,
+  POINT_VERTEX_STRIDE,
+  WebGLWorkerMessageType,
+  writePointFeatureToBuffers
+} from '../renderer/webgl/Layer.js';
+import {assign} from '../obj.js';
 
 onmessage = event => {
-  if (event.data.type === 'generate-buffer') {
-    const renderInstructions = new Float32Array(event.data.renderInstructions);
-    const customAttributesCount = event.data.customAttributesCount || 0;
+  const received = event.data;
+  if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
+    const renderInstructions = new Float32Array(received.renderInstructions);
+    const customAttributesCount = received.customAttributesCount || 0;
     const instructionsCount = POINT_INSTRUCTIONS_COUNT + customAttributesCount;
-    const projectionTransform = event.data.projectionTransform;
 
     const elementsCount = renderInstructions.length / instructionsCount;
     const indexBuffer = new Uint32Array(elementsCount * 6);
@@ -26,13 +32,14 @@ onmessage = event => {
         instructionsCount);
     }
 
-    postMessage({
-      type: 'buffers-generated',
+    /** @type {import('../renderer/webgl/Layer').WebGLWorkerGenerateBuffersMessage} */
+    const message = assign({
       vertexBuffer: vertexBuffer.buffer,
       indexBuffer: indexBuffer.buffer,
-      renderInstructions: renderInstructions.buffer,
-      projectionTransform
-    }, [vertexBuffer.buffer, indexBuffer.buffer, renderInstructions.buffer]);
+      renderInstructions: renderInstructions.buffer
+    }, received);
+
+    postMessage(message, [vertexBuffer.buffer, indexBuffer.buffer, renderInstructions.buffer]);
   }
 };
 
