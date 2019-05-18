@@ -4,6 +4,16 @@
 
 #### Backwards incompatible changes
 
+#### Removal of `GEOLOCATION` constant from `ol/has`
+
+If you were previously using this constant, you can check if `'geolocation'` is define in `navigator` instead.
+
+```js
+if ('geolocation' in navigator) {
+  // ...
+}
+```
+
 #### Removal of CSS print rules
 
 The CSS media print rules were removed from the `ol.css` file. To get the previous behavior, use the following CSS:
