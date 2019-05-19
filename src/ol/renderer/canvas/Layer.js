@@ -85,6 +85,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       container = target;
       reused = true;
     } else {
+      context = null;
       container = this.container;
       if (!container) {
         container = document.createElement('div');

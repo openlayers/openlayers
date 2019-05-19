@@ -6,7 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
+import {compose as composeTransform, makeInverse, toString as transformToString, apply as applyTransform} from '../../transform.js';
 
 /**
  * @classdesc
@@ -72,7 +72,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState) {
+  renderFrame(frameState, layerState, target) {
     const image = this.image_;
     const imageExtent = image.getExtent();
     const imageResolution = image.getResolution();
@@ -159,7 +159,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       canvas.style.transform = canvasTransform;
     }
 
-    return canvas;
+    return this.container;
 
   }
 

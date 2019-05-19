@@ -309,8 +309,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const y = Math.round(floatY);
         const w = nextX - x;
         const h = nextY - y;
+        const transition = z === currentZ;
 
-        if (clips) {
+        if (clips && (!transition || tile.getAlpha(getUid(this), frameState.time) === 1)) {
         // Clip mask for regions in this tile that already filled by a higher z tile
           context.save();
           currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
@@ -334,7 +335,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           clips.push(currentClip);
           clipZs.push(currentZ);
         }
-        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, z === currentZ);
+        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, transition);
         if (clips) {
           context.restore();
         }
