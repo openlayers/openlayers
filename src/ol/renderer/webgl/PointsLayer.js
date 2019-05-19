@@ -6,6 +6,7 @@ import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../web
 import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
 import WebGLLayerRenderer, {
+  colorEncodeId,
   getBlankTexture,
   POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, WebGLWorkerMessageType,
   writePointFeatureInstructions
@@ -19,6 +20,7 @@ import {
   apply as applyTransform
 } from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
+import {getUid} from '../../util.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -66,6 +68,26 @@ const FRAGMENT_SHADER = `
     gl_FragColor = v_color * textureColor;
     gl_FragColor.a *= v_opacity;
     gl_FragColor.rgb *= gl_FragColor.a;
+  }`;
+
+const HIT_FRAGMENT_SHADER = `
+  precision mediump float;
+
+  uniform sampler2D u_texture;
+
+  varying vec2 v_texCoord;
+  varying float v_opacity;
+  varying vec4 v_color;
+
+  void main(void) {
+    if (v_opacity == 0.0) {
+      discard;
+    }
+    vec4 textureColor = texture2D(u_texture, v_texCoord);
+    if (textureColor.a < 0.1) {
+      discard;
+    }
+    gl_FragColor = v_color;
   }`;
 
 /**
@@ -212,6 +234,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.sourceRevision_ = -1;
 
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
+    this.hitVerticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
     this.indicesBuffer_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW);
 
     this.program_ = this.helper.getProgram(
@@ -274,21 +297,49 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.renderInstructions_ = new Float32Array(0);
 
+    /**
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.hitRenderTransform_ = createTransform();
+
+    /**
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.invertHitRenderTransform_ = createTransform();
+
+    /**
+     * These instructions are used for hit detection
+     * @type {Float32Array}
+     * @private
+     */
+    this.hitRenderInstructions_ = new Float32Array(0);
+
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener('message', function(event) {
       const received = event.data;
       if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
         const projectionTransform = received.projectionTransform;
-        this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+        if (received.hitDetection) {
+          this.hitVerticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+          this.helper.flushBufferData(this.hitVerticesBuffer_);
+        } else {
+          this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+          this.helper.flushBufferData(this.verticesBuffer_);
+        }
         this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
-        this.helper.flushBufferData(this.verticesBuffer_);
         this.helper.flushBufferData(this.indicesBuffer_);
 
-        // saves the projection transform for the current frame state
-        this.renderTransform_ = projectionTransform;
-        makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
-
-        this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
+        if (received.hitDetection) {
+          this.hitRenderTransform_ = projectionTransform;
+          makeInverseTransform(this.invertHitRenderTransform_, this.hitRenderTransform_);
+          this.hitRenderInstructions_ = new Float32Array(event.data.renderInstructions);
+        } else {
+          this.renderTransform_ = projectionTransform;
+          makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+          this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
+        }
       }
     }.bind(this));
   }
@@ -384,11 +435,16 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
       this.renderInstructions_ = new Float32Array(totalInstructionsCount);
     }
+    if (!this.hitRenderInstructions_ || this.hitRenderInstructions_.length !== totalInstructionsCount) {
+      this.hitRenderInstructions_ = new Float32Array(totalInstructionsCount);
+    }
 
     // loop on features to fill the buffer
     let feature;
     const tmpCoords = [];
+    const tmpColor = [];
     let elementIndex = 0;
+    let u0, v0, u1, v1, size, opacity, rotateWithView, color;
     for (let i = 0; i < features.length; i++) {
       feature = features[i];
       if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
@@ -399,19 +455,43 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       tmpCoords[1] = this.coordCallback_(feature, 1);
       applyTransform(projectionTransform, tmpCoords);
 
-      elementIndex = writePointFeatureInstructions(
+      u0 = this.texCoordCallback_(feature, 0);
+      v0 = this.texCoordCallback_(feature, 1);
+      u1 = this.texCoordCallback_(feature, 2);
+      v1 = this.texCoordCallback_(feature, 3);
+      size = this.sizeCallback_(feature);
+      opacity = this.opacityCallback_(feature);
+      rotateWithView = this.rotateWithViewCallback_(feature);
+      color = this.colorCallback_(feature, this.colorArray_);
+
+      writePointFeatureInstructions(
         this.renderInstructions_,
         elementIndex,
         tmpCoords[0],
         tmpCoords[1],
-        this.texCoordCallback_(feature, 0),
-        this.texCoordCallback_(feature, 1),
-        this.texCoordCallback_(feature, 2),
-        this.texCoordCallback_(feature, 3),
-        this.sizeCallback_(feature),
-        this.opacityCallback_(feature),
-        this.rotateWithViewCallback_(feature),
-        this.colorCallback_(feature, this.colorArray_)
+        u0,
+        v0,
+        u1,
+        v1,
+        size,
+        opacity,
+        rotateWithView,
+        color
+      );
+
+      elementIndex = writePointFeatureInstructions(
+        this.hitRenderInstructions_,
+        elementIndex,
+        tmpCoords[0],
+        tmpCoords[1],
+        u0,
+        v0,
+        u1,
+        v1,
+        size,
+        opacity,
+        rotateWithView,
+        colorEncodeId(parseInt(getUid(feature)), tmpColor)
       );
     }
 
@@ -422,9 +502,19 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
-
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
+
+    /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
+    const hitMessage = {
+      type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+      renderInstructions: this.hitRenderInstructions_.buffer,
+      useShortIndices: !this.helper.getElementIndexUintEnabled()
+    };
+    hitMessage['projectionTransform'] = projectionTransform;
+    hitMessage['hitDetection'] = true;
+    this.worker_.postMessage(hitMessage, [this.hitRenderInstructions_.buffer]);
+    this.hitRenderInstructions_ = null;
   }
 
 
