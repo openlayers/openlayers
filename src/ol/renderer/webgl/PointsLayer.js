@@ -7,7 +7,7 @@ import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
 import WebGLLayerRenderer, {
   colorEncodeId,
-  getBlankTexture,
+  getBlankImageData,
   POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, WebGLWorkerMessageType,
   writePointFeatureInstructions
 } from './Layer.js';
@@ -222,7 +222,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const options = opt_options || {};
 
     const uniforms = options.uniforms || {};
-    uniforms.u_texture = options.texture || getBlankTexture();
+    uniforms.u_texture = options.texture || getBlankImageData();
     const projectionMatrixTransform = createTransform();
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 

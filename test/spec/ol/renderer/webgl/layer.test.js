@@ -1,7 +1,7 @@
 import WebGLLayerRenderer, {
   colorDecodeId,
   colorEncodeId,
-  getBlankTexture, POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
+  getBlankImageData, POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
   writePointFeatureInstructions, writePointFeatureToBuffers
 } from '../../../../../src/ol/renderer/webgl/Layer.js';
 import Layer from '../../../../../src/ol/layer/Layer.js';
@@ -239,9 +239,9 @@ describe('ol.renderer.webgl.Layer', function() {
 
   });
 
-  describe('getBlankTexture', function() {
+  describe('getBlankImageData', function() {
     it('creates a 1x1 white texture', function() {
-      const texture = getBlankTexture();
+      const texture = getBlankImageData();
       expect(texture.height).to.eql(1);
       expect(texture.width).to.eql(1);
       expect(texture.data[0]).to.eql(255);

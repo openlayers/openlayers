@@ -231,7 +231,7 @@ export function writePointFeatureToBuffers(instructions, elementIndex, vertexBuf
  * @private
  * @return {ImageData} Image data.
  */
-export function getBlankTexture() {
+export function getBlankImageData() {
   const canvas = document.createElement('canvas');
   const image = canvas.getContext('2d').createImageData(1, 1);
   image.data[0] = image.data[1] = image.data[2] = image.data[3] = 255;
