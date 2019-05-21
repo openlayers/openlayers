@@ -89,7 +89,7 @@
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.0.0",
-    "rollup-plugin-terser": "^4.0.4",
+    "rollup-plugin-terser": "^5.0.0",
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
     "sinon": "^7.3.2",
