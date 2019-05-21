@@ -7,7 +7,6 @@ import TileState from '../../TileState.js';
 import {createEmpty, equals, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
 import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
-import {numberSafeCompareFunction} from '../../array.js';
 
 /**
  * @classdesc
@@ -234,7 +233,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -width / 2, -height / 2
     );
 
-    const reused = this.useContainer(target, this.pixelTransform_);
+    this.useContainer(target, this.pixelTransform_);
     const context = this.context;
     const canvas = context.canvas;
 
@@ -251,7 +250,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-    } else if (!reused) {
+    } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }
 

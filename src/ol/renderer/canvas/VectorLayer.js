@@ -70,23 +70,25 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState) {
-    const context = this.context;
-    const canvas = context.canvas;
-
-    const replayGroup = this.replayGroup_;
-    if (!replayGroup || replayGroup.isEmpty()) {
-      if (canvas.width > 0) {
-        canvas.width = 0;
-      }
-      return canvas;
-    }
+  renderFrame(frameState, layerState, target) {
 
     const pixelRatio = frameState.pixelRatio;
 
     // set forward and inverse pixel transforms
     makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+
+    this.useContainer(target, this.pixelTransform_);
+    const context = this.context;
+    const canvas = context.canvas;
+
+    const replayGroup = this.replayGroup_;
+    if (!replayGroup || replayGroup.isEmpty()) {
+      if (!this.containerReused && canvas.width > 0) {
+        canvas.width = 0;
+      }
+      return this.container;
+    }
 
     // resize and clear
     const width = Math.round(frameState.size[0] * pixelRatio);
@@ -98,7 +100,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }
-    } else {
+    } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }
 
@@ -166,7 +168,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
-    return canvas;
+    return this.container;
   }
 
   /**

@@ -6,7 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {compose as composeTransform, makeInverse, toString as transformToString, apply as applyTransform} from '../../transform.js';
+import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc

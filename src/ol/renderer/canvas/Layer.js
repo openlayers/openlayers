@@ -8,7 +8,6 @@ import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
 import {create as createTransform, apply as applyTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
-import ContextEventType from '../../webgl/ContextEventType.js';
 
 /**
  * @abstract
@@ -64,16 +63,20 @@ class CanvasLayerRenderer extends LayerRenderer {
      */
     this.context = null;
 
+    /**
+     * @type {boolean}
+     */
+    this.containerReused = false;
+
   }
 
   /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
    * @param {import("../../transform").Transform} transform Transform.
-   * @return {boolean} The target is reused for this layer.
    */
   useContainer(target, transform) {
-    let reused = false;
+    const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (target) {
       const canvas = target.firstElementChild;
@@ -82,33 +85,33 @@ class CanvasLayerRenderer extends LayerRenderer {
       }
     }
     if (context && context.canvas.style.transform === transformToString(transform)) {
-      container = target;
-      reused = true;
-    } else {
-      context = null;
-      container = this.container;
-      if (!container) {
-        container = document.createElement('div');
-        const style = container.style;
-        style.position = 'absolute';
-        style.width = '100%';
-        style.height = '100%';
-      }
+      // Container of the previous layer renderer can be used.
+      target.classList.add(layerClassName);
+      this.container = target;
+      this.context = context;
+      this.containerReused = true;
+    } else if (this.containerReused) {
+      // Previously reused container cannot be used any more.
+      this.container = null;
+      this.context = null;
+      this.containerReused = false;
     }
-    if (container !== this.container) {
-      container.classList.add(this.getLayer().getClassName());
+    if (!this.container) {
+      container = document.createElement('div');
+      container.className = layerClassName;
+      let style = container.style;
+      style.position = 'absolute';
+      style.width = '100%';
+      style.height = '100%';
+      context = createCanvasContext2D();
+      const canvas = context.canvas;
+      container.appendChild(canvas);
+      style = canvas.style;
+      style.position = 'absolute';
+      style.transformOrigin = 'top left';
       this.container = container;
-      if (!context) {
-        context = createCanvasContext2D();
-        const canvas = context.canvas;
-        container.appendChild(canvas);
-        const style = canvas.style;
-        style.position = 'absolute';
-        style.transformOrigin = 'top left';
-      }
       this.context = context;
     }
-    return reused;
   }
 
   /**

@@ -362,10 +362,12 @@ class Executor extends Disposable {
       const declutterArgs = intersects ?
         [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
         null;
-      if (declutterArgs && fillStroke) {
-        declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
+      if (declutterArgs) {
+        if (fillStroke) {
+          declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
+        }
+        declutterGroup.push(declutterArgs);
       }
-      declutterGroup.push(declutterArgs);
     } else if (intersects) {
       if (fillStroke) {
         this.replayTextBackground_(context, p1, p2, p3, p4,

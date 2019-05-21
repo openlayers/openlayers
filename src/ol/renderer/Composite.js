@@ -9,7 +9,6 @@ import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
 import {replaceChildren} from '../dom.js';
 import {labelCache} from '../render/canvas.js';
-import {altShiftKeysOnly} from '../events/condition.js';
 
 
 /**

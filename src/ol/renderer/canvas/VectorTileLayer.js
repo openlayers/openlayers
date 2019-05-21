@@ -123,27 +123,31 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   useContainer(target, transform) {
-    let context;
+    let overlayContext;
     if (target && target.childElementCount === 2) {
-      context = target.lastElementChild.getContext('2d');
-      if (!context) {
+      overlayContext = target.lastElementChild.getContext('2d');
+      if (!overlayContext) {
         target = null;
       }
-    } else {
-      context = this.overlayContext_;
-      if (!this.overlayContext_) {
-        context = createCanvasContext2D();
-        const style = context.canvas.style;
-        style.position = 'absolute';
-        style.transformOrigin = 'top left';
-      }
     }
-    const reused = super.useContainer(target, transform);
+    const containerReused = this.containerReused;
+    super.useContainer(target, transform);
+    if (containerReused && !this.containerReused && !overlayContext) {
+      this.overlayContext_ = null;
+    }
+    if (this.containerReused && overlayContext) {
+      this.overlayContext_ = overlayContext;
+    }
+    if (!this.overlayContext_) {
+      const overlayContext = createCanvasContext2D();
+      const style = overlayContext.canvas.style;
+      style.position = 'absolute';
+      style.transformOrigin = 'top left';
+      this.overlayContext_ = overlayContext;
+    }
     if (this.container.childElementCount === 1) {
-      this.container.appendChild(context.canvas);
+      this.container.appendChild(this.overlayContext_.canvas);
     }
-    this.overlayContext_ = context;
-    return reused;
   }
 
   /**
@@ -401,7 +405,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     if (!isEmpty(this.renderTileImageQueue_) && !this.extentChanged) {
       this.renderTileImages_(hifi, frameState);
-      return this.container;
     }
 
     const context = this.overlayContext_;
@@ -427,7 +430,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }
-    } else {
+    } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }
 
@@ -495,10 +498,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (opacity !== parseFloat(canvas.style.opacity)) {
       canvas.style.opacity = opacity;
     }
-
-    // Now that we have rendered the tiles we have already, let's prepare new tile images
-    // for the next frame
-    this.renderTileImages_(hifi, frameState);
 
     return this.container;
   }
