@@ -75,6 +75,7 @@ class IIIF extends TileImage {
     const width = size[0];
     const height = size[1];
     const tileSize = options.tileSize;
+    const tilePixelRatio = options.tilePixelRatio || 1;
     const format = options.format || 'jpg';
     const quality = options.quality || (options.version == Versions.VERSION1 ? 'native' : 'default');
     let resolutions = options.resolutions || [];
@@ -260,7 +261,7 @@ class IIIF extends TileImage {
       return baseUrl + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
     };
 
-    const IiifTileClass = CustomTile.bind(null, tileGrid);
+    const IiifTileClass = CustomTile.bind(null, tilePixelRatio, tileGrid);
 
     super({
       attributions: options.attributions,
