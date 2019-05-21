@@ -57,7 +57,11 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     const options = opt_options || {};
 
-    this.helper_ = new WebGLHelper({
+    /**
+     * @type {WebGLHelper}
+     * @protected
+     */
+    this.helper = new WebGLHelper({
       postProcesses: options.postProcesses,
       uniforms: options.uniforms
     });
@@ -76,7 +80,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @api
    */
   getShaderCompileErrors() {
-    return this.helper_.getShaderCompileErrors();
+    return this.helper.getShaderCompileErrors();
   }
 }
 

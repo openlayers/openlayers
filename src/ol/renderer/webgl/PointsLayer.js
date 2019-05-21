@@ -215,12 +215,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
     this.indicesBuffer_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW);
 
-    this.program_ = this.helper_.getProgram(
+    this.program_ = this.helper.getProgram(
       options.fragmentShader || FRAGMENT_SHADER,
       options.vertexShader || VERTEX_SHADER
     );
 
-    this.helper_.useProgram(this.program_);
+    this.helper.useProgram(this.program_);
 
     this.sizeCallback_ = options.sizeCallback || function() {
       return 1;
@@ -282,8 +282,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         const projectionTransform = received.projectionTransform;
         this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
         this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
-        this.helper_.flushBufferData(this.verticesBuffer_);
-        this.helper_.flushBufferData(this.indicesBuffer_);
+        this.helper.flushBufferData(this.verticesBuffer_);
+        this.helper.flushBufferData(this.indicesBuffer_);
 
         // saves the projection transform for the current frame state
         this.renderTransform_ = projectionTransform;
@@ -306,9 +306,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   renderFrame(frameState) {
     const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
-    this.helper_.drawElements(0, renderCount);
-    this.helper_.finalizeDraw(frameState);
-    const canvas = this.helper_.getCanvas();
+    this.helper.drawElements(0, renderCount);
+    this.helper.finalizeDraw(frameState);
+    const canvas = this.helper.getCanvas();
 
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const opacity = layerState.opacity;
@@ -348,22 +348,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     }
 
     // apply the current projection transform with the invert of the one used to fill buffers
-    this.helper_.makeProjectionTransform(frameState, this.currentTransform_);
+    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
     multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
 
-    this.helper_.prepareDraw(frameState);
+    this.helper.prepareDraw(frameState);
 
     // write new data
-    this.helper_.bindBuffer(this.verticesBuffer_);
-    this.helper_.bindBuffer(this.indicesBuffer_);
+    this.helper.bindBuffer(this.verticesBuffer_);
+    this.helper.bindBuffer(this.indicesBuffer_);
 
     const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-    this.helper_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * stride, 0);
-    this.helper_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 2);
-    this.helper_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 4);
-    this.helper_.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
-    this.helper_.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
-    this.helper_.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
+    this.helper.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * stride, 0);
+    this.helper.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 2);
+    this.helper.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 4);
+    this.helper.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
+    this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
+    this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
 
     return true;
   }
@@ -379,7 +379,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     // saves the projection transform for the current frame state
     const projectionTransform = createTransform();
-    this.helper_.makeProjectionTransform(frameState, projectionTransform);
+    this.helper.makeProjectionTransform(frameState, projectionTransform);
 
     const features = vectorSource.getFeatures();
     const totalInstructionsCount = POINT_INSTRUCTIONS_COUNT * features.length;
