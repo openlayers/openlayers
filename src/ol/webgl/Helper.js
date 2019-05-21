@@ -260,11 +260,12 @@ class WebGLHelper extends Disposable {
 
     /**
      * @type {boolean}
+     * @private
      */
-    this.hasOESElementIndexUint = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
+    this.hasOESElementIndexUint_ = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
 
     // use the OES_element_index_uint extension if available
-    if (this.hasOESElementIndexUint) {
+    if (this.hasOESElementIndexUint_) {
       gl.getExtension('OES_element_index_uint');
     }
 
@@ -452,9 +453,9 @@ class WebGLHelper extends Disposable {
    */
   drawElements(start, end) {
     const gl = this.getGL();
-    const elementType = this.hasOESElementIndexUint ?
+    const elementType = this.hasOESElementIndexUint_ ?
       gl.UNSIGNED_INT : gl.UNSIGNED_SHORT;
-    const elementSize = this.hasOESElementIndexUint ? 4 : 2;
+    const elementSize = this.hasOESElementIndexUint_ ? 4 : 2;
 
     const numItems = end - start;
     const offsetInBytes = start * elementSize;
@@ -744,6 +745,16 @@ class WebGLHelper extends Disposable {
    * @private
    */
   handleWebGLContextRestored() {
+  }
+
+  /**
+   * Returns whether the `OES_element_index_uint` WebGL extension is enabled for this context.
+   * @return {boolean} If true, Uint16Array should be used for element array buffers
+   * instead of Uint8Array.
+   * @api
+   */
+  getElementIndexUintEnabled() {
+    return this.hasOESElementIndexUint_;
   }
 
   // TODO: shutdown program
