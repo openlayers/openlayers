@@ -114,14 +114,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
-  disposeInternal() {
-    this.overlayContext_.canvas.width = this.overlayContext_.canvas.height = 0;
-    super.disposeInternal();
-  }
-
-  /**
-   * @inheritDoc
-   */
   useContainer(target, transform) {
     let overlayContext;
     if (target && target.childElementCount === 2) {
@@ -399,12 +391,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const renderMode = layer.getRenderMode();
 
     if (renderMode === VectorTileRenderType.IMAGE) {
-      this.renderTileImages_(hifi, frameState);
       return this.container;
-    }
-
-    if (!isEmpty(this.renderTileImageQueue_) && !this.extentChanged) {
-      this.renderTileImages_(hifi, frameState);
     }
 
     const context = this.overlayContext_;
