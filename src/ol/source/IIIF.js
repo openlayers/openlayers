@@ -260,7 +260,7 @@ class IIIF extends TileImage {
       }
       return baseUrl + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
     };
-      
+
     const IiifTileClass = CustomTile.bind(null, tilePixelRatio, tileGrid);
 
     super({
