@@ -146,8 +146,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
+   * @param {boolean} queue Queue tile for rendering.
+   * @return {boolean} Tile needs to be rendered.
    */
-  prepareTile(tile, pixelRatio, projection) {
+  prepareTile(tile, pixelRatio, projection, queue) {
+    let render = false;
     const tileUid = getUid(tile);
     const state = tile.getState();
     if (((state === TileState.LOADED && tile.hifi) ||
@@ -159,9 +162,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (state === TileState.LOADED || state === TileState.ERROR) {
       this.updateExecutorGroup_(tile, pixelRatio, projection);
       if (this.tileImageNeedsRender_(tile, pixelRatio, projection)) {
-        this.renderTileImageQueue_[tileUid] = tile;
+        render = true;
+        if (queue) {
+          this.renderTileImageQueue_[tileUid] = tile;
+        }
       }
     }
+    return render;
   }
 
   /**
@@ -177,7 +184,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       tile.wantedResolution = resolution;
       const tileUid = getUid(tile);
       if (!(tileUid in this.tileListenerKeys_)) {
-        const listenerKey = listen(tile, EventType.CHANGE, this.prepareTile.bind(this, tile, pixelRatio, projection));
+        const listenerKey = listen(tile, EventType.CHANGE, this.prepareTile.bind(this, tile, pixelRatio, projection, true));
         this.tileListenerKeys_[tileUid] = listenerKey;
       }
     } else {
@@ -186,7 +193,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (hifi || !tile.wantedResolution) {
         tile.wantedResolution = resolution;
       }
-      this.prepareTile(tile, pixelRatio, projection);
+      const render = this.prepareTile(tile, pixelRatio, projection, false);
+      if (render) {
+        this.renderTileImage_(tile, frameState);
+      }
     }
     return tile;
   }
@@ -383,20 +393,27 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   renderFrame(frameState, layerState, target) {
     const viewHints = frameState.viewHints;
     const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
-    this.renderTileImages_(hifi, frameState);
+    this.renderQueuedTileImages_(hifi, frameState);
 
     super.renderFrame(frameState, layerState, target);
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
-
     if (renderMode === VectorTileRenderType.IMAGE) {
       return this.container;
     }
 
+    const source = layer.getSource();
+    // Unqueue tiles from the image queue when we don't need any more
+    const usedTiles = frameState.usedTiles[getUid(source)];
+    for (const tileUid in this.renderTileImageQueue_) {
+      if (!(tileUid in usedTiles)) {
+        delete this.renderTileImageQueue_[tileUid];
+      }
+    }
+
     const context = this.overlayContext_;
     const declutterReplays = layer.getDeclutter() ? {} : null;
-    const source = layer.getSource();
     const replayTypes = VECTOR_REPLAYS[renderMode];
     const pixelRatio = frameState.pixelRatio;
     const rotation = frameState.viewState.rotation;
@@ -488,16 +505,17 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {boolean} hifi We have time to render a high fidelity map image.
    * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
    */
-  renderTileImages_(hifi, frameState) {
+  renderQueuedTileImages_(hifi, frameState) {
+    // When we don't have time to render hifi, only render tiles until we have used up
+    // half of the frame budget of 16 ms
     for (const uid in this.renderTileImageQueue_) {
+      if (!hifi && Date.now() - frameState.time > 8) {
+        frameState.animate = true;
+        break;
+      }
       const tile = this.renderTileImageQueue_[uid];
       delete this.renderTileImageQueue_[uid];
-      const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
-      const viewState = frameState.viewState;
-      const tileGrid = layer.getSource().getTileGridForProjection(viewState.projection);
-      const tileResolution = tileGrid.getResolution(tile.tileCoord[0]);
-      const renderPixelRatio = frameState.pixelRatio / tile.wantedResolution * tileResolution;
-      this.renderTileImage_(tile, frameState.pixelRatio, renderPixelRatio, viewState.projection);
+      this.renderTileImage_(tile, frameState);
     }
   }
 
@@ -545,24 +563,29 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {number} renderPixelRatio Render pixel ratio.
-   * @param {import("../../proj/Projection.js").default} projection Projection.
+   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
    * @private
    */
-  renderTileImage_(tile, pixelRatio, renderPixelRatio, projection) {
+  renderTileImage_(tile, frameState) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const executorGroups = tile.executorGroups[getUid(layer)];
     replayState.renderedTileRevision = revision;
     replayState.renderedTileZ = tile.sourceZ;
+
     const tileCoord = tile.wrappedTileCoord;
     const z = tileCoord[0];
     const source = layer.getSource();
+    let pixelRatio = frameState.pixelRatio;
+    const viewState = frameState.viewState;
+    const projection = viewState.projection;
     const tileGrid = source.getTileGridForProjection(projection);
+    const tileResolution = tileGrid.getResolution(tile.tileCoord[0]);
+    const renderPixelRatio = frameState.pixelRatio / tile.wantedResolution * tileResolution;
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);
+
     // Increase tile size when overzooming for low pixel ratio, to avoid blurry tiles
     pixelRatio = Math.max(pixelRatio, renderPixelRatio / pixelRatio);
     const size = source.getTilePixelSize(z, pixelRatio, projection);
