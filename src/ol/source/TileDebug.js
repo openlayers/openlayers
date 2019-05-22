@@ -6,7 +6,7 @@ import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
-import TileSource from '../source/Tile.js';
+import XYZ from './XYZ.js';
 import {getKeyZXY} from '../tilecoord.js';
 
 
@@ -51,14 +51,17 @@ class LabeledTile extends Tile {
       const tileSize = this.tileSize_;
       const context = createCanvasContext2D(tileSize[0], tileSize[1]);
 
-      context.strokeStyle = 'black';
+      context.strokeStyle = 'grey';
       context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
 
-      context.fillStyle = 'black';
+      context.fillStyle = 'grey';
+      context.strokeStyle = 'white';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.font = '24px sans-serif';
-      context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
+      context.lineWidth = 4;
+      context.strokeText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
+      context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
 
       this.canvas_ = context.canvas;
       return context.canvas;
@@ -74,7 +77,7 @@ class LabeledTile extends Tile {
 
 /**
  * @typedef {Object} Options
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Optional projection.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -89,11 +92,15 @@ class LabeledTile extends Tile {
  * Uses Canvas context2d, so requires Canvas support.
  * @api
  */
-class TileDebug extends TileSource {
+class TileDebug extends XYZ {
   /**
-   * @param {Options=} options Debug tile options.
+   * @param {Options=} opt_options Debug tile options.
    */
-  constructor(options) {
+  constructor(opt_options) {
+    /**
+     * @type {Options}
+     */
+    const options = opt_options || {};
 
     super({
       opaque: false,
@@ -115,8 +122,12 @@ class TileDebug extends TileSource {
       const tileSize = toSize(this.tileGrid.getTileSize(z));
       const tileCoord = [z, x, y];
       const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-      const text = !textTileCoord ? '' :
-        this.getTileCoordForTileUrlFunction(textTileCoord).toString();
+      let text;
+      if (textTileCoord) {
+        text = 'z:' + textTileCoord[0] + ' x:' + textTileCoord[1] + ' y:' + textTileCoord[2];
+      } else {
+        text = 'none';
+      }
       const tile = new LabeledTile(tileCoord, tileSize, text);
       this.tileCache.set(tileCoordKey, tile);
       return tile;

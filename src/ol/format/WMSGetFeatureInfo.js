@@ -2,8 +2,8 @@
  * @module ol/format/WMSGetFeatureInfo
  */
 import {extend, includes} from '../array.js';
-import GML2 from '../format/GML2.js';
-import XMLFeature from '../format/XMLFeature.js';
+import GML2 from './GML2.js';
+import XMLFeature from './XMLFeature.js';
 import {assign} from '../obj.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
@@ -100,10 +100,12 @@ class WMSGetFeatureInfo extends XMLFeature {
         if (layer.nodeType !== Node.ELEMENT_NODE) {
           continue;
         }
+
+        const layerElement = /** @type {Element} */ (layer);
         const context = objectStack[0];
 
         const toRemove = layerIdentifier;
-        const layerName = layer.localName.replace(toRemove, '');
+        const layerName = layerElement.localName.replace(toRemove, '');
 
         if (this.layers_ && !includes(this.layers_, layerName)) {
           continue;
@@ -115,14 +117,15 @@ class WMSGetFeatureInfo extends XMLFeature {
         context['featureType'] = featureType;
         context['featureNS'] = this.featureNS_;
 
+        /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         parsers[featureType] = makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
         const parsersNS = makeStructureNS(
           [context['featureNS'], null], parsers);
-        layer.setAttribute('namespaceURI', this.featureNS_);
+        layerElement.setAttribute('namespaceURI', this.featureNS_);
         const layerFeatures = pushParseAndPop(
-          [], parsersNS, layer, objectStack, this.gmlFormat_);
+          [], parsersNS, layerElement, objectStack, this.gmlFormat_);
         if (layerFeatures) {
           extend(features, layerFeatures);
         }

@@ -2,14 +2,10 @@
  * @module ol/Map
  */
 import PluggableMap from './PluggableMap.js';
-import {defaults as defaultControls} from './control/util.js';
+import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
-import CanvasMapRenderer from './renderer/canvas/Map.js';
-import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
-import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
-import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
+import CompositeMapRenderer from './renderer/Composite.js';
 
 /**
  * @classdesc
@@ -56,10 +52,6 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
- * @fires import("./MapBrowserEvent.js").MapBrowserEvent
- * @fires import("./MapEvent.js").MapEvent
- * @fires module:ol/render/Event~RenderEvent#postcompose
- * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
 class Map extends PluggableMap {
@@ -80,14 +72,7 @@ class Map extends PluggableMap {
   }
 
   createRenderer() {
-    const renderer = new CanvasMapRenderer(this);
-    renderer.registerLayerRenderers([
-      CanvasImageLayerRenderer,
-      CanvasTileLayerRenderer,
-      CanvasVectorLayerRenderer,
-      CanvasVectorTileLayerRenderer
-    ]);
-    return renderer;
+    return new CompositeMapRenderer(this);
   }
 }
 

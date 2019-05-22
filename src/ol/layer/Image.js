@@ -1,29 +1,12 @@
 /**
  * @module ol/layer/Image
  */
-import LayerType from '../LayerType.js';
-import Layer from '../layer/Layer.js';
+import BaseImageLayer from './BaseImage.js';
+import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 
 
 /**
- * @typedef {Object} Options
- * @property {number} [opacity=1] Opacity (0, 1).
- * @property {boolean} [visible=true] Visibility.
- * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
- * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
- * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
- * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
- * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
- * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
- * be visible.
- * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
- * this layer in its layers collection, and the layer will be rendered on top. This is useful for
- * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link module:ol/Map#addLayer}.
- * @property {import("../source/Image.js").default} [source] Source for this layer.
+ * @typedef {import("./BaseImage.js").Options} Options
  */
 
 
@@ -35,35 +18,26 @@ import Layer from '../layer/Layer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class ImageLayer extends Layer {
+class ImageLayer extends BaseImageLayer {
 
   /**
    * @param {Options=} opt_options Layer options.
    */
   constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
-    super(options);
+    super(opt_options);
+  }
 
-    /**
-     * The layer type.
-     * @protected
-     * @type {import("../LayerType.js").default}
-     */
-    this.type = LayerType.IMAGE;
-
+  /**
+   * Create a renderer for this layer.
+   * @return {import("../renderer/Layer.js").default} A layer renderer.
+   * @protected
+   */
+  createRenderer() {
+    return new CanvasImageLayerRenderer(this);
   }
 
 }
 
-
-/**
- * Return the associated {@link module:ol/source/Image source} of the image layer.
- * @function
- * @return {import("../source/Image.js").default} Source.
- * @api
- */
-ImageLayer.prototype.getSource;
 export default ImageLayer;

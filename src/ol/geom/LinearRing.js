@@ -2,14 +2,14 @@
  * @module ol/geom/LinearRing
  */
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {linearRing as linearRingArea} from '../geom/flat/area.js';
-import {assignClosestPoint, maxSquaredDelta} from '../geom/flat/closest.js';
-import {deflateCoordinates} from '../geom/flat/deflate.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
-import {douglasPeucker} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {linearRing as linearRingArea} from './flat/area.js';
+import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
+import {deflateCoordinates} from './flat/deflate.js';
+import {inflateCoordinates} from './flat/inflate.js';
+import {douglasPeucker} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -42,9 +42,9 @@ class LinearRing extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
 
   }
@@ -118,7 +118,9 @@ class LinearRing extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return false;
+  }
 
   /**
    * Set the coordinates of the linear ring.

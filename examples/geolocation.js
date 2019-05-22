@@ -2,7 +2,6 @@ import Feature from '../src/ol/Feature.js';
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import Point from '../src/ol/geom/Point.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
@@ -20,11 +19,6 @@ const map = new Map({
     })
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: view
 });
 

@@ -3,16 +3,16 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import LineString from '../geom/LineString.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
-import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
-import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
-import {interpolatePoint, lineStringsCoordinateAtM} from '../geom/flat/interpolate.js';
-import {intersectsLineStringArray} from '../geom/flat/intersectsextent.js';
-import {douglasPeuckerArray} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import LineString from './LineString.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {assignClosestArrayPoint, arrayMaxSquaredDelta} from './flat/closest.js';
+import {deflateCoordinatesArray} from './flat/deflate.js';
+import {inflateCoordinatesArray} from './flat/inflate.js';
+import {interpolatePoint, lineStringsCoordinateAtM} from './flat/interpolate.js';
+import {intersectsLineStringArray} from './flat/intersectsextent.js';
+import {douglasPeuckerArray} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -23,7 +23,7 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 class MultiLineString extends SimpleGeometry {
 
   /**
-   * @param {Array<Array<import("../coordinate.js").Coordinate>|import("../geom.js").MultiLineString>|Array<number>} coordinates
+   * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
    *     combination with `opt_layout` and `opt_ends` are also accepted.)
    * @param {GeometryLayout=} opt_layout Layout.
@@ -52,16 +52,17 @@ class MultiLineString extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (Array.isArray(coordinates[0])) {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
     } else if (opt_layout !== undefined && opt_ends) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       this.ends_ = opt_ends;
     } else {
       let layout = this.getLayout();
+      const lineStrings = /** @type {Array<LineString>} */ (coordinates);
       const flatCoordinates = [];
       const ends = [];
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        const lineString = coordinates[i];
+      for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
+        const lineString = lineStrings[i];
         if (i === 0) {
           layout = lineString.getLayout();
         }

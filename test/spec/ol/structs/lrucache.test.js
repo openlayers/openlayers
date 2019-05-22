@@ -285,7 +285,9 @@ describe('ol.structs.LRUCache', function() {
       lruCache.setSize(2);
       expect(lruCache.highWaterMark).to.be(2);
       fillLRUCache(lruCache);
-      lruCache.prune();
+      while (lruCache.canExpireCache()) {
+        lruCache.pop();
+      }
       expect(lruCache.getKeys().length).to.be(2);
     });
   });

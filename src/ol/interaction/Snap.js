@@ -2,7 +2,6 @@
  * @module ol/interaction/Snap
  */
 import {getUid} from '../util.js';
-import {CollectionEvent} from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -11,9 +10,8 @@ import {boundingExtent, createEmpty} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
-import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
+import PointerInteraction from './Pointer.js';
 import {getValues} from '../obj.js';
-import {VectorSourceEvent} from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
@@ -45,6 +43,19 @@ import RBush from '../structs/RBush.js';
 
 
 /**
+ * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
+ * @return {import("../Feature.js").default} Feature.
+ */
+function getFeatureFromEvent(evt) {
+  if (/** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature) {
+    return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature;
+  } else if (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element) {
+    return /** @type {import("../Feature.js").default} */ (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element);
+  }
+
+}
+
+/**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
  * features can come from a {@link module:ol/source/Vector} or {@link module:ol/Collection~Collection}
@@ -71,14 +82,19 @@ class Snap extends PointerInteraction {
    */
   constructor(opt_options) {
 
-    super({
-      handleEvent: handleEvent,
-      handleDownEvent: TRUE,
-      handleUpEvent: handleUpEvent,
-      stopDown: FALSE
-    });
-
     const options = opt_options ? opt_options : {};
+
+    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+
+    if (!pointerOptions.handleDownEvent) {
+      pointerOptions.handleDownEvent = TRUE;
+    }
+
+    if (!pointerOptions.stopDown) {
+      pointerOptions.stopDown = FALSE;
+    }
+
+    super(pointerOptions);
 
     /**
      * @type {import("../source/Vector.js").default}
@@ -111,7 +127,7 @@ class Snap extends PointerInteraction {
     this.featuresListenerKeys_ = [];
 
     /**
-     * @type {Object<number, import("../events.js").EventsKey>}
+     * @type {Object<string, import("../events.js").EventsKey>}
      * @private
      */
     this.featureChangeListenerKeys_ = {};
@@ -119,7 +135,7 @@ class Snap extends PointerInteraction {
     /**
      * Extents are preserved so indexed segment can be quickly removed
      * when its feature geometry changes
-     * @type {Object<number, import("../extent.js").Extent>}
+     * @type {Object<string, import("../extent.js").Extent>}
      * @private
      */
     this.indexedFeaturesExtents_ = {};
@@ -128,7 +144,7 @@ class Snap extends PointerInteraction {
      * If a feature geometry changes while a pointer drag|move event occurs, the
      * feature doesn't get updated right away.  It will be at the next 'pointerup'
      * event fired.
-     * @type {!Object<number, import("../Feature.js").default>}
+     * @type {!Object<string, import("../Feature.js").default>}
      * @private
      */
     this.pendingFeatures_ = {};
@@ -165,7 +181,7 @@ class Snap extends PointerInteraction {
     /**
     * @const
     * @private
-    * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default)>}
+    * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default): void>}
     */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,
@@ -234,37 +250,37 @@ class Snap extends PointerInteraction {
     } else if (this.source_) {
       features = this.source_.getFeatures();
     }
-    return (
-      /** @type {!Array<import("../Feature.js").default>|!import("../Collection.js").default<import("../Feature.js").default>} */ (features)
-    );
+    return features;
   }
 
   /**
-   * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
+   * @inheritDoc
+   */
+  handleEvent(evt) {
+    const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+    if (result.snapped) {
+      evt.coordinate = result.vertex.slice(0, 2);
+      evt.pixel = result.vertexPixel;
+    }
+    return super.handleEvent(evt);
+  }
+
+  /**
+   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
    * @private
    */
   handleFeatureAdd_(evt) {
-    let feature;
-    if (evt instanceof VectorSourceEvent) {
-      feature = evt.feature;
-    } else if (evt instanceof CollectionEvent) {
-      feature = evt.element;
-    }
-    this.addFeature(/** @type {import("../Feature.js").default} */ (feature));
+    const feature = getFeatureFromEvent(evt);
+    this.addFeature(feature);
   }
 
   /**
-   * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
    * @private
    */
   handleFeatureRemove_(evt) {
-    let feature;
-    if (evt instanceof VectorSourceEvent) {
-      feature = evt.feature;
-    } else if (evt instanceof CollectionEvent) {
-      feature = evt.element;
-    }
-    this.removeFeature(/** @type {import("../Feature.js").default} */ (feature));
+    const feature = getFeatureFromEvent(evt);
+    this.removeFeature(feature);
   }
 
   /**
@@ -281,6 +297,18 @@ class Snap extends PointerInteraction {
     } else {
       this.updateFeature_(feature);
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(evt) {
+    const featuresToUpdate = getValues(this.pendingFeatures_);
+    if (featuresToUpdate.length) {
+      featuresToUpdate.forEach(this.updateFeature_.bind(this));
+      this.pendingFeatures_ = {};
+    }
+    return false;
   }
 
   /**
@@ -319,7 +347,7 @@ class Snap extends PointerInteraction {
   setMap(map) {
     const currentMap = this.getMap();
     const keys = this.featuresListenerKeys_;
-    const features = this.getFeatures_();
+    const features = /** @type {Array<import("../Feature.js").default>} */ (this.getFeatures_());
 
     if (currentMap) {
       keys.forEach(unlistenByKey);
@@ -423,13 +451,11 @@ class Snap extends PointerInteraction {
         vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
       }
     }
-    return (
-      /** @type {Result} */ ({
-        snapped: snapped,
-        vertex: vertex,
-        vertexPixel: vertexPixel
-      })
-    );
+    return {
+      snapped: snapped,
+      vertex: vertex,
+      vertexPixel: vertexPixel
+    };
   }
 
   /**
@@ -451,10 +477,10 @@ class Snap extends PointerInteraction {
     const coordinates = polygon.getCoordinates()[0];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {SegmentData} */ ({
+      const segmentData = {
         feature: feature,
         segment: segment
-      });
+      };
       this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
@@ -483,10 +509,10 @@ class Snap extends PointerInteraction {
     const coordinates = geometry.getCoordinates();
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {SegmentData} */ ({
+      const segmentData = {
         feature: feature,
         segment: segment
-      });
+      };
       this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
@@ -502,10 +528,10 @@ class Snap extends PointerInteraction {
       const coordinates = lines[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {SegmentData} */ ({
+        const segmentData = {
           feature: feature,
           segment: segment
-        });
+        };
         this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
@@ -520,10 +546,10 @@ class Snap extends PointerInteraction {
     const points = geometry.getCoordinates();
     for (let i = 0, ii = points.length; i < ii; ++i) {
       const coordinates = points[i];
-      const segmentData = /** @type {SegmentData} */ ({
+      const segmentData = {
         feature: feature,
         segment: [coordinates, coordinates]
-      });
+      };
       this.rBush_.insert(geometry.getExtent(), segmentData);
     }
   }
@@ -541,10 +567,10 @@ class Snap extends PointerInteraction {
         const coordinates = rings[j];
         for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
           const segment = coordinates.slice(i, i + 2);
-          const segmentData = /** @type {SegmentData} */ ({
+          const segmentData = {
             feature: feature,
             segment: segment
-          });
+          };
           this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
@@ -558,10 +584,10 @@ class Snap extends PointerInteraction {
    */
   writePointGeometry_(feature, geometry) {
     const coordinates = geometry.getCoordinates();
-    const segmentData = /** @type {SegmentData} */ ({
+    const segmentData = {
       feature: feature,
       segment: [coordinates, coordinates]
-    });
+    };
     this.rBush_.insert(geometry.getExtent(), segmentData);
   }
 
@@ -576,45 +602,14 @@ class Snap extends PointerInteraction {
       const coordinates = rings[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {SegmentData} */ ({
+        const segmentData = {
           feature: feature,
           segment: segment
-        });
+        };
         this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
   }
-}
-
-
-/**
- * Handle all pointer events events.
- * @param {import("../MapBrowserEvent.js").default} evt A move event.
- * @return {boolean} Pass the event to other interactions.
- * @this {Snap}
- */
-export function handleEvent(evt) {
-  const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
-  if (result.snapped) {
-    evt.coordinate = result.vertex.slice(0, 2);
-    evt.pixel = result.vertexPixel;
-  }
-  return handlePointerEvent.call(this, evt);
-}
-
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
- * @return {boolean} Stop drag sequence?
- * @this {Snap}
- */
-function handleUpEvent(evt) {
-  const featuresToUpdate = getValues(this.pendingFeatures_);
-  if (featuresToUpdate.length) {
-    featuresToUpdate.forEach(this.updateFeature_.bind(this));
-    this.pendingFeatures_ = {};
-  }
-  return false;
 }
 
 

@@ -26,8 +26,9 @@ export class CollectionEvent extends Event {
   /**
    * @param {CollectionEventType} type Type.
    * @param {*=} opt_element Element.
+   * @param {number} opt_index The index of the added or removed element.
    */
-  constructor(type, opt_element) {
+  constructor(type, opt_element, opt_index) {
     super(type);
 
     /**
@@ -37,6 +38,12 @@ export class CollectionEvent extends Event {
      */
     this.element = opt_element;
 
+    /**
+     * The index of the added or removed element.
+     * @type {number}
+     * @api
+     */
+    this.index = opt_index;
   }
 
 }
@@ -55,6 +62,8 @@ export class CollectionEvent extends Event {
  * event. Note that this does not cover changes to the objects _within_ the
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
+ *
+ * @fires CollectionEvent
  *
  * @template T
  * @api
@@ -160,7 +169,7 @@ class Collection extends BaseObject {
    * @api
    */
   getLength() {
-    return /** @type {number} */ (this.get(Property.LENGTH));
+    return this.get(Property.LENGTH);
   }
 
   /**
@@ -176,7 +185,7 @@ class Collection extends BaseObject {
     this.array_.splice(index, 0, elem);
     this.updateLength_();
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.ADD, elem));
+      new CollectionEvent(CollectionEventType.ADD, elem, index));
   }
 
   /**
@@ -231,7 +240,7 @@ class Collection extends BaseObject {
     const prev = this.array_[index];
     this.array_.splice(index, 1);
     this.updateLength_();
-    this.dispatchEvent(new CollectionEvent(CollectionEventType.REMOVE, prev));
+    this.dispatchEvent(new CollectionEvent(CollectionEventType.REMOVE, prev, index));
     return prev;
   }
 
@@ -250,9 +259,9 @@ class Collection extends BaseObject {
       const prev = this.array_[index];
       this.array_[index] = elem;
       this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.REMOVE, prev));
+        new CollectionEvent(CollectionEventType.REMOVE, prev, index));
       this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.ADD, elem));
+        new CollectionEvent(CollectionEventType.ADD, elem, index));
     } else {
       for (let j = n; j < index; ++j) {
         this.insertAt(j, undefined);

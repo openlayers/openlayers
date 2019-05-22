@@ -27,10 +27,10 @@ class MapBrowserEventHandler extends EventTarget {
     this.map_ = map;
 
     /**
-     * @type {number}
+     * @type {any}
      * @private
      */
-    this.clickTimeoutId_ = 0;
+    this.clickTimeoutId_;
 
     /**
      * @type {boolean}
@@ -118,17 +118,17 @@ class MapBrowserEventHandler extends EventTarget {
     let newEvent = new MapBrowserPointerEvent(
       MapBrowserEventType.CLICK, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
-    if (this.clickTimeoutId_ !== 0) {
+    if (this.clickTimeoutId_ !== undefined) {
       // double-click
       clearTimeout(this.clickTimeoutId_);
-      this.clickTimeoutId_ = 0;
+      this.clickTimeoutId_ = undefined;
       newEvent = new MapBrowserPointerEvent(
         MapBrowserEventType.DBLCLICK, this.map_, pointerEvent);
       this.dispatchEvent(newEvent);
     } else {
       // click
-      this.clickTimeoutId_ = window.setTimeout(function() {
-        this.clickTimeoutId_ = 0;
+      this.clickTimeoutId_ = setTimeout(function() {
+        this.clickTimeoutId_ = undefined;
         const newEvent = new MapBrowserPointerEvent(
           MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
         this.dispatchEvent(newEvent);

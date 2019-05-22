@@ -6,8 +6,8 @@
 // envelopes/extents, only geometries!
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import XMLFeature from '../format/XMLFeature.js';
+import {transformGeometryWithOptions, transformExtentWithOptions} from './Feature.js';
+import XMLFeature from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
@@ -71,6 +71,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * gml:MultiPolygon. Since the latter is deprecated in GML 3.
  * @property {string} [schemaLocation] Optional schemaLocation to use when
  * writing out the GML, this will override the default provided.
+ * @property {boolean} [hasZ=false] If coordinates have a Z value.
  */
 
 
@@ -122,11 +123,10 @@ class GMLBase extends XMLFeature {
      * @type {Object<string, Object<string, Object>>}
      */
     this.FEATURE_COLLECTION_PARSERS = {};
-    this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
-      'featureMember': makeReplacer(this.readFeaturesInternal),
+    this.FEATURE_COLLECTION_PARSERS[this.namespace] = {
+      'featureMember': makeArrayPusher(this.readFeaturesInternal),
       'featureMembers': makeReplacer(this.readFeaturesInternal)
     };
-
   }
 
   /**
@@ -138,15 +138,9 @@ class GMLBase extends XMLFeature {
     const localName = node.localName;
     let features = null;
     if (localName == 'FeatureCollection') {
-      if (node.namespaceURI === 'http://www.opengis.net/wfs') {
-        features = pushParseAndPop([],
-          this.FEATURE_COLLECTION_PARSERS, node,
-          objectStack, this);
-      } else {
-        features = pushParseAndPop(null,
-          this.FEATURE_COLLECTION_PARSERS, node,
-          objectStack, this);
-      }
+      features = pushParseAndPop([],
+        this.FEATURE_COLLECTION_PARSERS, node,
+        objectStack, this);
     } else if (localName == 'featureMembers' || localName == 'featureMember') {
       const context = objectStack[0];
       let featureType = context['featureType'];
@@ -189,9 +183,11 @@ class GMLBase extends XMLFeature {
         featureNS = {};
         featureNS[defaultPrefix] = ns;
       }
+      /** @type {Object<string, Object<string, import("../xml.js").Parser>>} */
       const parsersNS = {};
       const featureTypes = Array.isArray(featureType) ? featureType : [featureType];
       for (const p in featureNS) {
+        /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
           const featurePrefix = featureTypes[i].indexOf(':') === -1 ?
@@ -220,18 +216,19 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/Geometry.js").default|undefined} Geometry.
+   * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent|undefined} Geometry.
    */
   readGeometryElement(node, objectStack) {
     const context = /** @type {Object} */ (objectStack[0]);
     context['srsName'] = node.firstElementChild.getAttribute('srsName');
     context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
-    /** @type {import("../geom/Geometry.js").default} */
-    const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
+    const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS, node, objectStack, this);
     if (geometry) {
-      return (
-        /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, context))
-      );
+      if (Array.isArray(geometry)) {
+        return transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
+      } else {
+        return transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), false, context);
+      }
     } else {
       return undefined;
     }
@@ -240,42 +237,77 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Feature} Feature.
+   * @param {boolean} asFeature whether result should be wrapped as a feature.
+   * @return {Feature|Object} Feature
    */
-  readFeatureElement(node, objectStack) {
-    let n;
-    const fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
-    const values = {};
+  readFeatureElementInternal(node, objectStack, asFeature) {
     let geometryName;
-    for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+    const values = {};
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      let value;
       const localName = n.localName;
-      // Assume attribute elements have one child node and that the child
-      // is a text or CDATA node (to be treated as text).
-      // Otherwise assume it is a geometry node.
-      if (n.childNodes.length === 0 ||
-          (n.childNodes.length === 1 &&
-          (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
-        let value = getAllTextContent(n, false);
+      // first, check if it is simple attribute
+      if (n.childNodes.length === 0
+              || (n.childNodes.length === 1 && (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
+        value = getAllTextContent(n, false);
         if (ONLY_WHITESPACE_RE.test(value)) {
           value = undefined;
         }
-        values[localName] = value;
       } else {
-        // boundedBy is an extent and must not be considered as a geometry
-        if (localName !== 'boundedBy') {
+        if (asFeature) {
+          //if feature, try it as a geometry
+          value = this.readGeometryElement(n, objectStack);
+        }
+        if (!value) { //if not a geometry or not a feature, treat it as a complex attribute
+          value = this.readFeatureElementInternal(n, objectStack, false);
+        } else if (localName !== 'boundedBy') {
+          // boundedBy is an extent and must not be considered as a geometry
           geometryName = localName;
         }
-        values[localName] = this.readGeometryElement(n, objectStack);
+      }
+
+      if (values[localName]) {
+        if (!(values[localName] instanceof Array)) {
+          values[localName] = [values[localName]];
+        }
+        values[localName].push(value);
+      } else {
+        values[localName] = value;
+      }
+
+      const len = n.attributes.length;
+      if (len > 0) {
+        values[localName] = {_content_: values[localName]};
+        for (let i = 0; i < len; i++) {
+          const attName = n.attributes[i].name;
+          values[localName][attName] = n.attributes[i].value;
+        }
       }
     }
-    const feature = new Feature(values);
-    if (geometryName) {
-      feature.setGeometryName(geometryName);
+    if (!asFeature) {
+      return values;
+    } else {
+      const feature = new Feature(values);
+      if (geometryName) {
+        feature.setGeometryName(geometryName);
+      }
+      const fid = node.getAttribute('fid') ||
+           getAttributeNS(node, this.namespace, 'id');
+      if (fid) {
+        feature.setId(fid);
+      }
+      return feature;
     }
-    if (fid) {
-      feature.setId(fid);
-    }
-    return feature;
+  }
+
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {Feature} Feature.
+   */
+  readFeatureElement(node, objectStack) {
+    return this.readFeatureElementInternal(node, objectStack, true);
   }
 
   /**
@@ -383,7 +415,7 @@ class GMLBase extends XMLFeature {
    */
   readFlatLinearRing_(node, objectStack) {
     const ring = pushParseAndPop(null,
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS, node,
       objectStack, this);
     if (ring) {
       return ring;
@@ -412,7 +444,7 @@ class GMLBase extends XMLFeature {
   readPolygon(node, objectStack) {
     /** @type {Array<Array<number>>} */
     const flatLinearRings = pushParseAndPop([null],
-      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+      this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
     if (flatLinearRings && flatLinearRings[0]) {
       const flatCoordinates = flatLinearRings[0];
       const ends = [flatCoordinates.length];
@@ -434,7 +466,7 @@ class GMLBase extends XMLFeature {
    * @return {Array<number>} Flat coordinates.
    */
   readFlatCoordinatesFromNode_(node, objectStack) {
-    return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack, this);
+    return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -468,6 +500,40 @@ class GMLBase extends XMLFeature {
     return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));
   }
 }
+
+
+GMLBase.prototype.namespace = GMLNS;
+
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
+ */
+GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+  'http://www.opengis.net/gml': {}
+};
+
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
+ */
+GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+  'http://www.opengis.net/gml': {}
+};
+
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
+ */
+GMLBase.prototype.GEOMETRY_PARSERS = {
+  'http://www.opengis.net/gml': {}
+};
+
 
 /**
  * @const

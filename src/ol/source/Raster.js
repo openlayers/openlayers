@@ -1,7 +1,6 @@
 /**
  * @module ol/source/Raster
  */
-import {getUid} from '../util.js';
 import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -10,17 +9,14 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks/lib/index';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
-import LayerType from '../LayerType.js';
-import Layer from '../layer/Layer.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import {assign} from '../obj.js';
-import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
-import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
-import ImageSource from '../source/Image.js';
-import SourceState from '../source/State.js';
-import TileSource from '../source/Tile.js';
 import {create as createTransform} from '../transform.js';
+import ImageSource from './Image.js';
+import TileSource from './Tile.js';
+import SourceState from './State.js';
+import Source from './Source.js';
 
 
 /**
@@ -48,14 +44,14 @@ import {create as createTransform} from '../transform.js';
 const RasterEventType = {
   /**
    * Triggered before operations are run.
-   * @event ol/source/Raster~RasterSourceEvent#beforeoperations
+   * @event module:ol/source/Raster.RasterSourceEvent#beforeoperations
    * @api
    */
   BEFOREOPERATIONS: 'beforeoperations',
 
   /**
    * Triggered after operations are run.
-   * @event ol/source/Raster~RasterSourceEvent#afteroperations
+   * @event module:ol/source/Raster.RasterSourceEvent#afteroperations
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
@@ -77,7 +73,7 @@ const RasterOperationType = {
  * Events emitted by {@link module:ol/source/Raster} instances are instances of this
  * type.
  */
-class RasterSourceEvent extends Event {
+export class RasterSourceEvent extends Event {
   /**
    * @param {string} type Type.
    * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
@@ -115,7 +111,7 @@ class RasterSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources Input
- * sources or layers. Vector layers must be configured with `renderMode: 'image'`.
+ * sources or layers.  For vector data, use an VectorImage layer.
  * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
@@ -139,15 +135,17 @@ class RasterSourceEvent extends Event {
  * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
  * output pixel values.
  *
- * @fires ol/source/Raster~RasterSourceEvent
+ * @fires module:ol/source/Raster.RasterSourceEvent
  * @api
  */
 class RasterSource extends ImageSource {
   /**
-   * @param {Options=} options Options.
+   * @param {Options} options Options.
    */
   constructor(options) {
-    super({});
+    super({
+      projection: null
+    });
 
     /**
      * @private
@@ -170,30 +168,21 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {Array<import("../renderer/canvas/Layer.js").default>}
+     * @type {Array<import("../layer/Layer.js").default>}
      */
-    this.renderers_ = createRenderers(options.sources);
+    this.layers_ = createLayers(options.sources);
 
-    for (let r = 0, rr = this.renderers_.length; r < rr; ++r) {
-      listen(this.renderers_[r], EventType.CHANGE,
-        this.changed, this);
+    for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+      listen(this.layers_[i], EventType.CHANGE, this.changed, this);
     }
 
     /**
      * @private
      * @type {import("../TileQueue.js").default}
      */
-    this.tileQueue_ = new TileQueue(
-      function() {
-        return 1;
-      },
-      this.changed.bind(this));
-
-    const layerStatesArray = getLayerStatesArray(this.renderers_);
-    const layerStates = {};
-    for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
-    }
+    this.tileQueue_ = new TileQueue(function() {
+      return 1;
+    }, this.changed.bind(this));
 
     /**
      * The most recently requested frame state.
@@ -225,8 +214,7 @@ class RasterSource extends ImageSource {
       extent: null,
       focus: null,
       index: 0,
-      layerStates: layerStates,
-      layerStatesArray: layerStatesArray,
+      layerStatesArray: getLayerStatesArray(this.layers_),
       pixelRatio: 1,
       pixelToCoordinateTransform: createTransform(),
       postRenderFunctions: [],
@@ -239,8 +227,23 @@ class RasterSource extends ImageSource {
         rotation: 0
       }),
       viewHints: [],
-      wantedTiles: {}
+      wantedTiles: {},
+      declutterItems: []
     };
+
+    this.setAttributions(function(frameState) {
+      const attributions = [];
+      for (let index = 0, iMax = options.sources.length; index < iMax; ++index) {
+        const sourceOrLayer = options.sources[index];
+        const source = sourceOrLayer instanceof Source ? sourceOrLayer : sourceOrLayer.getSource();
+        const attributionGetter = source.getAttributions();
+        if (typeof attributionGetter === 'function') {
+          const sourceAttribution = attributionGetter(frameState);
+          attributions.push.apply(attributions, sourceAttribution);
+        }
+      }
+      return attributions.length !== 0 ? attributions : null;
+    });
 
     if (options.operation !== undefined) {
       this.setOperation(options.operation, options.lib);
@@ -286,8 +289,7 @@ class RasterSource extends ImageSource {
     frameState.focus = center;
     frameState.size[0] = Math.round(getWidth(extent) / resolution);
     frameState.size[1] = Math.round(getHeight(extent) / resolution);
-    frameState.time = Date.now();
-    frameState.animate = false;
+    frameState.time = Infinity;
 
     const viewState = frameState.viewState;
     viewState.center = center;
@@ -304,8 +306,8 @@ class RasterSource extends ImageSource {
   allSourcesReady_() {
     let ready = true;
     let source;
-    for (let i = 0, ii = this.renderers_.length; i < ii; ++i) {
-      source = this.renderers_[i].getLayer().getSource();
+    for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+      source = this.layers_[i].getSource();
       if (source.getState() !== SourceState.READY) {
         ready = false;
         break;
@@ -353,11 +355,10 @@ class RasterSource extends ImageSource {
    */
   processSources_() {
     const frameState = this.requestedFrameState_;
-    const len = this.renderers_.length;
+    const len = this.layers_.length;
     const imageDatas = new Array(len);
     for (let i = 0; i < len; ++i) {
-      const imageData = getImageData(
-        this.renderers_[i], frameState, frameState.layerStatesArray[i]);
+      const imageData = getImageData(this.layers_[i], frameState, frameState.layerStatesArray[i]);
       if (imageData) {
         imageDatas[i] = imageData;
       } else {
@@ -426,18 +427,32 @@ let sharedContext = null;
 
 
 /**
- * Get image data from a renderer.
- * @param {import("../renderer/canvas/Layer.js").default} renderer Layer renderer.
+ * Get image data from a layer.
+ * @param {import("../layer/Layer.js").default} layer Layer to render.
  * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
  * @param {import("../layer/Layer.js").State} layerState The layer state.
  * @return {ImageData} The image data.
  */
-function getImageData(renderer, frameState, layerState) {
+function getImageData(layer, frameState, layerState) {
+  const renderer = layer.getRenderer();
+  if (!renderer) {
+    throw new Error('Unsupported layer type: ' + layer);
+  }
+
   if (!renderer.prepareFrame(frameState, layerState)) {
     return null;
   }
   const width = frameState.size[0];
   const height = frameState.size[1];
+  const element = renderer.renderFrame(frameState, layerState);
+  if (!(element instanceof HTMLCanvasElement)) {
+    throw new Error('Unsupported rendered element: ' + element);
+  }
+  if (element.width === width && element.height === height) {
+    const context = element.getContext('2d');
+    return context.getImageData(0, 0, width, height);
+  }
+
   if (!sharedContext) {
     sharedContext = createCanvasContext2D(width, height);
   } else {
@@ -448,78 +463,56 @@ function getImageData(renderer, frameState, layerState) {
       sharedContext.clearRect(0, 0, width, height);
     }
   }
-  renderer.composeFrame(frameState, layerState, sharedContext);
+  sharedContext.drawImage(element, 0, 0, width, height);
   return sharedContext.getImageData(0, 0, width, height);
 }
 
 
 /**
- * Get a list of layer states from a list of renderers.
- * @param {Array<import("../renderer/canvas/Layer.js").default>} renderers Layer renderers.
+ * Get a list of layer states from a list of layers.
+ * @param {Array<import("../layer/Layer.js").default>} layers Layers.
  * @return {Array<import("../layer/Layer.js").State>} The layer states.
  */
-function getLayerStatesArray(renderers) {
-  return renderers.map(function(renderer) {
-    return renderer.getLayer().getLayerState();
+function getLayerStatesArray(layers) {
+  return layers.map(function(layer) {
+    return layer.getLayerState();
   });
 }
 
 
 /**
- * Create renderers for all sources.
+ * Create layers for all sources.
  * @param {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources The sources.
- * @return {Array<import("../renderer/canvas/Layer.js").default>} Array of layer renderers.
+ * @return {Array<import("../layer/Layer.js").default>} Array of layers.
  */
-function createRenderers(sources) {
+function createLayers(sources) {
   const len = sources.length;
-  const renderers = new Array(len);
+  const layers = new Array(len);
   for (let i = 0; i < len; ++i) {
-    renderers[i] = createRenderer(sources[i]);
+    layers[i] = createLayer(sources[i]);
   }
-  return renderers;
+  return layers;
 }
 
 
 /**
- * Create a renderer for the provided source.
- * @param {import("./Source.js").default|import("../layer/Layer.js").default} source The source.
- * @return {import("../renderer/canvas/Layer.js").default} The renderer.
+ * Create a layer for the provided source.
+ * @param {import("./Source.js").default|import("../layer/Layer.js").default} layerOrSource The layer or source.
+ * @return {import("../layer/Layer.js").default} The layer.
  */
-function createRenderer(source) {
-  let renderer = null;
-  if (source instanceof TileSource) {
-    renderer = createTileRenderer(source);
-  } else if (source instanceof ImageSource) {
-    renderer = createImageRenderer(source);
-  } else if (source instanceof TileLayer) {
-    renderer = new CanvasTileLayerRenderer(source);
-  } else if (source instanceof Layer &&
-      (source.getType() == LayerType.IMAGE || source.getType() == LayerType.VECTOR)) {
-    renderer = new CanvasImageLayerRenderer(source);
+function createLayer(layerOrSource) {
+  // @type {import("../layer/Layer.js").default}
+  let layer;
+  if (layerOrSource instanceof Source) {
+    if (layerOrSource instanceof TileSource) {
+      layer = new TileLayer({source: layerOrSource});
+    } else if (layerOrSource instanceof ImageSource) {
+      layer = new ImageLayer({source: layerOrSource});
+    }
+  } else {
+    layer = layerOrSource;
   }
-  return renderer;
-}
-
-
-/**
- * Create an image renderer for the provided source.
- * @param {import("./Image.js").default} source The source.
- * @return {import("../renderer/canvas/Layer.js").default} The renderer.
- */
-function createImageRenderer(source) {
-  const layer = new ImageLayer({source: source});
-  return new CanvasImageLayerRenderer(layer);
-}
-
-
-/**
- * Create a tile renderer for the provided source.
- * @param {import("./Tile.js").default} source The source.
- * @return {import("../renderer/canvas/Layer.js").default} The renderer.
- */
-function createTileRenderer(source) {
-  const layer = new TileLayer({source: source});
-  return new CanvasTileLayerRenderer(layer);
+  return layer;
 }
 
 

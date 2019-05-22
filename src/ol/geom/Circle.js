@@ -2,9 +2,11 @@
  * @module ol/geom/Circle
  */
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
-import GeometryType from '../geom/GeometryType.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {deflateCoordinate} from '../geom/flat/deflate.js';
+import GeometryType from './GeometryType.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {deflateCoordinate} from './flat/deflate.js';
+import {rotate, translate} from './flat/transform.js';
+
 
 /**
  * @classdesc
@@ -143,7 +145,7 @@ class Circle extends SimpleGeometry {
         return true;
       }
 
-      return forEachCorner(extent, this.intersectsCoordinate, this);
+      return forEachCorner(extent, this.intersectsCoordinate.bind(this));
     }
     return false;
 
@@ -194,7 +196,9 @@ class Circle extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  getCoordinates() {}
+  getCoordinates() {
+    return null;
+  }
 
   /**
    * @inheritDoc
@@ -210,6 +214,29 @@ class Circle extends SimpleGeometry {
     this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
     this.changed();
   }
+
+  /**
+   * @inheritDoc
+   * @api
+   */
+  rotate(angle, anchor) {
+    const center = this.getCenter();
+    const stride = this.getStride();
+    this.setCenter(rotate(center, 0, center.length, stride, angle, anchor, center));
+    this.changed();
+  }
+
+  /**
+   * @inheritDoc
+   * @api
+   */
+  translate(deltaX, deltaY) {
+    const center = this.getCenter();
+    const stride = this.getStride();
+    this.setCenter(translate(center, 0, center.length, stride, deltaX, deltaY, center));
+    this.changed();
+  }
+
 }
 
 

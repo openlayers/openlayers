@@ -9,15 +9,14 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
-import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../extent.js").Extent} [imageExtent] Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
@@ -35,7 +34,7 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  */
 class Static extends ImageSource {
   /**
-   * @param {Options=} options ImageStatic options.
+   * @param {Options} options ImageStatic options.
    */
   constructor(options) {
     const crossOrigin = options.crossOrigin !== undefined ?

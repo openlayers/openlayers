@@ -2,12 +2,11 @@
  * @module ol/format/GML2
  */
 import {createOrUpdate} from '../extent.js';
-import {transformWithOptions} from '../format/Feature.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
+import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
-import {get as getProjection, transformExtent} from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, pushParseAndPop, pushSerializeAndPop} from '../xml.js';
 
@@ -179,7 +178,7 @@ class GML2 extends GMLBase {
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
     if (fid) {
-      node.setAttribute('fid', fid);
+      node.setAttribute('fid', /** @type {string} */ (fid));
     }
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureNS = context['featureNS'];
@@ -196,7 +195,7 @@ class GML2 extends GMLBase {
       if (value !== null) {
         keys.push(key);
         values.push(value);
-        if (key == geometryName || value instanceof Geometry) {
+        if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           if (!(key in context.serializers[featureNS])) {
             context.serializers[featureNS][key] = makeChildAppender(
               this.writeGeometryElement, this);
@@ -285,17 +284,12 @@ class GML2 extends GMLBase {
   writeGeometryElement(node, geometry, objectStack) {
     const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
     const item = assign({}, context);
-    item.node = node;
+    item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
-      if (context.dataProjection) {
-        value = transformExtent(
-          geometry, context.featureProjection, context.dataProjection);
-      } else {
-        value = geometry;
-      }
+      value = transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
     } else {
-      value = transformWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
+      value = transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
     }
     pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       (item), this.GEOMETRY_SERIALIZERS_,
@@ -588,9 +582,9 @@ class GML2 extends GMLBase {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
     'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_)
   }
@@ -599,9 +593,9 @@ GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+GML2.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
     'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
     'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
@@ -623,9 +617,9 @@ GML2.prototype.BOX_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML2.prototype.GEOMETRY_PARSERS_ = {
+GML2.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
     'Point': makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': makeReplacer(

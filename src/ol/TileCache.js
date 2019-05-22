@@ -21,8 +21,7 @@ class TileCache extends LRUCache {
   expireCache(usedTiles) {
     while (this.canExpireCache()) {
       const tile = this.peekLast();
-      const zKey = tile.tileCoord[0].toString();
-      if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
+      if (tile.getKey() in usedTiles) {
         break;
       } else {
         this.pop().dispose();
@@ -45,7 +44,7 @@ class TileCache extends LRUCache {
         this.remove(getKey(tile.tileCoord));
         tile.dispose();
       }
-    }, this);
+    }.bind(this));
   }
 }
 

@@ -100,8 +100,7 @@ function shade(inputs, data) {
 
 const elevation = new XYZ({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
-  crossOrigin: 'anonymous',
-  transition: 0
+  crossOrigin: 'anonymous'
 });
 
 const raster = new Raster({

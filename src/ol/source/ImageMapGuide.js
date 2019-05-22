@@ -7,16 +7,15 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import {assign} from '../obj.js';
-import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
  * @property {string} [url] The mapagent url.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {number} [displayDpi=96] The display resolution.
  * @property {number} [metersPerUnit=1] The meters-per-unit value.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
@@ -36,12 +35,12 @@ import {appendParams} from '../uri.js';
  * @classdesc
  * Source for images from Mapguide servers
  *
- * @fires ol/source/Image~ImageSourceEvent
+ * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
 class ImageMapGuide extends ImageSource {
   /**
-   * @param {Options=} options ImageMapGuide options.
+   * @param {Options} options ImageMapGuide options.
    */
   constructor(options) {
 

@@ -4,7 +4,7 @@
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
-import DragBox from '../interaction/DragBox.js';
+import DragBox from './DragBox.js';
 
 
 /**
@@ -80,11 +80,8 @@ function onBoxEnd() {
     extent = mapExtent;
   }
 
-  const resolution = view.constrainResolution(
-    view.getResolutionForExtent(extent, size));
-
-  let center = getCenter(extent);
-  center = view.constrainCenter(center);
+  const resolution = view.getConstrainedResolution(view.getResolutionForExtent(extent, size));
+  const center = view.getConstrainedCenter(getCenter(extent), resolution);
 
   view.animate({
     resolution: resolution,

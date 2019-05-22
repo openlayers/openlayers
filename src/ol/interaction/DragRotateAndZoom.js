@@ -1,11 +1,8 @@
 /**
  * @module ol/interaction/DragRotateAndZoom
  */
-import {disable} from '../rotationconstraint.js';
-import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
-import {rotate, rotateWithoutConstraints, zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction from './Pointer.js';
 
 
 /**
@@ -38,11 +35,7 @@ class DragRotateAndZoom extends PointerInteraction {
 
     const options = opt_options ? opt_options : {};
 
-    super({
-      handleDownEvent: handleDownEvent,
-      handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent
-    });
+    super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /**
      * @private
@@ -76,80 +69,68 @@ class DragRotateAndZoom extends PointerInteraction {
 
   }
 
-}
+  /**
+   * @inheritDoc
+   */
+  handleDragEvent(mapBrowserEvent) {
+    if (!mouseOnly(mapBrowserEvent)) {
+      return;
+    }
 
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {DragRotateAndZoom}
- */
-function handleDragEvent(mapBrowserEvent) {
-  if (!mouseOnly(mapBrowserEvent)) {
-    return;
+    const map = mapBrowserEvent.map;
+    const size = map.getSize();
+    const offset = mapBrowserEvent.pixel;
+    const deltaX = offset[0] - size[0] / 2;
+    const deltaY = size[1] / 2 - offset[1];
+    const theta = Math.atan2(deltaY, deltaX);
+    const magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const view = map.getView();
+    if (this.lastAngle_ !== undefined) {
+      const angleDelta = this.lastAngle_ - theta;
+      view.adjustRotation(angleDelta);
+    }
+    this.lastAngle_ = theta;
+    if (this.lastMagnitude_ !== undefined) {
+      view.adjustResolution(this.lastMagnitude_ / magnitude);
+    }
+    if (this.lastMagnitude_ !== undefined) {
+      this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
+    }
+    this.lastMagnitude_ = magnitude;
   }
 
-  const map = mapBrowserEvent.map;
-  const size = map.getSize();
-  const offset = mapBrowserEvent.pixel;
-  const deltaX = offset[0] - size[0] / 2;
-  const deltaY = size[1] / 2 - offset[1];
-  const theta = Math.atan2(deltaY, deltaX);
-  const magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-  const view = map.getView();
-  if (view.getConstraints().rotation !== disable && this.lastAngle_ !== undefined) {
-    const angleDelta = theta - this.lastAngle_;
-    rotateWithoutConstraints(view, view.getRotation() - angleDelta);
-  }
-  this.lastAngle_ = theta;
-  if (this.lastMagnitude_ !== undefined) {
-    const resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    zoomWithoutConstraints(view, resolution);
-  }
-  if (this.lastMagnitude_ !== undefined) {
-    this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
-  }
-  this.lastMagnitude_ = magnitude;
-}
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(mapBrowserEvent) {
+    if (!mouseOnly(mapBrowserEvent)) {
+      return true;
+    }
 
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Stop drag sequence?
- * @this {DragRotateAndZoom}
- */
-function handleUpEvent(mapBrowserEvent) {
-  if (!mouseOnly(mapBrowserEvent)) {
-    return true;
-  }
-
-  const map = mapBrowserEvent.map;
-  const view = map.getView();
-  view.setHint(ViewHint.INTERACTING, -1);
-  const direction = this.lastScaleDelta_ - 1;
-  rotate(view, view.getRotation());
-  zoom(view, view.getResolution(), undefined, this.duration_, direction);
-  this.lastScaleDelta_ = 0;
-  return false;
-}
-
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Start drag sequence?
- * @this {DragRotateAndZoom}
- */
-function handleDownEvent(mapBrowserEvent) {
-  if (!mouseOnly(mapBrowserEvent)) {
+    const map = mapBrowserEvent.map;
+    const view = map.getView();
+    const direction = this.lastScaleDelta_ > 1 ? 1 : -1;
+    view.endInteraction(this.duration_, direction);
+    this.lastScaleDelta_ = 0;
     return false;
   }
 
-  if (this.condition_(mapBrowserEvent)) {
-    mapBrowserEvent.map.getView().setHint(ViewHint.INTERACTING, 1);
-    this.lastAngle_ = undefined;
-    this.lastMagnitude_ = undefined;
-    return true;
-  } else {
-    return false;
+  /**
+   * @inheritDoc
+   */
+  handleDownEvent(mapBrowserEvent) {
+    if (!mouseOnly(mapBrowserEvent)) {
+      return false;
+    }
+
+    if (this.condition_(mapBrowserEvent)) {
+      mapBrowserEvent.map.getView().beginInteraction();
+      this.lastAngle_ = undefined;
+      this.lastMagnitude_ = undefined;
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

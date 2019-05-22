@@ -2,7 +2,7 @@
  * @module ol/style/Circle
  */
 
-import RegularShape from '../style/RegularShape.js';
+import RegularShape from './RegularShape.js';
 
 
 /**
@@ -10,9 +10,6 @@ import RegularShape from '../style/RegularShape.js';
  * @property {import("./Fill.js").default} [fill] Fill style.
  * @property {number} radius Circle radius.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
- * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this circle.
- * When using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given,
- * the circle is added to an atlas. By default no atlas manager is used.
  */
 
 
@@ -33,14 +30,13 @@ class CircleStyle extends RegularShape {
       points: Infinity,
       fill: options.fill,
       radius: options.radius,
-      stroke: options.stroke,
-      atlasManager: options.atlasManager
+      stroke: options.stroke
     });
 
   }
 
   /**
-  * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
+  * Clones the style.
   * @return {CircleStyle} The cloned style.
   * @override
   * @api
@@ -49,8 +45,7 @@ class CircleStyle extends RegularShape {
     const style = new CircleStyle({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-      radius: this.getRadius(),
-      atlasManager: this.atlasManager_
+      radius: this.getRadius()
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());
@@ -65,7 +60,6 @@ class CircleStyle extends RegularShape {
   */
   setRadius(radius) {
     this.radius_ = radius;
-    this.render_(this.atlasManager_);
   }
 }
 

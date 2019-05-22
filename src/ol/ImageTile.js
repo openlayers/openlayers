@@ -4,14 +4,8 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
-import {listenOnce, unlistenByKey} from './events.js';
-import EventType from './events/EventType.js';
+import {listenImage} from './Image.js';
 
-/**
- * @typedef {function(new: ImageTile, import("./tilecoord.js").TileCoord,
- * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
- * @api
- */
 
 class ImageTile extends Tile {
 
@@ -52,9 +46,9 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {function():void}
      */
-    this.imageListenerKeys_ = null;
+    this.unlisten_ = null;
 
     /**
      * @private
@@ -114,8 +108,8 @@ class ImageTile extends Tile {
    * @private
    */
   handleImageLoad_() {
-    if (this.image_ instanceof HTMLImageElement &&
-      this.image_.naturalWidth && this.image_.naturalHeight) {
+    const image = /** @type {HTMLImageElement} */ (this.image_);
+    if (image.naturalWidth && image.naturalHeight) {
       this.state = TileState.LOADED;
     } else {
       this.state = TileState.EMPTY;
@@ -139,13 +133,12 @@ class ImageTile extends Tile {
     if (this.state == TileState.IDLE) {
       this.state = TileState.LOADING;
       this.changed();
-      this.imageListenerKeys_ = [
-        listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
-        listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
-      ];
       this.tileLoadFunction_(this, this.src_);
+      this.unlisten_ = listenImage(
+        this.image_,
+        this.handleImageLoad_.bind(this),
+        this.handleImageError_.bind(this)
+      );
     }
   }
 
@@ -155,8 +148,10 @@ class ImageTile extends Tile {
    * @private
    */
   unlistenImage_() {
-    this.imageListenerKeys_.forEach(unlistenByKey);
-    this.imageListenerKeys_ = null;
+    if (this.unlisten_) {
+      this.unlisten_();
+      this.unlisten_ = null;
+    }
   }
 }
 

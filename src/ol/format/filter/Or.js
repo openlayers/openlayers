@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Or
  */
-import LogicalNary from '../filter/LogicalNary.js';
+import LogicalNary from './LogicalNary.js';
 
 /**
  * @classdesc
@@ -14,8 +14,7 @@ class Or extends LogicalNary {
    * @param {...import("./Filter.js").default} conditions Conditions.
    */
   constructor(conditions) {
-    const params = ['Or'].concat(Array.prototype.slice.call(arguments));
-    super(...params);
+    super('Or', Array.prototype.slice.call(arguments));
   }
 
 }

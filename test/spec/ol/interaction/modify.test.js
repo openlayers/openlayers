@@ -696,6 +696,24 @@ describe('ol.interaction.Modify', function() {
     });
   });
 
+  describe('handle feature removal during down-up sequence', function() {
+    it('removes segment data of removed features from dragSegments_', function() {
+      const collection = new Collection(features);
+      const modify = new Modify({
+        features: collection
+      });
+      map.addInteraction(modify);
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -10, -10, null, 0);
+      simulateEvent('pointerdrag', -10, -10, null, 0);
+      collection.remove(features[0]);
+      expect(function() {
+        simulateEvent('pointerup', -10, -10, null, 0);
+      }).to.not.throwError();
+    });
+  });
+
   describe('#setActive', function() {
     it('removes the vertexFeature of deactivation', function() {
       const modify = new Modify({

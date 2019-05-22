@@ -1,20 +1,22 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
+import VectorRenderTile from '../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../src/ol/VectorTile.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import {listen, unlistenByKey} from '../../../../src/ol/events.js';
+import TileState from '../../../../src/ol/TileState.js';
 
 describe('ol.source.VectorTile', function() {
 
   const format = new MVT();
   const source = new VectorTileSource({
     format: format,
-    tilePixelRatio: 8,
     url: 'spec/ol/data/{z}-{x}-{y}.vector.pbf'
   });
   let tile;
@@ -38,7 +40,7 @@ describe('ol.source.VectorTile', function() {
   describe('#getTile()', function() {
     it('creates a tile with the correct tile class', function() {
       tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(VectorImageTile);
+      expect(tile).to.be.a(VectorRenderTile);
     });
     it('sets the correct tileCoord on the created tile', function() {
       expect(tile.getTileCoord()).to.eql([0, 0, 0]);
@@ -47,6 +49,24 @@ describe('ol.source.VectorTile', function() {
       expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')))
         .to.equal(tile);
     });
+    it('loads source tiles', function(done) {
+      const source = new VectorTileSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/data/point.json'
+      });
+      const tile = source.getTile(0, 0, 0, 1, source.getProjection());
+
+      tile.load();
+      const key = listen(tile, 'change', function(e) {
+        if (tile.getState() === TileState.LOADED) {
+          const sourceTile = source.getSourceTiles(1, source.getProjection(), tile)[0];
+          expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
+          unlistenByKey(key);
+          done();
+        }
+      });
+    });
+
   });
 
   describe('#getTileGridForProjection', function() {
@@ -58,7 +78,7 @@ describe('ol.source.VectorTile', function() {
 
   describe('Tile load events', function() {
     it('triggers tileloadstart and tileloadend with ol.VectorTile', function(done) {
-      tile = source.getTile(14, 8938, -5681, 1, getProjection('EPSG:3857'));
+      tile = source.getTile(14, 8938, 5680, 1, getProjection('EPSG:3857'));
       let started = false;
       source.on('tileloadstart', function() {
         started = true;
@@ -82,10 +102,10 @@ describe('ol.source.VectorTile', function() {
       loaded = [];
       requested = 0;
 
-      function tileUrlFunction(tileUrl) {
+      function tileUrlFunction(tileCoord) {
         ++requested;
-        if (tileUrl.toString() == '6,27,55') {
-          return tileUrl.join('/');
+        if (tileCoord.toString() == '5,13,-29') {
+          return tileCoord.join('/');
         }
       }
 
@@ -133,7 +153,7 @@ describe('ol.source.VectorTile', function() {
       map.renderSync();
       setTimeout(function() {
         expect(requested).to.be.greaterThan(1);
-        expect(loaded).to.eql(['6/27/55']);
+        expect(loaded).to.eql(['5/13/-29']);
         done();
       }, 0);
     });

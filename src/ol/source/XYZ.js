@@ -2,17 +2,17 @@
  * @module ol/source/XYZ
  */
 
-import TileImage from '../source/TileImage.js';
+import TileImage from './TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -93,7 +93,8 @@ class XYZ extends TileImage {
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      transition: options.transition
+      transition: options.transition,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
   }

@@ -7,35 +7,35 @@ import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
 import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
-import IconAnchorUnits from '../style/IconAnchorUnits.js';
-import {get as getIconImage} from '../style/IconImage.js';
-import IconOrigin from '../style/IconOrigin.js';
-import ImageStyle from '../style/Image.js';
+import IconAnchorUnits from './IconAnchorUnits.js';
+import {get as getIconImage} from './IconImage.js';
+import IconOrigin from './IconOrigin.js';
+import ImageStyle from './Image.js';
 
 
 /**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
- * @property {import("./IconOrigin.js").default} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`. Default is `top-left`.
- * @property {import("./IconAnchorUnits.js").default} [anchorXUnits] Units in which the anchor x value is
+ * @property {import("./IconOrigin.js").default} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {import("./IconAnchorUnits.js").default} [anchorXUnits='fraction'] Units in which the anchor x value is
  * specified. A value of `'fraction'` indicates the x value is a fraction of the icon. A value of `'pixels'` indicates
- * the x value in pixels. Default is `'fraction'`.
- * @property {import("./IconAnchorUnits.js").default} [anchorYUnits] Units in which the anchor y value is
+ * the x value in pixels.
+ * @property {import("./IconAnchorUnits.js").default} [anchorYUnits='fraction'] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
- * the y value in pixels. Default is `'fraction'`.
+ * the y value in pixels.
  * @property {import("../color.js").Color|string} [color] Color to tint the icon. If not specified,
  * the icon will be left as is.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
- * `crossOrigin` value if you are using the WebGL renderer or if you want to access pixel data with the Canvas renderer.
+ * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {HTMLImageElement|HTMLCanvasElement} [img] Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
  * to provide the size of the image, with the `imgSize` option.
  * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
- * @property {import("./IconOrigin.js").default} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`. Default is `top-left`.
+ * @property {import("./IconOrigin.js").default} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
@@ -149,7 +149,7 @@ class Icon extends ImageStyle {
       5); // `imgSize` must be set when `image` is provided
 
     if ((src === undefined || src.length === 0) && image) {
-      src = image instanceof HTMLImageElement && image.src || getUid(image).toString();
+      src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
     }
     assert(src !== undefined && src.length > 0,
       6); // A defined and non-empty `src` or `image` must be provided

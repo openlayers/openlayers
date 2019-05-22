@@ -5,6 +5,7 @@ import TileState from './TileState.js';
 import {easeIn} from './easing.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import {abstract} from './util.js';
 
 
 /**
@@ -40,7 +41,7 @@ import EventType from './events/EventType.js';
  * });
  * ```
  *
- * @typedef {function(Tile, string)} LoadFunction
+ * @typedef {function(Tile, string): void} LoadFunction
  * @api
  */
 
@@ -106,6 +107,14 @@ class Tile extends EventTarget {
     this.interimTile = null;
 
     /**
+     * The tile is available at the highest possible resolution. Subclasses can
+     * set this to `false` initially. Tile load listeners will not be
+     * unregistered before this is set to `true` and a `#changed()` is called.
+     * @type {boolean}
+     */
+    this.hifi = true;
+
+    /**
      * A key assigned to the tile. This is used by the tile source to determine
      * if this tile can effectively be used, or if a new tile should be created
      * and this one be used as an interim tile for this new tile.
@@ -122,7 +131,7 @@ class Tile extends EventTarget {
     /**
      * Lookup of start times for rendering transitions.  If the start time is
      * equal to -1, the transition is complete.
-     * @type {Object<number, number>}
+     * @type {Object<string, number>}
      */
     this.transitionStarts_ = {};
 
@@ -161,6 +170,9 @@ class Tile extends EventTarget {
     // cleaned up by refreshInterimChain)
     do {
       if (tile.getState() == TileState.LOADED) {
+        // Show tile immediately instead of fading it in after loading, because
+        // the interim tile is in place already
+        this.transition_ = 0;
         return tile;
       }
       tile = tile.interimTile;
@@ -240,11 +252,13 @@ class Tile extends EventTarget {
    * @abstract
    * @api
    */
-  load() {}
+  load() {
+    abstract();
+  }
 
   /**
    * Get the alpha value for rendering.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    * @param {number} time The render frame time.
    * @return {number} A number between 0 and 1.
    */
@@ -272,7 +286,7 @@ class Tile extends EventTarget {
    * Determine if a tile is in an alpha transition.  A tile is considered in
    * transition if tile.getAlpha() has not yet been called or has been called
    * and returned 1.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    * @return {boolean} The tile is in transition.
    */
   inTransition(id) {
@@ -284,7 +298,7 @@ class Tile extends EventTarget {
 
   /**
    * Mark a transition as complete.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    */
   endTransition(id) {
     if (this.transition_) {

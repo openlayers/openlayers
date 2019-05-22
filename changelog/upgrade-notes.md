@@ -2,6 +2,271 @@
 
 ### Next version
 
+#### Backwards incompatible changes
+
+#### Removal of `GEOLOCATION` constant from `ol/has`
+
+If you were previously using this constant, you can check if `'geolocation'` is define in `navigator` instead.
+
+```js
+if ('geolocation' in navigator) {
+  // ...
+}
+```
+
+#### Removal of CSS print rules
+
+The CSS media print rules were removed from the `ol.css` file. To get the previous behavior, use the following CSS:
+
+```css
+@media print {
+  .ol-control {
+    display: none;
+  }
+}
+```
+
+#### Removal of optional this arguments
+
+The optional this (i.e. opt_this) arguments were removed from the following methods.
+Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+* `forEachCorner` in `ol/extent`
+* `LRUCache#forEach`
+* `RBush#forEach` and `RBush#forEachInExtent`
+
+##### The `setCenter`, `setZoom`, `setResolution` and `setRotation` methods on `ol/View` do not bypass constraints anymore
+
+Previously, these methods allowed setting values that were inconsistent with the given view constraints.
+This is no longer the case and all changes to the view state now follow the same logic:
+target values are provided and constraints are applied on these to determine the actual values to be used.
+
+##### Removal of the `constrainResolution` option on `View.fit`, `PinchZoom`, `MouseWheelZoom` and `ol/interaction.js`
+
+The `constrainResolution` option is now only supported by the `View` class. A `View.setConstrainResolution` method was added as well.
+
+Generally, the responsibility of applying center/rotation/resolutions constraints was moved from interactions and controls to the `View` class.
+
+##### The view `extent` option now applies to the whole viewport
+
+Previously, this options only constrained the view *center*. This behaviour can still be obtained by specifying `constrainCenterOnly` in the view options.
+
+As a side effect, the view `rotate` method is gone and has been replaced with `adjustRotation` which takes a delta as input.
+
+##### The view is constrained so only one world is visible
+
+Previously, maps showed multiple worlds at low zoom levels. In addition, it used to be possible to pan off the north or south edge of the world.  Now, the view is restricted to show only one world, and you cannot pan off the edge. To get the previous behavior, configure the `ol/View` with `multiWorld: true`.
+
+##### Removal of deprecated methods
+
+The `inherits` function that was used to inherit the prototype methods from one constructor into another has been removed.
+The standard ECMAScript classes should be used instead.
+
+The deprecated `getSnapToPixel` and `setSnapToPixel` functions from the `ImageStyle` class have been removed.
+
+##### New internal tile coordinates
+
+Previously, the internal tile coordinates used in the library had an unusual row order – the origin of the tile coordinate system was at the top left as expected, but the rows increased upwards.  This meant that all tile coordinates within a tile grid's extent had negative `y` values.
+
+Now, the internal tile coordinates used in the library have the same row order as standard (e.g. XYZ) tile coordinates.  The origin is at the top left (as before), and rows or `y` values increase downward.  So the top left tile of a tile grid is now `0, 0`, whereas it was `0, -1` before.
+
+```
+x, y values for tile coordinates
+
+origin
+  *__________________________
+  |        |        |        |
+  |  0, 0  |  1, 0  |  2, 0  |
+  |________|________|________|
+  |        |        |        |
+  |  0, 1  |  1, 1  |  2, 1  |
+  |________|________|________|
+  |        |        |        |
+  |  0, 2  |  1, 2  |  2, 2  |
+  |________|________|________|
+```
+
+This change should only affect you if you were using a custom `tileLoadFunction` or `tileUrlFunction`.  For example, if you used to have a `tileUrlFunction` that looked like this:
+
+```js
+// before
+function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = -tileCoord[2] - 1;
+  // do something with z, x, y
+}
+```
+
+You would now do something like this:
+```js
+// after
+function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = tileCoord[2];
+  // do something with z, x, y
+}
+```
+
+In addition (this should be exceedingly rare), if you previously created a `ol/tilegrid/WMTS` by hand and you were providing an array of `sizes`, you no longer have to provide a negative height if your tile origin is the top-left corner (the common case).  On the other hand, if you are providing a custom array of `sizes` and your origin is the bottom of the grid (this is uncommon), your height values must now be negative.
+
+##### Removal of the "vector" render mode for vector tile layers
+
+If you were previously using `VectorTile` layers with `renderMode: 'vector'`, you have to remove this configuration option. That mode was removed. `'hybrid'` (default) and `'image'` are still available.
+
+##### Removal of the "renderMode" option for vector layers
+
+If you were previously using `Vector` layers with `renderMode: 'image'`, you have to remove this configuration option. Instead, use the new `ol/layer/VectorImage` layer with your `ol/source/Vector`.
+
+##### New declutter behavior
+
+If a map has more than one layer with `declutter` set to true, decluttering now considers all `Vector` and `VectorTile` layers, instead of decluttering each layer separately. Only `VectorImage` layers continue to be decluttered separately. The higher the z-index of a layer, the higher the priority of its decluttered items.
+
+Within a layer, the declutter order has changed. Previously, styles with a lower `zIndex` were prioritized over those with a higher `zIndex`. Now the opposite order is used.
+
+On vector layers, even if decluttered images or texts have a lower z-Index than polygons or lines, they will now be rendered on top of the polygons or lines. For vector tile layers, this was the case already in previous releases.
+
+##### New `prerender` and `postrender` layer events replace old `precompose`, `render` and `postcompose` events
+
+If you were previously registering for `precompose` and `postcompose` events, you should now register for `prerender` and `postrender` events on layers.  Instead of the previous `render` event, you should now listen for `postrender`. Layers are no longer composed to a single Canvas element.  Instead, they are added to the map viewport as individual elements.
+
+##### New `getVectorContext` function provides access to the immediate vector rendering API
+
+Previously, render events included a `vectorContext` property that allowed you to render features or geometries directly to the map.  This is still possible, but you now have to explicitly create a vector context with the `getVectorContext` function.  This change makes the immediate rendering API an explicit dependency if your application uses it.  If you don't use this API, your application bundle will not include the vector rendering modules (as it did before).
+
+Here is an abbreviated example of how to use the `getVectorContext` function:
+
+```js
+import {getVectorContext} from 'ol/render';
+
+// construct your map and layers as usual
+
+layer.on('postrender', function(event) {
+  const vectorContext = getVectorContext(event);
+  // use any of the drawing methods on the vector context
+});
+```
+
+##### Layers can only be added to a single map
+
+Previously, it was possible to render a single layer in two maps.  Now, each layer can only belong to a single map (in the same way that a single DOM element can only have one parent).
+
+##### The `OverviewMap` requires a list of layers.
+
+Due to the constraint above (layers can only be added to a single map), the overview map needs to be constructed with a list of layers.
+
+##### The `ol/Graticule` has been replaced by `ol/layer/Graticule`
+
+Previously, a graticule was not a layer.  Now it is.  See the graticule example for details on how to add a graticule layer to your map.
+
+##### `ol/format/Feature` API change
+
+The `getLastExtent()` method, which was required for custom `tileLoadFunction`s in `ol/source/Vector`, has been removed because it is no longer needed (see below).
+
+##### `ol/VectorTile` API changes
+
+* Removal of the `getProjection()` and `setProjection()` methods. These were used in custom `tileLoadFunction`s on `ol/source/VectorTile`, which work differently now (see below).
+* Removal of the `getExtent()` and `setExtent()` methods. These were used in custom `tileLoadFunction`s on `ol/source/VectorTile`, which work differently now (see below).
+
+##### Custom tileLoadFunction on a VectorTile source needs changes
+
+Previously, applications needed to call `setProjection()` and `setExtent()` on the tile in a custom `tileLoadFunction` on `ol/source/VectorTile`. The format's `getLastExtent()` method was used to get the extent. All this is no longer needed. Instead, the `extent` (first argument to the loader function) and `projection` (third argument to the loader function) are simply passed as `extent` and `featureProjection` options to the format's `readFeatures()` method.
+
+Example for an old `tileLoadFunction`:
+
+```js
+function(tile, url) {
+  tile.setLoader(function() {
+    fetch(url).then(function(response) {
+      response.arrayBuffer().then(function(data) {
+        var format = tile.getFormat();
+        tile.setProjection(format.readProjection(data));
+        tile.setFeatures(format.readFeatures(data, {
+          // featureProjection is not required for ol/format/MVT
+          featureProjection: map.getView().getProjection()
+        }));
+        tile.setExtent(format.getLastExtent());
+      })
+    })
+  }
+});
+```
+
+This function needs to be changed to:
+
+```js
+function(tile, url) {
+  tile.setLoader(function(extent, resolution, projection) {
+    fetch(url).then(function(response) {
+      response.arrayBuffer().then(function(data) {
+        var format = tile.getFormat();
+        tile.setFeatures(format.readFeatures(data, {
+          // extent is only required for ol/format/MVT
+          extent: extent,
+          featureProjection: projection
+        }));
+      })
+    })
+  }
+});
+```
+
+##### Drop of support for the experimental WebGL renderer
+
+The WebGL map and layers renderers are gone, replaced by a `WebGLHelper` function that provides a lightweight,
+low-level access to the WebGL API. This is implemented in a new `WebGLPointsLayer` which does simple rendering of large number
+of points with custom shaders.
+
+This is now used in the `Heatmap` layer.
+
+The removed classes and components are:
+* `WebGLMap` and `WebGLMapRenderer`
+* `WebGLLayerRenderer`
+* `WebGLImageLayer` and `WebGLImageLayerRenderer`
+* `WebGLTileLayer` and `WebGLTileLayerRenderer`
+* `WebGLVectorLayer` and `WebGLVectorLayerRenderer`
+* `WebGLReplay` and derived classes, along with associated shaders
+* `WebGLReplayGroup`
+* `WebGLImmediateRenderer`
+* `WebGLMap`
+* The shader build process using `mustache` and the `Makefile` at the root
+
+##### Removal of the AtlasManager
+
+Following the removal of the experimental WebGL renderer, the AtlasManager has been removed as well. The atlas was only used by this renderer.
+The non API `getChecksum` functions of the style is also removed.
+
+##### Change of the behavior of the vector source's clear() and refresh() methods
+
+The `ol/source/Vector#clear()` method no longer triggers a reload of the data from the server. If you were previously using `clear()` to refetch from the server, you now have to use `refresh()`.
+
+The `ol/source/Vector#refresh()` method now removes all features from the source and triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
+
+#### Other changes
+
+##### Allow declutter in image render mode
+
+It is now possible to configure vector tile layers with `declutter: true` and `renderMode: 'image'`. However, note that decluttering will be done per tile, resulting in labels and point symbols getting cut off at tile boundaries.
+Until now, using both options forced the render mode to be `hybrid`.
+
+##### Always load tiles while animating or interacting
+
+`ol/PluggableMap` and subclasses no longer support the `loadTilesWhileAnimating` and `loadTilesWhileInteracting` options. These options were used to enable tile loading during animations and interactions. With the new DOM composition render strategy, it is no longer necessary to postpone tile loading until after animations or interactions.
+
+### v5.3.0
+
+#### The `getUid` function returns string
+
+The `getUid` function from the `ol/util` module now returns a string instead of a number.
+
+#### Attributions are not collapsible for `ol/source/OSM`
+
+When a map contains a layer from a `ol/source/OSM` source, the `ol/control/Attribution` control will be shown with the `collapsible: false` behavior.
+
+To get the previous behavior, configure the `ol/control/Attribution` control with `collapsible: true`.
+
 ### v5.2.0
 
 #### Removal of the `snapToPixel` option for `ol/style/Image` subclasses
@@ -16,7 +281,7 @@ When rendering with the Immediate API, symbols will no longer be snapped to inte
 
 #### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
 
-Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter() for `ol/geom/Circle`) method.
+Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter()` for `ol/geom/Circle`) method.
 
 ### v5.0.0
 

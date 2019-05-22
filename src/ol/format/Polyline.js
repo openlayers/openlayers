@@ -3,8 +3,8 @@
  */
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import TextFeature from '../format/TextFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
@@ -89,14 +89,9 @@ class Polyline extends TextFeature {
     const flatCoordinates = decodeDeltas(text, stride, this.factor_);
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
     const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
+    const lineString = new LineString(coordinates, this.geometryLayout_);
 
-    return (
-      /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(
-        new LineString(coordinates, this.geometryLayout_),
-        false,
-        this.adaptOptions(opt_options)
-      ))
-    );
+    return transformGeometryWithOptions(lineString, false, this.adaptOptions(opt_options));
   }
 
   /**
@@ -124,7 +119,7 @@ class Polyline extends TextFeature {
    */
   writeGeometryText(geometry, opt_options) {
     geometry = /** @type {LineString} */
-      (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
+      (transformGeometryWithOptions(geometry, true, this.adaptOptions(opt_options)));
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);

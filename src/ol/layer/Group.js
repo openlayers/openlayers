@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
-import BaseLayer from '../layer/Base.js';
+import BaseLayer from './Base.js';
 import {assign, clear} from '../obj.js';
 import SourceState from '../source/State.js';
 
@@ -84,9 +84,8 @@ class LayerGroup extends BaseLayer {
       if (Array.isArray(layers)) {
         layers = new Collection(layers.slice(), {unique: true});
       } else {
-        assert(layers instanceof Collection,
+        assert(typeof /** @type {?} */ (layers).getArray === 'function',
           43); // Expected `layers` to be an array or a `Collection`
-        layers = layers;
       }
     } else {
       layers = new Collection(undefined, {unique: true});
@@ -104,7 +103,6 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {import("../events/Event.js").default} event Event.
    * @private
    */
   handleLayersChanged_() {
@@ -125,7 +123,7 @@ class LayerGroup extends BaseLayer {
     const layersArray = layers.getArray();
     for (let i = 0, ii = layersArray.length; i < ii; i++) {
       const layer = layersArray[i];
-      this.listenerKeys_[getUid(layer).toString()] = [
+      this.listenerKeys_[getUid(layer)] = [
         listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
         listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
       ];
@@ -140,8 +138,7 @@ class LayerGroup extends BaseLayer {
    */
   handleLayersAdd_(collectionEvent) {
     const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
-    const key = getUid(layer).toString();
-    this.listenerKeys_[key] = [
+    this.listenerKeys_[getUid(layer)] = [
       listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
       listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
     ];
@@ -154,7 +151,7 @@ class LayerGroup extends BaseLayer {
    */
   handleLayersRemove_(collectionEvent) {
     const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
-    const key = getUid(layer).toString();
+    const key = getUid(layer);
     this.listenerKeys_[key].forEach(unlistenByKey);
     delete this.listenerKeys_[key];
     this.changed();

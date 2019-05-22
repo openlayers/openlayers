@@ -2,8 +2,8 @@
  * @module ol/source/Stamen
  */
 
-import {ATTRIBUTION as OSM_ATTRIBUTION} from '../source/OSM.js';
-import XYZ from '../source/XYZ.js';
+import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
+import XYZ from './XYZ.js';
 
 
 /**
@@ -74,7 +74,7 @@ const LayerConfig = {
  */
 const ProviderConfig = {
   'terrain': {
-    minZoom: 4,
+    minZoom: 0,
     maxZoom: 18
   },
   'toner': {
@@ -82,19 +82,18 @@ const ProviderConfig = {
     maxZoom: 20
   },
   'watercolor': {
-    minZoom: 1,
-    maxZoom: 16
+    minZoom: 0,
+    maxZoom: 18
   }
 };
 
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize=2048] Cache size.
- * @property {string} [layer] Layer.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.
- * @property {boolean} [opaque] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
@@ -104,6 +103,8 @@ const ProviderConfig = {
  *   imageTile.getImage().src = src;
  * };
  * ```
+ * @property {number} [transition] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -116,7 +117,7 @@ const ProviderConfig = {
  */
 class Stamen extends XYZ {
   /**
-   * @param {Options=} options Stamen options.
+   * @param {Options} options Stamen options.
    */
   constructor(options) {
     const i = options.layer.indexOf('-');
@@ -138,6 +139,7 @@ class Stamen extends XYZ {
       opaque: layerConfig.opaque,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
+      transition: options.transition,
       url: url,
       wrapX: options.wrapX
     });

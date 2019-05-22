@@ -2,8 +2,8 @@
  * @module ol/format/TopoJSON
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import JSONFeature from '../format/JSONFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -139,7 +139,7 @@ class TopoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object<string, function(TopoJSONGeometry, Array, ...Array): import("../geom/Geometry.js").default>}
+ * @type {Object<string, function(TopoJSONGeometry, Array, ...Array=): import("../geom/Geometry.js").default>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -338,8 +338,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
     geometry = geometryReader(object, arcs);
   }
   const feature = new Feature();
-  feature.setGeometry(/** @type {import("../geom/Geometry.js").default} */ (
-    transformWithOptions(geometry, false, opt_options)));
+  feature.setGeometry(transformGeometryWithOptions(geometry, false, opt_options));
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
@@ -351,7 +350,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
     properties[property] = name;
   }
   if (properties) {
-    feature.setProperties(properties);
+    feature.setProperties(properties, true);
   }
   return feature;
 }

@@ -1,22 +1,8 @@
 /**
  * @module ol/VectorTile
  */
-import {getUid} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
-
-/**
- * @const
- * @type {import("./extent.js").Extent}
- */
-const DEFAULT_EXTENT = [0, 0, 4096, 4096];
-
-
-/**
- * @typedef {function(new: VectorTile, import("./tilecoord.js").TileCoord,
- * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
- * @api
- */
 
 class VectorTile extends Tile {
 
@@ -38,10 +24,10 @@ class VectorTile extends Tile {
     this.consumers = 0;
 
     /**
-     * @private
+     * Extent of this tile; set by the source.
      * @type {import("./extent.js").Extent}
      */
-    this.extent_ = null;
+    this.extent = null;
 
     /**
      * @private
@@ -62,17 +48,16 @@ class VectorTile extends Tile {
     this.loader_;
 
     /**
-     * Data projection
-     * @private
+     * Feature projection of this tile; set by the source.
      * @type {import("./proj/Projection.js").default}
      */
-    this.projection_ = null;
+    this.projection = null;
 
     /**
-     * @private
-     * @type {Object<string, import("./render/ReplayGroup.js").default>}
+     * Resolution of this tile; set by the source.
+     * @type {number}
      */
-    this.replayGroups_ = {};
+    this.resolution;
 
     /**
      * @private
@@ -92,20 +77,8 @@ class VectorTile extends Tile {
    * @inheritDoc
    */
   disposeInternal() {
-    this.features_ = null;
-    this.replayGroups_ = {};
-    this.state = TileState.ABORT;
-    this.changed();
+    this.setState(TileState.ABORT);
     super.disposeInternal();
-  }
-
-  /**
-   * Gets the extent of the vector tile.
-   * @return {import("./extent.js").Extent} The extent.
-   * @api
-   */
-  getExtent() {
-    return this.extent_ || DEFAULT_EXTENT;
   }
 
   /**
@@ -118,9 +91,8 @@ class VectorTile extends Tile {
   }
 
   /**
-   * Get the features for this tile. Geometries will be in the projection returned
-   * by {@link module:ol/VectorTile~VectorTile#getProjection}.
-   * @return {Array<import("./Feature.js").default|import("./render/Feature.js").default>} Features.
+   * Get the features for this tile. Geometries will be in the view projection.
+   * @return {Array<import("./Feature.js").FeatureLike>} Features.
    * @api
    */
   getFeatures() {
@@ -135,32 +107,13 @@ class VectorTile extends Tile {
   }
 
   /**
-   * Get the feature projection of features returned by
-   * {@link module:ol/VectorTile~VectorTile#getFeatures}.
-   * @return {import("./proj/Projection.js").default} Feature projection.
-   * @api
-   */
-  getProjection() {
-    return this.projection_;
-  }
-
-  /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
-   * @param {string} key Key.
-   * @return {import("./render/ReplayGroup.js").default} Replay group.
-   */
-  getReplayGroup(layer, key) {
-    return this.replayGroups_[getUid(layer) + ',' + key];
-  }
-
-  /**
    * @inheritDoc
    */
   load() {
     if (this.state == TileState.IDLE) {
       this.setState(TileState.LOADING);
       this.tileLoadFunction_(this, this.url_);
-      this.loader_(null, NaN, null);
+      this.loader_(this.extent, this.resolution, this.projection);
     }
   }
 
@@ -168,12 +121,9 @@ class VectorTile extends Tile {
    * Handler for successful tile load.
    * @param {Array<import("./Feature.js").default>} features The loaded features.
    * @param {import("./proj/Projection.js").default} dataProjection Data projection.
-   * @param {import("./extent.js").Extent} extent Extent.
    */
-  onLoad(features, dataProjection, extent) {
-    this.setProjection(dataProjection);
+  onLoad(features, dataProjection) {
     this.setFeatures(features);
-    this.setExtent(extent);
   }
 
   /**
@@ -181,22 +131,6 @@ class VectorTile extends Tile {
    */
   onError() {
     this.setState(TileState.ERROR);
-  }
-
-  /**
-   * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s
-   * `tileLoadFunction`. Sets the extent of the vector tile. This is only required
-   * for tiles in projections with `tile-pixels` as units. The extent should be
-   * set to `[0, 0, tilePixelSize, tilePixelSize]`, where `tilePixelSize` is
-   * calculated by multiplying the tile size with the tile pixel ratio. For
-   * sources using {@link module:ol/format/MVT~MVT} as feature format, the
-   * {@link module:ol/format/MVT~MVT#getLastExtent} method will return the correct
-   * extent. The default is `[0, 0, 4096, 4096]`.
-   * @param {import("./extent.js").Extent} extent The extent.
-   * @api
-   */
-  setExtent(extent) {
-    this.extent_ = extent;
   }
 
   /**
@@ -208,26 +142,6 @@ class VectorTile extends Tile {
   setFeatures(features) {
     this.features_ = features;
     this.setState(TileState.LOADED);
-  }
-
-  /**
-   * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
-   * Sets the projection of the features that were added with
-   * {@link module:ol/VectorTile~VectorTile#setFeatures}.
-   * @param {import("./proj/Projection.js").default} projection Feature projection.
-   * @api
-   */
-  setProjection(projection) {
-    this.projection_ = projection;
-  }
-
-  /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
-   * @param {string} key Key.
-   * @param {import("./render/ReplayGroup.js").default} replayGroup Replay group.
-   */
-  setReplayGroup(layer, key, replayGroup) {
-    this.replayGroups_[getUid(layer) + ',' + key] = replayGroup;
   }
 
   /**

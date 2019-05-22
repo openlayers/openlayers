@@ -5,8 +5,8 @@
 
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
-import FeatureFormat, {transformWithOptions} from '../format/Feature.js';
-import FormatType from '../format/FormatType.js';
+import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
+import FormatType from './FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -19,21 +19,19 @@ import {linearRingIsClockwise} from '../geom/flat/orient.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 import RenderFeature from '../render/Feature.js';
+import {get} from '../proj.js';
 
 
 /**
  * @typedef {Object} Options
- * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
- * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
- * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
- * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
- * which is optimized for rendering and hit detection.
- * @property {string} [geometryName='geometry'] Geometry name to use when creating
- * features.
- * @property {string} [layerName='layer'] Name of the feature attribute that
- * holds the layer name.
- * @property {Array<string>} [layers] Layers to read features from. If not
- * provided, features will be read from all layers.
+ * @property {import("../Feature.js").FeatureClass} [featureClass] Class for features returned by
+ * {@link module:ol/format/MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
+ * support at the cost of decreased rendering performance. The default is
+ * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
+ * @property {string} [geometryName='geometry'] Geometry name to use when creating features.
+ * @property {string} [layerName='layer'] Name of the feature attribute that holds the layer name.
+ * @property {Array<string>} [layers] Layers to read features from. If not provided, features will be read from all
+ * layers.
  */
 
 
@@ -64,12 +62,9 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {function((import("../geom/Geometry.js").default|Object<string,*>)=)|
-     *     function(GeometryType,Array<number>,
-     *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
+     * @type {import("../Feature.js").FeatureClass}
      */
-    this.featureClass_ = options.featureClass ?
-      options.featureClass : RenderFeature;
+    this.featureClass_ = options.featureClass ? options.featureClass : RenderFeature;
 
     /**
      * @private
@@ -89,19 +84,12 @@ class MVT extends FeatureFormat {
      */
     this.layers_ = options.layers ? options.layers : null;
 
-    /**
-     * @private
-     * @type {import("../extent.js").Extent}
-     */
-    this.extent_ = null;
-
   }
 
   /**
    * Read the raw geometry from the pbf offset stored in a raw feature's geometry
    * property.
-   * @suppress {missingProperties}
-   * @param {Object} pbf PBF.
+   * @param {PBF} pbf PBF.
    * @param {Object} feature Raw feature.
    * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
    * @param {Array<number>} ends Array to store ends in.
@@ -164,12 +152,12 @@ class MVT extends FeatureFormat {
 
   /**
    * @private
-   * @param {Object} pbf PBF
+   * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default|RenderFeature} Feature.
+   * @param {import("./Feature.js").ReadOptions} options Read options.
+   * @return {import("../Feature.js").FeatureLike} Feature.
    */
-  createFeature_(pbf, rawFeature, opt_options) {
+  createFeature_(pbf, rawFeature, options) {
     const type = rawFeature.type;
     if (type === 0) {
       return null;
@@ -188,6 +176,7 @@ class MVT extends FeatureFormat {
 
     if (this.featureClass_ === RenderFeature) {
       feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
+      feature.transform(options.dataProjection, options.featureProjection);
     } else {
       let geom;
       if (geometryType == GeometryType.POLYGON) {
@@ -215,25 +204,18 @@ class MVT extends FeatureFormat {
                 geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
                   null;
       }
-      feature = new this.featureClass_();
+      const ctor = /** @type {typeof import("../Feature.js").default} */ (this.featureClass_);
+      feature = new ctor();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       }
-      const geometry = transformWithOptions(geom, false, this.adaptOptions(opt_options));
+      const geometry = transformGeometryWithOptions(geom, false, options);
       feature.setGeometry(geometry);
       feature.setId(id);
-      feature.setProperties(values);
+      feature.setProperties(values, true);
     }
 
     return feature;
-  }
-
-  /**
-   * @inheritDoc
-   * @api
-   */
-  getLastExtent() {
-    return this.extent_;
   }
 
   /**
@@ -244,15 +226,22 @@ class MVT extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * Read all features.
+   *
+   * @param {ArrayBuffer} source Source.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
     const layers = this.layers_;
+    const options = /** @type {import("./Feature.js").ReadOptions} */ (this.adaptOptions(opt_options));
+    const dataProjection = get(options.dataProjection);
+    dataProjection.setWorldExtent(options.extent);
+    options.dataProjection = dataProjection;
 
     const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
     const pbfLayers = pbf.readFields(layersPBFReader, {});
-    /** @type {Array<import("../Feature.js").default|RenderFeature>} */
     const features = [];
     for (const name in pbfLayers) {
       if (layers && layers.indexOf(name) == -1) {
@@ -260,11 +249,13 @@ class MVT extends FeatureFormat {
       }
       const pbfLayer = pbfLayers[name];
 
+      const extent = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+      dataProjection.setExtent(extent);
+
       for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
         const rawFeature = readRawFeature(pbf, pbfLayer, i);
-        features.push(this.createFeature_(pbf, rawFeature));
+        features.push(this.createFeature_(pbf, rawFeature, options));
       }
-      this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
     }
 
     return features;
@@ -294,7 +285,7 @@ class MVT extends FeatureFormat {
  * Reader callback for parsing layers.
  * @param {number} tag The tag.
  * @param {Object} layers The layers object.
- * @param {Object} pbf The PBF.
+ * @param {PBF} pbf The PBF.
  */
 function layersPBFReader(tag, layers, pbf) {
   if (tag === 3) {
@@ -316,7 +307,7 @@ function layersPBFReader(tag, layers, pbf) {
  * Reader callback for parsing layer.
  * @param {number} tag The tag.
  * @param {Object} layer The layer object.
- * @param {Object} pbf The PBF.
+ * @param {PBF} pbf The PBF.
  */
 function layerPBFReader(tag, layer, pbf) {
   if (tag === 15) {
@@ -350,7 +341,7 @@ function layerPBFReader(tag, layer, pbf) {
  * Reader callback for parsing feature.
  * @param {number} tag The tag.
  * @param {Object} feature The feature object.
- * @param {Object} pbf The PBF.
+ * @param {PBF} pbf The PBF.
  */
 function featurePBFReader(tag, feature, pbf) {
   if (tag == 1) {
@@ -372,8 +363,7 @@ function featurePBFReader(tag, feature, pbf) {
 
 /**
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
- * @suppress {missingProperties}
- * @param {Object} pbf PBF.
+ * @param {PBF} pbf PBF.
  * @param {Object} layer Raw layer.
  * @param {number} i Index of the feature in the raw layer's `features` array.
  * @return {Object} Raw feature.
@@ -393,7 +383,6 @@ function readRawFeature(pbf, layer, i) {
 
 
 /**
- * @suppress {missingProperties}
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.

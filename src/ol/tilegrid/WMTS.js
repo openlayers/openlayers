@@ -4,7 +4,7 @@
 
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
-import TileGrid from '../tilegrid/TileGrid.js';
+import TileGrid from './TileGrid.js';
 
 
 /**
@@ -31,9 +31,9 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * `TileMatrixHeight` advertised in the GetCapabilities response of the WMTS, and
  * define the grid's extent together with the `origin`.
  * An `extent` can be configured in addition, and will further limit the extent for
- * which tile requests are made by sources. Note that when the top-left corner of
+ * which tile requests are made by sources. If the bottom-left corner of
  * the `extent` is used as `origin` or `origins`, then the `y` value must be
- * negative because OpenLayers tile coordinates increase upwards.
+ * negative because OpenLayers tile coordinates use the top left as the origin.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. The length of
  * this array needs to match the length of the `resolutions` array.
@@ -174,8 +174,7 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
       resolutions.push(resolution);
       tileSizes.push(tileWidth == tileHeight ?
         tileWidth : [tileWidth, tileHeight]);
-      // top-left origin, so height is negative
-      sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
+      sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
     }
   });
 

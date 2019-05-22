@@ -1,10 +1,8 @@
 /**
  * @module ol/interaction/PinchRotate
  */
-import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
-import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
+import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 import {disable} from '../rotationconstraint.js';
 
 
@@ -28,14 +26,15 @@ class PinchRotate extends PointerInteraction {
    */
   constructor(opt_options) {
 
-    super({
-      handleDownEvent: handleDownEvent,
-      handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent,
-      stopDown: FALSE
-    });
+    const options = opt_options ? opt_options : {};
 
-    const options = opt_options || {};
+    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+
+    if (!pointerOptions.stopDown) {
+      pointerOptions.stopDown = FALSE;
+    }
+
+    super(pointerOptions);
 
     /**
      * @private
@@ -75,98 +74,84 @@ class PinchRotate extends PointerInteraction {
 
   }
 
-}
+  /**
+   * @inheritDoc
+   */
+  handleDragEvent(mapBrowserEvent) {
+    let rotationDelta = 0.0;
 
+    const touch0 = this.targetPointers[0];
+    const touch1 = this.targetPointers[1];
 
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {PinchRotate}
- */
-function handleDragEvent(mapBrowserEvent) {
-  let rotationDelta = 0.0;
+    // angle between touches
+    const angle = Math.atan2(
+      touch1.clientY - touch0.clientY,
+      touch1.clientX - touch0.clientX);
 
-  const touch0 = this.targetPointers[0];
-  const touch1 = this.targetPointers[1];
-
-  // angle between touches
-  const angle = Math.atan2(
-    touch1.clientY - touch0.clientY,
-    touch1.clientX - touch0.clientX);
-
-  if (this.lastAngle_ !== undefined) {
-    const delta = angle - this.lastAngle_;
-    this.rotationDelta_ += delta;
-    if (!this.rotating_ &&
-        Math.abs(this.rotationDelta_) > this.threshold_) {
-      this.rotating_ = true;
+    if (this.lastAngle_ !== undefined) {
+      const delta = angle - this.lastAngle_;
+      this.rotationDelta_ += delta;
+      if (!this.rotating_ &&
+          Math.abs(this.rotationDelta_) > this.threshold_) {
+        this.rotating_ = true;
+      }
+      rotationDelta = delta;
     }
-    rotationDelta = delta;
-  }
-  this.lastAngle_ = angle;
+    this.lastAngle_ = angle;
 
-  const map = mapBrowserEvent.map;
-  const view = map.getView();
-  if (view.getConstraints().rotation === disable) {
-    return;
-  }
-
-  // rotate anchor point.
-  // FIXME: should be the intersection point between the lines:
-  //     touch0,touch1 and previousTouch0,previousTouch1
-  const viewportPosition = map.getViewport().getBoundingClientRect();
-  const centroid = centroidFromPointers(this.targetPointers);
-  centroid[0] -= viewportPosition.left;
-  centroid[1] -= viewportPosition.top;
-  this.anchor_ = map.getCoordinateFromPixel(centroid);
-
-  // rotate
-  if (this.rotating_) {
-    const rotation = view.getRotation();
-    map.render();
-    rotateWithoutConstraints(view, rotation + rotationDelta, this.anchor_);
-  }
-}
-
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Stop drag sequence?
- * @this {PinchRotate}
- */
-function handleUpEvent(mapBrowserEvent) {
-  if (this.targetPointers.length < 2) {
     const map = mapBrowserEvent.map;
     const view = map.getView();
-    view.setHint(ViewHint.INTERACTING, -1);
+    if (view.getConstraints().rotation === disable) {
+      return;
+    }
+
+    // rotate anchor point.
+    // FIXME: should be the intersection point between the lines:
+    //     touch0,touch1 and previousTouch0,previousTouch1
+    const viewportPosition = map.getViewport().getBoundingClientRect();
+    const centroid = centroidFromPointers(this.targetPointers);
+    centroid[0] -= viewportPosition.left;
+    centroid[1] -= viewportPosition.top;
+    this.anchor_ = map.getCoordinateFromPixel(centroid);
+
+    // rotate
     if (this.rotating_) {
-      const rotation = view.getRotation();
-      rotate(view, rotation, this.anchor_, this.duration_);
+      map.render();
+      view.adjustRotation(rotationDelta, this.anchor_);
     }
-    return false;
-  } else {
-    return true;
   }
-}
 
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Start drag sequence?
- * @this {PinchRotate}
- */
-function handleDownEvent(mapBrowserEvent) {
-  if (this.targetPointers.length >= 2) {
-    const map = mapBrowserEvent.map;
-    this.anchor_ = null;
-    this.lastAngle_ = undefined;
-    this.rotating_ = false;
-    this.rotationDelta_ = 0.0;
-    if (!this.handlingDownUpSequence) {
-      map.getView().setHint(ViewHint.INTERACTING, 1);
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(mapBrowserEvent) {
+    if (this.targetPointers.length < 2) {
+      const map = mapBrowserEvent.map;
+      const view = map.getView();
+      view.endInteraction(this.duration_);
+      return false;
+    } else {
+      return true;
     }
-    return true;
-  } else {
-    return false;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleDownEvent(mapBrowserEvent) {
+    if (this.targetPointers.length >= 2) {
+      const map = mapBrowserEvent.map;
+      this.anchor_ = null;
+      this.lastAngle_ = undefined;
+      this.rotating_ = false;
+      this.rotationDelta_ = 0.0;
+      if (!this.handlingDownUpSequence) {
+        map.getView().beginInteraction();
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

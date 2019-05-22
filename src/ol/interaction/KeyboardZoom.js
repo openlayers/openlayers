@@ -3,7 +3,7 @@
  */
 import EventType from '../events/EventType.js';
 import {targetNotEditable} from '../events/condition.js';
-import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 
 
 /**
@@ -27,7 +27,7 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * {@link module:ol/Map~Map}. `document` never loses focus but, for any other
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
- * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
+ * See also {@link module:ol/interaction/KeyboardPan~KeyboardPan}.
  * @api
  */
 class KeyboardZoom extends Interaction {

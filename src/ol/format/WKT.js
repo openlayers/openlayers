@@ -2,8 +2,8 @@
  * @module ol/format/WKT
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import TextFeature from '../format/TextFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryType from '../geom/GeometryType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -13,10 +13,10 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
+ * Geometry constructors
  * @enum {function (new:import("../geom/Geometry.js").default, Array, GeometryLayout)}
  */
 const GeometryConstructor = {
@@ -159,29 +159,32 @@ class Lexer {
    */
   nextToken() {
     const c = this.nextChar_();
-    const token = {position: this.index_, value: c};
+    const position = this.index_;
+    /** @type {number|string} */
+    let value = c;
+    let type;
 
     if (c == '(') {
-      token.type = TokenType.LEFT_PAREN;
+      type = TokenType.LEFT_PAREN;
     } else if (c == ',') {
-      token.type = TokenType.COMMA;
+      type = TokenType.COMMA;
     } else if (c == ')') {
-      token.type = TokenType.RIGHT_PAREN;
+      type = TokenType.RIGHT_PAREN;
     } else if (this.isNumeric_(c) || c == '-') {
-      token.type = TokenType.NUMBER;
-      token.value = this.readNumber_();
+      type = TokenType.NUMBER;
+      value = this.readNumber_();
     } else if (this.isAlpha_(c)) {
-      token.type = TokenType.TEXT;
-      token.value = this.readText_();
+      type = TokenType.TEXT;
+      value = this.readText_();
     } else if (this.isWhiteSpace_(c)) {
       return this.nextToken();
     } else if (c === '') {
-      token.type = TokenType.EOF;
+      type = TokenType.EOF;
     } else {
       throw new Error('Unexpected character: ' + c);
     }
 
-    return token;
+    return {position: position, value: value, type: type};
   }
 
   /**
@@ -372,7 +375,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All points in a polygon.
+   * @return {!Array<!Array<!Array<number>>>} All points in a polygon.
    * @private
    */
   parsePolygonText_() {
@@ -409,8 +412,8 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All linestring points
-   *                                        in a multilinestring.
+   * @return {!Array<!Array<!Array<number>>>} All linestring points
+   *                                          in a multilinestring.
    * @private
    */
   parseMultiLineStringText_() {
@@ -426,7 +429,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All polygon points in a multipolygon.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} All polygon points in a multipolygon.
    * @private
    */
   parseMultiPolygonText_() {
@@ -451,7 +454,7 @@ class Parser {
     for (let i = 0; i < dimensions; ++i) {
       const token = this.token_;
       if (this.match(TokenType.NUMBER)) {
-        coordinates.push(token.value);
+        coordinates.push(/** @type {number} */ (token.value));
       } else {
         break;
       }
@@ -487,7 +490,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<number>>>} An array of points.
    * @private
    */
   parseLineStringTextList_() {
@@ -499,7 +502,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} An array of points.
    * @private
    */
   parsePolygonTextList_() {
@@ -679,9 +682,7 @@ class WKT extends TextFeature {
   readGeometryFromText(text, opt_options) {
     const geometry = this.parse_(text);
     if (geometry) {
-      return (
-        /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, opt_options))
-      );
+      return transformGeometryWithOptions(geometry, false, opt_options);
     } else {
       return null;
     }
@@ -717,8 +718,7 @@ class WKT extends TextFeature {
    * @inheritDoc
    */
   writeGeometryText(geometry, opt_options) {
-    return encode(/** @type {import("../geom/Geometry.js").default} */ (
-      transformWithOptions(geometry, true, opt_options)));
+    return encode(transformGeometryWithOptions(geometry, true, opt_options));
   }
 }
 
@@ -820,7 +820,7 @@ function encodeMultiPolygonGeometry(geom) {
 }
 
 /**
- * @param {SimpleGeometry} geom SimpleGeometry geometry.
+ * @param {import("../geom/SimpleGeometry.js").default} geom SimpleGeometry geometry.
  * @return {string} Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {
@@ -853,7 +853,7 @@ const GeometryEncoder = {
 
 /**
  * Encode a geometry as WKT.
- * @param {import("../geom/Geometry.js").default} geom The geometry to encode.
+ * @param {!import("../geom/Geometry.js").default} geom The geometry to encode.
  * @return {string} WKT string for the geometry.
  */
 function encode(geom) {
@@ -861,8 +861,8 @@ function encode(geom) {
   const geometryEncoder = GeometryEncoder[type];
   const enc = geometryEncoder(geom);
   type = type.toUpperCase();
-  if (geom instanceof SimpleGeometry) {
-    const dimInfo = encodeGeometryLayout(geom);
+  if (typeof /** @type {?} */ (geom).getFlatCoordinates === 'function') {
+    const dimInfo = encodeGeometryLayout(/** @type {import("../geom/SimpleGeometry.js").default} */ (geom));
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
     }

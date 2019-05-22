@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
@@ -29,11 +28,6 @@ const map = new Map({
       source: new OSM()
     })
   ],
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   target: 'map',
   view: new View({
     center: center,

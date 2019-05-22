@@ -17,7 +17,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
 
   });
 
-  describe('#handleDragEvent_()', function() {
+  describe('#handleDragEvent()', function() {
 
     let target, map, interaction;
 
@@ -62,13 +62,18 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         true);
       interaction.lastAngle_ = Math.PI;
 
-      let view = map.getView();
-      let spy = sinon.spy(view, 'rotate');
-      interaction.handleDragEvent_(event);
-      expect(spy.callCount).to.be(1);
-      expect(interaction.lastAngle_).to.be(-0.8308214428190254);
-      view.rotate.restore();
+      let callCount = 0;
 
+      let view = map.getView();
+      view.on('change:rotation', function() {
+        callCount++;
+      });
+
+      interaction.handleDragEvent(event);
+      expect(callCount).to.be(1);
+      expect(interaction.lastAngle_).to.be(-0.8308214428190254);
+
+      callCount = 0;
       view = new View({
         projection: 'EPSG:4326',
         center: [0, 0],
@@ -76,15 +81,16 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         enableRotation: false
       });
       map.setView(view);
+      view.on('change:rotation', function() {
+        callCount++;
+      });
 
       event = new MapBrowserPointerEvent('pointermove', map,
         new PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
         true);
 
-      spy = sinon.spy(view, 'rotate');
-      interaction.handleDragEvent_(event);
-      expect(spy.callCount).to.be(0);
-      view.rotate.restore();
+      interaction.handleDragEvent(event);
+      expect(callCount).to.be(0);
     });
   });
 

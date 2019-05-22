@@ -1,9 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
+import Overlay from '../src/ol/Overlay.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+
+import {toPng} from 'html-to-image';
 
 const map = new Map({
   layers: [
@@ -18,27 +20,34 @@ const map = new Map({
     })
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2
   })
 });
 
+map.addOverlay(new Overlay({
+  position: [0, 0],
+  element: document.getElementById('null')
+}));
+
+
+// export options for html-to-image.
+// See: https://github.com/bubkoo/html-to-image#options
+const exportOptions = {
+  filter: function(element) {
+    return element.className ? element.className.indexOf('ol-control') === -1 : true;
+  }
+};
+
 document.getElementById('export-png').addEventListener('click', function() {
-  map.once('rendercomplete', function(event) {
-    const canvas = event.context.canvas;
-    if (navigator.msSaveBlob) {
-      navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
-    } else {
-      canvas.toBlob(function(blob) {
-        saveAs(blob, 'map.png');
+  map.once('rendercomplete', function() {
+    toPng(map.getTargetElement(), exportOptions)
+      .then(function(dataURL) {
+        const link = document.getElementById('image-download');
+        link.href = dataURL;
+        link.click();
       });
-    }
   });
   map.renderSync();
 });

@@ -8,21 +8,23 @@ class RenderEvent extends Event {
 
   /**
    * @param {import("./EventType.js").default} type Type.
-   * @param {import("./VectorContext.js").default=} opt_vectorContext Vector context.
+   * @param {import("../transform.js").Transform=} opt_inversePixelTransform Transform for
+   *     CSS pixels to rendered pixels.
    * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
    * @param {?CanvasRenderingContext2D=} opt_context Context.
-   * @param {?import("../webgl/Context.js").default=} opt_glContext WebGL Context.
+   * @param {?import("../webgl/Helper.js").default=} opt_glContext WebGL Context.
    */
-  constructor(type, opt_vectorContext, opt_frameState, opt_context, opt_glContext) {
+  constructor(type, opt_inversePixelTransform, opt_frameState, opt_context, opt_glContext) {
 
     super(type);
 
     /**
-     * For canvas, this is an instance of {@link module:ol/render/canvas/Immediate}.
-     * @type {import("./VectorContext.js").default|undefined}
+     * Transform from CSS pixels (relative to the top-left corner of the map viewport)
+     * to rendered pixels on this event's `context`.
+     * @type {import("../transform.js").Transform|undefined}
      * @api
      */
-    this.vectorContext = opt_vectorContext;
+    this.inversePixelTransform = opt_inversePixelTransform;
 
     /**
      * An object representing the current render frame state.
@@ -42,7 +44,7 @@ class RenderEvent extends Event {
     /**
      * WebGL context. Only available when a WebGL renderer is used, null
      * otherwise.
-     * @type {import("../webgl/Context.js").default|null|undefined}
+     * @type {import("../webgl/Helper.js").default|null|undefined}
      * @api
      */
     this.glContext = opt_glContext;

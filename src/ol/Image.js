@@ -22,7 +22,7 @@ import {getHeight} from './extent.js';
  * post requests or - in general - through XHR requests, where the src of the
  * image element would be set to a data URI when the content is loaded.
  *
- * @typedef {function(ImageWrapper, string)} LoadFunction
+ * @typedef {function(ImageWrapper, string): void} LoadFunction
  * @api
  */
 
@@ -58,9 +58,9 @@ class ImageWrapper extends ImageBase {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {function():void}
      */
-    this.imageListenerKeys_ = null;
+    this.unlisten_ = null;
 
     /**
      * @protected
@@ -120,13 +120,12 @@ class ImageWrapper extends ImageBase {
     if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
       this.state = ImageState.LOADING;
       this.changed();
-      this.imageListenerKeys_ = [
-        listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
-        listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
-      ];
       this.imageLoadFunction_(this, this.src_);
+      this.unlisten_ = listenImage(
+        this.image_,
+        this.handleImageLoad_.bind(this),
+        this.handleImageError_.bind(this)
+      );
     }
   }
 
@@ -143,9 +142,46 @@ class ImageWrapper extends ImageBase {
    * @private
    */
   unlistenImage_() {
-    this.imageListenerKeys_.forEach(unlistenByKey);
-    this.imageListenerKeys_ = null;
+    if (this.unlisten_) {
+      this.unlisten_();
+      this.unlisten_ = null;
+    }
   }
+}
+
+/**
+ * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image element.
+ * @param {function():any} loadHandler Load callback function.
+ * @param {function():any} errorHandler Error callback function.
+ * @return {function():void} Callback to stop listening.
+ */
+export function listenImage(image, loadHandler, errorHandler) {
+  const img = /** @type {HTMLImageElement} */ (image);
+  if (img.decode) {
+    const promise = img.decode();
+    let listening = true;
+    const unlisten = function() {
+      listening = false;
+    };
+    promise.then(function() {
+      if (listening) {
+        loadHandler();
+      }
+    }).catch(function(error) {
+      if (listening) {
+        errorHandler();
+      }
+    });
+    return unlisten;
+  }
+
+  const listenerKeys = [
+    listenOnce(img, EventType.LOAD, loadHandler),
+    listenOnce(img, EventType.ERROR, errorHandler)
+  ];
+  return function unlisten() {
+    listenerKeys.forEach(unlistenByKey);
+  };
 }
 
 

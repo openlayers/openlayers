@@ -1,6 +1,7 @@
 /**
  * @module ol/style/Image
  */
+import {abstract} from '../util.js';
 
 
 /**
@@ -17,6 +18,7 @@
  * A base class used for creating subclasses and not instantiated in
  * apps. Base class for {@link module:ol/style/Icon~Icon}, {@link module:ol/style/Circle~CircleStyle} and
  * {@link module:ol/style/RegularShape~RegularShape}.
+ * @abstract
  * @api
  */
 class ImageStyle {
@@ -102,22 +104,14 @@ class ImageStyle {
   }
 
   /**
-   * This method is deprecated and always returns false.
-   * @return {boolean} false.
-   * @deprecated
-   * @api
-   */
-  getSnapToPixel() {
-    return false;
-  }
-
-  /**
    * Get the anchor point in pixels. The anchor determines the center point for the
    * symbolizer.
    * @abstract
    * @return {Array<number>} Anchor.
    */
-  getAnchor() {}
+  getAnchor() {
+    return abstract();
+  }
 
   /**
    * Get the image element for the symbolizer.
@@ -125,46 +119,60 @@ class ImageStyle {
    * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
    */
-  getImage(pixelRatio) {}
+  getImage(pixelRatio) {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
    */
-  getHitDetectionImage(pixelRatio) {}
+  getHitDetectionImage(pixelRatio) {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @return {import("../ImageState.js").default} Image state.
    */
-  getImageState() {}
+  getImageState() {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @return {import("../size.js").Size} Image size.
    */
-  getImageSize() {}
+  getImageSize() {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @return {import("../size.js").Size} Size of the hit-detection image.
    */
-  getHitDetectionImageSize() {}
+  getHitDetectionImageSize() {
+    return abstract();
+  }
 
   /**
    * Get the origin of the symbolizer.
    * @abstract
    * @return {Array<number>} Origin.
    */
-  getOrigin() {}
+  getOrigin() {
+    return abstract();
+  }
 
   /**
    * Get the size of the symbolizer (in pixels).
    * @abstract
    * @return {import("../size.js").Size} Size.
    */
-  getSize() {}
+  getSize() {
+    return abstract();
+  }
 
   /**
    * Set the opacity.
@@ -206,35 +214,33 @@ class ImageStyle {
   }
 
   /**
-   * This method is deprecated and does nothing.
-   * @param {boolean} snapToPixel Snap to pixel?
-   * @deprecated
-   * @api
-   */
-  setSnapToPixel(snapToPixel) {}
-
-  /**
    * @abstract
-   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+   * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
    * @param {T} thisArg Value to use as `this` when executing `listener`.
    * @return {import("../events.js").EventsKey|undefined} Listener key.
    * @template T
    */
-  listenImageChange(listener, thisArg) {}
+  listenImageChange(listener, thisArg) {
+    return abstract();
+  }
 
   /**
    * Load not yet loaded URI.
    * @abstract
    */
-  load() {}
+  load() {
+    abstract();
+  }
 
   /**
    * @abstract
-   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+   * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
    * @param {T} thisArg Value to use as `this` when executing `listener`.
    * @template T
    */
-  unlistenImageChange(listener, thisArg) {}
+  unlistenImageChange(listener, thisArg) {
+    abstract();
+  }
 }
 
 export default ImageStyle;

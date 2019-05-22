@@ -3,17 +3,17 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {assignClosestPoint, maxSquaredDelta} from '../geom/flat/closest.js';
-import {deflateCoordinates} from '../geom/flat/deflate.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
-import {interpolatePoint, lineStringCoordinateAtM} from '../geom/flat/interpolate.js';
-import {intersectsLineString} from '../geom/flat/intersectsextent.js';
-import {lineStringLength} from '../geom/flat/length.js';
-import {forEach as forEachSegment} from '../geom/flat/segments.js';
-import {douglasPeucker} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
+import {deflateCoordinates} from './flat/deflate.js';
+import {inflateCoordinates} from './flat/inflate.js';
+import {interpolatePoint, lineStringCoordinateAtM} from './flat/interpolate.js';
+import {intersectsLineString} from './flat/intersectsextent.js';
+import {lineStringLength} from './flat/length.js';
+import {forEach as forEachSegment} from './flat/segments.js';
+import {douglasPeucker} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -57,9 +57,9 @@ class LineString extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
 
   }

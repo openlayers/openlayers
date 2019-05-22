@@ -100,6 +100,7 @@ describe('ol.renderer.Layer', function() {
 
       view = new View({
         center: [0, 0],
+        multiWorld: true,
         zoom: 0
       });
 

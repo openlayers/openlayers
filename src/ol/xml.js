@@ -14,12 +14,12 @@ import {extend} from './array.js';
 
 
 /**
- * @typedef {function(Element, Array<*>)} Parser
+ * @typedef {function(Element, Array<*>): void} Parser
  */
 
 
 /**
- * @typedef {function(Element, *, Array<*>)} Serializer
+ * @typedef {function(Element, *, Array<*>): void} Serializer
  */
 
 
@@ -89,20 +89,11 @@ export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
 
 
 /**
- * @param {?} value Value.
- * @return {boolean} Is document.
+ * @param {Object} object Object.
+ * @return {boolean} Is a document.
  */
-export function isDocument(value) {
-  return value instanceof Document;
-}
-
-
-/**
- * @param {?} value Value.
- * @return {boolean} Is node.
- */
-export function isNode(value) {
-  return value instanceof Node;
+export function isDocument(object) {
+  return 'documentElement' in object;
 }
 
 
@@ -261,7 +252,7 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
  * Create a serializer that appends nodes written by its `nodeWriter` to its
  * designated parent. The parent is the `node` of the
  * {@link module:ol/xml~NodeStackItem} at the top of the `objectStack`.
- * @param {function(this: T, Node, V, Array<*>)} nodeWriter Node writer.
+ * @param {function(this: T, Node, V, Array<*>): void} nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V
@@ -283,7 +274,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
  * designed to serialize a single item. An example would be a LineString
  * geometry writer, which could be reused for writing MultiLineString
  * geometries.
- * @param {function(this: T, Element, V, Array<*>)} nodeWriter Node writer.
+ * @param {function(this: T, Element, V, Array<*>): void} nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V

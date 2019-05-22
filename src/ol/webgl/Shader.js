@@ -1,6 +1,7 @@
 /**
  * @module ol/webgl/Shader
  */
+import {abstract} from '../util.js';
 
 /**
  * @abstract
@@ -31,7 +32,9 @@ class WebGLShader {
    * @abstract
    * @return {number} Type.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * @return {string} Source.

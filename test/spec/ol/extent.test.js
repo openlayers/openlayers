@@ -239,13 +239,6 @@ describe('ol.extent', function() {
       }
     );
 
-    it('calls the callback with given scope', function() {
-      const extent = [1, 2, 3, 4];
-      const scope = {humpty: 'dumpty'};
-      _ol_extent_.forEachCorner(extent, callbackTrue, scope);
-      expect(callbackTrue.calledOn(scope)).to.be(true);
-    });
-
   });
 
   describe('getArea', function() {

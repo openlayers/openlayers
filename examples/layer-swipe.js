@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -18,11 +17,6 @@ const bing = new TileLayer({
 const map = new Map({
   layers: [osm, bing],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2
@@ -31,7 +25,7 @@ const map = new Map({
 
 const swipe = document.getElementById('swipe');
 
-bing.on('precompose', function(event) {
+bing.on('prerender', function(event) {
   const ctx = event.context;
   const width = ctx.canvas.width * (swipe.value / 100);
 
@@ -41,7 +35,7 @@ bing.on('precompose', function(event) {
   ctx.clip();
 });
 
-bing.on('postcompose', function(event) {
+bing.on('postrender', function(event) {
   const ctx = event.context;
   ctx.restore();
 });

@@ -1,0 +1,6 @@
+.overlay {
+  background-color: yellow;
+  border-radius: 6px;
+  padding: 4px;
+  white-space: nowrap;
+}

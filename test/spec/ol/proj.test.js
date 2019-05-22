@@ -9,11 +9,12 @@ import {
   toLonLat,
   getTransform,
   getPointResolution,
-  getTransformFromProjections
+  getTransformFromProjections,
+  METERS_PER_UNIT
 } from '../../../src/ol/proj.js';
 import {register} from '../../../src/ol/proj/proj4.js';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
-import {METERS_PER_UNIT} from '../../../src/ol/proj/epsg4326.js';
+import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
 import Projection from '../../../src/ol/proj/Projection.js';
 
 
@@ -268,7 +269,7 @@ describe('ol.proj', function() {
       expect(pointResolution).to.roughlyEqual(0.615661, 1e-5);
     });
     it('returns the correct point resolution for EPSG:3857 with custom units', function() {
-      let pointResolution = getPointResolution('EPSG:3857', 1, [0, 0], 'degrees');
+      let pointResolution = getPointResolution('EPSG:3857', METERS_PER_UNIT['degrees'], [0, 0], 'degrees');
       expect(pointResolution).to.be(1);
       pointResolution = getPointResolution('EPSG:4326', 1, fromLonLat([0, 52]), 'degrees');
       expect(pointResolution).to.be(1);
@@ -600,7 +601,7 @@ describe('ol.proj', function() {
 
     it('returns value in meters', function() {
       const epsg4326 = getProjection('EPSG:4326');
-      expect(epsg4326.getMetersPerUnit()).to.eql(METERS_PER_UNIT);
+      expect(epsg4326.getMetersPerUnit()).to.eql(metersPerDegree);
     });
 
     it('works for proj4js projections without units', function() {

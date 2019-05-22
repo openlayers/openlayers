@@ -3,9 +3,9 @@ import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import ImageMapGuide from '../src/ol/source/ImageMapGuide.js';
 
-const mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
+const mdf = 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
 const agentUrl =
-    'http://www.buoyshark.com/mapguide/mapagent/mapagent.fcgi?';
+    'http://138.197.230.93:8008/mapguide/mapagent/mapagent.fcgi?';
 const bounds = [
   -87.865114442365922,
   43.665065564837931,
@@ -24,8 +24,9 @@ const map = new Map({
         params: {
           MAPDEFINITION: mdf,
           FORMAT: 'PNG',
-          USERNAME: 'OpenLayers',
-          PASSWORD: 'OpenLayers'
+          VERSION: '3.0.0',
+          USERNAME: 'OLGuest',
+          PASSWORD: 'olguest'
         },
         ratio: 2
       })

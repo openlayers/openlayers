@@ -7,6 +7,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
@@ -52,7 +53,7 @@ const polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-const route = /** @type {module:ol/geom/LineString~LineString} */ (new Polyline({
+const route = /** @type {import("../src/ol/geom/LineString.js").default} */ (new Polyline({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
@@ -123,7 +124,6 @@ const vectorLayer = new VectorLayer({
 const center = [-5639523.95, -3501274.52];
 const map = new Map({
   target: document.getElementById('map'),
-  loadTilesWhileAnimating: true,
   view: new View({
     center: center,
     zoom: 10,
@@ -133,7 +133,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new BingMaps({
-        imagerySet: 'AerialWithLabels',
+        imagerySet: 'AerialWithLabelsOnDemand',
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
       })
     }),
@@ -142,7 +142,7 @@ const map = new Map({
 });
 
 const moveFeature = function(event) {
-  const vectorContext = event.vectorContext;
+  const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
 
   if (animating) {
@@ -160,7 +160,7 @@ const moveFeature = function(event) {
     const feature = new Feature(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
-  // tell OpenLayers to continue the postcompose animation
+  // tell OpenLayers to continue the postrender animation
   map.render();
 };
 
@@ -176,7 +176,7 @@ function startAnimation() {
     geoMarker.setStyle(null);
     // just in case you pan somewhere else
     map.getView().setCenter(center);
-    map.on('postcompose', moveFeature);
+    vectorLayer.on('postrender', moveFeature);
     map.render();
   }
 }
@@ -191,10 +191,10 @@ function stopAnimation(ended) {
 
   // if animation cancelled set the marker at the beginning
   const coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
-  /** @type {module:ol/geom/Point~Point} */ (geoMarker.getGeometry())
-    .setCoordinates(coord);
+  const geometry = /** @type {import("../src/ol/geom/Point").default} */ (geoMarker.getGeometry());
+  geometry.setCoordinates(coord);
   //remove listener
-  map.un('postcompose', moveFeature);
+  vectorLayer.un('postrender', moveFeature);
 }
 
 startButton.addEventListener('click', startAnimation, false);

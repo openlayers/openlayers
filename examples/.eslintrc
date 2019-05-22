@@ -9,6 +9,7 @@
     "GyroNorm": false,
     "jsPDF": false,
     "jsts": false,
+    "mapboxgl": false,
     "saveAs": false,
     "toastr": false,
     "topojson": false,

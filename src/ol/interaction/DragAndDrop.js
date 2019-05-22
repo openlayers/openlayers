@@ -7,20 +7,20 @@ import {TRUE} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction from './Interaction.js';
 import {get as getProjection} from '../proj.js';
 
 
 /**
  * @typedef {Object} Options
- * @property {Array<function(new: import("../format/Feature.js").default)>} [formatConstructors] Format constructors.
+ * @property {Array<typeof import("../format/Feature.js").default>} [formatConstructors] Format constructors.
  * @property {import("../source/Vector.js").default} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
  * providing the source option listen for the "addfeatures" event.
  * @property {import("../proj.js").ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
- * @property {Element} [target] The element that is used as the drop target, default is the viewport element.
+ * @property {HTMLElement} [target] The element that is used as the drop target, default is the viewport element.
  */
 
 
@@ -56,7 +56,7 @@ class DragAndDropEvent extends Event {
 
     /**
      * The features parsed from dropped data.
-     * @type {Array<import("../Feature.js").default>|undefined}
+     * @type {Array<import("../Feature.js").FeatureLike>|undefined}
      * @api
      */
     this.features = opt_features;
@@ -101,7 +101,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array<function(new: import("../format/Feature.js").default)>}
+     * @type {Array<typeof import("../format/Feature.js").default>}
      */
     this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
@@ -127,7 +127,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.target = options.target ? options.target : null;
 
@@ -150,15 +150,7 @@ class DragAndDrop extends Interaction {
     const formatConstructors = this.formatConstructors_;
     let features = [];
     for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
-      /**
-       * Avoid "cannot instantiate abstract class" error.
-       * @type {Function}
-       */
-      const formatConstructor = formatConstructors[i];
-      /**
-       * @type {import("../format/Feature.js").default}
-       */
-      const format = new formatConstructor();
+      const format = new formatConstructors[i]();
       features = this.tryReadFeatures_(format, result, {
         featureProjection: projection
       });
@@ -220,7 +212,7 @@ class DragAndDrop extends Interaction {
    * @param {string} text Text.
    * @param {import("../format/Feature.js").ReadOptions} options Read options.
    * @private
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {

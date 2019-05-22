@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import RasterSource from '../src/ol/source/Raster.js';
+import {Raster as RasterSource, TileJSON} from '../src/ol/source.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 function flood(pixels, data) {
@@ -24,8 +24,7 @@ function flood(pixels, data) {
 const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 const elevation = new XYZ({
   url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
-  crossOrigin: 'anonymous',
-  transition: 0
+  crossOrigin: 'anonymous'
 });
 
 const raster = new RasterSource({
@@ -37,8 +36,9 @@ const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new XYZ({
-        url: 'https://api.mapbox.com/styles/v1/tschaub/ciutc102t00c62js5fqd47kqw/tiles/256/{z}/{x}/{y}?access_token=' + key
+      source: new TileJSON({
+        url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
+        crossOrigin: 'anonymous'
       })
     }),
     new ImageLayer({

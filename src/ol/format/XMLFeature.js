@@ -1,10 +1,11 @@
 /**
  * @module ol/format/XMLFeature
  */
+import {abstract} from '../util.js';
 import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
-import {isDocument, isNode, parse} from '../xml.js';
+import {isDocument, parse} from '../xml.js';
 
 /**
  * @classdesc
@@ -41,15 +42,15 @@ class XMLFeature extends FeatureFormat {
    * @api
    */
   readFeature(source, opt_options) {
-    if (isDocument(source)) {
-      return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
-    } else if (isNode(source)) {
-      return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
+    if (!source) {
+      return null;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFeatureFromDocument(doc, opt_options);
+    } else if (isDocument(source)) {
+      return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
     } else {
-      return null;
+      return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
     }
   }
 
@@ -85,16 +86,16 @@ class XMLFeature extends FeatureFormat {
    * @api
    */
   readFeatures(source, opt_options) {
-    if (isDocument(source)) {
-      return this.readFeaturesFromDocument(
-        /** @type {Document} */ (source), opt_options);
-    } else if (isNode(source)) {
-      return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
+    if (!source) {
+      return [];
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFeaturesFromDocument(doc, opt_options);
+    } else if (isDocument(source)) {
+      return this.readFeaturesFromDocument(
+        /** @type {Document} */ (source), opt_options);
     } else {
-      return [];
+      return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
     }
   }
 
@@ -107,7 +108,7 @@ class XMLFeature extends FeatureFormat {
   readFeaturesFromDocument(doc, opt_options) {
     /** @type {Array<import("../Feature.js").default>} */
     const features = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(features, this.readFeaturesFromNode(n, opt_options));
       }
@@ -122,22 +123,24 @@ class XMLFeature extends FeatureFormat {
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {}
+  readFeaturesFromNode(node, opt_options) {
+    return abstract();
+  }
 
   /**
    * @inheritDoc
    */
   readGeometry(source, opt_options) {
-    if (isDocument(source)) {
-      return this.readGeometryFromDocument(
-        /** @type {Document} */ (source), opt_options);
-    } else if (isNode(source)) {
-      return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
+    if (!source) {
+      return null;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readGeometryFromDocument(doc, opt_options);
+    } else if (isDocument(source)) {
+      return this.readGeometryFromDocument(
+        /** @type {Document} */ (source), opt_options);
     } else {
-      return null;
+      return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
     }
   }
 
@@ -169,15 +172,15 @@ class XMLFeature extends FeatureFormat {
    * @api
    */
   readProjection(source) {
-    if (isDocument(source)) {
-      return this.readProjectionFromDocument(/** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readProjectionFromNode(/** @type {Node} */ (source));
+    if (!source) {
+      return null;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readProjectionFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readProjectionFromDocument(/** @type {Document} */ (source));
     } else {
-      return null;
+      return this.readProjectionFromNode(/** @type {Node} */ (source));
     }
   }
 

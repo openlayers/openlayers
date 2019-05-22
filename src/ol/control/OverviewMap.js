@@ -1,8 +1,8 @@
 /**
  * @module ol/control/OverviewMap
  */
-import Collection from '../Collection.js';
-import Map from '../Map.js';
+import PluggableMap from '../PluggableMap.js';
+import CompositeMapRenderer from '../renderer/Composite.js';
 import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
 import {getChangeEventType} from '../Object.js';
@@ -10,7 +10,7 @@ import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
 import ViewProperty from '../ViewProperty.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
@@ -35,6 +35,13 @@ const MAX_RATIO = 0.75;
 const MIN_RATIO = 0.1;
 
 
+class ControlledMap extends PluggableMap {
+  createRenderer() {
+    return new CompositeMapRenderer(this);
+  }
+}
+
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-overviewmap'] CSS class name.
@@ -44,9 +51,8 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|HTMLElement} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} [layers]
- * Layers for the overview map. If not set, then all main map layers are used
- * instead.
+ * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} layers
+ * Layers for the overview map (mandatory).
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -144,18 +150,16 @@ class OverviewMap extends Control {
     this.ovmapDiv_.className = 'ol-overviewmap-map';
 
     /**
-     * @type {import("../Map.js").default}
+     * @type {ControlledMap}
      * @private
      */
-    this.ovmap_ = new Map({
-      controls: new Collection(),
-      interactions: new Collection(),
+    this.ovmap_ = new ControlledMap({
       view: options.view
     });
     const ovmap = this.ovmap_;
 
     if (options.layers) {
-      options.layers.forEach(
+      /** @type {Array<import("../layer/Layer.js").default>} */ (options.layers).forEach(
         /**
          * @param {import("../layer/Layer.js").default} layer Layer.
          */
@@ -204,7 +208,8 @@ class OverviewMap extends Control {
     };
 
     const move = function(event) {
-      const coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+      const position = /** @type {?} */ (computeDesiredMousePosition(event));
+      const coordinates = ovmap.getEventCoordinate(/** @type {Event} */ (position));
 
       overlay.setPosition(coordinates);
     };
@@ -249,11 +254,6 @@ class OverviewMap extends Control {
       this.listenerKeys.push(listen(
         map, ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
-
-      // TODO: to really support map switching, this would need to be reworked
-      if (this.ovmap_.getLayers().getLength() === 0) {
-        this.ovmap_.setLayerGroup(map.getLayerGroup());
-      }
 
       const view = map.getView();
       if (view) {

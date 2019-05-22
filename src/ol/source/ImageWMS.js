@@ -12,8 +12,8 @@ import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from 
 import {assign} from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
-import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
-import WMSServerType from '../source/WMSServerType.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import WMSServerType from './WMSServerType.js';
 import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
@@ -29,9 +29,8 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {import("./WMSServerType.js").default|string} [serverType] The type of
@@ -41,7 +40,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher.
@@ -55,7 +54,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @classdesc
  * Source for WMS servers providing single, untiled images.
  *
- * @fires ol/source/Image~ImageSourceEvent
+ * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
 class ImageWMS extends ImageSource {

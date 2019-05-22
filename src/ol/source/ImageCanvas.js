@@ -4,7 +4,7 @@
 
 import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
-import ImageSource from '../source/Image.js';
+import ImageSource from './Image.js';
 
 
 /**
@@ -32,7 +32,7 @@ import ImageSource from '../source/Image.js';
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `changed` should be called on the source for the source to
- * invalidate the current cached image. See @link: {@link module:ol/Observable~Observable#changed}
+ * invalidate the current cached image. See: {@link module:ol/Observable~Observable#changed}
  * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
  * width and height of the map viewport, and so on. Must be `1` or higher.
@@ -49,9 +49,11 @@ import ImageSource from '../source/Image.js';
  */
 class ImageCanvasSource extends ImageSource {
   /**
-   * @param {Options=} options ImageCanvas options.
+   * @param {Options=} opt_options ImageCanvas options.
    */
-  constructor(options) {
+  constructor(opt_options) {
+
+    const options = opt_options || /** @type {Options} */ ({});
 
     super({
       attributions: options.attributions,
@@ -108,8 +110,8 @@ class ImageCanvasSource extends ImageSource {
     const height = getHeight(extent) / resolution;
     const size = [width * pixelRatio, height * pixelRatio];
 
-    const canvasElement = this.canvasFunction_(
-      extent, resolution, pixelRatio, size, projection);
+    const canvasElement = this.canvasFunction_.call(
+      this, extent, resolution, pixelRatio, size, projection);
     if (canvasElement) {
       canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
     }

@@ -9,7 +9,7 @@ import OSM from '../src/ol/source/OSM.js';
  * Helper method for map-creation.
  *
  * @param {string} divId The id of the div for the map.
- * @return {module:ol/PluggableMap} The map instance.
+ * @return {Map} The map instance.
  */
 function createMap(divId) {
   const source = new OSM();

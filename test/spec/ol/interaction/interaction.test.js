@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
-import View from '../../../../src/ol/View.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
-import Interaction, {zoomByDelta} from '../../../../src/ol/interaction/Interaction.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
+import {FALSE} from '../../../../src/ol/functions.js';
 
 describe('ol.interaction.Interaction', function() {
 
@@ -56,67 +56,34 @@ describe('ol.interaction.Interaction', function() {
 
   });
 
-  describe('zoomByDelta()', function() {
+  describe('#handleEvent()', function() {
 
-    it('changes view resolution', function() {
-      const view = new View({
-        resolution: 1,
-        resolutions: [4, 2, 1, 0.5, 0.25]
-      });
+    class MockInteraction extends Interaction {
+      constructor() {
+        super(...arguments);
+      }
+      handleEvent(mapBrowserEvent) {
+        return false;
+      }
+    }
 
-      zoomByDelta(view, 1);
-      expect(view.getResolution()).to.be(0.5);
-
-      zoomByDelta(view, -1);
-      expect(view.getResolution()).to.be(1);
-
-      zoomByDelta(view, 2);
-      expect(view.getResolution()).to.be(0.25);
-
-      zoomByDelta(view, -2);
-      expect(view.getResolution()).to.be(1);
+    it('has a default event handler', function() {
+      const interaction = new Interaction({});
+      expect(interaction.handleEvent()).to.be(true);
     });
 
-    it('changes view resolution and center relative to the anchor', function() {
-      const view = new View({
-        center: [0, 0],
-        resolution: 1,
-        resolutions: [4, 2, 1, 0.5, 0.25]
+    it('allows event handler overrides via options', function() {
+      const interaction = new Interaction({
+        handleEvent: FALSE
       });
-
-      zoomByDelta(view, 1, [10, 10]);
-      expect(view.getCenter()).to.eql([5, 5]);
-
-      zoomByDelta(view, -1, [0, 0]);
-      expect(view.getCenter()).to.eql([10, 10]);
-
-      zoomByDelta(view, 2, [0, 0]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
-
-      zoomByDelta(view, -2, [0, 0]);
-      expect(view.getCenter()).to.eql([10, 10]);
+      expect(interaction.handleEvent()).to.be(false);
     });
 
-    it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
-      const view = new View({
-        center: [0, 0],
-        extent: [-2.5, -2.5, 2.5, 2.5],
-        resolution: 1,
-        resolutions: [4, 2, 1, 0.5, 0.25]
-      });
-
-      zoomByDelta(view, 1, [10, 10]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
-
-      zoomByDelta(view, -1, [0, 0]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
-
-      zoomByDelta(view, 2, [10, 10]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
-
-      zoomByDelta(view, -2, [0, 0]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
+    it('allows event handler overrides via class extension', function() {
+      const interaction = new MockInteraction({});
+      expect(interaction.handleEvent()).to.be(false);
     });
+
   });
 
 });

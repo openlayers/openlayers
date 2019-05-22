@@ -111,7 +111,7 @@ Features for `updates` must have an id set by the feature reader or `ol.Feature#
 
 ### 28
 
-`renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
+`renderMode` must be `'image'` or `'hybrid'`.
 
 ### 29
 
@@ -220,3 +220,11 @@ Duplicate item added to a unique collection.  For example, it may be that you tr
 ### 59
 
 Invalid command found in the PBF.  This indicates that the loaded vector tile may be corrupt.
+
+### 60
+
+Missing or invalid `size`.
+
+### 61
+
+Cannot determine IIIF Image API version from provided image information JSON.

@@ -189,7 +189,7 @@ class TileGrid {
    *
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} zoom Integer zoom level.
-   * @param {function(import("../tilecoord.js").TileCoord)} callback Function called with each tile coordinate.
+   * @param {function(import("../tilecoord.js").TileCoord): void} callback Function called with each tile coordinate.
    * @api
    */
   forEachTileCoord(extent, zoom, callback) {
@@ -203,14 +203,12 @@ class TileGrid {
 
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {function(this: T, number, import("../TileRange.js").default): boolean} callback Callback.
-   * @param {T=} opt_this The object to use as `this` in `callback`.
+   * @param {function(number, import("../TileRange.js").default): boolean} callback Callback.
    * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
    * @param {import("../extent.js").Extent=} opt_extent Temporary import("../extent.js").Extent object.
    * @return {boolean} Callback succeeded.
-   * @template T
    */
-  forEachTileCoordParentTileRange(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
+  forEachTileCoordParentTileRange(tileCoord, callback, opt_tileRange, opt_extent) {
     let tileRange, x, y;
     let tileCoordExtent = null;
     let z = tileCoord[0] - 1;
@@ -228,7 +226,7 @@ class TileGrid {
       } else {
         tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
       }
-      if (callback.call(opt_this, z, tileRange)) {
+      if (callback(z, tileRange)) {
         return true;
       }
       --z;
@@ -239,6 +237,7 @@ class TileGrid {
   /**
    * Get the extent for this tile grid, if it was configured.
    * @return {import("../extent.js").Extent} Extent.
+   * @api
    */
   getExtent() {
     return this.extent_;
@@ -342,10 +341,10 @@ class TileGrid {
    */
   getTileRangeForExtentAndZ(extent, z, opt_tileRange) {
     const tileCoord = tmpTileCoord;
-    this.getTileCoordForXYAndZ_(extent[0], extent[1], z, false, tileCoord);
+    this.getTileCoordForXYAndZ_(extent[0], extent[3], z, false, tileCoord);
     const minX = tileCoord[1];
     const minY = tileCoord[2];
-    this.getTileCoordForXYAndZ_(extent[2], extent[3], z, true, tileCoord);
+    this.getTileCoordForXYAndZ_(extent[2], extent[1], z, true, tileCoord);
     return createOrUpdateTileRange(minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
   }
 
@@ -359,7 +358,7 @@ class TileGrid {
     const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
     return [
       origin[0] + (tileCoord[1] + 0.5) * tileSize[0] * resolution,
-      origin[1] + (tileCoord[2] + 0.5) * tileSize[1] * resolution
+      origin[1] - (tileCoord[2] + 0.5) * tileSize[1] * resolution
     ];
   }
 
@@ -376,7 +375,7 @@ class TileGrid {
     const resolution = this.getResolution(tileCoord[0]);
     const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
     const minX = origin[0] + tileCoord[1] * tileSize[0] * resolution;
-    const minY = origin[1] + tileCoord[2] * tileSize[1] * resolution;
+    const minY = origin[1] - (tileCoord[2] + 1) * tileSize[1] * resolution;
     const maxX = minX + tileSize[0] * resolution;
     const maxY = minY + tileSize[1] * resolution;
     return createOrUpdate(minX, minY, maxX, maxY, opt_extent);
@@ -418,9 +417,9 @@ class TileGrid {
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
     const adjustX = reverseIntersectionPolicy ? 0.5 : 0;
-    const adjustY = reverseIntersectionPolicy ? 0 : 0.5;
+    const adjustY = reverseIntersectionPolicy ? 0.5 : 0;
     const xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
-    const yFromOrigin = Math.floor((y - origin[1]) / resolution + adjustY);
+    const yFromOrigin = Math.floor((origin[1] - y) / resolution + adjustY);
     let tileCoordX = scale * xFromOrigin / tileSize[0];
     let tileCoordY = scale * yFromOrigin / tileSize[1];
 
@@ -456,9 +455,9 @@ class TileGrid {
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
     const adjustX = reverseIntersectionPolicy ? 0.5 : 0;
-    const adjustY = reverseIntersectionPolicy ? 0 : 0.5;
+    const adjustY = reverseIntersectionPolicy ? 0.5 : 0;
     const xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
-    const yFromOrigin = Math.floor((y - origin[1]) / resolution + adjustY);
+    const yFromOrigin = Math.floor((origin[1] - y) / resolution + adjustY);
     let tileCoordX = xFromOrigin / tileSize[0];
     let tileCoordY = yFromOrigin / tileSize[1];
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/Projection
  */
-import {METERS_PER_UNIT} from '../proj/Units.js';
+import {METERS_PER_UNIT} from './Units.js';
 
 
 /**
@@ -19,7 +19,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * @property {function(number, import("../coordinate.js").Coordinate):number} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{import("../coordinate.js").Coordinate}` as arguments, and returns
- * the `{number}` resolution at the passed coordinate. If this is `undefined`,
+ * the `{number}` resolution in projection units at the passed coordinate. If this is `undefined`,
  * the default {@link module:ol/proj#getPointResolution} function will be used.
  */
 

@@ -1,32 +1,12 @@
 /**
  * @module ol/layer/VectorTile
  */
-import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
-import TileProperty from '../layer/TileProperty.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorTileRenderType from '../layer/VectorTileRenderType.js';
+import TileProperty from './TileProperty.js';
+import BaseVectorLayer from './BaseVector.js';
+import VectorTileRenderType from './VectorTileRenderType.js';
+import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
 import {assign} from '../obj.js';
-
-
-/**
- * @enum {string}
- * Render mode for vector tiles:
- *  * `'image'`: Vector tiles are rendered as images. Great performance, but
- *    point symbols and texts are always rotated with the view and pixels are
- *    scaled during zoom animations.
- *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
- *    are scaled during zoom animations. Point symbols and texts are accurately
- *    rendered as vectors and can stay upright on rotated views.
- *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
- *    even during animations, but slower performance than the other options.
- * @api
- */
-export const RenderType = {
-  IMAGE: 'image',
-  HYBRID: 'hybrid',
-  VECTOR: 'vector'
-};
 
 
 /**
@@ -53,24 +33,24 @@ export const RenderType = {
  * point symbol or line width.
  * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
- *    are always rotated with the view and pixels are scaled during zoom animations.
+ *    are always rotated with the view and pixels are scaled during zoom animations. When `declutter`
+ *    is set to `true`, the decluttering is done per tile resulting in labels and point symbols getting
+ *    cut off at tile boundaries.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
- *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering even during
- *    animations, but slower performance than the other options.
  *
- * When `declutter` is set to `true`, `'hybrid'` will be used instead of `'image'`.
  * @property {import("../source/VectorTile.js").default} [source] Source.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
- * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
- * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
- * `'hybrid'`.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
+ * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
+ * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
+ * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
+ * higher priority.
+ * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -80,10 +60,6 @@ export const RenderType = {
  * recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
- * features before rendering. By default features are drawn in the order that they are created.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
- * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */
 
@@ -96,92 +72,96 @@ export const RenderType = {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options=} opt_options Options.
+ * @extends {BaseVectorLayer<import("../source/VectorTile.js").default>}
  * @api
  */
-class VectorTileLayer extends VectorLayer {
+class VectorTileLayer extends BaseVectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
-    assert(renderMode == undefined ||
-       renderMode == VectorTileRenderType.IMAGE ||
-       renderMode == VectorTileRenderType.HYBRID ||
-       renderMode == VectorTileRenderType.VECTOR,
-    28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-    if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
-      renderMode = VectorTileRenderType.HYBRID;
-    }
-    options.renderMode = renderMode;
-
-    const baseOptions = assign({}, options);
-
+    const baseOptions = /** @type {Object} */ (assign({}, options));
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
-    super(baseOptions);
+
+    super(/** @type {import("./Vector.js").Options} */ (baseOptions));
+
+    const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
+    assert(renderMode == undefined ||
+       renderMode == VectorTileRenderType.IMAGE ||
+       renderMode == VectorTileRenderType.HYBRID,
+    28); // `renderMode` must be `'image'` or `'hybrid'`
+
+    /**
+     * @private
+     * @type {VectorTileRenderType}
+     */
+    this.renderMode_ = renderMode;
 
     this.setPreload(options.preload ? options.preload : 0);
     this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
       options.useInterimTilesOnError : true);
 
-    /**
-    * The layer type.
-    * @protected
-    * @type {import("../LayerType.js").default}
-    */
-    this.type = LayerType.VECTOR_TILE;
-
   }
 
   /**
-  * Return the level as number to which we will preload tiles up to.
-  * @return {number} The level to preload tiles up to.
-  * @observable
-  * @api
-  */
+   * Create a renderer for this layer.
+   * @return {import("../renderer/Layer.js").default} A layer renderer.
+   * @protected
+   */
+  createRenderer() {
+    return new CanvasVectorTileLayerRenderer(this);
+  }
+
+  /**
+   * @return {VectorTileRenderType} The render mode.
+   */
+  getRenderMode() {
+    return this.renderMode_;
+  }
+
+  /**
+   * Return the level as number to which we will preload tiles up to.
+   * @return {number} The level to preload tiles up to.
+   * @observable
+   * @api
+   */
   getPreload() {
     return /** @type {number} */ (this.get(TileProperty.PRELOAD));
   }
 
   /**
-  * Whether we use interim tiles on error.
-  * @return {boolean} Use interim tiles on error.
-  * @observable
-  * @api
-  */
+   * Whether we use interim tiles on error.
+   * @return {boolean} Use interim tiles on error.
+   * @observable
+   * @api
+   */
   getUseInterimTilesOnError() {
     return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
   }
 
   /**
-  * Set the level as number to which we will preload tiles up to.
-  * @param {number} preload The level to preload tiles up to.
-  * @observable
-  * @api
-  */
+   * Set the level as number to which we will preload tiles up to.
+   * @param {number} preload The level to preload tiles up to.
+   * @observable
+   * @api
+   */
   setPreload(preload) {
     this.set(TileProperty.PRELOAD, preload);
   }
 
   /**
-  * Set whether we use interim tiles on error.
-  * @param {boolean} useInterimTilesOnError Use interim tiles on error.
-  * @observable
-  * @api
-  */
+   * Set whether we use interim tiles on error.
+   * @param {boolean} useInterimTilesOnError Use interim tiles on error.
+   * @observable
+   * @api
+   */
   setUseInterimTilesOnError(useInterimTilesOnError) {
     this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
   }
 }
 
 
-/**
- * Return the associated {@link module:ol/source/VectorTile vectortilesource} of the layer.
- * @function
- * @return {import("../source/VectorTile.js").default} Source.
- * @api
- */
-VectorTileLayer.prototype.getSource;
 export default VectorTileLayer;

@@ -3,11 +3,12 @@
  */
 
 import {createCanvasContext2D} from '../dom.js';
-import {listenOnce, unlistenByKey} from '../events.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
-import {shared as iconImageCache} from '../style/IconImageCache.js';
+import {shared as iconImageCache} from './IconImageCache.js';
+import {listenImage} from '../Image.js';
+
 
 class IconImage extends EventTarget {
   /**
@@ -34,17 +35,15 @@ class IconImage extends EventTarget {
      */
     this.image_ = !image ? new Image() : image;
 
-    if (crossOrigin !== null && this.image_ instanceof HTMLImageElement) {
-      this.image_.crossOrigin = crossOrigin;
+    if (crossOrigin !== null) {
+      /** @type {HTMLImageElement} */ (this.image_).crossOrigin = crossOrigin;
     }
 
     /**
      * @private
      * @type {HTMLCanvasElement}
      */
-    this.canvas_ = color ?
-      /** @type {HTMLCanvasElement} */ (document.createElement('canvas')) :
-      null;
+    this.canvas_ = color ? document.createElement('canvas') : null;
 
     /**
      * @private
@@ -54,9 +53,9 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {Array<import("../events.js").EventsKey>}
+     * @type {function():void}
      */
-    this.imageListenerKeys_ = null;
+    this.unlisten_ = null;
 
     /**
      * @private
@@ -187,17 +186,16 @@ class IconImage extends EventTarget {
   load() {
     if (this.imageState_ == ImageState.IDLE) {
       this.imageState_ = ImageState.LOADING;
-      this.imageListenerKeys_ = [
-        listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
-        listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
-      ];
       try {
         /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       } catch (e) {
         this.handleImageError_();
       }
+      this.unlisten_ = listenImage(
+        this.image_,
+        this.handleImageLoad_.bind(this),
+        this.handleImageError_.bind(this)
+      );
     }
   }
 
@@ -235,8 +233,10 @@ class IconImage extends EventTarget {
    * @private
    */
   unlistenImage_() {
-    this.imageListenerKeys_.forEach(unlistenByKey);
-    this.imageListenerKeys_ = null;
+    if (this.unlisten_) {
+      this.unlisten_();
+      this.unlisten_ = null;
+    }
   }
 }
 

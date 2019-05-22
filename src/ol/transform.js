@@ -162,6 +162,16 @@ export function scale(transform, x, y) {
   return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
 }
 
+/**
+ * Creates a scale transform.
+ * @param {!Transform} target Transform to overwrite.
+ * @param {number} x Scale factor x.
+ * @param {number} y Scale factor y.
+ * @return {!Transform} The scale transform.
+ */
+export function makeScale(target, x, y) {
+  return set(target, x, 0, 0, y, 0, 0);
+}
 
 /**
  * Applies translation to the given transform.
@@ -203,30 +213,40 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
 
 /**
  * Invert the given transform.
- * @param {!Transform} transform Transform.
- * @return {!Transform} Inverse of the transform.
+ * @param {!Transform} source The source transform to invert.
+ * @return {!Transform} The inverted (source) transform.
  */
-export function invert(transform) {
-  const det = determinant(transform);
-  assert(det !== 0, 32); // Transformation matrix cannot be inverted
-
-  const a = transform[0];
-  const b = transform[1];
-  const c = transform[2];
-  const d = transform[3];
-  const e = transform[4];
-  const f = transform[5];
-
-  transform[0] = d / det;
-  transform[1] = -b / det;
-  transform[2] = -c / det;
-  transform[3] = a / det;
-  transform[4] = (c * f - d * e) / det;
-  transform[5] = -(a * f - b * e) / det;
-
-  return transform;
+export function invert(source) {
+  return makeInverse(source, source);
 }
 
+/**
+ * Invert the given transform.
+ * @param {!Transform} target Transform to be set as the inverse of
+ *     the source transform.
+ * @param {!Transform} source The source transform to invert.
+ * @return {!Transform} The inverted (target) transform.
+ */
+export function makeInverse(target, source) {
+  const det = determinant(source);
+  assert(det !== 0, 32); // Transformation matrix cannot be inverted
+
+  const a = source[0];
+  const b = source[1];
+  const c = source[2];
+  const d = source[3];
+  const e = source[4];
+  const f = source[5];
+
+  target[0] = d / det;
+  target[1] = -b / det;
+  target[2] = -c / det;
+  target[3] = a / det;
+  target[4] = (c * f - d * e) / det;
+  target[5] = -(a * f - b * e) / det;
+
+  return target;
+}
 
 /**
  * Returns the determinant of the given matrix.
@@ -235,4 +255,14 @@ export function invert(transform) {
  */
 export function determinant(mat) {
   return mat[0] * mat[3] - mat[1] * mat[2];
+}
+
+/**
+ * A string version of the transform.  This can be used
+ * for CSS transforms.
+ * @param {!Transform} mat Matrix.
+ * @return {string} The transform as a string.
+ */
+export function toString(mat) {
+  return 'matrix(' + mat.join(', ') + ')';
 }

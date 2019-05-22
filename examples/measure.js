@@ -38,35 +38,35 @@ const vector = new VectorLayer({
 
 /**
  * Currently drawn feature.
- * @type {module:ol/Feature~Feature}
+ * @type {import("../src/ol/Feature.js").default}
  */
 let sketch;
 
 
 /**
  * The help tooltip element.
- * @type {Element}
+ * @type {HTMLElement}
  */
 let helpTooltipElement;
 
 
 /**
  * Overlay to show the help messages.
- * @type {module:ol/Overlay}
+ * @type {Overlay}
  */
 let helpTooltip;
 
 
 /**
  * The measure tooltip element.
- * @type {Element}
+ * @type {HTMLElement}
  */
 let measureTooltipElement;
 
 
 /**
  * Overlay to show the measurement.
- * @type {module:ol/Overlay}
+ * @type {Overlay}
  */
 let measureTooltip;
 
@@ -87,7 +87,7 @@ const continueLineMsg = 'Click to continue drawing the line';
 
 /**
  * Handle pointer move.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt The event.
+ * @param {import("../src/ol/MapBrowserEvent").default} evt The event.
  */
 const pointerMoveHandler = function(evt) {
   if (evt.dragging) {
@@ -97,7 +97,7 @@ const pointerMoveHandler = function(evt) {
   let helpMsg = 'Click to start drawing';
 
   if (sketch) {
-    const geom = (sketch.getGeometry());
+    const geom = sketch.getGeometry();
     if (geom instanceof Polygon) {
       helpMsg = continuePolygonMsg;
     } else if (geom instanceof LineString) {
@@ -134,7 +134,7 @@ let draw; // global so we can remove it later
 
 /**
  * Format length output.
- * @param {module:ol/geom/LineString~LineString} line The line.
+ * @param {LineString} line The line.
  * @return {string} The formatted length.
  */
 const formatLength = function(line) {
@@ -153,7 +153,7 @@ const formatLength = function(line) {
 
 /**
  * Format area output.
- * @param {module:ol/geom/Polygon~Polygon} polygon The polygon.
+ * @param {Polygon} polygon The polygon.
  * @return {string} Formatted area.
  */
 const formatArea = function(polygon) {
@@ -205,7 +205,7 @@ function addInteraction() {
       // set sketch
       sketch = evt.feature;
 
-      /** @type {module:ol/coordinate~Coordinate|undefined} */
+      /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
       let tooltipCoord = evt.coordinate;
 
       listener = sketch.getGeometry().on('change', function(evt) {
@@ -221,11 +221,11 @@ function addInteraction() {
         measureTooltipElement.innerHTML = output;
         measureTooltip.setPosition(tooltipCoord);
       });
-    }, this);
+    });
 
   draw.on('drawend',
     function() {
-      measureTooltipElement.className = 'tooltip tooltip-static';
+      measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
       measureTooltip.setOffset([0, -7]);
       // unset sketch
       sketch = null;
@@ -233,7 +233,7 @@ function addInteraction() {
       measureTooltipElement = null;
       createMeasureTooltip();
       unByKey(listener);
-    }, this);
+    });
 }
 
 
@@ -245,7 +245,7 @@ function createHelpTooltip() {
     helpTooltipElement.parentNode.removeChild(helpTooltipElement);
   }
   helpTooltipElement = document.createElement('div');
-  helpTooltipElement.className = 'tooltip hidden';
+  helpTooltipElement.className = 'ol-tooltip hidden';
   helpTooltip = new Overlay({
     element: helpTooltipElement,
     offset: [15, 0],
@@ -263,7 +263,7 @@ function createMeasureTooltip() {
     measureTooltipElement.parentNode.removeChild(measureTooltipElement);
   }
   measureTooltipElement = document.createElement('div');
-  measureTooltipElement.className = 'tooltip tooltip-measure';
+  measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
   measureTooltip = new Overlay({
     element: measureTooltipElement,
     offset: [0, -15],

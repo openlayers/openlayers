@@ -263,6 +263,34 @@ describe('ol.geom.Circle', function() {
 
     });
 
+    describe('#rotate', function() {
+
+      it('rotates the center around the anchor', function() {
+        circle.setCenter([1, 0]);
+        circle.rotate(Math.PI / 2, [2, 0]);
+        expect(circle.getCenter()).to.eql([2, -1]);
+        expect(circle.getExtent()).to.eql([1, -2, 3, 0]);
+      });
+
+      it('does not change if the anchor equals the center', function() {
+        const center = [1, 0];
+        circle.setCenter(center);
+        const extent = circle.getExtent();
+        circle.rotate(Math.PI / 2, center);
+        expect(circle.getCenter()).to.eql(center);
+        expect(circle.getExtent()).to.eql(extent);
+      });
+    });
+
+    describe('#translate', function() {
+
+      it('translates the circle', function() {
+        circle.setCenter([1, 1]);
+        circle.translate(5, 10);
+        expect(circle.getCenter()).to.eql([6, 11]);
+        expect(circle.getExtent()).to.eql([5, 10, 7, 12]);
+      });
+    });
   });
 
 });

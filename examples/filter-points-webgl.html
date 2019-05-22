@@ -1,0 +1,25 @@
+---
+layout: example.html
+title: Filtering features with WebGL
+shortdesc: Using WebGL to filter large quantities of features
+docs: >
+  This example shows how to use `ol/renderer/webgl/PointsLayer` to dynamically filter a large amount
+    of point geometries. The above map is based on a dataset from the NASA containing 45k recorded meteorite
+    landing sites. Each meteorite is marked by a circle on the map (the bigger the circle, the heavier
+    the object). A pulse effect has been added, which is slightly offset by the year of the impact.
+
+  Adjusting the sliders causes the objects outside of the date range to be filtered out of the map. This is done using
+    a custom fragment shader on the layer renderer, and by using the `v_opacity` attribute of the rendered objects
+    to store the year of impact.
+
+tags: "webgl, icon, sprite, filter, feature"
+---
+<div id="map" class="map"></div>
+<form>
+  <div id="status">Show impacts between <span class="min-year"></span> and <span class="max-year"></span></div>
+
+  <label>Minimum year:</label>
+  <input id="min-year" type="range" min="1850" max="2015" step="1" value="1850"/>
+  <label>Maximum year:</label>
+  <input id="max-year" type="range" min="1850" max="2015" step="1" value="2015"/>
+</form>

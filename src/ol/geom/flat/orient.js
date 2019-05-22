@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/orient
  */
-import {coordinates as reverseCoordinates} from '../flat/reverse.js';
+import {coordinates as reverseCoordinates} from './reverse.js';
 
 
 /**
@@ -41,7 +41,7 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-export function linearRingIsOriented(flatCoordinates, offset, ends, stride, opt_right) {
+export function linearRingsAreOriented(flatCoordinates, offset, ends, stride, opt_right) {
   const right = opt_right !== undefined ? opt_right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
@@ -75,11 +75,15 @@ export function linearRingIsOriented(flatCoordinates, offset, ends, stride, opt_
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-export function linearRingsAreOriented(flatCoordinates, offset, endss, stride, opt_right) {
+export function linearRingssAreOriented(flatCoordinates, offset, endss, stride, opt_right) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
-    if (!linearRingIsOriented(
-      flatCoordinates, offset, endss[i], stride, opt_right)) {
+    const ends = endss[i];
+    if (!linearRingsAreOriented(
+      flatCoordinates, offset, ends, stride, opt_right)) {
       return false;
+    }
+    if (ends.length) {
+      offset = ends[ends.length - 1];
     }
   }
   return true;

@@ -1,10 +1,9 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid} from '../util.js';
+import {abstract} from '../util.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
-import TileState from '../TileState.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import SourceState from '../source/State.js';
@@ -27,6 +26,40 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * Determine whether render should be called.
+   * @abstract
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @return {boolean} Layer is ready to be rendered.
+   */
+  prepareFrame(frameState, layerState) {
+    return abstract();
+  }
+
+  /**
+   * Render the layer.
+   * @abstract
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @return {HTMLElement} The rendered element.
+   */
+  renderFrame(frameState, layerState) {
+    return abstract();
+  }
+
+  /**
+   * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
+   * @param {number} zoom Zoom level.
+   * @param {import("../Tile.js").default} tile Tile.
+   */
+  loadedTileCallback(tiles, zoom, tile) {
+    if (!tiles[zoom]) {
+      tiles[zoom] = {};
+    }
+    tiles[zoom][tile.tileCoord.toString()] = tile;
+  }
+
+  /**
    * Create a function that adds loaded tiles to the tile lookup.
    * @param {import("../source/Tile.js").default} source Tile source.
    * @param {import("../proj/Projection.js").default} projection Projection of the tiles.
@@ -41,17 +74,13 @@ class LayerRenderer extends Observable {
        * @param {number} zoom Zoom level.
        * @param {import("../TileRange.js").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
+       * @this {LayerRenderer}
        */
       function(zoom, tileRange) {
-        function callback(tile) {
-          if (!tiles[zoom]) {
-            tiles[zoom] = {};
-          }
-          tiles[zoom][tile.tileCoord.toString()] = tile;
-        }
+        const callback = this.loadedTileCallback.bind(this, tiles, zoom);
         return source.forEachLoadedTile(projection, zoom, tileRange, callback);
       }
-    );
+    ).bind(this);
   }
 
   /**
@@ -59,12 +88,25 @@ class LayerRenderer extends Observable {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
-   * @param {S} thisArg Value to use as `this` when executing `callback`.
+   * @param {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default): T} callback Feature callback.
+   * @param {Array<import("../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|void} Callback result.
-   * @template S,T
+   * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {}
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {}
+
+  /**
+   * @abstract
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
+   *    location, null will be returned.  If there is data, but pixel values cannot be
+   *    returned, and empty array will be returned.
+   */
+  getDataAtPixel(pixel, frameState, hitTolerance) {
+    return abstract();
+  }
 
   /**
    * @return {import("../layer/Layer.js").default} Layer.
@@ -72,6 +114,12 @@ class LayerRenderer extends Observable {
   getLayer() {
     return this.layer_;
   }
+
+  /**
+   * Perform action necessary to get the layer rendered after new fonts have loaded
+   * @abstract
+   */
+  handleFontsChanged() {}
 
   /**
    * Handle changes in image state.
@@ -119,123 +167,10 @@ class LayerRenderer extends Observable {
   renderIfReadyAndVisible() {
     const layer = this.getLayer();
     if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
-      this.changed();
+      layer.changed();
     }
   }
 
-  /**
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @protected
-   */
-  scheduleExpireCache(frameState, tileSource) {
-    if (tileSource.canExpireCache()) {
-      /**
-       * @param {import("../source/Tile.js").default} tileSource Tile source.
-       * @param {import("../PluggableMap.js").default} map Map.
-       * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-       */
-      const postRenderFunction = function(tileSource, map, frameState) {
-        const tileSourceKey = getUid(tileSource).toString();
-        if (tileSourceKey in frameState.usedTiles) {
-          tileSource.expireCache(frameState.viewState.projection,
-            frameState.usedTiles[tileSourceKey]);
-        }
-      }.bind(null, tileSource);
-
-      frameState.postRenderFunctions.push(
-        /** @type {import("../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
-      );
-    }
-  }
-
-  /**
-   * @param {!Object<string, !Object<string, import("../TileRange.js").default>>} usedTiles Used tiles.
-   * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @param {number} z Z.
-   * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @protected
-   */
-  updateUsedTiles(usedTiles, tileSource, z, tileRange) {
-    // FIXME should we use tilesToDrawByZ instead?
-    const tileSourceKey = getUid(tileSource).toString();
-    const zKey = z.toString();
-    if (tileSourceKey in usedTiles) {
-      if (zKey in usedTiles[tileSourceKey]) {
-        usedTiles[tileSourceKey][zKey].extend(tileRange);
-      } else {
-        usedTiles[tileSourceKey][zKey] = tileRange;
-      }
-    } else {
-      usedTiles[tileSourceKey] = {};
-      usedTiles[tileSourceKey][zKey] = tileRange;
-    }
-  }
-
-  /**
-   * Manage tile pyramid.
-   * This function performs a number of functions related to the tiles at the
-   * current zoom and lower zoom levels:
-   * - registers idle tiles in frameState.wantedTiles so that they are not
-   *   discarded by the tile queue
-   * - enqueues missing tiles
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @param {import("../tilegrid/TileGrid.js").default} tileGrid Tile grid.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @param {number} currentZ Current Z.
-   * @param {number} preload Load low resolution tiles up to 'preload' levels.
-   * @param {function(this: T, import("../Tile.js").default)=} opt_tileCallback Tile callback.
-   * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
-   * @protected
-   * @template T
-   */
-  manageTilePyramid(
-    frameState,
-    tileSource,
-    tileGrid,
-    pixelRatio,
-    projection,
-    extent,
-    currentZ,
-    preload,
-    opt_tileCallback,
-    opt_this
-  ) {
-    const tileSourceKey = getUid(tileSource).toString();
-    if (!(tileSourceKey in frameState.wantedTiles)) {
-      frameState.wantedTiles[tileSourceKey] = {};
-    }
-    const wantedTiles = frameState.wantedTiles[tileSourceKey];
-    const tileQueue = frameState.tileQueue;
-    const minZoom = tileGrid.getMinZoom();
-    let tile, tileRange, tileResolution, x, y, z;
-    for (z = minZoom; z <= currentZ; ++z) {
-      tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
-      tileResolution = tileGrid.getResolution(z);
-      for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-        for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          if (currentZ - z <= preload) {
-            tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-            if (tile.getState() == TileState.IDLE) {
-              wantedTiles[tile.getKey()] = true;
-              if (!tileQueue.isKeyQueued(tile.getKey())) {
-                tileQueue.enqueue([tile, tileSourceKey,
-                  tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
-              }
-            }
-            if (opt_tileCallback !== undefined) {
-              opt_tileCallback.call(opt_this, tile);
-            }
-          } else {
-            tileSource.useTile(z, x, y, projection);
-          }
-        }
-      }
-    }
-  }
 }
 
 export default LayerRenderer;

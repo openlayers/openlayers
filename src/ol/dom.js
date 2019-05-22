@@ -10,14 +10,14 @@
  * @return {CanvasRenderingContext2D} The context.
  */
 export function createCanvasContext2D(opt_width, opt_height) {
-  const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+  const canvas = document.createElement('canvas');
   if (opt_width) {
     canvas.width = opt_width;
   }
   if (opt_height) {
     canvas.height = opt_height;
   }
-  return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+  return canvas.getContext('2d');
 }
 
 
@@ -77,5 +77,48 @@ export function removeNode(node) {
 export function removeChildren(node) {
   while (node.lastChild) {
     node.removeChild(node.lastChild);
+  }
+}
+
+/**
+ * Transform the children of a parent node so they match the
+ * provided list of children.  This function aims to efficiently
+ * remove, add, and reorder child nodes while maintaining a simple
+ * implementation (it is not guaranteed to minimize DOM operations).
+ * @param {Node} node The parent node whose children need reworking.
+ * @param {Array<Node>} children The desired children.
+ */
+export function replaceChildren(node, children) {
+  const oldChildren = node.childNodes;
+
+  for (let i = 0; true; ++i) {
+    const oldChild = oldChildren[i];
+    const newChild = children[i];
+
+    // check if our work is done
+    if (!oldChild && !newChild) {
+      break;
+    }
+
+    // check if children match
+    if (oldChild === newChild) {
+      continue;
+    }
+
+    // check if a new child needs to be added
+    if (!oldChild) {
+      node.appendChild(newChild);
+      continue;
+    }
+
+    // check if an old child needs to be removed
+    if (!newChild) {
+      node.removeChild(oldChild);
+      --i;
+      continue;
+    }
+
+    // reorder
+    node.insertBefore(newChild, oldChild);
   }
 }

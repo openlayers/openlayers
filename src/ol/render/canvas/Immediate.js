@@ -11,7 +11,6 @@ import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
 import {defaultTextAlign, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline, defaultFont} from '../canvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
@@ -577,7 +576,7 @@ class CanvasImmediateRenderer extends VectorContext {
       const context = this.context_;
       const flatCoordinates = geometry.getFlatCoordinates();
       let offset = 0;
-      const ends = geometry.getEnds();
+      const ends = /** @type {Array<number>} */ (geometry.getEnds());
       const stride = geometry.getStride();
       context.beginPath();
       for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -612,7 +611,7 @@ class CanvasImmediateRenderer extends VectorContext {
       const context = this.context_;
       context.beginPath();
       this.drawRings_(geometry.getOrientedFlatCoordinates(),
-        0, geometry.getEnds(), geometry.getStride());
+        0, /** @type {Array<number>} */ (geometry.getEnds()), geometry.getStride());
       if (this.fillState_) {
         context.fill();
       }
@@ -693,12 +692,12 @@ class CanvasImmediateRenderer extends VectorContext {
     const context = this.context_;
     const contextStrokeState = this.contextStrokeState_;
     if (!contextStrokeState) {
-      context.lineCap = strokeState.lineCap;
-      if (CANVAS_LINE_DASH) {
+      context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+      if (context.setLineDash) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }
-      context.lineJoin = strokeState.lineJoin;
+      context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
       context.lineWidth = strokeState.lineWidth;
       context.miterLimit = strokeState.miterLimit;
       context.strokeStyle = strokeState.strokeStyle;
@@ -713,9 +712,9 @@ class CanvasImmediateRenderer extends VectorContext {
       };
     } else {
       if (contextStrokeState.lineCap != strokeState.lineCap) {
-        contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
+        contextStrokeState.lineCap = context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
       }
-      if (CANVAS_LINE_DASH) {
+      if (context.setLineDash) {
         if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
           context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
         }
@@ -725,7 +724,7 @@ class CanvasImmediateRenderer extends VectorContext {
         }
       }
       if (contextStrokeState.lineJoin != strokeState.lineJoin) {
-        contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
+        contextStrokeState.lineJoin = context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
       }
       if (contextStrokeState.lineWidth != strokeState.lineWidth) {
         contextStrokeState.lineWidth = context.lineWidth = strokeState.lineWidth;
@@ -752,8 +751,8 @@ class CanvasImmediateRenderer extends VectorContext {
       textState.textAlign : defaultTextAlign;
     if (!contextTextState) {
       context.font = textState.font;
-      context.textAlign = textAlign;
-      context.textBaseline = textState.textBaseline;
+      context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
+      context.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
       this.contextTextState_ = {
         font: textState.font,
         textAlign: textAlign,
@@ -764,11 +763,11 @@ class CanvasImmediateRenderer extends VectorContext {
         contextTextState.font = context.font = textState.font;
       }
       if (contextTextState.textAlign != textAlign) {
-        contextTextState.textAlign = context.textAlign = textAlign;
+        contextTextState.textAlign = context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
       }
       if (contextTextState.textBaseline != textState.textBaseline) {
         contextTextState.textBaseline = context.textBaseline =
-            textState.textBaseline;
+          /** @type {CanvasTextBaseline} */ (textState.textBaseline);
       }
     }
   }

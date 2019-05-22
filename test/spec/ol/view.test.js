@@ -28,6 +28,71 @@ describe('ol.View', function() {
 
   });
 
+  describe('parameter initialization with resolution/zoom constraints', function() {
+    it('correctly handles max resolution constraint', function() {
+      const view = new View({
+        maxResolution: 1000,
+        resolution: 1200
+      });
+      expect(view.getResolution()).to.eql(1000);
+      expect(view.targetResolution_).to.eql(1000);
+    });
+
+    it('correctly handles min resolution constraint', function() {
+      const view = new View({
+        maxResolution: 1024,
+        minResolution: 128,
+        resolution: 50
+      });
+      expect(view.getResolution()).to.eql(128);
+      expect(view.targetResolution_).to.eql(128);
+    });
+
+    it('correctly handles resolutions array constraint', function() {
+      let view = new View({
+        resolutions: [1024, 512, 256, 128, 64, 32],
+        resolution: 1200
+      });
+      expect(view.getResolution()).to.eql(1024);
+      expect(view.targetResolution_).to.eql(1024);
+
+      view = new View({
+        resolutions: [1024, 512, 256, 128, 64, 32],
+        resolution: 10
+      });
+      expect(view.getResolution()).to.eql(32);
+      expect(view.targetResolution_).to.eql(32);
+    });
+
+    it('correctly handles min zoom constraint', function() {
+      const view = new View({
+        minZoom: 3,
+        zoom: 2
+      });
+      expect(view.getZoom()).to.eql(3);
+      expect(view.targetResolution_).to.eql(view.getMaxResolution());
+    });
+
+    it('correctly handles max zoom constraint', function() {
+      const view = new View({
+        maxZoom: 4,
+        zoom: 5
+      });
+      expect(view.getZoom()).to.eql(4);
+      expect(view.targetResolution_).to.eql(view.getMaxResolution() / Math.pow(2, 4));
+    });
+
+    it('correctly handles extent constraint', function() {
+      // default viewport size is 100x100
+      const view = new View({
+        extent: [0, 0, 50, 50],
+        resolution: 1
+      });
+      expect(view.getResolution()).to.eql(0.5);
+      expect(view.targetResolution_).to.eql(0.5);
+    });
+  });
+
   describe('create constraints', function() {
 
     describe('create center constraint', function() {
@@ -35,10 +100,63 @@ describe('ol.View', function() {
       describe('with no options', function() {
         it('gives a correct center constraint function', function() {
           const options = {};
+          const size = [512, 256];
+          const resolution = 1e5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([42, -100], resolution, size)).to.eql([42, -100]);
+        });
+      });
+
+      describe('panning off the edge of the world', function() {
+        it('disallows going north off the world', function() {
+          const options = {
+            projection: 'EPSG:4326'
+          };
+          const size = [360, 180];
+          const resolution = 0.5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([0, 60], resolution, size)).to.eql([0, 45]);
+          expect(fn([180, 60], resolution, size)).to.eql([180, 45]);
+          expect(fn([-180, 60], resolution, size)).to.eql([-180, 45]);
+        });
+
+        it('disallows going south off the world', function() {
+          const options = {
+            projection: 'EPSG:4326'
+          };
+          const size = [360, 180];
+          const resolution = 0.5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([0, -60], resolution, size)).to.eql([0, -45]);
+          expect(fn([180, -60], resolution, size)).to.eql([180, -45]);
+          expect(fn([-180, -60], resolution, size)).to.eql([-180, -45]);
+        });
+      });
+
+      describe('with multiWorld: true', function() {
+        it('gives a correct center constraint function', function() {
+          const options = {multiWorld: true};
+          const size = [512, 256];
+          const resolution = 1e5;
+          const fn = createCenterConstraint(options);
+          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
+          expect(fn([42, -100], resolution, size)).to.eql([42, -100]);
+        });
+      });
+
+      describe('with extent option and center only', function() {
+        it('gives a correct center constraint function', function() {
+          const options = {
+            extent: [0, 0, 1, 1],
+            constrainOnlyCenter: true
+          };
           const fn = createCenterConstraint(options);
           expect(fn([0, 0])).to.eql([0, 0]);
-          expect(fn(undefined)).to.eql(undefined);
-          expect(fn([42, -100])).to.eql([42, -100]);
+          expect(fn([-10, 0])).to.eql([0, 0]);
+          expect(fn([100, 100])).to.eql([1, 1]);
         });
       });
 
@@ -48,9 +166,17 @@ describe('ol.View', function() {
             extent: [0, 0, 1, 1]
           };
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0])).to.eql([0, 0]);
-          expect(fn([-10, 0])).to.eql([0, 0]);
-          expect(fn([100, 100])).to.eql([1, 1]);
+          const res = 1;
+          const size = [0.15, 0.1];
+          expect(fn([0, 0], res, size)).to.eql([0.075, 0.05]);
+          expect(fn([0.5, 0.5], res, size)).to.eql([0.5, 0.5]);
+          expect(fn([10, 10], res, size)).to.eql([0.925, 0.95]);
+
+          const overshootCenter = fn([10, 10], res, size, true);
+          expect(overshootCenter[0] > 0.925).to.eql(true);
+          expect(overshootCenter[1] > 0.95).to.eql(true);
+          expect(overshootCenter[0] < 9).to.eql(true);
+          expect(overshootCenter[1] < 9).to.eql(true);
         });
       });
 
@@ -59,18 +185,20 @@ describe('ol.View', function() {
     describe('create resolution constraint', function() {
 
       describe('with no options', function() {
+        const size = [200, 200];
         it('gives a correct resolution constraint function', function() {
           const options = {};
           const fn = createResolutionConstraint(options).constraint;
-          expect(fn(156543.03392804097, 0, 0))
+          expect(fn(156543.03392804097, 0, size))
             .to.roughlyEqual(156543.03392804097, 1e-9);
-          expect(fn(78271.51696402048, 0, 0))
+          expect(fn(78271.51696402048, 0, size))
             .to.roughlyEqual(78271.51696402048, 1e-10);
         });
       });
 
       describe('with maxResolution, maxZoom, and zoomFactor options',
         function() {
+          const size = [200, 200];
           it('gives a correct resolution constraint function', function() {
             const options = {
               maxResolution: 81,
@@ -83,16 +211,17 @@ describe('ol.View', function() {
             const minResolution = info.minResolution;
             expect(minResolution).to.eql(3);
             const fn = info.constraint;
-            expect(fn(82, 0, 0)).to.eql(81);
-            expect(fn(81, 0, 0)).to.eql(81);
-            expect(fn(27, 0, 0)).to.eql(27);
-            expect(fn(9, 0, 0)).to.eql(9);
-            expect(fn(3, 0, 0)).to.eql(3);
-            expect(fn(2, 0, 0)).to.eql(3);
+            expect(fn(82, 0, size)).to.eql(81);
+            expect(fn(81, 0, size)).to.eql(81);
+            expect(fn(27, 0, size)).to.eql(27);
+            expect(fn(9, 0, size)).to.eql(9);
+            expect(fn(3, 0, size)).to.eql(3);
+            expect(fn(2, 0, size)).to.eql(3);
           });
         });
 
       describe('with resolutions', function() {
+        const size = [200, 200];
         it('gives a correct resolution constraint function', function() {
           const options = {
             resolutions: [97, 76, 65, 54, 0.45]
@@ -103,17 +232,18 @@ describe('ol.View', function() {
           const minResolution = info.minResolution;
           expect(minResolution).to.eql(0.45);
           const fn = info.constraint;
-          expect(fn(97, 0, 0)).to.eql(97);
-          expect(fn(76, 0, 0)).to.eql(76);
-          expect(fn(65, 0, 0)).to.eql(65);
-          expect(fn(54, 0, 0)).to.eql(54);
-          expect(fn(0.45, 0, 0)).to.eql(0.45);
+          expect(fn(97, 0, size)).to.eql(97);
+          expect(fn(76, 0, size)).to.eql(76);
+          expect(fn(65, 0, size)).to.eql(65);
+          expect(fn(54, 0, size)).to.eql(54);
+          expect(fn(0.45, 0, size)).to.eql(0.45);
         });
       });
 
       describe('with zoom related options', function() {
 
         const defaultMaxRes = 156543.03392804097;
+        const size = [200, 200];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -124,10 +254,10 @@ describe('ol.View', function() {
             maxZoom: maxZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes, 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
         });
 
@@ -137,10 +267,10 @@ describe('ol.View', function() {
             minZoom: minZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, minZoom), 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, 28), 1e-9);
         });
 
@@ -152,10 +282,10 @@ describe('ol.View', function() {
             maxZoom: maxZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, minZoom), 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
         });
 
@@ -169,10 +299,10 @@ describe('ol.View', function() {
             zoomFactor: zoomFactor
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(zoomFactor, minZoom), 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(zoomFactor, maxZoom), 1e-9);
         });
 
@@ -181,6 +311,7 @@ describe('ol.View', function() {
       describe('with resolution related options', function() {
 
         const defaultMaxRes = 156543.03392804097;
+        const size = [200, 200];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -188,13 +319,14 @@ describe('ol.View', function() {
         it('works with only maxResolution', function() {
           const maxResolution = 10e6;
           const constraint = getConstraint({
+            multiWorld: true,
             maxResolution: maxResolution
           });
 
-          expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
+          expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
             maxResolution, 1e-9);
 
-          const minResolution = constraint(0, 0, 0);
+          const minResolution = constraint(0, 0, size);
           const defaultMinRes = defaultMaxRes / Math.pow(2, 28);
 
           expect(minResolution).to.be.greaterThan(defaultMinRes);
@@ -207,10 +339,10 @@ describe('ol.View', function() {
             minResolution: minResolution
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes, 1e-9);
 
-          const constrainedMinRes = constraint(0, 0, 0);
+          const constrainedMinRes = constraint(0, 0, size);
           expect(constrainedMinRes).to.be.greaterThan(minResolution);
           expect(constrainedMinRes / minResolution).to.be.lessThan(2);
         });
@@ -218,31 +350,33 @@ describe('ol.View', function() {
         it('works with minResolution and maxResolution', function() {
           const constraint = getConstraint({
             maxResolution: 500,
-            minResolution: 100
+            minResolution: 100,
+            constrainResolution: true
           });
 
-          expect(constraint(600, 0, 0)).to.be(500);
-          expect(constraint(500, 0, 0)).to.be(500);
-          expect(constraint(400, 0, 0)).to.be(500);
-          expect(constraint(300, 0, 0)).to.be(250);
-          expect(constraint(200, 0, 0)).to.be(250);
-          expect(constraint(100, 0, 0)).to.be(125);
-          expect(constraint(0, 0, 0)).to.be(125);
+          expect(constraint(600, 0, size)).to.be(500);
+          expect(constraint(500, 0, size)).to.be(500);
+          expect(constraint(400, 0, size)).to.be(500);
+          expect(constraint(300, 0, size)).to.be(250);
+          expect(constraint(200, 0, size)).to.be(250);
+          expect(constraint(100, 0, size)).to.be(125);
+          expect(constraint(0, 0, size)).to.be(125);
         });
 
         it('accepts minResolution, maxResolution, and zoomFactor', function() {
           const constraint = getConstraint({
             maxResolution: 500,
             minResolution: 1,
-            zoomFactor: 10
+            zoomFactor: 10,
+            constrainResolution: true
           });
 
-          expect(constraint(1000, 0, 0)).to.be(500);
-          expect(constraint(500, 0, 0)).to.be(500);
-          expect(constraint(100, 0, 0)).to.be(50);
-          expect(constraint(50, 0, 0)).to.be(50);
-          expect(constraint(10, 0, 0)).to.be(5);
-          expect(constraint(1, 0, 0)).to.be(5);
+          expect(constraint(1000, 0, size)).to.be(500);
+          expect(constraint(500, 0, size)).to.be(500);
+          expect(constraint(100, 0, size)).to.be(50);
+          expect(constraint(50, 0, size)).to.be(50);
+          expect(constraint(10, 0, size)).to.be(5);
+          expect(constraint(1, 0, size)).to.be(5);
         });
 
       });
@@ -250,6 +384,7 @@ describe('ol.View', function() {
       describe('overspecified options (prefers resolution)', function() {
 
         const defaultMaxRes = 156543.03392804097;
+        const size = [200, 200];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -258,14 +393,15 @@ describe('ol.View', function() {
           const maxResolution = 10e6;
           const minZoom = 8;
           const constraint = getConstraint({
+            multiWorld: true,
             maxResolution: maxResolution,
             minZoom: minZoom
           });
 
-          expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
+          expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
             maxResolution, 1e-9);
 
-          const minResolution = constraint(0, 0, 0);
+          const minResolution = constraint(0, 0, size);
           const defaultMinRes = defaultMaxRes / Math.pow(2, 28);
 
           expect(minResolution).to.be.greaterThan(defaultMinRes);
@@ -280,14 +416,35 @@ describe('ol.View', function() {
             maxZoom: maxZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes, 1e-9);
 
-          const constrainedMinRes = constraint(0, 0, 0);
+          const constrainedMinRes = constraint(0, 0, size);
           expect(constrainedMinRes).to.be.greaterThan(minResolution);
           expect(constrainedMinRes / minResolution).to.be.lessThan(2);
         });
 
+      });
+
+      describe('Map views that show more than one world', function() {
+
+        const defaultMaxRes = 156543.03392804097;
+        const size = [512, 512];
+        function getConstraint(options) {
+          return createResolutionConstraint(options).constraint;
+        }
+
+        it('are disabled by default', function() {
+          const fn = getConstraint({});
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+        });
+
+        it('can be enabled by setting multiWorld to truet', function() {
+          const fn = getConstraint({
+            multiWorld: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes);
+        });
       });
 
     });
@@ -365,6 +522,7 @@ describe('ol.View', function() {
     it('applies the current resolution if resolution was originally supplied', function() {
       const view = new View({
         center: [0, 0],
+        maxResolution: 2000,
         resolution: 1000
       });
       view.setResolution(500);
@@ -964,7 +1122,7 @@ describe('ol.View', function() {
     let view;
     beforeEach(function() {
       view = new View({
-        resolutions: [512, 256, 128, 64, 32, 16]
+        resolutions: [1024, 512, 256, 128, 64, 32, 16, 8]
       });
     });
 
@@ -973,25 +1131,25 @@ describe('ol.View', function() {
       expect(view.getZoom()).to.be(undefined);
 
       view.setResolution(513);
-      expect(view.getZoom()).to.roughlyEqual(Math.log(512 / 513) / Math.LN2, 1e-9);
+      expect(view.getZoom()).to.roughlyEqual(Math.log(1024 / 513) / Math.LN2, 1e-9);
 
       view.setResolution(512);
-      expect(view.getZoom()).to.be(0);
+      expect(view.getZoom()).to.be(1);
 
       view.setResolution(100);
-      expect(view.getZoom()).to.roughlyEqual(2.35614, 1e-5);
+      expect(view.getZoom()).to.roughlyEqual(3.35614, 1e-5);
 
       view.setResolution(65);
-      expect(view.getZoom()).to.roughlyEqual(2.97763, 1e-5);
+      expect(view.getZoom()).to.roughlyEqual(3.97763, 1e-5);
 
       view.setResolution(64);
-      expect(view.getZoom()).to.be(3);
+      expect(view.getZoom()).to.be(4);
 
       view.setResolution(16);
-      expect(view.getZoom()).to.be(5);
+      expect(view.getZoom()).to.be(6);
 
       view.setResolution(15);
-      expect(view.getZoom()).to.roughlyEqual(Math.log(512 / 15) / Math.LN2, 1e-9);
+      expect(view.getZoom()).to.roughlyEqual(Math.log(1024 / 15) / Math.LN2, 1e-9);
     });
 
     it('works for resolution arrays with variable zoom factors', function() {
@@ -1102,7 +1260,9 @@ describe('ol.View', function() {
       const min = view.getMinZoom();
 
       expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
+      expect(view.getResolutionForZoom(max + 1)).to.be(view.getMinResolution() / 2);
       expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
+      expect(view.getResolutionForZoom(min - 1)).to.be(view.getMaxResolution() * 2);
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function() {
@@ -1110,11 +1270,30 @@ describe('ol.View', function() {
         resolutions: [10, 8, 6, 4, 2]
       });
 
+      expect(view.getResolutionForZoom(-1)).to.be(10);
       expect(view.getResolutionForZoom(0)).to.be(10);
       expect(view.getResolutionForZoom(1)).to.be(8);
       expect(view.getResolutionForZoom(2)).to.be(6);
       expect(view.getResolutionForZoom(3)).to.be(4);
       expect(view.getResolutionForZoom(4)).to.be(2);
+      expect(view.getResolutionForZoom(5)).to.be(2);
+    });
+
+    it('returns correct zoom levels for resolutions with variable zoom levels', function() {
+      const view = new View({
+        resolutions: [50, 10, 5, 2.5, 1.25, 0.625]
+      });
+
+      expect(view.getResolutionForZoom(-1)).to.be(50);
+      expect(view.getResolutionForZoom(0)).to.be(50);
+      expect(view.getResolutionForZoom(0.5)).to.be(50 / Math.pow(5, 0.5));
+      expect(view.getResolutionForZoom(1)).to.be(10);
+      expect(view.getResolutionForZoom(2)).to.be(5);
+      expect(view.getResolutionForZoom(2.75)).to.be(5 / Math.pow(2, 0.75));
+      expect(view.getResolutionForZoom(3)).to.be(2.5);
+      expect(view.getResolutionForZoom(4)).to.be(1.25);
+      expect(view.getResolutionForZoom(5)).to.be(0.625);
+      expect(view.getResolutionForZoom(6)).to.be(0.625);
     });
 
   });
@@ -1246,8 +1425,14 @@ describe('ol.View', function() {
       document.body.removeChild(target);
     });
     it('calculates the size correctly', function() {
-      const size = map.getView().getSizeFromViewport_();
+      let size = map.getView().getSizeFromViewport_();
       expect(size).to.eql([200, 150]);
+      size = map.getView().getSizeFromViewport_(Math.PI / 2);
+      expect(size[0]).to.roughlyEqual(150, 1e-9);
+      expect(size[1]).to.roughlyEqual(200, 1e-9);
+      size = map.getView().getSizeFromViewport_(Math.PI);
+      expect(size[0]).to.roughlyEqual(200, 1e-9);
+      expect(size[1]).to.roughlyEqual(150, 1e-9);
     });
   });
 
@@ -1278,13 +1463,39 @@ describe('ol.View', function() {
         zoom: 5
       });
     });
-    it('fits correctly to the geometry', function() {
+    it('fits correctly to the geometry (with unconstrained resolution)', function() {
       view.fit(
         new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-        {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
+        {size: [200, 200], padding: [100, 0, 0, 100]});
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
+
+      view.fit(
+        new Circle([6000, 46000], 1000),
+        {size: [200, 200]});
+      expect(view.getResolution()).to.be(10);
+      expect(view.getCenter()[0]).to.be(6000);
+      expect(view.getCenter()[1]).to.be(46000);
+
+      view.setRotation(Math.PI / 8);
+      view.fit(
+        new Circle([6000, 46000], 1000),
+        {size: [200, 200]});
+      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+
+      view.setRotation(Math.PI / 4);
+      view.fit(
+        new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {size: [200, 200], padding: [100, 0, 0, 100]});
+      expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
+    });
+    it('fits correctly to the geometry', function() {
+      view.setConstrainResolution(true);
 
       view.fit(
         new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
@@ -1314,30 +1525,8 @@ describe('ol.View', function() {
       expect(view.getZoom()).to.be(6);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
-
-      view.fit(
-        new Circle([6000, 46000], 1000),
-        {size: [200, 200], constrainResolution: false});
-      expect(view.getResolution()).to.be(10);
-      expect(view.getCenter()[0]).to.be(6000);
-      expect(view.getCenter()[1]).to.be(46000);
-
-      view.setRotation(Math.PI / 8);
-      view.fit(
-        new Circle([6000, 46000], 1000),
-        {size: [200, 200], constrainResolution: false});
-      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
-
-      view.setRotation(Math.PI / 4);
-      view.fit(
-        new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-        {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
-      expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
     });
+
     it('fits correctly to the extent', function() {
       view.fit([1000, 1000, 2000, 2000], {size: [200, 200]});
       expect(view.getResolution()).to.be(5);
@@ -1360,7 +1549,6 @@ describe('ol.View', function() {
         {
           size: [200, 200],
           padding: [100, 0, 0, 100],
-          constrainResolution: false,
           duration: 25
         });
 
@@ -1421,6 +1609,281 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.roughlyEqual(4585.78643762691, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
     });
+  });
+
+  describe('#beginInteraction() and endInteraction()', function() {
+    let view;
+    beforeEach(function() {
+      view = new View();
+    });
+
+    it('correctly changes the view hint', function() {
+      view.beginInteraction();
+      expect(view.getHints()[1]).to.be(1);
+      view.beginInteraction();
+      expect(view.getHints()[1]).to.be(2);
+      view.endInteraction();
+      view.endInteraction();
+      expect(view.getHints()[1]).to.be(0);
+    });
+  });
+
+  describe('#getConstrainedZoom()', function() {
+    let view;
+
+    it('works correctly without constraint', function() {
+      view = new View({
+        zoom: 0
+      });
+      expect(view.getConstrainedZoom(3)).to.be(3);
+    });
+    it('works correctly with resolution constraints', function() {
+      view = new View({
+        zoom: 4,
+        minZoom: 4,
+        maxZoom: 8
+      });
+      expect(view.getConstrainedZoom(3)).to.be(4);
+      expect(view.getConstrainedZoom(10)).to.be(8);
+    });
+    it('works correctly with a specific resolution set', function() {
+      view = new View({
+        zoom: 0,
+        resolutions: [512, 256, 128, 64, 32, 16, 8]
+      });
+      expect(view.getConstrainedZoom(0)).to.be(0);
+      expect(view.getConstrainedZoom(4)).to.be(4);
+      expect(view.getConstrainedZoom(8)).to.be(6);
+    });
+  });
+
+  describe('#getConstrainedResolution()', function() {
+    let view;
+    const defaultMaxRes = 156543.03392804097;
+
+    it('works correctly by snapping to power of 2', function() {
+      view = new View();
+      expect(view.getConstrainedResolution(1000000)).to.be(defaultMaxRes);
+      expect(view.getConstrainedResolution(defaultMaxRes / 8)).to.be(defaultMaxRes / 8);
+    });
+    it('works correctly by snapping to a custom zoom factor', function() {
+      view = new View({
+        maxResolution: 2500,
+        zoomFactor: 5,
+        maxZoom: 4,
+        constrainResolution: true
+      });
+      expect(view.getConstrainedResolution(90, 1)).to.be(100);
+      expect(view.getConstrainedResolution(90, -1)).to.be(20);
+      expect(view.getConstrainedResolution(20)).to.be(20);
+      expect(view.getConstrainedResolution(5)).to.be(4);
+      expect(view.getConstrainedResolution(1)).to.be(4);
+    });
+    it('works correctly with a specific resolution set', function() {
+      view = new View({
+        zoom: 0,
+        resolutions: [512, 256, 128, 64, 32, 16, 8],
+        constrainResolution: true
+      });
+      expect(view.getConstrainedResolution(1000, 1)).to.be(512);
+      expect(view.getConstrainedResolution(260, 1)).to.be(512);
+      expect(view.getConstrainedResolution(260)).to.be(256);
+      expect(view.getConstrainedResolution(30)).to.be(32);
+      expect(view.getConstrainedResolution(30, -1)).to.be(16);
+      expect(view.getConstrainedResolution(4, -1)).to.be(8);
+    });
+  });
+
+  describe('#adjustRotation()', function() {
+    it('changes view rotation with anchor', function() {
+      const view = new View({
+        resolution: 1,
+        center: [0, 0]
+      });
+
+      view.adjustRotation(Math.PI / 2);
+      expect(view.getRotation()).to.be(Math.PI / 2);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(-Math.PI);
+      expect(view.getRotation()).to.be(-Math.PI / 2);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(Math.PI / 3, [50, 0]);
+      expect(view.getRotation()).to.roughlyEqual(-Math.PI / 6, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(50 * (1 - Math.cos(Math.PI / 3)), 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(-50 * Math.sin(Math.PI / 3), 1e-9);
+    });
+
+    it('does not change view parameters if rotation is disabled', function() {
+      const view = new View({
+        resolution: 1,
+        enableRotation: false,
+        center: [0, 0]
+      });
+
+      view.adjustRotation(Math.PI / 2);
+      expect(view.getRotation()).to.be(0);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(-Math.PI * 3, [-50, 0]);
+      expect(view.getRotation()).to.be(0);
+      expect(view.getCenter()).to.eql([0, 0]);
+    });
+  });
+
+  describe('#adjustZoom()', function() {
+
+    it('changes view resolution', function() {
+      const view = new View({
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1);
+      expect(view.getResolution()).to.be(0.5);
+
+      view.adjustZoom(-1);
+      expect(view.getResolution()).to.be(1);
+
+      view.adjustZoom(2);
+      expect(view.getResolution()).to.be(0.25);
+
+      view.adjustZoom(-2);
+      expect(view.getResolution()).to.be(1);
+    });
+
+    it('changes view resolution and center relative to the anchor', function() {
+      const view = new View({
+        center: [0, 0],
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1, [10, 10]);
+      expect(view.getCenter()).to.eql([5, 5]);
+
+      view.adjustZoom(-1, [0, 0]);
+      expect(view.getCenter()).to.eql([10, 10]);
+
+      view.adjustZoom(2, [0, 0]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(-2, [0, 0]);
+      expect(view.getCenter()).to.eql([10, 10]);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent (center only)', function() {
+      const view = new View({
+        center: [0, 0],
+        extent: [-2.5, -2.5, 2.5, 2.5],
+        constrainOnlyCenter: true,
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1, [10, 10]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(-1, [0, 0]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(2, [10, 10]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(-2, [0, 0]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
+      const map = new Map({});
+      const view = new View({
+        center: [50, 50],
+        extent: [0, 0, 100, 100],
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25, 0.125]
+      });
+      map.setView(view);
+
+      view.adjustZoom(1, [100, 100]);
+      expect(view.getCenter()).to.eql([75, 75]);
+
+      view.adjustZoom(-1, [75, 75]);
+      expect(view.getCenter()).to.eql([50, 50]);
+
+      view.adjustZoom(2, [100, 100]);
+      expect(view.getCenter()).to.eql([87.5, 87.5]);
+
+      view.adjustZoom(-3, [0, 0]);
+      expect(view.getCenter()).to.eql([50, 50]);
+      expect(view.getResolution()).to.eql(1);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent (rotated)', function() {
+      const map = new Map({});
+      const view = new View({
+        center: [50, 50],
+        extent: [-100, -100, 100, 100],
+        resolution: 1,
+        resolutions: [2, 1, 0.5, 0.25, 0.125],
+        rotation: Math.PI / 4
+      });
+      map.setView(view);
+      const halfSize = 100 * Math.SQRT1_2;
+
+      view.adjustZoom(1, [100, 100]);
+      expect(view.getCenter()).to.eql([100 - halfSize / 2, 100 - halfSize / 2]);
+
+      view.setCenter([0, 50]);
+      view.adjustZoom(-1, [0, 0]);
+      expect(view.getCenter()).to.eql([0, 100 - halfSize]);
+    });
+  });
+});
+
+describe('does not start unexpected animations during interaction', function() {
+  let map;
+  beforeEach(function() {
+    map = new Map({
+      target: createMapDiv(512, 256)
+    });
+  });
+  afterEach(function() {
+    disposeMap(map);
+  });
+
+  it('works when initialized with #setCenter() and #setZoom()', function(done) {
+    const view = map.getView();
+    let callCount = 0;
+    view.on('change:resolution', function() {
+      ++callCount;
+    });
+    view.setCenter([0, 0]);
+    view.setZoom(0);
+    view.beginInteraction();
+    view.endInteraction();
+    setTimeout(function() {
+      expect(callCount).to.be(1);
+      done();
+    }, 500);
+  });
+
+  it('works when initialized with #animate()', function(done) {
+    const view = map.getView();
+    let callCount = 0;
+    view.on('change:resolution', function() {
+      ++callCount;
+    });
+    view.animate({
+      center: [0, 0],
+      zoom: 0
+    });
+    view.beginInteraction();
+    view.endInteraction();
+    setTimeout(function() {
+      expect(callCount).to.be(1);
+      done();
+    }, 500);
   });
 });
 

@@ -7,33 +7,32 @@ import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';
 import {assign} from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
-import TileImage from '../source/TileImage.js';
-import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
+import TileImage from './TileImage.js';
+import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../tilegrid/WMTS.js").default} tileGrid Tile grid.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("./WMTSRequestEncoding.js").default|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {import("../ImageTile.js").TileClass} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {typeof import("../ImageTile.js").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {string} [version='image/jpeg'] Image format.
- * @property {string} [format='1.0.0'] WMTS version.
+ * @property {string} [format='image/jpeg'] Image format. Only used when `requestEncoding` is `'KVP'`.
+ * @property {string} [version='1.0.0'] WMTS version.
  * @property {string} matrixSet Matrix set.
  * @property {!Object} [dimensions] Additional "dimensions" for tile requests.
  * This is an object with properties named like the advertised WMTS dimensions.
@@ -63,7 +62,7 @@ import {appendParams} from '../uri.js';
  */
 class WMTS extends TileImage {
   /**
-   * @param {Options=} options WMTS options.
+   * @param {Options} options WMTS options.
    */
   constructor(options) {
 
@@ -159,9 +158,7 @@ class WMTS extends TileImage {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
+    this.setTileUrlFunction(createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
   }
 
   /**
@@ -510,7 +507,7 @@ function createFromWMTSTemplate(template) {
         const localContext = {
           'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
           'TileCol': tileCoord[1],
-          'TileRow': -tileCoord[2] - 1
+          'TileRow': tileCoord[2]
         };
         assign(localContext, dimensions);
         let url = template;

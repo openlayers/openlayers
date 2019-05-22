@@ -100,8 +100,7 @@ function xyz2rgb(x) {
 
 const raster = new RasterSource({
   sources: [new Stamen({
-    layer: 'watercolor',
-    transition: 0
+    layer: 'watercolor'
   })],
   operation: function(pixels, data) {
     const hcl = rgb2hcl(pixels[0]);

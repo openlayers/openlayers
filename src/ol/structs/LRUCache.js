@@ -96,17 +96,15 @@ class LRUCache extends EventTarget {
 
 
   /**
-   * @param {function(this: S, T, string, LRUCache): ?} f The function
+   * @param {function(T, string, LRUCache): ?} f The function
    *     to call for every entry from the oldest to the newer. This function takes
    *     3 arguments (the entry value, the entry key and the LRUCache object).
    *     The return value is ignored.
-   * @param {S=} opt_this The object to use as `this` in `f`.
-   * @template S
    */
-  forEach(f, opt_this) {
+  forEach(f) {
     let entry = this.oldest_;
     while (entry) {
-      f.call(opt_this, entry.value_, entry.key_, this);
+      f(entry.value_, entry.key_, this);
       entry = entry.newer;
     }
   }
@@ -114,9 +112,10 @@ class LRUCache extends EventTarget {
 
   /**
    * @param {string} key Key.
+   * @param {*=} opt_options Options (reserverd for subclasses).
    * @return {T} Value.
    */
-  get(key) {
+  get(key, opt_options) {
     const entry = this.entries_[key];
     assert(entry !== undefined,
       15); // Tried to get a value for a key that does not exist in the cache
@@ -261,12 +260,12 @@ class LRUCache extends EventTarget {
   set(key, value) {
     assert(!(key in this.entries_),
       16); // Tried to set a value for a key that is used already
-    const entry = /** @type {Entry} */ ({
+    const entry = {
       key_: key,
       newer: null,
       older: this.newest_,
       value_: value
-    });
+    };
     if (!this.newest_) {
       this.oldest_ = entry;
     } else {
@@ -285,16 +284,6 @@ class LRUCache extends EventTarget {
    */
   setSize(size) {
     this.highWaterMark = size;
-  }
-
-
-  /**
-   * Prune the cache.
-   */
-  prune() {
-    while (this.canExpireCache()) {
-      this.pop();
-    }
   }
 
 }

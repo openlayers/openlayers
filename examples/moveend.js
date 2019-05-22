@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import {getBottomLeft, getTopRight} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {toLonLat} from '../src/ol/proj.js';
@@ -14,11 +13,6 @@ const map = new Map({
     })
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2

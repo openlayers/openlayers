@@ -58,36 +58,50 @@ export const ONE_MINUS_SRC_ALPHA = 0x0303;
 
 
 /**
+ * Used by {@link module:ol/webgl/Helper~WebGLHelper} for buffers containing vertices data, such as
+ * position, color, texture coordinate, etc. These vertices are then referenced by an index buffer
+ * to be drawn on screen (see {@link module:ol/webgl.ELEMENT_ARRAY_BUFFER}).
  * @const
  * @type {number}
+ * @api
  */
 export const ARRAY_BUFFER = 0x8892;
 
 
 /**
+ * Used by {@link module:ol/webgl/Helper~WebGLHelper} for buffers containing indices data.
+ * Index buffers are essentially lists of references to vertices defined in a vertex buffer
+ * (see {@link module:ol/webgl.ARRAY_BUFFER}), and define the primitives (triangles) to be drawn.
  * @const
  * @type {number}
+ * @api
  */
 export const ELEMENT_ARRAY_BUFFER = 0x8893;
 
 
 /**
+ * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
  * @const
  * @type {number}
+ * @api
  */
 export const STREAM_DRAW = 0x88E0;
 
 
 /**
+ * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
  * @const
  * @type {number}
+ * @api
  */
 export const STATIC_DRAW = 0x88E4;
 
 
 /**
+ * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
  * @const
  * @type {number}
+ * @api
  */
 export const DYNAMIC_DRAW = 0x88E8;
 
@@ -323,8 +337,8 @@ let HAS = false;
 //TODO Remove side effects
 if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
-    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    const canvas = document.createElement('canvas');
+    const gl = getContext(canvas);
     if (gl) {
       HAS = true;
       MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));

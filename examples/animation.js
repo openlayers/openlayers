@@ -24,9 +24,6 @@ const map = new Map({
       source: new OSM()
     })
   ],
-  // Improve user experience by loading tiles while animating. Will make
-  // animations stutter on mobile or slow devices.
-  loadTilesWhileAnimating: true,
   view: view
 });
 

@@ -29,6 +29,14 @@ describe('ol.coordinate', function() {
       expect(coordinate[0]).to.eql(48.73);
       expect(coordinate[1]).to.eql(10.1);
     });
+
+    it('does not produce unexpected results with string delta values', function() {
+      addCoordinate(coordinate, delta.map(function(n) {
+        return String(n);
+      }));
+      expect(coordinate[0]).to.eql(48.73);
+      expect(coordinate[1]).to.eql(10.1);
+    });
   });
 
   describe('#equals', function() {

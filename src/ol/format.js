@@ -7,6 +7,7 @@ export {default as GeoJSON} from './format/GeoJSON.js';
 export {default as GML} from './format/GML.js';
 export {default as GPX} from './format/GPX.js';
 export {default as IGC} from './format/IGC.js';
+export {default as IIIFInfo} from './format/IIIFInfo.js';
 export {default as KML} from './format/KML.js';
 export {default as MVT} from './format/MVT.js';
 export {default as OWS} from './format/OWS.js';

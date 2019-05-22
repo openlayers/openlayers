@@ -2,8 +2,8 @@
  * @module ol/geom/flat/intersectsextent
  */
 import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
-import {linearRingContainsXY, linearRingContainsExtent} from '../flat/contains.js';
-import {forEach as forEachSegment} from '../flat/segments.js';
+import {linearRingContainsXY, linearRingContainsExtent} from './contains.js';
+import {forEach as forEachSegment} from './segments.js';
 
 
 /**
@@ -111,7 +111,9 @@ export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride,
   }
   for (let i = 1, ii = ends.length; i < ii; ++i) {
     if (linearRingContainsExtent(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
-      return false;
+      if (!intersectsLineString(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
+        return false;
+      }
     }
   }
   return true;

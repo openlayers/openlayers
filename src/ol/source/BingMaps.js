@@ -6,10 +6,35 @@ import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import SourceState from '../source/State.js';
-import TileImage from '../source/TileImage.js';
-import {createOrUpdate, quadKey} from '../tilecoord.js';
+import SourceState from './State.js';
+import TileImage from './TileImage.js';
+import {createOrUpdate} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
+
+
+/**
+ * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
+ * @return {string} Quad key.
+ */
+export function quadKey(tileCoord) {
+  const z = tileCoord[0];
+  const digits = new Array(z);
+  let mask = 1 << (z - 1);
+  let i, charCode;
+  for (i = 0; i < z; ++i) {
+    // 48 is charCode for 0 - '0'.charCodeAt(0)
+    charCode = 48;
+    if (tileCoord[1] & mask) {
+      charCode += 1;
+    }
+    if (tileCoord[2] & mask) {
+      charCode += 2;
+    }
+    digits[i] = String.fromCharCode(charCode);
+    mask >>= 1;
+  }
+  return digits.join('');
+}
 
 
 /**
@@ -25,7 +50,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
  * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
  * @property {string} [culture='en-us'] Culture code.
  * @property {string} key Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
@@ -46,13 +71,55 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
 
 
 /**
+ * @typedef {Object} BingMapsImageryMetadataResponse
+ * @property {number} statusCode The response status code
+ * @property {string} statusDescription The response status description
+ * @property {string} authenticationResultCode The authentication result code
+ * @property {Array<ResourceSet>} resourceSets The array of resource sets
+ */
+
+
+/**
+ * @typedef {Object} ResourceSet
+ * @property {Array<Resource>} resources
+ */
+
+
+/**
+ * @typedef {Object} Resource
+ * @property {number} imageHeight The image height
+ * @property {number} imageWidth The image width
+ * @property {number} zoomMin The minimum zoom level
+ * @property {number} zoomMax The maximum zoom level
+ * @property {string} imageUrl The image URL
+ * @property {Array<string>} imageUrlSubdomains The image URL subdomains for rotation
+ * @property {Array<ImageryProvider>} [imageryProviders] The array of ImageryProviders
+ */
+
+
+/**
+ * @typedef {Object} ImageryProvider
+ * @property {Array<CoverageArea>} coverageAreas The coverage areas
+ * @property {string} [attribution] The attribution
+ */
+
+
+/**
+ * @typedef {Object} CoverageArea
+ * @property {number} zoomMin The minimum zoom
+ * @property {number} zoomMax The maximum zoom
+ * @property {Array<number>} bbox The coverage bounding box
+ */
+
+
+/**
  * @classdesc
  * Layer source for Bing Maps tile data.
  * @api
  */
 class BingMaps extends TileImage {
   /**
-   * @param {Options=} options Bing Maps options.
+   * @param {Options} options Bing Maps options.
    */
   constructor(options) {
 
@@ -150,13 +217,16 @@ class BingMaps extends TileImage {
 
     const sourceProjection = this.getProjection();
     const extent = extentFromProjection(sourceProjection);
+    const scale = this.hidpi_ ? 2 : 1;
     const tileSize = resource.imageWidth == resource.imageHeight ?
-      resource.imageWidth : [resource.imageWidth, resource.imageHeight];
+      resource.imageWidth / scale :
+      [resource.imageWidth / scale, resource.imageHeight / scale];
+
     const tileGrid = createXYZ({
       extent: extent,
       minZoom: resource.zoomMin,
       maxZoom: maxZoom,
-      tileSize: tileSize / (this.hidpi_ ? 2 : 1)
+      tileSize: tileSize
     });
     this.tileGrid = tileGrid;
 
@@ -164,6 +234,7 @@ class BingMaps extends TileImage {
     const hidpi = this.hidpi_;
     this.tileUrlFunction = createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function(subdomain) {
+        /** @type {import('../tilecoord.js').TileCoord} */
         const quadKeyTileCoord = [0, 0, 0];
         const imageUrl = resource.imageUrl
           .replace('{subdomain}', subdomain)
@@ -179,7 +250,7 @@ class BingMaps extends TileImage {
             if (!tileCoord) {
               return undefined;
             } else {
-              createOrUpdate(tileCoord[0], tileCoord[1], -tileCoord[2] - 1, quadKeyTileCoord);
+              createOrUpdate(tileCoord[0], tileCoord[1], tileCoord[2], quadKeyTileCoord);
               let url = imageUrl;
               if (hidpi) {
                 url += '&dpi=d1&device=mobile';
@@ -196,7 +267,10 @@ class BingMaps extends TileImage {
 
       this.setAttributions(function(frameState) {
         const attributions = [];
-        const zoom = frameState.viewState.zoom;
+        const viewState = frameState.viewState;
+        const tileGrid = this.getTileGrid();
+        const tileCoord = tileGrid.getTileCoordForCoordAndResolution(viewState.center, viewState.resolution);
+        const zoom = tileCoord[0];
         resource.imageryProviders.map(function(imageryProvider) {
           let intersecting = false;
           const coverageAreas = imageryProvider.coverageAreas;
@@ -219,7 +293,7 @@ class BingMaps extends TileImage {
 
         attributions.push(TOS_ATTRIBUTION);
         return attributions;
-      });
+      }.bind(this));
     }
 
     this.setState(SourceState.READY);

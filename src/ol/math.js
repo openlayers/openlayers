@@ -1,7 +1,6 @@
 /**
  * @module ol/math
  */
-import {assert} from './asserts.js';
 
 /**
  * Takes a number and clamps it to within the provided bounds.
@@ -35,22 +34,12 @@ export const cosh = (function() {
   } else {
     // … else, use the reference implementation of MDN:
     cosh = function(x) {
-      const y = Math.exp(x);
+      const y = /** @type {Math} */ (Math).exp(x);
       return (y + 1 / y) / 2;
     };
   }
   return cosh;
 }());
-
-
-/**
- * @param {number} x X.
- * @return {number} The smallest power of two greater than or equal to x.
- */
-export function roundUpToPowerOfTwo(x) {
-  assert(0 < x, 29); // `x` must be greater than `0`
-  return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
-}
 
 
 /**

@@ -1,10 +1,8 @@
-/* eslint-env node, es6 */
-
 const path = require('path');
-const pkg = require('../package.json');
 
 module.exports = function(karma) {
   karma.set({
+    browsers: ['Chrome'],
     browserDisconnectTolerance: 2,
     frameworks: ['mocha'],
     client: {
@@ -57,7 +55,12 @@ module.exports = function(karma) {
     preprocessors: {
       '**/*.js': ['webpack', 'sourcemap']
     },
-    reporters: ['progress'],
+    reporters: ['dots', 'coverage-istanbul'],
+    coverageIstanbulReporter: {
+      reports: ['text-summary', 'html'],
+      dir: path.resolve(__dirname, '../coverage/'),
+      fixWebpackSourcePaths: true
+    },
     webpack: {
       devtool: 'inline-source-map',
       mode: 'development',
@@ -66,8 +69,31 @@ module.exports = function(karma) {
           {
             test: /\.js$/,
             use: {
-              loader: 'buble-loader'
-            }
+              loader: 'babel-loader',
+              options: {
+                presets: ['@babel/preset-env']
+              }
+            },
+            include: path.resolve('src/ol/'),
+            exclude: path.resolve('node_modules/')
+          }, {
+            test: /\.js$/,
+            use: {
+              loader: 'istanbul-instrumenter-loader',
+              options: {
+                esModules: true
+              }
+            },
+            include: path.resolve('src/ol/'),
+            exclude: path.resolve('node_modules/')
+          }, {
+            test: /\.js$/,
+            use: {
+              loader: path.join(__dirname, '../examples/webpack/worker-loader.js')
+            },
+            include: [
+              path.join(__dirname, '../src/ol/worker')
+            ]
           }
         ]
       }
@@ -77,75 +103,5 @@ module.exports = function(karma) {
     }
   });
 
-  if (process.env.TRAVIS) {
-    const testName = process.env.TRAVIS_PULL_REQUEST ?
-      `https://github.com/openlayers/openlayers/pull/${process.env.TRAVIS_PULL_REQUEST}` :
-      `${pkg.name}@${pkg.version} (${process.env.TRAVIS_COMMIT})`;
-
-    // see https://wiki.saucelabs.com/display/DOCS/Platform+Configurator
-    // for platform and browserName options (Selenium API, node.js code)
-    const customLaunchers = {
-      SL_Chrome: {
-        base: 'SauceLabs',
-        browserName: 'chrome',
-        version: '62.0'
-      },
-      SL_Firefox: {
-        base: 'SauceLabs',
-        browserName: 'firefox',
-        version: '58'
-      },
-      SL_Edge: {
-        base: 'SauceLabs',
-        platform: 'Windows 10',
-        browserName: 'MicrosoftEdge'
-      },
-      SL_Safari: {
-        base: 'SauceLabs',
-        platform: 'macOS 10.12',
-        browserName: 'safari'
-      }
-    };
-    karma.set({
-      sauceLabs: {
-        testName: testName,
-        recordScreenshots: false,
-        startConnect: true,
-        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-        username: 'openlayers',
-        accessKey: process.env.SAUCE_ACCESS_KEY,
-        connectOptions: {
-          noSslBumpDomains: 'all',
-          connectRetries: 5
-        }
-      },
-      hostname: 'travis.dev',
-      reporters: ['dots', 'saucelabs'],
-      browserDisconnectTimeout: 10000,
-      browserDisconnectTolerance: 1,
-      captureTimeout: 240000,
-      browserNoActivityTimeout: 240000,
-      customLaunchers: customLaunchers,
-      browsers: Object.keys(customLaunchers),
-      preprocessors: {
-        '../src/**/*.js': ['coverage']
-      },
-      coverageReporter: {
-        reporters: [
-          {
-            type: 'lcovonly', // that's enough for coveralls, no HTML
-            dir: '../coverage/',
-            subdir: '.'
-          },
-          {
-            type: 'text-summary' // prints the textual summary to the terminal
-          }
-        ]
-      }
-    });
-  } else {
-    karma.set({
-      browsers: ['Chrome']
-    });
-  }
+  process.env.CHROME_BIN = require('puppeteer').executablePath();
 };

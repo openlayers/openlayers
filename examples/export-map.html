@@ -3,12 +3,13 @@ layout: example.html
 title: Map Export
 shortdesc: Example of exporting a map as a PNG image.
 docs: >
-  Example of exporting a map as a PNG image. This example requires a browser
-  that supports <a href="https://developer.mozilla.org/de/docs/Web/API/HTMLCanvasElement/toBlob#Browser_compatibility">
-  <code>canvas.toBlob()</code></a>.
+  Example of exporting a map as a PNG image. This example use the <a href="https://www.npmjs.com/package/html-to-image">html-to-image</a>
+  library.
 tags: "export, png, openstreetmap"
-resources:
-  - https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 ---
 <div id="map" class="map"></div>
+<div style="display: none;">
+  <div class="overlay" id="null">Null Island</div>
+</div>
 <a id="export-png" class="btn btn-default"><i class="fa fa-download"></i> Download PNG</a>
+<a id="image-download" download="map.png"></a>

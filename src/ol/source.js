@@ -5,6 +5,7 @@
 export {default as BingMaps} from './source/BingMaps.js';
 export {default as CartoDB} from './source/CartoDB.js';
 export {default as Cluster} from './source/Cluster.js';
+export {default as IIIF} from './source/IIIF.js';
 export {default as Image} from './source/Image.js';
 export {default as ImageArcGISRest} from './source/ImageArcGISRest.js';
 export {default as ImageCanvas} from './source/ImageCanvas.js';
@@ -24,6 +25,7 @@ export {default as TileWMS} from './source/TileWMS.js';
 export {default as UrlTile} from './source/UrlTile.js';
 export {default as UTFGrid} from './source/UTFGrid.js';
 export {default as Vector} from './source/Vector.js';
+export {default as VectorTile} from './source/VectorTile.js';
 export {default as WMTS} from './source/WMTS.js';
 export {default as XYZ} from './source/XYZ.js';
 export {default as Zoomify} from './source/Zoomify.js';

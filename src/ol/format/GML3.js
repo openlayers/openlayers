@@ -3,17 +3,16 @@
  */
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
-import {transformWithOptions} from '../format/Feature.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {readNonNegativeIntegerString, writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
+import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Polygon from '../geom/Polygon.js';
 import {assign} from '../obj.js';
-import {get as getProjection, transformExtent} from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, parseNode,
   pushParseAndPop, pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
@@ -183,7 +182,7 @@ class GML3 extends GMLBase {
    */
   readPolygonPatch_(node, objectStack) {
     return pushParseAndPop([null],
-      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+      this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -194,7 +193,7 @@ class GML3 extends GMLBase {
    */
   readLineStringSegment_(node, objectStack) {
     return pushParseAndPop([null],
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS,
       node, objectStack, this);
   }
 
@@ -357,9 +356,9 @@ class GML3 extends GMLBase {
     } else if (node.getAttribute('dimension')) {
       dim = readNonNegativeIntegerString(
         node.getAttribute('dimension'));
-    } else if (node.parentNode.getAttribute('srsDimension')) {
+    } else if (/** @type {Element} */ (node.parentNode).getAttribute('srsDimension')) {
       dim = readNonNegativeIntegerString(
-        node.parentNode.getAttribute('srsDimension'));
+        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension'));
     } else if (contextDimension) {
       dim = readNonNegativeIntegerString(contextDimension);
     }
@@ -387,7 +386,7 @@ class GML3 extends GMLBase {
   writePos_(node, value, objectStack) {
     const context = objectStack[objectStack.length - 1];
     const hasZ = context['hasZ'];
-    const srsDimension = hasZ ? 3 : 2;
+    const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
     let axisOrientation = 'enu';
@@ -443,7 +442,7 @@ class GML3 extends GMLBase {
   writePosList_(node, value, objectStack) {
     const context = objectStack[objectStack.length - 1];
     const hasZ = context['hasZ'];
-    const srsDimension = hasZ ? 3 : 2;
+    const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
     // only 2d for simple features profile
@@ -731,17 +730,12 @@ class GML3 extends GMLBase {
   writeGeometryElement(node, geometry, objectStack) {
     const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
     const item = assign({}, context);
-    item.node = node;
+    item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
-      if (context.dataProjection) {
-        value = transformExtent(
-          geometry, context.featureProjection, context.dataProjection);
-      } else {
-        value = geometry;
-      }
+      value = transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
     } else {
-      value = transformWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
+      value = transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
     }
     pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       (item), this.GEOMETRY_SERIALIZERS_,
@@ -757,7 +751,7 @@ class GML3 extends GMLBase {
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
     if (fid) {
-      node.setAttribute('fid', fid);
+      node.setAttribute('fid', /** @type {string} */ (fid));
     }
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureNS = context['featureNS'];
@@ -774,7 +768,7 @@ class GML3 extends GMLBase {
       if (value !== null) {
         keys.push(key);
         values.push(value);
-        if (key == geometryName || value instanceof Geometry) {
+        if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           if (!(key in context.serializers[featureNS])) {
             context.serializers[featureNS][key] = makeChildAppender(
               this.writeGeometryElement, this);
@@ -805,6 +799,7 @@ class GML3 extends GMLBase {
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureType = context['featureType'];
     const featureNS = context['featureNS'];
+    /** @type {Object<string, Object<string, import("../xml.js").Serializer>>} */
     const serializers = {};
     serializers[featureNS] = {};
     serializers[featureNS][featureType] = makeChildAppender(
@@ -828,7 +823,7 @@ class GML3 extends GMLBase {
    */
   MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, opt_nodeName) {
     const parentNode = objectStack[objectStack.length - 1].node;
-    return createElementNS('http://www.opengis.net/gml',
+    return createElementNS(this.namespace,
       MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
   }
 
@@ -861,7 +856,7 @@ class GML3 extends GMLBase {
     } else {
       nodeName = 'Envelope';
     }
-    return createElementNS('http://www.opengis.net/gml',
+    return createElementNS(this.namespace,
       nodeName);
   }
 
@@ -876,7 +871,7 @@ class GML3 extends GMLBase {
    */
   writeGeometryNode(geometry, opt_options) {
     opt_options = this.adaptOptions(opt_options);
-    const geom = createElementNS('http://www.opengis.net/gml', 'geom');
+    const geom = createElementNS(this.namespace, 'geom');
     const context = {node: geom, hasZ: this.hasZ, srsName: this.srsName,
       curve: this.curve_, surface: this.surface_,
       multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
@@ -898,7 +893,7 @@ class GML3 extends GMLBase {
    */
   writeFeaturesNode(features, opt_options) {
     opt_options = this.adaptOptions(opt_options);
-    const node = createElementNS('http://www.opengis.net/gml', 'featureMembers');
+    const node = createElementNS(this.namespace, 'featureMembers');
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation);
     const context = {
       srsName: this.srsName,
@@ -921,9 +916,9 @@ class GML3 extends GMLBase {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
     'pos': makeReplacer(GML3.prototype.readFlatPos_),
     'posList': makeReplacer(GML3.prototype.readFlatPosList_)
@@ -934,9 +929,9 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
     'interior': GML3.prototype.interiorParser_,
     'exterior': GML3.prototype.exteriorParser_
@@ -947,9 +942,9 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML3.prototype.GEOMETRY_PARSERS_ = {
+GML3.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
     'Point': makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': makeReplacer(

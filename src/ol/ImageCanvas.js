@@ -11,7 +11,7 @@ import ImageState from './ImageState.js';
  * If any error occurs during drawing, the "done" callback should be called with
  * that error.
  *
- * @typedef {function(function(Error))} Loader
+ * @typedef {function(function(Error=): void): void} Loader
  */
 
 
@@ -62,7 +62,7 @@ class ImageCanvas extends ImageBase {
 
   /**
    * Handle async drawing complete.
-   * @param {Error} err Any error during drawing.
+   * @param {Error=} err Any error during drawing.
    * @private
    */
   handleLoad_(err) {

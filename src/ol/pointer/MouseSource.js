@@ -32,7 +32,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import EventSource from '../pointer/EventSource.js';
+import EventSource from './EventSource.js';
 
 
 /**
@@ -226,7 +226,7 @@ class MouseSource extends EventSource {
  * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
  * @return {Object} The copied event.
  */
-function prepareEvent(inEvent, dispatcher) {
+export function prepareEvent(inEvent, dispatcher) {
   const e = dispatcher.cloneEvent(inEvent, inEvent);
 
   // forward mouse preventDefault

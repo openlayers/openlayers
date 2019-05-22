@@ -1,8 +1,7 @@
 /**
  * @module ol/source/Source
  */
-
-import {VOID} from '../functions.js';
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import SourceState from './State.js';
@@ -22,7 +21,7 @@ import SourceState from './State.js';
  * It represents either
  * * a simple string (e.g. `'© Acme Inc.'`)
  * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings (`{@link module:ol/source/Source~Attribution}`)
+ * * a function that returns a string or array of strings ({@link module:ol/source/Source~Attribution})
  *
  * @typedef {string|Array<string>|Attribution} AttributionLike
  */
@@ -31,9 +30,10 @@ import SourceState from './State.js';
 /**
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
- * @property {import("../proj.js").ProjectionLike} projection
- * @property {SourceState} [state]
- * @property {boolean} [wrapX]
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {SourceState} [state='ready']
+ * @property {boolean} [wrapX=false]
  */
 
 
@@ -44,6 +44,7 @@ import SourceState from './State.js';
  * Base class for {@link module:ol/layer/Layer~Layer} sources.
  *
  * A generic `change` event is triggered when the state of the source changes.
+ * @abstract
  * @api
  */
 class Source extends BaseObject {
@@ -55,16 +56,23 @@ class Source extends BaseObject {
     super();
 
     /**
-    * @private
-    * @type {import("../proj/Projection.js").default}
-    */
+     * @private
+     * @type {import("../proj/Projection.js").default}
+     */
     this.projection_ = getProjection(options.projection);
 
     /**
-    * @private
-    * @type {?Attribution}
-    */
-    this.attributions_ = this.adaptAttributions_(options.attributions);
+     * @private
+     * @type {?Attribution}
+     */
+    this.attributions_ = adaptAttributions(options.attributions);
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.attributionsCollapsible_ = options.attributionsCollapsible !== undefined ?
+      options.attributionsCollapsible : true;
 
     /**
      * This source is currently loading data. Sources that defer loading to the
@@ -74,125 +82,123 @@ class Source extends BaseObject {
     this.loading = false;
 
     /**
-    * @private
-    * @type {SourceState}
-    */
+     * @private
+     * @type {SourceState}
+     */
     this.state_ = options.state !== undefined ?
       options.state : SourceState.READY;
 
     /**
-    * @private
-    * @type {boolean}
-    */
+     * @private
+     * @type {boolean}
+     */
     this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
   }
 
   /**
-  * Turns the attributions option into an attributions function.
-  * @param {AttributionLike|undefined} attributionLike The attribution option.
-  * @return {?Attribution} An attribution function (or null).
-  */
-  adaptAttributions_(attributionLike) {
-    if (!attributionLike) {
-      return null;
-    }
-    if (Array.isArray(attributionLike)) {
-      return function(frameState) {
-        return attributionLike;
-      };
-    }
-
-    if (typeof attributionLike === 'function') {
-      return attributionLike;
-    }
-
-    return function(frameState) {
-      return [attributionLike];
-    };
-  }
-
-  /**
-  * Get the attribution function for the source.
-  * @return {?Attribution} Attribution function.
-  */
+   * Get the attribution function for the source.
+   * @return {?Attribution} Attribution function.
+   */
   getAttributions() {
     return this.attributions_;
   }
 
   /**
-  * Get the projection of the source.
-  * @return {import("../proj/Projection.js").default} Projection.
-  * @api
-  */
+   * @return {boolean} Attributions are collapsible.
+   */
+  getAttributionsCollapsible() {
+    return this.attributionsCollapsible_;
+  }
+
+  /**
+   * Get the projection of the source.
+   * @return {import("../proj/Projection.js").default} Projection.
+   * @api
+   */
   getProjection() {
     return this.projection_;
   }
 
   /**
-  * @abstract
-  * @return {Array<number>|undefined} Resolutions.
-  */
-  getResolutions() {}
+   * @abstract
+   * @return {Array<number>|undefined} Resolutions.
+   */
+  getResolutions() {
+    return abstract();
+  }
 
   /**
-  * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-  * @return {SourceState} State.
-  * @api
-  */
+   * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
+   * @return {SourceState} State.
+   * @api
+   */
   getState() {
     return this.state_;
   }
 
   /**
-  * @return {boolean|undefined} Wrap X.
-  */
+   * @return {boolean|undefined} Wrap X.
+   */
   getWrapX() {
     return this.wrapX_;
   }
 
   /**
-  * Refreshes the source and finally dispatches a 'change' event.
-  * @api
-  */
+   * Refreshes the source. The source will be cleared, and data from the server will be reloaded.
+   * @api
+   */
   refresh() {
     this.changed();
   }
 
   /**
-  * Set the attributions of the source.
-  * @param {AttributionLike|undefined} attributions Attributions.
-  *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
-  *     or `undefined`.
-  * @api
-  */
+   * Set the attributions of the source.
+   * @param {AttributionLike|undefined} attributions Attributions.
+   *     Can be passed as `string`, `Array<string>`, {@link module:ol/source/Source~Attribution},
+   *     or `undefined`.
+   * @api
+   */
   setAttributions(attributions) {
-    this.attributions_ = this.adaptAttributions_(attributions);
+    this.attributions_ = adaptAttributions(attributions);
     this.changed();
   }
 
   /**
-  * Set the state of the source.
-  * @param {SourceState} state State.
-  * @protected
-  */
+   * Set the state of the source.
+   * @param {SourceState} state State.
+   * @protected
+   */
   setState(state) {
     this.state_ = state;
     this.changed();
   }
 }
 
+
 /**
- * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function((import("../Feature.js").default|import("../render/Feature.js").default)): T} callback Feature callback.
- * @return {T|void} Callback result.
- * @template T
+ * Turns the attributions option into an attributions function.
+ * @param {AttributionLike|undefined} attributionLike The attribution option.
+ * @return {?Attribution} An attribution function (or null).
  */
-Source.prototype.forEachFeatureAtCoordinate = VOID;
+function adaptAttributions(attributionLike) {
+  if (!attributionLike) {
+    return null;
+  }
+  if (Array.isArray(attributionLike)) {
+    return function(frameState) {
+      return attributionLike;
+    };
+  }
+
+  if (typeof attributionLike === 'function') {
+    return attributionLike;
+  }
+
+  return function(frameState) {
+    return [attributionLike];
+  };
+}
 
 
 export default Source;

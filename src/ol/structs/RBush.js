@@ -2,7 +2,7 @@
  * @module ol/structs/RBush
  */
 import {getUid} from '../util.js';
-import rbush from 'rbush';
+import RBush_ from 'rbush';
 import {createOrUpdate, equals} from '../extent.js';
 import {isEmpty} from '../obj.js';
 
@@ -31,13 +31,13 @@ class RBush {
     /**
      * @private
      */
-    this.rbush_ = rbush(opt_maxEntries, undefined);
+    this.rbush_ = new RBush_(opt_maxEntries);
 
     /**
      * A mapping between the objects added to this rbush wrapper
      * and the objects that are actually added to the internal rbush.
      * @private
-     * @type {Object<number, Entry>}
+     * @type {Object<string, Entry>}
      */
     this.items_ = {};
 
@@ -156,41 +156,35 @@ class RBush {
    * Calls a callback function with each value in the tree.
    * If the callback returns a truthy value, this value is returned without
    * checking the rest of the tree.
-   * @param {function(this: S, T): *} callback Callback.
-   * @param {S=} opt_this The object to use as `this` in `callback`.
+   * @param {function(T): *} callback Callback.
    * @return {*} Callback return value.
-   * @template S
    */
-  forEach(callback, opt_this) {
-    return this.forEach_(this.getAll(), callback, opt_this);
+  forEach(callback) {
+    return this.forEach_(this.getAll(), callback);
   }
 
 
   /**
    * Calls a callback function with each value in the provided extent.
    * @param {import("../extent.js").Extent} extent Extent.
-   * @param {function(this: S, T): *} callback Callback.
-   * @param {S=} opt_this The object to use as `this` in `callback`.
+   * @param {function(T): *} callback Callback.
    * @return {*} Callback return value.
-   * @template S
    */
-  forEachInExtent(extent, callback, opt_this) {
-    return this.forEach_(this.getInExtent(extent), callback, opt_this);
+  forEachInExtent(extent, callback) {
+    return this.forEach_(this.getInExtent(extent), callback);
   }
 
 
   /**
    * @param {Array<T>} values Values.
-   * @param {function(this: S, T): *} callback Callback.
-   * @param {S=} opt_this The object to use as `this` in `callback`.
+   * @param {function(T): *} callback Callback.
    * @private
    * @return {*} Callback return value.
-   * @template S
    */
-  forEach_(values, callback, opt_this) {
+  forEach_(values, callback) {
     let result;
     for (let i = 0, l = values.length; i < l; i++) {
-      result = callback.call(opt_this, values[i]);
+      result = callback(values[i]);
       if (result) {
         return result;
       }
@@ -221,8 +215,7 @@ class RBush {
    * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {
-    // FIXME add getExtent() to rbush
-    const data = this.rbush_.data;
+    const data = this.rbush_.toJSON();
     return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
   }
 

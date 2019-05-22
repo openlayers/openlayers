@@ -11,8 +11,8 @@ import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import SourceState from '../source/State.js';
-import TileSource from '../source/Tile.js';
+import SourceState from './State.js';
+import TileSource from './Tile.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
@@ -28,7 +28,7 @@ export class CustomTile extends Tile {
 
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../TileState.js").default} state State.
+   * @param {TileState} state State.
    * @param {string} src Image source URI.
    * @param {import("../extent.js").Extent} extent Extent of the tile.
    * @param {boolean} preemptive Load the tile when visible (before it's needed).
@@ -138,25 +138,23 @@ export class CustomTile extends Tile {
    * Calls the callback (synchronously by default) with the available data
    * for given coordinate (or `null` if not yet loaded).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {function(this: T, *)} callback Callback.
-   * @param {T=} opt_this The object to use as `this` in the callback.
+   * @param {function(*): void} callback Callback.
    * @param {boolean=} opt_request If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
-   * @template T
    */
-  forDataAtCoordinate(coordinate, callback, opt_this, opt_request) {
+  forDataAtCoordinate(coordinate, callback, opt_request) {
     if (this.state == TileState.IDLE && opt_request === true) {
       listenOnce(this, EventType.CHANGE, function(e) {
-        callback.call(opt_this, this.getData(coordinate));
+        callback(this.getData(coordinate));
       }, this);
       this.loadInternal_();
     } else {
       if (opt_request === true) {
         setTimeout(function() {
-          callback.call(opt_this, this.getData(coordinate));
+          callback(this.getData(coordinate));
         }.bind(this), 0);
       } else {
-        callback.call(opt_this, this.getData(coordinate));
+        callback(this.getData(coordinate));
       }
     }
   }
@@ -279,7 +277,7 @@ export class CustomTile extends Tile {
  */
 class UTFGrid extends TileSource {
   /**
-   * @param {Options=} options Source options.
+   * @param {Options} options Source options.
    */
   constructor(options) {
     super({
@@ -379,7 +377,7 @@ class UTFGrid extends TileSource {
    * in case of an error).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {function(*)} callback Callback.
+   * @param {function(*): void} callback Callback.
    * @param {boolean=} opt_request If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    * @api
@@ -391,7 +389,7 @@ class UTFGrid extends TileSource {
         coordinate, resolution);
       const tile = /** @type {!CustomTile} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
-      tile.forDataAtCoordinate(coordinate, callback, null, opt_request);
+      tile.forDataAtCoordinate(coordinate, callback, opt_request);
     } else {
       if (opt_request === true) {
         setTimeout(function() {
