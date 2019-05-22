@@ -70,6 +70,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
+  useContainer(target, transform) {
+    if (this.getLayer().getOpacity() < 1) {
+      target = null;
+    }
+    super.useContainer(target, transform);
+  }
+
+  /**
+   * @inheritDoc
+   */
   renderFrame(frameState, layerState, target) {
 
     const pixelRatio = frameState.pixelRatio;

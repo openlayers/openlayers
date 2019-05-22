@@ -403,7 +403,7 @@ export function drawImage(context,
 
   context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
 
-  if (alpha) {
+  if (opacity != 1) {
     context.globalAlpha = alpha;
   }
   if (transform) {

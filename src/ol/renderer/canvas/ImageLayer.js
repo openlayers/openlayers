@@ -140,18 +140,22 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
     if (dw >= 0.5 && dh >= 0.5) {
+      const opacity = this.getLayer().getOpacity();
+      let previousAlpha;
+      if (opacity !== 1) {
+        previousAlpha = this.context.globalAlpha;
+        this.context.globalAlpha = opacity;
+      }
       this.context.drawImage(img, 0, 0, +img.width, +img.height,
         Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+      if (opacity !== 1) {
+        this.context.globalAlpha = previousAlpha;
+      }
     }
     this.postRender(context, frameState);
 
     if (clipped) {
       context.restore();
-    }
-
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = opacity;
     }
 
     const canvasTransform = transformToString(this.pixelTransform_);

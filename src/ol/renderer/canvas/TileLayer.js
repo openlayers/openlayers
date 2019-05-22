@@ -274,7 +274,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     });
 
     let clips, clipZs, currentClip;
-    if (tileSource.getOpaque(frameState.viewState.projection)) {
+    if (!this.containerReused || tileSource.getOpaque(frameState.viewState.projection)) {
       zs = zs.reverse();
     } else {
       clips = [];
@@ -360,11 +360,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = opacity;
-    }
-
     const canvasTransform = transformToString(this.pixelTransform_);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
@@ -389,7 +384,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     const uid = getUid(this);
-    const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+    const alpha = this.getLayer().getOpacity() * (transition ? tile.getAlpha(uid, frameState.time) : 1);
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();

@@ -481,11 +481,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       replayDeclutter(declutterReplays, context, rotation, hifi, frameState.declutterItems);
     }
 
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = opacity;
-    }
-
     return this.container;
   }
 
