@@ -164,7 +164,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (declutterReplays) {
       const viewHints = frameState.viewHints;
       const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
-      replayDeclutter(declutterReplays, context, rotation, hifi, frameState.declutterItems);
+      replayDeclutter(declutterReplays, context, rotation, 1, hifi, frameState.declutterItems);
     }
 
     if (clipped) {
@@ -174,8 +174,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.postRender(context, frameState);
 
     const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = opacity;
+    const container = this.container;
+    if (opacity !== parseFloat(container.style.opacity)) {
+      container.style.opacity = opacity === 1 ? '' : opacity;
     }
 
     return this.container;

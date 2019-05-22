@@ -79,7 +79,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   useContainer(target, transform, opacity) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
-    if (target) {
+    if (target && target.style.opacity === '') {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
         context = canvas.getContext('2d');

@@ -478,7 +478,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     if (declutterReplays) {
-      replayDeclutter(declutterReplays, context, rotation, hifi, frameState.declutterItems);
+      replayDeclutter(declutterReplays, context, rotation, layerState.opacity, hifi, frameState.declutterItems);
     }
 
     return this.container;

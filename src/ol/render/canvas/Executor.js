@@ -416,10 +416,11 @@ class Executor extends Disposable {
   /**
    * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} opacity Layer opacity.
    * @param {?} declutterTree Declutter tree.
    * @return {?} Declutter tree.
    */
-  renderDeclutter(declutterGroup, feature, declutterTree) {
+  renderDeclutter(declutterGroup, feature, opacity, declutterTree) {
     if (declutterGroup && declutterGroup.length > 5) {
       const groupCount = declutterGroup[4];
       if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
@@ -438,13 +439,19 @@ class Executor extends Disposable {
           declutterTree.insert(box);
           for (let j = 5, jj = declutterGroup.length; j < jj; ++j) {
             const declutterData = /** @type {Array} */ (declutterGroup[j]);
-            if (declutterData) {
-              if (declutterData.length > 11) {
-                this.replayTextBackground_(declutterData[0],
-                  declutterData[13], declutterData[14], declutterData[15], declutterData[16],
-                  declutterData[11], declutterData[12]);
-              }
-              drawImage.apply(undefined, declutterData);
+            const context = declutterData[0];
+            const currentAlpha = context.globalAlpha;
+            if (currentAlpha !== opacity) {
+              context.globalAlpha = opacity;
+            }
+            if (declutterData.length > 11) {
+              this.replayTextBackground_(declutterData[0],
+                declutterData[13], declutterData[14], declutterData[15], declutterData[16],
+                declutterData[11], declutterData[12]);
+            }
+            drawImage.apply(undefined, declutterData);
+            if (currentAlpha !== opacity) {
+              context.globalAlpha = currentAlpha;
             }
           }
         }

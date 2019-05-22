@@ -122,9 +122,10 @@ export function renderDeclutterItems(frameState, declutterTree) {
   }
   const items = frameState.declutterItems;
   for (let z = items.length - 1; z >= 0; --z) {
-    const zIndexItems = items[z];
+    const item = items[z];
+    const zIndexItems = item.items;
     for (let i = 0, ii = zIndexItems.length; i < ii; i += 3) {
-      declutterTree = zIndexItems[i].renderDeclutter(zIndexItems[i + 1], zIndexItems[i + 2], declutterTree);
+      declutterTree = zIndexItems[i].renderDeclutter(zIndexItems[i + 1], zIndexItems[i + 2], item.opacity, declutterTree);
     }
   }
   items.length = 0;

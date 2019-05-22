@@ -430,10 +430,11 @@ export function getCircleArray(radius) {
  * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
+ * @param {number} opacity Opacity.
  * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
- * @param {Array<Array<*>>} declutterItems Declutter items.
+ * @param {Array<import("../../PluggableMap.js").DeclutterItems>} declutterItems Declutter items.
  */
-export function replayDeclutter(declutterReplays, context, rotation, snapToPixel, declutterItems) {
+export function replayDeclutter(declutterReplays, context, rotation, opacity, snapToPixel, declutterItems) {
   const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
   const skippedFeatureUids = {};
   for (let z = 0, zz = zs.length; z < zz; ++z) {
@@ -443,7 +444,10 @@ export function replayDeclutter(declutterReplays, context, rotation, snapToPixel
       const executor = executorData[i++];
       if (executor !== currentExecutor) {
         currentExecutor = executor;
-        declutterItems.push(executor.declutterItems);
+        declutterItems.push({
+          items: executor.declutterItems,
+          opacity: opacity
+        });
       }
       const transform = executorData[i++];
       executor.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
