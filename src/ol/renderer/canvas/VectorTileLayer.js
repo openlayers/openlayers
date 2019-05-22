@@ -114,7 +114,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
-  useContainer(target, transform) {
+  useContainer(target, transform, opacity) {
     let overlayContext;
     if (target && target.childElementCount === 2) {
       overlayContext = target.lastElementChild.getContext('2d');
@@ -123,7 +123,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     const containerReused = this.containerReused;
-    super.useContainer(target, transform);
+    super.useContainer(target, transform, opacity);
     if (containerReused && !this.containerReused && !overlayContext) {
       this.overlayContext_ = null;
     }

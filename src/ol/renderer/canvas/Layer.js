@@ -74,8 +74,9 @@ class CanvasLayerRenderer extends LayerRenderer {
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
    * @param {import("../../transform").Transform} transform Transform.
+   * @param {number} opacity Opacity.
    */
-  useContainer(target, transform) {
+  useContainer(target, transform, opacity) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (target) {

@@ -101,7 +101,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     );
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
-    this.useContainer(target, this.pixelTransform_);
+    this.useContainer(target, this.pixelTransform_, layerState.opacity);
 
     const context = this.context;
     const canvas = context.canvas;
@@ -140,7 +140,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
     if (dw >= 0.5 && dh >= 0.5) {
-      const opacity = this.getLayer().getOpacity();
+      const opacity = layerState.opacity;
       let previousAlpha;
       if (opacity !== 1) {
         previousAlpha = this.context.globalAlpha;

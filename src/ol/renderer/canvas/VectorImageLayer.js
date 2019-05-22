@@ -78,7 +78,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] && !isEmpty(renderedExtent)) {
       let skippedFeatures = this.skippedFeatures_;
-      vectorRenderer.useContainer(null, null);
+      vectorRenderer.useContainer(null, null, 1);
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
         declutterItems: [],

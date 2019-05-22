@@ -70,11 +70,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  useContainer(target, transform) {
-    if (this.getLayer().getOpacity() < 1) {
+  useContainer(target, transform, opacity) {
+    if (opacity < 1) {
       target = null;
     }
-    super.useContainer(target, transform);
+    super.useContainer(target, transform, opacity);
   }
 
   /**
@@ -88,7 +88,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
-    this.useContainer(target, this.pixelTransform_);
+    this.useContainer(target, this.pixelTransform_, layerState.opacity);
     const context = this.context;
     const canvas = context.canvas;
 

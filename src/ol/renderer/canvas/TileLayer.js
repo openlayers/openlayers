@@ -233,7 +233,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -width / 2, -height / 2
     );
 
-    this.useContainer(target, this.pixelTransform_);
+    this.useContainer(target, this.pixelTransform_, layerState.opacity);
     const context = this.context;
     const canvas = context.canvas;
 
@@ -334,7 +334,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           clips.push(currentClip);
           clipZs.push(currentZ);
         }
-        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, transition);
+        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, transition, layerState.opacity);
         if (clips) {
           context.restore();
         }
@@ -377,14 +377,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
+   * @param {number} opacity Opacity.
    */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTileImage(tile, frameState, x, y, w, h, gutter, transition, opacity) {
     const image = this.getTileImage(tile);
     if (!image) {
       return;
     }
     const uid = getUid(this);
-    const alpha = this.getLayer().getOpacity() * (transition ? tile.getAlpha(uid, frameState.time) : 1);
+    const alpha = opacity * (transition ? tile.getAlpha(uid, frameState.time) : 1);
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();
