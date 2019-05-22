@@ -193,9 +193,13 @@ class Layer extends BaseLayer {
    */
   render(frameState) {
     const layerRenderer = this.getRenderer();
-    const layerState = this.getLayerState();
-    if (layerRenderer.prepareFrame(frameState, layerState)) {
-      return layerRenderer.renderFrame(frameState, layerState);
+    for (let i = 0, ii = frameState.layerStatesArray.length; i < ii; i++) {
+      const layerState = frameState.layerStatesArray[i];
+      if (layerState.layer === this) {
+        if (layerRenderer.prepareFrame(frameState, layerState)) {
+          return layerRenderer.renderFrame(frameState, layerState);
+        }
+      }
     }
   }
 
