@@ -274,7 +274,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     });
 
     let clips, clipZs, currentClip;
-    if (!this.containerReused || tileSource.getOpaque(frameState.viewState.projection)) {
+    if (layerState.opacity === 1 && (!this.containerReused || tileSource.getOpaque(frameState.viewState.projection))) {
       zs = zs.reverse();
     } else {
       clips = [];
