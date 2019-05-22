@@ -234,6 +234,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       };
       const proj = getProjection('EPSG:3857');
       const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
         extent: proj.getExtent(),
         pixelRatio: 1,
         time: Date.now(),
@@ -247,13 +249,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         usedTiles: {},
         wantedTiles: {}
       };
-      renderer.renderFrame(frameState, {});
+      renderer.renderFrame(frameState);
       const replayState = renderer.renderedTiles[0].getReplayState(layer);
       const revision = replayState.renderedTileRevision;
-      renderer.renderFrame(frameState, {}, null);
+      renderer.renderFrame(frameState, null);
       expect(replayState.renderedTileRevision).to.be(revision);
       layer.changed();
-      renderer.renderFrame(frameState, {}, null);
+      renderer.renderFrame(frameState, null);
       expect(replayState.renderedTileRevision).to.be(revision + 1);
       expect(Object.keys(renderer.tileListenerKeys_).length).to.be(0);
     });

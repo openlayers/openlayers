@@ -284,7 +284,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState) {
+  renderFrame(frameState) {
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     this.helper_.drawElements(0, this.indicesBuffer_.getArray().length);
     this.helper_.finalizeDraw(frameState);
     const canvas = this.helper_.getCanvas();

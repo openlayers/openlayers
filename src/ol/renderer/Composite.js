@@ -90,6 +90,7 @@ class CompositeMapRenderer extends MapRenderer {
     let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
+      frameState.layerIndex = i;
       if (!visibleAtResolution(layerState, viewResolution) ||
         (layerState.sourceState != SourceState.READY && layerState.sourceState != SourceState.UNDEFINED)) {
         continue;

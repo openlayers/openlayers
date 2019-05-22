@@ -218,13 +218,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
-  prepareFrame(frameState, layerState) {
+  prepareFrame(frameState) {
     const layerRevision = this.getLayer().getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
     }
     this.renderedLayerRevision_ = layerRevision;
-    return super.prepareFrame(frameState, layerState);
+    return super.prepareFrame(frameState);
   }
 
   /**
@@ -390,12 +390,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState, target) {
+  renderFrame(frameState, target) {
     const viewHints = frameState.viewHints;
     const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     this.renderQueuedTileImages_(hifi, frameState);
 
-    super.renderFrame(frameState, layerState, target);
+    super.renderFrame(frameState, target);
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
@@ -495,6 +495,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     if (declutterReplays) {
+      const layerState = frameState.layerStatesArray[frameState.layerIndex];
       replayDeclutter(declutterReplays, context, rotation, layerState.opacity, hifi, frameState.declutterItems);
     }
 

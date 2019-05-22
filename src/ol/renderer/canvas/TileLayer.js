@@ -125,7 +125,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  prepareFrame(frameState, layerState) {
+  prepareFrame(frameState) {
     return true;
   }
 
@@ -137,7 +137,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @inheritDoc
    * @returns {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, layerState, target) {
+  renderFrame(frameState, target) {
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const viewResolution = viewState.resolution;
