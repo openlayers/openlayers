@@ -719,6 +719,19 @@ describe('ol.source.Vector', function() {
       expect(source.getFeatures().length).to.be(0);
     });
 
+    it('prevents adding two features with a duplicate id in the collection', function() {
+      source = new VectorSource({
+        features: new Collection()
+      });
+      const feature1 = new Feature();
+      feature1.setId('1');
+      const feature2 = new Feature();
+      feature2.setId('1');
+      const collection = source.getFeaturesCollection();
+      collection.push(feature1);
+      collection.push(feature2);
+      expect(collection.getLength()).to.be(1);
+    });
   });
 
   describe('with a collection of features plus spatial index', function() {
