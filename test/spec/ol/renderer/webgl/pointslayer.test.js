@@ -59,7 +59,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
     });
 
     it('calls WebGlHelper#prepareDraw', function() {
-      const spy = sinon.spy(renderer.helper_, 'prepareDraw');
+      const spy = sinon.spy(renderer.helper, 'prepareDraw');
       renderer.prepareFrame(frameState);
       expect(spy.called).to.be(true);
     });
