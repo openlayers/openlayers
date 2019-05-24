@@ -79,7 +79,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   useContainer(target, transform, opacity) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
-    if (target && target.style.opacity === '') {
+    if (target && target.style.opacity === '' && target.className === layerClassName) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
         context = canvas.getContext('2d');
@@ -87,7 +87,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     }
     if (context && context.canvas.style.transform === transformToString(transform)) {
       // Container of the previous layer renderer can be used.
-      target.classList.add(layerClassName);
       this.container = target;
       this.context = context;
       this.containerReused = true;
