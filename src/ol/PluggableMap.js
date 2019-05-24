@@ -1057,7 +1057,7 @@ class PluggableMap extends BaseObject {
 
       if (!this.handleResize_) {
         this.handleResize_ = this.updateSize.bind(this);
-        global.addEventListener(EventType.RESIZE, this.handleResize_, false);
+        window.addEventListener(EventType.RESIZE, this.handleResize_, false);
       }
     }
 
