@@ -1380,6 +1380,40 @@ describe('ol.View', function() {
     });
   });
 
+  describe('#enableRotation', function() {
+    it('allows rotation to be changed when view instantiated with rotation disabled', function() {
+      const view = new View({
+        resolution: 1,
+        enableRotation: false,
+        center: [0, 0]
+      });
+
+      view.enableRotation();
+      view.adjustRotation(Math.PI / 2);
+      expect(view.getRotation()).to.be(Math.PI / 2);
+      expect(view.getCenter()).to.eql([0, 0]);
+    });
+  });
+
+  describe('#disableRotation', function() {
+    it('does not change view parameters if rotation is disabled', function() {
+      const view = new View({
+        resolution: 1,
+        center: [0, 0]
+      });
+
+      view.disableRotation();
+
+      view.adjustRotation(Math.PI / 2);
+      expect(view.getRotation()).to.be(0);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(-Math.PI * 3, [-50, 0]);
+      expect(view.getRotation()).to.be(0);
+      expect(view.getCenter()).to.eql([0, 0]);
+    });
+  });
+
   describe('#calculateExtent', function() {
     it('returns the expected extent', function() {
       const view = new View({
