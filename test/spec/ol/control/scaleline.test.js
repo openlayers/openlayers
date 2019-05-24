@@ -315,7 +315,8 @@ describe('ol.control.ScaleLine', function() {
       expect(ctrl.element.innerText).to.be('5 in');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.00005 nm');
+      expect(ctrl.element.innerText.indexOf('nm')).to.not.be(-1);
+      expect(parseFloat(ctrl.element.innerText).toFixed(5)).to.be('0.00005');
 
       ctrl.setUnits('us');
       expect(ctrl.element.innerText).to.be('5 in');
