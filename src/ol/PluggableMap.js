@@ -39,7 +39,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {boolean} animate
  * @property {import("./transform.js").Transform} coordinateToPixelTransform
  * @property {null|import("./extent.js").Extent} extent
- * @property {Array<*>} declutterItems
+ * @property {Array<DeclutterItems>} declutterItems
  * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
@@ -51,6 +51,13 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {!Object<string, Object<string, boolean>>} usedTiles
  * @property {Array<number>} viewHints
  * @property {!Object<string, Object<string, boolean>>} wantedTiles
+ */
+
+
+/**
+ * @typedef {Object} DeclutterItems
+ * @property {Array<*>} items Declutter items of an executor.
+ * @property {number} opacity Layer opacity.
  */
 
 

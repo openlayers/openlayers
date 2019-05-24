@@ -189,13 +189,15 @@ class Layer extends BaseLayer {
    * In charge to manage the rendering of the layer. One layer type is
    * bounded with one layer renderer.
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {HTMLElement} target Target which the renderer may (but need not) use
+   * for rendering its content.
    * @return {HTMLElement} The rendered element.
    */
-  render(frameState) {
+  render(frameState, target) {
     const layerRenderer = this.getRenderer();
     const layerState = this.getLayerState();
     if (layerRenderer.prepareFrame(frameState, layerState)) {
-      return layerRenderer.renderFrame(frameState, layerState);
+      return layerRenderer.renderFrame(frameState, layerState, target);
     }
   }
 

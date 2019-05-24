@@ -7,7 +7,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
 
 /**
  * @abstract
@@ -20,6 +20,12 @@ class CanvasLayerRenderer extends LayerRenderer {
   constructor(layer) {
 
     super(layer);
+
+    /**
+     * @protected
+     * @type {HTMLElement}
+     */
+    this.container = null;
 
     /**
      * @protected
@@ -55,20 +61,57 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @protected
      * @type {CanvasRenderingContext2D}
      */
-    this.context = createCanvasContext2D();
+    this.context = null;
 
-    const canvas = this.context.canvas;
-    canvas.style.position = 'absolute';
-    canvas.style.transformOrigin = 'top left';
-    canvas.className = this.getLayer().getClassName();
+    /**
+     * @type {boolean}
+     */
+    this.containerReused = false;
+
   }
 
   /**
-   * @inheritDoc
+   * Get a rendering container from an existing target, if compatible.
+   * @param {HTMLElement} target Potential render target.
+   * @param {import("../../transform").Transform} transform Transform.
+   * @param {number} opacity Opacity.
    */
-  disposeInternal() {
-    this.context.canvas.width = this.context.canvas.height = 0;
-    super.disposeInternal();
+  useContainer(target, transform, opacity) {
+    const layerClassName = this.getLayer().getClassName();
+    let container, context;
+    if (target && target.style.opacity === '' && target.className === layerClassName) {
+      const canvas = target.firstElementChild;
+      if (canvas instanceof HTMLCanvasElement) {
+        context = canvas.getContext('2d');
+      }
+    }
+    if (context && context.canvas.style.transform === transformToString(transform)) {
+      // Container of the previous layer renderer can be used.
+      this.container = target;
+      this.context = context;
+      this.containerReused = true;
+    } else if (this.containerReused) {
+      // Previously reused container cannot be used any more.
+      this.container = null;
+      this.context = null;
+      this.containerReused = false;
+    }
+    if (!this.container) {
+      container = document.createElement('div');
+      container.className = layerClassName;
+      let style = container.style;
+      style.position = 'absolute';
+      style.width = '100%';
+      style.height = '100%';
+      context = createCanvasContext2D();
+      const canvas = context.canvas;
+      container.appendChild(canvas);
+      style = canvas.style;
+      style.position = 'absolute';
+      style.transformOrigin = 'top left';
+      this.container = container;
+      this.context = context;
+    }
   }
 
   /**

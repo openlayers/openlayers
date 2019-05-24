@@ -307,7 +307,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       let rendered = false;
       if (renderer.prepareFrame(frameState, {})) {
         rendered = true;
-        renderer.renderFrame(frameState, layer.getLayerState());
+        renderer.renderFrame(frameState, layer.getLayerState(), null);
       }
       expect(rendered).to.be(true);
     });

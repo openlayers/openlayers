@@ -137,8 +137,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @inheritDoc
    * @returns {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, layerState) {
-    const context = this.context;
+  renderFrame(frameState, layerState, target) {
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const viewResolution = viewState.resolution;
@@ -224,7 +223,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
 
-    const canvas = context.canvas;
     const canvasScale = tileResolution / viewResolution;
 
     // set forward and inverse pixel transforms
@@ -234,6 +232,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       rotation,
       -width / 2, -height / 2
     );
+
+    this.useContainer(target, this.pixelTransform_, layerState.opacity);
+    const context = this.context;
+    const canvas = context.canvas;
+
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
     // set scale transform for calculating tile positions on the canvas
@@ -247,7 +250,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-    } else {
+    } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }
 
@@ -259,7 +262,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.renderedTiles.length = 0;
     /** @type {Array<number>} */
-    const zs = Object.keys(tilesToDrawByZ).map(Number);
+    let zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(function(a, b) {
       if (a === z) {
         return 1;
@@ -270,7 +273,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     });
 
-    for (let i = 0, ii = zs.length; i < ii; ++i) {
+    let clips, clipZs, currentClip;
+    if (layerState.opacity === 1 && (!this.containerReused || tileSource.getOpaque(frameState.viewState.projection))) {
+      zs = zs.reverse();
+    } else {
+      clips = [];
+      clipZs = [];
+    }
+    for (let i = zs.length - 1; i >= 0; --i) {
       const currentZ = zs[i];
       const currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
       const currentResolution = tileGrid.getResolution(currentZ);
@@ -298,8 +308,36 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const y = Math.round(floatY);
         const w = nextX - x;
         const h = nextY - y;
+        const transition = z === currentZ;
 
-        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, z === currentZ);
+        if (clips && (!transition || tile.getAlpha(getUid(this), frameState.time) === 1)) {
+        // Clip mask for regions in this tile that already filled by a higher z tile
+          context.save();
+          currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
+          for (let i = 0, ii = clips.length; i < ii; ++i) {
+            if (z !== currentZ && currentZ < clipZs[i]) {
+              const clip = clips[i];
+              context.beginPath();
+              // counter-clockwise (outer ring) for current tile
+              context.moveTo(currentClip[0], currentClip[1]);
+              context.lineTo(currentClip[2], currentClip[3]);
+              context.lineTo(currentClip[4], currentClip[5]);
+              context.lineTo(currentClip[6], currentClip[7]);
+              // clockwise (inner ring) for higher z tile
+              context.moveTo(clip[6], clip[7]);
+              context.lineTo(clip[4], clip[5]);
+              context.lineTo(clip[2], clip[3]);
+              context.lineTo(clip[0], clip[1]);
+              context.clip();
+            }
+          }
+          clips.push(currentClip);
+          clipZs.push(currentZ);
+        }
+        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, transition, layerState.opacity);
+        if (clips) {
+          context.restore();
+        }
         this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
@@ -322,17 +360,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = opacity;
-    }
-
     const canvasTransform = transformToString(this.pixelTransform_);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }
 
-    return canvas;
+    return this.container;
   }
 
   /**
@@ -344,19 +377,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
+   * @param {number} opacity Opacity.
    */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTileImage(tile, frameState, x, y, w, h, gutter, transition, opacity) {
     const image = this.getTileImage(tile);
     if (!image) {
       return;
     }
     const uid = getUid(this);
-    const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    const tileSource = tileLayer.getSource();
-    if (alpha === 1 && !tileSource.getOpaque(frameState.viewState.projection)) {
-      this.context.clearRect(x, y, w, h);
-    }
+    const alpha = opacity * (transition ? tile.getAlpha(uid, frameState.time) : 1);
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();

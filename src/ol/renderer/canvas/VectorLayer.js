@@ -70,23 +70,35 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState) {
-    const context = this.context;
-    const canvas = context.canvas;
-
-    const replayGroup = this.replayGroup_;
-    if (!replayGroup || replayGroup.isEmpty()) {
-      if (canvas.width > 0) {
-        canvas.width = 0;
-      }
-      return canvas;
+  useContainer(target, transform, opacity) {
+    if (opacity < 1) {
+      target = null;
     }
+    super.useContainer(target, transform, opacity);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  renderFrame(frameState, layerState, target) {
 
     const pixelRatio = frameState.pixelRatio;
 
     // set forward and inverse pixel transforms
     makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+
+    this.useContainer(target, this.pixelTransform_, layerState.opacity);
+    const context = this.context;
+    const canvas = context.canvas;
+
+    const replayGroup = this.replayGroup_;
+    if (!replayGroup || replayGroup.isEmpty()) {
+      if (!this.containerReused && canvas.width > 0) {
+        canvas.width = 0;
+      }
+      return this.container;
+    }
 
     // resize and clear
     const width = Math.round(frameState.size[0] * pixelRatio);
@@ -98,7 +110,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }
-    } else {
+    } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }
 
@@ -152,7 +164,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (declutterReplays) {
       const viewHints = frameState.viewHints;
       const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
-      replayDeclutter(declutterReplays, context, rotation, hifi, frameState.declutterItems);
+      replayDeclutter(declutterReplays, context, rotation, 1, hifi, frameState.declutterItems);
     }
 
     if (clipped) {
@@ -162,11 +174,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.postRender(context, frameState);
 
     const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = opacity;
+    const container = this.container;
+    if (opacity !== parseFloat(container.style.opacity)) {
+      container.style.opacity = opacity === 1 ? '' : opacity;
     }
 
-    return canvas;
+    return this.container;
   }
 
   /**

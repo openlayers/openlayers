@@ -81,10 +81,13 @@ class CompositeMapRenderer extends MapRenderer {
     this.calculateMatrices2D(frameState);
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
-    const layerStatesArray = frameState.layerStatesArray;
+    const layerStatesArray = frameState.layerStatesArray.sort(function(a, b) {
+      return a.zIndex - b.zIndex;
+    });
     const viewResolution = frameState.viewState.resolution;
 
     this.children_.length = 0;
+    let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
       if (!visibleAtResolution(layerState, viewResolution) ||
@@ -93,13 +96,10 @@ class CompositeMapRenderer extends MapRenderer {
       }
 
       const layer = layerState.layer;
-      const element = layer.render(frameState);
-      if (element) {
-        const zIndex = layerState.zIndex;
-        if (zIndex !== element.style.zIndex) {
-          element.style.zIndex = zIndex === Infinity ? Number.MAX_SAFE_INTEGER : zIndex;
-        }
+      const element = layer.render(frameState, previousElement);
+      if (element !== previousElement) {
         this.children_.push(element);
+        previousElement = element;
       }
     }
     super.renderFrame(frameState);

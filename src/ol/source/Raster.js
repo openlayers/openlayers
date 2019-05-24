@@ -444,7 +444,11 @@ function getImageData(layer, frameState, layerState) {
   }
   const width = frameState.size[0];
   const height = frameState.size[1];
-  const element = renderer.renderFrame(frameState, layerState);
+  const container = renderer.renderFrame(frameState, layerState, null);
+  let element;
+  if (container) {
+    element = container.firstElementChild;
+  }
   if (!(element instanceof HTMLCanvasElement)) {
     throw new Error('Unsupported rendered element: ' + element);
   }
