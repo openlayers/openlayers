@@ -282,6 +282,9 @@ class VectorSource extends Source {
    * instead. A feature will not be added to the source if feature with
    * the same id is already there. The reason for this behavior is to avoid
    * feature duplication when using bbox or tile loading strategies.
+   * Note: this also applies if an {@link module:ol/Collection} is used for features,
+   * meaning that if a feature with a duplicate id is added in the collection, it will
+   * be removed from it right away.
    * @param {import("../Feature.js").default} feature Feature to add.
    * @api
    */
@@ -300,6 +303,9 @@ class VectorSource extends Source {
     const featureKey = getUid(feature);
 
     if (!this.addToIndex_(featureKey, feature)) {
+      if (this.featuresCollection_) {
+        this.featuresCollection_.remove(feature);
+      }
       return;
     }
 
