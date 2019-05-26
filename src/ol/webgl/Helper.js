@@ -15,10 +15,10 @@ import {
   rotate as rotateTransform,
   scale as scaleTransform,
   translate as translateTransform
-} from '../transform';
-import {create, fromTransform} from '../vec/mat4';
-import WebGLPostProcessingPass from './PostProcessingPass';
-import {getContext} from '../webgl';
+} from '../transform.js';
+import {create, fromTransform} from '../vec/mat4.js';
+import WebGLPostProcessingPass from './PostProcessingPass.js';
+import {getContext} from '../webgl.js';
 
 
 /**

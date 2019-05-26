@@ -1,21 +1,21 @@
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
-import WebGLArrayBuffer from '../../webgl/Buffer';
-import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
-import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
-import GeometryType from '../../geom/GeometryType';
-import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from './Layer';
-import GeoJSON from '../../format/GeoJSON';
-import {getUid} from '../../util';
-import ViewHint from '../../ViewHint';
-import {createEmpty, equals} from '../../extent';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl.js';
+import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper.js';
+import GeometryType from '../../geom/GeometryType.js';
+import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from './Layer.js';
+import GeoJSON from '../../format/GeoJSON.js';
+import {getUid} from '../../util.js';
+import ViewHint from '../../ViewHint.js';
+import {createEmpty, equals} from '../../extent.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   apply as applyTransform
-} from '../../transform';
+} from '../../transform.js';
 
 const VERTEX_SHADER = `
   precision mediump float;

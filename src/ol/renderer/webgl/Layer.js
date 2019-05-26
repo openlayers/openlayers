@@ -2,7 +2,7 @@
  * @module ol/renderer/webgl/Layer
  */
 import LayerRenderer from '../Layer.js';
-import WebGLHelper from '../../webgl/Helper';
+import WebGLHelper from '../../webgl/Helper.js';
 
 
 /**

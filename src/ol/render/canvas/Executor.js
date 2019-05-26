@@ -21,7 +21,7 @@ import {
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import Disposable from '../../Disposable.js';
-import RBush from 'rbush';
+import RBush from '../../structs/RBush.js';
 
 
 /**
