@@ -174,9 +174,8 @@ class Geometry extends BaseObject {
 
   /**
    * Create a simplified version of this geometry.  For linestrings, this uses
-   * the the {@link
-   * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
-   * Douglas Peucker} algorithm.  For polygons, a quantization-based
+   * the [Douglas Peucker](https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm)
+   * algorithm.  For polygons, a quantization-based
    * simplification is used to preserve topology.
    * @param {number} tolerance The tolerance distance for simplification.
    * @return {Geometry} A new, simplified version of the original geometry.
