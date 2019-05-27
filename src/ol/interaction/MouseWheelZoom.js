@@ -4,8 +4,7 @@
 import {always, focus} from '../events/condition.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
-import Interaction, {zoomByDelta} from './Interaction.js';
-import {clamp} from '../math.js';
+import Interaction from './Interaction.js';
 
 
 /**
