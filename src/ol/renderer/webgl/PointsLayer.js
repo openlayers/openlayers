@@ -25,15 +25,15 @@ const VERTEX_SHADER = `
   attribute vec2 a_offsets;
   attribute float a_opacity;
   attribute vec4 a_color;
-  
+
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
-  
+
   varying vec2 v_texCoord;
   varying float v_opacity;
   varying vec4 v_color;
-  
+
   void main(void) {
     mat4 offsetMatrix = u_offsetScaleMatrix;
     if (a_rotateWithView == 1.0) {
@@ -48,13 +48,13 @@ const VERTEX_SHADER = `
 
 const FRAGMENT_SHADER = `
   precision mediump float;
-  
+
   uniform sampler2D u_texture;
 
   varying vec2 v_texCoord;
   varying float v_opacity;
   varying vec4 v_color;
-  
+
   void main(void) {
     if (v_opacity == 0.0) {
       discard;
@@ -222,7 +222,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       return 1;
     };
     this.coordCallback_ = options.coordCallback || function(feature, index) {
-      const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
+      const geom = feature.getGeometry();
       return geom.getCoordinates()[index];
     };
     this.opacityCallback_ = options.opacityCallback || function() {

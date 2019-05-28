@@ -126,7 +126,7 @@ class Extent extends PointerInteraction {
 
     /**
      * Feature for displaying the visible pointer
-     * @type {Feature}
+     * @type {Feature<Point>}
      * @private
      */
     this.vertexFeature_ = null;
@@ -265,7 +265,7 @@ class Extent extends PointerInteraction {
       this.vertexFeature_ = vertexFeature;
       this.vertexOverlay_.getSource().addFeature(vertexFeature);
     } else {
-      const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
+      const geometry = vertexFeature.getGeometry();
       geometry.setCoordinates(vertex);
     }
     return vertexFeature;
