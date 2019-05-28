@@ -3,7 +3,7 @@ import Map from '../../../src/ol/Map.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import Stroke from '../../../src/ol/style/Stroke.js';
 import Text from '../../../src/ol/style/Text.js';
-import Feature from '../../../src/ol/Feature';
+import Feature from '../../../src/ol/Feature.js';
 
 describe('ol.layer.Graticule', function() {
   let graticule;

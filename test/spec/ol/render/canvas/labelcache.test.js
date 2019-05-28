@@ -1,4 +1,4 @@
-import LabelCache from '../../../../../src/ol/render/canvas/LabelCache';
+import LabelCache from '../../../../../src/ol/render/canvas/LabelCache.js';
 
 describe('ol.render.canvas.LabelCache', function() {
 

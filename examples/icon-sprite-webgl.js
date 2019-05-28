@@ -1,14 +1,14 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import TileJSON from '../src/ol/source/TileJSON';
-import Feature from '../src/ol/Feature';
-import Point from '../src/ol/geom/Point';
-import VectorLayer from '../src/ol/layer/Vector';
-import {Vector} from '../src/ol/source';
-import {fromLonLat} from '../src/ol/proj';
-import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer';
-import {lerp} from '../src/ol/math';
+import TileJSON from '../src/ol/source/TileJSON.js';
+import Feature from '../src/ol/Feature.js';
+import Point from '../src/ol/geom/Point.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import {Vector} from '../src/ol/source.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer.js';
+import {lerp} from '../src/ol/math.js';
 
 const vectorSource = new Vector({
   features: [],

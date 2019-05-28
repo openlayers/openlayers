@@ -1,5 +1,5 @@
 import {createSnapToResolutions, createSnapToPower} from '../../../src/ol/resolutionconstraint.js';
-import {createMinMaxResolution} from '../../../src/ol/resolutionconstraint';
+import {createMinMaxResolution} from '../../../src/ol/resolutionconstraint.js';
 
 
 describe('ol.resolutionconstraint', function() {

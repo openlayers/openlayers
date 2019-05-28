@@ -1,14 +1,14 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import Feature from '../src/ol/Feature';
-import Point from '../src/ol/geom/Point';
-import VectorLayer from '../src/ol/layer/Vector';
-import {Vector} from '../src/ol/source';
-import {fromLonLat} from '../src/ol/proj';
-import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer';
-import {clamp, lerp} from '../src/ol/math';
-import Stamen from '../src/ol/source/Stamen';
+import Feature from '../src/ol/Feature.js';
+import Point from '../src/ol/geom/Point.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import {Vector} from '../src/ol/source.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer.js';
+import {clamp, lerp} from '../src/ol/math.js';
+import Stamen from '../src/ol/source/Stamen.js';
 
 const vectorSource = new Vector({
   attributions: 'NASA'

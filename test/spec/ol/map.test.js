@@ -4,7 +4,7 @@ import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import View from '../../../src/ol/View.js';
-import {LineString, Point} from '../../../src/ol/geom';
+import {LineString, Point} from '../../../src/ol/geom.js';
 import {TOUCH} from '../../../src/ol/has.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';

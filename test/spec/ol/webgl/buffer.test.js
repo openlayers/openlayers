@@ -1,4 +1,4 @@
-import WebGLArrayBuffer from '../../../../src/ol/webgl/Buffer';
+import WebGLArrayBuffer from '../../../../src/ol/webgl/Buffer.js';
 
 
 describe('ol.webgl.Buffer', function() {

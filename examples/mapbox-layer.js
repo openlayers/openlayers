@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import Layer from '../src/ol/layer/Layer';
-import {toLonLat, fromLonLat} from '../src/ol/proj';
+import Layer from '../src/ol/layer/Layer.js';
+import {toLonLat, fromLonLat} from '../src/ol/proj.js';
 import {Stroke, Style} from '../src/ol/style.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';

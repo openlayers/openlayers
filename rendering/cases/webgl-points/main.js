@@ -1,11 +1,11 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import XYZ from '../../../src/ol/source/XYZ';
-import {Vector as VectorLayer} from '../../../src/ol/layer';
-import VectorSource from '../../../src/ol/source/Vector';
-import KML from '../../../src/ol/format/KML';
-import WebGLPointsLayerRenderer from '../../../src/ol/renderer/webgl/PointsLayer';
+import XYZ from '../../../src/ol/source/XYZ.js';
+import {Vector as VectorLayer} from '../../../src/ol/layer.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
+import KML from '../../../src/ol/format/KML.js';
+import WebGLPointsLayerRenderer from '../../../src/ol/renderer/webgl/PointsLayer.js';
 
 class CustomLayer extends VectorLayer {
   createRenderer() {

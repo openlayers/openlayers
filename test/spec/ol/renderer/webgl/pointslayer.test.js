@@ -3,10 +3,10 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer';
-import {get as getProjection} from '../../../../../src/ol/proj';
-import Polygon from '../../../../../src/ol/geom/Polygon';
-import ViewHint from '../../../../../src/ol/ViewHint';
+import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import ViewHint from '../../../../../src/ol/ViewHint.js';
 
 
 describe('ol.renderer.webgl.PointsLayer', function() {

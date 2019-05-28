@@ -4,7 +4,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
-import {create as createVersionWorker} from '../src/ol/worker/version';
+import {create as createVersionWorker} from '../src/ol/worker/version.js';
 
 
 const map = new Map({
