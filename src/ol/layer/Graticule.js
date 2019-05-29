@@ -3,27 +3,27 @@
  */
 import VectorLayer from './Vector.js';
 import {assign} from '../obj.js';
-import {degreesToStringHDMS} from '../coordinate';
-import Text from '../style/Text';
-import Fill from '../style/Fill';
-import Stroke from '../style/Stroke';
+import {degreesToStringHDMS} from '../coordinate.js';
+import Text from '../style/Text.js';
+import Fill from '../style/Fill.js';
+import Stroke from '../style/Stroke.js';
 import LineString from '../geom/LineString.js';
-import VectorSource from '../source/Vector';
+import VectorSource from '../source/Vector.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
   getTransform,
   transformExtent
-} from '../proj';
-import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent';
-import {clamp} from '../math';
-import Style from '../style/Style';
-import Feature from '../Feature';
-import {bbox} from '../loadingstrategy';
-import {meridian, parallel} from '../geom/flat/geodesic';
-import GeometryLayout from '../geom/GeometryLayout';
-import Point from '../geom/Point';
-import Collection from '../Collection';
+} from '../proj.js';
+import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent.js';
+import {clamp} from '../math.js';
+import Style from '../style/Style.js';
+import Feature from '../Feature.js';
+import {bbox} from '../loadingstrategy.js';
+import {meridian, parallel} from '../geom/flat/geodesic.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import Point from '../geom/Point.js';
+import Collection from '../Collection.js';
 
 
 /**

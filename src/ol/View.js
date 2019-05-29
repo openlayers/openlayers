@@ -21,9 +21,9 @@ import {clamp, modulo} from './math.js';
 import {assign} from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
-import {equals} from './coordinate';
-import {easeOut} from './easing';
-import {createMinMaxResolution} from './resolutionconstraint';
+import {equals} from './coordinate.js';
+import {easeOut} from './easing.js';
+import {createMinMaxResolution} from './resolutionconstraint.js';
 
 
 /**

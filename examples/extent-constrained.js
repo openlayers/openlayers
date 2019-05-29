@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
-import ZoomSlider from '../src/ol/control/ZoomSlider';
+import ZoomSlider from '../src/ol/control/ZoomSlider.js';
 
 const view = new View({
   center: [328627.563458, 5921296.662223],

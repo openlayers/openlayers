@@ -1,9 +1,9 @@
-import WebGLHelper from '../../../../src/ol/webgl/Helper';
+import WebGLHelper from '../../../../src/ol/webgl/Helper.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
   scale as scaleTransform, translate as translateTransform
-} from '../../../../src/ol/transform';
+} from '../../../../src/ol/transform.js';
 
 
 const VERTEX_SHADER = `

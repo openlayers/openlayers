@@ -1,6 +1,6 @@
-import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from '../../../../../src/ol/renderer/webgl/Layer';
-import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer';
-import Layer from '../../../../../src/ol/layer/Layer';
+import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from '../../../../../src/ol/renderer/webgl/Layer.js';
+import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
+import Layer from '../../../../../src/ol/layer/Layer.js';
 
 
 describe('ol.renderer.webgl.Layer', function() {

@@ -1,10 +1,10 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import XYZ from '../../../src/ol/source/XYZ';
-import {Heatmap as HeatmapLayer} from '../../../src/ol/layer';
-import VectorSource from '../../../src/ol/source/Vector';
-import KML from '../../../src/ol/format/KML';
+import XYZ from '../../../src/ol/source/XYZ.js';
+import {Heatmap as HeatmapLayer} from '../../../src/ol/layer.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
+import KML from '../../../src/ol/format/KML.js';
 
 const vector = new HeatmapLayer({
   source: new VectorSource({

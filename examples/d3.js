@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {getWidth, getCenter} from '../src/ol/extent.js';
 import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
-import SourceState from '../src/ol/source/State';
+import SourceState from '../src/ol/source/State.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import Stamen from '../src/ol/source/Stamen.js';
 

@@ -5,7 +5,7 @@ import {
   get as getProjection,
   transform,
   transformExtent
-} from '../../../src/ol/proj';
+} from '../../../src/ol/proj.js';
 import ImageLayer from '../../../src/ol/layer/Image.js';
 const center = transform([-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857');
 
