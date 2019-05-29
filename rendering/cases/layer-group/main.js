@@ -1,7 +1,7 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import {Group as LayerGroup, Tile as TileLayer} from '../../../src/ol/layer.js';
-import XYZ from '../../../src/ol/source/XYZ';
+import XYZ from '../../../src/ol/source/XYZ.js';
 
 new Map({
   target: 'map',
