@@ -35,6 +35,8 @@ describe('ol/renderer/canvas/VectorImageLayer', function() {
         projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000
       ];
       const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
         extent: extent,
         skippedFeatureUids: {},
         viewHints: [],
@@ -44,7 +46,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function() {
           rotation: 0
         }
       };
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       const expected = renderer.image_.getExtent();
 
       scaleFromCenter(extent, 2);

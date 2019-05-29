@@ -80,9 +80,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState, target) {
+  renderFrame(frameState, target) {
 
     const pixelRatio = frameState.pixelRatio;
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
 
     // set forward and inverse pixel transforms
     makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
@@ -232,7 +233,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  prepareFrame(frameState, layerState) {
+  prepareFrame(frameState) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = vectorLayer.getSource();
 

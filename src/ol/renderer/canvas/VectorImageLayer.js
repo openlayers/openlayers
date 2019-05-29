@@ -63,7 +63,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
    * @inheritDoc
    */
-  prepareFrame(frameState, layerState) {
+  prepareFrame(frameState) {
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const viewResolution = viewState.resolution;
@@ -92,10 +92,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       }));
       const newSkippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
       const image = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas, function(callback) {
-        if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
+        if (vectorRenderer.prepareFrame(imageFrameState) &&
               (vectorRenderer.replayGroupChanged ||
               !equals(skippedFeatures, newSkippedFeatures))) {
-          vectorRenderer.renderFrame(imageFrameState, layerState, null);
+          vectorRenderer.renderFrame(imageFrameState, null);
           renderDeclutterItems(imageFrameState, null);
           skippedFeatures = newSkippedFeatures;
           callback();

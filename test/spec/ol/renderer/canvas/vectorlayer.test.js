@@ -243,7 +243,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
       frameState.extent =
           [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
@@ -255,7 +255,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
       frameState.extent =
           [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
@@ -266,7 +266,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
       frameState.extent =
           [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
@@ -279,7 +279,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
       ];
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
@@ -288,9 +288,9 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     it('sets replayGroupChanged correctly', function() {
       frameState.extent = [-10000, -10000, 10000, 10000];
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(true);
-      renderer.prepareFrame(frameState, {});
+      renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(false);
     });
 
@@ -301,13 +301,15 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         expect(true);
         done();
       });
+      frameState.layerStatesArray = [layer.getLayerState()];
+      frameState.layerIndex = 0;
       frameState.extent = [-10000, -10000, 10000, 10000];
       frameState.size = [100, 100];
       frameState.viewState.center = [0, 0];
       let rendered = false;
-      if (renderer.prepareFrame(frameState, {})) {
+      if (renderer.prepareFrame(frameState)) {
         rendered = true;
-        renderer.renderFrame(frameState, layer.getLayerState(), null);
+        renderer.renderFrame(frameState, null);
       }
       expect(rendered).to.be(true);
     });

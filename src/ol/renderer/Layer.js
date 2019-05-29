@@ -29,10 +29,9 @@ class LayerRenderer extends Observable {
    * Determine whether render should be called.
    * @abstract
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../layer/Layer.js").State} layerState Layer state.
    * @return {boolean} Layer is ready to be rendered.
    */
-  prepareFrame(frameState, layerState) {
+  prepareFrame(frameState) {
     return abstract();
   }
 
@@ -40,11 +39,10 @@ class LayerRenderer extends Observable {
    * Render the layer.
    * @abstract
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../layer/Layer.js").State} layerState Layer state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, layerState, target) {
+  renderFrame(frameState, target) {
     return abstract();
   }
 

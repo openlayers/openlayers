@@ -43,6 +43,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
+ * @property {number} layerIndex
  * @property {import("./transform.js").Transform} pixelToCoordinateTransform
  * @property {Array<PostRenderFunction>} postRenderFunctions
  * @property {import("./size.js").Size} size
@@ -1231,13 +1232,14 @@ class PluggableMap extends BaseObject {
     if (size !== undefined && hasArea(size) && view && view.isDef()) {
       const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
       viewState = view.getState(this.pixelRatio_);
-      frameState = /** @type {FrameState} */ ({
+      frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
         declutterItems: previousFrameState ? previousFrameState.declutterItems : [],
         extent: extent,
         focus: this.focus_ ? this.focus_ : viewState.center,
         index: this.frameIndex_++,
+        layerIndex: 0,
         layerStatesArray: this.getLayerGroup().getLayerStatesArray(),
         pixelRatio: this.pixelRatio_,
         pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
@@ -1250,7 +1252,7 @@ class PluggableMap extends BaseObject {
         viewState: viewState,
         viewHints: viewHints,
         wantedTiles: {}
-      });
+      };
     }
 
     if (frameState) {

@@ -83,6 +83,9 @@ class BaseLayer extends BaseObject {
   }
 
   /**
+   * This method is not meant to be called by layers or layer renderers because the state
+   * is incorrect if the layer is included in a layer group.
+   *
    * @param {boolean=} opt_managed Layer is managed.
    * @return {import("./Layer.js").State} Layer state.
    */

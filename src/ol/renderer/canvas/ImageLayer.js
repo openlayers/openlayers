@@ -38,7 +38,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  prepareFrame(frameState, layerState) {
+  prepareFrame(frameState) {
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const viewResolution = viewState.resolution;
@@ -72,11 +73,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  renderFrame(frameState, layerState, target) {
+  renderFrame(frameState, target) {
     const image = this.image_;
     const imageExtent = image.getExtent();
     const imageResolution = image.getResolution();
     const imagePixelRatio = image.getPixelRatio();
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const viewCenter = viewState.center;
