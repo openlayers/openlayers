@@ -63,6 +63,11 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
   describe('handleEvent()', function() {
 
+    let view;
+    beforeEach(function() {
+      view = map.getView();
+    });
+
     if (FIREFOX) {
       it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
         map.once('postrender', function() {
@@ -149,7 +154,64 @@ describe('ol.interaction.MouseWheelZoom', function() {
         map.handleMapBrowserEvent(event);
       });
 
+    it('works in DOM_DELTA_LINE mode (wheel)', function(done) {
+      map.once('postrender', function() {
+        expect(view.getResolution()).to.be(2);
+        expect(view.getCenter()).to.eql([0, 0]);
+        done();
+      });
+
+      const event = new MapBrowserEvent('wheel', map, {
+        type: 'wheel',
+        deltaMode: WheelEvent.DOM_DELTA_LINE,
+        deltaY: 7.5,
+        target: map.getViewport(),
+        preventDefault: Event.prototype.preventDefault
+      });
+      event.coordinate = [0, 0];
+
+      map.handleMapBrowserEvent(event);
     });
+
+    if (SAFARI) {
+      it('works on Safari (wheel)', function(done) {
+        map.once('postrender', function() {
+          expect(view.getResolution()).to.be(2);
+          expect(view.getCenter()).to.eql([0, 0]);
+          done();
+        });
+
+        const event = new MapBrowserEvent('mousewheel', map, {
+          type: 'mousewheel',
+          wheelDeltaY: -900,
+          target: map.getViewport(),
+          preventDefault: Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+
+        map.handleMapBrowserEvent(event);
+      });
+    }
+
+    if (!SAFARI) {
+      it('works on other browsers (wheel)', function(done) {
+        map.once('postrender', function() {
+          expect(view.getResolution()).to.be(2);
+          expect(view.getCenter()).to.eql([0, 0]);
+          done();
+        });
+
+        const event = new MapBrowserEvent('mousewheel', map, {
+          type: 'mousewheel',
+          wheelDeltaY: -300,
+          target: map.getViewport(),
+          preventDefault: Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+
+        map.handleMapBrowserEvent(event);
+      });
+    }
 
   });
 
