@@ -712,6 +712,23 @@ describe('ol.format.EsriJSON', function() {
       ]);
     });
 
+    it('should not mutate input', function() {
+      const input = {
+        rings: [
+          [[0, 1, 0, 1], [1, 4, 0, 1], [4, 3, 0, 1], [3, 0, 0, 1]],
+          [[2, 2, 0, 1], [3, 2, 0, 1], [3, 3, 0, 1], [2, 3, 0, 1]],
+          [[10, 1, 0, 1], [11, 5, 0, 1], [14, 3, 0, 1], [13, 0, 0, 1]]
+        ],
+        hasZ: true,
+        hasM: true
+      };
+      const str = JSON.stringify(input);
+      const obj = format.readGeometry(input);
+
+      expect(obj).to.be.a(MultiPolygon);
+      expect(str).to.eql(JSON.stringify(input));
+    });
+
   });
 
   describe('#readProjection', function() {
