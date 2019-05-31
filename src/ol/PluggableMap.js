@@ -22,7 +22,7 @@ import {listen, unlistenByKey, unlisten} from './events.js';
 import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
-import {DEVICE_PIXEL_RATIO, TOUCH} from './has.js';
+import {DEVICE_PIXEL_RATIO} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
@@ -230,7 +230,7 @@ class PluggableMap extends BaseObject {
      * @type {!HTMLElement}
      */
     this.viewport_ = document.createElement('div');
-    this.viewport_.className = 'ol-viewport' + (TOUCH ? ' ol-touch' : '');
+    this.viewport_.className = 'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
     this.viewport_.style.position = 'relative';
     this.viewport_.style.overflow = 'hidden';
     this.viewport_.style.width = '100%';

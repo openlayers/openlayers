@@ -39,30 +39,4 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  */
 export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 
-
-/**
- * True if browser supports touch events.
- * @const
- * @type {boolean}
- * @api
- */
-export const TOUCH = 'ontouchstart' in window;
-
-
-/**
- * True if browser supports pointer events.
- * @const
- * @type {boolean}
- */
-export const POINTER = 'PointerEvent' in window;
-
-
-/**
- * True if browser supports ms pointer events (IE 10).
- * @const
- * @type {boolean}
- */
-export const MSPOINTER = !!(navigator.msPointerEnabled);
-
-
 export {HAS as WEBGL} from './webgl.js';
