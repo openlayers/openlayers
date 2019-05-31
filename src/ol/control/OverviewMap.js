@@ -76,7 +76,7 @@ class OverviewMap extends Control {
    */
   constructor(opt_options) {
 
-    const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : /** @type {Options} */ ({});
 
     super({
       element: document.createElement('div'),
@@ -159,13 +159,9 @@ class OverviewMap extends Control {
     const ovmap = this.ovmap_;
 
     if (options.layers) {
-      /** @type {Array<import("../layer/Layer.js").default>} */ (options.layers).forEach(
-        /**
-         * @param {import("../layer/Layer.js").default} layer Layer.
-         */
-        (function(layer) {
-          ovmap.addLayer(layer);
-        }).bind(this));
+      options.layers.forEach(function(layer) {
+        ovmap.addLayer(layer);
+      });
     }
 
     const box = document.createElement('div');
