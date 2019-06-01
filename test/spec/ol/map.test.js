@@ -5,7 +5,6 @@ import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import View from '../../../src/ol/View.js';
 import {LineString, Point} from '../../../src/ol/geom.js';
-import {TOUCH} from '../../../src/ol/has.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
@@ -45,7 +44,7 @@ describe('ol.Map', function() {
     it('creates the viewport', function() {
       const map = new Map({});
       const viewport = map.getViewport();
-      const className = 'ol-viewport' + (TOUCH ? ' ol-touch' : '');
+      const className = 'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
       expect(viewport.className).to.be(className);
     });
 

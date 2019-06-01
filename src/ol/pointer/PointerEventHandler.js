@@ -34,7 +34,6 @@
 
 import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/Target.js';
-import {POINTER, MSPOINTER, TOUCH} from '../has.js';
 import PointerEventType from './EventType.js';
 import MouseSource, {prepareEvent as prepareMouseEvent} from './MouseSource.js';
 import MsSource from './MsSource.js';
@@ -124,15 +123,15 @@ class PointerEventHandler extends EventTarget {
    * that generate pointer events.
    */
   registerSources() {
-    if (POINTER) {
+    if ('PointerEvent' in window) {
       this.registerSource('native', new NativeSource(this));
-    } else if (MSPOINTER) {
+    } else if (window.navigator.msPointerEnabled) {
       this.registerSource('ms', new MsSource(this));
     } else {
       const mouseSource = new MouseSource(this);
       this.registerSource('mouse', mouseSource);
 
-      if (TOUCH) {
+      if ('ontouchstart' in window) {
         this.registerSource('touch', new TouchSource(this, mouseSource));
       }
     }

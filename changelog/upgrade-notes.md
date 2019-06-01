@@ -4,9 +4,19 @@
 
 #### Backwards incompatible changes
 
+#### Removal of `TOUCH` constant from `ol/has`
+
+If you were previously using this constant, you can check if `'ontouchstart'` is defined in `window` instead.
+
+```js
+if ('ontouchstart' in window) {
+  // ...
+}
+```
+
 #### Removal of `GEOLOCATION` constant from `ol/has`
 
-If you were previously using this constant, you can check if `'geolocation'` is define in `navigator` instead.
+If you were previously using this constant, you can check if `'geolocation'` is defined in `navigator` instead.
 
 ```js
 if ('geolocation' in navigator) {
