@@ -241,11 +241,11 @@ class VectorSource extends Source {
     this.idIndex_ = {};
 
     /**
-     * A lookup of features without id (keyed by getUid(feature)).
+     * A lookup of features by uid (using getUid(feature)).
      * @private
      * @type {!Object<string, import("../Feature.js").default<Geometry>>}
      */
-    this.undefIdIndex_ = {};
+    this.uidIndex_ = {};
 
     /**
      * @private
@@ -359,10 +359,11 @@ class VectorSource extends Source {
       } else {
         valid = false;
       }
-    } else {
-      assert(!(featureKey in this.undefIdIndex_),
+    }
+    if (valid) {
+      assert(!(featureKey in this.uidIndex_),
         30); // The passed `feature` was already added to the source
-      this.undefIdIndex_[featureKey] = feature;
+      this.uidIndex_[featureKey] = feature;
     }
     return valid;
   }
@@ -489,7 +490,7 @@ class VectorSource extends Source {
       if (!this.featuresCollection_) {
         this.featureChangeKeys_ = {};
         this.idIndex_ = {};
-        this.undefIdIndex_ = {};
+        this.uidIndex_ = {};
       }
     } else {
       if (this.featuresRtree_) {
@@ -771,6 +772,18 @@ class VectorSource extends Source {
 
 
   /**
+   * Get a feature by its internal unique identifier (using `getUid`).
+   *
+   * @param {string} uid Feature identifier.
+   * @return {import("../Feature.js").default<Geometry>} The feature (or `null` if not found).
+   */
+  getFeatureByUid(uid) {
+    const feature = this.uidIndex_[uid];
+    return feature !== undefined ? feature : null;
+  }
+
+
+  /**
    * Get the format associated with this source.
    *
    * @return {import("../format/Feature.js").default|undefined} The feature format.
@@ -831,20 +844,13 @@ class VectorSource extends Source {
     const id = feature.getId();
     if (id !== undefined) {
       const sid = id.toString();
-      if (featureKey in this.undefIdIndex_) {
-        delete this.undefIdIndex_[featureKey];
+      if (this.idIndex_[sid] !== feature) {
+        this.removeFromIdIndex_(feature);
         this.idIndex_[sid] = feature;
-      } else {
-        if (this.idIndex_[sid] !== feature) {
-          this.removeFromIdIndex_(feature);
-          this.idIndex_[sid] = feature;
-        }
       }
     } else {
-      if (!(featureKey in this.undefIdIndex_)) {
-        this.removeFromIdIndex_(feature);
-        this.undefIdIndex_[featureKey] = feature;
-      }
+      this.removeFromIdIndex_(feature);
+      this.uidIndex_[featureKey] = feature;
     }
     this.changed();
     this.dispatchEvent(new VectorSourceEvent(
@@ -862,7 +868,7 @@ class VectorSource extends Source {
     if (id !== undefined) {
       return id in this.idIndex_;
     } else {
-      return getUid(feature) in this.undefIdIndex_;
+      return getUid(feature) in this.uidIndex_;
     }
   }
 
@@ -964,9 +970,8 @@ class VectorSource extends Source {
     const id = feature.getId();
     if (id !== undefined) {
       delete this.idIndex_[id.toString()];
-    } else {
-      delete this.undefIdIndex_[featureKey];
     }
+    delete this.uidIndex_[featureKey];
     this.dispatchEvent(new VectorSourceEvent(
       VectorEventType.REMOVEFEATURE, feature));
   }

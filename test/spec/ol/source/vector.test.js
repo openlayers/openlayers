@@ -10,6 +10,7 @@ import {bbox as bboxStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import {getUid} from '../../../../src/ol/util.js';
 
 
 describe('ol.source.Vector', function() {
@@ -515,6 +516,59 @@ describe('ol.source.Vector', function() {
       feature.setId('bar');
       expect(source.getFeatureById('foo')).to.be(null);
       expect(source.getFeatureById('bar')).to.be(feature);
+    });
+
+  });
+
+  describe('#getFeatureByUid()', function() {
+    let source;
+    beforeEach(function() {
+      source = new VectorSource();
+    });
+
+    it('returns a feature with an id', function() {
+      const feature = new Feature();
+      feature.setId('abcd');
+      source.addFeature(feature);
+      expect(source.getFeatureByUid(getUid(feature))).to.be(feature);
+    });
+
+    it('returns a feature without id', function() {
+      const feature = new Feature();
+      source.addFeature(feature);
+      expect(source.getFeatureByUid(getUid(feature))).to.be(feature);
+    });
+
+    it('returns null when no feature is found', function() {
+      const feature = new Feature();
+      feature.setId('abcd');
+      source.addFeature(feature);
+      const wrongId = 'abcd';
+      expect(source.getFeatureByUid(wrongId)).to.be(null);
+    });
+
+    it('returns null after removing feature', function() {
+      const feature = new Feature();
+      feature.setId('abcd');
+      source.addFeature(feature);
+      const uid = getUid(feature);
+      expect(source.getFeatureByUid(uid)).to.be(feature);
+      source.removeFeature(feature);
+      expect(source.getFeatureByUid(uid)).to.be(null);
+    });
+
+    it('returns null after clear', function() {
+      const feature = new Feature();
+      feature.setId('abcd');
+      source.addFeature(feature);
+      const uid = getUid(feature);
+      expect(source.getFeatureByUid(uid)).to.be(feature);
+      source.clear();
+      expect(source.getFeatureByUid(uid)).to.be(null);
+    });
+
+    it('returns null when no features are present', function() {
+      expect(source.getFeatureByUid('abcd')).to.be(null);
     });
 
   });
