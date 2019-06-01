@@ -65,6 +65,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     this.overlayContext_ = null;
 
     /**
+     * @type {string}
+     */
+    this.overlayContextUid_;
+
+    /**
      * The transform for rendered pixels to viewport CSS pixels for the overlay canvas.
      * @private
      * @type {import("../../transform.js").Transform}
@@ -126,6 +131,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     super.useContainer(target, transform, opacity);
     if (containerReused && !this.containerReused && !overlayContext) {
       this.overlayContext_ = null;
+      this.overlayContextUid_ = undefined;
     }
     if (this.containerReused && overlayContext) {
       this.overlayContext_ = overlayContext;
@@ -136,6 +142,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       style.position = 'absolute';
       style.transformOrigin = 'top left';
       this.overlayContext_ = overlayContext;
+      this.overlayContextUid_ = getUid(overlayContext);
     }
     if (this.container.childElementCount === 1) {
       this.container.appendChild(this.overlayContext_.canvas);
@@ -434,7 +441,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }
-    } else if (!this.containerReused) {
+    } else if (getUid(context) === this.overlayContextUid_) {
       context.clearRect(0, 0, width, height);
     }
 
