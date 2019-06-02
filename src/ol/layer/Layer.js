@@ -45,6 +45,7 @@ import SourceState from '../source/State.js';
  * @property {SourceState} sourceState
  * @property {boolean} visible
  * @property {boolean} managed
+ * @property {boolean} hasOverlay Set by the renderer when an overlay for points and text is used.
  * @property {import("../extent.js").Extent} [extent]
  * @property {number} zIndex
  * @property {number} maxResolution
