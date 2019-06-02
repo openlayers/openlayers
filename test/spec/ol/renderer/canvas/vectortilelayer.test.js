@@ -19,6 +19,8 @@ import Text from '../../../../../src/ol/style/Text.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import VectorTileRenderType from '../../../../../src/ol/layer/VectorTileRenderType.js';
 import {getUid} from '../../../../../src/ol/util.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
+import XYZ from '../../../../../src/ol/source/XYZ.js';
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {
@@ -39,6 +41,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       target.style.height = '256px';
       document.body.appendChild(target);
       map = new Map({
+        pixelRatio: 1,
         view: new View({
           center: [0, 0],
           zoom: 0
@@ -201,6 +204,25 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       expect(Object.keys(tile.executorGroups)[0]).to.be(getUid(layer));
       expect(Object.keys(tile.executorGroups)[1]).to.be(getUid(layer2));
+    });
+
+    it('reuses render container and adds and removes overlay context', function(done) {
+      map.getLayers().insertAt(0, new TileLayer({
+        source: new XYZ({
+          url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        })
+      }));
+      map.once('postcompose', function(e) {
+        expect(e.frameState.layerStatesArray[1].hasOverlay).to.be(true);
+      });
+      map.once('rendercomplete', function() {
+        expect(document.querySelector('.ol-layers').childElementCount).to.be(1);
+        expect(document.querySelector('.ol-layer').childElementCount).to.be(2);
+        map.removeLayer(map.getLayers().item(1));
+        map.renderSync();
+        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
+        done();
+      });
     });
 
   });

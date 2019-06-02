@@ -93,7 +93,8 @@ class BaseLayer extends BaseObject {
     /** @type {import("./Layer.js").State} */
     const state = this.state_ || /** @type {?} */ ({
       layer: this,
-      managed: opt_managed === undefined ? true : opt_managed
+      managed: opt_managed === undefined ? true : opt_managed,
+      hasOverlay: false
     });
     state.opacity = clamp(Math.round(this.getOpacity() * 100) / 100, 0, 1);
     state.sourceState = this.getSourceState();

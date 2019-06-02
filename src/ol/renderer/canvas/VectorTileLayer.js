@@ -226,6 +226,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState) {
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    layerState.hasOverlay = true;
     const layerRevision = this.getLayer().getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;

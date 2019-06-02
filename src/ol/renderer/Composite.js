@@ -87,9 +87,11 @@ class CompositeMapRenderer extends MapRenderer {
     const viewResolution = frameState.viewState.resolution;
 
     this.children_.length = 0;
+    let hasOverlay = false;
     let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
+      hasOverlay = hasOverlay || layerState.hasOverlay;
       frameState.layerIndex = i;
       if (!visibleAtResolution(layerState, viewResolution) ||
         (layerState.sourceState != SourceState.READY && layerState.sourceState != SourceState.UNDEFINED)) {
@@ -98,8 +100,15 @@ class CompositeMapRenderer extends MapRenderer {
 
       const layer = layerState.layer;
       const element = layer.render(frameState, previousElement);
+      if (!element) {
+        continue;
+      }
+      if ((element !== previousElement || i == ii - 1) && element.childElementCount === 2 && !hasOverlay) {
+        element.removeChild(element.lastElementChild);
+      }
       if (element !== previousElement) {
         this.children_.push(element);
+        hasOverlay = false;
         previousElement = element;
       }
     }
