@@ -432,6 +432,30 @@ class WebGLHelper extends Disposable {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
+    gl.useProgram(this.currentProgram_);
+    this.applyFrameState(frameState);
+    this.applyUniforms(frameState);
+  }
+
+  /**
+   * Clear the render target & bind it for future draw operations.
+   * This is similar to `prepareDraw`, only post processes will not be applied.
+   * Note: the whole viewport will be drawn to the render target, regardless of its size.
+   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
+   * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
+   */
+  prepareDrawToRenderTarget(frameState, renderTarget, opt_disableAlphaBlend) {
+    const gl = this.getGL();
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.getFramebuffer());
+    gl.bindTexture(gl.TEXTURE_2D, renderTarget.getTexture());
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
+
+    gl.useProgram(this.currentProgram_);
     this.applyFrameState(frameState);
     this.applyUniforms(frameState);
   }
