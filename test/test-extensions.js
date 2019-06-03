@@ -1,5 +1,4 @@
 import {equals} from '../src/ol/array.js';
-import {WEBGL} from '../src/ol/has.js';
 // avoid importing anything that results in an instanceof check
 // since these extensions are global, instanceof checks fail with modules
 
@@ -374,12 +373,6 @@ import {WEBGL} from '../src/ol/has.js';
       target.parentNode.removeChild(target);
     }
     map.dispose();
-  };
-
-  global.assertWebGL = function(map) {
-    if (!WEBGL) {
-      expect().fail('No WebGL support!');
-    }
   };
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
