@@ -302,6 +302,11 @@ class PluggableMap extends BaseObject {
     this.interactions = optionsInternal.interactions || new Collection();
 
     /**
+     * @type {import("./events/Target.js").default}
+     */
+    this.labelCache_ = null;
+
+    /**
      * @type {import("./events.js").EventsKey}
      */
     this.labelCacheListenerKey_;
@@ -323,7 +328,7 @@ class PluggableMap extends BaseObject {
      * @type {import("./renderer/Map.js").default}
      * @private
      */
-    this.renderer_ = this.createRenderer();
+    this.renderer_ = null;
 
     /**
      * @type {function(Event): void|undefined}
@@ -512,24 +517,6 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Attach a label cache for listening to font changes.
-   * @param {import("./events/Target.js").default} labelCache Label cache.
-   */
-  attachLabelCache(labelCache) {
-    this.detachLabelCache();
-    this.labelCacheListenerKey_ = listen(labelCache, EventType.CLEAR, this.redrawText.bind(this));
-  }
-
-  /**
-   * Detach the label cache, i.e. no longer listen to font changes.
-   */
-  detachLabelCache() {
-    if (this.labelCacheListenerKey_) {
-      unlistenByKey(this.labelCacheListenerKey_);
-    }
-  }
-
-  /**
    *
    * @inheritDoc
    */
@@ -542,11 +529,6 @@ class PluggableMap extends BaseObject {
       removeEventListener(EventType.RESIZE, this.handleResize_, false);
       this.handleResize_ = undefined;
     }
-    if (this.animationDelayKey_) {
-      cancelAnimationFrame(this.animationDelayKey_);
-      this.animationDelayKey_ = undefined;
-    }
-    this.detachLabelCache();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -1041,6 +1023,14 @@ class PluggableMap extends BaseObject {
     }
 
     if (!targetElement) {
+      if (this.renderer_) {
+        this.renderer_.dispose();
+        this.renderer_ = null;
+      }
+      if (this.animationDelayKey_) {
+        cancelAnimationFrame(this.animationDelayKey_);
+        this.animationDelayKey_ = undefined;
+      }
       removeNode(this.viewport_);
       if (this.handleResize_ !== undefined) {
         removeEventListener(EventType.RESIZE, this.handleResize_, false);
@@ -1048,6 +1038,9 @@ class PluggableMap extends BaseObject {
       }
     } else {
       targetElement.appendChild(this.viewport_);
+      if (!this.renderer_) {
+        this.renderer_ = this.createRenderer();
+      }
 
       const keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
@@ -1166,7 +1159,7 @@ class PluggableMap extends BaseObject {
    * @api
    */
   render() {
-    if (this.animationDelayKey_ === undefined) {
+    if (this.renderer_ && this.animationDelayKey_ === undefined) {
       this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
     }
   }

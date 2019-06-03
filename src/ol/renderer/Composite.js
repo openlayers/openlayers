@@ -9,6 +9,8 @@ import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
 import {replaceChildren} from '../dom.js';
 import {labelCache} from '../render/canvas.js';
+import EventType from '../events/EventType.js';
+import {listen, unlistenByKey} from '../events.js';
 
 
 /**
@@ -23,7 +25,11 @@ class CompositeMapRenderer extends MapRenderer {
    */
   constructor(map) {
     super(map);
-    map.attachLabelCache(labelCache);
+
+    /**
+     * @type {import("./events.js").EventsKey}
+     */
+    this.labelCacheKey_ = listen(labelCache, EventType.CLEAR, map.redrawText.bind(map));
 
     /**
      * @private
@@ -64,6 +70,11 @@ class CompositeMapRenderer extends MapRenderer {
       const event = new RenderEvent(type, undefined, frameState);
       map.dispatchEvent(event);
     }
+  }
+
+  disposeInternal() {
+    unlistenByKey(this.labelCacheKey_);
+    super.disposeInternal();
   }
 
   /**
