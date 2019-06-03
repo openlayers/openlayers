@@ -260,12 +260,6 @@ class MapBrowserEventHandler extends EventTarget {
         this.dragging_);
       this.dispatchEvent(newEvent);
     }
-
-    // Some native android browser triggers mousemove events during small period
-    // of time. See: https://code.google.com/p/android/issues/detail?id=5491 or
-    // https://code.google.com/p/android/issues/detail?id=19827
-    // ex: Galaxy Tab P3110 + Android 4.1.1
-    pointerEvent.preventDefault();
   }
 
   /**
