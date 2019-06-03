@@ -546,7 +546,6 @@ class PluggableMap extends BaseObject {
       cancelAnimationFrame(this.animationDelayKey_);
       this.animationDelayKey_ = undefined;
     }
-    this.detachLabelCache();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -1046,6 +1045,7 @@ class PluggableMap extends BaseObject {
         removeEventListener(EventType.RESIZE, this.handleResize_, false);
         this.handleResize_ = undefined;
       }
+      this.detachLabelCache();
     } else {
       targetElement.appendChild(this.viewport_);
 
