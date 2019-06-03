@@ -103,7 +103,7 @@ function loadData() {
 
 loadData();
 
-new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new TileJSON({
@@ -120,4 +120,19 @@ new Map({
     center: [0, 4000000],
     zoom: 2
   })
+});
+
+const info = document.getElementById('info');
+map.on('pointermove', function(evt) {
+  if (map.getView().getInteracting()) {
+    return;
+  }
+  const pixel = evt.pixel;
+  info.innerText = '';
+  map.forEachFeatureAtPixel(pixel, function(feature) {
+    const datetime = feature.get('datetime');
+    const duration = feature.get('duration');
+    const shape = feature.get('shape');
+    info.innerText = 'On ' + datetime + ', lasted ' + duration + ' seconds and had a "' + shape + '" shape.';
+  });
 });
