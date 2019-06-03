@@ -56,7 +56,7 @@ class ImageArcGISRest extends ImageSource {
    */
   constructor(opt_options) {
 
-    const options = opt_options || /** @type {Options} */ ({});
+    const options = opt_options ? opt_options : {};
 
     super({
       attributions: options.attributions,

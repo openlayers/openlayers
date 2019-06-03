@@ -81,7 +81,7 @@ class TileWMS extends TileImage {
    */
   constructor(opt_options) {
 
-    const options = opt_options || /** @type {Options} */ ({});
+    const options = opt_options ? opt_options : {};
 
     const params = options.params || {};
 
