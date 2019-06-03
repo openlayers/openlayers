@@ -328,7 +328,7 @@ class PluggableMap extends BaseObject {
      * @type {import("./renderer/Map.js").default}
      * @private
      */
-    this.renderer_ = this.createRenderer();
+    this.renderer_ = null;
 
     /**
      * @type {function(Event): void|undefined}
@@ -517,35 +517,6 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Attach a label cache and listen to font changes. Called by the renderer.
-   * @param {import("./events/Target.js").default} labelCache Label cache.
-   */
-  attachLabelCache(labelCache) {
-    this.unlistenLabelCache_();
-    this.labelCache_ = labelCache;
-    this.listenLabelCache_();
-  }
-
-  /**
-   * Listen to font changes.
-   * @private
-   */
-  listenLabelCache_() {
-    this.labelCacheListenerKey_ = listen(this.labelCache_, EventType.CLEAR, this.redrawText.bind(this));
-  }
-
-  /**
-   * No longer listen to font changes.
-   * @private
-   */
-  unlistenLabelCache_() {
-    if (this.labelCacheListenerKey_) {
-      unlistenByKey(this.labelCacheListenerKey_);
-      delete this.labelCacheListenerKey_;
-    }
-  }
-
-  /**
    *
    * @inheritDoc
    */
@@ -557,10 +528,6 @@ class PluggableMap extends BaseObject {
     if (this.handleResize_ !== undefined) {
       removeEventListener(EventType.RESIZE, this.handleResize_, false);
       this.handleResize_ = undefined;
-    }
-    if (this.animationDelayKey_) {
-      cancelAnimationFrame(this.animationDelayKey_);
-      this.animationDelayKey_ = undefined;
     }
     this.setTarget(null);
     super.disposeInternal();
@@ -1056,14 +1023,24 @@ class PluggableMap extends BaseObject {
     }
 
     if (!targetElement) {
+      if (this.renderer_) {
+        this.renderer_.dispose();
+        this.renderer_ = null;
+      }
+      if (this.animationDelayKey_) {
+        cancelAnimationFrame(this.animationDelayKey_);
+        this.animationDelayKey_ = undefined;
+      }
       removeNode(this.viewport_);
       if (this.handleResize_ !== undefined) {
         removeEventListener(EventType.RESIZE, this.handleResize_, false);
         this.handleResize_ = undefined;
       }
-      this.unlistenLabelCache_();
     } else {
       targetElement.appendChild(this.viewport_);
+      if (!this.renderer_) {
+        this.renderer_ = this.createRenderer();
+      }
 
       const keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
@@ -1076,7 +1053,6 @@ class PluggableMap extends BaseObject {
         this.handleResize_ = this.updateSize.bind(this);
         window.addEventListener(EventType.RESIZE, this.handleResize_, false);
       }
-      this.listenLabelCache_();
     }
 
     this.updateSize();
@@ -1183,7 +1159,7 @@ class PluggableMap extends BaseObject {
    * @api
    */
   render() {
-    if (this.animationDelayKey_ === undefined) {
+    if (this.renderer_ && this.animationDelayKey_ === undefined) {
       this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
     }
   }
