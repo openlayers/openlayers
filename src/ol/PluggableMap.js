@@ -302,6 +302,11 @@ class PluggableMap extends BaseObject {
     this.interactions = optionsInternal.interactions || new Collection();
 
     /**
+     * @type {import("./events/Target.js").default}
+     */
+    this.labelCache_ = null;
+
+    /**
      * @type {import("./events.js").EventsKey}
      */
     this.labelCacheListenerKey_;
@@ -512,20 +517,31 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Attach a label cache for listening to font changes.
+   * Attach a label cache and listen to font changes. Called by the renderer.
    * @param {import("./events/Target.js").default} labelCache Label cache.
    */
   attachLabelCache(labelCache) {
-    this.detachLabelCache();
-    this.labelCacheListenerKey_ = listen(labelCache, EventType.CLEAR, this.redrawText.bind(this));
+    this.unlistenLabelCache_();
+    this.labelCache_ = labelCache;
+    this.listenLabelCache_();
   }
 
   /**
-   * Detach the label cache, i.e. no longer listen to font changes.
+   * Listen to font changes.
+   * @private
    */
-  detachLabelCache() {
+  listenLabelCache_() {
+    this.labelCacheListenerKey_ = listen(this.labelCache_, EventType.CLEAR, this.redrawText.bind(this));
+  }
+
+  /**
+   * No longer listen to font changes.
+   * @private
+   */
+  unlistenLabelCache_() {
     if (this.labelCacheListenerKey_) {
       unlistenByKey(this.labelCacheListenerKey_);
+      delete this.labelCacheListenerKey_;
     }
   }
 
@@ -1045,7 +1061,7 @@ class PluggableMap extends BaseObject {
         removeEventListener(EventType.RESIZE, this.handleResize_, false);
         this.handleResize_ = undefined;
       }
-      this.detachLabelCache();
+      this.unlistenLabelCache_();
     } else {
       targetElement.appendChild(this.viewport_);
 
@@ -1060,6 +1076,7 @@ class PluggableMap extends BaseObject {
         this.handleResize_ = this.updateSize.bind(this);
         window.addEventListener(EventType.RESIZE, this.handleResize_, false);
       }
+      this.listenLabelCache_();
     }
 
     this.updateSize();
