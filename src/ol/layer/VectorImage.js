@@ -60,7 +60,7 @@ class VectorImageLayer extends BaseVectorLayer {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-    const options = opt_options ? opt_options : /** @type {Options} */ ({});
+    const options = opt_options ? opt_options : {};
 
     const baseOptions = assign({}, options);
     delete baseOptions.imageRatio;

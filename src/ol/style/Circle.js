@@ -24,7 +24,7 @@ class CircleStyle extends RegularShape {
    */
   constructor(opt_options) {
 
-    const options = opt_options || /** @type {Options} */ ({});
+    const options = opt_options ? opt_options : {};
 
     super({
       points: Infinity,
