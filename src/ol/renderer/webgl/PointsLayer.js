@@ -6,6 +6,7 @@ import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../web
 import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
 import WebGLLayerRenderer, {
+  colorDecodeId,
   colorEncodeId,
   getBlankImageData,
   POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, WebGLWorkerMessageType,
@@ -21,6 +22,7 @@ import {
 } from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -241,8 +243,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       options.fragmentShader || FRAGMENT_SHADER,
       options.vertexShader || VERTEX_SHADER
     );
-
-    this.helper.useProgram(this.program_);
+    this.hitProgram_ = this.helper.getProgram(
+      HIT_FRAGMENT_SHADER,
+      options.vertexShader || VERTEX_SHADER
+    );
 
     this.sizeCallback_ = options.sizeCallback || function() {
       return 1;
@@ -316,6 +320,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.hitRenderInstructions_ = new Float32Array(0);
 
+    /**
+     * @type {WebGLRenderTarget}
+     * @private
+     */
+    this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener('message', function(event) {
       const received = event.data;
@@ -366,6 +376,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
+    this.renderHitDetection(frameState);
+
     return canvas;
   }
 
@@ -400,6 +412,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.makeProjectionTransform(frameState, this.currentTransform_);
     multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
 
+    this.helper.useProgram(this.program_);
     this.helper.prepareDraw(frameState);
 
     // write new data
@@ -508,8 +521,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
     const hitMessage = {
       type: WebGLWorkerMessageType.GENERATE_BUFFERS,
-      renderInstructions: this.hitRenderInstructions_.buffer,
-      useShortIndices: !this.helper.getElementIndexUintEnabled()
+      renderInstructions: this.hitRenderInstructions_.buffer
     };
     hitMessage['projectionTransform'] = projectionTransform;
     hitMessage['hitDetection'] = true;
@@ -517,7 +529,63 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.hitRenderInstructions_ = null;
   }
 
+  /**
+   * @inheritDoc
+   */
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
+    const pixel = applyTransform(frameState.coordinateToPixelTransform, coordinate.slice(0, 2));
+    const width = frameState.size[0];
+    const height = frameState.size[1];
 
+    const data = this.hitRenderTarget_.read();
+    const index = Math.floor(pixel[0]) + (height - Math.floor(pixel[1])) * width;
+    const color = [
+      data[index * 4] / 255,
+      data[index * 4 + 1] / 255,
+      data[index * 4 + 2] / 255,
+      data[index * 4 + 3] / 255
+    ];
+    const uid = colorDecodeId(color).toString();
+
+    const source = this.getLayer().getSource();
+    const feature = source.getFeatureByUid(uid);
+    if (feature) {
+      return callback(feature, this.getLayer());
+    }
+  }
+
+  /**
+   * Render the hit detection data to the corresponding render target
+   * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
+   */
+  renderHitDetection(frameState) {
+    const width = frameState.size[0];
+    const height = frameState.size[1];
+    const size = [width, height];
+
+    this.hitRenderTarget_.setSize(size);
+
+    this.helper.useProgram(this.hitProgram_);
+    this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
+
+    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
+    multiplyTransform(this.currentTransform_, this.invertHitRenderTransform_);
+
+    this.helper.bindBuffer(this.hitVerticesBuffer_);
+    this.helper.bindBuffer(this.indicesBuffer_);
+
+    const stride = POINT_VERTEX_STRIDE;
+    const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+    this.helper.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * stride, 0);
+    this.helper.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 2);
+    this.helper.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 4);
+    this.helper.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
+    this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
+    this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
+
+    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    this.helper.drawElements(0, renderCount);
+  }
 }
 
 export default WebGLPointsLayerRenderer;
