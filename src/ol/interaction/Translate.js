@@ -35,6 +35,13 @@ const TranslateEventType = {
   TRANSLATEEND: 'translateend'
 };
 
+/**
+ * A function that takes an {@link module:ol/Feature} or
+ * {@link module:ol/render/Feature} and an
+ * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * translated or `false` otherwise.
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
+ */
 
 /**
  * @typedef {Object} Options
