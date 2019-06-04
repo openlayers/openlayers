@@ -6,11 +6,6 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 
 
 /**
- * @typedef {import("./BaseTile.js").Options} Options
- */
-
-
-/**
  * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
  * organized by zoom levels for specific resolutions.
@@ -23,7 +18,7 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 class TileLayer extends BaseTileLayer {
 
   /**
-   * @param {Options=} opt_options Tile layer options.
+   * @param {import("./BaseTile.js").Options=} opt_options Tile layer options.
    */
   constructor(opt_options) {
     super(opt_options);
