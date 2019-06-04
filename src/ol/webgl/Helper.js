@@ -10,11 +10,11 @@ import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import {
+  compose as composeTransform,
   create as createTransform,
   reset as resetTransform,
   rotate as rotateTransform,
-  scale as scaleTransform,
-  translate as translateTransform
+  scale as scaleTransform
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
@@ -691,10 +691,12 @@ class WebGLHelper extends Disposable {
     const center = frameState.viewState.center;
 
     resetTransform(transform);
-    scaleTransform(transform, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-    rotateTransform(transform, -rotation);
-    translateTransform(transform, -center[0], -center[1]);
-
+    composeTransform(transform,
+      0, 0,
+      2 / (resolution * size[0]), 2 / (resolution * size[1]),
+      -rotation,
+      -center[0], -center[1]
+    );
     return transform;
   }
 
