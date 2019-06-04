@@ -60,8 +60,8 @@ import {toEPSG4326, fromEPSG4326, PROJECTIONS as EPSG3857_PROJECTIONS} from './p
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
 import Projection from './proj/Projection.js';
 import Units, {METERS_PER_UNIT} from './proj/Units.js';
-import * as projections from './proj/projections.js';
 import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransformFunc} from './proj/transforms.js';
+import {add as addProj, clear as clearProj, get as getProj} from './proj/projections.js';
 
 
 /**
@@ -133,7 +133,7 @@ export function identityTransform(input, opt_output, opt_dimension) {
  * @api
  */
 export function addProjection(projection) {
-  projections.add(projection.getCode(), projection);
+  addProj(projection.getCode(), projection);
   addTransformFunc(projection, projection, cloneTransform);
 }
 
@@ -157,7 +157,7 @@ export function addProjections(projections) {
  */
 export function get(projectionLike) {
   return typeof projectionLike === 'string' ?
-    projections.get(/** @type {string} */ (projectionLike)) :
+    getProj(/** @type {string} */ (projectionLike)) :
     (/** @type {Projection} */ (projectionLike) || null);
 }
 
@@ -271,7 +271,7 @@ export function addEquivalentTransforms(projections1, projections2, forwardTrans
  * Clear all cached projections and transforms.
  */
 export function clearAllProjections() {
-  projections.clear();
+  clearProj();
   clearTransformFuncs();
 }
 
