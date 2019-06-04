@@ -213,7 +213,10 @@ describe('ol.webgl.WebGLHelper', function() {
         scaleTransform(expected, scaleX, scaleY);
         rotateTransform(expected, -frameState.viewState.rotation);
         translateTransform(expected, -frameState.viewState.center[0], -frameState.viewState.center[1]);
-        expect(h.makeProjectionTransform(frameState, given)).to.eql(expected);
+
+        h.makeProjectionTransform(frameState, given);
+
+        expect(given.map(val => val.toFixed(15))).to.eql(expected.map(val => val.toFixed(15)));
       });
     });
 
