@@ -6,11 +6,6 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
 
 
 /**
- * @typedef {import("./BaseVector.js").Options} Options
- */
-
-
-/**
  * @classdesc
  * Vector data that is rendered client-side.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -22,7 +17,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  */
 class VectorLayer extends BaseVectorLayer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {import("./BaseVector.js").Options=} opt_options Options.
    */
   constructor(opt_options) {
     super(opt_options);
