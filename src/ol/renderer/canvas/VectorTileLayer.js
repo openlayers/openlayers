@@ -416,7 +416,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     // Unqueue tiles from the image queue when we don't need any more
     const usedTiles = frameState.usedTiles[getUid(source)];
     for (const tileUid in this.renderTileImageQueue_) {
-      if (!(tileUid in usedTiles)) {
+      if (!usedTiles || !(tileUid in usedTiles)) {
         delete this.renderTileImageQueue_[tileUid];
       }
     }
