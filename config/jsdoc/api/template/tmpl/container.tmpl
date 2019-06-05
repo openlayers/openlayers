@@ -18,7 +18,7 @@
         <sup class="variation"><?js= doc.variation ?></sup>
     <?js } ?></h2>
     <br>
-    <?js if (doc.stability || doc.kind == 'namespace') {
+    <?js if (doc.stability || doc.kind == 'namespace' || doc.kind == 'module') {
       var ancestors = doc.ancestors.map(a => a.replace(/>\./g, '>').replace(/\.</g, '<')).join('/');
       var parts = [];
       if (ancestors) {
@@ -26,7 +26,20 @@
       }
       var importPath = parts.join('/');
     ?>
-    <pre class="prettyprint source"><code>import <?js= doc.name ?> from '<?js= importPath ?>';</code></pre>
+      <?js
+        var nameParts = doc.name.split('/');
+        var moduleName = nameParts[nameParts.length - 1];
+        if(moduleName) {
+          var firstChar = moduleName.charAt(0);
+          moduleName = firstChar.toUpperCase() + moduleName.slice(1);
+          var isClassModule = firstChar.toUpperCase() === firstChar;
+        }
+      ?>
+      <?js if (doc.kind == 'module' && !isClassModule && nameParts.length < 3) {?>
+        <pre class="prettyprint source"><code>import * as ol<?js= moduleName ?> from '<?js= doc.name ?>';</code></pre>
+      <?js } else if(doc.kind !== 'module') { ?>
+        <pre class="prettyprint source"><code>import <?js= doc.name ?> from '<?js= importPath ?>';</code></pre>
+      <?js } ?>
     <?js } ?>
     <?js if (doc.classdesc) { ?>
         <div class="class-description"><?js= doc.classdesc ?></div>
@@ -143,6 +156,7 @@
         <h3 class="subsection-title">Methods</h3>
 
         <dl><?js methods.forEach(function(m) { ?>
+            <?js m.parent = doc ?>
             <?js= self.partial('method.tmpl', m) ?>
         <?js }); ?></dl>
     <?js } ?>
