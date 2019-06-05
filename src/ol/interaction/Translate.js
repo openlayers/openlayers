@@ -35,6 +35,13 @@ const TranslateEventType = {
   TRANSLATEEND: 'translateend'
 };
 
+/**
+ * A function that takes an {@link module:ol/Feature} or
+ * {@link module:ol/render/Feature} and an
+ * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * translated or `false` otherwise.
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
+ */
 
 /**
  * @typedef {Object} Options
@@ -45,6 +52,10 @@ const TranslateEventType = {
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
  * absent, all visible layers will be considered translatable.
+ * @property {FilterFunction} [filter] A function
+ * that takes an {@link module:ol/Feature} and an
+ * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * translated or `false` otherwise.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features.
  */
@@ -135,6 +146,12 @@ class Translate extends PointerInteraction {
      * @type {function(import("../layer/Layer.js").default): boolean}
      */
     this.layerFilter_ = layerFilter;
+
+    /**
+     * @private
+     * @type {FilterFunction}
+     */
+    this.filter_ = options.filter ? options.filter : TRUE;
 
     /**
      * @private
@@ -245,9 +262,11 @@ class Translate extends PointerInteraction {
    */
   featuresAtPixel_(pixel, map) {
     return map.forEachFeatureAtPixel(pixel,
-      function(feature) {
-        if (!this.features_ || includes(this.features_.getArray(), feature)) {
-          return feature;
+      function(feature, layer) {
+        if (this.filter_(feature, layer)) {
+          if (!this.features_ || includes(this.features_.getArray(), feature)) {
+            return feature;
+          }
         }
       }.bind(this), {
         layerFilter: this.layerFilter_,
