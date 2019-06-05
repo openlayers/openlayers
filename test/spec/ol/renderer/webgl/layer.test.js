@@ -89,7 +89,7 @@ describe('ol.renderer.webgl.Layer', function() {
 
     beforeEach(function() {
       vertexBuffer = new Float32Array(100);
-      indexBuffer = new Uint16Array(100);
+      indexBuffer = new Uint32Array(100);
       instructions = new Float32Array(100);
       elementIndex = 3;
 

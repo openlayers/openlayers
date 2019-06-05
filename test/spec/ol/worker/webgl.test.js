@@ -45,25 +45,6 @@ describe('ol/worker/webgl', function() {
 
         worker.postMessage(message);
       });
-
-      it('responds with buffer data (fallback to Uint16Array)', function(done) {
-        worker.addEventListener('error', done);
-
-        worker.addEventListener('message', function(event) {
-          expect(event.data.indexBuffer).to.eql(Uint16Array.BYTES_PER_ELEMENT * 6);
-          done();
-        });
-
-        const instructions = new Float32Array(POINT_INSTRUCTIONS_COUNT);
-
-        const message = {
-          type: WebGLWorkerMessageType.GENERATE_BUFFERS,
-          renderInstructions: instructions,
-          useShortIndices: true
-        };
-
-        worker.postMessage(message);
-      });
     });
   });
 

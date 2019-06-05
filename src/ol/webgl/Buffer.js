@@ -2,8 +2,7 @@
  * @module ol/webgl/Buffer
  */
 import {STATIC_DRAW, STREAM_DRAW, DYNAMIC_DRAW} from '../webgl.js';
-import {includes} from '../array.js';
-import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
+import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER} from '../webgl.js';
 import {assert} from '../asserts.js';
 
 /**
@@ -44,7 +43,7 @@ class WebGLArrayBuffer {
 
     /**
      * @private
-     * @type {Float32Array|Uint32Array|Uint16Array}
+     * @type {Float32Array|Uint32Array}
      */
     this.array = null;
 
@@ -96,7 +95,7 @@ class WebGLArrayBuffer {
   }
 
   /**
-   * @return {Float32Array|Uint32Array|Uint16Array} Array.
+   * @return {Float32Array|Uint32Array} Array.
    */
   getArray() {
     return this.array;
@@ -113,15 +112,14 @@ class WebGLArrayBuffer {
 /**
  * Returns a typed array constructor based on the given buffer type
  * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
- * @returns {Float32ArrayConstructor|Uint16ArrayConstructor|Uint32ArrayConstructor} The typed array class to use for this buffer.
+ * @returns {Float32ArrayConstructor|Uint32ArrayConstructor} The typed array class to use for this buffer.
  */
 export function getArrayClassForType(type) {
   switch (type) {
     case ARRAY_BUFFER:
       return Float32Array;
     case ELEMENT_ARRAY_BUFFER:
-      const hasExtension = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
-      return hasExtension ? Uint32Array : Uint16Array;
+      return Uint32Array;
     default:
       return Float32Array;
   }

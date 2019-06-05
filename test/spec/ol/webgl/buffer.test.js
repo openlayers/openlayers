@@ -2,7 +2,6 @@ import WebGLArrayBuffer, {getArrayClassForType} from '../../../../src/ol/webgl/B
 import {
   ARRAY_BUFFER,
   ELEMENT_ARRAY_BUFFER,
-  EXTENSIONS as WEBGL_EXTENSIONS,
   STATIC_DRAW,
   STREAM_DRAW
 } from '../../../../src/ol/webgl.js';
@@ -36,11 +35,6 @@ describe('ol.webgl.Buffer', function() {
     it('returns the correct typed array constructor', function() {
       expect(getArrayClassForType(ARRAY_BUFFER)).to.be(Float32Array);
       expect(getArrayClassForType(ELEMENT_ARRAY_BUFFER)).to.be(Uint32Array);
-    });
-
-    it('returns the correct typed array constructor (without OES uint extension)', function() {
-      WEBGL_EXTENSIONS.length = 0;
-      expect(getArrayClassForType(ELEMENT_ARRAY_BUFFER)).to.be(Uint16Array);
     });
   });
 

@@ -419,8 +419,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
     const message = {
       type: WebGLWorkerMessageType.GENERATE_BUFFERS,
-      renderInstructions: this.renderInstructions_.buffer,
-      useShortIndices: !this.helper.getElementIndexUintEnabled()
+      renderInstructions: this.renderInstructions_.buffer
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;

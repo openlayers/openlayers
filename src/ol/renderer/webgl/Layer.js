@@ -23,7 +23,6 @@ export const WebGLWorkerMessageType = {
  * @property {ArrayBuffer} [vertexBuffer] Vertices array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
  * @property {number} [customAttributesCount] Amount of custom attributes count in the render instructions.
- * @property {boolean} [useShortIndices] If true, Uint16Array will be used instead of Uint32Array for index buffers.
  */
 
 /**
@@ -158,7 +157,7 @@ function writeCustomAttrs(buffer, pos, customAttrs) {
  * @param {Float32Array} instructions Array of render instructions for points.
  * @param {number} elementIndex Index from which render instructions will be read.
  * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
- * @param {Uint16Array|Uint32Array} indexBuffer Buffer in the form of a typed array.
+ * @param {Uint32Array} indexBuffer Buffer in the form of a typed array.
  * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
  * @param {number} [count] Amount of render instructions that will be read. Default value is POINT_INSTRUCTIONS_COUNT
  * but a higher value can be provided; all values beyond the default count will be put in the vertices buffer as
