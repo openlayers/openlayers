@@ -118,6 +118,7 @@ class WebGLRenderTarget {
    * @param {number} x Pixel coordinate
    * @param {number} y Pixel coordinate
    * @returns {Uint8Array} Integer array with one color value (4 components)
+   * @api
    */
   readPixel(x, y) {
     this.readAll();

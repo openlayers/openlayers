@@ -377,6 +377,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     }
 
     this.renderHitDetection(frameState);
+    this.hitRenderTarget_.clearCachedData();
 
     return canvas;
   }
@@ -533,17 +534,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
-    const pixel = applyTransform(frameState.coordinateToPixelTransform, coordinate.slice(0, 2));
-    const width = frameState.size[0];
-    const height = frameState.size[1];
+    const pixel = applyTransform(frameState.coordinateToPixelTransform, coordinate.slice());
 
-    const data = this.hitRenderTarget_.read();
-    const index = Math.floor(pixel[0]) + (height - Math.floor(pixel[1])) * width;
+    const data = this.hitRenderTarget_.readPixel(pixel[0], pixel[1]);
     const color = [
-      data[index * 4] / 255,
-      data[index * 4 + 1] / 255,
-      data[index * 4 + 2] / 255,
-      data[index * 4 + 3] / 255
+      data[0] / 255,
+      data[1] / 255,
+      data[2] / 255,
+      data[3] / 255
     ];
     const uid = colorDecodeId(color).toString();
 
