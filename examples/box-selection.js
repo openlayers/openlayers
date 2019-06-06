@@ -45,8 +45,10 @@ map.addInteraction(dragBox);
 dragBox.on('boxend', function() {
   // features that intersect the box are added to the collection of
   // selected features
-  const extent = dragBox.getGeometry().getExtent();
-  vectorSource.forEachFeatureIntersectingExtent(extent, function(feature) {
+  const geometry = dragBox.getGeometry().clone();
+  geometry.rotate(-map.getView().getRotation());
+
+  vectorSource.forEachFeatureIntersectingExtent(geometry.getExtent(), function(feature) {
     selectedFeatures.push(feature);
   });
 });
