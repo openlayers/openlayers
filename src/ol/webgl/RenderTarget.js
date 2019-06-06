@@ -4,6 +4,8 @@
  */
 import {equals} from '../array.js';
 
+// for pixel color reading
+const tmpArray4 = new Uint8Array(4);
 
 /**
  * @classdesc
@@ -47,7 +49,13 @@ class WebGLRenderTarget {
      * @type {Uint8Array}
      * @private
      */
-    this.data_ = new Uint8Array(1);
+    this.data_ = new Uint8Array(0);
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.dataCacheDirty_ = true;
 
     this.updateSize_();
   }
@@ -77,17 +85,48 @@ class WebGLRenderTarget {
   }
 
   /**
-   * Returns the content of the render target texture as raw data (series of r,g,b,a values)
+   * This will cause following calls to `#readAll` or `#readPixel` to download the content of the
+   * render target into memory, which is an expensive operation.
+   * This content will be kept in cache but should be cleared after each new render.
+   * @api
+   */
+  clearCachedData() {
+    this.dataCacheDirty_ = true;
+  }
+
+  /**
+   * Returns the full content of the frame buffer as a series of r, g, b, a components
+   * in the 0-255 range (unsigned byte).
    * @return {Uint8Array} Integer array of color values
    * @api
    */
-  read() {
-    const size = this.size_;
-    const gl = this.helper_.getGL();
+  readAll() {
+    if (this.dataCacheDirty_) {
+      const size = this.size_;
+      const gl = this.helper_.getGL();
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer_);
-    gl.readPixels(0, 0, size[0], size[1], gl.RGBA, gl.UNSIGNED_BYTE, this.data_);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer_);
+      gl.readPixels(0, 0, size[0], size[1], gl.RGBA, gl.UNSIGNED_BYTE, this.data_);
+      this.dataCacheDirty_ = false;
+    }
     return this.data_;
+  }
+
+  /**
+   * Reads one pixel of the frame buffer as an array of r, g, b, a components
+   * in the 0-255 range (unsigned byte).
+   * @param {number} x Pixel coordinate
+   * @param {number} y Pixel coordinate
+   * @returns {Uint8Array} Integer array with one color value (4 components)
+   */
+  readPixel(x, y) {
+    this.readAll();
+    const index = Math.floor(x) + (this.size_[1] - Math.floor(y) - 1) * this.size_[0];
+    tmpArray4[0] = this.data_[index * 4];
+    tmpArray4[1] = this.data_[index * 4 + 1];
+    tmpArray4[2] = this.data_[index * 4 + 2];
+    tmpArray4[3] = this.data_[index * 4 + 3];
+    return tmpArray4;
   }
 
   /**
