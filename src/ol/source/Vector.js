@@ -670,7 +670,7 @@ class VectorSource extends Source {
 
 
   /**
-   * Get all features in the provided extent.  Note that this returns an array of
+   * Get all features whose bounding box intersects the provided extent.  Note that this returns an array of
    * all features intersecting the given extent in random order (so it may include
    * features whose geometries do not intersect the extent).
    *
