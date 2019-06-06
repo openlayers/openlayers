@@ -208,10 +208,11 @@ class SimpleGeometry extends Geometry {
    * @inheritDoc
    * @api
    */
-  rotate(angle, anchor) {
+  rotate(angle, opt_anchor) {
     const flatCoordinates = this.getFlatCoordinates();
     if (flatCoordinates) {
       const stride = this.getStride();
+      const anchor = opt_anchor !== undefined ? opt_anchor : getCenter(this.getExtent());
       rotate(
         flatCoordinates, 0, flatCoordinates.length,
         stride, angle, anchor, flatCoordinates);

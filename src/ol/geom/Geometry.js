@@ -150,10 +150,11 @@ class Geometry extends BaseObject {
    * coordinates in place.
    * @abstract
    * @param {number} angle Rotation angle in radians.
-   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
+   * @param {import("../coordinate.js").Coordinate=} opt_anchor The rotation center.
+   *     Defaults to the center of the geometry extent.
    * @api
    */
-  rotate(angle, anchor) {
+  rotate(angle, opt_anchor) {
     abstract();
   }
 
