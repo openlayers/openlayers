@@ -20,6 +20,7 @@ async function build(input, {minify = true} = {}) {
     common(),
     resolve(),
     babel({
+      'externalHelpers': true,
       'presets': [
         [
           '@babel/preset-env',

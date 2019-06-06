@@ -22,5 +22,16 @@ module.exports = {
   context: __dirname,
   target: 'web',
   entry: entry,
-  devtool: 'source-map'
+  devtool: 'source-map',
+  module: {
+    rules: [{
+      test: /\.js$/,
+      use: {
+        loader: path.join(__dirname, '../examples/webpack/worker-loader.js')
+      },
+      include: [
+        path.join(__dirname, '../src/ol/worker')
+      ]
+    }]
+  }
 };

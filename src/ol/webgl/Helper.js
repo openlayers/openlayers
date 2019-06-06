@@ -2,12 +2,10 @@
  * @module ol/webgl/Helper
  */
 import {getUid} from '../util.js';
-import {EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
 import Disposable from '../Disposable.js';
-import {includes} from '../array.js';
 import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
-import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
+import {TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T, EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import {
   compose as composeTransform,
@@ -19,6 +17,8 @@ import {
 import {create, fromTransform} from '../vec/mat4.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
 import {getContext} from '../webgl.js';
+import {includes} from '../array.js';
+import {assert} from '../asserts.js';
 
 
 /**
@@ -258,15 +258,8 @@ class WebGLHelper extends Disposable {
      */
     this.currentProgram_ = null;
 
-    /**
-     * @type {boolean}
-     */
-    this.hasOESElementIndexUint = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
-
-    // use the OES_element_index_uint extension if available
-    if (this.hasOESElementIndexUint) {
-      gl.getExtension('OES_element_index_uint');
-    }
+    assert(includes(WEBGL_EXTENSIONS, 'OES_element_index_uint'), 63);
+    gl.getExtension('OES_element_index_uint');
 
     listen(this.canvas_, ContextEventType.LOST,
       this.handleWebGLContextLost, this);
@@ -347,11 +340,10 @@ class WebGLHelper extends Disposable {
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
-   * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
    * @param {import("./Buffer").default} buffer Buffer.
    * @api
    */
-  bindBuffer(target, buffer) {
+  bindBuffer(buffer) {
     const gl = this.getGL();
     const bufferKey = getUid(buffer);
     let bufferCache = this.bufferCache_[bufferKey];
@@ -362,28 +354,19 @@ class WebGLHelper extends Disposable {
         webGlBuffer: webGlBuffer
       };
     }
-    gl.bindBuffer(target, bufferCache.webGlBuffer);
+    gl.bindBuffer(buffer.getType(), bufferCache.webGlBuffer);
   }
 
   /**
    * Update the data contained in the buffer array; this is required for the
    * new data to be rendered
-   * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
    * @param {import("./Buffer").default} buffer Buffer.
    * @api
    */
-  flushBufferData(target, buffer) {
+  flushBufferData(buffer) {
     const gl = this.getGL();
-    const arr = buffer.getArray();
-    this.bindBuffer(target, buffer);
-    let /** @type {ArrayBufferView} */ arrayBuffer;
-    if (target == ARRAY_BUFFER) {
-      arrayBuffer = new Float32Array(arr);
-    } else if (target == ELEMENT_ARRAY_BUFFER) {
-      arrayBuffer = this.hasOESElementIndexUint ?
-        new Uint32Array(arr) : new Uint16Array(arr);
-    }
-    gl.bufferData(target, arrayBuffer, buffer.getUsage());
+    this.bindBuffer(buffer);
+    gl.bufferData(buffer.getType(), buffer.getArray(), buffer.getUsage());
   }
 
   /**
@@ -462,9 +445,8 @@ class WebGLHelper extends Disposable {
    */
   drawElements(start, end) {
     const gl = this.getGL();
-    const elementType = this.hasOESElementIndexUint ?
-      gl.UNSIGNED_INT : gl.UNSIGNED_SHORT;
-    const elementSize = this.hasOESElementIndexUint ? 4 : 2;
+    const elementType = gl.UNSIGNED_INT;
+    const elementSize = 4;
 
     const numItems = end - start;
     const offsetInBytes = start * elementSize;

@@ -5,9 +5,11 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl.js';
 import {DefaultAttrib, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
-import WebGLLayerRenderer, {getBlankTexture, pushFeatureToBuffer} from './Layer.js';
-import GeoJSON from '../../format/GeoJSON.js';
-import {getUid} from '../../util.js';
+import WebGLLayerRenderer, {
+  getBlankTexture,
+  POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, WebGLWorkerMessageType,
+  writePointFeatureInstructions
+} from './Layer.js';
 import ViewHint from '../../ViewHint.js';
 import {createEmpty, equals} from '../../extent.js';
 import {
@@ -16,6 +18,7 @@ import {
   multiply as multiplyTransform,
   apply as applyTransform
 } from '../../transform.js';
+import {create as createWebGLWorker} from '../../worker/webgl.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -208,15 +211,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.sourceRevision_ = -1;
 
-    this.verticesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
-    this.indicesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+    this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
+    this.indicesBuffer_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW);
 
-    this.program_ = this.helper_.getProgram(
+    this.program_ = this.helper.getProgram(
       options.fragmentShader || FRAGMENT_SHADER,
       options.vertexShader || VERTEX_SHADER
     );
 
-    this.helper_.useProgram(this.program_);
+    this.helper.useProgram(this.program_);
 
     this.sizeCallback_ = options.sizeCallback || function() {
       return 1;
@@ -241,14 +244,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       return false;
     };
 
-    this.geojsonFormat_ = new GeoJSON();
-
-    /**
-     * @type {Object<string, import("../../format/GeoJSON").GeoJSONFeature>}
-     * @private
-     */
-    this.geojsonFeatureCache_ = {};
-
     this.previousExtent_ = createEmpty();
 
     /**
@@ -272,6 +267,30 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.invertRenderTransform_ = createTransform();
+
+    /**
+     * @type {Float32Array}
+     * @private
+     */
+    this.renderInstructions_ = new Float32Array(0);
+
+    this.worker_ = createWebGLWorker();
+    this.worker_.addEventListener('message', function(event) {
+      const received = event.data;
+      if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        const projectionTransform = received.projectionTransform;
+        this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+        this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
+        this.helper.flushBufferData(this.verticesBuffer_);
+        this.helper.flushBufferData(this.indicesBuffer_);
+
+        // saves the projection transform for the current frame state
+        this.renderTransform_ = projectionTransform;
+        makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+
+        this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
+      }
+    }.bind(this));
   }
 
   /**
@@ -285,11 +304,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState) {
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    this.helper_.drawElements(0, this.indicesBuffer_.getArray().length);
-    this.helper_.finalizeDraw(frameState);
-    const canvas = this.helper_.getCanvas();
+    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    this.helper.drawElements(0, renderCount);
+    this.helper.finalizeDraw(frameState);
+    const canvas = this.helper.getCanvas();
 
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const opacity = layerState.opacity;
     if (opacity !== parseFloat(canvas.style.opacity)) {
       canvas.style.opacity = opacity;
@@ -306,8 +326,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const vectorSource = vectorLayer.getSource();
     const viewState = frameState.viewState;
 
-    // TODO: get this from somewhere...
-    const stride = 12;
+    const stride = POINT_VERTEX_STRIDE;
 
     // the source has changed: clear the feature cache & reload features
     const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
@@ -328,22 +347,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     }
 
     // apply the current projection transform with the invert of the one used to fill buffers
-    this.helper_.makeProjectionTransform(frameState, this.currentTransform_);
+    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
     multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
 
-    this.helper_.prepareDraw(frameState);
+    this.helper.prepareDraw(frameState);
 
     // write new data
-    this.helper_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
-    this.helper_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+    this.helper.bindBuffer(this.verticesBuffer_);
+    this.helper.bindBuffer(this.indicesBuffer_);
 
     const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-    this.helper_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * stride, 0);
-    this.helper_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 2);
-    this.helper_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 4);
-    this.helper_.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
-    this.helper_.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
-    this.helper_.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
+    this.helper.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * stride, 0);
+    this.helper.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 2);
+    this.helper.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * stride, bytesPerFloat * 4);
+    this.helper.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
+    this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
+    this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
 
     return true;
   }
@@ -357,47 +376,59 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = vectorLayer.getSource();
 
-    this.verticesBuffer_.getArray().length = 0;
-    this.indicesBuffer_.getArray().length = 0;
-
     // saves the projection transform for the current frame state
-    this.helper_.makeProjectionTransform(frameState, this.renderTransform_);
-    makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
+    const projectionTransform = createTransform();
+    this.helper.makeProjectionTransform(frameState, projectionTransform);
+
+    const features = vectorSource.getFeatures();
+    const totalInstructionsCount = POINT_INSTRUCTIONS_COUNT * features.length;
+    if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
+      this.renderInstructions_ = new Float32Array(totalInstructionsCount);
+    }
 
     // loop on features to fill the buffer
-    const features = vectorSource.getFeatures();
     let feature;
+    const tmpCoords = [];
+    let elementIndex = 0;
     for (let i = 0; i < features.length; i++) {
       feature = features[i];
       if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
         continue;
       }
 
-      let geojsonFeature = this.geojsonFeatureCache_[getUid(feature)];
-      if (!geojsonFeature) {
-        geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
-        this.geojsonFeatureCache_[getUid(feature)] = geojsonFeature;
-      }
+      tmpCoords[0] = this.coordCallback_(feature, 0);
+      tmpCoords[1] = this.coordCallback_(feature, 1);
+      applyTransform(projectionTransform, tmpCoords);
 
-      geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
-      geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
-      applyTransform(this.renderTransform_, geojsonFeature.geometry.coordinates);
-      geojsonFeature.properties = geojsonFeature.properties || {};
-      geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
-      geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
-      geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
-      geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
-      geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
-      geojsonFeature.properties.size = this.sizeCallback_(feature);
-      geojsonFeature.properties.opacity = this.opacityCallback_(feature);
-      geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-
-      pushFeatureToBuffer(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
+      elementIndex = writePointFeatureInstructions(
+        this.renderInstructions_,
+        elementIndex,
+        tmpCoords[0],
+        tmpCoords[1],
+        this.texCoordCallback_(feature, 0),
+        this.texCoordCallback_(feature, 1),
+        this.texCoordCallback_(feature, 2),
+        this.texCoordCallback_(feature, 3),
+        this.sizeCallback_(feature),
+        this.opacityCallback_(feature),
+        this.rotateWithViewCallback_(feature),
+        this.colorCallback_(feature, this.colorArray_)
+      );
     }
 
-    this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
-    this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+    /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
+    const message = {
+      type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+      renderInstructions: this.renderInstructions_.buffer
+    };
+    // additional properties will be sent back as-is by the worker
+    message['projectionTransform'] = projectionTransform;
+
+    this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
+    this.renderInstructions_ = null;
   }
+
+
 }
 
 export default WebGLPointsLayerRenderer;

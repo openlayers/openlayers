@@ -10,6 +10,8 @@ import {fromLonLat} from '../src/ol/proj.js';
 import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer.js';
 import {lerp} from '../src/ol/math.js';
 
+const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
+
 const vectorSource = new Vector({
   features: [],
   attributions: 'National UFO Reporting Center'
@@ -105,7 +107,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new TileJSON({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure',
+        url: 'https://api.tiles.mapbox.com/v4/mapbox.world-dark.json?access_token=' + key,
         crossOrigin: 'anonymous'
       })
     }),
