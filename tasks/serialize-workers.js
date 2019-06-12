@@ -52,7 +52,7 @@ async function build(input, {minify = true} = {}) {
   });
 
   const bundle = await rollup.rollup({input, plugins});
-  const {output} = await bundle.generate({format: 'es'});
+  const {output} = await bundle.generate({format: 'iife', name: 'worker'});
 
   if (output.length !== 1) {
     throw new Error(`Unexpected output length: ${output.length}`);
