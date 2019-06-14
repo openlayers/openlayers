@@ -227,18 +227,18 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const canvasScale = tileResolution / viewResolution;
 
     // set forward and inverse pixel transforms
-    composeTransform(this.pixelTransform_,
+    composeTransform(this.pixelTransform,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / tilePixelRatio, 1 / tilePixelRatio,
       rotation,
       -width / 2, -height / 2
     );
 
-    this.useContainer(target, this.pixelTransform_, layerState.opacity);
+    this.useContainer(target, this.pixelTransform, layerState.opacity);
     const context = this.context;
     const canvas = context.canvas;
 
-    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+    makeInverse(this.inversePixelTransform, this.pixelTransform);
 
     // set scale transform for calculating tile positions on the canvas
     composeTransform(this.tempTransform_,
@@ -361,7 +361,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const canvasTransform = transformToString(this.pixelTransform_);
+    const canvasTransform = transformToString(this.pixelTransform);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }

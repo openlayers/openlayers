@@ -95,15 +95,15 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     }
 
     // set forward and inverse pixel transforms
-    composeTransform(this.pixelTransform_,
+    composeTransform(this.pixelTransform,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / pixelRatio, 1 / pixelRatio,
       rotation,
       -width / 2, -height / 2
     );
-    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+    makeInverse(this.inversePixelTransform, this.pixelTransform);
 
-    this.useContainer(target, this.pixelTransform_, layerState.opacity);
+    this.useContainer(target, this.pixelTransform, layerState.opacity);
 
     const context = this.context;
     const canvas = context.canvas;
@@ -160,7 +160,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const canvasTransform = transformToString(this.pixelTransform_);
+    const canvasTransform = transformToString(this.pixelTransform);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }
