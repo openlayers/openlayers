@@ -8,7 +8,7 @@ import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import {fromLonLat, get as getProjection, toLonLat, transform} from '../../../../src/ol/proj.js';
+import {fromLonLat, get as getProjection, toLonLat, transform, Projection} from '../../../../src/ol/proj.js';
 
 
 describe('ol.format.GeoJSON', function() {
@@ -258,6 +258,28 @@ describe('ol.format.GeoJSON', function() {
         readFeature(pointGeoJSON);
       expect(feature.getGeometryName()).to.be('the_geom');
       expect(feature.getGeometry()).to.be.an(Point);
+    });
+
+    it('transforms tile pixel coordinates', function() {
+      const geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [1024, 1024]
+        }
+      };
+      const format = new GeoJSON({
+        dataProjection: new Projection({
+          code: '',
+          units: 'tile-pixels',
+          extent: [0, 0, 4096, 4096]
+        })
+      });
+      const feature = format.readFeature(geojson, {
+        extent: [-180, -90, 180, 90],
+        featureProjection: 'EPSG:3857'
+      });
+      expect(feature.getGeometry().getCoordinates()).to.eql([-135, 45]);
     });
 
   });
