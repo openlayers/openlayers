@@ -6,7 +6,7 @@ import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {Tile as TileLayer, VectorTile as VectorTileLayer} from '../src/ol/layer.js';
 import Projection from '../src/ol/proj/Projection.js';
 
-
+// Converts geojson-vt data to GeoJSON
 const replacer = function(key, value) {
   if (value.geometry) {
     let type;
@@ -46,11 +46,6 @@ const replacer = function(key, value) {
   }
 };
 
-const tilePixels = new Projection({
-  code: 'TILE_PIXELS',
-  units: 'tile-pixels'
-});
-
 const map = new Map({
   layers: [
     new TileLayer({
@@ -73,23 +68,22 @@ fetch(url).then(function(response) {
     debug: 1
   });
   const vectorSource = new VectorTileSource({
-    format: new GeoJSON(),
-    tileLoadFunction: function(tile) {
-      const format = tile.getFormat();
-      const tileCoord = tile.getTileCoord();
+    format: new GeoJSON({
+      // Data returned from geojson-vt is in tile pixel units
+      dataProjection: new Projection({
+        code: 'TILE_PIXELS',
+        units: 'tile-pixels',
+        extent: [0, 0, 4096, 4096]
+      })
+    }),
+    tileUrlFunction: function(tileCoord) {
       const data = tileIndex.getTile(tileCoord[0], tileCoord[1], tileCoord[2]);
-
-      const features = format.readFeatures(
-        JSON.stringify({
-          type: 'FeatureCollection',
-          features: data ? data.features : []
-        }, replacer));
-      tile.setLoader(function() {
-        tile.setFeatures(features);
-        tile.setProjection(tilePixels);
-      });
-    },
-    url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
+      const geojson = JSON.stringify({
+        type: 'FeatureCollection',
+        features: data ? data.features : []
+      }, replacer);
+      return 'data:application/json;charset=UTF-8,' + geojson;
+    }
   });
   const vectorLayer = new VectorTileLayer({
     source: vectorSource
