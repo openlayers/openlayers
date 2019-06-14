@@ -37,7 +37,7 @@ const vectorLayer = new VectorLayer({
 
 const rasterLayer = new TileLayer({
   source: new TileJSON({
-    url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
+    url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json',
     crossOrigin: ''
   })
 });
