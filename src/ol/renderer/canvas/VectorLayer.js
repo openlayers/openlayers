@@ -86,10 +86,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
 
     // set forward and inverse pixel transforms
-    makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+    makeScale(this.pixelTransform, 1 / pixelRatio, 1 / pixelRatio);
+    makeInverse(this.inversePixelTransform, this.pixelTransform);
 
-    this.useContainer(target, this.pixelTransform_, layerState.opacity);
+    this.useContainer(target, this.pixelTransform, layerState.opacity);
     const context = this.context;
     const canvas = context.canvas;
 
@@ -107,7 +107,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-      const canvasTransform = transformToString(this.pixelTransform_);
+      const canvasTransform = transformToString(this.pixelTransform);
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }
