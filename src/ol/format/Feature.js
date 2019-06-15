@@ -13,8 +13,10 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * the `dataProjection` of the format is assigned (where set). If the projection
  * can not be derived from the data and if no `dataProjection` is set for a format,
  * the features will not be reprojected.
- * @property {import("../extent.js").Extent} [extent] Tile extent of the tile being read. This is only used and
- * required for {@link module:ol/format/MVT}.
+ * @property {import("../extent.js").Extent} [extent] Tile extent in map units of the tile being read.
+ * This is only required when reading data with tile pixels as geometry units. When configured,
+ * a `dataProjection` with `TILE_PIXELS` as `units` and the tile's pixel extent as `extent` needs to be
+ * provided.
  * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection of the feature geometries
  * created by the format reader. If not provided, features will be returned in the
  * `dataProjection`.
@@ -86,9 +88,14 @@ class FeatureFormat {
   getReadOptions(source, opt_options) {
     let options;
     if (opt_options) {
+      let dataProjection = opt_options.dataProjection ?
+        opt_options.dataProjection : this.readProjection(source);
+      if (opt_options.extent) {
+        dataProjection = getProjection(dataProjection);
+        dataProjection.setWorldExtent(opt_options.extent);
+      }
       options = {
-        dataProjection: opt_options.dataProjection ?
-          opt_options.dataProjection : this.readProjection(source),
+        dataProjection: dataProjection,
         featureProjection: opt_options.featureProjection
       };
     }
