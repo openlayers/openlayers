@@ -187,7 +187,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   dispatchRenderEvent_(type, context, frameState) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const event = new RenderEvent(type, this.inversePixelTransform, frameState, context, null);
+      const event = new RenderEvent(type, this.inversePixelTransform, frameState, context);
       layer.dispatchEvent(event);
     }
   }

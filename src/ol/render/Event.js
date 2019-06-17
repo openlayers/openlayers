@@ -12,9 +12,8 @@ class RenderEvent extends Event {
    *     CSS pixels to rendered pixels.
    * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
    * @param {?CanvasRenderingContext2D=} opt_context Context.
-   * @param {?import("../webgl/Helper.js").default=} opt_glContext WebGL Context.
    */
-  constructor(type, opt_inversePixelTransform, opt_frameState, opt_context, opt_glContext) {
+  constructor(type, opt_inversePixelTransform, opt_frameState, opt_context) {
 
     super(type);
 
@@ -40,14 +39,6 @@ class RenderEvent extends Event {
      * @api
      */
     this.context = opt_context;
-
-    /**
-     * WebGL context. Only available when a WebGL renderer is used, null
-     * otherwise.
-     * @type {import("../webgl/Helper.js").default|null|undefined}
-     * @api
-     */
-    this.glContext = opt_glContext;
 
   }
 
