@@ -12,13 +12,18 @@ $(function () {
                 var $item = $(v);
 
                 if ($item.data('name') && regexp.test($item.data('name'))) {
+                    const container = $item.parent().parent().parent();
+                    container.show();
+                    container.closest('.itemMembers').show();
+                    container.closest('.item').show();
                     $item.show();
                     $item.closest('.itemMembers').show();
                     $item.closest('.item').show();
                 }
             });
         } else {
-            $el.find('.item, .itemMembers').show();
+            $el.find('.item, .itemMembers').hide();
+            $('.navigation>ul>li').show();
         }
 
         $el.find('.list').scrollTop(0);
