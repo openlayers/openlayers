@@ -10,11 +10,12 @@ function toShortName(name) {
     </div>
     <ul class="list">
     <?js
-    this.nav.forEach(function (item) {
+    let navbuilder;
+    this.nav.forEach(navbuilder = function (item) {
     ?>
         <li class="item" data-name="<?js= item.longname ?>">
             <span class="title">
-                <?js= self.linkto(item.longname, item.longname.replace('module:', '')) ?>
+                <?js= self.linkto(item.longname, item.type === 'module' ? item.longname.replace('module:', '') : item.name) ?>
                 <?js if (item.type === 'namespace' &&
                         (item.members.length + item.typedefs.length + item.methods.length +
                          item.events.length > 0)) { ?>
@@ -27,9 +28,7 @@ function toShortName(name) {
             <span class="subtitle">Classes</span>
             <?js
                 item.classes.forEach(function (v) {
-            ?>
-                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, toShortName(v.name)) ?></li>
-            <?js
+                    navbuilder(v);
                 });
             }
             ?>
