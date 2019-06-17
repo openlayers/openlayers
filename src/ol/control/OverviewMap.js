@@ -4,17 +4,13 @@
 import PluggableMap from '../PluggableMap.js';
 import CompositeMapRenderer from '../renderer/Composite.js';
 import MapEventType from '../MapEventType.js';
-import MapProperty from '../MapProperty.js';
-import {getChangeEventType} from '../Object.js';
-import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
-import ViewProperty from '../ViewProperty.js';
 import Control from './Control.js';
 import {rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
-import {listen, listenOnce, unlisten} from '../events.js';
+import {listen, listenOnce} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
 
@@ -237,77 +233,20 @@ class OverviewMap extends Control {
       return;
     }
     if (oldMap) {
-      const oldView = oldMap.getView();
-      if (oldView) {
-        this.unbindView_(oldView);
-      }
       this.ovmap_.setTarget(null);
     }
     super.setMap(map);
 
     if (map) {
       this.ovmap_.setTarget(this.ovmapDiv_);
-      this.listenerKeys.push(listen(
-        map, ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, this));
-
       const view = map.getView();
       if (view) {
-        this.bindView_(view);
         if (view.isDef()) {
           this.ovmap_.updateSize();
           this.resetExtent_();
         }
       }
     }
-  }
-
-  /**
-   * Handle map property changes.  This only deals with changes to the map's view.
-   * @param {import("../Object.js").ObjectEvent} event The propertychange event.
-   * @private
-   */
-  handleMapPropertyChange_(event) {
-    if (event.key === MapProperty.VIEW) {
-      const oldView = /** @type {import("../View.js").default} */ (event.oldValue);
-      if (oldView) {
-        this.unbindView_(oldView);
-      }
-      const newView = this.getMap().getView();
-      this.bindView_(newView);
-    }
-  }
-
-  /**
-   * Register listeners for view property changes.
-   * @param {import("../View.js").default} view The view.
-   * @private
-   */
-  bindView_(view) {
-    listen(view,
-      getChangeEventType(ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
-  }
-
-  /**
-   * Unregister listeners for view property changes.
-   * @param {import("../View.js").default} view The view.
-   * @private
-   */
-  unbindView_(view) {
-    unlisten(view,
-      getChangeEventType(ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
-  }
-
-  /**
-   * Handle rotation changes to the main map.
-   * TODO: This should rotate the extent rectrangle instead of the
-   * overview map's view.
-   * @private
-   */
-  handleRotationChanged_() {
-    this.ovmap_.getView().setRotation(this.getMap().getView().getRotation());
   }
 
   /**
@@ -436,6 +375,9 @@ class OverviewMap extends Control {
     // set position using bottom left coordinates
     const rotateBottomLeft = this.calculateCoordinateRotate_(rotation, bottomLeft);
     overlay.setPosition(rotateBottomLeft);
+
+    // TODO: This should rotate the extent rectrangle instead of the overview map's view.
+    ovview.setRotation(rotation);
 
     // set box size calculated from map extent size and overview map resolution
     if (box) {
