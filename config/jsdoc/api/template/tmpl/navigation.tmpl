@@ -22,6 +22,20 @@ function toShortName(name) {
             </span>
             <ul class="members itemMembers">
             <?js
+            if (item.classes.length) {
+            ?>
+            <span class="subtitle">Classes</span>
+            <?js
+                item.classes.forEach(function (v) {
+            ?>
+                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, toShortName(v.name)) ?></li>
+            <?js
+                });
+            }
+            ?>
+            </ul>
+            <ul class="members itemMembers">
+            <?js
             if (item.members.length) {
             ?>
             <span class="subtitle">Members</span>

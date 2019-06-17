@@ -222,6 +222,10 @@ function buildNav(members) {
           type: 'module',
           longname: v.longname,
           name: v.name,
+          classes: find({
+            kind: 'class',
+            memberof: v.longname
+          }),
           members: find({
             kind: 'member',
             memberof: v.longname
@@ -234,30 +238,6 @@ function buildNav(members) {
             kind: 'typedef',
             memberof: v.longname
           }),
-          events: find({
-            kind: 'event',
-            memberof: v.longname
-          })
-        });
-      }
-      if (v.kind == 'class') {
-        nav.push({
-          type: 'class',
-          longname: v.longname,
-          name: v.name,
-          members: find({
-            kind: 'member',
-            memberof: v.longname
-          }),
-          methods: find({
-            kind: 'function',
-            memberof: v.longname
-          }),
-          typedefs: find({
-            kind: 'typedef',
-            memberof: v.longname
-          }),
-          fires: v.fires,
           events: find({
             kind: 'event',
             memberof: v.longname

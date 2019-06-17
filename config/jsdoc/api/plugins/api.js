@@ -59,7 +59,9 @@ function includeAugments(doclet) {
           });
         }
         cls._hideConstructor = true;
-        delete cls.undocumented;
+        if (!cls.undocumented) {
+          cls._documented = true;
+        }
       }
     }
   }
@@ -149,6 +151,9 @@ exports.handlers = {
       } else if (doclet.undocumented !== false && !doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
+      }
+      if (doclet._documented) {
+        delete doclet.undocumented;
       }
     }
   }
