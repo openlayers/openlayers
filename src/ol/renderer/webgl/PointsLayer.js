@@ -493,6 +493,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         color
       );
 
+      // for hit detection, the feature uid is saved in the opacity value
+      // and the index of the opacity value is encoded in the color values
       elementIndex = writePointFeatureInstructions(
         this.hitRenderInstructions_,
         elementIndex,
@@ -503,9 +505,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         u1,
         v1,
         size,
-        opacity,
+        opacity > 0 ? Number(getUid(feature)) : 0,
         rotateWithView,
-        colorEncodeId(parseInt(getUid(feature)), tmpColor)
+        colorEncodeId(elementIndex + 7, tmpColor)
       );
     }
 
@@ -534,6 +536,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
+    if (!this.hitRenderInstructions_) {
+      return;
+    }
+
     const pixel = applyTransform(frameState.coordinateToPixelTransform, coordinate.slice());
 
     const data = this.hitRenderTarget_.readPixel(pixel[0], pixel[1]);
@@ -543,7 +549,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       data[2] / 255,
       data[3] / 255
     ];
-    const uid = colorDecodeId(color).toString();
+    const index = colorDecodeId(color);
+    const opacity = this.hitRenderInstructions_[index];
+    const uid = Math.floor(opacity).toString();
 
     const source = this.getLayer().getSource();
     const feature = source.getFeatureByUid(uid);
