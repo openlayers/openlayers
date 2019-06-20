@@ -5,7 +5,6 @@
   "globals": {
     "IMAGE_TOLERANCE": false,
     "afterLoadText": false,
-    "assertWebGL": false,
     "createMapDiv": true,
     "disposeMap": true,
     "expect": false,

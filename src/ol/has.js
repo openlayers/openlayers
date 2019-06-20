@@ -38,5 +38,3 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  * @api
  */
 export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
-
-export {HAS as WEBGL} from './webgl.js';

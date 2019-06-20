@@ -5,7 +5,6 @@ import {getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
-import {TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T, EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import {
   compose as composeTransform,
@@ -16,7 +15,7 @@ import {
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
-import {getContext} from '../webgl.js';
+import {getContext, getSupportedExtensions} from '../webgl.js';
 import {includes} from '../array.js';
 import {assert} from '../asserts.js';
 
@@ -258,7 +257,7 @@ class WebGLHelper extends Disposable {
      */
     this.currentProgram_ = null;
 
-    assert(includes(WEBGL_EXTENSIONS, 'OES_element_index_uint'), 63);
+    assert(includes(getSupportedExtensions(), 'OES_element_index_uint'), 63);
     gl.getExtension('OES_element_index_uint');
 
     listen(this.canvas_, ContextEventType.LOST,
@@ -757,11 +756,11 @@ class WebGLHelper extends Disposable {
 
     if (opt_wrapS !== undefined) {
       gl.texParameteri(
-        TEXTURE_2D, TEXTURE_WRAP_S, opt_wrapS);
+        gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, opt_wrapS);
     }
     if (opt_wrapT !== undefined) {
       gl.texParameteri(
-        TEXTURE_2D, TEXTURE_WRAP_T, opt_wrapT);
+        gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, opt_wrapT);
     }
 
     return texture;
