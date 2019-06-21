@@ -11,7 +11,7 @@ const center = [-98.8, 37.9];
 const key = 'ER67WIiPdCQvhgsUjoWK';
 
 const mbMap = new mapboxgl.Map({
-  style: 'https://maps.tilehosting.com/styles/bright/style.json?key=' + key,
+  style: 'https://api.maptiler.com/maps/bright/style.json?key=' + key,
   attributionControl: false,
   boxZoom: false,
   center: center,
