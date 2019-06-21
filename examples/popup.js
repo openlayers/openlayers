@@ -6,6 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {toLonLat} from '../src/ol/proj.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 
+const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 
 /**
  * Elements that make up the popup.
@@ -45,7 +46,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new TileJSON({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+        url: 'https://api.tiles.mapbox.com/v4/mapbox.natural-earth-hypso-bathy.json?access_token=' + key,
         crossOrigin: 'anonymous'
       })
     })
