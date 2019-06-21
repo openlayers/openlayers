@@ -86,12 +86,12 @@ class VectorTileLayer extends BaseVectorLayer {
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
 
-    super(/** @type {import("./Vector.js").Options} */ (baseOptions));
+    super(/** @type {import("./BaseVector.js").Options} */ (baseOptions));
 
     const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(renderMode == undefined ||
-       renderMode == VectorTileRenderType.IMAGE ||
-       renderMode == VectorTileRenderType.HYBRID,
+        renderMode == VectorTileRenderType.IMAGE ||
+        renderMode == VectorTileRenderType.HYBRID,
     28); // `renderMode` must be `'image'` or `'hybrid'`
 
     /**
