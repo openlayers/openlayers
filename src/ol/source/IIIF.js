@@ -23,6 +23,7 @@ import TileImage from './TileImage.js';
  * for version 1, 'default' for versions 2 and 3.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {Array<number>} [resolutions] Supported resolutions as given in IIIF 'scaleFactors'
  * @property {import("../size.js").Size} size Size of the image [width, height].
  * @property {import("../size.js").Size[]} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
@@ -37,7 +38,7 @@ import TileImage from './TileImage.js';
  * are supported), the default tilesize is 256.
  * @property {number} [transition]
  * @property {string} [url] Base URL of the IIIF Image service.
- * This should be the same as the IIIF Image @id.
+ * This should be the same as the IIIF Image ID.
  * @property {Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
  * @property {number} [zDirection] Indicate which resolution should be used
  * by a renderer if the views resolution does not match any resolution of the tile source.
@@ -63,6 +64,9 @@ class IIIF extends TileImage {
    */
   constructor(opt_options) {
 
+    /**
+     * @type {Partial<Options>} options
+     */
     const options = opt_options || {};
 
     let baseUrl = options.url || '';
@@ -83,7 +87,7 @@ class IIIF extends TileImage {
     const extent = options.extent || [0, -height, width, 0];
 
     const supportsListedSizes = sizes != undefined && Array.isArray(sizes) && sizes.length > 0;
-    const supportsListedTiles = tileSize != undefined && (Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0);
+    const supportsListedTiles = tileSize != undefined && (typeof tileSize === 'number' && Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0);
     const supportsArbitraryTiling = supports != undefined && Array.isArray(supports) &&
       (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
       (supports.includes('sizeByWh') || supports.includes('sizeByH') ||
@@ -99,7 +103,7 @@ class IIIF extends TileImage {
 
     if (supportsListedTiles || supportsArbitraryTiling) {
       if (tileSize != undefined) {
-        if (Number.isInteger(tileSize) && tileSize > 0) {
+        if (typeof tileSize === 'number' && Number.isInteger(tileSize) && tileSize > 0) {
           tileWidth = tileSize;
           tileHeight = tileSize;
         } else if (Array.isArray(tileSize) && tileSize.length > 0) {
@@ -131,7 +135,7 @@ class IIIF extends TileImage {
           resolutions.push(Math.pow(2, i));
         }
       } else {
-        const maxScaleFactor = Math.max([...resolutions]);
+        const maxScaleFactor = Math.max(...resolutions);
         // TODO maxScaleFactor might not be a power to 2
         maxZoom = Math.round(Math.log(maxScaleFactor) / Math.LN2);
       }
