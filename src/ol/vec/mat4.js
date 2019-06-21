@@ -4,7 +4,7 @@
 
 
 /**
- * @return {Array<number>} 4x4 matrix representing a 3D identity transform.
+ * @return {Array<number>} "4x4 matrix representing a 3D identity transform."
  */
 export function create() {
   return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
@@ -14,7 +14,7 @@ export function create() {
 /**
  * @param {Array<number>} mat4 Flattened 4x4 matrix receiving the result.
  * @param {import("../transform.js").Transform} transform Transformation matrix.
- * @return {Array<number>} 2D transformation matrix as flattened 4x4 matrix.
+ * @return {Array<number>} "2D transformation matrix as flattened 4x4 matrix."
  */
 export function fromTransform(mat4, transform) {
   mat4[0] = transform[0];

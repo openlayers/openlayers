@@ -167,7 +167,7 @@ class DragPan extends PointerInteraction {
 }
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+ * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Browser event.
  * @return {boolean} Combined condition result.
  */
 function defaultCondition(mapBrowserEvent) {

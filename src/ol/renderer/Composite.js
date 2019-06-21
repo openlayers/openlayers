@@ -27,7 +27,7 @@ class CompositeMapRenderer extends MapRenderer {
     super(map);
 
     /**
-     * @type {import("./events.js").EventsKey}
+     * @type {import("../events.js").EventsKey}
      */
     this.labelCacheKey_ = listen(labelCache, EventType.CLEAR, map.redrawText.bind(map));
 
