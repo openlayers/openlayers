@@ -129,12 +129,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
     const containerReused = this.containerReused;
     super.useContainer(target, transform, opacity);
-    if (containerReused && !this.containerReused && !overlayContext) {
-      this.overlayContext_ = null;
-      this.overlayContextUid_ = undefined;
-    }
-    if (this.containerReused && overlayContext) {
-      this.overlayContext_ = overlayContext;
+    if (containerReused) {
+      this.overlayContext_ = overlayContext || null;
+      this.overlayContextUid_ = overlayContext ? getUid(overlayContext) : undefined;
     }
     if (!this.overlayContext_) {
       const overlayContext = createCanvasContext2D();
