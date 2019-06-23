@@ -38,3 +38,9 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  * @api
  */
 export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+
+/**
+ * Image.prototype.decode() is supported.
+ * @type {boolean}
+ */
+export const IMAGE_DECODE = typeof Image !== 'undefined' && Image.prototype.decode;

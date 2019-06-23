@@ -6,7 +6,7 @@ import ImageState from './ImageState.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import {getHeight} from './extent.js';
-import {SAFARI} from './has.js';
+import {IMAGE_DECODE} from './has.js';
 
 
 /**
@@ -159,10 +159,7 @@ class ImageWrapper extends ImageBase {
 export function listenImage(image, loadHandler, errorHandler) {
   const img = /** @type {HTMLImageElement} */ (image);
 
-  // The decode function is supported by Safari but not when the image is a svg file.
-  // FIXME: remove `!SAFARI` in the test when this bug is fixed upstream.
-  //        See: https://bugs.webkit.org/show_bug.cgi?id=198527
-  if (!SAFARI && img.decode) {
+  if (IMAGE_DECODE) {
     const promise = img.decode();
     let listening = true;
     const unlisten = function() {
@@ -174,7 +171,13 @@ export function listenImage(image, loadHandler, errorHandler) {
       }
     }).catch(function(error) {
       if (listening) {
-        errorHandler();
+        // FIXME: Unconditionally call errorHandler() when this bug is fixed upstream:
+        //        https://bugs.webkit.org/show_bug.cgi?id=198527
+        if (error.name === 'EncodingError' && error.message === 'Invalid image type.') {
+          loadHandler();
+        } else {
+          errorHandler();
+        }
       }
     });
     return unlisten;
