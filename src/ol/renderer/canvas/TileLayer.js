@@ -264,15 +264,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedTiles.length = 0;
     /** @type {Array<number>} */
     let zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort(function(a, b) {
-      if (a === z) {
-        return 1;
-      } else if (b === z) {
-        return -1;
-      } else {
-        return a > b ? 1 : a < b ? -1 : 0;
-      }
-    });
+    zs.sort(numberSafeCompareFunction);
 
     let clips, clipZs, currentClip;
     if (layerState.opacity === 1 && (!this.containerReused || tileSource.getOpaque(frameState.viewState.projection))) {
