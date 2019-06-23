@@ -22,7 +22,7 @@ import {listen, unlistenByKey, unlisten} from './events.js';
 import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
-import {DEVICE_PIXEL_RATIO} from './has.js';
+import {DEVICE_PIXEL_RATIO, IMAGE_DECODE} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
@@ -967,7 +967,7 @@ class PluggableMap extends BaseObject {
       if (frameState) {
         const hints = frameState.viewHints;
         if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
-          const lowOnFrameBudget = Date.now() - frameState.time > 8;
+          const lowOnFrameBudget = !IMAGE_DECODE && Date.now() - frameState.time > 8;
           maxTotalLoading = lowOnFrameBudget ? 0 : 8;
           maxNewLoads = lowOnFrameBudget ? 0 : 2;
         }
