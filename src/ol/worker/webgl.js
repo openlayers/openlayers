@@ -10,7 +10,10 @@ import {
 } from '../renderer/webgl/Layer.js';
 import {assign} from '../obj.js';
 
-onmessage = event => {
+/** @type {any} */
+const worker = self;
+
+worker.onmessage = event => {
   const received = event.data;
   if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
     const renderInstructions = new Float32Array(received.renderInstructions);
@@ -41,7 +44,7 @@ onmessage = event => {
       renderInstructions: renderInstructions.buffer
     }, received);
 
-    postMessage(message, [vertexBuffer.buffer, indexBuffer.buffer, renderInstructions.buffer]);
+    worker.postMessage(message, [vertexBuffer.buffer, indexBuffer.buffer, renderInstructions.buffer]);
   }
 };
 
