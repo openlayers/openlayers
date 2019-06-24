@@ -78,6 +78,44 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       expect(features[0].getId()).to.be(2);
     });
 
+    it('accepts custom idProperty', function() {
+      const format = new MVT({
+        featureClass: Feature,
+        layers: ['poi_label'],
+        idProperty: 'osm_id'
+      });
+      const features = format.readFeatures(data, options);
+
+      const first = features[0];
+      expect(first.getId()).to.be(1000000057590683);
+      expect(first.get('osm_id')).to.be(undefined);
+    });
+
+    it('accepts custom idProperty (render features)', function() {
+      const format = new MVT({
+        layers: ['poi_label'],
+        idProperty: 'osm_id'
+      });
+
+      const features = format.readFeatures(data, options);
+
+      const first = features[0];
+      expect(first.getId()).to.be(1000000057590683);
+      expect(first.get('osm_id')).to.be(undefined);
+    });
+
+    it('works if you provide a bogus idProperty', function() {
+      const format = new MVT({
+        layers: ['poi_label'],
+        idProperty: 'bogus'
+      });
+
+      const features = format.readFeatures(data, options);
+
+      const first = features[0];
+      expect(first.getId()).to.be(undefined);
+    });
+
   });
 
 });
