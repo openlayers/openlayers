@@ -408,7 +408,7 @@ class WFS extends XMLFeature {
         node.setAttribute('count', String(options.count));
       }
       if (options.viewParams !== undefined) {
-        node.setAttribute('viewParams ', options.viewParams);
+        node.setAttribute('viewParams', options.viewParams);
       }
       filter = options.filter;
       if (options.bbox) {
