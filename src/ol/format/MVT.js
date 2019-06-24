@@ -31,6 +31,7 @@ import {get} from '../proj.js';
  * @property {string} [geometryName='geometry'] Geometry name to use when creating features.
  * @property {string} [layerName='layer'] Name of the feature attribute that holds the layer name.
  * @property {Array<string>} [layers] Layers to read features from. If not provided, features will be read from all
+ * @property {string} [idProperty] Optional property that will be assigned as the feature id and removed from the properties.
  * layers.
  */
 
@@ -83,6 +84,12 @@ class MVT extends FeatureFormat {
      * @type {Array<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.idProperty_ = options.idProperty;
 
   }
 
@@ -164,8 +171,16 @@ class MVT extends FeatureFormat {
     }
 
     let feature;
-    const id = rawFeature.id;
     const values = rawFeature.properties;
+
+    let id;
+    if (!this.idProperty_) {
+      id = rawFeature.id;
+    } else {
+      id = values[this.idProperty_];
+      delete values[this.idProperty_];
+    }
+
     values[this.layerName_] = rawFeature.layer.name;
 
     const flatCoordinates = [];
