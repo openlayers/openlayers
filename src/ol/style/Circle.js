@@ -53,13 +53,14 @@ class CircleStyle extends RegularShape {
   }
 
   /**
-  * Set the circle radius.
-  *
-  * @param {number} radius Circle radius.
-  * @api
-  */
+   * Set the circle radius.
+   *
+   * @param {number} radius Circle radius.
+   * @api
+   */
   setRadius(radius) {
     this.radius_ = radius;
+    this.render();
   }
 }
 
