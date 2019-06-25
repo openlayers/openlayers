@@ -8,7 +8,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 
 const center = [-98.8, 37.9];
-const key = 'ER67WIiPdCQvhgsUjoWK';
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
 const mbMap = new mapboxgl.Map({
   style: 'https://api.maptiler.com/maps/bright/style.json?key=' + key,
