@@ -142,7 +142,7 @@ class RegularShape extends ImageStyle {
      */
     this.hitDetectionImageSize_ = null;
 
-    this.render_();
+    this.render();
 
   }
 
@@ -301,7 +301,7 @@ class RegularShape extends ImageStyle {
   /**
    * @protected
    */
-  render_() {
+  render() {
     let lineCap = '';
     let lineJoin = '';
     let miterLimit = 0;
@@ -338,7 +338,6 @@ class RegularShape extends ImageStyle {
 
     let size = 2 * (this.radius_ + strokeWidth) + 1;
 
-    /** @type {RenderOptions} */
     const renderOptions = {
       strokeStyle: strokeStyle,
       strokeWidth: strokeWidth,
