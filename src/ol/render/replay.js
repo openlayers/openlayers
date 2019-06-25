@@ -32,5 +32,5 @@ export const TEXT_ALIGN = {
   hanging: 0.2,
   alphabetic: 0.8,
   ideographic: 0.8,
-  bottom: 1,
+  bottom: 1
 };
