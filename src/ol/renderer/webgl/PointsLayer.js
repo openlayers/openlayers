@@ -332,7 +332,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
     if (sourceChanged) {
       this.sourceRevision_ = vectorSource.getRevision();
-      this.geojsonFeatureCache_ = {};
 
       const projection = viewState.projection;
       const resolution = viewState.resolution;
