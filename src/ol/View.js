@@ -1472,7 +1472,7 @@ class View extends BaseObject {
    */
   getConstrainedZoom(targetZoom, opt_direction) {
     const targetRes = this.getResolutionForZoom(targetZoom);
-    return this.getZoomForResolution(this.getConstrainedResolution(targetRes));
+    return this.getZoomForResolution(this.getConstrainedResolution(targetRes, opt_direction));
   }
 
   /**
