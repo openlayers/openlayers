@@ -1224,7 +1224,7 @@ class PluggableMap extends BaseObject {
     let frameState = null;
     if (size !== undefined && hasArea(size) && view && view.isDef()) {
       const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
-      viewState = view.getState(this.pixelRatio_);
+      viewState = view.getState();
       frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,

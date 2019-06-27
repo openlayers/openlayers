@@ -927,10 +927,9 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {number} pixelRatio Pixel ratio for center rounding.
    * @return {State} View state.
    */
-  getState(pixelRatio) {
+  getState() {
     const center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenter());
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
