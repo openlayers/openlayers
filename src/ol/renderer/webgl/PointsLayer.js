@@ -574,9 +574,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.useProgram(this.hitProgram_);
     this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
 
-    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
-    multiplyTransform(this.currentTransform_, this.invertHitRenderTransform_);
-
     this.helper.bindBuffer(this.hitVerticesBuffer_);
     this.helper.bindBuffer(this.indicesBuffer_);
 
