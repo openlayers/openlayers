@@ -220,5 +220,74 @@ describe('ol.webgl.WebGLHelper', function() {
       });
     });
 
+    describe('#createTexture', function() {
+      let h;
+      beforeEach(function() {
+        h = new WebGLHelper();
+      });
+
+      it('creates an empty texture from scratch', function() {
+        const width = 4;
+        const height = 4;
+        const t = h.createTexture([width, height]);
+        const gl = h.getGL();
+
+        const fb = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+        const data = new Uint8Array(width * height * 4);
+        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
+        gl.deleteFramebuffer(fb);
+
+        expect(data[0]).to.eql(0);
+        expect(data[1]).to.eql(0);
+        expect(data[2]).to.eql(0);
+        expect(data[3]).to.eql(0);
+        expect(data[4]).to.eql(0);
+        expect(data[5]).to.eql(0);
+        expect(data[6]).to.eql(0);
+        expect(data[7]).to.eql(0);
+      });
+
+      it('creates a texture from image data', function() {
+        const width = 4;
+        const height = 4;
+        const canvas = document.createElement('canvas');
+        const image = canvas.getContext('2d').createImageData(width, height);
+        for (let i = 0; i < image.data.length; i += 4) {
+          image.data[i] = 100;
+          image.data[i + 1] = 150;
+          image.data[i + 2] = 200;
+          image.data[i + 3] = 250;
+        }
+        const t = h.createTexture([width, height], image);
+        const gl = h.getGL();
+
+        const fb = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+        const data = new Uint8Array(width * height * 4);
+        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
+        gl.deleteFramebuffer(fb);
+
+        expect(data[0]).to.eql(100);
+        expect(data[1]).to.eql(150);
+        expect(data[2]).to.eql(200);
+        expect(data[3]).to.eql(250);
+        expect(data[4]).to.eql(100);
+        expect(data[5]).to.eql(150);
+        expect(data[6]).to.eql(200);
+        expect(data[7]).to.eql(250);
+      });
+
+      it('reuses a given texture', function() {
+        const width = 4;
+        const height = 4;
+        const gl = h.getGL();
+        const t1 = gl.createTexture();
+        const t2 = h.createTexture([width, height], undefined, t1);
+        expect(t1).to.be(t2);
+      });
+    });
   });
 });

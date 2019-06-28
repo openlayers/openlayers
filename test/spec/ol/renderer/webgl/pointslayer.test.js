@@ -6,6 +6,7 @@ import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/Point
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import ViewHint from '../../../../../src/ol/ViewHint.js';
 import {POINT_VERTEX_STRIDE, WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
+import {create as createTransform, translate as translateTransform} from '../../../../../src/ol/transform.js';
 
 
 describe('ol.renderer.webgl.PointsLayer', function() {
@@ -143,6 +144,69 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       frameState.extent = [10, 20, 30, 40];
       renderer.prepareFrame(frameState);
       expect(spy.callCount).to.be(2);
+    });
+  });
+
+  describe('#forEachFeatureAtCoordinate', function() {
+    let layer, renderer, feature;
+
+    beforeEach(function() {
+      feature = new Feature(new Point([0, 0]));
+      layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature]
+        })
+      });
+      renderer = new WebGLPointsLayerRenderer(layer, {
+        sizeCallback: function() {
+          return 4;
+        }
+      });
+    });
+
+    it('correctly hit detects a feature', function(done) {
+      const transform = translateTransform(createTransform(), 20, 20);
+      const projection = getProjection('EPSG:3857');
+      const frameState = {
+        viewState: {
+          projection: projection,
+          resolution: 1,
+          rotation: 0,
+          center: [0, 0]
+        },
+        layerStatesArray: [{}],
+        layerIndex: 0,
+        extent: [-20, -20, 20, 20],
+        size: [40, 40],
+        viewHints: [],
+        coordinateToPixelTransform: transform
+      };
+      let found;
+      const cb = function(feature) {
+        found = feature;
+      };
+
+      renderer.prepareFrame(frameState);
+      renderer.worker_.addEventListener('message', function() {
+        if (!renderer.hitRenderInstructions_) {
+          return;
+        }
+        renderer.renderFrame(frameState);
+
+        function checkHit(x, y, expected) {
+          found = null;
+          renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
+          expect(found).to.be(expected ? feature : null);
+        }
+
+        checkHit(0, 0, true);
+        checkHit(1, -2, true);
+        checkHit(-2, 1, true);
+        checkHit(2, 0, false);
+        checkHit(1, -3, false);
+
+        done();
+      });
     });
   });
 

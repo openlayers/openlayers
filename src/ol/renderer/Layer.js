@@ -133,15 +133,6 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @return {boolean} Is there a feature at the given coordinate?
-   */
-  hasFeatureAtCoordinate(coordinate, frameState) {
-    return false;
-  }
-
-  /**
    * Load the image if not already loaded, and register the image change
    * listener if needed.
    * @param {import("../ImageBase.js").default} image Image.

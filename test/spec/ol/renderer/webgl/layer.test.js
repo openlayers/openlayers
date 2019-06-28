@@ -1,5 +1,7 @@
 import WebGLLayerRenderer, {
-  getBlankTexture, POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
+  colorDecodeId,
+  colorEncodeId,
+  getBlankImageData, POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
   writePointFeatureInstructions, writePointFeatureToBuffers
 } from '../../../../../src/ol/renderer/webgl/Layer.js';
 import Layer from '../../../../../src/ol/layer/Layer.js';
@@ -237,15 +239,46 @@ describe('ol.renderer.webgl.Layer', function() {
 
   });
 
-  describe('getBlankTexture', function() {
+  describe('getBlankImageData', function() {
     it('creates a 1x1 white texture', function() {
-      const texture = getBlankTexture();
+      const texture = getBlankImageData();
       expect(texture.height).to.eql(1);
       expect(texture.width).to.eql(1);
       expect(texture.data[0]).to.eql(255);
       expect(texture.data[1]).to.eql(255);
       expect(texture.data[2]).to.eql(255);
       expect(texture.data[3]).to.eql(255);
+    });
+  });
+
+  describe('colorEncodeId and colorDecodeId', function() {
+    it('correctly encodes and decodes ids', function() {
+      expect(colorDecodeId(colorEncodeId(0))).to.eql(0);
+      expect(colorDecodeId(colorEncodeId(1))).to.eql(1);
+      expect(colorDecodeId(colorEncodeId(123))).to.eql(123);
+      expect(colorDecodeId(colorEncodeId(12345))).to.eql(12345);
+      expect(colorDecodeId(colorEncodeId(123456))).to.eql(123456);
+      expect(colorDecodeId(colorEncodeId(91612))).to.eql(91612);
+      expect(colorDecodeId(colorEncodeId(1234567890))).to.eql(1234567890);
+    });
+
+    it('correctly reuses array', function() {
+      const arr = [];
+      expect(colorEncodeId(123, arr)).to.be(arr);
+    });
+
+    it('is compatible with Uint8Array storage', function() {
+      const encoded = colorEncodeId(91612);
+      const typed = Uint8Array.of(encoded[0] * 255, encoded[1] * 255,
+        encoded[2] * 255, encoded[3] * 255);
+      const arr = [
+        typed[0] / 255,
+        typed[1] / 255,
+        typed[2] / 255,
+        typed[3] / 255
+      ];
+      const decoded = colorDecodeId(arr);
+      expect(decoded).to.eql(91612);
     });
   });
 

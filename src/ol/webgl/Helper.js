@@ -432,6 +432,30 @@ class WebGLHelper extends Disposable {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
+    gl.useProgram(this.currentProgram_);
+    this.applyFrameState(frameState);
+    this.applyUniforms(frameState);
+  }
+
+  /**
+   * Clear the render target & bind it for future draw operations.
+   * This is similar to `prepareDraw`, only post processes will not be applied.
+   * Note: the whole viewport will be drawn to the render target, regardless of its size.
+   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
+   * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
+   */
+  prepareDrawToRenderTarget(frameState, renderTarget, opt_disableAlphaBlend) {
+    const gl = this.getGL();
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.getFramebuffer());
+    gl.bindTexture(gl.TEXTURE_2D, renderTarget.getTexture());
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
+
+    gl.useProgram(this.currentProgram_);
     this.applyFrameState(frameState);
     this.applyUniforms(frameState);
   }
@@ -742,57 +766,36 @@ class WebGLHelper extends Disposable {
   // TODO: shutdown program
 
   /**
-   * TODO: these are not used and should be reworked
-   * @param {number=} opt_wrapS wrapS.
-   * @param {number=} opt_wrapT wrapT.
-   * @return {WebGLTexture} The texture.
+   * Will create or reuse a given webgl texture and apply the given size. If no image data
+   * specified, the texture will be empty, otherwise image data will be used and the `size`
+   * parameter will be ignored.
+   * Note: wrap parameters are set to clamp to edge, min filter is set to linear.
+   * @param {Array<number>} size Expected size of the texture
+   * @param {ImageData|HTMLImageElement|HTMLCanvasElement} [opt_data] Image data/object to bind to the texture
+   * @param {WebGLTexture} [opt_texture] Existing texture to reuse
+   * @return {WebGLTexture} The generated texture
+   * @api
    */
-  createTextureInternal(opt_wrapS, opt_wrapT) {
+  createTexture(size, opt_data, opt_texture) {
     const gl = this.getGL();
-    const texture = gl.createTexture();
+    const texture = opt_texture || gl.createTexture();
+
+    // set params & size
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const border = 0;
+    const format = gl.RGBA;
+    const type = gl.UNSIGNED_BYTE;
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    if (opt_data) {
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, format, type, opt_data);
+    } else {
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, size[0], size[1], border, format, type, null);
+    }
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    if (opt_wrapS !== undefined) {
-      gl.texParameteri(
-        gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, opt_wrapS);
-    }
-    if (opt_wrapT !== undefined) {
-      gl.texParameteri(
-        gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, opt_wrapT);
-    }
-
-    return texture;
-  }
-
-  /**
-   * TODO: these are not used and should be reworked
-   * @param {number} width Width.
-   * @param {number} height Height.
-   * @param {number=} opt_wrapS wrapS.
-   * @param {number=} opt_wrapT wrapT.
-   * @return {WebGLTexture} The texture.
-   */
-  createEmptyTexture(width, height, opt_wrapS, opt_wrapT) {
-    const gl = this.getGL();
-    const texture = this.createTextureInternal(opt_wrapS, opt_wrapT);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    return texture;
-  }
-
-
-  /**
-   * TODO: these are not used and should be reworked
-   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
-   * @param {number=} opt_wrapS wrapS.
-   * @param {number=} opt_wrapT wrapT.
-   * @return {WebGLTexture} The texture.
-   */
-  createTexture(image, opt_wrapS, opt_wrapT) {
-    const gl = this.getGL();
-    const texture = this.createTextureInternal(opt_wrapS, opt_wrapT);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
     return texture;
   }
 }
