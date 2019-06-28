@@ -3,7 +3,6 @@
  */
 import LayerRenderer from '../Layer.js';
 import WebGLHelper from '../../webgl/Helper.js';
-import {TRUE} from '../../functions.js';
 
 
 /**
@@ -83,13 +82,6 @@ class WebGLLayerRenderer extends LayerRenderer {
     return this.helper.getShaderCompileErrors();
   }
 
-  /**
-   * @inheritDoc
-   */
-  hasFeatureAtCoordinate(coordinate, frameState) {
-    const feature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, null);
-    return feature !== undefined;
-  }
 }
 
 

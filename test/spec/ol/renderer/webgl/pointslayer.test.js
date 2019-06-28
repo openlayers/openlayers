@@ -147,7 +147,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
     });
   });
 
-  describe('#forEachFeatureAtCoordinate and #hasFeatureAtCoordinate', function() {
+  describe('#forEachFeatureAtCoordinate', function() {
     let layer, renderer, feature;
 
     beforeEach(function() {
@@ -181,7 +181,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         viewHints: [],
         coordinateToPixelTransform: transform
       };
-      let found, hit;
+      let found;
       const cb = function(feature) {
         found = feature;
       };
@@ -196,9 +196,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         function checkHit(x, y, expected) {
           found = null;
           renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
-          hit = renderer.hasFeatureAtCoordinate([x, y], frameState);
           expect(found).to.be(expected ? feature : null);
-          expect(hit).to.eql(expected);
         }
 
         checkHit(0, 0, true);
