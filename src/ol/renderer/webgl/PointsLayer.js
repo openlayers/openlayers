@@ -302,18 +302,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.renderInstructions_ = new Float32Array(0);
 
     /**
-     * @type {import("../../transform.js").Transform}
-     * @private
-     */
-    this.hitRenderTransform_ = createTransform();
-
-    /**
-     * @type {import("../../transform.js").Transform}
-     * @private
-     */
-    this.invertHitRenderTransform_ = createTransform();
-
-    /**
      * These instructions are used for hit detection
      * @type {Float32Array}
      * @private
@@ -341,24 +329,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
         this.helper.flushBufferData(this.indicesBuffer_);
 
+        this.renderTransform_ = projectionTransform;
+        makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
         if (received.hitDetection) {
-          this.hitRenderTransform_ = projectionTransform;
-          makeInverseTransform(this.invertHitRenderTransform_, this.hitRenderTransform_);
           this.hitRenderInstructions_ = new Float32Array(event.data.renderInstructions);
         } else {
-          this.renderTransform_ = projectionTransform;
-          makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
           this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
         }
       }
     }.bind(this));
-  }
-
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    super.disposeInternal();
   }
 
   /**
@@ -573,9 +552,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.helper.useProgram(this.hitProgram_);
     this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
-
-    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
-    multiplyTransform(this.currentTransform_, this.invertHitRenderTransform_);
 
     this.helper.bindBuffer(this.hitVerticesBuffer_);
     this.helper.bindBuffer(this.indicesBuffer_);
