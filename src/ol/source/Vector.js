@@ -155,7 +155,7 @@ export class VectorSourceEvent extends Event {
  * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
  * vector data that is optimized for rendering.
  *
- * @fires VectorSourceEvent<Geometry>
+ * @fires VectorSourceEvent
  * @api
  * @template {import("../geom/Geometry.js").default} Geometry
  */

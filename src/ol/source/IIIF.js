@@ -65,7 +65,7 @@ class IIIF extends TileImage {
   constructor(opt_options) {
 
     /**
-     * @type {Partial<Options>} options
+     * @type {Partial<Options>}
      */
     const options = opt_options || {};
 
