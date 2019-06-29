@@ -61,7 +61,7 @@
     "front-matter": "^3.0.2",
     "fs-extra": "^8.0.0",
     "glob": "^7.1.4",
-    "globby": "^9.2.0",
+    "globby": "^10.0.0",
     "handlebars": "4.1.2",
     "html-to-image": "^0.1.0",
     "istanbul": "0.4.5",
