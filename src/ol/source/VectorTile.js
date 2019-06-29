@@ -215,17 +215,17 @@ class VectorTile extends UrlTile {
             }
           } else if (loadedZ === sourceZ) {
             const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-            sourceTile = new this.tileClass(sourceTileCoord,
-              tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
-              tileUrl == undefined ? '' : tileUrl,
-              this.format_, this.tileLoadFunction);
-            sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-            sourceTile.projection = projection;
-            sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-            this.sourceTiles_[tileKey] = sourceTile;
-            empty = empty && sourceTile.getState() === TileState.EMPTY;
-            listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
-            sourceTile.load();
+            if (tileUrl !== undefined) {
+              sourceTile = new this.tileClass(sourceTileCoord, TileState.IDLE, tileUrl,
+                this.format_, this.tileLoadFunction);
+              sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
+              sourceTile.projection = projection;
+              sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
+              this.sourceTiles_[tileKey] = sourceTile;
+              empty = false;
+              listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
+              sourceTile.load();
+            }
           } else {
             empty = false;
           }
@@ -312,26 +312,34 @@ class VectorTile extends UrlTile {
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tileCoordKey = getKeyZXY(z, x, y);
+    const key = this.getKey();
+    let tile;
     if (this.tileCache.containsKey(tileCoordKey)) {
-      return (
-        /** @type {!import("../Tile.js").default} */ (this.tileCache.get(tileCoordKey))
-      );
-    } else {
-      const tileCoord = [z, x, y];
-      const urlTileCoord = this.getTileCoordForTileUrlFunction(
-        tileCoord, projection);
-      const tile = new VectorRenderTile(
-        tileCoord,
-        urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
-        urlTileCoord,
-        this.tileGrid,
-        this.getSourceTiles.bind(this, pixelRatio, projection),
-        this.removeSourceTiles.bind(this));
-
-      tile.key = this.getRevision().toString();
-      this.tileCache.set(tileCoordKey, tile);
-      return tile;
+      tile = /** @type {!import("../Tile.js").default} */ (this.tileCache.get(tileCoordKey));
+      if (tile.key === key) {
+        return tile;
+      }
     }
+    const tileCoord = [z, x, y];
+    const urlTileCoord = this.getTileCoordForTileUrlFunction(
+      tileCoord, projection);
+    const newTile = new VectorRenderTile(
+      tileCoord,
+      urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
+      urlTileCoord,
+      this.tileGrid,
+      this.getSourceTiles.bind(this, pixelRatio, projection),
+      this.removeSourceTiles.bind(this));
+
+    newTile.key = key;
+    if (tile) {
+      newTile.interimTile = tile;
+      newTile.refreshInterimChain();
+      this.tileCache.replace(tileCoordKey, newTile);
+    } else {
+      this.tileCache.set(tileCoordKey, newTile);
+    }
+    return newTile;
   }
 
   /**
