@@ -183,24 +183,18 @@ class Heatmap extends VectorLayer {
         precision mediump float;
         attribute vec2 a_position;
         attribute vec2 a_texCoord;
-        attribute float a_rotateWithView;
         attribute vec2 a_offsets;
         attribute float a_opacity;
 
         uniform mat4 u_projectionMatrix;
         uniform mat4 u_offsetScaleMatrix;
-        uniform mat4 u_offsetRotateMatrix;
         uniform float u_size;
 
         varying vec2 v_texCoord;
         varying float v_opacity;
 
         void main(void) {
-          mat4 offsetMatrix = u_offsetScaleMatrix;
-          if (a_rotateWithView == 1.0) {
-            offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
-          }
-          vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
+          vec4 offsets = u_offsetScaleMatrix * vec4(a_offsets, 0.0, 0.0);
           gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;
           v_texCoord = a_texCoord;
           v_opacity = a_opacity;
