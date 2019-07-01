@@ -207,7 +207,6 @@ class Heatmap extends VectorLayer {
         }`,
       fragmentShader: `
         precision mediump float;
-        uniform float u_resolution;
         uniform float u_blurSlope;
 
         varying vec2 v_texCoord;
@@ -226,10 +225,7 @@ class Heatmap extends VectorLayer {
         }.bind(this),
         u_blurSlope: function() {
           return this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR));
-        }.bind(this),
-        u_resolution: function(frameState) {
-          return frameState.viewState.resolution;
-        }
+        }.bind(this)
       },
       postProcesses: [
         {
