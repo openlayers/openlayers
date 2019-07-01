@@ -94,6 +94,8 @@ import {assert} from '../asserts.js';
  * image service additional to the ones indicated by the compliance level.
  * @property {Array<string>} [extraFeatures] Additional supported features whose support
  * is not indicated by the compliance level.
+ * @property {Array<string>} [preferredFormats] Image formats that should preferrably
+ * be used.
  */
 
 /**
@@ -156,15 +158,15 @@ IIIF_PROFILE_VALUES[Versions.VERSION3] = {
     qualities: ['default']
   },
   'level1': {
-    supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
+    supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH', 'sizeByWh'],
     formats: ['jpg'],
     qualities: ['default']
   },
   'level2': {
     supports: ['regionByPx', 'regionSquare', 'regionByPct',
       'sizeByW', 'sizeByH', 'sizeByPct', 'sizeByConfinedWh', 'sizeByWh'],
-    formats: ['jpg'],
-    qualities: ['default', 'bitonal']
+    formats: ['jpg', 'png'],
+    qualities: ['default']
   }
 };
 IIIF_PROFILE_VALUES['none'] = {
@@ -231,7 +233,16 @@ function generateVersion2Options(iiifInfo) {
 }
 
 function generateVersion3Options(iiifInfo) {
-  const levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();
+  const levelProfile = iiifInfo.getComplianceLevelSupportedFeatures(),
+      formats = iiifInfo.imageInfo.extraFormats === undefined ? levelProfile.formats :
+        [...levelProfile.formats, ...iiifInfo.imageInfo.extraFormats],
+      preferredFormat = iiifInfo.imageInfo.preferredFormats !== undefined && Array.isArray(iiifInfo.imageInfo.preferredFormats) &&
+        iiifInfo.imageInfo.preferredFormats.length > 0 ?
+        iiifInfo.imageInfo.preferredFormats.filter(function(format) {
+          return ['jpg', 'png', 'gif'].includes(format);
+        }).reduce(function(acc, format) {
+          return acc === undefined && formats.includes(format) ? format : acc;
+        }, undefined) : undefined;
   return {
     url: iiifInfo.imageInfo['id'],
     sizes: iiifInfo.imageInfo.sizes === undefined ? undefined : iiifInfo.imageInfo.sizes.map(function(size) {
@@ -251,10 +262,10 @@ function generateVersion3Options(iiifInfo) {
       })[0],
     supports: iiifInfo.imageInfo.extraFeatures === undefined ? levelProfile.supports :
       [...levelProfile.supports, ...iiifInfo.imageInfo.extraFeatures],
-    formats: iiifInfo.imageInfo.extraFormats === undefined ? levelProfile.formats :
-      [...levelProfile.formats, ...iiifInfo.imageInfo.extraFormats],
+    formats: formats,
     qualities: iiifInfo.imageInfo.extraQualities === undefined ? levelProfile.qualities :
       [...levelProfile.supports, ...iiifInfo.imageInfo.extraQualities],
+    preferredFormat: preferredFormat,
     maxWidth: undefined,
     maxHeight: undefined,
     maxArea: undefined
@@ -414,7 +425,8 @@ class IIIFInfo {
       version: version,
       size: [this.imageInfo.width, this.imageInfo.height],
       sizes: imageOptions.sizes,
-      format: imageOptions.formats.includes(options.format) ? options.format : 'jpg',
+      format: options.format !== undefined && imageOptions.formats.includes(options.format) ? options.format :
+        imageOptions.preferredFormat !== undefined ? imageOptions.preferredFormat : 'jpg',
       supports: imageOptions.supports,
       quality: options.quality && imageOptions.qualities.includes(options.quality) ?
         options.quality : imageOptions.qualities.includes('native') ? 'native' : 'default',

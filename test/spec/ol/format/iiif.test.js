@@ -219,7 +219,40 @@ describe('ol.format.IIIFInfo', function() {
       expect(level.supports).to.contain('sizeByDistortedWh');
       expect(level.supports).to.contain('sizeByWh');
 
-      // TODO test version 3 compliance level features once version 3 is final
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        profile: 'level0'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.be.empty();
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        profile: 'level1'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.have.length(5);
+      expect(level.supports).to.contain('regionByPx');
+      expect(level.supports).to.contain('regionSquare');
+      expect(level.supports).to.contain('sizeByW');
+      expect(level.supports).to.contain('sizeByH');
+      expect(level.supports).to.contain('sizeByWh');
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        profile: 'level2'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.have.length(8);
+      expect(level.supports).to.contain('regionByPx');
+      expect(level.supports).to.contain('regionByPct');
+      expect(level.supports).to.contain('regionSquare');
+      expect(level.supports).to.contain('sizeByW');
+      expect(level.supports).to.contain('sizeByH');
+      expect(level.supports).to.contain('sizeByWh');
+      expect(level.supports).to.contain('sizeByConfinedWh');
+      expect(level.supports).to.contain('sizeByPct');
+
     });
 
   });
@@ -350,7 +383,8 @@ describe('ol.format.IIIFInfo', function() {
       expect(options.supports).to.contain('regionSquare');
       expect(options.supports).to.contain('sizeByW');
       expect(options.supports).to.contain('sizeByH');
-      expect(options.supports).to.have.length(6);
+      expect(options.supports).to.contain('sizeByWh');
+      expect(options.supports).to.have.length(7);
 
     });
 
@@ -483,5 +517,47 @@ describe('ol.format.IIIFInfo', function() {
     expect(options.sizes[2][1]).to.be(250);
 
   });
+
+  it('respects the preferred image formats', function() {
+
+    iiifInfo.setImageInfo({
+      '@context': 'http://iiif.io/api/image/3/context.json',
+      'id': 'http://iiif.test/id',
+      'profile': 'level0',
+      'preferredFormats': ['png', 'gif']
+    });
+    let options = iiifInfo.getTileSourceOptions();
+    expect(options.format).to.be('jpg');
+
+    iiifInfo.setImageInfo({
+      '@context': 'http://iiif.io/api/image/3/context.json',
+      'id': 'http://iiif.test/id',
+      'profile': 'level1',
+      'preferredFormats': ['png', 'gif']
+    });
+    options = iiifInfo.getTileSourceOptions();
+    expect(options.format).to.be('jpg');
+
+    iiifInfo.setImageInfo({
+      '@context': 'http://iiif.io/api/image/3/context.json',
+      'id': 'http://iiif.test/id',
+      'profile': 'level1',
+      'extraFormats': ['webp', 'gif'],
+      'preferredFormats': ['webp', 'png', 'gif']
+    });
+    options = iiifInfo.getTileSourceOptions();
+    expect(options.format).to.be('gif');
+
+    iiifInfo.setImageInfo({
+      '@context': 'http://iiif.io/api/image/3/context.json',
+      'id': 'http://iiif.test/id',
+      'profile': 'level2',
+      'preferredFormats': ['png', 'gif']
+    });
+    options = iiifInfo.getTileSourceOptions();
+    expect(options.format).to.be('png');
+
+  });
+
 
 });
