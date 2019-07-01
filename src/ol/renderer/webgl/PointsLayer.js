@@ -565,11 +565,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
    */
   renderHitDetection(frameState) {
-    const width = frameState.size[0];
-    const height = frameState.size[1];
-    const size = [width, height];
-
-    this.hitRenderTarget_.setSize(size);
+    this.hitRenderTarget_.setSize(frameState.size);
 
     this.helper.useProgram(this.hitProgram_);
     this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
