@@ -4,6 +4,7 @@
 import {assign} from '../obj.js';
 import {abstract} from '../util.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
+import Units from '../proj/Units.js';
 
 
 /**
@@ -89,8 +90,9 @@ class FeatureFormat {
     let options;
     if (opt_options) {
       let dataProjection = opt_options.dataProjection ?
-        opt_options.dataProjection : this.readProjection(source);
-      if (opt_options.extent) {
+        getProjection(opt_options.dataProjection) : this.readProjection(source);
+      if (opt_options.extent &&
+          dataProjection && dataProjection.getUnits() === Units.TILE_PIXELS) {
         dataProjection = getProjection(dataProjection);
         dataProjection.setWorldExtent(opt_options.extent);
       }
