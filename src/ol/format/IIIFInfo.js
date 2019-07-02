@@ -265,10 +265,7 @@ function generateVersion3Options(iiifInfo) {
     formats: formats,
     qualities: iiifInfo.imageInfo.extraQualities === undefined ? levelProfile.qualities :
       [...levelProfile.supports, ...iiifInfo.imageInfo.extraQualities],
-    preferredFormat: preferredFormat,
-    maxWidth: undefined,
-    maxHeight: undefined,
-    maxArea: undefined
+    preferredFormat: preferredFormat
   };
 }
 
