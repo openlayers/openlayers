@@ -323,7 +323,22 @@ describe('ol.format.IIIFInfo', function() {
         height: 1500,
         profile: ['http://iiif.io/api/image/2/level2.json']
       });
-      const options = iiifInfo.getTileSourceOptions({
+      let options = iiifInfo.getTileSourceOptions({
+        quality: 'bitonal',
+        format: 'png'
+      });
+      expect(options).to.have.property('quality', 'bitonal');
+      expect(options).to.have.property('format', 'png');
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        '@id': 'http://iiif.test/version3/id',
+        width: 2000,
+        height: 1500,
+        profile: 'level2',
+        extraQualities: ['gray', 'bitonal']
+      });
+      options = iiifInfo.getTileSourceOptions({
         quality: 'bitonal',
         format: 'png'
       });
@@ -341,7 +356,21 @@ describe('ol.format.IIIFInfo', function() {
         height: 1500,
         profile: ['http://iiif.io/api/image/2/level1.json']
       });
-      const options = iiifInfo.getTileSourceOptions({
+      let options = iiifInfo.getTileSourceOptions({
+        quality: 'bitonal',
+        format: 'png'
+      });
+      expect(options).to.have.property('quality', 'default');
+      expect(options).to.have.property('format', 'jpg');
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        '@id': 'http://iiif.test/version3/id',
+        width: 2000,
+        height: 1500,
+        profile: 'level1',
+      });
+      options = iiifInfo.getTileSourceOptions({
         quality: 'bitonal',
         format: 'png'
       });
@@ -482,6 +511,26 @@ describe('ol.format.IIIFInfo', function() {
       expect(options.tileSize[0]).to.be(512);
       expect(options.tileSize[1]).to.be(1024);
 
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'level0',
+        tiles: [{
+          scaleFactors: [1, 2, 4, 8],
+          width: 512,
+          height: 256
+        }]
+      });
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.have.length(4);
+      expect(options.resolutions).to.contain(1);
+      expect(options.resolutions).to.contain(2);
+      expect(options.resolutions).to.contain(4);
+      expect(options.resolutions).to.contain(8);
+      expect(options.tileSize).to.have.length(2);
+      expect(options.tileSize[0]).to.be(512);
+      expect(options.tileSize[1]).to.be(256);
+
     });
 
   });
@@ -504,7 +553,7 @@ describe('ol.format.IIIFInfo', function() {
         height: 250
       }]
     });
-    const options = iiifInfo.getTileSourceOptions();
+    let options = iiifInfo.getTileSourceOptions();
     expect(options.sizes).to.have.length(3);
     expect(options.sizes[0]).to.have.length(2);
     expect(options.sizes[0][0]).to.be(2000);
@@ -515,6 +564,20 @@ describe('ol.format.IIIFInfo', function() {
     expect(options.sizes[2]).to.have.length(2);
     expect(options.sizes[2][0]).to.be(500);
     expect(options.sizes[2][1]).to.be(250);
+
+    iiifInfo.setImageInfo({
+      '@context': 'http://iiif.io/api/image/3/context.json',
+      '@id': 'http://iiif.test/id',
+      'sizes': [{
+        width: 1500,
+        height: 800
+      }]
+    });
+    options = iiifInfo.getTileSourceOptions();
+    expect(options.sizes).to.have.length(1);
+    expect(options.sizes[0]).to.have.length(2);
+    expect(options.sizes[0][0]).to.be(1500);
+    expect(options.sizes[0][1]).to.be(800);
 
   });
 

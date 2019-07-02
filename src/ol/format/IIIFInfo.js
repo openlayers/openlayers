@@ -264,7 +264,7 @@ function generateVersion3Options(iiifInfo) {
       [...levelProfile.supports, ...iiifInfo.imageInfo.extraFeatures],
     formats: formats,
     qualities: iiifInfo.imageInfo.extraQualities === undefined ? levelProfile.qualities :
-      [...levelProfile.supports, ...iiifInfo.imageInfo.extraQualities],
+      [...levelProfile.qualities, ...iiifInfo.imageInfo.extraQualities],
     preferredFormat: preferredFormat
   };
 }
