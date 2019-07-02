@@ -368,7 +368,7 @@ describe('ol.format.IIIFInfo', function() {
         '@id': 'http://iiif.test/version3/id',
         width: 2000,
         height: 1500,
-        profile: 'level1',
+        profile: 'level1'
       });
       options = iiifInfo.getTileSourceOptions({
         quality: 'bitonal',
