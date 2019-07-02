@@ -201,6 +201,21 @@ describe('ol.source.IIIF', function() {
       expect(tileUrlFunction([2, 0, 0])).to.be('http://iiif.test/image-id/full/full/0/default.jpg');
       expect(tileUrlFunction([3, 0, 0])).to.be(undefined);
 
+      tileUrlFunction = getSource({
+        version: Versions.VERSION3,
+        sizes: [[2000, 1500], [1000, 750], [500, 375]]
+      }).getTileUrlFunction();
+
+      expect(tileUrlFunction([0, 0, 0])).to.be('http://iiif.test/image-id/full/500,375/0/default.jpg');
+      expect(tileUrlFunction([1, 0, 0])).to.be('http://iiif.test/image-id/full/1000,750/0/default.jpg');
+      expect(tileUrlFunction([2, 0, 0])).to.be('http://iiif.test/image-id/full/max/0/default.jpg');
+      expect(tileUrlFunction([3, 0, 0])).to.be(undefined);
+      expect(tileUrlFunction([-1, 0, 0])).to.be(undefined);
+      expect(tileUrlFunction([0, 1, 0])).to.be(undefined);
+      expect(tileUrlFunction([0, 0, 1])).to.be(undefined);
+      expect(tileUrlFunction([1, 1, 0])).to.be(undefined);
+      expect(tileUrlFunction([1, 0, 1])).to.be(undefined);
+
     });
 
     it('cannot provide scaled tiles without provided tilesize or supported features', function() {
