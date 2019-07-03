@@ -230,7 +230,6 @@ class Heatmap extends VectorLayer {
             uniform sampler2D u_gradientTexture;
 
             varying vec2 v_texCoord;
-            varying vec2 v_screenCoord;
 
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
