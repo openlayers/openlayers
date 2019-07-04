@@ -17,6 +17,8 @@ import DragBox from './DragBox.js';
  * Default is {@link module:ol/events/condition~shiftKeyOnly}.
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {boolean} [out=false] Use interaction for zooming out.
+ * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the parent default
+ * `boxEndCondition` function.
  */
 
 
@@ -42,6 +44,7 @@ class DragZoom extends DragBox {
     super({
       condition: condition,
       className: options.className || 'ol-dragzoom',
+      minArea: options.minArea,
       onBoxEnd: onBoxEnd
     });
 
