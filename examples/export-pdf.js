@@ -65,18 +65,18 @@ exportButton.addEventListener('click', function() {
   const width = Math.round(dim[0] * resolution / 25.4);
   const height = Math.round(dim[1] * resolution / 25.4);
   const size = map.getSize();
-  const extent = map.getView().calculateExtent(size);
+  const viewResolution = map.getView().getResolution();
 
   map.once('rendercomplete', function() {
-    toJpeg(map.getTargetElement(), exportOptions).then(function(dataUrl) {
+    exportOptions.width = width;
+    exportOptions.height = height;
+    toJpeg(map.getViewport(), exportOptions).then(function(dataUrl) {
       const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
       pdf.save('map.pdf');
       // Reset original map size
       map.setSize(size);
-      map.getView().fit(extent, {
-        size: size
-      });
+      map.getView().setResolution(viewResolution);
       exportButton.disabled = false;
       document.body.style.cursor = 'auto';
     });
@@ -85,6 +85,7 @@ exportButton.addEventListener('click', function() {
   // Set print size
   const printSize = [width, height];
   map.setSize(printSize);
-  map.getView().fit(extent, {size: printSize});
+  const scaling = Math.min(width / size[0], height / size[1]);
+  map.getView().setResolution(viewResolution / scaling);
 
 }, false);
