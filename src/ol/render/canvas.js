@@ -180,6 +180,10 @@ export const checkedFonts = {};
  */
 let measureContext = null;
 
+/**
+ * @type {string}
+ */
+let measureFont;
 
 /**
  * @type {!Object<string, number>}
@@ -238,6 +242,7 @@ export const checkFont = (function() {
           clear(textHeights);
           // Make sure that loaded fonts are picked up by Safari
           measureContext = null;
+          measureFont = undefined;
           labelCache.clear();
         } else {
           ++checked[font];
@@ -317,8 +322,8 @@ export const measureTextHeight = (function() {
  */
 export function measureTextWidth(font, text) {
   const measureContext = getMeasureContext();
-  if (font != measureContext.font) {
-    measureContext.font = font;
+  if (font != measureFont) {
+    measureContext.font = measureFont = font;
   }
   return measureContext.measureText(text).width;
 }
