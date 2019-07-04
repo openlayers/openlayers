@@ -243,7 +243,9 @@ export const checkFont = (function() {
           // Make sure that loaded fonts are picked up by Safari
           measureContext = null;
           measureFont = undefined;
+          if (labelCache.getCount()) {
           labelCache.clear();
+          }
         } else {
           ++checked[font];
           done = false;

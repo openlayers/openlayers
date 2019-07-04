@@ -24,6 +24,7 @@ import {
   makeInverse
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
+import {clear} from '../../obj.js';
 
 
 /**
@@ -378,6 +379,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   handleFontsChanged() {
+    clear(this.renderTileImageQueue_);
     const layer = this.getLayer();
     if (layer.getVisible() && this.renderedLayerRevision_ !== undefined) {
       layer.changed();
