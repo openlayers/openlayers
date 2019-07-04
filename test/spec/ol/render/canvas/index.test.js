@@ -17,10 +17,10 @@ describe('ol.render.canvas', function() {
       render.measureTextHeight('12px sans-serif');
     });
 
-    const retries = 60;
+    const retries = 100;
 
     it('does not clear label cache and measurements for unavailable fonts', function(done) {
-      this.timeout(3000);
+      this.timeout(4000);
       const spy = sinon.spy();
       listen(render.labelCache, 'clear', spy);
       const interval = setInterval(function() {

@@ -196,7 +196,7 @@ export const textHeights = {};
  * @param {string} fontSpec CSS font spec.
  */
 export const checkFont = (function() {
-  const retries = 60;
+  const retries = 100;
   const checked = checkedFonts;
   const size = '32px ';
   const referenceFonts = ['monospace', 'serif'];
