@@ -2,6 +2,13 @@
  * @module ol/css
  */
 
+/**
+ * @typedef {Object} FontParameters
+ * @property {Array<string>} families
+ * @property {string} style
+ * @property {string} weight
+ */
+
 
 /**
  * The CSS class for hidden feature.
@@ -62,10 +69,13 @@ export const CLASS_COLLAPSED = 'ol-collapsed';
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
  * @param {string} The CSS font property.
- * @return {Object<string>} The font families (or null if the input spec is invalid).
+ * @return {FontParameters} The font families (or null if the input spec is invalid).
  */
-export const getFontFamilies = (function() {
+export const getFontParameters = (function() {
   let style;
+  /**
+   * @type {Object<string, FontParameters>}
+   */
   const cache = {};
   return function(font) {
     if (!style) {
@@ -74,11 +84,18 @@ export const getFontFamilies = (function() {
     if (!(font in cache)) {
       style.font = font;
       const family = style.fontFamily;
+      const fontWeight = style.fontWeight;
+      const fontStyle = style.fontStyle;
       style.font = '';
       if (!family) {
         return null;
       }
-      cache[font] = family.split(/,\s?/);
+      const families = family.split(/,\s?/);
+      cache[font] = {
+        families: families,
+        weight: fontWeight,
+        style: fontStyle
+      };
     }
     return cache[font];
   };

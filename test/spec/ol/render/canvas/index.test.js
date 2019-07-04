@@ -24,7 +24,7 @@ describe('ol.render.canvas', function() {
       const spy = sinon.spy();
       listen(render.labelCache, 'clear', spy);
       const interval = setInterval(function() {
-        if (render.checkedFonts['foo'] == retries && render.checkedFonts['sans-serif'] == retries) {
+        if (render.checkedFonts['normal\nnormal\nfoo'] == retries && render.checkedFonts['normal\nnormal\nsans-serif'] == retries) {
           clearInterval(interval);
           unlisten(render.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
@@ -39,7 +39,7 @@ describe('ol.render.canvas', function() {
       const spy = sinon.spy();
       listen(render.labelCache, 'clear', spy);
       const interval = setInterval(function() {
-        if (render.checkedFonts['sans-serif'] == retries) {
+        if (render.checkedFonts['normal\nnormal\nsans-serif'] == retries) {
           clearInterval(interval);
           unlisten(render.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
@@ -54,7 +54,7 @@ describe('ol.render.canvas', function() {
       const spy = sinon.spy();
       listen(render.labelCache, 'clear', spy);
       const interval = setInterval(function() {
-        if (render.checkedFonts['monospace'] == retries) {
+        if (render.checkedFonts['normal\nnormal\nmonospace'] == retries) {
           clearInterval(interval);
           unlisten(render.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
@@ -67,6 +67,7 @@ describe('ol.render.canvas', function() {
 
     it('clears label cache and measurements for fonts that become available', function(done) {
       head.appendChild(font);
+      render.labelCache.set('dummy', {});
       listen(render.labelCache, 'clear', function() {
         expect(render.textHeights).to.eql({});
         done();
