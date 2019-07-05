@@ -697,7 +697,7 @@ class CanvasImmediateRenderer extends VectorContext {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }
-      context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
+      context.lineJoin = strokeState.lineJoin;
       context.lineWidth = strokeState.lineWidth;
       context.miterLimit = strokeState.miterLimit;
       context.strokeStyle = strokeState.strokeStyle;
@@ -724,7 +724,7 @@ class CanvasImmediateRenderer extends VectorContext {
         }
       }
       if (contextStrokeState.lineJoin != strokeState.lineJoin) {
-        contextStrokeState.lineJoin = context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
+        contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
       }
       if (contextStrokeState.lineWidth != strokeState.lineWidth) {
         contextStrokeState.lineWidth = context.lineWidth = strokeState.lineWidth;

@@ -33,7 +33,7 @@ import ImageStyle from './Image.js';
  * @property {string} lineCap
  * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
- * @property {string} lineJoin
+ * @property {CanvasLineJoin} lineJoin
  * @property {number} miterLimit
  */
 
@@ -303,7 +303,7 @@ class RegularShape extends ImageStyle {
    */
   render() {
     let lineCap = '';
-    let lineJoin = '';
+    let lineJoin = defaultLineJoin;
     let miterLimit = 0;
     let lineDash = null;
     let lineDashOffset = 0;
@@ -418,7 +418,7 @@ class RegularShape extends ImageStyle {
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
       context.lineCap = /** @type {CanvasLineCap} */ (renderOptions.lineCap);
-      context.lineJoin = /** @type {CanvasLineJoin} */ (renderOptions.lineJoin);
+      context.lineJoin = renderOptions.lineJoin;
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }

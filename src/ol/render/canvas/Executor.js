@@ -208,7 +208,7 @@ class Executor extends Disposable {
         context.strokeStyle = strokeState.strokeStyle;
         context.lineWidth = strokeWidth;
         context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
-        context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
+        context.lineJoin = strokeState.lineJoin;
         context.miterLimit = strokeState.miterLimit;
         if (context.setLineDash && strokeState.lineDash.length) {
           context.setLineDash(strokeState.lineDash);

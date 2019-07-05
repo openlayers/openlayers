@@ -21,7 +21,7 @@ import LabelCache from './canvas/LabelCache.js';
  * @property {string} [currentLineCap]
  * @property {Array<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
- * @property {string} [currentLineJoin]
+ * @property {CanvasLineJoin} [currentLineJoin]
  * @property {number} [currentLineWidth]
  * @property {number} [currentMiterLimit]
  * @property {number} [lastStroke]
@@ -30,7 +30,7 @@ import LabelCache from './canvas/LabelCache.js';
  * @property {string} [lineCap]
  * @property {Array<number>} lineDash
  * @property {number} [lineDashOffset]
- * @property {string} [lineJoin]
+ * @property {CanvasLineJoin} [lineJoin]
  * @property {number} [lineWidth]
  * @property {number} [miterLimit]
  */
@@ -41,7 +41,7 @@ import LabelCache from './canvas/LabelCache.js';
  * @property {string} lineCap
  * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
- * @property {string} lineJoin
+ * @property {CanvasLineJoin} lineJoin
  * @property {number} lineWidth
  * @property {number} miterLimit
  * @property {import("../colorlike.js").ColorLike} strokeStyle
@@ -113,7 +113,7 @@ export const defaultLineDashOffset = 0;
 
 /**
  * @const
- * @type {string}
+ * @type {CanvasLineJoin}
  */
 export const defaultLineJoin = 'round';
 
