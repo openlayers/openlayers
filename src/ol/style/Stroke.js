@@ -8,7 +8,7 @@
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
- * @property {string} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {CanvasLineCap} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
  * @property {CanvasLineJoin} [lineJoin='round'] Line join style: `bevel`, `round`, or `miter`.
  * @property {Array<number>} [lineDash] Line dash pattern. Default is `undefined` (no dash).
  * Please note that Internet Explorer 10 and lower do not support the `setLineDash` method on
@@ -43,7 +43,7 @@ class Stroke {
 
     /**
      * @private
-     * @type {string|undefined}
+     * @type {CanvasLineCap|undefined}
      */
     this.lineCap_ = options.lineCap;
 
@@ -107,7 +107,7 @@ class Stroke {
 
   /**
    * Get the line cap type for the stroke.
-   * @return {string|undefined} Line cap.
+   * @return {CanvasLineCap|undefined} Line cap.
    * @api
    */
   getLineCap() {
@@ -172,7 +172,7 @@ class Stroke {
   /**
    * Set the line cap.
    *
-   * @param {string|undefined} lineCap Line cap.
+   * @param {CanvasLineCap|undefined} lineCap Line cap.
    * @api
    */
   setLineCap(lineCap) {

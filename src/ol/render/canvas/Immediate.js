@@ -692,7 +692,7 @@ class CanvasImmediateRenderer extends VectorContext {
     const context = this.context_;
     const contextStrokeState = this.contextStrokeState_;
     if (!contextStrokeState) {
-      context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+      context.lineCap = strokeState.lineCap;
       if (context.setLineDash) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
@@ -712,7 +712,7 @@ class CanvasImmediateRenderer extends VectorContext {
       };
     } else {
       if (contextStrokeState.lineCap != strokeState.lineCap) {
-        contextStrokeState.lineCap = context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+        contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
       }
       if (context.setLineDash) {
         if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {

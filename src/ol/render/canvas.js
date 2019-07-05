@@ -18,7 +18,7 @@ import LabelCache from './canvas/LabelCache.js';
  * @typedef {Object} FillStrokeState
  * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
  * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
- * @property {string} [currentLineCap]
+ * @property {CanvasLineCap} [currentLineCap]
  * @property {Array<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
  * @property {CanvasLineJoin} [currentLineJoin]
@@ -27,7 +27,7 @@ import LabelCache from './canvas/LabelCache.js';
  * @property {number} [lastStroke]
  * @property {import("../colorlike.js").ColorLike} [fillStyle]
  * @property {import("../colorlike.js").ColorLike} [strokeStyle]
- * @property {string} [lineCap]
+ * @property {CanvasLineCap} [lineCap]
  * @property {Array<number>} lineDash
  * @property {number} [lineDashOffset]
  * @property {CanvasLineJoin} [lineJoin]
@@ -38,7 +38,7 @@ import LabelCache from './canvas/LabelCache.js';
 
 /**
  * @typedef {Object} StrokeState
- * @property {string} lineCap
+ * @property {CanvasLineCap} lineCap
  * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
  * @property {CanvasLineJoin} lineJoin
@@ -92,7 +92,7 @@ export const defaultFillStyle = '#000';
 
 /**
  * @const
- * @type {string}
+ * @type {CanvasLineCap}
  */
 export const defaultLineCap = 'round';
 
