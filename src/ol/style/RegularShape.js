@@ -30,10 +30,10 @@ import ImageStyle from './Image.js';
  * @property {import("../colorlike.js").ColorLike} [strokeStyle]
  * @property {number} strokeWidth
  * @property {number} size
- * @property {string} lineCap
+ * @property {CanvasLineCap} lineCap
  * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
- * @property {string} lineJoin
+ * @property {CanvasLineJoin} lineJoin
  * @property {number} miterLimit
  */
 
@@ -302,8 +302,8 @@ class RegularShape extends ImageStyle {
    * @protected
    */
   render() {
-    let lineCap = '';
-    let lineJoin = '';
+    let lineCap = defaultLineCap;
+    let lineJoin = defaultLineJoin;
     let miterLimit = 0;
     let lineDash = null;
     let lineDashOffset = 0;
@@ -417,8 +417,8 @@ class RegularShape extends ImageStyle {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
-      context.lineCap = /** @type {CanvasLineCap} */ (renderOptions.lineCap);
-      context.lineJoin = /** @type {CanvasLineJoin} */ (renderOptions.lineJoin);
+      context.lineCap = renderOptions.lineCap;
+      context.lineJoin = renderOptions.lineJoin;
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }

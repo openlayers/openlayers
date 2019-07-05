@@ -692,12 +692,12 @@ class CanvasImmediateRenderer extends VectorContext {
     const context = this.context_;
     const contextStrokeState = this.contextStrokeState_;
     if (!contextStrokeState) {
-      context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+      context.lineCap = strokeState.lineCap;
       if (context.setLineDash) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }
-      context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
+      context.lineJoin = strokeState.lineJoin;
       context.lineWidth = strokeState.lineWidth;
       context.miterLimit = strokeState.miterLimit;
       context.strokeStyle = strokeState.strokeStyle;
@@ -712,7 +712,7 @@ class CanvasImmediateRenderer extends VectorContext {
       };
     } else {
       if (contextStrokeState.lineCap != strokeState.lineCap) {
-        contextStrokeState.lineCap = context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+        contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
       }
       if (context.setLineDash) {
         if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
@@ -724,7 +724,7 @@ class CanvasImmediateRenderer extends VectorContext {
         }
       }
       if (contextStrokeState.lineJoin != strokeState.lineJoin) {
-        contextStrokeState.lineJoin = context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
+        contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
       }
       if (contextStrokeState.lineWidth != strokeState.lineWidth) {
         contextStrokeState.lineWidth = context.lineWidth = strokeState.lineWidth;
