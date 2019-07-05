@@ -111,7 +111,7 @@ const HIT_FRAGMENT_SHADER = `
  * source to compute the opacity of the quad on screen (from 0 to 1). This is only done on source change.
  * Note: this is multiplied with the color of the point which can also have an alpha value < 1.
  * @property {function(import("../../Feature").default):boolean} [rotateWithViewCallback] Will be called on every feature in the
- * source to compute whether the quad on screen must stay upwards (`false`) or follow the view rotation (`true`).
+ * source to compute whether the quad on screen must stay upwards (`false`) or follow the view rotation (`true`). Default is `false`.
  * This is only done on source change.
  * @property {HTMLCanvasElement|HTMLImageElement|ImageData} [texture] Texture to use on points. `texCoordCallback` and `sizeCallback`
  * must be defined for this to have any effect.
@@ -544,11 +544,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
    */
   renderHitDetection(frameState) {
-    const width = frameState.size[0];
-    const height = frameState.size[1];
-    const size = [width, height];
-
-    this.hitRenderTarget_.setSize(size);
+    this.hitRenderTarget_.setSize(frameState.size);
 
     this.helper.useProgram(this.hitProgram_);
     this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
