@@ -8,7 +8,7 @@ import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
 import {assign} from '../obj.js';
 import {modulo} from '../math.js';
-import {get as getProjection, transform, transformExtent, METERS_PER_UNIT} from '../proj.js';
+import {get as getProjection, transform, transformExtent} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
 import TileImage from './TileImage.js';
@@ -214,7 +214,8 @@ class TileWMS extends TileImage {
   /**
    * Return the GetLegendGraphic URL for the passed resolution.
    * Return `undefined` if the GetLegendGraphic URL cannot be constructed.
-   * @param {number} resolution Resolution.
+   * @param {!number} resolution Resolution. If set to undefined `SCALE`
+   *     will not be calculated.
    * @param {!Object} params GetLegendGraphic params. Default `FORMAT` is
    *     `image/png`. `VERSION` should not be specified here.
    * @return {string|undefined} GetLegendGraphic URL.
@@ -227,20 +228,21 @@ class TileWMS extends TileImage {
       return undefined;
     }
 
-    const units = this.getProjection() && this.getProjection().getUnits();
-    const dpi = 25.4 / 0.28;
-    const mpu = METERS_PER_UNIT[units || 'm'];
-    const inchesPerMeter = 39.37;
-    const scale = resolution * mpu * inchesPerMeter * dpi;
-
     const baseParams = {
       'SERVICE': 'WMS',
       'VERSION': DEFAULT_WMS_VERSION,
       'REQUEST': 'GetLegendGraphic',
       'FORMAT': 'image/png',
-      'LAYER': this.params_['LAYERS'],
-      'SCALE': scale
+      'LAYER': layers
     };
+
+    if (resolution !== undefined) {
+      const mpu = this.getProjection() ? this.getProjection().getMetersPerUnit() : 1;
+      const dpi = 25.4 / 0.28;
+      const inchesPerMeter = 39.37;
+      baseParams['SCALE'] = resolution * mpu * inchesPerMeter * dpi;
+    }
+
     assign(baseParams, params);
 
     return appendParams(/** @type {string} */ (this.urls[0]), baseParams);

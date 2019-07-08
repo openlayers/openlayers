@@ -194,7 +194,8 @@ class ImageWMS extends ImageSource {
   /**
    * Return the GetLegendGraphic URL for the passed resolution.
    * Return `undefined` if the GetLegendGraphic URL cannot be constructed.
-   * @param {number} resolution Resolution.
+   * @param {!number} resolution Resolution. If set to undefined `SCALE`
+   *     will not be calculated.
    * @param {!Object} params GetLegendGraphic params. Default `FORMAT` is
    *     `image/png`. `VERSION` should not be specified here.
    * @return {string|undefined} GetLegendGraphic URL.
@@ -207,19 +208,21 @@ class ImageWMS extends ImageSource {
       return undefined;
     }
 
-    const mpu = this.getProjection() ? this.getProjection().getMetersPerUnit() : 1;
-    const dpi = 25.4 / 0.28;
-    const inchesPerMeter = 39.37;
-    const scale = resolution * mpu * inchesPerMeter * dpi;
-
     const baseParams = {
       'SERVICE': 'WMS',
       'VERSION': DEFAULT_WMS_VERSION,
       'REQUEST': 'GetLegendGraphic',
       'FORMAT': 'image/png',
-      'LAYER': layers,
-      'SCALE': scale
+      'LAYER': layers
     };
+
+    if (resolution !== undefined) {
+      const mpu = this.getProjection() ? this.getProjection().getMetersPerUnit() : 1;
+      const dpi = 25.4 / 0.28;
+      const inchesPerMeter = 39.37;
+      baseParams['SCALE'] = resolution * mpu * inchesPerMeter * dpi;
+    }
+
     assign(baseParams, params);
 
     return appendParams(/** @type {string} */ (this.url_), baseParams);

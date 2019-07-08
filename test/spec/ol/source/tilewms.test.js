@@ -317,6 +317,14 @@ describe('ol.source.TileWMS', function() {
       expect(queryData.get('SCALE')).to.be('357.14214285714274');
     });
 
+    it('does not include SCALE if no resolution was provided', function() {
+      const source = new TileWMS(options);
+      const url = source.getGetLegendGraphicUrl();
+      const uri = new URL(url);
+      const queryData = uri.searchParams;
+      expect(queryData.get('SCALE')).to.be(null);
+    });
+
     it('adds additional params as expected', function() {
       const source = new TileWMS(options);
       const url = source.getGetLegendGraphicUrl(0.1, {

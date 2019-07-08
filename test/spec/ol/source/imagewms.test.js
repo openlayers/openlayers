@@ -332,7 +332,7 @@ describe('ol.source.ImageWMS', function() {
 
   describe('#getGetLegendGraphicUrl', function() {
 
-    it('returns the getLegenGraphic url as expected', function() {
+    it('returns the getLegendGraphic url as expected', function() {
       const source = new ImageWMS(options);
       const url = source.getGetLegendGraphicUrl(resolution);
       const uri = new URL(url);
@@ -346,6 +346,14 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('SCALE')).to.be('357.14214285714274');
+    });
+
+    it('does not include SCALE if no resolution was provided', function() {
+      const source = new ImageWMS(options);
+      const url = source.getGetLegendGraphicUrl();
+      const uri = new URL(url);
+      const queryData = uri.searchParams;
+      expect(queryData.get('SCALE')).to.be(null);
     });
 
     it('adds additional params as expected', function() {
