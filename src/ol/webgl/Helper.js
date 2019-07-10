@@ -449,6 +449,7 @@ class WebGLHelper extends Disposable {
     const gl = this.getGL();
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.getFramebuffer());
+    gl.viewport(0, 0, frameState.size[0], frameState.size[1]);
     gl.bindTexture(gl.TEXTURE_2D, renderTarget.getTexture());
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
