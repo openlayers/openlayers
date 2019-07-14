@@ -31,6 +31,24 @@ function hasApiMembers(doclet) {
 }
 
 function includeAugments(doclet) {
+  // Make sure that `observables` and `fires` are taken from an already processed `class` doclet.
+  // This is necessary because JSDoc generates multiple doclets with the same longname.
+  const cls = classes[doclet.longname];
+  if (cls.observables && !doclet.observables) {
+    doclet.observables = cls.observables;
+  }
+  if (doclet.fires && cls.fires) {
+    for (let i = 0, ii = cls.fires.length; i < ii; ++i) {
+      const fires = cls.fires[i];
+      if (doclet.fires.indexOf(fires) == -1) {
+        doclet.fires.push(fires);
+      }
+    }
+  }
+  if (cls.fires && !doclet.fires) {
+    doclet.fires = cls.fires;
+  }
+
   const augments = doclet.augments;
   if (augments) {
     let cls;
@@ -148,7 +166,7 @@ exports.handlers = {
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
-      } else if (doclet.undocumented !== false && !doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
+      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }

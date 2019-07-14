@@ -1147,7 +1147,6 @@ class View extends BaseObject {
    * constraint will apply.
    * @param {number} ratio The ratio to apply on the view resolution.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
-   * @observable
    * @api
    */
   adjustResolution(ratio, opt_anchor) {
@@ -1179,7 +1178,6 @@ class View extends BaseObject {
    * constraint will apply.
    * @param {number} delta Relative value to add to the zoom rotation, in radians.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
-   * @observable
    * @api
    */
   adjustRotation(delta, opt_anchor) {
