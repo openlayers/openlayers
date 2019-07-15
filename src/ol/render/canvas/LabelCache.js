@@ -21,8 +21,8 @@ class LabelCache extends LRUCache {
   }
 
   clear() {
-    super.clear();
     this.consumers = {};
+    super.clear();
   }
 
   /**

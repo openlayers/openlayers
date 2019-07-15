@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas
  */
-import {getFontFamilies} from '../css.js';
+import {getFontParameters} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import {create as createTransform} from '../transform.js';
@@ -180,6 +180,10 @@ export const checkedFonts = {};
  */
 let measureContext = null;
 
+/**
+ * @type {string}
+ */
+let measureFont;
 
 /**
  * @type {!Object<string, number>}
@@ -192,7 +196,7 @@ export const textHeights = {};
  * @param {string} fontSpec CSS font spec.
  */
 export const checkFont = (function() {
-  const retries = 60;
+  const retries = 100;
   const checked = checkedFonts;
   const size = '32px ';
   const referenceFonts = ['monospace', 'serif'];
@@ -200,31 +204,29 @@ export const checkFont = (function() {
   const text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
   let interval, referenceWidth;
 
-  function isAvailable(font) {
+  /**
+   * @param {string} fontStyle Css font-style
+   * @param {string} fontWeight Css font-weight
+   * @param {*} fontFamily Css font-family
+   * @return {boolean} Font with style and weight is available
+   */
+  function isAvailable(fontStyle, fontWeight, fontFamily) {
     const context = getMeasureContext();
-    // Check weight ranges according to
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
-    for (let weight = 100; weight <= 700; weight += 300) {
-      const fontWeight = weight + ' ';
-      let available = true;
-      for (let i = 0; i < len; ++i) {
-        const referenceFont = referenceFonts[i];
-        context.font = fontWeight + size + referenceFont;
-        referenceWidth = context.measureText(text).width;
-        if (font != referenceFont) {
-          context.font = fontWeight + size + font + ',' + referenceFont;
-          const width = context.measureText(text).width;
-          // If width and referenceWidth are the same, then the fallback was used
-          // instead of the font we wanted, so the font is not available.
-          available = available && width != referenceWidth;
-        }
+    let available = true;
+    for (let i = 0; i < len; ++i) {
+      const referenceFont = referenceFonts[i];
+      context.font = fontStyle + ' ' + fontWeight + ' ' + size + referenceFont;
+      referenceWidth = context.measureText(text).width;
+      if (fontFamily != referenceFont) {
+        context.font = fontStyle + ' ' + fontWeight + ' ' + size + fontFamily + ',' + referenceFont;
+        const width = context.measureText(text).width;
+        // If width and referenceWidth are the same, then the fallback was used
+        // instead of the font we wanted, so the font is not available.
+        available = available && width != referenceWidth;
       }
-      if (available) {
-        // Consider font available when it is available in one weight range.
-        //FIXME With this we miss rare corner cases, so we should consider
-        //FIXME checking availability for each requested weight range.
-        return true;
-      }
+    }
+    if (available) {
+      return true;
     }
     return false;
   }
@@ -233,12 +235,15 @@ export const checkFont = (function() {
     let done = true;
     for (const font in checked) {
       if (checked[font] < retries) {
-        if (isAvailable(font)) {
+        if (isAvailable.apply(this, font.split('\n'))) {
           checked[font] = retries;
           clear(textHeights);
           // Make sure that loaded fonts are picked up by Safari
           measureContext = null;
-          labelCache.clear();
+          measureFont = undefined;
+          if (labelCache.getCount()) {
+            labelCache.clear();
+          }
         } else {
           ++checked[font];
           done = false;
@@ -252,16 +257,18 @@ export const checkFont = (function() {
   }
 
   return function(fontSpec) {
-    const fontFamilies = getFontFamilies(fontSpec);
-    if (!fontFamilies) {
+    const font = getFontParameters(fontSpec);
+    if (!font) {
       return;
     }
-    for (let i = 0, ii = fontFamilies.length; i < ii; ++i) {
-      const fontFamily = fontFamilies[i];
-      if (!(fontFamily in checked)) {
-        checked[fontFamily] = retries;
-        if (!isAvailable(fontFamily)) {
-          checked[fontFamily] = 0;
+    const families = font.families;
+    for (let i = 0, ii = families.length; i < ii; ++i) {
+      const family = families[i];
+      const key = font.style + '\n' + font.weight + '\n' + family;
+      if (!(key in checked)) {
+        checked[key] = retries;
+        if (!isAvailable(font.style, font.weight, family)) {
+          checked[key] = 0;
           if (interval === undefined) {
             interval = setInterval(check, 32);
           }
@@ -317,8 +324,8 @@ export const measureTextHeight = (function() {
  */
 export function measureTextWidth(font, text) {
   const measureContext = getMeasureContext();
-  if (font != measureContext.font) {
-    measureContext.font = font;
+  if (font != measureFont) {
+    measureContext.font = measureFont = font;
   }
   return measureContext.measureText(text).width;
 }
