@@ -256,10 +256,10 @@ function readGeometry(object, opt_options) {
     const rings = convertRings(esriJSONPolygon.rings, layout);
     if (rings.length === 1) {
       type = GeometryType.POLYGON;
-      object['rings'] = rings[0];
+      object = Object.assign({}, object, {['rings']: rings[0]});
     } else {
       type = GeometryType.MULTI_POLYGON;
-      object['rings'] = rings;
+      object = Object.assign({}, object, {['rings']: rings});
     }
   }
   const geometryReader = GEOMETRY_READERS[type];
