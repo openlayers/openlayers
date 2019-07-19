@@ -159,7 +159,7 @@ class ImageWrapper extends ImageBase {
 export function listenImage(image, loadHandler, errorHandler) {
   const img = /** @type {HTMLImageElement} */ (image);
 
-  if (IMAGE_DECODE) {
+  if (img.src && IMAGE_DECODE) {
     const promise = img.decode();
     let listening = true;
     const unlisten = function() {
