@@ -21,6 +21,17 @@ describe('HTML Image loading', function() {
     }, 200);
   });
 
+  it('handles load event when src is set later', function(done) {
+    listenImage(img, handleLoad, handleError);
+    img.src = 'spec/ol/data/dot.png';
+
+    setTimeout(function() {
+      expect(handleLoad).to.be.called();
+      expect(handleError).not.to.be.called();
+      done();
+    }, 200);
+  });
+
   it('handles error event', function(done) {
     img.src = 'invalid.jpeg';
     listenImage(img, handleLoad, handleError);
