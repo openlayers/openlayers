@@ -299,6 +299,71 @@ describe('ol.source.TileWMS', function() {
     });
   });
 
+  describe('#getGetLegendGraphicUrl', function() {
+
+    it('returns the getLegenGraphic url as expected', function() {
+      const source = new TileWMS(options);
+      const url = source.getGetLegendGraphicUrl(0.1);
+      const uri = new URL(url);
+      expect(uri.protocol).to.be('http:');
+      expect(uri.hostname).to.be('example.com');
+      expect(uri.pathname).to.be('/wms');
+      const queryData = uri.searchParams;
+      expect(queryData.get('FORMAT')).to.be('image/png');
+      expect(queryData.get('LAYER')).to.be('layer');
+      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
+      expect(queryData.get('SERVICE')).to.be('WMS');
+      expect(queryData.get('VERSION')).to.be('1.3.0');
+      expect(queryData.get('SCALE')).to.be('357.14214285714274');
+    });
+
+    it('does not include SCALE if no resolution was provided', function() {
+      const source = new TileWMS(options);
+      const url = source.getGetLegendGraphicUrl();
+      const uri = new URL(url);
+      const queryData = uri.searchParams;
+      expect(queryData.get('SCALE')).to.be(null);
+    });
+
+    it('adds additional params as expected', function() {
+      const source = new TileWMS(options);
+      const url = source.getGetLegendGraphicUrl(0.1, {
+        STYLE: 'STYLE_VALUE',
+        FEATURETYPE: 'FEATURETYPE_VALUE',
+        RULE: 'RULE_VALUE',
+        SLD: 'SLD_VALUE',
+        SLD_BODY: 'SLD_BODY_VALUE',
+        FORMAT: 'FORMAT_VALUE',
+        WIDTH: 'WIDTH_VALUE',
+        HEIGHT: 'HEIGHT_VALUE',
+        EXCEPTIONS: 'EXCEPTIONS_VALUE',
+        LANGUAGE: 'LANGUAGE_VALUE'
+      });
+      const uri = new URL(url);
+      expect(uri.protocol).to.be('http:');
+      expect(uri.hostname).to.be('example.com');
+      expect(uri.pathname).to.be('/wms');
+      const queryData = uri.searchParams;
+      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
+      expect(queryData.get('LAYER')).to.be('layer');
+      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
+      expect(queryData.get('SERVICE')).to.be('WMS');
+      expect(queryData.get('VERSION')).to.be('1.3.0');
+      expect(queryData.get('SCALE')).to.be('357.14214285714274');
+      expect(queryData.get('STYLE')).to.be('STYLE_VALUE');
+      expect(queryData.get('FEATURETYPE')).to.be('FEATURETYPE_VALUE');
+      expect(queryData.get('RULE')).to.be('RULE_VALUE');
+      expect(queryData.get('SLD')).to.be('SLD_VALUE');
+      expect(queryData.get('SLD_BODY')).to.be('SLD_BODY_VALUE');
+      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
+      expect(queryData.get('WIDTH')).to.be('WIDTH_VALUE');
+      expect(queryData.get('HEIGHT')).to.be('HEIGHT_VALUE');
+      expect(queryData.get('EXCEPTIONS')).to.be('EXCEPTIONS_VALUE');
+      expect(queryData.get('LANGUAGE')).to.be('LANGUAGE_VALUE');
+    });
+
+  });
+
   describe('#setUrl()', function() {
     it('sets the correct url', function() {
       const source = new TileWMS(options);

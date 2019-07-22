@@ -212,6 +212,43 @@ class TileWMS extends TileImage {
   }
 
   /**
+   * Return the GetLegendGraphic URL for the passed resolution.
+   * Return `undefined` if the GetLegendGraphic URL cannot be constructed.
+   * @param {!number} resolution Resolution. If set to undefined `SCALE`
+   *     will not be calculated.
+   * @param {!Object} params GetLegendGraphic params. Default `FORMAT` is
+   *     `image/png`. `VERSION` should not be specified here.
+   * @return {string|undefined} GetLegendGraphic URL.
+   * @api
+   */
+  getGetLegendGraphicUrl(resolution, params) {
+    const layers = this.params_.LAYERS;
+    const isSingleLayer = !Array.isArray(layers) || this.params_['LAYERS'].length === 1;
+    if (this.urls[0] === undefined || !isSingleLayer) {
+      return undefined;
+    }
+
+    const baseParams = {
+      'SERVICE': 'WMS',
+      'VERSION': DEFAULT_WMS_VERSION,
+      'REQUEST': 'GetLegendGraphic',
+      'FORMAT': 'image/png',
+      'LAYER': layers
+    };
+
+    if (resolution !== undefined) {
+      const mpu = this.getProjection() ? this.getProjection().getMetersPerUnit() : 1;
+      const dpi = 25.4 / 0.28;
+      const inchesPerMeter = 39.37;
+      baseParams['SCALE'] = resolution * mpu * inchesPerMeter * dpi;
+    }
+
+    assign(baseParams, params);
+
+    return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
+  }
+
+  /**
    * @inheritDoc
    */
   getGutter() {
