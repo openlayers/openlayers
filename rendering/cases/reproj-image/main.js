@@ -4,7 +4,7 @@ import Static from '../../../src/ol/source/ImageStatic.js';
 import {
   get as getProjection,
   transformExtent
-} from '../../../src/ol/proj';
+} from '../../../src/ol/proj.js';
 import ImageLayer from '../../../src/ol/layer/Image.js';
 
 const source = new Static({
@@ -26,4 +26,6 @@ new Map({
   })
 });
 
-render();
+render({
+  tolerance: 0.001
+});
