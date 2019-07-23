@@ -212,11 +212,13 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * Return the GetLegendGraphic URL for the passed resolution.
-   * Return `undefined` if the GetLegendGraphic URL cannot be constructed.
-   * @param {!number} resolution Resolution. If set to undefined `SCALE`
-   *     will not be calculated.
-   * @param {!Object} params GetLegendGraphic params. Default `FORMAT` is
+   * Return the GetLegendGraphic URL, optionally optimized for the passed
+   * resolution and possibly including any passed specific parameters. Returns
+   * `undefined` if the GetLegendGraphic URL cannot be constructed.
+   *
+   * @param {number} [resolution] Resolution. If set to undefined, `SCALE`
+   *     will not be calculated and included in URL.
+   * @param {Object} [params] GetLegendGraphic params. Default `FORMAT` is
    *     `image/png`. `VERSION` should not be specified here.
    * @return {string|undefined} GetLegendGraphic URL.
    * @api
