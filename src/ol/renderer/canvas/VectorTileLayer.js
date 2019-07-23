@@ -344,11 +344,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     let i, ii;
     for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
       const tile = renderedTiles[i];
+      const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+      const tileContainsCoordinate = containsCoordinate(tileExtent, coordinate);
+
       if (!declutter) {
         // When not decluttering, we only need to consider the tile that contains the given
         // coordinate, because each feature will be rendered for each tile that contains it.
-        const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-        if (!containsCoordinate(tileExtent, coordinate)) {
+        if (!tileContainsCoordinate) {
           continue;
         }
       }
@@ -361,13 +363,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
            * @return {?} Callback result.
            */
           function(feature) {
-            let key = feature.getId();
-            if (key === undefined) {
-              key = getUid(feature);
-            }
-            if (!(key in features)) {
-              features[key] = true;
-              return callback(feature, layer);
+            if (tileContainsCoordinate || (declutteredFeatures && declutteredFeatures.indexOf(feature) !== -1)) {
+              let key = feature.getId();
+              if (key === undefined) {
+                key = getUid(feature);
+              }
+              if (!(key in features)) {
+                features[key] = true;
+                return callback(feature, layer);
+              }
             }
           }, layer.getDeclutter() ? declutteredFeatures : null);
       }
