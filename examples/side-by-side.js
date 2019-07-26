@@ -1,16 +1,22 @@
 import Map from '../src/ol/Map.js';
-import WebGLMap from '../src/ol/WebGLMap.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WebGLTileLayer from '../src/ol/layer/WebGLTile.js';
-import OSM from '../src/ol/source/OSM.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 
-const layer = new TileLayer({
-  source: new OSM()
+const roadLayer = new TileLayer({
+  source: new BingMaps({
+    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
+    imagerySet: 'RoadOnDemand',
+    maxZoom: 19
+  })
 });
 
-const webGLLayer = new WebGLTileLayer({
-  source: new OSM()
+const aerialLayer = new TileLayer({
+  source: new BingMaps({
+    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
+    imagerySet: 'Aerial',
+    maxZoom: 19
+  })
 });
 
 const view = new View({
@@ -19,13 +25,13 @@ const view = new View({
 });
 
 const map1 = new Map({
-  target: 'canvasMap',
-  layers: [layer],
+  target: 'roadMap',
+  layers: [roadLayer],
   view: view
 });
 
 const map2 = new WebGLMap({
-  target: 'webglMap',
-  layers: [webGLLayer],
+  target: 'aerialMap',
+  layers: [aerialLayer],
   view: view
 });
