@@ -30,7 +30,7 @@ const map1 = new Map({
   view: view
 });
 
-const map2 = new WebGLMap({
+const map2 = new Map({
   target: 'aerialMap',
   layers: [aerialLayer],
   view: view
