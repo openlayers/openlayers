@@ -20,8 +20,8 @@ const aerialLayer = new TileLayer({
 });
 
 const view = new View({
-  center: [0, 0],
-  zoom: 1
+  center: [-6655.5402445057125, 6709968.258934638],
+  zoom: 13
 });
 
 const map1 = new Map({
