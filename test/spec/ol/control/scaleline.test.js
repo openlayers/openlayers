@@ -277,6 +277,9 @@ describe('ol.control.ScaleLine', function() {
       }));
       map.renderSync();
       expect(ctrl.element.innerText).to.be('2000 km');
+      expect(ctrl.state.count).to.be(2000);
+      expect(ctrl.state.suffix).to.be('km');
+      expect(ctrl.state.width).to.be(83);
       map.setView(new View({
         center: [7, 52],
         multiWorld: true,
@@ -285,6 +288,9 @@ describe('ol.control.ScaleLine', function() {
       }));
       map.renderSync();
       expect(ctrl.element.innerText).to.be('5000 km');
+      expect(ctrl.state.count).to.be(5000);
+      expect(ctrl.state.suffix).to.be('km');
+      expect(ctrl.state.width).to.be(158);
       map.setView(new View({
         center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
         zoom: 7,
@@ -292,6 +298,9 @@ describe('ol.control.ScaleLine', function() {
       }));
       map.renderSync();
       expect(ctrl.element.innerText).to.be('100 km');
+      expect(ctrl.state.count).to.be(100);
+      expect(ctrl.state.suffix).to.be('km');
+      expect(ctrl.state.width).to.be(82);
     });
 
     it('shows the same scale for different projections at higher resolutions', function() {
@@ -339,16 +348,27 @@ describe('ol.control.ScaleLine', function() {
 
       ctrl.setUnits('metric');
       expect(ctrl.element.innerText).to.be('100 m');
+      expect(ctrl.state.count).to.be(100);
+      expect(ctrl.state.suffix).to.be('m');
+      expect(ctrl.state.width).to.be(100);
 
       ctrl.setUnits('imperial');
       expect(ctrl.element.innerText).to.be('500 ft');
+      expect(ctrl.state.count).to.be(500);
+      expect(ctrl.state.suffix).to.be('ft');
+      expect(ctrl.state.width).to.be(152);
 
       ctrl.setUnits('nautical');
       expect(ctrl.element.innerText).to.be('0.05 nm');
+      expect(ctrl.state.count).to.be(0.05);
+      expect(ctrl.state.suffix).to.be('nm');
+      expect(ctrl.state.width).to.be(93);
 
       ctrl.setUnits('us');
       expect(ctrl.element.innerText).to.be('500 ft');
-
+      expect(ctrl.state.count).to.be(500);
+      expect(ctrl.state.suffix).to.be('ft');
+      expect(ctrl.state.width).to.be(152);
 
       map.setView(new View({
         center: [0, 0],

@@ -102,6 +102,15 @@ class ScaleLine extends Control {
     this.viewState_ = null;
 
     /**
+     * @type {{width: number, count: number, suffix: string}}
+     */
+    this.state = {
+      width: undefined,
+      count: undefined,
+      suffix: undefined
+    };
+
+    /**
      * @private
      * @type {number}
      */
@@ -276,6 +285,11 @@ class ScaleLine extends Control {
       ++i;
     }
     let html;
+
+    this.state.width = width;
+    this.state.count = count;
+    this.state.suffix = suffix;
+
     if (this.scaleBar_) {
       html = this.createScaleBar(width, count, suffix);
     } else {
