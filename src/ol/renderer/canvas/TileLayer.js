@@ -63,12 +63,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @type {import("../../TileRange.js").default}
      */
     this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
-
-    /**
-     * @protected
-     * @type {number}
-     */
-    this.zDirection = 0;
   }
 
   /**
@@ -151,8 +145,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileSource = tileLayer.getSource();
     const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
-    const zDirection = tileSource.zDirection === undefined ? this.zDirection : tileSource.zDirection;
-    const z = tileGrid.getZForResolution(viewResolution, zDirection);
+    const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
     const tileResolution = tileGrid.getResolution(z);
     let extent = frameState.extent;
 

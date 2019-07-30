@@ -64,6 +64,10 @@ import {equals} from '../array.js';
  * When set to `false`, only one world
  * will be rendered. When set to `true`, tiles will be wrapped horizontally to
  * render multiple worlds.
+ * @property {number} [zDirection=1] Indicate which resolution should be used
+ * by a renderer if the view resolution does not match any resolution of the tile source.
+ * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
+ * will be used. If -1, the nearest higher resolution will be used.
  */
 
 
@@ -109,7 +113,8 @@ class VectorTile extends UrlTile {
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX === undefined ? true : options.wrapX,
-      transition: options.transition
+      transition: options.transition,
+      zDirection: options.zDirection === undefined ? 1 : options.zDirection
     });
 
     /**

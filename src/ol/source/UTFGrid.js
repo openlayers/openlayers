@@ -385,8 +385,8 @@ class UTFGrid extends TileSource {
   forDataAtCoordinateAndResolution(
     coordinate, resolution, callback, opt_request) {
     if (this.tileGrid) {
-      const tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
-        coordinate, resolution);
+      const z = this.tileGrid.getZForResolution(resolution, this.zDirection);
+      const tileCoord = this.tileGrid.getTileCoordForCoordAndZ(coordinate, z);
       const tile = /** @type {!CustomTile} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
       tile.forDataAtCoordinate(coordinate, callback, opt_request);

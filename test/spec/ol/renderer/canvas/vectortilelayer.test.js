@@ -101,7 +101,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('creates a new instance', function() {
       const renderer = new CanvasVectorTileLayerRenderer(layer);
       expect(renderer).to.be.a(CanvasVectorTileLayerRenderer);
-      expect(renderer.zDirection).to.be(1);
+      expect(renderer.getLayer()).to.equal(layer);
     });
 
     it('does not render replays for pure image rendering', function() {

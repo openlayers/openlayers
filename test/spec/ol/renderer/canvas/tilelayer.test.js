@@ -86,6 +86,17 @@ describe('ol.renderer.canvas.TileLayer', function() {
         done();
       });
     });
+
+    it('respects the source\'s zDirection setting', function(done) {
+      layer.getSource().zDirection = 1;
+      map.getView().setZoom(5.8); // would lead to z6 tile request with the default zDirection
+      map.once('rendercomplete', function() {
+        const tileCache = layer.getSource().tileCache;
+        const keys = tileCache.getKeys();
+        expect(keys.some(key => key.startsWith('6/'))).to.be(false);
+        done();
+      });
+    });
   });
 
 });
