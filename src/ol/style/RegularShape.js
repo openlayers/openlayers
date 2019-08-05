@@ -299,7 +299,8 @@ class RegularShape extends ImageStyle {
   unlistenImageChange(listener, thisArg) {}
 
   /**
-   * @protected
+   * Regenerate the shape.
+   * @api
    */
   render() {
     let lineCap = defaultLineCap;
