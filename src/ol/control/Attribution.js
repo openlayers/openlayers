@@ -7,7 +7,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import {visibleAtResolution} from '../layer/Layer.js';
+import {inView} from '../layer/Layer.js';
 
 
 /**
@@ -170,10 +170,9 @@ class Attribution extends Control {
     const visibleAttributions = [];
 
     const layerStatesArray = frameState.layerStatesArray;
-    const resolution = frameState.viewState.resolution;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
-      if (!visibleAtResolution(layerState, resolution)) {
+      if (!inView(layerState, frameState.viewState)) {
         continue;
       }
 

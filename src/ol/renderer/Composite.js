@@ -2,7 +2,7 @@
  * @module ol/renderer/Composite
  */
 import {CLASS_UNSELECTABLE} from '../css.js';
-import {visibleAtResolution} from '../layer/Layer.js';
+import {inView} from '../layer/Layer.js';
 import RenderEvent from '../render/Event.js';
 import RenderEventType from '../render/EventType.js';
 import MapRenderer from './Map.js';
@@ -95,7 +95,7 @@ class CompositeMapRenderer extends MapRenderer {
     const layerStatesArray = frameState.layerStatesArray.sort(function(a, b) {
       return a.zIndex - b.zIndex;
     });
-    const viewResolution = frameState.viewState.resolution;
+    const viewState = frameState.viewState;
 
     this.children_.length = 0;
     let hasOverlay = false;
@@ -104,7 +104,7 @@ class CompositeMapRenderer extends MapRenderer {
       const layerState = layerStatesArray[i];
       hasOverlay = hasOverlay || layerState.hasOverlay;
       frameState.layerIndex = i;
-      if (!visibleAtResolution(layerState, viewResolution) ||
+      if (!inView(layerState, viewState) ||
         (layerState.sourceState != SourceState.READY && layerState.sourceState != SourceState.UNDEFINED)) {
         continue;
       }
@@ -142,7 +142,6 @@ class CompositeMapRenderer extends MapRenderer {
    */
   forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
     const viewState = frameState.viewState;
-    const viewResolution = viewState.resolution;
 
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
@@ -150,7 +149,7 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = layerState.layer;
-      if (layer.hasRenderer() && visibleAtResolution(layerState, viewResolution) && layerFilter(layer)) {
+      if (layer.hasRenderer() && inView(layerState, viewState) && layerFilter(layer)) {
         const layerRenderer = layer.getRenderer();
         const data = layerRenderer.getDataAtPixel(pixel, frameState, hitTolerance);
         if (data) {
