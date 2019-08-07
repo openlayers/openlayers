@@ -54,7 +54,7 @@
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "4.3.0",
     "copy-webpack-plugin": "^5.0.3",
-    "coveralls": "3.0.5",
+    "coveralls": "3.0.6",
     "eslint": "^6.0.0",
     "eslint-config-openlayers": "^12.0.0",
     "expect.js": "0.3.1",
