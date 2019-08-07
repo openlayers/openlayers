@@ -337,7 +337,8 @@ describe('ol.source.TileWMS', function() {
         WIDTH: 'WIDTH_VALUE',
         HEIGHT: 'HEIGHT_VALUE',
         EXCEPTIONS: 'EXCEPTIONS_VALUE',
-        LANGUAGE: 'LANGUAGE_VALUE'
+        LANGUAGE: 'LANGUAGE_VALUE',
+        LAYER: 'LAYER_VALUE'
       });
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
@@ -345,7 +346,7 @@ describe('ol.source.TileWMS', function() {
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('LAYER')).to.be('layer');
+      expect(queryData.get('LAYER')).to.be('LAYER_VALUE');
       expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('VERSION')).to.be('1.3.0');

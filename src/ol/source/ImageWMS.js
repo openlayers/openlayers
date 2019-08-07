@@ -197,15 +197,15 @@ class ImageWMS extends ImageSource {
    *
    * @param {number} [resolution] Resolution. If set to undefined, `SCALE`
    *     will not be calculated and included in URL.
-   * @param {Object} [params] GetLegendGraphic params. Default `FORMAT` is
-   *     `image/png`. `VERSION` should not be specified here.
+   * @param {Object} [params] GetLegendGraphic params. If `LAYER` is set, the
+   *     request is generated for this wms layer, else it will try to use the
+   *     configured wms layer. Default `FORMAT` is `image/png`.
+   *     `VERSION` should not be specified here.
    * @return {string|undefined} GetLegendGraphic URL.
    * @api
    */
   getLegendUrl(resolution, params) {
-    const layers = this.params_.LAYERS;
-    const isSingleLayer = !Array.isArray(layers) || this.params_['LAYERS'].length === 1;
-    if (this.url_ === undefined || !isSingleLayer) {
+    if (this.url_ === undefined) {
       return undefined;
     }
 
@@ -213,9 +213,17 @@ class ImageWMS extends ImageSource {
       'SERVICE': 'WMS',
       'VERSION': DEFAULT_WMS_VERSION,
       'REQUEST': 'GetLegendGraphic',
-      'FORMAT': 'image/png',
-      'LAYER': layers
+      'FORMAT': 'image/png'
     };
+
+    if (params === undefined || params['LAYER'] === undefined) {
+      const layers = this.params_.LAYERS;
+      const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
+      if (!isSingleLayer) {
+        return undefined;
+      }
+      baseParams['LAYER'] = layers;
+    }
 
     if (resolution !== undefined) {
       const mpu = this.getProjection() ? this.getProjection().getMetersPerUnit() : 1;
