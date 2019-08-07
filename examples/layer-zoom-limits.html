@@ -1,0 +1,13 @@
+---
+layout: example.html
+title: Layer Zoom Limits
+shortdesc: Using minZoom and maxZoom to control layer visibility.
+docs: >
+  Layers support `minZoom` and `maxZoom` options for controlling visibility based on the view's zoom level.
+  If min or max zoom are set, the layer will only be visible at zoom levels greater than the `minZoom` and
+  less than or equal to the `maxZoom`.  After construction, the layer's `setMinZoom` and `setMaxZoom` can
+  be used to set limits.  This example shows an OSM layer at zoom levels 14 and lower and a USGS layer at
+  zoom levels higher than 14.
+tags: "minZoom, maxZoom, layer"
+---
+<div id="map" class="map"></div>

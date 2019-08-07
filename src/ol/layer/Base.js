@@ -23,6 +23,10 @@ import {assign} from '../obj.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * visible.
+ * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * be visible.
  */
 
 
@@ -57,6 +61,10 @@ class BaseLayer extends BaseObject {
        options.maxResolution !== undefined ? options.maxResolution : Infinity;
     properties[LayerProperty.MIN_RESOLUTION] =
        options.minResolution !== undefined ? options.minResolution : 0;
+    properties[LayerProperty.MIN_ZOOM] =
+       options.minZoom !== undefined ? options.minZoom : -Infinity;
+    properties[LayerProperty.MAX_ZOOM] =
+       options.maxZoom !== undefined ? options.maxZoom : Infinity;
 
     /**
      * @type {string}
@@ -103,6 +111,8 @@ class BaseLayer extends BaseObject {
     state.zIndex = this.getZIndex() || (state.managed === false ? Infinity : 0);
     state.maxResolution = this.getMaxResolution();
     state.minResolution = Math.max(this.getMinResolution(), 0);
+    state.minZoom = this.getMinZoom();
+    state.maxZoom = this.getMaxZoom();
     this.state_ = state;
 
     return state;
@@ -159,6 +169,26 @@ class BaseLayer extends BaseObject {
    */
   getMinResolution() {
     return /** @type {number} */ (this.get(LayerProperty.MIN_RESOLUTION));
+  }
+
+  /**
+   * Return the minimum zoom level of the layer.
+   * @return {number} The minimum zoom level of the layer.
+   * @observable
+   * @api
+   */
+  getMinZoom() {
+    return /** @type {number} */ (this.get(LayerProperty.MIN_ZOOM));
+  }
+
+  /**
+   * Return the maximum zoom level of the layer.
+   * @return {number} The maximum zoom level of the layer.
+   * @observable
+   * @api
+   */
+  getMaxZoom() {
+    return /** @type {number} */ (this.get(LayerProperty.MAX_ZOOM));
   }
 
   /**
@@ -229,6 +259,30 @@ class BaseLayer extends BaseObject {
    */
   setMinResolution(minResolution) {
     this.set(LayerProperty.MIN_RESOLUTION, minResolution);
+  }
+
+  /**
+   * Set the maximum zoom (exclusive) at which the layer is visible.
+   * Note that the zoom levels for layer visibility are based on the
+   * view zoom level, which may be different from a tile source zoom level.
+   * @param {number} maxZoom The maximum zoom of the layer.
+   * @observable
+   * @api
+   */
+  setMaxZoom(maxZoom) {
+    this.set(LayerProperty.MAX_ZOOM, maxZoom);
+  }
+
+  /**
+   * Set the minimum zoom (inclusive) at which the layer is visible.
+   * Note that the zoom levels for layer visibility are based on the
+   * view zoom level, which may be different from a tile source zoom level.
+   * @param {number} minZoom The minimum zoom of the layer.
+   * @observable
+   * @api
+   */
+  setMinZoom(minZoom) {
+    this.set(LayerProperty.MIN_ZOOM, minZoom);
   }
 
   /**

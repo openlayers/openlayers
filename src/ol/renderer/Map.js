@@ -5,7 +5,7 @@ import {abstract, getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
-import {visibleAtResolution} from '../layer/Layer.js';
+import {inView} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, makeInverse} from '../transform.js';
 import {renderDeclutterItems} from '../render.js';
@@ -87,7 +87,6 @@ class MapRenderer extends Disposable {
   ) {
     let result;
     const viewState = frameState.viewState;
-    const viewResolution = viewState.resolution;
 
     /**
      * @param {boolean} managed Managed layer.
@@ -126,7 +125,7 @@ class MapRenderer extends Disposable {
     for (i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = /** @type {import("../layer/Layer.js").default} */ (layerState.layer);
-      if (layer.hasRenderer() && visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
+      if (layer.hasRenderer() && inView(layerState, viewState) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = layer.getRenderer();
         const source = layer.getSource();
         if (layerRenderer && source) {

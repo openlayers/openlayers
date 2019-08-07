@@ -44,7 +44,9 @@ describe('ol.layer.Group', function() {
         extent: undefined,
         zIndex: 0,
         maxResolution: Infinity,
-        minResolution: 0
+        minResolution: 0,
+        minZoom: -Infinity,
+        maxZoom: Infinity
       });
     });
 
@@ -147,13 +149,17 @@ describe('ol.layer.Group', function() {
         visible: false,
         zIndex: 10,
         maxResolution: 500,
-        minResolution: 0.25
+        minResolution: 0.25,
+        minZoom: 1,
+        maxZoom: 10
       });
 
       expect(layerGroup.getOpacity()).to.be(0.5);
       expect(layerGroup.getVisible()).to.be(false);
       expect(layerGroup.getMaxResolution()).to.be(500);
       expect(layerGroup.getMinResolution()).to.be(0.25);
+      expect(layerGroup.getMinZoom()).to.be(1);
+      expect(layerGroup.getMaxZoom()).to.be(10);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
         opacity: 0.5,
@@ -164,7 +170,9 @@ describe('ol.layer.Group', function() {
         extent: undefined,
         zIndex: 10,
         maxResolution: 500,
-        minResolution: 0.25
+        minResolution: 0.25,
+        minZoom: 1,
+        maxZoom: 10
       });
       expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
@@ -206,7 +214,9 @@ describe('ol.layer.Group', function() {
         extent: groupExtent,
         zIndex: 0,
         maxResolution: 500,
-        minResolution: 0.25
+        minResolution: 0.25,
+        minZoom: -Infinity,
+        maxZoom: Infinity
       });
       expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
@@ -237,6 +247,8 @@ describe('ol.layer.Group', function() {
       layerGroup.setExtent(groupExtent);
       layerGroup.setMaxResolution(500);
       layerGroup.setMinResolution(0.25);
+      layerGroup.setMinZoom(5);
+      layerGroup.setMaxZoom(10);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
         opacity: 0.3,
@@ -247,7 +259,9 @@ describe('ol.layer.Group', function() {
         extent: groupExtent,
         zIndex: 10,
         maxResolution: 500,
-        minResolution: 0.25
+        minResolution: 0.25,
+        minZoom: 5,
+        maxZoom: 10
       });
     });
 
@@ -264,7 +278,9 @@ describe('ol.layer.Group', function() {
         extent: undefined,
         zIndex: 0,
         maxResolution: Infinity,
-        minResolution: 0
+        minResolution: 0,
+        minZoom: -Infinity,
+        maxZoom: Infinity
       });
 
       layerGroup.setOpacity(3);
@@ -279,7 +295,9 @@ describe('ol.layer.Group', function() {
         extent: undefined,
         zIndex: 0,
         maxResolution: Infinity,
-        minResolution: 0
+        minResolution: 0,
+        minZoom: -Infinity,
+        maxZoom: Infinity
       });
     });
 
@@ -452,10 +470,56 @@ describe('ol.layer.Group', function() {
         extent: undefined,
         zIndex: 0,
         maxResolution: 150,
-        minResolution: 0.25
+        minResolution: 0.25,
+        minZoom: -Infinity,
+        maxZoom: Infinity
       });
 
       layerGroup.dispose();
+    });
+
+    it('returns max minZoom', function() {
+      const group = new LayerGroup({
+        minZoom: 5,
+        layers: [
+          new Layer({
+            source: new Source({
+              projection: 'EPSG:4326'
+            })
+          }),
+          new Layer({
+            source: new Source({
+              projection: 'EPSG:4326'
+            }),
+            minZoom: 10
+          })
+        ]
+      });
+
+      expect(group.getLayerStatesArray()[0].minZoom).to.be(5);
+      expect(group.getLayerStatesArray()[1].minZoom).to.be(10);
+    });
+
+    it('returns min maxZoom of layers', function() {
+      const group = new LayerGroup({
+        maxZoom: 5,
+        layers: [
+          new Layer({
+            source: new Source({
+              projection: 'EPSG:4326'
+            })
+          }),
+          new Layer({
+            source: new Source({
+              projection: 'EPSG:4326'
+            }),
+            maxZoom: 2
+          })
+        ]
+      });
+
+      expect(group.getLayerStatesArray()[0].maxZoom).to.be(5);
+      expect(group.getLayerStatesArray()[1].maxZoom).to.be(2);
     });
 
   });

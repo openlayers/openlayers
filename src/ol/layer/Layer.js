@@ -50,6 +50,8 @@ import SourceState from '../source/State.js';
  * @property {number} zIndex
  * @property {number} maxResolution
  * @property {number} minResolution
+ * @property {number} minZoom
+ * @property {number} maxZoom
  */
 
 /**
@@ -277,17 +279,22 @@ class Layer extends BaseLayer {
 
 
 /**
- * Return `true` if the layer is visible, and if the passed resolution is
- * between the layer's minResolution and maxResolution. The comparison is
- * inclusive for `minResolution` and exclusive for `maxResolution`.
+ * Return `true` if the layer is visible and if the provided view state
+ * has resolution and zoom levels that are in range of the layer's min/max.
  * @param {State} layerState Layer state.
- * @param {number} resolution Resolution.
- * @return {boolean} The layer is visible at the given resolution.
+ * @param {import("../View.js").State} viewState View state.
+ * @return {boolean} The layer is visible at the given view state.
  */
-export function visibleAtResolution(layerState, resolution) {
-  return layerState.visible && resolution >= layerState.minResolution &&
-      resolution < layerState.maxResolution;
+export function inView(layerState, viewState) {
+  if (!layerState.visible) {
+    return false;
+  }
+  const resolution = viewState.resolution;
+  if (resolution < layerState.minResolution || resolution >= layerState.maxResolution) {
+    return false;
+  }
+  const zoom = viewState.zoom;
+  return zoom > layerState.minZoom && zoom <= layerState.maxZoom;
 }
-
 
 export default Layer;
