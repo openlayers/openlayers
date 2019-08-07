@@ -24,6 +24,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
  * @property {string} [key]
+ * @property {number} [zDirection=0]
  */
 
 
@@ -110,9 +111,9 @@ class TileSource extends Source {
      * by a renderer if the views resolution does not match any resolution of the tile source.
      * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
      * will be used. If -1, the nearest higher resolution will be used.
-     * @type {number=}
+     * @type {number}
      */
-    this.zDirection;
+    this.zDirection = options.zDirection ? options.zDirection : 0;
   }
 
   /**

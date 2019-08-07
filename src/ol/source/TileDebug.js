@@ -80,6 +80,11 @@ class LabeledTile extends Tile {
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Optional projection.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ * @property {number} [zDirection=0] Set to `1` when debugging `VectorTile` sources with
+ * a default configuration. Indicates which resolution should be used by a renderer if
+ * the view resolution does not match any resolution of the tile source. If 0, the nearest
+ * resolution will be used. If 1, the nearest lower resolution will be used. If -1, the
+ * nearest higher resolution will be used.
  */
 
 
@@ -106,7 +111,8 @@ class TileDebug extends XYZ {
       opaque: false,
       projection: options.projection,
       tileGrid: options.tileGrid,
-      wrapX: options.wrapX !== undefined ? options.wrapX : true
+      wrapX: options.wrapX !== undefined ? options.wrapX : true,
+      zDirection: options.zDirection
     });
 
   }

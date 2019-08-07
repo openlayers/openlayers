@@ -25,6 +25,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
  * @property {string} [key]
+ * @property {number} [zDirection=0]
  */
 
 
@@ -51,7 +52,8 @@ class UrlTile extends TileSource {
       wrapX: options.wrapX,
       transition: options.transition,
       key: options.key,
-      attributionsCollapsible: options.attributionsCollapsible
+      attributionsCollapsible: options.attributionsCollapsible,
+      zDirection: options.zDirection
     });
 
     /**

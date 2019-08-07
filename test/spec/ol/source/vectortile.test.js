@@ -26,6 +26,10 @@ describe('ol.source.VectorTile', function() {
       expect(source.format_).to.equal(format);
     });
 
+    it('sets the default zDirection on the instance', function() {
+      expect(source.zDirection).to.be(1);
+    });
+
     it('uses ol.VectorTile as default tileClass', function() {
       expect(source.tileClass).to.equal(VectorTile);
     });

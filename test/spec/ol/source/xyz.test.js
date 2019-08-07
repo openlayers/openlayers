@@ -20,6 +20,13 @@ describe('ol.source.XYZ', function() {
       expect(source).to.be.an(TileSource);
     });
 
+    it('can be constructed with a custom zDirection', function() {
+      const source = new XYZ({
+        zDirection: -1
+      });
+      expect(source.zDirection).to.be(-1);
+    });
+
     it('can be constructed with a custom tile grid', function() {
       const tileGrid = createXYZ();
       const tileSource = new XYZ({

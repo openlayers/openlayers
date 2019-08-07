@@ -269,7 +269,8 @@ class BingMaps extends TileImage {
         const attributions = [];
         const viewState = frameState.viewState;
         const tileGrid = this.getTileGrid();
-        const tileCoord = tileGrid.getTileCoordForCoordAndResolution(viewState.center, viewState.resolution);
+        const z = tileGrid.getZForResolution(viewState.resolution, this.zDirection);
+        const tileCoord = tileGrid.getTileCoordForCoordAndZ(viewState.center, z);
         const zoom = tileCoord[0];
         resource.imageryProviders.map(function(imageryProvider) {
           let intersecting = false;

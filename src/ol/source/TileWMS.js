@@ -168,7 +168,8 @@ class TileWMS extends TileImage {
       tileGrid = this.getTileGridForProjection(projectionObj);
     }
 
-    const tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
+    const z = tileGrid.getZForResolution(resolution, this.zDirection);
+    const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
 
     if (tileGrid.getResolutions().length <= tileCoord[0]) {
       return undefined;
