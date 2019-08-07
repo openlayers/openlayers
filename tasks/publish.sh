@@ -23,7 +23,7 @@ REMOTE=https://github.com/openlayers/openlayers.git
 display_usage() {
   cat <<-EOF
 
-  Usage: ${1} <version>
+  Usage: ${1} <version> [options]
 
   To publish a new release, update the version number in package.json and
   create a tag for the release.
@@ -32,6 +32,8 @@ display_usage() {
   version 3.2.1 would be tagged v3.2.1).
 
   The tag must be pushed to ${REMOTE} before the release can be published.
+
+  Additional args afer <version> will be passed to "npm publish" (e.g. "--tag beta").
 
 EOF
 }
@@ -76,12 +78,13 @@ main() {
   npm install
   npm run build-package
   cd ${BUILT_PACKAGE}
-  npm publish
+  shift
+  npm publish ${@}
 }
 
-if test ${#} -ne 1; then
+if test ${#} -lt 1; then
   display_usage ${0}
   exit 1
 else
-  main ${1}
+  main ${@}
 fi
