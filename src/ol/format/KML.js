@@ -1800,7 +1800,10 @@ function dataParser(node, objectStack) {
   if (name && featureObject.displayName) {
     featureObject[name] = {
       value: featureObject.value,
-      displayName: featureObject.displayName
+      displayName: featureObject.displayName,
+      toString: function() {
+        return featureObject.value;
+      }
     };
   } else if (name !== null) {
     featureObject[name] = featureObject.value;
