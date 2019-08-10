@@ -5,7 +5,7 @@ import VectorTile from '../../../../src/ol/VectorTile.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
+import {get as getProjection, get} from '../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
@@ -75,7 +75,7 @@ describe('ol.source.VectorTile', function() {
       });
     });
 
-    it('handles empty tiles tiles', function(done) {
+    it('handles empty tiles', function(done) {
       const source = new VectorTileSource({
         format: new GeoJSON(),
         url: ''
@@ -88,6 +88,15 @@ describe('ol.source.VectorTile', function() {
         done();
       });
       tile.load();
+    });
+
+    it('creates empty tiles outside the source extent', function() {
+      const fullExtent = get('EPSG:3857').getExtent();
+      const source = new VectorTileSource({
+        extent: [fullExtent[0], fullExtent[1], 0, 0]
+      });
+      const tile = source.getTile(1, 1, 1, 1, source.getProjection());
+      expect(tile.getState()).to.be(TileState.EMPTY);
     });
 
     it('creates new tile when source key changes', function() {
