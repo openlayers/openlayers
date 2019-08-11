@@ -108,10 +108,10 @@ class Interaction extends BaseObject {
  * @param {number=} opt_duration Duration.
  */
 export function pan(view, delta, opt_duration) {
-  const currentCenter = view.getCenter();
+  const currentCenter = view.getCenterInternal();
   if (currentCenter) {
     const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
-    view.animate_({
+    view.animateInternal({
       duration: opt_duration !== undefined ? opt_duration : 250,
       easing: linear,
       center: view.getConstrainedCenter(center)
@@ -138,7 +138,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   if (view.getAnimating()) {
     view.cancelAnimations();
   }
-  view.animate({
+  view.animateInternal({
     resolution: newResolution,
     anchor: opt_anchor,
     duration: opt_duration !== undefined ? opt_duration : 250,

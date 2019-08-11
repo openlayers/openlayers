@@ -92,7 +92,7 @@ class DragPan extends PointerInteraction {
         const view = map.getView();
         scaleCoordinate(delta, view.getResolution());
         rotateCoordinate(delta, view.getRotation());
-        view.adjustCenter(delta);
+        view.adjustCenterInternal(delta);
       }
     } else if (this.kinetic_) {
       // reset so we don't overestimate the kinetic energy after
@@ -113,13 +113,13 @@ class DragPan extends PointerInteraction {
       if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
         const distance = this.kinetic_.getDistance();
         const angle = this.kinetic_.getAngle();
-        const center = /** @type {!import("../coordinate.js").Coordinate} */ (view.getCenter());
+        const center = view.getCenterInternal();
         const centerpx = map.getPixelFromCoordinate(center);
         const dest = map.getCoordinateFromPixel([
           centerpx[0] - distance * Math.cos(angle),
           centerpx[1] - distance * Math.sin(angle)
         ]);
-        view.animate({
+        view.animateInternal({
           center: view.getConstrainedCenter(dest),
           duration: 500,
           easing: easeOut

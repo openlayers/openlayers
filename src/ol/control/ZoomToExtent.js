@@ -2,6 +2,7 @@
  * @module ol/control/ZoomToExtent
  */
 import EventType from '../events/EventType.js';
+import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 
@@ -80,7 +81,7 @@ class ZoomToExtent extends Control {
     const map = this.getMap();
     const view = map.getView();
     const extent = !this.extent ? view.getProjection().getExtent() : this.extent;
-    view.fit(extent);
+    view.fitInternal(polygonFromExtent(extent));
   }
 }
 

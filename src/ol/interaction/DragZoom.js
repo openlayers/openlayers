@@ -73,20 +73,20 @@ function onBoxEnd() {
   let extent = this.getGeometry().getExtent();
 
   if (this.out_) {
-    const mapExtent = view.calculateExtent(size);
+    const mapExtent = view.calculateExtentInternal(size);
     const boxPixelExtent = createOrUpdateFromCoordinates([
       map.getPixelFromCoordinate(getBottomLeft(extent)),
       map.getPixelFromCoordinate(getTopRight(extent))]);
-    const factor = view.getResolutionForExtent(boxPixelExtent, size);
+    const factor = view.getResolutionForExtentInternal(boxPixelExtent, size);
 
     scaleFromCenter(mapExtent, 1 / factor);
     extent = mapExtent;
   }
 
-  const resolution = view.getConstrainedResolution(view.getResolutionForExtent(extent, size));
+  const resolution = view.getConstrainedResolution(view.getResolutionForExtentInternal(extent, size));
   const center = view.getConstrainedCenter(getCenter(extent), resolution);
 
-  view.animate({
+  view.animateInternal({
     resolution: resolution,
     center: center,
     duration: this.duration_,

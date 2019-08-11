@@ -99,20 +99,20 @@ describe('ol.interaction.MouseWheelZoom', function() {
       });
     }
 
-    describe('spying on view.animate()', function() {
+    describe('spying on view.animateInternal()', function() {
       let view;
       beforeEach(function() {
         view = map.getView();
-        sinon.spy(view, 'animate');
+        sinon.spy(view, 'animateInternal');
       });
 
       afterEach(function() {
-        view.animate.restore();
+        view.animateInternal.restore();
       });
 
       it('works in DOM_DELTA_LINE mode (wheel)', function(done) {
         map.once('postrender', function() {
-          const call = view.animate.getCall(0);
+          const call = view.animateInternal.getCall(0);
           expect(call.args[0].resolution).to.be(2);
           expect(call.args[0].anchor).to.eql([0, 0]);
           done();
@@ -132,7 +132,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
       it('works on all browsers (wheel)', function(done) {
         map.once('postrender', function() {
-          const call = view.animate.getCall(0);
+          const call = view.animateInternal.getCall(0);
           expect(call.args[0].resolution).to.be(2);
           expect(call.args[0].anchor).to.eql([0, 0]);
           done();

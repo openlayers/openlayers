@@ -78,7 +78,7 @@ describe('ol.interaction.DragZoom', function() {
       interaction.onBoxEnd_();
       setTimeout(function() {
         const view = map.getView();
-        const center = view.getCenter();
+        const center = view.getCenterInternal();
         expect(center).to.eql(getCenter(extent));
         done();
       }, 50);
