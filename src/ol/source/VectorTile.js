@@ -9,7 +9,7 @@ import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
 import {getKeyZXY, getKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
-import {buffer as bufferExtent, getIntersection} from '../extent.js';
+import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
@@ -328,8 +328,18 @@ class VectorTile extends UrlTile {
       }
     }
     const tileCoord = [z, x, y];
-    const urlTileCoord = this.getTileCoordForTileUrlFunction(
-      tileCoord, projection);
+    const sourceExtent = this.getTileGrid().getExtent();
+    let tileInExtent = true;
+    if (sourceExtent) {
+      const tileGrid = this.getTileGridForProjection(projection);
+      const tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+      // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
+      bufferExtent(tileExtent, -1 / tileGrid.getResolution(z), tileExtent);
+      tileInExtent = intersects(sourceExtent, tileExtent);
+    }
+    const urlTileCoord = tileInExtent ?
+      this.getTileCoordForTileUrlFunction(tileCoord, projection) :
+      null;
     const newTile = new VectorRenderTile(
       tileCoord,
       urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
