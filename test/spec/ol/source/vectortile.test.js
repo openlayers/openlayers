@@ -11,6 +11,7 @@ import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
 import TileState from '../../../../src/ol/TileState.js';
+import {getCenter} from '../../../../src/ol/extent.js';
 
 describe('ol.source.VectorTile', function() {
 
@@ -199,6 +200,54 @@ describe('ol.source.VectorTile', function() {
         expect(loaded).to.eql(['5/13/-29']);
         done();
       }, 0);
+    });
+
+  });
+
+  it('does not fill up the tile queue', function(done) {
+    const target = document.createElement('div');
+    target.style.width = '100px';
+    target.style.height = '100px';
+    document.body.appendChild(target);
+    const extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
+    let url = 'spec/ol/data/14-8938-5680.vector.pbf?';
+    const source = new VectorTileSource({
+      format: new MVT(),
+      url: url,
+      minZoom: 14,
+      maxZoom: 14
+    });
+
+    const map = new Map({
+      target: target,
+      layers: [
+        new VectorTileLayer({
+          extent: extent,
+          source: source
+        })
+      ],
+      view: new View({
+        center: getCenter(extent),
+        zoom: 14
+      })
+    });
+
+    const limit = 3;
+    let count = 0;
+    source.on('tileloadend', function() {
+      setTimeout(function() {
+        ++count;
+        if (count === limit) {
+          document.body.removeChild(target);
+          map.dispose();
+          done();
+        }
+
+        url = url + count;
+        source.setUrl(url);
+        const queue = map.tileQueue_;
+        expect(queue.getTilesLoading()).to.be(0);
+      }, 100);
     });
 
   });

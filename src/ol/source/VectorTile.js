@@ -132,7 +132,7 @@ class VectorTile extends UrlTile {
      * @private
      * @type {Object<string, import("../VectorTile.js").default>}
      */
-    this.sourceTiles_ = {};
+    this.sourceTileByCoordKey_ = {};
 
     /**
      * @private
@@ -173,7 +173,7 @@ class VectorTile extends UrlTile {
    */
   clear() {
     this.tileCache.clear();
-    this.sourceTiles_ = {};
+    this.sourceTileByCoordKey_ = {};
     this.sourceTilesByTileKey_ = {};
   }
 
@@ -199,7 +199,7 @@ class VectorTile extends UrlTile {
     const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
     const minZoom = sourceTileGrid.getMinZoom();
 
-    const previousSourceTiles = this.sourceTilesByTileKey_[getKey(tile.tileCoord)];
+    const previousSourceTiles = this.sourceTilesByTileKey_[tile.getKey()];
     if (previousSourceTiles && previousSourceTiles.length > 0 && previousSourceTiles[0].tileCoord[0] === sourceZ) {
       return previousSourceTiles;
     }
@@ -212,10 +212,10 @@ class VectorTile extends UrlTile {
       covered = true;
       empty = true;
       sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
-        const tileKey = getKey(sourceTileCoord);
+        const coordKey = getKey(sourceTileCoord);
         let sourceTile;
-        if (tileKey in this.sourceTiles_) {
-          sourceTile = this.sourceTiles_[tileKey];
+        if (coordKey in this.sourceTileByCoordKey_) {
+          sourceTile = this.sourceTileByCoordKey_[coordKey];
           const state = sourceTile.getState();
           if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
             empty = empty && state === TileState.EMPTY;
@@ -230,7 +230,7 @@ class VectorTile extends UrlTile {
             sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
             sourceTile.projection = projection;
             sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-            this.sourceTiles_[tileKey] = sourceTile;
+            this.sourceTileByCoordKey_[coordKey] = sourceTile;
             empty = false;
             listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
             sourceTile.load();
@@ -246,7 +246,7 @@ class VectorTile extends UrlTile {
           tile.loadingSourceTiles++;
           const key = listen(sourceTile, EventType.CHANGE, function() {
             const state = sourceTile.getState();
-            const sourceTileKey = getKey(sourceTile.tileCoord);
+            const sourceTileKey = sourceTile.getKey();
             if (state === TileState.LOADED || state === TileState.ERROR) {
               if (state === TileState.LOADED) {
                 unlistenByKey(key);
@@ -289,7 +289,7 @@ class VectorTile extends UrlTile {
    * @param {Array<import("../VectorTile").default>} sourceTiles Source tiles.
    */
   addSourceTiles(tile, sourceTiles) {
-    this.sourceTilesByTileKey_[getKey(tile.tileCoord)] = sourceTiles;
+    this.sourceTilesByTileKey_[tile.getKey()] = sourceTiles;
     for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
       sourceTiles[i].consumers++;
     }
@@ -299,7 +299,7 @@ class VectorTile extends UrlTile {
    * @param {VectorRenderTile} tile Tile.
    */
   removeSourceTiles(tile) {
-    const tileKey = getKey(tile.tileCoord);
+    const tileKey = tile.getKey();
     if (tileKey in this.sourceTilesByTileKey_) {
       const sourceTiles = this.sourceTilesByTileKey_[tileKey];
       for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
@@ -307,7 +307,7 @@ class VectorTile extends UrlTile {
         sourceTile.consumers--;
         if (sourceTile.consumers === 0) {
           sourceTile.dispose();
-          delete this.sourceTiles_[getKey(sourceTile.tileCoord)];
+          delete this.sourceTileByCoordKey_[getKey(sourceTile.tileCoord)];
         }
       }
     }
@@ -318,11 +318,11 @@ class VectorTile extends UrlTile {
    * @inheritDoc
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const tileCoordKey = getKeyZXY(z, x, y);
+    const coordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
     let tile;
-    if (this.tileCache.containsKey(tileCoordKey)) {
-      tile = /** @type {!import("../Tile.js").default} */ (this.tileCache.get(tileCoordKey));
+    if (this.tileCache.containsKey(coordKey)) {
+      tile = /** @type {!import("../Tile.js").default} */ (this.tileCache.get(coordKey));
       if (tile.key === key) {
         return tile;
       }
@@ -352,9 +352,9 @@ class VectorTile extends UrlTile {
     if (tile) {
       newTile.interimTile = tile;
       newTile.refreshInterimChain();
-      this.tileCache.replace(tileCoordKey, newTile);
+      this.tileCache.replace(coordKey, newTile);
     } else {
-      this.tileCache.set(tileCoordKey, newTile);
+      this.tileCache.set(coordKey, newTile);
     }
     return newTile;
   }
