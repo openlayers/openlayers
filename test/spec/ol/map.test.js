@@ -203,6 +203,7 @@ describe('ol.Map', function() {
         target: target,
         layers: [
           new TileLayer({
+            opacity: 0.5,
             source: new XYZ({
               url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
             })

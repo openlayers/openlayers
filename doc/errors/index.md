@@ -236,3 +236,7 @@ A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUF
 ### 63
 
 Support for the `OES_element_index_uint` WebGL extension is mandatory for WebGL layers.
+
+### 64
+
+Layer opacity must be a number.
