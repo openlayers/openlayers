@@ -377,7 +377,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     const uid = getUid(this);
-    const alpha = opacity * (transition ? tile.getAlpha(uid, frameState.time) : 1);
+    const tileAlpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+    const alpha = opacity * tileAlpha;
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();
@@ -389,7 +390,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (alphaChanged) {
       this.context.restore();
     }
-    if (alpha !== 1) {
+    if (tileAlpha !== 1) {
       frameState.animate = true;
     } else if (transition) {
       tile.endTransition(uid);
