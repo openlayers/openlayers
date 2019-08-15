@@ -6,6 +6,7 @@ import BaseObject from '../Object.js';
 import LayerProperty from './Property.js';
 import {clamp} from '../math.js';
 import {assign} from '../obj.js';
+import {assert} from '../asserts.js';
 
 
 /**
@@ -52,8 +53,11 @@ class BaseLayer extends BaseObject {
      * @type {Object<string, *>}
      */
     const properties = assign({}, options);
+
     properties[LayerProperty.OPACITY] =
-       options.opacity !== undefined ? options.opacity : 1;
+        options.opacity !== undefined ? options.opacity : 1;
+    assert(typeof properties[LayerProperty.OPACITY] === 'number', 64); // Layer opacity must be a number
+
     properties[LayerProperty.VISIBLE] =
        options.visible !== undefined ? options.visible : true;
     properties[LayerProperty.Z_INDEX] = options.zIndex;
@@ -292,6 +296,7 @@ class BaseLayer extends BaseObject {
    * @api
    */
   setOpacity(opacity) {
+    assert(typeof opacity === 'number', 64); // Layer opacity must be a number
     this.set(LayerProperty.OPACITY, opacity);
   }
 

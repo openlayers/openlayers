@@ -112,6 +112,19 @@ describe('ol.layer.Layer', function() {
       layer.dispose();
     });
 
+    it('throws on non-numeric opacity', function() {
+      function create() {
+        new Layer({
+          source: new Source({
+            projection: 'EPSG:4326'
+          }),
+          opacity: 'foo'
+        });
+      }
+
+      expect(create).to.throwException();
+    });
+
     it('accepts a custom render function', function() {
       let called = false;
       const layer = new Layer({
@@ -509,6 +522,13 @@ describe('ol.layer.Layer', function() {
     it('accepts a positive number', function() {
       layer.setOpacity(0.3);
       expect(layer.getOpacity()).to.be(0.3);
+    });
+
+    it('throws on types other than number', function() {
+      function set() {
+        layer.setOpacity('foo');
+      }
+      expect(set).to.throwException();
     });
 
     it('triggers a change event', function() {
