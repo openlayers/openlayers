@@ -9,6 +9,7 @@ import {getCenter} from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
+import {getKey} from '../../../../../src/ol/tilecoord.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {checkedFonts} from '../../../../../src/ol/render/canvas.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
@@ -300,12 +301,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: createXYZ()
       });
-      source.sourceTiles_ = {
-        '0/0/0': sourceTile
-      };
-      source.sourceTilesByTileKey_ = {
-        '0/0/0': [sourceTile]
-      };
+      source.sourceTileByCoordKey_[getKey(sourceTile.tileCoord)] = sourceTile;
+      source.sourceTilesByTileKey_[sourceTile.getKey()] = [sourceTile];
       executorGroup = {};
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
