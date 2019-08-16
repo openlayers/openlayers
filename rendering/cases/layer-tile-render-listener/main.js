@@ -1,8 +1,8 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import {transform, fromLonLat} from '../../../src/ol/proj';
-import XYZ from '../../../src/ol/source/XYZ';
+import {transform, fromLonLat} from '../../../src/ol/proj.js';
+import XYZ from '../../../src/ol/source/XYZ.js';
 import CircleStyle from '../../../src/ol/style/Circle.js';
 import Fill from '../../../src/ol/style/Fill.js';
 import Stroke from '../../../src/ol/style/Stroke.js';
