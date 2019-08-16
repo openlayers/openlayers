@@ -62,6 +62,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
       if (format.getType() == FormatType.ARRAY_BUFFER) {
         xhr.responseType = 'arraybuffer';
       }
+      xhr.withCredentials = true;
       /**
        * @param {Event} event Event.
        * @private
