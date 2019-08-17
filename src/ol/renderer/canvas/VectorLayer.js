@@ -362,10 +362,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
     let loading = false;
     if (Array.isArray(styles)) {
+      const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
-          builderGroup, feature, styles[i],
-          getSquaredRenderTolerance(resolution, pixelRatio),
+          builderGroup, feature, styles[i], squaredTolerance,
           this.handleStyleImageChange_, this) || loading;
       }
     } else {
