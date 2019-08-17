@@ -40,10 +40,10 @@ class BuilderGroup {
     this.declutter_ = declutter;
 
     /**
-     * @type {import("../canvas.js").DeclutterGroup}
+     * @type {import("../canvas.js").DeclutterGroups}
      * @private
      */
-    this.declutterGroup_ = null;
+    this.declutterGroups_ = null;
 
     /**
      * @private
@@ -78,17 +78,17 @@ class BuilderGroup {
 
   /**
    * @param {boolean} group Group with previous builder.
-   * @return {Array<*>} The resulting instruction group.
+   * @return {import("../canvas").DeclutterGroups} The resulting instruction groups.
    */
   addDeclutter(group) {
     let declutter = null;
     if (this.declutter_) {
       if (group) {
-        declutter = this.declutterGroup_;
-        /** @type {number} */ (declutter[4])++;
+        declutter = this.declutterGroups_;
+        /** @type {number} */ (declutter[0][4])++;
       } else {
-        declutter = this.declutterGroup_ = createEmpty();
-        declutter.push(1);
+        declutter = this.declutterGroups_ = [createEmpty()];
+        declutter[0].push(1);
       }
     }
     return declutter;

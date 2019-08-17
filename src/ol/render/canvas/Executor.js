@@ -535,7 +535,7 @@ class Executor extends Disposable {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image, text, textKey;
+    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, declutterGroups, image, text, textKey;
     let strokeKey, fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
@@ -633,7 +633,7 @@ class Executor extends Disposable {
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
-          declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[6]);
+          declutterGroups = featureCallback ? null : instruction[6];
           let height = /** @type {number} */ (instruction[7]);
           const opacity = /** @type {number} */ (instruction[8]);
           const originX = /** @type {number} */ (instruction[9]);
@@ -642,7 +642,6 @@ class Executor extends Disposable {
           let rotation = /** @type {number} */ (instruction[12]);
           const scale = /** @type {number} */ (instruction[13]);
           let width = /** @type {number} */ (instruction[14]);
-
 
           if (!image && instruction.length >= 19) {
             // create label images
@@ -679,9 +678,19 @@ class Executor extends Disposable {
             rotation += viewRotation;
           }
           let widthIndex = 0;
+          let declutterGroupIndex = 0;
           for (; d < dd; d += 2) {
             if (geometryWidths && geometryWidths[widthIndex++] < width / this.pixelRatio) {
               continue;
+            }
+            if (declutterGroups) {
+              const index = Math.floor(declutterGroupIndex);
+              if (declutterGroups.length < index + 1) {
+                declutterGroup = createEmpty();
+                declutterGroup.push(declutterGroups[0][4]);
+                declutterGroups.push(declutterGroup);
+              }
+              declutterGroup = declutterGroups[index];
             }
             this.replayImage_(context,
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
@@ -689,15 +698,21 @@ class Executor extends Disposable {
               snapToPixel, width, padding,
               backgroundFill ? /** @type {Array<*>} */ (lastFillInstruction) : null,
               backgroundStroke ? /** @type {Array<*>} */ (lastStrokeInstruction) : null);
+            if (declutterGroup) {
+              if (declutterGroupIndex === Math.floor(declutterGroupIndex)) {
+                this.declutterItems.push(this, declutterGroup, feature);
+              }
+              declutterGroupIndex += 1 / declutterGroup[4];
+
+            }
           }
-          this.declutterItems.push(this, declutterGroup, feature);
           ++i;
           break;
         case CanvasInstruction.DRAW_CHARS:
           const begin = /** @type {number} */ (instruction[1]);
           const end = /** @type {number} */ (instruction[2]);
           const baseline = /** @type {number} */ (instruction[3]);
-          declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[4]);
+          declutterGroup = featureCallback ? null : instruction[4];
           const overflow = /** @type {number} */ (instruction[5]);
           fillKey = /** @type {string} */ (instruction[6]);
           const maxAngle = /** @type {number} */ (instruction[7]);

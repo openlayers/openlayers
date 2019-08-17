@@ -16,9 +16,9 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import("../canvas.js").DeclutterGroup}
+     * @type {import("../canvas.js").DeclutterGroups}
      */
-    this.declutterGroup_ = null;
+    this.declutterGroups_ = null;
 
     /**
      * @private
@@ -121,14 +121,14 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
+      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
       this.scale_ * this.pixelRatio, this.width_
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
+      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
       this.scale_, this.width_
     ]);
@@ -151,14 +151,14 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
+      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
       this.scale_ * this.pixelRatio, this.width_
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
+      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
       this.scale_, this.width_
     ]);
@@ -189,7 +189,7 @@ class CanvasImageBuilder extends CanvasBuilder {
   /**
    * @inheritDoc
    */
-  setImageStyle(imageStyle, declutterGroup) {
+  setImageStyle(imageStyle, declutterGroups) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
     const hitDetectionImage = imageStyle.getHitDetectionImage(1);
@@ -197,7 +197,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const origin = imageStyle.getOrigin();
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
-    this.declutterGroup_ = /** @type {import("../canvas.js").DeclutterGroup} */ (declutterGroup);
+    this.declutterGroups_ = /** @type {import("../canvas.js").DeclutterGroups} */ (declutterGroups);
     this.hitDetectionImage_ = hitDetectionImage;
     this.image_ = image;
     this.height_ = size[1];

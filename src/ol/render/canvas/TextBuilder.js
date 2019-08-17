@@ -40,9 +40,9 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import("../canvas.js").DeclutterGroup}
+     * @type {import("../canvas.js").DeclutterGroups}
      */
-    this.declutterGroup_;
+    this.declutterGroups_;
 
     /**
      * @private
@@ -201,7 +201,10 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
         end = this.coordinates.length;
         flatOffset = ends[o];
-        this.drawChars_(begin, end, this.declutterGroup_);
+        const declutterGroup = this.declutterGroups_ ?
+          (o === 0 ? this.declutterGroups_[0] : [].concat(this.declutterGroups_[0])) :
+          null;
+        this.drawChars_(begin, end, declutterGroup);
         begin = end;
       }
       this.endGeometry(feature);
@@ -274,7 +277,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       // render time.
       const pixelRatio = this.pixelRatio;
       this.instructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
-        null, NaN, NaN, this.declutterGroup_, NaN, 1, 0, 0,
+        null, NaN, NaN, this.declutterGroups_, NaN, 1, 0, 0,
         this.textRotateWithView_, this.textRotation_, 1, NaN,
         textState.padding == defaultPadding ?
           defaultPadding : textState.padding.map(function(p) {
@@ -285,7 +288,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetX_, this.textOffsetY_, geometryWidths
       ]);
       this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
-        null, NaN, NaN, this.declutterGroup_, NaN, 1, 0, 0,
+        null, NaN, NaN, this.declutterGroups_, NaN, 1, 0, 0,
         this.textRotateWithView_, this.textRotation_, 1 / this.pixelRatio, NaN,
         textState.padding,
         !!textState.backgroundFill, !!textState.backgroundStroke,
@@ -379,12 +382,12 @@ class CanvasTextBuilder extends CanvasBuilder {
   /**
    * @inheritDoc
    */
-  setTextStyle(textStyle, declutterGroup) {
+  setTextStyle(textStyle, declutterGroups) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
     } else {
-      this.declutterGroup_ = /** @type {import("../canvas.js").DeclutterGroup} */ (declutterGroup);
+      this.declutterGroups_ = /** @type {import("../canvas.js").DeclutterGroups} */ (declutterGroups);
 
       const textFillStyle = textStyle.getFill();
       if (!textFillStyle) {
