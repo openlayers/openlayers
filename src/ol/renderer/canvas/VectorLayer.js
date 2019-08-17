@@ -299,6 +299,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     vectorSource.loadFeatures(extent, resolution, projection);
 
+    const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
+
     /**
      * @param {import("../../Feature.js").default} feature Feature.
      * @this {CanvasVectorLayerRenderer}
@@ -310,11 +312,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         styles = styleFunction(feature, resolution);
       }
       if (styles) {
-        const dirty = this.renderFeature(
-          feature, resolution, pixelRatio, styles, replayGroup);
+        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
         this.dirty_ = this.dirty_ || dirty;
       }
     }.bind(this);
+
     if (vectorLayerRenderOrder) {
       /** @type {Array<import("../../Feature.js").default>} */
       const features = [];
@@ -350,13 +352,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../Feature.js").default} feature Feature.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
    * @return {boolean} `true` if an image is loading.
    */
-  renderFeature(feature, resolution, pixelRatio, styles, builderGroup) {
+  renderFeature(feature, squaredTolerance, styles, builderGroup) {
     if (!styles) {
       return false;
     }
@@ -364,14 +365,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (Array.isArray(styles)) {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
-          builderGroup, feature, styles[i],
-          getSquaredRenderTolerance(resolution, pixelRatio),
+          builderGroup, feature, styles[i], squaredTolerance,
           this.handleStyleImageChange_, this) || loading;
       }
     } else {
       loading = renderFeature(
-        builderGroup, feature, styles,
-        getSquaredRenderTolerance(resolution, pixelRatio),
+        builderGroup, feature, styles, squaredTolerance,
         this.handleStyleImageChange_, this);
     }
     return loading;
