@@ -75,11 +75,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         style: layerStyle
       });
       map.addLayer(layer);
-      const spy = sinon.spy(layer.getRenderer(),
-        'renderFeature');
+      const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[3]).to.be(layerStyle);
-      expect(spy.getCall(1).args[3]).to.be(featureStyle);
+      expect(spy.getCall(0).args[2]).to.be(layerStyle);
+      expect(spy.getCall(1).args[2]).to.be(featureStyle);
       document.body.removeChild(target);
     });
 
