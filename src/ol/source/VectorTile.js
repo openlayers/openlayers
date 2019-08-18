@@ -328,18 +328,17 @@ class VectorTile extends UrlTile {
       }
     }
     const tileCoord = [z, x, y];
+    let urlTileCoord = this.getTileCoordForTileUrlFunction(tileCoord, projection);
     const sourceExtent = this.getTileGrid().getExtent();
-    let tileInExtent = true;
     if (sourceExtent) {
       const tileGrid = this.getTileGridForProjection(projection);
-      const tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+      const tileExtent = tileGrid.getTileCoordExtent(urlTileCoord);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       bufferExtent(tileExtent, -1 / tileGrid.getResolution(z), tileExtent);
-      tileInExtent = intersects(sourceExtent, tileExtent);
+      if (!intersects(sourceExtent, tileExtent)) {
+        urlTileCoord = null;
+      }
     }
-    const urlTileCoord = tileInExtent ?
-      this.getTileCoordForTileUrlFunction(tileCoord, projection) :
-      null;
     const newTile = new VectorRenderTile(
       tileCoord,
       urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
