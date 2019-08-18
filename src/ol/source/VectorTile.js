@@ -200,74 +200,78 @@ class VectorTile extends UrlTile {
     const minZoom = sourceTileGrid.getMinZoom();
 
     const previousSourceTiles = this.sourceTilesByTileKey_[tile.getKey()];
+    let sourceTiles, covered, empty, loadedZ;
     if (previousSourceTiles && previousSourceTiles.length > 0 && previousSourceTiles[0].tileCoord[0] === sourceZ) {
-      return previousSourceTiles;
-    }
-
-    const sourceTiles = [];
-    let loadedZ = sourceZ + 1;
-    let covered, empty;
-    do {
-      --loadedZ;
+      sourceTiles = previousSourceTiles;
       covered = true;
-      empty = true;
-      sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
-        const coordKey = getKey(sourceTileCoord);
-        let sourceTile;
-        if (coordKey in this.sourceTileByCoordKey_) {
-          sourceTile = this.sourceTileByCoordKey_[coordKey];
-          const state = sourceTile.getState();
-          if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
-            empty = empty && state === TileState.EMPTY;
-            sourceTiles.push(sourceTile);
+      empty = false;
+      loadedZ = sourceZ;
+    } else {
+      sourceTiles = [];
+      loadedZ = sourceZ + 1;
+      do {
+        --loadedZ;
+        covered = true;
+        empty = true;
+        sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
+          const coordKey = getKey(sourceTileCoord);
+          let sourceTile;
+          if (coordKey in this.sourceTileByCoordKey_) {
+            sourceTile = this.sourceTileByCoordKey_[coordKey];
+            const state = sourceTile.getState();
+            if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
+              empty = empty && state === TileState.EMPTY;
+              sourceTiles.push(sourceTile);
+              return;
+            }
+          } else if (loadedZ === sourceZ) {
+            const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+            if (tileUrl !== undefined) {
+              sourceTile = new this.tileClass(sourceTileCoord, TileState.IDLE, tileUrl,
+                this.format_, this.tileLoadFunction);
+              sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
+              sourceTile.projection = projection;
+              sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
+              this.sourceTileByCoordKey_[coordKey] = sourceTile;
+              empty = false;
+              listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
+              sourceTile.load();
+            }
+          } else {
+            empty = false;
+          }
+          covered = false;
+          if (!sourceTile) {
             return;
           }
-        } else if (loadedZ === sourceZ) {
-          const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-          if (tileUrl !== undefined) {
-            sourceTile = new this.tileClass(sourceTileCoord, TileState.IDLE, tileUrl,
-              this.format_, this.tileLoadFunction);
-            sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-            sourceTile.projection = projection;
-            sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-            this.sourceTileByCoordKey_[coordKey] = sourceTile;
-            empty = false;
-            listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
-            sourceTile.load();
+          if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
+            tile.loadingSourceTiles++;
+            const key = listen(sourceTile, EventType.CHANGE, function() {
+              const state = sourceTile.getState();
+              const sourceTileKey = sourceTile.getKey();
+              if (state === TileState.LOADED || state === TileState.ERROR) {
+                if (state === TileState.LOADED) {
+                  unlistenByKey(key);
+                  tile.loadingSourceTiles--;
+                  delete tile.errorSourceTileKeys[sourceTileKey];
+                } else if (state === TileState.ERROR) {
+                  tile.errorSourceTileKeys[sourceTileKey] = true;
+                }
+                if (tile.loadingSourceTiles - Object.keys(tile.errorSourceTileKeys).length === 0) {
+                  tile.hifi = true;
+                  tile.sourceZ = sourceZ;
+                  tile.setState(isEmpty(tile.errorSourceTileKeys) ? TileState.LOADED : TileState.ERROR);
+                }
+              }
+            });
           }
-        } else {
-          empty = false;
+        }.bind(this));
+        if (!covered) {
+          sourceTiles.length = 0;
         }
-        covered = false;
-        if (!sourceTile) {
-          return;
-        }
-        if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
-          tile.loadingSourceTiles++;
-          const key = listen(sourceTile, EventType.CHANGE, function() {
-            const state = sourceTile.getState();
-            const sourceTileKey = sourceTile.getKey();
-            if (state === TileState.LOADED || state === TileState.ERROR) {
-              if (state === TileState.LOADED) {
-                unlistenByKey(key);
-                tile.loadingSourceTiles--;
-                delete tile.errorSourceTileKeys[sourceTileKey];
-              } else if (state === TileState.ERROR) {
-                tile.errorSourceTileKeys[sourceTileKey] = true;
-              }
-              if (tile.loadingSourceTiles - Object.keys(tile.errorSourceTileKeys).length === 0) {
-                tile.hifi = true;
-                tile.sourceZ = sourceZ;
-                tile.setState(isEmpty(tile.errorSourceTileKeys) ? TileState.LOADED : TileState.ERROR);
-              }
-            }
-          });
-        }
-      }.bind(this));
-      if (!covered) {
-        sourceTiles.length = 0;
-      }
-    } while (!covered && loadedZ > minZoom);
+      } while (!covered && loadedZ > minZoom);
+    }
+
     if (!empty && tile.getState() === TileState.IDLE) {
       tile.setState(TileState.LOADING);
     }
