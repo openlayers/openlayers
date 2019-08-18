@@ -229,13 +229,19 @@ describe('ol.source.VectorTile', function() {
         zoom: 0
       })
     });
+    map.renderSync();
 
 
     const max = urls.length + 3;
     let count = 0;
-    source.on('tileloadend', function() {
-      setTimeout(function() {
+    let tile = source.getTile(0, 0, 0, 1, map.getView().getProjection());
+    tile.addEventListener('change', function onTileChange(e) {
+      if (e.target.getState() !== TileState.LOADED && !e.target.hifi) {
+        return;
+      }
+      e.target.removeEventListener('change', onTileChange);
 
+      map.once('rendercomplete', function() {
         expect(map.tileQueue_.getTilesLoading()).to.be(0);
 
         ++count;
@@ -247,7 +253,10 @@ describe('ol.source.VectorTile', function() {
         }
 
         source.setUrl(urls[count % urls.length]);
-      }, 100);
+        tile = source.getTile(0, 0, 0, 1, map.getView().getProjection());
+        tile.addEventListener('change', onTileChange);
+      });
+
     });
 
   });
