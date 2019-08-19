@@ -95,6 +95,20 @@ describe('ol.source.VectorTile', function() {
       expect(tile.getState()).to.be(TileState.EMPTY);
     });
 
+    it('creates empty tiles outside the world extent when wrapX === false', function() {
+      const source = new VectorTileSource({
+        wrapX: false
+      });
+      const tile = source.getTile(0, -1, 0, 1, source.getProjection());
+      expect(tile.getState()).to.be(TileState.EMPTY);
+    });
+
+    it('creates non-empty tiles outside the world extent when wrapX === true', function() {
+      const source = new VectorTileSource({});
+      const tile = source.getTile(0, -1, 0, 1, source.getProjection());
+      expect(tile.getState()).to.be(TileState.IDLE);
+    });
+
     it('creates new tile when source key changes', function() {
       source.setKey('key1');
       const tile1 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
