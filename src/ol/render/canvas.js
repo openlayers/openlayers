@@ -62,7 +62,6 @@ import LabelCache from './canvas/LabelCache.js';
  * @property {Array<number>} [padding]
  */
 
-
 /**
  * Container for decluttered replay instructions that need to be rendered or
  * omitted together, i.e. when styles render both an image and text, or for the
@@ -73,6 +72,12 @@ import LabelCache from './canvas/LabelCache.js';
  * In addition to these four elements, declutter instruction arrays (i.e. the
  * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
  * @typedef {Array<*>} DeclutterGroup
+ */
+
+
+/**
+ * Declutter groups for support of multi geometries.
+ * @typedef {Array<DeclutterGroup>} DeclutterGroups
  */
 
 

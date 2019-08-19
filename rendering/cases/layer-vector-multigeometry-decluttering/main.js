@@ -1,21 +1,21 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Fill, Stroke, Style, Text} from '../src/ol/style.js';
+import Map from '../../../src/ol/Map.js';
+import View from '../../../src/ol/View.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
+import VectorLayer from '../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
+import {Fill, Stroke, Style, Text} from '../../../src/ol/style.js';
 
 const map = new Map({
   target: 'map',
   view: new View({
-    center: [0, 0],
-    zoom: 1
+    center: [-17465028, 2331736],
+    zoom: 5
   })
 });
 
 const labelStyle = new Style({
   text: new Text({
-    font: '12px Calibri,sans-serif',
+    font: '16px Ubuntu',
     overflow: true,
     fill: new Fill({
       color: '#000'
@@ -39,7 +39,7 @@ const style = [countryStyle, labelStyle];
 
 const vectorLayer = new VectorLayer({
   source: new VectorSource({
-    url: 'data/geojson/countries.geojson',
+    url: '/data/countries.json',
     format: new GeoJSON()
   }),
   style: function(feature) {
@@ -50,3 +50,6 @@ const vectorLayer = new VectorLayer({
 });
 
 map.addLayer(vectorLayer);
+
+
+render({tolerance: 0.007});

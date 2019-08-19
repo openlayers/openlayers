@@ -106,9 +106,9 @@ class VectorContext {
 
   /**
    * @param {import("../style/Text.js").default} textStyle Text style.
-   * @param {import("./canvas.js").DeclutterGroup=} opt_declutterGroup Declutter.
+   * @param {import("./canvas.js").DeclutterGroups=} opt_declutterGroups Declutter.
    */
-  setTextStyle(textStyle, opt_declutterGroup) {}
+  setTextStyle(textStyle, opt_declutterGroups) {}
 }
 
 export default VectorContext;
