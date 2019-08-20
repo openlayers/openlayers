@@ -109,6 +109,15 @@ describe('ol.source.VectorTile', function() {
       expect(tile.getState()).to.be(TileState.IDLE);
     });
 
+    it('creates non-empty tiles for overzoomed resolutions', function() {
+      const source = new VectorTileSource({
+        maxZoom: 16
+      });
+      const tile = source.getTile(24, 9119385, 5820434, 1, source.getProjection());
+      tile.load();
+      expect(tile.getState()).to.be(TileState.LOADING);
+    });
+
     it('creates new tile when source key changes', function() {
       source.setKey('key1');
       const tile1 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));

@@ -190,7 +190,7 @@ class VectorTile extends UrlTile {
     const z = urlTileCoord[0];
     const resolution = tileGrid.getResolution(z);
     // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
-    bufferExtent(extent, -1 / resolution, extent);
+    bufferExtent(extent, -resolution, extent);
     const sourceTileGrid = this.tileGrid;
     const sourceExtent = sourceTileGrid.getExtent();
     if (sourceExtent) {
@@ -338,7 +338,7 @@ class VectorTile extends UrlTile {
       const tileGrid = this.getTileGridForProjection(projection);
       const tileExtent = tileGrid.getTileCoordExtent(urlTileCoord);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
-      bufferExtent(tileExtent, -1 / tileGrid.getResolution(z), tileExtent);
+      bufferExtent(tileExtent, -tileGrid.getResolution(z), tileExtent);
       if (!intersects(sourceExtent, tileExtent)) {
         urlTileCoord = null;
       }
