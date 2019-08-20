@@ -62,7 +62,9 @@ export function loadFeaturesXhr(url, format, success, failure) {
       if (format.getType() == FormatType.ARRAY_BUFFER) {
         xhr.responseType = 'arraybuffer';
       }
-      xhr.withCredentials = true;
+      if (window.withCredentials) {
+        xhr.withCredentials = window.withCredentials;
+      }
       /**
        * @param {Event} event Event.
        * @private
@@ -131,4 +133,15 @@ export function xhr(url, format) {
         /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(features);
       }
     }, /* FIXME handle error */ VOID);
+}
+
+
+/**
+ * Sets a global withCredentials variable that will be used in
+ * loadFeaturesXhr() above.
+ * @param {bool} bool Boolean that will be used in xhr.withCredentials.
+ * @api
+ */
+export function setWithCredentials(bool) {
+  window.withCredentials = bool;
 }
