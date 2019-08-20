@@ -334,7 +334,7 @@ class VectorTile extends UrlTile {
     const tileCoord = [z, x, y];
     let urlTileCoord = this.getTileCoordForTileUrlFunction(tileCoord, projection);
     const sourceExtent = this.getTileGrid().getExtent();
-    if (sourceExtent) {
+    if (urlTileCoord && sourceExtent) {
       const tileGrid = this.getTileGridForProjection(projection);
       const tileExtent = tileGrid.getTileCoordExtent(urlTileCoord);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
