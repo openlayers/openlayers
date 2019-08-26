@@ -69,7 +69,7 @@ describe('ol.interaction.Snap', function() {
       };
       snapInteraction.handleEvent(event);
       // check that the coordinate is in XY and not XYZ
-      expect(event.coordinate).to.eql([0, 0]);
+      expect(event.getCoordinate()).to.eql([0, 0]);
     });
 
     it('snaps to edges only', function() {
@@ -87,7 +87,7 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([7, 0]);
+      expect(event.getCoordinate()).to.eql([7, 0]);
     });
 
     it('snaps to vertices only', function() {
@@ -105,7 +105,7 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.getCoordinate()).to.eql([10, 0]);
     });
 
     it('snaps to circle', function() {
@@ -123,8 +123,9 @@ describe('ol.interaction.Snap', function() {
       };
       snapInteraction.handleEvent(event);
 
-      expect(event.coordinate[0]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
-      expect(event.coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
+      const coordinate = event.getCoordinate();
+      expect(coordinate[0]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
+      expect(coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
     });
 
     it('handle feature without geometry', function() {
@@ -144,7 +145,7 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.getCoordinate()).to.eql([10, 0]);
     });
 
     it('handle geometry changes', function() {
@@ -164,7 +165,7 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.getCoordinate()).to.eql([10, 0]);
     });
 
     it('handle geometry name changes', function() {
@@ -187,7 +188,7 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.getCoordinate()).to.eql([10, 0]);
     });
 
 

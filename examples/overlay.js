@@ -46,7 +46,7 @@ map.addOverlay(popup);
 
 map.on('click', function(evt) {
   const element = popup.getElement();
-  const coordinate = evt.coordinate;
+  const coordinate = evt.getCoordinate();
   const hdms = toStringHDMS(toLonLat(coordinate));
 
   $(element).popover('destroy');

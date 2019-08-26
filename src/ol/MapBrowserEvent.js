@@ -32,16 +32,14 @@ class MapBrowserEvent extends MapEvent {
     /**
      * The map pixel relative to the viewport corresponding to the original browser event.
      * @type {import("./pixel.js").Pixel}
-     * @api
      */
-    this.pixel = map.getEventPixel(browserEvent);
+    this.pixel_ = null;
 
     /**
      * The coordinate in view projection corresponding to the original browser event.
      * @type {import("./coordinate.js").Coordinate}
-     * @api
      */
-    this.coordinate = map.getCoordinateFromPixel(this.pixel);
+    this.coordinate_ = null;
 
     /**
      * Indicates if the map is currently being dragged. Only set for
@@ -52,6 +50,28 @@ class MapBrowserEvent extends MapEvent {
      */
     this.dragging = opt_dragging !== undefined ? opt_dragging : false;
 
+  }
+
+  /**
+   * @return {import("./pixel.js").Pixel} The map pixel relative to the viewport corresponding to the original browser event.
+   * @api
+   */
+  getPixel() {
+    if (!this.pixel_) {
+      this.pixel_ = this.map.getEventPixel(this.originalEvent);
+    }
+    return this.pixel_;
+  }
+
+  /**
+   * @return {import("./coordinate.js").Coordinate} The coordinate in view projection corresponding to the original browser event.
+   * @api
+   */
+  getCoordinate() {
+    if (!this.coordinate_) {
+      this.coordinate_ = this.map.getCoordinateFromPixel(this.getPixel());
+    }
+    return this.coordinate_;
   }
 
   /**

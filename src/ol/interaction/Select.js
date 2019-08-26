@@ -394,7 +394,7 @@ function handleEvent(mapBrowserEvent) {
     // pixel, or clear the selected feature(s) if there is no feature at
     // the pixel.
     clear(this.featureLayerAssociation_);
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+    map.forEachFeatureAtPixel(mapBrowserEvent.getPixel(),
       (
         /**
          * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -427,7 +427,7 @@ function handleEvent(mapBrowserEvent) {
     }
   } else {
     // Modify the currently selected feature(s).
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+    map.forEachFeatureAtPixel(mapBrowserEvent.getPixel(),
       (
         /**
          * @param {import("../Feature.js").FeatureLike} feature Feature.

@@ -58,7 +58,7 @@ function handleEvent(mapBrowserEvent) {
   if (mapBrowserEvent.type == MapBrowserEventType.DBLCLICK) {
     const browserEvent = /** @type {MouseEvent} */ (mapBrowserEvent.originalEvent);
     const map = mapBrowserEvent.map;
-    const anchor = mapBrowserEvent.coordinate;
+    const anchor = mapBrowserEvent.getCoordinate();
     const delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     const view = map.getView();
     zoomByDelta(view, delta, anchor, this.duration_);

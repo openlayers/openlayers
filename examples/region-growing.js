@@ -106,7 +106,7 @@ const map = new Map({
 let coordinate;
 
 map.on('click', function(event) {
-  coordinate = event.coordinate;
+  coordinate = event.getCoordinate();
   raster.changed();
 });
 

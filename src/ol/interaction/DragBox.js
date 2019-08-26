@@ -190,10 +190,10 @@ class DragBox extends PointerInteraction {
       return;
     }
 
-    this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
+    this.box_.setPixels(this.startPixel_, mapBrowserEvent.getPixel());
 
     this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
-      mapBrowserEvent.coordinate, mapBrowserEvent));
+      mapBrowserEvent.getCoordinate(), mapBrowserEvent));
   }
 
   /**
@@ -206,10 +206,10 @@ class DragBox extends PointerInteraction {
 
     this.box_.setMap(null);
 
-    if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
+    if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.getPixel())) {
       this.onBoxEnd_(mapBrowserEvent);
       this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXEND,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
+        mapBrowserEvent.getCoordinate(), mapBrowserEvent));
     }
     return false;
   }
@@ -224,11 +224,11 @@ class DragBox extends PointerInteraction {
 
     if (mouseActionButton(mapBrowserEvent) &&
         this.condition_(mapBrowserEvent)) {
-      this.startPixel_ = mapBrowserEvent.pixel;
+      this.startPixel_ = mapBrowserEvent.getPixel();
       this.box_.setMap(mapBrowserEvent.map);
       this.box_.setPixels(this.startPixel_, this.startPixel_);
       this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXSTART,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
+        mapBrowserEvent.getCoordinate(), mapBrowserEvent));
       return true;
     } else {
       return false;

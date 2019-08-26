@@ -484,7 +484,7 @@ class Draw extends PointerInteraction {
     if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
       const now = Date.now();
       if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
-        this.downPx_ = event.pixel;
+        this.downPx_ = event.getPixel();
         this.shouldHandle_ = !this.freehand_;
         move = true;
       } else {
@@ -525,7 +525,7 @@ class Draw extends PointerInteraction {
     this.shouldHandle_ = !this.freehand_;
 
     if (this.freehand_) {
-      this.downPx_ = event.pixel;
+      this.downPx_ = event.getPixel();
       if (!this.finishCoordinate_) {
         this.startDrawing_(event);
       }
@@ -536,7 +536,7 @@ class Draw extends PointerInteraction {
         this.handlePointerMove_(new MapBrowserPointerEvent(
           MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, false, event.frameState));
       }.bind(this), this.dragVertexDelay_);
-      this.downPx_ = event.pixel;
+      this.downPx_ = event.getPixel();
       return true;
     } else {
       this.lastDragTime_ = undefined;
@@ -597,7 +597,7 @@ class Draw extends PointerInteraction {
         ((!this.freehand_ && this.shouldHandle_) ||
         (this.freehand_ && !this.shouldHandle_))) {
       const downPx = this.downPx_;
-      const clickPx = event.pixel;
+      const clickPx = event.getPixel();
       const dx = downPx[0] - clickPx[0];
       const dy = downPx[1] - clickPx[1];
       const squaredDistance = dx * dx + dy * dy;
@@ -640,7 +640,7 @@ class Draw extends PointerInteraction {
         for (let i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
           const finishCoordinate = potentiallyFinishCoordinates[i];
           const finishPixel = map.getPixelFromCoordinate(finishCoordinate);
-          const pixel = event.pixel;
+          const pixel = event.getPixel();
           const dx = pixel[0] - finishPixel[0];
           const dy = pixel[1] - finishPixel[1];
           const snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
@@ -660,7 +660,7 @@ class Draw extends PointerInteraction {
    * @private
    */
   createOrUpdateSketchPoint_(event) {
-    const coordinates = event.coordinate.slice();
+    const coordinates = event.getCoordinate().slice();
     if (!this.sketchPoint_) {
       this.sketchPoint_ = new Feature(new Point(coordinates));
       this.updateSketchFeatures_();
@@ -676,7 +676,7 @@ class Draw extends PointerInteraction {
    * @private
    */
   startDrawing_(event) {
-    const start = event.coordinate;
+    const start = event.getCoordinate();
     this.finishCoordinate_ = start;
     if (this.mode_ === Mode.POINT) {
       this.sketchCoords_ = start.slice();
@@ -706,7 +706,7 @@ class Draw extends PointerInteraction {
    * @private
    */
   modifyDrawing_(event) {
-    let coordinate = event.coordinate;
+    let coordinate = event.getCoordinate();
     const geometry = this.sketchFeature_.getGeometry();
     let coordinates, last;
     if (this.mode_ === Mode.POINT) {
@@ -759,7 +759,7 @@ class Draw extends PointerInteraction {
    * @private
    */
   addToDrawing_(event) {
-    const coordinate = event.coordinate;
+    const coordinate = event.getCoordinate();
     const geometry = this.sketchFeature_.getGeometry();
     let done;
     let coordinates;

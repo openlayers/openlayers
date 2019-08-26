@@ -100,5 +100,5 @@ map.on('pointermove', function(evt) {
 });
 
 map.on('click', function(evt) {
-  displayFeatureInfo(evt.pixel);
+  displayFeatureInfo(evt.getPixel());
 });

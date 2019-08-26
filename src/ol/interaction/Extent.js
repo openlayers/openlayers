@@ -217,7 +217,7 @@ class Extent extends PointerInteraction {
    * @private
    */
   handlePointerMove_(mapBrowserEvent) {
-    const pixel = mapBrowserEvent.pixel;
+    const pixel = mapBrowserEvent.getPixel();
     const map = mapBrowserEvent.map;
 
     let vertex = this.snapToVertex_(pixel, map);
@@ -292,7 +292,7 @@ class Extent extends PointerInteraction {
    * @inheritDoc
    */
   handleDownEvent(mapBrowserEvent) {
-    const pixel = mapBrowserEvent.pixel;
+    const pixel = mapBrowserEvent.getPixel();
     const map = mapBrowserEvent.map;
 
     const extent = this.getExtent();
@@ -350,7 +350,7 @@ class Extent extends PointerInteraction {
    */
   handleDragEvent(mapBrowserEvent) {
     if (this.pointerHandler_) {
-      const pixelCoordinate = mapBrowserEvent.coordinate;
+      const pixelCoordinate = mapBrowserEvent.getCoordinate();
       this.setExtent(this.pointerHandler_(pixelCoordinate));
       this.createOrUpdatePointerFeature_(pixelCoordinate);
     }

@@ -73,7 +73,7 @@ class DragRotate extends PointerInteraction {
       return;
     }
     const size = map.getSize();
-    const offset = mapBrowserEvent.pixel;
+    const offset = mapBrowserEvent.getPixel();
     const theta =
         Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
     if (this.lastAngle_ !== undefined) {

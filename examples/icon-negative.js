@@ -68,5 +68,5 @@ map.addInteraction(select);
 
 map.on('pointermove', function(evt) {
   map.getTargetElement().style.cursor =
-      map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+      map.hasFeatureAtPixel(evt.getPixel()) ? 'pointer' : '';
 });

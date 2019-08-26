@@ -41,7 +41,7 @@ const statusElement = document.getElementById('status');
 
 map.on('singleclick', function(e) {
   let hit = false;
-  map.forEachFeatureAtPixel(e.pixel, function() {
+  map.forEachFeatureAtPixel(e.getPixel(), function() {
     hit = true;
   }, {
     hitTolerance: hitTolerance

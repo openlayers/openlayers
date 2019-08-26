@@ -931,7 +931,7 @@ class PluggableMap extends BaseObject {
       }
       target = target.parentElement;
     }
-    this.focus_ = mapBrowserEvent.coordinate;
+    this.focus_ = mapBrowserEvent.getCoordinate();
     mapBrowserEvent.frameState = this.frameState_;
     const interactionsArray = this.getInteractions().getArray();
     if (this.dispatchEvent(mapBrowserEvent) !== false) {

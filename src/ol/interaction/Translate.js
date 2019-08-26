@@ -172,9 +172,9 @@ class Translate extends PointerInteraction {
    * @inheritDoc
    */
   handleDownEvent(event) {
-    this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
+    this.lastFeature_ = this.featuresAtPixel_(event.getPixel(), event.map);
     if (!this.lastCoordinate_ && this.lastFeature_) {
-      this.lastCoordinate_ = event.coordinate;
+      this.lastCoordinate_ = event.getCoordinate();
       this.handleMoveEvent(event);
 
       const features = this.features_ || new Collection([this.lastFeature_]);
@@ -182,7 +182,7 @@ class Translate extends PointerInteraction {
       this.dispatchEvent(
         new TranslateEvent(
           TranslateEventType.TRANSLATESTART, features,
-          event.coordinate));
+          event.getCoordinate()));
       return true;
     }
     return false;
@@ -201,7 +201,7 @@ class Translate extends PointerInteraction {
       this.dispatchEvent(
         new TranslateEvent(
           TranslateEventType.TRANSLATEEND, features,
-          event.coordinate));
+          event.getCoordinate()));
       return true;
     }
     return false;
@@ -212,7 +212,7 @@ class Translate extends PointerInteraction {
    */
   handleDragEvent(event) {
     if (this.lastCoordinate_) {
-      const newCoordinate = event.coordinate;
+      const newCoordinate = event.getCoordinate();
       const deltaX = newCoordinate[0] - this.lastCoordinate_[0];
       const deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
@@ -240,7 +240,7 @@ class Translate extends PointerInteraction {
 
     // Change the cursor to grab/grabbing if hovering any of the features managed
     // by the interaction
-    if (this.featuresAtPixel_(event.pixel, event.map)) {
+    if (this.featuresAtPixel_(event.getPixel(), event.map)) {
       elem.classList.remove(this.lastCoordinate_ ? 'ol-grab' : 'ol-grabbing');
       elem.classList.add(this.lastCoordinate_ ? 'ol-grabbing' : 'ol-grab');
     } else {

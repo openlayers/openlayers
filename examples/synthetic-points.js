@@ -90,7 +90,7 @@ map.on('pointermove', function(evt) {
 });
 
 map.on('click', function(evt) {
-  displaySnap(evt.coordinate);
+  displaySnap(evt.getCoordinate());
 });
 
 const stroke = new Stroke({

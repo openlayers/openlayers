@@ -539,7 +539,7 @@ describe('ol.interaction.Draw', function() {
         source: source,
         type: 'LineString',
         finishCondition: function(event) {
-          if (equals(event.coordinate, [30, -20])) {
+          if (equals(event.getCoordinate(), [30, -20])) {
             return true;
           }
           return false;
@@ -1152,7 +1152,7 @@ describe('ol.interaction.Draw', function() {
       // move to first quadrant
       simulateEvent('pointermove', 79, 80);
       let event = simulateEvent('pointermove', 80, 80);
-      let coordinate = event.coordinate;
+      let coordinate = event.getCoordinate();
       const firstQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
       expect(firstQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
       expect(firstQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
@@ -1160,7 +1160,7 @@ describe('ol.interaction.Draw', function() {
       // move to second quadrant
       simulateEvent('pointermove', 41, 80);
       event = simulateEvent('pointermove', 40, 80);
-      coordinate = event.coordinate;
+      coordinate = event.getCoordinate();
       const secondQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
       expect(secondQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
       expect(secondQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
@@ -1168,7 +1168,7 @@ describe('ol.interaction.Draw', function() {
       // move to third quadrant
       simulateEvent('pointermove', 40, 41);
       event = simulateEvent('pointermove', 40, 40);
-      coordinate = event.coordinate;
+      coordinate = event.getCoordinate();
       const thirdQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
       expect(thirdQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
       expect(thirdQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
@@ -1176,7 +1176,7 @@ describe('ol.interaction.Draw', function() {
       // move to fourth quadrant
       simulateEvent('pointermove', 79, 40);
       event = simulateEvent('pointermove', 80, 40);
-      coordinate = event.coordinate;
+      coordinate = event.getCoordinate();
       const fourthQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
       expect(fourthQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
       expect(fourthQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);

@@ -106,7 +106,7 @@ const pointerMoveHandler = function(evt) {
   }
 
   helpTooltipElement.innerHTML = helpMsg;
-  helpTooltip.setPosition(evt.coordinate);
+  helpTooltip.setPosition(evt.getCoordinate());
 
   helpTooltipElement.classList.remove('hidden');
 };
@@ -206,7 +206,7 @@ function addInteraction() {
       sketch = evt.feature;
 
       /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
-      let tooltipCoord = evt.coordinate;
+      let tooltipCoord = evt.getCoordinate();
 
       listener = sketch.getGeometry().on('change', function(evt) {
         const geom = evt.target;

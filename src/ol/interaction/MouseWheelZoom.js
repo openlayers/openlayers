@@ -163,7 +163,7 @@ class MouseWheelZoom extends Interaction {
     const wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
 
     if (this.useAnchor_) {
-      this.lastAnchor_ = mapBrowserEvent.coordinate;
+      this.lastAnchor_ = mapBrowserEvent.getCoordinate();
     }
 
     // Delta normalisation inspired by

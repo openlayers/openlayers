@@ -127,7 +127,7 @@ map.on('pointermove', function(evt) {
   if (map.getView().getInteracting()) {
     return;
   }
-  const pixel = evt.pixel;
+  const pixel = evt.getPixel();
   info.innerText = '';
   map.forEachFeatureAtPixel(pixel, function(feature) {
     const datetime = feature.get('datetime');

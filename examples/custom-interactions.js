@@ -51,13 +51,13 @@ class Drag extends PointerInteraction {
 function handleDownEvent(evt) {
   const map = evt.map;
 
-  const feature = map.forEachFeatureAtPixel(evt.pixel,
+  const feature = map.forEachFeatureAtPixel(evt.getPixel(),
     function(feature) {
       return feature;
     });
 
   if (feature) {
-    this.coordinate_ = evt.coordinate;
+    this.coordinate_ = evt.getCoordinate();
     this.feature_ = feature;
   }
 
@@ -69,14 +69,15 @@ function handleDownEvent(evt) {
  * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
  */
 function handleDragEvent(evt) {
-  const deltaX = evt.coordinate[0] - this.coordinate_[0];
-  const deltaY = evt.coordinate[1] - this.coordinate_[1];
+  const coordinate = evt.getCoordinate();
+  const deltaX = coordinate[0] - this.coordinate_[0];
+  const deltaY = coordinate[1] - this.coordinate_[1];
 
   const geometry = this.feature_.getGeometry();
   geometry.translate(deltaX, deltaY);
 
-  this.coordinate_[0] = evt.coordinate[0];
-  this.coordinate_[1] = evt.coordinate[1];
+  this.coordinate_[0] = coordinate[0];
+  this.coordinate_[1] = coordinate[1];
 }
 
 
@@ -86,7 +87,7 @@ function handleDragEvent(evt) {
 function handleMoveEvent(evt) {
   if (this.cursor_) {
     const map = evt.map;
-    const feature = map.forEachFeatureAtPixel(evt.pixel,
+    const feature = map.forEachFeatureAtPixel(evt.getPixel(),
       function(feature) {
         return feature;
       });

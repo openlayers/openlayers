@@ -68,5 +68,5 @@ map.on('pointermove', function(evt) {
 });
 
 map.on('click', function(evt) {
-  displayCountryInfo(evt.coordinate);
+  displayCountryInfo(evt.getCoordinate());
 });

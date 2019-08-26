@@ -45,7 +45,7 @@ const map = new Map({
 const selectElement = document.getElementById('type');
 
 map.on('click', function(event) {
-  const features = map.getFeaturesAtPixel(event.pixel);
+  const features = map.getFeaturesAtPixel(event.getPixel());
   if (!features) {
     selection = {};
     // force redraw of layer style

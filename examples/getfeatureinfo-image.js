@@ -30,7 +30,7 @@ map.on('singleclick', function(evt) {
   document.getElementById('info').innerHTML = '';
   const viewResolution = /** @type {number} */ (view.getResolution());
   const url = wmsSource.getFeatureInfoUrl(
-    evt.coordinate, viewResolution, 'EPSG:3857',
+    evt.getCoordinate(), viewResolution, 'EPSG:3857',
     {'INFO_FORMAT': 'text/html'});
   if (url) {
     fetch(url)
