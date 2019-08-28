@@ -80,13 +80,13 @@ class PointerInteraction extends Interaction {
     this.handlingDownUpSequence = false;
 
     /**
-     * @type {!Object<string, import("../pointer/PointerEvent.js").default>}
+     * @type {!Object<string, PointerEvent>}
      * @private
      */
     this.trackedPointers_ = {};
 
     /**
-     * @type {Array<import("../pointer/PointerEvent.js").default>}
+     * @type {Array<PointerEvent>}
      * @protected
      */
     this.targetPointers = [];
@@ -199,7 +199,7 @@ class PointerInteraction extends Interaction {
 
 
 /**
- * @param {Array<import("../pointer/PointerEvent.js").default>} pointerEvents List of events.
+ * @param {Array<PointerEvent>} pointerEvents List of events.
  * @return {import("../pixel.js").Pixel} Centroid pixel.
  */
 export function centroid(pointerEvents) {

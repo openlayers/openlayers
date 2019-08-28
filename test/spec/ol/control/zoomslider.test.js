@@ -1,10 +1,23 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import ZoomSlider from '../../../../src/ol/control/ZoomSlider.js';
-import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
+import Event from '../../../../src/ol/events/Event.js';
+import EventTarget from '../../../../src/ol/events/Target.js';
 
 describe('ol.control.ZoomSlider', function() {
   let map, target, zoomslider;
+
+  const createElement = document.createElement;
+  function createEventElement(type) {
+    const element = createElement.call(document, type);
+    const eventTarget = new EventTarget();
+    element.listeners_ = {};
+    element.dispatching_ = {};
+    element.pendingRemovals_ = {};
+    element.dispatchEvent = eventTarget.dispatchEvent.bind(element);
+    element.addEventListener = eventTarget.addEventListener.bind(element);
+    return element;
+  }
 
   beforeEach(function() {
     target = document.createElement('div');
@@ -102,138 +115,142 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('[horizontal] handles a drag sequence', function() {
+      document.createElement = createEventElement;
       const control = new ZoomSlider();
       map.addControl(control);
+      document.createElement = createElement;
       map.getView().setZoom(0);
       control.element.style.width = '500px';
       control.element.style.height = '10px';
       control.element.firstChild.style.width = '100px';
       control.element.firstChild.style.height = '10px';
       map.renderSync();
-      const dragger = control.dragger_;
-      const event = new PointerEvent('pointerdown', {
-        target: control.element.firstElementChild
-      });
+      const event = new Event();
+      event.type = 'pointerdown',
+      event.target = control.element.firstElementChild;
       event.clientX = control.widthLimit_;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(16);
       expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(4);
+      expect(control.dragListenerKeys_.length).to.be(2);
       event.type = 'pointermove';
       event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(4);
       event.type = 'pointermove';
       event.clientX = 4 * control.widthLimit_ / 8;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       event.type = 'pointerup';
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
       expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
     });
     it('[horizontal] handles a drag sequence ending outside its bounds', function() {
+      document.createElement = createEventElement;
       const control = new ZoomSlider();
       map.addControl(control);
+      document.createElement = createElement;
       map.getView().setZoom(0);
       control.element.style.width = '500px';
       control.element.style.height = '10px';
       control.element.firstChild.style.width = '100px';
       control.element.firstChild.style.height = '10px';
       map.renderSync();
-      const dragger = control.dragger_;
-      const event = new PointerEvent('pointerdown', {
-        target: control.element.firstElementChild
-      });
+      const event = new Event();
+      event.type = 'pointerdown';
+      event.target = control.element.firstElementChild;
       event.clientX = control.widthLimit_;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(16);
       expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(4);
+      expect(control.dragListenerKeys_.length).to.be(2);
       event.type = 'pointermove';
       event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(4);
       event.type = 'pointermove';
       event.clientX = 12 * control.widthLimit_ / 8;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       event.type = 'pointerup';
       event.target = 'document';
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
       expect(control.currentResolution_).to.be(16);
     });
     it('[vertical] handles a drag sequence', function() {
+      document.createElement = createEventElement;
       const control = new ZoomSlider();
       control.element.style.width = '10px';
       control.element.style.height = '100px';
       control.element.firstChild.style.width = '10px';
       control.element.firstChild.style.height = '20px';
       map.addControl(control);
+      document.createElement = createElement;
       map.getView().setZoom(8);
       map.renderSync();
-      const dragger = control.dragger_;
-      const event = new PointerEvent('pointerdown', {
-        target: control.element.firstElementChild
-      });
+      const event = new Event();
+      event.type = 'pointerdown';
+      event.target = control.element.firstElementChild;
       event.clientX = 0;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.0625);
       expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(4);
+      expect(control.dragListenerKeys_.length).to.be(2);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 2 * control.heightLimit_ / 8;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.25);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 4 * control.heightLimit_ / 8;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       event.type = 'pointerup';
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
       expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
     });
     it('[vertical] handles a drag sequence ending outside its bounds', function() {
+      document.createElement = createEventElement;
       const control = new ZoomSlider();
       control.element.style.width = '10px';
       control.element.style.height = '100px';
       control.element.firstChild.style.width = '10px';
       control.element.firstChild.style.height = '20px';
       map.addControl(control);
+      document.createElement = createElement;
       map.getView().setZoom(8);
       map.renderSync();
-      const dragger = control.dragger_;
-      const event = new PointerEvent('pointerdown', {
-        target: control.element.firstElementChild
-      });
+      const event = new Event();
+      event.type = 'pointerdown';
+      event.target = control.element.firstElementChild;
       event.clientX = 0;
       event.clientY = 0;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.0625);
       expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(4);
+      expect(control.dragListenerKeys_.length).to.be(2);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 2 * control.heightLimit_ / 8;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.25);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 12 * control.heightLimit_ / 8;
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       event.type = 'pointerup';
-      dragger.dispatchEvent(event);
+      control.element.dispatchEvent(event);
       expect(control.currentResolution_).to.be(16);
       expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);

@@ -3,7 +3,7 @@ import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js
 import View from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
+import Event from '../../../../src/ol/events/Event.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 describe('ol.interaction.DragRotateAndZoom', function() {
@@ -57,9 +57,12 @@ describe('ol.interaction.DragRotateAndZoom', function() {
     });
 
     it('does not rotate when rotation is disabled on the view', function() {
-      let event = new MapBrowserPointerEvent('pointermove', map,
-        new PointerEvent('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
-        true);
+      const pointerEvent = new Event();
+      pointerEvent.type = 'pointermove';
+      pointerEvent.clientX = 20;
+      pointerEvent.clientY = 10;
+      pointerEvent.pointerType = 'mouse';
+      let event = new MapBrowserPointerEvent('pointermove', map, pointerEvent, true);
       interaction.lastAngle_ = Math.PI;
 
       let callCount = 0;
@@ -85,9 +88,11 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         callCount++;
       });
 
-      event = new MapBrowserPointerEvent('pointermove', map,
-        new PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
-        true);
+      pointerEvent.type = 'pointermove';
+      pointerEvent.clientX = 24;
+      pointerEvent.clientY = 16;
+      pointerEvent.pointerType = 'mouse';
+      event = new MapBrowserPointerEvent('pointermove', map, pointerEvent, true);
 
       interaction.handleDragEvent(event);
       expect(callCount).to.be(0);
