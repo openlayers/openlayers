@@ -35,7 +35,7 @@ function addInteraction() {
       value = 'Circle';
       geometryFunction = createRegularPolygon(4);
     } else if (value === 'Box') {
-      value = 'Circle';
+      value = 'Box';
       geometryFunction = createBox();
     } else if (value === 'Star') {
       value = 'Circle';
