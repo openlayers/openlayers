@@ -24,15 +24,14 @@ describe('ol.events', function() {
       boundListener();
       expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.bindTo);
     });
-    it('binds to the target when bindTo is not provided', function() {
-      const listenerObj = {
-        listener: sinon.spy(),
-        target: {id: 1}
-      };
-      const boundListener = bindListener(listenerObj);
-      expect(listenerObj.boundListener).to.equal(boundListener);
-      boundListener();
-      expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.target);
+    it('binds to the target when bindTo is not provided', function(done) {
+      const target = new EventTarget();
+      const listenerObj = listen(target, 'foo', function() {
+        expect(this).to.equal(target);
+        done();
+      });
+      expect(listenerObj.boundListener).to.equal(listenerObj.listener);
+      target.dispatchEvent('foo');
     });
     it('binds a self-unregistering listener when callOnce is true', function() {
       const bindTo = {id: 1};
@@ -122,13 +121,14 @@ describe('ol.events', function() {
 
   describe('listenOnce()', function() {
     it('creates a one-off listener', function() {
+      const target = new EventTarget();
       const listener = sinon.spy();
       const key = listenOnce(target, 'foo', listener);
-      expect(add.callCount).to.be(1);
       expect(key.callOnce).to.be(true);
-      key.boundListener();
+      target.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
-      expect(remove.callCount).to.be(1);
+      target.dispatchEvent('foo');
+      expect(listener.callCount).to.be(1);
     });
     it('does not add the same listener twice', function() {
       const listener = function() {};
