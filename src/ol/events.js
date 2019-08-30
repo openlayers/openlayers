@@ -32,14 +32,19 @@ import {clear} from './obj.js';
  * @return {ListenerFunction} Bound listener.
  */
 export function bindListener(listenerObj) {
-  const boundListener = function(evt) {
-    const listener = listenerObj.listener;
-    const bindTo = listenerObj.bindTo || listenerObj.target;
-    if (listenerObj.callOnce) {
-      unlistenByKey(listenerObj);
-    }
-    return listener.call(bindTo, evt);
-  };
+  let boundListener;
+  if (listenerObj.bindTo || listenerObj.callOnce) {
+    boundListener = function(evt) {
+      const listener = listenerObj.listener;
+      const bindTo = listenerObj.bindTo || listenerObj.target;
+      if (listenerObj.callOnce) {
+        unlistenByKey(listenerObj);
+      }
+      return listener.call(bindTo, evt);
+    };
+  } else {
+    boundListener = listenerObj.listener;
+  }
   listenerObj.boundListener = boundListener;
   return boundListener;
 }
