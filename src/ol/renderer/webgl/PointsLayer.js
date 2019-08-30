@@ -245,7 +245,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     );
     this.hitProgram_ = this.helper.getProgram(
       HIT_FRAGMENT_SHADER,
-      options.vertexShader || VERTEX_SHADER
+      VERTEX_SHADER
     );
 
     this.sizeCallback_ = options.sizeCallback || function() {
