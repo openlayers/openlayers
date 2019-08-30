@@ -539,7 +539,6 @@ class WebGLHelper extends Disposable {
     let textureSlot = 0;
     this.uniforms_.forEach(function(uniform) {
       value = typeof uniform.value === 'function' ? uniform.value(frameState) : uniform.value;
-
       // apply value based on type
       if (value instanceof HTMLCanvasElement || value instanceof HTMLImageElement || value instanceof ImageData) {
         // create a texture & put data
@@ -551,7 +550,11 @@ class WebGLHelper extends Disposable {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
+
+        const imageReady = !(value instanceof HTMLImageElement) || /** @type {HTMLImageElement} */(value).complete;
+        if (imageReady) {
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
+        }
 
         // fill texture slots by increasing index
         gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
