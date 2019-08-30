@@ -192,6 +192,8 @@ class Heatmap extends VectorLayer {
 
         varying vec2 v_texCoord;
         varying float v_opacity;
+        varying vec4 v_color;
+
 
         void main(void) {
           vec4 offsets = u_offsetScaleMatrix * vec4(a_offsets, 0.0, 0.0);
