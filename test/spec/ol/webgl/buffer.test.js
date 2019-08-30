@@ -75,4 +75,21 @@ describe('ol.webgl.Buffer', function() {
 
   });
 
+  describe('#getSize', function() {
+    let b;
+    beforeEach(function() {
+      b = new WebGLArrayBuffer(ARRAY_BUFFER);
+    });
+
+    it('returns 0 when the buffer array is not initialized', function() {
+      expect(b.getSize()).to.be(0);
+    });
+
+    it('returns the size of the array otherwise', function() {
+      b.ofSize(12);
+      expect(b.getSize()).to.be(12);
+    });
+
+  });
+
 });

@@ -95,6 +95,7 @@ class WebGLArrayBuffer {
   }
 
   /**
+   * Will return null if the buffer was not initialized
    * @return {Float32Array|Uint32Array} Array.
    */
   getArray() {
@@ -106,6 +107,14 @@ class WebGLArrayBuffer {
    */
   getUsage() {
     return this.usage;
+  }
+
+  /**
+   * Will return 0 if the buffer is not initialized
+   * @return {number} Array size
+   */
+  getSize() {
+    return this.array ? this.array.length : 0;
   }
 }
 

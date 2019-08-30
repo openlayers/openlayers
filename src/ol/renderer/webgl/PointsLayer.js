@@ -344,7 +344,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState) {
-    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
     this.helper.finalizeDraw(frameState);
     const canvas = this.helper.getCanvas();
@@ -561,7 +561,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
     this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
 
-    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
   }
 }
