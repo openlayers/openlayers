@@ -153,13 +153,6 @@ class ZoomSlider extends Control {
   /**
    * @inheritDoc
    */
-  disposeInternal() {
-    super.disposeInternal();
-  }
-
-  /**
-   * @inheritDoc
-   */
   setMap(map) {
     super.setMap(map);
     if (map) {
