@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import MousePosition from '../../../../src/ol/control/MousePosition.js';
 import View from '../../../../src/ol/View.js';
-import EventType from '../../../../src/ol/events/EventType.js';
+import EventType from '../../../../src/ol/pointer/EventType.js';
 
 describe('ol/control/MousePosition', function() {
 
@@ -57,7 +57,7 @@ describe('ol/control/MousePosition', function() {
       const viewport = map.getViewport();
       // calculated in case body has top < 0 (test runner with small window)
       const position = viewport.getBoundingClientRect();
-      const evt = new MouseEvent(type, {
+      const evt = new PointerEvent(type, {
         clientX: position.left + x + width / 2,
         clientY: position.top + y + height / 2
       });
@@ -74,13 +74,13 @@ describe('ol/control/MousePosition', function() {
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
 
-        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('some text');
 
-        simulateEvent(EventType.MOUSEMOVE, 20, 30);
+        simulateEvent(EventType.POINTERMOVE, 20, 30);
         expect(element.innerHTML).to.be('20,-30');
 
-        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('some text');
       });
 
@@ -91,14 +91,14 @@ describe('ol/control/MousePosition', function() {
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
 
-        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('&nbsp;');
 
-        target.dispatchEvent(new MouseEvent('mousemove'));
-        simulateEvent(EventType.MOUSEMOVE, 20, 30);
+        target.dispatchEvent(new PointerEvent('pointermove'));
+        simulateEvent(EventType.POINTERMOVE, 20, 30);
         expect(element.innerHTML).to.be('20,-30');
 
-        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('&nbsp;');
       });
 
@@ -111,14 +111,14 @@ describe('ol/control/MousePosition', function() {
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
 
-        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('');
 
-        target.dispatchEvent(new MouseEvent('mousemove'));
-        simulateEvent(EventType.MOUSEMOVE, 20, 30);
+        target.dispatchEvent(new PointerEvent('pointermove'));
+        simulateEvent(EventType.POINTERMOVE, 20, 30);
         expect(element.innerHTML).to.be('20,-30');
 
-        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('20,-30');
       });
     });

@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
-import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../../../../src/ol/has.js';
+import {DEVICE_PIXEL_RATIO, FIREFOX} from '../../../../src/ol/has.js';
 import MouseWheelZoom, {Mode} from '../../../../src/ol/interaction/MouseWheelZoom.js';
 
 
@@ -42,8 +42,8 @@ describe('ol.interaction.MouseWheelZoom', function() {
     });
 
     it('works with the default value', function(done) {
-      const event = new MapBrowserEvent('mousewheel', map, {
-        type: 'mousewheel',
+      const event = new MapBrowserEvent('wheel', map, {
+        type: 'wheel',
         target: map.getViewport(),
         preventDefault: Event.prototype.preventDefault
       });
@@ -130,47 +130,24 @@ describe('ol.interaction.MouseWheelZoom', function() {
         map.handleMapBrowserEvent(event);
       });
 
-      if (SAFARI) {
-        it('works on Safari (wheel)', function(done) {
-          map.once('postrender', function() {
-            const call = view.animate.getCall(0);
-            expect(call.args[0].resolution).to.be(2);
-            expect(call.args[0].anchor).to.eql([0, 0]);
-            done();
-          });
-
-          const event = new MapBrowserEvent('mousewheel', map, {
-            type: 'mousewheel',
-            wheelDeltaY: -50,
-            target: map.getViewport(),
-            preventDefault: Event.prototype.preventDefault
-          });
-          event.coordinate = [0, 0];
-
-          map.handleMapBrowserEvent(event);
+      it.only('works on all browsers (wheel)', function(done) {
+        map.once('postrender', function() {
+          const call = view.animate.getCall(0);
+          expect(call.args[0].resolution).to.be(2);
+          expect(call.args[0].anchor).to.eql([0, 0]);
+          done();
         });
-      }
 
-      if (!SAFARI) {
-        it('works on other browsers (wheel)', function(done) {
-          map.once('postrender', function() {
-            const call = view.animate.getCall(0);
-            expect(call.args[0].resolution).to.be(2);
-            expect(call.args[0].anchor).to.eql([0, 0]);
-            done();
-          });
-
-          const event = new MapBrowserEvent('mousewheel', map, {
-            type: 'mousewheel',
-            wheelDeltaY: -120,
-            target: map.getViewport(),
-            preventDefault: Event.prototype.preventDefault
-          });
-          event.coordinate = [0, 0];
-
-          map.handleMapBrowserEvent(event);
+        const event = new MapBrowserEvent('wheel', map, {
+          type: 'wheel',
+          deltaY: 120,
+          target: map.getViewport(),
+          preventDefault: Event.prototype.preventDefault
         });
-      }
+        event.coordinate = [0, 0];
+
+        map.handleMapBrowserEvent(event);
+      });
 
     });
 

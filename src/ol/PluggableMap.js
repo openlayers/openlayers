@@ -287,7 +287,6 @@ class PluggableMap extends BaseObject {
 
     listen(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
     listen(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
-    listen(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -524,7 +523,6 @@ class PluggableMap extends BaseObject {
     this.mapBrowserEventHandler_.dispose();
     unlisten(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
     unlisten(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
-    unlisten(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
     if (this.handleResize_ !== undefined) {
       removeEventListener(EventType.RESIZE, this.handleResize_, false);
       this.handleResize_ = undefined;
