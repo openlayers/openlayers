@@ -336,6 +336,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         } else {
           this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
         }
+
+        this.getLayer().changed();
       }
     }.bind(this));
   }
