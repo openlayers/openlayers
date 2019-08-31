@@ -82,7 +82,9 @@ class Target extends Disposable {
   dispatchEvent(event) {
     const evt = typeof event === 'string' ? new Event(event) : event;
     const type = evt.type;
-    evt.target = this;
+    if (!evt.target) {
+      evt.target = this;
+    }
     const listeners = this.listeners_[type];
     let propagate;
     if (listeners) {

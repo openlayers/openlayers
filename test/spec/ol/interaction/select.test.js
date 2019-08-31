@@ -8,7 +8,6 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import Select from '../../../../src/ol/interaction/Select.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 

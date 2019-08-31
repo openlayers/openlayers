@@ -11,8 +11,8 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import Event from '../../../../src/ol/events/Event.js';
 
 
 describe('ol.interaction.Modify', function() {
@@ -81,19 +81,17 @@ describe('ol.interaction.Modify', function() {
     const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
-    const pointerEvent = new PointerEvent(type, {
-      type: type,
-      clientX: position.left + x + width / 2,
-      clientY: position.top + y + height / 2,
-      shiftKey: modifiers.shift || false,
-      altKey: modifiers.alt || false,
-      preventDefault: function() {}
-    }, {
-      button: button,
-      isPrimary: true
-    });
+    const pointerEvent = new Event();
+    pointerEvent.type = type;
+    pointerEvent.clientX = position.left + x + width / 2;
+    pointerEvent.clientY = position.top + y + height / 2;
+    pointerEvent.shiftKey = modifiers.shift || false;
+    pointerEvent.altKey = modifiers.alt || false;
+    pointerEvent.pointerId = 1;
+    pointerEvent.preventDefault = function() {};
+    pointerEvent.button = button;
+    pointerEvent.isPrimary = true;
     const event = new MapBrowserPointerEvent(type, map, pointerEvent);
-    event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
 

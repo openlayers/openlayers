@@ -207,7 +207,7 @@ export const shiftKeyOnly = function(mapBrowserEvent) {
  * @api
  */
 export const targetNotEditable = function(mapBrowserEvent) {
-  const target = mapBrowserEvent.originalEvent.target;
+  const target = mapBrowserEvent.target;
   const tagName = /** @type {Element} */ (target).tagName;
   return (
     tagName !== 'INPUT' &&

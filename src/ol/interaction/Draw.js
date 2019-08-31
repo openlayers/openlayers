@@ -18,7 +18,6 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
-import {POINTER_TYPE} from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import PointerInteraction from './Pointer.js';
@@ -511,7 +510,7 @@ class Draw extends PointerInteraction {
       pass = event.type === MapBrowserEventType.POINTERMOVE;
       if (pass && this.freehand_) {
         pass = this.handlePointerMove_(event);
-      } else if (/** @type {MapBrowserPointerEvent} */ (event).pointerEvent.pointerType == POINTER_TYPE ||
+      } else if (/** @type {MapBrowserPointerEvent} */ (event).pointerEvent.pointerType == 'mouse' ||
           (event.type === MapBrowserEventType.POINTERDRAG && this.downTimeout_ === undefined)) {
         this.handlePointerMove_(event);
       }
