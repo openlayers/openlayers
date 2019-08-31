@@ -17,7 +17,7 @@ const vectorSource = new Vector({
   attributions: 'National UFO Reporting Center'
 });
 
-const texture = document.createElement('img');
+const texture = new Image();
 texture.src = 'data/ufo_shapes.png';
 
 // This describes the content of the associated sprite sheet
@@ -135,4 +135,8 @@ map.on('pointermove', function(evt) {
     const shape = feature.get('shape');
     info.innerText = 'On ' + datetime + ', lasted ' + duration + ' seconds and had a "' + shape + '" shape.';
   });
+});
+
+texture.addEventListener('load', function() {
+  map.render();
 });

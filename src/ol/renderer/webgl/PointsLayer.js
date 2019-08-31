@@ -245,7 +245,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     );
     this.hitProgram_ = this.helper.getProgram(
       HIT_FRAGMENT_SHADER,
-      options.vertexShader || VERTEX_SHADER
+      VERTEX_SHADER
     );
 
     this.sizeCallback_ = options.sizeCallback || function() {
@@ -336,6 +336,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         } else {
           this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
         }
+
+        this.getLayer().changed();
       }
     }.bind(this));
   }
@@ -344,7 +346,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState) {
-    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
     this.helper.finalizeDraw(frameState);
     const canvas = this.helper.getCanvas();
@@ -544,6 +546,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
    */
   renderHitDetection(frameState) {
+    // skip render entirely if vertices buffers for display & hit detection have different sizes
+    // this typically means both buffers are temporarily out of sync
+    if (this.hitVerticesBuffer_.getSize() !== this.verticesBuffer_.getSize()) {
+      return;
+    }
+
     this.hitRenderTarget_.setSize(frameState.size);
 
     this.helper.useProgram(this.hitProgram_);
@@ -561,7 +569,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
     this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
 
-    const renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+    const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
   }
 }
