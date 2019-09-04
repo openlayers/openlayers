@@ -30,8 +30,9 @@ class BuilderGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} declutter Decluttering enabled.
+   * @param {object} cacheInstructions Shared hitDetectionInstructions cache, for the entire layer.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, declutter) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio, declutter, cacheInstructions) {
 
     /**
      * @type {boolean}
@@ -74,6 +75,12 @@ class BuilderGroup {
      * @type {!Object<string, !Object<import("./BuilderType").default, Builder>>}
      */
     this.buildersByZIndex_ = {};
+
+    /**
+     * @private
+     * @type {object}
+     */
+    this.cacheInstructions_ = cacheInstructions || {};
   }
 
   /**
@@ -126,7 +133,7 @@ class BuilderGroup {
     if (replay === undefined) {
       const Constructor = BATCH_CONSTRUCTORS[builderType];
       replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_, this.pixelRatio_);
+        this.resolution_, this.pixelRatio_, this.cacheInstructions_);
       replays[builderType] = replay;
     }
     return replay;

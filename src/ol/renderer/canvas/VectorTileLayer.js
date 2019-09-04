@@ -95,6 +95,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
+     * @type {object}
+     */
+    this.cacheInstructions_ = layer.getStaticStyles() ? {} : undefined;
+
+    /**
+     * @private
      * @type {number}
      */
     this.renderedLayerRevision_;
@@ -279,7 +285,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
       builderState.dirty = false;
       const builderGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
-        pixelRatio, layer.getDeclutter());
+        pixelRatio, layer.getDeclutter(), this.cacheInstructions_);
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
       /**

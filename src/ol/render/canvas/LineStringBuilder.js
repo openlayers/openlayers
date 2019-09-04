@@ -10,9 +10,16 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
+   * @param {object} cacheInstructions Shared hitDetectionInstructions cache, for the entire layer.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio, cacheInstructions) {
     super(tolerance, maxExtent, resolution, pixelRatio);
+
+    /**
+     * @private
+     * @type {object}
+     */
+    this.cacheInstructions_ = cacheInstructions || {};
   }
 
   /**
@@ -45,11 +52,20 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     }
     this.updateStrokeStyle(state, this.applyStroke);
     this.beginGeometry(lineStringGeometry, feature);
-    this.hitDetectionInstructions.push([
+
+    let arr = [
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
-    ], beginPathInstruction);
+    ];
+		const keyHash = JSON.stringify(arr);
+		if (keyHash in this.cacheInstructions_) {
+			arr = this.cacheInstructions_[keyHash];
+		} else {
+			this.cacheInstructions_[keyHash] = arr;
+		}
+		this.hitDetectionInstructions.push(arr, beginPathInstruction);
+
     const flatCoordinates = lineStringGeometry.getFlatCoordinates();
     const stride = lineStringGeometry.getStride();
     this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
@@ -69,11 +85,20 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     }
     this.updateStrokeStyle(state, this.applyStroke);
     this.beginGeometry(multiLineStringGeometry, feature);
-    this.hitDetectionInstructions.push([
+
+    let arr = [
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
-    ], beginPathInstruction);
+    ];
+		const keyHash = JSON.stringify(arr);
+		if (keyHash in this.cacheInstructions_) {
+			arr = this.cacheInstructions_[keyHash];
+		} else {
+			this.cacheInstructions_[keyHash] = arr;
+		}
+    this.hitDetectionInstructions.push(arr, beginPathInstruction);
+    
     const ends = multiLineStringGeometry.getEnds();
     const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
     const stride = multiLineStringGeometry.getStride();

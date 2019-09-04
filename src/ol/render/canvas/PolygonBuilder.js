@@ -15,9 +15,15 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
+   * @param {object} cacheInstructions Shared hitDetectionInstructions cache, for the entire layer.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio, cacheInstructions) {
     super(tolerance, maxExtent, resolution, pixelRatio);
+    /**
+     * @private
+     * @type {object}
+     */
+    this.cacheInstructions_ = cacheInstructions || {};
   }
 
   /**
@@ -74,17 +80,31 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     this.setFillStrokeStyles_();
     this.beginGeometry(circleGeometry, feature);
     if (state.fillStyle !== undefined) {
-      this.hitDetectionInstructions.push([
+      let arr = [
         CanvasInstruction.SET_FILL_STYLE,
         defaultFillStyle
-      ]);
+      ];
+      const keyHash = JSON.stringify(arr);
+      if (keyHash in this.cacheInstructions_) {
+        arr = this.cacheInstructions_[keyHash];
+      } else {
+        this.cacheInstructions_[keyHash] = arr;
+      }
+      this.hitDetectionInstructions.push(arr);
     }
     if (state.strokeStyle !== undefined) {
-      this.hitDetectionInstructions.push([
+      let arr = [
         CanvasInstruction.SET_STROKE_STYLE,
         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
         state.miterLimit, state.lineDash, state.lineDashOffset
-      ]);
+      ];
+      const keyHash = JSON.stringify(arr);
+      if (keyHash in this.cacheInstructions_) {
+        arr = this.cacheInstructions_[keyHash];
+      } else {
+        this.cacheInstructions_[keyHash] = arr;
+      }
+      this.hitDetectionInstructions.push(arr);
     }
     const flatCoordinates = circleGeometry.getFlatCoordinates();
     const stride = circleGeometry.getStride();
@@ -118,17 +138,31 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     this.setFillStrokeStyles_();
     this.beginGeometry(polygonGeometry, feature);
     if (state.fillStyle !== undefined) {
-      this.hitDetectionInstructions.push([
+      let arr = [
         CanvasInstruction.SET_FILL_STYLE,
         defaultFillStyle
-      ]);
+      ];
+      const keyHash = JSON.stringify(arr);
+      if (keyHash in this.cacheInstructions_) {
+        arr = this.cacheInstructions_[keyHash];
+      } else {
+        this.cacheInstructions_[keyHash] = arr;
+      }
+      this.hitDetectionInstructions.push(arr);
     }
     if (state.strokeStyle !== undefined) {
-      this.hitDetectionInstructions.push([
+      let arr = [
         CanvasInstruction.SET_STROKE_STYLE,
         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
         state.miterLimit, state.lineDash, state.lineDashOffset
-      ]);
+      ];
+      const keyHash = JSON.stringify(arr);
+      if (keyHash in this.cacheInstructions_) {
+        arr = this.cacheInstructions_[keyHash];
+      } else {
+        this.cacheInstructions_[keyHash] = arr;
+      }
+      this.hitDetectionInstructions.push(arr);
     }
     const ends = polygonGeometry.getEnds();
     const flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
@@ -150,17 +184,31 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     this.setFillStrokeStyles_();
     this.beginGeometry(multiPolygonGeometry, feature);
     if (state.fillStyle !== undefined) {
-      this.hitDetectionInstructions.push([
+      let arr = [
         CanvasInstruction.SET_FILL_STYLE,
         defaultFillStyle
-      ]);
+      ];
+      const keyHash = JSON.stringify(arr);
+      if (keyHash in this.cacheInstructions_) {
+        arr = this.cacheInstructions_[keyHash];
+      } else {
+        this.cacheInstructions_[keyHash] = arr;
+      }
+      this.hitDetectionInstructions.push(arr);
     }
     if (state.strokeStyle !== undefined) {
-      this.hitDetectionInstructions.push([
+      let arr = [
         CanvasInstruction.SET_STROKE_STYLE,
         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
         state.miterLimit, state.lineDash, state.lineDashOffset
-      ]);
+      ];
+      const keyHash = JSON.stringify(arr);
+      if (keyHash in this.cacheInstructions_) {
+        arr = this.cacheInstructions_[keyHash];
+      } else {
+        this.cacheInstructions_[keyHash] = arr;
+      }
+      this.hitDetectionInstructions.push(arr);
     }
     const endss = multiPolygonGeometry.getEndss();
     const flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();

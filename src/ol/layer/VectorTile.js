@@ -51,6 +51,7 @@ import {assign} from '../obj.js';
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
+ * @property {boolean} [staticStyles=false] static styles, reduces memory-emptiness.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -89,6 +90,11 @@ class VectorTileLayer extends BaseVectorLayer {
 
     super(/** @type {import("./BaseVector.js").Options} */ (baseOptions));
 
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.staticStyles_ = options.staticStyles !== undefined ? options.staticStyles : false;
     const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(renderMode == undefined ||
         renderMode == VectorTileRenderType.IMAGE ||
@@ -114,6 +120,13 @@ class VectorTileLayer extends BaseVectorLayer {
    */
   createRenderer() {
     return new CanvasVectorTileLayerRenderer(this);
+  }
+
+  /**
+   * @return {boolean} Static Styles.
+   */
+  getStaticStyles() {
+    return this.staticStyles_;
   }
 
   /**
