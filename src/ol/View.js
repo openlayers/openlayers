@@ -198,7 +198,7 @@ const DEFAULT_MIN_ZOOM = 0;
  *
  * ### The view states
  *
- * An View is determined by three states: `center`, `resolution`,
+ * A View is determined by three states: `center`, `resolution`,
  * and `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
@@ -1452,6 +1452,15 @@ export function createResolutionConstraint(options) {
   const smooth =
       options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
 
+  const projection = createProjection(options.projection, 'EPSG:3857');
+  const projExtent = projection.getExtent();
+  let constrainOnlyCenter = options.constrainOnlyCenter;
+  let extent = options.extent;
+  if (!multiWorld && !extent && projection.isGlobal()) {
+    constrainOnlyCenter = false;
+    extent = projExtent;
+  }
+
   if (options.resolutions !== undefined) {
     const resolutions = options.resolutions;
     maxResolution = resolutions[minZoom];
@@ -1460,20 +1469,18 @@ export function createResolutionConstraint(options) {
 
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToResolutions(resolutions, smooth,
-        !options.constrainOnlyCenter && options.extent);
+        !constrainOnlyCenter && extent);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !options.constrainOnlyCenter && options.extent);
+        !constrainOnlyCenter && extent);
     }
   } else {
     // calculate the default min and max resolution
-    const projection = createProjection(options.projection, 'EPSG:3857');
-    const extent = projection.getExtent();
-    const size = !extent ?
+    const size = !projExtent ?
       // use an extent that can fit the whole world if need be
       360 * METERS_PER_UNIT[Units.DEGREES] /
             projection.getMetersPerUnit() :
-      Math.max(getWidth(extent), getHeight(extent));
+      Math.max(getWidth(projExtent), getHeight(projExtent));
 
     const defaultMaxResolution = size / DEFAULT_TILE_SIZE / Math.pow(
       defaultZoomFactor, DEFAULT_MIN_ZOOM);
@@ -1511,14 +1518,8 @@ export function createResolutionConstraint(options) {
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToPower(
         zoomFactor, maxResolution, minResolution, smooth,
-        !options.constrainOnlyCenter && options.extent);
+        !constrainOnlyCenter && extent);
     } else {
-      let constrainOnlyCenter = options.constrainOnlyCenter;
-      let extent = options.extent;
-      if (!multiWorld && !extent && projection.isGlobal()) {
-        constrainOnlyCenter = false;
-        extent = projection.getExtent();
-      }
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
         !constrainOnlyCenter && extent);
     }
