@@ -9,7 +9,7 @@ import {stopPropagation} from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
-import 'pepjs';
+import '@openlayers/pepjs';
 
 
 /**

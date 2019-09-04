@@ -6,7 +6,7 @@ import EventType from '../pointer/EventType.js';
 import {getChangeEventType} from '../Object.js';
 import Control from './Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
-import 'pepjs';
+import '@openlayers/pepjs';
 
 
 /**

@@ -36,8 +36,8 @@
     "url": "https://github.com/openlayers/openlayers/issues"
   },
   "dependencies": {
+    "@openlayers/pepjs": "^0.5.3",
     "pbf": "3.2.0",
-    "pepjs": "^0.5.2",
     "pixelworks": "1.1.0",
     "rbush": "^3.0.0"
   },
