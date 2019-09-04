@@ -5,7 +5,6 @@ import {getChangeEventType} from '../Object.js';
 import {assert} from '../asserts.js';
 import Control from './Control.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
-import {listen} from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
 import ProjUnits from '../proj/Units.js';
 
@@ -125,9 +124,7 @@ class ScaleLine extends Control {
      */
     this.renderedHTML_ = '';
 
-    listen(
-      this, getChangeEventType(UNITS_PROP),
-      this.handleUnitsChanged_, this);
+    this.addEventListener(getChangeEventType(UNITS_PROP), this.handleUnitsChanged_);
 
     this.setUnits(/** @type {Units} */ (options.units) || Units.METRIC);
 

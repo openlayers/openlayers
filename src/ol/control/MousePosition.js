@@ -68,9 +68,7 @@ class MousePosition extends Control {
       target: options.target
     });
 
-    listen(this,
-      getChangeEventType(PROJECTION),
-      this.handleProjectionChanged_, this);
+    this.addEventListener(getChangeEventType(PROJECTION), this.handleProjectionChanged_);
 
     if (options.coordinateFormat) {
       this.setCoordinateFormat(options.coordinateFormat);

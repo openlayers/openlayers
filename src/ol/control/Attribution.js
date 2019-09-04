@@ -5,7 +5,6 @@ import {equals} from '../array.js';
 import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {inView} from '../layer/Layer.js';
 
@@ -125,7 +124,7 @@ class Attribution extends Control {
     button.title = tipLabel;
     button.appendChild(activeLabel);
 
-    listen(button, EventType.CLICK, this.handleClick_, this);
+    button.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
 
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
         (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +

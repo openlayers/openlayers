@@ -24,6 +24,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     super(vectorLayer);
 
+    /** @private */
+    this.boundHandleStyleImageChange_ = this.handleStyleImageChange_.bind(this);
+
+
     /**
      * @private
      * @type {boolean}
@@ -366,12 +370,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
           builderGroup, feature, styles[i], squaredTolerance,
-          this.handleStyleImageChange_, this) || loading;
+          this.boundHandleStyleImageChange_) || loading;
       }
     } else {
       loading = renderFeature(
         builderGroup, feature, styles, squaredTolerance,
-        this.handleStyleImageChange_, this);
+        this.boundHandleStyleImageChange_);
     }
     return loading;
   }

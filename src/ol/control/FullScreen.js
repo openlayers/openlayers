@@ -91,8 +91,7 @@ class FullScreen extends Control {
     this.button_.title = tipLabel;
     this.button_.appendChild(this.labelNode_);
 
-    listen(this.button_, EventType.CLICK,
-      this.handleClick_, this);
+    this.button_.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
 
     const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
         ' ' + CLASS_CONTROL + ' ' +

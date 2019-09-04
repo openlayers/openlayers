@@ -3,7 +3,6 @@
  */
 
 import ImageWrapper from '../Image.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import {assign} from '../obj.js';
@@ -162,8 +161,7 @@ class ImageMapGuide extends ImageSource {
       image = new ImageWrapper(extent, resolution, pixelRatio,
         imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
-      listen(image, EventType.CHANGE,
-        this.handleImageChange, this);
+      image.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
     } else {
       image = null;
     }

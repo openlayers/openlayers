@@ -40,7 +40,7 @@ describe('ol.renderer.Layer', function() {
 
       it('registers a listener', function() {
         renderer.loadImage(image);
-        const listeners = image.getListeners(eventType, false);
+        const listeners = image.listeners_[eventType];
         expect(listeners).to.have.length(1);
       });
 
@@ -76,7 +76,7 @@ describe('ol.renderer.Layer', function() {
 
       it('does not register a new listener', function() {
         renderer.loadImage(image);
-        const listeners = image.getListeners(eventType, false);
+        const listeners = image.listeners_[eventType];
         expect(listeners).to.have.length(1);
       });
 

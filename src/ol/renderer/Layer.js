@@ -4,7 +4,6 @@
 import {abstract} from '../util.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import SourceState from '../source/State.js';
 
@@ -16,6 +15,9 @@ class LayerRenderer extends Observable {
   constructor(layer) {
 
     super();
+
+    /** @private */
+    this.boundHandleImageChange_ = this.handleImageChange_.bind(this);
 
     /**
      * @private
@@ -142,7 +144,7 @@ class LayerRenderer extends Observable {
   loadImage(image) {
     let imageState = image.getState();
     if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
-      listen(image, EventType.CHANGE, this.handleImageChange_, this);
+      image.addEventListener(EventType.CHANGE, this.boundHandleImageChange_);
     }
     if (imageState == ImageState.IDLE) {
       image.load();

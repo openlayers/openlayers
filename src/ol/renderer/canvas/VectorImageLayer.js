@@ -8,7 +8,6 @@ import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 import {assign} from '../../obj.js';
 import CanvasImageLayerRenderer from './ImageLayer.js';
 import CanvasVectorLayerRenderer from './VectorLayer.js';
-import {listen} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import ImageState from '../../ImageState.js';
 import {renderDeclutterItems} from '../../render.js';
@@ -102,12 +101,12 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         }
       });
 
-      listen(image, EventType.CHANGE, function() {
+      image.addEventListener(EventType.CHANGE, function() {
         if (image.getState() === ImageState.LOADED) {
           this.image_ = image;
           this.skippedFeatures_ = skippedFeatures;
         }
-      }, this);
+      }.bind(this));
       image.load();
     }
 

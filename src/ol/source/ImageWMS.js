@@ -6,7 +6,6 @@ import {DEFAULT_WMS_VERSION} from './common.js';
 
 import ImageWrapper from '../Image.js';
 import {assert} from '../asserts.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from '../extent.js';
 import {assign} from '../obj.js';
@@ -296,8 +295,7 @@ class ImageWMS extends ImageSource {
 
     this.renderedRevision_ = this.getRevision();
 
-    listen(this.image_, EventType.CHANGE,
-      this.handleImageChange, this);
+    this.image_.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
 
     return this.image_;
 

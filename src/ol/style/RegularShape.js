@@ -284,9 +284,7 @@ class RegularShape extends ImageStyle {
   /**
    * @inheritDoc
    */
-  listenImageChange(listener, thisArg) {
-    return undefined;
-  }
+  listenImageChange(listener) {}
 
   /**
    * @inheritDoc
@@ -296,7 +294,7 @@ class RegularShape extends ImageStyle {
   /**
    * @inheritDoc
    */
-  unlistenImageChange(listener, thisArg) {}
+  unlistenImageChange(listener) {}
 
   /**
    * @protected

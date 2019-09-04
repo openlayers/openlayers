@@ -4,7 +4,6 @@
 import {getUid} from '../util.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
-import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {singleClick, never, shiftKeyOnly, pointerMove} from '../events/condition.js';
 import {TRUE} from '../functions.js';
@@ -254,10 +253,8 @@ class Select extends Interaction {
     this.featureLayerAssociation_ = {};
 
     const features = this.getFeatures();
-    listen(features, CollectionEventType.ADD,
-      this.addFeature_, this);
-    listen(features, CollectionEventType.REMOVE,
-      this.removeFeature_, this);
+    features.addEventListener(CollectionEventType.ADD, this.addFeature_.bind(this));
+    features.addEventListener(CollectionEventType.REMOVE, this.removeFeature_.bind(this));
   }
 
   /**

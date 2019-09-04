@@ -2,7 +2,7 @@
  * @module ol/Feature
  */
 import {assert} from './asserts.js';
-import {listen, unlisten, unlistenByKey} from './events.js';
+import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 
@@ -101,9 +101,7 @@ class Feature extends BaseObject {
      */
     this.geometryChangeKey_ = null;
 
-    listen(
-      this, getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this.addEventListener(getChangeEventType(this.geometryName_), this.handleGeometryChanged_);
 
     if (opt_geometryOrProperties) {
       if (typeof /** @type {?} */ (opt_geometryOrProperties).getSimplifiedGeometry === 'function') {
@@ -263,13 +261,9 @@ class Feature extends BaseObject {
    * @api
    */
   setGeometryName(name) {
-    unlisten(
-      this, getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this.removeEventListener(getChangeEventType(this.geometryName_), this.handleGeometryChanged_);
     this.geometryName_ = name;
-    listen(
-      this, getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this.addEventListener(getChangeEventType(this.geometryName_), this.handleGeometryChanged_);
     this.handleGeometryChanged_();
   }
 }

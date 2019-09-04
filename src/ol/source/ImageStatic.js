@@ -5,7 +5,6 @@
 import ImageWrapper from '../Image.js';
 import ImageState from '../ImageState.js';
 import {createCanvasContext2D} from '../dom.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
@@ -73,8 +72,7 @@ class Static extends ImageSource {
      */
     this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-    listen(this.image_, EventType.CHANGE,
-      this.handleImageChange, this);
+    this.image_.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
 
   }
 

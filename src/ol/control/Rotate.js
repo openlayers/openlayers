@@ -4,7 +4,6 @@
 import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 
 
@@ -75,7 +74,7 @@ class Rotate extends Control {
     button.title = tipLabel;
     button.appendChild(this.label_);
 
-    listen(button, EventType.CLICK, this.handleClick_, this);
+    button.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
 
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     const element = this.element;

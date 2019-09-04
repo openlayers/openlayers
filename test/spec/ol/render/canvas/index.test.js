@@ -1,4 +1,3 @@
-import {listen, unlisten} from '../../../../../src/ol/events.js';
 import {clear} from '../../../../../src/ol/obj.js';
 import * as render from '../../../../../src/ol/render/canvas.js';
 
@@ -22,11 +21,11 @@ describe('ol.render.canvas', function() {
     it('does not clear label cache and measurements for unavailable fonts', function(done) {
       this.timeout(4000);
       const spy = sinon.spy();
-      listen(render.labelCache, 'clear', spy);
+      render.labelCache.addEventListener('clear', spy);
       const interval = setInterval(function() {
         if (render.checkedFonts['normal\nnormal\nfoo'] == retries && render.checkedFonts['normal\nnormal\nsans-serif'] == retries) {
           clearInterval(interval);
-          unlisten(render.labelCache, 'clear', spy);
+          render.labelCache.removeEventListener('clear', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
@@ -37,11 +36,11 @@ describe('ol.render.canvas', function() {
 
     it('does not clear label cache and measurements for available fonts', function(done) {
       const spy = sinon.spy();
-      listen(render.labelCache, 'clear', spy);
+      render.labelCache.addEventListener('clear', spy);
       const interval = setInterval(function() {
         if (render.checkedFonts['normal\nnormal\nsans-serif'] == retries) {
           clearInterval(interval);
-          unlisten(render.labelCache, 'clear', spy);
+          render.labelCache.removeEventListener('clear', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
@@ -52,11 +51,11 @@ describe('ol.render.canvas', function() {
 
     it('does not clear label cache and measurements for the \'monospace\' font', function(done) {
       const spy = sinon.spy();
-      listen(render.labelCache, 'clear', spy);
+      render.labelCache.addEventListener('clear', spy);
       const interval = setInterval(function() {
         if (render.checkedFonts['normal\nnormal\nmonospace'] == retries) {
           clearInterval(interval);
-          unlisten(render.labelCache, 'clear', spy);
+          render.labelCache.removeEventListener('clear', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
@@ -68,7 +67,7 @@ describe('ol.render.canvas', function() {
     it('clears label cache and measurements for fonts that become available', function(done) {
       head.appendChild(font);
       render.labelCache.set('dummy', {});
-      listen(render.labelCache, 'clear', function() {
+      render.labelCache.addEventListener('clear', function() {
         expect(render.textHeights).to.eql({});
         done();
       });

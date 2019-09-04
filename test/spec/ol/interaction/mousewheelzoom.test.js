@@ -130,7 +130,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         map.handleMapBrowserEvent(event);
       });
 
-      it.only('works on all browsers (wheel)', function(done) {
+      it('works on all browsers (wheel)', function(done) {
         map.once('postrender', function() {
           const call = view.animate.getCall(0);
           expect(call.args[0].resolution).to.be(2);

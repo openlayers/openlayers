@@ -2,9 +2,9 @@
  * @module ol/events/Target
  */
 import Disposable from '../Disposable.js';
-import {unlistenAll} from '../events.js';
 import {VOID} from '../functions.js';
 import Event from './Event.js';
+import {clear} from '../obj.js';
 
 
 /**
@@ -116,7 +116,7 @@ class Target extends Disposable {
    * @inheritDoc
    */
   disposeInternal() {
-    unlistenAll(this);
+    clear(this.listeners_);
   }
 
   /**

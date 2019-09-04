@@ -121,9 +121,7 @@ class Layer extends BaseLayer {
       this.setMap(options.map);
     }
 
-    listen(this,
-      getChangeEventType(LayerProperty.SOURCE),
-      this.handleSourcePropertyChange_, this);
+    this.addEventListener(getChangeEventType(LayerProperty.SOURCE), this.handleSourcePropertyChange_);
 
     const source = options.source ? /** @type {SourceType} */ (options.source) : null;
     this.setSource(source);

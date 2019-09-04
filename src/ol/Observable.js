@@ -1,7 +1,7 @@
 /**
  * @module ol/Observable
  */
-import {listen, unlistenByKey, unlisten, listenOnce} from './events.js';
+import {listen, unlistenByKey, listenOnce} from './events.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 
@@ -101,11 +101,10 @@ class Observable extends EventTarget {
   un(type, listener) {
     if (Array.isArray(type)) {
       for (let i = 0, ii = type.length; i < ii; ++i) {
-        unlisten(this, type[i], listener);
+        this.removeEventListener(type[i], listener);
       }
-      return;
     } else {
-      unlisten(this, /** @type {string} */ (type), listener);
+      this.removeEventListener(type, listener);
     }
   }
 }

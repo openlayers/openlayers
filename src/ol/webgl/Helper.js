@@ -3,7 +3,6 @@
  */
 import {getUid} from '../util.js';
 import Disposable from '../Disposable.js';
-import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import {
@@ -218,6 +217,12 @@ class WebGLHelper extends Disposable {
     super();
     const options = opt_options || {};
 
+    /** @private */
+    this.boundHandleWebGLContextLost_ = this.handleWebGLContextLost.bind(this);
+
+    /** @private */
+    this.boundHandleWebGLContextRestored_ = this.handleWebGLContextRestored.bind(this);
+
     /**
      * @private
      * @type {HTMLCanvasElement}
@@ -260,10 +265,8 @@ class WebGLHelper extends Disposable {
     assert(includes(getSupportedExtensions(), 'OES_element_index_uint'), 63);
     gl.getExtension('OES_element_index_uint');
 
-    listen(this.canvas_, ContextEventType.LOST,
-      this.handleWebGLContextLost, this);
-    listen(this.canvas_, ContextEventType.RESTORED,
-      this.handleWebGLContextRestored, this);
+    this.canvas_.addEventListener(ContextEventType.LOST, this.boundHandleWebGLContextLost_);
+    this.canvas_.addEventListener(ContextEventType.RESTORED, this.boundHandleWebGLContextRestored_);
 
     /**
      * @private
@@ -385,7 +388,8 @@ class WebGLHelper extends Disposable {
    * @inheritDoc
    */
   disposeInternal() {
-    unlistenAll(this.canvas_);
+    this.canvas_.removeEventListener(ContextEventType.LOST, this.boundHandleWebGLContextLost_);
+    this.canvas_.removeEventListener(ContextEventType.RESTORED, this.boundHandleWebGLContextRestored_);
     const gl = this.getGL();
     if (!gl.isContextLost()) {
       for (const key in this.bufferCache_) {

@@ -7,7 +7,6 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {getChangeEventType} from '../Object.js';
 import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
-import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {noModifierKeys, always, shiftKeyOnly} from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
@@ -448,9 +447,7 @@ class Draw extends PointerInteraction {
         options.freehandCondition : shiftKeyOnly;
     }
 
-    listen(this,
-      getChangeEventType(InteractionProperty.ACTIVE),
-      this.updateState_, this);
+    this.addEventListener(getChangeEventType(InteractionProperty.ACTIVE), this.updateState_);
 
   }
 

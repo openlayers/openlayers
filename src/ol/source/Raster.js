@@ -4,7 +4,6 @@
 import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
-import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks/lib/index.js';
@@ -172,8 +171,9 @@ class RasterSource extends ImageSource {
      */
     this.layers_ = createLayers(options.sources);
 
+    const changed = this.changed.bind(this);
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
-      listen(this.layers_[i], EventType.CHANGE, this.changed, this);
+      this.layers_[i].addEventListener(EventType.CHANGE, changed);
     }
 
     /**

@@ -18,7 +18,7 @@ import View from './View.js';
 import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
-import {listen, unlistenByKey, unlisten} from './events.js';
+import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
@@ -149,6 +149,10 @@ class PluggableMap extends BaseObject {
 
     const optionsInternal = createOptionsInternal(options);
 
+    /** @private */
+    this.boundHandleBrowserEvent_ = this.handleBrowserEvent.bind(this);
+
+
     /**
      * @type {number}
      * @private
@@ -268,9 +272,9 @@ class PluggableMap extends BaseObject {
      * @type {MapBrowserEventHandler}
      */
     this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
+    const handleMapBrowserEvent = this.handleMapBrowserEvent.bind(this);
     for (const key in MapBrowserEventType) {
-      listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
-        this.handleMapBrowserEvent, this);
+      this.mapBrowserEventHandler_.addEventListener(MapBrowserEventType[key], handleMapBrowserEvent);
     }
 
     /**
@@ -285,8 +289,9 @@ class PluggableMap extends BaseObject {
      */
     this.keyHandlerKeys_ = null;
 
-    listen(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
-    listen(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
+    const handleBrowserEvent = this.handleBrowserEvent.bind(this);
+    this.viewport_.addEventListener(EventType.CONTEXTMENU, handleBrowserEvent, false);
+    this.viewport_.addEventListener(EventType.WHEEL, handleBrowserEvent, false);
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -362,15 +367,10 @@ class PluggableMap extends BaseObject {
      */
     this.skippedFeatureUids_ = {};
 
-    listen(
-      this, getChangeEventType(MapProperty.LAYERGROUP),
-      this.handleLayerGroupChanged_, this);
-    listen(this, getChangeEventType(MapProperty.VIEW),
-      this.handleViewChanged_, this);
-    listen(this, getChangeEventType(MapProperty.SIZE),
-      this.handleSizeChanged_, this);
-    listen(this, getChangeEventType(MapProperty.TARGET),
-      this.handleTargetChanged_, this);
+    this.addEventListener(getChangeEventType(MapProperty.LAYERGROUP), this.handleLayerGroupChanged_);
+    this.addEventListener(getChangeEventType(MapProperty.VIEW), this.handleViewChanged_);
+    this.addEventListener(getChangeEventType(MapProperty.SIZE), this.handleSizeChanged_);
+    this.addEventListener(getChangeEventType(MapProperty.TARGET), this.handleTargetChanged_);
 
     // setProperties will trigger the rendering of the map if the map
     // is "defined" already.
@@ -385,21 +385,21 @@ class PluggableMap extends BaseObject {
         control.setMap(this);
       }).bind(this));
 
-    listen(this.controls, CollectionEventType.ADD,
+    this.controls.addEventListener(CollectionEventType.ADD,
       /**
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
       function(event) {
         event.element.setMap(this);
-      }, this);
+      }.bind(this));
 
-    listen(this.controls, CollectionEventType.REMOVE,
+    this.controls.addEventListener(CollectionEventType.REMOVE,
       /**
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
       function(event) {
         event.element.setMap(null);
-      }, this);
+      }.bind(this));
 
     this.interactions.forEach(
       /**
@@ -410,33 +410,33 @@ class PluggableMap extends BaseObject {
         interaction.setMap(this);
       }).bind(this));
 
-    listen(this.interactions, CollectionEventType.ADD,
+    this.interactions.addEventListener(CollectionEventType.ADD,
       /**
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
       function(event) {
         event.element.setMap(this);
-      }, this);
+      }.bind(this));
 
-    listen(this.interactions, CollectionEventType.REMOVE,
+    this.interactions.addEventListener(CollectionEventType.REMOVE,
       /**
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
       function(event) {
         event.element.setMap(null);
-      }, this);
+      }.bind(this));
 
     this.overlays_.forEach(this.addOverlayInternal_.bind(this));
 
-    listen(this.overlays_, CollectionEventType.ADD,
+    this.overlays_.addEventListener(CollectionEventType.ADD,
       /**
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
       function(event) {
         this.addOverlayInternal_(/** @type {import("./Overlay.js").default} */ (event.element));
-      }, this);
+      }.bind(this));
 
-    listen(this.overlays_, CollectionEventType.REMOVE,
+    this.overlays_.addEventListener(CollectionEventType.REMOVE,
       /**
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
@@ -447,7 +447,7 @@ class PluggableMap extends BaseObject {
           delete this.overlayIdIndex_[id.toString()];
         }
         event.element.setMap(null);
-      }, this);
+      }.bind(this));
 
   }
 
@@ -521,8 +521,8 @@ class PluggableMap extends BaseObject {
    */
   disposeInternal() {
     this.mapBrowserEventHandler_.dispose();
-    unlisten(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
-    unlisten(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
+    this.viewport_.removeEventListener(EventType.CONTEXTMENU, this.boundHandleBrowserEvent_);
+    this.viewport_.removeEventListener(EventType.WHEEL, this.boundHandleBrowserEvent_);
     if (this.handleResize_ !== undefined) {
       removeEventListener(EventType.RESIZE, this.handleResize_, false);
       this.handleResize_ = undefined;

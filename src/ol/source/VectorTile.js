@@ -234,7 +234,7 @@ class VectorTile extends UrlTile {
               sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
               this.sourceTileByCoordKey_[coordKey] = sourceTile;
               empty = false;
-              listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
+              sourceTile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
               sourceTile.load();
             }
           } else {

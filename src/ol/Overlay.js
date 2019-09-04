@@ -178,25 +178,11 @@ class Overlay extends BaseObject {
      */
     this.mapPostrenderListenerKey = null;
 
-    listen(
-      this, getChangeEventType(Property.ELEMENT),
-      this.handleElementChanged, this);
-
-    listen(
-      this, getChangeEventType(Property.MAP),
-      this.handleMapChanged, this);
-
-    listen(
-      this, getChangeEventType(Property.OFFSET),
-      this.handleOffsetChanged, this);
-
-    listen(
-      this, getChangeEventType(Property.POSITION),
-      this.handlePositionChanged, this);
-
-    listen(
-      this, getChangeEventType(Property.POSITIONING),
-      this.handlePositioningChanged, this);
+    this.addEventListener(getChangeEventType(Property.ELEMENT), this.handleElementChanged);
+    this.addEventListener(getChangeEventType(Property.MAP), this.handleMapChanged);
+    this.addEventListener(getChangeEventType(Property.OFFSET), this.handleOffsetChanged);
+    this.addEventListener(getChangeEventType(Property.POSITION), this.handlePositionChanged);
+    this.addEventListener(getChangeEventType(Property.POSITIONING), this.handlePositioningChanged);
 
     if (options.element !== undefined) {
       this.setElement(options.element);
