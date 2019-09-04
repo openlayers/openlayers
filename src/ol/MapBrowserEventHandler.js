@@ -2,7 +2,7 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import 'pepjs';
+import '@openlayers/pepjs';
 import {DEVICE_PIXEL_RATIO} from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';

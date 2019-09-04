@@ -14,7 +14,7 @@ import Control from './Control.js';
 import {rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
-import {listen, listenOnce, unlisten} from '../events.js';
+import {listen, listenOnce} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
 
@@ -85,6 +85,11 @@ class OverviewMap extends Control {
     });
 
     /**
+     * @private
+     */
+    this.boundHandleRotationChanged_ = this.handleRotationChanged_.bind(this);
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -139,8 +144,7 @@ class OverviewMap extends Control {
     button.title = tipLabel;
     button.appendChild(activeLabel);
 
-    listen(button, EventType.CLICK,
-      this.handleClick_, this);
+    button.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
 
     /**
      * @type {HTMLElement}
@@ -225,6 +229,7 @@ class OverviewMap extends Control {
       window.addEventListener('mousemove', move);
       window.addEventListener('mouseup', endMoving);
     });
+
   }
 
   /**
@@ -284,9 +289,7 @@ class OverviewMap extends Control {
    * @private
    */
   bindView_(view) {
-    listen(view,
-      getChangeEventType(ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+    view.addEventListener(getChangeEventType(ViewProperty.ROTATION), this.boundHandleRotationChanged_);
   }
 
   /**
@@ -295,9 +298,7 @@ class OverviewMap extends Control {
    * @private
    */
   unbindView_(view) {
-    unlisten(view,
-      getChangeEventType(ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+    view.removeEventListener(getChangeEventType(ViewProperty.ROTATION), this.boundHandleRotationChanged_);
   }
 
   /**

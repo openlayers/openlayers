@@ -9,7 +9,7 @@ import {stopPropagation} from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
-import 'pepjs';
+import '@openlayers/pepjs';
 
 
 /**
@@ -139,15 +139,12 @@ class ZoomSlider extends Control {
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
 
-    listen(containerElement, PointerEventType.POINTERDOWN,
-      this.handleDraggerStart_, this);
-    listen(containerElement, PointerEventType.POINTERMOVE,
-      this.handleDraggerDrag_, this);
-    listen(containerElement, PointerEventType.POINTERUP,
-      this.handleDraggerEnd_, this);
+    containerElement.addEventListener(PointerEventType.POINTERDOWN, this.handleDraggerStart_.bind(this), false);
+    containerElement.addEventListener(PointerEventType.POINTERMOVE, this.handleDraggerDrag_.bind(this), false);
+    containerElement.addEventListener(PointerEventType.POINTERUP, this.handleDraggerEnd_.bind(this), false);
 
-    listen(containerElement, EventType.CLICK, this.handleContainerClick_, this);
-    listen(thumbElement, EventType.CLICK, stopPropagation);
+    containerElement.addEventListener(EventType.CLICK, this.handleContainerClick_.bind(this), false);
+    thumbElement.addEventListener(EventType.CLICK, stopPropagation, false);
   }
 
   /**

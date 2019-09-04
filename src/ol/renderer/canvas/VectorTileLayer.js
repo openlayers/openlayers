@@ -59,6 +59,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   constructor(layer) {
     super(layer);
 
+    /** @private */
+    this.boundHandleStyleImageChange_ = this.handleStyleImageChange_.bind(this);
+
     /**
      * @private
      * @type {CanvasRenderingContext2D}
@@ -112,7 +115,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
-
   }
 
   /**
@@ -546,12 +548,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
           executorGroup, feature, styles[i], squaredTolerance,
-          this.handleStyleImageChange_, this) || loading;
+          this.boundHandleStyleImageChange_) || loading;
       }
     } else {
       loading = renderFeature(
         executorGroup, feature, styles, squaredTolerance,
-        this.handleStyleImageChange_, this);
+        this.boundHandleStyleImageChange_);
     }
     return loading;
   }

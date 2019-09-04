@@ -5,7 +5,6 @@ import {getUid} from '../util.js';
 import ImageState from '../ImageState.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
-import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import IconAnchorUnits from './IconAnchorUnits.js';
 import {get as getIconImage} from './IconImage.js';
@@ -378,9 +377,8 @@ class Icon extends ImageStyle {
   /**
    * @override
    */
-  listenImageChange(listener, thisArg) {
-    return listen(this.iconImage_, EventType.CHANGE,
-      listener, thisArg);
+  listenImageChange(listener) {
+    this.iconImage_.addEventListener(EventType.CHANGE, listener);
   }
 
   /**
@@ -398,9 +396,8 @@ class Icon extends ImageStyle {
   /**
    * @override
    */
-  unlistenImageChange(listener, thisArg) {
-    unlisten(this.iconImage_, EventType.CHANGE,
-      listener, thisArg);
+  unlistenImageChange(listener) {
+    this.iconImage_.removeEventListener(EventType.CHANGE, listener);
   }
 }
 

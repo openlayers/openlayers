@@ -428,7 +428,7 @@ class VectorSource extends Source {
    */
   bindFeaturesCollection_(collection) {
     let modifyingCollection = false;
-    listen(this, VectorEventType.ADDFEATURE,
+    this.addEventListener(VectorEventType.ADDFEATURE,
       /**
        * @param {VectorSourceEvent<Geometry>} evt The vector source event
        */
@@ -439,7 +439,7 @@ class VectorSource extends Source {
           modifyingCollection = false;
         }
       });
-    listen(this, VectorEventType.REMOVEFEATURE,
+    this.addEventListener(VectorEventType.REMOVEFEATURE,
       /**
        * @param {VectorSourceEvent<Geometry>} evt The vector source event
        */
@@ -450,7 +450,7 @@ class VectorSource extends Source {
           modifyingCollection = false;
         }
       });
-    listen(collection, CollectionEventType.ADD,
+    collection.addEventListener(CollectionEventType.ADD,
       /**
        * @param {import("../Collection.js").CollectionEvent} evt The collection event
        */
@@ -460,8 +460,8 @@ class VectorSource extends Source {
           this.addFeature(/** @type {import("../Feature.js").default<Geometry>} */ (evt.element));
           modifyingCollection = false;
         }
-      }, this);
-    listen(collection, CollectionEventType.REMOVE,
+      }.bind(this));
+    collection.addEventListener(CollectionEventType.REMOVE,
       /**
        * @param {import("../Collection.js").CollectionEvent} evt The collection event
        */
@@ -471,7 +471,7 @@ class VectorSource extends Source {
           this.removeFeature(/** @type {import("../Feature.js").default<Geometry>} */ (evt.element));
           modifyingCollection = false;
         }
-      }, this);
+      }.bind(this));
     this.featuresCollection_ = collection;
   }
 

@@ -215,13 +215,11 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
-   * @param {T} thisArg Value to use as `this` when executing `listener`.
-   * @return {import("../events.js").EventsKey|undefined} Listener key.
+   * @param {function(import("../events/Event.js").default): void} listener Listener function.
    * @template T
    */
-  listenImageChange(listener, thisArg) {
-    return abstract();
+  listenImageChange(listener) {
+    abstract();
   }
 
   /**
@@ -234,11 +232,10 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
-   * @param {T} thisArg Value to use as `this` when executing `listener`.
+   * @param {function(import("../events/Event.js").default): void} listener Listener function.
    * @template T
    */
-  unlistenImageChange(listener, thisArg) {
+  unlistenImageChange(listener) {
     abstract();
   }
 }

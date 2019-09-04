@@ -43,16 +43,6 @@ describe('ol.events.EventTarget', function() {
     });
   });
 
-  describe('#getListeners', function() {
-    it('returns listeners for a type or undefined if none', function() {
-      expect(eventTarget.getListeners('foo')).to.be(undefined);
-      const listeners = [function() {}];
-      eventTarget.listeners_['foo'] = listeners;
-      expect(eventTarget.getListeners('foo')).to.equal(listeners);
-    });
-  });
-
-
   describe('#addEventListener()', function() {
     it('has listeners for each registered type', function() {
       eventTarget.addEventListener('foo', spy1);
@@ -72,7 +62,7 @@ describe('ol.events.EventTarget', function() {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.addEventListener('foo', spy2);
       eventTarget.removeEventListener('foo', spy1, false);
-      expect(eventTarget.getListeners('foo')).to.have.length(1);
+      expect(eventTarget.listeners_['foo']).to.have.length(1);
     });
   });
 
@@ -131,7 +121,7 @@ describe('ol.events.EventTarget', function() {
         eventTarget.dispatchEvent('foo');
       }).not.to.throwException();
       expect(called).to.eql([3]);
-      expect(eventTarget.getListeners('foo')).to.have.length(1);
+      expect(eventTarget.listeners_['foo']).to.have.length(1);
     });
     it('is safe to do weird things in listeners', function() {
       eventTarget.addEventListener('foo', spy2);
@@ -148,7 +138,7 @@ describe('ol.events.EventTarget', function() {
         eventTarget.dispatchEvent('foo');
       }).not.to.throwException();
       expect(called).to.eql([2, 2]);
-      expect(eventTarget.getListeners('foo')).to.be(undefined);
+      expect(eventTarget.listeners_['foo']).to.be(undefined);
     });
   });
 

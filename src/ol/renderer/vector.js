@@ -91,24 +91,23 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
- * @param {T} thisArg Value to use as `this` when executing `listener`.
+ * @param {function(import("../events/Event.js").default): void} listener Listener function.
  * @return {boolean} `true` if style is loading.
  * @template T
  */
-export function renderFeature(replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+export function renderFeature(replayGroup, feature, style, squaredTolerance, listener) {
   let loading = false;
   const imageStyle = style.getImage();
   if (imageStyle) {
     let imageState = imageStyle.getImageState();
     if (imageState == ImageState.LOADED || imageState == ImageState.ERROR) {
-      imageStyle.unlistenImageChange(listener, thisArg);
+      imageStyle.unlistenImageChange(listener);
     } else {
       if (imageState == ImageState.IDLE) {
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      imageStyle.listenImageChange(listener, thisArg);
+      imageStyle.listenImageChange(listener);
       loading = true;
     }
   }

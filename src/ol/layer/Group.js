@@ -80,9 +80,7 @@ class LayerGroup extends BaseLayer {
      */
     this.listenerKeys_ = {};
 
-    listen(this,
-      getChangeEventType(Property.LAYERS),
-      this.handleLayersChanged_, this);
+    this.addEventListener(getChangeEventType(Property.LAYERS), this.handleLayersChanged_);
 
     if (layers) {
       if (Array.isArray(layers)) {

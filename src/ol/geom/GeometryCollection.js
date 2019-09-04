@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/GeometryCollection
  */
-import {listen, unlisten} from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from './Geometry.js';
@@ -29,6 +29,11 @@ class GeometryCollection extends Geometry {
      */
     this.geometries_ = opt_geometries ? opt_geometries : null;
 
+    /**
+     * @type {Array<import("../events.js").EventsKey>}
+     */
+    this.changeEventsKeys_ = [];
+
     this.listenGeometriesChange_();
   }
 
@@ -36,14 +41,8 @@ class GeometryCollection extends Geometry {
    * @private
    */
   unlistenGeometriesChange_() {
-    if (!this.geometries_) {
-      return;
-    }
-    for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
-      unlisten(
-        this.geometries_[i], EventType.CHANGE,
-        this.changed, this);
-    }
+    this.changeEventsKeys_.forEach(unlistenByKey);
+    this.changeEventsKeys_.length = 0;
   }
 
   /**
@@ -54,9 +53,9 @@ class GeometryCollection extends Geometry {
       return;
     }
     for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
-      listen(
+      this.changeEventsKeys_.push(listen(
         this.geometries_[i], EventType.CHANGE,
-        this.changed, this);
+        this.changed, this));
     }
   }
 

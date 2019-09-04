@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/Heatmap
  */
-import {listen} from '../events.js';
 import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from './Vector.js';
@@ -83,9 +82,7 @@ class Heatmap extends VectorLayer {
      */
     this.gradient_ = null;
 
-    listen(this,
-      getChangeEventType(Property.GRADIENT),
-      this.handleGradientChanged_, this);
+    this.addEventListener(getChangeEventType(Property.GRADIENT), this.handleGradientChanged_);
 
     this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
 

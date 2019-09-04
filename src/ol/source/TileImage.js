@@ -6,7 +6,6 @@ import {getUid} from '../util.js';
 import ImageTile from '../ImageTile.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
@@ -261,8 +260,7 @@ class TileImage extends UrlTile {
       this.tileLoadFunction,
       this.tileOptions);
     tile.key = key;
-    listen(tile, EventType.CHANGE,
-      this.handleTileChange, this);
+    tile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
     return tile;
   }
 

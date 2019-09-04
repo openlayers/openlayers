@@ -8,7 +8,6 @@ import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import {equals} from '../array.js';
 import {equals as coordinatesEqual, distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, squaredDistanceToSegment, closestOnSegment} from '../coordinate.js';
-import {listen, unlisten} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {always, primaryAction, altKeyOnly, singleClick} from '../events/condition.js';
@@ -158,6 +157,9 @@ class Modify extends PointerInteraction {
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
+    /** @private */
+    this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);
+
     /**
      * @private
      * @type {import("../events/condition.js").Condition}
@@ -299,10 +301,8 @@ class Modify extends PointerInteraction {
     if (options.source) {
       this.source_ = options.source;
       features = new Collection(this.source_.getFeatures());
-      listen(this.source_, VectorEventType.ADDFEATURE,
-        this.handleSourceAdd_, this);
-      listen(this.source_, VectorEventType.REMOVEFEATURE,
-        this.handleSourceRemove_, this);
+      this.source_.addEventListener(VectorEventType.ADDFEATURE, this.handleSourceAdd_.bind(this));
+      this.source_.addEventListener(VectorEventType.REMOVEFEATURE, this.handleSourceRemove_.bind(this));
     } else {
       features = options.features;
     }
@@ -317,10 +317,8 @@ class Modify extends PointerInteraction {
     this.features_ = features;
 
     this.features_.forEach(this.addFeature_.bind(this));
-    listen(this.features_, CollectionEventType.ADD,
-      this.handleFeatureAdd_, this);
-    listen(this.features_, CollectionEventType.REMOVE,
-      this.handleFeatureRemove_, this);
+    this.features_.addEventListener(CollectionEventType.ADD, this.handleFeatureAdd_.bind(this));
+    this.features_.addEventListener(CollectionEventType.REMOVE, this.handleFeatureRemove_.bind(this));
 
     /**
      * @type {import("../MapBrowserPointerEvent.js").default}
@@ -343,8 +341,7 @@ class Modify extends PointerInteraction {
     if (map && map.isRendered() && this.getActive()) {
       this.handlePointerAtPixel_(this.lastPixel_, map);
     }
-    listen(feature, EventType.CHANGE,
-      this.handleFeatureChange_, this);
+    feature.addEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
   }
 
   /**
@@ -371,8 +368,7 @@ class Modify extends PointerInteraction {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
-    unlisten(feature, EventType.CHANGE,
-      this.handleFeatureChange_, this);
+    feature.removeEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
   }
 
   /**

@@ -2,7 +2,6 @@
  * @module ol/TileQueue
  */
 import TileState from './TileState.js';
-import {listen, unlisten} from './events.js';
 import EventType from './events/EventType.js';
 import PriorityQueue from './structs/PriorityQueue.js';
 
@@ -36,6 +35,9 @@ class TileQueue extends PriorityQueue {
         return (/** @type {import("./Tile.js").default} */ (element[0]).getKey());
       });
 
+    /** @private */
+    this.boundHandleTileChange_ = this.handleTileChange.bind(this);
+
     /**
      * @private
      * @type {function(): ?}
@@ -63,7 +65,7 @@ class TileQueue extends PriorityQueue {
     const added = super.enqueue(element);
     if (added) {
       const tile = element[0];
-      listen(tile, EventType.CHANGE, this.handleTileChange, this);
+      tile.addEventListener(EventType.CHANGE, this.boundHandleTileChange_);
     }
     return added;
   }
@@ -84,7 +86,7 @@ class TileQueue extends PriorityQueue {
     const state = tile.getState();
     if (tile.hifi && state === TileState.LOADED || state === TileState.ERROR ||
         state === TileState.EMPTY || state === TileState.ABORT) {
-      unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
+      tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
       const tileKey = tile.getKey();
       if (tileKey in this.tilesLoadingKeys_) {
         delete this.tilesLoadingKeys_[tileKey];

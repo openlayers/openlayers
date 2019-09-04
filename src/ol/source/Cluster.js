@@ -7,7 +7,6 @@ import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import GeometryType from '../geom/GeometryType.js';
 import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';
-import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
@@ -88,7 +87,7 @@ class Cluster extends VectorSource {
      */
     this.source = options.source;
 
-    listen(this.source, EventType.CHANGE, this.refresh, this);
+    this.source.addEventListener(EventType.CHANGE, this.refresh.bind(this));
   }
 
   /**

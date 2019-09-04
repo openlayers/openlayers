@@ -2,8 +2,7 @@
  * @module ol/Geolocation
  */
 import BaseObject, {getChangeEventType} from './Object.js';
-import {listen} from './events.js';
-import Event from './events/Event.js';
+import BaseEvent from './events/Event.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
 import {toRadians} from './math.js';
@@ -31,7 +30,7 @@ const Property = {
  * @classdesc
  * Events emitted on Geolocation error.
  */
-class GeolocationError extends Event {
+class GeolocationError extends BaseEvent {
   /**
    * @param {PositionError} error error object.
    */
@@ -115,12 +114,8 @@ class Geolocation extends BaseObject {
      */
     this.watchId_ = undefined;
 
-    listen(
-      this, getChangeEventType(Property.PROJECTION),
-      this.handleProjectionChanged_, this);
-    listen(
-      this, getChangeEventType(Property.TRACKING),
-      this.handleTrackingChanged_, this);
+    this.addEventListener(getChangeEventType(Property.PROJECTION), this.handleProjectionChanged_);
+    this.addEventListener(getChangeEventType(Property.TRACKING), this.handleTrackingChanged_);
 
     if (options.projection !== undefined) {
       this.setProjection(options.projection);

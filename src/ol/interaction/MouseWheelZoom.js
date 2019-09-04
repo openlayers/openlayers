@@ -3,7 +3,7 @@
  */
 import {always} from '../events/condition.js';
 import EventType from '../events/EventType.js';
-import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
+import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 import {clamp} from '../math.js';
 
@@ -153,7 +153,7 @@ class MouseWheelZoom extends Interaction {
       return true;
     }
     const type = mapBrowserEvent.type;
-    if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
+    if (type !== EventType.WHEEL) {
       return true;
     }
 
@@ -177,11 +177,6 @@ class MouseWheelZoom extends Interaction {
       }
       if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
         delta *= 40;
-      }
-    } else if (mapBrowserEvent.type == EventType.MOUSEWHEEL) {
-      delta = -wheelEvent.wheelDeltaY;
-      if (SAFARI) {
-        delta /= 3;
       }
     }
 

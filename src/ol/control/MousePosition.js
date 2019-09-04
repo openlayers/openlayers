@@ -2,10 +2,11 @@
  * @module ol/control/MousePosition
  */
 import {listen} from '../events.js';
-import EventType from '../events/EventType.js';
+import EventType from '../pointer/EventType.js';
 import {getChangeEventType} from '../Object.js';
 import Control from './Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
+import '@openlayers/pepjs';
 
 
 /**
@@ -67,9 +68,7 @@ class MousePosition extends Control {
       target: options.target
     });
 
-    listen(this,
-      getChangeEventType(PROJECTION),
-      this.handleProjectionChanged_, this);
+    this.addEventListener(getChangeEventType(PROJECTION), this.handleProjectionChanged_);
 
     if (options.coordinateFormat) {
       this.setCoordinateFormat(options.coordinateFormat);
@@ -170,13 +169,11 @@ class MousePosition extends Control {
     if (map) {
       const viewport = map.getViewport();
       this.listenerKeys.push(
-        listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this),
-        listen(viewport, EventType.TOUCHSTART, this.handleMouseMove, this)
+        listen(viewport, EventType.POINTERMOVE, this.handleMouseMove, this)
       );
       if (this.renderOnMouseOut_) {
         this.listenerKeys.push(
-          listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this),
-          listen(viewport, EventType.TOUCHEND, this.handleMouseOut, this)
+          listen(viewport, EventType.POINTEROUT, this.handleMouseOut, this)
         );
       }
     }

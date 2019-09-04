@@ -3,7 +3,6 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
-import {getListeners} from '../../../../src/ol/events.js';
 import {doubleClick} from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -13,6 +12,7 @@ import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Event from '../../../../src/ol/events/Event.js';
+import {getValues} from '../../../../src/ol/obj.js';
 
 
 describe('ol.interaction.Modify', function() {
@@ -607,10 +607,10 @@ describe('ol.interaction.Modify', function() {
 
     beforeEach(function() {
       getModifyListeners = function(feature, modify) {
-        const listeners = getListeners(
-          feature, 'change');
+        const listeners = feature.listeners_['change'];
+        const candidates = getValues(modify);
         return listeners.filter(function(listener) {
-          return listener.bindTo === modify;
+          return candidates.indexOf(listener) !== -1;
         });
       };
     });
