@@ -16,7 +16,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen, listenOnce} from '../events.js';
 import EventType from '../events/EventType.js';
-import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
+import {containsExtent, equals as equalsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
 
 
 /**
@@ -303,7 +303,7 @@ class OverviewMap extends Control {
 
   /**
    * Handle rotation changes to the main map.
-   * TODO: This should rotate the extent rectrangle instead of the
+   * TODO: This should rotate the extent rectangle instead of the
    * overview map's view.
    * @private
    */
@@ -334,6 +334,12 @@ class OverviewMap extends Control {
 
     const view = map.getView();
     const extent = view.calculateExtent(mapSize);
+
+    if (this.viewExtent_ && equalsExtent(extent, this.viewExtent_)) {
+      // repeats of the same extent may indicate constraint conflicts leading to an endless cycle
+      return;
+    }
+    this.viewExtent_ = extent;
 
     const ovmapSize = /** @type {import("../size.js").Size} */ (ovmap.getSize());
 
