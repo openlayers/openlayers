@@ -111,7 +111,7 @@ class LineString extends SimpleGeometry {
    * value immediately. Otherwise the function returns `false`.
    *
    * @param {function(this: S, import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): T} callback Function
-   *     called for each segment.
+   *     called for each segment. The function will receive two arguments, the start and end coordinates of the segment.
    * @return {T|boolean} Value.
    * @template T,S
    * @api
