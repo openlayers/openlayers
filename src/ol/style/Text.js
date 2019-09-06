@@ -184,7 +184,8 @@ class Text {
       offsetX: this.getOffsetX(),
       offsetY: this.getOffsetY(),
       backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
-      backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined
+      backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined,
+      padding: this.getPadding()
     });
   }
 
