@@ -39,7 +39,9 @@ describe('ol.control.OverviewMap', function() {
       });
       map.setView(view);
 
-      const control = new OverviewMap();
+      const control = new OverviewMap({
+        rotateWithView: true
+      });
       map.addControl(control);
       const ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
@@ -49,7 +51,9 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('maintains rotation in sync if view added later', function() {
-      const control = new OverviewMap();
+      const control = new OverviewMap({
+        rotateWithView: true
+      });
       map.addControl(control);
       const ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
@@ -65,7 +69,9 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('stops listening to old maps', function() {
-      const control = new OverviewMap();
+      const control = new OverviewMap({
+        rotateWithView: true
+      });
       const ovView = control.ovmap_.getView();
 
       const view = new View({
