@@ -168,6 +168,12 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
+     * @type {*}
+     */
+    this.postRenderTimeoutHandle_;
+
+    /**
+     * @private
      * @type {number|undefined}
      */
     this.animationDelayKey_;
@@ -1022,6 +1028,8 @@ class PluggableMap extends BaseObject {
 
     if (!targetElement) {
       if (this.renderer_) {
+        clearTimeout(this.postRenderTimeoutHandle_);
+        this.postRenderFunctions_.length = 0;
         this.renderer_.dispose();
         this.renderer_ = null;
       }
@@ -1284,7 +1292,7 @@ class PluggableMap extends BaseObject {
 
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
-    setTimeout(this.handlePostRender.bind(this), 0);
+    this.postRenderTimeoutHandle_ = setTimeout(this.handlePostRender.bind(this), 0);
 
   }
 
