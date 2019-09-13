@@ -1,0 +1,20 @@
+---
+layout: example.html
+title: Draw and Extend Features
+shortdesc: Example of using the extend function of ol/interaction/Draw interaction.
+docs: >
+  Example of using the the extend function of Draw interaction. Select a geometry type from the
+  dropdown above to start drawing. To finish drawing, click the last
+  point. Click the green LineString Feature to extend coordinates to your drawing.
+  Extending is supported for drawing LineStrings and Polygons.
+tags: "draw, edit, freehand, vector"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label>Geometry type &nbsp;</label>
+  <select id="type">
+    <option value="LineString">LineString</option>
+    <option value="Polygon">Polygon</option>
+    <option value="None">None</option>
+  </select>
+</form>
