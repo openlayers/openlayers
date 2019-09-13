@@ -2,11 +2,10 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import Snap from '../src/ol/interaction/Snap.js';
-import LineString from '../src/ol/geom/LineString';
-import Style from '../src/ol/style/Style';
-import Stroke from '../src/ol/style/Stroke';
+import Style from '../src/ol/style/Style.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Collection from '../src/ol/Collection.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js'
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
@@ -22,7 +21,7 @@ sampleFeatures.push(
       [-12000000, 4600000],
       [-12000000, 4000000],
       [-10000000, 5600000],
-      [ -9000000, 3000000],
+      [-9000000,  3000000],
       [-10000000, 4000000],
       [-11000000, 3000000],
       [-13000000, 4000000],
@@ -59,16 +58,18 @@ const map = new Map({
   })
 });
 
+let draw; // global so we can remove it later
+
 map.on('click', (event) => {
   let clickedFeature = null;
   map.forEachFeatureAtPixel(
     event.pixel,
-    (feature, layer) => {
+    (feature) => {
       clickedFeature = feature;
     }, {
       hitTolerance: 10,
       layerFilter: (layer) => {
-        return layer === sampleVector
+        return layer === sampleVector;
       }
     }
   );
@@ -86,7 +87,6 @@ const snapInteraction = new Snap({
 
 const typeSelect = document.getElementById('type');
 
-let draw; // global so we can remove it later
 function addInteraction() {
   const value = typeSelect.value;
   if (value !== 'None') {
