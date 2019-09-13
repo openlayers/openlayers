@@ -6,6 +6,8 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
+const rotateWithView = document.getElementById('rotateWithView');
+
 const overviewMapControl = new OverviewMap({
   // see in overviewmap-custom.html to see the custom CSS used
   className: 'ol-overviewmap ol-custom-overviewmap',
@@ -20,6 +22,10 @@ const overviewMapControl = new OverviewMap({
   collapseLabel: '\u00BB',
   label: '\u00AB',
   collapsed: false
+});
+
+rotateWithView.addEventListener('change', function() {
+  overviewMapControl.setRotateWithView(this.checked);
 });
 
 const map = new Map({
