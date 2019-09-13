@@ -903,17 +903,17 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Extend an existing geometry by adding additional points. This only works
-   * when drawing LineStrings or Polygons. Extending supports only input
-   * features with `LineString` geometries, where the interaction will
-   * extend lines by adding points to the end of the coordinates array.
-   * @param {!Feature<LineString>} feature Feature to be extended.
+   * Extend the geometry that is being drawn, by  appending the linear coordinates
+   * given as the parameter to the coordinate array of currently drawn feature..
+   * This can be used when drawing LineStrings or Polygons. Extending supports
+   * only linear coordinates, such as the coordinates from a LineString
+   * or a LinearRing of a Polygon.
+   * @param {!LineCoordType} coordinateExtension Linear coordinates to be appended into
+   * the coordinate array.
    * @api
    */
-  extend(feature) {
-    const lineStringGeometry = feature.getGeometry();
-    const extendCoordinates = lineStringGeometry.getCoordinates();
-    const ending = extendCoordinates[extendCoordinates.length - 1].slice();
+  appendCoordinates(coordinateExtension) {
+    const ending = coordinateExtension[coordinateExtension.length - 1].slice();
     const mode = this.mode_;
 
     let coordinates = [];
@@ -925,9 +925,9 @@ class Draw extends PointerInteraction {
       return;
     }
 
-    // (1) Remove last coordinate, (2) extend coordinate list and (3) clone last coordinate
+    // (1) Remove last coordinate, (2) append coordinate list and (3) clone last coordinate
     coordinates.pop();
-    Array.prototype.push.apply(coordinates, extendCoordinates);
+    Array.prototype.push.apply(coordinates, coordinateExtension);
     coordinates.push(ending);
 
     // Update geometry and sketch line
@@ -943,6 +943,25 @@ class Draw extends PointerInteraction {
       }
     }
     this.updateSketchFeatures_();
+  }
+
+  /**
+   * Extend an existing geometry by adding additional points. This only works
+   * on features with `LineString` geometries, where the interaction will
+   * extend lines by adding points to the end of the coordinates array.
+   * @param {!Feature<LineString>} feature Feature to be extended.
+   * @api
+   */
+  extend(feature) {
+    const geometry = feature.getGeometry();
+    const lineString = geometry;
+    this.sketchFeature_ = feature;
+    this.sketchCoords_ = lineString.getCoordinates();
+    const last = this.sketchCoords_[this.sketchCoords_.length - 1];
+    this.finishCoordinate_ = last.slice();
+    this.sketchCoords_.push(last.slice());
+    this.updateSketchFeatures_();
+    this.dispatchEvent(new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_));
   }
 
   /**
