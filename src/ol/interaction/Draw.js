@@ -904,21 +904,45 @@ class Draw extends PointerInteraction {
 
   /**
    * Extend an existing geometry by adding additional points. This only works
-   * on features with `LineString` geometries, where the interaction will
+   * when drawing LineStrings or Polygons. Extending supports only input
+   * features with `LineString` geometries, where the interaction will
    * extend lines by adding points to the end of the coordinates array.
    * @param {!Feature<LineString>} feature Feature to be extended.
    * @api
    */
   extend(feature) {
-    const geometry = feature.getGeometry();
-    const lineString = geometry;
-    this.sketchFeature_ = feature;
-    this.sketchCoords_ = lineString.getCoordinates();
-    const last = this.sketchCoords_[this.sketchCoords_.length - 1];
-    this.finishCoordinate_ = last.slice();
-    this.sketchCoords_.push(last.slice());
+    const lineStringGeometry = feature.getGeometry();;
+    const extendCoordinates = lineStringGeometry.getCoordinates();
+    const ending = extendCoordinates[extendCoordinates.length-1].slice();
+    const mode = this.mode_;
+
+    let coordinates = [];
+    if (mode === Mode.LINE_STRING) {
+      coordinates = this.sketchCoords_;
+    } else if (mode === Mode.POLYGON) {
+      coordinates = (this.sketchCoords_)[0];
+    } else {
+      return;
+    }
+
+    // (1) Remove last coordinate, (2) extend coordinate list and (3) clone last coordinate
+    coordinates.pop();
+    Array.prototype.push.apply(coordinates, extendCoordinates);
+    coordinates.push(ending)
+
+    // Update geometry and sketch line
+    this.geometryFunction_(this.sketchCoords_, this.sketchFeature_.getGeometry());
+
+    if (mode === Mode.POLYGON) {
+      this.sketchLineCoords_ = this.sketchCoords_[0];
+      if (this.sketchLine_ !== null) {
+        this.sketchLine_.getGeometry().setCoordinates(this.sketchLineCoords_);
+      } else {
+        this.sketchLine_ = new Feature(
+          new LineString(this.sketchLineCoords_));
+      }
+    }
     this.updateSketchFeatures_();
-    this.dispatchEvent(new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_));
   }
 
   /**
