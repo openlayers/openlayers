@@ -897,9 +897,9 @@ class Draw extends PointerInteraction {
    * @api
    */
   extend(feature) {
-    const lineStringGeometry = feature.getGeometry();;
+    const lineStringGeometry = feature.getGeometry();
     const extendCoordinates = lineStringGeometry.getCoordinates();
-    const ending = extendCoordinates[extendCoordinates.length-1].slice();
+    const ending = extendCoordinates[extendCoordinates.length - 1].slice();
     const mode = this.mode_;
 
     let coordinates = [];
@@ -914,7 +914,7 @@ class Draw extends PointerInteraction {
     // (1) Remove last coordinate, (2) extend coordinate list and (3) clone last coordinate
     coordinates.pop();
     Array.prototype.push.apply(coordinates, extendCoordinates);
-    coordinates.push(ending)
+    coordinates.push(ending);
 
     // Update geometry and sketch line
     this.geometryFunction_(this.sketchCoords_, this.sketchFeature_.getGeometry());
