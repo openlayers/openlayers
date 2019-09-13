@@ -21,7 +21,7 @@ sampleFeatures.push(
       [-12000000, 4600000],
       [-12000000, 4000000],
       [-10000000, 5600000],
-      [-9000000,  3000000],
+      [-9000000, 3000000],
       [-10000000, 4000000],
       [-11000000, 3000000],
       [-13000000, 4000000],
@@ -77,7 +77,7 @@ map.on('click', (event) => {
     // In this demo we remove the new point that was clicked,
     // and add the whole feature instead:
     draw.removeLastPoint();
-    draw.extend(clickedFeature);
+    draw.appendCoordinates(clickedFeature.getGeometry().getCoordinates());
   }
 });
 
