@@ -121,7 +121,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
           !containsExtent(extent, frameState.extent) &&
           intersects(extent, frameState.extent);
     if (clipped) {
-      this.clip(context, frameState, extent);
+      this.clipUnrotated(context, frameState, extent);
     }
 
     const img = image.getImage();
