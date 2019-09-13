@@ -893,9 +893,9 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Extend the geometry that is being drawn, by  appending the linear coordinates
-   * given as the parameter to the coordinate array of currently drawn feature..
-   * This can be used when drawing LineStrings or Polygons. Extending supports
+   * Append the geometry that is currently being drawn with a copy of the
+   * linear coordinates given as the parameter.
+   * This can be used when drawing LineStrings or Polygons. Appending supports
    * only linear coordinates, such as the coordinates from a LineString
    * or a LinearRing of a Polygon.
    * @param {!LineCoordType} coordinateExtension Linear coordinates to be appended into
@@ -939,6 +939,11 @@ class Draw extends PointerInteraction {
    * Extend an existing geometry by adding additional points. This only works
    * on features with `LineString` geometries, where the interaction will
    * extend lines by adding points to the end of the coordinates array.
+   * This will change the original feature, instead of drawing a copy.
+   *
+   * Extend can be used without having triggered the startDrawing_ function.
+   * The function will dispatch a DRAWSTART event.
+   *
    * @param {!Feature<LineString>} feature Feature to be extended.
    * @api
    */
