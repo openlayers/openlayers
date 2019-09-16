@@ -11,3 +11,4 @@ export {default as MultiPoint} from './geom/MultiPoint.js';
 export {default as MultiPolygon} from './geom/MultiPolygon.js';
 export {default as Point} from './geom/Point.js';
 export {default as Polygon} from './geom/Polygon.js';
+export {default as LinearRing} from './geom/LinearRing.js';
