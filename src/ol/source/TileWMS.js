@@ -159,7 +159,7 @@ class TileWMS extends TileImage {
    * @return {string|undefined} GetFeatureInfo URL.
    * @api
    */
-  getGetFeatureInfoUrl(coordinate, resolution, projection, params) {
+  getFeatureInfoUrl(coordinate, resolution, projection, params) {
     const projectionObj = getProjection(projection);
     const sourceProjectionObj = this.getProjection();
 
@@ -224,7 +224,7 @@ class TileWMS extends TileImage {
    * @return {string|undefined} GetLegendGraphic URL.
    * @api
    */
-  getGetLegendGraphicUrl(resolution, params) {
+  getLegendUrl(resolution, params) {
     const layers = this.params_.LAYERS;
     const isSingleLayer = !Array.isArray(layers) || this.params_['LAYERS'].length === 1;
     if (this.urls[0] === undefined || !isSingleLayer) {

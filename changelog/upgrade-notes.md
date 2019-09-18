@@ -4,7 +4,7 @@
 
 #### Backwards incompatible changes
 
-#### Removal of `TOUCH` constant from `ol/has`
+##### Removal of `TOUCH` constant from `ol/has`
 
 If you were previously using this constant, you can check if `'ontouchstart'` is defined in `window` instead.
 
@@ -14,7 +14,7 @@ if ('ontouchstart' in window) {
 }
 ```
 
-#### Removal of `GEOLOCATION` constant from `ol/has`
+##### Removal of `GEOLOCATION` constant from `ol/has`
 
 If you were previously using this constant, you can check if `'geolocation'` is defined in `navigator` instead.
 
@@ -24,7 +24,7 @@ if ('geolocation' in navigator) {
 }
 ```
 
-#### Removal of CSS print rules
+##### Removal of CSS print rules
 
 The CSS media print rules were removed from the `ol.css` file. To get the previous behavior, use the following CSS:
 
@@ -36,7 +36,7 @@ The CSS media print rules were removed from the `ol.css` file. To get the previo
 }
 ```
 
-#### Removal of optional this arguments
+##### Removal of optional this arguments
 
 The optional this (i.e. opt_this) arguments were removed from the following methods.
 Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here:
@@ -253,6 +253,10 @@ The non API `getChecksum` functions of the style is also removed.
 The `ol/source/Vector#clear()` method no longer triggers a reload of the data from the server. If you were previously using `clear()` to refetch from the server, you now have to use `refresh()`.
 
 The `ol/source/Vector#refresh()` method now removes all features from the source and triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
+
+##### Renaming of `getGetFeatureInfoUrl` to `getFeatureInfoUrl`
+
+The `getGetFeatureInfoUrl` of `ol/source/ImageWMS` and `ol/source/TileWMS` is now called `getFeatureInfoUrl`.
 
 #### Other changes
 
