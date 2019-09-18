@@ -254,6 +254,10 @@ The `ol/source/Vector#clear()` method no longer triggers a reload of the data fr
 
 The `ol/source/Vector#refresh()` method now removes all features from the source and triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
 
+##### Renaming of `getGetFeatureInfoUrl` to `getFeatureInfoUrl`
+
+The `getGetFeatureInfoUrl` of `ol/source/ImageWMS` and `ol/source/TileWMS` is now called `getFeatureInfoUrl`.
+
 #### Other changes
 
 ##### Allow declutter in image render mode

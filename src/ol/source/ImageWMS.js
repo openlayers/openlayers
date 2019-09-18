@@ -155,7 +155,7 @@ class ImageWMS extends ImageSource {
    * @return {string|undefined} GetFeatureInfo URL.
    * @api
    */
-  getGetFeatureInfoUrl(coordinate, resolution, projection, params) {
+  getFeatureInfoUrl(coordinate, resolution, projection, params) {
     if (this.url_ === undefined) {
       return undefined;
     }
@@ -202,7 +202,7 @@ class ImageWMS extends ImageSource {
    * @return {string|undefined} GetLegendGraphic URL.
    * @api
    */
-  getGetLegendGraphicUrl(resolution, params) {
+  getLegendUrl(resolution, params) {
     const layers = this.params_.LAYERS;
     const isSingleLayer = !Array.isArray(layers) || this.params_['LAYERS'].length === 1;
     if (this.url_ === undefined || !isSingleLayer) {
