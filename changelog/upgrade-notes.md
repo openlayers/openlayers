@@ -4,7 +4,7 @@
 
 #### Backwards incompatible changes
 
-#### Removal of `TOUCH` constant from `ol/has`
+##### Removal of `TOUCH` constant from `ol/has`
 
 If you were previously using this constant, you can check if `'ontouchstart'` is defined in `window` instead.
 
@@ -14,7 +14,7 @@ if ('ontouchstart' in window) {
 }
 ```
 
-#### Removal of `GEOLOCATION` constant from `ol/has`
+##### Removal of `GEOLOCATION` constant from `ol/has`
 
 If you were previously using this constant, you can check if `'geolocation'` is defined in `navigator` instead.
 
@@ -24,7 +24,7 @@ if ('geolocation' in navigator) {
 }
 ```
 
-#### Removal of CSS print rules
+##### Removal of CSS print rules
 
 The CSS media print rules were removed from the `ol.css` file. To get the previous behavior, use the following CSS:
 
@@ -36,7 +36,7 @@ The CSS media print rules were removed from the `ol.css` file. To get the previo
 }
 ```
 
-#### Removal of optional this arguments
+##### Removal of optional this arguments
 
 The optional this (i.e. opt_this) arguments were removed from the following methods.
 Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here:
