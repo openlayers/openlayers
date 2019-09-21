@@ -1,32 +1,36 @@
-.ol-custom-overviewmap,
-.ol-custom-overviewmap.ol-uncollapsible {
+.mapcontainer {
+  position: relative;
+}
+
+div.ol-custom-overviewmap,
+div.ol-custom-overviewmap.ol-uncollapsible {
   bottom: auto;
   left: auto;
   right: 0;
   top: 0;
 }
 
-.ol-custom-overviewmap:not(.ol-collapsed)  {
+div.ol-custom-overviewmap:not(.ol-collapsed)  {
   border: 1px solid black;
 }
 
-.ol-custom-overviewmap .ol-overviewmap-map {
+div.ol-custom-overviewmap div.ol-overviewmap-map {
   border: none;
   width: 300px;
 }
 
-.ol-custom-overviewmap .ol-overviewmap-box {
+div.ol-custom-overviewmap div.ol-overviewmap-box {
   border: 2px solid red;
 }
 
-.ol-custom-overviewmap:not(.ol-collapsed) button{
+div.ol-custom-overviewmap:not(.ol-collapsed) button{
   bottom: auto;
   left: auto;
   right: 1px;
   top: 1px;
 }
 
-.ol-rotate {
+div.ol-rotate {
   top: 170px;
   right: 0;
 }
