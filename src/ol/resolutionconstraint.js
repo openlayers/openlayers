@@ -82,6 +82,9 @@ export function createSnapToResolutions(resolutions, opt_smooth, opt_maxExtent) 
 
         const capped = Math.min(cappedMaxRes, resolution);
         const z = Math.floor(linearFindNearest(resolutions, capped, direction));
+        if (resolutions[z] > cappedMaxRes && z < resolutions.length - 1) {
+          return resolutions[z + 1];
+        }
         return resolutions[z];
       } else {
         return undefined;
