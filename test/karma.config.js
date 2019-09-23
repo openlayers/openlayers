@@ -57,7 +57,7 @@ module.exports = function(karma) {
     },
     reporters: ['dots', 'coverage-istanbul'],
     coverageIstanbulReporter: {
-      reports: ['text-summary', 'html'],
+      reports: ['text-summary', 'lcovonly', 'html'],
       dir: path.resolve(__dirname, '../coverage/'),
       fixWebpackSourcePaths: true
     },

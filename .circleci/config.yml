@@ -27,6 +27,11 @@ jobs:
           name: Run Tests
           command: npm test
 
+      - run:
+          name: Post coverage to coveralls
+          command: echo "Do we have the variable COVERALLS_SERVICE_NAME=$COVERALLS_SERVICE_NAME" > ./coverage/mj.html
+          #command: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
       - store_artifacts:
           path: coverage/
           destination: coverage
