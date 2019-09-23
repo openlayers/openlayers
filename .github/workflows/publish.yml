@@ -18,7 +18,7 @@ jobs:
         run: npm ci
       - name: Publish
         run: |
-          VERSION=$(npx semver $(npm view ol@dev version) --increment prerelease --preid dev)
+          VERSION=$(node tasks/next-dev-version.js)
           npm --no-git-tag-version version ${VERSION}
           npm run build-package
           cd build/ol
