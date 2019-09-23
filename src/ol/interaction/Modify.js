@@ -775,7 +775,7 @@ class Modify extends PointerInteraction {
       return false;
     }
     this.handlePointerAtPixel_(evt.pixel, evt.map);
-    const pixelCoordinate = evt.map.getCoordinateFromPixel(evt.pixel);
+    const pixelCoordinate = evt.map.getCoordinateFromPixelInternal(evt.pixel);
     this.dragSegments_.length = 0;
     this.modified_ = false;
     const vertexFeature = this.vertexFeature_;
@@ -883,7 +883,7 @@ class Modify extends PointerInteraction {
    * @private
    */
   handlePointerAtPixel_(pixel, map) {
-    const pixelCoordinate = map.getCoordinateFromPixel(pixel);
+    const pixelCoordinate = map.getCoordinateFromPixelInternal(pixel);
     const sortByDistance = function(a, b) {
       return pointDistanceToSegmentDataSquared(pixelCoordinate, a) -
           pointDistanceToSegmentDataSquared(pixelCoordinate, b);
@@ -899,7 +899,7 @@ class Modify extends PointerInteraction {
       const node = nodes[0];
       const closestSegment = node.segment;
       let vertex = closestOnSegmentData(pixelCoordinate, node);
-      const vertexPixel = map.getPixelFromCoordinate(vertex);
+      const vertexPixel = map.getPixelFromCoordinateInternal(vertex);
       let dist = coordinateDistance(pixel, vertexPixel);
       if (dist <= this.pixelTolerance_) {
         /** @type {Object<string, boolean>} */
@@ -911,8 +911,8 @@ class Modify extends PointerInteraction {
           this.snappedToVertex_ = true;
           this.createOrUpdateVertexFeature_(vertex);
         } else {
-          const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-          const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+          const pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
+          const pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
           const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
           const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
           dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));

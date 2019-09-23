@@ -114,8 +114,8 @@ class DragPan extends PointerInteraction {
         const distance = this.kinetic_.getDistance();
         const angle = this.kinetic_.getAngle();
         const center = view.getCenterInternal();
-        const centerpx = map.getPixelFromCoordinate(center);
-        const dest = map.getCoordinateFromPixel([
+        const centerpx = map.getPixelFromCoordinateInternal(center);
+        const dest = map.getCoordinateFromPixelInternal([
           centerpx[0] - distance * Math.cos(angle),
           centerpx[1] - distance * Math.sin(angle)
         ]);

@@ -218,7 +218,7 @@ class MousePosition extends Control {
         }
       }
       const map = this.getMap();
-      const coordinate = map.getCoordinateFromPixel(pixel);
+      const coordinate = map.getCoordinateFromPixelExternal(pixel);
       if (coordinate) {
         this.transform_(coordinate, coordinate);
         const coordinateFormat = this.getCoordinateFormat();

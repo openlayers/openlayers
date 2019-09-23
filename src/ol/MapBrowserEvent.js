@@ -74,7 +74,7 @@ class MapBrowserEvent extends MapEvent {
    */
   get coordinate() {
     if (!this.coordinate_) {
-      this.coordinate_ = this.map.getCoordinateFromPixel(this.pixel);
+      this.coordinate_ = this.map.getCoordinateFromPixelInternal(this.pixel);
     }
     return this.coordinate_;
   }

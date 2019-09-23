@@ -105,7 +105,7 @@ class RenderBox extends Disposable {
       endPixel,
       [endPixel[0], startPixel[1]]
     ];
-    const coordinates = pixels.map(this.map_.getCoordinateFromPixel, this.map_);
+    const coordinates = pixels.map(this.map_.getCoordinateFromPixelInternal, this.map_);
     // close the polygon
     coordinates[4] = coordinates[0].slice();
     if (!this.geometry_) {

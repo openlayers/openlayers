@@ -361,9 +361,9 @@ class OverviewMap extends Control {
     const ovextent = ovview.calculateExtentInternal(ovmapSize);
 
     const topLeftPixel =
-        ovmap.getPixelFromCoordinate(getTopLeft(extent));
+        ovmap.getPixelFromCoordinateInternal(getTopLeft(extent));
     const bottomRightPixel =
-        ovmap.getPixelFromCoordinate(getBottomRight(extent));
+        ovmap.getPixelFromCoordinateInternal(getBottomRight(extent));
 
     const boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
     const boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);

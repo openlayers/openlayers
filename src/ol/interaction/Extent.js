@@ -13,6 +13,7 @@ import PointerInteraction from './Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import {createEditingStyle} from '../style/Style.js';
+import { toUserExtent } from '../proj.js';
 
 
 /**
@@ -177,12 +178,12 @@ class Extent extends PointerInteraction {
    * @private
    */
   snapToVertex_(pixel, map) {
-    const pixelCoordinate = map.getCoordinateFromPixel(pixel);
+    const pixelCoordinate = map.getCoordinateFromPixelInternal(pixel);
     const sortByDistance = function(a, b) {
       return squaredDistanceToSegment(pixelCoordinate, a) -
           squaredDistanceToSegment(pixelCoordinate, b);
     };
-    const extent = this.getExtent();
+    const extent = this.getExtentInternal();
     if (extent) {
       //convert extents to line segments and find the segment closest to pixelCoordinate
       const segments = getSegments(extent);
@@ -191,13 +192,13 @@ class Extent extends PointerInteraction {
 
       let vertex = (closestOnSegment(pixelCoordinate,
         closestSegment));
-      const vertexPixel = map.getPixelFromCoordinate(vertex);
+      const vertexPixel = map.getPixelFromCoordinateInternal(vertex);
 
       //if the distance is within tolerance, snap to the segment
       if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
         //test if we should further snap to a vertex
-        const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-        const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+        const pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
+        const pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
         const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
         const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
         const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
@@ -222,7 +223,7 @@ class Extent extends PointerInteraction {
 
     let vertex = this.snapToVertex_(pixel, map);
     if (!vertex) {
-      vertex = map.getCoordinateFromPixel(pixel);
+      vertex = map.getCoordinateFromPixelInternal(pixel);
     }
     this.createOrUpdatePointerFeature_(vertex);
   }
@@ -295,7 +296,7 @@ class Extent extends PointerInteraction {
     const pixel = mapBrowserEvent.pixel;
     const map = mapBrowserEvent.map;
 
-    const extent = this.getExtent();
+    const extent = this.getExtentInternal();
     let vertex = this.snapToVertex_(pixel, map);
 
     //find the extent corner opposite the passed corner
@@ -338,7 +339,7 @@ class Extent extends PointerInteraction {
       }
     //no snap - new bbox
     } else {
-      vertex = map.getCoordinateFromPixel(pixel);
+      vertex = map.getCoordinateFromPixelInternal(pixel);
       this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
       this.pointerHandler_ = getPointHandler(vertex);
     }
@@ -363,7 +364,7 @@ class Extent extends PointerInteraction {
   handleUpEvent(mapBrowserEvent) {
     this.pointerHandler_ = null;
     //If bbox is zero area, set to null;
-    const extent = this.getExtent();
+    const extent = this.getExtentInternal();
     if (!extent || getArea(extent) === 0) {
       this.setExtent(null);
     }
@@ -380,12 +381,22 @@ class Extent extends PointerInteraction {
   }
 
   /**
+   * Returns the current drawn extent in the view projection (or user projection if set)
+   *
+   * @return {import("../extent.js").Extent} Drawn extent in the view projection.
+   * @api
+   */
+  getExtentExternal() {
+    return toUserExtent(this.getExtentInternal(), this.getMap().getView().getProjection());
+  }
+
+  /**
    * Returns the current drawn extent in the view projection
    *
    * @return {import("../extent.js").Extent} Drawn extent in the view projection.
    * @api
    */
-  getExtent() {
+  getExtentInternal() {
     return this.extent_;
   }
 

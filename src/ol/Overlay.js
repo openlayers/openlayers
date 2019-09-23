@@ -419,14 +419,14 @@ class Overlay extends BaseObject {
 
       if (delta[0] !== 0 || delta[1] !== 0) {
         const center = /** @type {import("./coordinate.js").Coordinate} */ (map.getView().getCenterInternal());
-        const centerPx = map.getPixelFromCoordinate(center);
+        const centerPx = map.getPixelFromCoordinateInternal(center);
         const newCenterPx = [
           centerPx[0] + delta[0],
           centerPx[1] + delta[1]
         ];
 
         map.getView().animateInternal({
-          center: map.getCoordinateFromPixel(newCenterPx),
+          center: map.getCoordinateFromPixelInternal(newCenterPx),
           duration: this.autoPanAnimation.duration,
           easing: this.autoPanAnimation.easing
         });
@@ -488,7 +488,7 @@ class Overlay extends BaseObject {
       return;
     }
 
-    const pixel = map.getPixelFromCoordinate(position);
+    const pixel = map.getPixelFromCoordinateInternal(position);
     const mapSize = map.getSize();
     this.updateRenderedPosition(pixel, mapSize);
   }
