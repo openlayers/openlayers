@@ -120,7 +120,10 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * resolution constraint. It is used together with `maxZoom` (or
  * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
  * provided, it is given precedence over `minZoom`.
- * @property {boolean} [multiWorld=false] No more than one world is visible.
+ * @property {boolean} [multiWorld=false] If `false` the view is constrained so
+ * only one world is visible, and you cannot pan off the edge.  If `true` the map
+ * may show multiple worlds at low zoom levels.  Only used if the `projection` is
+ * global.  Note that if `extent` is also provided it is given precedence.
  * @property {boolean} [constrainResolution=false] If true, the view will always
  * animate to the closest zoom level after an interaction; false means
  * intermediary zoom levels are allowed.
