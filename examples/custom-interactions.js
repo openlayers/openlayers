@@ -123,13 +123,14 @@ const polygonFeature = new Feature(
   new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
     [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
 
 const map = new Map({
   interactions: defaultInteractions().extend([new Drag()]),
   layers: [
     new TileLayer({
       source: new TileJSON({
-        url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json'
+        url: 'https://a.tiles.mapbox.com/v4/aj.1x1-degrees.json?access_token=' + key
       })
     }),
     new VectorLayer({

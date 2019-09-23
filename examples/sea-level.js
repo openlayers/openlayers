@@ -37,7 +37,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new TileJSON({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
+        url: 'https://api.tiles.mapbox.com/v4/mapbox.world-light.json?secure&access_token=' + key,
         crossOrigin: 'anonymous'
       })
     }),

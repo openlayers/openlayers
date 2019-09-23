@@ -77,8 +77,9 @@ Progress.prototype.hide = function() {
 
 const progress = new Progress(document.getElementById('progress'));
 
+const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 const source = new TileJSON({
-  url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
+  url: 'https://api.tiles.mapbox.com/v4/mapbox.world-bright.json?secure&access_token=' + key,
   crossOrigin: 'anonymous'
 });
 

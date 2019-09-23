@@ -6,10 +6,10 @@ import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 
-
+const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 const raster = new TileLayer({
   source: new TileJSON({
-    url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure'
+    url: 'https://api.tiles.mapbox.com/v4/mapbox.world-dark.json?secure&access_token=' + key
   })
 });
 
