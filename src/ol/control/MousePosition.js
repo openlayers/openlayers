@@ -5,7 +5,7 @@ import {listen} from '../events.js';
 import EventType from '../pointer/EventType.js';
 import {getChangeEventType} from '../Object.js';
 import Control from './Control.js';
-import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
+import {getTransformFromProjections, identityTransform, get as getProjection, getUserProjection} from '../proj.js';
 import '@openlayers/pepjs';
 
 
@@ -218,8 +218,13 @@ class MousePosition extends Control {
         }
       }
       const map = this.getMap();
-      const coordinate = map.getCoordinateFromPixelExternal(pixel);
+      const coordinate = map.getCoordinateFromPixelInternal(pixel);
       if (coordinate) {
+        const userProjection = getUserProjection()
+        if (userProjection) {
+          this.transform_ = getTransformFromProjections(
+            this.mapProjection_, userProjection);
+        }
         this.transform_(coordinate, coordinate);
         const coordinateFormat = this.getCoordinateFormat();
         if (coordinateFormat) {
