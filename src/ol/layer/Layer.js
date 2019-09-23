@@ -35,6 +35,7 @@ import SourceState from '../source/State.js';
  * @property {import("../PluggableMap.js").default} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
+ * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  */
 
 
@@ -70,6 +71,11 @@ import SourceState from '../source/State.js';
  * {@link module:ol/layer/Layer~Layer#setMap} instead.
  *
  * A generic `change` event is fired when the state of the source changes.
+ *
+ * Please note that for performance reasons several layers might get rendered to
+ * the same HTML element, which will cause {@link module:ol/Map~Map#forEachLayerAtPixel} to
+ * give false positives. To avoid this, apply different `className` properties to the
+ * layers at creation time.
  *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender

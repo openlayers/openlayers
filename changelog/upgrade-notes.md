@@ -4,6 +4,23 @@
 
 #### Backwards incompatible changes
 
+##### Usage of `Map.forEachLayerAtPixel`
+
+Due to performance considerations, the layers in a map will sometimes be rendered into one
+single canvas instead of separate elements.
+This means `Map.forEachLayerAtPixel` will bring up false positives.
+
+The easiest solution to avoid that is to assign different `className` properties to each layer like so:
+```js
+new Layer({
+   // ...
+   className: 'my-layer'
+})
+```
+
+Please note that this may incur a significant performance loss when dealing with many layers and/or
+targetting mobile devices.
+
 ##### Removal of `TOUCH` constant from `ol/has`
 
 If you were previously using this constant, you can check if `'ontouchstart'` is defined in `window` instead.
