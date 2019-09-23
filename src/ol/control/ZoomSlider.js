@@ -204,7 +204,7 @@ class ZoomSlider extends Control {
     const resolution = this.getResolutionForPosition_(relativePosition);
     const zoom = view.getConstrainedZoom(view.getZoomForResolution(resolution));
 
-    view.animate({
+    view.animateInternal({
       zoom: zoom,
       duration: this.duration_,
       easing: easeOut

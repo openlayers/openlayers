@@ -24,7 +24,7 @@ describe('ol.interaction.KeyboardZoom', function() {
   describe('handleEvent()', function() {
     it('zooms on + and - keys', function() {
       const view = map.getView();
-      const spy = sinon.spy(view, 'animate');
+      const spy = sinon.spy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -41,7 +41,7 @@ describe('ol.interaction.KeyboardZoom', function() {
       expect(spy.getCall(1).args[0].resolution).to.eql(4);
       view.setResolution(2);
 
-      view.animate.restore();
+      view.animateInternal.restore();
     });
   });
 

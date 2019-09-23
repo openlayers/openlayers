@@ -418,14 +418,14 @@ class Overlay extends BaseObject {
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
-        const center = /** @type {import("./coordinate.js").Coordinate} */ (map.getView().getCenter());
+        const center = /** @type {import("./coordinate.js").Coordinate} */ (map.getView().getCenterInternal());
         const centerPx = map.getPixelFromCoordinate(center);
         const newCenterPx = [
           centerPx[0] + delta[0],
           centerPx[1] + delta[1]
         ];
 
-        map.getView().animate({
+        map.getView().animateInternal({
           center: map.getCoordinateFromPixel(newCenterPx),
           duration: this.autoPanAnimation.duration,
           easing: this.autoPanAnimation.easing

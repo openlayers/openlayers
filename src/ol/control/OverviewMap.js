@@ -11,6 +11,7 @@ import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
 import ViewProperty from '../ViewProperty.js';
 import Control from './Control.js';
+import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen, listenOnce} from '../events.js';
@@ -230,7 +231,7 @@ class OverviewMap extends Control {
     const endMoving = function(event) {
       const coordinates = ovmap.getEventCoordinate(event);
 
-      scope.getMap().getView().setCenter(coordinates);
+      scope.getMap().getView().setCenterInternal(coordinates);
 
       window.removeEventListener('mousemove', move);
       window.removeEventListener('mouseup', endMoving);
@@ -346,7 +347,7 @@ class OverviewMap extends Control {
     const mapSize = /** @type {import("../size.js").Size} */ (map.getSize());
 
     const view = map.getView();
-    const extent = view.calculateExtent(mapSize);
+    const extent = view.calculateExtentInternal(mapSize);
 
     if (this.viewExtent_ && equalsExtent(extent, this.viewExtent_)) {
       // repeats of the same extent may indicate constraint conflicts leading to an endless cycle
@@ -357,7 +358,7 @@ class OverviewMap extends Control {
     const ovmapSize = /** @type {import("../size.js").Size} */ (ovmap.getSize());
 
     const ovview = ovmap.getView();
-    const ovextent = ovview.calculateExtent(ovmapSize);
+    const ovextent = ovview.calculateExtentInternal(ovmapSize);
 
     const topLeftPixel =
         ovmap.getPixelFromCoordinate(getTopLeft(extent));
@@ -396,7 +397,7 @@ class OverviewMap extends Control {
     const mapSize = /** @type {import("../size.js").Size} */ (map.getSize());
 
     const view = map.getView();
-    const extent = view.calculateExtent(mapSize);
+    const extent = view.calculateExtentInternal(mapSize);
 
     const ovview = ovmap.getView();
 
@@ -407,7 +408,7 @@ class OverviewMap extends Control {
       MAX_RATIO / MIN_RATIO) / Math.LN2;
     const ratio = 1 / (Math.pow(2, steps / 2) * MIN_RATIO);
     scaleFromCenter(extent, ratio);
-    ovview.fit(extent);
+    ovview.fitInternal(polygonFromExtent(extent));
   }
 
   /**
@@ -423,7 +424,7 @@ class OverviewMap extends Control {
 
     const ovview = ovmap.getView();
 
-    ovview.setCenter(view.getCenter());
+    ovview.setCenterInternal(view.getCenterInternal());
   }
 
   /**
@@ -448,7 +449,7 @@ class OverviewMap extends Control {
 
     const overlay = this.boxOverlay_;
     const box = this.boxOverlay_.getElement();
-    const center = view.getCenter();
+    const center = view.getCenterInternal();
     const resolution = view.getResolution();
     const ovresolution = ovview.getResolution();
     const width = mapSize[0] * resolution / ovresolution;
