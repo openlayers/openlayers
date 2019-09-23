@@ -629,13 +629,22 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Returns the coordinate in view projection for a browser event.
+   * Returns the coordinate in user projection for a browser event.
    * @param {Event} event Event.
    * @return {import("./coordinate.js").Coordinate} Coordinate.
    * @api
    */
-  getEventCoordinate(event) {
+  getEventCoordinateExternal(event) {
     return this.getCoordinateFromPixelExternal(this.getEventPixel(event));
+  }
+
+  /**
+   * Returns the coordinate in view projection for a browser event.
+   * @param {Event} event Event.
+   * @return {import("./coordinate.js").Coordinate} Coordinate.
+   */
+  getEventCoordinateInternal(event) {
+    return this.getCoordinateFromPixelInternal(this.getEventPixel(event));
   }
 
   /**

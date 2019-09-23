@@ -63,7 +63,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  const coordinate = map.getEventCoordinate(evt.originalEvent);
+  const coordinate = map.getEventCoordinateExternal(evt.originalEvent);
   displayCountryInfo(coordinate);
 });
 
