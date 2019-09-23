@@ -20,7 +20,7 @@ import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
 import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
-import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
+import {clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
 import {DEVICE_PIXEL_RATIO, IMAGE_DECODE} from './has.js';
 import LayerGroup from './layer/Group.js';
@@ -1220,22 +1220,19 @@ class PluggableMap extends BaseObject {
    * @private
    */
   renderFrame_(time) {
-    let viewState;
-
     const size = this.getSize();
     const view = this.getView();
-    const extent = createEmpty();
     const previousFrameState = this.frameState_;
     /** @type {?FrameState} */
     let frameState = null;
     if (size !== undefined && hasArea(size) && view && view.isDef()) {
       const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
-      viewState = view.getState();
+      const viewState = view.getState();
       frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
         declutterItems: previousFrameState ? previousFrameState.declutterItems : [],
-        extent: extent,
+        extent: getForViewAndSize(viewState.center, viewState.resolution, viewState.rotation, size),
         focus: this.focus_ ? this.focus_ : viewState.center,
         index: this.frameIndex_++,
         layerIndex: 0,
@@ -1252,11 +1249,6 @@ class PluggableMap extends BaseObject {
         viewHints: viewHints,
         wantedTiles: {}
       };
-    }
-
-    if (frameState) {
-      frameState.extent = getForViewAndSize(viewState.center,
-        viewState.resolution, viewState.rotation, frameState.size, extent);
     }
 
     this.frameState_ = frameState;
