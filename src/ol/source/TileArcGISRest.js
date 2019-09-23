@@ -24,6 +24,8 @@ import {appendParams} from '../uri.js';
  * override the default service layer visibility. See
  * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
  * for further reference.
+ * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
+ * the image from the remote server.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
@@ -86,6 +88,12 @@ class TileArcGISRest extends TileImage {
      * @type {!Object}
      */
     this.params_ = options.params || {};
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
 
     /**
      * @private
@@ -165,7 +173,7 @@ class TileArcGISRest extends TileImage {
    * @inheritDoc
    */
   getTilePixelRatio(pixelRatio) {
-    return /** @type {number} */ (pixelRatio);
+    return this.hidpi_ ? /** @type {number} */ (pixelRatio) : 1;
   }
 
   /**
@@ -195,6 +203,10 @@ function tileUrlFunction(tileCoord, pixelRatio, projection) {
 
   if (tileGrid.getResolutions().length <= tileCoord[0]) {
     return undefined;
+  }
+
+  if (pixelRatio != 1 && !this.hidpi_) {
+    pixelRatio = 1;
   }
 
   const tileExtent = tileGrid.getTileCoordExtent(
