@@ -114,12 +114,13 @@ class CompositeMapRenderer extends MapRenderer {
       if (!element) {
         continue;
       }
-      if ((element !== previousElement || i == ii - 1) && element.childElementCount === 2 && !hasOverlay) {
+      const childElementCount = element.childElementCount;
+      if ((element !== previousElement || i == ii - 1) && childElementCount === 2 && !hasOverlay) {
         element.removeChild(element.lastElementChild);
       }
       if (element !== previousElement) {
         this.children_.push(element);
-        hasOverlay = false;
+        hasOverlay = childElementCount === 2;
         previousElement = element;
       }
     }
