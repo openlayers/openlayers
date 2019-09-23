@@ -31,7 +31,6 @@ export {default as MouseWheelZoom} from './interaction/MouseWheelZoom.js';
 export {default as PinchRotate} from './interaction/PinchRotate.js';
 export {default as PinchZoom} from './interaction/PinchZoom.js';
 export {default as Pointer} from './interaction/Pointer.js';
-export {default as Select} from './interaction/Select.js';
 export {default as Snap} from './interaction/Snap.js';
 export {default as Translate} from './interaction/Translate.js';
 
