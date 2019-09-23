@@ -4,6 +4,7 @@
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
+import {fromUserExtent} from '../../proj.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
 import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
@@ -50,7 +51,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     let renderedExtent = frameState.extent;
     if (layerState.extent !== undefined) {
-      renderedExtent = getIntersection(renderedExtent, layerState.extent);
+      renderedExtent = getIntersection(renderedExtent, fromUserExtent(layerState.extent, viewState.projection));
     }
 
     if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] && !isEmpty(renderedExtent)) {
@@ -116,12 +117,13 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     }
 
     // clipped rendering if layer extent is set
-    const extent = layerState.extent;
-    const clipped = extent !== undefined &&
-          !containsExtent(extent, frameState.extent) &&
-          intersects(extent, frameState.extent);
-    if (clipped) {
-      this.clipUnrotated(context, frameState, extent);
+    let clipped = false;
+    if (layerState.extent) {
+      const layerExtent = fromUserExtent(layerState.extent, viewState.projection);
+      clipped = !containsExtent(layerExtent, frameState.extent) && intersects(layerExtent, frameState.extent);
+      if (clipped) {
+        this.clipUnrotated(context, frameState, layerExtent);
+      }
     }
 
     const img = image.getImage();

@@ -2,6 +2,7 @@
  * @module ol/renderer/canvas/TileLayer
  */
 import {getUid} from '../../util.js';
+import {fromUserExtent} from '../../proj.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, equals, getIntersection, getTopLeft} from '../../extent.js';
@@ -147,10 +148,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
     const tileResolution = tileGrid.getResolution(z);
-    let extent = frameState.extent;
 
-    if (layerState.extent) {
-      extent = getIntersection(extent, layerState.extent);
+    let extent = frameState.extent;
+    const layerExtent = layerState.extent && fromUserExtent(layerState.extent, projection);
+    if (layerExtent) {
+      extent = getIntersection(extent, fromUserExtent(layerState.extent, projection));
     }
 
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
@@ -249,8 +251,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.clearRect(0, 0, width, height);
     }
 
-    if (layerState.extent) {
-      this.clipUnrotated(context, frameState, layerState.extent);
+    if (layerExtent) {
+      this.clipUnrotated(context, frameState, layerExtent);
     }
 
     this.preRender(context, frameState);

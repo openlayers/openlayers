@@ -3,7 +3,8 @@
  */
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
-import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
+import {buffer, createEmpty, containsExtent, getWidth, intersects as intersectsExtent} from '../../extent.js';
+import {fromUserExtent} from '../../proj.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
@@ -129,10 +130,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const vectorSource = this.getLayer().getSource();
 
     // clipped rendering if layer extent is set
-    const clipExtent = layerState.extent;
-    const clipped = clipExtent !== undefined;
-    if (clipped) {
-      this.clip(context, frameState, clipExtent);
+    let clipped = false;
+    if (layerState.extent) {
+      const layerExtent = fromUserExtent(layerState.extent, projection);
+      clipped = !containsExtent(layerExtent, frameState.extent) && intersectsExtent(layerExtent, frameState.extent);
+      if (clipped) {
+        this.clip(context, frameState, layerExtent);
+      }
     }
 
 
