@@ -184,7 +184,7 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    const {tolerance = 0, message = ''} = await renderPage(page, entry, options);
+    const {tolerance = 0.001, message = ''} = await renderPage(page, entry, options);
 
     if (options.fix) {
       await copyActualToExpected(entry);
@@ -204,7 +204,7 @@ async function renderEach(page, entries, options) {
     }
 
     if (mismatch > tolerance) {
-      options.log.error(`${detail}': mismatch ${mismatch.toFixed(3)}`);
+      options.log.error(`${detail}': mismatch ${mismatch}`);
       fail = true;
     } else {
       options.log.info(`${detail}': ok`);
@@ -251,11 +251,11 @@ async function render(entries, options) {
 }
 
 async function getLatest(patterns) {
-  const stats = await globby(patterns, {stats: true});
+  const infoList = await globby(patterns, {stats: true});
   let latest = 0;
-  for (const stat of stats) {
-    if (stat.mtime > latest) {
-      latest = stat.mtime;
+  for (const info of infoList) {
+    if (info.stats.mtime > latest) {
+      latest = info.stats.mtime;
     }
   }
   return latest;
