@@ -247,11 +247,9 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   relayEvent_(pointerEvent) {
-    if (this.map_.hasListener(pointerEvent.type)) {
-      const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
-      this.dispatchEvent(new MapBrowserPointerEvent(
-        pointerEvent.type, this.map_, pointerEvent, dragging));
-    }
+    const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
+    this.dispatchEvent(new MapBrowserPointerEvent(
+      pointerEvent.type, this.map_, pointerEvent, dragging));
   }
 
   /**
