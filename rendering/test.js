@@ -251,11 +251,11 @@ async function render(entries, options) {
 }
 
 async function getLatest(patterns) {
-  const stats = await globby(patterns, {stats: true});
+  const infoList = await globby(patterns, {stats: true});
   let latest = 0;
-  for (const stat of stats) {
-    if (stat.mtime > latest) {
-      latest = stat.mtime;
+  for (const info of infoList) {
+    if (info.stats.mtime > latest) {
+      latest = info.stats.mtime;
     }
   }
   return latest;
