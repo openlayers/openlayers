@@ -1465,22 +1465,24 @@ class View extends BaseObject {
   /**
    * Get a valid zoom level according to the current view constraints.
    * @param {number|undefined} targetZoom Target zoom.
-   * @param {number=} opt_direction Direction. Default is `0`. Specify `-1` or `1` to return
-   * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
-   * the nearest available value.
+   * @param {number=} [opt_direction=0] Indicate which resolution should be used
+   * by a renderer if the view resolution does not match any resolution of the tile source.
+   * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
+   * will be used. If -1, the nearest higher resolution will be used.
    * @return {number|undefined} Valid zoom level.
    */
   getConstrainedZoom(targetZoom, opt_direction) {
     const targetRes = this.getResolutionForZoom(targetZoom);
-    return this.getZoomForResolution(this.getConstrainedResolution(targetRes));
+    return this.getZoomForResolution(this.getConstrainedResolution(targetRes, opt_direction));
   }
 
   /**
    * Get a valid resolution according to the current view constraints.
    * @param {number|undefined} targetResolution Target resolution.
-   * @param {number=} opt_direction Direction. Default is `0`. Specify `-1` or `1` to return
-   * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
-   * the nearest available value.
+   * @param {number=} [opt_direction=0] Indicate which resolution should be used
+   * by a renderer if the view resolution does not match any resolution of the tile source.
+   * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
+   * will be used. If -1, the nearest higher resolution will be used.
    * @return {number|undefined} Valid resolution.
    */
   getConstrainedResolution(targetResolution, opt_direction) {
