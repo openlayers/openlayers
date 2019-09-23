@@ -430,6 +430,8 @@ describe('ol.View', function() {
 
         const defaultMaxRes = 156543.03392804097;
         const size = [512, 512];
+        const maxResolution = 160000;
+        const resolutions = [160000, 80000, 40000, 20000, 10000, 5000];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -439,11 +441,60 @@ describe('ol.View', function() {
           expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
         });
 
-        it('can be enabled by setting multiWorld to truet', function() {
+        it('can be enabled by setting multiWorld to true', function() {
           const fn = getConstraint({
             multiWorld: true
           });
           expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes);
+        });
+
+        it('disabled, with constrainResolution', function() {
+          const fn = getConstraint({
+            maxResolution: maxResolution,
+            constrainResolution: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+        });
+
+        it('enabled, with constrainResolution', function() {
+          const fn = getConstraint({
+            maxResolution: maxResolution,
+            constrainResolution: true,
+            multiWorld: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(maxResolution);
+        });
+
+        it('disabled, with resolutions array', function() {
+          const fn = getConstraint({
+            resolutions: resolutions
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+        });
+
+        it('enabled, with resolutions array', function() {
+          const fn = getConstraint({
+            resolutions: resolutions,
+            multiWorld: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes);
+        });
+
+        it('disabled, with resolutions array and constrainResolution', function() {
+          const fn = getConstraint({
+            resolutions: resolutions,
+            constrainResolution: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(resolutions[2]);
+        });
+
+        it('enabled, with resolutions array and constrainResolution', function() {
+          const fn = getConstraint({
+            resolutions: resolutions,
+            constrainResolution: true,
+            multiWorld: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(resolutions[0]);
         });
       });
 
