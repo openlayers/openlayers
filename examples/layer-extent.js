@@ -15,9 +15,11 @@ const extents = {
   Sweden: transform([11.02737, 55.36174, 23.90338, 69.10625])
 };
 
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+
 const base = new TileLayer({
   source: new TileJSON({
-    url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
+    url: 'https://api.tiles.mapbox.com/v4/mapbox.world-light.json?secure&access_token=' + key,
     crossOrigin: 'anonymous'
   })
 });
@@ -25,7 +27,7 @@ const base = new TileLayer({
 const overlay = new TileLayer({
   extent: extents.India,
   source: new TileJSON({
-    url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
+    url: 'https://api.tiles.mapbox.com/v4/mapbox.world-black.json?secure&access_token=' + key,
     crossOrigin: 'anonymous'
   })
 });

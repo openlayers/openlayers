@@ -3,11 +3,13 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+const baseUrl = 'https://{a-c}.tiles.mapbox.com/v4';
 const urls = [
-  'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-jan/{z}/{x}/{y}.png',
-  'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-bathy-jan/{z}/{x}/{y}.png',
-  'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-jul/{z}/{x}/{y}.png',
-  'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-bathy-jul/{z}/{x}/{y}.png'
+  baseUrl + '/mapbox.blue-marble-topo-jan/{z}/{x}/{y}.png?access_token=' + key,
+  baseUrl + '/mapbox.blue-marble-topo-bathy-jan/{z}/{x}/{y}.png?access_token=' + key,
+  baseUrl + '/mapbox.blue-marble-topo-jul/{z}/{x}/{y}.png?access_token=' + key,
+  baseUrl + '/mapbox.blue-marble-topo-bathy-jul/{z}/{x}/{y}.png?access_token=' + key
 ];
 
 const source = new XYZ();

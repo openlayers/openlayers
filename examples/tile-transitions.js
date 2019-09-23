@@ -3,7 +3,8 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
-const url = 'https://{a-c}.tiles.mapbox.com/v3/mapbox.world-bright/{z}/{x}/{y}.png';
+const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
+const url = 'https://{a-c}.tiles.mapbox.com/v4/mapbox.world-bright/{z}/{x}/{y}.png?access_token=' + key;
 
 const withTransition = new TileLayer({
   source: new XYZ({url: url})
