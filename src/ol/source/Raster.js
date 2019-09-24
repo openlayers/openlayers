@@ -212,7 +212,6 @@ class RasterSource extends ImageSource {
       animate: false,
       coordinateToPixelTransform: createTransform(),
       extent: null,
-      focus: null,
       index: 0,
       layerIndex: 0,
       layerStatesArray: getLayerStatesArray(this.layers_),
@@ -286,7 +285,6 @@ class RasterSource extends ImageSource {
     const center = getCenter(extent);
 
     frameState.extent = extent.slice();
-    frameState.focus = center;
     frameState.size[0] = Math.round(getWidth(extent) / resolution);
     frameState.size[1] = Math.round(getHeight(extent) / resolution);
     frameState.time = Infinity;

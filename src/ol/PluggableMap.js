@@ -40,7 +40,6 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {import("./transform.js").Transform} coordinateToPixelTransform
  * @property {null|import("./extent.js").Extent} extent
  * @property {Array<DeclutterItems>} declutterItems
- * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
  * @property {number} layerIndex
@@ -344,12 +343,6 @@ class PluggableMap extends BaseObject {
      * @private
      */
     this.handleResize_;
-
-    /**
-     * @private
-     * @type {import("./coordinate.js").Coordinate}
-     */
-    this.focus_ = null;
 
     /**
      * @private
@@ -891,12 +884,13 @@ class PluggableMap extends BaseObject {
     }
     // Prioritize the highest zoom level tiles closest to the focus.
     // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).
-    // Within a zoom level, tiles are prioritized by the distance in pixels
-    // between the center of the tile and the focus.  The factor of 65536 means
-    // that the prioritization should behave as desired for tiles up to
+    // Within a zoom level, tiles are prioritized by the distance in pixels between
+    // the center of the tile and the center of the viewport.  The factor of 65536
+    // means that the prioritization should behave as desired for tiles up to
     // 65536 * Math.log(2) = 45426 pixels from the focus.
-    const deltaX = tileCenter[0] - frameState.focus[0];
-    const deltaY = tileCenter[1] - frameState.focus[1];
+    const center = frameState.viewState.center;
+    const deltaX = tileCenter[0] - center[0];
+    const deltaY = tileCenter[1] - center[1];
     return 65536 * Math.log(tileResolution) +
         Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
   }
@@ -927,7 +921,6 @@ class PluggableMap extends BaseObject {
       }
       target = target.parentElement;
     }
-    this.focus_ = mapBrowserEvent.coordinate;
     mapBrowserEvent.frameState = this.frameState_;
     const interactionsArray = this.getInteractions().getArray();
     if (this.dispatchEvent(mapBrowserEvent) !== false) {
@@ -1229,7 +1222,6 @@ class PluggableMap extends BaseObject {
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
         declutterItems: previousFrameState ? previousFrameState.declutterItems : [],
         extent: getForViewAndSize(viewState.center, viewState.resolution, viewState.rotation, size),
-        focus: this.focus_ ? this.focus_ : viewState.center,
         index: this.frameIndex_++,
         layerIndex: 0,
         layerStatesArray: this.getLayerGroup().getLayerStatesArray(),
