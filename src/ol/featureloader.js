@@ -5,6 +5,13 @@ import {VOID} from './functions.js';
 import FormatType from './format/FormatType.js';
 
 /**
+ *
+ * @type {boolean} withCredentials Compare https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
+ * @private
+ */
+let withCredentials = false;
+
+/**
  * {@link module:ol/source/Vector} sources use a function of this type to
  * load features.
  *
@@ -62,6 +69,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
       if (format.getType() == FormatType.ARRAY_BUFFER) {
         xhr.responseType = 'arraybuffer';
       }
+      xhr.withCredentials = withCredentials;
       /**
        * @param {Event} event Event.
        * @private
@@ -130,4 +138,15 @@ export function xhr(url, format) {
         /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(features);
       }
     }, /* FIXME handle error */ VOID);
+}
+
+/**
+ * Setter for the withCredentials configuration for the XHR.
+ *
+ * @param {boolean} xhrWithCredentials The value of withCredentials to set.
+ * Compare https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
+ * @api
+ */
+export function setWithCredentials(xhrWithCredentials) {
+  withCredentials = xhrWithCredentials;
 }
