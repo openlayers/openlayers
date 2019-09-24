@@ -122,7 +122,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState) {
-    return true;
+    return !!this.getLayer().getSource();
   }
 
   /**
