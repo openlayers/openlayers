@@ -5,6 +5,13 @@ class FunctionDoc {
   }
 }
 
+class TypedefDoc {
+  constructor(doc) {
+    this.name = doc.name;
+    this.doc = doc;
+  }
+}
+
 class ClassDoc {
   constructor(name) {
     this.name = name;
@@ -31,6 +38,7 @@ class ModuleDoc {
   processDoc(doc) {
     if (doc.kind === 'module') {
       this.doc = doc;
+      //console.log('processing module: ' + doc.longname)
       return;
     }
 
@@ -94,7 +102,7 @@ function moduleIDFromLongname(longname) {
   return match.groups.module;
 }
 
-function nameFromLongname(longname) {
+export function nameFromLongname(longname) {
   const match = longname.match(longnameRE);
   if (!match) {
     throw new Error(`could not match name in longname: ${longname}`);
@@ -146,7 +154,20 @@ class DocHelper {
     this.moduleLookup = {};
     this.modules = [];
 
+    this.typedefLookup = {};
+
     docs.forEach(doc => {
+      // typedef are indexed by long name
+      if (doc.kind === 'typedef') {
+        if (doc.name in this.typedefLookup) {
+          throw new Error(`Duplicate type definition ${doc.name} in ${this.id}`);
+        }
+
+        const type = new TypedefDoc(doc);
+        this.typedefLookup[doc.longname] = type;
+        return;
+      }
+
       const moduleID = moduleIDFromLongname(doc.longname);
       if (!(moduleID in this.moduleLookup)) {
         const module = new ModuleDoc(moduleID);
@@ -160,6 +181,11 @@ class DocHelper {
 
     this.modules.sort(byModuleId);
     this.modules.forEach(module => module.finalize());
+  }
+
+  getTypeDef(longName) {
+    this.typedefLookup[longName] && console.log(this.typedefLookup[longName]);
+    return this.typedefLookup[longName];
   }
 }
 

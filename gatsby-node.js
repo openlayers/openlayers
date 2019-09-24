@@ -3,7 +3,7 @@ function getDocs() {
   // TODO: build if not present
   const info = require('./build/api-info.json');
 
-  return info.docs.filter(doc => !doc.ignore && (doc.api || doc.kind === 'module'));
+  return info.docs.filter(doc => !doc.ignore && (doc.api || doc.kind === 'module' || doc.kind === 'typedef'));
 }
 
 function createPages({actions: {createPage}}) {

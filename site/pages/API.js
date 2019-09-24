@@ -13,7 +13,7 @@ function API({pageContext: {docs}}) {
       {helper.modules
         .filter(module => module.visible)
         .map(module => (
-          <Module key={module.id} module={module} />
+          <Module key={module.id} module={module} helper={helper} />
         ))}
     </Page>
   );
