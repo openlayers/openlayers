@@ -7,7 +7,7 @@ import View from '../../../src/ol/View.js';
 import {LineString, Point} from '../../../src/ol/geom.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
-import {get as getProjection, useGeographic, transform} from '../../../src/ol/proj.js';
+import {get as getProjection, useGeographic, transform, clearUserProjection} from '../../../src/ol/proj.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import DragPan from '../../../src/ol/interaction/DragPan.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
@@ -774,6 +774,7 @@ describe('ol.Map', function() {
       afterEach(function() {
         map.dispose();
         document.body.removeChild(target);
+        clearUserProjection();
       });
 
       it('gets coordinates in user projection', function(done) {

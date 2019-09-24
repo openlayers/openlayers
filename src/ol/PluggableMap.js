@@ -810,8 +810,8 @@ class PluggableMap extends BaseObject {
    * @api
    */
   getPixelFromCoordinateExternal(coordinate) {
-    const userCoordinate = fromUserCoordinate(coordinate, this.getView().getProjection());
-    return this.getPixelFromCoordinateInternal(userCoordinate);
+    const viewCoordinate = fromUserCoordinate(coordinate, this.getView().getProjection());
+    return this.getPixelFromCoordinateInternal(viewCoordinate);
   }
 
   /**
