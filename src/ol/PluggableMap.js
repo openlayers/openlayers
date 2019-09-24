@@ -27,7 +27,7 @@ import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
 import {create as createTransform, apply as applyTransform} from './transform.js';
-import {toUserCoordinate} from './proj.js';
+import {toUserCoordinate, fromUserCoordinate} from './proj.js';
 
 
 /**
@@ -810,7 +810,7 @@ class PluggableMap extends BaseObject {
    * @api
    */
   getPixelFromCoordinateExternal(coordinate) {
-    const userCoordinate = toUserCoordinate(coordinate, this.getView().getProjection());
+    const userCoordinate = fromUserCoordinate(coordinate, this.getView().getProjection());
     return this.getPixelFromCoordinateInternal(userCoordinate);
   }
 
