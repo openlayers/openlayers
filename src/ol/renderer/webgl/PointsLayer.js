@@ -574,6 +574,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
   }
+
+  /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    this.worker_.terminate();
+    super.disposeInternal();
+  }
 }
 
 export default WebGLPointsLayerRenderer;

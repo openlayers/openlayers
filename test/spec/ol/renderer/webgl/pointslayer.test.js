@@ -254,4 +254,20 @@ describe('ol.renderer.webgl.PointsLayer', function() {
     });
   });
 
+  describe('#disposeInternal', function() {
+    it('terminates the worker and calls dispose on the helper', function() {
+      const layer = new VectorLayer({
+        source: new VectorSource()
+      });
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+      });
+
+      const spyHelper = sinon.spy(renderer.helper, 'disposeInternal');
+      const spyWorker = sinon.spy(renderer.worker_, 'terminate');
+      renderer.disposeInternal();
+      expect(spyHelper.called).to.be(true);
+      expect(spyWorker.called).to.be(true);
+    });
+  });
+
 });
