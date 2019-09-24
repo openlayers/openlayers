@@ -5,10 +5,10 @@ import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {transform2D} from './flat/transform.js';
-import {get as getProjection, getTransform} from '../proj.js';
+import {get as getProjection, getTransform, getTransformFromProjections} from '../proj.js';
 import Units from '../proj/Units.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
-
+import {memoizeOne} from '../functions.js';
 
 /**
  * @type {import("../transform.js").Transform}
@@ -62,6 +62,24 @@ class Geometry extends BaseObject {
      * @type {number}
      */
     this.simplifiedGeometryRevision = 0;
+
+    /**
+     * Get a transformed and simplified version of the geometry.
+     * @abstract
+     * @param {number} squaredTolerance Squared tolerance.
+     * @param {import("../proj/Projection.js").default} sourceProjection The source projection.
+     * @param {import("../proj/Projection.js").default} destProjection The destination projection.
+     * @return {Geometry} Simplified geometry.
+     */
+    this.simplifyTransformed = memoizeOne(function(squaredTolerance, sourceProjection, destProjection) {
+      if (!sourceProjection || !destProjection) {
+        return this.getSimplifiedGeometry(squaredTolerance);
+      }
+      const transform = getTransformFromProjections(sourceProjection, destProjection);
+      const clone = this.clone();
+      clone.applyTransform(transform);
+      return clone.getSimplifiedGeometry(squaredTolerance);
+    });
 
   }
 

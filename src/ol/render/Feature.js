@@ -201,6 +201,18 @@ class RenderFeature {
   }
 
   /**
+   * Get a transformed and simplified version of the geometry.
+   * @abstract
+   * @param {number} squaredTolerance Squared tolerance.
+   * @param {import("../proj/Projection.js").default} sourceProjection The source projection.
+   * @param {import("../proj/Projection.js").default} destProjection The destination projection.
+   * @return {RenderFeature} Simplified geometry.
+   */
+  simplifyTransformed(squaredTolerance, sourceProjection, destProjection) {
+    return this;
+  }
+
+  /**
    * Get the feature properties.
    * @return {Object<string, *>} Feature properties.
    * @api

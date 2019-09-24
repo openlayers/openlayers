@@ -5,6 +5,7 @@ import {getUid} from '../util.js';
 import ImageState from '../ImageState.js';
 import GeometryType from '../geom/GeometryType.js';
 import BuilderType from '../render/canvas/BuilderType.js';
+import {getUserProjection} from '../proj.js';
 
 
 /**
@@ -92,10 +93,11 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(import("../events/Event.js").default): void} listener Listener function.
+ * @param {import("../proj/Projection.js").default} projection The view projection.
  * @return {boolean} `true` if style is loading.
  * @template T
  */
-export function renderFeature(replayGroup, feature, style, squaredTolerance, listener) {
+export function renderFeature(replayGroup, feature, style, squaredTolerance, listener, projection) {
   let loading = false;
   const imageStyle = style.getImage();
   if (imageStyle) {
@@ -111,7 +113,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
       loading = true;
     }
   }
-  renderFeatureInternal(replayGroup, feature, style, squaredTolerance);
+  renderFeatureInternal(replayGroup, feature, style, squaredTolerance, projection);
 
   return loading;
 }
@@ -122,13 +124,14 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
+ * @param {import("../proj/Projection.js").default} projection The view projection.
  */
-function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
+function renderFeatureInternal(replayGroup, feature, style, squaredTolerance, projection) {
   const geometry = style.getGeometryFunction()(feature);
   if (!geometry) {
     return;
   }
-  const simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
+  const simplifiedGeometry = geometry.simplifyTransformed(squaredTolerance, getUserProjection(), projection);
   const renderer = style.getRenderer();
   if (renderer) {
     renderGeometry(replayGroup, simplifiedGeometry, style, feature);

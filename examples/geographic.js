@@ -1,22 +1,33 @@
 import {useGeographic} from '../src/ol/proj.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import OSM from '../src/ol/source/OSM.js';
+import {Map, View, Feature} from '../src/ol/index.js';
+import {Point} from '../src/ol/geom.js';
+import {Vector as VectorLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 useGeographic();
 
+const place = [-110, 45];
+
+const point = new Point(place);
+
 const map = new Map({
+  target: 'map',
+  view: new View({
+    center: place,
+    zoom: 8
+  }),
   layers: [
     new TileLayer({
       source: new OSM()
+    }),
+    new VectorLayer({
+      source: new VectorSource({
+        features: [
+          new Feature(point)
+        ]
+      })
     })
-  ],
-  target: 'map',
-  view: new View({
-    center: [-110, 45],
-    zoom: 8
-  })
+  ]
 });
 
 const info = document.getElementById('info');

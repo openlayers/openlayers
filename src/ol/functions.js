@@ -2,6 +2,8 @@
  * @module ol/functions
  */
 
+import {equals as arrayEquals} from './array.js';
+
 /**
  * Always returns true.
  * @returns {boolean} true.
@@ -24,3 +26,36 @@ export function FALSE() {
  * @return {void} Nothing.
  */
 export function VOID() {}
+
+/**
+ * Wrap a function in another function that remembers the last return.  If the
+ * returned function is called twice in a row with the same arguments and the same
+ * this object, it will return the value from the first call in the second call.
+ *
+ * @template ReturnType
+ * @template ThisType
+ * @param {function(this:ThisType, ...any):ReturnType} fn The function to memoize.
+ * @return {function(this:ThisType, ...any):ReturnType} The memoized function.
+ */
+export function memoizeOne(fn) {
+  let called = false;
+
+  /** @type ReturnType */
+  let lastResult;
+
+  /** @type Array<any> */
+  let lastArgs;
+
+  let lastThis;
+
+  return function() {
+    const nextArgs = Array.prototype.slice.call(arguments);
+    if (!called || this !== lastThis || !arrayEquals(nextArgs, lastArgs)) {
+      called = true;
+      lastThis = this;
+      lastArgs = nextArgs;
+      lastResult = fn.apply(this, arguments);
+    }
+    return lastResult;
+  };
+}

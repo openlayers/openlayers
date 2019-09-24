@@ -4,7 +4,7 @@
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, createEmpty, containsExtent, getWidth, intersects as intersectsExtent} from '../../extent.js';
-import {fromUserExtent} from '../../proj.js';
+import {fromUserExtent, toUserExtent, getUserProjection} from '../../proj.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
@@ -304,7 +304,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
       pixelRatio, vectorLayer.getDeclutter());
 
-    vectorSource.loadFeatures(extent, resolution, projection);
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      vectorSource.loadFeatures(toUserExtent(extent, projection), resolution, userProjection);
+    } else {
+      vectorSource.loadFeatures(extent, resolution, projection);
+    }
 
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
@@ -319,15 +324,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         styles = styleFunction(feature, resolution);
       }
       if (styles) {
-        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
+        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup, projection);
         this.dirty_ = this.dirty_ || dirty;
       }
     }.bind(this);
 
+    const userExtent = toUserExtent(extent, projection);
     if (vectorLayerRenderOrder) {
       /** @type {Array<import("../../Feature.js").default>} */
       const features = [];
-      vectorSource.forEachFeatureInExtent(extent,
+      vectorSource.forEachFeatureInExtent(userExtent,
         /**
          * @param {import("../../Feature.js").default} feature Feature.
          */
@@ -339,7 +345,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         render(features[i]);
       }
     } else {
-      vectorSource.forEachFeatureInExtent(extent, render);
+      vectorSource.forEachFeatureInExtent(userExtent, render);
     }
 
     const replayGroupInstructions = replayGroup.finish();
@@ -362,9 +368,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
+   * @param {import("../../proj/Projection.js").default} projection The view projection.
    * @return {boolean} `true` if an image is loading.
    */
-  renderFeature(feature, squaredTolerance, styles, builderGroup) {
+  renderFeature(feature, squaredTolerance, styles, builderGroup, projection) {
     if (!styles) {
       return false;
     }
@@ -373,12 +380,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
           builderGroup, feature, styles[i], squaredTolerance,
-          this.boundHandleStyleImageChange_) || loading;
+          this.boundHandleStyleImageChange_, projection) || loading;
       }
     } else {
       loading = renderFeature(
         builderGroup, feature, styles, squaredTolerance,
-        this.boundHandleStyleImageChange_);
+        this.boundHandleStyleImageChange_, projection);
     }
     return loading;
   }
