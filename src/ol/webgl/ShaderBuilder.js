@@ -16,17 +16,8 @@ export function formatNumber(v) {
 }
 
 /**
- * @typedef {Object} SymbolShaderParameters
- * @property {number|Array.<number, number>} size Size.
- * @property {boolean} [rotateWithView] Rotate with view.
- * @property {Array.<number, number>} [offset] Offset.
- * @property {Array.<number, number, number, number>} [textureCoord] Texture coordinates: u0, v0, u1, v1.
- * @property {number} [opacity] Opacity.
- * @property {import("../color.js").Color|string} [color] Color.
- */
-
-/**
- * Generates a symbol vertex shader, i.e. a shader intended to be used on point geometries.
+ * Generates a symbol vertex shader from a literal style,
+ * intended to be used on point geometries.
  *
  * Expected the following attributes to be present in the attribute array:
  * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3).
@@ -34,7 +25,7 @@ export function formatNumber(v) {
  * Transmits the following varyings to the fragment shader:
  * `vec2 v_texCoord`, `float v_opacity`, `vec4 v_color`
  *
- * @param {SymbolShaderParameters} parameters Parameters for the shader.
+ * @param {import('../style/LiteralStyle.js').LiteralSymbolStyle} parameters Parameters for the shader.
  * @returns {string} The full shader as a string.
  */
 export function getSymbolVertexShader(parameters) {
@@ -82,7 +73,7 @@ void main(void) {
 }
 
 /**
- * Generates a symbol fragment shader, i.e. a shader intended to be used on point geometries.
+ * Generates a symbol fragment shader intended to be used on point geometries.
  *
  * Expected the following varyings to be transmitted by the vertex shader:
  * `vec2 v_texCoord`, `float v_opacity`, `vec4 v_color`

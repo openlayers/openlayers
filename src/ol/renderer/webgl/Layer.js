@@ -123,9 +123,9 @@ const tmpArray_ = [];
 const bufferPositions_ = {vertexPosition: 0, indexPosition: 0};
 
 export const POINT_INSTRUCTIONS_COUNT = 13;
-export const POINT_VERTEX_STRIDE = 12;
+export const POINT_VERTEX_STRIDE = 13;
 
-function writePointVertex(buffer, pos, x, y, offsetX, offsetY, u, v, opacity, rotateWithView, red, green, blue, alpha) {
+function writePointVertex(buffer, pos, x, y, offsetX, offsetY, u, v, opacity, rotateWithView, red, green, blue, alpha, index) {
   buffer[pos + 0] = x;
   buffer[pos + 1] = y;
   buffer[pos + 2] = offsetX;
@@ -138,6 +138,7 @@ function writePointVertex(buffer, pos, x, y, offsetX, offsetY, u, v, opacity, ro
   buffer[pos + 9] = green;
   buffer[pos + 10] = blue;
   buffer[pos + 11] = alpha;
+  buffer[pos + 12] = index;
 }
 
 function writeCustomAttrs(buffer, pos, customAttrs) {
@@ -202,19 +203,19 @@ export function writePointFeatureToBuffers(instructions, elementIndex, vertexBuf
   const baseIndex = vPos / stride;
 
   // push vertices for each of the four quad corners (first standard then custom attributes)
-  writePointVertex(vertexBuffer, vPos, x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
+  writePointVertex(vertexBuffer, vPos, x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha, 0);
   writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
   vPos += stride;
 
-  writePointVertex(vertexBuffer, vPos, x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
+  writePointVertex(vertexBuffer, vPos, x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha, 1);
   writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
   vPos += stride;
 
-  writePointVertex(vertexBuffer, vPos, x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
+  writePointVertex(vertexBuffer, vPos, x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha, 2);
   writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
   vPos += stride;
 
-  writePointVertex(vertexBuffer, vPos, x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
+  writePointVertex(vertexBuffer, vPos, x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha, 3);
   writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
   vPos += stride;
 

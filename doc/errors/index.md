@@ -240,3 +240,7 @@ Support for the `OES_element_index_uint` WebGL extension is mandatory for WebGL 
 ### 64
 
 Layer opacity must be a number.
+
+### 65
+
+A symbol literal representation must be defined on the style supplied to a `WebGLPointsLayer` instance.

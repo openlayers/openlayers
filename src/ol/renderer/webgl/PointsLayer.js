@@ -408,6 +408,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
     this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
     this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
+    this.helper.enableAttributeArray('a_index', 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 12);
 
     return true;
   }
@@ -568,6 +569,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 6);
     this.helper.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 7);
     this.helper.enableAttributeArray(DefaultAttrib.COLOR, 4, FLOAT, bytesPerFloat * stride, bytesPerFloat * 8);
+    this.helper.enableAttributeArray('a_index', 1, FLOAT, bytesPerFloat * stride, bytesPerFloat * 12);
 
     const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
