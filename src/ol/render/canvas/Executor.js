@@ -556,8 +556,7 @@ class Executor extends Disposable {
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
-          if (opt_hitExtent !== undefined && !intersects(
-            opt_hitExtent, feature.getGeometry().getExtent())) {
+          if (opt_hitExtent !== undefined && !intersects(opt_hitExtent, instruction[3])) {
             i = /** @type {number} */ (instruction[2]) + 1;
           } else {
             ++i;

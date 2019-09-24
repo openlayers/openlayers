@@ -488,7 +488,7 @@ class Overlay extends BaseObject {
       return;
     }
 
-    const pixel = map.getPixelFromCoordinateInternal(position);
+    const pixel = map.getPixelFromCoordinate(position);
     const mapSize = map.getSize();
     this.updateRenderedPosition(pixel, mapSize);
   }

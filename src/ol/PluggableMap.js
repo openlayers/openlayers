@@ -546,7 +546,7 @@ class PluggableMap extends BaseObject {
     if (!this.frameState_) {
       return;
     }
-    const coordinate = this.getCoordinateFromPixel(pixel);
+    const coordinate = this.getCoordinateFromPixelInternal(pixel);
     opt_options = opt_options !== undefined ? opt_options :
       /** @type {AtPixelOptions} */ ({});
     const hitTolerance = opt_options.hitTolerance !== undefined ?
@@ -618,7 +618,7 @@ class PluggableMap extends BaseObject {
     if (!this.frameState_) {
       return false;
     }
-    const coordinate = this.getCoordinateFromPixel(pixel);
+    const coordinate = this.getCoordinateFromPixelInternal(pixel);
     opt_options = opt_options !== undefined ? opt_options :
       /** @type {AtPixelOptions} */ ({});
     const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
