@@ -44,7 +44,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(feature);
+    this.beginGeometry(lineStringGeometry, feature);
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -68,7 +68,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(feature);
+    this.beginGeometry(multiLineStringGeometry, feature);
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,

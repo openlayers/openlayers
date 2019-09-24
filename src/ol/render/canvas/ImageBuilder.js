@@ -113,7 +113,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     if (!this.image_) {
       return;
     }
-    this.beginGeometry(feature);
+    this.beginGeometry(pointGeometry, feature);
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
@@ -142,7 +142,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     if (!this.image_) {
       return;
     }
-    this.beginGeometry(feature);
+    this.beginGeometry(multiPointGeometry, feature);
     const flatCoordinates = multiPointGeometry.getFlatCoordinates();
     const stride = multiPointGeometry.getStride();
     const myBegin = this.coordinates.length;

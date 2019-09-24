@@ -72,7 +72,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(feature);
+    this.beginGeometry(circleGeometry, feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -116,7 +116,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(feature);
+    this.beginGeometry(polygonGeometry, feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -148,7 +148,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(feature);
+    this.beginGeometry(multiPolygonGeometry, feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
