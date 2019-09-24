@@ -46,20 +46,6 @@ export const DefaultUniform = {
 };
 
 /**
- * Attribute names used in the default shaders: `POSITION`, `TEX_COORD`, `OPACITY`,
- * `ROTATE_WITH_VIEW`, `OFFSETS` and `COLOR`
- * @enum {string}
- */
-export const DefaultAttrib = {
-  POSITION: 'a_position',
-  TEX_COORD: 'a_texCoord',
-  OPACITY: 'a_opacity',
-  ROTATE_WITH_VIEW: 'a_rotateWithView',
-  OFFSETS: 'a_offsets',
-  COLOR: 'a_color'
-};
-
-/**
  * Attribute types, either `UNSIGNED_BYTE`, `UNSIGNED_SHORT`, `UNSIGNED_INT` or `FLOAT`
  * Note: an attribute stored in a `Float32Array` should be of type `FLOAT`.
  * @enum {number}
@@ -860,7 +846,7 @@ class WebGLHelper extends Disposable {
 }
 
 /**
- * Compute a stride based on a list of attributes
+ * Compute a stride in bytes based on a list of attributes
  * @param {Array<AttributeDescription>} attributes Ordered list of attributes
  * @returns {number} Stride, ie amount of values for each vertex in the vertex buffer
  * @api

@@ -5,8 +5,9 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import ViewHint from '../../../../../src/ol/ViewHint.js';
-import {POINT_VERTEX_STRIDE, WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
-import {create as createTransform, compose as composeTransform} from '../../../../../src/ol/transform.js';
+import {WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
+import {compose as composeTransform, create as createTransform} from '../../../../../src/ol/transform.js';
+import {getSymbolVertexShader} from '../../../../../src/ol/webgl/ShaderBuilder.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -77,7 +78,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       }));
       renderer.prepareFrame(frameState);
 
-      const attributePerVertex = POINT_VERTEX_STRIDE;
+      const attributePerVertex = 3;
 
       renderer.worker_.addEventListener('message', function(event) {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
@@ -109,7 +110,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
           return;
         }
-        const attributePerVertex = 12;
+        const attributePerVertex = 3;
         expect(renderer.verticesBuffer_.getArray().length).to.eql(4 * attributePerVertex);
         expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
         done();
@@ -162,9 +163,9 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         })
       });
       renderer = new WebGLPointsLayerRenderer(layer, {
-        sizeCallback: function() {
-          return 4;
-        }
+        vertexShader: getSymbolVertexShader({
+          size: 4
+        })
       });
     });
 
