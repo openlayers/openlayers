@@ -386,7 +386,7 @@ class Extent extends PointerInteraction {
    * @return {import("../extent.js").Extent} Drawn extent in the view projection.
    * @api
    */
-  getExtentExternal() {
+  getExtent() {
     return toUserExtent(this.getExtentInternal(), this.getMap().getView().getProjection());
   }
 

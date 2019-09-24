@@ -135,7 +135,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  const coordinate = map.getEventCoordinateExternal(evt.originalEvent);
+  const coordinate = map.getEventCoordinate(evt.originalEvent);
   displaySnap(coordinate);
 });
 

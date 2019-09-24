@@ -546,7 +546,7 @@ class PluggableMap extends BaseObject {
     if (!this.frameState_) {
       return;
     }
-    const coordinate = this.getCoordinateFromPixelExternal(pixel);
+    const coordinate = this.getCoordinateFromPixel(pixel);
     opt_options = opt_options !== undefined ? opt_options :
       /** @type {AtPixelOptions} */ ({});
     const hitTolerance = opt_options.hitTolerance !== undefined ?
@@ -618,7 +618,7 @@ class PluggableMap extends BaseObject {
     if (!this.frameState_) {
       return false;
     }
-    const coordinate = this.getCoordinateFromPixelExternal(pixel);
+    const coordinate = this.getCoordinateFromPixel(pixel);
     opt_options = opt_options !== undefined ? opt_options :
       /** @type {AtPixelOptions} */ ({});
     const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
@@ -634,8 +634,8 @@ class PluggableMap extends BaseObject {
    * @return {import("./coordinate.js").Coordinate} Coordinate.
    * @api
    */
-  getEventCoordinateExternal(event) {
-    return this.getCoordinateFromPixelExternal(this.getEventPixel(event));
+  getEventCoordinate(event) {
+    return this.getCoordinateFromPixel(this.getEventPixel(event));
   }
 
   /**
@@ -701,7 +701,7 @@ class PluggableMap extends BaseObject {
    * @return {import("./coordinate.js").Coordinate} The coordinate for the pixel position.
    * @api
    */
-  getCoordinateFromPixelExternal(pixel) {
+  getCoordinateFromPixel(pixel) {
     return toUserCoordinate(this.getCoordinateFromPixelInternal(pixel), this.getView().getProjection());
   }
 
@@ -809,7 +809,7 @@ class PluggableMap extends BaseObject {
    * @return {import("./pixel.js").Pixel} A pixel position in the map viewport.
    * @api
    */
-  getPixelFromCoordinateExternal(coordinate) {
+  getPixelFromCoordinate(coordinate) {
     const viewCoordinate = fromUserCoordinate(coordinate, this.getView().getProjection());
     return this.getPixelFromCoordinateInternal(viewCoordinate);
   }

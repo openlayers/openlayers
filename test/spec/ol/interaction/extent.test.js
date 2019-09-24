@@ -99,7 +99,7 @@ describe('ol.interaction.Extent', function() {
       simulateEvent('pointerdrag', 50, 50, false, 0);
       simulateEvent('pointerup', 50, 50, false, 0);
 
-      expect(interaction.getExtentExternal()).to.eql([-50, -50, 50, 50]);
+      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
     });
 
     it('clicking off extent nulls extent', function() {
@@ -108,7 +108,7 @@ describe('ol.interaction.Extent', function() {
       simulateEvent('pointerdown', -10, -10, false, 0);
       simulateEvent('pointerup', -10, -10, false, 0);
 
-      expect(interaction.getExtentExternal()).to.equal(null);
+      expect(interaction.getExtent()).to.equal(null);
     });
 
     it('clicking on extent does not null extent', function() {
@@ -117,7 +117,7 @@ describe('ol.interaction.Extent', function() {
       simulateEvent('pointerdown', 50, 50, false, 0);
       simulateEvent('pointerup', 50, 50, false, 0);
 
-      expect(interaction.getExtentExternal()).to.eql([-50, -50, 50, 50]);
+      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
     });
 
     it('snap and drag vertex works', function() {
@@ -127,7 +127,7 @@ describe('ol.interaction.Extent', function() {
       simulateEvent('pointerdrag', -70, -40, false, 0);
       simulateEvent('pointerup', -70, -40, false, 0);
 
-      expect(interaction.getExtentExternal()).to.eql([-70, -50, -50, -40]);
+      expect(interaction.getExtent()).to.eql([-70, -50, -50, -40]);
     });
 
     it('snap and drag edge works', function() {
@@ -137,7 +137,7 @@ describe('ol.interaction.Extent', function() {
       simulateEvent('pointerdrag', 20, -30, false, 0);
       simulateEvent('pointerup', 20, -30, false, 0);
 
-      expect(interaction.getExtentExternal()).to.eql([-50, -50, 20, 50]);
+      expect(interaction.getExtent()).to.eql([-50, -50, 20, 50]);
     });
   });
 });

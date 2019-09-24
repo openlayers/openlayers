@@ -779,7 +779,7 @@ describe('ol.Map', function() {
 
       it('gets coordinates in user projection', function(done) {
         map.renderSync();
-        const coordinateGeographic = map.getCoordinateFromPixelExternal(screenCenter);
+        const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
         expect(coordinateGeographic[0]).to.roughlyEqual(centerGeographic[0], 1e-5);
         expect(coordinateGeographic[1]).to.roughlyEqual(centerGeographic[1], 1e-5);
         done();
@@ -795,7 +795,7 @@ describe('ol.Map', function() {
 
       it('gets pixel from coordinates in user projection', function(done) {
         map.renderSync();
-        const pixel = map.getPixelFromCoordinateExternal(centerGeographic);
+        const pixel = map.getPixelFromCoordinate(centerGeographic);
         expect(pixel).to.eql(screenCenter);
         done();
       });
