@@ -1,9 +1,10 @@
-import WebGLHelper from '../../../../src/ol/webgl/Helper.js';
+import WebGLHelper, {AttributeType, computeAttributesStride} from '../../../../src/ol/webgl/Helper.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
   scale as scaleTransform, translate as translateTransform
 } from '../../../../src/ol/transform.js';
+import {FLOAT} from '../../../../src/ol/webgl.js';
 
 
 const VERTEX_SHADER = `
@@ -288,6 +289,66 @@ describe('ol.webgl.WebGLHelper', function() {
         const t2 = h.createTexture([width, height], undefined, t1);
         expect(t1).to.be(t2);
       });
+    });
+  });
+
+  describe('#enableAttributes', function() {
+    let baseAttrs, h;
+
+    beforeEach(function() {
+      h = new WebGLHelper();
+      baseAttrs = [
+        {
+          name: 'attr1',
+          size: 3
+        },
+        {
+          name: 'attr2',
+          size: 2
+        },
+        {
+          name: 'attr3',
+          size: 1
+        }
+      ];
+      h.useProgram(h.getProgram(FRAGMENT_SHADER, `
+        precision mediump float;
+
+        uniform mat4 u_projectionMatrix;
+        uniform mat4 u_offsetScaleMatrix;
+        uniform mat4 u_offsetRotateMatrix;
+
+        attribute vec3 attr1;
+        attribute vec2 attr2;
+        attribute float attr3;
+        uniform float u_test;
+
+        void main(void) {
+          gl_Position = vec4(u_test, a_test, 0.0, 1.0);
+        }`));
+    });
+
+    it('enables attributes based on the given array (FLOAT)', function() {
+      const spy = sinon.spy(h, 'enableAttributeArray_');
+      h.enableAttributes(baseAttrs);
+      const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+
+      expect(spy.callCount).to.eql(3);
+      expect(spy.getCall(0).args[0]).to.eql('attr1');
+      expect(spy.getCall(0).args[1]).to.eql(3);
+      expect(spy.getCall(0).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(0).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(0).args[4]).to.eql(0);
+      expect(spy.getCall(1).args[0]).to.eql('attr2');
+      expect(spy.getCall(1).args[1]).to.eql(2);
+      expect(spy.getCall(1).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(1).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(1).args[4]).to.eql(3 * bytesPerFloat);
+      expect(spy.getCall(2).args[0]).to.eql('attr3');
+      expect(spy.getCall(2).args[1]).to.eql(1);
+      expect(spy.getCall(2).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
     });
   });
 });
