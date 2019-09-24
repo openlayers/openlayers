@@ -1,4 +1,3 @@
-import {getUid} from '../../../../../src/ol/util.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -29,14 +28,13 @@ describe('ol.render.canvas.BuilderGroup', function() {
 
     /**
      * @param {BuilderGroup} builder The builder to get instructions from.
-     * @param {Object=} skippedUids The ids to skip.
      * @param {number=} pixelRatio The pixel ratio.
      * @param {boolean=} overlaps Whether there is overlaps.
      */
-    function execute(builder, skippedUids, pixelRatio, overlaps) {
+    function execute(builder, pixelRatio, overlaps) {
       const executor = new ExecutorGroup([-180, -90, 180, 90], 1,
         pixelRatio || 1, !!overlaps, builder.finish());
-      executor.execute(context, transform, 0, skippedUids || {});
+      executor.execute(context, transform, 0, false);
     }
 
     beforeEach(function() {
@@ -147,43 +145,6 @@ describe('ol.render.canvas.BuilderGroup', function() {
       expect(beginPathCount).to.be(3);
     });
 
-    it('batches fill and stroke instructions for skipped feature at the beginning', function() {
-      renderFeature(builder, feature1, style1, 1);
-      renderFeature(builder, feature2, style2, 1);
-      renderFeature(builder, feature3, style2, 1);
-      const skippedUids = {};
-      skippedUids[getUid(feature1)] = true;
-      execute(builder, skippedUids);
-      expect(fillCount).to.be(1);
-      expect(strokeCount).to.be(1);
-      expect(beginPathCount).to.be(1);
-    });
-
-    it('batches fill and stroke instructions for skipped feature at the end', function() {
-      renderFeature(builder, feature1, style1, 1);
-      renderFeature(builder, feature2, style1, 1);
-      renderFeature(builder, feature3, style2, 1);
-      const skippedUids = {};
-      skippedUids[getUid(feature3)] = true;
-      execute(builder, skippedUids);
-      expect(fillCount).to.be(1);
-      expect(strokeCount).to.be(1);
-      expect(beginPathCount).to.be(1);
-    });
-
-    it('batches fill and stroke instructions for skipped features', function() {
-      renderFeature(builder, feature1, style1, 1);
-      renderFeature(builder, feature2, style1, 1);
-      renderFeature(builder, feature3, style2, 1);
-      const skippedUids = {};
-      skippedUids[getUid(feature1)] = true;
-      skippedUids[getUid(feature2)] = true;
-      execute(builder, skippedUids);
-      expect(fillCount).to.be(1);
-      expect(strokeCount).to.be(1);
-      expect(beginPathCount).to.be(1);
-    });
-
     it('does not batch when overlaps is set to true', function() {
       builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
       renderFeature(builder, feature1, style1, 1);
@@ -263,7 +224,7 @@ describe('ol.render.canvas.BuilderGroup', function() {
       renderFeature(builder, multipolygon, style, 1);
       renderFeature(builder, geometrycollection, style, 1);
       scaleTransform(transform, 0.1, 0.1);
-      execute(builder, {}, 1, true);
+      execute(builder, 1, true);
       expect(calls.length).to.be(9);
       expect(calls[0].geometry).to.be(point.getGeometry());
       expect(calls[0].feature).to.be(point);

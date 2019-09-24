@@ -220,7 +220,6 @@ class RasterSource extends ImageSource {
       pixelToCoordinateTransform: createTransform(),
       postRenderFunctions: [],
       size: [0, 0],
-      skippedFeatureUids: {},
       tileQueue: this.tileQueue_,
       time: Date.now(),
       usedTiles: {},

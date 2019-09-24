@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Map
  */
-import {abstract, getUid} from '../util.js';
+import {abstract} from '../util.js';
 import Disposable from '../Disposable.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
@@ -95,8 +95,8 @@ class MapRenderer extends Disposable {
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(managed, feature, layer) {
-      if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
-        return callback.call(thisArg, feature, managed ? layer : null);
+      if (managed) {
+        return callback.call(thisArg, feature, layer);
       }
     }
 

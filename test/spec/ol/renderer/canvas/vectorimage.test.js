@@ -38,7 +38,6 @@ describe('ol/renderer/canvas/VectorImageLayer', function() {
         layerStatesArray: [layer.getLayerState()],
         layerIndex: 0,
         extent: extent,
-        skippedFeatureUids: {},
         viewHints: [],
         viewState: {
           projection: projection,

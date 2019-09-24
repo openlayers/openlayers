@@ -190,7 +190,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       const replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
-        resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
+        resolution, rotation, hitTolerance, callback) {
         const feature = new Feature();
         callback(feature);
         callback(feature);
@@ -202,7 +202,6 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       const coordinate = [0, 0];
       const frameState = {
         layerStatesArray: [{}],
-        skippedFeatureUids: {},
         viewState: {
           resolution: 1,
           rotation: 0
@@ -228,7 +227,6 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       worldWidth = getWidth(projExtent);
       buffer = layer.getRenderBuffer();
       frameState = {
-        skippedFeatureUids: {},
         viewHints: [],
         viewState: {
           projection: projection,
