@@ -357,7 +357,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroups = tile.executorGroups[getUid(layer)];
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
-        found = found || executorGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
+        found = found || executorGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance,
           /**
            * @param {import("../../Feature.js").FeatureLike} feature Feature.
            * @return {?} Callback result.
@@ -497,7 +497,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             }
           }
         }
-        executorGroup.execute(context, transform, rotation, {}, hifi, replayTypes, declutterReplays);
+        executorGroup.execute(context, transform, rotation, hifi, replayTypes, declutterReplays);
         if (!declutterReplays && !clipped) {
           context.restore();
           clips.push(currentClip);
@@ -617,7 +617,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     translateTransform(transform, -tileExtent[0], -tileExtent[3]);
     for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
       const executorGroup = executorGroups[i];
-      executorGroup.execute(context, transform, 0, {}, true, IMAGE_REPLAYS[layer.getRenderMode()]);
+      executorGroup.execute(context, transform, 0, true, IMAGE_REPLAYS[layer.getRenderMode()]);
     }
     replayState.renderedTileResolution = tile.wantedResolution;
   }

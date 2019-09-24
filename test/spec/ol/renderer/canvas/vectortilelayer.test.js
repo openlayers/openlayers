@@ -314,7 +314,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       });
       renderer = new CanvasVectorTileLayerRenderer(layer);
       executorGroup.forEachFeatureAtCoordinate = function(coordinate,
-        resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
+        resolution, rotation, hitTolerance, callback) {
         const feature = new Feature();
         callback(feature);
         callback(feature);
@@ -326,7 +326,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       const coordinate = [0, 0];
       const frameState = {
         layerStatesArray: [{}],
-        skippedFeatureUids: {},
         viewState: {
           projection: getProjection('EPSG:3857'),
           resolution: 1,

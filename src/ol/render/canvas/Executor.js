@@ -1,14 +1,12 @@
 /**
  * @module ol/render/canvas/Executor
  */
-import {getUid} from '../../util.js';
 import {equals} from '../../array.js';
 import {createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, intersects} from '../../extent.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import {isEmpty} from '../../obj.js';
 import {drawImage, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
@@ -497,8 +495,6 @@ class Executor extends Disposable {
    * @private
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
-   *     to skip.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    * @param {function(import("../../Feature.js").FeatureLike): T|undefined} featureCallback Feature callback.
@@ -510,7 +506,6 @@ class Executor extends Disposable {
   execute_(
     context,
     transform,
-    skippedFeaturesHash,
     instructions,
     snapToPixel,
     featureCallback,
@@ -530,7 +525,6 @@ class Executor extends Disposable {
         transform, this.pixelCoordinates_);
       transformSetFromArray(this.renderedTransform_, transform);
     }
-    const skipFeatures = !isEmpty(skippedFeaturesHash);
     let i = 0; // instruction index
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
@@ -562,9 +556,7 @@ class Executor extends Disposable {
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
-          if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
-            i = /** @type {number} */ (instruction[2]);
-          } else if (opt_hitExtent !== undefined && !intersects(
+          if (opt_hitExtent !== undefined && !intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {
             i = /** @type {number} */ (instruction[2]) + 1;
           } else {
@@ -871,22 +863,17 @@ class Executor extends Disposable {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
-   *     to skip.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    */
-  execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
+  execute(context, transform, viewRotation, snapToPixel) {
     this.viewRotation_ = viewRotation;
-    this.execute_(context, transform,
-      skippedFeaturesHash, this.instructions, snapToPixel, undefined, undefined);
+    this.execute_(context, transform, this.instructions, snapToPixel, undefined, undefined);
   }
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
-   *     to skip.
    * @param {function(import("../../Feature.js").FeatureLike): T=} opt_featureCallback
    *     Feature callback.
    * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
@@ -898,12 +885,11 @@ class Executor extends Disposable {
     context,
     transform,
     viewRotation,
-    skippedFeaturesHash,
     opt_featureCallback,
     opt_hitExtent
   ) {
     this.viewRotation_ = viewRotation;
-    return this.execute_(context, transform, skippedFeaturesHash,
+    return this.execute_(context, transform,
       this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
   }
 }

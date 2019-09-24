@@ -47,7 +47,6 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {import("./transform.js").Transform} pixelToCoordinateTransform
  * @property {Array<PostRenderFunction>} postRenderFunctions
  * @property {import("./size.js").Size} size
- * @property {!Object<string, boolean>} skippedFeatureUids
  * @property {TileQueue} tileQueue
  * @property {!Object<string, Object<string, boolean>>} usedTiles
  * @property {Array<number>} viewHints
@@ -365,13 +364,6 @@ class PluggableMap extends BaseObject {
     this.tileQueue_ = new TileQueue(
       this.getTilePriority.bind(this),
       this.handleTileChange_.bind(this));
-
-    /**
-     * Uids of features to skip at rendering time.
-     * @type {Object<string, boolean>}
-     * @private
-     */
-    this.skippedFeatureUids_ = {};
 
     this.addEventListener(getChangeEventType(MapProperty.LAYERGROUP), this.handleLayerGroupChanged_);
     this.addEventListener(getChangeEventType(MapProperty.VIEW), this.handleViewChanged_);
@@ -1241,7 +1233,6 @@ class PluggableMap extends BaseObject {
         pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
         postRenderFunctions: [],
         size: size,
-        skippedFeatureUids: this.skippedFeatureUids_,
         tileQueue: this.tileQueue_,
         time: time,
         usedTiles: {},
@@ -1330,14 +1321,6 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * @param {import("./Feature.js").default} feature Feature.
-   */
-  skipFeature(feature) {
-    this.skippedFeatureUids_[getUid(feature)] = true;
-    this.render();
-  }
-
-  /**
    * Force a recalculation of the map viewport size.  This should be called when
    * third-party code changes the size of the map viewport.
    * @api
@@ -1362,14 +1345,6 @@ class PluggableMap extends BaseObject {
             parseFloat(computedStyle['borderBottomWidth'])
       ]);
     }
-  }
-
-  /**
-   * @param {import("./Feature.js").default} feature Feature.
-   */
-  unskipFeature(feature) {
-    delete this.skippedFeatureUids_[getUid(feature)];
-    this.render();
   }
 }
 

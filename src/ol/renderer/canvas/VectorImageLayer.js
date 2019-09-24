@@ -3,7 +3,6 @@
  */
 import ImageCanvas from '../../ImageCanvas.js';
 import ViewHint from '../../ViewHint.js';
-import {equals} from '../../array.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 import {assign} from '../../obj.js';
 import CanvasImageLayerRenderer from './ImageLayer.js';
@@ -24,11 +23,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    */
   constructor(layer) {
     super(layer);
-
-    /**
-     * @type {!Array<string>}
-     */
-    this.skippedFeatures_ = [];
 
     /**
      * @private
@@ -76,7 +70,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
 
     if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] && !isEmpty(renderedExtent)) {
-      let skippedFeatures = this.skippedFeatures_;
       vectorRenderer.useContainer(null, null, 1);
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
@@ -89,14 +82,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           rotation: 0
         }))
       }));
-      const newSkippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
       const image = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas, function(callback) {
-        if (vectorRenderer.prepareFrame(imageFrameState) &&
-              (vectorRenderer.replayGroupChanged ||
-              !equals(skippedFeatures, newSkippedFeatures))) {
+        if (vectorRenderer.prepareFrame(imageFrameState) && vectorRenderer.replayGroupChanged) {
           vectorRenderer.renderFrame(imageFrameState, null);
           renderDeclutterItems(imageFrameState, null);
-          skippedFeatures = newSkippedFeatures;
           callback();
         }
       });
@@ -104,7 +93,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       image.addEventListener(EventType.CHANGE, function() {
         if (image.getState() === ImageState.LOADED) {
           this.image_ = image;
-          this.skippedFeatures_ = skippedFeatures;
         }
       }.bind(this));
       image.load();

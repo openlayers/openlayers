@@ -167,7 +167,6 @@ class ExecutorGroup extends Disposable {
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function(import("../../Feature.js").FeatureLike): T} callback Feature callback.
    * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
@@ -178,7 +177,6 @@ class ExecutorGroup extends Disposable {
     resolution,
     rotation,
     hitTolerance,
-    skippedFeaturesHash,
     callback,
     declutteredFeatures
   ) {
@@ -256,8 +254,7 @@ class ExecutorGroup extends Disposable {
         builderType = ORDER[j];
         executor = executors[builderType];
         if (executor !== undefined) {
-          result = executor.executeHitDetection(context, transform, rotation,
-            skippedFeaturesHash, featureCallback, hitExtent);
+          result = executor.executeHitDetection(context, transform, rotation, featureCallback, hitExtent);
           if (result) {
             return result;
           }
@@ -297,14 +294,12 @@ class ExecutorGroup extends Disposable {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<BuilderType>=} opt_builderTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
-  execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel, opt_builderTypes,
-    opt_declutterReplays) {
+  execute(context, transform, viewRotation, snapToPixel, opt_builderTypes, opt_declutterReplays) {
 
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -335,7 +330,7 @@ class ExecutorGroup extends Disposable {
               declutter.push(replay, transform.slice(0));
             }
           } else {
-            replay.execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel);
+            replay.execute(context, transform, viewRotation, snapToPixel);
           }
         }
       }
@@ -436,7 +431,6 @@ export function getCircleArray(radius) {
  */
 export function replayDeclutter(declutterReplays, context, rotation, opacity, snapToPixel, declutterItems) {
   const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
-  const skippedFeatureUids = {};
   for (let z = 0, zz = zs.length; z < zz; ++z) {
     const executorData = declutterReplays[zs[z].toString()];
     let currentExecutor;
@@ -450,7 +444,7 @@ export function replayDeclutter(declutterReplays, context, rotation, opacity, sn
         });
       }
       const transform = executorData[i++];
-      executor.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
+      executor.execute(context, transform, rotation, snapToPixel);
     }
   }
 }

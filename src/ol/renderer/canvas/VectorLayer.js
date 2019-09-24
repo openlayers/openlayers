@@ -144,9 +144,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
 
     const transform = this.getRenderTransform(frameState, width, height, 0);
-    const skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
     const declutterReplays = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer()).getDeclutter() ? {} : null;
-    replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
+    replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
 
     if (vectorSource.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
       let startX = extent[0];
@@ -157,7 +156,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         --world;
         offsetX = worldWidth * world;
         const transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
+        replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
         startX += worldWidth;
       }
       world = 0;
@@ -166,7 +165,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         ++world;
         offsetX = worldWidth * world;
         const transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
+        replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
         startX -= worldWidth;
       }
     }
@@ -203,7 +202,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const layer = /** @type {import("../../layer/Vector").default} */ (this.getLayer());
       /** @type {!Object<string, boolean>} */
       const features = {};
-      const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
+      const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance,
         /**
          * @param {import("../../Feature.js").FeatureLike} feature Feature.
          * @return {?} Callback result.
