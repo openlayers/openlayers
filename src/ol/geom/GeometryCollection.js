@@ -6,7 +6,6 @@ import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from './Geometry.js';
 import GeometryType from './GeometryType.js';
-import {clear} from '../obj.js';
 
 /**
  * @classdesc
@@ -131,8 +130,7 @@ class GeometryCollection extends Geometry {
    * @inheritDoc
    */
   getSimplifiedGeometry(squaredTolerance) {
-    if (this.simplifiedGeometryRevision != this.getRevision()) {
-      clear(this.simplifiedGeometryCache);
+    if (this.simplifiedGeometryRevision !== this.getRevision()) {
       this.simplifiedGeometryMaxMinSquaredTolerance = 0;
       this.simplifiedGeometryRevision = this.getRevision();
     }
@@ -141,30 +139,25 @@ class GeometryCollection extends Geometry {
          squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)) {
       return this;
     }
-    const key = squaredTolerance.toString();
-    if (this.simplifiedGeometryCache.hasOwnProperty(key)) {
-      return this.simplifiedGeometryCache[key];
+
+    const simplifiedGeometries = [];
+    const geometries = this.geometries_;
+    let simplified = false;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      const geometry = geometries[i];
+      const simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
+      simplifiedGeometries.push(simplifiedGeometry);
+      if (simplifiedGeometry !== geometry) {
+        simplified = true;
+      }
+    }
+    if (simplified) {
+      const simplifiedGeometryCollection = new GeometryCollection(null);
+      simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
+      return simplifiedGeometryCollection;
     } else {
-      const simplifiedGeometries = [];
-      const geometries = this.geometries_;
-      let simplified = false;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        const geometry = geometries[i];
-        const simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
-        simplifiedGeometries.push(simplifiedGeometry);
-        if (simplifiedGeometry !== geometry) {
-          simplified = true;
-        }
-      }
-      if (simplified) {
-        const simplifiedGeometryCollection = new GeometryCollection(null);
-        simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
-        this.simplifiedGeometryCache[key] = simplifiedGeometryCollection;
-        return simplifiedGeometryCollection;
-      } else {
-        this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-        return this;
-      }
+      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+      return this;
     }
   }
 

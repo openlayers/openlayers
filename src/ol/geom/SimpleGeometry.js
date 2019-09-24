@@ -6,7 +6,6 @@ import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from './Geometry.js';
 import GeometryLayout from './GeometryLayout.js';
 import {rotate, scale, translate, transform2D} from './flat/transform.js';
-import {clear} from '../obj.js';
 
 /**
  * @classdesc
@@ -95,8 +94,7 @@ class SimpleGeometry extends Geometry {
    * @inheritDoc
    */
   getSimplifiedGeometry(squaredTolerance) {
-    if (this.simplifiedGeometryRevision != this.getRevision()) {
-      clear(this.simplifiedGeometryCache);
+    if (this.simplifiedGeometryRevision !== this.getRevision()) {
       this.simplifiedGeometryMaxMinSquaredTolerance = 0;
       this.simplifiedGeometryRevision = this.getRevision();
     }
@@ -107,26 +105,21 @@ class SimpleGeometry extends Geometry {
          squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)) {
       return this;
     }
-    const key = squaredTolerance.toString();
-    if (this.simplifiedGeometryCache.hasOwnProperty(key)) {
-      return this.simplifiedGeometryCache[key];
+
+    const simplifiedGeometry =
+        this.getSimplifiedGeometryInternal(squaredTolerance);
+    const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
+    if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
+      return simplifiedGeometry;
     } else {
-      const simplifiedGeometry =
-          this.getSimplifiedGeometryInternal(squaredTolerance);
-      const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
-      if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
-        this.simplifiedGeometryCache[key] = simplifiedGeometry;
-        return simplifiedGeometry;
-      } else {
-        // Simplification did not actually remove any coordinates.  We now know
-        // that any calls to getSimplifiedGeometry with a squaredTolerance less
-        // than or equal to the current squaredTolerance will also not have any
-        // effect.  This allows us to short circuit simplification (saving CPU
-        // cycles) and prevents the cache of simplified geometries from filling
-        // up with useless identical copies of this geometry (saving memory).
-        this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-        return this;
-      }
+      // Simplification did not actually remove any coordinates.  We now know
+      // that any calls to getSimplifiedGeometry with a squaredTolerance less
+      // than or equal to the current squaredTolerance will also not have any
+      // effect.  This allows us to short circuit simplification (saving CPU
+      // cycles) and prevents the cache of simplified geometries from filling
+      // up with useless identical copies of this geometry (saving memory).
+      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+      return this;
     }
   }
 
