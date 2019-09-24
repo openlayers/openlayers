@@ -236,15 +236,17 @@ class VectorTile extends UrlTile {
               empty = false;
               sourceTile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
               sourceTile.load();
+            } else {
+              sourceTile = null;
             }
           } else {
             empty = false;
           }
           covered = false;
-          if (!sourceTile) {
+          if (sourceTile === undefined) {
             return;
           }
-          if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
+          if (sourceTile !== null && tile.getState() === TileState.IDLE) {
             tile.loadingSourceTiles++;
             const key = listen(sourceTile, EventType.CHANGE, function() {
               const state = sourceTile.getState();
