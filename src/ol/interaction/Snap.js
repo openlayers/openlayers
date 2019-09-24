@@ -384,9 +384,9 @@ class Snap extends PointerInteraction {
    */
   snapTo(pixel, pixelCoordinate, map) {
 
-    const lowerLeft = map.getCoordinateFromPixel(
+    const lowerLeft = map.getCoordinateFromPixelInternal(
       [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
-    const upperRight = map.getCoordinateFromPixel(
+    const upperRight = map.getCoordinateFromPixelInternal(
       [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
     const box = boundingExtent([lowerLeft, upperRight]);
 
@@ -412,8 +412,8 @@ class Snap extends PointerInteraction {
       const isCircle = segments[0].feature.getGeometry().getType() ===
           GeometryType.CIRCLE;
       if (this.vertex_ && !this.edge_) {
-        pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-        pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+        pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
+        pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
         squaredDist1 = squaredCoordinateDistance(pixel, pixel1);
         squaredDist2 = squaredCoordinateDistance(pixel, pixel2);
         dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
@@ -421,7 +421,7 @@ class Snap extends PointerInteraction {
         if (snappedToVertex) {
           snapped = true;
           vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
-          vertexPixel = map.getPixelFromCoordinate(vertex);
+          vertexPixel = map.getPixelFromCoordinateInternal(vertex);
         }
       } else if (this.edge_) {
         if (isCircle) {
@@ -430,19 +430,19 @@ class Snap extends PointerInteraction {
         } else {
           vertex = closestOnSegment(pixelCoordinate, closestSegment);
         }
-        vertexPixel = map.getPixelFromCoordinate(vertex);
+        vertexPixel = map.getPixelFromCoordinateInternal(vertex);
         if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
           snapped = true;
           if (this.vertex_ && !isCircle) {
-            pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-            pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+            pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
+            pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
             squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
             squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
             dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
             snappedToVertex = dist <= this.pixelTolerance_;
             if (snappedToVertex) {
               vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
-              vertexPixel = map.getPixelFromCoordinate(vertex);
+              vertexPixel = map.getPixelFromCoordinateInternal(vertex);
             }
           }
         }

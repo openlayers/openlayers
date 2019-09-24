@@ -639,7 +639,7 @@ class Draw extends PointerInteraction {
         const map = event.map;
         for (let i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
           const finishCoordinate = potentiallyFinishCoordinates[i];
-          const finishPixel = map.getPixelFromCoordinate(finishCoordinate);
+          const finishPixel = map.getPixelFromCoordinateInternal(finishCoordinate);
           const pixel = event.pixel;
           const dx = pixel[0] - finishPixel[0];
           const dy = pixel[1] - finishPixel[1];

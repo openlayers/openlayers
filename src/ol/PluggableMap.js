@@ -27,6 +27,7 @@ import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
 import {create as createTransform, apply as applyTransform} from './transform.js';
+import {toUserCoordinate, fromUserCoordinate} from './proj.js';
 
 
 /**
@@ -628,13 +629,22 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Returns the coordinate in view projection for a browser event.
+   * Returns the coordinate in user projection for a browser event.
    * @param {Event} event Event.
    * @return {import("./coordinate.js").Coordinate} Coordinate.
    * @api
    */
   getEventCoordinate(event) {
     return this.getCoordinateFromPixel(this.getEventPixel(event));
+  }
+
+  /**
+   * Returns the coordinate in view projection for a browser event.
+   * @param {Event} event Event.
+   * @return {import("./coordinate.js").Coordinate} Coordinate.
+   */
+  getEventCoordinateInternal(event) {
+    return this.getCoordinateFromPixelInternal(this.getEventPixel(event));
   }
 
   /**
@@ -686,12 +696,22 @@ class PluggableMap extends BaseObject {
 
   /**
    * Get the coordinate for a given pixel.  This returns a coordinate in the
-   * map view projection.
+   * user projection.
    * @param {import("./pixel.js").Pixel} pixel Pixel position in the map viewport.
    * @return {import("./coordinate.js").Coordinate} The coordinate for the pixel position.
    * @api
    */
   getCoordinateFromPixel(pixel) {
+    return toUserCoordinate(this.getCoordinateFromPixelInternal(pixel), this.getView().getProjection());
+  }
+
+  /**
+   * Get the coordinate for a given pixel.  This returns a coordinate in the
+   * map view projection.
+   * @param {import("./pixel.js").Pixel} pixel Pixel position in the map viewport.
+   * @return {import("./coordinate.js").Coordinate} The coordinate for the pixel position.
+   */
+  getCoordinateFromPixelInternal(pixel) {
     const frameState = this.frameState_;
     if (!frameState) {
       return null;
@@ -783,13 +803,24 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Get the pixel for a coordinate.  This takes a coordinate in the map view
+   * Get the pixel for a coordinate.  This takes a coordinate in the user
    * projection and returns the corresponding pixel.
    * @param {import("./coordinate.js").Coordinate} coordinate A map coordinate.
    * @return {import("./pixel.js").Pixel} A pixel position in the map viewport.
    * @api
    */
   getPixelFromCoordinate(coordinate) {
+    const viewCoordinate = fromUserCoordinate(coordinate, this.getView().getProjection());
+    return this.getPixelFromCoordinateInternal(viewCoordinate);
+  }
+
+  /**
+   * Get the pixel for a coordinate.  This takes a coordinate in the map view
+   * projection and returns the corresponding pixel.
+   * @param {import("./coordinate.js").Coordinate} coordinate A map coordinate.
+   * @return {import("./pixel.js").Pixel} A pixel position in the map viewport.
+   */
+  getPixelFromCoordinateInternal(coordinate) {
     const frameState = this.frameState_;
     if (!frameState) {
       return null;

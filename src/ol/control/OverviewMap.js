@@ -223,13 +223,13 @@ class OverviewMap extends Control {
 
     const move = function(event) {
       const position = /** @type {?} */ (computeDesiredMousePosition(event));
-      const coordinates = ovmap.getEventCoordinate(/** @type {Event} */ (position));
+      const coordinates = ovmap.getEventCoordinateInternal(/** @type {Event} */ (position));
 
       overlay.setPosition(coordinates);
     };
 
     const endMoving = function(event) {
-      const coordinates = ovmap.getEventCoordinate(event);
+      const coordinates = ovmap.getEventCoordinateInternal(event);
 
       scope.getMap().getView().setCenterInternal(coordinates);
 
@@ -361,9 +361,9 @@ class OverviewMap extends Control {
     const ovextent = ovview.calculateExtentInternal(ovmapSize);
 
     const topLeftPixel =
-        ovmap.getPixelFromCoordinate(getTopLeft(extent));
+        ovmap.getPixelFromCoordinateInternal(getTopLeft(extent));
     const bottomRightPixel =
-        ovmap.getPixelFromCoordinate(getBottomRight(extent));
+        ovmap.getPixelFromCoordinateInternal(getBottomRight(extent));
 
     const boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
     const boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);

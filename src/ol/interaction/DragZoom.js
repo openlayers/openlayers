@@ -75,8 +75,8 @@ function onBoxEnd() {
   if (this.out_) {
     const mapExtent = view.calculateExtentInternal(size);
     const boxPixelExtent = createOrUpdateFromCoordinates([
-      map.getPixelFromCoordinate(getBottomLeft(extent)),
-      map.getPixelFromCoordinate(getTopRight(extent))]);
+      map.getPixelFromCoordinateInternal(getBottomLeft(extent)),
+      map.getPixelFromCoordinateInternal(getTopRight(extent))]);
     const factor = view.getResolutionForExtentInternal(boxPixelExtent, size);
 
     scaleFromCenter(mapExtent, 1 / factor);

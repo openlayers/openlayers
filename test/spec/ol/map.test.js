@@ -7,7 +7,7 @@ import View from '../../../src/ol/View.js';
 import {LineString, Point} from '../../../src/ol/geom.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
-import {get as getProjection} from '../../../src/ol/proj.js';
+import {get as getProjection, useGeographic, transform, clearUserProjection} from '../../../src/ol/proj.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import DragPan from '../../../src/ol/interaction/DragPan.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
@@ -734,6 +734,78 @@ describe('ol.Map', function() {
 
     });
 
-  });
+    describe('getCoordinateFromPixel() and getPixelFromCoordinate()', function() {
 
+      let target, view, map;
+      const centerGeographic = [2.460938, 48.850258];
+      const centerMercator = transform(centerGeographic, getProjection('EPSG:4326'), getProjection('EPSG:3857'));
+      const screenCenter = [500, 500];
+
+      beforeEach(function() {
+        target = document.createElement('div');
+
+        const style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = `${screenCenter[0] * 2}px`;
+        style.height = `${screenCenter[1] * 2}px`;
+        document.body.appendChild(target);
+
+        useGeographic();
+
+        view = new View({
+          center: centerGeographic,
+          zoom: 3
+        });
+        map = new Map({
+          target: target,
+          view: view,
+          layers: [
+            new TileLayer({
+              source: new XYZ({
+                url: '#{x}/{y}/{z}'
+              })
+            })
+          ]
+        });
+      });
+
+      afterEach(function() {
+        map.dispose();
+        document.body.removeChild(target);
+        clearUserProjection();
+      });
+
+      it('gets coordinates in user projection', function(done) {
+        map.renderSync();
+        const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
+        expect(coordinateGeographic[0]).to.roughlyEqual(centerGeographic[0], 1e-5);
+        expect(coordinateGeographic[1]).to.roughlyEqual(centerGeographic[1], 1e-5);
+        done();
+      });
+
+      it('gets coordinates in view projection', function(done) {
+        map.renderSync();
+        const coordinateMercator = map.getCoordinateFromPixelInternal(screenCenter);
+        expect(coordinateMercator[0]).to.roughlyEqual(centerMercator[0], 1e-5);
+        expect(coordinateMercator[1]).to.roughlyEqual(centerMercator[1], 1e-5);
+        done();
+      });
+
+      it('gets pixel from coordinates in user projection', function(done) {
+        map.renderSync();
+        const pixel = map.getPixelFromCoordinate(centerGeographic);
+        expect(pixel).to.eql(screenCenter);
+        done();
+      });
+
+      it('gets pixel from coordinates in view projection', function(done) {
+        map.renderSync();
+        const pixel = map.getPixelFromCoordinateInternal(centerMercator);
+        expect(pixel).to.eql(screenCenter);
+        done();
+      });
+    });
+  });
 });

@@ -112,7 +112,7 @@ class PinchRotate extends PointerInteraction {
     const centroid = centroidFromPointers(this.targetPointers);
     centroid[0] -= viewportPosition.left;
     centroid[1] -= viewportPosition.top;
-    this.anchor_ = map.getCoordinateFromPixel(centroid);
+    this.anchor_ = map.getCoordinateFromPixelInternal(centroid);
 
     // rotate
     if (this.rotating_) {
