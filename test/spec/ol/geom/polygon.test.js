@@ -496,15 +496,6 @@ describe('ol/geom/Polygon', function() {
           [[[3, 0], [0, 3], [0, 6], [6, 6], [3, 3]]]);
       });
 
-      it('caches multiple simplified geometries', function() {
-        const simplifiedGeometry1 = polygon.getSimplifiedGeometry(4);
-        const simplifiedGeometry2 = polygon.getSimplifiedGeometry(9);
-        const simplifiedGeometry3 = polygon.getSimplifiedGeometry(4);
-        const simplifiedGeometry4 = polygon.getSimplifiedGeometry(9);
-        expect(simplifiedGeometry1).to.be(simplifiedGeometry3);
-        expect(simplifiedGeometry2).to.be(simplifiedGeometry4);
-      });
-
     });
   });
 

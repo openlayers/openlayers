@@ -47,12 +47,6 @@ class Geometry extends BaseObject {
 
     /**
      * @protected
-     * @type {Object<string, Geometry>}
-     */
-    this.simplifiedGeometryCache = {};
-
-    /**
-     * @protected
      * @type {number}
      */
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;

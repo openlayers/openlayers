@@ -336,19 +336,6 @@ describe('ol.geom.LineString', function() {
           [[0, 0], [3, 3], [5, 1], [7, 5]]);
       });
 
-      it('caches by resolution', function() {
-        const simplifiedGeometry1 = lineString.getSimplifiedGeometry(1);
-        const simplifiedGeometry2 = lineString.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry1).to.be(simplifiedGeometry2);
-      });
-
-      it('invalidates the cache when the geometry changes', function() {
-        const simplifiedGeometry1 = lineString.getSimplifiedGeometry(1);
-        lineString.setCoordinates(lineString.getCoordinates());
-        const simplifiedGeometry2 = lineString.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry1).not.to.be(simplifiedGeometry2);
-      });
-
       it('remembers the minimum squared tolerance', function() {
         sinon.spy(lineString, 'getSimplifiedGeometryInternal');
         const simplifiedGeometry1 = lineString.getSimplifiedGeometry(0.05);
