@@ -562,15 +562,12 @@ class PluggableMap extends BaseObject {
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions=} opt_options Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
-   * `null` if none were found.
+   * an empty array if none were found.
    * @api
    */
   getFeaturesAtPixel(pixel, opt_options) {
-    let features = null;
+    const features = [];
     this.forEachFeatureAtPixel(pixel, function(feature) {
-      if (!features) {
-        features = [];
-      }
       features.push(feature);
     }, opt_options);
     return features;

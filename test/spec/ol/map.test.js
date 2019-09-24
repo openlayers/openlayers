@@ -279,9 +279,10 @@ describe('ol.Map', function() {
       document.body.removeChild(target);
     });
 
-    it('returns null if no feature was found', function() {
+    it('returns an empty array if no feature was found', function() {
       const features = map.getFeaturesAtPixel([0, 0]);
-      expect(features).to.be(null);
+      expect(features).to.be.an(Array);
+      expect(features).to.be.empty();
     });
 
     it('returns an array of found features', function() {
@@ -311,10 +312,11 @@ describe('ol.Map', function() {
       map.addLayer(otherLayer);
       const features = map.getFeaturesAtPixel([50, 50], {
         layerFilter: function(layer) {
-          return layer == otherLayer;
+          return layer === otherLayer;
         }
       });
-      expect(features).to.be(null);
+      expect(features).to.be.an(Array);
+      expect(features).to.be.empty();
     });
 
   });

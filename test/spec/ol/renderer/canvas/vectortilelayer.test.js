@@ -369,7 +369,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           const features = map.getFeaturesAtPixel([96, 96]);
           document.body.removeChild(target);
           map.dispose();
-          expect(features).to.be(null);
+          expect(features).to.be.an(Array);
+          expect(features).to.be.empty();
           done();
         }, 200);
       });
