@@ -220,7 +220,7 @@ class MousePosition extends Control {
       const map = this.getMap();
       const coordinate = map.getCoordinateFromPixelInternal(pixel);
       if (coordinate) {
-        const userProjection = getUserProjection()
+        const userProjection = getUserProjection();
         if (userProjection) {
           this.transform_ = getTransformFromProjections(
             this.mapProjection_, userProjection);

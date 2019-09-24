@@ -27,7 +27,7 @@ import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
 import {create as createTransform, apply as applyTransform} from './transform.js';
-import { toUserCoordinate } from './proj.js';
+import {toUserCoordinate} from './proj.js';
 
 
 /**
@@ -702,7 +702,7 @@ class PluggableMap extends BaseObject {
    * @api
    */
   getCoordinateFromPixelExternal(pixel) {
-    return toUserCoordinate(this.getCoordinateFromPixelInternal(pixel), this.getView().getProjection())
+    return toUserCoordinate(this.getCoordinateFromPixelInternal(pixel), this.getView().getProjection());
   }
 
   /**
@@ -719,7 +719,7 @@ class PluggableMap extends BaseObject {
       return applyTransform(frameState.pixelToCoordinateTransform, pixel.slice());
     }
   }
-  
+
   /**
    * Get the map controls. Modifying this collection changes the controls
    * associated with the map.

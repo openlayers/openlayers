@@ -13,7 +13,7 @@ import PointerInteraction from './Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import {createEditingStyle} from '../style/Style.js';
-import { toUserExtent } from '../proj.js';
+import {toUserExtent} from '../proj.js';
 
 
 /**
