@@ -26,7 +26,7 @@ export function formatNumber(v) {
  */
 
 /**
- * Generates a symbol shader, i.e. a shader intended to be used on point geometries.
+ * Generates a symbol vertex shader, i.e. a shader intended to be used on point geometries.
  *
  * Expected the following attributes to be present in the attribute array:
  * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3).
@@ -76,6 +76,34 @@ void main(void) {
   v_texCoord = vec2(u, v);
   v_opacity = ${f(opacity)};
   v_color = vec4(${color.map(normalizeColor).map(f).join(', ')});
+}`;
+
+  return body;
+}
+
+/**
+ * Generates a symbol fragment shader, i.e. a shader intended to be used on point geometries.
+ *
+ * Expected the following varyings to be transmitted by the vertex shader:
+ * `vec2 v_texCoord`, `float v_opacity`, `vec4 v_color`
+ *
+ * @returns {string} The full shader as a string.
+ */
+export function getSymbolFragmentShader() {
+  const body = `precision mediump float;
+uniform sampler2D u_texture;
+varying vec2 v_texCoord;
+varying float v_opacity;
+varying vec4 v_color;
+
+void main(void) {
+  if (v_opacity == 0.0) {
+    discard;
+  }
+  vec4 textureColor = texture2D(u_texture, v_texCoord);
+  gl_FragColor = v_color * textureColor;
+  gl_FragColor.a *= v_opacity;
+  gl_FragColor.rgb *= gl_FragColor.a;
 }`;
 
   return body;

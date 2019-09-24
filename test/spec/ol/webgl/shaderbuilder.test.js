@@ -1,4 +1,4 @@
-import {getSymbolVertexShader, formatNumber} from '../../../../src/ol/webgl/ShaderBuilder.js';
+import {getSymbolVertexShader, formatNumber, getSymbolFragmentShader} from '../../../../src/ol/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', function() {
 
@@ -134,6 +134,26 @@ void main(void) {
   v_texCoord = vec2(u, v);
   v_opacity = 1.0;
   v_color = vec4(1.0, 1.0, 1.0, 1.0);
+}`);
+    });
+  });
+
+  describe('getSymbolFragmentShader', function() {
+    it('generates a fixed shader', function() {
+      expect(getSymbolFragmentShader()).to.eql(`precision mediump float;
+uniform sampler2D u_texture;
+varying vec2 v_texCoord;
+varying float v_opacity;
+varying vec4 v_color;
+
+void main(void) {
+  if (v_opacity == 0.0) {
+    discard;
+  }
+  vec4 textureColor = texture2D(u_texture, v_texCoord);
+  gl_FragColor = v_color * textureColor;
+  gl_FragColor.a *= v_opacity;
+  gl_FragColor.rgb *= gl_FragColor.a;
 }`);
     });
   });
