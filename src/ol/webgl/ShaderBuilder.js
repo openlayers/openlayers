@@ -6,13 +6,26 @@ import {asArray} from '../color.js';
  */
 
 /**
- * Will return the number as a float with a dit separator, which is required by GLSL.
+ * Will return the number as a float with a dot separator, which is required by GLSL.
  * @param {number} v Numerical value.
  * @returns {string} The value as string.
  */
 export function formatNumber(v) {
   const s = v.toString();
   return s.indexOf('.') === -1 ? s + '.0' : s;
+}
+
+/**
+ * Will normalize and converts to string a color array compatible with GLSL.
+ * @param {Array<number>} colorArray Color in [r, g, b, a] array form, with RGB components in the
+ * 0..255 range and the alpha component in the 0..1 range. Note that if the A component is
+ * missing, only 3 values will be output.
+ * @returns {string} The color components concatenated in `1.0, 1.0, 1.0, 1.0` form.
+ */
+export function formatColor(colorArray) {
+  return colorArray.map(function (c, i) {
+    return i < 3 ? c / 255 : c;
+  }).map(formatNumber).join(', ');
 }
 
 /**
@@ -40,9 +53,6 @@ export function getSymbolVertexShader(parameters) {
   const color = parameters.color !== undefined ?
     (typeof parameters.color === 'string' ? asArray(parameters.color) : parameters.color) :
     [255, 255, 255, 1];
-  function normalizeColor(c, i) {
-    return i < 3 ? c / 255 : c;
-  }
 
   const f = formatNumber;
 
@@ -66,7 +76,7 @@ void main(void) {
   float v = a_index == 0.0 || a_index == 1.0 ? ${f(texCoord[1])} : ${f(texCoord[3])};
   v_texCoord = vec2(u, v);
   v_opacity = ${f(opacity)};
-  v_color = vec4(${color.map(normalizeColor).map(f).join(', ')});
+  v_color = vec4(${formatColor(color)});
 }`;
 
   return body;
