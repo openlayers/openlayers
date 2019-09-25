@@ -1,11 +1,9 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Draw, Modify, Snap} from '../src/ol/interaction.js';
+import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import Collection from '../src/ol/Collection.js';
-import {shiftKeyOnly} from '../src/ol/events/condition.js';
 
 const raster = new TileLayer({
   source: new OSM()
@@ -39,53 +37,29 @@ const map = new Map({
   })
 });
 
-const highlightStyle = new Style({
-  fill: new Fill({
-    color: 'rgba(255,255,255,0.7)'
-  }),
-  stroke: new Stroke({
-    color: 'rgb(51,153,204)',
-    width: 3
-  })
-});
-
 const ExampleModify = {
   init: function() {
-    this.features = new Collection();
-
-    this.features.on('add', function(e) {
-      e.element.setStyle(highlightStyle);
-    });
-
-    this.features.on('remove', function(e) {
-      e.element.setStyle(undefined);
-    });
-
-    this.select = function(e) {
-      if (!shiftKeyOnly(e)) {
-        this.features.clear();
-      }
-      map.forEachFeatureAtPixel(e.pixel, function(f) {
-        this.features.push(f);
-      }.bind(this));
-    }.bind(this);
+    this.select = new Select();
+    map.addInteraction(this.select);
 
     this.modify = new Modify({
-      features: this.features
+      features: this.select.getFeatures()
     });
     map.addInteraction(this.modify);
 
     this.setEvents();
   },
   setEvents: function() {
+    const selectedFeatures = this.select.getFeatures();
+
+    this.select.on('change:active', function() {
+      selectedFeatures.forEach(function(each) {
+        selectedFeatures.remove(each);
+      });
+    });
   },
   setActive: function(active) {
-    if (active) {
-      this.features.clear();
-      map.on('singleclick', this.select);
-    } else {
-      map.un('singleclick', this.select);
-    }
+    this.select.setActive(active);
     this.modify.setActive(active);
   }
 };
