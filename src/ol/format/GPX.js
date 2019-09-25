@@ -52,6 +52,7 @@ const FEATURE_READER = {
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const GPX_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'rte': makeArrayPusher(readRte),
@@ -64,6 +65,7 @@ const GPX_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'text': makeObjectPropertySetter(readString, 'linkText'),
@@ -75,6 +77,7 @@ const LINK_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
+// @ts-ignore
 const GPX_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'rte': makeChildAppender(writeRte),
@@ -228,6 +231,7 @@ class GPX extends XMLFeature {
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const RTE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'name': makeObjectPropertySetter(readString),
@@ -246,6 +250,7 @@ const RTE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const RTEPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ele': makeObjectPropertySetter(readDecimal),
@@ -257,6 +262,7 @@ const RTEPT_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TRK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'name': makeObjectPropertySetter(readString),
@@ -275,6 +281,7 @@ const TRK_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TRKSEG_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'trkpt': parseTrkPt
@@ -285,6 +292,7 @@ const TRKSEG_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TRKPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ele': makeObjectPropertySetter(readDecimal),
@@ -296,6 +304,7 @@ const TRKPT_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const WPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ele': makeObjectPropertySetter(readDecimal),
@@ -331,6 +340,7 @@ const LINK_SEQUENCE = ['text', 'type'];
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
+// @ts-ignore
 const LINK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'text': makeChildAppender(writeStringTextNode),
@@ -342,6 +352,7 @@ const LINK_SERIALIZERS = makeStructureNS(
  * @const
  * @type {Object<string, Array<string>>}
  */
+// @ts-ignore
 const RTE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
@@ -352,6 +363,7 @@ const RTE_SEQUENCE = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
+// @ts-ignore
 const RTE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'name': makeChildAppender(writeStringTextNode),
@@ -369,6 +381,7 @@ const RTE_SERIALIZERS = makeStructureNS(
  * @const
  * @type {Object<string, Array<string>>}
  */
+// @ts-ignore
 const RTEPT_TYPE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'ele', 'time'
@@ -379,6 +392,7 @@ const RTEPT_TYPE_SEQUENCE = makeStructureNS(
  * @const
  * @type {Object<string, Array<string>>}
  */
+// @ts-ignore
 const TRK_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
@@ -389,6 +403,7 @@ const TRK_SEQUENCE = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
+// @ts-ignore
 const TRK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'name': makeChildAppender(writeStringTextNode),
@@ -413,6 +428,7 @@ const TRKSEG_NODE_FACTORY = makeSimpleNodeFactory('trkpt');
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
+// @ts-ignore
 const TRKSEG_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'trkpt': makeChildAppender(writeWptType)
@@ -423,6 +439,7 @@ const TRKSEG_SERIALIZERS = makeStructureNS(
  * @const
  * @type {Object<string, Array<string>>}
  */
+// @ts-ignore
 const WPT_TYPE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
@@ -435,6 +452,7 @@ const WPT_TYPE_SEQUENCE = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
+// @ts-ignore
 const WPT_TYPE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ele': makeChildAppender(writeDecimalTextNode),

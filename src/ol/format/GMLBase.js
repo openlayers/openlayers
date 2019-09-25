@@ -472,6 +472,7 @@ class GMLBase extends XMLFeature {
   /**
    * @inheritDoc
    */
+  //@ts-ignore
   readGeometryFromNode(node, opt_options) {
     const geometry = this.readGeometryElement(node,
       [this.getReadOptions(node, opt_options ? opt_options : {})]);

@@ -34,6 +34,7 @@ const OWS_NAMESPACE_URIS = [
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Contents': makeObjectPropertySetter(readContents)
@@ -89,6 +90,7 @@ class WMTSCapabilities extends XML {
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CONTENTS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Layer': makeObjectPropertyPusher(readLayer),
@@ -100,6 +102,7 @@ const CONTENTS_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Style': makeObjectPropertyPusher(readStyle),
@@ -119,6 +122,7 @@ const LAYER_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'LegendURL': makeObjectPropertyPusher(readLegendUrl)
@@ -132,6 +136,7 @@ const STYLE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TMS_LINKS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'TileMatrixSet': makeObjectPropertySetter(readString),
@@ -142,6 +147,7 @@ const TMS_LINKS_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'TileMatrixLimits': makeArrayPusher(readTileMatrixLimits)
@@ -152,6 +158,7 @@ const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TMS_LIMITS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'TileMatrix': makeObjectPropertySetter(readString),
@@ -166,6 +173,7 @@ const TMS_LIMITS_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const DIMENSION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Default': makeObjectPropertySetter(readString),
@@ -179,6 +187,7 @@ const DIMENSION_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const WGS84_BBOX_READERS = makeStructureNS(
   OWS_NAMESPACE_URIS, {
     'LowerCorner': makeArrayPusher(readCoordinates),
@@ -190,6 +199,7 @@ const WGS84_BBOX_READERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TMS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'WellKnownScaleSet': makeObjectPropertySetter(readString),
@@ -204,6 +214,7 @@ const TMS_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const TM_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'TopLeftCorner': makeObjectPropertySetter(readCoordinates),

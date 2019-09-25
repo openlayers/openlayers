@@ -26,6 +26,7 @@ const NAMESPACE_URIS = [null];
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const WAY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'nd': readNd,
@@ -37,6 +38,7 @@ const WAY_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'node': readNode,
@@ -108,6 +110,7 @@ class OSMXML extends XMLFeature {
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const NODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'tag': readTag

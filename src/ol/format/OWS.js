@@ -18,6 +18,7 @@ const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ServiceIdentification': makeObjectPropertySetter(readServiceIdentification),
@@ -58,6 +59,7 @@ class OWS extends XML {
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'DeliveryPoint': makeObjectPropertySetter(readString),
@@ -73,6 +75,7 @@ const ADDRESS_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const ALLOWED_VALUES_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Value': makeObjectPropertyPusher(readValue)
@@ -83,6 +86,7 @@ const ALLOWED_VALUES_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CONSTRAINT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'AllowedValues': makeObjectPropertySetter(readAllowedValues)
@@ -93,6 +97,7 @@ const CONSTRAINT_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CONTACT_INFO_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Phone': makeObjectPropertySetter(readPhone),
@@ -104,6 +109,7 @@ const CONTACT_INFO_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const DCP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'HTTP': makeObjectPropertySetter(readHttp)
@@ -114,6 +120,7 @@ const DCP_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const HTTP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Get': makeObjectPropertyPusher(readGet),
@@ -125,6 +132,7 @@ const HTTP_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const OPERATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'DCP': makeObjectPropertySetter(readDcp)
@@ -135,6 +143,7 @@ const OPERATION_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const OPERATIONS_METADATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Operation': readOperation
@@ -145,6 +154,7 @@ const OPERATIONS_METADATA_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const PHONE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Voice': makeObjectPropertySetter(readString),
@@ -156,6 +166,7 @@ const PHONE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const REQUEST_METHOD_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Constraint': makeObjectPropertyPusher(readConstraint)
@@ -166,6 +177,7 @@ const REQUEST_METHOD_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const SERVICE_CONTACT_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {
@@ -179,6 +191,7 @@ const SERVICE_CONTACT_PARSERS =
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const SERVICE_IDENTIFICATION_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {
@@ -195,6 +208,7 @@ const SERVICE_IDENTIFICATION_PARSERS =
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const SERVICE_PROVIDER_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {

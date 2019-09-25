@@ -125,6 +125,7 @@ class WMSGetFeatureInfo extends XMLFeature {
           [context['featureNS'], null], parsers);
         layerElement.setAttribute('namespaceURI', this.featureNS_);
         const layerFeatures = pushParseAndPop(
+          // @ts-ignore
           [], parsersNS, layerElement, objectStack, this.gmlFormat_);
         if (layerFeatures) {
           extend(features, layerFeatures);
