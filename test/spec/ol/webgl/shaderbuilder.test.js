@@ -2,7 +2,7 @@ import {
   getSymbolVertexShader,
   formatNumber,
   getSymbolFragmentShader,
-  formatColor, formatArray
+  formatColor, formatArray, parse
 } from '../../../../src/ol/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', function() {
@@ -193,6 +193,33 @@ void main(void) {
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
 }`);
+    });
+  });
+
+  describe('parse', function() {
+    let attributes, prefix, parseFn;
+
+    beforeEach(function() {
+      attributes = [];
+      prefix = 'a_';
+      parseFn = function(value) {
+        return parse(value, attributes, prefix);
+      };
+    });
+
+    it('parses expressions & literal values', function() {
+      expect(parseFn(1)).to.eql('1.0');
+      expect(parseFn(['get', 'myAttr'])).to.eql('a_myAttr');
+      expect(parseFn(['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
+      expect(parseFn(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
+      expect(parseFn(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('(clamp(a_size, 10.0, 100.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');
+      expect(attributes).to.eql(['myAttr', 'size', 'attr2', 'attr3']);
+    });
+
+    it('does not register an attribute several times', function() {
+      parseFn(['get', 'myAttr']);
+      parseFn(['clamp', ['get', 'attr2'], ['get', 'attr2'], ['get', 'myAttr']]);
+      expect(attributes).to.eql(['myAttr', 'attr2']);
     });
   });
 

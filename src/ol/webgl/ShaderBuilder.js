@@ -141,3 +141,57 @@ void main(void) {
 
   return body;
 }
+
+/**
+ * Base type for values fed to operators; can be a number literal or the output of another operator
+ * @typedef {Array<*>|number} OperatorValue
+ */
+
+/**
+ * Parses the provided expressions and produces a GLSL-compatible assignment string, such as:
+ * `['add', ['*', ['get', 'size'], 0.001], 12] => '(a_size * (0.001)) + (12.0)'
+ *
+ * The following operators can be used:
+ * * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
+ * * `['*', value1, value1]` multiplies value1 by value2
+ * * `['+', value1, value1]` adds value1 and value2
+ * * `['clamp', value1, value2, value3]` clamps value1 between values2 and value3
+ * * `['stretch', value1, value2, value3, value4, value5]` maps value1 from [value2, value3] range to
+ *   [value4, value5] range, clamping values along the way
+ *
+ * Values can either be literals (numbers) or another operator, as they will be evaluated recursively.
+ *
+ * Also takes in an array where new attributes will be pushed, so that the user of the `parse` function
+ * knows which attributes are expected to be available at evaluation time.
+ *
+ * A prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
+ * the final assignment string.
+ *
+ * @param {OperatorValue} value Either literal or an operator.
+ * @param {Array<string>} attributes Array containing the attribute names prefixed with `a_`; it
+ * it passed along recursively
+ * @param {string} attributePrefix Prefix added to attribute names in the final output (typically `a_` or `v_`).
+ * @returns {string} Assignment string.
+ */
+export function parse(value, attributes, attributePrefix) {
+  const v = value;
+  function p(value) {
+    return parse(value, attributes, attributePrefix);
+  }
+  if (Array.isArray(v)) {
+    switch (v[0]) {
+      case 'get':
+        if (attributes.indexOf(v[1]) === -1) {
+          attributes.push(v[1]);
+        }
+        return attributePrefix + v[1];
+      case '*': return `(${p(v[1])} * ${p(v[2])})`;
+      case '+': return `(${p(v[1])} + ${p(v[2])})`;
+      case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
+      case 'stretch': return `(clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])}) * ((${p(v[5])} - ${p(v[4])}) / (${p(v[3])} - ${p(v[2])})) + ${p(v[4])})`;
+      default: throw new Error('Unrecognized literal style expression: ' + JSON.stringify(value));
+    }
+  } else {
+    return formatNumber(value);
+  }
+}
