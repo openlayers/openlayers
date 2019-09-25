@@ -11,11 +11,12 @@ import {create as createTransform, apply as applyTransform, compose as composeTr
 
 /**
  * @abstract
+ * @template {import("../../layer/Layer.js").default} LayerType
  */
 class CanvasLayerRenderer extends LayerRenderer {
 
   /**
-   * @param {import("../../layer/Layer.js").default} layer Layer.
+   * @param {LayerType} layer Layer.
    */
   constructor(layer) {
 

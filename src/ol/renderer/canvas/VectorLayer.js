@@ -144,7 +144,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
 
     const transform = this.getRenderTransform(frameState, width, height, 0);
-    const declutterReplays = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer()).getDeclutter() ? {} : null;
+    const declutterReplays = this.getLayer().getDeclutter() ? {} : null;
     replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
 
     if (vectorSource.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
@@ -199,7 +199,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     } else {
       const resolution = frameState.viewState.resolution;
       const rotation = frameState.viewState.rotation;
-      const layer = /** @type {import("../../layer/Vector").default} */ (this.getLayer());
+      const layer = this.getLayer();
       /** @type {!Object<string, boolean>} */
       const features = {};
       const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance,
@@ -241,7 +241,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState) {
-    const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const vectorLayer = this.getLayer();
     const vectorSource = vectorLayer.getSource();
 
     const animating = frameState.viewHints[ViewHint.ANIMATING];
