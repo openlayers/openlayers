@@ -11,7 +11,7 @@
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test rendering src/ol examples config",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint && npm run typecheck",
     "test-rendering": "node rendering/test.js",
     "test": "npm run karma -- --single-run --log-level error && npm run test-rendering -- --force",
     "karma": "karma start test/karma.config.js",
@@ -95,7 +95,7 @@
     "shx": "^0.3.2",
     "sinon": "^7.3.2",
     "terser-webpack-plugin": "^2.0.1",
-    "typescript": "^3.4.5",
+    "typescript": "3.5.3",
     "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
     "webpack": "4.41.0",

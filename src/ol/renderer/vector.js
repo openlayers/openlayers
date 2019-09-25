@@ -93,7 +93,7 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(import("../events/Event.js").default): void} listener Listener function.
- * @param {import("../proj/Projection.js").default} projection The view projection.
+ * @param {import("../proj/Projection.js").default} [projection] The view projection.
  * @return {boolean} `true` if style is loading.
  * @template T
  */
@@ -124,7 +124,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {import("../proj/Projection.js").default} projection The view projection.
+ * @param {import("../proj/Projection.js").default} [projection] The view projection.
  */
 function renderFeatureInternal(replayGroup, feature, style, squaredTolerance, projection) {
   const geometry = style.getGeometryFunction()(feature);

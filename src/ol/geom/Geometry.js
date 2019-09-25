@@ -61,8 +61,8 @@ class Geometry extends BaseObject {
      * Get a transformed and simplified version of the geometry.
      * @abstract
      * @param {number} squaredTolerance Squared tolerance.
-     * @param {import("../proj/Projection.js").default} sourceProjection The source projection.
-     * @param {import("../proj/Projection.js").default} destProjection The destination projection.
+     * @param {import("../proj/Projection.js").default} [sourceProjection] The source projection.
+     * @param {import("../proj/Projection.js").default} [destProjection] The destination projection.
      * @return {Geometry} Simplified geometry.
      */
     this.simplifyTransformed = memoizeOne(function(squaredTolerance, sourceProjection, destProjection) {

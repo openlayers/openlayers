@@ -22,6 +22,7 @@ const NAMESPACE_URIS = [
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Service': makeObjectPropertySetter(readService),
@@ -33,6 +34,7 @@ const PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CAPABILITY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Request': makeObjectPropertySetter(readRequest),
@@ -86,6 +88,7 @@ class WMSCapabilities extends XML {
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const SERVICE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Name': makeObjectPropertySetter(readString),
@@ -106,6 +109,7 @@ const SERVICE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CONTACT_INFORMATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ContactPersonPrimary': makeObjectPropertySetter(readContactPersonPrimary),
@@ -121,6 +125,7 @@ const CONTACT_INFORMATION_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CONTACT_PERSON_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ContactPerson': makeObjectPropertySetter(readString),
@@ -132,6 +137,7 @@ const CONTACT_PERSON_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const CONTACT_ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'AddressType': makeObjectPropertySetter(readString),
@@ -147,6 +153,7 @@ const CONTACT_ADDRESS_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const EXCEPTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Format': makeArrayPusher(readString)
@@ -157,6 +164,7 @@ const EXCEPTION_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Name': makeObjectPropertySetter(readString),
@@ -184,6 +192,7 @@ const LAYER_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const ATTRIBUTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Title': makeObjectPropertySetter(readString),
@@ -196,6 +205,7 @@ const ATTRIBUTION_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
       'westBoundLongitude': makeObjectPropertySetter(readDecimal),
@@ -209,6 +219,7 @@ const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const REQUEST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'GetCapabilities': makeObjectPropertySetter(readOperationType),
@@ -221,6 +232,7 @@ const REQUEST_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const OPERATIONTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Format': makeObjectPropertyPusher(readString),
@@ -232,6 +244,7 @@ const OPERATIONTYPE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const DCPTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'HTTP': makeObjectPropertySetter(readHTTP)
@@ -242,6 +255,7 @@ const DCPTYPE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const HTTP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Get': makeObjectPropertySetter(readFormatOnlineresource),
@@ -253,6 +267,7 @@ const HTTP_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Name': makeObjectPropertySetter(readString),
@@ -268,6 +283,7 @@ const STYLE_PARSERS = makeStructureNS(
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const FORMAT_ONLINERESOURCE_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
       'Format': makeObjectPropertySetter(readString),
@@ -279,6 +295,7 @@ const FORMAT_ONLINERESOURCE_PARSERS =
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
+// @ts-ignore
 const KEYWORDLIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Keyword': makeArrayPusher(readString)
