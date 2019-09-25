@@ -184,7 +184,7 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    const {tolerance = 0.001, message = ''} = await renderPage(page, entry, options);
+    const {tolerance = 0.005, message = ''} = await renderPage(page, entry, options);
 
     if (options.fix) {
       await copyActualToExpected(entry);
