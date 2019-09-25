@@ -60,12 +60,13 @@ class Geometry extends BaseObject {
     /**
      * Get a transformed and simplified version of the geometry.
      * @abstract
+     * @param {number} revision The geometry revision.
      * @param {number} squaredTolerance Squared tolerance.
      * @param {import("../proj/Projection.js").default} sourceProjection The source projection.
      * @param {import("../proj/Projection.js").default} destProjection The destination projection.
      * @return {Geometry} Simplified geometry.
      */
-    this.simplifyTransformed = memoizeOne(function(squaredTolerance, sourceProjection, destProjection) {
+    this.simplifyTransformedInternal = memoizeOne(function(revision, squaredTolerance, sourceProjection, destProjection) {
       if (!sourceProjection || !destProjection) {
         return this.getSimplifiedGeometry(squaredTolerance);
       }
@@ -75,6 +76,18 @@ class Geometry extends BaseObject {
       return clone.getSimplifiedGeometry(squaredTolerance);
     });
 
+  }
+
+  /**
+   * Get a transformed and simplified version of the geometry.
+   * @abstract
+   * @param {number} squaredTolerance Squared tolerance.
+   * @param {import("../proj/Projection.js").default} sourceProjection The source projection.
+   * @param {import("../proj/Projection.js").default} destProjection The destination projection.
+   * @return {Geometry} Simplified geometry.
+   */
+  simplifyTransformed(squaredTolerance, sourceProjection, destProjection) {
+    return this.simplifyTransformedInternal(this.getRevision(), squaredTolerance, sourceProjection, destProjection);
   }
 
   /**
