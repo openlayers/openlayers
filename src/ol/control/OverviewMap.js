@@ -463,8 +463,6 @@ class OverviewMap extends Control {
       box.style.width = width + 'px';
       box.style.height = height + 'px';
       const transform = 'rotate(' + rotation + 'rad)';
-      box.style.msTransform = transform;
-      box.style.webkitTransform = transform;
       box.style.transform = transform;
     }
   }
