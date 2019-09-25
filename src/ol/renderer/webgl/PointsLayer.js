@@ -460,12 +460,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
    */
   renderHitDetection(frameState) {
-    // skip render entirely if vertices buffers for display & hit detection have different sizes
-    // this typically means both buffers are temporarily out of sync
-    // FIXME: adapt this to the new points renderer behaviour
-    // if (this.hitVerticesBuffer_.getSize() !== this.verticesBuffer_.getSize()) {
-    //   return;
-    // }
+    // skip render entirely if vertex buffers not ready/generated yet
+    if (!this.hitVerticesBuffer_.getSize()) {
+      return;
+    }
 
     this.hitRenderTarget_.setSize(frameState.size);
 
