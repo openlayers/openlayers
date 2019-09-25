@@ -8,7 +8,6 @@ import LRUCache from '../../structs/LRUCache.js';
 /**
  * @classdesc
  * Cache of pre-rendered labels.
- * @fires import("../events/Event.js").Event
  */
 class LabelCache extends LRUCache {
 
