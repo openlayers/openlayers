@@ -2,6 +2,7 @@
  * @module ol/style/RegularShape
  */
 
+import {asArray} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import ImageState from '../ImageState.js';
@@ -429,17 +430,31 @@ class RegularShape extends ImageStyle {
    */
   createHitDetectionCanvas_(renderOptions) {
     this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
+    this.hitDetectionCanvas_ = this.canvas_;
     if (this.fill_) {
-      this.hitDetectionCanvas_ = this.canvas_;
-      return;
+      let color = this.fill_.getColor();
+
+      // determine if fill is transparent (or pattern or gradient)
+      let opacity = 0;
+      if (typeof color === 'string') {
+        color = asArray(color);
+      }
+      if (color === null) {
+        opacity = 1;
+      } else if (Array.isArray(color)) {
+        opacity = color.length === 4 ? color[3] : 1;
+      }
+      if (opacity === 0) {
+
+        // if a transparent fill style is set, create an extra hit-detection image
+        // with a default fill style
+        const context = createCanvasContext2D(renderOptions.size, renderOptions.size);
+        this.hitDetectionCanvas_ = context.canvas;
+
+        this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
+      }
     }
 
-    // if no fill style is set, create an extra hit-detection image with a
-    // default fill style
-    const context = createCanvasContext2D(renderOptions.size, renderOptions.size);
-    this.hitDetectionCanvas_ = context.canvas;
-
-    this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
   }
 
   /**

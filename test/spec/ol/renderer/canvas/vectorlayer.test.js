@@ -393,23 +393,21 @@ describe('ol.renderer.canvas.VectorLayer', function() {
             geometry: new Circle([7.5, 7.5], 1.5),
             fillType: 'transparent'
           }),
-          // CircleStyle transparent and no fill hit detection
-          // is currently the opposite of ol/Style
           new Feature({
             geometry: new Point([1.5, 1.5]),
-            fillType: 'transparent'
+            fillType: 'none'
           }),
           new Feature({
             geometry: new Point([2.5, 2.5]),
-            fillType: 'transparent'
+            fillType: 'none'
           }),
           new Feature({
             geometry: new Point([6.5, 1.5]),
-            fillType: 'none'
+            fillType: 'transparent'
           }),
           new Feature({
             geometry: new Point([7.5, 2.5]),
-            fillType: 'none'
+            fillType: 'transparent'
           })
         ]
       });
