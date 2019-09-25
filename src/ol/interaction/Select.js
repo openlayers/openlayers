@@ -86,8 +86,6 @@ const SelectEventType = {
  * that takes an {@link module:ol/Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @property {boolean} [wrapX=true] Wrap the world horizontally on the selection
- * overlay.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside
  * the radius around the given position will be checked for features.
  */

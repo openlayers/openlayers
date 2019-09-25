@@ -223,7 +223,7 @@ describe('ol.interaction.Select', function() {
       expect(features.getLength()).to.equal(4);
       expect(select.getLayer(features.item(0))).to.equal(layer);
 
-      // Select again to make sure the internal layer isn't reported
+      // Select again to make sure the style change does not break selection
       simulateEvent('singleclick', 10, -20);
 
       expect(listenerSpy.callCount).to.be(1);
@@ -362,7 +362,7 @@ describe('ol.interaction.Select', function() {
       interaction.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20);
-      // Select again to make sure that the internal layer doesn't get reported.
+      // Select again to make sure the style change does not break selection
       simulateEvent('singleclick', 10, -20);
     });
   });

@@ -275,6 +275,10 @@ The `ol/source/Vector#refresh()` method now removes all features from the source
 
 The `getGetFeatureInfoUrl` of `ol/source/ImageWMS` and `ol/source/TileWMS` is now called `getFeatureInfoUrl`.
 
+##### `getFeaturesAtPixel` always returns an array
+
+`getFeaturesAtPixel` now returns an empty array instead of null if no features were found.
+
 #### Other changes
 
 ##### Allow declutter in image render mode
