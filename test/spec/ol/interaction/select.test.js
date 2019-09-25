@@ -259,10 +259,10 @@ describe('ol.interaction.Select', function() {
 
       simulateEvent('singleclick', 10, -20, true);
 
-      expect(listenerSpy.callCount).to.be(2);
+      expect(listenerSpy.callCount).to.be(1);
 
       features = select.getFeatures();
-      expect(features.getLength()).to.equal(0);
+      expect(features.getLength()).to.equal(4);
     });
   });
 
@@ -377,8 +377,6 @@ describe('ol.interaction.Select', function() {
 
       map.addInteraction(interaction);
 
-      expect(interaction.featureOverlay_).not.to.be(null);
-
       simulateEvent('singleclick', 10, -20);
     });
 
@@ -405,47 +403,5 @@ describe('ol.interaction.Select', function() {
       });
     });
 
-  });
-
-  describe('#setMap()', function() {
-    let interaction;
-
-    beforeEach(function() {
-      interaction = new Select();
-      expect(interaction.getActive()).to.be(true);
-    });
-
-    describe('#setMap(null)', function() {
-      beforeEach(function() {
-        map.addInteraction(interaction);
-      });
-      afterEach(function() {
-        map.removeInteraction(interaction);
-      });
-      describe('#setMap(null) when interaction is active', function() {
-        it('unsets the map from the feature overlay', function() {
-          const spy = sinon.spy(interaction.featureOverlay_, 'setMap');
-          interaction.setMap(null);
-          expect(spy.getCall(0).args[0]).to.be(null);
-        });
-      });
-    });
-
-    describe('#setMap(map)', function() {
-      describe('#setMap(map) when interaction is active', function() {
-        it('sets the map into the feature overlay', function() {
-          const spy = sinon.spy(interaction.featureOverlay_, 'setMap');
-          interaction.setMap(map);
-          expect(spy.getCall(0).args[0]).to.be(map);
-        });
-      });
-    });
-  });
-
-  describe('#getOverlay', function() {
-    it('returns the feature overlay layer', function() {
-      const select = new Select();
-      expect (select.getOverlay()).to.eql(select.featureOverlay_);
-    });
   });
 });
