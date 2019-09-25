@@ -58,8 +58,8 @@ describe('ol.reproj.Tile', () => {
       proj3857, createForProjection(proj3857),
       proj4326, createForProjection(proj4326),
       [0, -1, 0], null, 1, 0, function() {
-      throw Error('No tiles should be required');
-    });
+        throw Error('No tiles should be required');
+      });
     expect(tile.getState()).toBe(4);
   });
 
@@ -70,8 +70,8 @@ describe('ol.reproj.Tile', () => {
       proj27700, createForProjection(proj27700),
       proj4326, createForProjection(proj4326),
       [3, 2, -2], null, 1, 0, function() {
-      throw Error('No tiles should be required');
-    });
+        throw Error('No tiles should be required');
+      });
     expect(tile.getState()).toBe(4);
   });
 

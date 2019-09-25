@@ -111,6 +111,9 @@
     "plugins": [
       "@openlayers"
     ],
+    "env": {
+      "jest": true
+    },
     "rules": {
       "valid-jsdoc": "off",
       "@openlayers/valid-tsdoc": [
