@@ -18,7 +18,7 @@ describe('ol.array', () => {
   describe('binarySearch', () => {
 
     const insertionPoint = function(position) {
-      return -(position + 1);
+      return Math.abs(position + 1);
     };
     const revNumCompare = function(a, b) {
       return b - a;
