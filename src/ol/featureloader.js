@@ -6,7 +6,7 @@ import FormatType from './format/FormatType.js';
 
 /**
  *
- * @type {boolean} withCredentials Compare https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
+ * @type {boolean}
  * @private
  */
 let withCredentials = false;
