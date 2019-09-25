@@ -1,18 +1,13 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
-import {defaults as defaultInteractions, Draw, Modify} from '../src/ol/interaction.js';
+import {defaults as defaultInteractions, Draw, Modify, Select} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import XYZ from '../src/ol/source/XYZ.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
-import Collection from '../src/ol/Collection.js';
-import Style from '../src/ol/style/Style.js';
-import Fill from '../src/ol/style/Fill.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import {shiftKeyOnly} from '../src/ol/events/condition.js';
 
 
 const serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
@@ -68,32 +63,17 @@ const draw = new Draw({
   type: 'Polygon'
 });
 
-const selected = new Collection();
-
-const highlightStyle = new Style({
-  fill: new Fill({
-    color: 'rgba(255,255,255,0.7)'
-  }),
-  stroke: new Stroke({
-    color: 'rgb(51,153,204)',
-    width: 3
-  })
-});
-
-selected.on('add', function(e) {
-  e.element.setStyle(highlightStyle);
-});
-
-selected.on('remove', function(e) {
-  e.element.setStyle(undefined);
-});
+const select = new Select();
+select.setActive(false);
+const selected = select.getFeatures();
 
 const modify = new Modify({
   features: selected
 });
+modify.setActive(false);
 
 const map = new Map({
-  interactions: defaultInteractions().extend([draw, modify]),
+  interactions: defaultInteractions().extend([draw, select, modify]),
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({
@@ -101,15 +81,6 @@ const map = new Map({
     zoom: 12
   })
 });
-
-function select(e) {
-  if (!shiftKeyOnly(e)) {
-    selected.clear();
-  }
-  map.forEachFeatureAtPixel(e.pixel, function(f) {
-    selected.push(f);
-  });
-}
 
 const typeSelect = document.getElementById('type');
 
@@ -121,11 +92,6 @@ typeSelect.onchange = function() {
   draw.setActive(typeSelect.value === 'DRAW');
   select.setActive(typeSelect.value === 'MODIFY');
   modify.setActive(typeSelect.value === 'MODIFY');
-  if (typeSelect.value === 'MODIFY') {
-    map.on('singleclick', select);
-  } else {
-    map.un('singleclick', select);
-  }
 };
 
 const dirty = {};

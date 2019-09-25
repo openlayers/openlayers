@@ -2,6 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {createEmpty, getWidth, getHeight, extend} from '../src/ol/extent.js';
 import KML from '../src/ol/format/KML.js';
+import {defaults as defaultInteractions, Select} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {Cluster, Stamen, Vector as VectorSource} from '../src/ol/source.js';
 import {Circle as CircleStyle, Fill, RegularShape, Stroke, Style, Text} from '../src/ol/style.js';
@@ -68,50 +69,48 @@ const calculateClusterInfo = function(resolution) {
 };
 
 let currentResolution;
-let hovered = null;
-
 function styleFunction(feature, resolution) {
-  if (feature !== hovered) {
-    if (resolution != currentResolution) {
-      calculateClusterInfo(resolution);
-      currentResolution = resolution;
-    }
-    let style;
-    const size = feature.get('features').length;
-    if (size > 1) {
-      style = new Style({
-        image: new CircleStyle({
-          radius: feature.get('radius'),
-          fill: new Fill({
-            color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
-          })
-        }),
-        text: new Text({
-          text: size.toString(),
-          fill: textFill,
-          stroke: textStroke
-        })
-      });
-    } else {
-      const originalFeature = feature.get('features')[0];
-      style = createEarthquakeStyle(originalFeature);
-    }
-    return style;
-  } else {
-    const styles = [new Style({
+  if (resolution != currentResolution) {
+    calculateClusterInfo(resolution);
+    currentResolution = resolution;
+  }
+  let style;
+  const size = feature.get('features').length;
+  if (size > 1) {
+    style = new Style({
       image: new CircleStyle({
         radius: feature.get('radius'),
-        fill: invisibleFill
+        fill: new Fill({
+          color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
+        })
+      }),
+      text: new Text({
+        text: size.toString(),
+        fill: textFill,
+        stroke: textStroke
       })
-    })];
-    const originalFeatures = feature.get('features');
-    let originalFeature;
-    for (let i = originalFeatures.length - 1; i >= 0; --i) {
-      originalFeature = originalFeatures[i];
-      styles.push(createEarthquakeStyle(originalFeature));
-    }
-    return styles;
+    });
+  } else {
+    const originalFeature = feature.get('features')[0];
+    style = createEarthquakeStyle(originalFeature);
   }
+  return style;
+}
+
+function selectStyleFunction(feature) {
+  const styles = [new Style({
+    image: new CircleStyle({
+      radius: feature.get('radius'),
+      fill: invisibleFill
+    })
+  })];
+  const originalFeatures = feature.get('features');
+  let originalFeature;
+  for (let i = originalFeatures.length - 1; i >= 0; --i) {
+    originalFeature = originalFeatures[i];
+    styles.push(createEarthquakeStyle(originalFeature));
+  }
+  return styles;
 }
 
 vector = new VectorLayer({
@@ -135,17 +134,16 @@ const raster = new TileLayer({
 
 const map = new Map({
   layers: [raster, vector],
+  interactions: defaultInteractions().extend([new Select({
+    condition: function(evt) {
+      return evt.type == 'pointermove' ||
+          evt.type == 'singleclick';
+    },
+    style: selectStyleFunction
+  })]),
   target: 'map',
   view: new View({
     center: [0, 0],
     zoom: 2
   })
-});
-
-map.on('pointermove', function(e) {
-  hovered = null;
-  map.forEachFeatureAtPixel(e.pixel, function(f) {
-    hovered = f;
-    f.changed();
-  });
 });

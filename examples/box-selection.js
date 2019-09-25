@@ -2,13 +2,9 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {DragBox} from '../src/ol/interaction.js';
+import {DragBox, Select} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import Collection from '../src/ol/Collection.js';
-import Style from '../src/ol/style/Style.js';
-import Fill from '../src/ol/style/Fill.js';
-import Stroke from '../src/ol/style/Stroke.js';
 
 
 const vectorSource = new VectorSource({
@@ -34,37 +30,11 @@ const map = new Map({
   })
 });
 
-const selectedFeatures = new Collection();
+// a normal select interaction to handle click
+const select = new Select();
+map.addInteraction(select);
 
-// style features in collection
-
-const highlightStyle = new Style({
-  fill: new Fill({
-    color: 'rgba(255,255,255,0.7)'
-  }),
-  stroke: new Stroke({
-    color: '#3399CC',
-    width: 3
-  })
-});
-
-selectedFeatures.on('add', function(e) {
-  e.element.setStyle(highlightStyle);
-});
-
-selectedFeatures.on('remove', function(e) {
-  e.element.setStyle(undefined);
-});
-
-
-// handle clicks
-
-map.on('singleclick', function(e) {
-  selectedFeatures.clear();
-  map.forEachFeatureAtPixel(e.pixel, function(f) {
-    selectedFeatures.push(f);
-  });
-});
+const selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
 const dragBox = new DragBox({

@@ -1,11 +1,10 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {defaults as defaultInteractions, Modify} from '../src/ol/interaction.js';
+import {defaults as defaultInteractions, Modify, Select} from '../src/ol/interaction.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import Collection from '../src/ol/Collection.js';
 
 
 const styleFunction = (function() {
@@ -212,29 +211,23 @@ const overlayStyle = (function() {
   };
 })();
 
-const collection = new Collection();
-
-collection.on('add', function(e) {
-  e.element.setStyle(overlayStyle);
-});
-
-collection.on('remove', function(e) {
-  e.element.setStyle(undefined);
+const select = new Select({
+  style: overlayStyle
 });
 
 const modify = new Modify({
-  features: collection,
+  features: select.getFeatures(),
   style: overlayStyle,
   insertVertexCondition: function() {
     // prevent new vertices to be added to the polygons
-    return !collection.getArray().every(function(feature) {
+    return !select.getFeatures().getArray().every(function(feature) {
       return feature.getGeometry().getType().match(/Polygon/);
     });
   }
 });
 
 const map = new Map({
-  interactions: defaultInteractions().extend([modify]),
+  interactions: defaultInteractions().extend([select, modify]),
   layers: [layer],
   target: 'map',
   view: new View({
@@ -242,12 +235,3 @@ const map = new Map({
     zoom: 2
   })
 });
-
-map.on('singleclick', function(e) {
-  collection.clear();
-  map.forEachFeatureAtPixel(e.pixel, function(f) {
-    collection.push(f);
-  });
-});
-
-

@@ -275,14 +275,6 @@ The `ol/source/Vector#refresh()` method now removes all features from the source
 
 The `getGetFeatureInfoUrl` of `ol/source/ImageWMS` and `ol/source/TileWMS` is now called `getFeatureInfoUrl`.
 
-##### Removal of `SelectInteraction`
-
-The `SelectInteraction` is removed. There are two examples ([Select Features by Hover](https://openlayers.org/en/master/examples/select-hover-features.html) and [Select multiple Features](https://openlayers.org/en/master/examples/select-multiple-features.html) which show how similar results can be achieved by using more basic methods.
-
-##### `getFeaturesAtPixel` always returns an array
-
-`getFeaturesAtPixel` now returns an empty array instead of `null` if no features were found. 
-
 #### Other changes
 
 ##### Allow declutter in image render mode

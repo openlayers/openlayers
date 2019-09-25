@@ -2,6 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
+import Select from '../src/ol/interaction/Select.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -43,35 +44,27 @@ const map = new Map({
 });
 
 const selectStyle = {};
-let selected = null;
-
-map.on('singleclick', function(e) {
-  if (selected !== null) {
-    selected.setStyle(undefined);
-  }
-  map.forEachFeatureAtPixel(e.pixel, function(f) {
-    f.setStyle(function(feature) {
-      const image = feature.get('style').getImage().getImage();
-      if (!selectStyle[image.src]) {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = image.width;
-        canvas.height = image.height;
-        context.drawImage(image, 0, 0, image.width, image.height);
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        for (let i = 0, ii = data.length; i < ii; i = i + (i % 4 == 2 ? 2 : 1)) {
-          data[i] = 255 - data[i];
-        }
-        context.putImageData(imageData, 0, 0);
-        selectStyle[image.src] = createStyle(undefined, canvas);
+const select = new Select({
+  style: function(feature) {
+    const image = feature.get('style').getImage().getImage();
+    if (!selectStyle[image.src]) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      context.drawImage(image, 0, 0, image.width, image.height);
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      for (let i = 0, ii = data.length; i < ii; i = i + (i % 4 == 2 ? 2 : 1)) {
+        data[i] = 255 - data[i];
       }
-      return selectStyle[image.src];
-    });
-    selected = f;
-    return true;
-  });
+      context.putImageData(imageData, 0, 0);
+      selectStyle[image.src] = createStyle(undefined, canvas);
+    }
+    return selectStyle[image.src];
+  }
 });
+map.addInteraction(select);
 
 map.on('pointermove', function(evt) {
   map.getTargetElement().style.cursor =
