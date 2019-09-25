@@ -5,7 +5,7 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
-import WebGLLayerRenderer, {colorDecodeId, colorEncodeId, getBlankImageData, WebGLWorkerMessageType} from './Layer.js';
+import WebGLLayerRenderer, {colorDecodeId, colorEncodeId, WebGLWorkerMessageType} from './Layer.js';
 import ViewHint from '../../ViewHint.js';
 import {createEmpty, equals} from '../../extent.js';
 import {

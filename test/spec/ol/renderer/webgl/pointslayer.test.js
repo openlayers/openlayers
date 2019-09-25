@@ -108,7 +108,9 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       });
       renderer = new WebGLPointsLayerRenderer(layer, {
         vertexShader: simpleVertexShader,
-        fragmentShader: simpleFragmentShader
+        fragmentShader: simpleFragmentShader,
+        hitVertexShader: hitVertexShader,
+        hitFragmentShader: hitFragmentShader
       });
       frameState = Object.assign({
         size: [2, 2],

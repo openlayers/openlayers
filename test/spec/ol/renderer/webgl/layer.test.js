@@ -33,7 +33,7 @@ describe('ol.renderer.webgl.Layer', function() {
   });
 
   describe('writePointFeatureToBuffers', function() {
-    let vertexBuffer, indexBuffer, instructions, elementIndex;
+    let vertexBuffer, indexBuffer, instructions;
 
     beforeEach(function() {
       vertexBuffer = new Float32Array(100);

@@ -22,16 +22,17 @@ texture.src = 'data/ufo_shapes.png';
 
 // This describes the content of the associated sprite sheet
 // coords are u0, v0, u1, v1 for a given shape
-const shapeTextureCoords = {
-  'light': [0, 0.5, 0.25, 0],
-  'sphere': [0.25, 0.5, 0.5, 0],
-  'circle': [0.25, 0.5, 0.5, 0],
-  'disc': [0.5, 0.5, 0.75, 0],
-  'oval': [0.5, 0.5, 0.75, 0],
-  'triangle': [0.75, 0.5, 1, 0],
-  'fireball': [0, 1, 0.25, 0.5],
-  'default': [0.75, 1, 1, 0.5]
-};
+// FIXME: re enable this
+// const shapeTextureCoords = {
+//   'light': [0, 0.5, 0.25, 0],
+//   'sphere': [0.25, 0.5, 0.5, 0],
+//   'circle': [0.25, 0.5, 0.5, 0],
+//   'disc': [0.5, 0.5, 0.75, 0],
+//   'oval': [0.5, 0.5, 0.75, 0],
+//   'triangle': [0.75, 0.5, 1, 0],
+//   'fireball': [0, 1, 0.25, 0.5],
+//   'default': [0.75, 1, 1, 0.5]
+// };
 
 const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];

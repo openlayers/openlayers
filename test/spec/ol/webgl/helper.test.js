@@ -1,8 +1,9 @@
-import WebGLHelper, {AttributeType, computeAttributesStride} from '../../../../src/ol/webgl/Helper.js';
+import WebGLHelper from '../../../../src/ol/webgl/Helper.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
-  scale as scaleTransform, translate as translateTransform
+  scale as scaleTransform,
+  translate as translateTransform
 } from '../../../../src/ol/transform.js';
 import {FLOAT} from '../../../../src/ol/webgl.js';
 

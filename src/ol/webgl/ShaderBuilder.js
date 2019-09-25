@@ -23,7 +23,7 @@ export function formatNumber(v) {
  * @returns {string} The color components concatenated in `1.0, 1.0, 1.0, 1.0` form.
  */
 export function formatColor(colorArray) {
-  return colorArray.map(function (c, i) {
+  return colorArray.map(function(c, i) {
     return i < 3 ? c / 255 : c;
   }).map(formatNumber).join(', ');
 }
