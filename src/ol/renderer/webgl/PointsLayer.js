@@ -113,7 +113,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   constructor(vectorLayer, options) {
     const uniforms = options.uniforms || {};
-    uniforms.u_texture = getBlankImageData();
     const projectionMatrixTransform = createTransform();
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 

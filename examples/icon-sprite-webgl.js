@@ -21,18 +21,17 @@ const texture = new Image();
 texture.src = 'data/ufo_shapes.png';
 
 // This describes the content of the associated sprite sheet
-// coords are u0, v0, u1, v1 for a given shape
-// FIXME: re enable this
-// const shapeTextureCoords = {
-//   'light': [0, 0.5, 0.25, 0],
-//   'sphere': [0.25, 0.5, 0.5, 0],
-//   'circle': [0.25, 0.5, 0.5, 0],
-//   'disc': [0.5, 0.5, 0.75, 0],
-//   'oval': [0.5, 0.5, 0.75, 0],
-//   'triangle': [0.75, 0.5, 1, 0],
-//   'fireball': [0, 1, 0.25, 0.5],
-//   'default': [0.75, 1, 1, 0.5]
-// };
+// coords are u0, v0 for a given shape (all icons have a size of 0.25 x 0.5)
+const shapeTextureCoords = {
+  'light': [0, 0],
+  'sphere': [0.25, 0],
+  'circle': [0.25, 0],
+  'disc': [0.5, 0],
+  'oval': [0.5, 0],
+  'triangle': [0.75, 0],
+  'fireball': [0, 0.5],
+  'default': [0.75, 0.5]
+};
 
 const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];
@@ -47,8 +46,31 @@ class WebglPointsLayer extends VectorLayer {
           callback: function(feature) {
             return feature.get('year');
           }
+        },
+        {
+          name: 'texCoordU',
+          callback: function(feature) {
+            let coords = shapeTextureCoords[feature.get('shape')];
+            if (!coords) {
+              coords = shapeTextureCoords['default'];
+            }
+            return coords[0];
+          }
+        },
+        {
+          name: 'texCoordV',
+          callback: function(feature) {
+            let coords = shapeTextureCoords[feature.get('shape')];
+            if (!coords) {
+              coords = shapeTextureCoords['default'];
+            }
+            return coords[1];
+          }
         }
       ],
+      uniforms: {
+        u_texture: texture
+      },
       vertexShader: [
         'precision mediump float;',
 
@@ -58,6 +80,9 @@ class WebglPointsLayer extends VectorLayer {
         'attribute vec2 a_position;',
         'attribute float a_index;',
         'attribute float a_year;',
+        'attribute float a_texCoordU;',
+        'attribute float a_texCoordV;',
+        'varying vec2 v_texCoord;',
         'varying float v_year;',
 
         'void main(void) {',
@@ -68,6 +93,9 @@ class WebglPointsLayer extends VectorLayer {
         '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
         '  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);',
         '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;',
+        '  float u = a_index == 0.0 || a_index == 3.0 ? a_texCoordU : a_texCoordU + 0.25;',
+        '  float v = a_index == 2.0 || a_index == 3.0 ? a_texCoordV : a_texCoordV + 0.5;',
+        '  v_texCoord = vec2(u, v);',
         '  v_year = a_year;',
         '}'
       ].join(' '),
@@ -77,16 +105,22 @@ class WebglPointsLayer extends VectorLayer {
         'uniform float u_time;',
         'uniform float u_minYear;',
         'uniform float u_maxYear;',
+        'uniform sampler2D u_texture;',
+        'varying vec2 v_texCoord;',
         'varying float v_year;',
 
         'void main(void) {',
+        '  vec4 textureColor = texture2D(u_texture, v_texCoord);',
+        '  if (textureColor.a < 0.1) {',
+        '    discard;',
+        '  }',
 
         // color is interpolated based on year
         '  float ratio = clamp((v_year - 1950.0) / (2013.0 - 1950.0), 0.0, 1.1);',
         '  vec3 color = mix(vec3(' + formatColor(oldColor) + '),',
         '    vec3(' + formatColor(newColor) + '), ratio);',
 
-        '  gl_FragColor = vec4(color, 1.0);',
+        '  gl_FragColor = vec4(color, 1.0) * textureColor;',
         '  gl_FragColor.rgb *= gl_FragColor.a;',
         '}'
       ].join(' '),
@@ -99,6 +133,9 @@ class WebglPointsLayer extends VectorLayer {
         'attribute vec2 a_position;',
         'attribute float a_index;',
         'attribute vec4 a_hitColor;',
+        'attribute float a_texCoordU;',
+        'attribute float a_texCoordV;',
+        'varying vec2 v_texCoord;',
         'varying vec4 v_hitColor;',
 
         'void main(void) {',
@@ -109,19 +146,28 @@ class WebglPointsLayer extends VectorLayer {
         '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
         '  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);',
         '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;',
+        '  float u = a_index == 0.0 || a_index == 3.0 ? a_texCoordU : a_texCoordU + 0.25;',
+        '  float v = a_index == 2.0 || a_index == 3.0 ? a_texCoordV : a_texCoordV + 0.5;',
+        '  v_texCoord = vec2(u, v);',
         '  v_hitColor = a_hitColor;',
         '}'
       ].join(' '),
       hitFragmentShader: [
         'precision mediump float;',
 
+        'uniform sampler2D u_texture;',
+        'varying vec2 v_texCoord;',
         'varying vec4 v_hitColor;',
 
         'void main(void) {',
+        '  vec4 textureColor = texture2D(u_texture, v_texCoord);',
+        '  if (textureColor.a < 0.1) {',
+        '    discard;',
+        '  }',
+
         '  gl_FragColor = v_hitColor;',
         '}'
-      ].join(' '),
-      texture: texture // FIXME: this doesn't work yet
+      ].join(' ')
     });
   }
 }
