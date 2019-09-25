@@ -32,10 +32,9 @@ export function VOID() {}
  * returned function is called twice in a row with the same arguments and the same
  * this object, it will return the value from the first call in the second call.
  *
+ * @param {function(...any): ReturnType} fn The function to memoize.
+ * @return {function(...any): ReturnType} The memoized function.
  * @template ReturnType
- * @template ThisType
- * @param {function(this:ThisType, ...any):ReturnType} fn The function to memoize.
- * @return {function(this:ThisType, ...any):ReturnType} The memoized function.
  */
 export function memoizeOne(fn) {
   let called = false;
