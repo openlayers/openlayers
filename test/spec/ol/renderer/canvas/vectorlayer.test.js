@@ -2,13 +2,18 @@ import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import {buffer as bufferExtent, getWidth} from '../../../../../src/ol/extent.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
 import Point from '../../../../../src/ol/geom/Point.js';
+import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import {clear} from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {checkedFonts} from '../../../../../src/ol/render/canvas.js';
 import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 
@@ -309,6 +314,225 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         renderer.renderFrame(frameState, null);
       }
       expect(rendered).to.be(true);
+    });
+
+  });
+
+  describe('hit detection', function() {
+
+    it('with no fill and transparent fill', function() {
+      const target = document.createElement('div');
+      target.style.width = '300px';
+      target.style.height = '300px';
+      document.body.appendChild(target);
+      const styles = {
+        transparent: new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 3
+          }),
+          fill: new Fill({
+            color: 'transparent'
+          }),
+          image: new CircleStyle({
+            radius: 30,
+            stroke: new Stroke({
+              color: 'blue',
+              width: 3
+            }),
+            fill: new Fill({
+              color: 'transparent'
+            })
+          })
+        }),
+        none: new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 3
+          }),
+          image: new CircleStyle({
+            radius: 30,
+            stroke: new Stroke({
+              color: 'blue',
+              width: 3
+            })
+          })
+        })
+      };
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: fromExtent([0, 10, 3, 13]),
+            fillType: 'none'
+          }),
+          new Feature({
+            geometry: fromExtent([1, 11, 4, 14]),
+            fillType: 'none'
+          }),
+          new Feature({
+            geometry: fromExtent([5, 10, 8, 13]),
+            fillType: 'transparent'
+          }),
+          new Feature({
+            geometry: fromExtent([6, 11, 9, 14]),
+            fillType: 'transparent'
+          }),
+          new Feature({
+            geometry: new Circle([1.5, 6.5], 1.5),
+            fillType: 'none'
+          }),
+          new Feature({
+            geometry: new Circle([2.5, 7.5], 1.5),
+            fillType: 'none'
+          }),
+          new Feature({
+            geometry: new Circle([6.5, 6.5], 1.5),
+            fillType: 'transparent'
+          }),
+          new Feature({
+            geometry: new Circle([7.5, 7.5], 1.5),
+            fillType: 'transparent'
+          }),
+          // CircleStyle transparent and no fill hit detection
+          // is currently the opposite of ol/Style
+          new Feature({
+            geometry: new Point([1.5, 1.5]),
+            fillType: 'transparent'
+          }),
+          new Feature({
+            geometry: new Point([2.5, 2.5]),
+            fillType: 'transparent'
+          }),
+          new Feature({
+            geometry: new Point([6.5, 1.5]),
+            fillType: 'none'
+          }),
+          new Feature({
+            geometry: new Point([7.5, 2.5]),
+            fillType: 'none'
+          })
+        ]
+      });
+      const layer = new VectorLayer({
+        source: source,
+        style: function(feature, resolution) {
+          return styles[feature.get('fillType')];
+        }
+      });
+      const map = new Map({
+        layers: [layer],
+        view: new View({
+          center: [4.5, 7],
+          resolution: 0.05
+        }),
+        target: target
+      });
+      map.renderSync();
+
+      function hitTest(coordinate) {
+        const features = map.getFeaturesAtPixel(
+          map.getPixelFromCoordinate(coordinate)
+        );
+        const result = {count: 0};
+        if (features && features.length > 0) {
+          result.count = features.length;
+          result.extent = features[0].getGeometry().getExtent();
+        }
+        return result;
+      }
+      let res;
+
+      res = hitTest([0, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([1, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([2, 12]);
+      expect(res.count).to.be(0);
+      res = hitTest([3, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([4, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([5, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(5);
+      res = hitTest([6, 12]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([7, 12]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([8, 12]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([9, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(6);
+
+      res = hitTest([0, 6.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([1, 7.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([2, 7.0]);
+      expect(res.count).to.be(0);
+      res = hitTest([3, 6.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([4, 7.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([5, 6.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(5);
+      res = hitTest([6, 7.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([7, 7.0]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([8, 6.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([9, 7.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(6);
+
+      res = hitTest([0, 1.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1.5);
+      res = hitTest([1, 2.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(2.5);
+      res = hitTest([2, 2.0]);
+      expect(res.count).to.be(0);
+      res = hitTest([3, 1.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1.5);
+      res = hitTest([4, 2.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(2.5);
+      res = hitTest([5, 1.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(6.5);
+      res = hitTest([6, 2.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(7.5);
+      res = hitTest([7, 2.0]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(7.5);
+      res = hitTest([8, 1.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(7.5);
+      res = hitTest([9, 2.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(7.5);
+
+      document.body.removeChild(target);
     });
 
   });
