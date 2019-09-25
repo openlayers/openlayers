@@ -17,6 +17,7 @@ import {
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {assert} from '../../asserts.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -48,13 +49,38 @@ import WebGLRenderTarget from '../../webgl/RenderTarget.js';
  * All features will be rendered as quads (two triangles forming a square). New data will be flushed to the GPU
  * every time the vector source changes.
  *
- * Use shaders to customize the final output. The following attributes are available:
- * * `vec2 a_position`
- * * `vec2 a_texCoord`
- * * `vec2 a_offsets`
- * * `float a_rotateWithView`
- * * `float a_opacity`
- * * `float a_color`
+ * You need to provide vertex and fragment shaders for rendering. This can be done using
+ * {@link module:ol/webgl/ShaderBuilder} utilities. These shaders shall expect a `a_position` attribute
+ * containing the screen-space projected center of the quad, as well as a `a_index` attribute
+ * whose value (0, 1, 2 or 3) indicates which quad vertex is currently getting processed (see structure below).
+ *
+ * To include variable attributes in the shaders, you need to declare them using the `attributes` property of
+ * the options object like so:
+ * ```js
+ * new WebGLPointsLayerRenderer(layer, {
+ *   attributes: [
+ *     {
+ *       name: 'size',
+ *       callback: function(feature) {
+ *         // compute something with the feature
+ *       }
+ *     },
+ *     {
+ *       name: 'weight',
+ *       callback: function(feature) {
+ *         // compute something with the feature
+ *       }
+ *     },
+ *   ],
+ *   vertexShader:
+ *     // shader using attribute a_weight and a_size
+ *   fragmentShader:
+ *     // shader using varying v_weight and v_size
+ * ```
+ *
+ * To enable hit detection, you must as well provide dedicated shaders using the `hitVertexShader`
+ * and `hitFragmentShader` properties. These shall expect the `a_hitColor` attribute to contain
+ * the final color that will have to be output for hit detection to work.
  *
  * The following uniform is used for the main texture: `u_texture`.
  *
@@ -76,61 +102,6 @@ import WebGLRenderTarget from '../../webgl/RenderTarget.js';
  *  ```
  *
  * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
- *
- * Default shaders are shown hereafter:
- *
- * * Vertex shader:
- *   ```
- *   precision mediump float;
- *
- *   attribute vec2 a_position;
- *   attribute vec2 a_texCoord;
- *   attribute float a_rotateWithView;
- *   attribute vec2 a_offsets;
- *   attribute float a_opacity;
- *   attribute vec4 a_color;
- *
- *   uniform mat4 u_projectionMatrix;
- *   uniform mat4 u_offsetScaleMatrix;
- *   uniform mat4 u_offsetRotateMatrix;
- *
- *   varying vec2 v_texCoord;
- *   varying float v_opacity;
- *   varying vec4 v_color;
- *
- *   void main(void) {
- *     mat4 offsetMatrix = u_offsetScaleMatrix;
- *     if (a_rotateWithView == 1.0) {
- *       offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
- *     }
- *     vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
- *     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
- *     v_texCoord = a_texCoord;
- *     v_opacity = a_opacity;
- *     v_color = a_color;
- *   }
- *   ```
- *
- * * Fragment shader:
- *   ```
- *   precision mediump float;
- *
- *   uniform sampler2D u_texture;
- *
- *   varying vec2 v_texCoord;
- *   varying float v_opacity;
- *   varying vec4 v_color;
- *
- *   void main(void) {
- *     if (v_opacity == 0.0) {
- *       discard;
- *     }
- *     vec4 textureColor = texture2D(u_texture, v_texCoord);
- *     gl_FragColor = v_color * textureColor;
- *     gl_FragColor.a *= v_opacity;
- *     gl_FragColor.rgb *= gl_FragColor.a;
- *   }
- *   ```
  *
  * @api
  */
@@ -161,7 +132,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       options.fragmentShader,
       options.vertexShader
     );
-    this.hitProgram_ = this.helper.getProgram(
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hitDetectionEnabled_ = options.hitFragmentShader && options.hitVertexShader ? true : false;
+
+    this.hitProgram_ = this.hitDetectionEnabled_ && this.helper.getProgram(
       options.hitFragmentShader,
       options.hitVertexShader
     );
@@ -255,7 +233,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {WebGLRenderTarget}
      * @private
      */
-    this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+    this.hitRenderTarget_ = this.hitDetectionEnabled_ && new WebGLRenderTarget(this.helper);
 
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener('message', function(event) {
@@ -300,8 +278,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
-    this.renderHitDetection(frameState);
-    this.hitRenderTarget_.clearCachedData();
+    if (this.hitDetectionEnabled_) {
+      this.renderHitDetection(frameState);
+      this.hitRenderTarget_.clearCachedData();
+    }
 
     return canvas;
   }
@@ -370,9 +350,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
       this.renderInstructions_ = new Float32Array(totalInstructionsCount);
     }
-    const totalHitInstructionsCount = (7 + this.customAttributes.length) * features.length;
-    if (!this.hitRenderInstructions_ || this.hitRenderInstructions_.length !== totalHitInstructionsCount) {
-      this.hitRenderInstructions_ = new Float32Array(totalHitInstructionsCount);
+    if (this.hitDetectionEnabled_) {
+      const totalHitInstructionsCount = (7 + this.customAttributes.length) * features.length;
+      if (!this.hitRenderInstructions_ || this.hitRenderInstructions_.length !== totalHitInstructionsCount) {
+        this.hitRenderInstructions_ = new Float32Array(totalHitInstructionsCount);
+      }
     }
 
     // loop on features to fill the buffer
@@ -399,20 +381,24 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
       // for hit detection, the feature uid is saved in the opacity value
       // and the index of the opacity value is encoded in the color values
-      this.hitRenderInstructions_[hitIndex++] = tmpCoords[0];
-      this.hitRenderInstructions_[hitIndex++] = tmpCoords[1];
-      this.hitRenderInstructions_[hitIndex++] = hitColor[0];
-      this.hitRenderInstructions_[hitIndex++] = hitColor[1];
-      this.hitRenderInstructions_[hitIndex++] = hitColor[2];
-      this.hitRenderInstructions_[hitIndex++] = hitColor[3];
-      this.hitRenderInstructions_[hitIndex++] = Number(getUid(feature));
+      if (this.hitDetectionEnabled_) {
+        this.hitRenderInstructions_[hitIndex++] = tmpCoords[0];
+        this.hitRenderInstructions_[hitIndex++] = tmpCoords[1];
+        this.hitRenderInstructions_[hitIndex++] = hitColor[0];
+        this.hitRenderInstructions_[hitIndex++] = hitColor[1];
+        this.hitRenderInstructions_[hitIndex++] = hitColor[2];
+        this.hitRenderInstructions_[hitIndex++] = hitColor[3];
+        this.hitRenderInstructions_[hitIndex++] = Number(getUid(feature));
+      }
 
       // pushing custom attributes
       let value;
       for (let j = 0; j < this.customAttributes.length; j++) {
         value = this.customAttributes[j].callback(feature);
         this.renderInstructions_[renderIndex++] = value;
-        this.hitRenderInstructions_[hitIndex++] = value;
+        if (this.hitDetectionEnabled_) {
+          this.hitRenderInstructions_[hitIndex++] = value;
+        }
       }
     }
 
@@ -428,21 +414,24 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.renderInstructions_ = null;
 
     /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
-    const hitMessage = {
-      type: WebGLWorkerMessageType.GENERATE_BUFFERS,
-      renderInstructions: this.hitRenderInstructions_.buffer,
-      customAttributesCount: 5 + this.customAttributes.length
-    };
-    hitMessage['projectionTransform'] = projectionTransform;
-    hitMessage['hitDetection'] = true;
-    this.worker_.postMessage(hitMessage, [this.hitRenderInstructions_.buffer]);
-    this.hitRenderInstructions_ = null;
+    if (this.hitDetectionEnabled_) {
+      const hitMessage = {
+        type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+        renderInstructions: this.hitRenderInstructions_.buffer,
+        customAttributesCount: 5 + this.customAttributes.length
+      };
+      hitMessage['projectionTransform'] = projectionTransform;
+      hitMessage['hitDetection'] = true;
+      this.worker_.postMessage(hitMessage, [this.hitRenderInstructions_.buffer]);
+      this.hitRenderInstructions_ = null;
+    }
   }
 
   /**
    * @inheritDoc
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
+    assert(this.hitDetectionEnabled_, 66);
     if (!this.hitRenderInstructions_) {
       return;
     }
