@@ -14,7 +14,7 @@ const worker = self;
 worker.onmessage = event => {
   const received = event.data;
   if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
-    // This is specific to point features
+    // This is specific to point features (x, y, index)
     const baseVertexAttrsCount = 3;
     const baseInstructionsCount = 2;
 

@@ -18,74 +18,6 @@ import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 
-const VERTEX_SHADER = `
-  precision mediump float;
-  attribute vec2 a_position;
-  attribute vec2 a_texCoord;
-  attribute float a_rotateWithView;
-  attribute vec2 a_offsets;
-  attribute float a_opacity;
-  attribute vec4 a_color;
-
-  uniform mat4 u_projectionMatrix;
-  uniform mat4 u_offsetScaleMatrix;
-  uniform mat4 u_offsetRotateMatrix;
-
-  varying vec2 v_texCoord;
-  varying float v_opacity;
-  varying vec4 v_color;
-
-  void main(void) {
-    mat4 offsetMatrix = u_offsetScaleMatrix;
-    if (a_rotateWithView == 1.0) {
-      offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
-    }
-    vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
-    gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
-    v_texCoord = a_texCoord;
-    v_opacity = a_opacity;
-    v_color = a_color;
-  }`;
-
-const FRAGMENT_SHADER = `
-  precision mediump float;
-
-  uniform sampler2D u_texture;
-
-  varying vec2 v_texCoord;
-  varying float v_opacity;
-  varying vec4 v_color;
-
-  void main(void) {
-    if (v_opacity == 0.0) {
-      discard;
-    }
-    vec4 textureColor = texture2D(u_texture, v_texCoord);
-    gl_FragColor = v_color * textureColor;
-    gl_FragColor.a *= v_opacity;
-    gl_FragColor.rgb *= gl_FragColor.a;
-  }`;
-
-const HIT_FRAGMENT_SHADER = `
-  precision mediump float;
-
-  uniform sampler2D u_texture;
-
-  varying vec2 v_texCoord;
-  varying float v_opacity;
-  varying vec4 v_color;
-
-  void main(void) {
-    if (v_opacity == 0.0) {
-      discard;
-    }
-    vec4 textureColor = texture2D(u_texture, v_texCoord);
-    if (textureColor.a < 0.1) {
-      discard;
-    }
-    gl_FragColor = v_color;
-  }`;
-
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
@@ -101,8 +33,10 @@ const HIT_FRAGMENT_SHADER = `
  *  * In the vertex shader as an `attribute` by prefixing it with `a_`
  *  * In the fragment shader as a `varying` by prefixing it with `v_`
  * Please note that these can only be numerical values.
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
+ * @property {string} vertexShader Vertex shader source, mandatory.
+ * @property {string} fragmentShader Fragment shader source, mandatory.
+ * @property {string} [hitVertexShader] Vertex shader source for hit detection rendering.
+ * @property {string} [hitFragmentShader] Fragment shader source for hit detection rendering.
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
@@ -204,11 +138,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
-   * @param {Options=} [opt_options] Options.
+   * @param {Options=} options Options.
    */
-  constructor(vectorLayer, opt_options) {
-    const options = opt_options || {};
-
+  constructor(vectorLayer, options) {
     const uniforms = options.uniforms || {};
     uniforms.u_texture = getBlankImageData();
     const projectionMatrixTransform = createTransform();
@@ -226,12 +158,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.indicesBuffer_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW);
 
     this.program_ = this.helper.getProgram(
-      options.fragmentShader || FRAGMENT_SHADER,
-      options.vertexShader || VERTEX_SHADER
+      options.fragmentShader,
+      options.vertexShader
     );
     this.hitProgram_ = this.helper.getProgram(
-      HIT_FRAGMENT_SHADER,
-      VERTEX_SHADER
+      options.hitFragmentShader,
+      options.hitVertexShader
     );
 
     const customAttributes = options.attributes ?
@@ -271,7 +203,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       size: 1,
       type: AttributeType.FLOAT
     }, {
-      name: 'a_color',
+      name: 'a_hitColor',
       size: 4,
       type: AttributeType.FLOAT
     }, {
@@ -429,6 +361,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.makeProjectionTransform(frameState, projectionTransform);
 
     const features = vectorSource.getFeatures();
+
+    // here we anticipate the amount of render instructions that we well generate
+    // this can be done since we know that for normal render we only have x, y as base instructions,
+    // and x, y, r, g, b, a and featureUid for hit render instructions
+    // and we also know the amount of custom attributes to append to these
     const totalInstructionsCount = (2 + this.customAttributes.length) * features.length;
     if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
       this.renderInstructions_ = new Float32Array(totalInstructionsCount);

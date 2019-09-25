@@ -79,6 +79,7 @@ class WebglPointsLayer extends VectorLayer {
         'varying float v_year;',
 
         'void main(void) {',
+
         // color is interpolated based on year
         '  float ratio = clamp((v_year - 1950.0) / (2013.0 - 1950.0), 0.0, 1.1);',
         '  vec3 color = mix(vec3(' + formatColor(oldColor) + '),',
@@ -86,6 +87,37 @@ class WebglPointsLayer extends VectorLayer {
 
         '  gl_FragColor = vec4(color, 1.0);',
         '  gl_FragColor.rgb *= gl_FragColor.a;',
+        '}'
+      ].join(' '),
+      hitVertexShader: [
+        'precision mediump float;',
+
+        'uniform mat4 u_projectionMatrix;',
+        'uniform mat4 u_offsetScaleMatrix;',
+        'uniform mat4 u_offsetRotateMatrix;',
+        'attribute vec2 a_position;',
+        'attribute float a_index;',
+        'attribute vec4 a_hitColor;',
+        'varying vec4 v_hitColor;',
+
+        'void main(void) {',
+        '  mat4 offsetMatrix = u_offsetScaleMatrix;',
+        '  float offsetX = a_index == 0.0 || a_index == 3.0 ? ',
+        '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
+        '  float offsetY = a_index == 0.0 || a_index == 1.0 ? ',
+        '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
+        '  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);',
+        '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;',
+        '  v_hitColor = a_hitColor;',
+        '}'
+      ].join(' '),
+      hitFragmentShader: [
+        'precision mediump float;',
+
+        'varying vec4 v_hitColor;',
+
+        'void main(void) {',
+        '  gl_FragColor = v_hitColor;',
         '}'
       ].join(' '),
       texture: texture // FIXME: this doesn't work yet
