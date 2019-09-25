@@ -3,11 +3,11 @@ import {transformGeom2D} from '../../../../../src/ol/geom/SimpleGeometry.js';
 import {rotate, translate} from '../../../../../src/ol/geom/flat/transform.js';
 
 
-describe('ol.geom.flat.transform', function() {
+describe('ol.geom.flat.transform', () => {
 
-  describe('ol.geom.flat.transform.transform2D', function() {
+  describe('ol.geom.flat.transform.transform2D', () => {
 
-    it('transforms a Simple Geometry to 2D', function() {
+    test('transforms a Simple Geometry to 2D', () => {
 
       const multiPolygonGeometry = new MultiPolygon([
         [[[-80.736061, 28.788576000000006, 0],
@@ -66,8 +66,8 @@ describe('ol.geom.flat.transform', function() {
 
   });
 
-  describe('ol.geom.flat.transform.translate', function() {
-    it('translates the coordinates array', function() {
+  describe('ol.geom.flat.transform.translate', () => {
+    test('translates the coordinates array', () => {
       const multiPolygon = new MultiPolygon([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
         [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
@@ -77,14 +77,14 @@ describe('ol.geom.flat.transform', function() {
       translate(flatCoordinates, 0,
         flatCoordinates.length, multiPolygon.getStride(),
         deltaX, deltaY, flatCoordinates);
-      expect(flatCoordinates).to.eql([
+      expect(flatCoordinates).toEqual([
         1, 2, 2, 1, 3, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2,
         3, 4, 3, 3, 5, 3, 4, 5, 3, 4, 4, 3, 3, 4, 3]);
     });
   });
 
-  describe('ol.geom.flat.transform.rotate', function() {
-    it('rotates the coordinates array', function() {
+  describe('ol.geom.flat.transform.rotate', () => {
+    test('rotates the coordinates array', () => {
       const multiPolygon = new MultiPolygon([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
         [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);

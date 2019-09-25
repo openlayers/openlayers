@@ -41,31 +41,31 @@ const FRAGMENT_SHADER = `
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   }`;
 
-describe('ol.webgl.WebGLHelper', function() {
+describe('ol.webgl.WebGLHelper', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    describe('without an argument', function() {
+    describe('without an argument', () => {
 
       let h;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper();
       });
 
-      it('initialized WebGL context & canvas', function() {
-        expect(h.getGL() instanceof WebGLRenderingContext).to.eql(true);
-        expect(h.getCanvas() instanceof HTMLCanvasElement).to.eql(true);
+      test('initialized WebGL context & canvas', () => {
+        expect(h.getGL() instanceof WebGLRenderingContext).toEqual(true);
+        expect(h.getCanvas() instanceof HTMLCanvasElement).toEqual(true);
       });
 
-      it('has a default rendering pass', function() {
-        expect(h.postProcessPasses_.length).to.eql(1);
+      test('has a default rendering pass', () => {
+        expect(h.postProcessPasses_.length).toEqual(1);
       });
     });
 
-    describe('with post process passes', function() {
+    describe('with post process passes', () => {
 
       let h;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper({
           postProcesses: [{
             scaleRatio: 0.5
@@ -77,25 +77,25 @@ describe('ol.webgl.WebGLHelper', function() {
         });
       });
 
-      it('has instantiated post-processing passes', function() {
-        expect(h.postProcessPasses_.length).to.eql(2);
-        expect(h.postProcessPasses_[0].scaleRatio_).to.eql(0.5);
-        expect(h.postProcessPasses_[0].uniforms_.length).to.eql(0);
-        expect(h.postProcessPasses_[1].scaleRatio_).to.eql(1);
-        expect(h.postProcessPasses_[1].uniforms_.length).to.eql(1);
-        expect(h.postProcessPasses_[1].uniforms_[0].value).to.eql(4);
+      test('has instantiated post-processing passes', () => {
+        expect(h.postProcessPasses_.length).toEqual(2);
+        expect(h.postProcessPasses_[0].scaleRatio_).toEqual(0.5);
+        expect(h.postProcessPasses_[0].uniforms_.length).toEqual(0);
+        expect(h.postProcessPasses_[1].scaleRatio_).toEqual(1);
+        expect(h.postProcessPasses_[1].uniforms_.length).toEqual(1);
+        expect(h.postProcessPasses_[1].uniforms_[0].value).toEqual(4);
       });
 
     });
 
   });
 
-  describe('operations', function() {
+  describe('operations', () => {
 
-    describe('prepare draw', function() {
+    describe('prepare draw', () => {
 
       let h;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper({
           uniforms: {
             u_test1: 42,
@@ -116,83 +116,83 @@ describe('ol.webgl.WebGLHelper', function() {
         });
       });
 
-      it('has resized the canvas', function() {
-        expect(h.getCanvas().width).to.eql(100);
-        expect(h.getCanvas().height).to.eql(160);
+      test('has resized the canvas', () => {
+        expect(h.getCanvas().width).toEqual(100);
+        expect(h.getCanvas().height).toEqual(160);
       });
 
-      it('has processed uniforms', function() {
-        expect(h.uniforms_.length).to.eql(4);
-        expect(h.uniforms_[0].name).to.eql('u_test1');
-        expect(h.uniforms_[1].name).to.eql('u_test2');
-        expect(h.uniforms_[2].name).to.eql('u_test3');
-        expect(h.uniforms_[3].name).to.eql('u_test4');
-        expect(h.uniforms_[0].location).to.not.eql(-1);
-        expect(h.uniforms_[1].location).to.not.eql(-1);
-        expect(h.uniforms_[2].location).to.not.eql(-1);
-        expect(h.uniforms_[3].location).to.not.eql(-1);
-        expect(h.uniforms_[2].texture).to.not.eql(undefined);
+      test('has processed uniforms', () => {
+        expect(h.uniforms_.length).toEqual(4);
+        expect(h.uniforms_[0].name).toEqual('u_test1');
+        expect(h.uniforms_[1].name).toEqual('u_test2');
+        expect(h.uniforms_[2].name).toEqual('u_test3');
+        expect(h.uniforms_[3].name).toEqual('u_test4');
+        expect(h.uniforms_[0].location).not.toEqual(-1);
+        expect(h.uniforms_[1].location).not.toEqual(-1);
+        expect(h.uniforms_[2].location).not.toEqual(-1);
+        expect(h.uniforms_[3].location).not.toEqual(-1);
+        expect(h.uniforms_[2].texture).not.toEqual(undefined);
       });
     });
 
-    describe('valid shader compiling', function() {
+    describe('valid shader compiling', () => {
       let h;
       let p;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper();
 
         p = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
         h.useProgram(p);
       });
 
-      it('has saved the program', function() {
-        expect(h.currentProgram_).to.eql(p);
+      test('has saved the program', () => {
+        expect(h.currentProgram_).toEqual(p);
       });
 
-      it('has no shader compilation error', function() {
-        expect(h.shaderCompileErrors_).to.eql(null);
+      test('has no shader compilation error', () => {
+        expect(h.shaderCompileErrors_).toEqual(null);
       });
 
-      it('can find the uniform location', function() {
-        expect(h.getUniformLocation('u_test')).to.not.eql(null);
+      test('can find the uniform location', () => {
+        expect(h.getUniformLocation('u_test')).not.toEqual(null);
       });
 
-      it('can find the attribute location', function() {
-        expect(h.getAttributeLocation('a_test')).to.not.eql(-1);
+      test('can find the attribute location', () => {
+        expect(h.getAttributeLocation('a_test')).not.toEqual(-1);
       });
 
-      it('cannot find an unknown attribute location', function() {
-        expect(h.getAttributeLocation('a_test_missing')).to.eql(-1);
+      test('cannot find an unknown attribute location', () => {
+        expect(h.getAttributeLocation('a_test_missing')).toEqual(-1);
       });
     });
 
-    describe('invalid shader compiling', function() {
+    describe('invalid shader compiling', () => {
       let h;
       let p;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper();
 
         p = h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER);
         h.useProgram(p);
       });
 
-      it('has saved the program', function() {
-        expect(h.currentProgram_).to.eql(p);
+      test('has saved the program', () => {
+        expect(h.currentProgram_).toEqual(p);
       });
 
-      it('has shader compilation errors', function() {
-        expect(h.shaderCompileErrors_).to.not.eql(null);
+      test('has shader compilation errors', () => {
+        expect(h.shaderCompileErrors_).not.toEqual(null);
       });
 
-      it('cannot find the uniform location', function() {
-        expect(h.getUniformLocation('u_test')).to.eql(null);
+      test('cannot find the uniform location', () => {
+        expect(h.getUniformLocation('u_test')).toEqual(null);
       });
     });
 
-    describe('#makeProjectionTransform', function() {
+    describe('#makeProjectionTransform', () => {
       let h;
       let frameState;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper();
 
         frameState = {
@@ -205,7 +205,7 @@ describe('ol.webgl.WebGLHelper', function() {
         };
       });
 
-      it('gives out the correct transform', function() {
+      test('gives out the correct transform', () => {
         const scaleX = 2 / frameState.size[0] / frameState.viewState.resolution;
         const scaleY = 2 / frameState.size[1] / frameState.viewState.resolution;
         const given = createTransform();
@@ -216,17 +216,17 @@ describe('ol.webgl.WebGLHelper', function() {
 
         h.makeProjectionTransform(frameState, given);
 
-        expect(given.map(val => val.toFixed(15))).to.eql(expected.map(val => val.toFixed(15)));
+        expect(given.map(val => val.toFixed(15))).toEqual(expected.map(val => val.toFixed(15)));
       });
     });
 
-    describe('#createTexture', function() {
+    describe('#createTexture', () => {
       let h;
-      beforeEach(function() {
+      beforeEach(() => {
         h = new WebGLHelper();
       });
 
-      it('creates an empty texture from scratch', function() {
+      test('creates an empty texture from scratch', () => {
         const width = 4;
         const height = 4;
         const t = h.createTexture([width, height]);
@@ -239,17 +239,17 @@ describe('ol.webgl.WebGLHelper', function() {
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.deleteFramebuffer(fb);
 
-        expect(data[0]).to.eql(0);
-        expect(data[1]).to.eql(0);
-        expect(data[2]).to.eql(0);
-        expect(data[3]).to.eql(0);
-        expect(data[4]).to.eql(0);
-        expect(data[5]).to.eql(0);
-        expect(data[6]).to.eql(0);
-        expect(data[7]).to.eql(0);
+        expect(data[0]).toEqual(0);
+        expect(data[1]).toEqual(0);
+        expect(data[2]).toEqual(0);
+        expect(data[3]).toEqual(0);
+        expect(data[4]).toEqual(0);
+        expect(data[5]).toEqual(0);
+        expect(data[6]).toEqual(0);
+        expect(data[7]).toEqual(0);
       });
 
-      it('creates a texture from image data', function() {
+      test('creates a texture from image data', () => {
         const width = 4;
         const height = 4;
         const canvas = document.createElement('canvas');
@@ -270,23 +270,23 @@ describe('ol.webgl.WebGLHelper', function() {
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.deleteFramebuffer(fb);
 
-        expect(data[0]).to.eql(100);
-        expect(data[1]).to.eql(150);
-        expect(data[2]).to.eql(200);
-        expect(data[3]).to.eql(250);
-        expect(data[4]).to.eql(100);
-        expect(data[5]).to.eql(150);
-        expect(data[6]).to.eql(200);
-        expect(data[7]).to.eql(250);
+        expect(data[0]).toEqual(100);
+        expect(data[1]).toEqual(150);
+        expect(data[2]).toEqual(200);
+        expect(data[3]).toEqual(250);
+        expect(data[4]).toEqual(100);
+        expect(data[5]).toEqual(150);
+        expect(data[6]).toEqual(200);
+        expect(data[7]).toEqual(250);
       });
 
-      it('reuses a given texture', function() {
+      test('reuses a given texture', () => {
         const width = 4;
         const height = 4;
         const gl = h.getGL();
         const t1 = gl.createTexture();
         const t2 = h.createTexture([width, height], undefined, t1);
-        expect(t1).to.be(t2);
+        expect(t1).toBe(t2);
       });
     });
   });

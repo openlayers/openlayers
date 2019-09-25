@@ -1,8 +1,8 @@
 import {getFontParameters} from '../../../src/ol/css.js';
 
-describe('ol.css', function() {
+describe('ol.css', () => {
 
-  describe('getFontParameters()', function() {
+  describe('getFontParameters()', () => {
     const cases = [{
       font: '2em "Open Sans"',
       style: 'normal',
@@ -34,10 +34,10 @@ describe('ol.css', function() {
     }];
 
     cases.forEach(function(c, i) {
-      it('works for ' + c.font, function() {
+      test('works for ' + c.font, () => {
         const font = getFontParameters(c.font);
         if (c.families === null) {
-          expect(font).to.be(null);
+          expect(font).toBe(null);
           return;
         }
         font.families.forEach(function(family, j) {
@@ -48,9 +48,9 @@ describe('ol.css', function() {
             font.families[j] = '"' + family.slice(1, -1) + '"';
           }
         });
-        expect(font.style).to.eql(c.style);
-        expect(font.weight).to.eql(c.weight);
-        expect(font.families).to.eql(c.families);
+        expect(font.style).toEqual(c.style);
+        expect(font.weight).toEqual(c.weight);
+        expect(font.families).toEqual(c.families);
       });
     });
 

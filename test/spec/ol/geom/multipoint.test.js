@@ -3,253 +3,253 @@ import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
 
 
-describe('ol.geom.MultiPoint', function() {
+describe('ol.geom.MultiPoint', () => {
 
-  it('cannot be constructed with a null geometry', function() {
+  test('cannot be constructed with a null geometry', () => {
     expect(function() {
       return new MultiPoint(null);
-    }).to.throwException();
+    }).toThrow();
   });
 
-  describe('construct empty', function() {
+  describe('construct empty', () => {
 
     let multiPoint;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPoint = new MultiPoint([]);
     });
 
-    it('defaults to layout XY', function() {
-      expect(multiPoint.getLayout()).to.be('XY');
+    test('defaults to layout XY', () => {
+      expect(multiPoint.getLayout()).toBe('XY');
     });
 
-    it('has empty coordinates', function() {
-      expect(multiPoint.getCoordinates()).to.be.empty();
+    test('has empty coordinates', () => {
+      expect(multiPoint.getCoordinates()).toHaveLength(0);
     });
 
-    it('has an empty extent', function() {
-      expect(isEmpty(multiPoint.getExtent())).to.be(true);
+    test('has an empty extent', () => {
+      expect(isEmpty(multiPoint.getExtent())).toBe(true);
     });
 
-    it('has empty flat coordinates', function() {
-      expect(multiPoint.getFlatCoordinates()).to.be.empty();
+    test('has empty flat coordinates', () => {
+      expect(multiPoint.getFlatCoordinates()).toHaveLength(0);
     });
 
-    it('has stride the expected stride', function() {
-      expect(multiPoint.getStride()).to.be(2);
+    test('has stride the expected stride', () => {
+      expect(multiPoint.getStride()).toBe(2);
     });
 
-    it('can append points', function() {
+    test('can append points', () => {
       multiPoint.appendPoint(new Point([1, 2]));
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2]]);
+      expect(multiPoint.getCoordinates()).toEqual([[1, 2]]);
       multiPoint.appendPoint(new Point([3, 4]));
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+      expect(multiPoint.getCoordinates()).toEqual([[1, 2], [3, 4]]);
     });
 
   });
 
-  describe('construct with 2D coordinates', function() {
+  describe('construct with 2D coordinates', () => {
 
     let multiPoint;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPoint = new MultiPoint([[1, 2], [3, 4]]);
     });
 
-    it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be('XY');
+    test('has the expected layout', () => {
+      expect(multiPoint.getLayout()).toBe('XY');
     });
 
-    it('has the expected coordinates', function() {
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+    test('has the expected coordinates', () => {
+      expect(multiPoint.getCoordinates()).toEqual([[1, 2], [3, 4]]);
     });
 
-    it('has the expected extent', function() {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 3, 4]);
+    test('has the expected extent', () => {
+      expect(multiPoint.getExtent()).toEqual([1, 2, 3, 4]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4]);
+    test('has the expected flat coordinates', () => {
+      expect(multiPoint.getFlatCoordinates()).toEqual([1, 2, 3, 4]);
     });
 
-    it('has stride the expected stride', function() {
-      expect(multiPoint.getStride()).to.be(2);
+    test('has stride the expected stride', () => {
+      expect(multiPoint.getStride()).toBe(2);
     });
 
-    describe('#intersectsExtent()', function() {
+    describe('#intersectsExtent()', () => {
 
-      it('returns true for extent covering a point', function() {
-        expect(multiPoint.intersectsExtent([1, 2, 2, 2])).to.be(true);
+      test('returns true for extent covering a point', () => {
+        expect(multiPoint.intersectsExtent([1, 2, 2, 2])).toBe(true);
       });
 
-      it('returns false for non-matching extent within own extent', function() {
-        expect(multiPoint.intersectsExtent([2, 3, 2, 4])).to.be(false);
+      test('returns false for non-matching extent within own extent', () => {
+        expect(multiPoint.intersectsExtent([2, 3, 2, 4])).toBe(false);
       });
 
     });
 
   });
 
-  describe('construct with 3D coordinates', function() {
+  describe('construct with 3D coordinates', () => {
 
     let multiPoint;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPoint = new MultiPoint([[1, 2, 3], [4, 5, 6]]);
     });
 
-    it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be('XYZ');
+    test('has the expected layout', () => {
+      expect(multiPoint.getLayout()).toBe('XYZ');
     });
 
-    it('has the expected coordinates', function() {
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+    test('has the expected coordinates', () => {
+      expect(multiPoint.getCoordinates()).toEqual([[1, 2, 3], [4, 5, 6]]);
     });
 
-    it('has the expected extent', function() {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 4, 5]);
+    test('has the expected extent', () => {
+      expect(multiPoint.getExtent()).toEqual([1, 2, 4, 5]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+    test('has the expected flat coordinates', () => {
+      expect(multiPoint.getFlatCoordinates()).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
-    it('has the expected stride', function() {
-      expect(multiPoint.getStride()).to.be(3);
+    test('has the expected stride', () => {
+      expect(multiPoint.getStride()).toBe(3);
     });
 
   });
 
-  describe('construct with 3D coordinates and layout XYM', function() {
+  describe('construct with 3D coordinates and layout XYM', () => {
 
     let multiPoint;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPoint = new MultiPoint(
         [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
-    it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be('XYM');
+    test('has the expected layout', () => {
+      expect(multiPoint.getLayout()).toBe('XYM');
     });
 
-    it('has the expected coordinates', function() {
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+    test('has the expected coordinates', () => {
+      expect(multiPoint.getCoordinates()).toEqual([[1, 2, 3], [4, 5, 6]]);
     });
 
-    it('has the expected extent', function() {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 4, 5]);
+    test('has the expected extent', () => {
+      expect(multiPoint.getExtent()).toEqual([1, 2, 4, 5]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+    test('has the expected flat coordinates', () => {
+      expect(multiPoint.getFlatCoordinates()).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
-    it('has the expected stride', function() {
-      expect(multiPoint.getStride()).to.be(3);
+    test('has the expected stride', () => {
+      expect(multiPoint.getStride()).toBe(3);
     });
 
-    it('can return individual points', function() {
+    test('can return individual points', () => {
       const point0 = multiPoint.getPoint(0);
-      expect(point0.getLayout()).to.be('XYM');
-      expect(point0.getCoordinates()).to.eql([1, 2, 3]);
+      expect(point0.getLayout()).toBe('XYM');
+      expect(point0.getCoordinates()).toEqual([1, 2, 3]);
       const point1 = multiPoint.getPoint(1);
-      expect(point1.getLayout()).to.be('XYM');
-      expect(point1.getCoordinates()).to.eql([4, 5, 6]);
+      expect(point1.getLayout()).toBe('XYM');
+      expect(point1.getCoordinates()).toEqual([4, 5, 6]);
     });
 
-    it('can return all points', function() {
+    test('can return all points', () => {
       const points = multiPoint.getPoints();
-      expect(points).to.have.length(2);
-      expect(points[0]).to.be.an(Point);
-      expect(points[0].getLayout()).to.be('XYM');
-      expect(points[0].getCoordinates()).to.eql([1, 2, 3]);
-      expect(points[1]).to.be.an(Point);
-      expect(points[1].getLayout()).to.be('XYM');
-      expect(points[1].getCoordinates()).to.eql([4, 5, 6]);
+      expect(points).toHaveLength(2);
+      expect(points[0]).toBeInstanceOf(Point);
+      expect(points[0].getLayout()).toBe('XYM');
+      expect(points[0].getCoordinates()).toEqual([1, 2, 3]);
+      expect(points[1]).toBeInstanceOf(Point);
+      expect(points[1].getLayout()).toBe('XYM');
+      expect(points[1].getCoordinates()).toEqual([4, 5, 6]);
     });
 
   });
 
-  describe('construct with 4D coordinates', function() {
+  describe('construct with 4D coordinates', () => {
 
     let multiPoint;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPoint = new MultiPoint([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
-    it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be('XYZM');
+    test('has the expected layout', () => {
+      expect(multiPoint.getLayout()).toBe('XYZM');
     });
 
-    it('has the expected coordinates', function() {
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2, 3, 4], [5, 6, 7, 8]]);
+    test('has the expected coordinates', () => {
+      expect(multiPoint.getCoordinates()).toEqual([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
-    it('has the expected extent', function() {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 5, 6]);
+    test('has the expected extent', () => {
+      expect(multiPoint.getExtent()).toEqual([1, 2, 5, 6]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
+    test('has the expected flat coordinates', () => {
+      expect(multiPoint.getFlatCoordinates()).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     });
 
-    it('has the expected stride', function() {
-      expect(multiPoint.getStride()).to.be(4);
+    test('has the expected stride', () => {
+      expect(multiPoint.getStride()).toBe(4);
     });
 
-    describe('#getClosestPoint', function() {
+    describe('#getClosestPoint', () => {
 
-      it('preserves extra dimensions', function() {
+      test('preserves extra dimensions', () => {
         const closestPoint = multiPoint.getClosestPoint([6, 6]);
-        expect(closestPoint).to.eql([5, 6, 7, 8]);
+        expect(closestPoint).toEqual([5, 6, 7, 8]);
       });
 
     });
 
   });
 
-  describe('#scale()', function() {
+  describe('#scale()', () => {
 
-    it('scales a multi-point', function() {
+    test('scales a multi-point', () => {
       const geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[-100, -200], [100, 200]]);
+      expect(coordinates).toEqual([[-100, -200], [100, 200]]);
     });
 
-    it('accepts sx and sy', function() {
+    test('accepts sx and sy', () => {
       const geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[-20, -60], [20, 60]]);
+      expect(coordinates).toEqual([[-20, -60], [20, 60]]);
     });
 
-    it('accepts an anchor', function() {
+    test('accepts an anchor', () => {
       const geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(3, 2, [-10, -20]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[-10, -20], [50, 60]]);
+      expect(coordinates).toEqual([[-10, -20], [50, 60]]);
     });
 
   });
 
-  describe('#applyTransform()', function() {
+  describe('#applyTransform()', () => {
 
     let multi, transform;
-    beforeEach(function() {
+    beforeEach(() => {
       multi = new MultiPoint([[1, 2], [3, 4]]);
       transform = sinon.spy();
     });
 
-    it('calls a transform function', function() {
+    test('calls a transform function', () => {
       multi.applyTransform(transform);
-      expect(transform.calledOnce).to.be(true);
+      expect(transform.calledOnce).toBe(true);
       const args = transform.firstCall.args;
-      expect(args).to.have.length(3);
+      expect(args).toHaveLength(3);
 
-      expect(args[0]).to.be(multi.getFlatCoordinates()); // input coords
-      expect(args[1]).to.be(multi.getFlatCoordinates()); // output coords
-      expect(args[2]).to.be(2); // dimension
+      expect(args[0]).toBe(multi.getFlatCoordinates());
+      expect(args[1]).toBe(multi.getFlatCoordinates());
+      expect(args[2]).toBe(2);
     });
 
-    it('allows for modification of coordinates', function() {
+    test('allows for modification of coordinates', () => {
       const mod = function(input, output, dimension) {
         const copy = input.slice();
         for (let i = 0, ii = copy.length; i < ii; i += dimension) {
@@ -258,23 +258,23 @@ describe('ol.geom.MultiPoint', function() {
         }
       };
       multi.applyTransform(mod);
-      expect(multi.getCoordinates()).to.eql([[2, 1], [4, 3]]);
+      expect(multi.getCoordinates()).toEqual([[2, 1], [4, 3]]);
     });
 
-    it('returns undefined', function() {
+    test('returns undefined', () => {
       const got = multi.applyTransform(transform);
-      expect(got).to.be(undefined);
+      expect(got).toBe(undefined);
     });
 
   });
 
-  describe('#transform()', function() {
+  describe('#transform()', () => {
 
-    it('transforms a geometry given CRS identifiers', function() {
+    test('transforms a geometry given CRS identifiers', () => {
       const multi = new MultiPoint([[-111, 45], [111, -45]]).transform(
         'EPSG:4326', 'EPSG:3857');
 
-      expect(multi).to.be.a(MultiPoint);
+      expect(multi).toBeInstanceOf(MultiPoint);
 
       const coords = multi.getCoordinates();
 
@@ -287,25 +287,25 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
-  describe('#containsXY()', function() {
+  describe('#containsXY()', () => {
 
-    it('does contain XY', function() {
+    test('does contain XY', () => {
       const multi = new MultiPoint([[1, 2], [10, 20]]);
 
-      expect(multi.containsXY(1, 2)).to.be(true);
-      expect(multi.containsXY(10, 20)).to.be(true);
+      expect(multi.containsXY(1, 2)).toBe(true);
+      expect(multi.containsXY(10, 20)).toBe(true);
     });
 
-    it('does not contain XY', function() {
+    test('does not contain XY', () => {
       const multi = new MultiPoint([[1, 2], [10, 20]]);
 
-      expect(multi.containsXY(1, 3)).to.be(false);
-      expect(multi.containsXY(2, 2)).to.be(false);
-      expect(multi.containsXY(2, 3)).to.be(false);
+      expect(multi.containsXY(1, 3)).toBe(false);
+      expect(multi.containsXY(2, 2)).toBe(false);
+      expect(multi.containsXY(2, 3)).toBe(false);
 
-      expect(multi.containsXY(10, 30)).to.be(false);
-      expect(multi.containsXY(20, 20)).to.be(false);
-      expect(multi.containsXY(20, 30)).to.be(false);
+      expect(multi.containsXY(10, 30)).toBe(false);
+      expect(multi.containsXY(20, 20)).toBe(false);
+      expect(multi.containsXY(20, 30)).toBe(false);
     });
 
   });

@@ -7,10 +7,10 @@ import Map from '../../../../src/ol/Map.js';
 import ImageState from '../../../../src/ol/ImageState.js';
 
 
-describe('ol.source.ImageWMS', function() {
+describe('ol.source.ImageWMS', () => {
 
   let extent, pixelRatio, options, optionsReproj, projection, resolution;
-  beforeEach(function() {
+  beforeEach(() => {
     extent = [10, 20, 30, 40];
     pixelRatio = 1;
     projection = getProjection('EPSG:4326');
@@ -32,9 +32,9 @@ describe('ol.source.ImageWMS', function() {
     };
   });
 
-  describe('#getImage', function() {
+  describe('#getImage', () => {
 
-    it('returns the expected image URL', function() {
+    test('returns the expected image URL', () => {
       [1, 1.5].forEach(function(ratio) {
         options.ratio = ratio;
         const source = new ImageWMS(options);
@@ -49,13 +49,13 @@ describe('ol.source.ImageWMS', function() {
         const bbox = queryData.get('BBOX').split(',').map(Number);
         const bboxAspectRatio = (bbox[3] - bbox[1]) / (bbox[2] - bbox[0]);
         const imageAspectRatio = imageWidth / imageHeight;
-        expect (imageWidth).to.be(Math.ceil(viewWidth / resolution * ratio));
-        expect (imageHeight).to.be(Math.ceil(viewHeight / resolution * ratio));
+        expect (imageWidth).toBe(Math.ceil(viewWidth / resolution * ratio));
+        expect (imageHeight).toBe(Math.ceil(viewHeight / resolution * ratio));
         expect(bboxAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
       });
     });
 
-    it('uses correct WIDTH and HEIGHT for HiDPI devices', function() {
+    test('uses correct WIDTH and HEIGHT for HiDPI devices', () => {
       pixelRatio = 2;
       options.serverType = 'geoserver';
       const source = new ImageWMS(options);
@@ -64,11 +64,11 @@ describe('ol.source.ImageWMS', function() {
       const queryData = uri.searchParams;
       const width = Number(queryData.get('WIDTH'));
       const height = Number(queryData.get('HEIGHT'));
-      expect(width).to.be(400);
-      expect(height).to.be(400);
+      expect(width).toBe(400);
+      expect(height).toBe(400);
     });
 
-    it('requests integer WIDTH and HEIGHT', function() {
+    test('requests integer WIDTH and HEIGHT', () => {
       options.ratio = 1.5;
       const source = new ImageWMS(options);
       const image = source.getImage([10, 20, 30.1, 39.9], resolution, pixelRatio, projection);
@@ -76,103 +76,103 @@ describe('ol.source.ImageWMS', function() {
       const queryData = uri.searchParams;
       const width = parseFloat(queryData.get('WIDTH'));
       const height = parseFloat(queryData.get('HEIGHT'));
-      expect(width).to.be(Math.round(width));
-      expect(height).to.be(Math.round(height));
+      expect(width).toBe(Math.round(width));
+      expect(height).toBe(Math.round(height));
     });
 
-    it('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', function() {
+    test('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', () => {
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      expect(uri.protocol).toBe('http:');
+      expect(uri.hostname).toBe('example.com');
+      expect(uri.pathname).toBe('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('20,10,40,30');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('200');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetMap');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('200');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      expect(queryData.get('BBOX')).toBe('20,10,40,30');
+      expect(queryData.get('CRS')).toBe('EPSG:4326');
+      expect(queryData.get('FORMAT')).toBe('image/png');
+      expect(queryData.get('HEIGHT')).toBe('200');
+      expect(queryData.get('LAYERS')).toBe('layer');
+      expect(queryData.get('REQUEST')).toBe('GetMap');
+      expect(queryData.get('SERVICE')).toBe('WMS');
+      expect(queryData.get('SRS')).toBe(null);
+      expect(queryData.get('STYLES')).toBe('');
+      expect(queryData.get('TRANSPARENT')).toBe('true');
+      expect(queryData.get('VERSION')).toBe('1.3.0');
+      expect(queryData.get('WIDTH')).toBe('200');
+      expect(uri.hash.replace('#', '')).toHaveLength(0);
     });
 
-    it('sets the SRS query value instead of CRS if version < 1.3', function() {
+    test('sets the SRS query value instead of CRS if version < 1.3', () => {
       options.params.VERSION = '1.2';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('CRS')).to.be(null);
-      expect(queryData.get('SRS')).to.be('EPSG:4326');
+      expect(queryData.get('CRS')).toBe(null);
+      expect(queryData.get('SRS')).toBe('EPSG:4326');
     });
 
-    it('allows various parameters to be overridden', function() {
+    test('allows various parameters to be overridden', () => {
       options.params.FORMAT = 'image/jpeg';
       options.params.TRANSPARENT = false;
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('image/jpeg');
-      expect(queryData.get('TRANSPARENT')).to.be('false');
+      expect(queryData.get('FORMAT')).toBe('image/jpeg');
+      expect(queryData.get('TRANSPARENT')).toBe('false');
     });
 
-    it('does not add a STYLES= option if one is specified', function() {
+    test('does not add a STYLES= option if one is specified', () => {
       options.params.STYLES = 'foo';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('STYLES')).to.be('foo');
+      expect(queryData.get('STYLES')).toBe('foo');
     });
 
-    it('changes the BBOX order for EN axis orientations', function() {
+    test('changes the BBOX order for EN axis orientations', () => {
       const source = new ImageWMS(options);
       projection = getProjection('CRS:84');
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('10,20,30,40');
+      expect(queryData.get('BBOX')).toBe('10,20,30,40');
     });
 
-    it('uses EN BBOX order if version < 1.3', function() {
+    test('uses EN BBOX order if version < 1.3', () => {
       options.params.VERSION = '1.1.0';
       const source = new ImageWMS(options);
       const image =
           source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('10,20,30,40');
+      expect(queryData.get('BBOX')).toBe('10,20,30,40');
     });
 
-    it('sets MAP_RESOLUTION when the server is MapServer', function() {
+    test('sets MAP_RESOLUTION when the server is MapServer', () => {
       options.serverType = 'mapserver';
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('MAP_RESOLUTION')).to.be('180');
+      expect(queryData.get('MAP_RESOLUTION')).toBe('180');
     });
 
-    it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
+    test('sets FORMAT_OPTIONS when the server is GeoServer', () => {
       options.serverType = 'geoserver';
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
+      expect(queryData.get('FORMAT_OPTIONS')).toBe('dpi:180');
     });
 
-    it('extends FORMAT_OPTIONS if it is already present', function() {
+    test('extends FORMAT_OPTIONS if it is already present', () => {
       options.serverType = 'geoserver';
       const source = new ImageWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
@@ -180,11 +180,12 @@ describe('ol.source.ImageWMS', function() {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
+      expect(queryData.get('FORMAT_OPTIONS')).toBe('param1:value1;dpi:180');
     });
 
-    it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
-      function() {
+    test(
+      'rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
+      () => {
         options.serverType = 'geoserver';
         const source = new ImageWMS(options);
         pixelRatio = 1.325;
@@ -192,171 +193,177 @@ describe('ol.source.ImageWMS', function() {
             source.getImage(extent, resolution, pixelRatio, projection);
         const uri = new URL(image.src_);
         const queryData = uri.searchParams;
-        expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
-      });
+        expect(queryData.get('FORMAT_OPTIONS')).toBe('dpi:119');
+      }
+    );
 
-    it('sets DPI when the server is QGIS', function() {
+    test('sets DPI when the server is QGIS', () => {
       options.serverType = 'qgis';
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('180');
+      expect(queryData.get('DPI')).toBe('180');
     });
 
-    it('creates an image with a custom imageLoadFunction', function() {
+    test('creates an image with a custom imageLoadFunction', () => {
       const imageLoadFunction = sinon.spy();
       options.imageLoadFunction = imageLoadFunction;
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       expect(imageLoadFunction).to.be.called();
-      expect(imageLoadFunction.calledWith(image, image.src_)).to.be(true);
+      expect(imageLoadFunction.calledWith(image, image.src_)).toBe(true);
     });
 
-    it('returns same image for consecutive calls with same args', function() {
+    test('returns same image for consecutive calls with same args', () => {
       const extent = [10.01, 20, 30.01, 40];
       const source = new ImageWMS(options);
       const image1 = source.getImage(extent, resolution, pixelRatio, projection);
       const image2 = source.getImage(extent, resolution, pixelRatio, projection);
-      expect(image1).to.equal(image2);
+      expect(image1).toBe(image2);
     });
 
-    it('returns same image for calls with similar extents', function() {
+    test('returns same image for calls with similar extents', () => {
       options.ratio = 1.5;
       const source = new ImageWMS(options);
       let extent = [10.01, 20, 30.01, 40];
       const image1 = source.getImage(extent, resolution, pixelRatio, projection);
       extent = [10.01, 20.1, 30.01, 40.1];
       const image2 = source.getImage(extent, resolution, pixelRatio, projection);
-      expect(image1).to.equal(image2);
+      expect(image1).toBe(image2);
     });
 
-    it('calculates correct image size with ratio', function() {
+    test('calculates correct image size with ratio', () => {
       options.ratio = 1.5;
       const source = new ImageWMS(options);
       const extent = [10, 5, 30, 45];
       source.getImage(extent, resolution, pixelRatio, projection);
-      expect(source.imageSize_).to.eql([300, 600]);
+      expect(source.imageSize_).toEqual([300, 600]);
     });
 
   });
 
-  describe('#getFeatureInfoUrl', function() {
+  describe('#getFeatureInfoUrl', () => {
 
-    it('returns the expected GetFeatureInfo URL', function() {
+    test('returns the expected GetFeatureInfo URL', () => {
       const source = new ImageWMS(options);
       const url = source.getFeatureInfoUrl(
         [20, 30], resolution, projection,
         {INFO_FORMAT: 'text/plain'});
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      expect(uri.protocol).toBe('http:');
+      expect(uri.hostname).toBe('example.com');
+      expect(uri.pathname).toBe('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('101');
-      expect(queryData.get('I')).to.be('50');
-      expect(queryData.get('J')).to.be('50');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      expect(queryData.get('BBOX')).toBe('24.95,14.95,35.05,25.05');
+      expect(queryData.get('CRS')).toBe('EPSG:4326');
+      expect(queryData.get('FORMAT')).toBe('image/png');
+      expect(queryData.get('HEIGHT')).toBe('101');
+      expect(queryData.get('I')).toBe('50');
+      expect(queryData.get('J')).toBe('50');
+      expect(queryData.get('LAYERS')).toBe('layer');
+      expect(queryData.get('QUERY_LAYERS')).toBe('layer');
+      expect(queryData.get('REQUEST')).toBe('GetFeatureInfo');
+      expect(queryData.get('SERVICE')).toBe('WMS');
+      expect(queryData.get('SRS')).toBe(null);
+      expect(queryData.get('STYLES')).toBe('');
+      expect(queryData.get('TRANSPARENT')).toBe('true');
+      expect(queryData.get('VERSION')).toBe('1.3.0');
+      expect(queryData.get('WIDTH')).toBe('101');
+      expect(uri.hash.replace('#', '')).toHaveLength(0);
     });
 
-    it('returns the expected GetFeatureInfo URL when source\'s projection is different from the parameter', function() {
-      const source = new ImageWMS(optionsReproj);
-      const url = source.getFeatureInfoUrl(
-        [20, 30], resolution, projection,
-        {INFO_FORMAT: 'text/plain'});
-      const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
-      const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('1577259.402312431,2854419.4299513334,2875520.229418512,4152680.2570574144');
-      expect(queryData.get('CRS')).to.be('EPSG:3857');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('101');
-      expect(queryData.get('I')).to.be('50');
-      expect(queryData.get('J')).to.be('50');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.hash.replace('#', '')).to.be.empty();
-    });
+    test(
+      'returns the expected GetFeatureInfo URL when source\'s projection is different from the parameter',
+      () => {
+        const source = new ImageWMS(optionsReproj);
+        const url = source.getFeatureInfoUrl(
+          [20, 30], resolution, projection,
+          {INFO_FORMAT: 'text/plain'});
+        const uri = new URL(url);
+        expect(uri.protocol).toBe('http:');
+        expect(uri.hostname).toBe('example.com');
+        expect(uri.pathname).toBe('/wms');
+        const queryData = uri.searchParams;
+        expect(queryData.get('BBOX')).toBe(
+          '1577259.402312431,2854419.4299513334,2875520.229418512,4152680.2570574144'
+        );
+        expect(queryData.get('CRS')).toBe('EPSG:3857');
+        expect(queryData.get('FORMAT')).toBe('image/png');
+        expect(queryData.get('HEIGHT')).toBe('101');
+        expect(queryData.get('I')).toBe('50');
+        expect(queryData.get('J')).toBe('50');
+        expect(queryData.get('LAYERS')).toBe('layer');
+        expect(queryData.get('QUERY_LAYERS')).toBe('layer');
+        expect(queryData.get('REQUEST')).toBe('GetFeatureInfo');
+        expect(queryData.get('SERVICE')).toBe('WMS');
+        expect(queryData.get('SRS')).toBe(null);
+        expect(queryData.get('STYLES')).toBe('');
+        expect(queryData.get('TRANSPARENT')).toBe('true');
+        expect(queryData.get('VERSION')).toBe('1.3.0');
+        expect(queryData.get('WIDTH')).toBe('101');
+        expect(uri.hash.replace('#', '')).toHaveLength(0);
+      }
+    );
 
-    it('sets the QUERY_LAYERS param as expected', function() {
+    test('sets the QUERY_LAYERS param as expected', () => {
       const source = new ImageWMS(options);
       const url = source.getFeatureInfoUrl(
         [20, 30], resolution, projection,
         {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'});
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      expect(uri.protocol).toBe('http:');
+      expect(uri.hostname).toBe('example.com');
+      expect(uri.pathname).toBe('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('101');
-      expect(queryData.get('I')).to.be('50');
-      expect(queryData.get('J')).to.be('50');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('foo,bar');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      expect(queryData.get('BBOX')).toBe('24.95,14.95,35.05,25.05');
+      expect(queryData.get('CRS')).toBe('EPSG:4326');
+      expect(queryData.get('FORMAT')).toBe('image/png');
+      expect(queryData.get('HEIGHT')).toBe('101');
+      expect(queryData.get('I')).toBe('50');
+      expect(queryData.get('J')).toBe('50');
+      expect(queryData.get('LAYERS')).toBe('layer');
+      expect(queryData.get('QUERY_LAYERS')).toBe('foo,bar');
+      expect(queryData.get('REQUEST')).toBe('GetFeatureInfo');
+      expect(queryData.get('SERVICE')).toBe('WMS');
+      expect(queryData.get('SRS')).toBe(null);
+      expect(queryData.get('STYLES')).toBe('');
+      expect(queryData.get('TRANSPARENT')).toBe('true');
+      expect(queryData.get('VERSION')).toBe('1.3.0');
+      expect(queryData.get('WIDTH')).toBe('101');
+      expect(uri.hash.replace('#', '')).toHaveLength(0);
     });
   });
 
-  describe('#getLegendUrl', function() {
+  describe('#getLegendUrl', () => {
 
-    it('returns the GetLegendGraphic url as expected', function() {
+    test('returns the GetLegendGraphic url as expected', () => {
       const source = new ImageWMS(options);
       const url = source.getLegendUrl(resolution);
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      expect(uri.protocol).toBe('http:');
+      expect(uri.hostname).toBe('example.com');
+      expect(uri.pathname).toBe('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('LAYER')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14214285714274');
+      expect(queryData.get('FORMAT')).toBe('image/png');
+      expect(queryData.get('LAYER')).toBe('layer');
+      expect(queryData.get('REQUEST')).toBe('GetLegendGraphic');
+      expect(queryData.get('SERVICE')).toBe('WMS');
+      expect(queryData.get('VERSION')).toBe('1.3.0');
+      expect(queryData.get('SCALE')).toBe('357.14214285714274');
     });
 
-    it('does not include SCALE if no resolution was provided', function() {
+    test('does not include SCALE if no resolution was provided', () => {
       const source = new ImageWMS(options);
       const url = source.getLegendUrl();
       const uri = new URL(url);
       const queryData = uri.searchParams;
-      expect(queryData.get('SCALE')).to.be(null);
+      expect(queryData.get('SCALE')).toBe(null);
     });
 
-    it('adds additional params as expected', function() {
+    test('adds additional params as expected', () => {
       const source = new ImageWMS(options);
       const url = source.getLegendUrl(resolution, {
         STYLE: 'STYLE_VALUE',
@@ -372,35 +379,35 @@ describe('ol.source.ImageWMS', function() {
         LAYER: 'LAYER_VALUE'
       });
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      expect(uri.protocol).toBe('http:');
+      expect(uri.hostname).toBe('example.com');
+      expect(uri.pathname).toBe('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('LAYER')).to.be('LAYER_VALUE');
-      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14214285714274');
-      expect(queryData.get('STYLE')).to.be('STYLE_VALUE');
-      expect(queryData.get('FEATURETYPE')).to.be('FEATURETYPE_VALUE');
-      expect(queryData.get('RULE')).to.be('RULE_VALUE');
-      expect(queryData.get('SLD')).to.be('SLD_VALUE');
-      expect(queryData.get('SLD_BODY')).to.be('SLD_BODY_VALUE');
-      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('WIDTH')).to.be('WIDTH_VALUE');
-      expect(queryData.get('HEIGHT')).to.be('HEIGHT_VALUE');
-      expect(queryData.get('EXCEPTIONS')).to.be('EXCEPTIONS_VALUE');
-      expect(queryData.get('LANGUAGE')).to.be('LANGUAGE_VALUE');
+      expect(queryData.get('FORMAT')).toBe('FORMAT_VALUE');
+      expect(queryData.get('LAYER')).toBe('LAYER_VALUE');
+      expect(queryData.get('REQUEST')).toBe('GetLegendGraphic');
+      expect(queryData.get('SERVICE')).toBe('WMS');
+      expect(queryData.get('VERSION')).toBe('1.3.0');
+      expect(queryData.get('SCALE')).toBe('357.14214285714274');
+      expect(queryData.get('STYLE')).toBe('STYLE_VALUE');
+      expect(queryData.get('FEATURETYPE')).toBe('FEATURETYPE_VALUE');
+      expect(queryData.get('RULE')).toBe('RULE_VALUE');
+      expect(queryData.get('SLD')).toBe('SLD_VALUE');
+      expect(queryData.get('SLD_BODY')).toBe('SLD_BODY_VALUE');
+      expect(queryData.get('FORMAT')).toBe('FORMAT_VALUE');
+      expect(queryData.get('WIDTH')).toBe('WIDTH_VALUE');
+      expect(queryData.get('HEIGHT')).toBe('HEIGHT_VALUE');
+      expect(queryData.get('EXCEPTIONS')).toBe('EXCEPTIONS_VALUE');
+      expect(queryData.get('LANGUAGE')).toBe('LANGUAGE_VALUE');
     });
 
   });
 
-  describe('#refresh()', function() {
+  describe('#refresh()', () => {
 
     let map, source;
     let callCount = 0;
-    beforeEach(function(done) {
+    beforeEach(done => {
       source = new ImageWMS(options);
       source.setImageLoadFunction(function(image) {
         ++callCount;
@@ -428,14 +435,14 @@ describe('ol.source.ImageWMS', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
     });
 
-    it('reloads from server', function(done) {
+    test('reloads from server', done => {
       map.once('rendercomplete', function() {
-        expect(callCount).to.be(1);
+        expect(callCount).toBe(1);
         done();
       });
       source.refresh();

@@ -1,75 +1,75 @@
 import {hasArea, toSize, buffer as bufferSize, scale as scaleSize} from '../../../src/ol/size.js';
 
 
-describe('ol.size', function() {
+describe('ol.size', () => {
 
-  describe('buffer()', function() {
+  describe('buffer()', () => {
 
-    it('buffers a size', function() {
+    test('buffers a size', () => {
       const size = [50, 75];
       const bufferedSize = bufferSize(size, 20);
-      expect(bufferedSize).to.eql([90, 115]);
+      expect(bufferedSize).toEqual([90, 115]);
     });
 
-    it('reuses an existing array', function() {
+    test('reuses an existing array', () => {
       const reuse = [0, 0];
       const size = [50, 50];
       const bufferedSize = bufferSize(size, 20, reuse);
-      expect(bufferedSize).to.equal(reuse);
+      expect(bufferedSize).toBe(reuse);
     });
 
   });
 
-  describe('hasArea()', function() {
+  describe('hasArea()', () => {
 
-    it('determines if a size has a positive area', function() {
-      expect(hasArea([50, 75])).to.equal(true);
-      expect(hasArea([0, 75])).to.equal(false);
-      expect(hasArea([50, 0])).to.equal(false);
-      expect(hasArea([0, 0])).to.equal(false);
-      expect(hasArea([-1, 75])).to.equal(false);
-      expect(hasArea([50, -1])).to.equal(false);
-      expect(hasArea([-1, -1])).to.equal(false);
+    test('determines if a size has a positive area', () => {
+      expect(hasArea([50, 75])).toBe(true);
+      expect(hasArea([0, 75])).toBe(false);
+      expect(hasArea([50, 0])).toBe(false);
+      expect(hasArea([0, 0])).toBe(false);
+      expect(hasArea([-1, 75])).toBe(false);
+      expect(hasArea([50, -1])).toBe(false);
+      expect(hasArea([-1, -1])).toBe(false);
     });
 
   });
 
-  describe('scale()', function() {
+  describe('scale()', () => {
 
-    it('scales a size and rounds the result', function() {
+    test('scales a size and rounds the result', () => {
       const size = [50, 75];
       const scaledSize = scaleSize(size, 1.75);
-      expect(scaledSize).to.eql([88, 131]);
+      expect(scaledSize).toEqual([88, 131]);
     });
 
-    it('reuses an existing array', function() {
+    test('reuses an existing array', () => {
       const reuse = [0, 0];
       const size = [50, 50];
       const scaledSize = scaleSize(size, 1.75, reuse);
-      expect(scaledSize).to.equal(reuse);
+      expect(scaledSize).toBe(reuse);
     });
 
   });
 
-  describe('toSize()', function() {
+  describe('toSize()', () => {
 
-    it('creates a size array from a number', function() {
+    test('creates a size array from a number', () => {
       const size = toSize(512);
-      expect(size).to.eql([512, 512]);
+      expect(size).toEqual([512, 512]);
     });
 
-    it('reuses an existing array', function() {
+    test('reuses an existing array', () => {
       const sizeArray = [0, 0];
       const size = toSize(512, sizeArray);
-      expect(size).to.equal(sizeArray);
+      expect(size).toBe(sizeArray);
     });
 
-    it('returns a size array unaltered', function() {
+    test('returns a size array unaltered', () => {
       const sizeArray = [512, 256];
       let size = toSize(sizeArray);
-      expect(size).to.equal(sizeArray);
+      expect(size).toBe(sizeArray);
       size = toSize(sizeArray, [0, 0]);
-      expect(size).to.equal(sizeArray);
+      expect(size).toBe(sizeArray);
     });
 
   });

@@ -4,59 +4,59 @@ import Tile from '../../../src/ol/Tile.js';
 import TileState from '../../../src/ol/TileState.js';
 
 
-describe('ol.Tile', function() {
-  describe('constructor', function() {
-    it('sets a default transition', function() {
+describe('ol.Tile', () => {
+  describe('constructor', () => {
+    test('sets a default transition', () => {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
-      expect(tile.transition_).to.equal(250);
+      expect(tile.transition_).toBe(250);
     });
 
-    it('allows the transition to be set', function() {
+    test('allows the transition to be set', () => {
       const coord = [0, 0, 0];
       const transition = 500;
       const tile = new Tile(coord, TileState.IDLE, {transition: transition});
-      expect(tile.transition_).to.equal(transition);
+      expect(tile.transition_).toBe(transition);
     });
   });
 
-  describe('#getAlpha()', function() {
-    it('returns the alpha value for a tile in transition', function() {
+  describe('#getAlpha()', () => {
+    test('returns the alpha value for a tile in transition', () => {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
       const id = 'test';
       let time = Date.now();
 
       const startAlpha = tile.getAlpha(id, time);
-      expect(startAlpha > 0).to.be(true);
-      expect(startAlpha < 1).to.be(true);
+      expect(startAlpha > 0).toBe(true);
+      expect(startAlpha < 1).toBe(true);
 
       time += tile.transition_ / 2;
       const midAlpha = tile.getAlpha(id, time);
-      expect(midAlpha > startAlpha).to.be(true);
-      expect(midAlpha < 1).to.be(true);
+      expect(midAlpha > startAlpha).toBe(true);
+      expect(midAlpha < 1).toBe(true);
 
       time += tile.transition_ / 2;
       const endAlpha = tile.getAlpha(id, time);
-      expect(endAlpha).to.be(1);
+      expect(endAlpha).toBe(1);
     });
   });
 
-  describe('#inTransition()', function() {
-    it('determines if the tile is in transition', function() {
+  describe('#inTransition()', () => {
+    test('determines if the tile is in transition', () => {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
       const id = 'test';
 
-      expect(tile.inTransition(id)).to.be(true);
+      expect(tile.inTransition(id)).toBe(true);
       tile.endTransition(id);
-      expect(tile.inTransition(id)).to.be(false);
+      expect(tile.inTransition(id)).toBe(false);
     });
   });
 
-  describe('interimChain', function() {
+  describe('interimChain', () => {
     let head, renderTile;
-    beforeEach(function() {
+    beforeEach(() => {
       const tileCoord = [0, 0, 0];
       head = new ImageTile(tileCoord, TileState.IDLE);
       getUid(head);
@@ -79,7 +79,7 @@ describe('ol.Tile', function() {
 
     });
 
-    it('shrinks tile chain correctly', function(done) {
+    test('shrinks tile chain correctly', done => {
       const chainLength = function(tile) {
         let c = 0;
         while (tile) {
@@ -89,26 +89,26 @@ describe('ol.Tile', function() {
         return c;
       };
 
-      expect(chainLength(head)).to.be(9);
+      expect(chainLength(head)).toBe(9);
       head.refreshInterimChain();
-      expect(chainLength(head)).to.be(3);
+      expect(chainLength(head)).toBe(3);
       done();
     });
 
-    it('gives the right tile to render', function(done) {
-      expect(head.getInterimTile()).to.be(renderTile);
+    test('gives the right tile to render', done => {
+      expect(head.getInterimTile()).toBe(renderTile);
       head.refreshInterimChain();
-      expect(head.getInterimTile()).to.be(renderTile);
+      expect(head.getInterimTile()).toBe(renderTile);
       done();
     });
 
-    it('discards everything after the render tile', function(done) {
+    test('discards everything after the render tile', done => {
       head.refreshInterimChain();
-      expect(renderTile.interimTile).to.be(null);
+      expect(renderTile.interimTile).toBe(null);
       done();
     });
 
-    it('preserves order of tiles', function(done) {
+    test('preserves order of tiles', done => {
       head.refreshInterimChain();
       while (head.interimTile !== null) {
         //use property of ol.getUid returning increasing id's.

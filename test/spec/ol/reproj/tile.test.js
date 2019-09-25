@@ -6,8 +6,8 @@ import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import {createForProjection} from '../../../../src/ol/tilegrid.js';
 
 
-describe('ol.reproj.Tile', function() {
-  beforeEach(function() {
+describe('ol.reproj.Tile', () => {
+  beforeEach(() => {
     proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 ' +
         '+k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy ' +
         '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
@@ -17,7 +17,7 @@ describe('ol.reproj.Tile', function() {
     proj27700.setExtent([0, 0, 700000, 1300000]);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     delete proj4.defs['EPSG:27700'];
     clearAllProjections();
     addCommon();
@@ -40,9 +40,9 @@ describe('ol.reproj.Tile', function() {
       });
   }
 
-  it('changes state as expected', function(done) {
+  test('changes state as expected', done => {
     const tile = createTile(1);
-    expect(tile.getState()).to.be(0); // IDLE
+    expect(tile.getState()).toBe(0);
     listen(tile, 'change', function() {
       if (tile.getState() == 2) { // LOADED
         done();
@@ -51,50 +51,50 @@ describe('ol.reproj.Tile', function() {
     tile.load();
   });
 
-  it('is empty when outside target tile grid', function() {
+  test('is empty when outside target tile grid', () => {
     const proj4326 = getProjection('EPSG:4326');
     const proj3857 = getProjection('EPSG:3857');
     const tile = new ReprojTile(
       proj3857, createForProjection(proj3857),
       proj4326, createForProjection(proj4326),
       [0, -1, 0], null, 1, 0, function() {
-        expect().fail('No tiles should be required');
-      });
-    expect(tile.getState()).to.be(4); // EMPTY
+      throw Error('No tiles should be required');
+    });
+    expect(tile.getState()).toBe(4);
   });
 
-  it('is empty when outside source tile grid', function() {
+  test('is empty when outside source tile grid', () => {
     const proj4326 = getProjection('EPSG:4326');
     const proj27700 = getProjection('EPSG:27700');
     const tile = new ReprojTile(
       proj27700, createForProjection(proj27700),
       proj4326, createForProjection(proj4326),
       [3, 2, -2], null, 1, 0, function() {
-        expect().fail('No tiles should be required');
-      });
-    expect(tile.getState()).to.be(4); // EMPTY
+      throw Error('No tiles should be required');
+    });
+    expect(tile.getState()).toBe(4);
   });
 
-  it('respects tile size of target tile grid', function(done) {
+  test('respects tile size of target tile grid', done => {
     const tile = createTile(1, [100, 40]);
     listen(tile, 'change', function() {
       if (tile.getState() == 2) { // LOADED
         const canvas = tile.getImage();
-        expect(canvas.width).to.be(100);
-        expect(canvas.height).to.be(40);
+        expect(canvas.width).toBe(100);
+        expect(canvas.height).toBe(40);
         done();
       }
     });
     tile.load();
   });
 
-  it('respects pixelRatio', function(done) {
+  test('respects pixelRatio', done => {
     const tile = createTile(3, [60, 20]);
     listen(tile, 'change', function() {
       if (tile.getState() == 2) { // LOADED
         const canvas = tile.getImage();
-        expect(canvas.width).to.be(180);
-        expect(canvas.height).to.be(60);
+        expect(canvas.width).toBe(180);
+        expect(canvas.height).toBe(60);
         done();
       }
     });

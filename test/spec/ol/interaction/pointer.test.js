@@ -3,14 +3,14 @@ import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js
 import Event from '../../../../src/ol/events/Event.js';
 import PointerInteraction from '../../../../src/ol/interaction/Pointer.js';
 
-describe('ol.interaction.Pointer', function() {
+describe('ol.interaction.Pointer', () => {
 
-  describe('#handleEvent', function() {
+  describe('#handleEvent', () => {
 
     let event;
     let defaultPrevented;
 
-    beforeEach(function() {
+    beforeEach(() => {
       const type = 'pointerdown';
       const pointerEvent = new Event();
       pointerEvent.type = type;
@@ -22,29 +22,29 @@ describe('ol.interaction.Pointer', function() {
       defaultPrevented = false;
     });
 
-    it('prevents default on handled down event', function() {
+    test('prevents default on handled down event', () => {
       const interaction = new PointerInteraction({
         handleDownEvent: function() {
           return true;
         }
       });
       interaction.handleEvent(event);
-      expect(defaultPrevented).to.be(true);
+      expect(defaultPrevented).toBe(true);
     });
 
-    it('does not prevent default on unhandled down event', function() {
+    test('does not prevent default on unhandled down event', () => {
       const interaction = new PointerInteraction({
         handleDownEvent: function() {
           return false;
         }
       });
       interaction.handleEvent(event);
-      expect(defaultPrevented).to.be(false);
+      expect(defaultPrevented).toBe(false);
     });
 
   });
 
-  describe('event handlers', function() {
+  describe('event handlers', () => {
     let handleDownCalled, handleDragCalled, handleMoveCalled, handleUpCalled;
 
     const flagHandleDown = function() {
@@ -83,20 +83,20 @@ describe('ol.interaction.Pointer', function() {
       }
     }
 
-    beforeEach(function() {
+    beforeEach(() => {
       handleDownCalled = false;
       handleDragCalled = false;
       handleMoveCalled = false;
       handleUpCalled = false;
     });
 
-    it('has default event handlers', function() {
+    test('has default event handlers', () => {
       const interaction = new PointerInteraction({});
-      expect(interaction.handleDownEvent()).to.be(false);
-      expect(interaction.handleUpEvent()).to.be(false);
+      expect(interaction.handleDownEvent()).toBe(false);
+      expect(interaction.handleUpEvent()).toBe(false);
     });
 
-    it('allows event handler overrides via options', function() {
+    test('allows event handler overrides via options', () => {
       const interaction = new PointerInteraction({
         handleDownEvent: flagHandleDown,
         handleDragEvent: flagHandleDrag,
@@ -105,32 +105,32 @@ describe('ol.interaction.Pointer', function() {
       });
 
       interaction.handleDownEvent();
-      expect(handleDownCalled).to.be(true);
+      expect(handleDownCalled).toBe(true);
 
       interaction.handleDragEvent();
-      expect(handleDragCalled).to.be(true);
+      expect(handleDragCalled).toBe(true);
 
       interaction.handleMoveEvent();
-      expect(handleMoveCalled).to.be(true);
+      expect(handleMoveCalled).toBe(true);
 
       interaction.handleUpEvent();
-      expect(handleUpCalled).to.be(true);
+      expect(handleUpCalled).toBe(true);
     });
 
-    it('allows event handler overrides via class extension', function() {
+    test('allows event handler overrides via class extension', () => {
       const interaction = new MockPointerInteraction({});
 
       interaction.handleDownEvent();
-      expect(handleDownCalled).to.be(true);
+      expect(handleDownCalled).toBe(true);
 
       interaction.handleDragEvent();
-      expect(handleDragCalled).to.be(true);
+      expect(handleDragCalled).toBe(true);
 
       interaction.handleMoveEvent();
-      expect(handleMoveCalled).to.be(true);
+      expect(handleMoveCalled).toBe(true);
 
       interaction.handleUpEvent();
-      expect(handleUpCalled).to.be(true);
+      expect(handleUpCalled).toBe(true);
     });
 
   });

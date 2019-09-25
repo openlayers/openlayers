@@ -8,14 +8,14 @@ import RenderBox from '../../../../src/ol/render/Box.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
-describe('ol.interaction.DragZoom', function() {
+describe('ol.interaction.DragZoom', () => {
 
   let target, map, source;
 
   const width = 360;
   const height = 180;
 
-  beforeEach(function(done) {
+  beforeEach(done => {
     target = document.createElement('div');
     const style = target.style;
     style.position = 'absolute';
@@ -40,31 +40,31 @@ describe('ol.interaction.DragZoom', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     map.dispose();
     document.body.removeChild(target);
   });
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new DragZoom();
-      expect(instance).to.be.an(DragZoom);
+      expect(instance).toBeInstanceOf(DragZoom);
     });
-    it('sets "ol-dragzoom" as box className', function() {
+    test('sets "ol-dragzoom" as box className', () => {
       const instance = new DragZoom();
-      expect(instance.box_.element_.className).to.be('ol-box ol-dragzoom');
+      expect(instance.box_.element_.className).toBe('ol-box ol-dragzoom');
     });
-    it('sets a custom box className', function() {
+    test('sets a custom box className', () => {
       const instance = new DragZoom({className: 'test-dragzoom'});
-      expect(instance.box_.element_.className).to.be('ol-box test-dragzoom');
+      expect(instance.box_.element_.className).toBe('ol-box test-dragzoom');
     });
 
   });
 
-  describe('#onBoxEnd()', function() {
+  describe('#onBoxEnd()', () => {
 
-    it('centers the view on the box geometry', function(done) {
+    test('centers the view on the box geometry', done => {
       const interaction = new DragZoom({
         duration: 10
       });
@@ -79,13 +79,13 @@ describe('ol.interaction.DragZoom', function() {
       setTimeout(function() {
         const view = map.getView();
         const center = view.getCenterInternal();
-        expect(center).to.eql(getCenter(extent));
+        expect(center).toEqual(getCenter(extent));
         done();
       }, 50);
 
     });
 
-    it('sets new resolution while zooming out', function(done) {
+    test('sets new resolution while zooming out', done => {
       const interaction = new DragZoom({
         duration: 10,
         out: true
@@ -103,7 +103,7 @@ describe('ol.interaction.DragZoom', function() {
         setTimeout(function() {
           const view = map.getView();
           const resolution = view.getResolution();
-          expect(resolution).to.eql(view.getConstrainedResolution(0.5));
+          expect(resolution).toEqual(view.getConstrainedResolution(0.5));
           done();
         }, 50);
       }, 50);

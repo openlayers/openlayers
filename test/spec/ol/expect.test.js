@@ -1,15 +1,15 @@
 
 
-describe('expect.js', function() {
+describe('expect.js', () => {
 
-  describe('arreqlNaN', function() {
+  describe('arreqlNaN', () => {
 
-    it('considers NaN in array to be equal', function() {
+    test('considers NaN in array to be equal', () => {
       expect([1, NaN, 2]).to.arreqlNaN([1, NaN, 2]);
       expect([1, NaN, 2]).not.to.arreqlNaN([1, 1.5, 2]);
     });
 
-    it('allows a mix of number and string', function() {
+    test('allows a mix of number and string', () => {
       expect([1, NaN, 'foo']).to.arreqlNaN([1, NaN, 'foo']);
       expect([1, NaN, 'foo']).not.to.arreqlNaN([1, NaN, 'bar']);
       expect([1, NaN]).not.to.arreqlNaN([1, 'foo']);
@@ -17,102 +17,106 @@ describe('expect.js', function() {
 
   });
 
-  describe('roughlyEqual', function() {
+  describe('roughlyEqual', () => {
 
-    it('can tell the difference between 1 and 3', function() {
+    test('can tell the difference between 1 and 3', () => {
       expect(1).not.to.roughlyEqual(3, 1);
     });
 
-    it('really can tell the difference between 1 and 3', function() {
+    test('really can tell the difference between 1 and 3', () => {
       expect(function() {
         expect(1).to.roughlyEqual(3, 0.5);
-      }).to.throwException();
+      }).toThrow();
     });
 
-    it('thinks that 1 ain\'t so different from 2', function() {
+    test('thinks that 1 ain\'t so different from 2', () => {
       expect(1).to.roughlyEqual(2, 1);
     });
 
-    it('knows that, like, 1 and 2 would, like, totally dig each other',
-      function() {
+    test(
+      'knows that, like, 1 and 2 would, like, totally dig each other',
+      () => {
         expect(function() {
           expect(1).to.roughlyEqual(2, 1);
-        }).not.to.throwException();
-      });
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('called', function() {
+  describe('called', () => {
 
     let telephone;
-    beforeEach(function() {
+    beforeEach(() => {
       telephone = sinon.spy();
     });
 
-    it('has caller ID', function() {
+    test('has caller ID', () => {
       telephone();
       expect(telephone).to.be.called();
     });
 
-    it('also knows when it\'s speaking to the hand', function() {
+    test('also knows when it\'s speaking to the hand', () => {
       (function() {})();
       expect(telephone).not.to.be.called();
     });
 
-    it('reminds you that you forgot', function() {
+    test('reminds you that you forgot', () => {
       expect(function() {
         expect(telephone).to.be.called();
-      }).to.throwException();
+      }).toThrow();
     });
 
-    it('gets moody all too quickly', function() {
+    test('gets moody all too quickly', () => {
       telephone();
       expect(function() {
         expect(telephone).not.to.be.called();
-      }).to.throwException();
+      }).toThrow();
     });
 
   });
 
-  describe('Test equality of XML documents - xmleql', function() {
+  describe('Test equality of XML documents - xmleql', () => {
 
-    it('Test XML document with single root, different prefix', function() {
+    test('Test XML document with single root, different prefix', () => {
       const doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
       const doc2 = '<foo xmlns="http://foo"></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.xmleql(
         new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
-    it('Test XML document with single root, different prefix, prefix true',
-      function() {
+    test(
+      'Test XML document with single root, different prefix, prefix true',
+      () => {
         const doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
         const doc2 = '<foo xmlns="http://foo"></foo>';
         expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
           new DOMParser().parseFromString(doc2, 'application/xml'), {prefix: true});
-      });
+      }
+    );
 
-    it('Test XML document with different root', function() {
+    test('Test XML document with different root', () => {
       const doc1 = '<foo></foo>';
       const doc2 = '<bar></bar>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
         new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
-    it('Test different number of attributes', function() {
+    test('Test different number of attributes', () => {
       const doc1 = '<foo attr="bla"></foo>';
       const doc2 = '<foo></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
         new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
-    it('Test different attribute value', function() {
+    test('Test different attribute value', () => {
       const doc1 = '<foo attr="bla"></foo>';
       const doc2 = '<foo attr="foo"></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
         new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
-    it('Test different number of children', function() {
+    test('Test different number of children', () => {
       const doc1 = '<foo><mynode></mynode></foo>';
       const doc2 = '<foo></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(

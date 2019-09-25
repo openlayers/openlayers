@@ -1,12 +1,12 @@
 import Zoom from '../../../../src/ol/control/Zoom.js';
 
-describe('ol.control.Zoom', function() {
+describe('ol.control.Zoom', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new Zoom();
-      expect(instance).to.be.an(Zoom);
+      expect(instance).toBeInstanceOf(Zoom);
     });
 
   });

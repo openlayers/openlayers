@@ -5,7 +5,7 @@ import Stroke from '../../../src/ol/style/Stroke.js';
 import Text from '../../../src/ol/style/Text.js';
 import Feature from '../../../src/ol/Feature.js';
 
-describe('ol.layer.Graticule', function() {
+describe('ol.layer.Graticule', () => {
   let graticule;
 
   function createGraticule() {
@@ -15,8 +15,8 @@ describe('ol.layer.Graticule', function() {
     });
   }
 
-  describe('#createGraticule', function() {
-    it('creates a graticule without labels', function() {
+  describe('#createGraticule', () => {
+    test('creates a graticule without labels', () => {
       createGraticule();
       const extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
@@ -25,13 +25,13 @@ describe('ol.layer.Graticule', function() {
       const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      expect(graticule.getMeridians().length).to.be(13);
-      expect(graticule.getParallels().length).to.be(3);
-      expect(graticule.meridiansLabels_).to.be(null);
-      expect(graticule.parallelsLabels_).to.be(null);
+      expect(graticule.getMeridians().length).toBe(13);
+      expect(graticule.getParallels().length).toBe(3);
+      expect(graticule.meridiansLabels_).toBe(null);
+      expect(graticule.parallelsLabels_).toBe(null);
     });
 
-    it('creates a graticule with labels', function() {
+    test('creates a graticule with labels', () => {
       graticule = new Graticule({
         showLabels: true
       });
@@ -45,23 +45,23 @@ describe('ol.layer.Graticule', function() {
       const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      expect(graticule.meridiansLabels_.length).to.be(13);
-      expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.meridiansLabels_.length).toBe(13);
+      expect(graticule.meridiansLabels_[0].text).toBe('0° 00′ 00″');
       expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(0, 1e-9);
-      expect(graticule.parallelsLabels_.length).to.be(3);
-      expect(graticule.parallelsLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.parallelsLabels_.length).toBe(3);
+      expect(graticule.parallelsLabels_[0].text).toBe('0° 00′ 00″');
       expect(graticule.parallelsLabels_[0].geom.getCoordinates()[1]).to.roughlyEqual(0, 1e-9);
     });
 
-    it('has a default stroke style', function() {
+    test('has a default stroke style', () => {
       createGraticule();
       const actualStyle = graticule.strokeStyle_;
 
-      expect(actualStyle).not.to.be(undefined);
-      expect(actualStyle instanceof Stroke).to.be(true);
+      expect(actualStyle).not.toBe(undefined);
+      expect(actualStyle instanceof Stroke).toBe(true);
     });
 
-    it('can be configured with a stroke style', function() {
+    test('can be configured with a stroke style', () => {
       createGraticule();
       const customStrokeStyle = new Stroke({
         color: 'rebeccapurple'
@@ -72,11 +72,11 @@ describe('ol.layer.Graticule', function() {
       });
       const actualStyle = styledGraticule.strokeStyle_;
 
-      expect(actualStyle).not.to.be(undefined);
-      expect(actualStyle).to.be(customStrokeStyle);
+      expect(actualStyle).not.toBe(undefined);
+      expect(actualStyle).toBe(customStrokeStyle);
     });
 
-    it('can be configured with label options', function() {
+    test('can be configured with label options', () => {
       const latLabelStyle = new Text();
       const lonLabelStyle = new Text();
       const feature = new Feature();
@@ -101,15 +101,15 @@ describe('ol.layer.Graticule', function() {
       const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      expect(graticule.meridiansLabels_[0].text).to.be('lon: 0');
-      expect(graticule.parallelsLabels_[0].text).to.be('lat: 0');
-      expect(graticule.lonLabelStyle_(feature).getText()).to.eql(lonLabelStyle);
-      expect(graticule.latLabelStyle_(feature).getText()).to.eql(latLabelStyle);
-      expect(graticule.lonLabelPosition_).to.be(0.9);
-      expect(graticule.latLabelPosition_).to.be(0.1);
+      expect(graticule.meridiansLabels_[0].text).toBe('lon: 0');
+      expect(graticule.parallelsLabels_[0].text).toBe('lat: 0');
+      expect(graticule.lonLabelStyle_(feature).getText()).toEqual(lonLabelStyle);
+      expect(graticule.latLabelStyle_(feature).getText()).toEqual(latLabelStyle);
+      expect(graticule.lonLabelPosition_).toBe(0.9);
+      expect(graticule.latLabelPosition_).toBe(0.1);
     });
 
-    it('can be configured with interval limits', function() {
+    test('can be configured with interval limits', () => {
       graticule = new Graticule({
         showLabels: true,
         lonLabelFormatter: function(lon) {
@@ -131,15 +131,15 @@ describe('ol.layer.Graticule', function() {
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
 
-      expect(graticule.meridiansLabels_[0].text).to.be('0');
-      expect(graticule.parallelsLabels_[0].text).to.be('0');
-      expect(graticule.meridiansLabels_[1].text).to.be('-10');
-      expect(graticule.parallelsLabels_[1].text).to.be('-10');
-      expect(graticule.meridiansLabels_[2].text).to.be('-20');
-      expect(graticule.parallelsLabels_[2].text).to.be('-20');
+      expect(graticule.meridiansLabels_[0].text).toBe('0');
+      expect(graticule.parallelsLabels_[0].text).toBe('0');
+      expect(graticule.meridiansLabels_[1].text).toBe('-10');
+      expect(graticule.parallelsLabels_[1].text).toBe('-10');
+      expect(graticule.meridiansLabels_[2].text).toBe('-20');
+      expect(graticule.parallelsLabels_[2].text).toBe('-20');
 
-      expect(graticule.getMeridians().length).to.be(37);
-      expect(graticule.getParallels().length).to.be(11);
+      expect(graticule.getMeridians().length).toBe(37);
+      expect(graticule.getParallels().length).toBe(11);
     });
 
 

@@ -1,12 +1,12 @@
 import {getUid} from '../../../src/ol/util.js';
 
-describe('getUid()', function() {
-  it('is constant once generated', function() {
+describe('getUid()', () => {
+  test('is constant once generated', () => {
     const a = {};
-    expect(getUid(a)).to.be(getUid(a));
+    expect(getUid(a)).toBe(getUid(a));
   });
 
-  it('generates a strictly increasing sequence', function() {
+  test('generates a strictly increasing sequence', () => {
     const a = {};
     const b = {};
     const c = {};
@@ -14,9 +14,8 @@ describe('getUid()', function() {
     getUid(c);
     getUid(b);
 
-    //uid order should be a < c < b
-    expect(getUid(a)).to.be.lessThan(getUid(c));
-    expect(getUid(c)).to.be.lessThan(getUid(b));
-    expect(getUid(a)).to.be.lessThan(getUid(b));
+    expect(getUid(a)).toBeLessThan(getUid(c));
+    expect(getUid(c)).toBeLessThan(getUid(b));
+    expect(getUid(a)).toBeLessThan(getUid(b));
   });
 });

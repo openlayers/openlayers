@@ -5,32 +5,32 @@ import {
 } from '../../../../src/ol/renderer/webgl/Layer.js';
 
 
-describe('ol/worker/webgl', function() {
+describe('ol/worker/webgl', () => {
 
   let worker;
-  beforeEach(function() {
+  beforeEach(() => {
     worker = create();
   });
 
-  afterEach(function() {
+  afterEach(() => {
     if (worker) {
       worker.terminate();
     }
     worker = null;
   });
 
-  describe('messaging', function() {
-    describe('GENERATE_BUFFERS', function() {
-      it('responds with buffer data', function(done) {
+  describe('messaging', () => {
+    describe('GENERATE_BUFFERS', () => {
+      test('responds with buffer data', done => {
         worker.addEventListener('error', done);
 
         worker.addEventListener('message', function(event) {
-          expect(event.data.type).to.eql(WebGLWorkerMessageType.GENERATE_BUFFERS);
-          expect(event.data.renderInstructions.byteLength).to.greaterThan(0);
-          expect(event.data.indexBuffer.byteLength).to.greaterThan(0);
-          expect(event.data.vertexBuffer.byteLength).to.greaterThan(0);
-          expect(event.data.testInt).to.be(101);
-          expect(event.data.testString).to.be('abcd');
+          expect(event.data.type).toEqual(WebGLWorkerMessageType.GENERATE_BUFFERS);
+          expect(event.data.renderInstructions.byteLength).toBeGreaterThan(0);
+          expect(event.data.indexBuffer.byteLength).toBeGreaterThan(0);
+          expect(event.data.vertexBuffer.byteLength).toBeGreaterThan(0);
+          expect(event.data.testInt).toBe(101);
+          expect(event.data.testString).toBe('abcd');
           done();
         });
 

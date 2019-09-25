@@ -6,10 +6,10 @@ import {DEVICE_PIXEL_RATIO, FIREFOX} from '../../../../src/ol/has.js';
 import MouseWheelZoom, {Mode} from '../../../../src/ol/interaction/MouseWheelZoom.js';
 
 
-describe('ol.interaction.MouseWheelZoom', function() {
+describe('ol.interaction.MouseWheelZoom', () => {
   let map, interaction;
 
-  beforeEach(function() {
+  beforeEach(() => {
     interaction = new MouseWheelZoom();
     map = new Map({
       target: createMapDiv(100, 100),
@@ -23,25 +23,25 @@ describe('ol.interaction.MouseWheelZoom', function() {
     map.renderSync();
   });
 
-  afterEach(function() {
+  afterEach(() => {
     disposeMap(map);
     map = null;
     interaction = null;
   });
 
-  describe('timeout duration', function() {
+  describe('timeout duration', () => {
     let clock;
-    beforeEach(function() {
+    beforeEach(() => {
       sinon.spy(interaction, 'handleWheelZoom_');
       clock = sinon.useFakeTimers();
     });
 
-    afterEach(function() {
+    afterEach(() => {
       clock.restore();
       interaction.handleWheelZoom_.restore();
     });
 
-    it('works with the default value', function(done) {
+    test('works with the default value', done => {
       const event = new MapBrowserEvent('wheel', map, {
         type: 'wheel',
         target: map.getViewport(),
@@ -50,23 +50,22 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
       map.handleMapBrowserEvent(event);
       clock.tick(50);
-      // default timeout is 80 ms, not called yet
-      expect(interaction.handleWheelZoom_.called).to.be(false);
+      expect(interaction.handleWheelZoom_.called).toBe(false);
 
       clock.tick(30);
-      expect(interaction.handleWheelZoom_.called).to.be(true);
+      expect(interaction.handleWheelZoom_.called).toBe(true);
 
       done();
     });
 
   });
 
-  describe('handleEvent()', function() {
+  describe('handleEvent()', () => {
 
     if (FIREFOX) {
-      it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
+      test('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', done => {
         map.once('postrender', function() {
-          expect(interaction.mode_).to.be(Mode.TRACKPAD);
+          expect(interaction.mode_).toBe(Mode.TRACKPAD);
           done();
         });
         const event = new MapBrowserEvent('wheel', map, {
@@ -82,9 +81,9 @@ describe('ol.interaction.MouseWheelZoom', function() {
     }
 
     if (!FIREFOX) {
-      it('works in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
+      test('works in DOM_DELTA_PIXEL mode (trackpad)', done => {
         map.once('postrender', function() {
-          expect(interaction.mode_).to.be(Mode.TRACKPAD);
+          expect(interaction.mode_).toBe(Mode.TRACKPAD);
           done();
         });
         const event = new MapBrowserEvent('wheel', map, {
@@ -99,22 +98,22 @@ describe('ol.interaction.MouseWheelZoom', function() {
       });
     }
 
-    describe('spying on view.animateInternal()', function() {
+    describe('spying on view.animateInternal()', () => {
       let view;
-      beforeEach(function() {
+      beforeEach(() => {
         view = map.getView();
         sinon.spy(view, 'animateInternal');
       });
 
-      afterEach(function() {
+      afterEach(() => {
         view.animateInternal.restore();
       });
 
-      it('works in DOM_DELTA_LINE mode (wheel)', function(done) {
+      test('works in DOM_DELTA_LINE mode (wheel)', done => {
         map.once('postrender', function() {
           const call = view.animateInternal.getCall(0);
-          expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql([0, 0]);
+          expect(call.args[0].resolution).toBe(2);
+          expect(call.args[0].anchor).toEqual([0, 0]);
           done();
         });
 
@@ -130,11 +129,11 @@ describe('ol.interaction.MouseWheelZoom', function() {
         map.handleMapBrowserEvent(event);
       });
 
-      it('works on all browsers (wheel)', function(done) {
+      test('works on all browsers (wheel)', done => {
         map.once('postrender', function() {
           const call = view.animateInternal.getCall(0);
-          expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql([0, 0]);
+          expect(call.args[0].resolution).toBe(2);
+          expect(call.args[0].anchor).toEqual([0, 0]);
           done();
         });
 

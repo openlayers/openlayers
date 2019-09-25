@@ -4,39 +4,39 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import Style, {createDefaultStyle} from '../../../../src/ol/style/Style.js';
 
 
-describe('ol.layer.Vector', function() {
+describe('ol.layer.Vector', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
     const source = new VectorSource();
     const style = new Style();
 
-    it('creates a new layer', function() {
+    test('creates a new layer', () => {
       const layer = new VectorLayer({source: source});
-      expect(layer).to.be.a(VectorLayer);
-      expect(layer).to.be.a(Layer);
+      expect(layer).toBeInstanceOf(VectorLayer);
+      expect(layer).toBeInstanceOf(Layer);
     });
 
-    it('accepts a style option with a single style', function() {
+    test('accepts a style option with a single style', () => {
       const layer = new VectorLayer({
         source: source,
         style: style
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction()).to.eql([style]);
+      expect(styleFunction()).toEqual([style]);
     });
 
-    it('accepts a style option with an array of styles', function() {
+    test('accepts a style option with an array of styles', () => {
       const layer = new VectorLayer({
         source: source,
         style: [style]
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction()).to.eql([style]);
+      expect(styleFunction()).toEqual([style]);
     });
 
-    it('accepts a style option with a style function', function() {
+    test('accepts a style option with a style function', () => {
       const layer = new VectorLayer({
         source: source,
         style: function(feature, resolution) {
@@ -45,79 +45,78 @@ describe('ol.layer.Vector', function() {
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction()).to.eql([style]);
+      expect(styleFunction()).toEqual([style]);
     });
 
   });
 
-  describe('#setStyle()', function() {
+  describe('#setStyle()', () => {
 
     let layer, style;
 
-    beforeEach(function() {
+    beforeEach(() => {
       layer = new VectorLayer({
         source: new VectorSource()
       });
       style = new Style();
     });
 
-    it('allows the style to be set after construction', function() {
+    test('allows the style to be set after construction', () => {
       layer.setStyle(style);
-      expect(layer.getStyle()).to.be(style);
+      expect(layer.getStyle()).toBe(style);
     });
 
-    it('dispatches the change event', function(done) {
+    test('dispatches the change event', done => {
       layer.on('change', function() {
         done();
       });
       layer.setStyle(style);
     });
 
-    it('updates the internal style function', function() {
-      expect(layer.getStyleFunction()).to.be(createDefaultStyle);
+    test('updates the internal style function', () => {
+      expect(layer.getStyleFunction()).toBe(createDefaultStyle);
       layer.setStyle(style);
-      expect(layer.getStyleFunction()).not.to.be(
-        createDefaultStyle);
+      expect(layer.getStyleFunction()).not.toBe(createDefaultStyle);
     });
 
-    it('allows setting an null style', function() {
+    test('allows setting an null style', () => {
       layer.setStyle(null);
-      expect(layer.getStyle()).to.be(null);
-      expect(layer.getStyleFunction()).to.be(undefined);
+      expect(layer.getStyle()).toBe(null);
+      expect(layer.getStyleFunction()).toBe(undefined);
     });
 
-    it('sets the default style when passing undefined', function() {
+    test('sets the default style when passing undefined', () => {
       layer.setStyle(style);
       layer.setStyle(undefined);
-      expect(layer.getStyle()).to.be(createDefaultStyle);
-      expect(layer.getStyleFunction()).to.be(createDefaultStyle);
+      expect(layer.getStyle()).toBe(createDefaultStyle);
+      expect(layer.getStyleFunction()).toBe(createDefaultStyle);
     });
 
   });
 
-  describe('#getStyle()', function() {
+  describe('#getStyle()', () => {
 
     const source = new VectorSource();
     const style = new Style();
 
-    it('returns what is provided to setStyle', function() {
+    test('returns what is provided to setStyle', () => {
       const layer = new VectorLayer({
         source: source
       });
 
-      expect(layer.getStyle()).to.be(createDefaultStyle);
+      expect(layer.getStyle()).toBe(createDefaultStyle);
 
       layer.setStyle(style);
-      expect(layer.getStyle()).to.be(style);
+      expect(layer.getStyle()).toBe(style);
 
       layer.setStyle([style]);
-      expect(layer.getStyle()).to.eql([style]);
+      expect(layer.getStyle()).toEqual([style]);
 
       const styleFunction = function(feature, resolution) {
         return [style];
       };
       layer.setStyle(styleFunction);
-      expect(layer.getStyle()).to.be(styleFunction);
+      expect(layer.getStyle()).toBe(styleFunction);
 
     });
 

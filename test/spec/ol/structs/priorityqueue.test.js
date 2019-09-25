@@ -1,43 +1,43 @@
 import PriorityQueue, {DROP} from '../../../../src/ol/structs/PriorityQueue.js';
 
 
-describe('ol.structs.PriorityQueue', function() {
+describe('ol.structs.PriorityQueue', () => {
 
   const identity = function(a) {
     return a;
   };
 
-  describe('when empty', function() {
+  describe('when empty', () => {
 
     let pq;
-    beforeEach(function() {
+    beforeEach(() => {
       pq = new PriorityQueue(identity, identity);
     });
 
-    it('is empty', function() {
-      expect(pq.isEmpty()).to.be(true);
+    test('is empty', () => {
+      expect(pq.isEmpty()).toBe(true);
     });
 
-    it('enqueue adds an element', function() {
+    test('enqueue adds an element', () => {
       const added = pq.enqueue(0);
-      expect(added).to.be(true);
-      expect(pq.elements_).to.eql([0]);
-      expect(pq.priorities_).to.eql([0]);
+      expect(added).toBe(true);
+      expect(pq.elements_).toEqual([0]);
+      expect(pq.priorities_).toEqual([0]);
     });
 
-    it('do not enqueue element with DROP priority', function() {
+    test('do not enqueue element with DROP priority', () => {
       const added = pq.enqueue(Infinity);
-      expect(added).to.be(false);
-      expect(pq.elements_).to.eql([]);
-      expect(pq.priorities_).to.eql([]);
+      expect(added).toBe(false);
+      expect(pq.elements_).toEqual([]);
+      expect(pq.priorities_).toEqual([]);
     });
 
   });
 
-  describe('when populated', function() {
+  describe('when populated', () => {
 
     let elements, pq;
-    beforeEach(function() {
+    beforeEach(() => {
       elements = [];
       pq = new PriorityQueue(identity, identity);
       let element, i;
@@ -48,21 +48,21 @@ describe('ol.structs.PriorityQueue', function() {
       }
     });
 
-    it('dequeues elements in the correct order', function() {
+    test('dequeues elements in the correct order', () => {
       elements.sort();
       let i;
       for (i = 0; i < elements.length; ++i) {
-        expect(pq.dequeue()).to.be(elements[i]);
+        expect(pq.dequeue()).toBe(elements[i]);
       }
-      expect(pq.isEmpty()).to.be(true);
+      expect(pq.isEmpty()).toBe(true);
     });
 
   });
 
-  describe('with an impure priority function', function() {
+  describe('with an impure priority function', () => {
 
     let pq, target;
-    beforeEach(function() {
+    beforeEach(() => {
       target = 0.5;
       pq = new PriorityQueue(function(element) {
         return Math.abs(element - target);
@@ -73,29 +73,29 @@ describe('ol.structs.PriorityQueue', function() {
       }
     });
 
-    it('dequeue elements in the correct order', function() {
+    test('dequeue elements in the correct order', () => {
       let lastDelta = 0;
       let delta;
       while (!pq.isEmpty()) {
         delta = Math.abs(pq.dequeue() - target);
-        expect(lastDelta <= delta).to.be(true);
+        expect(lastDelta <= delta).toBe(true);
         lastDelta = delta;
       }
     });
 
-    it('allows reprioritization', function() {
+    test('allows reprioritization', () => {
       const target = 0.5;
       pq.reprioritize();
       let lastDelta = 0;
       let delta;
       while (!pq.isEmpty()) {
         delta = Math.abs(pq.dequeue() - target);
-        expect(lastDelta <= delta).to.be(true);
+        expect(lastDelta <= delta).toBe(true);
         lastDelta = delta;
       }
     });
 
-    it('allows dropping during reprioritization', function() {
+    test('allows dropping during reprioritization', () => {
       const target = 0.5;
       let i = 0;
       pq.priorityFunction_ = function(element) {
@@ -106,60 +106,60 @@ describe('ol.structs.PriorityQueue', function() {
         }
       };
       pq.reprioritize();
-      expect(pq.getCount()).to.be(16);
+      expect(pq.getCount()).toBe(16);
       let lastDelta = 0;
       let delta;
       while (!pq.isEmpty()) {
         delta = Math.abs(pq.dequeue() - target);
-        expect(lastDelta <= delta).to.be(true);
+        expect(lastDelta <= delta).toBe(true);
         lastDelta = delta;
       }
     });
 
   });
 
-  describe('tracks elements in the queue', function() {
+  describe('tracks elements in the queue', () => {
 
     let pq;
-    beforeEach(function() {
+    beforeEach(() => {
       pq = new PriorityQueue(identity, identity);
       pq.enqueue('a');
       pq.enqueue('b');
       pq.enqueue('c');
     });
 
-    it('tracks which elements have been queued', function() {
-      expect(pq.isQueued('a')).to.be(true);
-      expect(pq.isQueued('b')).to.be(true);
-      expect(pq.isQueued('c')).to.be(true);
+    test('tracks which elements have been queued', () => {
+      expect(pq.isQueued('a')).toBe(true);
+      expect(pq.isQueued('b')).toBe(true);
+      expect(pq.isQueued('c')).toBe(true);
     });
 
-    it('tracks which elements have not been queued', function() {
-      expect(pq.isQueued('d')).to.be(false);
+    test('tracks which elements have not been queued', () => {
+      expect(pq.isQueued('d')).toBe(false);
     });
 
-    it('raises an error when an queued element is re-queued', function() {
+    test('raises an error when an queued element is re-queued', () => {
       expect(function() {
         pq.enqueue('a');
-      }).to.throwException();
+      }).toThrow();
     });
 
-    it('tracks which elements have be dequeued', function() {
-      expect(pq.isQueued('a')).to.be(true);
-      expect(pq.isQueued('b')).to.be(true);
-      expect(pq.isQueued('c')).to.be(true);
-      expect(pq.dequeue()).to.be('a');
-      expect(pq.isQueued('a')).to.be(false);
-      expect(pq.isQueued('b')).to.be(true);
-      expect(pq.isQueued('c')).to.be(true);
-      expect(pq.dequeue()).to.be('b');
-      expect(pq.isQueued('a')).to.be(false);
-      expect(pq.isQueued('b')).to.be(false);
-      expect(pq.isQueued('c')).to.be(true);
-      expect(pq.dequeue()).to.be('c');
-      expect(pq.isQueued('a')).to.be(false);
-      expect(pq.isQueued('b')).to.be(false);
-      expect(pq.isQueued('c')).to.be(false);
+    test('tracks which elements have be dequeued', () => {
+      expect(pq.isQueued('a')).toBe(true);
+      expect(pq.isQueued('b')).toBe(true);
+      expect(pq.isQueued('c')).toBe(true);
+      expect(pq.dequeue()).toBe('a');
+      expect(pq.isQueued('a')).toBe(false);
+      expect(pq.isQueued('b')).toBe(true);
+      expect(pq.isQueued('c')).toBe(true);
+      expect(pq.dequeue()).toBe('b');
+      expect(pq.isQueued('a')).toBe(false);
+      expect(pq.isQueued('b')).toBe(false);
+      expect(pq.isQueued('c')).toBe(true);
+      expect(pq.dequeue()).toBe('c');
+      expect(pq.isQueued('a')).toBe(false);
+      expect(pq.isQueued('b')).toBe(false);
+      expect(pq.isQueued('c')).toBe(false);
     });
 
   });

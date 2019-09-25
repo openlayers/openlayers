@@ -22,53 +22,53 @@ import ImageStatic from '../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 
-describe('ol.Map', function() {
+describe('ol.Map', () => {
 
-  describe('constructor', function() {
-    it('creates a new map', function() {
+  describe('constructor', () => {
+    test('creates a new map', () => {
       const map = new Map({});
-      expect(map).to.be.a(Map);
+      expect(map).toBeInstanceOf(Map);
     });
 
-    it('creates a set of default interactions', function() {
+    test('creates a set of default interactions', () => {
       const map = new Map({});
       const interactions = map.getInteractions();
       const length = interactions.getLength();
-      expect(length).to.be.greaterThan(0);
+      expect(length).toBeGreaterThan(0);
 
       for (let i = 0; i < length; ++i) {
-        expect(interactions.item(i).getMap()).to.be(map);
+        expect(interactions.item(i).getMap()).toBe(map);
       }
     });
 
-    it('creates the viewport', function() {
+    test('creates the viewport', () => {
       const map = new Map({});
       const viewport = map.getViewport();
       const className = 'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
-      expect(viewport.className).to.be(className);
+      expect(viewport.className).toBe(className);
     });
 
-    it('creates the overlay containers', function() {
+    test('creates the overlay containers', () => {
       const map = new Map({});
       const container = map.getOverlayContainer();
-      expect(container.className).to.be('ol-overlaycontainer');
+      expect(container.className).toBe('ol-overlaycontainer');
 
       const containerStop = map.getOverlayContainerStopEvent();
-      expect(containerStop.className).to.be('ol-overlaycontainer-stopevent');
+      expect(containerStop.className).toBe('ol-overlaycontainer-stopevent');
     });
 
   });
 
-  describe('#addLayer()', function() {
-    it('adds a layer to the map', function() {
+  describe('#addLayer()', () => {
+    test('adds a layer to the map', () => {
       const map = new Map({});
       const layer = new TileLayer();
       map.addLayer(layer);
 
-      expect(map.getLayers().item(0)).to.be(layer);
+      expect(map.getLayers().item(0)).toBe(layer);
     });
 
-    it('throws if a layer is added twice', function() {
+    test('throws if a layer is added twice', () => {
       const map = new Map({});
       const layer = new TileLayer();
       map.addLayer(layer);
@@ -76,25 +76,25 @@ describe('ol.Map', function() {
       const call = function() {
         map.addLayer(layer);
       };
-      expect(call).to.throwException();
+      expect(call).toThrow();
     });
   });
 
-  describe('#addInteraction()', function() {
-    it('adds an interaction to the map', function() {
+  describe('#addInteraction()', () => {
+    test('adds an interaction to the map', () => {
       const map = new Map({});
       const interaction = new Interaction({});
 
       const before = map.getInteractions().getLength();
       map.addInteraction(interaction);
       const after = map.getInteractions().getLength();
-      expect(after).to.be(before + 1);
-      expect(interaction.getMap()).to.be(map);
+      expect(after).toBe(before + 1);
+      expect(interaction.getMap()).toBe(map);
     });
   });
 
-  describe('#removeInteraction()', function() {
-    it('removes an interaction from the map', function() {
+  describe('#removeInteraction()', () => {
+    test('removes an interaction from the map', () => {
       const map = new Map({});
       const interaction = new Interaction({});
 
@@ -102,17 +102,17 @@ describe('ol.Map', function() {
       map.addInteraction(interaction);
 
       map.removeInteraction(interaction);
-      expect(map.getInteractions().getLength()).to.be(before);
+      expect(map.getInteractions().getLength()).toBe(before);
 
-      expect(interaction.getMap()).to.be(null);
+      expect(interaction.getMap()).toBe(null);
     });
   });
 
-  describe('movestart/moveend event', function() {
+  describe('movestart/moveend event', () => {
 
     let target, view, map;
 
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
 
       const style = target.style;
@@ -139,25 +139,25 @@ describe('ol.Map', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('are fired only once after view changes', function(done) {
+    test('are fired only once after view changes', done => {
       const center = [10, 20];
       const zoom = 3;
       let startCalls = 0;
       let endCalls = 0;
       map.on('movestart', function() {
         ++startCalls;
-        expect(startCalls).to.be(1);
+        expect(startCalls).toBe(1);
       });
       map.on('moveend', function() {
         ++endCalls;
-        expect(endCalls).to.be(1);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getZoom()).to.be(zoom);
+        expect(endCalls).toBe(1);
+        expect(view.getCenter()).toEqual(center);
+        expect(view.getZoom()).toBe(zoom);
         window.setTimeout(done, 1000);
       });
 
@@ -165,7 +165,7 @@ describe('ol.Map', function() {
       view.setZoom(zoom);
     });
 
-    it('are fired in sequence', function(done) {
+    test('are fired in sequence', done => {
       view.setCenter([0, 0]);
       view.setResolution(0.703125);
       map.renderSync();
@@ -174,15 +174,15 @@ describe('ol.Map', function() {
       const calls = [];
       map.on('movestart', function(e) {
         calls.push('start');
-        expect(calls).to.eql(['start']);
-        expect(e.frameState.viewState.center).to.eql([0, 0]);
-        expect(e.frameState.viewState.resolution).to.be(0.703125);
+        expect(calls).toEqual(['start']);
+        expect(e.frameState.viewState.center).toEqual([0, 0]);
+        expect(e.frameState.viewState.resolution).toBe(0.703125);
       });
       map.on('moveend', function() {
         calls.push('end');
-        expect(calls).to.eql(['start', 'end']);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getZoom()).to.be(zoom);
+        expect(calls).toEqual(['start', 'end']);
+        expect(view.getCenter()).toEqual(center);
+        expect(view.getZoom()).toBe(zoom);
         done();
       });
 
@@ -192,10 +192,10 @@ describe('ol.Map', function() {
 
   });
 
-  describe('rendercomplete event', function() {
+  describe('rendercomplete event', () => {
 
     let map;
-    beforeEach(function() {
+    beforeEach(() => {
       const target = document.createElement('div');
       target.style.width = target.style.height = '100px';
       document.body.appendChild(target);
@@ -232,32 +232,35 @@ describe('ol.Map', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
       map.dispose();
     });
 
-    it('triggers when all tiles and sources are loaded and faded in', function(done) {
-      map.once('rendercomplete', function() {
-        const layers = map.getLayers().getArray();
-        expect(map.tileQueue_.getTilesLoading()).to.be(0);
-        expect(layers[1].getSource().image_.getState()).to.be(ImageState.LOADED);
-        expect(layers[2].getSource().getFeatures().length).to.be(1);
-        done();
-      });
-      map.setView(new View({
-        center: [0, 0],
-        zoom: 0
-      }));
-    });
+    test(
+      'triggers when all tiles and sources are loaded and faded in',
+      done => {
+        map.once('rendercomplete', function() {
+          const layers = map.getLayers().getArray();
+          expect(map.tileQueue_.getTilesLoading()).toBe(0);
+          expect(layers[1].getSource().image_.getState()).toBe(ImageState.LOADED);
+          expect(layers[2].getSource().getFeatures().length).toBe(1);
+          done();
+        });
+        map.setView(new View({
+          center: [0, 0],
+          zoom: 0
+        }));
+      }
+    );
 
   });
 
-  describe('#getFeaturesAtPixel', function() {
+  describe('#getFeaturesAtPixel', () => {
 
     let target, map;
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
       target.style.width = target.style.height = '100px';
       document.body.appendChild(target);
@@ -275,23 +278,23 @@ describe('ol.Map', function() {
       });
       map.renderSync();
     });
-    afterEach(function() {
+    afterEach(() => {
       document.body.removeChild(target);
     });
 
-    it('returns an empty array if no feature was found', function() {
+    test('returns an empty array if no feature was found', () => {
       const features = map.getFeaturesAtPixel([0, 0]);
-      expect(features).to.be.an(Array);
-      expect(features).to.be.empty();
+      expect(features).toBeInstanceOf(Array);
+      expect(features).toHaveLength(0);
     });
 
-    it('returns an array of found features', function() {
+    test('returns an array of found features', () => {
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(Feature);
+      expect(features).toBeInstanceOf(Array);
+      expect(features[0]).toBeInstanceOf(Feature);
     });
 
-    it('returns an array of found features with declutter: true', function() {
+    test('returns an array of found features with declutter: true', () => {
       const layer = map.getLayers().item(0);
       map.removeLayer(layer);
       const otherLayer = new VectorLayer({
@@ -301,11 +304,11 @@ describe('ol.Map', function() {
       map.addLayer(otherLayer);
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features).to.be.an(Array);
-      expect(features[0]).to.be.a(Feature);
+      expect(features).toBeInstanceOf(Array);
+      expect(features[0]).toBeInstanceOf(Feature);
     });
 
-    it('respects options', function() {
+    test('respects options', () => {
       const otherLayer = new VectorLayer({
         source: new VectorSource
       });
@@ -315,17 +318,17 @@ describe('ol.Map', function() {
           return layer === otherLayer;
         }
       });
-      expect(features).to.be.an(Array);
-      expect(features).to.be.empty();
+      expect(features).toBeInstanceOf(Array);
+      expect(features).toHaveLength(0);
     });
 
   });
 
-  describe('#forEachLayerAtPixel()', function() {
+  describe('#forEachLayerAtPixel()', () => {
 
     let target, map, original, log;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       log = [];
       original = TileLayerRenderer.prototype.getDataAtPixel;
       TileLayerRenderer.prototype.getDataAtPixel = function(pixel) {
@@ -365,29 +368,29 @@ describe('ol.Map', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       TileLayerRenderer.prototype.getDataAtPixel = original;
       map.dispose();
       document.body.removeChild(target);
       log = null;
     });
 
-    it('calls each layer renderer with the same pixel', function() {
+    test('calls each layer renderer with the same pixel', () => {
       const pixel = [10, 20];
       map.forEachLayerAtPixel(pixel, function() {});
-      expect(log.length).to.equal(3);
-      expect(log[0].length).to.equal(2);
-      expect(log[0]).to.eql(log[1]);
-      expect(log[1]).to.eql(log[2]);
+      expect(log.length).toBe(3);
+      expect(log[0].length).toBe(2);
+      expect(log[0]).toEqual(log[1]);
+      expect(log[1]).toEqual(log[2]);
     });
 
   });
 
-  describe('#render()', function() {
+  describe('#render()', () => {
 
     let target, map;
 
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
       const style = target.style;
       style.position = 'absolute';
@@ -406,90 +409,93 @@ describe('ol.Map', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('is called when the view.changed() is called', function() {
+    test('is called when the view.changed() is called', () => {
       const view = map.getView();
 
       const spy = sinon.spy(map, 'render');
       view.changed();
-      expect(spy.callCount).to.be(1);
+      expect(spy.callCount).toBe(1);
     });
 
-    it('is not called on view changes after the view has been removed', function() {
-      const view = map.getView();
-      map.setView(null);
+    test(
+      'is not called on view changes after the view has been removed',
+      () => {
+        const view = map.getView();
+        map.setView(null);
 
-      const spy = sinon.spy(map, 'render');
-      view.changed();
-      expect(spy.callCount).to.be(0);
-    });
+        const spy = sinon.spy(map, 'render');
+        view.changed();
+        expect(spy.callCount).toBe(0);
+      }
+    );
 
-    it('calls renderFrame_ and results in an postrender event', function(done) {
+    test('calls renderFrame_ and results in an postrender event', done => {
 
       const spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(MapEvent);
-        expect(typeof spy.firstCall.args[0]).to.be('number');
+        expect(event).toBeInstanceOf(MapEvent);
+        expect(typeof spy.firstCall.args[0]).toBe('number');
         spy.restore();
         const frameState = event.frameState;
-        expect(frameState).not.to.be(null);
+        expect(frameState).not.toBe(null);
         done();
       });
 
     });
 
-    it('uses the same render frame for subsequent calls', function(done) {
+    test('uses the same render frame for subsequent calls', done => {
       map.render();
       const id1 = map.animationDelayKey_;
       let id2 = null;
       map.once('postrender', function() {
-        expect(id2).to.be(id1);
+        expect(id2).toBe(id1);
         done();
       });
       map.render();
       id2 = map.animationDelayKey_;
     });
 
-    it('creates a new render frame after renderSync()', function(done) {
+    test('creates a new render frame after renderSync()', done => {
       let id2 = null;
       map.render();
       const id1 = map.animationDelayKey_;
       map.once('postrender', function() {
-        expect(id2).to.not.be(id1);
+        expect(id2).not.toBe(id1);
         done();
       });
       map.renderSync();
       id2 = map.animationDelayKey_;
     });
 
-    it('results in an postrender event (for zero height map)', function(done) {
+    test('results in an postrender event (for zero height map)', done => {
       target.style.height = '0px';
       map.updateSize();
 
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(MapEvent);
+        expect(event).toBeInstanceOf(MapEvent);
         const frameState = event.frameState;
-        expect(frameState).to.be(null);
+        expect(frameState).toBe(null);
         done();
       });
 
     });
 
-    it('results in an postrender event (for zero width map)', function(done) {
+    test('results in an postrender event (for zero width map)', done => {
       target.style.width = '0px';
       map.updateSize();
 
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(MapEvent);
+        expect(event).toBeInstanceOf(MapEvent);
         const frameState = event.frameState;
-        expect(frameState).to.be(null);
+        expect(frameState).toBe(null);
         done();
       });
 
@@ -497,58 +503,58 @@ describe('ol.Map', function() {
 
   });
 
-  describe('dispose', function() {
+  describe('dispose', () => {
     let map;
 
-    beforeEach(function() {
+    beforeEach(() => {
       map = new Map({
         target: document.createElement('div')
       });
     });
 
-    it('removes the viewport from its parent', function() {
+    test('removes the viewport from its parent', () => {
       map.dispose();
-      expect(map.getViewport().parentNode).to.be(null);
+      expect(map.getViewport().parentNode).toBe(null);
     });
 
-    it('removes window listeners', function() {
+    test('removes window listeners', () => {
       map.dispose();
-      expect(map.handleResize_).to.be(undefined);
+      expect(map.handleResize_).toBe(undefined);
     });
   });
 
-  describe('#setTarget', function() {
+  describe('#setTarget', () => {
     let map;
 
-    beforeEach(function() {
+    beforeEach(() => {
       map = new Map({
         target: document.createElement('div')
       });
-      expect(map.handleResize_).to.be.ok();
+      expect(map.handleResize_).toBeTruthy();
     });
 
-    describe('call setTarget with null', function() {
-      it('unregisters the viewport resize listener', function() {
+    describe('call setTarget with null', () => {
+      test('unregisters the viewport resize listener', () => {
         map.setTarget(null);
-        expect(map.handleResize_).to.be(undefined);
+        expect(map.handleResize_).toBe(undefined);
       });
     });
 
-    describe('call setTarget with an element', function() {
-      it('registers a viewport resize listener', function() {
+    describe('call setTarget with an element', () => {
+      test('registers a viewport resize listener', () => {
         map.setTarget(null);
         map.setTarget(document.createElement('div'));
-        expect(map.handleResize_).to.be.ok();
+        expect(map.handleResize_).toBeTruthy();
       });
     });
 
   });
 
-  describe('create interactions', function() {
+  describe('create interactions', () => {
 
     let options;
 
-    beforeEach(function() {
+    beforeEach(() => {
       options = {
         altShiftDragRotate: false,
         doubleClickZoom: false,
@@ -561,81 +567,81 @@ describe('ol.Map', function() {
       };
     });
 
-    describe('create mousewheel interaction', function() {
-      it('creates mousewheel interaction', function() {
+    describe('create mousewheel interaction', () => {
+      test('creates mousewheel interaction', () => {
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(MouseWheelZoom);
-        expect(interactions.item(0).useAnchor_).to.eql(true);
+        expect(interactions.getLength()).toEqual(1);
+        expect(interactions.item(0)).toBeInstanceOf(MouseWheelZoom);
+        expect(interactions.item(0).useAnchor_).toEqual(true);
         interactions.item(0).setMouseAnchor(false);
-        expect(interactions.item(0).useAnchor_).to.eql(false);
-        expect(interactions.item(0).condition_).to.not.be(focus);
+        expect(interactions.item(0).useAnchor_).toEqual(false);
+        expect(interactions.item(0).condition_).not.toBe(focus);
       });
-      it('uses the focus condition when onFocusOnly option is set', function() {
+      test('uses the focus condition when onFocusOnly option is set', () => {
         options.onFocusOnly = true;
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focus);
+        expect(interactions.item(0).condition_).toBe(focus);
       });
     });
 
-    describe('create dragpan interaction', function() {
-      it('creates dragpan interaction', function() {
+    describe('create dragpan interaction', () => {
+      test('creates dragpan interaction', () => {
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(DragPan);
-        expect(interactions.item(0).condition_).to.not.be(focus);
+        expect(interactions.getLength()).toEqual(1);
+        expect(interactions.item(0)).toBeInstanceOf(DragPan);
+        expect(interactions.item(0).condition_).not.toBe(focus);
       });
-      it('uses the focus condition when onFocusOnly option is set', function() {
+      test('uses the focus condition when onFocusOnly option is set', () => {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focus);
+        expect(interactions.item(0).condition_).toBe(focus);
       });
     });
 
-    describe('create pinchZoom interaction', function() {
-      it('creates pinchZoom interaction', function() {
+    describe('create pinchZoom interaction', () => {
+      test('creates pinchZoom interaction', () => {
         options.pinchZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(PinchZoom);
+        expect(interactions.getLength()).toEqual(1);
+        expect(interactions.item(0)).toBeInstanceOf(PinchZoom);
       });
     });
 
-    describe('create double click interaction', function() {
+    describe('create double click interaction', () => {
 
-      beforeEach(function() {
+      beforeEach(() => {
         options.doubleClickZoom = true;
       });
 
-      describe('default zoomDelta', function() {
-        it('create double click interaction with default delta', function() {
+      describe('default zoomDelta', () => {
+        test('create double click interaction with default delta', () => {
           const interactions = defaultInteractions(options);
-          expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(DoubleClickZoom);
-          expect(interactions.item(0).delta_).to.eql(1);
+          expect(interactions.getLength()).toEqual(1);
+          expect(interactions.item(0)).toBeInstanceOf(DoubleClickZoom);
+          expect(interactions.item(0).delta_).toEqual(1);
         });
       });
 
-      describe('set zoomDelta', function() {
-        it('create double click interaction with set delta', function() {
+      describe('set zoomDelta', () => {
+        test('create double click interaction with set delta', () => {
           options.zoomDelta = 7;
           const interactions = defaultInteractions(options);
-          expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(DoubleClickZoom);
-          expect(interactions.item(0).delta_).to.eql(7);
+          expect(interactions.getLength()).toEqual(1);
+          expect(interactions.item(0)).toBeInstanceOf(DoubleClickZoom);
+          expect(interactions.item(0).delta_).toEqual(7);
         });
       });
     });
 
-    describe('#getEventPixel', function() {
+    describe('#getEventPixel', () => {
 
       let target;
 
-      beforeEach(function() {
+      beforeEach(() => {
         target = document.createElement('div');
         target.style.position = 'absolute';
         target.style.top = '10px';
@@ -645,11 +651,11 @@ describe('ol.Map', function() {
 
         document.body.appendChild(target);
       });
-      afterEach(function() {
+      afterEach(() => {
         document.body.removeChild(target);
       });
 
-      it('works with touchend events', function() {
+      test('works with touchend events', () => {
 
         const map = new Map({
           target: target
@@ -664,17 +670,15 @@ describe('ol.Map', function() {
           }]
         };
         const position = map.getEventPixel(browserEvent);
-        // 80 = clientX - target.style.left
-        expect(position[0]).to.eql(80);
-        // 190 = clientY - target.style.top
-        expect(position[1]).to.eql(190);
+        expect(position[0]).toEqual(80);
+        expect(position[1]).toEqual(190);
       });
     });
 
-    describe('#getOverlayById()', function() {
+    describe('#getOverlayById()', () => {
       let target, map, overlay, overlay_target;
 
-      beforeEach(function() {
+      beforeEach(() => {
         target = document.createElement('div');
         const style = target.style;
         style.position = 'absolute';
@@ -694,54 +698,54 @@ describe('ol.Map', function() {
         overlay_target = document.createElement('div');
       });
 
-      afterEach(function() {
+      afterEach(() => {
         map.removeOverlay(overlay);
         map.dispose();
         document.body.removeChild(target);
       });
 
-      it('returns an overlay by id', function() {
+      test('returns an overlay by id', () => {
         overlay = new Overlay({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(overlay);
+        expect(map.getOverlayById('foo')).toBe(overlay);
       });
 
-      it('returns null when no overlay is found', function() {
+      test('returns null when no overlay is found', () => {
         overlay = new Overlay({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('bar')).to.be(null);
+        expect(map.getOverlayById('bar')).toBe(null);
       });
 
-      it('returns null after removing overlay', function() {
+      test('returns null after removing overlay', () => {
         overlay = new Overlay({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(overlay);
+        expect(map.getOverlayById('foo')).toBe(overlay);
         map.removeOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(null);
+        expect(map.getOverlayById('foo')).toBe(null);
       });
 
     });
 
-    describe('getCoordinateFromPixel() and getPixelFromCoordinate()', function() {
+    describe('getCoordinateFromPixel() and getPixelFromCoordinate()', () => {
 
       let target, view, map;
       const centerGeographic = [2.460938, 48.850258];
       const centerMercator = transform(centerGeographic, getProjection('EPSG:4326'), getProjection('EPSG:3857'));
       const screenCenter = [500, 500];
 
-      beforeEach(function() {
+      beforeEach(() => {
         target = document.createElement('div');
 
         const style = target.style;
@@ -771,13 +775,13 @@ describe('ol.Map', function() {
         });
       });
 
-      afterEach(function() {
+      afterEach(() => {
         map.dispose();
         document.body.removeChild(target);
         clearUserProjection();
       });
 
-      it('gets coordinates in user projection', function(done) {
+      test('gets coordinates in user projection', done => {
         map.renderSync();
         const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
         expect(coordinateGeographic[0]).to.roughlyEqual(centerGeographic[0], 1e-5);
@@ -785,7 +789,7 @@ describe('ol.Map', function() {
         done();
       });
 
-      it('gets coordinates in view projection', function(done) {
+      test('gets coordinates in view projection', done => {
         map.renderSync();
         const coordinateMercator = map.getCoordinateFromPixelInternal(screenCenter);
         expect(coordinateMercator[0]).to.roughlyEqual(centerMercator[0], 1e-5);
@@ -793,17 +797,17 @@ describe('ol.Map', function() {
         done();
       });
 
-      it('gets pixel from coordinates in user projection', function(done) {
+      test('gets pixel from coordinates in user projection', done => {
         map.renderSync();
         const pixel = map.getPixelFromCoordinate(centerGeographic);
-        expect(pixel).to.eql(screenCenter);
+        expect(pixel).toEqual(screenCenter);
         done();
       });
 
-      it('gets pixel from coordinates in view projection', function(done) {
+      test('gets pixel from coordinates in view projection', done => {
         map.renderSync();
         const pixel = map.getPixelFromCoordinateInternal(centerMercator);
-        expect(pixel).to.eql(screenCenter);
+        expect(pixel).toEqual(screenCenter);
         done();
       });
     });

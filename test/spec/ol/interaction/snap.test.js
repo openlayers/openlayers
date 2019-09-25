@@ -8,24 +8,24 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Snap from '../../../../src/ol/interaction/Snap.js';
 
 
-describe('ol.interaction.Snap', function() {
+describe('ol.interaction.Snap', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new Snap();
-      expect(instance).to.be.an(Snap);
+      expect(instance).toBeInstanceOf(Snap);
     });
 
   });
 
-  describe('handleEvent', function() {
+  describe('handleEvent', () => {
     let target, map;
 
     const width = 360;
     const height = 180;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       target = document.createElement('div');
 
       const style = target.style;
@@ -50,12 +50,12 @@ describe('ol.interaction.Snap', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('can handle XYZ coordinates', function() {
+    test('can handle XYZ coordinates', () => {
       const point = new Feature(new Point([0, 0, 123]));
       const snapInteraction = new Snap({
         features: new Collection([point])
@@ -68,11 +68,10 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      // check that the coordinate is in XY and not XYZ
-      expect(event.coordinate).to.eql([0, 0]);
+      expect(event.coordinate).toEqual([0, 0]);
     });
 
-    it('snaps to edges only', function() {
+    test('snaps to edges only', () => {
       const point = new Feature(new LineString([[-10, 0], [10, 0]]));
       const snapInteraction = new Snap({
         features: new Collection([point]),
@@ -87,10 +86,10 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([7, 0]);
+      expect(event.coordinate).toEqual([7, 0]);
     });
 
-    it('snaps to vertices only', function() {
+    test('snaps to vertices only', () => {
       const point = new Feature(new LineString([[-10, 0], [10, 0]]));
       const snapInteraction = new Snap({
         features: new Collection([point]),
@@ -105,10 +104,10 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.coordinate).toEqual([10, 0]);
     });
 
-    it('snaps to circle', function() {
+    test('snaps to circle', () => {
       const circle = new Feature(new Circle([0, 0], 10));
       const snapInteraction = new Snap({
         features: new Collection([circle]),
@@ -127,7 +126,7 @@ describe('ol.interaction.Snap', function() {
       expect(event.coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
     });
 
-    it('handle feature without geometry', function() {
+    test('handle feature without geometry', () => {
       const feature = new Feature();
       const snapInteraction = new Snap({
         features: new Collection([feature]),
@@ -144,10 +143,10 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.coordinate).toEqual([10, 0]);
     });
 
-    it('handle geometry changes', function() {
+    test('handle geometry changes', () => {
       const line = new Feature(new LineString([[-10, 0], [0, 0]]));
       const snapInteraction = new Snap({
         features: new Collection([line]),
@@ -164,10 +163,10 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.coordinate).toEqual([10, 0]);
     });
 
-    it('handle geometry name changes', function() {
+    test('handle geometry name changes', () => {
       const line = new Feature({
         geometry: new LineString([[-10, 0], [0, 0]]),
         alt_geometry: new LineString([[-10, 0], [10, 0]])
@@ -187,7 +186,7 @@ describe('ol.interaction.Snap', function() {
         map: map
       };
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
+      expect(event.coordinate).toEqual([10, 0]);
     });
 
 

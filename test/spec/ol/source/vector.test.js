@@ -13,25 +13,25 @@ import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import {getUid} from '../../../../src/ol/util.js';
 
 
-describe('ol.source.Vector', function() {
+describe('ol.source.Vector', () => {
 
   let pointFeature;
   let infiniteExtent;
-  beforeEach(function() {
+  beforeEach(() => {
     pointFeature = new Feature(new Point([0, 0]));
     infiniteExtent = [-Infinity, -Infinity, Infinity, Infinity];
   });
 
-  describe('when empty', function() {
+  describe('when empty', () => {
 
     let vectorSource;
-    beforeEach(function() {
+    beforeEach(() => {
       vectorSource = new VectorSource();
     });
 
-    describe('#forEachFeatureInExtent', function() {
+    describe('#forEachFeatureInExtent', () => {
 
-      it('does not call the callback', function() {
+      test('does not call the callback', () => {
         const f = sinon.spy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
         expect(f).not.to.be.called();
@@ -39,42 +39,42 @@ describe('ol.source.Vector', function() {
 
     });
 
-    describe('#getFeaturesInExtent', function() {
+    describe('#getFeaturesInExtent', () => {
 
-      it('returns an empty array', function() {
+      test('returns an empty array', () => {
         const features = vectorSource.getFeaturesInExtent(infiniteExtent);
-        expect(features).to.be.an(Array);
-        expect(features).to.be.empty();
+        expect(features).toBeInstanceOf(Array);
+        expect(features).toHaveLength(0);
       });
 
     });
 
-    describe('#isEmpty', function() {
+    describe('#isEmpty', () => {
 
-      it('returns true', function() {
-        expect(vectorSource.isEmpty()).to.be(true);
+      test('returns true', () => {
+        expect(vectorSource.isEmpty()).toBe(true);
       });
 
     });
 
-    describe('#addFeature', function() {
+    describe('#addFeature', () => {
 
-      it('can add a single point feature', function() {
+      test('can add a single point feature', () => {
         vectorSource.addFeature(pointFeature);
         const features = vectorSource.getFeaturesInExtent(infiniteExtent);
-        expect(features).to.be.an(Array);
-        expect(features).to.have.length(1);
-        expect(features[0]).to.be(pointFeature);
+        expect(features).toBeInstanceOf(Array);
+        expect(features).toHaveLength(1);
+        expect(features[0]).toBe(pointFeature);
       });
 
-      it('fires a change event', function() {
+      test('fires a change event', () => {
         const listener = sinon.spy();
         listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
         expect(listener).to.be.called();
       });
 
-      it('adds same id features only once', function() {
+      test('adds same id features only once', () => {
         const source = new VectorSource();
         const feature1 = new Feature();
         feature1.setId('1');
@@ -82,47 +82,47 @@ describe('ol.source.Vector', function() {
         feature2.setId('1');
         source.addFeature(feature1);
         source.addFeature(feature2);
-        expect(source.getFeatures().length).to.be(1);
+        expect(source.getFeatures().length).toBe(1);
       });
 
     });
 
-    describe('#hasFeature', function() {
+    describe('#hasFeature', () => {
 
-      it('returns true for added feature without id', function() {
+      test('returns true for added feature without id', () => {
         const feature = new Feature();
         vectorSource.addFeature(feature);
-        expect(vectorSource.hasFeature(feature)).to.be(true);
+        expect(vectorSource.hasFeature(feature)).toBe(true);
       });
 
-      it('returns true for added feature with id', function() {
+      test('returns true for added feature with id', () => {
         const feature = new Feature();
         feature.setId('1');
         vectorSource.addFeature(feature);
-        expect(vectorSource.hasFeature(feature)).to.be(true);
+        expect(vectorSource.hasFeature(feature)).toBe(true);
       });
 
-      it('return false for removed feature', function() {
+      test('return false for removed feature', () => {
         const feature = new Feature();
         vectorSource.addFeature(feature);
         vectorSource.removeFeature(feature);
-        expect(vectorSource.hasFeature(feature)).to.be(false);
+        expect(vectorSource.hasFeature(feature)).toBe(false);
       });
 
-      it('returns false for non-added feature', function() {
+      test('returns false for non-added feature', () => {
         const feature = new Feature();
-        expect(vectorSource.hasFeature(feature)).to.be(false);
+        expect(vectorSource.hasFeature(feature)).toBe(false);
       });
 
     });
 
   });
 
-  describe('when populated with 3 features', function() {
+  describe('when populated with 3 features', () => {
 
     const features = [];
     let vectorSource;
-    beforeEach(function() {
+    beforeEach(() => {
       features.push(new Feature(new LineString([[0, 0], [10, 10]])));
       features.push(new Feature(new Point([0, 10])));
       features.push(new Feature(new Point([10, 5])));
@@ -131,28 +131,28 @@ describe('ol.source.Vector', function() {
       });
     });
 
-    describe('#getClosestFeatureToCoordinate', function() {
+    describe('#getClosestFeatureToCoordinate', () => {
 
-      it('returns the expected feature', function() {
+      test('returns the expected feature', () => {
         const feature = vectorSource.getClosestFeatureToCoordinate([1, 9]);
-        expect(feature).to.be(features[1]);
+        expect(feature).toBe(features[1]);
       });
 
-      it('returns the expected feature when a filter is used', function() {
+      test('returns the expected feature when a filter is used', () => {
         const feature = vectorSource.getClosestFeatureToCoordinate([1, 9], function(feature) {
           return feature.getGeometry().getType() == 'LineString';
         });
-        expect(feature).to.be(features[0]);
+        expect(feature).toBe(features[0]);
       });
 
     });
 
   });
 
-  describe('clear and refresh', function() {
+  describe('clear and refresh', () => {
 
     let map, source, spy;
-    beforeEach(function(done) {
+    beforeEach(done => {
       source = new VectorSource({
         format: new GeoJSON(),
         url: 'spec/ol/source/vectorsource/single-feature.json'
@@ -178,7 +178,7 @@ describe('ol.source.Vector', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       if (spy) {
         source.loader_.restore();
       }
@@ -186,35 +186,35 @@ describe('ol.source.Vector', function() {
       map.setTarget(null);
     });
 
-    it('#refresh() reloads from server', function(done) {
-      expect(source.getFeatures()).to.have.length(1);
+    test('#refresh() reloads from server', done => {
+      expect(source.getFeatures()).toHaveLength(1);
       map.once('rendercomplete', function() {
-        expect(source.getFeatures()).to.have.length(1);
-        expect(spy.callCount).to.be(1);
+        expect(source.getFeatures()).toHaveLength(1);
+        expect(spy.callCount).toBe(1);
         done();
       });
       source.refresh();
     });
 
-    it('#clear() removes all features from the source', function(done) {
-      expect(source.getFeatures()).to.have.length(1);
+    test('#clear() removes all features from the source', done => {
+      expect(source.getFeatures()).toHaveLength(1);
       map.once('rendercomplete', function() {
-        expect(source.getFeatures()).to.have.length(0);
-        expect(spy.callCount).to.be(0);
+        expect(source.getFeatures()).toHaveLength(0);
+        expect(spy.callCount).toBe(0);
         done();
       });
       source.clear();
     });
 
-    it('After #setUrl(), refresh() loads from the new url', function(done) {
+    test('After #setUrl(), refresh() loads from the new url', done => {
       source.loader_.restore();
       spy = undefined;
-      expect(source.getFeatures()).to.have.length(1);
+      expect(source.getFeatures()).toHaveLength(1);
       const oldCoordinates = source.getFeatures()[0].getGeometry().getCoordinates();
       map.on('rendercomplete', function() {
-        expect(source.getFeatures()).to.have.length(1);
+        expect(source.getFeatures()).toHaveLength(1);
         const newCoordinates = source.getFeatures()[0].getGeometry().getCoordinates();
-        expect(newCoordinates).to.not.eql(oldCoordinates);
+        expect(newCoordinates).not.toEqual(oldCoordinates);
         done();
       });
       source.setUrl('spec/ol/data/point.json');
@@ -222,11 +222,11 @@ describe('ol.source.Vector', function() {
     });
   });
 
-  describe('when populated with 10 random points and a null', function() {
+  describe('when populated with 10 random points and a null', () => {
 
     let features;
     let vectorSource;
-    beforeEach(function() {
+    beforeEach(() => {
       features = [];
       let i;
       for (i = 0; i < 10; ++i) {
@@ -239,94 +239,92 @@ describe('ol.source.Vector', function() {
       });
     });
 
-    describe('#clear', function() {
+    describe('#clear', () => {
 
-      it('removes all features using fast path', function() {
+      test('removes all features using fast path', () => {
         const removeFeatureSpy = sinon.spy();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
         const clearSourceSpy = sinon.spy();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear(true);
-        expect(vectorSource.getFeatures()).to.eql([]);
-        expect(vectorSource.isEmpty()).to.be(true);
+        expect(vectorSource.getFeatures()).toEqual([]);
+        expect(vectorSource.isEmpty()).toBe(true);
         expect(removeFeatureSpy).not.to.be.called();
-        expect(removeFeatureSpy.callCount).to.be(0);
+        expect(removeFeatureSpy.callCount).toBe(0);
         expect(clearSourceSpy).to.be.called();
-        expect(clearSourceSpy.callCount).to.be(1);
+        expect(clearSourceSpy.callCount).toBe(1);
       });
 
-      it('removes all features using slow path', function() {
+      test('removes all features using slow path', () => {
         const removeFeatureSpy = sinon.spy();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
         const clearSourceSpy = sinon.spy();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear();
-        expect(vectorSource.getFeatures()).to.eql([]);
-        expect(vectorSource.isEmpty()).to.be(true);
+        expect(vectorSource.getFeatures()).toEqual([]);
+        expect(vectorSource.isEmpty()).toBe(true);
         expect(removeFeatureSpy).to.be.called();
-        expect(removeFeatureSpy.callCount).to.be(features.length);
+        expect(removeFeatureSpy.callCount).toBe(features.length);
         expect(clearSourceSpy).to.be.called();
-        expect(clearSourceSpy.callCount).to.be(1);
+        expect(clearSourceSpy.callCount).toBe(1);
       });
 
     });
 
-    describe('#forEachFeatureInExtent', function() {
+    describe('#forEachFeatureInExtent', () => {
 
-      it('is called the expected number of times', function() {
+      test('is called the expected number of times', () => {
         const f = sinon.spy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
-        expect(f.callCount).to.be(10);
+        expect(f.callCount).toBe(10);
       });
 
-      it('allows breaking out', function() {
+      test('allows breaking out', () => {
         let count = 0;
         const result = vectorSource.forEachFeatureInExtent(infiniteExtent,
           function(f) {
             return ++count == 5;
           });
-        expect(result).to.be(true);
-        expect(count).to.be(5);
+        expect(result).toBe(true);
+        expect(count).toBe(5);
       });
 
     });
 
-    describe('#getFeaturesInExtent', function() {
+    describe('#getFeaturesInExtent', () => {
 
-      it('returns the expected number of features', function() {
-        expect(vectorSource.getFeaturesInExtent(infiniteExtent)).
-          to.have.length(10);
+      test('returns the expected number of features', () => {
+        expect(vectorSource.getFeaturesInExtent(infiniteExtent)).toHaveLength(10);
       });
 
     });
 
-    describe('#isEmpty', function() {
+    describe('#isEmpty', () => {
 
-      it('returns false', function() {
-        expect(vectorSource.isEmpty()).to.be(false);
+      test('returns false', () => {
+        expect(vectorSource.isEmpty()).toBe(false);
       });
 
     });
 
-    describe('#removeFeature', function() {
+    describe('#removeFeature', () => {
 
-      it('works as expected', function() {
+      test('works as expected', () => {
         let i;
         for (i = features.length - 1; i >= 0; --i) {
           vectorSource.removeFeature(features[i]);
-          expect(vectorSource.getFeaturesInExtent(infiniteExtent)).
-            have.length(i);
+          expect(vectorSource.getFeaturesInExtent(infiniteExtent)).toHaveLength(i);
         }
       });
 
-      it('fires a change event', function() {
+      test('fires a change event', () => {
         const listener = sinon.spy();
         listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
         expect(listener).to.be.called();
       });
 
-      it('fires a removefeature event', function() {
+      test('fires a removefeature event', () => {
         const listener = sinon.spy();
         listen(vectorSource, 'removefeature', listener);
         vectorSource.removeFeature(features[0]);
@@ -335,82 +333,72 @@ describe('ol.source.Vector', function() {
 
     });
 
-    describe('modifying a feature\'s geometry', function() {
+    describe('modifying a feature\'s geometry', () => {
 
-      it('keeps the R-Tree index up to date', function() {
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-          to.have.length(10);
+      test('keeps the R-Tree index up to date', () => {
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).toHaveLength(10);
         features[0].getGeometry().setCoordinates([100, 100]);
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-          to.have.length(9);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).toHaveLength(9);
         features[0].getGeometry().setCoordinates([0.5, 0.5]);
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-          to.have.length(10);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).toHaveLength(10);
       });
 
     });
 
-    describe('setting a features geometry', function() {
+    describe('setting a features geometry', () => {
 
-      it('keeps the R-Tree index up to date', function() {
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-          to.have.length(10);
+      test('keeps the R-Tree index up to date', () => {
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).toHaveLength(10);
         features[0].setGeometry(new Point([100, 100]));
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-          to.have.length(9);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).toHaveLength(9);
       });
 
     });
 
   });
 
-  describe('tracking changes to features', function() {
+  describe('tracking changes to features', () => {
 
     let vectorSource;
-    beforeEach(function() {
+    beforeEach(() => {
       vectorSource = new VectorSource();
     });
 
-    it('keeps its index up-to-date', function() {
+    test('keeps its index up-to-date', () => {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-        to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).toEqual([feature]);
       feature.getGeometry().setCoordinates([3, 3]);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-        to.be.empty();
-      expect(vectorSource.getFeaturesInExtent([2, 2, 4, 4])).
-        to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).toHaveLength(0);
+      expect(vectorSource.getFeaturesInExtent([2, 2, 4, 4])).toEqual([feature]);
     });
 
-    it('handles features with null geometries', function() {
+    test('handles features with null geometries', () => {
       const feature = new Feature(null);
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).toEqual([feature]);
     });
 
-    it('handles features with geometries changing from null', function() {
+    test('handles features with geometries changing from null', () => {
       const feature = new Feature(null);
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).toEqual([feature]);
       feature.setGeometry(new Point([1, 1]));
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-        to.eql([feature]);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).toEqual([feature]);
+      expect(vectorSource.getFeatures()).toEqual([feature]);
     });
 
-    it('handles features with geometries changing to null', function() {
+    test('handles features with geometries changing to null', () => {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-        to.eql([feature]);
+      expect(vectorSource.getFeatures()).toEqual([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).toEqual([feature]);
       feature.setGeometry(null);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).toHaveLength(0);
+      expect(vectorSource.getFeatures()).toEqual([feature]);
     });
 
-    it('fires a change event when setting a feature\'s property', function() {
+    test('fires a change event when setting a feature\'s property', () => {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       const listener = sinon.spy();
@@ -419,11 +407,11 @@ describe('ol.source.Vector', function() {
       expect(listener).to.be.called();
     });
 
-    it('fires a changefeature event when updating a feature', function() {
+    test('fires a changefeature event when updating a feature', () => {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       const listener = sinon.spy(function(event) {
-        expect(event.feature).to.be(feature);
+        expect(event.feature).toBe(feature);
       });
       vectorSource.on('changefeature', listener);
       feature.setStyle(null);
@@ -432,153 +420,153 @@ describe('ol.source.Vector', function() {
 
   });
 
-  describe('#getFeatureById()', function() {
+  describe('#getFeatureById()', () => {
     let source;
-    beforeEach(function() {
+    beforeEach(() => {
       source = new VectorSource();
     });
 
-    it('returns a feature by id', function() {
+    test('returns a feature by id', () => {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(feature);
     });
 
-    it('returns a feature by id (set after add)', function() {
+    test('returns a feature by id (set after add)', () => {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('foo')).toBe(null);
       feature.setId('foo');
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(feature);
     });
 
-    it('returns null when no feature is found', function() {
+    test('returns null when no feature is found', () => {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('bar')).to.be(null);
+      expect(source.getFeatureById('bar')).toBe(null);
     });
 
-    it('returns null after removing feature', function() {
+    test('returns null after removing feature', () => {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(feature);
       source.removeFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('foo')).toBe(null);
     });
 
-    it('returns null after unsetting id', function() {
+    test('returns null after unsetting id', () => {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(feature);
       feature.setId(undefined);
-      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('foo')).toBe(null);
     });
 
-    it('returns null after clear', function() {
+    test('returns null after clear', () => {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(feature);
       source.clear();
-      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('foo')).toBe(null);
     });
 
-    it('returns null when no features are indexed', function() {
-      expect(source.getFeatureById('foo')).to.be(null);
+    test('returns null when no features are indexed', () => {
+      expect(source.getFeatureById('foo')).toBe(null);
       source.addFeature(new Feature());
-      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('foo')).toBe(null);
     });
 
-    it('returns correct feature after add/remove/add', function() {
-      expect(source.getFeatureById('foo')).to.be(null);
+    test('returns correct feature after add/remove/add', () => {
+      expect(source.getFeatureById('foo')).toBe(null);
       const first = new Feature();
       first.setId('foo');
       source.addFeature(first);
-      expect(source.getFeatureById('foo')).to.be(first);
+      expect(source.getFeatureById('foo')).toBe(first);
       source.removeFeature(first);
-      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('foo')).toBe(null);
       const second = new Feature();
       second.setId('foo');
       source.addFeature(second);
-      expect(source.getFeatureById('foo')).to.be(second);
+      expect(source.getFeatureById('foo')).toBe(second);
     });
 
-    it('returns correct feature after add/change', function() {
-      expect(source.getFeatureById('foo')).to.be(null);
+    test('returns correct feature after add/change', () => {
+      expect(source.getFeatureById('foo')).toBe(null);
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(feature);
       feature.setId('bar');
-      expect(source.getFeatureById('foo')).to.be(null);
-      expect(source.getFeatureById('bar')).to.be(feature);
+      expect(source.getFeatureById('foo')).toBe(null);
+      expect(source.getFeatureById('bar')).toBe(feature);
     });
 
   });
 
-  describe('#getFeatureByUid()', function() {
+  describe('#getFeatureByUid()', () => {
     let source;
-    beforeEach(function() {
+    beforeEach(() => {
       source = new VectorSource();
     });
 
-    it('returns a feature with an id', function() {
+    test('returns a feature with an id', () => {
       const feature = new Feature();
       feature.setId('abcd');
       source.addFeature(feature);
-      expect(source.getFeatureByUid(getUid(feature))).to.be(feature);
+      expect(source.getFeatureByUid(getUid(feature))).toBe(feature);
     });
 
-    it('returns a feature without id', function() {
+    test('returns a feature without id', () => {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(source.getFeatureByUid(getUid(feature))).to.be(feature);
+      expect(source.getFeatureByUid(getUid(feature))).toBe(feature);
     });
 
-    it('returns null when no feature is found', function() {
+    test('returns null when no feature is found', () => {
       const feature = new Feature();
       feature.setId('abcd');
       source.addFeature(feature);
       const wrongId = 'abcd';
-      expect(source.getFeatureByUid(wrongId)).to.be(null);
+      expect(source.getFeatureByUid(wrongId)).toBe(null);
     });
 
-    it('returns null after removing feature', function() {
+    test('returns null after removing feature', () => {
       const feature = new Feature();
       feature.setId('abcd');
       source.addFeature(feature);
       const uid = getUid(feature);
-      expect(source.getFeatureByUid(uid)).to.be(feature);
+      expect(source.getFeatureByUid(uid)).toBe(feature);
       source.removeFeature(feature);
-      expect(source.getFeatureByUid(uid)).to.be(null);
+      expect(source.getFeatureByUid(uid)).toBe(null);
     });
 
-    it('returns null after clear', function() {
+    test('returns null after clear', () => {
       const feature = new Feature();
       feature.setId('abcd');
       source.addFeature(feature);
       const uid = getUid(feature);
-      expect(source.getFeatureByUid(uid)).to.be(feature);
+      expect(source.getFeatureByUid(uid)).toBe(feature);
       source.clear();
-      expect(source.getFeatureByUid(uid)).to.be(null);
+      expect(source.getFeatureByUid(uid)).toBe(null);
     });
 
-    it('returns null when no features are present', function() {
-      expect(source.getFeatureByUid('abcd')).to.be(null);
+    test('returns null when no features are present', () => {
+      expect(source.getFeatureByUid('abcd')).toBe(null);
     });
 
   });
 
-  describe('#loadFeatures', function() {
+  describe('#loadFeatures', () => {
 
-    describe('with the "bbox" strategy', function() {
+    describe('with the "bbox" strategy', () => {
 
 
-      it('requests the view extent plus render buffer', function(done) {
+      test('requests the view extent plus render buffer', done => {
         const center = [-97.6114, 38.8403];
         const source = new VectorSource({
           strategy: bboxStrategy,
@@ -613,22 +601,21 @@ describe('ol.source.Vector', function() {
 
     });
 
-    describe('with no loader and the "all" strategy', function() {
+    describe('with no loader and the "all" strategy', () => {
 
-      it('stores the infinity extent in the Rtree', function() {
+      test('stores the infinity extent in the Rtree', () => {
         const source = new VectorSource();
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
           getProjection('EPSG:3857'));
         const loadedExtents = source.loadedExtentsRtree_.getAll();
-        expect(loadedExtents).to.have.length(1);
-        expect(loadedExtents[0].extent).to.eql(
-          [-Infinity, -Infinity, Infinity, Infinity]);
+        expect(loadedExtents).toHaveLength(1);
+        expect(loadedExtents[0].extent).toEqual([-Infinity, -Infinity, Infinity, Infinity]);
       });
     });
 
-    describe('with setLoader', function() {
+    describe('with setLoader', () => {
 
-      it('it will change the loader function', function() {
+      test('it will change the loader function', () => {
         let count1 = 0;
         const loader1 = function(bbox, resolution, projection) {
           count1++;
@@ -644,17 +631,17 @@ describe('ol.source.Vector', function() {
         source.refresh();
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
           getProjection('EPSG:3857'));
-        expect(count1).to.eql(1);
-        expect(count2).to.eql(1);
+        expect(count1).toEqual(1);
+        expect(count2).toEqual(1);
       });
 
-      it('removes extents with #removeLoadedExtent()', function(done) {
+      test('removes extents with #removeLoadedExtent()', done => {
         const source = new VectorSource();
         source.setLoader(function(bbox, resolution, projection) {
           setTimeout(function() {
-            expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
+            expect(source.loadedExtentsRtree_.getAll()).toHaveLength(1);
             source.removeLoadedExtent(bbox);
-            expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+            expect(source.loadedExtentsRtree_.getAll()).toHaveLength(0);
             done();
           }, 0);
         });
@@ -664,24 +651,24 @@ describe('ol.source.Vector', function() {
 
   });
 
-  describe('the feature id index', function() {
+  describe('the feature id index', () => {
     let source;
-    beforeEach(function() {
+    beforeEach(() => {
       source = new VectorSource();
     });
 
-    it('ignores features with the same id', function() {
+    test('ignores features with the same id', () => {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       const dupe = new Feature();
       dupe.setId('foo');
       source.addFeature(dupe);
-      expect(source.getFeatures()).to.have.length(1);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      expect(source.getFeatures()).toHaveLength(1);
+      expect(source.getFeatureById('foo')).toBe(feature);
     });
 
-    it('allows changing feature and set the same id', function() {
+    test('allows changing feature and set the same id', () => {
       const foo = new Feature();
       foo.setId('foo');
       source.addFeature(foo);
@@ -689,148 +676,151 @@ describe('ol.source.Vector', function() {
       bar.setId('bar');
       source.addFeature(bar);
       bar.setId('foo');
-      expect(source.getFeatureById('foo')).to.be(bar);
+      expect(source.getFeatureById('foo')).toBe(bar);
     });
 
   });
 
-  describe('the undefined feature id index', function() {
+  describe('the undefined feature id index', () => {
     let source;
-    beforeEach(function() {
+    beforeEach(() => {
       source = new VectorSource();
     });
 
-    it('disallows adding the same feature twice', function() {
+    test('disallows adding the same feature twice', () => {
       const feature = new Feature();
       source.addFeature(feature);
       expect(function() {
         source.addFeature(feature);
-      }).to.throwException();
+      }).toThrow();
     });
   });
 
-  describe('with useSpatialIndex set to false', function() {
+  describe('with useSpatialIndex set to false', () => {
     let source;
-    beforeEach(function() {
+    beforeEach(() => {
       source = new VectorSource({useSpatialIndex: false});
     });
 
-    it('returns a features collection', function() {
-      expect(source.getFeaturesCollection()).to.be.a(Collection);
+    test('returns a features collection', () => {
+      expect(source.getFeaturesCollection()).toBeInstanceOf(Collection);
     });
 
-    it('#forEachFeatureInExtent loops through all features', function() {
+    test('#forEachFeatureInExtent loops through all features', () => {
       source.addFeatures([new Feature(), new Feature()]);
       const spy = sinon.spy();
       source.forEachFeatureInExtent([0, 0, 0, 0], spy);
-      expect(spy.callCount).to.be(2);
+      expect(spy.callCount).toBe(2);
     });
 
   });
 
-  describe('with a collection of features', function() {
+  describe('with a collection of features', () => {
     let collection, source;
-    beforeEach(function() {
+    beforeEach(() => {
       source = new VectorSource({
         useSpatialIndex: false
       });
       collection = source.getFeaturesCollection();
     });
 
-    it('creates a features collection', function() {
-      expect(source.getFeaturesCollection()).to.not.be(null);
+    test('creates a features collection', () => {
+      expect(source.getFeaturesCollection()).not.toBe(null);
     });
 
-    it('adding/removing features keeps the collection in sync', function() {
+    test('adding/removing features keeps the collection in sync', () => {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(collection.getLength()).to.be(1);
+      expect(collection.getLength()).toBe(1);
       source.removeFeature(feature);
-      expect(collection.getLength()).to.be(0);
+      expect(collection.getLength()).toBe(0);
     });
 
-    it('#clear() features keeps the collection in sync', function() {
+    test('#clear() features keeps the collection in sync', () => {
       const feature = new Feature();
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      expect(collection.getLength()).toBe(1);
       source.clear();
-      expect(collection.getLength()).to.be(0);
+      expect(collection.getLength()).toBe(0);
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      expect(collection.getLength()).toBe(1);
       source.clear(true);
-      expect(collection.getLength()).to.be(0);
+      expect(collection.getLength()).toBe(0);
     });
 
-    it('keeps the source\'s features in sync with the collection', function() {
+    test('keeps the source\'s features in sync with the collection', () => {
       const feature = new Feature();
       collection.push(feature);
-      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures().length).toBe(1);
       collection.remove(feature);
-      expect(source.getFeatures().length).to.be(0);
+      expect(source.getFeatures().length).toBe(0);
       collection.extend([feature]);
-      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures().length).toBe(1);
       collection.clear();
-      expect(source.getFeatures().length).to.be(0);
+      expect(source.getFeatures().length).toBe(0);
     });
 
-    it('prevents adding two features with a duplicate id in the collection', function() {
-      source = new VectorSource({
-        features: new Collection()
-      });
-      const feature1 = new Feature();
-      feature1.setId('1');
-      const feature2 = new Feature();
-      feature2.setId('1');
-      const collection = source.getFeaturesCollection();
-      collection.push(feature1);
-      collection.push(feature2);
-      expect(collection.getLength()).to.be(1);
-    });
+    test(
+      'prevents adding two features with a duplicate id in the collection',
+      () => {
+        source = new VectorSource({
+          features: new Collection()
+        });
+        const feature1 = new Feature();
+        feature1.setId('1');
+        const feature2 = new Feature();
+        feature2.setId('1');
+        const collection = source.getFeaturesCollection();
+        collection.push(feature1);
+        collection.push(feature2);
+        expect(collection.getLength()).toBe(1);
+      }
+    );
   });
 
-  describe('with a collection of features plus spatial index', function() {
+  describe('with a collection of features plus spatial index', () => {
     let collection, source;
-    beforeEach(function() {
+    beforeEach(() => {
       collection = new Collection();
       source = new VectorSource({
         features: collection
       });
     });
 
-    it('#getFeaturesCollection returns the configured collection', function() {
-      expect(source.getFeaturesCollection()).to.equal(collection);
+    test('#getFeaturesCollection returns the configured collection', () => {
+      expect(source.getFeaturesCollection()).toBe(collection);
     });
 
-    it('adding/removing features keeps the collection in sync', function() {
+    test('adding/removing features keeps the collection in sync', () => {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(collection.getLength()).to.be(1);
+      expect(collection.getLength()).toBe(1);
       source.removeFeature(feature);
-      expect(collection.getLength()).to.be(0);
+      expect(collection.getLength()).toBe(0);
     });
 
-    it('#clear() features keeps the collection in sync', function() {
+    test('#clear() features keeps the collection in sync', () => {
       const feature = new Feature();
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      expect(collection.getLength()).toBe(1);
       source.clear();
-      expect(collection.getLength()).to.be(0);
+      expect(collection.getLength()).toBe(0);
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      expect(collection.getLength()).toBe(1);
       source.clear(true);
-      expect(collection.getLength()).to.be(0);
+      expect(collection.getLength()).toBe(0);
     });
 
-    it('keeps the source\'s features in sync with the collection', function() {
+    test('keeps the source\'s features in sync with the collection', () => {
       const feature = new Feature();
       collection.push(feature);
-      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures().length).toBe(1);
       collection.remove(feature);
-      expect(source.getFeatures().length).to.be(0);
+      expect(source.getFeatures().length).toBe(0);
       collection.extend([feature]);
-      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures().length).toBe(1);
       collection.clear();
-      expect(source.getFeatures().length).to.be(0);
+      expect(source.getFeatures().length).toBe(0);
     });
 
   });

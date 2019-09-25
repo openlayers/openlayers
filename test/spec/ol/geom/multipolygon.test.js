@@ -2,129 +2,123 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 
 
-describe('ol.geom.MultiPolygon', function() {
+describe('ol.geom.MultiPolygon', () => {
 
-  it('cannot be constructed with a null geometry', function() {
+  test('cannot be constructed with a null geometry', () => {
     expect(function() {
       return new MultiPolygon(null);
-    }).to.throwException();
+    }).toThrow();
   });
 
-  describe('with a null MultiPolygon', function() {
+  describe('with a null MultiPolygon', () => {
 
-    it('can append polygons', function() {
+    test('can append polygons', () => {
       const multiPolygon = new MultiPolygon([
         new Polygon([[[0, 0], [0, 2], [1, 1], [2, 0]]])]);
-      expect(multiPolygon.getCoordinates()).to.eql(
-        [[[[0, 0], [0, 2], [1, 1], [2, 0]]]]);
+      expect(multiPolygon.getCoordinates()).toEqual([[[[0, 0], [0, 2], [1, 1], [2, 0]]]]);
       multiPolygon.appendPolygon(
         new Polygon([[[3, 0], [4, 1], [5, 2], [5, 0]]]));
-      expect(multiPolygon.getCoordinates()).to.eql([
+      expect(multiPolygon.getCoordinates()).toEqual([
         [[[0, 0], [0, 2], [1, 1], [2, 0]]],
         [[[3, 0], [4, 1], [5, 2], [5, 0]]]
       ]);
-      expect(multiPolygon.getPolygons().length).to.eql(2);
+      expect(multiPolygon.getPolygons().length).toEqual(2);
     });
 
   });
 
-  describe('with an empty MultiPolygon', function() {
+  describe('with an empty MultiPolygon', () => {
 
     let multiPolygon;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPolygon = new MultiPolygon([]);
     });
 
-    it('can append polygons', function() {
+    test('can append polygons', () => {
       multiPolygon.appendPolygon(
         new Polygon([[[0, 0], [0, 2], [1, 1], [2, 0]]]));
-      expect(multiPolygon.getCoordinates()).to.eql(
-        [[[[0, 0], [0, 2], [1, 1], [2, 0]]]]);
+      expect(multiPolygon.getCoordinates()).toEqual([[[[0, 0], [0, 2], [1, 1], [2, 0]]]]);
       multiPolygon.appendPolygon(
         new Polygon([[[3, 0], [4, 1], [5, 2], [5, 0]]]));
-      expect(multiPolygon.getCoordinates()).to.eql([
+      expect(multiPolygon.getCoordinates()).toEqual([
         [[[0, 0], [0, 2], [1, 1], [2, 0]]],
         [[[3, 0], [4, 1], [5, 2], [5, 0]]]
       ]);
-      expect(multiPolygon.getPolygons().length).to.eql(2);
+      expect(multiPolygon.getPolygons().length).toEqual(2);
     });
 
   });
 
-  describe('#scale()', function() {
+  describe('#scale()', () => {
 
-    it('scales a multi-polygon', function() {
+    test('scales a multi-polygon', () => {
       const geom = new MultiPolygon([[
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[[[-10, -20], [10, -20], [10, 20], [-10, 20], [-10, -20]]]]);
+      expect(coordinates).toEqual([[[[-10, -20], [10, -20], [10, 20], [-10, 20], [-10, -20]]]]);
     });
 
-    it('accepts sx and sy', function() {
+    test('accepts sx and sy', () => {
       const geom = new MultiPolygon([[
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[[[-2, -6], [2, -6], [2, 6], [-2, 6], [-2, -6]]]]);
+      expect(coordinates).toEqual([[[[-2, -6], [2, -6], [2, 6], [-2, 6], [-2, -6]]]]);
     });
 
-    it('accepts an anchor', function() {
+    test('accepts an anchor', () => {
       const geom = new MultiPolygon([[
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]]);
       geom.scale(3, 2, [-1, -2]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[[[-1, -2], [5, -2], [5, 6], [-1, 6], [-1, -2]]]]);
+      expect(coordinates).toEqual([[[[-1, -2], [5, -2], [5, 6], [-1, 6], [-1, -2]]]]);
     });
 
   });
 
-  describe('with a simple MultiPolygon', function() {
+  describe('with a simple MultiPolygon', () => {
 
     let multiPolygon;
-    beforeEach(function() {
+    beforeEach(() => {
       multiPolygon = new MultiPolygon([
         [[[0, 0], [0, 2], [1, 1], [2, 0]]],
         [[[3, 0], [4, 1], [5, 2], [5, 0]]]
       ]);
     });
 
-    it('can return individual polygons', function() {
+    test('can return individual polygons', () => {
       const polygon0 = multiPolygon.getPolygon(0);
-      expect(polygon0).to.be.an(Polygon);
-      expect(polygon0.getCoordinates()).to.eql(
-        [[[0, 0], [0, 2], [1, 1], [2, 0]]]);
+      expect(polygon0).toBeInstanceOf(Polygon);
+      expect(polygon0.getCoordinates()).toEqual([[[0, 0], [0, 2], [1, 1], [2, 0]]]);
       const polygon1 = multiPolygon.getPolygon(1);
-      expect(polygon1).to.be.an(Polygon);
-      expect(polygon1.getCoordinates()).to.eql(
-        [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
+      expect(polygon1).toBeInstanceOf(Polygon);
+      expect(polygon1.getCoordinates()).toEqual([[[3, 0], [4, 1], [5, 2], [5, 0]]]);
     });
 
-    it('can return all polygons', function() {
+    test('can return all polygons', () => {
       const polygons = multiPolygon.getPolygons();
-      expect(polygons).to.be.an(Array);
-      expect(polygons).to.have.length(2);
-      expect(polygons[0]).to.be.an(Polygon);
-      expect(polygons[0].getCoordinates()).to.eql(
-        [[[0, 0], [0, 2], [1, 1], [2, 0]]]);
-      expect(polygons[1]).to.be.an(Polygon);
-      expect(polygons[1].getCoordinates()).to.eql(
-        [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
+      expect(polygons).toBeInstanceOf(Array);
+      expect(polygons).toHaveLength(2);
+      expect(polygons[0]).toBeInstanceOf(Polygon);
+      expect(polygons[0].getCoordinates()).toEqual([[[0, 0], [0, 2], [1, 1], [2, 0]]]);
+      expect(polygons[1]).toBeInstanceOf(Polygon);
+      expect(polygons[1].getCoordinates()).toEqual([[[3, 0], [4, 1], [5, 2], [5, 0]]]);
     });
 
-    describe('#clone()', function() {
+    describe('#clone()', () => {
 
-      it('has the expected endss_', function() {
+      test('has the expected endss_', () => {
         const clone = multiPolygon.clone();
-        expect(multiPolygon.endss_).to.eql(clone.endss_);
+        expect(multiPolygon.endss_).toEqual(clone.endss_);
       });
 
     });
 
-    describe('#getCoordinates()', function() {
+    describe('#getCoordinates()', () => {
 
       const cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
       const cw2 = [[-140, -60], [-140, 60], [140, 60], [140, -60], [-140, -60]];
@@ -133,83 +127,83 @@ describe('ol.geom.MultiPolygon', function() {
       const right = new MultiPolygon([[ccw, cw], [ccw2, cw2]]);
       const left = new MultiPolygon([[cw, ccw], [cw2, ccw2]]);
 
-      it('returns coordinates as they were constructed', function() {
-        expect(right.getCoordinates()).to.eql([[ccw, cw], [ccw2, cw2]]);
-        expect(left.getCoordinates()).to.eql([[cw, ccw], [cw2, ccw2]]);
+      test('returns coordinates as they were constructed', () => {
+        expect(right.getCoordinates()).toEqual([[ccw, cw], [ccw2, cw2]]);
+        expect(left.getCoordinates()).toEqual([[cw, ccw], [cw2, ccw2]]);
       });
 
-      it('can return coordinates with right-hand orientation', function() {
-        expect(right.getCoordinates(true)).to.eql([[ccw, cw], [ccw2, cw2]]);
-        expect(left.getCoordinates(true)).to.eql([[ccw, cw], [ccw2, cw2]]);
+      test('can return coordinates with right-hand orientation', () => {
+        expect(right.getCoordinates(true)).toEqual([[ccw, cw], [ccw2, cw2]]);
+        expect(left.getCoordinates(true)).toEqual([[ccw, cw], [ccw2, cw2]]);
       });
 
-      it('can return coordinates with left-hand orientation', function() {
-        expect(right.getCoordinates(false)).to.eql([[cw, ccw], [cw2, ccw2]]);
-        expect(left.getCoordinates(false)).to.eql([[cw, ccw], [cw2, ccw2]]);
-      });
-
-    });
-
-    describe('#getExtent()', function() {
-
-      it('returns expected result', function() {
-        expect(multiPolygon.getExtent()).to.eql([0, 0, 5, 2]);
+      test('can return coordinates with left-hand orientation', () => {
+        expect(right.getCoordinates(false)).toEqual([[cw, ccw], [cw2, ccw2]]);
+        expect(left.getCoordinates(false)).toEqual([[cw, ccw], [cw2, ccw2]]);
       });
 
     });
 
-    describe('#getSimplifiedGeometry', function() {
+    describe('#getExtent()', () => {
 
-      it('returns the expected result', function() {
+      test('returns expected result', () => {
+        expect(multiPolygon.getExtent()).toEqual([0, 0, 5, 2]);
+      });
+
+    });
+
+    describe('#getSimplifiedGeometry', () => {
+
+      test('returns the expected result', () => {
         const simplifiedGeometry = multiPolygon.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry).to.be.an(MultiPolygon);
-        expect(simplifiedGeometry.getCoordinates()).to.eql([
+        expect(simplifiedGeometry).toBeInstanceOf(MultiPolygon);
+        expect(simplifiedGeometry.getCoordinates()).toEqual([
           [[[0, 0], [0, 2], [2, 0]]],
           [[[3, 0], [5, 2], [5, 0]]]
         ]);
       });
     });
 
-    describe('#intersectsExtent()', function() {
+    describe('#intersectsExtent()', () => {
 
-      it('returns true for extent of of each polygon', function() {
+      test('returns true for extent of of each polygon', () => {
         const polygons = multiPolygon.getPolygons();
         for (let i = 0; i < polygons.length; i++) {
           expect(multiPolygon.intersectsExtent(
-            polygons[i].getExtent())).to.be(true);
+            polygons[i].getExtent())).toBe(true);
         }
       });
 
-      it('returns false for non-matching extent within own extent', function() {
-        expect(multiPolygon.intersectsExtent([2.1, 0, 2.9, 2])).to.be(false);
+      test('returns false for non-matching extent within own extent', () => {
+        expect(multiPolygon.intersectsExtent([2.1, 0, 2.9, 2])).toBe(false);
       });
 
     });
 
   });
 
-  describe('#getArea', function() {
+  describe('#getArea', () => {
 
-    it('works with a clockwise and a counterclockwise Polygon', function() {
+    test('works with a clockwise and a counterclockwise Polygon', () => {
       const multiPolygon = new MultiPolygon([
         [[[1, 3], [1, 2], [0, 2], [1, 3]]], // clockwise polygon with area 0.5
         [[[2, 1], [2, 0.5], [3, 1], [2, 1]]] // counterclockwise polygon with area 0.25
       ]);
-      expect(multiPolygon.getArea()).to.be(0.75);
+      expect(multiPolygon.getArea()).toBe(0.75);
     });
   });
 
-  describe('#getInteriorPoints', function() {
+  describe('#getInteriorPoints', () => {
 
-    it('returns XYM multipoint with intersection width as M', function() {
+    test('returns XYM multipoint with intersection width as M', () => {
       const geom = new MultiPolygon([
         [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
         [[[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]]
       ]);
       const interiorPoints = geom.getInteriorPoints();
-      expect(interiorPoints.getType()).to.be('MultiPoint');
-      expect(interiorPoints.layout).to.be('XYM');
-      expect(interiorPoints.getCoordinates()).to.eql([[0.5, 0.5, 1], [1.5, 1.5, 1]]);
+      expect(interiorPoints.getType()).toBe('MultiPoint');
+      expect(interiorPoints.layout).toBe('XYM');
+      expect(interiorPoints.getCoordinates()).toEqual([[0.5, 0.5, 1], [1.5, 1.5, 1]]);
     });
   });
 

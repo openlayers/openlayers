@@ -2,27 +2,27 @@ import {linearRingIsClockwise, linearRingsAreOriented,
   linearRingssAreOriented, orientLinearRings, orientLinearRingsArray} from '../../../../../src/ol/geom/flat/orient.js';
 
 
-describe('ol.geom.flat.orient', function() {
+describe('ol.geom.flat.orient', () => {
 
-  describe('ol.geom.flat.orient.linearRingIsClockwise', function() {
+  describe('ol.geom.flat.orient.linearRingIsClockwise', () => {
 
-    it('identifies clockwise rings', function() {
+    test('identifies clockwise rings', () => {
       const flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0];
       const isClockwise = linearRingIsClockwise(
         flatCoordinates, 0, flatCoordinates.length, 2);
-      expect(isClockwise).to.be(true);
+      expect(isClockwise).toBe(true);
     });
 
-    it('identifies anti-clockwise rings', function() {
+    test('identifies anti-clockwise rings', () => {
       const flatCoordinates = [2, 2, 3, 2, 3, 3, 2, 3];
       const isClockwise = linearRingIsClockwise(
         flatCoordinates, 0, flatCoordinates.length, 2);
-      expect(isClockwise).to.be(false);
+      expect(isClockwise).toBe(false);
     });
 
   });
 
-  describe('ol.geom.flat.orient.linearRingsAreOriented', function() {
+  describe('ol.geom.flat.orient.linearRingsAreOriented', () => {
     const oriented = linearRingsAreOriented;
 
     const rightCoords = [
@@ -37,19 +37,19 @@ describe('ol.geom.flat.orient', function() {
 
     const ends = [10, 20];
 
-    it('checks for left-hand orientation by default', function() {
-      expect(oriented(rightCoords, 0, ends, 2)).to.be(false);
-      expect(oriented(leftCoords, 0, ends, 2)).to.be(true);
+    test('checks for left-hand orientation by default', () => {
+      expect(oriented(rightCoords, 0, ends, 2)).toBe(false);
+      expect(oriented(leftCoords, 0, ends, 2)).toBe(true);
     });
 
-    it('can check for right-hand orientation', function() {
-      expect(oriented(rightCoords, 0, ends, 2, true)).to.be(true);
-      expect(oriented(leftCoords, 0, ends, 2, true)).to.be(false);
+    test('can check for right-hand orientation', () => {
+      expect(oriented(rightCoords, 0, ends, 2, true)).toBe(true);
+      expect(oriented(leftCoords, 0, ends, 2, true)).toBe(false);
     });
 
   });
 
-  describe('ol.geom.flat.orient.linearRingssAreOriented', function() {
+  describe('ol.geom.flat.orient.linearRingssAreOriented', () => {
     const oriented = linearRingssAreOriented;
 
     const rightCoords = [
@@ -68,19 +68,19 @@ describe('ol.geom.flat.orient', function() {
 
     const ends = [[10, 20], [30, 40]];
 
-    it('checks for left-hand orientation by default', function() {
-      expect(oriented(rightCoords, 0, ends, 2)).to.be(false);
-      expect(oriented(leftCoords, 0, ends, 2)).to.be(true);
+    test('checks for left-hand orientation by default', () => {
+      expect(oriented(rightCoords, 0, ends, 2)).toBe(false);
+      expect(oriented(leftCoords, 0, ends, 2)).toBe(true);
     });
 
-    it('can check for right-hand orientation', function() {
-      expect(oriented(rightCoords, 0, ends, 2, true)).to.be(true);
-      expect(oriented(leftCoords, 0, ends, 2, true)).to.be(false);
+    test('can check for right-hand orientation', () => {
+      expect(oriented(rightCoords, 0, ends, 2, true)).toBe(true);
+      expect(oriented(leftCoords, 0, ends, 2, true)).toBe(false);
     });
 
   });
 
-  describe('ol.geom.flat.orient.orientLinearRings', function() {
+  describe('ol.geom.flat.orient.orientLinearRings', () => {
     const orient = orientLinearRings;
 
     const rightCoords = [
@@ -95,29 +95,29 @@ describe('ol.geom.flat.orient', function() {
 
     const ends = [10, 20];
 
-    it('orients using the left-hand rule by default', function() {
+    test('orients using the left-hand rule by default', () => {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2);
-      expect(rightClone).to.eql(leftCoords);
+      expect(rightClone).toEqual(leftCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2);
-      expect(leftClone).to.eql(leftCoords);
+      expect(leftClone).toEqual(leftCoords);
     });
 
-    it('can orient using the right-hand rule', function() {
+    test('can orient using the right-hand rule', () => {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2, true);
-      expect(rightClone).to.eql(rightCoords);
+      expect(rightClone).toEqual(rightCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2, true);
-      expect(leftClone).to.eql(rightCoords);
+      expect(leftClone).toEqual(rightCoords);
     });
 
   });
 
-  describe('ol.geom.flat.orient.orientLinearRingsArray', function() {
+  describe('ol.geom.flat.orient.orientLinearRingsArray', () => {
     const orient = orientLinearRingsArray;
 
     const rightCoords = [
@@ -136,24 +136,24 @@ describe('ol.geom.flat.orient', function() {
 
     const ends = [[10, 20], [30, 40]];
 
-    it('orients using the left-hand rule by default', function() {
+    test('orients using the left-hand rule by default', () => {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2);
-      expect(rightClone).to.eql(leftCoords);
+      expect(rightClone).toEqual(leftCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2);
-      expect(leftClone).to.eql(leftCoords);
+      expect(leftClone).toEqual(leftCoords);
     });
 
-    it('can orient using the right-hand rule', function() {
+    test('can orient using the right-hand rule', () => {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2, true);
-      expect(rightClone).to.eql(rightCoords);
+      expect(rightClone).toEqual(rightCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2, true);
-      expect(leftClone).to.eql(rightCoords);
+      expect(leftClone).toEqual(rightCoords);
     });
 
   });

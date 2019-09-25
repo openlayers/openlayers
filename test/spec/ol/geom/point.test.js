@@ -1,202 +1,202 @@
 import Point from '../../../../src/ol/geom/Point.js';
 
 
-describe('ol.geom.Point', function() {
+describe('ol.geom.Point', () => {
 
-  it('cannot be constructed with a null geometry', function() {
+  test('cannot be constructed with a null geometry', () => {
     expect(function() {
       return new Point(null);
-    }).to.throwException();
+    }).toThrow();
   });
 
-  describe('construct with 2D coordinates', function() {
+  describe('construct with 2D coordinates', () => {
 
     let point;
-    beforeEach(function() {
+    beforeEach(() => {
       point = new Point([1, 2]);
     });
 
-    it('has the expected layout', function() {
-      expect(point.getLayout()).to.be('XY');
+    test('has the expected layout', () => {
+      expect(point.getLayout()).toBe('XY');
     });
 
-    it('has the expected coordinates', function() {
-      expect(point.getCoordinates()).to.eql([1, 2]);
+    test('has the expected coordinates', () => {
+      expect(point.getCoordinates()).toEqual([1, 2]);
     });
 
-    it('has the expected extent', function() {
-      expect(point.getExtent()).to.eql([1, 2, 1, 2]);
+    test('has the expected extent', () => {
+      expect(point.getExtent()).toEqual([1, 2, 1, 2]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(point.getFlatCoordinates()).to.eql([1, 2]);
+    test('has the expected flat coordinates', () => {
+      expect(point.getFlatCoordinates()).toEqual([1, 2]);
     });
 
-    it('has stride the expected stride', function() {
-      expect(point.getStride()).to.be(2);
+    test('has stride the expected stride', () => {
+      expect(point.getStride()).toBe(2);
     });
 
-    it('does not intersect non matching extent', function() {
-      expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
+    test('does not intersect non matching extent', () => {
+      expect(point.intersectsExtent([0, 0, 10, 0.5])).toBe(false);
     });
 
-    it('does intersect it\'s extent', function() {
-      expect(point.intersectsExtent(point.getExtent())).to.be(true);
+    test('does intersect it\'s extent', () => {
+      expect(point.intersectsExtent(point.getExtent())).toBe(true);
     });
 
   });
 
-  describe('construct with 3D coordinates and layout XYM', function() {
+  describe('construct with 3D coordinates and layout XYM', () => {
 
     let point;
-    beforeEach(function() {
+    beforeEach(() => {
       point = new Point([1, 2, 3], 'XYM');
     });
 
-    it('has the expected layout', function() {
-      expect(point.getLayout()).to.be('XYM');
+    test('has the expected layout', () => {
+      expect(point.getLayout()).toBe('XYM');
     });
 
-    it('has the expected coordinates', function() {
-      expect(point.getCoordinates()).to.eql([1, 2, 3]);
+    test('has the expected coordinates', () => {
+      expect(point.getCoordinates()).toEqual([1, 2, 3]);
     });
 
-    it('has the expected extent', function() {
-      expect(point.getExtent()).to.eql([1, 2, 1, 2]);
+    test('has the expected extent', () => {
+      expect(point.getExtent()).toEqual([1, 2, 1, 2]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(point.getFlatCoordinates()).to.eql([1, 2, 3]);
+    test('has the expected flat coordinates', () => {
+      expect(point.getFlatCoordinates()).toEqual([1, 2, 3]);
     });
 
-    it('has the expected stride', function() {
-      expect(point.getStride()).to.be(3);
+    test('has the expected stride', () => {
+      expect(point.getStride()).toBe(3);
     });
 
-    it('does not intersect non matching extent', function() {
-      expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
+    test('does not intersect non matching extent', () => {
+      expect(point.intersectsExtent([0, 0, 10, 0.5])).toBe(false);
     });
 
-    it('does intersect it\'s extent', function() {
-      expect(point.intersectsExtent(point.getExtent())).to.be(true);
+    test('does intersect it\'s extent', () => {
+      expect(point.intersectsExtent(point.getExtent())).toBe(true);
     });
 
   });
 
-  describe('construct with 4D coordinates', function() {
+  describe('construct with 4D coordinates', () => {
 
     let point;
-    beforeEach(function() {
+    beforeEach(() => {
       point = new Point([1, 2, 3, 4]);
     });
 
-    it('has the expected layout', function() {
-      expect(point.getLayout()).to.be('XYZM');
+    test('has the expected layout', () => {
+      expect(point.getLayout()).toBe('XYZM');
     });
 
-    it('has the expected coordinates', function() {
-      expect(point.getCoordinates()).to.eql([1, 2, 3, 4]);
+    test('has the expected coordinates', () => {
+      expect(point.getCoordinates()).toEqual([1, 2, 3, 4]);
     });
 
-    it('has the expected extent', function() {
-      expect(point.getExtent()).to.eql([1, 2, 1, 2]);
+    test('has the expected extent', () => {
+      expect(point.getExtent()).toEqual([1, 2, 1, 2]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(point.getFlatCoordinates()).to.eql([1, 2, 3, 4]);
+    test('has the expected flat coordinates', () => {
+      expect(point.getFlatCoordinates()).toEqual([1, 2, 3, 4]);
     });
 
-    it('has the expected stride', function() {
-      expect(point.getStride()).to.be(4);
+    test('has the expected stride', () => {
+      expect(point.getStride()).toBe(4);
     });
 
-    it('does not intersect non matching extent', function() {
-      expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
+    test('does not intersect non matching extent', () => {
+      expect(point.intersectsExtent([0, 0, 10, 0.5])).toBe(false);
     });
 
-    it('does intersect it\'s extent', function() {
-      expect(point.intersectsExtent(point.getExtent())).to.be(true);
+    test('does intersect it\'s extent', () => {
+      expect(point.intersectsExtent(point.getExtent())).toBe(true);
     });
 
-    describe('#getClosestPoint', function() {
+    describe('#getClosestPoint', () => {
 
-      it('preseves extra dimensions', function() {
+      test('preseves extra dimensions', () => {
         const closestPoint = point.getClosestPoint([0, 0]);
-        expect(closestPoint).to.eql([1, 2, 3, 4]);
+        expect(closestPoint).toEqual([1, 2, 3, 4]);
       });
 
     });
 
   });
 
-  describe('#scale()', function() {
+  describe('#scale()', () => {
 
-    it('scales a point', function() {
+    test('scales a point', () => {
       const geom = new Point([1, 2]);
       geom.scale(10e6);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([1, 2]);
+      expect(coordinates).toEqual([1, 2]);
     });
 
-    it('accepts sx and sy', function() {
+    test('accepts sx and sy', () => {
       const geom = new Point([1, 2]);
       geom.scale(1e6, -42);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([1, 2]);
+      expect(coordinates).toEqual([1, 2]);
     });
 
-    it('accepts an anchor', function() {
+    test('accepts an anchor', () => {
       const geom = new Point([1, 2]);
       geom.scale(10, 15, [0, 0]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([10, 30]);
+      expect(coordinates).toEqual([10, 30]);
     });
 
   });
 
-  describe('#applyTransform()', function() {
+  describe('#applyTransform()', () => {
 
     let point, transform;
-    beforeEach(function() {
+    beforeEach(() => {
       point = new Point([1, 2]);
       transform = sinon.spy();
     });
 
-    it('calls a transform function', function() {
+    test('calls a transform function', () => {
       point.applyTransform(transform);
-      expect(transform.calledOnce).to.be(true);
+      expect(transform.calledOnce).toBe(true);
       const args = transform.firstCall.args;
-      expect(args).to.have.length(3);
+      expect(args).toHaveLength(3);
 
-      expect(args[0]).to.be(point.getFlatCoordinates()); // input coords
-      expect(args[1]).to.be(point.getFlatCoordinates()); // output coords
-      expect(args[2]).to.be(2); // dimension
+      expect(args[0]).toBe(point.getFlatCoordinates());
+      expect(args[1]).toBe(point.getFlatCoordinates());
+      expect(args[2]).toBe(2);
     });
 
-    it('allows for modification of coordinates', function() {
+    test('allows for modification of coordinates', () => {
       const mod = function(input, output, dimension) {
         const copy = input.slice();
         output[1] = copy[0];
         output[0] = copy[1];
       };
       point.applyTransform(mod);
-      expect(point.getCoordinates()).to.eql([2, 1]);
+      expect(point.getCoordinates()).toEqual([2, 1]);
     });
 
-    it('returns undefined', function() {
+    test('returns undefined', () => {
       const got = point.applyTransform(transform);
-      expect(got).to.be(undefined);
+      expect(got).toBe(undefined);
     });
 
   });
 
-  describe('#transform()', function() {
+  describe('#transform()', () => {
 
-    it('transforms a geometry given CRS identifiers', function() {
+    test('transforms a geometry given CRS identifiers', () => {
       const point = new Point([-111, 45]).transform(
         'EPSG:4326', 'EPSG:3857');
 
-      expect(point).to.be.a(Point);
+      expect(point).toBeInstanceOf(Point);
 
       const coords = point.getCoordinates();
 
@@ -204,7 +204,7 @@ describe('ol.geom.Point', function() {
       expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
     });
 
-    it('modifies the original', function() {
+    test('modifies the original', () => {
       const point = new Point([-111, 45]);
       point.transform('EPSG:4326', 'EPSG:3857');
       const coords = point.getCoordinates();
@@ -215,20 +215,20 @@ describe('ol.geom.Point', function() {
 
   });
 
-  describe('#containsXY()', function() {
+  describe('#containsXY()', () => {
 
-    it('does contain XY', function() {
+    test('does contain XY', () => {
       const point = new Point([1, 2]);
 
-      expect(point.containsXY(1, 2)).to.be(true);
+      expect(point.containsXY(1, 2)).toBe(true);
     });
 
-    it('does not contain XY', function() {
+    test('does not contain XY', () => {
       const point = new Point([1, 2]);
 
-      expect(point.containsXY(1, 3)).to.be(false);
-      expect(point.containsXY(2, 2)).to.be(false);
-      expect(point.containsXY(2, 3)).to.be(false);
+      expect(point.containsXY(1, 3)).toBe(false);
+      expect(point.containsXY(2, 2)).toBe(false);
+      expect(point.containsXY(2, 3)).toBe(false);
     });
 
   });

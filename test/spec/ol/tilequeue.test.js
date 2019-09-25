@@ -6,7 +6,7 @@ import {defaultImageLoadFunction} from '../../../src/ol/source/Image.js';
 import {DROP} from '../../../src/ol/structs/PriorityQueue.js';
 
 
-describe('ol.TileQueue', function() {
+describe('ol.TileQueue', () => {
 
   function addRandomPriorityTiles(tq, num) {
     let i, tile, priority;
@@ -36,10 +36,10 @@ describe('ol.TileQueue', function() {
     return new ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
 
-  describe('#loadMoreTiles()', function() {
+  describe('#loadMoreTiles()', () => {
     const noop = function() {};
 
-    it('works when tile queues share tiles', function(done) {
+    test('works when tile queues share tiles', done => {
       const q1 = new TileQueue(noop, noop);
       const q2 = new TileQueue(noop, noop);
 
@@ -50,63 +50,62 @@ describe('ol.TileQueue', function() {
         q2.enqueue([tile]);
       }
 
-      // Initially, both have all tiles.
-      expect(q1.getCount()).to.equal(numTiles);
-      expect(q2.getCount()).to.equal(numTiles);
+      expect(q1.getCount()).toBe(numTiles);
+      expect(q2.getCount()).toBe(numTiles);
 
       const maxLoading = numTiles / 2;
 
-      // and nothing is loading
-      expect(q1.getTilesLoading()).to.equal(0);
-      expect(q2.getTilesLoading()).to.equal(0);
+      expect(q1.getTilesLoading()).toBe(0);
+      expect(q2.getTilesLoading()).toBe(0);
 
       // ask both to load
       q1.loadMoreTiles(maxLoading, maxLoading);
       q2.loadMoreTiles(maxLoading, maxLoading);
 
-      // both tiles will be loading the max
-      expect(q1.getTilesLoading()).to.equal(maxLoading);
-      expect(q2.getTilesLoading()).to.equal(maxLoading);
+      expect(q1.getTilesLoading()).toBe(maxLoading);
+      expect(q2.getTilesLoading()).toBe(maxLoading);
 
-      // the second queue will be empty now
-      expect(q1.getCount()).to.equal(numTiles - maxLoading);
-      expect(q2.getCount()).to.equal(0);
+      expect(q1.getCount()).toBe(numTiles - maxLoading);
+      expect(q2.getCount()).toBe(0);
 
       // let all tiles load
       setTimeout(function() {
-        expect(q1.getTilesLoading()).to.equal(0);
-        expect(q2.getTilesLoading()).to.equal(0);
+        expect(q1.getTilesLoading()).toBe(0);
+        expect(q2.getTilesLoading()).toBe(0);
 
         // ask both to load, this should clear q1
         q1.loadMoreTiles(maxLoading, maxLoading);
         q2.loadMoreTiles(maxLoading, maxLoading);
 
-        expect(q1.getCount()).to.equal(0);
-        expect(q2.getCount()).to.equal(0);
+        expect(q1.getCount()).toBe(0);
+        expect(q2.getCount()).toBe(0);
 
         done();
       }, 20);
 
     });
 
-    it('calls #tileChangeCallback_ when all wanted tiles are aborted', function() {
-      const tileChangeCallback = sinon.spy();
-      const queue = new TileQueue(noop, tileChangeCallback);
-      const numTiles = 20;
-      for (let i = 0; i < numTiles; ++i) {
-        const tile = createImageTile();
-        tile.state = TileState.ABORT;
-        queue.enqueue([tile]);
+    test(
+      'calls #tileChangeCallback_ when all wanted tiles are aborted',
+      () => {
+        const tileChangeCallback = sinon.spy();
+        const queue = new TileQueue(noop, tileChangeCallback);
+        const numTiles = 20;
+        for (let i = 0; i < numTiles; ++i) {
+          const tile = createImageTile();
+          tile.state = TileState.ABORT;
+          queue.enqueue([tile]);
+        }
+        const maxLoading = numTiles / 2;
+        queue.loadMoreTiles(maxLoading, maxLoading);
+        expect(tileChangeCallback.callCount).toBe(1);
       }
-      const maxLoading = numTiles / 2;
-      queue.loadMoreTiles(maxLoading, maxLoading);
-      expect(tileChangeCallback.callCount).to.be(1);
-    });
+    );
 
   });
 
-  describe('heapify', function() {
-    it('does convert an arbitrary array into a heap', function() {
+  describe('heapify', () => {
+    test('does convert an arbitrary array into a heap', () => {
 
       const tq = new TileQueue(function() {});
       addRandomPriorityTiles(tq, 100);
@@ -115,8 +114,8 @@ describe('ol.TileQueue', function() {
     });
   });
 
-  describe('reprioritize', function() {
-    it('does reprioritize the array', function() {
+  describe('reprioritize', () => {
+    test('does reprioritize the array', () => {
 
       const tq = new TileQueue(function() {});
       addRandomPriorityTiles(tq, 100);
@@ -135,41 +134,41 @@ describe('ol.TileQueue', function() {
       };
 
       tq.reprioritize();
-      expect(tq.elements_.length).to.eql(50);
-      expect(tq.priorities_.length).to.eql(50);
+      expect(tq.elements_.length).toEqual(50);
+      expect(tq.priorities_.length).toEqual(50);
 
     });
   });
 
-  describe('tile change event', function() {
+  describe('tile change event', () => {
     const noop = function() {};
 
-    it('abort queued tiles', function() {
+    test('abort queued tiles', () => {
       const tq = new TileQueue(noop, noop);
       const tile = createImageTile();
-      expect(tile.hasListener('change')).to.be(false);
+      expect(tile.hasListener('change')).toBe(false);
 
       tq.enqueue([tile]);
-      expect(tile.hasListener('change')).to.be(true);
+      expect(tile.hasListener('change')).toBe(true);
 
       tile.dispose();
-      expect(tile.hasListener('change')).to.be(false);
-      expect(tile.getState()).to.eql(5); // ABORT
+      expect(tile.hasListener('change')).toBe(false);
+      expect(tile.getState()).toEqual(5);
     });
 
-    it('abort loading tiles', function() {
+    test('abort loading tiles', () => {
       const tq = new TileQueue(noop, noop);
       const tile = createImageTile(noop);
 
       tq.enqueue([tile]);
       tq.loadMoreTiles(Infinity, Infinity);
-      expect(tq.getTilesLoading()).to.eql(1);
-      expect(tile.getState()).to.eql(1); // LOADING
+      expect(tq.getTilesLoading()).toEqual(1);
+      expect(tile.getState()).toEqual(1);
 
       tile.dispose();
-      expect(tq.getTilesLoading()).to.eql(0);
-      expect(tile.hasListener('change')).to.be(false);
-      expect(tile.getState()).to.eql(5); // ABORT
+      expect(tq.getTilesLoading()).toEqual(0);
+      expect(tile.hasListener('change')).toBe(false);
+      expect(tile.getState()).toEqual(5);
 
     });
 

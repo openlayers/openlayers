@@ -1,47 +1,47 @@
 import Event, {preventDefault, stopPropagation} from '../../../../src/ol/events/Event.js';
 
-describe('ol.events.Event', function() {
+describe('ol.events.Event', () => {
 
-  describe('constructor', function() {
-    it('takes a type as argument', function() {
+  describe('constructor', () => {
+    test('takes a type as argument', () => {
       const event = new Event('foo');
-      expect(event.type).to.be('foo');
+      expect(event.type).toBe('foo');
     });
-    it('does not set the propagationStopped flag', function() {
+    test('does not set the propagationStopped flag', () => {
       const event = new Event('foo');
-      expect(event.propagationStopped).to.be(undefined);
+      expect(event.propagationStopped).toBe(undefined);
     });
   });
 
-  describe('#preventDefault', function() {
-    it('sets the propagationStopped flag', function() {
+  describe('#preventDefault', () => {
+    test('sets the propagationStopped flag', () => {
       const event = new Event('foo');
       event.preventDefault();
-      expect(event.propagationStopped).to.be(true);
+      expect(event.propagationStopped).toBe(true);
     });
-    it('does the same as #stopPropagation', function() {
+    test('does the same as #stopPropagation', () => {
       const event = new Event('foo');
-      expect(event.stopPropagation()).to.equal(event.preventDefault());
+      expect(event.stopPropagation()).toBe(event.preventDefault());
     });
   });
 
-  describe('ol.events.Event.preventDefault', function() {
-    it('calls preventDefault on the event object', function() {
+  describe('ol.events.Event.preventDefault', () => {
+    test('calls preventDefault on the event object', () => {
       const event = {
         preventDefault: sinon.spy()
       };
       preventDefault(event);
-      expect(event.preventDefault.called).to.be(true);
+      expect(event.preventDefault.called).toBe(true);
     });
   });
 
-  describe('ol.events.Event.stopPropagation', function() {
-    it('calls preventDefault on the event object', function() {
+  describe('ol.events.Event.stopPropagation', () => {
+    test('calls preventDefault on the event object', () => {
       const event = {
         stopPropagation: sinon.spy()
       };
       stopPropagation(event);
-      expect(event.stopPropagation.called).to.be(true);
+      expect(event.stopPropagation.called).toBe(true);
     });
   });
 

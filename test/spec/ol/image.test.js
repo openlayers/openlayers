@@ -1,16 +1,16 @@
 import {listenImage} from '../../../src/ol/Image.js';
 
 
-describe('HTML Image loading', function() {
+describe('HTML Image loading', () => {
   let handleLoad, handleError, img;
 
-  beforeEach(function() {
+  beforeEach(() => {
     handleLoad = sinon.spy();
     handleError = sinon.spy();
     img = new Image();
   });
 
-  it('handles load event', function(done) {
+  test('handles load event', done => {
     img.src = 'spec/ol/data/dot.png';
     listenImage(img, handleLoad, handleError);
 
@@ -21,7 +21,7 @@ describe('HTML Image loading', function() {
     }, 200);
   });
 
-  it('handles load event when src is set later', function(done) {
+  test('handles load event when src is set later', done => {
     listenImage(img, handleLoad, handleError);
     img.src = 'spec/ol/data/dot.png';
 
@@ -32,7 +32,7 @@ describe('HTML Image loading', function() {
     }, 200);
   });
 
-  it('handles error event', function(done) {
+  test('handles error event', done => {
     img.src = 'invalid.jpeg';
     listenImage(img, handleLoad, handleError);
 
@@ -43,7 +43,7 @@ describe('HTML Image loading', function() {
     }, 200);
   });
 
-  it('handles cancelation', function(done) {
+  test('handles cancelation', done => {
     img.src = 'spec/ol/data/dot.png';
     listenImage(img, handleLoad, handleError)();
 

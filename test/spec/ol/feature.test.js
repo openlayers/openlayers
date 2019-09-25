@@ -4,67 +4,67 @@ import {isEmpty} from '../../../src/ol/obj.js';
 import Style from '../../../src/ol/style/Style.js';
 
 
-describe('ol.Feature', function() {
+describe('ol.Feature', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('creates a new feature', function() {
+    test('creates a new feature', () => {
       const feature = new Feature();
-      expect(feature).to.be.a(Feature);
+      expect(feature).toBeInstanceOf(Feature);
     });
 
-    it('takes properties', function() {
+    test('takes properties', () => {
       const feature = new Feature({
         foo: 'bar'
       });
-      expect(feature.get('foo')).to.be('bar');
+      expect(feature.get('foo')).toBe('bar');
     });
 
-    it('can store the feature\'s commonly used id', function() {
+    test('can store the feature\'s commonly used id', () => {
       const feature = new Feature();
       feature.setId('foo');
-      expect(feature.getId()).to.be('foo');
+      expect(feature.getId()).toBe('foo');
     });
 
-    it('will set the default geometry', function() {
+    test('will set the default geometry', () => {
       const feature = new Feature({
         geometry: new Point([10, 20]),
         foo: 'bar'
       });
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(feature.get('geometry')).to.be(geometry);
+      expect(geometry).toBeInstanceOf(Point);
+      expect(feature.get('geometry')).toBe(geometry);
     });
 
   });
 
-  describe('#get()', function() {
+  describe('#get()', () => {
 
-    it('returns values set at construction', function() {
+    test('returns values set at construction', () => {
       const feature = new Feature({
         a: 'first',
         b: 'second'
       });
-      expect(feature.get('a')).to.be('first');
-      expect(feature.get('b')).to.be('second');
+      expect(feature.get('a')).toBe('first');
+      expect(feature.get('b')).toBe('second');
     });
 
-    it('returns undefined for unset attributes', function() {
+    test('returns undefined for unset attributes', () => {
       const feature = new Feature();
-      expect(feature.get('a')).to.be(undefined);
+      expect(feature.get('a')).toBe(undefined);
     });
 
-    it('returns values set by set', function() {
+    test('returns values set by set', () => {
       const feature = new Feature();
       feature.set('a', 'b');
-      expect(feature.get('a')).to.be('b');
+      expect(feature.get('a')).toBe('b');
     });
 
   });
 
-  describe('#getProperties()', function() {
+  describe('#getProperties()', () => {
 
-    it('returns an object with all attributes', function() {
+    test('returns an object with all attributes', () => {
       const point = new Point([15, 30]);
       const feature = new Feature({
         foo: 'bar',
@@ -75,137 +75,137 @@ describe('ol.Feature', function() {
       const attributes = feature.getProperties();
 
       const keys = Object.keys(attributes);
-      expect(keys.sort()).to.eql(['foo', 'geometry', 'ten']);
+      expect(keys.sort()).toEqual(['foo', 'geometry', 'ten']);
 
-      expect(attributes.foo).to.be('bar');
-      expect(attributes.geometry).to.be(point);
-      expect(attributes.ten).to.be(10);
+      expect(attributes.foo).toBe('bar');
+      expect(attributes.geometry).toBe(point);
+      expect(attributes.ten).toBe(10);
     });
 
-    it('is empty by default', function() {
+    test('is empty by default', () => {
       const feature = new Feature();
       const properties = feature.getProperties();
-      expect(isEmpty(properties)).to.be(true);
+      expect(isEmpty(properties)).toBe(true);
     });
 
   });
 
 
-  describe('#getGeometry()', function() {
+  describe('#getGeometry()', () => {
 
     const point = new Point([15, 30]);
 
-    it('returns undefined for unset geometry', function() {
+    test('returns undefined for unset geometry', () => {
       const feature = new Feature();
-      expect(feature.getGeometry()).to.be(undefined);
+      expect(feature.getGeometry()).toBe(undefined);
     });
 
-    it('returns null for null geometry (constructor)', function() {
+    test('returns null for null geometry (constructor)', () => {
       const feature = new Feature(null);
-      expect(feature.getGeometry()).to.be(undefined);
+      expect(feature.getGeometry()).toBe(undefined);
     });
 
-    it('returns null for null geometry (setGeometry())', function() {
+    test('returns null for null geometry (setGeometry())', () => {
       const feature = new Feature();
       feature.setGeometry(null);
-      expect(feature.getGeometry()).to.be(null);
+      expect(feature.getGeometry()).toBe(null);
     });
 
-    it('gets the geometry set at construction', function() {
+    test('gets the geometry set at construction', () => {
       const feature = new Feature({
         geometry: point
       });
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.getGeometry()).toBe(point);
     });
 
-    it('gets any geometry set by setGeometry', function() {
+    test('gets any geometry set by setGeometry', () => {
       const feature = new Feature();
       feature.setGeometry(point);
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.getGeometry()).toBe(point);
 
       const point2 = new Point([1, 2]);
       feature.setGeometry(point2);
-      expect(feature.getGeometry()).to.be(point2);
+      expect(feature.getGeometry()).toBe(point2);
     });
 
   });
 
-  describe('#set()', function() {
+  describe('#set()', () => {
 
-    it('sets values', function() {
+    test('sets values', () => {
       const feature = new Feature({
         a: 'first',
         b: 'second'
       });
       feature.set('a', 'new');
-      expect(feature.get('a')).to.be('new');
+      expect(feature.get('a')).toBe('new');
     });
 
-    it('can be used to set the geometry', function() {
+    test('can be used to set the geometry', () => {
       const point = new Point([3, 4]);
       const feature = new Feature({
         geometry: new Point([1, 2])
       });
       feature.set('geometry', point);
-      expect(feature.get('geometry')).to.be(point);
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.get('geometry')).toBe(point);
+      expect(feature.getGeometry()).toBe(point);
     });
 
-    it('can be used to set attributes with arbitrary names', function() {
+    test('can be used to set attributes with arbitrary names', () => {
 
       const feature = new Feature();
 
       feature.set('toString', 'string');
-      expect(feature.get('toString')).to.be('string');
-      expect(typeof feature.toString).to.be('function');
+      expect(feature.get('toString')).toBe('string');
+      expect(typeof feature.toString).toBe('function');
 
       feature.set('getGeometry', 'x');
-      expect(feature.get('getGeometry')).to.be('x');
+      expect(feature.get('getGeometry')).toBe('x');
 
       feature.set('geometry', new Point([1, 2]));
-      expect(feature.getGeometry()).to.be.a(Point);
+      expect(feature.getGeometry()).toBeInstanceOf(Point);
 
     });
 
   });
 
-  describe('#setGeometry()', function() {
+  describe('#setGeometry()', () => {
 
     const point = new Point([15, 30]);
 
-    it('sets the default geometry', function() {
+    test('sets the default geometry', () => {
       const feature = new Feature();
       feature.setGeometry(point);
-      expect(feature.get('geometry')).to.be(point);
+      expect(feature.get('geometry')).toBe(point);
     });
 
-    it('replaces previous default geometry', function() {
+    test('replaces previous default geometry', () => {
       const feature = new Feature({
         geometry: point
       });
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.getGeometry()).toBe(point);
 
       const point2 = new Point([1, 2]);
       feature.setGeometry(point2);
-      expect(feature.getGeometry()).to.be(point2);
+      expect(feature.getGeometry()).toBe(point2);
     });
 
   });
 
-  describe('#setGeometryName()', function() {
+  describe('#setGeometryName()', () => {
 
     const point = new Point([15, 30]);
 
-    it('sets property where to to look at geometry', function() {
+    test('sets property where to to look at geometry', () => {
       const feature = new Feature();
       feature.setGeometry(point);
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.getGeometry()).toBe(point);
 
       const point2 = new Point([1, 2]);
       feature.set('altGeometry', point2);
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.getGeometry()).toBe(point);
       feature.setGeometryName('altGeometry');
-      expect(feature.getGeometry()).to.be(point2);
+      expect(feature.getGeometry()).toBe(point2);
 
       feature.on('change', function() {
         expect.fail();
@@ -213,7 +213,7 @@ describe('ol.Feature', function() {
       point.setCoordinates([0, 2]);
     });
 
-    it('changes property listener', function() {
+    test('changes property listener', () => {
       const feature = new Feature();
       feature.setGeometry(point);
       const point2 = new Point([1, 2]);
@@ -223,40 +223,40 @@ describe('ol.Feature', function() {
       const spy = sinon.spy();
       feature.on('change', spy);
       point2.setCoordinates([0, 2]);
-      expect(spy.callCount).to.be(1);
+      expect(spy.callCount).toBe(1);
     });
 
-    it('can use a different geometry name', function() {
+    test('can use a different geometry name', () => {
       const feature = new Feature();
       feature.setGeometryName('foo');
       const point = new Point([10, 20]);
       feature.setGeometry(point);
-      expect(feature.getGeometry()).to.be(point);
+      expect(feature.getGeometry()).toBe(point);
     });
 
   });
 
-  describe('#setId()', function() {
+  describe('#setId()', () => {
 
-    it('sets the feature identifier', function() {
+    test('sets the feature identifier', () => {
       const feature = new Feature();
-      expect(feature.getId()).to.be(undefined);
+      expect(feature.getId()).toBe(undefined);
       feature.setId('foo');
-      expect(feature.getId()).to.be('foo');
+      expect(feature.getId()).toBe('foo');
     });
 
-    it('accepts a string or number', function() {
+    test('accepts a string or number', () => {
       const feature = new Feature();
       feature.setId('foo');
-      expect(feature.getId()).to.be('foo');
+      expect(feature.getId()).toBe('foo');
       feature.setId(2);
-      expect(feature.getId()).to.be(2);
+      expect(feature.getId()).toBe(2);
     });
 
-    it('dispatches the "change" event', function(done) {
+    test('dispatches the "change" event', done => {
       const feature = new Feature();
       feature.on('change', function() {
-        expect(feature.getId()).to.be('foo');
+        expect(feature.getId()).toBe('foo');
         done();
       });
       feature.setId('foo');
@@ -264,39 +264,39 @@ describe('ol.Feature', function() {
 
   });
 
-  describe('#getStyleFunction()', function() {
+  describe('#getStyleFunction()', () => {
 
     const styleFunction = function(feature, resolution) {
       return null;
     };
 
-    it('returns undefined after construction', function() {
+    test('returns undefined after construction', () => {
       const feature = new Feature();
-      expect(feature.getStyleFunction()).to.be(undefined);
+      expect(feature.getStyleFunction()).toBe(undefined);
     });
 
-    it('returns the function passed to setStyle', function() {
+    test('returns the function passed to setStyle', () => {
       const feature = new Feature();
       feature.setStyle(styleFunction);
-      expect(feature.getStyleFunction()).to.be(styleFunction);
+      expect(feature.getStyleFunction()).toBe(styleFunction);
     });
 
-    it('does not get confused with user "styleFunction" property', function() {
+    test('does not get confused with user "styleFunction" property', () => {
       const feature = new Feature();
       feature.set('styleFunction', 'foo');
-      expect(feature.getStyleFunction()).to.be(undefined);
+      expect(feature.getStyleFunction()).toBe(undefined);
     });
 
-    it('does not get confused with "styleFunction" option', function() {
+    test('does not get confused with "styleFunction" option', () => {
       const feature = new Feature({
         styleFunction: 'foo'
       });
-      expect(feature.getStyleFunction()).to.be(undefined);
+      expect(feature.getStyleFunction()).toBe(undefined);
     });
 
   });
 
-  describe('#setStyle()', function() {
+  describe('#setStyle()', () => {
 
     const style = new Style();
 
@@ -304,46 +304,46 @@ describe('ol.Feature', function() {
       return resolution;
     };
 
-    it('accepts a single style', function() {
+    test('accepts a single style', () => {
       const feature = new Feature();
       feature.setStyle(style);
       const func = feature.getStyleFunction();
-      expect(func()).to.eql([style]);
+      expect(func()).toEqual([style]);
     });
 
-    it('accepts an array of styles', function() {
+    test('accepts an array of styles', () => {
       const feature = new Feature();
       feature.setStyle([style]);
       const func = feature.getStyleFunction();
-      expect(func()).to.eql([style]);
+      expect(func()).toEqual([style]);
     });
 
-    it('accepts a style function', function() {
+    test('accepts a style function', () => {
       const feature = new Feature();
       feature.setStyle(styleFunction);
-      expect(feature.getStyleFunction()).to.be(styleFunction);
-      expect(feature.getStyleFunction()(feature, 42)).to.be(42);
+      expect(feature.getStyleFunction()).toBe(styleFunction);
+      expect(feature.getStyleFunction()(feature, 42)).toBe(42);
     });
 
-    it('accepts null', function() {
+    test('accepts null', () => {
       const feature = new Feature();
       feature.setStyle(style);
       feature.setStyle(null);
-      expect(feature.getStyle()).to.be(null);
-      expect(feature.getStyleFunction()).to.be(undefined);
+      expect(feature.getStyle()).toBe(null);
+      expect(feature.getStyleFunction()).toBe(undefined);
     });
 
-    it('dispatches a change event', function() {
+    test('dispatches a change event', () => {
       const feature = new Feature();
       const spy = sinon.spy();
       feature.on('change', spy);
       feature.setStyle(style);
-      expect(spy.callCount).to.be(1);
+      expect(spy.callCount).toBe(1);
     });
 
   });
 
-  describe('#getStyle()', function() {
+  describe('#getStyle()', () => {
 
     const style = new Style();
 
@@ -351,42 +351,42 @@ describe('ol.Feature', function() {
       return null;
     };
 
-    it('returns what is passed to setStyle', function() {
+    test('returns what is passed to setStyle', () => {
       const feature = new Feature();
 
-      expect(feature.getStyle()).to.be(null);
+      expect(feature.getStyle()).toBe(null);
 
       feature.setStyle(style);
-      expect(feature.getStyle()).to.be(style);
+      expect(feature.getStyle()).toBe(style);
 
       feature.setStyle([style]);
-      expect(feature.getStyle()).to.eql([style]);
+      expect(feature.getStyle()).toEqual([style]);
 
       feature.setStyle(styleFunction);
-      expect(feature.getStyle()).to.be(styleFunction);
+      expect(feature.getStyle()).toBe(styleFunction);
 
     });
 
-    it('does not get confused with "style" option to constructor', function() {
+    test('does not get confused with "style" option to constructor', () => {
       const feature = new Feature({
         style: 'foo'
       });
 
-      expect(feature.getStyle()).to.be(null);
+      expect(feature.getStyle()).toBe(null);
     });
 
-    it('does not get confused with user set "style" property', function() {
+    test('does not get confused with user set "style" property', () => {
       const feature = new Feature();
       feature.set('style', 'foo');
 
-      expect(feature.getStyle()).to.be(null);
+      expect(feature.getStyle()).toBe(null);
     });
 
   });
 
-  describe('#clone', function() {
+  describe('#clone', () => {
 
-    it('correctly clones features', function() {
+    test('correctly clones features', () => {
       const feature = new Feature();
       feature.setProperties({'fookey': 'fooval'});
       feature.setId(1);
@@ -398,70 +398,69 @@ describe('ol.Feature', function() {
       feature.set('barkey', 'barval');
 
       const clone = feature.clone();
-      expect(clone.get('fookey')).to.be('fooval');
-      expect(clone.getId()).to.be(undefined);
-      expect(clone.getGeometryName()).to.be('geom');
+      expect(clone.get('fookey')).toBe('fooval');
+      expect(clone.getId()).toBe(undefined);
+      expect(clone.getGeometryName()).toBe('geom');
       const geometryClone = clone.getGeometry();
-      expect(geometryClone).not.to.be(geometry);
+      expect(geometryClone).not.toBe(geometry);
       const coordinates = geometryClone.getFlatCoordinates();
-      expect(coordinates[0]).to.be(1);
-      expect(coordinates[1]).to.be(2);
-      expect(clone.getStyle()).to.be(style);
-      expect(clone.get('barkey')).to.be('barval');
+      expect(coordinates[0]).toBe(1);
+      expect(coordinates[1]).toBe(2);
+      expect(clone.getStyle()).toBe(style);
+      expect(clone.get('barkey')).toBe('barval');
     });
 
-    it('correctly clones features with no geometry and no style', function() {
+    test('correctly clones features with no geometry and no style', () => {
       const feature = new Feature();
       feature.set('fookey', 'fooval');
 
       const clone = feature.clone();
-      expect(clone.get('fookey')).to.be('fooval');
-      expect(clone.getGeometry()).to.be(undefined);
-      expect(clone.getStyle()).to.be(null);
+      expect(clone.get('fookey')).toBe('fooval');
+      expect(clone.getGeometry()).toBe(undefined);
+      expect(clone.getStyle()).toBe(null);
     });
   });
 
-  describe('#setGeometry()', function() {
+  describe('#setGeometry()', () => {
 
-    it('dispatches a change event when geometry is set to null',
-      function() {
-        const feature = new Feature({
-          geometry: new Point([0, 0])
-        });
-        const spy = sinon.spy();
-        feature.on('change', spy);
-        feature.setGeometry(null);
-        expect(spy.callCount).to.be(1);
+    test('dispatches a change event when geometry is set to null', () => {
+      const feature = new Feature({
+        geometry: new Point([0, 0])
       });
+      const spy = sinon.spy();
+      feature.on('change', spy);
+      feature.setGeometry(null);
+      expect(spy.callCount).toBe(1);
+    });
   });
 
 });
 
-describe('ol.Feature.createStyleFunction()', function() {
+describe('ol.Feature.createStyleFunction()', () => {
   const style = new Style();
 
-  it('creates a feature style function from a single style', function() {
+  test('creates a feature style function from a single style', () => {
     const styleFunction = createStyleFunction(style);
-    expect(styleFunction()).to.eql([style]);
+    expect(styleFunction()).toEqual([style]);
   });
 
-  it('creates a feature style function from an array of styles', function() {
+  test('creates a feature style function from an array of styles', () => {
     const styleFunction = createStyleFunction([style]);
-    expect(styleFunction()).to.eql([style]);
+    expect(styleFunction()).toEqual([style]);
   });
 
-  it('passes through a function', function() {
+  test('passes through a function', () => {
     const original = function(feature, resolution) {
       return [style];
     };
     const styleFunction = createStyleFunction(original);
-    expect(styleFunction).to.be(original);
+    expect(styleFunction).toBe(original);
   });
 
-  it('throws on (some) unexpected input', function() {
+  test('throws on (some) unexpected input', () => {
     expect(function() {
       createStyleFunction({bogus: 'input'});
-    }).to.throwException();
+    }).toThrow();
   });
 
 });

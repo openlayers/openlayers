@@ -2,26 +2,26 @@ import {create} from '../../../../src/ol/worker/version.js';
 import {VERSION} from '../../../../src/ol/util.js';
 
 
-describe('ol/worker/version', function() {
+describe('ol/worker/version', () => {
 
   let worker;
-  beforeEach(function() {
+  beforeEach(() => {
     worker = create();
   });
 
-  afterEach(function() {
+  afterEach(() => {
     if (worker) {
       worker.terminate();
     }
     worker = null;
   });
 
-  describe('messaging', function() {
-    it('responds with the version', function(done) {
+  describe('messaging', () => {
+    test('responds with the version', done => {
       worker.addEventListener('error', done);
 
       worker.addEventListener('message', function(event) {
-        expect(event.data).to.equal('version: ' + VERSION);
+        expect(event.data).toBe('version: ' + VERSION);
         done();
       });
 

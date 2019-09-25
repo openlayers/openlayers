@@ -10,13 +10,13 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
-describe('ol.interaction.Translate', function() {
+describe('ol.interaction.Translate', () => {
   let target, map, source, features;
 
   const width = 360;
   const height = 180;
 
-  beforeEach(function(done) {
+  beforeEach(done => {
     target = document.createElement('div');
     const style = target.style;
     style.position = 'absolute';
@@ -47,7 +47,7 @@ describe('ol.interaction.Translate', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     map.dispose();
     document.body.removeChild(target);
   });
@@ -108,63 +108,59 @@ describe('ol.interaction.Translate', function() {
     const startevent = events[0];
     const endevent = events[events.length - 1];
 
-    // first event should be translatestart
-    expect(startevent).to.be.an(TranslateEvent);
-    expect(startevent.type).to.eql('translatestart');
+    expect(startevent).toBeInstanceOf(TranslateEvent);
+    expect(startevent.type).toEqual('translatestart');
 
-    // last event should be translateend
-    expect(endevent).to.be.an(TranslateEvent);
-    expect(endevent.type).to.eql('translateend');
+    expect(endevent).toBeInstanceOf(TranslateEvent);
+    expect(endevent.type).toEqual('translateend');
 
-    // make sure we get change events to events array
-    expect(events.length > 2).to.be(true);
+    expect(events.length > 2).toBe(true);
     // middle events should be feature modification events
     for (let i = 1; i < events.length - 1; i++) {
-      expect(events[i]).to.equal('change');
+      expect(events[i]).toBe('change');
     }
 
-    // TranslateEvents should include the expected features
-    expect(startevent.features.getArray()).to.eql(features);
-    expect(endevent.features.getArray()).to.eql(features);
+    expect(startevent.features.getArray()).toEqual(features);
+    expect(endevent.features.getArray()).toEqual(features);
   }
 
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('creates a new interaction', function() {
+    test('creates a new interaction', () => {
       const translate = new Translate({
         features: features
       });
-      expect(translate).to.be.a(Translate);
-      expect(translate).to.be.a(Interaction);
+      expect(translate).toBeInstanceOf(Translate);
+      expect(translate).toBeInstanceOf(Interaction);
     });
 
   });
 
-  describe('setActive', function() {
+  describe('setActive', () => {
 
-    it('works when the map is not set', function() {
+    test('works when the map is not set', () => {
       const translate = new Translate({
         features: features
       });
-      expect(translate.getActive()).to.be(true);
+      expect(translate.getActive()).toBe(true);
       translate.setActive(false);
-      expect(translate.getActive()).to.be(false);
+      expect(translate.getActive()).toBe(false);
     });
 
   });
 
-  describe('moving features, with features option', function() {
+  describe('moving features, with features option', () => {
     let translate;
 
-    beforeEach(function() {
+    beforeEach(() => {
       translate = new Translate({
         features: new Collection([features[0]])
       });
       map.addInteraction(translate);
     });
 
-    it('moves a selected feature', function() {
+    test('moves a selected feature', () => {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
@@ -172,13 +168,13 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([50, 40]);
+      expect(geometry).toBeInstanceOf(Point);
+      expect(geometry.getCoordinates()).toEqual([50, 40]);
 
       validateEvents(events, [features[0]]);
     });
 
-    it('does not move an unselected feature', function() {
+    test('does not move an unselected feature', () => {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 20, 30);
@@ -186,39 +182,39 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([20, -30]);
+      expect(geometry).toBeInstanceOf(Point);
+      expect(geometry.getCoordinates()).toEqual([20, -30]);
 
-      expect(events).to.be.empty();
+      expect(events).toHaveLength(0);
     });
   });
 
-  describe('moving features, without features option', function() {
+  describe('moving features, without features option', () => {
     let translate;
 
-    beforeEach(function() {
+    beforeEach(() => {
       translate = new Translate();
       map.addInteraction(translate);
     });
 
-    it('moves only targeted feature', function() {
+    test('moves only targeted feature', () => {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
-      expect(features[0].getGeometry().getCoordinates()).to.eql([50, 40]);
-      expect(features[1].getGeometry().getCoordinates()).to.eql([20, -30]);
+      expect(features[0].getGeometry().getCoordinates()).toEqual([50, 40]);
+      expect(features[1].getGeometry().getCoordinates()).toEqual([20, -30]);
 
       validateEvents(events, [features[0]]);
     });
   });
 
-  describe('moving features, with filter option', function() {
+  describe('moving features, with filter option', () => {
     let translate;
 
-    beforeEach(function() {
+    beforeEach(() => {
       translate = new Translate({
         filter: function(feature, layer) {
           return feature == features[0];
@@ -227,7 +223,7 @@ describe('ol.interaction.Translate', function() {
       map.addInteraction(translate);
     });
 
-    it('moves a filter-passing feature', function() {
+    test('moves a filter-passing feature', () => {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
@@ -235,13 +231,13 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([50, 40]);
+      expect(geometry).toBeInstanceOf(Point);
+      expect(geometry.getCoordinates()).toEqual([50, 40]);
 
       validateEvents(events, [features[0]]);
     });
 
-    it('does not move a filter-discarded feature', function() {
+    test('does not move a filter-discarded feature', () => {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 20, 30);
@@ -249,80 +245,89 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([20, -30]);
+      expect(geometry).toBeInstanceOf(Point);
+      expect(geometry.getCoordinates()).toEqual([20, -30]);
 
-      expect(events).to.be.empty();
+      expect(events).toHaveLength(0);
     });
   });
 
-  describe('changes css cursor', function() {
+  describe('changes css cursor', () => {
     let element, translate;
 
-    beforeEach(function() {
+    beforeEach(() => {
       translate = new Translate();
       map.addInteraction(translate);
       element = map.getViewport();
     });
 
-    it('changes css cursor', function() {
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+    test('changes css cursor', () => {
+      expect(element.classList.contains('ol-grabbing')).toBe(false);
+      expect(element.classList.contains('ol-grab')).toBe(false);
 
       simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      expect(element.classList.contains('ol-grabbing')).toBe(false);
+      expect(element.classList.contains('ol-grab')).toBe(true);
 
       simulateEvent('pointerdown', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(true);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      expect(element.classList.contains('ol-grabbing')).toBe(true);
+      expect(element.classList.contains('ol-grab')).toBe(false);
 
       simulateEvent('pointerup', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      expect(element.classList.contains('ol-grabbing')).toBe(false);
+      expect(element.classList.contains('ol-grab')).toBe(true);
 
       simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      expect(element.classList.contains('ol-grabbing')).toBe(false);
+      expect(element.classList.contains('ol-grab')).toBe(false);
     });
 
-    it('resets css cursor when interaction is deactivated while pointer is on feature', function() {
-      simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+    test(
+      'resets css cursor when interaction is deactivated while pointer is on feature',
+      () => {
+        simulateEvent('pointermove', 10, 20);
+        expect(element.classList.contains('ol-grabbing')).toBe(false);
+        expect(element.classList.contains('ol-grab')).toBe(true);
 
-      translate.setActive(false);
+        translate.setActive(false);
 
-      simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
-    });
+        simulateEvent('pointermove', 0, 0);
+        expect(element.classList.contains('ol-grabbing')).toBe(false);
+        expect(element.classList.contains('ol-grab')).toBe(false);
+      }
+    );
 
-    it('resets css cursor interaction is removed while pointer is on feature', function() {
-      simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+    test(
+      'resets css cursor interaction is removed while pointer is on feature',
+      () => {
+        simulateEvent('pointermove', 10, 20);
+        expect(element.classList.contains('ol-grabbing')).toBe(false);
+        expect(element.classList.contains('ol-grab')).toBe(true);
 
-      map.removeInteraction(translate);
+        map.removeInteraction(translate);
 
-      simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
-    });
+        simulateEvent('pointermove', 0, 0);
+        expect(element.classList.contains('ol-grabbing')).toBe(false);
+        expect(element.classList.contains('ol-grab')).toBe(false);
+      }
+    );
 
-    it('resets css cursor to existing cursor interaction is removed while pointer is on feature', function() {
-      element.style.cursor = 'pointer';
+    test(
+      'resets css cursor to existing cursor interaction is removed while pointer is on feature',
+      () => {
+        element.style.cursor = 'pointer';
 
-      simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+        simulateEvent('pointermove', 10, 20);
+        expect(element.classList.contains('ol-grabbing')).toBe(false);
+        expect(element.classList.contains('ol-grab')).toBe(true);
 
-      map.removeInteraction(translate);
+        map.removeInteraction(translate);
 
-      simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
-    });
+        simulateEvent('pointermove', 0, 0);
+        expect(element.classList.contains('ol-grabbing')).toBe(false);
+        expect(element.classList.contains('ol-grab')).toBe(false);
+      }
+    );
 
   });
 

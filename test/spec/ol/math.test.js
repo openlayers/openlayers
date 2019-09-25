@@ -1,57 +1,57 @@
 import {clamp, lerp, cosh, solveLinearSystem, toDegrees, toRadians, modulo} from '../../../src/ol/math.js';
 
 
-describe('ol.math.clamp', function() {
+describe('ol.math.clamp', () => {
 
-  it('returns the correct value at -Infinity', function() {
-    expect(clamp(-Infinity, 10, 20)).to.eql(10);
+  test('returns the correct value at -Infinity', () => {
+    expect(clamp(-Infinity, 10, 20)).toEqual(10);
   });
 
-  it('returns the correct value at min', function() {
-    expect(clamp(10, 10, 20)).to.eql(10);
+  test('returns the correct value at min', () => {
+    expect(clamp(10, 10, 20)).toEqual(10);
   });
 
-  it('returns the correct value at mid point', function() {
-    expect(clamp(15, 10, 20)).to.eql(15);
+  test('returns the correct value at mid point', () => {
+    expect(clamp(15, 10, 20)).toEqual(15);
   });
 
-  it('returns the correct value at max', function() {
-    expect(clamp(20, 10, 20)).to.eql(20);
+  test('returns the correct value at max', () => {
+    expect(clamp(20, 10, 20)).toEqual(20);
   });
 
-  it('returns the correct value at Infinity', function() {
-    expect(clamp(Infinity, 10, 20)).to.eql(20);
+  test('returns the correct value at Infinity', () => {
+    expect(clamp(Infinity, 10, 20)).toEqual(20);
   });
 
 });
 
-describe('ol.math.cosh', function() {
+describe('ol.math.cosh', () => {
 
-  it('returns the correct value at -Infinity', function() {
-    expect(cosh(-Infinity)).to.eql(Infinity);
+  test('returns the correct value at -Infinity', () => {
+    expect(cosh(-Infinity)).toEqual(Infinity);
   });
 
-  it('returns the correct value at -1', function() {
+  test('returns the correct value at -1', () => {
     expect(cosh(-1)).to.roughlyEqual(1.5430806348152437, 1e-9);
   });
 
-  it('returns the correct value at 0', function() {
-    expect(cosh(0)).to.eql(1);
+  test('returns the correct value at 0', () => {
+    expect(cosh(0)).toEqual(1);
   });
 
-  it('returns the correct value at 1', function() {
+  test('returns the correct value at 1', () => {
     expect(cosh(1)).to.roughlyEqual(1.5430806348152437, 1e-9);
   });
 
-  it('returns the correct value at Infinity', function() {
-    expect(cosh(Infinity)).to.eql(Infinity);
+  test('returns the correct value at Infinity', () => {
+    expect(cosh(Infinity)).toEqual(Infinity);
   });
 
 });
 
-describe('ol.math.solveLinearSystem', function() {
+describe('ol.math.solveLinearSystem', () => {
 
-  it('calculates correctly', function() {
+  test('calculates correctly', () => {
     const result = solveLinearSystem([
       [2, 1, 3, 1],
       [2, 6, 8, 3],
@@ -62,73 +62,73 @@ describe('ol.math.solveLinearSystem', function() {
     expect(result[2]).to.roughlyEqual(0, 1e-9);
   });
 
-  it('can handle singular matrix', function() {
+  test('can handle singular matrix', () => {
     const result = solveLinearSystem([
       [2, 1, 3, 1],
       [2, 6, 8, 3],
       [2, 1, 3, 1]
     ]);
-    expect(result).to.be(null);
+    expect(result).toBe(null);
   });
 
 });
 
-describe('ol.math.toDegrees', function() {
-  it('returns the correct value at -π', function() {
-    expect(toDegrees(-Math.PI)).to.be(-180);
+describe('ol.math.toDegrees', () => {
+  test('returns the correct value at -π', () => {
+    expect(toDegrees(-Math.PI)).toBe(-180);
   });
-  it('returns the correct value at 0', function() {
-    expect(toDegrees(0)).to.be(0);
+  test('returns the correct value at 0', () => {
+    expect(toDegrees(0)).toBe(0);
   });
-  it('returns the correct value at π', function() {
-    expect(toDegrees(Math.PI)).to.be(180);
-  });
-});
-
-describe('ol.math.toRadians', function() {
-  it('returns the correct value at -180', function() {
-    expect(toRadians(-180)).to.be(-Math.PI);
-  });
-  it('returns the correct value at 0', function() {
-    expect(toRadians(0)).to.be(0);
-  });
-  it('returns the correct value at 180', function() {
-    expect(toRadians(180)).to.be(Math.PI);
+  test('returns the correct value at π', () => {
+    expect(toDegrees(Math.PI)).toBe(180);
   });
 });
 
-describe('ol.math.modulo', function() {
-  it('256 / 8 returns 0', function() {
-    expect(modulo(256, 8)).to.be(0);
+describe('ol.math.toRadians', () => {
+  test('returns the correct value at -180', () => {
+    expect(toRadians(-180)).toBe(-Math.PI);
   });
-  it('positive and positive returns a positive ', function() {
-    expect(modulo(7, 8)).to.be(7);
+  test('returns the correct value at 0', () => {
+    expect(toRadians(0)).toBe(0);
   });
-  it('same Dividend and Divisor returns 0', function() {
-    expect(modulo(4, 4)).to.be(0);
-  });
-  it('negative and positive returns positive', function() {
-    expect(modulo(-3, 4)).to.be(1);
-  });
-  it('negative and negative returns negative', function() {
-    expect(modulo(-4, -5)).to.be(-4);
-    expect(modulo(-3, -4)).to.be(-3);
-  });
-  it('positive and negative returns negative', function() {
-    expect(modulo(3, -4)).to.be(-1);
-    expect(modulo(1, -5)).to.be(-4);
-    expect(modulo(6, -5)).to.be(-4);
+  test('returns the correct value at 180', () => {
+    expect(toRadians(180)).toBe(Math.PI);
   });
 });
 
-describe('ol.math.lerp', function() {
-  it('correctly interpolated numbers', function() {
-    expect(lerp(0, 0, 0)).to.be(0);
-    expect(lerp(0, 1, 0)).to.be(0);
-    expect(lerp(1, 11, 5)).to.be(51);
+describe('ol.math.modulo', () => {
+  test('256 / 8 returns 0', () => {
+    expect(modulo(256, 8)).toBe(0);
   });
-  it('correctly interpolates floats', function() {
-    expect(lerp(0, 1, 0.5)).to.be(0.5);
-    expect(lerp(0.25, 0.75, 0.5)).to.be(0.5);
+  test('positive and positive returns a positive ', () => {
+    expect(modulo(7, 8)).toBe(7);
+  });
+  test('same Dividend and Divisor returns 0', () => {
+    expect(modulo(4, 4)).toBe(0);
+  });
+  test('negative and positive returns positive', () => {
+    expect(modulo(-3, 4)).toBe(1);
+  });
+  test('negative and negative returns negative', () => {
+    expect(modulo(-4, -5)).toBe(-4);
+    expect(modulo(-3, -4)).toBe(-3);
+  });
+  test('positive and negative returns negative', () => {
+    expect(modulo(3, -4)).toBe(-1);
+    expect(modulo(1, -5)).toBe(-4);
+    expect(modulo(6, -5)).toBe(-4);
+  });
+});
+
+describe('ol.math.lerp', () => {
+  test('correctly interpolated numbers', () => {
+    expect(lerp(0, 0, 0)).toBe(0);
+    expect(lerp(0, 1, 0)).toBe(0);
+    expect(lerp(1, 11, 5)).toBe(51);
+  });
+  test('correctly interpolates floats', () => {
+    expect(lerp(0, 1, 0.5)).toBe(0.5);
+    expect(lerp(0.25, 0.75, 0.5)).toBe(0.5);
   });
 });

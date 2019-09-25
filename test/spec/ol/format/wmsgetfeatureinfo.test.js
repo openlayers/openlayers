@@ -3,31 +3,31 @@ import {addCommon, clearAllProjections} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 
 
-describe('ol.format.WMSGetFeatureInfo', function() {
+describe('ol.format.WMSGetFeatureInfo', () => {
 
-  describe('#getLayers', function() {
+  describe('#getLayers', () => {
 
-    it('returns null if layers is undefined', function() {
+    test('returns null if layers is undefined', () => {
       const format = new WMSGetFeatureInfo();
-      expect(format.getLayers()).to.be(null);
+      expect(format.getLayers()).toBe(null);
     });
 
-    it('returns the value provided in the layers option', function() {
+    test('returns the value provided in the layers option', () => {
       const format = new WMSGetFeatureInfo({
         layers: ['a', 'z']
       });
-      expect(format.getLayers()).to.eql(['a', 'z']);
+      expect(format.getLayers()).toEqual(['a', 'z']);
     });
 
   });
 
-  describe('#readFormat', function() {
+  describe('#readFormat', () => {
 
-    describe('read Features', function() {
+    describe('read Features', () => {
 
       let features;
 
-      before(function(done) {
+      beforeAll(function(done) {
         proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
         register(proj4);
         afterLoadText('spec/ol/format/wms/getfeatureinfo.xml', function(data) {
@@ -40,31 +40,30 @@ describe('ol.format.WMSGetFeatureInfo', function() {
         });
       });
 
-      after(function() {
+      afterAll(function() {
         delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
         clearAllProjections();
         addCommon();
       });
 
-      it('creates 3 features', function() {
-        expect(features).to.have.length(3);
+      test('creates 3 features', () => {
+        expect(features).toHaveLength(3);
       });
 
-      it('creates a feature for 1071', function() {
+      test('creates a feature for 1071', () => {
         const feature = features[0];
-        expect(feature.getId()).to.be(undefined);
-        expect(feature.get('FID')).to.equal('1071');
-        expect(feature.get('NO_CAMPAGNE')).to.equal('1020050');
+        expect(feature.getId()).toBe(undefined);
+        expect(feature.get('FID')).toBe('1071');
+        expect(feature.get('NO_CAMPAGNE')).toBe('1020050');
       });
 
-      it('read boundedBy but no geometry', function() {
+      test('read boundedBy but no geometry', () => {
         const feature = features[0];
-        expect(feature.getGeometry()).to.be(undefined);
-        expect(feature.get('boundedBy')).to.eql(
-          [-531138.686422, 5386348.414671, -117252.819653, 6144475.186022]);
+        expect(feature.getGeometry()).toBe(undefined);
+        expect(feature.get('boundedBy')).toEqual([-531138.686422, 5386348.414671, -117252.819653, 6144475.186022]);
       });
 
-      it('read empty response', function() {
+      test('read empty response', () => {
         // read empty response
         const text = '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput xmlns:gml="http://www.opengis.net/gml"' +
@@ -74,10 +73,10 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '  </AAA64_layer>' +
             '</msGMLOutput>';
         const features = new WMSGetFeatureInfo().readFeatures(text);
-        expect(features.length).to.be(0);
+        expect(features.length).toBe(0);
       });
 
-      it('read empty attributes', function() {
+      test('read empty attributes', () => {
         const text =
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput ' +
@@ -99,13 +98,12 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '  </AAA64_layer>' +
             '</msGMLOutput>';
         const features = new WMSGetFeatureInfo().readFeatures(text);
-        expect(features.length).to.be(1);
-        expect(features[0].get('FOO')).to.be('bar');
-        // FIXME is that really wanted ?
-        expect(features[0].get('EMPTY')).to.be(undefined);
+        expect(features.length).toBe(1);
+        expect(features[0].get('FOO')).toBe('bar');
+        expect(features[0].get('EMPTY')).toBe(undefined);
       });
 
-      it('read features from multiple layers', function() {
+      test('read features from multiple layers', () => {
         const text =
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput ' +
@@ -160,21 +158,21 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '</msGMLOutput>';
         const format = new WMSGetFeatureInfo();
         const features = format.readFeatures(text);
-        expect(features.length).to.be(2);
-        expect(features[0].get('OBJECTID')).to.be('287');
-        expect(features[1].get('OBJECTID')).to.be('1251');
+        expect(features.length).toBe(2);
+        expect(features[0].get('OBJECTID')).toBe('287');
+        expect(features[1].get('OBJECTID')).toBe('1251');
         format.setLayers(['AAA64']);
         const aaa64Features = format.readFeatures(text);
-        expect(aaa64Features.length).to.be(1);
+        expect(aaa64Features.length).toBe(1);
         format.setLayers(['AAA64', 'AAA62']);
         const allFeatures = format.readFeatures(text);
-        expect(allFeatures.length).to.be(2);
+        expect(allFeatures.length).toBe(2);
         format.setLayers(['foo', 'bar']);
         const dummyFeatures = format.readFeatures(text);
-        expect(dummyFeatures.length).to.be(0);
+        expect(dummyFeatures.length).toBe(0);
       });
 
-      it('read geoserver’s response', function() {
+      test('read geoserver’s response', () => {
         const text =
             '<?xml version="1.0" encoding="UTF-8"?>' +
             '<wfs:FeatureCollection xmlns="http://www.opengis.net/wfs"' +
@@ -225,9 +223,9 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '  </gml:featureMember>' +
             '</wfs:FeatureCollection>';
         const features = new WMSGetFeatureInfo().readFeatures(text);
-        expect(features.length).to.be(1);
-        expect(features[0].get('cat')).to.be('3');
-        expect(features[0].getGeometry().getType()).to.be('MultiLineString');
+        expect(features.length).toBe(1);
+        expect(features[0].get('cat')).toBe('3');
+        expect(features[0].getGeometry().getType()).toBe('MultiLineString');
       });
 
     });

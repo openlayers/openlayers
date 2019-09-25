@@ -1,42 +1,42 @@
 import Disposable from '../../../src/ol/Disposable.js';
 
 
-describe('ol.Disposable', function() {
+describe('ol.Disposable', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('creates an instance', function() {
+    test('creates an instance', () => {
       const disposable = new Disposable();
-      expect(disposable).to.be.a(Disposable);
+      expect(disposable).toBeInstanceOf(Disposable);
     });
 
   });
 
-  describe('#disposed_', function() {
+  describe('#disposed_', () => {
 
-    it('is initially false', function() {
+    test('is initially false', () => {
       const disposable = new Disposable();
-      expect(disposable.disposed_).to.be(false);
+      expect(disposable.disposed_).toBe(false);
     });
 
-    it('is true after a call to dispose', function() {
+    test('is true after a call to dispose', () => {
       const disposable = new Disposable();
       disposable.dispose();
-      expect(disposable.disposed_).to.be(true);
+      expect(disposable.disposed_).toBe(true);
     });
 
   });
 
-  describe('#dispose()', function() {
+  describe('#dispose()', () => {
 
-    it('calls disposeInternal only once', function() {
+    test('calls disposeInternal only once', () => {
       const disposable = new Disposable();
       sinon.spy(disposable, 'disposeInternal');
-      expect(disposable.disposeInternal.called).to.be(false);
+      expect(disposable.disposeInternal.called).toBe(false);
       disposable.dispose();
-      expect(disposable.disposeInternal.callCount).to.be(1);
+      expect(disposable.disposeInternal.callCount).toBe(1);
       disposable.dispose();
-      expect(disposable.disposeInternal.callCount).to.be(1);
+      expect(disposable.disposeInternal.callCount).toBe(1);
     });
 
   });

@@ -2,134 +2,134 @@ import {get as getProjection} from '../../../../src/ol/proj.js';
 import Source from '../../../../src/ol/source/Source.js';
 
 
-describe('ol.source.Source', function() {
+describe('ol.source.Source', () => {
 
-  describe('constructor', function() {
-    it('returns a source', function() {
+  describe('constructor', () => {
+    test('returns a source', () => {
       const source = new Source({
         projection: getProjection('EPSG:4326')
       });
-      expect(source).to.be.a(Source);
+      expect(source).toBeInstanceOf(Source);
     });
   });
 
-  describe('config option `attributions`', function() {
-    it('accepts undefined', function() {
+  describe('config option `attributions`', () => {
+    test('accepts undefined', () => {
       const source = new Source({});
       const attributions = source.getAttributions();
-      expect(attributions).to.be(null);
+      expect(attributions).toBe(null);
     });
 
-    it('accepts a single string', function() {
+    test('accepts a single string', () => {
       const source = new Source({
         attributions: 'Humpty'
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty']);
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual(['Humpty']);
     });
 
-    it('accepts an array of strings', function() {
+    test('accepts an array of strings', () => {
       const source = new Source({
         attributions: ['Humpty', 'Dumpty']
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual(['Humpty', 'Dumpty']);
     });
 
-    it('accepts a function that returns a string', function() {
+    test('accepts a function that returns a string', () => {
       const source = new Source({
         attributions: function() {
           return 'Humpty';
         }
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.be('Humpty');
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toBe('Humpty');
     });
 
-    it('accepts a function that returns an array of strings', function() {
+    test('accepts a function that returns an array of strings', () => {
       const source = new Source({
         attributions: function() {
           return ['Humpty', 'Dumpty'];
         }
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual(['Humpty', 'Dumpty']);
     });
   });
 
-  describe('#refresh()', function() {
-    it('dispatches the change event', function() {
+  describe('#refresh()', () => {
+    test('dispatches the change event', () => {
       const source = new Source({
         projection: getProjection('EPSG:4326')
       });
       const changedSpy = sinon.spy();
       source.on('change', changedSpy);
       source.refresh();
-      expect(changedSpy.called).to.be.ok();
+      expect(changedSpy.called).toBeTruthy();
     });
   });
 
-  describe('#setAttributions()', function() {
+  describe('#setAttributions()', () => {
     let source = null;
 
-    beforeEach(function() {
+    beforeEach(() => {
       source = new Source({
         attributions: 'before'
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       source = null;
     });
 
-    it('accepts undefined', function() {
+    test('accepts undefined', () => {
       source.setAttributions();
       const attributions = source.getAttributions();
-      expect(attributions).to.be(null);
+      expect(attributions).toBe(null);
     });
 
-    it('accepts a single string', function() {
+    test('accepts a single string', () => {
       source.setAttributions('Humpty');
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty']);
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual(['Humpty']);
     });
 
-    it('accepts an array of strings', function() {
+    test('accepts an array of strings', () => {
       source.setAttributions(['Humpty', 'Dumpty']);
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual(['Humpty', 'Dumpty']);
     });
 
-    it('accepts a function that returns a string', function() {
+    test('accepts a function that returns a string', () => {
       source.setAttributions(function() {
         return 'Humpty';
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql('Humpty');
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual('Humpty');
     });
 
-    it('accepts a function that returns an array of strings', function() {
+    test('accepts a function that returns an array of strings', () => {
       source.setAttributions(function() {
         return ['Humpty', 'Dumpty'];
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      expect(attributions).not.toBe(null);
+      expect(typeof attributions).toBe('function');
+      expect(attributions()).toEqual(['Humpty', 'Dumpty']);
     });
   });
 

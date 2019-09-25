@@ -1,15 +1,15 @@
 import {assign, clear, isEmpty, getValues} from '../../../src/ol/obj.js';
 
 
-describe('ol.obj.assign()', function() {
+describe('ol.obj.assign()', () => {
 
-  it('is an alias for Object.assign() where available', function() {
+  test('is an alias for Object.assign() where available', () => {
     if (typeof Object.assign === 'function') {
-      expect(assign).to.be(Object.assign);
+      expect(assign).toBe(Object.assign);
     }
   });
 
-  it('assigns properties from a source object to a target object', function() {
+  test('assigns properties from a source object to a target object', () => {
 
     const source = {
       sourceProp1: 'sourceValue1',
@@ -22,54 +22,60 @@ describe('ol.obj.assign()', function() {
     };
 
     const assigned = assign(target, source);
-    expect(assigned).to.be(target);
-    expect(assigned.sourceProp1).to.be('sourceValue1');
-    expect(assigned.sourceProp2).to.be('sourceValue2');
-    expect(assigned.targetProp1).to.be('targetValue1');
+    expect(assigned).toBe(target);
+    expect(assigned.sourceProp1).toBe('sourceValue1');
+    expect(assigned.sourceProp2).toBe('sourceValue2');
+    expect(assigned.targetProp1).toBe('targetValue1');
 
   });
 
-  it('throws a TypeError with `undefined` as target', function() {
-    expect(assign).withArgs(undefined).to.throwException(function(e) {
-      expect(e).to.be.a(TypeError);
-    });
+  test('throws a TypeError with `undefined` as target', () => {
+    try {
+      assign();
+      throw Error('Function did not throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
-  it('throws a TypeError with `null` as target', function() {
-    expect(assign).withArgs(null).to.throwException(function(e) {
-      expect(e).to.be.a(TypeError);
-    });
-  });
-
-});
-
-describe('ol.obj.clear()', function() {
-
-  it('removes all properties from an object', function() {
-    expect(isEmpty(clear({foo: 'bar'}))).to.be(true);
-    expect(isEmpty(clear({foo: 'bar', num: 42}))).to.be(true);
-    expect(isEmpty(clear({}))).to.be(true);
-    expect(isEmpty(clear(null))).to.be(true);
+  test('throws a TypeError with `null` as target', () => {
+    try {
+      assign();
+      throw Error('Function did not throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
 });
 
-describe('ol.obj.getValues()', function() {
+describe('ol.obj.clear()', () => {
 
-  it('gets a list of property values from an object', function() {
-    expect(getValues({foo: 'bar', num: 42}).sort()).to.eql([42, 'bar']);
-    expect(getValues([])).to.eql([]);
+  test('removes all properties from an object', () => {
+    expect(isEmpty(clear({foo: 'bar'}))).toBe(true);
+    expect(isEmpty(clear({foo: 'bar', num: 42}))).toBe(true);
+    expect(isEmpty(clear({}))).toBe(true);
+    expect(isEmpty(clear(null))).toBe(true);
   });
 
 });
 
-describe('ol.obj.isEmpty()', function() {
+describe('ol.obj.getValues()', () => {
 
-  it('checks if an object has any properties', function() {
-    expect(isEmpty({})).to.be(true);
-    expect(isEmpty(null)).to.be(true);
-    expect(isEmpty({foo: 'bar'})).to.be(false);
-    expect(isEmpty({foo: false})).to.be(false);
+  test('gets a list of property values from an object', () => {
+    expect(getValues({foo: 'bar', num: 42}).sort()).toEqual([42, 'bar']);
+    expect(getValues([])).toEqual([]);
+  });
+
+});
+
+describe('ol.obj.isEmpty()', () => {
+
+  test('checks if an object has any properties', () => {
+    expect(isEmpty({})).toBe(true);
+    expect(isEmpty(null)).toBe(true);
+    expect(isEmpty({foo: 'bar'})).toBe(false);
+    expect(isEmpty({foo: false})).toBe(false);
   });
 
 });

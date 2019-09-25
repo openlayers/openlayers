@@ -3,40 +3,40 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {OSM, XYZ} from '../../../../src/ol/source.js';
 
 
-describe('ol.layer.Tile', function() {
+describe('ol.layer.Tile', () => {
 
-  describe('constructor (defaults)', function() {
+  describe('constructor (defaults)', () => {
 
     let layer;
 
-    beforeEach(function() {
+    beforeEach(() => {
       layer = new TileLayer({
         source: new OSM()
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       layer.dispose();
     });
 
-    it('creates an instance', function() {
-      expect(layer).to.be.a(TileLayer);
+    test('creates an instance', () => {
+      expect(layer).toBeInstanceOf(TileLayer);
     });
 
-    it('provides default preload', function() {
-      expect(layer.getPreload()).to.be(0);
+    test('provides default preload', () => {
+      expect(layer.getPreload()).toBe(0);
     });
 
-    it('provides default useInterimTilesOnError', function() {
-      expect(layer.getUseInterimTilesOnError()).to.be(true);
+    test('provides default useInterimTilesOnError', () => {
+      expect(layer.getUseInterimTilesOnError()).toBe(true);
     });
 
   });
 
-  describe('frameState.animate after tile transition with layer opacity', function() {
+  describe('frameState.animate after tile transition with layer opacity', () => {
     let target, map;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       target = document.createElement('div');
       Object.assign(target.style, {
         position: 'absolute',
@@ -57,12 +57,12 @@ describe('ol.layer.Tile', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('sets frameState.animate to false when opacity is 1', function(done) {
+    test('sets frameState.animate to false when opacity is 1', done => {
       let lastFrameState;
       const layer = new TileLayer({
         opacity: 1,
@@ -75,14 +75,14 @@ describe('ol.layer.Tile', function() {
       });
 
       map.once('rendercomplete', function() {
-        expect(lastFrameState.animate).to.be(false);
+        expect(lastFrameState.animate).toBe(false);
         done();
       });
 
       map.addLayer(layer);
     });
 
-    it('sets frameState.animate to false when opacity is 0.5', function(done) {
+    test('sets frameState.animate to false when opacity is 0.5', done => {
       let lastFrameState;
       const layer = new TileLayer({
         opacity: 0.5,
@@ -95,7 +95,7 @@ describe('ol.layer.Tile', function() {
       });
 
       map.once('rendercomplete', function() {
-        expect(lastFrameState.animate).to.be(false);
+        expect(lastFrameState.animate).toBe(false);
         done();
       });
 

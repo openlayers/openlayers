@@ -3,10 +3,10 @@ import TileCache from '../../../src/ol/TileCache.js';
 import {getKey} from '../../../src/ol/tilecoord.js';
 
 
-describe('ol.TileCache', function() {
+describe('ol.TileCache', () => {
 
-  describe('#pruneExceptNewestZ()', function() {
-    it('gets rid of all entries that are not at the newest z', function() {
+  describe('#pruneExceptNewestZ()', () => {
+    test('gets rid of all entries that are not at the newest z', () => {
       const tiles = [
         new Tile([0, 0, 0]),
         new Tile([1, 0, 0]),
@@ -26,14 +26,14 @@ describe('ol.TileCache', function() {
 
       cache.pruneExceptNewestZ();
 
-      expect(cache.getKeys()).to.eql([
+      expect(cache.getKeys()).toEqual([
         '2/3/0',
         '2/2/0',
         '2/1/0',
         '2/0/0'
       ]);
 
-      expect(tiles[0].dispose.calledOnce).to.be(true);
+      expect(tiles[0].dispose.calledOnce).toBe(true);
     });
   });
 });

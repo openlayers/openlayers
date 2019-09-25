@@ -3,81 +3,79 @@ import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 
 
-describe('ol.style.RegularShape', function() {
+describe('ol.style.RegularShape', () => {
 
-  describe('#constructor', function() {
+  describe('#constructor', () => {
 
-    it('can use rotateWithView', function() {
+    test('can use rotateWithView', () => {
       const style = new RegularShape({
         rotateWithView: true,
         radius: 0
       });
-      expect(style.getRotateWithView()).to.be(true);
+      expect(style.getRotateWithView()).toBe(true);
     });
 
-    it('can use radius', function() {
+    test('can use radius', () => {
       const style = new RegularShape({
         radius: 5,
         radius2: 10
       });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(10);
+      expect(style.getRadius()).toEqual(5);
+      expect(style.getRadius2()).toEqual(10);
     });
 
-    it('can use radius1 as an alias for radius', function() {
+    test('can use radius1 as an alias for radius', () => {
       const style = new RegularShape({
         radius1: 5,
         radius2: 10
       });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(10);
+      expect(style.getRadius()).toEqual(5);
+      expect(style.getRadius2()).toEqual(10);
     });
 
-    it('creates a canvas (no fill-style)', function() {
+    test('creates a canvas (no fill-style)', () => {
       const style = new RegularShape({radius: 10});
-      expect(style.getImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([21, 21]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
-      // hit-detection image is created, because no fill style is set
-      expect(style.getImage()).to.not.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+      expect(style.getImage()).toBeInstanceOf(HTMLCanvasElement);
+      expect(style.getSize()).toEqual([21, 21]);
+      expect(style.getImageSize()).toEqual([21, 21]);
+      expect(style.getOrigin()).toEqual([0, 0]);
+      expect(style.getAnchor()).toEqual([10.5, 10.5]);
+      expect(style.getImage()).not.toBe(style.getHitDetectionImage());
+      expect(style.getHitDetectionImage()).toBeInstanceOf(HTMLCanvasElement);
+      expect(style.getHitDetectionImageSize()).toEqual([21, 21]);
     });
 
-    it('creates a canvas (fill-style)', function() {
+    test('creates a canvas (fill-style)', () => {
       const style = new RegularShape({
         radius: 10,
         fill: new Fill({
           color: '#FFFF00'
         })
       });
-      expect(style.getImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([21, 21]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
-      // no hit-detection image is created, because fill style is set
-      expect(style.getImage()).to.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+      expect(style.getImage()).toBeInstanceOf(HTMLCanvasElement);
+      expect(style.getSize()).toEqual([21, 21]);
+      expect(style.getImageSize()).toEqual([21, 21]);
+      expect(style.getOrigin()).toEqual([0, 0]);
+      expect(style.getAnchor()).toEqual([10.5, 10.5]);
+      expect(style.getImage()).toBe(style.getHitDetectionImage());
+      expect(style.getHitDetectionImage()).toBeInstanceOf(HTMLCanvasElement);
+      expect(style.getHitDetectionImageSize()).toEqual([21, 21]);
     });
 
   });
 
-  describe('#clone', function() {
+  describe('#clone', () => {
 
-    it('creates a new ol.style.RegularShape', function() {
+    test('creates a new ol.style.RegularShape', () => {
       const original = new RegularShape({
         points: 5
       });
       const clone = original.clone();
-      expect(clone).to.be.an(RegularShape);
-      expect(clone).to.not.be(original);
+      expect(clone).toBeInstanceOf(RegularShape);
+      expect(clone).not.toBe(original);
     });
 
-    it('copies all values', function() {
+    test('copies all values', () => {
       const original = new RegularShape({
         fill: new Fill({
           color: '#319FD3'
@@ -95,36 +93,39 @@ describe('ol.style.RegularShape', function() {
       original.setOpacity(0.5);
       original.setScale(1.5);
       const clone = original.clone();
-      expect(original.getAngle()).to.eql(clone.getAngle());
-      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
-      expect(original.getOpacity()).to.eql(clone.getOpacity());
-      expect(original.getPoints()).to.eql(clone.getPoints());
-      expect(original.getRadius()).to.eql(clone.getRadius());
-      expect(original.getRadius2()).to.eql(clone.getRadius2());
-      expect(original.getRotation()).to.eql(clone.getRotation());
-      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
-      expect(original.getScale()).to.eql(clone.getScale());
-      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getAngle()).toEqual(clone.getAngle());
+      expect(original.getFill().getColor()).toEqual(clone.getFill().getColor());
+      expect(original.getOpacity()).toEqual(clone.getOpacity());
+      expect(original.getPoints()).toEqual(clone.getPoints());
+      expect(original.getRadius()).toEqual(clone.getRadius());
+      expect(original.getRadius2()).toEqual(clone.getRadius2());
+      expect(original.getRotation()).toEqual(clone.getRotation());
+      expect(original.getRotateWithView()).toEqual(clone.getRotateWithView());
+      expect(original.getScale()).toEqual(clone.getScale());
+      expect(original.getStroke().getColor()).toEqual(clone.getStroke().getColor());
     });
 
-    it('the clone does not reference the same objects as the original', function() {
-      const original = new RegularShape({
-        fill: new Fill({
-          color: '#319FD3'
-        }),
-        stroke: new Stroke({
-          color: '#319FD3'
-        })
-      });
-      const clone = original.clone();
-      expect(original.getFill()).to.not.be(clone.getFill());
-      expect(original.getStroke()).to.not.be(clone.getStroke());
+    test(
+      'the clone does not reference the same objects as the original',
+      () => {
+        const original = new RegularShape({
+          fill: new Fill({
+            color: '#319FD3'
+          }),
+          stroke: new Stroke({
+            color: '#319FD3'
+          })
+        });
+        const clone = original.clone();
+        expect(original.getFill()).not.toBe(clone.getFill());
+        expect(original.getStroke()).not.toBe(clone.getStroke());
 
-      clone.getFill().setColor('#012345');
-      clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(clone.getFill().getColor());
-      expect(original.getStroke().getColor()).to.not.eql(clone.getStroke().getColor());
-    });
+        clone.getFill().setColor('#012345');
+        clone.getStroke().setColor('#012345');
+        expect(original.getFill().getColor()).not.toEqual(clone.getFill().getColor());
+        expect(original.getStroke().getColor()).not.toEqual(clone.getStroke().getColor());
+      }
+    );
   });
 
 });

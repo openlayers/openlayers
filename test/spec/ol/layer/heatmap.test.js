@@ -1,13 +1,13 @@
 import HeatmapLayer from '../../../../src/ol/layer/Heatmap.js';
 
 
-describe('ol.layer.Heatmap', function() {
+describe('ol.layer.Heatmap', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new HeatmapLayer();
-      expect(instance).to.be.an(HeatmapLayer);
+      expect(instance).toBeInstanceOf(HeatmapLayer);
     });
 
   });

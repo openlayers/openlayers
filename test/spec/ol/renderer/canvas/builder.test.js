@@ -17,9 +17,9 @@ import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import {create as createTransform, scale as scaleTransform} from '../../../../../src/ol/transform.js';
 
-describe('ol.render.canvas.BuilderGroup', function() {
+describe('ol.render.canvas.BuilderGroup', () => {
 
-  describe('#replay', function() {
+  describe('#replay', () => {
 
     let context, builder, fillCount, transform;
     let strokeCount, beginPathCount, moveToCount, lineToCount;
@@ -37,7 +37,7 @@ describe('ol.render.canvas.BuilderGroup', function() {
       executor.execute(context, transform, 0, false);
     }
 
-    beforeEach(function() {
+    beforeEach(() => {
       transform = createTransform();
       builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
@@ -98,65 +98,65 @@ describe('ol.render.canvas.BuilderGroup', function() {
 
     });
 
-    it('omits lineTo for repeated coordinates', function() {
+    test('omits lineTo for repeated coordinates', () => {
       renderFeature(builder, feature0, fill0, 1);
       execute(builder);
-      expect(lineToCount).to.be(4);
+      expect(lineToCount).toBe(4);
       lineToCount = 0;
       scaleTransform(transform, 0.25, 0.25);
       execute(builder);
-      expect(lineToCount).to.be(3);
+      expect(lineToCount).toBe(3);
     });
 
-    it('does not omit moveTo for repeated coordinates', function() {
+    test('does not omit moveTo for repeated coordinates', () => {
       renderFeature(builder, feature0, fill0, 1);
       renderFeature(builder, feature1, fill1, 1);
       execute(builder);
-      expect(moveToCount).to.be(2);
+      expect(moveToCount).toBe(2);
     });
 
-    it('batches fill and stroke instructions for same style', function() {
+    test('batches fill and stroke instructions for same style', () => {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder);
-      expect(fillCount).to.be(1);
-      expect(strokeCount).to.be(1);
-      expect(beginPathCount).to.be(1);
+      expect(fillCount).toBe(1);
+      expect(strokeCount).toBe(1);
+      expect(beginPathCount).toBe(1);
     });
 
-    it('batches fill and stroke instructions for different styles', function() {
+    test('batches fill and stroke instructions for different styles', () => {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style2, 1);
       execute(builder);
-      expect(fillCount).to.be(2);
-      expect(strokeCount).to.be(2);
-      expect(beginPathCount).to.be(2);
+      expect(fillCount).toBe(2);
+      expect(strokeCount).toBe(2);
+      expect(beginPathCount).toBe(2);
     });
 
-    it('batches fill and stroke instructions for changing styles', function() {
+    test('batches fill and stroke instructions for changing styles', () => {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style2, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder);
-      expect(fillCount).to.be(3);
-      expect(strokeCount).to.be(3);
-      expect(beginPathCount).to.be(3);
+      expect(fillCount).toBe(3);
+      expect(strokeCount).toBe(3);
+      expect(beginPathCount).toBe(3);
     });
 
-    it('does not batch when overlaps is set to true', function() {
+    test('does not batch when overlaps is set to true', () => {
       builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder, {}, 1, true);
-      expect(fillCount).to.be(3);
-      expect(strokeCount).to.be(3);
-      expect(beginPathCount).to.be(3);
+      expect(fillCount).toBe(3);
+      expect(strokeCount).toBe(3);
+      expect(beginPathCount).toBe(3);
     });
 
-    it('applies the pixelRatio to the linedash array and offset', function() {
+    test('applies the pixelRatio to the linedash array and offset', () => {
       // replay with a pixelRatio of 2
       builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 2, true);
 
@@ -179,16 +179,16 @@ describe('ol.render.canvas.BuilderGroup', function() {
       renderFeature(builder, feature2, style2, 1);
       execute(builder, {}, 2, true);
 
-      expect(lineDashCount).to.be(1);
-      expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
-      expect(lineDash).to.eql([6, 12]);
+      expect(lineDashCount).toBe(1);
+      expect(style2.getStroke().getLineDash()).toEqual([3, 6]);
+      expect(lineDash).toEqual([6, 12]);
 
-      expect(lineDashOffsetCount).to.be(1);
-      expect(style2.getStroke().getLineDashOffset()).to.be(2);
-      expect(lineDashOffset).to.be(4);
+      expect(lineDashOffsetCount).toBe(1);
+      expect(style2.getStroke().getLineDashOffset()).toBe(2);
+      expect(lineDashOffset).toBe(4);
     });
 
-    it('calls the renderer function configured for the style', function() {
+    test('calls the renderer function configured for the style', () => {
       const calls = [];
       const style = new Style({
         renderer: function(coords, state) {
@@ -225,198 +225,225 @@ describe('ol.render.canvas.BuilderGroup', function() {
       renderFeature(builder, geometrycollection, style, 1);
       scaleTransform(transform, 0.1, 0.1);
       execute(builder, 1, true);
-      expect(calls.length).to.be(9);
-      expect(calls[0].geometry).to.be(point.getGeometry());
-      expect(calls[0].feature).to.be(point);
-      expect(calls[0].context).to.be(context);
-      expect(calls[0].pixelRatio).to.be(1);
-      expect(calls[0].rotation).to.be(0);
-      expect(calls[0].resolution).to.be(1);
-      expect(calls[0].coords).to.eql([4.5, 9]);
-      expect(calls[1].feature).to.be(multipoint);
-      expect(calls[1].coords[0]).to.eql([4.5, 9]);
-      expect(calls[2].feature).to.be(linestring);
-      expect(calls[2].coords[0]).to.eql([4.5, 9]);
-      expect(calls[3].feature).to.be(multilinestring);
-      expect(calls[3].coords[0][0]).to.eql([4.5, 9]);
-      expect(calls[4].feature).to.be(polygon);
-      expect(calls[4].coords[0][0]).to.eql([-9, -4.5]);
-      expect(calls[5].feature).to.be(multipolygon);
-      expect(calls[5].coords[0][0][0]).to.eql([-9, -4.5]);
-      expect(calls[6].feature).to.be(geometrycollection);
-      expect(calls[6].geometry.getCoordinates()).to.eql([45, 90]);
-      expect(calls[7].geometry.getCoordinates()[0]).to.eql([45, 90]);
-      expect(calls[8].geometry.getCoordinates()[0][0]).to.eql([-90, -45]);
+      expect(calls.length).toBe(9);
+      expect(calls[0].geometry).toBe(point.getGeometry());
+      expect(calls[0].feature).toBe(point);
+      expect(calls[0].context).toBe(context);
+      expect(calls[0].pixelRatio).toBe(1);
+      expect(calls[0].rotation).toBe(0);
+      expect(calls[0].resolution).toBe(1);
+      expect(calls[0].coords).toEqual([4.5, 9]);
+      expect(calls[1].feature).toBe(multipoint);
+      expect(calls[1].coords[0]).toEqual([4.5, 9]);
+      expect(calls[2].feature).toBe(linestring);
+      expect(calls[2].coords[0]).toEqual([4.5, 9]);
+      expect(calls[3].feature).toBe(multilinestring);
+      expect(calls[3].coords[0][0]).toEqual([4.5, 9]);
+      expect(calls[4].feature).toBe(polygon);
+      expect(calls[4].coords[0][0]).toEqual([-9, -4.5]);
+      expect(calls[5].feature).toBe(multipolygon);
+      expect(calls[5].coords[0][0][0]).toEqual([-9, -4.5]);
+      expect(calls[6].feature).toBe(geometrycollection);
+      expect(calls[6].geometry.getCoordinates()).toEqual([45, 90]);
+      expect(calls[7].geometry.getCoordinates()[0]).toEqual([45, 90]);
+      expect(calls[8].geometry.getCoordinates()[0][0]).toEqual([-90, -45]);
     });
   });
 
 });
 
-describe('ol.render.canvas.Builder', function() {
+describe('ol.render.canvas.Builder', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('creates a new replay batch', function() {
+    test('creates a new replay batch', () => {
       const tolerance = 10;
       const extent = [-180, -90, 180, 90];
       const replay = new CanvasBuilder(tolerance, extent, 1, 1, true);
-      expect(replay).to.be.a(CanvasBuilder);
+      expect(replay).toBeInstanceOf(CanvasBuilder);
     });
 
   });
 
-  describe('#appendFlatCoordinates()', function() {
+  describe('#appendFlatCoordinates()', () => {
 
     let replay;
-    beforeEach(function() {
+    beforeEach(() => {
       replay = new CanvasBuilder(1, [-180, -90, 180, 90], 1, 1, true);
     });
 
-    it('appends coordinates that are within the max extent', function() {
+    test('appends coordinates that are within the max extent', () => {
       const flat = [-110, 45, 110, 45, 110, -45, -110, -45];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('appends polygon coordinates that are within the max extent', function() {
+    test('appends polygon coordinates that are within the max extent', () => {
       const flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('appends polygon coordinates that are within the max extent (skipping first)', function() {
-      const flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([110, 45, 110, -45, -110, -45, -110, 45]);
-    });
+    test(
+      'appends polygon coordinates that are within the max extent (skipping first)',
+      () => {
+        const flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+        expect(replay.coordinates).toEqual([110, 45, 110, -45, -110, -45, -110, 45]);
+      }
+    );
 
-    it('works with a single coordinate (inside)', function() {
+    test('works with a single coordinate (inside)', () => {
       const flat = [-110, 45];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('always appends first point (even if outside)', function() {
+    test('always appends first point (even if outside)', () => {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first point
       const flat = [-110, 145];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('always appends first polygon vertex (even if outside)', function() {
+    test('always appends first polygon vertex (even if outside)', () => {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first point
       const flat = [-110, 145, -110, 145];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('skips first polygon vertex upon request (also when outside)', function() {
-      const flat = [-110, 145, -110, 145];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([-110, 145]);
-    });
+    test(
+      'skips first polygon vertex upon request (also when outside)',
+      () => {
+        const flat = [-110, 145, -110, 145];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+        expect(replay.coordinates).toEqual([-110, 145]);
+      }
+    );
 
-    it('appends points when segments cross (top to bottom)', function() {
+    test('appends points when segments cross (top to bottom)', () => {
       // this means we get a few extra points when coordinates are not
       // part of a linestring or ring, but only a few extra
       const flat = [0, 200, 0, -200];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('appends points when segments cross (top to inside)', function() {
+    test('appends points when segments cross (top to inside)', () => {
       const flat = [0, 200, 0, 0];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('always appends the first segment (even when outside)', function() {
+    test('always appends the first segment (even when outside)', () => {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first segment
       const flat = [-10, 200, 10, 200];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      expect(replay.coordinates).toEqual(flat);
     });
 
-    it('always appends the first polygon segment (even when outside)', function() {
-      // this could be changed, but to make the code simpler for properly
-      // closing rings, we always add the first segment
-      const flat = [-10, 200, 10, 200, -10, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
-    });
+    test(
+      'always appends the first polygon segment (even when outside)',
+      () => {
+        // this could be changed, but to make the code simpler for properly
+        // closing rings, we always add the first segment
+        const flat = [-10, 200, 10, 200, -10, 200];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
+        expect(replay.coordinates).toEqual(flat);
+      }
+    );
 
-    it('skips first polygon segment upon request (also when outside)', function() {
-      const flat = [-10, 200, 10, 200, -10, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([10, 200, -10, 200]);
-    });
+    test(
+      'skips first polygon segment upon request (also when outside)',
+      () => {
+        const flat = [-10, 200, 10, 200, -10, 200];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+        expect(replay.coordinates).toEqual([10, 200, -10, 200]);
+      }
+    );
 
-    it('eliminates segments outside (and not changing rel)', function() {
+    test('eliminates segments outside (and not changing rel)', () => {
       const flat = [0, 0, 0, 200, 5, 200, 10, 200];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200]);
+      expect(replay.coordinates).toEqual([0, 0, 0, 200]);
     });
 
-    it('eliminates polygon segments outside (and not changing rel)', function() {
+    test('eliminates polygon segments outside (and not changing rel)', () => {
       const flat = [0, 0, 0, 200, 5, 200, 10, 200, 0, 0];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200, 10, 200, 0, 0]);
+      expect(replay.coordinates).toEqual([0, 0, 0, 200, 10, 200, 0, 0]);
     });
 
-    it('eliminates polygon segments outside (skipping first and not changing rel)', function() {
-      const flat = [0, 0, 0, 10, 0, 200, 5, 200, 10, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([0, 10, 0, 200, 10, 200, 0, 0]);
-    });
+    test(
+      'eliminates polygon segments outside (skipping first and not changing rel)',
+      () => {
+        const flat = [0, 0, 0, 10, 0, 200, 5, 200, 10, 200, 0, 0];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+        expect(replay.coordinates).toEqual([0, 10, 0, 200, 10, 200, 0, 0]);
+      }
+    );
 
-    it('eliminates segments outside (and not changing rel)', function() {
+    test('eliminates segments outside (and not changing rel)', () => {
       const flat = [0, 0, 0, 200, 10, 200];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200]);
+      expect(replay.coordinates).toEqual([0, 0, 0, 200]);
     });
 
-    it('includes polygon segments outside (and not changing rel) when on last segment', function() {
-      const flat = [0, 0, 0, 200, 10, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
-    });
+    test(
+      'includes polygon segments outside (and not changing rel) when on last segment',
+      () => {
+        const flat = [0, 0, 0, 200, 10, 200, 0, 0];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
+        expect(replay.coordinates).toEqual(flat);
+      }
+    );
 
-    it('includes polygon segments outside (skipping first and not changing rel) when on last segment', function() {
-      const flat = [0, 0, 0, 200, 10, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([0, 200, 10, 200, 0, 0]);
-    });
+    test(
+      'includes polygon segments outside (skipping first and not changing rel) when on last segment',
+      () => {
+        const flat = [0, 0, 0, 200, 10, 200, 0, 0];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+        expect(replay.coordinates).toEqual([0, 200, 10, 200, 0, 0]);
+      }
+    );
 
-    it('includes outside segments that change relationship', function() {
+    test('includes outside segments that change relationship', () => {
       const flat = [0, 0, 0, 200, 200, 200, 250, 200];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200, 200, 200]);
+      expect(replay.coordinates).toEqual([0, 0, 0, 200, 200, 200]);
     });
 
-    it('includes outside polygon segments that change relationship when on last segment', function() {
-      const flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
-    });
+    test(
+      'includes outside polygon segments that change relationship when on last segment',
+      () => {
+        const flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
+        expect(replay.coordinates).toEqual(flat);
+      }
+    );
 
-    it('includes outside polygon segments that change relationship when on last segment (when skipping first)', function() {
-      const flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([0, 200, 200, 200, 250, 200, 0, 0]);
-    });
+    test(
+      'includes outside polygon segments that change relationship when on last segment (when skipping first)',
+      () => {
+        const flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
+        replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+        expect(replay.coordinates).toEqual([0, 200, 200, 200, 250, 200, 0, 0]);
+      }
+    );
 
   });
 
 });
 
-describe('ol.render.canvas.LineStringBuilder', function() {
+describe('ol.render.canvas.LineStringBuilder', () => {
 
-  describe('#getBufferedMaxExtent()', function() {
+  describe('#getBufferedMaxExtent()', () => {
 
-    it('buffers the max extent to accommodate stroke width', function() {
+    test('buffers the max extent to accommodate stroke width', () => {
       const tolerance = 1;
       const extent = [-180, -90, 180, 90];
       const resolution = 10;
@@ -427,18 +454,18 @@ describe('ol.render.canvas.LineStringBuilder', function() {
       });
       replay.setFillStrokeStyle(null, stroke);
       const buffered = replay.getBufferedMaxExtent();
-      expect(buffered).to.eql([-195, -105, 195, 105]);
+      expect(buffered).toEqual([-195, -105, 195, 105]);
     });
 
   });
 
 });
 
-describe('ol.render.canvas.PolygonBuilder', function() {
+describe('ol.render.canvas.PolygonBuilder', () => {
 
   let replay;
 
-  beforeEach(function() {
+  beforeEach(() => {
     const tolerance = 1;
     const extent = [-180, -90, 180, 90];
     const resolution = 10;
@@ -446,8 +473,8 @@ describe('ol.render.canvas.PolygonBuilder', function() {
       resolution);
   });
 
-  describe('#drawFlatCoordinatess_()', function() {
-    it('returns correct offset', function() {
+  describe('#drawFlatCoordinatess_()', () => {
+    test('returns correct offset', () => {
       const coords = [1, 2, 3, 4, 5, 6, 1, 2, 1, 2, 3, 4, 5, 6, 1, 2];
       const ends = [7, 14];
       const stroke = new Stroke({
@@ -455,22 +482,22 @@ describe('ol.render.canvas.PolygonBuilder', function() {
       });
       replay.setFillStrokeStyle(null, stroke);
       let offset = replay.drawFlatCoordinatess_(coords, 0, ends, 2);
-      expect(offset).to.be(14);
+      expect(offset).toBe(14);
       replay.setFillStrokeStyle(null, null);
       offset = replay.drawFlatCoordinatess_(coords, 0, ends, 2);
-      expect(offset).to.be(14);
+      expect(offset).toBe(14);
     });
   });
 
-  describe('#getBufferedMaxExtent()', function() {
+  describe('#getBufferedMaxExtent()', () => {
 
-    it('buffers the max extent to accommodate stroke width', function() {
+    test('buffers the max extent to accommodate stroke width', () => {
       const stroke = new Stroke({
         width: 5
       });
       replay.setFillStrokeStyle(null, stroke);
       const buffered = replay.getBufferedMaxExtent();
-      expect(buffered).to.eql([-210, -120, 210, 120]);
+      expect(buffered).toEqual([-210, -120, 210, 120]);
     });
 
   });

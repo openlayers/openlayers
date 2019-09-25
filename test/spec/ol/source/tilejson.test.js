@@ -3,35 +3,35 @@ import TileJSON from '../../../../src/ol/source/TileJSON.js';
 import {unByKey} from '../../../../src/ol/Observable.js';
 
 
-describe('ol.source.TileJSON', function() {
+describe('ol.source.TileJSON', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('returns a tileJSON source', function() {
+    test('returns a tileJSON source', () => {
       const source = new TileJSON({
         url: 'spec/ol/data/tilejson.json'
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(TileJSON);
+      expect(source).toBeInstanceOf(Source);
+      expect(source).toBeInstanceOf(TileJSON);
     });
   });
 
-  describe('#getTileJSON', function() {
+  describe('#getTileJSON', () => {
 
-    it('parses the tilejson file', function() {
+    test('parses the tilejson file', () => {
       const source = new TileJSON({
         url: 'spec/ol/data/tilejson.json'
       });
       source.on('change', function() {
         if (source.getState() === 'ready') {
           const tileJSON = source.getTileJSON();
-          expect(tileJSON.name).to.eql('Geography Class');
-          expect(tileJSON.version).to.eql('1.0.0');
+          expect(tileJSON.name).toEqual('Geography Class');
+          expect(tileJSON.version).toEqual('1.0.0');
         }
       });
     });
 
-    it ('parses inline TileJSON', function() {
+    test('parses inline TileJSON', () => {
       const tileJSON = {
         bounds: [
           -180,
@@ -68,54 +68,54 @@ describe('ol.source.TileJSON', function() {
       const source = new TileJSON({
         tileJSON: tileJSON
       });
-      expect(source.getState()).to.be('ready');
-      expect(source.getTileUrlFunction()([0, 0, 0])).to.be('https://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png');
-      expect(source.getTileUrlFunction()([1, 0, 0])).to.be('https://a.tiles.mapbox.com/v3/mapbox.geography-class/1/0/0.png');
-      expect(source.getTileUrlFunction()([1, 0, 1])).to.be('https://b.tiles.mapbox.com/v3/mapbox.geography-class/1/0/1.png');
-      expect(source.getTileUrlFunction()([1, 1, 0])).to.be('https://c.tiles.mapbox.com/v3/mapbox.geography-class/1/1/0.png');
-      expect(source.getTileUrlFunction()([1, 1, 1])).to.be('https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png');
+      expect(source.getState()).toBe('ready');
+      expect(source.getTileUrlFunction()([0, 0, 0])).toBe('https://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png');
+      expect(source.getTileUrlFunction()([1, 0, 0])).toBe('https://a.tiles.mapbox.com/v3/mapbox.geography-class/1/0/0.png');
+      expect(source.getTileUrlFunction()([1, 0, 1])).toBe('https://b.tiles.mapbox.com/v3/mapbox.geography-class/1/0/1.png');
+      expect(source.getTileUrlFunction()([1, 1, 0])).toBe('https://c.tiles.mapbox.com/v3/mapbox.geography-class/1/1/0.png');
+      expect(source.getTileUrlFunction()([1, 1, 1])).toBe('https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png');
     });
   });
 
-  describe('#getState', function() {
+  describe('#getState', () => {
 
-    it('returns error on HTTP 404', function() {
+    test('returns error on HTTP 404', () => {
       const source = new TileJSON({
         url: 'invalid.jsonp'
       });
       source.on('change', function() {
-        expect(source.getState()).to.eql('error');
-        expect(source.getTileJSON()).to.eql(null);
+        expect(source.getState()).toEqual('error');
+        expect(source.getTileJSON()).toEqual(null);
       });
     });
 
-    it('returns error on CORS issues', function() {
+    test('returns error on CORS issues', () => {
       const source = new TileJSON({
         url: 'http://example.com'
       });
       source.on('change', function() {
-        expect(source.getState()).to.eql('error');
-        expect(source.getTileJSON()).to.eql(null);
+        expect(source.getState()).toEqual('error');
+        expect(source.getTileJSON()).toEqual(null);
       });
     });
 
-    it('returns error on JSON parsing issues', function() {
+    test('returns error on JSON parsing issues', () => {
       const source = new TileJSON({
         url: '/'
       });
       source.on('change', function() {
-        expect(source.getState()).to.eql('error');
-        expect(source.getTileJSON()).to.eql(null);
+        expect(source.getState()).toEqual('error');
+        expect(source.getTileJSON()).toEqual(null);
       });
     });
 
   });
 
-  describe('tileUrlFunction', function() {
+  describe('tileUrlFunction', () => {
 
     let source, tileGrid;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       source = new TileJSON({
         url: 'spec/ol/data/tilejson.json'
       });
@@ -128,7 +128,7 @@ describe('ol.source.TileJSON', function() {
       });
     });
 
-    it('uses the correct tile coordinates', function() {
+    test('uses the correct tile coordinates', () => {
 
       const coordinate = [829330.2064098881, 5933916.615134273];
       const regex = /\/([0-9]*\/[0-9]*\/[0-9]*)\.png$/;
@@ -136,31 +136,31 @@ describe('ol.source.TileJSON', function() {
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 0));
-      expect(tileUrl.match(regex)[1]).to.eql('0/0/0');
+      expect(tileUrl.match(regex)[1]).toEqual('0/0/0');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 1));
-      expect(tileUrl.match(regex)[1]).to.eql('1/1/0');
+      expect(tileUrl.match(regex)[1]).toEqual('1/1/0');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 2));
-      expect(tileUrl.match(regex)[1]).to.eql('2/2/1');
+      expect(tileUrl.match(regex)[1]).toEqual('2/2/1');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 3));
-      expect(tileUrl.match(regex)[1]).to.eql('3/4/2');
+      expect(tileUrl.match(regex)[1]).toEqual('3/4/2');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 4));
-      expect(tileUrl.match(regex)[1]).to.eql('4/8/5');
+      expect(tileUrl.match(regex)[1]).toEqual('4/8/5');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 5));
-      expect(tileUrl.match(regex)[1]).to.eql('5/16/11');
+      expect(tileUrl.match(regex)[1]).toEqual('5/16/11');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 6));
-      expect(tileUrl.match(regex)[1]).to.eql('6/33/22');
+      expect(tileUrl.match(regex)[1]).toEqual('6/33/22');
 
     });
 

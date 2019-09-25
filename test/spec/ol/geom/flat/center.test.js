@@ -2,11 +2,11 @@ import {linearRingss as linearRingssCenter} from '../../../../../src/ol/geom/fla
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 
 
-describe('ol.geom.flat.center', function() {
+describe('ol.geom.flat.center', () => {
 
-  describe('ol.geom.flat.center.linearRingss', function() {
+  describe('ol.geom.flat.center.linearRingss', () => {
 
-    it('calculates the center of a square', function() {
+    test('calculates the center of a square', () => {
       const squareMultiPoly = new MultiPolygon([[
         [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
       ]]);
@@ -16,10 +16,10 @@ describe('ol.geom.flat.center', function() {
         squareMultiPoly.endss_,
         2
       );
-      expect(got).to.eql([0.5, 0.5]);
+      expect(got).toEqual([0.5, 0.5]);
     });
 
-    it('calculates the centers of two squares', function() {
+    test('calculates the centers of two squares', () => {
       const squareMultiPoly = new MultiPolygon([
         [
           [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
@@ -34,10 +34,10 @@ describe('ol.geom.flat.center', function() {
         squareMultiPoly.endss_,
         2
       );
-      expect(got).to.eql([0.5, 0.5, 3.5, 0.5]);
+      expect(got).toEqual([0.5, 0.5, 3.5, 0.5]);
     });
 
-    it('does not care about holes', function() {
+    test('does not care about holes', () => {
       const polywithHole = new MultiPolygon([[
         [[0, 0], [0, 5], [5, 5], [5, 0], [0, 0]],
         [[1, 1], [1, 4], [4, 4], [4, 1], [1, 1]]
@@ -48,7 +48,7 @@ describe('ol.geom.flat.center', function() {
         polywithHole.endss_,
         2
       );
-      expect(got).to.eql([2.5, 2.5]);
+      expect(got).toEqual([2.5, 2.5]);
     });
 
   });

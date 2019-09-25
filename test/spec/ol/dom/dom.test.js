@@ -1,50 +1,50 @@
 import {createCanvasContext2D, outerWidth, outerHeight, replaceChildren} from '../../../../src/ol/dom.js';
 
-describe('ol.dom', function() {
+describe('ol.dom', () => {
 
-  describe('ol.dom.createCanvasContext2D', function() {
+  describe('ol.dom.createCanvasContext2D', () => {
     // default values from
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
     const defaultWidth = 300;
     const defaultHeight = 150;
 
-    it('returns a CanvasRenderingContext2D', function() {
+    test('returns a CanvasRenderingContext2D', () => {
       const ctx = createCanvasContext2D();
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(defaultWidth);
-      expect(ctx.canvas.height).to.be(defaultHeight);
+      expect(ctx).toBeInstanceOf(CanvasRenderingContext2D);
+      expect(ctx.canvas).toBeInstanceOf(HTMLCanvasElement);
+      expect(ctx.canvas.width).toBe(defaultWidth);
+      expect(ctx.canvas.height).toBe(defaultHeight);
     });
 
-    it('has the desired width', function() {
+    test('has the desired width', () => {
       const ctx = createCanvasContext2D(42);
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(42);
-      expect(ctx.canvas.height).to.be(defaultHeight);
+      expect(ctx).toBeInstanceOf(CanvasRenderingContext2D);
+      expect(ctx.canvas).toBeInstanceOf(HTMLCanvasElement);
+      expect(ctx.canvas.width).toBe(42);
+      expect(ctx.canvas.height).toBe(defaultHeight);
     });
 
-    it('has the desired height', function() {
+    test('has the desired height', () => {
       const ctx = createCanvasContext2D(undefined, 42);
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(defaultWidth);
-      expect(ctx.canvas.height).to.be(42);
+      expect(ctx).toBeInstanceOf(CanvasRenderingContext2D);
+      expect(ctx.canvas).toBeInstanceOf(HTMLCanvasElement);
+      expect(ctx.canvas.width).toBe(defaultWidth);
+      expect(ctx.canvas.height).toBe(42);
     });
 
-    it('has the desired height and width', function() {
+    test('has the desired height and width', () => {
       const ctx = createCanvasContext2D(42, 42);
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(42);
-      expect(ctx.canvas.height).to.be(42);
+      expect(ctx).toBeInstanceOf(CanvasRenderingContext2D);
+      expect(ctx.canvas).toBeInstanceOf(HTMLCanvasElement);
+      expect(ctx.canvas.width).toBe(42);
+      expect(ctx.canvas.height).toBe(42);
     });
 
   });
 
-  describe('ol.dom.outerWidth', function() {
+  describe('ol.dom.outerWidth', () => {
     let element = null;
-    beforeEach(function() {
+    beforeEach(() => {
       element = document.createElement('div');
       element.style.padding = 0;
       element.style.margin = 0;
@@ -53,149 +53,149 @@ describe('ol.dom', function() {
       element.style.height = '10px';
       document.body.appendChild(element);
     });
-    afterEach(function() {
+    afterEach(() => {
       element.parentNode.removeChild(element);
       element = null;
     });
 
-    describe('without padding, margin or border', function() {
+    describe('without padding, margin or border', () => {
 
-      it('calculates correctly', function() {
+      test('calculates correctly', () => {
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(10);
+        expect(calcWidth).toBe(10);
       });
 
     });
 
-    describe('with padding', function() {
-      it('calculates correctly (both sides)', function() {
+    describe('with padding', () => {
+      test('calculates correctly (both sides)', () => {
         element.style.padding = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        expect(calcWidth).toBe(20);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.paddingLeft = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(15);
+        expect(calcWidth).toBe(15);
       });
     });
 
-    describe('with margin', function() {
+    describe('with margin', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.margin = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        expect(calcWidth).toBe(20);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.marginLeft = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(15);
+        expect(calcWidth).toBe(15);
       });
 
     });
 
-    describe('with border', function() {
+    describe('with border', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.border = '5px solid chocolate';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        expect(calcWidth).toBe(20);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(15);
+        expect(calcWidth).toBe(15);
       });
 
     });
 
-    describe('with padding and margin', function() {
+    describe('with padding and margin', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.padding = '5px';
         element.style.margin = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(30);
+        expect(calcWidth).toBe(30);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.paddingLeft = '5px';
         element.style.marginLeft = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        expect(calcWidth).toBe(20);
       });
 
     });
 
-    describe('with padding and border', function() {
+    describe('with padding and border', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(30);
+        expect(calcWidth).toBe(30);
       });
 
-      it('calculates correctly (one side)', function() {
-        element.style.paddingLeft = '5px';
-        element.style.border = '5px solid chocolate';
-        element.style.borderRightWidth = '0';
-        const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
-      });
-
-    });
-
-    describe('with margin and border', function() {
-
-      it('calculates correctly (both sides)', function() {
-        element.style.margin = '5px';
-        element.style.border = '5px solid chocolate';
-        const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(30);
-      });
-
-      it('calculates correctly (one side)', function() {
-        element.style.marginLeft = '5px';
-        element.style.border = '5px solid chocolate';
-        element.style.borderRightWidth = '0';
-        const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
-      });
-
-    });
-
-    describe('with padding, margin and border', function() {
-
-      it('calculates correctly (both sides)', function() {
-        element.style.margin = '5px';
-        element.style.padding = '5px';
-        element.style.border = '5px solid chocolate';
-        const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(40);
-      });
-
-      it('calculates correctly (one side)', function() {
-        element.style.marginLeft = '5px';
+      test('calculates correctly (one side)', () => {
         element.style.paddingLeft = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(25);
+        expect(calcWidth).toBe(20);
+      });
+
+    });
+
+    describe('with margin and border', () => {
+
+      test('calculates correctly (both sides)', () => {
+        element.style.margin = '5px';
+        element.style.border = '5px solid chocolate';
+        const calcWidth = outerWidth(element);
+        expect(calcWidth).toBe(30);
+      });
+
+      test('calculates correctly (one side)', () => {
+        element.style.marginLeft = '5px';
+        element.style.border = '5px solid chocolate';
+        element.style.borderRightWidth = '0';
+        const calcWidth = outerWidth(element);
+        expect(calcWidth).toBe(20);
+      });
+
+    });
+
+    describe('with padding, margin and border', () => {
+
+      test('calculates correctly (both sides)', () => {
+        element.style.margin = '5px';
+        element.style.padding = '5px';
+        element.style.border = '5px solid chocolate';
+        const calcWidth = outerWidth(element);
+        expect(calcWidth).toBe(40);
+      });
+
+      test('calculates correctly (one side)', () => {
+        element.style.marginLeft = '5px';
+        element.style.paddingLeft = '5px';
+        element.style.border = '5px solid chocolate';
+        element.style.borderRightWidth = '0';
+        const calcWidth = outerWidth(element);
+        expect(calcWidth).toBe(25);
       });
 
     });
 
   });
 
-  describe('ol.dom.outerHeight', function() {
+  describe('ol.dom.outerHeight', () => {
     let element = null;
-    beforeEach(function() {
+    beforeEach(() => {
       element = document.createElement('div');
       element.style.padding = 0;
       element.style.margin = 0;
@@ -204,157 +204,157 @@ describe('ol.dom', function() {
       element.style.height = '10px';
       document.body.appendChild(element);
     });
-    afterEach(function() {
+    afterEach(() => {
       element.parentNode.removeChild(element);
       element = null;
     });
 
-    describe('without padding, margin or border', function() {
+    describe('without padding, margin or border', () => {
 
-      it('calculates correctly', function() {
+      test('calculates correctly', () => {
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(10);
+        expect(calcHeight).toBe(10);
       });
 
     });
 
-    describe('with padding', function() {
-      it('calculates correctly (both sides)', function() {
+    describe('with padding', () => {
+      test('calculates correctly (both sides)', () => {
         element.style.padding = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        expect(calcHeight).toBe(20);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.paddingTop = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(15);
+        expect(calcHeight).toBe(15);
       });
     });
 
-    describe('with margin', function() {
+    describe('with margin', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.margin = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        expect(calcHeight).toBe(20);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.marginTop = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(15);
+        expect(calcHeight).toBe(15);
       });
 
     });
 
-    describe('with border', function() {
+    describe('with border', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.border = '5px solid chocolate';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        expect(calcHeight).toBe(20);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(15);
+        expect(calcHeight).toBe(15);
       });
 
     });
 
-    describe('with padding and margin', function() {
+    describe('with padding and margin', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.padding = '5px';
         element.style.margin = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(30);
+        expect(calcHeight).toBe(30);
       });
 
-      it('calculates correctly (one side)', function() {
+      test('calculates correctly (one side)', () => {
         element.style.paddingTop = '5px';
         element.style.marginTop = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        expect(calcHeight).toBe(20);
       });
 
     });
 
-    describe('with padding and border', function() {
+    describe('with padding and border', () => {
 
-      it('calculates correctly (both sides)', function() {
+      test('calculates correctly (both sides)', () => {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(30);
+        expect(calcHeight).toBe(30);
       });
 
-      it('calculates correctly (one side)', function() {
-        element.style.paddingTop = '5px';
-        element.style.border = '5px solid chocolate';
-        element.style.borderBottomWidth = '0';
-        const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
-      });
-
-    });
-
-    describe('with margin and border', function() {
-
-      it('calculates correctly (both sides)', function() {
-        element.style.margin = '5px';
-        element.style.border = '5px solid chocolate';
-        const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(30);
-      });
-
-      it('calculates correctly (one side)', function() {
-        element.style.marginTop = '5px';
-        element.style.border = '5px solid chocolate';
-        element.style.borderBottomWidth = '0';
-        const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
-      });
-
-    });
-
-    describe('with padding, margin and border', function() {
-
-      it('calculates correctly (both sides)', function() {
-        element.style.margin = '5px';
-        element.style.padding = '5px';
-        element.style.border = '5px solid chocolate';
-        const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(40);
-      });
-
-      it('calculates correctly (one side)', function() {
-        element.style.marginTop = '5px';
+      test('calculates correctly (one side)', () => {
         element.style.paddingTop = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(25);
+        expect(calcHeight).toBe(20);
+      });
+
+    });
+
+    describe('with margin and border', () => {
+
+      test('calculates correctly (both sides)', () => {
+        element.style.margin = '5px';
+        element.style.border = '5px solid chocolate';
+        const calcHeight = outerHeight(element);
+        expect(calcHeight).toBe(30);
+      });
+
+      test('calculates correctly (one side)', () => {
+        element.style.marginTop = '5px';
+        element.style.border = '5px solid chocolate';
+        element.style.borderBottomWidth = '0';
+        const calcHeight = outerHeight(element);
+        expect(calcHeight).toBe(20);
+      });
+
+    });
+
+    describe('with padding, margin and border', () => {
+
+      test('calculates correctly (both sides)', () => {
+        element.style.margin = '5px';
+        element.style.padding = '5px';
+        element.style.border = '5px solid chocolate';
+        const calcHeight = outerHeight(element);
+        expect(calcHeight).toBe(40);
+      });
+
+      test('calculates correctly (one side)', () => {
+        element.style.marginTop = '5px';
+        element.style.paddingTop = '5px';
+        element.style.border = '5px solid chocolate';
+        element.style.borderBottomWidth = '0';
+        const calcHeight = outerHeight(element);
+        expect(calcHeight).toBe(25);
       });
 
     });
 
   });
 
-  describe('replaceChildren()', function() {
+  describe('replaceChildren()', () => {
 
     function assertChildrenMatch(parent, children) {
       const actual = parent.childNodes;
-      expect(actual).to.have.length(children.length);
+      expect(actual).toHaveLength(children.length);
       for (let i = 0; i < children.length; i++) {
-        expect(actual[i]).to.be(children[i]);
+        expect(actual[i]).toBe(children[i]);
       }
     }
 
-    it('adds new children to an empty parent', function() {
+    test('adds new children to an empty parent', () => {
       const parent = document.createElement('div');
       const children = [
         document.createElement('a'),
@@ -366,7 +366,7 @@ describe('ol.dom', function() {
       assertChildrenMatch(parent, children);
     });
 
-    it('removes children', function() {
+    test('removes children', () => {
       const parent = document.createElement('div');
       const existingChildren = [
         document.createElement('a'),
@@ -378,10 +378,10 @@ describe('ol.dom', function() {
       });
 
       replaceChildren(parent, []);
-      expect(parent.childNodes).to.have.length(0);
+      expect(parent.childNodes).toHaveLength(0);
     });
 
-    it('swaps children', function() {
+    test('swaps children', () => {
       const parent = document.createElement('div');
       const existingChildren = [
         document.createElement('a'),
@@ -402,7 +402,7 @@ describe('ol.dom', function() {
       assertChildrenMatch(parent, newChildren);
     });
 
-    it('appends children', function() {
+    test('appends children', () => {
       const parent = document.createElement('div');
       const existingChildren = [
         document.createElement('a'),
@@ -425,7 +425,7 @@ describe('ol.dom', function() {
       assertChildrenMatch(parent, allChildren);
     });
 
-    it('prunes children', function() {
+    test('prunes children', () => {
       const parent = document.createElement('div');
       const existingChildren = [
         document.createElement('a'),
@@ -447,7 +447,7 @@ describe('ol.dom', function() {
       assertChildrenMatch(parent, desiredChildren);
     });
 
-    it('reorders children', function() {
+    test('reorders children', () => {
       const parent = document.createElement('div');
       const existingChildren = [
         document.createElement('a'),
@@ -472,7 +472,7 @@ describe('ol.dom', function() {
       assertChildrenMatch(parent, desiredChildren);
     });
 
-    it('reorders, prunes, and appends children', function() {
+    test('reorders, prunes, and appends children', () => {
       const parent = document.createElement('div');
       const existingChildren = [
         document.createElement('a'),
@@ -498,8 +498,7 @@ describe('ol.dom', function() {
       replaceChildren(parent, desiredChildren);
       assertChildrenMatch(parent, desiredChildren);
 
-      // confirm we haven't modified the input
-      expect(desiredChildren).to.eql(clone);
+      expect(desiredChildren).toEqual(clone);
     });
 
   });

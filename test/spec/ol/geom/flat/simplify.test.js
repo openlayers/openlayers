@@ -1,7 +1,7 @@
 import {douglasPeucker, quantize, radialDistance, simplifyLineString} from '../../../../../src/ol/geom/flat/simplify.js';
 
 
-describe('ol.geom.flat.simplify', function() {
+describe('ol.geom.flat.simplify', () => {
 
   const flatCoordinates = [
     224.55, 250.15, 226.91, 244.19, 233.31, 241.45, 234.98, 236.06,
@@ -81,273 +81,263 @@ describe('ol.geom.flat.simplify', function() {
     866.36, 480.77
   ];
 
-  describe('ol.geom.flat.simplify.simplifyLineString', function() {
+  describe('ol.geom.flat.simplify.simplifyLineString', () => {
 
-    it('works with empty line strings', function() {
-      expect(simplifyLineString([], 0, 0, 2, 1, true)).to.
-        eql([]);
-      expect(simplifyLineString([], 0, 0, 2, 1, false)).to.
-        eql([]);
+    test('works with empty line strings', () => {
+      expect(simplifyLineString([], 0, 0, 2, 1, true)).toEqual([]);
+      expect(simplifyLineString([], 0, 0, 2, 1, false)).toEqual([]);
     });
 
-    it('works with a line string with a single point', function() {
-      expect(simplifyLineString([1, 2], 0, 2, 2, 1, true)).to.
-        eql([1, 2]);
-      expect(simplifyLineString([1, 2], 0, 2, 2, 1, false)).to.
-        eql([1, 2]);
+    test('works with a line string with a single point', () => {
+      expect(simplifyLineString([1, 2], 0, 2, 2, 1, true)).toEqual([1, 2]);
+      expect(simplifyLineString([1, 2], 0, 2, 2, 1, false)).toEqual([1, 2]);
     });
 
-    it('returns the expected result with low quality', function() {
+    test('returns the expected result with low quality', () => {
       const result = simplifyLineString(
         flatCoordinates, 0, flatCoordinates.length, 2, 25, false);
-      expect(result.length).to.be(simplifiedFlatCoordinates.length);
-      expect(result).to.eql(simplifiedFlatCoordinates);
+      expect(result.length).toBe(simplifiedFlatCoordinates.length);
+      expect(result).toEqual(simplifiedFlatCoordinates);
     });
 
-    it('returns the expected result with high quality', function() {
+    test('returns the expected result with high quality', () => {
       const result = simplifyLineString(
         flatCoordinates, 0, flatCoordinates.length, 2, 25, true);
-      expect(result.length).to.be(simplifiedHighQualityFlatCoordinates.length);
-      expect(result).to.eql(simplifiedHighQualityFlatCoordinates);
+      expect(result.length).toBe(simplifiedHighQualityFlatCoordinates.length);
+      expect(result).toEqual(simplifiedHighQualityFlatCoordinates);
     });
 
   });
 
-  describe('ol.geom.flat.simplify.radialDistance', function() {
+  describe('ol.geom.flat.simplify.radialDistance', () => {
 
     let dest;
-    beforeEach(function() {
+    beforeEach(() => {
       dest = [];
     });
 
-    it('works with empty line strings', function() {
+    test('works with empty line strings', () => {
       expect(radialDistance(
-        [], 0, 0, 2, 1, dest, 0)).to.be(0);
-      expect(dest).to.eql([]);
+        [], 0, 0, 2, 1, dest, 0)).toBe(0);
+      expect(dest).toEqual([]);
     });
 
-    it('works with a line string with a single point', function() {
+    test('works with a line string with a single point', () => {
       expect(radialDistance(
-        [1, 2], 0, 2, 2, 1, dest, 0)).to.be(2);
-      expect(dest).to.eql([1, 2]);
+        [1, 2], 0, 2, 2, 1, dest, 0)).toBe(2);
+      expect(dest).toEqual([1, 2]);
     });
 
-    it('works with a line string with two points', function() {
+    test('works with a line string with two points', () => {
       expect(radialDistance(
-        [1, 2, 3, 4], 0, 4, 2, 1, dest, 0)).to.be(4);
-      expect(dest).to.eql([1, 2, 3, 4]);
+        [1, 2, 3, 4], 0, 4, 2, 1, dest, 0)).toBe(4);
+      expect(dest).toEqual([1, 2, 3, 4]);
     });
 
-    it('works when the points are widely spaced', function() {
+    test('works when the points are widely spaced', () => {
       expect(radialDistance(
-        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)).to.be(8);
-      expect(dest).to.eql([0, 0, 1, 0, 2, 0, 3, 0]);
+        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)).toBe(8);
+      expect(dest).toEqual([0, 0, 1, 0, 2, 0, 3, 0]);
     });
 
-    it('works when the spacing matches the tolerance', function() {
+    test('works when the spacing matches the tolerance', () => {
       expect(radialDistance(
-        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)).to.be(6);
-      expect(dest).to.eql([0, 0, 2, 0, 3, 0]);
+        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)).toBe(6);
+      expect(dest).toEqual([0, 0, 2, 0, 3, 0]);
     });
 
-    it('works when the points are closely spaced', function() {
+    test('works when the points are closely spaced', () => {
       expect(radialDistance(
-        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)).to.be(6);
-      expect(dest).to.eql([0, 0, 2, 0, 3, 0]);
+        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)).toBe(6);
+      expect(dest).toEqual([0, 0, 2, 0, 3, 0]);
     });
 
-    it('works when the line oscillates with widely spaced points', function() {
+    test('works when the line oscillates with widely spaced points', () => {
       expect(radialDistance(
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 1, dest, 0)).
-        to.be(12);
-      expect(dest).to.eql([0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1]);
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 1, dest, 0)).toBe(12);
+      expect(dest).toEqual([0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1]);
     });
 
-    it('works when the line oscillates with closely spaced points', function() {
+    test('works when the line oscillates with closely spaced points', () => {
       expect(radialDistance(
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 2, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 1, 1]);
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 2, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 1, 1]);
     });
 
-    it('works when the line oscillates within the tolerance', function() {
+    test('works when the line oscillates within the tolerance', () => {
       expect(radialDistance(
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0], 0, 14, 2, 2, dest, 0)).
-        to.be(2);
-      expect(dest).to.eql([0, 0]);
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0], 0, 14, 2, 2, dest, 0)).toBe(2);
+      expect(dest).toEqual([0, 0]);
     });
 
-    it('works with real data', function() {
+    test('works with real data', () => {
       expect(radialDistance(
-        flatCoordinates, 0, flatCoordinates.length, 2, 25, dest, 0)).
-        to.be(simplifiedRadiallyFlatCoordinates.length);
-      expect(dest).to.eql(simplifiedRadiallyFlatCoordinates);
+        flatCoordinates, 0, flatCoordinates.length, 2, 25, dest, 0)).toBe(simplifiedRadiallyFlatCoordinates.length);
+      expect(dest).toEqual(simplifiedRadiallyFlatCoordinates);
     });
 
   });
 
-  describe('ol.geom.flat.simplify.douglasPeucker', function() {
+  describe('ol.geom.flat.simplify.douglasPeucker', () => {
 
     let dest;
-    beforeEach(function() {
+    beforeEach(() => {
       dest = [];
     });
 
-    it('works with empty line strings', function() {
+    test('works with empty line strings', () => {
       expect(douglasPeucker(
-        [], 0, 0, 2, 1, dest, 0)).to.be(0);
-      expect(dest).to.eql([]);
+        [], 0, 0, 2, 1, dest, 0)).toBe(0);
+      expect(dest).toEqual([]);
     });
 
-    it('works with a line string with a single point', function() {
+    test('works with a line string with a single point', () => {
       expect(douglasPeucker(
-        [1, 2], 0, 2, 2, 1, dest, 0)).to.be(2);
-      expect(dest).to.eql([1, 2]);
+        [1, 2], 0, 2, 2, 1, dest, 0)).toBe(2);
+      expect(dest).toEqual([1, 2]);
     });
 
-    it('works with a line string with two points', function() {
+    test('works with a line string with two points', () => {
       expect(douglasPeucker(
-        [1, 2, 3, 4], 0, 4, 2, 1, dest, 0)).to.be(4);
-      expect(dest).to.eql([1, 2, 3, 4]);
+        [1, 2, 3, 4], 0, 4, 2, 1, dest, 0)).toBe(4);
+      expect(dest).toEqual([1, 2, 3, 4]);
     });
 
-    it('works when the points are widely spaced', function() {
+    test('works when the points are widely spaced', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 3, 0]);
+        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 3, 0]);
     });
 
-    it('works when the spacing matches the tolerance', function() {
+    test('works when the spacing matches the tolerance', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 3, 0]);
+        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 3, 0]);
     });
 
-    it('works when the points are closely spaced', function() {
+    test('works when the points are closely spaced', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 3, 0]);
+        [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 3, 0]);
     });
 
-    it('does not elimnate points outside the tolerance', function() {
+    test('does not elimnate points outside the tolerance', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 2, 0], 0, 6, 2, 0.5, dest, 0)).to.be(6);
-      expect(dest).to.eql([0, 0, 1, 1, 2, 0]);
+        [0, 0, 1, 1, 2, 0], 0, 6, 2, 0.5, dest, 0)).toBe(6);
+      expect(dest).toEqual([0, 0, 1, 1, 2, 0]);
     });
 
-    it('does eliminate points within the tolerance', function() {
+    test('does eliminate points within the tolerance', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 2, 0], 0, 6, 2, 2, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 2, 0]);
+        [0, 0, 1, 1, 2, 0], 0, 6, 2, 2, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 2, 0]);
     });
 
-    it('does not eliminate multiple points outside the tolerance', function() {
+    test('does not eliminate multiple points outside the tolerance', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 0.5, dest, 0)).to.be(8);
-      expect(dest).to.eql([0, 0, 1, 1, 1, -1, 2, 0]);
+        [0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 0.5, dest, 0)).toBe(8);
+      expect(dest).toEqual([0, 0, 1, 1, 1, -1, 2, 0]);
     });
 
-    it('does eliminate multiple points within the tolerance', function() {
+    test('does eliminate multiple points within the tolerance', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 2, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 2, 0]);
+        [0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 2, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 2, 0]);
     });
 
-    it('works when the line oscillates with widely spaced points', function() {
+    test('works when the line oscillates with widely spaced points', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 1, dest, 0)).to.be(4);
-      expect(dest).to.eql([0, 0, 1, 1]);
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 1, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 1, 1]);
     });
 
-    it('works when the line oscillates with closely spaced points', function() {
+    test('works when the line oscillates with closely spaced points', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 2, dest, 0)).
-        to.be(4);
-      expect(dest).to.eql([0, 0, 1, 1]);
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 2, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 1, 1]);
     });
 
-    it('works when the line oscillates within the tolerance', function() {
+    test('works when the line oscillates within the tolerance', () => {
       expect(douglasPeucker(
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0], 0, 14, 2, 2, dest, 0)).
-        to.be(4);
-      expect(dest).to.eql([0, 0, 0, 0]);
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0], 0, 14, 2, 2, dest, 0)).toBe(4);
+      expect(dest).toEqual([0, 0, 0, 0]);
     });
 
-    it('works on small triangles', function() {
+    test('works on small triangles', () => {
       expect(douglasPeucker(
-        [3, 0, 4, 1, 5, 2, 5, 0], 0, 8, 2, 1, dest, 0)).to.be(6);
-      expect(dest).to.eql([3, 0, 5, 2, 5, 0]);
+        [3, 0, 4, 1, 5, 2, 5, 0], 0, 8, 2, 1, dest, 0)).toBe(6);
+      expect(dest).toEqual([3, 0, 5, 2, 5, 0]);
     });
 
-    it('is the same as high quality simplification', function() {
+    test('is the same as high quality simplification', () => {
       expect(douglasPeucker(
-        flatCoordinates, 0, flatCoordinates.length, 2, 25, dest, 0)).
-        to.be(simplifiedHighQualityFlatCoordinates.length);
-      expect(dest).to.eql(simplifiedHighQualityFlatCoordinates);
+        flatCoordinates, 0, flatCoordinates.length, 2, 25, dest, 0)).toBe(simplifiedHighQualityFlatCoordinates.length);
+      expect(dest).toEqual(simplifiedHighQualityFlatCoordinates);
     });
 
   });
 
-  describe('ol.geom.flat.simplify.quantize', function() {
+  describe('ol.geom.flat.simplify.quantize', () => {
 
-    it('handles empty coordinates', function() {
+    test('handles empty coordinates', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
-        [], 0, 0, 2, 2, simplifiedFlatCoordinates, 0)).to.be(0);
-      expect(simplifiedFlatCoordinates).to.be.empty();
+        [], 0, 0, 2, 2, simplifiedFlatCoordinates, 0)).toBe(0);
+      expect(simplifiedFlatCoordinates).toHaveLength(0);
     });
 
-    it('expands points to a zero-length line', function() {
+    test('expands points to a zero-length line', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
-        [0, 0, 0, 0], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).to.be(4);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
+        [0, 0, 0, 0], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).toBe(4);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 0, 0]);
     });
 
-    it('snaps near-by points to the same value', function() {
+    test('snaps near-by points to the same value', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
-        [0.1, 0, 0, 0.1], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).to.be(4);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
+        [0.1, 0, 0, 0.1], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).toBe(4);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 0, 0]);
     });
 
-    it('eliminates duplicate snapped points', function() {
+    test('eliminates duplicate snapped points', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
         [0.1, 0, 2, 0, 2.1, 0, 2, 0.1, 1.9, 0, 2, -0.1], 0, 12, 2, 2,
-        simplifiedFlatCoordinates, 0)).to.be(4);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0]);
+        simplifiedFlatCoordinates, 0)).toBe(4);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 2, 0]);
     });
 
-    it('eliminates horizontal colinear points', function() {
+    test('eliminates horizontal colinear points', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
         [0, 0, 2, 0, 4, 0, 6, 0], 0, 8, 2, 2,
-        simplifiedFlatCoordinates, 0)).to.be(4);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, 0]);
+        simplifiedFlatCoordinates, 0)).toBe(4);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 6, 0]);
     });
 
-    it('eliminates vertical colinear points', function() {
+    test('eliminates vertical colinear points', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
         [0, 0, 0, -2, 0, -4, 0, -6], 0, 8, 2, 2,
-        simplifiedFlatCoordinates, 0)).to.be(4);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, -6]);
+        simplifiedFlatCoordinates, 0)).toBe(4);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 0, -6]);
     });
 
-    it('eliminates diagonal colinear points', function() {
+    test('eliminates diagonal colinear points', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
         [0, 0, 2, -2, 4, -4, 6, -6], 0, 8, 2, 2,
-        simplifiedFlatCoordinates, 0)).to.be(4);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, -6]);
+        simplifiedFlatCoordinates, 0)).toBe(4);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 6, -6]);
     });
 
-    it('handles switchbacks', function() {
+    test('handles switchbacks', () => {
       const simplifiedFlatCoordinates = [];
       expect(quantize(
         [0, 0, 2, 0, 0, 0, 4, 0], 0, 8, 2, 2,
-        simplifiedFlatCoordinates, 0)).to.be(8);
-      expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0, 0, 0, 4, 0]);
+        simplifiedFlatCoordinates, 0)).toBe(8);
+      expect(simplifiedFlatCoordinates).toEqual([0, 0, 2, 0, 0, 0, 4, 0]);
     });
 
   });

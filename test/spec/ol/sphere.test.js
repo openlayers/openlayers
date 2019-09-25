@@ -7,9 +7,9 @@ import MultiPoint from '../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../src/ol/geom/Point.js';
 
 
-describe('ol/sphere', function() {
+describe('ol/sphere', () => {
 
-  describe('getDistance()', function() {
+  describe('getDistance()', () => {
 
     const expected = [{
       c1: [0, 0],
@@ -74,13 +74,13 @@ describe('ol/sphere', function() {
     }];
 
     expected.forEach(function(e, i) {
-      it('calculates the distance between two points: ' + i, function() {
+      test('calculates the distance between two points: ' + i, () => {
         expect(getDistance(e.c1, e.c2)).to.roughlyEqual(e.distance, 1e-6);
       });
     });
   });
 
-  describe('getLength()', function() {
+  describe('getLength()', () => {
     const cases = [{
       geometry: new Point([0, 0]),
       length: 0
@@ -156,7 +156,7 @@ describe('ol/sphere', function() {
     }];
 
     cases.forEach(function(c, i) {
-      it('works for case ' + i, function() {
+      test('works for case ' + i, () => {
         const c = cases[i];
         const length = getLength(c.geometry, c.options);
         expect(length).to.roughlyEqual(c.length, 1e-8);
@@ -165,10 +165,10 @@ describe('ol/sphere', function() {
 
   });
 
-  describe('getArea()', function() {
+  describe('getArea()', () => {
     let geometry;
     const expectedArea = 145652224192.4434;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
         try {
           const format = new WKT();
@@ -180,18 +180,18 @@ describe('ol/sphere', function() {
       });
     });
 
-    it('calculates the area of Ilinois', function() {
+    test('calculates the area of Ilinois', () => {
       const area = getArea(geometry, {projection: 'EPSG:4326'});
-      expect(area).to.equal(expectedArea);
+      expect(area).toBe(expectedArea);
     });
 
-    it('calculates the area of a projected geometry', function() {
+    test('calculates the area of a projected geometry', () => {
       const projected = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
       const area = getArea(projected);
       expect(area).to.roughlyEqual(expectedArea, 1e-3);
     });
 
-    it('calculates the area of a projected geometry collection', function() {
+    test('calculates the area of a projected geometry collection', () => {
       const part = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
       const collection = new GeometryCollection([part, part.clone()]);
       const area = getArea(collection);

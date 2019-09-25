@@ -24,7 +24,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   let map, target, redSource, greenSource, blueSource, raster;
 
-  beforeEach(function() {
+  beforeEach(() => {
     target = document.createElement('div');
 
     const style = target.style;
@@ -87,7 +87,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     if (map) {
       disposeMap(map);
     }
@@ -98,18 +98,18 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     blueSource.dispose();
   });
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('returns a raster source', function() {
+    test('returns a raster source', () => {
       const source = new RasterSource({
         threads: 0,
         sources: [new TileSource({})]
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(RasterSource);
+      expect(source).toBeInstanceOf(Source);
+      expect(source).toBeInstanceOf(RasterSource);
     });
 
-    it('defaults to "pixel" operation', function(done) {
+    test('defaults to "pixel" operation', done => {
 
       const log = [];
 
@@ -123,10 +123,10 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       source.once('afteroperations', function() {
-        expect(log.length).to.equal(4);
+        expect(log.length).toBe(4);
         const inputs = log[0];
         const pixel = inputs[0];
-        expect(pixel).to.be.an('array');
+        expect(pixel).toBeInstanceOf(Array);
         done();
       });
 
@@ -137,7 +137,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     });
 
-    it('allows operation type to be set to "image"', function(done) {
+    test('allows operation type to be set to "image"', done => {
       const log = [];
 
       const source = new RasterSource({
@@ -151,12 +151,12 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       source.once('afteroperations', function() {
-        expect(log.length).to.equal(1);
+        expect(log.length).toBe(1);
         const inputs = log[0];
         const imageData = inputs[0];
-        expect(imageData.data).to.be.a(Uint8ClampedArray);
-        expect(imageData.width).to.be(2);
-        expect(imageData.height).to.be(2);
+        expect(imageData.data).toBeInstanceOf(Uint8ClampedArray);
+        expect(imageData.width).toBe(2);
+        expect(imageData.height).toBe(2);
         done();
       });
 
@@ -169,8 +169,8 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   });
 
-  describe('config option `attributions`', function() {
-    it('handles empty attributions', function() {
+  describe('config option `attributions`', () => {
+    test('handles empty attributions', () => {
       const blue = new RasterSource({
         operationType: 'image',
         threads: 0,
@@ -180,10 +180,10 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         }
       });
       const blueAttributions = blue.getAttributions();
-      expect(blueAttributions()).to.be(null);
+      expect(blueAttributions()).toBe(null);
     });
 
-    it('shows single attributions', function() {
+    test('shows single attributions', () => {
       const red = new RasterSource({
         operationType: 'image',
         threads: 0,
@@ -194,12 +194,12 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
       const redAttribtuions = red.getAttributions();
 
-      expect(redAttribtuions()).to.not.be(null);
-      expect(typeof redAttribtuions).to.be('function');
-      expect(redAttribtuions()).to.eql(['red raster source']);
+      expect(redAttribtuions()).not.toBe(null);
+      expect(typeof redAttribtuions).toBe('function');
+      expect(redAttribtuions()).toEqual(['red raster source']);
     });
 
-    it('concatinates multiple attributions', function() {
+    test('concatinates multiple attributions', () => {
       const redGreen = new RasterSource({
         operationType: 'image',
         threads: 0,
@@ -210,16 +210,16 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
       const redGreenAttributions = redGreen.getAttributions();
 
-      expect(redGreenAttributions()).to.not.be(null);
-      expect(typeof redGreenAttributions).to.be('function');
-      expect(redGreenAttributions()).to.eql(['red raster source', 'green raster source']);
+      expect(redGreenAttributions()).not.toBe(null);
+      expect(typeof redGreenAttributions).toBe('function');
+      expect(redGreenAttributions()).toEqual(['red raster source', 'green raster source']);
     });
 
   });
 
-  describe('#setOperation()', function() {
+  describe('#setOperation()', () => {
 
-    it('allows operation to be set', function(done) {
+    test('allows operation to be set', done => {
 
       let count = 0;
       raster.setOperation(function(pixels) {
@@ -227,9 +227,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         const redPixel = pixels[0];
         const greenPixel = pixels[1];
         const bluePixel = pixels[2];
-        expect(redPixel).to.eql([255, 0, 0, 255]);
-        expect(greenPixel).to.eql([0, 255, 0, 255]);
-        expect(bluePixel).to.eql([0, 0, 255, 255]);
+        expect(redPixel).toEqual([255, 0, 0, 255]);
+        expect(greenPixel).toEqual([0, 255, 0, 255]);
+        expect(bluePixel).toEqual([0, 0, 255, 255]);
         return pixels[0];
       });
 
@@ -238,13 +238,13 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       view.setZoom(0);
 
       raster.once('afteroperations', function(event) {
-        expect(count).to.equal(4);
+        expect(count).toBe(4);
         done();
       });
 
     });
 
-    it('updates and re-runs the operation', function(done) {
+    test('updates and re-runs the operation', done => {
 
       const view = map.getView();
       view.setCenter([0, 0]);
@@ -266,9 +266,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   });
 
-  describe('beforeoperations', function() {
+  describe('beforeoperations', () => {
 
-    it('gets called before operations are run', function(done) {
+    test('gets called before operations are run', done => {
 
       let count = 0;
       raster.setOperation(function(inputs) {
@@ -277,11 +277,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       raster.once('beforeoperations', function(event) {
-        expect(count).to.equal(0);
-        expect(!!event).to.be(true);
-        expect(event.extent).to.be.an('array');
-        expect(event.resolution).to.be.a('number');
-        expect(event.data).to.be.an('object');
+        expect(count).toBe(0);
+        expect(!!event).toBe(true);
+        expect(event.extent).toBeInstanceOf(Array);
+        expect(typeof event.resolution).toBe('number');
+        expect(typeof event.data).toBe('object');
         done();
       });
 
@@ -292,7 +292,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     });
 
 
-    it('allows data to be set for the operation', function(done) {
+    test('allows data to be set for the operation', done => {
 
       raster.setOperation(function(inputs, data) {
         ++data.count;
@@ -304,7 +304,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       raster.once('afteroperations', function(event) {
-        expect(event.data.count).to.equal(4);
+        expect(event.data.count).toBe(4);
         done();
       });
 
@@ -316,9 +316,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   });
 
-  describe('afteroperations', function() {
+  describe('afteroperations', () => {
 
-    it('gets called after operations are run', function(done) {
+    test('gets called after operations are run', done => {
 
       let count = 0;
       raster.setOperation(function(inputs) {
@@ -327,11 +327,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       raster.once('afteroperations', function(event) {
-        expect(count).to.equal(4);
-        expect(!!event).to.be(true);
-        expect(event.extent).to.be.an('array');
-        expect(event.resolution).to.be.a('number');
-        expect(event.data).to.be.an('object');
+        expect(count).toBe(4);
+        expect(!!event).toBe(true);
+        expect(event.extent).toBeInstanceOf(Array);
+        expect(typeof event.resolution).toBe('number');
+        expect(typeof event.data).toBe('object');
         done();
       });
 
@@ -341,7 +341,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     });
 
-    it('receives data set by the operation', function(done) {
+    test('receives data set by the operation', done => {
 
       raster.setOperation(function(inputs, data) {
         data.message = 'hello world';
@@ -349,7 +349,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       raster.once('afteroperations', function(event) {
-        expect(event.data.message).to.equal('hello world');
+        expect(event.data.message).toBe('hello world');
         done();
       });
 
@@ -361,14 +361,14 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   });
 
-  describe('tile loading', function() {
+  describe('tile loading', () => {
     let map2;
-    afterEach(function() {
+    afterEach(() => {
       disposeMap(map2);
       map2 = null;
     });
 
-    it('is initiated on the underlying source', function(done) {
+    test('is initiated on the underlying source', done => {
 
       const source = new XYZ({
         url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
@@ -397,12 +397,12 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
       const tileCache = source.tileCache;
 
-      expect(tileCache.getCount()).to.equal(0);
+      expect(tileCache.getCount()).toBe(0);
 
       map2.once('moveend', function() {
-        expect(tileCache.getCount()).to.equal(1);
+        expect(tileCache.getCount()).toBe(1);
         const state = tileCache.peekLast().getState();
-        expect(state === TileState.LOADING || state === TileState.LOADED).to.be(true);
+        expect(state === TileState.LOADING || state === TileState.LOADED).toBe(true);
         done();
       });
 

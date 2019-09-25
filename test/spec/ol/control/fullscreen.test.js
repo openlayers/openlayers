@@ -1,12 +1,12 @@
 import FullScreen from '../../../../src/ol/control/FullScreen.js';
 
-describe('ol.control.FullScreen', function() {
+describe('ol.control.FullScreen', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new FullScreen();
-      expect(instance).to.be.an(FullScreen);
+      expect(instance).toBeInstanceOf(FullScreen);
     });
 
   });

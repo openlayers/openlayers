@@ -5,11 +5,11 @@ import EventType from '../../../src/ol/events/EventType.js';
 import {defaultImageLoadFunction} from '../../../src/ol/source/Image.js';
 
 
-describe('ol.ImageTile', function() {
+describe('ol.ImageTile', () => {
 
-  describe('#load()', function() {
+  describe('#load()', () => {
 
-    it('can load idle tile', function(done) {
+    test('can load idle tile', done => {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-0.png';
@@ -21,12 +21,12 @@ describe('ol.ImageTile', function() {
       listen(tile, EventType.CHANGE, function(event) {
         const state = tile.getState();
         if (previousState == TileState.IDLE) {
-          expect(state).to.be(TileState.LOADING);
+          expect(state).toBe(TileState.LOADING);
         } else if (previousState == TileState.LOADING) {
-          expect(state).to.be(TileState.LOADED);
+          expect(state).toBe(TileState.LOADED);
           done();
         } else {
-          expect().fail();
+          throw Error();
         }
         previousState = state;
       });
@@ -34,7 +34,7 @@ describe('ol.ImageTile', function() {
       tile.load();
     });
 
-    it('can load error tile', function(done) {
+    test('can load error tile', done => {
       const tileCoord = [0, 0, 0];
       const state = TileState.ERROR;
       const src = 'spec/ol/data/osm-0-0-0.png';
@@ -46,12 +46,12 @@ describe('ol.ImageTile', function() {
       listen(tile, EventType.CHANGE, function(event) {
         const state = tile.getState();
         if (previousState == TileState.ERROR) {
-          expect(state).to.be(TileState.LOADING);
+          expect(state).toBe(TileState.LOADING);
         } else if (previousState == TileState.LOADING) {
-          expect(state).to.be(TileState.LOADED);
+          expect(state).toBe(TileState.LOADED);
           done();
         } else {
-          expect().fail();
+          throw Error();
         }
         previousState = state;
       });
@@ -59,7 +59,7 @@ describe('ol.ImageTile', function() {
       tile.load();
     });
 
-    it('loads an empty image on error ', function(done) {
+    test('loads an empty image on error ', done => {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-99.png';
@@ -69,11 +69,11 @@ describe('ol.ImageTile', function() {
       const key = listen(tile, EventType.CHANGE, function(event) {
         const state = tile.getState();
         if (state == TileState.ERROR) {
-          expect(state).to.be(TileState.ERROR);
-          expect(tile.image_).to.be.a(HTMLCanvasElement);
+          expect(state).toBe(TileState.ERROR);
+          expect(tile.image_).toBeInstanceOf(HTMLCanvasElement);
           unlistenByKey(key);
           tile.load();
-          expect(tile.image_).to.be.a(HTMLImageElement);
+          expect(tile.image_).toBeInstanceOf(HTMLImageElement);
           done();
         }
       });
@@ -83,19 +83,19 @@ describe('ol.ImageTile', function() {
 
   });
 
-  describe('dispose', function() {
+  describe('dispose', () => {
 
-    it('sets image src to a blank image data uri', function() {
+    test('sets image src to a blank image data uri', () => {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-0.png';
       const tileLoadFunction = defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
       tile.load();
-      expect(tile.getState()).to.be(TileState.LOADING);
+      expect(tile.getState()).toBe(TileState.LOADING);
       tile.dispose();
-      expect(tile.getState()).to.be(TileState.ABORT);
-      expect(tile.getImage().src).to.be(ImageTile.blankImageUrl);
+      expect(tile.getState()).toBe(TileState.ABORT);
+      expect(tile.getImage().src).toBe(ImageTile.blankImageUrl);
     });
 
   });

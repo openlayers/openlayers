@@ -12,7 +12,7 @@ import {getKeyZXY} from '../../../../src/ol/tilecoord.js';
 import {createXYZ, createForProjection} from '../../../../src/ol/tilegrid.js';
 
 
-describe('ol.source.TileImage', function() {
+describe('ol.source.TileImage', () => {
   function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
     const proj = opt_proj || 'EPSG:3857';
     return new TileImage({
@@ -24,70 +24,70 @@ describe('ol.source.TileImage', function() {
     });
   }
 
-  describe('#getTileCacheForProjection', function() {
-    it('uses the cacheSize for reprojected tile caches', function() {
+  describe('#getTileCacheForProjection', () => {
+    test('uses the cacheSize for reprojected tile caches', () => {
       const source = createSource(undefined, undefined, 42);
       const tileCache = source.getTileCacheForProjection(getProjection('EPSG:4326'));
-      expect(tileCache.highWaterMark).to.be(42);
-      expect(tileCache).to.not.equal(source.getTileCacheForProjection(source.getProjection()));
+      expect(tileCache.highWaterMark).toBe(42);
+      expect(tileCache).not.toBe(source.getTileCacheForProjection(source.getProjection()));
     });
   });
 
-  describe('#setTileGridForProjection', function() {
-    it('uses the tilegrid for given projection', function() {
+  describe('#setTileGridForProjection', () => {
+    test('uses the tilegrid for given projection', () => {
       const source = createSource();
       const tileGrid = createForProjection('EPSG:4326', 3, [10, 20]);
       source.setTileGridForProjection('EPSG:4326', tileGrid);
       const retrieved = source.getTileGridForProjection(getProjection('EPSG:4326'));
-      expect(retrieved).to.be(tileGrid);
+      expect(retrieved).toBe(tileGrid);
     });
   });
 
-  describe('#getTileInternal', function() {
+  describe('#getTileInternal', () => {
     let source, tile;
 
-    beforeEach(function() {
+    beforeEach(() => {
       source = createSource();
-      expect(source.getKey()).to.be('');
+      expect(source.getKey()).toBe('');
       source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(source.tileCache.getCount()).to.be(1);
+      expect(source.tileCache.getCount()).toBe(1);
       tile = source.tileCache.get(getKeyZXY(0, 0, 0));
     });
 
-    it('gets the tile from the cache', function() {
+    test('gets the tile from the cache', () => {
       const returnedTile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(returnedTile).to.be(tile);
+      expect(returnedTile).toBe(tile);
     });
 
-    describe('change a dynamic param', function() {
+    describe('change a dynamic param', () => {
 
-      describe('tile is not loaded', function() {
-        it('returns a tile with no interim tile', function() {
+      describe('tile is not loaded', () => {
+        test('returns a tile with no interim tile', () => {
           source.getKey = function() {
             return 'key0';
           };
           const returnedTile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key0');
-          expect(returnedTile.interimTile).to.be(null);
+          expect(returnedTile).not.toBe(tile);
+          expect(returnedTile.key).toBe('key0');
+          expect(returnedTile.interimTile).toBe(null);
         });
       });
 
-      describe('tile is loaded', function() {
-        it('returns a tile with interim tile', function() {
+      describe('tile is loaded', () => {
+        test('returns a tile with interim tile', () => {
           source.getKey = function() {
             return 'key0';
           };
           tile.state = 2; // LOADED
           const returnedTile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key0');
-          expect(returnedTile.interimTile).to.be(tile);
+          expect(returnedTile).not.toBe(tile);
+          expect(returnedTile.key).toBe('key0');
+          expect(returnedTile.interimTile).toBe(tile);
         });
       });
 
-      describe('tile is not loaded but interim tile is', function() {
-        it('returns a tile with interim tile', function() {
+      describe('tile is not loaded but interim tile is', () => {
+        test('returns a tile with interim tile', () => {
           let dynamicParamsKey, returnedTile;
           source.getKey = function() {
             return dynamicParamsKey;
@@ -97,9 +97,9 @@ describe('ol.source.TileImage', function() {
           returnedTile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
           dynamicParamsKey = 'key1';
           returnedTile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key1');
-          expect(returnedTile.interimTile).to.be(tile);
+          expect(returnedTile).not.toBe(tile);
+          expect(returnedTile.key).toBe('key1');
+          expect(returnedTile.interimTile).toBe(tile);
         });
       });
 
@@ -107,12 +107,12 @@ describe('ol.source.TileImage', function() {
 
   });
 
-  describe('#getTile', function() {
-    it('does not do reprojection for identity', function() {
+  describe('#getTile', () => {
+    test('does not do reprojection for identity', () => {
       const source3857 = createSource('EPSG:3857');
       const tile3857 = source3857.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile3857).to.be.a(ImageTile);
-      expect(tile3857).not.to.be.a(ReprojTile);
+      expect(tile3857).toBeInstanceOf(ImageTile);
+      expect(tile3857).not.toBeInstanceOf(ReprojTile);
 
       const projXXX = new Projection({
         code: 'XXX',
@@ -120,28 +120,28 @@ describe('ol.source.TileImage', function() {
       });
       const sourceXXX = createSource(projXXX);
       const tileXXX = sourceXXX.getTile(0, 0, 0, 1, projXXX);
-      expect(tileXXX).to.be.a(ImageTile);
-      expect(tileXXX).not.to.be.a(ReprojTile);
+      expect(tileXXX).toBeInstanceOf(ImageTile);
+      expect(tileXXX).not.toBeInstanceOf(ReprojTile);
     });
 
-    beforeEach(function() {
+    beforeEach(() => {
       proj4.defs('4326_noextentnounits', '+proj=longlat +datum=WGS84 +no_defs');
       register(proj4);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       delete proj4.defs['4326_noextentnounits'];
       clearAllProjections();
       addCommon();
     });
 
-    it('can handle source projection without extent and units', function(done) {
+    test('can handle source projection without extent and units', done => {
       const source = createSource('4326_noextentnounits', createXYZ({
         extent: [-180, -90, 180, 90],
         tileSize: [2, 2]
       }));
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(ReprojTile);
+      expect(tile).toBeInstanceOf(ReprojTile);
 
       listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
@@ -151,7 +151,7 @@ describe('ol.source.TileImage', function() {
       tile.load();
     });
 
-    it('can handle target projection without extent and units', function(done) {
+    test('can handle target projection without extent and units', done => {
       const proj = getProjection('4326_noextentnounits');
       const source = createSource();
       source.setTileGridForProjection(proj,
@@ -160,7 +160,7 @@ describe('ol.source.TileImage', function() {
           tileSize: [2, 2]
         }));
       const tile = source.getTile(0, 0, 0, 1, proj);
-      expect(tile).to.be.a(ReprojTile);
+      expect(tile).toBeInstanceOf(ReprojTile);
 
       listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
@@ -171,17 +171,17 @@ describe('ol.source.TileImage', function() {
     });
   });
 
-  describe('tile load events', function() {
+  describe('tile load events', () => {
 
     let source;
 
-    beforeEach(function() {
+    beforeEach(() => {
       source = new TileImage({
         url: '{z}/{x}/{y}'
       });
     });
 
-    it('dispatches tileloadstart and tileloadend events', function() {
+    test('dispatches tileloadstart and tileloadend events', () => {
       source.setTileLoadFunction(function(tile) {
         tile.setState(TileState.LOADED);
       });
@@ -191,11 +191,11 @@ describe('ol.source.TileImage', function() {
       source.on('tileloadend', endSpy);
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
-      expect(startSpy.callCount).to.be(1);
-      expect(endSpy.callCount).to.be(1);
+      expect(startSpy.callCount).toBe(1);
+      expect(endSpy.callCount).toBe(1);
     });
 
-    it('works for loading-error-loading-loaded sequences', function(done) {
+    test('works for loading-error-loading-loaded sequences', done => {
       source.setTileLoadFunction(function(tile) {
         tile.setState(
           tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR);
@@ -211,15 +211,15 @@ describe('ol.source.TileImage', function() {
         errorSpy();
       });
       source.on('tileloadend', function() {
-        expect(startSpy.callCount).to.be(2);
-        expect(errorSpy.callCount).to.be(1);
+        expect(startSpy.callCount).toBe(2);
+        expect(errorSpy.callCount).toBe(1);
         done();
       });
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
     });
 
-    it('dispatches tileloadend events for aborted tiles', function() {
+    test('dispatches tileloadend events for aborted tiles', () => {
       source.setTileLoadFunction(function() {});
       const startSpy = sinon.spy();
       source.on('tileloadstart', startSpy);
@@ -228,8 +228,8 @@ describe('ol.source.TileImage', function() {
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
       tile.dispose();
-      expect(startSpy.callCount).to.be(1);
-      expect(endSpy.callCount).to.be(1);
+      expect(startSpy.callCount).toBe(1);
+      expect(endSpy.callCount).toBe(1);
     });
   });
 

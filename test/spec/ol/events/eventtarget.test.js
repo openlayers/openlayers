@@ -4,14 +4,20 @@ import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
 
 
-describe('ol.events.EventTarget', function() {
+describe('ol.events.EventTarget', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
   let called, events, eventTarget, spy1, spy2, spy3;
 
-  beforeEach(function() {
+  beforeEach(() => {
     called = [];
     events = [];
     function spy(evt) {
-      called.push(this.id);
+      called.push(testContext.id);
       events.push(evt);
     }
     spy1 = spy.bind({id: 1});
@@ -20,60 +26,60 @@ describe('ol.events.EventTarget', function() {
     eventTarget = new EventTarget();
   });
 
-  describe('constructor', function() {
-    it('creates an instance', function() {
-      expect(eventTarget).to.be.a(EventTarget);
-      expect(eventTarget).to.be.a(Disposable);
+  describe('constructor', () => {
+    test('creates an instance', () => {
+      expect(eventTarget).toBeInstanceOf(EventTarget);
+      expect(eventTarget).toBeInstanceOf(Disposable);
     });
-    it('creates an empty listeners_ object', function() {
-      expect(Object.keys(eventTarget.listeners_)).to.have.length(0);
-    });
-  });
-
-  describe('#hasListener', function() {
-    it('reports any listeners when called without argument', function() {
-      expect(eventTarget.hasListener()).to.be(false);
-      eventTarget.listeners_['foo'] = [function() {}];
-      expect(eventTarget.hasListener()).to.be(true);
-    });
-    it('reports listeners for the type passed as argument', function() {
-      eventTarget.listeners_['foo'] = [function() {}];
-      expect(eventTarget.hasListener('foo')).to.be(true);
-      expect(eventTarget.hasListener('bar')).to.be(false);
+    test('creates an empty listeners_ object', () => {
+      expect(Object.keys(eventTarget.listeners_)).toHaveLength(0);
     });
   });
 
-  describe('#addEventListener()', function() {
-    it('has listeners for each registered type', function() {
+  describe('#hasListener', () => {
+    test('reports any listeners when called without argument', () => {
+      expect(eventTarget.hasListener()).toBe(false);
+      eventTarget.listeners_['foo'] = [function() {}];
+      expect(eventTarget.hasListener()).toBe(true);
+    });
+    test('reports listeners for the type passed as argument', () => {
+      eventTarget.listeners_['foo'] = [function() {}];
+      expect(eventTarget.hasListener('foo')).toBe(true);
+      expect(eventTarget.hasListener('bar')).toBe(false);
+    });
+  });
+
+  describe('#addEventListener()', () => {
+    test('has listeners for each registered type', () => {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.addEventListener('bar', spy2);
-      expect(eventTarget.hasListener('foo')).to.be(true);
-      expect(eventTarget.hasListener('bar')).to.be(true);
+      expect(eventTarget.hasListener('foo')).toBe(true);
+      expect(eventTarget.hasListener('bar')).toBe(true);
     });
   });
 
-  describe('#removeEventListener()', function() {
-    it('keeps the listeners registry clean', function() {
+  describe('#removeEventListener()', () => {
+    test('keeps the listeners registry clean', () => {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.removeEventListener('foo', spy1);
-      expect(eventTarget.hasListener('foo')).to.be(false);
+      expect(eventTarget.hasListener('foo')).toBe(false);
     });
-    it('removes added listeners from the listeners registry', function() {
+    test('removes added listeners from the listeners registry', () => {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.addEventListener('foo', spy2);
       eventTarget.removeEventListener('foo', spy1, false);
-      expect(eventTarget.listeners_['foo']).to.have.length(1);
+      expect(eventTarget.listeners_['foo']).toHaveLength(1);
     });
   });
 
-  describe('#dispatchEvent()', function() {
-    it('calls listeners in the correct order', function() {
+  describe('#dispatchEvent()', () => {
+    test('calls listeners in the correct order', () => {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.addEventListener('foo', spy2);
       eventTarget.dispatchEvent('foo');
-      expect(called).to.eql([1, 2]);
+      expect(called).toEqual([1, 2]);
     });
-    it('stops propagation when listeners return false', function() {
+    test('stops propagation when listeners return false', () => {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.addEventListener('foo', function(evt) {
         spy2();
@@ -81,34 +87,34 @@ describe('ol.events.EventTarget', function() {
       }, false);
       eventTarget.addEventListener('foo', spy3);
       eventTarget.dispatchEvent('foo');
-      expect(called).to.eql([1, 2]);
+      expect(called).toEqual([1, 2]);
     });
-    it('stops propagation when listeners call preventDefault()', function() {
+    test('stops propagation when listeners call preventDefault()', () => {
       eventTarget.addEventListener('foo', function(evt) {
         spy2();
         evt.preventDefault();
       });
       eventTarget.addEventListener('foo', spy1);
       eventTarget.dispatchEvent('foo');
-      expect(called).to.eql([2]);
+      expect(called).toEqual([2]);
     });
-    it('passes a default ol.events.Event object to listeners', function() {
+    test('passes a default ol.events.Event object to listeners', () => {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.dispatchEvent('foo');
-      expect(events[0]).to.be.a(Event);
-      expect(events[0].type).to.be('foo');
-      expect(events[0].target).to.equal(eventTarget);
+      expect(events[0]).toBeInstanceOf(Event);
+      expect(events[0].type).toBe('foo');
+      expect(events[0].target).toBe(eventTarget);
     });
-    it('passes a custom event object with target to listeners', function() {
+    test('passes a custom event object with target to listeners', () => {
       eventTarget.addEventListener('foo', spy1);
       const event = {
         type: 'foo'
       };
       eventTarget.dispatchEvent(event);
-      expect(events[0]).to.equal(event);
-      expect(events[0].target).to.equal(eventTarget);
+      expect(events[0]).toBe(event);
+      expect(events[0].target).toBe(eventTarget);
     });
-    it('is safe to remove listeners in listeners', function() {
+    test('is safe to remove listeners in listeners', () => {
       eventTarget.addEventListener('foo', spy3);
       eventTarget.addEventListener('foo', function() {
         eventTarget.removeEventListener('foo', spy1);
@@ -119,11 +125,11 @@ describe('ol.events.EventTarget', function() {
       eventTarget.addEventListener('foo', spy2);
       expect(function() {
         eventTarget.dispatchEvent('foo');
-      }).not.to.throwException();
-      expect(called).to.eql([3]);
-      expect(eventTarget.listeners_['foo']).to.have.length(1);
+      }).not.toThrow();
+      expect(called).toEqual([3]);
+      expect(eventTarget.listeners_['foo']).toHaveLength(1);
     });
-    it('is safe to do weird things in listeners', function() {
+    test('is safe to do weird things in listeners', () => {
       eventTarget.addEventListener('foo', spy2);
       eventTarget.addEventListener('foo', function weird(evt) {
         eventTarget.removeEventListener('foo', weird);
@@ -136,18 +142,18 @@ describe('ol.events.EventTarget', function() {
       eventTarget.addEventListener('foo', spy1);
       expect(function() {
         eventTarget.dispatchEvent('foo');
-      }).not.to.throwException();
-      expect(called).to.eql([2, 2]);
-      expect(eventTarget.listeners_['foo']).to.be(undefined);
+      }).not.toThrow();
+      expect(called).toEqual([2, 2]);
+      expect(eventTarget.listeners_['foo']).toBe(undefined);
     });
   });
 
-  describe('#dispose()', function() {
-    it('cleans up foreign references', function() {
+  describe('#dispose()', () => {
+    test('cleans up foreign references', () => {
       listen(eventTarget, 'foo', spy1, document);
-      expect(eventTarget.hasListener('foo')).to.be(true);
+      expect(eventTarget.hasListener('foo')).toBe(true);
       eventTarget.dispose();
-      expect(eventTarget.hasListener('foo')).to.be(false);
+      expect(eventTarget.hasListener('foo')).toBe(false);
     });
   });
 });

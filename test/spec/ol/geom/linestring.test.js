@@ -2,404 +2,401 @@ import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 
 
-describe('ol.geom.LineString', function() {
+describe('ol.geom.LineString', () => {
 
-  it('cannot be constructed with a null geometry', function() {
+  test('cannot be constructed with a null geometry', () => {
     expect(function() {
       return new LineString(null);
-    }).to.throwException();
+    }).toThrow();
   });
 
-  describe('construct empty', function() {
+  describe('construct empty', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString([]);
     });
 
-    it('defaults to layout XY', function() {
-      expect(lineString.getLayout()).to.be('XY');
+    test('defaults to layout XY', () => {
+      expect(lineString.getLayout()).toBe('XY');
     });
 
-    it('has empty coordinates', function() {
-      expect(lineString.getCoordinates()).to.be.empty();
+    test('has empty coordinates', () => {
+      expect(lineString.getCoordinates()).toHaveLength(0);
     });
 
-    it('has an empty extent', function() {
-      expect(isEmpty(lineString.getExtent())).to.be(true);
+    test('has an empty extent', () => {
+      expect(isEmpty(lineString.getExtent())).toBe(true);
     });
 
-    it('has empty flat coordinates', function() {
-      expect(lineString.getFlatCoordinates()).to.be.empty();
+    test('has empty flat coordinates', () => {
+      expect(lineString.getFlatCoordinates()).toHaveLength(0);
     });
 
-    it('has stride the expected stride', function() {
-      expect(lineString.getStride()).to.be(2);
+    test('has stride the expected stride', () => {
+      expect(lineString.getStride()).toBe(2);
     });
 
-    it('can append coordinates', function() {
+    test('can append coordinates', () => {
       lineString.appendCoordinate([1, 2]);
-      expect(lineString.getCoordinates()).to.eql([[1, 2]]);
+      expect(lineString.getCoordinates()).toEqual([[1, 2]]);
       lineString.appendCoordinate([3, 4]);
-      expect(lineString.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+      expect(lineString.getCoordinates()).toEqual([[1, 2], [3, 4]]);
     });
 
   });
 
-  describe('construct with 2D coordinates', function() {
+  describe('construct with 2D coordinates', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString([[1, 2], [3, 4]]);
     });
 
-    it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be('XY');
+    test('has the expected layout', () => {
+      expect(lineString.getLayout()).toBe('XY');
     });
 
-    it('has the expected coordinates', function() {
-      expect(lineString.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+    test('has the expected coordinates', () => {
+      expect(lineString.getCoordinates()).toEqual([[1, 2], [3, 4]]);
     });
 
-    it('has the expected extent', function() {
-      expect(lineString.getExtent()).to.eql([1, 2, 3, 4]);
+    test('has the expected extent', () => {
+      expect(lineString.getExtent()).toEqual([1, 2, 3, 4]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(lineString.getFlatCoordinates()).to.eql([1, 2, 3, 4]);
+    test('has the expected flat coordinates', () => {
+      expect(lineString.getFlatCoordinates()).toEqual([1, 2, 3, 4]);
     });
 
-    it('has stride the expected stride', function() {
-      expect(lineString.getStride()).to.be(2);
+    test('has stride the expected stride', () => {
+      expect(lineString.getStride()).toBe(2);
     });
 
-    describe('#intersectsExtent', function() {
+    describe('#intersectsExtent', () => {
 
-      it('return false for non matching extent', function() {
-        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      test('return false for non matching extent', () => {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).toBe(false);
       });
 
-      it('return true for extent on midpoint', function() {
-        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      test('return true for extent on midpoint', () => {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).toBe(true);
       });
 
-      it('returns true for the geom\'s own extent', function() {
-        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      test('returns true for the geom\'s own extent', () => {
+        expect(lineString.intersectsExtent(lineString.getExtent())).toBe(true);
       });
 
     });
 
-    describe('#getCoordinateAt', function() {
+    describe('#getCoordinateAt', () => {
 
-      it('return the first point when fraction is 0', function() {
-        expect(lineString.getCoordinateAt(0)).to.eql([1, 2]);
+      test('return the first point when fraction is 0', () => {
+        expect(lineString.getCoordinateAt(0)).toEqual([1, 2]);
       });
 
-      it('return the last point when fraction is 1', function() {
-        expect(lineString.getCoordinateAt(1)).to.eql([3, 4]);
+      test('return the last point when fraction is 1', () => {
+        expect(lineString.getCoordinateAt(1)).toEqual([3, 4]);
       });
 
-      it('return the mid point when fraction is 0.5', function() {
-        expect(lineString.getCoordinateAt(0.5)).to.eql([2, 3]);
+      test('return the mid point when fraction is 0.5', () => {
+        expect(lineString.getCoordinateAt(0.5)).toEqual([2, 3]);
       });
 
     });
 
   });
 
-  describe('construct with 3D coordinates', function() {
+  describe('construct with 3D coordinates', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString([[1, 2, 3], [4, 5, 6]]);
     });
 
-    it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be('XYZ');
+    test('has the expected layout', () => {
+      expect(lineString.getLayout()).toBe('XYZ');
     });
 
-    it('has the expected coordinates', function() {
-      expect(lineString.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+    test('has the expected coordinates', () => {
+      expect(lineString.getCoordinates()).toEqual([[1, 2, 3], [4, 5, 6]]);
     });
 
-    it('has the expected extent', function() {
-      expect(lineString.getExtent()).to.eql([1, 2, 4, 5]);
+    test('has the expected extent', () => {
+      expect(lineString.getExtent()).toEqual([1, 2, 4, 5]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(lineString.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+    test('has the expected flat coordinates', () => {
+      expect(lineString.getFlatCoordinates()).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
-    it('has the expected stride', function() {
-      expect(lineString.getStride()).to.be(3);
+    test('has the expected stride', () => {
+      expect(lineString.getStride()).toBe(3);
     });
 
-    describe('#intersectsExtent', function() {
+    describe('#intersectsExtent', () => {
 
-      it('return false for non matching extent', function() {
-        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      test('return false for non matching extent', () => {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).toBe(false);
       });
 
-      it('return true for extent on midpoint', function() {
-        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      test('return true for extent on midpoint', () => {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).toBe(true);
       });
 
-      it('returns true for the geom\'s own extent', function() {
-        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      test('returns true for the geom\'s own extent', () => {
+        expect(lineString.intersectsExtent(lineString.getExtent())).toBe(true);
       });
 
     });
 
   });
 
-  describe('construct with 3D coordinates and layout XYM', function() {
+  describe('construct with 3D coordinates and layout XYM', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString(
         [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
-    it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be('XYM');
+    test('has the expected layout', () => {
+      expect(lineString.getLayout()).toBe('XYM');
     });
 
-    it('has the expected coordinates', function() {
-      expect(lineString.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+    test('has the expected coordinates', () => {
+      expect(lineString.getCoordinates()).toEqual([[1, 2, 3], [4, 5, 6]]);
     });
 
-    it('has the expected extent', function() {
-      expect(lineString.getExtent()).to.eql([1, 2, 4, 5]);
+    test('has the expected extent', () => {
+      expect(lineString.getExtent()).toEqual([1, 2, 4, 5]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(lineString.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+    test('has the expected flat coordinates', () => {
+      expect(lineString.getFlatCoordinates()).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
-    it('has the expected stride', function() {
-      expect(lineString.getStride()).to.be(3);
+    test('has the expected stride', () => {
+      expect(lineString.getStride()).toBe(3);
     });
 
-    describe('#intersectsExtent', function() {
+    describe('#intersectsExtent', () => {
 
-      it('return false for non matching extent', function() {
-        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      test('return false for non matching extent', () => {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).toBe(false);
       });
 
-      it('return true for extent on midpoint', function() {
-        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      test('return true for extent on midpoint', () => {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).toBe(true);
       });
 
-      it('returns true for the geom\'s own extent', function() {
-        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      test('returns true for the geom\'s own extent', () => {
+        expect(lineString.intersectsExtent(lineString.getExtent())).toBe(true);
       });
 
     });
 
   });
 
-  describe('construct with 4D coordinates', function() {
+  describe('construct with 4D coordinates', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
-    it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be('XYZM');
+    test('has the expected layout', () => {
+      expect(lineString.getLayout()).toBe('XYZM');
     });
 
-    it('has the expected coordinates', function() {
-      expect(lineString.getCoordinates()).to.eql([[1, 2, 3, 4], [5, 6, 7, 8]]);
+    test('has the expected coordinates', () => {
+      expect(lineString.getCoordinates()).toEqual([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
-    it('has the expected extent', function() {
-      expect(lineString.getExtent()).to.eql([1, 2, 5, 6]);
+    test('has the expected extent', () => {
+      expect(lineString.getExtent()).toEqual([1, 2, 5, 6]);
     });
 
-    it('has the expected flat coordinates', function() {
-      expect(lineString.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
+    test('has the expected flat coordinates', () => {
+      expect(lineString.getFlatCoordinates()).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     });
 
-    it('has the expected stride', function() {
-      expect(lineString.getStride()).to.be(4);
+    test('has the expected stride', () => {
+      expect(lineString.getStride()).toBe(4);
     });
 
-    describe('#intersectsExtent', function() {
+    describe('#intersectsExtent', () => {
 
-      it('return false for non matching extent', function() {
-        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      test('return false for non matching extent', () => {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).toBe(false);
       });
 
-      it('return true for extent on midpoint', function() {
-        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      test('return true for extent on midpoint', () => {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).toBe(true);
       });
 
-      it('returns true for the geom\'s own extent', function() {
-        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      test('returns true for the geom\'s own extent', () => {
+        expect(lineString.intersectsExtent(lineString.getExtent())).toBe(true);
       });
 
     });
 
   });
 
-  describe('#scale()', function() {
+  describe('#scale()', () => {
 
-    it('scales a linestring', function() {
+    test('scales a linestring', () => {
       const geom = new LineString([[-10, -20], [10, 20]]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[-100, -200], [100, 200]]);
+      expect(coordinates).toEqual([[-100, -200], [100, 200]]);
     });
 
-    it('accepts sx and sy', function() {
+    test('accepts sx and sy', () => {
       const geom = new LineString([[-10, -20], [10, 20]]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[-20, -60], [20, 60]]);
+      expect(coordinates).toEqual([[-20, -60], [20, 60]]);
     });
 
-    it('accepts an anchor', function() {
+    test('accepts an anchor', () => {
       const geom = new LineString([[-10, -20], [10, 20]]);
       geom.scale(3, 2, [10, 20]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([[-50, -60], [10, 20]]);
+      expect(coordinates).toEqual([[-50, -60], [10, 20]]);
     });
 
   });
 
-  describe('with a simple line string', function() {
+  describe('with a simple line string', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString(
         [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
     });
 
-    describe('#getFirstCoordinate', function() {
+    describe('#getFirstCoordinate', () => {
 
-      it('returns the expected result', function() {
-        expect(lineString.getFirstCoordinate()).to.eql([0, 0]);
+      test('returns the expected result', () => {
+        expect(lineString.getFirstCoordinate()).toEqual([0, 0]);
       });
 
     });
 
-    describe('#getFlatMidpoint', function() {
+    describe('#getFlatMidpoint', () => {
 
-      it('returns the expected result', function() {
+      test('returns the expected result', () => {
         const midpoint = lineString.getFlatMidpoint();
-        expect(midpoint).to.be.an(Array);
-        expect(midpoint).to.have.length(2);
+        expect(midpoint).toBeInstanceOf(Array);
+        expect(midpoint).toHaveLength(2);
         expect(midpoint[0]).to.roughlyEqual(4, 1e-1);
         expect(midpoint[1]).to.roughlyEqual(2, 1e-1);
       });
 
     });
 
-    describe('#getLastCoordinate', function() {
+    describe('#getLastCoordinate', () => {
 
-      it('returns the expected result', function() {
-        expect(lineString.getLastCoordinate()).to.eql([7, 5]);
+      test('returns the expected result', () => {
+        expect(lineString.getLastCoordinate()).toEqual([7, 5]);
       });
 
     });
 
-    describe('#simplify', function() {
+    describe('#simplify', () => {
 
-      it('returns a simplified geometry', function() {
+      test('returns a simplified geometry', () => {
         const simplified = lineString.simplify(1);
-        expect(simplified).to.be.an(LineString);
-        expect(simplified.getCoordinates()).to.eql(
-          [[0, 0], [3, 3], [5, 1], [7, 5]]);
+        expect(simplified).toBeInstanceOf(LineString);
+        expect(simplified.getCoordinates()).toEqual([[0, 0], [3, 3], [5, 1], [7, 5]]);
       });
 
-      it('does not modify the original', function() {
+      test('does not modify the original', () => {
         lineString.simplify(1);
-        expect(lineString.getCoordinates()).to.eql(
-          [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
+        expect(lineString.getCoordinates()).toEqual([[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
       });
 
-      it('delegates to the internal method', function() {
+      test('delegates to the internal method', () => {
         const simplified = lineString.simplify(2);
         const internal = lineString.getSimplifiedGeometry(4);
-        expect(simplified.getCoordinates()).to.eql(internal.getCoordinates());
+        expect(simplified.getCoordinates()).toEqual(internal.getCoordinates());
       });
 
     });
 
-    describe('#getSimplifiedGeometry', function() {
+    describe('#getSimplifiedGeometry', () => {
 
-      it('returns the expectedResult', function() {
+      test('returns the expectedResult', () => {
         const simplifiedGeometry = lineString.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry).to.be.an(LineString);
-        expect(simplifiedGeometry.getCoordinates()).to.eql(
-          [[0, 0], [3, 3], [5, 1], [7, 5]]);
+        expect(simplifiedGeometry).toBeInstanceOf(LineString);
+        expect(simplifiedGeometry.getCoordinates()).toEqual([[0, 0], [3, 3], [5, 1], [7, 5]]);
       });
 
-      it('remembers the minimum squared tolerance', function() {
+      test('remembers the minimum squared tolerance', () => {
         sinon.spy(lineString, 'getSimplifiedGeometryInternal');
         const simplifiedGeometry1 = lineString.getSimplifiedGeometry(0.05);
-        expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
-        expect(simplifiedGeometry1).to.be(lineString);
+        expect(lineString.getSimplifiedGeometryInternal.callCount).toBe(1);
+        expect(simplifiedGeometry1).toBe(lineString);
         const simplifiedGeometry2 = lineString.getSimplifiedGeometry(0.01);
-        expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
-        expect(simplifiedGeometry2).to.be(lineString);
+        expect(lineString.getSimplifiedGeometryInternal.callCount).toBe(1);
+        expect(simplifiedGeometry2).toBe(lineString);
       });
 
     });
 
-    describe('#getCoordinateAt', function() {
+    describe('#getCoordinateAt', () => {
 
-      it('return the first point when fraction is 0', function() {
-        expect(lineString.getCoordinateAt(0)).to.eql([0, 0]);
+      test('return the first point when fraction is 0', () => {
+        expect(lineString.getCoordinateAt(0)).toEqual([0, 0]);
       });
 
-      it('return the last point when fraction is 1', function() {
-        expect(lineString.getCoordinateAt(1)).to.eql([7, 5]);
+      test('return the last point when fraction is 1', () => {
+        expect(lineString.getCoordinateAt(1)).toEqual([7, 5]);
       });
 
-      it('return the mid point when fraction is 0.5', function() {
+      test('return the mid point when fraction is 0.5', () => {
         const midpoint = lineString.getFlatMidpoint();
-        expect(lineString.getCoordinateAt(0.5)).to.eql(midpoint);
+        expect(lineString.getCoordinateAt(0.5)).toEqual(midpoint);
       });
 
     });
 
   });
 
-  describe('with a simple XYM coordinates', function() {
+  describe('with a simple XYM coordinates', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString(
         [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
-    describe('#getCoordinateAtM', function() {
+    describe('#getCoordinateAtM', () => {
 
-      it('returns the expected value', function() {
-        expect(lineString.getCoordinateAtM(2, false)).to.be(null);
-        expect(lineString.getCoordinateAtM(2, true)).to.eql([1, 2, 2]);
-        expect(lineString.getCoordinateAtM(3, false)).to.eql([1, 2, 3]);
-        expect(lineString.getCoordinateAtM(3, true)).to.eql([1, 2, 3]);
-        expect(lineString.getCoordinateAtM(4, false)).to.eql([2, 3, 4]);
-        expect(lineString.getCoordinateAtM(4, true)).to.eql([2, 3, 4]);
-        expect(lineString.getCoordinateAtM(5, false)).to.eql([3, 4, 5]);
-        expect(lineString.getCoordinateAtM(5, true)).to.eql([3, 4, 5]);
-        expect(lineString.getCoordinateAtM(6, false)).to.eql([4, 5, 6]);
-        expect(lineString.getCoordinateAtM(6, true)).to.eql([4, 5, 6]);
-        expect(lineString.getCoordinateAtM(7, false)).to.eql(null);
-        expect(lineString.getCoordinateAtM(7, true)).to.eql([4, 5, 7]);
+      test('returns the expected value', () => {
+        expect(lineString.getCoordinateAtM(2, false)).toBe(null);
+        expect(lineString.getCoordinateAtM(2, true)).toEqual([1, 2, 2]);
+        expect(lineString.getCoordinateAtM(3, false)).toEqual([1, 2, 3]);
+        expect(lineString.getCoordinateAtM(3, true)).toEqual([1, 2, 3]);
+        expect(lineString.getCoordinateAtM(4, false)).toEqual([2, 3, 4]);
+        expect(lineString.getCoordinateAtM(4, true)).toEqual([2, 3, 4]);
+        expect(lineString.getCoordinateAtM(5, false)).toEqual([3, 4, 5]);
+        expect(lineString.getCoordinateAtM(5, true)).toEqual([3, 4, 5]);
+        expect(lineString.getCoordinateAtM(6, false)).toEqual([4, 5, 6]);
+        expect(lineString.getCoordinateAtM(6, true)).toEqual([4, 5, 6]);
+        expect(lineString.getCoordinateAtM(7, false)).toEqual(null);
+        expect(lineString.getCoordinateAtM(7, true)).toEqual([4, 5, 7]);
       });
 
     });
 
   });
 
-  describe('with several XYZM coordinates', function() {
+  describe('with several XYZM coordinates', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString([
         [0, 0, 0, 0],
         [1, -1, 2, 1],
@@ -415,14 +412,13 @@ describe('ol.geom.LineString', function() {
       ]);
     });
 
-    describe('#getCoordinateAtM', function() {
+    describe('#getCoordinateAtM', () => {
 
-      it('returns the expected value', function() {
-        expect(lineString.getLayout()).to.be('XYZM');
+      test('returns the expected value', () => {
+        expect(lineString.getLayout()).toBe('XYZM');
         let m;
         for (m = 0; m <= 22; m += 0.5) {
-          expect(lineString.getCoordinateAtM(m, true)).to.eql(
-            [m, -m, 2 * m, m]);
+          expect(lineString.getCoordinateAtM(m, true)).toEqual([m, -m, 2 * m, m]);
         }
       });
 
@@ -430,10 +426,10 @@ describe('ol.geom.LineString', function() {
 
   });
 
-  describe('#containsXY()', function() {
+  describe('#containsXY()', () => {
 
     let lineString;
-    beforeEach(function() {
+    beforeEach(() => {
       lineString = new LineString([
         [0, 0, 0, 0],
         [1, -1, 2, 1],
@@ -449,16 +445,16 @@ describe('ol.geom.LineString', function() {
       ]);
     });
 
-    it('does contain XY', function() {
-      expect(lineString.containsXY(1, -1)).to.be(true);
-      expect(lineString.containsXY(16, -16)).to.be(true);
-      expect(lineString.containsXY(3, -3)).to.be(true);
+    test('does contain XY', () => {
+      expect(lineString.containsXY(1, -1)).toBe(true);
+      expect(lineString.containsXY(16, -16)).toBe(true);
+      expect(lineString.containsXY(3, -3)).toBe(true);
     });
 
-    it('does not contain XY', function() {
-      expect(lineString.containsXY(1, 3)).to.be(false);
-      expect(lineString.containsXY(2, 2)).to.be(false);
-      expect(lineString.containsXY(2, 3)).to.be(false);
+    test('does not contain XY', () => {
+      expect(lineString.containsXY(1, 3)).toBe(false);
+      expect(lineString.containsXY(2, 2)).toBe(false);
+      expect(lineString.containsXY(2, 3)).toBe(false);
     });
 
   });

@@ -3,30 +3,30 @@ import UrlTile from '../../../../src/ol/source/UrlTile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 
-describe('ol.source.UrlTile', function() {
+describe('ol.source.UrlTile', () => {
 
-  describe('#setUrl()', function() {
-    it('sets the URL for the source', function() {
+  describe('#setUrl()', () => {
+    test('sets the URL for the source', () => {
       const source = new UrlTile({});
 
       const url = 'https://example.com/';
       source.setUrl(url);
 
-      expect(source.getUrls()).to.eql([url]);
+      expect(source.getUrls()).toEqual([url]);
     });
 
-    it('updates the key for the source', function() {
+    test('updates the key for the source', () => {
       const source = new UrlTile({});
 
       const url = 'https://example.com/';
       source.setUrl(url);
 
-      expect(source.getKey()).to.eql(url);
+      expect(source.getKey()).toEqual(url);
     });
   });
 
-  describe('#setUrls()', function() {
-    it('sets the URL for the source', function() {
+  describe('#setUrls()', () => {
+    test('sets the URL for the source', () => {
       const source = new UrlTile({});
 
       const urls = [
@@ -36,10 +36,10 @@ describe('ol.source.UrlTile', function() {
       ];
       source.setUrls(urls);
 
-      expect(source.getUrls()).to.eql(urls);
+      expect(source.getUrls()).toEqual(urls);
     });
 
-    it('updates the key for the source', function() {
+    test('updates the key for the source', () => {
       const source = new UrlTile({});
 
       const urls = [
@@ -49,26 +49,26 @@ describe('ol.source.UrlTile', function() {
       ];
       source.setUrls(urls);
 
-      expect(source.getKey()).to.eql(urls.join('\n'));
+      expect(source.getKey()).toEqual(urls.join('\n'));
     });
   });
 
-  describe('url option', function() {
-    it('expands url template', function() {
+  describe('url option', () => {
+    test('expands url template', () => {
       const tileSource = new UrlTile({
         url: '{1-3}'
       });
 
       const urls = tileSource.getUrls();
-      expect(urls).to.eql(['1', '2', '3']);
+      expect(urls).toEqual(['1', '2', '3']);
     });
   });
 
-  describe('tileUrlFunction', function() {
+  describe('tileUrlFunction', () => {
 
     let tileSource, tileGrid;
 
-    beforeEach(function() {
+    beforeEach(() => {
       tileSource = new UrlTile({
         projection: 'EPSG:3857',
         tileGrid: createXYZ({maxZoom: 6}),
@@ -78,88 +78,88 @@ describe('ol.source.UrlTile', function() {
       tileGrid = tileSource.getTileGrid();
     });
 
-    it('returns the expected URL', function() {
+    test('returns the expected URL', () => {
 
       const coordinate = [829330.2064098881, 5933916.615134273];
       let tileUrl;
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 0));
-      expect(tileUrl).to.eql('0/0/0');
+      expect(tileUrl).toEqual('0/0/0');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 1));
-      expect(tileUrl).to.eql('1/1/0');
+      expect(tileUrl).toEqual('1/1/0');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 2));
-      expect(tileUrl).to.eql('2/2/1');
+      expect(tileUrl).toEqual('2/2/1');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 3));
-      expect(tileUrl).to.eql('3/4/2');
+      expect(tileUrl).toEqual('3/4/2');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 4));
-      expect(tileUrl).to.eql('4/8/5');
+      expect(tileUrl).toEqual('4/8/5');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 5));
-      expect(tileUrl).to.eql('5/16/11');
+      expect(tileUrl).toEqual('5/16/11');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 6));
-      expect(tileUrl).to.eql('6/33/22');
+      expect(tileUrl).toEqual('6/33/22');
 
     });
 
-    describe('wrap x', function() {
+    describe('wrap x', () => {
 
-      it('returns the expected URL', function() {
+      test('returns the expected URL', () => {
         const projection = tileSource.getProjection();
         let tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, -31, 22], projection));
-        expect(tileUrl).to.eql('6/33/22');
+        expect(tileUrl).toEqual('6/33/22');
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection));
-        expect(tileUrl).to.eql('6/33/22');
+        expect(tileUrl).toEqual('6/33/22');
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 97, 22], projection));
-        expect(tileUrl).to.eql('6/33/22');
+        expect(tileUrl).toEqual('6/33/22');
       });
 
     });
 
-    describe('crop y', function() {
+    describe('crop y', () => {
 
-      it('returns the expected URL', function() {
+      test('returns the expected URL', () => {
         const projection = tileSource.getProjection();
         let tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, -1], projection));
-        expect(tileUrl).to.be(undefined);
+        expect(tileUrl).toBe(undefined);
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection));
-        expect(tileUrl).to.eql('6/33/22');
+        expect(tileUrl).toEqual('6/33/22');
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, 64], projection));
-        expect(tileUrl).to.be(undefined);
+        expect(tileUrl).toBe(undefined);
       });
 
     });
 
   });
 
-  describe('#getUrls', function() {
+  describe('#getUrls', () => {
 
     let sourceOptions;
     let source;
     const url = 'http://geo.nls.uk/maps/towns/glasgow1857/{z}/{x}/{-y}.png';
 
-    beforeEach(function() {
+    beforeEach(() => {
       sourceOptions = {
         tileGrid: createXYZ({
           extent: getProjection('EPSG:4326').getExtent()
@@ -167,43 +167,43 @@ describe('ol.source.UrlTile', function() {
       };
     });
 
-    describe('using a "url" option', function() {
-      beforeEach(function() {
+    describe('using a "url" option', () => {
+      beforeEach(() => {
         sourceOptions.url = url;
         source = new UrlTile(sourceOptions);
       });
 
-      it('returns the XYZ URL', function() {
+      test('returns the XYZ URL', () => {
         const urls = source.getUrls();
-        expect(urls).to.be.eql([url]);
+        expect(urls).toEqual([url]);
       });
 
     });
 
-    describe('using a "urls" option', function() {
-      beforeEach(function() {
+    describe('using a "urls" option', () => {
+      beforeEach(() => {
         sourceOptions.urls = ['some_xyz_url1', 'some_xyz_url2'];
         source = new UrlTile(sourceOptions);
       });
 
-      it('returns the XYZ URLs', function() {
+      test('returns the XYZ URLs', () => {
         const urls = source.getUrls();
-        expect(urls).to.be.eql(['some_xyz_url1', 'some_xyz_url2']);
+        expect(urls).toEqual(['some_xyz_url1', 'some_xyz_url2']);
       });
 
     });
 
-    describe('using a "tileUrlFunction"', function() {
-      beforeEach(function() {
+    describe('using a "tileUrlFunction"', () => {
+      beforeEach(() => {
         sourceOptions.tileUrlFunction = function() {
           return 'some_xyz_url';
         };
         source = new UrlTile(sourceOptions);
       });
 
-      it('returns null', function() {
+      test('returns null', () => {
         const urls = source.getUrls();
-        expect(urls).to.be(null);
+        expect(urls).toBe(null);
       });
 
     });

@@ -8,7 +8,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   let viewport, map, interaction;
 
-  beforeEach(function() {
+  beforeEach(() => {
     viewport = new EventTarget();
     map = {
       getViewport: function() {
@@ -23,74 +23,74 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
   });
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const interaction = new DragAndDrop();
-      expect(interaction).to.be.an(DragAndDrop);
+      expect(interaction).toBeInstanceOf(DragAndDrop);
     });
 
-    it('sets formatConstructors on the instance', function() {
-      expect(interaction.formatConstructors_).to.have.length(1);
+    test('sets formatConstructors on the instance', () => {
+      expect(interaction.formatConstructors_).toHaveLength(1);
     });
 
-    it('accepts a source option', function() {
+    test('accepts a source option', () => {
       const source = new VectorSource();
       const drop = new DragAndDrop({
         formatConstructors: [GeoJSON],
         source: source
       });
-      expect(drop.source_).to.equal(source);
+      expect(drop.source_).toBe(source);
     });
   });
 
-  describe('#setActive()', function() {
-    it('registers and unregisters listeners', function() {
+  describe('#setActive()', () => {
+    test('registers and unregisters listeners', () => {
       interaction.setMap(map);
       interaction.setActive(true);
-      expect(viewport.hasListener('dragenter')).to.be(true);
-      expect(viewport.hasListener('dragover')).to.be(true);
-      expect(viewport.hasListener('drop')).to.be(true);
+      expect(viewport.hasListener('dragenter')).toBe(true);
+      expect(viewport.hasListener('dragover')).toBe(true);
+      expect(viewport.hasListener('drop')).toBe(true);
       interaction.setActive(false);
-      expect(viewport.hasListener('dragenter')).to.be(false);
-      expect(viewport.hasListener('dragover')).to.be(false);
-      expect(viewport.hasListener('drop')).to.be(false);
+      expect(viewport.hasListener('dragenter')).toBe(false);
+      expect(viewport.hasListener('dragover')).toBe(false);
+      expect(viewport.hasListener('drop')).toBe(false);
     });
   });
 
-  describe('#setMap()', function() {
-    it('registers and unregisters listeners', function() {
+  describe('#setMap()', () => {
+    test('registers and unregisters listeners', () => {
       interaction.setMap(map);
-      expect(viewport.hasListener('dragenter')).to.be(true);
-      expect(viewport.hasListener('dragover')).to.be(true);
-      expect(viewport.hasListener('drop')).to.be(true);
+      expect(viewport.hasListener('dragenter')).toBe(true);
+      expect(viewport.hasListener('dragover')).toBe(true);
+      expect(viewport.hasListener('drop')).toBe(true);
       interaction.setMap(null);
-      expect(viewport.hasListener('dragenter')).to.be(false);
-      expect(viewport.hasListener('dragover')).to.be(false);
-      expect(viewport.hasListener('drop')).to.be(false);
+      expect(viewport.hasListener('dragenter')).toBe(false);
+      expect(viewport.hasListener('dragover')).toBe(false);
+      expect(viewport.hasListener('drop')).toBe(false);
     });
 
-    it('registers and unregisters listeners on a custom target', function() {
+    test('registers and unregisters listeners on a custom target', () => {
       const customTarget = new EventTarget();
       interaction = new DragAndDrop({
         formatConstructors: [GeoJSON],
         target: customTarget
       });
       interaction.setMap(map);
-      expect(customTarget.hasListener('dragenter')).to.be(true);
-      expect(customTarget.hasListener('dragover')).to.be(true);
-      expect(customTarget.hasListener('drop')).to.be(true);
+      expect(customTarget.hasListener('dragenter')).toBe(true);
+      expect(customTarget.hasListener('dragover')).toBe(true);
+      expect(customTarget.hasListener('drop')).toBe(true);
       interaction.setMap(null);
-      expect(customTarget.hasListener('dragenter')).to.be(false);
-      expect(customTarget.hasListener('dragover')).to.be(false);
-      expect(customTarget.hasListener('drop')).to.be(false);
+      expect(customTarget.hasListener('dragenter')).toBe(false);
+      expect(customTarget.hasListener('dragover')).toBe(false);
+      expect(customTarget.hasListener('drop')).toBe(false);
     });
   });
 
-  describe('#handleDrop_', function() {
+  describe('#handleDrop_', () => {
     let OrigFileReader;
 
-    beforeEach(function() {
+    beforeEach(() => {
       OrigFileReader = FileReader;
 
       class MockFileReader extends EventTarget {
@@ -105,13 +105,13 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
       FileReader = MockFileReader;
     });
 
-    afterEach(function() {
+    afterEach(() => {
       FileReader = OrigFileReader;
     });
 
-    it('reads dropped files', function(done) {
+    test('reads dropped files', done => {
       interaction.on('addfeatures', function(evt) {
-        expect(evt.features.length).to.be(1);
+        expect(evt.features.length).toBe(1);
         done();
       });
       interaction.setMap(map);
@@ -132,11 +132,11 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         }
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      expect(event.dataTransfer.dropEffect).toBe('copy');
+      expect(event.propagationStopped).toBe(true);
     });
 
-    it('adds dropped features to a source', function(done) {
+    test('adds dropped features to a source', done => {
       const source = new VectorSource();
       const drop = new DragAndDrop({
         formatConstructors: [GeoJSON],
@@ -146,7 +146,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
 
       drop.on('addfeatures', function(evt) {
         const features = source.getFeatures();
-        expect(features.length).to.be(1);
+        expect(features.length).toBe(1);
         done();
       });
 
@@ -167,8 +167,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         }
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      expect(event.dataTransfer.dropEffect).toBe('copy');
+      expect(event.propagationStopped).toBe(true);
     });
   });
 

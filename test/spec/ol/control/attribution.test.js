@@ -6,7 +6,7 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
-describe('ol.control.Attribution', function() {
+describe('ol.control.Attribution', () => {
 
   let map;
 
@@ -21,7 +21,7 @@ describe('ol.control.Attribution', function() {
     return tile;
   };
 
-  beforeEach(function() {
+  beforeEach(() => {
     const target = document.createElement('div');
     target.style.width = target.style.height = '100px';
     document.body.appendChild(target);
@@ -65,53 +65,59 @@ describe('ol.control.Attribution', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     disposeMap(map);
     map = null;
   });
 
-  it('does not add duplicate attributions', function() {
+  test('does not add duplicate attributions', () => {
     map.renderSync();
     const attribution = map.getTarget().querySelectorAll('.ol-attribution li');
-    expect(attribution.length).to.be(2);
+    expect(attribution.length).toBe(2);
   });
 
-  it('renders attributions as non-collapsible if source is configured with attributionsCollapsible set to false', function() {
-    map.getControls().clear();
-    map.addControl(new Attribution());
-    const source = new TileSource({
-      projection: 'EPSG:3857',
-      tileGrid: createXYZ(),
-      attributions: 'foo',
-      attributionsCollapsible: false
-    });
-    source.getTile = tileLoadFunction;
-    map.addLayer(new TileLayer({
-      source: source
-    }));
-    map.renderSync();
+  test(
+    'renders attributions as non-collapsible if source is configured with attributionsCollapsible set to false',
+    () => {
+      map.getControls().clear();
+      map.addControl(new Attribution());
+      const source = new TileSource({
+        projection: 'EPSG:3857',
+        tileGrid: createXYZ(),
+        attributions: 'foo',
+        attributionsCollapsible: false
+      });
+      source.getTile = tileLoadFunction;
+      map.addLayer(new TileLayer({
+        source: source
+      }));
+      map.renderSync();
 
-    const attribution = map.getTarget().querySelectorAll('.ol-attribution.ol-uncollapsible');
-    expect(attribution.length).to.be(1);
-  });
+      const attribution = map.getTarget().querySelectorAll('.ol-attribution.ol-uncollapsible');
+      expect(attribution.length).toBe(1);
+    }
+  );
 
-  it('renders attributions as collapsible if configured with collapsible set to true', function() {
-    map.getControls().clear();
-    map.addControl(new Attribution({collapsible: true}));
-    const source = new TileSource({
-      projection: 'EPSG:3857',
-      tileGrid: createXYZ(),
-      attributions: 'foo',
-      attributionsCollapsible: false
-    });
-    source.getTile = tileLoadFunction;
-    map.addLayer(new TileLayer({
-      source: source
-    }));
-    map.renderSync();
+  test(
+    'renders attributions as collapsible if configured with collapsible set to true',
+    () => {
+      map.getControls().clear();
+      map.addControl(new Attribution({collapsible: true}));
+      const source = new TileSource({
+        projection: 'EPSG:3857',
+        tileGrid: createXYZ(),
+        attributions: 'foo',
+        attributionsCollapsible: false
+      });
+      source.getTile = tileLoadFunction;
+      map.addLayer(new TileLayer({
+        source: source
+      }));
+      map.renderSync();
 
-    const attribution = map.getTarget().querySelectorAll('.ol-attribution.ol-uncollapsible');
-    expect(attribution.length).to.be(0);
-  });
+      const attribution = map.getTarget().querySelectorAll('.ol-attribution.ol-uncollapsible');
+      expect(attribution.length).toBe(0);
+    }
+  );
 
 });

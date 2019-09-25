@@ -1,72 +1,78 @@
 import {appendParams} from '../../../src/ol/uri.js';
 
 
-describe('ol.uri.appendParams()', function() {
+describe('ol.uri.appendParams()', () => {
 
-  it('should append empty STYLES with =', function() {
+  test('should append empty STYLES with =', () => {
     const url = appendParams('http://example.com/foo', {
       SERVICE: 'WMS',
       STYLES: ''
     });
-    expect(url).to.equal('http://example.com/foo?SERVICE=WMS&STYLES=');
+    expect(url).toBe('http://example.com/foo?SERVICE=WMS&STYLES=');
   });
 
-  it('should URL encode values but not names', function() {
+  test('should URL encode values but not names', () => {
     const url = appendParams('http://example.com/foo', {
       'k ': 'v '
     });
-    expect(url).to.equal('http://example.com/foo?k =v%20');
+    expect(url).toBe('http://example.com/foo?k =v%20');
   });
 
-  it('should append to simple base URL', function() {
+  test('should append to simple base URL', () => {
     const url = appendParams('http://example.com/foo', {
       k: 'v'
     });
-    expect(url).to.equal('http://example.com/foo?k=v');
+    expect(url).toBe('http://example.com/foo?k=v');
   });
 
-  it('should append to base URL with ?', function() {
+  test('should append to base URL with ?', () => {
     const url = appendParams('http://example.com/foo?', {
       k: 'v'
     });
-    expect(url).to.equal('http://example.com/foo?k=v');
+    expect(url).toBe('http://example.com/foo?k=v');
   });
 
-  it('should append to base URL with single existing param', function() {
+  test('should append to base URL with single existing param', () => {
     const url = appendParams('http://example.com/foo?bar=bam', {
       k: 'v'
     });
-    expect(url).to.equal('http://example.com/foo?bar=bam&k=v');
+    expect(url).toBe('http://example.com/foo?bar=bam&k=v');
   });
 
-  it('should append to base URL with single existing param and extraneous &', function() {
-    const url = appendParams('http://example.com/foo?bar=bam&', {
-      k: 'v'
-    });
-    expect(url).to.equal('http://example.com/foo?bar=bam&k=v');
-  });
+  test(
+    'should append to base URL with single existing param and extraneous &',
+    () => {
+      const url = appendParams('http://example.com/foo?bar=bam&', {
+        k: 'v'
+      });
+      expect(url).toBe('http://example.com/foo?bar=bam&k=v');
+    }
+  );
 
-  it('should append to base URL with two existing params', function() {
+  test('should append to base URL with two existing params', () => {
     const url = appendParams('http://example.com/foo?bar=bam&baz=bat', {
       k: 'v'
     });
-    expect(url).to.equal('http://example.com/foo?bar=bam&baz=bat&k=v');
+    expect(url).toBe('http://example.com/foo?bar=bam&baz=bat&k=v');
   });
 
-  it('should append to base URL with three existing params last one empty', function() {
-    const url = appendParams('http://example.com/foo?bar=bam&baz=bat&bop=', {
-      k: 'v'
-    });
-    expect(url).to.equal('http://example.com/foo?bar=bam&baz=bat&bop=&k=v');
-  });
+  test(
+    'should append to base URL with three existing params last one empty',
+    () => {
+      const url = appendParams('http://example.com/foo?bar=bam&baz=bat&bop=', {
+        k: 'v'
+      });
+      expect(url).toBe('http://example.com/foo?bar=bam&baz=bat&bop=&k=v');
+    }
+  );
 
-  it('should not append null or undefined parameters to the url', function() {
+  test('should not append null or undefined parameters to the url', () => {
     const url = appendParams('http://example.com/foo', {
       a: '1',
       b: null,
       c: undefined
     });
-    expect(url).to.equal('http://example.com/foo?a=1');
+    expect(url).toBe('http://example.com/foo?a=1');
   });
 
 });

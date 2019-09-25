@@ -4,30 +4,30 @@ import Icon from '../../../../src/ol/style/Icon.js';
 import IconImage, {get as getIconImage} from '../../../../src/ol/style/IconImage.js';
 
 
-describe('ol.style.Icon', function() {
+describe('ol.style.Icon', () => {
   const size = [36, 48];
   const src = 'data:image/gif;base64,' +
       'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('caches canvas images with a uid as src', function() {
+    test('caches canvas images with a uid as src', () => {
       const canvas = document.createElement('canvas');
       new Icon({
         img: canvas,
         imgSize: size
       });
-      expect(getIconImage(canvas, getUid(canvas), size, '').getImage()).to.eql(canvas);
+      expect(getIconImage(canvas, getUid(canvas), size, '').getImage()).toEqual(canvas);
     });
 
-    it('imgSize overrides img.width and img.height', function(done) {
+    test('imgSize overrides img.width and img.height', done => {
       const style = new Icon({
         src: src,
         imgSize: size
       });
       const iconImage = style.iconImage_;
       iconImage.addEventListener('change', function() {
-        expect([iconImage.image_.width, iconImage.image_.height]).to.eql(size);
+        expect([iconImage.image_.width, iconImage.image_.height]).toEqual(size);
         done();
       });
       style.load();
@@ -35,18 +35,18 @@ describe('ol.style.Icon', function() {
 
   });
 
-  describe('#clone', function() {
+  describe('#clone', () => {
 
-    it('creates a new ol.style.Icon', function() {
+    test('creates a new ol.style.Icon', () => {
       const original = new Icon({
         src: src
       });
       const clone = original.clone();
-      expect(clone).to.be.an(Icon);
-      expect(clone).to.not.be(original);
+      expect(clone).toBeInstanceOf(Icon);
+      expect(clone).not.toBe(original);
     });
 
-    it('copies all values ', function() {
+    test('copies all values ', () => {
       const canvas = document.createElement('canvas');
       const original = new Icon({
         anchor: [1, 0],
@@ -66,69 +66,72 @@ describe('ol.style.Icon', function() {
       });
 
       const clone = original.clone();
-      expect(original.getImage(1)).to.be(clone.getImage(1));
-      expect(original.iconImage_).to.be(clone.iconImage_);
-      expect(original.getAnchor()).to.eql(clone.getAnchor());
-      expect(original.anchorOrigin_).to.eql(clone.anchorOrigin_);
-      expect(original.anchorXUnits_).to.eql(clone.anchorXUnits_);
-      expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
-      expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
-      expect(original.getColor()).to.eql(clone.getColor());
-      expect(original.offset_).to.eql(clone.offset_);
-      expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
-      expect(original.getSize()).to.eql(clone.getSize());
-      expect(original.getSrc()).to.eql(clone.getSrc());
-      expect(original.getOpacity()).to.eql(clone.getOpacity());
-      expect(original.getRotation()).to.eql(clone.getRotation());
-      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
+      expect(original.getImage(1)).toBe(clone.getImage(1));
+      expect(original.iconImage_).toBe(clone.iconImage_);
+      expect(original.getAnchor()).toEqual(clone.getAnchor());
+      expect(original.anchorOrigin_).toEqual(clone.anchorOrigin_);
+      expect(original.anchorXUnits_).toEqual(clone.anchorXUnits_);
+      expect(original.anchorYUnits_).toEqual(clone.anchorYUnits_);
+      expect(original.crossOrigin_).toEqual(clone.crossOrigin_);
+      expect(original.getColor()).toEqual(clone.getColor());
+      expect(original.offset_).toEqual(clone.offset_);
+      expect(original.offsetOrigin_).toEqual(clone.offsetOrigin_);
+      expect(original.getSize()).toEqual(clone.getSize());
+      expect(original.getSrc()).toEqual(clone.getSrc());
+      expect(original.getOpacity()).toEqual(clone.getOpacity());
+      expect(original.getRotation()).toEqual(clone.getRotation());
+      expect(original.getRotateWithView()).toEqual(clone.getRotateWithView());
 
       const original2 = new Icon({
         src: src
       });
       const clone2 = original2.clone();
-      expect(original2.getImage(1)).to.be(clone2.getImage(1));
-      expect(original2.iconImage_).to.be(clone2.iconImage_);
-      expect(original2.getSrc()).to.eql(clone2.getSrc());
+      expect(original2.getImage(1)).toBe(clone2.getImage(1));
+      expect(original2.iconImage_).toBe(clone2.iconImage_);
+      expect(original2.getSrc()).toEqual(clone2.getSrc());
     });
 
-    it('the clone does not reference the same objects as the original', function() {
-      const original = new Icon({
-        anchor: [1, 0],
-        color: [1, 2, 3, 0.4],
-        src: src,
-        offset: [1, 2],
-        size: [10, 12]
-      });
-      const clone = original.clone();
-      expect(original.getAnchor()).not.to.be(clone.getAnchor());
-      expect(original.offset_).not.to.be(clone.offset_);
-      expect(original.getColor()).not.to.be(clone.getColor());
-      expect(original.getSize()).not.to.be(clone.getSize());
+    test(
+      'the clone does not reference the same objects as the original',
+      () => {
+        const original = new Icon({
+          anchor: [1, 0],
+          color: [1, 2, 3, 0.4],
+          src: src,
+          offset: [1, 2],
+          size: [10, 12]
+        });
+        const clone = original.clone();
+        expect(original.getAnchor()).not.toBe(clone.getAnchor());
+        expect(original.offset_).not.toBe(clone.offset_);
+        expect(original.getColor()).not.toBe(clone.getColor());
+        expect(original.getSize()).not.toBe(clone.getSize());
 
-      clone.anchor_[0] = 0;
-      clone.offset_[0] = 0;
-      clone.color_[0] = 0;
-      clone.size_[0] = 5;
-      expect(original.anchor_).not.to.eql(clone.anchor_);
-      expect(original.offset_).not.to.eql(clone.offset_);
-      expect(original.color_).not.to.eql(clone.color_);
-      expect(original.size_).not.to.eql(clone.size_);
-    });
+        clone.anchor_[0] = 0;
+        clone.offset_[0] = 0;
+        clone.color_[0] = 0;
+        clone.size_[0] = 5;
+        expect(original.anchor_).not.toEqual(clone.anchor_);
+        expect(original.offset_).not.toEqual(clone.offset_);
+        expect(original.color_).not.toEqual(clone.color_);
+        expect(original.size_).not.toEqual(clone.size_);
+      }
+    );
   });
 
-  describe('#getAnchor', function() {
+  describe('#getAnchor', () => {
     const fractionAnchor = [0.25, 0.25];
 
-    it('uses fractional units by default', function() {
+    test('uses fractional units by default', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor
       });
-      expect(iconStyle.getAnchor()).to.eql([9, 12]);
+      expect(iconStyle.getAnchor()).toEqual([9, 12]);
     });
 
-    it('uses pixels units', function() {
+    test('uses pixels units', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
@@ -136,68 +139,68 @@ describe('ol.style.Icon', function() {
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels'
       });
-      expect(iconStyle.getAnchor()).to.eql([2, 18]);
+      expect(iconStyle.getAnchor()).toEqual([2, 18]);
     });
 
-    it('uses a bottom left anchor origin', function() {
+    test('uses a bottom left anchor origin', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
         anchorOrigin: 'bottom-left'
       });
-      expect(iconStyle.getAnchor()).to.eql([9, 36]);
+      expect(iconStyle.getAnchor()).toEqual([9, 36]);
     });
 
-    it('uses a bottom right anchor origin', function() {
+    test('uses a bottom right anchor origin', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
         anchorOrigin: 'bottom-right'
       });
-      expect(iconStyle.getAnchor()).to.eql([27, 36]);
+      expect(iconStyle.getAnchor()).toEqual([27, 36]);
     });
 
-    it('uses a top right anchor origin', function() {
+    test('uses a top right anchor origin', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
         anchorOrigin: 'top-right'
       });
-      expect(iconStyle.getAnchor()).to.eql([27, 12]);
+      expect(iconStyle.getAnchor()).toEqual([27, 12]);
     });
   });
 
-  describe('#setAnchor', function() {
-    it('resets the cached anchor', function() {
+  describe('#setAnchor', () => {
+    test('resets the cached anchor', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
         anchor: [0.25, 0.25]
       });
-      expect(iconStyle.getAnchor()).to.eql([9, 12]);
+      expect(iconStyle.getAnchor()).toEqual([9, 12]);
 
       iconStyle.setAnchor([0.5, 0.5]);
-      expect(iconStyle.getAnchor()).to.eql([18, 24]);
+      expect(iconStyle.getAnchor()).toEqual([18, 24]);
     });
   });
 
-  describe('#getOrigin', function() {
+  describe('#getOrigin', () => {
     const offset = [16, 20];
     const imageSize = [144, 192];
 
-    it('uses a top left offset origin (default)', function() {
+    test('uses a top left offset origin (default)', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
         offset: offset
       });
-      expect(iconStyle.getOrigin()).to.eql([16, 20]);
+      expect(iconStyle.getOrigin()).toEqual([16, 20]);
     });
 
-    it('uses a bottom left offset origin', function() {
+    test('uses a bottom left offset origin', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
@@ -205,10 +208,10 @@ describe('ol.style.Icon', function() {
         offsetOrigin: 'bottom-left'
       });
       iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([16, 124]);
+      expect(iconStyle.getOrigin()).toEqual([16, 124]);
     });
 
-    it('uses a bottom right offset origin', function() {
+    test('uses a bottom right offset origin', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
@@ -216,10 +219,10 @@ describe('ol.style.Icon', function() {
         offsetOrigin: 'bottom-right'
       });
       iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([92, 124]);
+      expect(iconStyle.getOrigin()).toEqual([92, 124]);
     });
 
-    it('uses a top right offset origin', function() {
+    test('uses a top right offset origin', () => {
       const iconStyle = new Icon({
         src: 'test.png',
         size: size,
@@ -227,14 +230,14 @@ describe('ol.style.Icon', function() {
         offsetOrigin: 'top-right'
       });
       iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([92, 20]);
+      expect(iconStyle.getOrigin()).toEqual([92, 20]);
     });
   });
 
-  describe('#getImageSize', function() {
+  describe('#getImageSize', () => {
     const imgSize = [144, 192];
 
-    it('takes the real image size', function() {
+    test('takes the real image size', () => {
       // pretend that the image is already in the cache,
       // this image will be used for the icon.
       const src = 'test.png';
@@ -244,15 +247,15 @@ describe('ol.style.Icon', function() {
       const iconStyle = new Icon({
         src: 'test.png'
       });
-      expect(iconStyle.getImageSize()).to.eql(imgSize);
+      expect(iconStyle.getImageSize()).toEqual(imgSize);
     });
 
-    it('uses the given image size', function() {
+    test('uses the given image size', () => {
       const iconStyle = new Icon({
         img: {src: 'test.png'},
         imgSize: imgSize
       });
-      expect(iconStyle.getImageSize()).to.eql(imgSize);
+      expect(iconStyle.getImageSize()).toEqual(imgSize);
     });
   });
 });

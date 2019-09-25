@@ -6,9 +6,9 @@ import Projection from '../../../../src/ol/proj/Projection.js';
 import proj4 from 'proj4';
 import {register} from '../../../../src/ol/proj/proj4.js';
 
-describe('ol.control.ScaleLine', function() {
+describe('ol.control.ScaleLine', () => {
   let map;
-  beforeEach(function() {
+  beforeEach(() => {
     const target = document.createElement('div');
     target.style.height = '256px';
     document.body.appendChild(target);
@@ -16,29 +16,29 @@ describe('ol.control.ScaleLine', function() {
       target: target
     });
   });
-  afterEach(function() {
+  afterEach(() => {
     disposeMap(map);
     map = null;
   });
 
-  describe('constructor', function() {
-    it('can be constructed without arguments', function() {
+  describe('constructor', () => {
+    test('can be constructed without arguments', () => {
       const ctrl = new ScaleLine();
-      expect(ctrl).to.be.an(ScaleLine);
+      expect(ctrl).toBeInstanceOf(ScaleLine);
     });
   });
 
-  describe('configuration options', function() {
+  describe('configuration options', () => {
 
-    describe('className', function() {
-      it('defaults to "ol-scale-line"', function() {
+    describe('className', () => {
+      test('defaults to "ol-scale-line"', () => {
         const ctrl = new ScaleLine();
         ctrl.setMap(map);
         const element = document.querySelector('.ol-scale-line', map.getTarget());
-        expect(element).to.not.be(null);
-        expect(element).to.be.a(HTMLDivElement);
+        expect(element).not.toBe(null);
+        expect(element).toBeInstanceOf(HTMLDivElement);
       });
-      it('can be configured', function() {
+      test('can be configured', () => {
         const ctrl = new ScaleLine({
           className: 'humpty-dumpty'
         });
@@ -46,64 +46,64 @@ describe('ol.control.ScaleLine', function() {
 
         // check that the default was not chosen
         const element1 = document.querySelector('.ol-scale-line', map.getTarget());
-        expect(element1).to.be(null);
+        expect(element1).toBe(null);
         // check if the configured classname was chosen
         const element2 = document.querySelector('.humpty-dumpty', map.getTarget());
-        expect(element2).to.not.be(null);
-        expect(element2).to.be.a(HTMLDivElement);
+        expect(element2).not.toBe(null);
+        expect(element2).toBeInstanceOf(HTMLDivElement);
       });
     });
 
-    describe('minWidth', function() {
-      it('defaults to 64', function() {
+    describe('minWidth', () => {
+      test('defaults to 64', () => {
         const ctrl = new ScaleLine();
-        expect(ctrl.minWidth_).to.be(64);
+        expect(ctrl.minWidth_).toBe(64);
       });
-      it('can be configured', function() {
+      test('can be configured', () => {
         const ctrl = new ScaleLine({
           minWidth: 4711
         });
-        expect(ctrl.minWidth_).to.be(4711);
+        expect(ctrl.minWidth_).toBe(4711);
       });
     });
 
-    describe('render', function() {
-      it('defaults to `ol.control.ScaleLine.render`', function() {
+    describe('render', () => {
+      test('defaults to `ol.control.ScaleLine.render`', () => {
         const ctrl = new ScaleLine();
-        expect(ctrl.render).to.be(render);
+        expect(ctrl.render).toBe(render);
       });
-      it('can be configured', function() {
+      test('can be configured', () => {
         const myRender = function() {};
         const ctrl = new ScaleLine({
           render: myRender
         });
-        expect(ctrl.render).to.be(myRender);
+        expect(ctrl.render).toBe(myRender);
       });
     });
 
   });
 
-  describe('synchronisation with map view', function() {
-    it('calls `render` as soon as the map is rendered', function(done) {
+  describe('synchronisation with map view', () => {
+    test('calls `render` as soon as the map is rendered', done => {
       const renderSpy = sinon.spy();
       const ctrl = new ScaleLine({
         render: renderSpy
       });
-      expect(renderSpy.called).to.be(false);
+      expect(renderSpy.called).toBe(false);
       ctrl.setMap(map);
-      expect(renderSpy.called).to.be(false);
+      expect(renderSpy.called).toBe(false);
       map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
-      expect(renderSpy.called).to.be(false);
+      expect(renderSpy.called).toBe(false);
       map.once('postrender', function() {
-        expect(renderSpy.called).to.be(true);
-        expect(renderSpy.callCount).to.be(1);
+        expect(renderSpy.called).toBe(true);
+        expect(renderSpy.callCount).toBe(1);
         done();
       });
     });
-    it('calls `render` as often as the map is rendered', function() {
+    test('calls `render` as often as the map is rendered', () => {
       const renderSpy = sinon.spy();
       const ctrl = new ScaleLine({
         render: renderSpy
@@ -114,13 +114,13 @@ describe('ol.control.ScaleLine', function() {
         zoom: 0
       }));
       map.renderSync();
-      expect(renderSpy.callCount).to.be(1);
+      expect(renderSpy.callCount).toBe(1);
       map.renderSync();
-      expect(renderSpy.callCount).to.be(2);
+      expect(renderSpy.callCount).toBe(2);
       map.renderSync();
-      expect(renderSpy.callCount).to.be(3);
+      expect(renderSpy.callCount).toBe(3);
     });
-    it('calls `render` as when the view changes', function(done) {
+    test('calls `render` as when the view changes', done => {
       const renderSpy = sinon.spy();
       const ctrl = new ScaleLine({
         render: renderSpy
@@ -132,17 +132,17 @@ describe('ol.control.ScaleLine', function() {
       }));
       map.renderSync();
       map.once('postrender', function() {
-        expect(renderSpy.callCount).to.be(2);
+        expect(renderSpy.callCount).toBe(2);
         done();
       });
       map.getView().setCenter([1, 1]);
     });
   });
 
-  describe('static method `render`', function() {
-    it('updates the rendered text', function() {
+  describe('static method `render`', () => {
+    test('updates the rendered text', () => {
       const ctrl = new ScaleLine();
-      expect(ctrl.element.innerText).to.be('');
+      expect(ctrl.element.innerText).toBe('');
       ctrl.setMap(map);
       map.setView(new View({
         center: [0, 0],
@@ -150,30 +150,30 @@ describe('ol.control.ScaleLine', function() {
         zoom: 0
       }));
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 km');
+      expect(ctrl.element.innerText).toBe('10000 km');
     });
   });
 
-  describe('#getUnits', function() {
-    it('returns "metric" by default', function() {
+  describe('#getUnits', () => {
+    test('returns "metric" by default', () => {
       const ctrl = new ScaleLine();
-      expect(ctrl.getUnits()).to.be('metric');
+      expect(ctrl.getUnits()).toBe('metric');
     });
-    it('returns what is configured via `units` property', function() {
+    test('returns what is configured via `units` property', () => {
       const ctrl = new ScaleLine({
         units: 'nautical'
       });
-      expect(ctrl.getUnits()).to.be('nautical');
+      expect(ctrl.getUnits()).toBe('nautical');
     });
-    it('returns what is configured `setUnits` method', function() {
+    test('returns what is configured `setUnits` method', () => {
       const ctrl = new ScaleLine();
       ctrl.setUnits('nautical');
-      expect(ctrl.getUnits()).to.be('nautical');
+      expect(ctrl.getUnits()).toBe('nautical');
     });
   });
 
-  describe('#setUnits', function() {
-    it('triggers rerendering', function() {
+  describe('#setUnits', () => {
+    test('triggers rerendering', () => {
       const ctrl = new ScaleLine();
       map.setView(new View({
         center: [0, 0],
@@ -183,22 +183,22 @@ describe('ol.control.ScaleLine', function() {
       ctrl.setMap(map);
 
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 km');
+      expect(ctrl.element.innerText).toBe('10000 km');
 
       ctrl.setUnits('nautical');
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 nm');
+      expect(ctrl.element.innerText).toBe('10000 nm');
     });
   });
 
-  describe('different units result in different contents', function() {
+  describe('different units result in different contents', () => {
     let ctrl;
     let metricHtml;
     let nauticalHtml;
     let degreesHtml;
     let imperialHtml;
     let usHtml;
-    beforeEach(function(done) {
+    beforeEach(done => {
       ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(new View({
@@ -210,46 +210,44 @@ describe('ol.control.ScaleLine', function() {
         done();
       });
     });
-    afterEach(function() {
+    afterEach(() => {
       map.setView(null);
       map.removeControl(ctrl);
     });
 
-    it('renders a scaleline for "metric"', function() {
-      expect(metricHtml).to.not.be(undefined);
+    test('renders a scaleline for "metric"', () => {
+      expect(metricHtml).not.toBe(undefined);
     });
-    it('renders a different scaleline for "nautical"', function() {
+    test('renders a different scaleline for "nautical"', () => {
       ctrl.setUnits('nautical');
       nauticalHtml = ctrl.element.innerHTML;
-      expect(nauticalHtml).to.not.be(metricHtml);
+      expect(nauticalHtml).not.toBe(metricHtml);
     });
-    it('renders a different scaleline for "degrees"', function() {
+    test('renders a different scaleline for "degrees"', () => {
       ctrl.setUnits('degrees');
       degreesHtml = ctrl.element.innerHTML;
-      expect(degreesHtml).to.not.be(metricHtml);
-      expect(degreesHtml).to.not.be(nauticalHtml);
+      expect(degreesHtml).not.toBe(metricHtml);
+      expect(degreesHtml).not.toBe(nauticalHtml);
     });
-    it('renders a different scaleline for "imperial"', function() {
+    test('renders a different scaleline for "imperial"', () => {
       ctrl.setUnits('imperial');
       imperialHtml = ctrl.element.innerHTML;
-      expect(imperialHtml).to.not.be(metricHtml);
-      expect(imperialHtml).to.not.be(nauticalHtml);
-      expect(imperialHtml).to.not.be(degreesHtml);
+      expect(imperialHtml).not.toBe(metricHtml);
+      expect(imperialHtml).not.toBe(nauticalHtml);
+      expect(imperialHtml).not.toBe(degreesHtml);
     });
-    it('renders a different scaleline for "us"', function() {
+    test('renders a different scaleline for "us"', () => {
       ctrl.setUnits('us');
       usHtml = ctrl.element.innerHTML;
-      expect(usHtml).to.not.be(metricHtml);
-      expect(usHtml).to.not.be(nauticalHtml);
-      expect(usHtml).to.not.be(degreesHtml);
-      // it's hard to actually find a difference in rendering between
-      // usHtml and imperialHtml
+      expect(usHtml).not.toBe(metricHtml);
+      expect(usHtml).not.toBe(nauticalHtml);
+      expect(usHtml).not.toBe(degreesHtml);
     });
   });
 
-  describe('projections affect the scaleline', function() {
+  describe('projections affect the scaleline', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
         'SPHEROID["GRS1980",6378137.000,298.25722210]],PRIMEM["Greenwich",0],' +
         'UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],' +
@@ -262,12 +260,12 @@ describe('ol.control.ScaleLine', function() {
       register(proj4);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       clearAllProjections();
       addCommon();
     });
 
-    it('is rendered differently for different projections', function() {
+    test('is rendered differently for different projections', () => {
       const ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(new View({
@@ -276,7 +274,7 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:3857'
       }));
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('2000 km');
+      expect(ctrl.element.innerText).toBe('2000 km');
       map.setView(new View({
         center: [7, 52],
         multiWorld: true,
@@ -284,120 +282,129 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:4326'
       }));
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('5000 km');
+      expect(ctrl.element.innerText).toBe('5000 km');
       map.setView(new View({
         center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
         zoom: 7,
         projection: 'Indiana-East'
       }));
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
+      expect(ctrl.element.innerText).toBe('100 km');
     });
 
-    it('shows the same scale for different projections at higher resolutions', function() {
-      const ctrl = new ScaleLine();
-      ctrl.setMap(map);
-      map.setView(new View({
-        center: fromLonLat([-85.685, 39.891]),
-        zoom: 7,
-        projection: 'EPSG:3857'
-      }));
-      map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
-      map.setView(new View({
-        center: [-85.685, 39.891],
-        zoom: 7,
-        projection: 'EPSG:4326'
-      }));
-      map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
-      map.setView(new View({
-        center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
-        zoom: 7,
-        projection: 'Indiana-East'
-      }));
-      map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
-    });
+    test(
+      'shows the same scale for different projections at higher resolutions',
+      () => {
+        const ctrl = new ScaleLine();
+        ctrl.setMap(map);
+        map.setView(new View({
+          center: fromLonLat([-85.685, 39.891]),
+          zoom: 7,
+          projection: 'EPSG:3857'
+        }));
+        map.renderSync();
+        expect(ctrl.element.innerText).toBe('100 km');
+        map.setView(new View({
+          center: [-85.685, 39.891],
+          zoom: 7,
+          projection: 'EPSG:4326'
+        }));
+        map.renderSync();
+        expect(ctrl.element.innerText).toBe('100 km');
+        map.setView(new View({
+          center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
+          zoom: 7,
+          projection: 'Indiana-East'
+        }));
+        map.renderSync();
+        expect(ctrl.element.innerText).toBe('100 km');
+      }
+    );
 
-    it('Projection\'s metersPerUnit affect scale for non-degree units', function() {
-      const ctrl = new ScaleLine();
-      ctrl.setMap(map);
-      map.setView(new View({
-        center: [0, 0],
-        zoom: 0,
-        resolutions: [1],
-        projection: new Projection({
-          code: 'METERS',
-          units: 'm',
-          getPointResolution: function(r) {
-            return r;
-          }
-        })
-      }));
-      map.renderSync();
+    test(
+      'Projection\'s metersPerUnit affect scale for non-degree units',
+      () => {
+        const ctrl = new ScaleLine();
+        ctrl.setMap(map);
+        map.setView(new View({
+          center: [0, 0],
+          zoom: 0,
+          resolutions: [1],
+          projection: new Projection({
+            code: 'METERS',
+            units: 'm',
+            getPointResolution: function(r) {
+              return r;
+            }
+          })
+        }));
+        map.renderSync();
 
-      ctrl.setUnits('metric');
-      expect(ctrl.element.innerText).to.be('100 m');
+        ctrl.setUnits('metric');
+        expect(ctrl.element.innerText).toBe('100 m');
 
-      ctrl.setUnits('imperial');
-      expect(ctrl.element.innerText).to.be('500 ft');
+        ctrl.setUnits('imperial');
+        expect(ctrl.element.innerText).toBe('500 ft');
 
-      ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.05 nm');
+        ctrl.setUnits('nautical');
+        expect(ctrl.element.innerText).toBe('0.05 nm');
 
-      ctrl.setUnits('us');
-      expect(ctrl.element.innerText).to.be('500 ft');
+        ctrl.setUnits('us');
+        expect(ctrl.element.innerText).toBe('500 ft');
 
 
-      map.setView(new View({
-        center: [0, 0],
-        zoom: 0,
-        resolutions: [1],
-        projection: new Projection({
-          code: 'PIXELS',
-          units: 'pixels',
-          metersPerUnit: 1 / 1000,
-          getPointResolution: function(r) {
-            return r;
-          }
-        })
-      }));
-      map.renderSync();
+        map.setView(new View({
+          center: [0, 0],
+          zoom: 0,
+          resolutions: [1],
+          projection: new Projection({
+            code: 'PIXELS',
+            units: 'pixels',
+            metersPerUnit: 1 / 1000,
+            getPointResolution: function(r) {
+              return r;
+            }
+          })
+        }));
+        map.renderSync();
 
-      ctrl.setUnits('metric');
-      expect(ctrl.element.innerText).to.be('100 mm');
+        ctrl.setUnits('metric');
+        expect(ctrl.element.innerText).toBe('100 mm');
 
-      ctrl.setUnits('imperial');
-      expect(ctrl.element.innerText).to.be('5 in');
+        ctrl.setUnits('imperial');
+        expect(ctrl.element.innerText).toBe('5 in');
 
-      ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.00005 nm');
+        ctrl.setUnits('nautical');
+        expect(ctrl.element.innerText).toBe('0.00005 nm');
 
-      ctrl.setUnits('us');
-      expect(ctrl.element.innerText).to.be('5 in');
-    });
+        ctrl.setUnits('us');
+        expect(ctrl.element.innerText).toBe('5 in');
+      }
+    );
 
-    it('Metric display works with Geographic (EPSG:4326) projection', function() {
-      const ctrl = new ScaleLine();
-      ctrl.setMap(map);
-      map.setView(new View({
-        center: [0, 0],
-        multiWorld: true,
-        zoom: 0, /* min zoom */
-        projection: 'EPSG:4326'
-      }));
-      map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 km');
-      map.getView().setZoom(28); /* max zoom */
-      map.renderSync();
-      expect(ctrl.element.innerText).to.be('50 mm');
-    });
+    test(
+      'Metric display works with Geographic (EPSG:4326) projection',
+      () => {
+        const ctrl = new ScaleLine();
+        ctrl.setMap(map);
+        map.setView(new View({
+          center: [0, 0],
+          multiWorld: true,
+          zoom: 0, /* min zoom */
+          projection: 'EPSG:4326'
+        }));
+        map.renderSync();
+        expect(ctrl.element.innerText).toBe('10000 km');
+        map.getView().setZoom(28); /* max zoom */
+        map.renderSync();
+        expect(ctrl.element.innerText).toBe('50 mm');
+      }
+    );
   });
 
-  describe('latitude may affect scale line in EPSG:4326', function() {
+  describe('latitude may affect scale line in EPSG:4326', () => {
 
-    it('is rendered differently at different latitudes for metric', function() {
+    test('is rendered differently at different latitudes for metric', () => {
       const ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(new View({
@@ -410,10 +417,10 @@ describe('ol.control.ScaleLine', function() {
       map.getView().setCenter([7, 52]);
       map.renderSync();
       const innerHtml52 = ctrl.element.innerHTML;
-      expect(innerHtml0).to.not.be(innerHtml52);
+      expect(innerHtml0).not.toBe(innerHtml52);
     });
 
-    it('is rendered the same at different latitudes for degrees', function() {
+    test('is rendered the same at different latitudes for degrees', () => {
       const ctrl = new ScaleLine({
         units: 'degrees'
       });
@@ -429,12 +436,12 @@ describe('ol.control.ScaleLine', function() {
       map.getView().setCenter([7, 52]);
       map.renderSync();
       const innerHtml52 = ctrl.element.innerHTML;
-      expect(innerHtml0).to.be(innerHtml52);
+      expect(innerHtml0).toBe(innerHtml52);
     });
 
   });
 
-  describe('zoom affects the scaleline', function() {
+  describe('zoom affects the scaleline', () => {
     let currentZoom;
     let ctrl;
     let renderedHtmls;
@@ -462,7 +469,7 @@ describe('ol.control.ScaleLine', function() {
       }
     };
 
-    beforeEach(function() {
+    beforeEach(() => {
       currentZoom = 33;
       renderedHtmls = {};
       ctrl = new ScaleLine({
@@ -479,12 +486,12 @@ describe('ol.control.ScaleLine', function() {
       map.renderSync();
 
     });
-    afterEach(function() {
+    afterEach(() => {
       map.removeControl(ctrl);
       map.setView(null);
     });
 
-    it('metric: is rendered differently for different zoomlevels', function() {
+    test('metric: is rendered differently for different zoomlevels', () => {
       ctrl.setUnits('metric');
       map.renderSync();
       renderedHtmls[ctrl.element.innerHTML] = true;
@@ -492,14 +499,14 @@ describe('ol.control.ScaleLine', function() {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        expect(currentHtml in renderedHtmls).toBe(false);
         renderedHtmls[currentHtml] = true;
 
         const unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
-        expect(unit).to.eql(getMetricUnit(currentZoom));
+        expect(unit).toEqual(getMetricUnit(currentZoom));
       }
     });
-    it('degrees: is rendered differently for different zoomlevels', function() {
+    test('degrees: is rendered differently for different zoomlevels', () => {
       ctrl.setUnits('degrees');
       map.renderSync();
       renderedHtmls[ctrl.element.innerHTML] = true;
@@ -507,11 +514,11 @@ describe('ol.control.ScaleLine', function() {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        expect(currentHtml in renderedHtmls).toBe(false);
         renderedHtmls[currentHtml] = true;
       }
     });
-    it('imperial: is rendered differently for different zoomlevels', function() {
+    test('imperial: is rendered differently for different zoomlevels', () => {
       ctrl.setUnits('imperial');
       map.renderSync();
       renderedHtmls[ctrl.element.innerHTML] = true;
@@ -519,14 +526,14 @@ describe('ol.control.ScaleLine', function() {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        expect(currentHtml in renderedHtmls).toBe(false);
         renderedHtmls[currentHtml] = true;
 
         const unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
-        expect(unit).to.eql(getImperialUnit(currentZoom));
+        expect(unit).toEqual(getImperialUnit(currentZoom));
       }
     });
-    it('nautical: is rendered differently for different zoomlevels', function() {
+    test('nautical: is rendered differently for different zoomlevels', () => {
       ctrl.setUnits('nautical');
       map.renderSync();
       renderedHtmls[ctrl.element.innerHTML] = true;
@@ -534,11 +541,11 @@ describe('ol.control.ScaleLine', function() {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        expect(currentHtml in renderedHtmls).toBe(false);
         renderedHtmls[currentHtml] = true;
       }
     });
-    it('us: is rendered differently for different zoomlevels', function() {
+    test('us: is rendered differently for different zoomlevels', () => {
       ctrl.setUnits('us');
       map.renderSync();
       renderedHtmls[ctrl.element.innerHTML] = true;
@@ -546,7 +553,7 @@ describe('ol.control.ScaleLine', function() {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        expect(currentHtml in renderedHtmls).toBe(false);
         renderedHtmls[currentHtml] = true;
       }
     });

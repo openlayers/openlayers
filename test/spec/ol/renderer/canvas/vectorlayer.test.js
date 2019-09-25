@@ -13,9 +13,9 @@ import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 
 
-describe('ol.renderer.canvas.VectorLayer', function() {
+describe('ol.renderer.canvas.VectorLayer', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
     const head = document.getElementsByTagName('head')[0];
     const font = document.createElement('link');
@@ -24,26 +24,26 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     let target;
 
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       document.body.removeChild(target);
     });
 
-    it('creates a new instance', function() {
+    test('creates a new instance', () => {
       const layer = new VectorLayer({
         source: new VectorSource()
       });
       const renderer = new CanvasVectorLayerRenderer(layer);
-      expect(renderer).to.be.a(CanvasVectorLayerRenderer);
+      expect(renderer).toBeInstanceOf(CanvasVectorLayerRenderer);
     });
 
-    it('gives precedence to feature styles over layer styles', function() {
+    test('gives precedence to feature styles over layer styles', () => {
       const target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
@@ -77,12 +77,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       map.addLayer(layer);
       const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layerStyle);
-      expect(spy.getCall(1).args[2]).to.be(featureStyle);
+      expect(spy.getCall(0).args[2]).toBe(layerStyle);
+      expect(spy.getCall(1).args[2]).toBe(featureStyle);
       document.body.removeChild(target);
     });
 
-    it('does not re-render for unavailable fonts', function(done) {
+    test('does not re-render for unavailable fonts', done => {
       clear(checkedFonts);
       const map = new Map({
         view: new View({
@@ -108,12 +108,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function() {
-        expect(layer.getRevision()).to.be(revision);
+        expect(layer.getRevision()).toBe(revision);
         done();
       }, 800);
     });
 
-    it('does not re-render for available fonts', function(done) {
+    test('does not re-render for available fonts', done => {
       clear(checkedFonts);
       const map = new Map({
         view: new View({
@@ -139,12 +139,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function() {
-        expect(layer.getRevision()).to.be(revision);
+        expect(layer.getRevision()).toBe(revision);
         done();
       }, 800);
     });
 
-    it('re-renders for fonts that become available', function(done) {
+    test('re-renders for fonts that become available', done => {
       clear(checkedFonts);
       head.appendChild(font);
       const map = new Map({
@@ -171,7 +171,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function() {
-        expect(layer.getRevision()).to.be(revision + 1);
+        expect(layer.getRevision()).toBe(revision + 1);
         head.removeChild(font);
         done();
       }, 1600);
@@ -179,10 +179,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
   });
 
-  describe('#forEachFeatureAtCoordinate', function() {
+  describe('#forEachFeatureAtCoordinate', () => {
     let layer, renderer;
 
-    beforeEach(function() {
+    beforeEach(() => {
       layer = new VectorLayer({
         source: new VectorSource()
       });
@@ -197,7 +197,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
     });
 
-    it('calls callback once per feature with a layer as 2nd arg', function() {
+    test('calls callback once per feature with a layer as 2nd arg', () => {
       const spy = sinon.spy();
       const coordinate = [0, 0];
       const frameState = {
@@ -209,15 +209,15 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
-      expect(spy.callCount).to.be(1);
-      expect(spy.getCall(0).args[1]).to.equal(layer);
+      expect(spy.callCount).toBe(1);
+      expect(spy.getCall(0).args[1]).toBe(layer);
     });
   });
 
-  describe('#prepareFrame and #compose', function() {
+  describe('#prepareFrame and #compose', () => {
     let frameState, projExtent, renderer, worldWidth, buffer;
 
-    beforeEach(function() {
+    beforeEach(() => {
       const layer = new VectorLayer({
         source: new VectorSource({wrapX: true})
       });
@@ -236,62 +236,62 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
     });
 
-    it('sets correct extent for small viewport near dateline', function() {
+    test('sets correct extent for small viewport near dateline', () => {
 
       frameState.extent =
           [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
+      expect(renderer.replayGroup_.maxExtent_).toEqual(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
 
     });
 
-    it('sets correct extent for viewport less than 1 world wide', function() {
+    test('sets correct extent for viewport less than 1 world wide', () => {
 
       frameState.extent =
           [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
+      expect(renderer.replayGroup_.maxExtent_).toEqual(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
     });
 
-    it('sets correct extent for viewport more than 1 world wide', function() {
+    test('sets correct extent for viewport more than 1 world wide', () => {
 
       frameState.extent =
           [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
+      expect(renderer.replayGroup_.maxExtent_).toEqual(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
     });
 
-    it('sets correct extent for viewport more than 2 worlds wide', function() {
+    test('sets correct extent for viewport more than 2 worlds wide', () => {
 
       frameState.extent = [
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
       ];
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
+      expect(renderer.replayGroup_.maxExtent_).toEqual(bufferExtent([
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
       ], buffer));
     });
 
-    it('sets replayGroupChanged correctly', function() {
+    test('sets replayGroupChanged correctly', () => {
       frameState.extent = [-10000, -10000, 10000, 10000];
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(true);
+      expect(renderer.replayGroupChanged).toBe(true);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(false);
+      expect(renderer.replayGroupChanged).toBe(false);
     });
 
-    it('dispatches a postrender event when rendering', function(done) {
+    test('dispatches a postrender event when rendering', done => {
       const layer = renderer.getLayer();
       layer.getSource().addFeature(new Feature(new Point([0, 0])));
       layer.once('postrender', function() {
@@ -308,7 +308,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         rendered = true;
         renderer.renderFrame(frameState, null);
       }
-      expect(rendered).to.be(true);
+      expect(rendered).toBe(true);
     });
 
   });

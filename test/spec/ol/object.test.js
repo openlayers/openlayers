@@ -2,84 +2,89 @@ import BaseObject from '../../../src/ol/Object.js';
 import {listen} from '../../../src/ol/events.js';
 
 
-describe('ol.Object', function() {
+describe('ol.Object', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
 
   let o;
-  beforeEach(function() {
+  beforeEach(() => {
     o = new BaseObject();
   });
 
-  describe('get, set and unset', function() {
+  describe('get, set and unset', () => {
 
-    describe('get an unset property', function() {
+    describe('get an unset property', () => {
       let v;
-      beforeEach(function() {
+      beforeEach(() => {
         v = o.get('k');
       });
 
-      it('returns undefined', function() {
-        expect(v).to.be(undefined);
+      test('returns undefined', () => {
+        expect(v).toBe(undefined);
       });
     });
 
-    describe('get a set property', function() {
+    describe('get a set property', () => {
       let v;
-      beforeEach(function() {
+      beforeEach(() => {
         o.set('k', 1);
         v = o.get('k');
       });
 
-      it('returns expected value', function() {
-        expect(v).to.eql(1);
+      test('returns expected value', () => {
+        expect(v).toEqual(1);
       });
     });
 
-    describe('unset a set property', function() {
-      beforeEach(function() {
+    describe('unset a set property', () => {
+      beforeEach(() => {
         o.set('k', 1);
       });
 
-      it('returns undefined', function() {
+      test('returns undefined', () => {
         const v = o.unset('k');
-        expect(v).to.be(undefined);
+        expect(v).toBe(undefined);
       });
     });
   });
 
-  describe('#get()', function() {
+  describe('#get()', () => {
 
-    it('does not return values that are not explicitly set', function() {
+    test('does not return values that are not explicitly set', () => {
       const o = new BaseObject();
-      expect(o.get('constructor')).to.be(undefined);
-      expect(o.get('hasOwnProperty')).to.be(undefined);
-      expect(o.get('isPrototypeOf')).to.be(undefined);
-      expect(o.get('propertyIsEnumerable')).to.be(undefined);
-      expect(o.get('toLocaleString')).to.be(undefined);
-      expect(o.get('toString')).to.be(undefined);
-      expect(o.get('valueOf')).to.be(undefined);
+      expect(o.get('constructor')).toBe(undefined);
+      expect(o.get('hasOwnProperty')).toBe(undefined);
+      expect(o.get('isPrototypeOf')).toBe(undefined);
+      expect(o.get('propertyIsEnumerable')).toBe(undefined);
+      expect(o.get('toLocaleString')).toBe(undefined);
+      expect(o.get('toString')).toBe(undefined);
+      expect(o.get('valueOf')).toBe(undefined);
     });
 
   });
 
-  describe('#set()', function() {
-    it('can be used with arbitrary names', function() {
+  describe('#set()', () => {
+    test('can be used with arbitrary names', () => {
       const o = new BaseObject();
 
       o.set('set', 'sat');
-      expect(o.get('set')).to.be('sat');
+      expect(o.get('set')).toBe('sat');
 
       o.set('get', 'got');
-      expect(o.get('get')).to.be('got');
+      expect(o.get('get')).toBe('got');
 
       o.set('toString', 'string');
-      expect(o.get('toString')).to.be('string');
-      expect(typeof o.toString).to.be('function');
+      expect(o.get('toString')).toBe('string');
+      expect(typeof o.toString).toBe('function');
     });
   });
 
-  describe('#getKeys()', function() {
+  describe('#getKeys()', () => {
 
-    it('returns property names set at construction', function() {
+    test('returns property names set at construction', () => {
       const o = new BaseObject({
         prop1: 'val1',
         prop2: 'val2',
@@ -88,32 +93,32 @@ describe('ol.Object', function() {
       });
 
       const keys = o.getKeys();
-      expect(keys.length).to.be(4);
-      expect(keys.sort()).to.eql(['get', 'prop1', 'prop2', 'toString']);
+      expect(keys.length).toBe(4);
+      expect(keys.sort()).toEqual(['get', 'prop1', 'prop2', 'toString']);
     });
 
   });
 
-  describe('setProperties', function() {
+  describe('setProperties', () => {
 
-    it('sets multiple values at once', function() {
+    test('sets multiple values at once', () => {
       o.setProperties({
         k1: 1,
         k2: 2
       });
-      expect(o.get('k1')).to.eql(1);
-      expect(o.get('k2')).to.eql(2);
+      expect(o.get('k1')).toEqual(1);
+      expect(o.get('k2')).toEqual(2);
 
       const keys = o.getKeys().sort();
-      expect(keys).to.eql(['k1', 'k2']);
+      expect(keys).toEqual(['k1', 'k2']);
     });
   });
 
-  describe('notify', function() {
+  describe('notify', () => {
 
     let listener1, listener2;
 
-    beforeEach(function() {
+    beforeEach(() => {
       listener1 = sinon.spy();
       listen(o, 'change:k', listener1);
 
@@ -121,32 +126,32 @@ describe('ol.Object', function() {
       listen(o, 'propertychange', listener2);
     });
 
-    it('dispatches events', function() {
+    test('dispatches events', () => {
       o.notify('k', 1);
-      expect(listener1.calledOnce).to.be(true);
+      expect(listener1.calledOnce).toBe(true);
       const args = listener1.firstCall.args;
-      expect(args).to.have.length(1);
+      expect(args).toHaveLength(1);
       const event = args[0];
-      expect(event.key).to.be('k');
-      expect(event.oldValue).to.be(1);
+      expect(event.key).toBe('k');
+      expect(event.oldValue).toBe(1);
     });
 
-    it('dispatches generic change events to bound objects', function() {
+    test('dispatches generic change events to bound objects', () => {
       o.notify('k', 1);
-      expect(listener2.calledOnce).to.be(true);
+      expect(listener2.calledOnce).toBe(true);
       const args = listener2.firstCall.args;
-      expect(args).to.have.length(1);
+      expect(args).toHaveLength(1);
       const event = args[0];
-      expect(event.key).to.be('k');
-      expect(event.oldValue).to.be(1);
+      expect(event.key).toBe('k');
+      expect(event.oldValue).toBe(1);
     });
   });
 
-  describe('set', function() {
+  describe('set', () => {
 
     let listener1, listener2;
 
-    beforeEach(function() {
+    beforeEach(() => {
       listener1 = sinon.spy();
       listen(o, 'change:k', listener1);
 
@@ -154,88 +159,87 @@ describe('ol.Object', function() {
       listen(o, 'propertychange', listener2);
     });
 
-    it('dispatches events to object', function() {
+    test('dispatches events to object', () => {
       o.set('k', 1);
       expect(listener1).to.be.called();
 
-      expect(o.getKeys()).to.eql(['k']);
+      expect(o.getKeys()).toEqual(['k']);
     });
 
-    it('dispatches generic change events to object', function() {
+    test('dispatches generic change events to object', () => {
       o.set('k', 1);
-      expect(listener2.calledOnce).to.be(true);
+      expect(listener2.calledOnce).toBe(true);
       const args = listener2.firstCall.args;
-      expect(args).to.have.length(1);
+      expect(args).toHaveLength(1);
       const event = args[0];
-      expect(event.key).to.be('k');
+      expect(event.key).toBe('k');
     });
 
-    it('dispatches events only if the value is different', function() {
+    test('dispatches events only if the value is different', () => {
       o.set('k', 1);
       o.set('k', 1);
-      expect(listener1.calledOnce).to.be(true);
-      expect(listener2.calledOnce).to.be(true);
+      expect(listener1.calledOnce).toBe(true);
+      expect(listener2.calledOnce).toBe(true);
     });
 
   });
 
-  describe('setter', function() {
-    beforeEach(function() {
+  describe('setter', () => {
+    beforeEach(() => {
       o.setX = function(x) {
-        this.set('x', x);
+        testContext.set('x', x);
       };
       sinon.spy(o, 'setX');
     });
 
-    it('does not call the setter', function() {
+    test('does not call the setter', () => {
       o.set('x', 1);
-      expect(o.get('x')).to.eql(1);
+      expect(o.get('x')).toEqual(1);
       expect(o.setX).to.not.be.called();
 
-      expect(o.getKeys()).to.eql(['x']);
+      expect(o.getKeys()).toEqual(['x']);
     });
   });
 
-  describe('getter', function() {
-    beforeEach(function() {
+  describe('getter', () => {
+    beforeEach(() => {
       o.getX = function() {
         return 1;
       };
       sinon.spy(o, 'getX');
     });
 
-    it('does not call the getter', function() {
-      expect(o.get('x')).to.be(undefined);
+    test('does not call the getter', () => {
+      expect(o.get('x')).toBe(undefined);
       expect(o.getX).to.not.be.called();
     });
   });
 
-  describe('create with options', function() {
-    it('sets the property', function() {
+  describe('create with options', () => {
+    test('sets the property', () => {
       const o = new BaseObject({k: 1});
-      expect(o.get('k')).to.eql(1);
+      expect(o.get('k')).toEqual(1);
 
-      expect(o.getKeys()).to.eql(['k']);
+      expect(o.getKeys()).toEqual(['k']);
     });
   });
 
-  describe('case sensitivity', function() {
+  describe('case sensitivity', () => {
     let listener1, listener2;
 
-    beforeEach(function() {
+    beforeEach(() => {
       listener1 = sinon.spy();
       listen(o, 'change:k', listener1);
       listener2 = sinon.spy();
       listen(o, 'change:K', listener2);
     });
 
-    it('dispatches the expected event', function() {
+    test('dispatches the expected event', () => {
       o.set('K', 1);
       expect(listener1).to.not.be.called();
       expect(listener2).to.be.called();
 
-      expect(o.getKeys()).to.eql(['K']);
+      expect(o.getKeys()).toEqual(['K']);
     });
   });
-
 });

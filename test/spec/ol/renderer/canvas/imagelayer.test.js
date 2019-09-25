@@ -10,12 +10,12 @@ import Static from '../../../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 
-describe('ol.renderer.canvas.ImageLayer', function() {
+describe('ol.renderer.canvas.ImageLayer', () => {
 
-  describe('#forEachLayerAtCoordinate', function() {
+  describe('#forEachLayerAtCoordinate', () => {
 
     let map, target, source;
-    beforeEach(function(done) {
+    beforeEach(done => {
       const projection = new Projection({
         code: 'custom-image',
         units: 'pixels',
@@ -48,29 +48,29 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.setTarget(null);
       document.body.removeChild(target);
     });
 
-    it('properly detects pixels', function() {
+    test('properly detects pixels', () => {
       map.renderSync();
       let has = false;
       function hasLayer() {
         has = true;
       }
       map.forEachLayerAtPixel([20, 80], hasLayer);
-      expect(has).to.be(true);
+      expect(has).toBe(true);
       has = false;
       map.forEachLayerAtPixel([10, 90], hasLayer);
-      expect(has).to.be(false);
+      expect(has).toBe(false);
     });
   });
 
-  describe('Image rendering', function() {
+  describe('Image rendering', () => {
     let map, div, layer;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       const projection = getProj('EPSG:3857');
       layer = new ImageLayer({
         source: new Static({
@@ -96,34 +96,37 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.setTarget(null);
       document.body.removeChild(div);
       map.dispose();
     });
 
-    it('dispatches prerender and postrender events on the image layer', function(done) {
-      let prerender = 0;
-      let postrender = 0;
-      layer.on('prerender', function() {
-        ++prerender;
-      });
-      layer.on('postrender', function() {
-        ++postrender;
-      });
-      map.on('postrender', function() {
-        expect(prerender).to.be(1);
-        expect(postrender).to.be(1);
-        done();
-      });
-    });
+    test(
+      'dispatches prerender and postrender events on the image layer',
+      done => {
+        let prerender = 0;
+        let postrender = 0;
+        layer.on('prerender', function() {
+          ++prerender;
+        });
+        layer.on('postrender', function() {
+          ++postrender;
+        });
+        map.on('postrender', function() {
+          expect(prerender).toBe(1);
+          expect(postrender).toBe(1);
+          done();
+        });
+      }
+    );
   });
 
 
-  describe('Vector image rendering', function() {
+  describe('Vector image rendering', () => {
     let map, div, layer;
 
-    beforeEach(function() {
+    beforeEach(() => {
       layer = new VectorImageLayer({
         source: new VectorSource({
           features: [new Feature(new Point([0, 0]))]
@@ -143,27 +146,30 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.setTarget(null);
       document.body.removeChild(div);
       map.dispose();
     });
 
-    it('dispatches prerender and postrender events on the vector layer', function(done) {
-      let prerender = 0;
-      let postrender = 0;
-      layer.on('prerender', function() {
-        ++prerender;
-      });
-      layer.on('postrender', function() {
-        ++postrender;
-      });
-      map.once('postrender', function() {
-        expect(prerender).to.be(1);
-        expect(postrender).to.be(1);
-        done();
-      });
-    });
+    test(
+      'dispatches prerender and postrender events on the vector layer',
+      done => {
+        let prerender = 0;
+        let postrender = 0;
+        layer.on('prerender', function() {
+          ++prerender;
+        });
+        layer.on('postrender', function() {
+          ++postrender;
+        });
+        map.once('postrender', function() {
+          expect(prerender).toBe(1);
+          expect(postrender).toBe(1);
+          done();
+        });
+      }
+    );
   });
 
 });

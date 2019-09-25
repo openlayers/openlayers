@@ -8,20 +8,20 @@ import XYZ from '../../../../src/ol/source/XYZ.js';
 import {fromKey} from '../../../../src/ol/tilecoord.js';
 
 
-describe('ol.renderer.Layer', function() {
+describe('ol.renderer.Layer', () => {
   let renderer;
   const eventType = 'change';
 
-  beforeEach(function() {
+  beforeEach(() => {
     const layer = new Layer({});
     renderer = new LayerRenderer(layer);
   });
 
-  describe('#loadImage', function() {
+  describe('#loadImage', () => {
     let image;
     let imageLoadFunction;
 
-    beforeEach(function() {
+    beforeEach(() => {
       const extent = [];
       const resolution = 1;
       const pixelRatio = 1;
@@ -31,63 +31,63 @@ describe('ol.renderer.Layer', function() {
       image = new ImageWrapper(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction);
     });
 
-    describe('load IDLE image', function() {
+    describe('load IDLE image', () => {
 
-      it('returns false', function() {
+      test('returns false', () => {
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(false);
+        expect(loaded).toBe(false);
       });
 
-      it('registers a listener', function() {
+      test('registers a listener', () => {
         renderer.loadImage(image);
         const listeners = image.listeners_[eventType];
-        expect(listeners).to.have.length(1);
+        expect(listeners).toHaveLength(1);
       });
 
     });
 
-    describe('load LOADED image', function() {
+    describe('load LOADED image', () => {
 
-      it('returns true', function() {
+      test('returns true', () => {
         image.state = 2; // LOADED
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(true);
+        expect(loaded).toBe(true);
       });
 
-      it('does not register a listener', function() {
+      test('does not register a listener', () => {
         image.state = 2; // LOADED
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(true);
+        expect(loaded).toBe(true);
       });
 
     });
 
-    describe('load LOADING image', function() {
+    describe('load LOADING image', () => {
 
-      beforeEach(function() {
+      beforeEach(() => {
         renderer.loadImage(image);
-        expect(image.getState()).to.be(1); // LOADING
+        expect(image.getState()).toBe(1);
       });
 
-      it('returns false', function() {
+      test('returns false', () => {
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(false);
+        expect(loaded).toBe(false);
       });
 
-      it('does not register a new listener', function() {
+      test('does not register a new listener', () => {
         renderer.loadImage(image);
         const listeners = image.listeners_[eventType];
-        expect(listeners).to.have.length(1);
+        expect(listeners).toHaveLength(1);
       });
 
     });
 
   });
 
-  describe('manageTilePyramid behavior', function() {
+  describe('manageTilePyramid behavior', () => {
     let target, map, view, source;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       target = document.createElement('div');
       Object.assign(target.style, {
         position: 'absolute',
@@ -122,22 +122,22 @@ describe('ol.renderer.Layer', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('accesses tiles from current zoom level last', function(done) {
+    test('accesses tiles from current zoom level last', done => {
       // expect most recent tile in the cache to be from zoom level 0
       const key = source.tileCache.peekFirstKey();
       const tileCoord = fromKey(key);
-      expect(tileCoord[0]).to.be(0);
+      expect(tileCoord[0]).toBe(0);
 
       map.once('moveend', function() {
         // expect most recent tile in the cache to be from zoom level 4
         const key = source.tileCache.peekFirstKey();
         const tileCoord = fromKey(key);
-        expect(tileCoord[0]).to.be(4);
+        expect(tileCoord[0]).toBe(4);
         done();
       });
       view.setZoom(4);

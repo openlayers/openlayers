@@ -4,13 +4,13 @@ import View from '../../../../src/ol/View.js';
 import ExtentInteraction from '../../../../src/ol/interaction/Extent.js';
 import Event from '../../../../src/ol/events/Event.js';
 
-describe('ol.interaction.Extent', function() {
+describe('ol.interaction.Extent', () => {
   let map, interaction;
 
   const width = 360;
   const height = 180;
 
-  beforeEach(function() {
+  beforeEach(() => {
     const target = createMapDiv(width, height);
 
     map = new Map({
@@ -28,7 +28,7 @@ describe('ol.interaction.Extent', function() {
     map.addInteraction(interaction);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     if (map) {
       disposeMap(map);
     }
@@ -63,81 +63,81 @@ describe('ol.interaction.Extent', function() {
     map.handleMapBrowserEvent(event);
   }
 
-  describe('Constructor', function() {
+  describe('Constructor', () => {
 
-    it('can be configured with an extent', function() {
+    test('can be configured with an extent', () => {
       expect(function() {
         new ExtentInteraction({
           extent: [-10, -10, 10, 10]
         });
-      }).to.not.throwException();
+      }).not.toThrow();
     });
 
   });
 
-  describe('snap to vertex', function() {
-    it('snap to vertex works', function() {
+  describe('snap to vertex', () => {
+    test('snap to vertex works', () => {
       interaction.setExtent([-50, -50, 50, 50]);
 
-      expect(interaction.snapToVertex_([230, 40], map)).to.eql([50, 50]);
-      expect(interaction.snapToVertex_([231, 41], map)).to.eql([50, 50]);
+      expect(interaction.snapToVertex_([230, 40], map)).toEqual([50, 50]);
+      expect(interaction.snapToVertex_([231, 41], map)).toEqual([50, 50]);
     });
 
-    it('snap to edge works', function() {
+    test('snap to edge works', () => {
       interaction.setExtent([-50, -50, 50, 50]);
 
-      expect(interaction.snapToVertex_([230, 90], map)).to.eql([50, 0]);
-      expect(interaction.snapToVertex_([230, 89], map)).to.eql([50, 1]);
-      expect(interaction.snapToVertex_([231, 90], map)).to.eql([50, 0]);
+      expect(interaction.snapToVertex_([230, 90], map)).toEqual([50, 0]);
+      expect(interaction.snapToVertex_([230, 89], map)).toEqual([50, 1]);
+      expect(interaction.snapToVertex_([231, 90], map)).toEqual([50, 0]);
     });
   });
 
-  describe('draw extent', function() {
+  describe('draw extent', () => {
 
-    it('drawing extent works', function() {
+    test('drawing extent works', () => {
       simulateEvent('pointerdown', -50, -50, false, 0);
       simulateEvent('pointerdrag', 50, 50, false, 0);
       simulateEvent('pointerup', 50, 50, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
+      expect(interaction.getExtent()).toEqual([-50, -50, 50, 50]);
     });
 
-    it('clicking off extent nulls extent', function() {
+    test('clicking off extent nulls extent', () => {
       interaction.setExtent([-50, -50, 50, 50]);
 
       simulateEvent('pointerdown', -10, -10, false, 0);
       simulateEvent('pointerup', -10, -10, false, 0);
 
-      expect(interaction.getExtent()).to.equal(null);
+      expect(interaction.getExtent()).toBe(null);
     });
 
-    it('clicking on extent does not null extent', function() {
+    test('clicking on extent does not null extent', () => {
       interaction.setExtent([-50, -50, 50, 50]);
 
       simulateEvent('pointerdown', 50, 50, false, 0);
       simulateEvent('pointerup', 50, 50, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
+      expect(interaction.getExtent()).toEqual([-50, -50, 50, 50]);
     });
 
-    it('snap and drag vertex works', function() {
+    test('snap and drag vertex works', () => {
       interaction.setExtent([-50, -50, 50, 50]);
 
       simulateEvent('pointerdown', 51, 49, false, 0);
       simulateEvent('pointerdrag', -70, -40, false, 0);
       simulateEvent('pointerup', -70, -40, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-70, -50, -50, -40]);
+      expect(interaction.getExtent()).toEqual([-70, -50, -50, -40]);
     });
 
-    it('snap and drag edge works', function() {
+    test('snap and drag edge works', () => {
       interaction.setExtent([-50, -50, 50, 50]);
 
       simulateEvent('pointerdown', 51, 5, false, 0);
       simulateEvent('pointerdrag', 20, -30, false, 0);
       simulateEvent('pointerup', 20, -30, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 20, 50]);
+      expect(interaction.getExtent()).toEqual([-50, -50, 20, 50]);
     });
   });
 });

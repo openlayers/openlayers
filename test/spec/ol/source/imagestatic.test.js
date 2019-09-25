@@ -2,10 +2,10 @@ import Static from '../../../../src/ol/source/ImageStatic.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 
 
-describe('ol.source.ImageStatic', function() {
+describe('ol.source.ImageStatic', () => {
 
   let extent, pixelRatio, projection, resolution;
-  beforeEach(function() {
+  beforeEach(() => {
     extent = [
       -13637278.73946974, 4543799.13271362,
       -13617443.330629736, 4553927.038961405];
@@ -14,9 +14,9 @@ describe('ol.source.ImageStatic', function() {
     resolution = 38;
   });
 
-  describe('#getImage', function() {
+  describe('#getImage', () => {
 
-    it('scales image to fit imageExtent', function(done) {
+    test('scales image to fit imageExtent', done => {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
@@ -28,15 +28,15 @@ describe('ol.source.ImageStatic', function() {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function(event) {
-        expect(image.getImage().width).to.be(128);
-        expect(image.getImage().height).to.be(256);
+        expect(image.getImage().width).toBe(128);
+        expect(image.getImage().height).toBe(256);
         done();
       });
 
       image.load();
     });
 
-    it('respects imageSize', function(done) {
+    test('respects imageSize', done => {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
@@ -49,15 +49,15 @@ describe('ol.source.ImageStatic', function() {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function(event) {
-        expect(image.getImage().width).to.be(127);
-        expect(image.getImage().height).to.be(254);
+        expect(image.getImage().width).toBe(127);
+        expect(image.getImage().height).toBe(254);
         done();
       });
 
       image.load();
     });
 
-    it('triggers image load events', function(done) {
+    test('triggers image load events', done => {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
@@ -72,8 +72,8 @@ describe('ol.source.ImageStatic', function() {
       source.on('imageloadstart', imageloadstart);
       source.on('imageloaderror', imageloaderror);
       source.on('imageloadend', function(event) {
-        expect(imageloadstart.callCount).to.be(1);
-        expect(imageloaderror.callCount).to.be(0);
+        expect(imageloadstart.callCount).toBe(1);
+        expect(imageloaderror.callCount).toBe(0);
         done();
       });
 

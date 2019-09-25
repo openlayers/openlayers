@@ -2,58 +2,58 @@ import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 
 
-describe('ol.layer.VectorTile', function() {
+describe('ol.layer.VectorTile', () => {
 
-  describe('constructor (defaults)', function() {
+  describe('constructor (defaults)', () => {
 
     let layer;
 
-    beforeEach(function() {
+    beforeEach(() => {
       layer = new VectorTileLayer({
         source: new VectorTileSource({})
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       layer.dispose();
     });
 
-    it('creates an instance', function() {
-      expect(layer).to.be.a(VectorTileLayer);
+    test('creates an instance', () => {
+      expect(layer).toBeInstanceOf(VectorTileLayer);
     });
 
-    it('provides default preload', function() {
-      expect(layer.getPreload()).to.be(0);
+    test('provides default preload', () => {
+      expect(layer.getPreload()).toBe(0);
     });
 
-    it('provides default useInterimTilesOnError', function() {
-      expect(layer.getUseInterimTilesOnError()).to.be(true);
+    test('provides default useInterimTilesOnError', () => {
+      expect(layer.getUseInterimTilesOnError()).toBe(true);
     });
 
-    it('provides default renderMode', function() {
-      expect(layer.getRenderMode()).to.be('hybrid');
+    test('provides default renderMode', () => {
+      expect(layer.getRenderMode()).toBe('hybrid');
     });
 
   });
 
-  describe('constructor (options)', function() {
-    it('works with options', function() {
+  describe('constructor (options)', () => {
+    test('works with options', () => {
       let layer = new VectorTileLayer({
         renderMode: 'hybrid',
         source: new VectorTileSource({})
       });
-      expect(layer.getRenderMode()).to.be('hybrid');
+      expect(layer.getRenderMode()).toBe('hybrid');
       layer = new VectorTileLayer({
         renderMode: 'image',
         source: new VectorTileSource({})
       });
-      expect(layer.getRenderMode()).to.be('image');
+      expect(layer.getRenderMode()).toBe('image');
       expect(function() {
         layer = new VectorTileLayer({
           renderMode: 'foo',
           source: new VectorTileSource({})
         });
-      }).to.throwException();
+      }).toThrow();
     });
   });
 

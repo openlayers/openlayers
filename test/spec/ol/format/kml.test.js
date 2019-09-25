@@ -24,27 +24,27 @@ import Text from '../../../../src/ol/style/Text.js';
 import {parse} from '../../../../src/ol/xml.js';
 
 
-describe('ol.format.KML', function() {
+describe('ol.format.KML', () => {
 
   let format;
 
-  describe('using defaultStyle', function() {
+  describe('using defaultStyle', () => {
 
     const dfltStyle = new Style();
 
-    beforeEach(function() {
+    beforeEach(() => {
       format = new KML({
         defaultStyle: [dfltStyle]
       });
     });
 
-    it('set constant variables', function() {
-      expect(getDefaultStyleArray()).to.be.an(Array);
+    test('set constant variables', () => {
+      expect(getDefaultStyleArray()).toBeInstanceOf(Array);
     });
 
-    describe('#readFeatures', function() {
+    describe('#readFeatures', () => {
 
-      it('can apply a default style to a feature', function() {
+      test('can apply a default style to a feature', () => {
         const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -52,72 +52,72 @@ describe('ol.format.KML', function() {
             '  </Document>' +
             '</kml>';
         const fs = format.readFeatures(text);
-        expect(fs).to.have.length(1);
+        expect(fs).toHaveLength(1);
         const f = fs[0];
-        expect(f).to.be.an(Feature);
+        expect(f).toBeInstanceOf(Feature);
         const styleFunction = f.getStyleFunction();
-        expect(styleFunction).not.to.be(undefined);
+        expect(styleFunction).not.toBe(undefined);
         const styleArray = styleFunction(f, 0);
-        expect(styleArray).to.be.an(Array);
-        expect(styleArray).to.have.length(1);
+        expect(styleArray).toBeInstanceOf(Array);
+        expect(styleArray).toHaveLength(1);
         const style = styleArray[0];
-        expect(style).to.be.an(Style);
-        expect(style).to.be(dfltStyle);
+        expect(style).toBeInstanceOf(Style);
+        expect(style).toBe(dfltStyle);
       });
     });
   });
 
-  describe('without parameters', function() {
+  describe('without parameters', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       format = new KML();
     });
 
-    it('set constant variables', function() {
-      expect(getDefaultStyleArray()).to.be.an(Array);
+    test('set constant variables', () => {
+      expect(getDefaultStyleArray()).toBeInstanceOf(Array);
     });
 
-    describe('#readProjection', function() {
-      it('returns the default projection from document', function() {
+    describe('#readProjection', () => {
+      test('returns the default projection from document', () => {
         const projection = format.readProjectionFromDocument();
-        expect(projection).to.eql(getProjection('EPSG:4326'));
+        expect(projection).toEqual(getProjection('EPSG:4326'));
       });
 
-      it('returns the default projection from node', function() {
+      test('returns the default projection from node', () => {
         const projection = format.readProjectionFromNode();
-        expect(projection).to.eql(getProjection('EPSG:4326'));
+        expect(projection).toEqual(getProjection('EPSG:4326'));
       });
     });
 
-    describe('#readFeatures', function() {
+    describe('#readFeatures', () => {
 
-      describe('id', function() {
+      describe('id', () => {
 
-        it('can read a Feature\'s id', function() {
+        test('can read a Feature\'s id', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark id="foo"/>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getId()).to.be('foo');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.getId()).toBe('foo');
         });
 
-        it('treats a missing id as undefined', function() {
+        test('treats a missing id as undefined', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark/>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getId()).to.be(undefined);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.getId()).toBe(undefined);
         });
 
-        it('can write a Feature', function() {
+        test('can write a Feature', () => {
           const features = [new Feature()];
           const node = format.writeFeaturesNode(features);
           const text =
@@ -131,7 +131,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write a Feature as string', function() {
+        test('can write a Feature as string', () => {
           const features = [new Feature()];
           const node = format.writeFeatures(features);
           const text =
@@ -145,7 +145,7 @@ describe('ol.format.KML', function() {
           expect(parse(node)).to.xmleql(parse(text));
         });
 
-        it('can write a Feature\'s id', function() {
+        test('can write a Feature\'s id', () => {
           const feature = new Feature();
           feature.setId('foo');
           const features = [feature];
@@ -163,22 +163,22 @@ describe('ol.format.KML', function() {
 
       });
 
-      describe('geometry', function() {
+      describe('geometry', () => {
 
-        it('treats a missing geometry as null', function() {
+        test('treats a missing geometry as null', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark/>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be(null);
+          expect(g).toBe(null);
         });
 
-        it('can write feature with null geometries', function() {
+        test('can write feature with null geometries', () => {
           const features = [new Feature(null)];
           const node = format.writeFeaturesNode(features);
           const text =
@@ -193,7 +193,7 @@ describe('ol.format.KML', function() {
         });
 
 
-        it('can write properties', function() {
+        test('can write properties', () => {
           const lineString = new LineString([[1, 2], [3, 4]]);
           lineString.set('extrude', false);
           lineString.set('tessellate', true);
@@ -219,7 +219,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read Point geometries', function() {
+        test('can read Point geometries', () => {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -235,17 +235,17 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
-          expect(g.getCoordinates()).to.eql([1, 2, 3]);
-          expect(g.get('extrude')).to.be(false);
-          expect(g.get('altitudeMode')).to.be('absolute');
+          expect(g).toBeInstanceOf(Point);
+          expect(g.getCoordinates()).toEqual([1, 2, 3]);
+          expect(g.get('extrude')).toBe(false);
+          expect(g.get('altitudeMode')).toBe('absolute');
         });
 
-        it('can transform and read Point geometries', function() {
+        test('can transform and read Point geometries', () => {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -261,17 +261,17 @@ describe('ol.format.KML', function() {
           const fs = format.readFeatures(text, {
             featureProjection: 'EPSG:3857'
           });
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
+          expect(g).toBeInstanceOf(Point);
           const expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
-          expect(g.getCoordinates()).to.eql(expectedPoint);
+          expect(g.getCoordinates()).toEqual(expectedPoint);
         });
 
-        it('can read a single Point geometry', function() {
+        test('can read a single Point geometry', () => {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -285,13 +285,13 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const f = format.readFeature(text);
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
-          expect(g.getCoordinates()).to.eql([1, 2, 3]);
+          expect(g).toBeInstanceOf(Point);
+          expect(g.getCoordinates()).toEqual([1, 2, 3]);
         });
 
-        it('can transform and read a single Point geometry', function() {
+        test('can transform and read a single Point geometry', () => {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -307,15 +307,15 @@ describe('ol.format.KML', function() {
           const f = format.readFeature(text, {
             featureProjection: 'EPSG:3857'
           });
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
+          expect(g).toBeInstanceOf(Point);
           const expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
-          expect(g.getCoordinates()).to.eql(expectedPoint);
+          expect(g.getCoordinates()).toEqual(expectedPoint);
         });
 
-        it('can write XY Point geometries', function() {
+        test('can write XY Point geometries', () => {
           const layout = 'XY';
           const point = new Point([1, 2], layout);
           const features = [new Feature(point)];
@@ -335,7 +335,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZ Point geometries', function() {
+        test('can write XYZ Point geometries', () => {
           const layout = 'XYZ';
           const point = new Point([1, 2, 3], layout);
           const features = [new Feature(point)];
@@ -355,7 +355,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can transform and write XYZ Point geometries', function() {
+        test('can transform and write XYZ Point geometries', () => {
           addProjection(new Projection({code: 'double'}));
           addCoordinateTransforms('EPSG:4326', 'double',
             function(coordinate) {
@@ -390,7 +390,7 @@ describe('ol.format.KML', function() {
           removeTransform(getProjection('double'), getProjection('EPSG:4326'));
         });
 
-        it('can write XYM Point geometries', function() {
+        test('can write XYM Point geometries', () => {
           const layout = 'XYM';
           const point = new Point([1, 2, 100], layout);
           const features = [new Feature(point)];
@@ -410,7 +410,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZM Point geometries', function() {
+        test('can write XYZM Point geometries', () => {
           const layout = 'XYZM';
           const point = new Point([1, 2, 3, 100], layout);
           const features = [new Feature(point)];
@@ -430,7 +430,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read LineString geometries', function() {
+        test('can read LineString geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -443,18 +443,18 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(LineString);
-          expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
-          expect(g.get('extrude')).to.be(false);
-          expect(g.get('tessellate')).to.be(true);
-          expect(g.get('altitudeMode')).to.be('absolute');
+          expect(g).toBeInstanceOf(LineString);
+          expect(g.getCoordinates()).toEqual([[1, 2, 3], [4, 5, 6]]);
+          expect(g.get('extrude')).toBe(false);
+          expect(g.get('tessellate')).toBe(true);
+          expect(g.get('altitudeMode')).toBe('absolute');
         });
 
-        it('can write XY LineString geometries', function() {
+        test('can write XY LineString geometries', () => {
           const layout = 'XY';
           const lineString = new LineString([[1, 2], [3, 4]], layout);
           const features = [new Feature(lineString)];
@@ -474,7 +474,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZ LineString geometries', function() {
+        test('can write XYZ LineString geometries', () => {
           const layout = 'XYZ';
           const lineString = new LineString(
             [[1, 2, 3], [4, 5, 6]], layout);
@@ -495,7 +495,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYM LineString geometries', function() {
+        test('can write XYM LineString geometries', () => {
           const layout = 'XYM';
           const lineString = new LineString(
             [[1, 2, 100], [3, 4, 200]], layout);
@@ -516,7 +516,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZM LineString geometries', function() {
+        test('can write XYZM LineString geometries', () => {
           const layout = 'XYZM';
           const lineString = new LineString(
             [[1, 2, 3, 100], [4, 5, 6, 200]], layout);
@@ -537,7 +537,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read LinearRing geometries', function() {
+        test('can read LinearRing geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -547,15 +547,15 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]);
+          expect(g).toBeInstanceOf(Polygon);
+          expect(g.getCoordinates()).toEqual([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]);
         });
 
-        it('can write XY LinearRing geometries', function() {
+        test('can write XY LinearRing geometries', () => {
           const layout = 'XY';
           const linearRing = new LinearRing(
             [[1, 2], [3, 4], [1, 2]], layout);
@@ -576,7 +576,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZ LinearRing geometries', function() {
+        test('can write XYZ LinearRing geometries', () => {
           const layout = 'XYZ';
           const linearRing = new LinearRing(
             [[1, 2, 3], [4, 5, 6], [1, 2, 3]], layout);
@@ -597,7 +597,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYM LinearRing geometries', function() {
+        test('can write XYM LinearRing geometries', () => {
           const layout = 'XYM';
           const linearRing = new LinearRing(
             [[1, 2, 100], [3, 4, 200], [1, 2, 100]], layout);
@@ -618,7 +618,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZM LinearRing geometries', function() {
+        test('can write XYZM LinearRing geometries', () => {
           const layout = 'XYZM';
           const linearRing = new LinearRing(
             [[1, 2, 3, 100], [4, 5, 6, 200], [1, 2, 3, 100]], layout);
@@ -639,7 +639,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read Polygon geometries', function() {
+        test('can read Polygon geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -655,18 +655,17 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql(
-            [[[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]]]);
-          expect(g.get('extrude')).to.be(false);
-          expect(g.get('altitudeMode')).to.be('absolute');
+          expect(g).toBeInstanceOf(Polygon);
+          expect(g.getCoordinates()).toEqual([[[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]]]);
+          expect(g.get('extrude')).toBe(false);
+          expect(g.get('altitudeMode')).toBe('absolute');
         });
 
-        it('can write XY Polygon geometries', function() {
+        test('can write XY Polygon geometries', () => {
           const layout = 'XY';
           const polygon = new Polygon(
             [[[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]]], layout);
@@ -691,7 +690,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZ Polygon geometries', function() {
+        test('can write XYZ Polygon geometries', () => {
           const layout = 'XYZ';
           const polygon = new Polygon(
             [[[0, 0, 1], [0, 2, 2], [2, 2, 3], [2, 0, 4], [0, 0, 5]]], layout);
@@ -718,7 +717,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYM Polygon geometries', function() {
+        test('can write XYM Polygon geometries', () => {
           const layout = 'XYM';
           const polygon = new Polygon(
             [[[0, 0, 1], [0, 2, 1], [2, 2, 1], [2, 0, 1], [0, 0, 1]]], layout);
@@ -745,7 +744,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write XYZM Polygon geometries', function() {
+        test('can write XYZM Polygon geometries', () => {
           const layout = 'XYZM';
           const polygon = new Polygon([
             [[0, 0, 1, 1], [0, 2, 2, 1], [2, 2, 3, 1], [2, 0, 4, 1], [0, 0, 5, 1]]
@@ -771,7 +770,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read complex Polygon geometries', function() {
+        test('can read complex Polygon geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -795,19 +794,19 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql([
+          expect(g).toBeInstanceOf(Polygon);
+          expect(g.getCoordinates()).toEqual([
             [[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]],
             [[1, 1, 0], [1, 2, 0], [2, 2, 0], [2, 1, 0]],
             [[3, 3, 0], [3, 4, 0], [4, 4, 0], [4, 3, 0]]
           ]);
         });
 
-        it('can write complex Polygon geometries', function() {
+        test('can write complex Polygon geometries', () => {
           const layout = 'XYZ';
           const polygon = new Polygon([
             [[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]],
@@ -845,7 +844,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read MultiPolygon geometries', function() {
+        test('can read MultiPolygon geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -870,25 +869,24 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiPolygon);
-          expect(g.getCoordinates()).to.eql(
-            [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
-              [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(undefined);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be(undefined);
+          expect(g).toBeInstanceOf(MultiPolygon);
+          expect(g.getCoordinates()).toEqual([[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
+            [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]]);
+          expect(g.get('extrude')).toBeInstanceOf(Array);
+          expect(g.get('extrude')).toHaveLength(2);
+          expect(g.get('extrude')[0]).toBe(false);
+          expect(g.get('extrude')[1]).toBe(undefined);
+          expect(g.get('altitudeMode')).toBeInstanceOf(Array);
+          expect(g.get('altitudeMode')).toHaveLength(2);
+          expect(g.get('altitudeMode')[0]).toBe('absolute');
+          expect(g.get('altitudeMode')[1]).toBe(undefined);
         });
 
-        it('can write MultiPolygon geometries', function() {
+        test('can write MultiPolygon geometries', () => {
           const layout = 'XYZ';
           const multiPolygon = new MultiPolygon(
             [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
@@ -923,7 +921,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read MultiPoint geometries', function() {
+        test('can read MultiPoint geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -942,23 +940,23 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiPoint);
-          expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(true);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be('clampToGround');
+          expect(g).toBeInstanceOf(MultiPoint);
+          expect(g.getCoordinates()).toEqual([[1, 2, 3], [4, 5, 6]]);
+          expect(g.get('extrude')).toBeInstanceOf(Array);
+          expect(g.get('extrude')).toHaveLength(2);
+          expect(g.get('extrude')[0]).toBe(false);
+          expect(g.get('extrude')[1]).toBe(true);
+          expect(g.get('altitudeMode')).toBeInstanceOf(Array);
+          expect(g.get('altitudeMode')).toHaveLength(2);
+          expect(g.get('altitudeMode')[0]).toBe('absolute');
+          expect(g.get('altitudeMode')[1]).toBe('clampToGround');
         });
 
-        it('can write MultiPoint geometries', function() {
+        test('can write MultiPoint geometries', () => {
           const layout = 'XYZ';
           const multiPoint = new MultiPoint(
             [[1, 2, 3], [4, 5, 6]], layout);
@@ -984,7 +982,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read MultiLineString geometries', function() {
+        test('can read MultiLineString geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1002,28 +1000,27 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiLineString);
-          expect(g.getCoordinates()).to.eql(
-            [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(undefined);
-          expect(g.get('tessellate')).to.be.an('array');
-          expect(g.get('tessellate')).to.have.length(2);
-          expect(g.get('tessellate')[0]).to.be(false);
-          expect(g.get('tessellate')[1]).to.be(undefined);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be(undefined);
+          expect(g).toBeInstanceOf(MultiLineString);
+          expect(g.getCoordinates()).toEqual([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
+          expect(g.get('extrude')).toBeInstanceOf(Array);
+          expect(g.get('extrude')).toHaveLength(2);
+          expect(g.get('extrude')[0]).toBe(false);
+          expect(g.get('extrude')[1]).toBe(undefined);
+          expect(g.get('tessellate')).toBeInstanceOf(Array);
+          expect(g.get('tessellate')).toHaveLength(2);
+          expect(g.get('tessellate')[0]).toBe(false);
+          expect(g.get('tessellate')[1]).toBe(undefined);
+          expect(g.get('altitudeMode')).toBeInstanceOf(Array);
+          expect(g.get('altitudeMode')).toHaveLength(2);
+          expect(g.get('altitudeMode')[0]).toBe('absolute');
+          expect(g.get('altitudeMode')[1]).toBe(undefined);
         });
 
-        it('can write MultiLineString geometries', function() {
+        test('can write MultiLineString geometries', () => {
           const layout = 'XYZ';
           const multiLineString = new MultiLineString(
             [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], layout);
@@ -1049,7 +1046,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read MultiPolygon geometries', function() {
+        test('can read MultiPolygon geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1074,26 +1071,26 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiPolygon);
-          expect(g.getCoordinates()).to.eql([
+          expect(g).toBeInstanceOf(MultiPolygon);
+          expect(g.getCoordinates()).toEqual([
             [[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
             [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]
           ]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(undefined);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be(undefined);
+          expect(g.get('extrude')).toBeInstanceOf(Array);
+          expect(g.get('extrude')).toHaveLength(2);
+          expect(g.get('extrude')[0]).toBe(false);
+          expect(g.get('extrude')[1]).toBe(undefined);
+          expect(g.get('altitudeMode')).toBeInstanceOf(Array);
+          expect(g.get('altitudeMode')).toHaveLength(2);
+          expect(g.get('altitudeMode')[0]).toBe('absolute');
+          expect(g.get('altitudeMode')[1]).toBe(undefined);
         });
 
-        it('can write MultiPolygon geometries', function() {
+        test('can write MultiPolygon geometries', () => {
           const layout = 'XYZ';
           const multiPolygon = new MultiPolygon([
             [[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
@@ -1129,7 +1126,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read empty GeometryCollection geometries', function() {
+        test('can read empty GeometryCollection geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1138,15 +1135,15 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
-          expect(g.getGeometries()).to.be.empty();
+          expect(g).toBeInstanceOf(GeometryCollection);
+          expect(g.getGeometries()).toHaveLength(0);
         });
 
-        it('can read heterogeneous GeometryCollection geometries', function() {
+        test('can read heterogeneous GeometryCollection geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1171,20 +1168,20 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
+          expect(g).toBeInstanceOf(GeometryCollection);
           const gs = g.getGeometries();
-          expect(gs).to.have.length(4);
-          expect(gs[0]).to.be.an(Point);
-          expect(gs[1]).to.be.an(LineString);
-          expect(gs[2]).to.be.an(Polygon);
-          expect(gs[3]).to.be.an(Polygon);
+          expect(gs).toHaveLength(4);
+          expect(gs[0]).toBeInstanceOf(Point);
+          expect(gs[1]).toBeInstanceOf(LineString);
+          expect(gs[2]).toBeInstanceOf(Polygon);
+          expect(gs[3]).toBeInstanceOf(Polygon);
         });
 
-        it('can read nested GeometryCollection geometries', function() {
+        test('can read nested GeometryCollection geometries', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1195,17 +1192,17 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
+          expect(g).toBeInstanceOf(GeometryCollection);
           const gs = g.getGeometries();
-          expect(gs).to.have.length(1);
-          expect(gs[0]).to.be.an(GeometryCollection);
+          expect(gs).toHaveLength(1);
+          expect(gs[0]).toBeInstanceOf(GeometryCollection);
         });
 
-        it('can write GeometryCollection geometries', function() {
+        test('can write GeometryCollection geometries', () => {
           const collection = new GeometryCollection([
             new Point([1, 2]),
             new LineString([[1, 2], [3, 4]]),
@@ -1240,7 +1237,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read gx:Track', function() {
+        test('can read gx:Track', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2"' +
               '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
@@ -1256,14 +1253,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(LineString);
+          expect(g).toBeInstanceOf(LineString);
         });
 
-        it('can read gx:MultiTrack', function() {
+        test('can read gx:MultiTrack', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2"' +
               '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
@@ -1283,17 +1280,17 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiLineString);
+          expect(g).toBeInstanceOf(MultiLineString);
           const gs = g.getLineStrings();
-          expect(gs).to.have.length(2);
-          expect(gs[0]).to.be.an(LineString);
+          expect(gs).toHaveLength(2);
+          expect(gs[0]).toBeInstanceOf(LineString);
         });
 
-        it('can read dateTime', function() {
+        test('can read dateTime', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2"' +
               '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
@@ -1316,20 +1313,18 @@ describe('ol.format.KML', function() {
           const f = fs[0];
           const g = f.getGeometry();
           const flatCoordinates = g.flatCoordinates;
-          expect(flatCoordinates[3]).to.be.eql(Date.UTC(2014, 0, 1, 0, 0, 0));
-          expect(flatCoordinates[7]).to.be.eql(Date.UTC(2014, 1, 1, 0, 0, 0));
-          expect(flatCoordinates[11]).to.be.eql(Date.UTC(2014, 1, 6, 0, 0, 0));
-          expect(flatCoordinates[15]).to.be.eql(Date.UTC(2014, 1, 6, 19, 39, 3));
-          expect(flatCoordinates[19]).to.be.eql(
-            Date.UTC(2014, 1, 6, 16, 39, 10)
-          );
+          expect(flatCoordinates[3]).toEqual(Date.UTC(2014, 0, 1, 0, 0, 0));
+          expect(flatCoordinates[7]).toEqual(Date.UTC(2014, 1, 1, 0, 0, 0));
+          expect(flatCoordinates[11]).toEqual(Date.UTC(2014, 1, 6, 0, 0, 0));
+          expect(flatCoordinates[15]).toEqual(Date.UTC(2014, 1, 6, 19, 39, 3));
+          expect(flatCoordinates[19]).toEqual(Date.UTC(2014, 1, 6, 16, 39, 10));
         });
 
       });
 
-      describe('attributes', function() {
+      describe('attributes', () => {
 
-        it('can read boolean attributes', function() {
+        test('can read boolean attributes', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1338,14 +1333,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('open')).to.be(true);
-          expect(f.get('visibility')).to.be(false);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('open')).toBe(true);
+          expect(f.get('visibility')).toBe(false);
         });
 
-        it('can read string attributes', function() {
+        test('can read string attributes', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1356,16 +1351,16 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('address')).to.be('My address');
-          expect(f.get('description')).to.be('My description');
-          expect(f.get('name')).to.be('My name');
-          expect(f.get('phoneNumber')).to.be('My phone number');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('address')).toBe('My address');
+          expect(f.get('description')).toBe('My description');
+          expect(f.get('name')).toBe('My name');
+          expect(f.get('phoneNumber')).toBe('My phone number');
         });
 
-        it('strips leading and trailing whitespace in strings', function() {
+        test('strips leading and trailing whitespace in strings', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1373,13 +1368,13 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('description')).to.be('My  description');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('description')).toBe('My  description');
         });
 
-        it('can read CDATA sections in strings', function() {
+        test('can read CDATA sections in strings', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1387,13 +1382,13 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('name')).to.be('My name in CDATA');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('name')).toBe('My name in CDATA');
         });
 
-        it('strips leading and trailing whitespace around CDATA', function() {
+        test('strips leading and trailing whitespace around CDATA', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1401,13 +1396,13 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('name')).to.be('My name in CDATA');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('name')).toBe('My name in CDATA');
         });
 
-        it('can write Feature\'s string attributes', function() {
+        test('can write Feature\'s string attributes', () => {
           const feature = new Feature();
           feature.set('address', 'My address');
           feature.set('description', 'My description');
@@ -1431,7 +1426,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write Feature\'s boolean attributes', function() {
+        test('can write Feature\'s boolean attributes', () => {
           const feature = new Feature();
           feature.set('open', true);
           feature.set('visibility', false);
@@ -1453,9 +1448,9 @@ describe('ol.format.KML', function() {
 
       });
 
-      describe('region', function() {
+      describe('region', () => {
 
-        it('can read Region', function() {
+        test('can read Region', () => {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -1475,22 +1470,22 @@ describe('ol.format.KML', function() {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const extent = f.get('extent');
-          expect(extent).to.be.an(Array);
-          expect(extent).to.have.length(4);
-          expect(extent[0]).to.be(1.384133);
-          expect(extent[1]).to.be(43.540908);
-          expect(extent[2]).to.be(1.514582);
-          expect(extent[3]).to.be(43.651015);
-          expect(f.get('altitudeMode')).to.be('relativeToGround');
-          expect(f.get('minAltitude')).to.be(133.57);
-          expect(f.get('maxAltitude')).to.be(146.16);
+          expect(extent).toBeInstanceOf(Array);
+          expect(extent).toHaveLength(4);
+          expect(extent[0]).toBe(1.384133);
+          expect(extent[1]).toBe(43.540908);
+          expect(extent[2]).toBe(1.514582);
+          expect(extent[3]).toBe(43.651015);
+          expect(f.get('altitudeMode')).toBe('relativeToGround');
+          expect(f.get('minAltitude')).toBe(133.57);
+          expect(f.get('maxAltitude')).toBe(146.16);
         });
 
-        it('can read Lod', function() {
+        test('can read Lod', () => {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -1507,20 +1502,20 @@ describe('ol.format.KML', function() {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('minLodPixels')).to.be(128);
-          expect(f.get('maxLodPixels')).to.be(2048);
-          expect(f.get('minFadeExtent')).to.be(0.2);
-          expect(f.get('maxFadeExtent')).to.be(10.5);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('minLodPixels')).toBe(128);
+          expect(f.get('maxLodPixels')).toBe(2048);
+          expect(f.get('minFadeExtent')).toBe(0.2);
+          expect(f.get('maxFadeExtent')).toBe(10.5);
         });
 
       });
 
-      describe('extended data', function() {
+      describe('extended data', () => {
 
-        it('can write ExtendedData with no values', function() {
+        test('can write ExtendedData with no values', () => {
           const feature = new Feature();
           feature.set('foo', null);
           feature.set('bar', undefined);
@@ -1542,7 +1537,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write ExtendedData with values', function() {
+        test('can write ExtendedData with values', () => {
           const feature = new Feature();
           feature.set('foo', 'bar');
           feature.set('aNumber', 1000);
@@ -1568,7 +1563,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write ExtendedData pair with displayName and value', function() {
+        test('can write ExtendedData pair with displayName and value', () => {
           const pair = {
             value: 'bar',
             displayName: 'display name'
@@ -1597,7 +1592,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write ExtendedData after Style tag', function() {
+        test('can write ExtendedData after Style tag', () => {
           const style = new Style({
             stroke: new Stroke({
               color: '#112233',
@@ -1630,7 +1625,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can read ExtendedData', function() {
+        test('can read ExtendedData', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
@@ -1642,14 +1637,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           expect(f.getProperties()).to.only.have.keys(['foo', 'geometry']);
-          expect(f.get('foo')).to.be('bar');
+          expect(f.get('foo')).toBe('bar');
         });
 
-        it('can read ExtendedData with no values', function() {
+        test('can read ExtendedData with no values', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
@@ -1662,15 +1657,15 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           expect(f.getProperties()).to.only.have.keys(['foo', 'bar', 'geometry']);
-          expect(f.get('foo')).to.be('200');
-          expect(f.get('bar')).to.be(undefined);
+          expect(f.get('foo')).toBe('200');
+          expect(f.get('bar')).toBe(undefined);
         });
 
-        it('can read ExtendedData with displayName instead of name', function() {
+        test('can read ExtendedData with displayName instead of name', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
@@ -1683,13 +1678,13 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('foo')).to.be('bar');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('foo')).toBe('bar');
         });
 
-        it('can read SchemaData', function() {
+        test('can read SchemaData', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
@@ -1702,14 +1697,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('capital')).to.be('London');
-          expect(f.get('population')).to.be('60000000');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('capital')).toBe('London');
+          expect(f.get('population')).toBe('60000000');
         });
 
-        it('can read ExtendedData with displayName', function() {
+        test('can read ExtendedData with displayName', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
@@ -1726,44 +1721,43 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('capital')).to.be('London');
-          expect(f.get('country').value).to.be('United-Kingdom');
-          expect(f.get('country').displayName).to.be('Country');
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('capital')).toBe('London');
+          expect(f.get('country').value).toBe('United-Kingdom');
+          expect(f.get('country').displayName).toBe('Country');
         });
       });
 
-      describe('styles', function() {
+      describe('styles', () => {
 
-        it('applies the default style if no style is defined', function() {
+        test('applies the default style if no style is defined', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getFill().getColor()).to.eql([255, 255, 255, 1]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          // FIXME check image style
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
-          expect(style.getStroke().getColor()).to.eql([255, 255, 255, 1]);
-          expect(style.getStroke().getWidth()).to.be(1);
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getFill()).toBe(getDefaultFillStyle());
+          expect(style.getFill().getColor()).toEqual([255, 255, 255, 1]);
+          expect(style.getImage()).toBe(getDefaultImageStyle());
+          expect(style.getStroke()).toBe(getDefaultStrokeStyle());
+          expect(style.getStroke().getColor()).toEqual([255, 255, 255, 1]);
+          expect(style.getStroke().getWidth()).toBe(1);
         });
 
-        it('can read a feature\'s IconStyle', function() {
+        test('can read a feature\'s IconStyle', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1777,31 +1771,31 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getFill()).toBe(getDefaultFillStyle());
+          expect(style.getStroke()).toBe(getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(imageStyle).toBeInstanceOf(Icon);
+          expect(new URL(imageStyle.getSrc()).href).toEqual(new URL('http://foo.png').href);
+          expect(imageStyle.getAnchor()).toBe(null);
+          expect(imageStyle.getOrigin()).toBe(null);
+          expect(imageStyle.getRotation()).toEqual(0);
+          expect(imageStyle.getSize()).toBe(null);
+          expect(imageStyle.getScale()).toBe(1);
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('can read a IconStyle\'s hotspot', function() {
+        test('can read a IconStyle\'s hotspot', () => {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Placemark id="1">' +
@@ -1856,57 +1850,57 @@ describe('ol.format.KML', function() {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(5);
+          expect(fs).toHaveLength(5);
           fs.forEach(function(f) {
-            expect(f).to.be.an(Feature);
-            expect(f.getId()).to.be.within(1, 5);
+            expect(f).toBeInstanceOf(Feature);
+            expect(f.getId() > 1 && f.getId() < 5).toBeTruthy();
             const styleFunction = f.getStyleFunction();
-            expect(styleFunction).not.to.be(undefined);
+            expect(styleFunction).not.toBe(undefined);
             const styleArray = styleFunction(f, 0);
-            expect(styleArray).to.be.an(Array);
-            expect(styleArray).to.have.length(1);
+            expect(styleArray).toBeInstanceOf(Array);
+            expect(styleArray).toHaveLength(1);
             const style = styleArray[0];
-            expect(style).to.be.an(Style);
-            expect(style.getFill()).to.be(getDefaultFillStyle());
-            expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+            expect(style).toBeInstanceOf(Style);
+            expect(style.getFill()).toBe(getDefaultFillStyle());
+            expect(style.getStroke()).toBe(getDefaultStrokeStyle());
             const imageStyle = style.getImage();
-            expect(imageStyle).to.be.an(Icon);
-            expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
-            expect(imageStyle.anchor_).to.be.an(Array);
-            expect(imageStyle.anchor_).to.have.length(2);
+            expect(imageStyle).toBeInstanceOf(Icon);
+            expect(new URL(imageStyle.getSrc()).href).toEqual(new URL('http://foo.png').href);
+            expect(imageStyle.anchor_).toBeInstanceOf(Array);
+            expect(imageStyle.anchor_).toHaveLength(2);
             if (f.getId() == 1) {
-              expect(imageStyle.anchor_[0]).to.be(0.5);
-              expect(imageStyle.anchor_[1]).to.be(0.5);
-              expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
-              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.FRACTION);
-              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.FRACTION);
+              expect(imageStyle.anchor_[0]).toBe(0.5);
+              expect(imageStyle.anchor_[1]).toBe(0.5);
+              expect(imageStyle.anchorOrigin_).toBe(IconOrigin.BOTTOM_LEFT);
+              expect(imageStyle.anchorXUnits_).toBe(IconAnchorUnits.FRACTION);
+              expect(imageStyle.anchorYUnits_).toBe(IconAnchorUnits.FRACTION);
             } else {
-              expect(imageStyle.anchor_[0]).to.be(5);
-              expect(imageStyle.anchor_[1]).to.be(5);
-              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.PIXELS);
-              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.PIXELS);
+              expect(imageStyle.anchor_[0]).toBe(5);
+              expect(imageStyle.anchor_[1]).toBe(5);
+              expect(imageStyle.anchorXUnits_).toBe(IconAnchorUnits.PIXELS);
+              expect(imageStyle.anchorYUnits_).toBe(IconAnchorUnits.PIXELS);
               if (f.getId() == 2) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
+                expect(imageStyle.anchorOrigin_).toBe(IconOrigin.BOTTOM_LEFT);
               }
               if (f.getId() == 3) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_RIGHT);
+                expect(imageStyle.anchorOrigin_).toBe(IconOrigin.BOTTOM_RIGHT);
               }
               if (f.getId() == 4) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.TOP_LEFT);
+                expect(imageStyle.anchorOrigin_).toBe(IconOrigin.TOP_LEFT);
               }
               if (f.getId() == 5) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.TOP_RIGHT);
+                expect(imageStyle.anchorOrigin_).toBe(IconOrigin.TOP_RIGHT);
               }
             }
-            expect(imageStyle.getRotation()).to.eql(0);
-            expect(imageStyle.getSize()).to.be(null);
-            expect(imageStyle.getScale()).to.be(1);
-            expect(style.getText()).to.be(getDefaultTextStyle());
-            expect(style.getZIndex()).to.be(undefined);
+            expect(imageStyle.getRotation()).toEqual(0);
+            expect(imageStyle.getSize()).toBe(null);
+            expect(imageStyle.getScale()).toBe(1);
+            expect(style.getText()).toBe(getDefaultTextStyle());
+            expect(style.getZIndex()).toBe(undefined);
           });
         });
 
-        it('can read a complex feature\'s IconStyle', function() {
+        test('can read a complex feature\'s IconStyle', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2"' +
               '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
@@ -1928,30 +1922,30 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getFill()).toBe(getDefaultFillStyle());
+          expect(style.getStroke()).toBe(getDefaultStrokeStyle());
           const imageStyle = style.getImage();
           imageStyle.iconImage_.size_ = [144, 192];
-          expect(imageStyle.getSize()).to.eql([48, 48]);
-          expect(imageStyle.getAnchor()).to.eql([24, 36]);
-          expect(imageStyle.getOrigin()).to.eql([24, 108]);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getScale()).to.eql(3.0);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(imageStyle.getSize()).toEqual([48, 48]);
+          expect(imageStyle.getAnchor()).toEqual([24, 36]);
+          expect(imageStyle.getOrigin()).toEqual([24, 108]);
+          expect(imageStyle.getRotation()).toEqual(0);
+          expect(imageStyle.getScale()).toEqual(3.0);
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('can read a feature\'s LabelStyle', function() {
+        test('can read a feature\'s LabelStyle', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1964,29 +1958,29 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getFill()).toBe(getDefaultFillStyle());
+          expect(style.getImage()).toBe(getDefaultImageStyle());
+          expect(style.getStroke()).toBe(getDefaultStrokeStyle());
           const textStyle = style.getText();
-          expect(textStyle).to.be.an(Text);
-          expect(textStyle.getScale()).to.be(0.25);
+          expect(textStyle).toBeInstanceOf(Text);
+          expect(textStyle.getScale()).toBe(0.25);
           const textFillStyle = textStyle.getFill();
-          expect(textFillStyle).to.be.an(Fill);
-          expect(textFillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getZIndex()).to.be(undefined);
+          expect(textFillStyle).toBeInstanceOf(Fill);
+          expect(textFillStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('can read a feature\'s LineStyle', function() {
+        test('can read a feature\'s LineStyle', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -1999,27 +1993,27 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getImage()).to.be(getDefaultImageStyle());
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getFill()).toBe(getDefaultFillStyle());
+          expect(style.getImage()).toBe(getDefaultImageStyle());
           const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(strokeStyle).toBeInstanceOf(Stroke);
+          expect(strokeStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(strokeStyle.getWidth()).toBe(9);
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('can read a feature\'s PolyStyle', function() {
+        test('can read a feature\'s PolyStyle', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -2031,26 +2025,26 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          expect(style).toBeInstanceOf(Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(fillStyle).toBeInstanceOf(Fill);
+          expect(fillStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(style.getImage()).toBe(getDefaultImageStyle());
+          expect(style.getStroke()).toBe(getDefaultStrokeStyle());
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('can read a feature\'s LineStyle and PolyStyle', function() {
+        test('can read a feature\'s LineStyle and PolyStyle', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -2068,29 +2062,29 @@ describe('ol.format.KML', function() {
           const fs = format.readFeatures(text);
 
 
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          expect(style).toBeInstanceOf(Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
+          expect(fillStyle).toBeInstanceOf(Fill);
+          expect(fillStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(style.getImage()).toBe(getDefaultImageStyle());
           const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(strokeStyle).toBeInstanceOf(Stroke);
+          expect(strokeStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(strokeStyle.getWidth()).toBe(9);
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('disables the fill when fill is \'0\'', function() {
+        test('disables the fill when fill is \'0\'', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -2107,27 +2101,27 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(null);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getFill()).toBe(null);
+          expect(style.getImage()).toBe(getDefaultImageStyle());
           const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(strokeStyle).toBeInstanceOf(Stroke);
+          expect(strokeStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(strokeStyle.getWidth()).toBe(9);
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('disables the stroke when outline is \'0\'', function() {
+        test('disables the stroke when outline is \'0\'', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -2144,27 +2138,28 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          expect(style).toBeInstanceOf(Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          expect(style.getStroke()).to.be(null);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          expect(fillStyle).toBeInstanceOf(Fill);
+          expect(fillStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(style.getImage()).toBe(getDefaultImageStyle());
+          expect(style.getStroke()).toBe(null);
+          expect(style.getText()).toBe(getDefaultTextStyle());
+          expect(style.getZIndex()).toBe(undefined);
         });
 
-        it('disables both fill and stroke when fill and outline are \'0\'',
-          function() {
+        test(
+          'disables both fill and stroke when fill and outline are \'0\'',
+          () => {
             const text =
                   '<kml xmlns="http://earth.google.com/kml/2.2">' +
                   '  <Placemark>' +
@@ -2182,24 +2177,25 @@ describe('ol.format.KML', function() {
                   '  </Placemark>' +
                   '</kml>';
             const fs = format.readFeatures(text);
-            expect(fs).to.have.length(1);
+            expect(fs).toHaveLength(1);
             const f = fs[0];
-            expect(f).to.be.an(Feature);
+            expect(f).toBeInstanceOf(Feature);
             const styleFunction = f.getStyleFunction();
-            expect(styleFunction).not.to.be(undefined);
+            expect(styleFunction).not.toBe(undefined);
             const styleArray = styleFunction(f, 0);
-            expect(styleArray).to.be.an(Array);
-            expect(styleArray).to.have.length(1);
+            expect(styleArray).toBeInstanceOf(Array);
+            expect(styleArray).toHaveLength(1);
             const style = styleArray[0];
-            expect(style).to.be.an(Style);
-            expect(style.getFill()).to.be(null);
-            expect(style.getImage()).to.be(getDefaultImageStyle());
-            expect(style.getStroke()).to.be(null);
-            expect(style.getText()).to.be(getDefaultTextStyle());
-            expect(style.getZIndex()).to.be(undefined);
-          });
+            expect(style).toBeInstanceOf(Style);
+            expect(style.getFill()).toBe(null);
+            expect(style.getImage()).toBe(getDefaultImageStyle());
+            expect(style.getStroke()).toBe(null);
+            expect(style.getText()).toBe(getDefaultTextStyle());
+            expect(style.getZIndex()).toBe(undefined);
+          }
+        );
 
-        it('can create text style for named point placemarks', function() {
+        test('can create text style for named point placemarks', () => {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2235,20 +2231,20 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(2);
           const style = styleArray[1];
-          expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getText().getText()).toEqual(f.getProperties()['name']);
         });
 
-        it('can create text style for named point placemarks', function() {
+        test('can create text style for named point placemarks', () => {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2284,20 +2280,20 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(2);
           const style = styleArray[1];
-          expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
+          expect(style).toBeInstanceOf(Style);
+          expect(style.getText().getText()).toEqual(f.getProperties()['name']);
         });
 
-        it('can write an feature\'s icon style', function() {
+        test('can write an feature\'s icon style', () => {
           const style = new Style({
             image: new Icon({
               anchor: [0.25, 36],
@@ -2345,7 +2341,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('does not write styles when writeStyles option is false', function() {
+        test('does not write styles when writeStyles option is false', () => {
           format = new KML({writeStyles: false});
           const style = new Style({
             image: new Icon({
@@ -2367,7 +2363,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('skips image styles that are not icon styles', function() {
+        test('skips image styles that are not icon styles', () => {
           const style = new Style({
             image: new CircleStyle({
               radius: 4,
@@ -2393,7 +2389,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write an feature\'s text style', function() {
+        test('can write an feature\'s text style', () => {
           const style = new Style({
             text: new Text({
               scale: 0.5,
@@ -2425,7 +2421,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write an feature\'s stroke style', function() {
+        test('can write an feature\'s stroke style', () => {
           const style = new Style({
             stroke: new Stroke({
               color: '#112233',
@@ -2453,7 +2449,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write an feature\'s fill style', function() {
+        test('can write an feature\'s fill style', () => {
           const style = new Style({
             fill: new Fill({
               color: 'rgba(12, 34, 223, 0.7)'
@@ -2479,7 +2475,7 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(parse(text));
         });
 
-        it('can write multiple features with Style', function() {
+        test('can write multiple features with Style', () => {
           const style = new Style({
             fill: new Fill({
               color: 'rgba(12, 34, 223, 0.7)'
@@ -2517,9 +2513,9 @@ describe('ol.format.KML', function() {
         });
       });
 
-      describe('style maps', function() {
+      describe('style maps', () => {
 
-        it('can read a normal style', function() {
+        test('can read a normal style', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2538,21 +2534,21 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
+          expect(s).toBeInstanceOf(Style);
+          expect(s.getFill()).not.toBe(null);
+          expect(s.getFill().getColor()).toEqual([0, 0, 0, 0]);
         });
 
-        it('ignores highlight styles', function() {
+        test('ignores highlight styles', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2571,21 +2567,21 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s).to.be(getDefaultStyle());
+          expect(s).toBeInstanceOf(Style);
+          expect(s).toBe(getDefaultStyle());
 
         });
 
-        it('uses normal styles instead of highlight styles', function() {
+        test('uses normal styles instead of highlight styles', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2612,21 +2608,21 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
+          expect(s).toBeInstanceOf(Style);
+          expect(s.getFill()).not.toBe(null);
+          expect(s.getFill().getColor()).toEqual([0, 0, 0, 0]);
         });
 
-        it('can read normal styleUrls', function() {
+        test('can read normal styleUrls', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2646,21 +2642,21 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
+          expect(s).toBeInstanceOf(Style);
+          expect(s.getFill()).not.toBe(null);
+          expect(s.getFill().getColor()).toEqual([0, 0, 0, 0]);
         });
 
-        it('ignores highlight styleUrls', function() {
+        test('ignores highlight styleUrls', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2680,20 +2676,20 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s).to.be(getDefaultStyle());
+          expect(s).toBeInstanceOf(Style);
+          expect(s).toBe(getDefaultStyle());
         });
 
-        it('can use Styles in StyleMaps before they are defined', function() {
+        test('can use Styles in StyleMaps before they are defined', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2714,25 +2710,25 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+          expect(s).toBeInstanceOf(Style);
+          expect(s.getFill()).not.toBe(null);
+          expect(s.getFill().getColor()).toEqual([120, 86, 52, 18 / 255]);
         });
 
       });
 
-      describe('shared styles', function() {
+      describe('shared styles', () => {
 
-        it('can apply a shared style to a feature', function() {
+        test('can apply a shared style to a feature', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2747,22 +2743,22 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          expect(style).toBeInstanceOf(Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(fillStyle).toBeInstanceOf(Fill);
+          expect(fillStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
         });
 
-        it('can read a shared style from a Folder', function() {
+        test('can read a shared style from a Folder', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2779,22 +2775,22 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          expect(styleFunction).not.toBe(undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).toBeInstanceOf(Array);
+          expect(styleArray).toHaveLength(1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          expect(style).toBeInstanceOf(Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(fillStyle).toBeInstanceOf(Fill);
+          expect(fillStyle.getColor()).toEqual([0x78, 0x56, 0x34, 0x12 / 255]);
         });
 
-        it('can apply a shared style to multiple features', function() {
+        test('can apply a shared style to multiple features', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2812,46 +2808,46 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(2);
+          expect(fs).toHaveLength(2);
           const f1 = fs[0];
-          expect(f1).to.be.an(Feature);
+          expect(f1).toBeInstanceOf(Feature);
           const styleFunction1 = f1.getStyleFunction();
-          expect(styleFunction1).not.to.be(undefined);
+          expect(styleFunction1).not.toBe(undefined);
           const styleArray1 = styleFunction1(f1, 0);
-          expect(styleArray1).to.be.an(Array);
+          expect(styleArray1).toBeInstanceOf(Array);
           const f2 = fs[1];
-          expect(f2).to.be.an(Feature);
+          expect(f2).toBeInstanceOf(Feature);
           const styleFunction2 = f2.getStyleFunction();
-          expect(styleFunction2).not.to.be(undefined);
+          expect(styleFunction2).not.toBe(undefined);
           const styleArray2 = styleFunction2(f2, 0);
-          expect(styleArray2).to.be.an(Array);
-          expect(styleArray1).to.be(styleArray2);
+          expect(styleArray2).toBeInstanceOf(Array);
+          expect(styleArray1).toBe(styleArray2);
         });
 
       });
 
-      describe('multiple features', function() {
+      describe('multiple features', () => {
 
-        it('returns no features from an empty Document', function() {
+        test('returns no features from an empty Document', () => {
           const text =
               '<Document xmlns="http://earth.google.com/kml/2.2">' +
               '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.be.empty();
+          expect(fs).toHaveLength(0);
         });
 
-        it('can read a single feature from a Document', function() {
+        test('can read a single feature from a Document', () => {
           const text =
               '<Document xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
               '  </Placemark>' +
               '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          expect(fs).toHaveLength(1);
+          expect(fs[0]).toBeInstanceOf(Feature);
         });
 
-        it('can read a single feature from nested Document', function() {
+        test('can read a single feature from nested Document', () => {
           const text =
               '<Document xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2860,11 +2856,11 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          expect(fs).toHaveLength(1);
+          expect(fs[0]).toBeInstanceOf(Feature);
         });
 
-        it('can transform and read a single feature from a Document', function() {
+        test('can transform and read a single feature from a Document', () => {
           const text =
               '<Document xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -2876,17 +2872,17 @@ describe('ol.format.KML', function() {
           const fs = format.readFeatures(text, {
             featureProjection: 'EPSG:3857'
           });
-          expect(fs).to.have.length(1);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
+          expect(g).toBeInstanceOf(Point);
           const expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
-          expect(g.getCoordinates()).to.eql(expectedPoint);
+          expect(g.getCoordinates()).toEqual(expectedPoint);
         });
 
-        it('can read a multiple features from a Document', function() {
+        test('can read a multiple features from a Document', () => {
           const text =
               '<Document xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark id="1">' +
@@ -2895,33 +2891,33 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(2);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('1');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('2');
+          expect(fs).toHaveLength(2);
+          expect(fs[0]).toBeInstanceOf(Feature);
+          expect(fs[0].getId()).toBe('1');
+          expect(fs[1]).toBeInstanceOf(Feature);
+          expect(fs[1].getId()).toBe('2');
         });
 
-        it('returns no features from an empty Folder', function() {
+        test('returns no features from an empty Folder', () => {
           const text =
               '<Folder xmlns="http://earth.google.com/kml/2.2">' +
               '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.be.empty();
+          expect(fs).toHaveLength(0);
         });
 
-        it('can read a single feature from a Folder', function() {
+        test('can read a single feature from a Folder', () => {
           const text =
               '<Folder xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
               '  </Placemark>' +
               '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          expect(fs).toHaveLength(1);
+          expect(fs[0]).toBeInstanceOf(Feature);
         });
 
-        it('can read a multiple features from a Folder', function() {
+        test('can read a multiple features from a Folder', () => {
           const text =
               '<Folder xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark id="1">' +
@@ -2930,14 +2926,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(2);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('1');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('2');
+          expect(fs).toHaveLength(2);
+          expect(fs[0]).toBeInstanceOf(Feature);
+          expect(fs[0].getId()).toBe('1');
+          expect(fs[1]).toBeInstanceOf(Feature);
+          expect(fs[1].getId()).toBe('2');
         });
 
-        it('can read features from Folders nested in Documents', function() {
+        test('can read features from Folders nested in Documents', () => {
           const text =
               '<Document xmlns="http://earth.google.com/kml/2.2">' +
               '  <Folder>' +
@@ -2946,11 +2942,11 @@ describe('ol.format.KML', function() {
               '  </Folder>' +
               '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          expect(fs).toHaveLength(1);
+          expect(fs[0]).toBeInstanceOf(Feature);
         });
 
-        it('can read features from Folders nested in Folders', function() {
+        test('can read features from Folders nested in Folders', () => {
           const text =
               '<Folder xmlns="http://earth.google.com/kml/2.2">' +
               '  <Folder>' +
@@ -2959,20 +2955,20 @@ describe('ol.format.KML', function() {
               '  </Folder>' +
               '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          expect(fs).toHaveLength(1);
+          expect(fs[0]).toBeInstanceOf(Feature);
         });
 
-        it('can read a single feature', function() {
+        test('can read a single feature', () => {
           const text =
               '<Placemark xmlns="http://earth.google.com/kml/2.2">' +
               '</Placemark>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          expect(fs).toHaveLength(1);
+          expect(fs[0]).toBeInstanceOf(Feature);
         });
 
-        it('can read features at multiple levels', function() {
+        test('can read features at multiple levels', () => {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Document>' +
@@ -2988,42 +2984,42 @@ describe('ol.format.KML', function() {
               '  </Document>' +
               '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(5);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('a');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('b');
-          expect(fs[2]).to.be.an(Feature);
-          expect(fs[2].getId()).to.be('c');
-          expect(fs[3]).to.be.an(Feature);
-          expect(fs[3].getId()).to.be('d');
-          expect(fs[4]).to.be.an(Feature);
-          expect(fs[4].getId()).to.be('e');
+          expect(fs).toHaveLength(5);
+          expect(fs[0]).toBeInstanceOf(Feature);
+          expect(fs[0].getId()).toBe('a');
+          expect(fs[1]).toBeInstanceOf(Feature);
+          expect(fs[1].getId()).toBe('b');
+          expect(fs[2]).toBeInstanceOf(Feature);
+          expect(fs[2].getId()).toBe('c');
+          expect(fs[3]).toBeInstanceOf(Feature);
+          expect(fs[3].getId()).toBe('d');
+          expect(fs[4]).toBeInstanceOf(Feature);
+          expect(fs[4].getId()).toBe('e');
         });
 
-        it('supports common namespaces', function() {
+        test('supports common namespaces', () => {
           expect(format.readFeatures(
             '<kml xmlns="http://earth.google.com/kml/2.0">' +
               '  <Placemark/>' +
-              '</kml>')).to.have.length(1);
+              '</kml>')).toHaveLength(1);
           expect(format.readFeatures(
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark/>' +
-              '</kml>')).to.have.length(1);
+              '</kml>')).toHaveLength(1);
           expect(format.readFeatures(
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark/>' +
-              '</kml>')).to.have.length(1);
+              '</kml>')).toHaveLength(1);
         });
 
-        it('ignores unknown namespaces', function() {
+        test('ignores unknown namespaces', () => {
           expect(format.readFeatures(
             '<kml xmlns="http://example.com/notkml/1.0">' +
               '  <Placemark/>' +
-              '</kml>')).to.be.empty();
+              '</kml>')).toHaveLength(0);
         });
 
-        it('can write multiple features', function() {
+        test('can write multiple features', () => {
           const feature1 = new Feature();
           feature1.setId('1');
           const feature2 = new Feature();
@@ -3047,15 +3043,15 @@ describe('ol.format.KML', function() {
 
       });
 
-      describe('error handling', function() {
+      describe('error handling', () => {
 
-        it('should ignore invalid coordinates', function() {
+        test('should ignore invalid coordinates', () => {
           const doc = new DOMParser().parseFromString('<coordinates>INVALID</coordinates>', 'application/xml');
           const node = doc.firstChild;
-          expect(readFlatCoordinates(node)).to.be(undefined);
+          expect(readFlatCoordinates(node)).toBe(undefined);
         });
 
-        it('should ignore Points with invalid coordinates', function() {
+        test('should ignore Points with invalid coordinates', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark>' +
@@ -3065,14 +3061,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.getGeometry()).toBe(null);
         });
 
-        it('should ignore LineStrings with invalid coordinates', function() {
+        test('should ignore LineStrings with invalid coordinates', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark>' +
@@ -3082,14 +3078,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.getGeometry()).toBe(null);
         });
 
-        it('should ignore Polygons with no rings', function() {
+        test('should ignore Polygons with no rings', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark>' +
@@ -3099,14 +3095,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.getGeometry()).toBe(null);
         });
 
-        it('should ignore Polygons with no outer ring', function() {
+        test('should ignore Polygons with no outer ring', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark>' +
@@ -3120,14 +3116,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.getGeometry()).toBe(null);
         });
 
-        it('should ignore geometries with invalid coordinates', function() {
+        test('should ignore geometries with invalid coordinates', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark>' +
@@ -3139,16 +3135,16 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          expect(f).toBeInstanceOf(Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
-          expect(g.getGeometries()).to.be.empty();
+          expect(g).toBeInstanceOf(GeometryCollection);
+          expect(g.getGeometries()).toHaveLength(0);
         });
 
-        it('should ignore invalid booleans', function() {
+        test('should ignore invalid booleans', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark>' +
@@ -3156,14 +3152,14 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('visibility')).to.be(undefined);
+          expect(f).toBeInstanceOf(Feature);
+          expect(f.get('visibility')).toBe(undefined);
         });
 
-        it('parse all valid features in a Folder, without error', function() {
+        test('parse all valid features in a Folder, without error', () => {
           const kml =
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
               '  <Placemark id="a"/>' +
@@ -3177,28 +3173,28 @@ describe('ol.format.KML', function() {
               '  <Placemark id="e"/>' +
               '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(5);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('a');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('b');
-          expect(fs[2]).to.be.an(Feature);
-          expect(fs[2].getId()).to.be('c');
-          expect(fs[3]).to.be.an(Feature);
-          expect(fs[3].getId()).to.be('d');
-          expect(fs[4]).to.be.an(Feature);
-          expect(fs[4].getId()).to.be('e');
+          expect(fs).toBeInstanceOf(Array);
+          expect(fs).toHaveLength(5);
+          expect(fs[0]).toBeInstanceOf(Feature);
+          expect(fs[0].getId()).toBe('a');
+          expect(fs[1]).toBeInstanceOf(Feature);
+          expect(fs[1].getId()).toBe('b');
+          expect(fs[2]).toBeInstanceOf(Feature);
+          expect(fs[2].getId()).toBe('c');
+          expect(fs[3]).toBeInstanceOf(Feature);
+          expect(fs[3].getId()).toBe('d');
+          expect(fs[4]).toBeInstanceOf(Feature);
+          expect(fs[4].getId()).toBe('e');
         });
 
       });
 
     });
 
-    describe('when parsing states.kml', function() {
+    describe('when parsing states.kml', () => {
 
       let features;
-      before(function(done) {
+      beforeAll(function(done) {
         afterLoadText('spec/ol/format/kml/states.kml', function(xml) {
           try {
             features = format.readFeatures(xml);
@@ -3209,50 +3205,50 @@ describe('ol.format.KML', function() {
         });
       });
 
-      it('creates 50 features', function() {
-        expect(features).to.have.length(50);
+      test('creates 50 features', () => {
+        expect(features).toHaveLength(50);
       });
 
-      it('creates features with heterogeneous geometry collections', function() {
+      test('creates features with heterogeneous geometry collections', () => {
         // FIXME decide if we should instead create features with multiple geoms
         const feature = features[0];
-        expect(feature).to.be.an(Feature);
+        expect(feature).toBeInstanceOf(Feature);
         const geometry = feature.getGeometry();
-        expect(geometry).to.be.an(GeometryCollection);
+        expect(geometry).toBeInstanceOf(GeometryCollection);
       });
 
-      it('creates a Point and a MultiPolygon for Alaska', function() {
+      test('creates a Point and a MultiPolygon for Alaska', () => {
         const alaska = find(features, function(feature) {
           return feature.get('name') === 'Alaska';
         });
-        expect(alaska).to.be.an(Feature);
+        expect(alaska).toBeInstanceOf(Feature);
         const geometry = alaska.getGeometry();
-        expect(geometry).to.be.an(GeometryCollection);
+        expect(geometry).toBeInstanceOf(GeometryCollection);
         const components = geometry.getGeometries();
-        expect(components).to.have.length(2);
-        expect(components[0]).to.be.an(Point);
-        expect(components[1]).to.be.an(MultiPolygon);
+        expect(components).toHaveLength(2);
+        expect(components[0]).toBeInstanceOf(Point);
+        expect(components[1]).toBeInstanceOf(MultiPolygon);
       });
 
-      it('reads style and icon', function() {
+      test('reads style and icon', () => {
         const f = features[0];
         const styleFunction = f.getStyleFunction();
-        expect(styleFunction).not.to.be(undefined);
+        expect(styleFunction).not.toBe(undefined);
         const styleArray = styleFunction(f, 0);
-        expect(styleArray).to.be.an(Array);
+        expect(styleArray).toBeInstanceOf(Array);
         const style = styleArray[0];
-        expect(style).to.be.an(Style);
+        expect(style).toBeInstanceOf(Style);
         const imageStyle = style.getImage();
-        expect(imageStyle).to.be.an(Icon);
-        expect(imageStyle.getSrc()).to.eql('http://maps.google.com/mapfiles/kml/shapes/star.png');
+        expect(imageStyle).toBeInstanceOf(Icon);
+        expect(imageStyle.getSrc()).toEqual('http://maps.google.com/mapfiles/kml/shapes/star.png');
       });
 
     });
 
-    describe('#JSONExport', function() {
+    describe('#JSONExport', () => {
 
       let features;
-      before(function(done) {
+      beforeAll(function(done) {
         afterLoadText('spec/ol/format/kml/style.kml', function(xml) {
           try {
             features = format.readFeatures(xml);
@@ -3263,20 +3259,20 @@ describe('ol.format.KML', function() {
         });
       });
 
-      it('feature must not have a properties property', function() {
+      test('feature must not have a properties property', () => {
         const geojsonFormat = new GeoJSON();
         features.forEach(function(feature) {
           const geojsonFeature = geojsonFormat.writeFeatureObject(feature);
-          expect(geojsonFeature.properties).to.be(null);
+          expect(geojsonFeature.properties).toBe(null);
           JSON.stringify(geojsonFeature);
         });
       });
 
     });
 
-    describe('#readName', function() {
+    describe('#readName', () => {
 
-      it('returns undefined if there is no name', function() {
+      test('returns undefined if there is no name', () => {
         const kml =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Document>' +
@@ -3285,40 +3281,40 @@ describe('ol.format.KML', function() {
             '    </Folder>' +
             '  </Document>' +
             '</kml>';
-        expect(format.readName(kml)).to.be(undefined);
+        expect(format.readName(kml)).toBe(undefined);
       });
 
-      it('returns the name of the first Document', function() {
+      test('returns the name of the first Document', () => {
         const kml =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Document>' +
             '    <name>Document name</name>' +
             '  </Document>' +
             '</kml>';
-        expect(format.readName(kml)).to.be('Document name');
+        expect(format.readName(kml)).toBe('Document name');
       });
 
-      it('returns the name of the first Folder', function() {
+      test('returns the name of the first Folder', () => {
         const kml =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Folder>' +
             '    <name>Folder name</name>' +
             '  </Folder>' +
             '</kml>';
-        expect(format.readName(kml)).to.be('Folder name');
+        expect(format.readName(kml)).toBe('Folder name');
       });
 
-      it('returns the name of the first Placemark', function() {
+      test('returns the name of the first Placemark', () => {
         const kml =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Placemark>' +
             '    <name>Placemark name</name>' +
             '  </Placemark>' +
             '</kml>';
-        expect(format.readName(kml)).to.be('Placemark name');
+        expect(format.readName(kml)).toBe('Placemark name');
       });
 
-      it('searches breadth-first', function() {
+      test('searches breadth-first', () => {
         const kml =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Document>' +
@@ -3328,23 +3324,23 @@ describe('ol.format.KML', function() {
             '    <name>Document name</name>' +
             '  </Document>' +
             '</kml>';
-        expect(format.readName(kml)).to.be('Document name');
+        expect(format.readName(kml)).toBe('Document name');
       });
 
     });
 
-    describe('#readNetworkLinks', function() {
-      it('returns empty array if no network links found', function() {
+    describe('#readNetworkLinks', () => {
+      test('returns empty array if no network links found', () => {
         const text =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Document>' +
             '  </Document>' +
             '</kml>';
         const nl = format.readNetworkLinks(text);
-        expect(nl).to.have.length(0);
+        expect(nl).toHaveLength(0);
       });
 
-      it('returns an array of network links', function() {
+      test('returns an array of network links', () => {
         const text =
             '<kml xmlns="http://www.opengis.net/kml/2.2">' +
             '  <Document>' +
@@ -3364,18 +3360,18 @@ describe('ol.format.KML', function() {
             '  </Folder>' +
             '</kml>';
         const nl = format.readNetworkLinks(text);
-        expect(nl).to.have.length(2);
-        expect(nl[0].name).to.be('bar');
-        expect(nl[0].href.replace(window.location.origin, '')).to.be('/bar/bar.kml');
-        expect(nl[1].href).to.be('http://foo.com/foo.kml');
+        expect(nl).toHaveLength(2);
+        expect(nl[0].name).toBe('bar');
+        expect(nl[0].href.replace(window.location.origin, '')).toBe('/bar/bar.kml');
+        expect(nl[1].href).toBe('http://foo.com/foo.kml');
       });
 
     });
 
-    describe('#readNetworkLinksFile', function() {
+    describe('#readNetworkLinksFile', () => {
 
       let nl;
-      before(function(done) {
+      beforeAll(function(done) {
         afterLoadText('spec/ol/format/kml/networklinks.kml', function(xml) {
           try {
             nl = format.readNetworkLinks(xml);
@@ -3386,17 +3382,17 @@ describe('ol.format.KML', function() {
         });
       });
 
-      it('returns an array of network links', function() {
-        expect(nl).to.have.length(2);
-        expect(nl[0].name).to.be('bar');
-        expect(/\/bar\/bar\.kml$/.test(nl[0].href)).to.be.ok();
-        expect(nl[1].href).to.be('http://foo.com/foo.kml');
+      test('returns an array of network links', () => {
+        expect(nl).toHaveLength(2);
+        expect(nl[0].name).toBe('bar');
+        expect(/\/bar\/bar\.kml$/.test(nl[0].href)).toBeTruthy();
+        expect(nl[1].href).toBe('http://foo.com/foo.kml');
       });
     });
 
-    describe('#readRegion', function() {
+    describe('#readRegion', () => {
 
-      it('returns an array of regions', function() {
+      test('returns an array of regions', () => {
         const text =
           '<kml xmlns="http://www.opengis.net/kml/2.2">' +
           '  <Document>' +
@@ -3439,16 +3435,16 @@ describe('ol.format.KML', function() {
           '  </Folder>' +
           '</kml>';
         const nl = format.readRegion(text);
-        expect(nl).to.have.length(2);
-        expect(nl[0].extent).to.eql([-180, -90, 0, 0]);
-        expect(nl[0].minAltitude).to.be(0);
-        expect(nl[0].maxAltitude).to.be(4000);
-        expect(nl[0].altitudeMode).to.be('clampToGround');
-        expect(nl[0].minLodPixels).to.be(0);
-        expect(nl[0].maxLodPixels).to.be(-1);
-        expect(nl[0].minFadeExtent).to.be(0);
-        expect(nl[0].maxFadeExtent).to.be(0);
-        expect(nl[1].extent).to.eql([0, 0, 180, 90]);
+        expect(nl).toHaveLength(2);
+        expect(nl[0].extent).toEqual([-180, -90, 0, 0]);
+        expect(nl[0].minAltitude).toBe(0);
+        expect(nl[0].maxAltitude).toBe(4000);
+        expect(nl[0].altitudeMode).toBe('clampToGround');
+        expect(nl[0].minLodPixels).toBe(0);
+        expect(nl[0].maxLodPixels).toBe(-1);
+        expect(nl[0].minFadeExtent).toBe(0);
+        expect(nl[0].maxFadeExtent).toBe(0);
+        expect(nl[1].extent).toEqual([0, 0, 180, 90]);
       });
     });
   });

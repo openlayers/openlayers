@@ -12,10 +12,10 @@ import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
 import TileState from '../../../../src/ol/TileState.js';
 
-describe('ol.source.VectorTile', function() {
+describe('ol.source.VectorTile', () => {
 
   let format, source;
-  beforeEach(function() {
+  beforeEach(() => {
     format = new MVT();
     source = new VectorTileSource({
       format: format,
@@ -23,37 +23,36 @@ describe('ol.source.VectorTile', function() {
     });
   });
 
-  describe('constructor', function() {
-    it('sets the format on the instance', function() {
-      expect(source.format_).to.equal(format);
+  describe('constructor', () => {
+    test('sets the format on the instance', () => {
+      expect(source.format_).toBe(format);
     });
 
-    it('sets the default zDirection on the instance', function() {
-      expect(source.zDirection).to.be(1);
+    test('sets the default zDirection on the instance', () => {
+      expect(source.zDirection).toBe(1);
     });
 
-    it('uses ol.VectorTile as default tileClass', function() {
-      expect(source.tileClass).to.equal(VectorTile);
+    test('uses ol.VectorTile as default tileClass', () => {
+      expect(source.tileClass).toBe(VectorTile);
     });
 
-    it('creates a 512 XYZ tilegrid by default', function() {
+    test('creates a 512 XYZ tilegrid by default', () => {
       const tileGrid = createXYZ({tileSize: 512});
-      expect(source.tileGrid.tileSize_).to.equal(tileGrid.tileSize_);
-      expect(source.tileGrid.extent_).to.equal(tileGrid.extent_);
+      expect(source.tileGrid.tileSize_).toBe(tileGrid.tileSize_);
+      expect(source.tileGrid.extent_).toBe(tileGrid.extent_);
     });
   });
 
-  describe('#getTile()', function() {
+  describe('#getTile()', () => {
 
-    it('creates a tile with the correct tile class', function() {
+    test('creates a tile with the correct tile class', () => {
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(VectorRenderTile);
-      expect(tile.getTileCoord()).to.eql([0, 0, 0]);
-      expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')))
-        .to.equal(tile);
+      expect(tile).toBeInstanceOf(VectorRenderTile);
+      expect(tile.getTileCoord()).toEqual([0, 0, 0]);
+      expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'))).toBe(tile);
     });
 
-    it('loads source tiles', function(done) {
+    test('loads source tiles', done => {
       const source = new VectorTileSource({
         format: new GeoJSON(),
         url: 'spec/ol/data/point.json'
@@ -64,14 +63,14 @@ describe('ol.source.VectorTile', function() {
       const key = listen(tile, 'change', function(e) {
         if (tile.getState() === TileState.LOADED) {
           const sourceTile = source.getSourceTiles(1, source.getProjection(), tile)[0];
-          expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
+          expect(sourceTile.getFeatures().length).toBeGreaterThan(0);
           unlistenByKey(key);
           done();
         }
       });
     });
 
-    it('handles empty tiles', function(done) {
+    test('handles empty tiles', done => {
       const source = new VectorTileSource({
         format: new GeoJSON(),
         url: ''
@@ -80,86 +79,95 @@ describe('ol.source.VectorTile', function() {
 
       const key = listen(tile, 'change', function(e) {
         unlistenByKey(key);
-        expect(tile.getState()).to.be(TileState.EMPTY);
+        expect(tile.getState()).toBe(TileState.EMPTY);
         done();
       });
       tile.load();
     });
 
-    it('creates empty tiles outside the source extent', function() {
+    test('creates empty tiles outside the source extent', () => {
       const fullExtent = get('EPSG:3857').getExtent();
       const source = new VectorTileSource({
         extent: [fullExtent[0], fullExtent[1], 0, 0]
       });
       const tile = source.getTile(1, 1, 1, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.EMPTY);
+      expect(tile.getState()).toBe(TileState.EMPTY);
     });
 
-    it('creates empty tiles outside the world extent when wrapX === false', function() {
-      const source = new VectorTileSource({
-        wrapX: false
-      });
-      const tile = source.getTile(0, -1, 0, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.EMPTY);
-    });
+    test(
+      'creates empty tiles outside the world extent when wrapX === false',
+      () => {
+        const source = new VectorTileSource({
+          wrapX: false
+        });
+        const tile = source.getTile(0, -1, 0, 1, source.getProjection());
+        expect(tile.getState()).toBe(TileState.EMPTY);
+      }
+    );
 
-    it('creates non-empty tiles outside the world extent when wrapX === true', function() {
-      const source = new VectorTileSource({});
-      const tile = source.getTile(0, -1, 0, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.IDLE);
-    });
+    test(
+      'creates non-empty tiles outside the world extent when wrapX === true',
+      () => {
+        const source = new VectorTileSource({});
+        const tile = source.getTile(0, -1, 0, 1, source.getProjection());
+        expect(tile.getState()).toBe(TileState.IDLE);
+      }
+    );
 
-    it('creates non-empty tiles for overzoomed resolutions', function() {
+    test('creates non-empty tiles for overzoomed resolutions', () => {
       const source = new VectorTileSource({
         maxZoom: 16
       });
       const tile = source.getTile(24, 9119385, 5820434, 1, source.getProjection());
       tile.load();
-      expect(tile.getState()).to.be(TileState.LOADING);
+      expect(tile.getState()).toBe(TileState.LOADING);
     });
 
-    it('creates new tile when source key changes', function() {
+    test('creates new tile when source key changes', () => {
       source.setKey('key1');
       const tile1 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       const tile2 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       source.setKey('key2');
       const tile3 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile1).to.equal(tile2);
-      expect(tile1.key).to.be('key1');
-      expect(tile3.key).to.be('key2');
+      expect(tile1).toBe(tile2);
+      expect(tile1.key).toBe('key1');
+      expect(tile3.key).toBe('key2');
     });
 
   });
 
-  describe('#getTileGridForProjection', function() {
-    it('creates a tile grid with the source tile grid\'s tile size', function() {
+  describe('#getTileGridForProjection', () => {
+    test('creates a tile grid with the source tile grid\'s tile size', () => {
       const tileGrid = source.getTileGridForProjection(getProjection('EPSG:3857'));
-      expect(tileGrid.getTileSize(0)).to.be(512);
+      expect(tileGrid.getTileSize(0)).toBe(512);
     });
   });
 
-  describe('Tile load events', function() {
-    it('triggers tileloadstart and tileloadend with ol.VectorTile', function(done) {
-      const tile = source.getTile(14, 8938, 5680, 1, getProjection('EPSG:3857'));
-      let started = false;
-      source.on('tileloadstart', function() {
-        started = true;
-      });
-      source.on('tileloadend', function(e) {
-        expect(started).to.be(true);
-        expect(e.tile).to.be.a(VectorTile);
-        expect(e.tile.getFeatures().length).to.be(1327);
-        done();
-      });
-      tile.load();
-    });
+  describe('Tile load events', () => {
+    test(
+      'triggers tileloadstart and tileloadend with ol.VectorTile',
+      done => {
+        const tile = source.getTile(14, 8938, 5680, 1, getProjection('EPSG:3857'));
+        let started = false;
+        source.on('tileloadstart', function() {
+          started = true;
+        });
+        source.on('tileloadend', function(e) {
+          expect(started).toBe(true);
+          expect(e.tile).toBeInstanceOf(VectorTile);
+          expect(e.tile.getFeatures().length).toBe(1327);
+          done();
+        });
+        tile.load();
+      }
+    );
   });
 
-  describe('different source and render tile grids', function() {
+  describe('different source and render tile grids', () => {
 
     let source, map, loaded, requested, target;
 
-    beforeEach(function() {
+    beforeEach(() => {
 
       loaded = [];
       requested = 0;
@@ -207,22 +215,22 @@ describe('ol.source.VectorTile', function() {
 
     });
 
-    afterEach(function() {
+    afterEach(() => {
       document.body.removeChild(target);
     });
 
-    it('loads available tiles', function(done) {
+    test('loads available tiles', done => {
       map.renderSync();
       setTimeout(function() {
-        expect(requested).to.be.greaterThan(1);
-        expect(loaded).to.eql(['5/13/-29']);
+        expect(requested).toBeGreaterThan(1);
+        expect(loaded).toEqual(['5/13/-29']);
         done();
       }, 0);
     });
 
   });
 
-  it('does not fill up the tile queue', function(done) {
+  test('does not fill up the tile queue', done => {
     const target = document.createElement('div');
     target.style.width = '100px';
     target.style.height = '100px';
@@ -265,7 +273,7 @@ describe('ol.source.VectorTile', function() {
       e.target.removeEventListener('change', onTileChange);
 
       map.once('rendercomplete', function() {
-        expect(map.tileQueue_.getTilesLoading()).to.be(0);
+        expect(map.tileQueue_.getTilesLoading()).toBe(0);
 
         ++count;
         if (count === max) {

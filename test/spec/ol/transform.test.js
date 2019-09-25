@@ -15,7 +15,7 @@ import {
 } from '../../../src/ol/transform.js';
 
 
-describe('ol.transform', function() {
+describe('ol.transform', () => {
 
   function assertRoughlyEqual(t1, t2) {
     t1.forEach(function(item, index) {
@@ -23,86 +23,86 @@ describe('ol.transform', function() {
     });
   }
 
-  describe('create()', function() {
-    it('creates an identity transform', function() {
-      expect(create()).to.eql([1, 0, 0, 1, 0, 0]);
+  describe('create()', () => {
+    test('creates an identity transform', () => {
+      expect(create()).toEqual([1, 0, 0, 1, 0, 0]);
     });
   });
 
-  describe('reset()', function() {
-    it('resets tansform to an identity transform', function() {
+  describe('reset()', () => {
+    test('resets tansform to an identity transform', () => {
       const transform = [1, 2, 3, 4, 5, 6];
-      expect(reset(transform)).to.eql([1, 0, 0, 1, 0, 0]);
-      expect(transform).to.eql([1, 0, 0, 1, 0, 0]);
+      expect(reset(transform)).toEqual([1, 0, 0, 1, 0, 0]);
+      expect(transform).toEqual([1, 0, 0, 1, 0, 0]);
     });
   });
 
-  describe('set()', function() {
-    it('sets the given values', function() {
+  describe('set()', () => {
+    test('sets the given values', () => {
       const transform = create();
-      expect(set(transform, 1, 2, 3, 4, 5, 6)).to.eql([1, 2, 3, 4, 5, 6]);
-      expect(transform).to.eql([1, 2, 3, 4, 5, 6]);
+      expect(set(transform, 1, 2, 3, 4, 5, 6)).toEqual([1, 2, 3, 4, 5, 6]);
+      expect(transform).toEqual([1, 2, 3, 4, 5, 6]);
     });
   });
 
-  describe('setFromArray()', function() {
-    it('sets values of 2nd transform on 1st transform', function() {
+  describe('setFromArray()', () => {
+    test('sets values of 2nd transform on 1st transform', () => {
       const transform1 = create();
       const transform2 = [1, 2, 3, 4, 5, 6];
-      expect(setFromArray(transform1, transform2)).to.eql(transform2);
-      expect(transform1).to.eql(transform2);
+      expect(setFromArray(transform1, transform2)).toEqual(transform2);
+      expect(transform1).toEqual(transform2);
     });
   });
 
-  describe('translate()', function() {
-    it('applies translation to a transform', function() {
+  describe('translate()', () => {
+    test('applies translation to a transform', () => {
       const transform = create();
-      expect(translate(transform, 3, 4)).to.eql([1, 0, 0, 1, 3, 4]);
-      expect(transform).to.eql([1, 0, 0, 1, 3, 4]);
+      expect(translate(transform, 3, 4)).toEqual([1, 0, 0, 1, 3, 4]);
+      expect(transform).toEqual([1, 0, 0, 1, 3, 4]);
     });
   });
 
-  describe('scale()', function() {
-    it('applies scaling to a transform', function() {
+  describe('scale()', () => {
+    test('applies scaling to a transform', () => {
       const transform = create();
-      expect(scale(transform, 3, 4)).to.eql([3, 0, 0, 4, 0, 0]);
-      expect(transform).to.eql([3, 0, 0, 4, 0, 0]);
+      expect(scale(transform, 3, 4)).toEqual([3, 0, 0, 4, 0, 0]);
+      expect(transform).toEqual([3, 0, 0, 4, 0, 0]);
     });
   });
 
-  describe('makeScale()', function() {
-    it('creates a scale transform', function() {
+  describe('makeScale()', () => {
+    test('creates a scale transform', () => {
       const target = create();
       makeScale(target, 2, 3);
-      expect(target).to.eql([2, 0, 0, 3, 0, 0]);
+      expect(target).toEqual([2, 0, 0, 3, 0, 0]);
     });
 
-    it('returns the target', function() {
+    test('returns the target', () => {
       const target = create();
       const transform = makeScale(target, 2, 3);
-      expect(transform).to.be(target);
+      expect(transform).toBe(target);
     });
   });
 
-  describe('rotate()', function() {
-    it('applies rotation to a transform', function() {
+  describe('rotate()', () => {
+    test('applies rotation to a transform', () => {
       const transform = create();
       assertRoughlyEqual(rotate(transform, Math.PI / 2), [0, 1, -1, 0, 0, 0]);
       assertRoughlyEqual(transform, [0, 1, -1, 0, 0, 0]);
     });
   });
 
-  describe('multiply()', function() {
-    it('multiplies two transforms', function() {
+  describe('multiply()', () => {
+    test('multiplies two transforms', () => {
       const transform1 = [1, 2, 1, 2, 1, 2];
       const transform2 = [1, 2, 1, 2, 1, 2];
-      expect(multiply(transform1, transform2)).to.eql([3, 6, 3, 6, 4, 8]);
-      expect(transform1).to.eql([3, 6, 3, 6, 4, 8]);
+      expect(multiply(transform1, transform2)).toEqual([3, 6, 3, 6, 4, 8]);
+      expect(transform1).toEqual([3, 6, 3, 6, 4, 8]);
     });
   });
 
-  describe('compose()', function() {
-    it('composes a translate, scale, rotate, translate transform', function() {
+  describe('compose()', () => {
+    test('composes a translate, scale, rotate, translate transform', () => {
       const dx1 = 3;
       const dy1 = 4;
       const sx = 1.5;
@@ -119,55 +119,55 @@ describe('ol.transform', function() {
 
       const composed = create();
       const composedReturn = compose(composed, dx1, dy1, sx, sy, angle, dx2, dy2);
-      expect(composed).to.equal(composedReturn);
-      expect(composed).to.eql(expected);
+      expect(composed).toBe(composedReturn);
+      expect(composed).toEqual(expected);
     });
   });
 
-  describe('invert()', function() {
-    it('inverts a transform', function() {
+  describe('invert()', () => {
+    test('inverts a transform', () => {
       const transform = [1, 1, 1, 2, 2, 0];
-      expect(invert(transform)).to.eql([2, -1, -1, 1, -4, 2]);
+      expect(invert(transform)).toEqual([2, -1, -1, 1, -4, 2]);
     });
 
-    it('throws if the transform cannot be inverted', function() {
+    test('throws if the transform cannot be inverted', () => {
       const indeterminant = [1, 0, 1, 0, 1, 0];
       expect(function() {
         invert(indeterminant);
-      }).to.throwException();
+      }).toThrow();
     });
 
-    it('modifies the source', function() {
+    test('modifies the source', () => {
       const source = [1, 1, 1, 2, 2, 0];
       const inverted = invert(source);
-      expect(inverted).to.eql([2, -1, -1, 1, -4, 2]);
-      expect(source).to.be(inverted);
+      expect(inverted).toEqual([2, -1, -1, 1, -4, 2]);
+      expect(source).toBe(inverted);
     });
   });
 
-  describe('makeInverse()', function() {
-    it('makes the target the inverse of the source', function() {
+  describe('makeInverse()', () => {
+    test('makes the target the inverse of the source', () => {
       const source = [1, 1, 1, 2, 2, 0];
       const target = [1, 0, 0, 1, 0, 0];
       makeInverse(target, source);
-      expect(source).to.eql([1, 1, 1, 2, 2, 0]);
-      expect(target).to.eql([2, -1, -1, 1, -4, 2]);
+      expect(source).toEqual([1, 1, 1, 2, 2, 0]);
+      expect(target).toEqual([2, -1, -1, 1, -4, 2]);
     });
 
-    it('returns the target', function() {
+    test('returns the target', () => {
       const source = [1, 1, 1, 2, 2, 0];
       const target = [1, 0, 0, 1, 0, 0];
       const inverted = makeInverse(target, source);
-      expect(target).to.be(inverted);
+      expect(target).toBe(inverted);
     });
   });
 
-  describe('apply()', function() {
-    it('applies a transform to a 2d vector', function() {
+  describe('apply()', () => {
+    test('applies a transform to a 2d vector', () => {
       const transform = translate(create(), 2, 3);
       const point = [1, 2];
-      expect(apply(transform, point)).to.eql([3, 5]);
-      expect(point).to.eql([3, 5]);
+      expect(apply(transform, point)).toEqual([3, 5]);
+      expect(point).toEqual([3, 5]);
     });
   });
 

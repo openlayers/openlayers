@@ -7,24 +7,24 @@ import Cluster from '../../../../src/ol/source/Cluster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
-describe('ol.source.Cluster', function() {
+describe('ol.source.Cluster', () => {
 
-  describe('constructor', function() {
-    it('returns a cluster source', function() {
+  describe('constructor', () => {
+    test('returns a cluster source', () => {
       const source = new Cluster({
         projection: getProjection('EPSG:4326'),
         source: new VectorSource()
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(Cluster);
-      expect(source.getDistance()).to.be(20);
+      expect(source).toBeInstanceOf(Source);
+      expect(source).toBeInstanceOf(Cluster);
+      expect(source.getDistance()).toBe(20);
     });
   });
 
-  describe('#loadFeatures', function() {
+  describe('#loadFeatures', () => {
     const extent = [-1, -1, 1, 1];
     const projection = getProjection('EPSG:3857');
-    it('clusters a source with point features', function() {
+    test('clusters a source with point features', () => {
       const source = new Cluster({
         source: new VectorSource({
           features: [
@@ -34,10 +34,10 @@ describe('ol.source.Cluster', function() {
         })
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('features').length).to.be(2);
+      expect(source.getFeatures().length).toBe(1);
+      expect(source.getFeatures()[0].get('features').length).toBe(2);
     });
-    it('clusters with a custom geometryFunction', function() {
+    test('clusters with a custom geometryFunction', () => {
       const source = new Cluster({
         geometryFunction: function(feature) {
           const geom = feature.getGeometry();
@@ -58,20 +58,20 @@ describe('ol.source.Cluster', function() {
         })
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('features').length).to.be(2);
+      expect(source.getFeatures().length).toBe(1);
+      expect(source.getFeatures()[0].get('features').length).toBe(2);
     });
   });
 
-  describe('#setDistance', function() {
-    it('changes the distance value', function() {
+  describe('#setDistance', () => {
+    test('changes the distance value', () => {
       const source = new Cluster({
         distance: 100,
         source: new VectorSource()
       });
-      expect(source.getDistance()).to.be(100);
+      expect(source.getDistance()).toBe(100);
       source.setDistance(10);
-      expect(source.getDistance()).to.be(10);
+      expect(source.getDistance()).toBe(10);
     });
   });
 

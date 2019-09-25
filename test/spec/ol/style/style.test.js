@@ -7,7 +7,7 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 import Text from '../../../../src/ol/style/Text.js';
 
 
-describe('ol.style.Style', function() {
+describe('ol.style.Style', () => {
 
   const testFill = new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
@@ -33,16 +33,16 @@ describe('ol.style.Style', function() {
     radius: 5
   });
 
-  describe('#clone', function() {
+  describe('#clone', () => {
 
-    it('creates a new ol.style.Style', function() {
+    test('creates a new ol.style.Style', () => {
       const original = new Style();
       const clone = original.clone();
-      expect(clone).to.be.an(Style);
-      expect(clone).to.not.be(original);
+      expect(clone).toBeInstanceOf(Style);
+      expect(clone).not.toBe(original);
     });
 
-    it('copies all values', function() {
+    test('copies all values', () => {
       const original = new Style({
         geometry: new Point([0, 0, 0]),
         fill: new Fill({
@@ -60,211 +60,211 @@ describe('ol.style.Style', function() {
         zIndex: 2
       });
       const clone = original.clone();
-      expect(original.getGeometry().getCoordinates()).to.eql(clone.getGeometry().getCoordinates());
-      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
-      expect(original.getImage().getRadius()).to.eql(clone.getImage().getRadius());
-      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
-      expect(original.getText().getText()).to.eql(clone.getText().getText());
-      expect(original.getZIndex()).to.eql(clone.getZIndex());
+      expect(original.getGeometry().getCoordinates()).toEqual(clone.getGeometry().getCoordinates());
+      expect(original.getFill().getColor()).toEqual(clone.getFill().getColor());
+      expect(original.getImage().getRadius()).toEqual(clone.getImage().getRadius());
+      expect(original.getStroke().getColor()).toEqual(clone.getStroke().getColor());
+      expect(original.getText().getText()).toEqual(clone.getText().getText());
+      expect(original.getZIndex()).toEqual(clone.getZIndex());
     });
 
-    it('the clone does not reference the same objects as the original', function() {
-      const original = new Style({
-        geometry: new Point([0, 0, 0]),
-        fill: new Fill({
-          color: '#319FD3'
-        }),
-        image: new CircleStyle({
-          radius: 5
-        }),
-        stroke: new Stroke({
-          color: '#319FD3'
-        }),
-        text: new Text({
-          text: 'test'
-        })
-      });
-      const clone = original.clone();
-      expect(original.getGeometry()).not.to.be(clone.getGeometry());
-      expect(original.getFill()).not.to.be(clone.getFill());
-      expect(original.getImage()).not.to.be(clone.getImage());
-      expect(original.getStroke()).not.to.be(clone.getStroke());
-      expect(original.getText()).not.to.be(clone.getText());
+    test(
+      'the clone does not reference the same objects as the original',
+      () => {
+        const original = new Style({
+          geometry: new Point([0, 0, 0]),
+          fill: new Fill({
+            color: '#319FD3'
+          }),
+          image: new CircleStyle({
+            radius: 5
+          }),
+          stroke: new Stroke({
+            color: '#319FD3'
+          }),
+          text: new Text({
+            text: 'test'
+          })
+        });
+        const clone = original.clone();
+        expect(original.getGeometry()).not.toBe(clone.getGeometry());
+        expect(original.getFill()).not.toBe(clone.getFill());
+        expect(original.getImage()).not.toBe(clone.getImage());
+        expect(original.getStroke()).not.toBe(clone.getStroke());
+        expect(original.getText()).not.toBe(clone.getText());
 
-      clone.getGeometry().setCoordinates([1, 1, 1]);
-      clone.getFill().setColor('#012345');
-      clone.getImage().setScale(2);
-      clone.getStroke().setColor('#012345');
-      clone.getText().setText('other');
-      expect(original.getGeometry().getCoordinates()).not.to.eql(clone.getGeometry().getCoordinates());
-      expect(original.getFill().getColor()).not.to.eql(clone.getFill().getColor());
-      expect(original.getImage().getScale()).not.to.eql(clone.getImage().getScale());
-      expect(original.getStroke().getColor()).not.to.eql(clone.getStroke().getColor());
-      expect(original.getText().getText()).not.to.eql(clone.getText().getText());
-    });
+        clone.getGeometry().setCoordinates([1, 1, 1]);
+        clone.getFill().setColor('#012345');
+        clone.getImage().setScale(2);
+        clone.getStroke().setColor('#012345');
+        clone.getText().setText('other');
+        expect(original.getGeometry().getCoordinates()).not.toEqual(clone.getGeometry().getCoordinates());
+        expect(original.getFill().getColor()).not.toEqual(clone.getFill().getColor());
+        expect(original.getImage().getScale()).not.toEqual(clone.getImage().getScale());
+        expect(original.getStroke().getColor()).not.toEqual(clone.getStroke().getColor());
+        expect(original.getText().getText()).not.toEqual(clone.getText().getText());
+      }
+    );
   });
 
-  describe('#setZIndex', function() {
+  describe('#setZIndex', () => {
 
-    it('sets the zIndex', function() {
+    test('sets the zIndex', () => {
       const style = new Style();
 
       style.setZIndex(0.7);
-      expect(style.getZIndex()).to.be(0.7);
+      expect(style.getZIndex()).toBe(0.7);
     });
   });
 
-  describe('#getFill', function() {
+  describe('#getFill', () => {
     const style = new Style({
       fill: testFill
     });
 
-    it('returns the fill style of a style', function() {
-      expect(style.getFill()).to.eql(testFill);
+    test('returns the fill style of a style', () => {
+      expect(style.getFill()).toEqual(testFill);
     });
   });
 
-  describe('#setFill', function() {
+  describe('#setFill', () => {
     const style = new Style();
 
-    it('sets the fill style of a style', function() {
+    test('sets the fill style of a style', () => {
       style.setFill(testFill);
-      expect(style.getFill()).to.eql(testFill);
+      expect(style.getFill()).toEqual(testFill);
     });
   });
 
-  describe('#getImage', function() {
+  describe('#getImage', () => {
     const style = new Style({
       image: testImage
     });
 
-    it('returns the image style of a style', function() {
-      expect(style.getImage()).to.eql(testImage);
+    test('returns the image style of a style', () => {
+      expect(style.getImage()).toEqual(testImage);
     });
   });
 
-  describe('#setImage', function() {
+  describe('#setImage', () => {
     const style = new Style();
 
-    it('sets the image style of a style', function() {
+    test('sets the image style of a style', () => {
       style.setImage(testImage);
-      expect(style.getImage()).to.eql(testImage);
+      expect(style.getImage()).toEqual(testImage);
     });
   });
 
-  describe('#getStroke', function() {
+  describe('#getStroke', () => {
     const style = new Style({
       stroke: testStroke
     });
 
-    it('returns the stroke style of a style', function() {
-      expect(style.getStroke()).to.eql(testStroke);
+    test('returns the stroke style of a style', () => {
+      expect(style.getStroke()).toEqual(testStroke);
     });
   });
 
-  describe('#setStroke', function() {
+  describe('#setStroke', () => {
     const style = new Style();
 
-    it('sets the stroke style of a style', function() {
+    test('sets the stroke style of a style', () => {
       style.setStroke(testStroke);
-      expect(style.getStroke()).to.eql(testStroke);
+      expect(style.getStroke()).toEqual(testStroke);
     });
   });
 
-  describe('#getText', function() {
+  describe('#getText', () => {
     const style = new Style({
       text: testText
     });
 
-    it('returns the text style of a style', function() {
-      expect(style.getText()).to.eql(testText);
+    test('returns the text style of a style', () => {
+      expect(style.getText()).toEqual(testText);
     });
   });
 
-  describe('#setText', function() {
+  describe('#setText', () => {
     const style = new Style();
 
-    it('sets the text style of a style', function() {
+    test('sets the text style of a style', () => {
       style.setText(testText);
-      expect(style.getText()).to.eql(testText);
+      expect(style.getText()).toEqual(testText);
     });
   });
 
-  describe('#setGeometry', function() {
+  describe('#setGeometry', () => {
     const style = new Style();
 
-    it('creates a geometry function from a string', function() {
+    test('creates a geometry function from a string', () => {
       const feature = new Feature();
       feature.set('myGeom', new Point([0, 0]));
       style.setGeometry('myGeom');
-      expect(style.getGeometryFunction()(feature))
-        .to.eql(feature.get('myGeom'));
+      expect(style.getGeometryFunction()(feature)).toEqual(feature.get('myGeom'));
     });
 
-    it('creates a geometry function from a geometry', function() {
+    test('creates a geometry function from a geometry', () => {
       const geom = new Point([0, 0]);
       style.setGeometry(geom);
-      expect(style.getGeometryFunction()())
-        .to.eql(geom);
+      expect(style.getGeometryFunction()()).toEqual(geom);
     });
 
-    it('returns the configured geometry function', function() {
+    test('returns the configured geometry function', () => {
       const geom = new Point([0, 0]);
       style.setGeometry(function() {
         return geom;
       });
-      expect(style.getGeometryFunction()())
-        .to.eql(geom);
+      expect(style.getGeometryFunction()()).toEqual(geom);
     });
   });
 
-  describe('#getGeometry', function() {
+  describe('#getGeometry', () => {
 
-    it('returns whatever was passed to setGeometry', function() {
+    test('returns whatever was passed to setGeometry', () => {
       const style = new Style();
       style.setGeometry('foo');
-      expect(style.getGeometry()).to.eql('foo');
+      expect(style.getGeometry()).toEqual('foo');
       const geom = new Point([1, 2]);
       style.setGeometry(geom);
-      expect(style.getGeometry()).to.eql(geom);
+      expect(style.getGeometry()).toEqual(geom);
       const fn = function() {
         return geom;
       };
       style.setGeometry(fn);
-      expect(style.getGeometry()).to.eql(fn);
+      expect(style.getGeometry()).toEqual(fn);
       style.setGeometry(null);
-      expect(style.getGeometry()).to.eql(null);
+      expect(style.getGeometry()).toEqual(null);
     });
 
   });
 
 });
 
-describe('toFunction()', function() {
+describe('toFunction()', () => {
   const style = new Style();
 
-  it('creates a style function from a single style', function() {
+  test('creates a style function from a single style', () => {
     const styleFunction = toFunction(style);
-    expect(styleFunction()).to.eql([style]);
+    expect(styleFunction()).toEqual([style]);
   });
 
-  it('creates a style function from an array of styles', function() {
+  test('creates a style function from an array of styles', () => {
     const styleFunction = toFunction([style]);
-    expect(styleFunction()).to.eql([style]);
+    expect(styleFunction()).toEqual([style]);
   });
 
-  it('passes through a function', function() {
+  test('passes through a function', () => {
     const original = function() {
       return [style];
     };
     const styleFunction = toFunction(original);
-    expect(styleFunction).to.be(original);
+    expect(styleFunction).toBe(original);
   });
 
-  it('throws on (some) unexpected input', function() {
+  test('throws on (some) unexpected input', () => {
     expect(function() {
       toFunction({bogus: 'input'});
-    }).to.throwException();
+    }).toThrow();
   });
 
 });

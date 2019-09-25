@@ -1,12 +1,12 @@
 import Rotate from '../../../../src/ol/control/Rotate.js';
 
-describe('ol.control.Rotate', function() {
+describe('ol.control.Rotate', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new Rotate();
-      expect(instance).to.be.an(Rotate);
+      expect(instance).toBeInstanceOf(Rotate);
     });
 
   });

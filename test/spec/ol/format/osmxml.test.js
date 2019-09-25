@@ -5,37 +5,37 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
-describe('ol.format.OSMXML', function() {
+describe('ol.format.OSMXML', () => {
 
   let format;
-  beforeEach(function() {
+  beforeEach(() => {
     format = new OSMXML();
   });
 
-  describe('#readProjection', function() {
-    it('returns the default projection from document', function() {
+  describe('#readProjection', () => {
+    test('returns the default projection from document', () => {
       const projection = format.readProjectionFromDocument();
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      expect(projection).toEqual(getProjection('EPSG:4326'));
     });
 
-    it('returns the default projection from node', function() {
+    test('returns the default projection from node', () => {
       const projection = format.readProjectionFromNode();
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      expect(projection).toEqual(getProjection('EPSG:4326'));
     });
   });
 
-  describe('#readFeatures', function() {
+  describe('#readFeatures', () => {
 
-    it('can read an empty document', function() {
+    test('can read an empty document', () => {
       const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
           '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(0);
+      expect(fs).toHaveLength(0);
     });
 
-    it('can read nodes', function() {
+    test('can read nodes', () => {
       const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
@@ -47,15 +47,15 @@ describe('ol.format.OSMXML', function() {
           '  </node>' +
           '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(2);
+      expect(fs).toHaveLength(2);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      expect(f).toBeInstanceOf(Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1]);
+      expect(g).toBeInstanceOf(Point);
+      expect(g.getCoordinates()).toEqual([2, 1]);
     });
 
-    it('can read nodes and ways', function() {
+    test('can read nodes and ways', () => {
       const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
@@ -72,21 +72,21 @@ describe('ol.format.OSMXML', function() {
           '  </way>' +
           '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      expect(fs).toHaveLength(3);
       const point = fs[0];
-      expect(point).to.be.an(Feature);
+      expect(point).toBeInstanceOf(Feature);
       let g = point.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1]);
+      expect(g).toBeInstanceOf(Point);
+      expect(g.getCoordinates()).toEqual([2, 1]);
       const line = fs[2];
-      expect(line).to.be.an(Feature);
+      expect(line).toBeInstanceOf(Feature);
       g = line.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
+      expect(g).toBeInstanceOf(LineString);
+      expect(g.getCoordinates()).toEqual([[2, 1], [4, 3]]);
     });
 
 
-    it('can read ways before nodes', function() {
+    test('can read ways before nodes', () => {
       const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
@@ -103,16 +103,16 @@ describe('ol.format.OSMXML', function() {
           '  </node>' +
           '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      expect(fs).toHaveLength(3);
       const line = fs[2];
-      expect(line).to.be.an(Feature);
+      expect(line).toBeInstanceOf(Feature);
       const g = line.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
+      expect(g).toBeInstanceOf(LineString);
+      expect(g.getCoordinates()).toEqual([[2, 1], [4, 3]]);
     });
 
 
-    it('can transform and read nodes', function() {
+    test('can transform and read nodes', () => {
       const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
@@ -126,13 +126,12 @@ describe('ol.format.OSMXML', function() {
       const fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857'
       });
-      expect(fs).to.have.length(2);
+      expect(fs).toHaveLength(2);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      expect(f).toBeInstanceOf(Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql(
-        transform([2, 1], 'EPSG:4326', 'EPSG:3857'));
+      expect(g).toBeInstanceOf(Point);
+      expect(g.getCoordinates()).toEqual(transform([2, 1], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });

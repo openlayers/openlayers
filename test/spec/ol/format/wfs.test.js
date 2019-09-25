@@ -28,23 +28,23 @@ import {addCommon, clearAllProjections, transform} from '../../../../src/ol/proj
 import {register} from '../../../../src/ol/proj/proj4.js';
 import {parse} from '../../../../src/ol/xml.js';
 
-describe('ol.format.WFS', function() {
+describe('ol.format.WFS', () => {
 
-  describe('featureType', function() {
+  describe('featureType', () => {
 
-    it('#getFeatureType #setFeatureType', function() {
+    test('#getFeatureType #setFeatureType', () => {
       const format = new WFS({
         featureNS: 'http://www.openplans.org/topp',
         featureType: ['foo', 'bar']
       });
-      expect(format.getFeatureType()).to.eql(['foo', 'bar']);
+      expect(format.getFeatureType()).toEqual(['foo', 'bar']);
       format.setFeatureType('baz');
-      expect(format.getFeatureType()).to.eql('baz');
+      expect(format.getFeatureType()).toEqual('baz');
     });
 
   });
 
-  describe('when parsing TOPP states GML from WFS', function() {
+  describe('when parsing TOPP states GML from WFS', () => {
 
     let features, feature, xml;
     const config = {
@@ -52,7 +52,7 @@ describe('ol.format.WFS', function() {
       'featureType': 'states'
     };
 
-    before(function(done) {
+    beforeAll(function(done) {
       proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
       register(proj4);
       afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(data) {
@@ -66,40 +66,40 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    after(function() {
+    afterAll(function() {
       delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
       clearAllProjections();
       addCommon();
     });
 
-    it('creates 3 features', function() {
-      expect(features).to.have.length(3);
+    test('creates 3 features', () => {
+      expect(features).toHaveLength(3);
     });
 
-    it('creates a polygon for Illinois', function() {
+    test('creates a polygon for Illinois', () => {
       feature = features[0];
-      expect(feature.getId()).to.equal('states.1');
-      expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(MultiPolygon);
+      expect(feature.getId()).toBe('states.1');
+      expect(feature.get('STATE_NAME')).toBe('Illinois');
+      expect(feature.getGeometry()).toBeInstanceOf(MultiPolygon);
     });
 
-    it('transforms and creates a polygon for Illinois', function() {
+    test('transforms and creates a polygon for Illinois', () => {
       features = new WFS(config).readFeatures(xml, {
         featureProjection: 'EPSG:3857'
       });
       feature = features[0];
-      expect(feature.getId()).to.equal('states.1');
-      expect(feature.get('STATE_NAME')).to.equal('Illinois');
+      expect(feature.getId()).toBe('states.1');
+      expect(feature.get('STATE_NAME')).toBe('Illinois');
       const geom = feature.getGeometry();
-      expect(geom).to.be.an(MultiPolygon);
+      expect(geom).toBeInstanceOf(MultiPolygon);
       const p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
       p.push(0);
-      expect(geom.getFirstCoordinate()).to.eql(p);
+      expect(geom.getFirstCoordinate()).toEqual(p);
     });
 
   });
 
-  describe('when parsing mapserver GML2 polygon', function() {
+  describe('when parsing mapserver GML2 polygon', () => {
 
     let features, feature, xml;
     const config = {
@@ -108,7 +108,7 @@ describe('ol.format.WFS', function() {
       'gmlFormat': new GML2()
     };
 
-    before(function(done) {
+    beforeAll(function(done) {
       proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
       register(proj4);
       afterLoadText('spec/ol/format/wfs/polygonv2.xml', function(data) {
@@ -122,47 +122,45 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    after(function() {
+    afterAll(function() {
       delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
       clearAllProjections();
       addCommon();
     });
 
-    it('creates 3 features', function() {
-      expect(features).to.have.length(3);
+    test('creates 3 features', () => {
+      expect(features).toHaveLength(3);
     });
 
-    it('creates a polygon for My Polygon with hole', function() {
+    test('creates a polygon for My Polygon with hole', () => {
       feature = features[0];
-      expect(feature.getId()).to.equal('1');
-      expect(feature.get('name')).to.equal('My Polygon with hole');
-      expect(feature.get('boundedBy')).to.eql(
-        [47.003018, -0.768746, 47.925567, 0.532597]);
-      expect(feature.getGeometry()).to.be.an(MultiPolygon);
-      expect(feature.getGeometry().getFlatCoordinates()).
-        to.have.length(60);
+      expect(feature.getId()).toBe('1');
+      expect(feature.get('name')).toBe('My Polygon with hole');
+      expect(feature.get('boundedBy')).toEqual([47.003018, -0.768746, 47.925567, 0.532597]);
+      expect(feature.getGeometry()).toBeInstanceOf(MultiPolygon);
+      expect(feature.getGeometry().getFlatCoordinates()).toHaveLength(60);
     });
 
   });
 
-  describe('when parsing FeatureCollection', function() {
+  describe('when parsing FeatureCollection', () => {
     let xml;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/EmptyFeatureCollection.xml',
         function(_xml) {
           xml = _xml;
           done();
         });
     });
-    it('returns an empty array of features when none exist', function() {
+    test('returns an empty array of features when none exist', () => {
       const result = new WFS().readFeatures(xml);
-      expect(result).to.have.length(0);
+      expect(result).toHaveLength(0);
     });
   });
 
-  describe('when parsing FeatureCollection', function() {
+  describe('when parsing FeatureCollection', () => {
     let response;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/NumberOfFeatures.xml',
         function(xml) {
           try {
@@ -173,14 +171,14 @@ describe('ol.format.WFS', function() {
           done();
         });
     });
-    it('returns the correct number of features', function() {
-      expect(response.numberOfFeatures).to.equal(625);
+    test('returns the correct number of features', () => {
+      expect(response.numberOfFeatures).toBe(625);
     });
   });
 
-  describe('when parsing FeatureCollection', function() {
+  describe('when parsing FeatureCollection', () => {
     let response;
-    before(function(done) {
+    beforeAll(function(done) {
       proj4.defs('EPSG:28992', '+proj=sterea +lat_0=52.15616055555555 ' +
           '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
           '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
@@ -196,15 +194,15 @@ describe('ol.format.WFS', function() {
           done();
         });
     });
-    it('returns the correct bounds', function() {
-      expect(response.bounds).to.eql([3197.88, 306457.313,
+    test('returns the correct bounds', () => {
+      expect(response.bounds).toEqual([3197.88, 306457.313,
         280339.156, 613850.438]);
     });
   });
 
-  describe('when parsing TransactionResponse', function() {
+  describe('when parsing TransactionResponse', () => {
     let response;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionResponse.xml',
         function(xml) {
           try {
@@ -215,18 +213,18 @@ describe('ol.format.WFS', function() {
           done();
         });
     });
-    it('returns the correct TransactionResponse object', function() {
-      expect(response.transactionSummary.totalDeleted).to.equal(0);
-      expect(response.transactionSummary.totalInserted).to.equal(0);
-      expect(response.transactionSummary.totalUpdated).to.equal(1);
-      expect(response.insertIds).to.have.length(2);
-      expect(response.insertIds[0]).to.equal('parcelle.40');
+    test('returns the correct TransactionResponse object', () => {
+      expect(response.transactionSummary.totalDeleted).toBe(0);
+      expect(response.transactionSummary.totalInserted).toBe(0);
+      expect(response.transactionSummary.totalUpdated).toBe(1);
+      expect(response.insertIds).toHaveLength(2);
+      expect(response.insertIds[0]).toBe('parcelle.40');
     });
   });
 
-  describe('when writing out a GetFeature request', function() {
+  describe('when writing out a GetFeature request', () => {
 
-    it('creates the expected output', function() {
+    test('creates the expected output', () => {
       const text =
           '<wfs:GetFeature service="WFS" version="1.1.0" resultType="hits" ' +
           '    xmlns:topp="http://www.openplans.org/topp"' +
@@ -254,7 +252,7 @@ describe('ol.format.WFS', function() {
       expect(serialized).to.xmleql(parse(text));
     });
 
-    it('creates paging headers', function() {
+    test('creates paging headers', () => {
       const text =
           '<wfs:GetFeature service="WFS" version="1.1.0" startIndex="20" ' +
           '    count="10" xmlns:topp="http://www.openplans.org/topp"' +
@@ -279,7 +277,7 @@ describe('ol.format.WFS', function() {
       expect(serialized).to.xmleql(parse(text));
     });
 
-    it('creates a BBOX filter', function() {
+    test('creates a BBOX filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -306,7 +304,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a property filter', function() {
+    test('creates a property filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -328,7 +326,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates two property filters', function() {
+    test('creates two property filters', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -358,7 +356,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates greater/less than property filters', function() {
+    test('creates greater/less than property filters', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -407,7 +405,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates isBetween property filter', function() {
+    test('creates isBetween property filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -430,7 +428,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates isNull property filter', function() {
+    test('creates isNull property filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -451,7 +449,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates isLike property filter', function() {
+    test('creates isLike property filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -473,7 +471,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates isLike property filter with arguments', function() {
+    test('creates isLike property filter with arguments', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -495,7 +493,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a Not filter', function() {
+    test('creates a Not filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -519,7 +517,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates an AND filter', function() {
+    test('creates an AND filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
@@ -559,7 +557,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a contains filter', function() {
+    test('creates a contains filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
@@ -596,7 +594,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a intersects filter', function() {
+    test('creates a intersects filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
@@ -633,7 +631,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a within filter', function() {
+    test('creates a within filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
@@ -670,7 +668,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates During property filter', function() {
+    test('creates During property filter', () => {
       const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="states" srsName="EPSG:4326">' +
@@ -703,9 +701,9 @@ describe('ol.format.WFS', function() {
 
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
 
-    it('creates a handle', function() {
+    test('creates a handle', () => {
       const text =
           '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" ' +
           'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
@@ -719,15 +717,15 @@ describe('ol.format.WFS', function() {
 
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionSrs.xml', function(xml) {
         text = xml;
         done();
       });
     });
-    it('creates the correct srsName', function() {
+    test('creates the correct srsName', () => {
       const format = new WFS();
       const insertFeature = new Feature({
         the_geom: new MultiLineString([[
@@ -749,16 +747,16 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionUpdate.xml', function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('creates the correct update', function() {
+    test('creates the correct update', () => {
       const format = new WFS();
       const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
@@ -779,7 +777,7 @@ describe('ol.format.WFS', function() {
       expect(serialized).to.xmleql(parse(text));
     });
 
-    it('creates the correct update if geometry name is alias', function() {
+    test('creates the correct update if geometry name is alias', () => {
       const format = new WFS();
       const updateFeature = new Feature(new MultiLineString([[
         [-12279454, 6741885],
@@ -801,9 +799,9 @@ describe('ol.format.WFS', function() {
 
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
 
-    it('creates the correct update with default featurePrefix', function() {
+    test('creates the correct update with default featurePrefix', () => {
       const format = new WFS();
       const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
@@ -820,13 +818,13 @@ describe('ol.format.WFS', function() {
         featureType: 'FAULTS',
         gmlOptions: {srsName: 'EPSG:900913'}
       });
-      expect(serialized.firstChild.attributes.getNamedItem('xmlns:feature') !== null).to.equal(true);
+      expect(serialized.firstChild.attributes.getNamedItem('xmlns:feature') !== null).toBe(true);
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
 
-    it('does not create an update if no fid', function() {
+    test('does not create an update if no fid', () => {
       const format = new WFS();
       const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
@@ -845,14 +843,14 @@ describe('ol.format.WFS', function() {
           featurePrefix: 'foo',
           gmlOptions: {srsName: 'EPSG:900913'}
         });
-      }).to.throwException();
+      }).toThrow();
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
     const filename = 'spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml';
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText(filename, function(xml) {
         text = xml;
         done();
@@ -860,7 +858,7 @@ describe('ol.format.WFS', function() {
       );
     });
 
-    it('handles multiple geometries', function() {
+    test('handles multiple geometries', () => {
       const format = new WFS();
       const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
@@ -886,16 +884,16 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('creates the correct transaction body', function() {
+    test('creates the correct transaction body', () => {
       const format = new WFS();
       const insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
@@ -929,16 +927,16 @@ describe('ol.format.WFS', function() {
 
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/Native.xml', function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('handles writing out Native', function() {
+    test('handles writing out Native', () => {
       const format = new WFS();
       const serialized = format.writeTransaction(null, null, null, {
         nativeElements: [{
@@ -955,17 +953,17 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
     const filename = 'spec/ol/format/wfs/TransactionMultiVersion100.xml';
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText(filename, function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('handles the WFS version', function() {
+    test('handles the WFS version', () => {
       const format = new WFS();
       const insertFeature = new Feature({
         the_geom: new LineString([[1.1, 2], [3, 4.2]]),
@@ -1000,16 +998,16 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('do not add feature prefix twice', function() {
+    test('do not add feature prefix twice', () => {
       const format = new WFS();
       const insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
@@ -1042,17 +1040,17 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a transaction request', function() {
+  describe('when writing out a transaction request', () => {
     let text;
     const filename = 'spec/ol/format/wfs/TransactionMultiVersion100_3D.xml';
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText(filename, function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('handles 3D in WFS 1.0.0', function() {
+    test('handles 3D in WFS 1.0.0', () => {
       const format = new WFS();
       const insertFeature = new Feature({
         the_geom: new LineString([[1.1, 2, 4], [3, 4.2, 5]]),
@@ -1085,16 +1083,16 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a Transaction request', function() {
+  describe('when writing out a Transaction request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti_3D.xml', function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('handles 3D in WFS 1.1.0', function() {
+    test('handles 3D in WFS 1.1.0', () => {
       const format = new WFS();
       const insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2, 3]]),
@@ -1125,16 +1123,16 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when writing out a GetFeature request', function() {
+  describe('when writing out a GetFeature request', () => {
     let text;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/GetFeatureMultiple.xml', function(xml) {
         text = xml;
         done();
       });
     });
 
-    it('handles writing multiple Query elements', function() {
+    test('handles writing multiple Query elements', () => {
       const format = new WFS();
       const serialized = format.writeGetFeature({
         featureNS: 'http://www.openplans.org/topp',
@@ -1145,10 +1143,10 @@ describe('ol.format.WFS', function() {
     });
   });
 
-  describe('when parsing GML from MapServer', function() {
+  describe('when parsing GML from MapServer', () => {
 
     let features, feature;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/wfs/mapserver.xml', function(xml) {
         try {
           const config = {
@@ -1163,24 +1161,24 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('creates 7 features', function() {
-      expect(features).to.have.length(7);
+    test('creates 7 features', () => {
+      expect(features).toHaveLength(7);
     });
 
-    it('creates a polygon for Arnstadt', function() {
+    test('creates a polygon for Arnstadt', () => {
       feature = features[0];
       const fid = 'Historische_Messtischblaetter_WFS.71055885';
-      expect(feature.getId()).to.equal(fid);
-      expect(feature.get('titel')).to.equal('Arnstadt');
-      expect(feature.getGeometry()).to.be.an(Polygon);
+      expect(feature.getId()).toBe(fid);
+      expect(feature.get('titel')).toBe('Arnstadt');
+      expect(feature.getGeometry()).toBeInstanceOf(Polygon);
     });
 
   });
 
-  describe('when parsing multiple feature types', function() {
+  describe('when parsing multiple feature types', () => {
 
     let features;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
         try {
           features = new WFS({
@@ -1194,16 +1192,16 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('reads all features', function() {
-      expect(features.length).to.be(12);
+    test('reads all features', () => {
+      expect(features.length).toBe(12);
     });
 
   });
 
-  describe('when parsing multiple feature types separately', function() {
+  describe('when parsing multiple feature types separately', () => {
 
     let lineFeatures, polygonFeatures;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
         try {
           lineFeatures = new WFS({
@@ -1221,17 +1219,17 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('reads all features', function() {
-      expect(lineFeatures.length).to.be(3);
-      expect(polygonFeatures.length).to.be(9);
+    test('reads all features', () => {
+      expect(lineFeatures.length).toBe(3);
+      expect(polygonFeatures.length).toBe(9);
     });
 
   });
 
-  describe('when parsing multiple feature types', function() {
+  describe('when parsing multiple feature types', () => {
 
     let features;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
         try {
           features = new WFS().readFeatures(xml);
@@ -1242,16 +1240,16 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('reads all features with autoconfigure', function() {
-      expect(features.length).to.be(12);
+    test('reads all features with autoconfigure', () => {
+      expect(features.length).toBe(12);
     });
 
   });
 
-  describe('when parsing multiple feature types (MapServer)', function() {
+  describe('when parsing multiple feature types (MapServer)', () => {
 
     let features;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
         try {
           features = new WFS().readFeatures(xml);
@@ -1262,19 +1260,19 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('reads all features', function() {
-      expect(features.length).to.be(5);
+    test('reads all features', () => {
+      expect(features.length).toBe(5);
       features.forEach(function(feature) {
-        expect(feature instanceof Feature).to.be(true);
+        expect(feature instanceof Feature).toBe(true);
       });
     });
 
   });
 
-  describe('when parsing multiple feature types separately (MapServer)', function() {
+  describe('when parsing multiple feature types separately (MapServer)', () => {
 
     let busFeatures, infoFeatures;
-    before(function(done) {
+    beforeAll(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
         try {
           busFeatures = new WFS({
@@ -1292,15 +1290,15 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('reads all features', function() {
-      expect(busFeatures.length).to.be(3);
-      expect(infoFeatures.length).to.be(2);
+    test('reads all features', () => {
+      expect(busFeatures.length).toBe(3);
+      expect(infoFeatures.length).toBe(2);
     });
 
   });
 
-  describe('when writing out a WFS Filter', function() {
-    it('creates a filter', function() {
+  describe('when writing out a WFS Filter', () => {
+    test('creates a filter', () => {
       const text =
           '<Filter xmlns="http://www.opengis.net/ogc">' +
           '  <And>' +

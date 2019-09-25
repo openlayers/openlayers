@@ -4,7 +4,7 @@ import ZoomSlider from '../../../../src/ol/control/ZoomSlider.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
 
-describe('ol.control.ZoomSlider', function() {
+describe('ol.control.ZoomSlider', () => {
   let map, target, zoomslider;
 
   const createElement = document.createElement;
@@ -19,7 +19,7 @@ describe('ol.control.ZoomSlider', function() {
     return element;
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     target = document.createElement('div');
     document.body.appendChild(target);
     zoomslider = new ZoomSlider();
@@ -29,7 +29,7 @@ describe('ol.control.ZoomSlider', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     zoomslider.dispose();
     map.dispose();
     document.body.removeChild(target);
@@ -38,40 +38,40 @@ describe('ol.control.ZoomSlider', function() {
     target = null;
   });
 
-  describe('DOM creation', function() {
-    it('creates the expected DOM elements', function() {
+  describe('DOM creation', () => {
+    test('creates the expected DOM elements', () => {
       const zoomSliderContainers = target.querySelectorAll('.ol-zoomslider');
 
-      expect(zoomSliderContainers.length).to.be(1);
+      expect(zoomSliderContainers.length).toBe(1);
 
       const zoomSliderContainer = zoomSliderContainers[0];
-      expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
+      expect(zoomSliderContainer instanceof HTMLDivElement).toBe(true);
 
       let hasUnselectableCls = zoomSliderContainer.classList.contains('ol-unselectable');
-      expect(hasUnselectableCls).to.be(true);
+      expect(hasUnselectableCls).toBe(true);
 
       const zoomSliderThumbs = zoomSliderContainer.querySelectorAll('.ol-zoomslider-thumb');
-      expect(zoomSliderThumbs.length).to.be(1);
+      expect(zoomSliderThumbs.length).toBe(1);
 
       const zoomSliderThumb = zoomSliderThumbs[0];
-      expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
+      expect(zoomSliderThumb instanceof HTMLButtonElement).toBe(true);
 
       hasUnselectableCls = zoomSliderThumb.classList.contains('ol-unselectable');
-      expect(hasUnselectableCls).to.be(true);
+      expect(hasUnselectableCls).toBe(true);
     });
 
   });
 
-  describe('#initSlider_', function() {
-    it('sets limits', function() {
+  describe('#initSlider_', () => {
+    test('sets limits', () => {
       zoomslider.initSlider_();
-      expect(zoomslider.widthLimit_).not.to.be(0);
-      expect(zoomslider.heightLimit_).to.be(0);
+      expect(zoomslider.widthLimit_).not.toBe(0);
+      expect(zoomslider.heightLimit_).toBe(0);
     });
   });
 
-  describe('#direction_', function() {
-    it('is horizontal for wide containers', function() {
+  describe('#direction_', () => {
+    test('is horizontal for wide containers', () => {
       const control = new ZoomSlider({});
       control.element.style.width = '1000px';
       control.element.style.height = '10px';
@@ -79,12 +79,12 @@ describe('ol.control.ZoomSlider', function() {
       control.initSlider_();
 
       const horizontal = 1;
-      expect(control.direction_).to.be(horizontal);
+      expect(control.direction_).toBe(horizontal);
 
       control.dispose();
     });
 
-    it('is vertical for tall containers', function() {
+    test('is vertical for tall containers', () => {
       const control = new ZoomSlider({});
       control.element.style.width = '10px';
       control.element.style.height = '1000px';
@@ -92,16 +92,16 @@ describe('ol.control.ZoomSlider', function() {
       control.setMap(map);
 
       const vertical = 0;
-      expect(control.direction_).to.be(vertical);
+      expect(control.direction_).toBe(vertical);
 
       control.dispose();
     });
   });
 
-  describe('Pointer event handling', function() {
+  describe('Pointer event handling', () => {
     let map;
 
-    beforeEach(function() {
+    beforeEach(() => {
       map = new Map({
         target: createMapDiv(500, 100),
         view: new View({
@@ -110,11 +110,11 @@ describe('ol.control.ZoomSlider', function() {
         })
       });
     });
-    afterEach(function() {
+    afterEach(() => {
       disposeMap(map);
     });
 
-    it('[horizontal] handles a drag sequence', function() {
+    test('[horizontal] handles a drag sequence', () => {
       document.createElement = createEventElement;
       const control = new ZoomSlider();
       map.addControl(control);
@@ -131,61 +131,64 @@ describe('ol.control.ZoomSlider', function() {
       event.clientX = control.widthLimit_;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(16);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
+      expect(control.currentResolution_).toBe(16);
+      expect(control.dragging_).toBe(true);
+      expect(control.dragListenerKeys_.length).toBe(2);
       event.type = 'pointermove';
       event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(4);
+      expect(control.currentResolution_).toBe(4);
       event.type = 'pointermove';
       event.clientX = 4 * control.widthLimit_ / 8;
       event.clientY = 0;
       control.element.dispatchEvent(event);
       event.type = 'pointerup';
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(1);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
+      expect(control.currentResolution_).toBe(1);
+      expect(control.dragListenerKeys_.length).toBe(0);
+      expect(control.dragging_).toBe(false);
     });
-    it('[horizontal] handles a drag sequence ending outside its bounds', function() {
-      document.createElement = createEventElement;
-      const control = new ZoomSlider();
-      map.addControl(control);
-      document.createElement = createElement;
-      map.getView().setZoom(0);
-      control.element.style.width = '500px';
-      control.element.style.height = '10px';
-      control.element.firstChild.style.width = '100px';
-      control.element.firstChild.style.height = '10px';
-      map.renderSync();
-      const event = new Event();
-      event.type = 'pointerdown';
-      event.target = control.element.firstElementChild;
-      event.clientX = control.widthLimit_;
-      event.clientY = 0;
-      control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(16);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
-      event.type = 'pointermove';
-      event.clientX = 6 * control.widthLimit_ / 8;
-      event.clientY = 0;
-      control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(4);
-      event.type = 'pointermove';
-      event.clientX = 12 * control.widthLimit_ / 8;
-      event.clientY = 0;
-      control.element.dispatchEvent(event);
-      event.type = 'pointerup';
-      event.target = 'document';
-      control.element.dispatchEvent(event);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
-      expect(control.currentResolution_).to.be(16);
-    });
-    it('[vertical] handles a drag sequence', function() {
+    test(
+      '[horizontal] handles a drag sequence ending outside its bounds',
+      () => {
+        document.createElement = createEventElement;
+        const control = new ZoomSlider();
+        map.addControl(control);
+        document.createElement = createElement;
+        map.getView().setZoom(0);
+        control.element.style.width = '500px';
+        control.element.style.height = '10px';
+        control.element.firstChild.style.width = '100px';
+        control.element.firstChild.style.height = '10px';
+        map.renderSync();
+        const event = new Event();
+        event.type = 'pointerdown';
+        event.target = control.element.firstElementChild;
+        event.clientX = control.widthLimit_;
+        event.clientY = 0;
+        control.element.dispatchEvent(event);
+        expect(control.currentResolution_).toBe(16);
+        expect(control.dragging_).toBe(true);
+        expect(control.dragListenerKeys_.length).toBe(2);
+        event.type = 'pointermove';
+        event.clientX = 6 * control.widthLimit_ / 8;
+        event.clientY = 0;
+        control.element.dispatchEvent(event);
+        expect(control.currentResolution_).toBe(4);
+        event.type = 'pointermove';
+        event.clientX = 12 * control.widthLimit_ / 8;
+        event.clientY = 0;
+        control.element.dispatchEvent(event);
+        event.type = 'pointerup';
+        event.target = 'document';
+        control.element.dispatchEvent(event);
+        expect(control.dragListenerKeys_.length).toBe(0);
+        expect(control.dragging_).toBe(false);
+        expect(control.currentResolution_).toBe(16);
+      }
+    );
+    test('[vertical] handles a drag sequence', () => {
       document.createElement = createEventElement;
       const control = new ZoomSlider();
       control.element.style.width = '10px';
@@ -202,59 +205,62 @@ describe('ol.control.ZoomSlider', function() {
       event.clientX = 0;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.0625);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
+      expect(control.currentResolution_).toBe(0.0625);
+      expect(control.dragging_).toBe(true);
+      expect(control.dragListenerKeys_.length).toBe(2);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 2 * control.heightLimit_ / 8;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.25);
+      expect(control.currentResolution_).toBe(0.25);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 4 * control.heightLimit_ / 8;
       control.element.dispatchEvent(event);
       event.type = 'pointerup';
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(1);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
+      expect(control.currentResolution_).toBe(1);
+      expect(control.dragListenerKeys_.length).toBe(0);
+      expect(control.dragging_).toBe(false);
     });
-    it('[vertical] handles a drag sequence ending outside its bounds', function() {
-      document.createElement = createEventElement;
-      const control = new ZoomSlider();
-      control.element.style.width = '10px';
-      control.element.style.height = '100px';
-      control.element.firstChild.style.width = '10px';
-      control.element.firstChild.style.height = '20px';
-      map.addControl(control);
-      document.createElement = createElement;
-      map.getView().setZoom(8);
-      map.renderSync();
-      const event = new Event();
-      event.type = 'pointerdown';
-      event.target = control.element.firstElementChild;
-      event.clientX = 0;
-      event.clientY = 0;
-      control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.0625);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
-      event.type = 'pointermove';
-      event.clientX = 0;
-      event.clientY = 2 * control.heightLimit_ / 8;
-      control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.25);
-      event.type = 'pointermove';
-      event.clientX = 0;
-      event.clientY = 12 * control.heightLimit_ / 8;
-      control.element.dispatchEvent(event);
-      event.type = 'pointerup';
-      control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(16);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
-    });
+    test(
+      '[vertical] handles a drag sequence ending outside its bounds',
+      () => {
+        document.createElement = createEventElement;
+        const control = new ZoomSlider();
+        control.element.style.width = '10px';
+        control.element.style.height = '100px';
+        control.element.firstChild.style.width = '10px';
+        control.element.firstChild.style.height = '20px';
+        map.addControl(control);
+        document.createElement = createElement;
+        map.getView().setZoom(8);
+        map.renderSync();
+        const event = new Event();
+        event.type = 'pointerdown';
+        event.target = control.element.firstElementChild;
+        event.clientX = 0;
+        event.clientY = 0;
+        control.element.dispatchEvent(event);
+        expect(control.currentResolution_).toBe(0.0625);
+        expect(control.dragging_).toBe(true);
+        expect(control.dragListenerKeys_.length).toBe(2);
+        event.type = 'pointermove';
+        event.clientX = 0;
+        event.clientY = 2 * control.heightLimit_ / 8;
+        control.element.dispatchEvent(event);
+        expect(control.currentResolution_).toBe(0.25);
+        event.type = 'pointermove';
+        event.clientX = 0;
+        event.clientY = 12 * control.heightLimit_ / 8;
+        control.element.dispatchEvent(event);
+        event.type = 'pointerup';
+        control.element.dispatchEvent(event);
+        expect(control.currentResolution_).toBe(16);
+        expect(control.dragListenerKeys_.length).toBe(0);
+        expect(control.dragging_).toBe(false);
+      }
+    );
   });
 
 });

@@ -3,10 +3,10 @@ import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 
-describe('ol.interaction.KeyboardZoom', function() {
+describe('ol.interaction.KeyboardZoom', () => {
   let map;
 
-  beforeEach(function() {
+  beforeEach(() => {
     map = new Map({
       target: createMapDiv(100, 100),
       view: new View({
@@ -17,12 +17,12 @@ describe('ol.interaction.KeyboardZoom', function() {
     });
     map.renderSync();
   });
-  afterEach(function() {
+  afterEach(() => {
     disposeMap(map);
   });
 
-  describe('handleEvent()', function() {
-    it('zooms on + and - keys', function() {
+  describe('handleEvent()', () => {
+    test('zooms on + and - keys', () => {
       const view = map.getView();
       const spy = sinon.spy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
@@ -33,12 +33,12 @@ describe('ol.interaction.KeyboardZoom', function() {
 
       event.originalEvent.charCode = '+'.charCodeAt(0);
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[0].resolution).to.eql(1);
+      expect(spy.getCall(0).args[0].resolution).toEqual(1);
       view.setResolution(2);
 
       event.originalEvent.charCode = '-'.charCodeAt(0);
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(1).args[0].resolution).to.eql(4);
+      expect(spy.getCall(1).args[0].resolution).toEqual(4);
       view.setResolution(2);
 
       view.animateInternal.restore();

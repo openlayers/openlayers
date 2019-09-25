@@ -1,22 +1,22 @@
 import {createSnapToZero} from '../../../src/ol/rotationconstraint.js';
 
 
-describe('ol.rotationconstraint', function() {
+describe('ol.rotationconstraint', () => {
 
-  describe('SnapToZero', function() {
+  describe('SnapToZero', () => {
 
-    it('returns expected rotation value', function() {
+    test('returns expected rotation value', () => {
       const rotationConstraint = createSnapToZero(0.3);
 
-      expect(rotationConstraint(0.1)).to.eql(0);
-      expect(rotationConstraint(0.2)).to.eql(0);
-      expect(rotationConstraint(0.3)).to.eql(0);
-      expect(rotationConstraint(0.4)).to.eql(0.4);
+      expect(rotationConstraint(0.1)).toEqual(0);
+      expect(rotationConstraint(0.2)).toEqual(0);
+      expect(rotationConstraint(0.3)).toEqual(0);
+      expect(rotationConstraint(0.4)).toEqual(0.4);
 
-      expect(rotationConstraint(-0.1)).to.eql(0);
-      expect(rotationConstraint(-0.2)).to.eql(0);
-      expect(rotationConstraint(-0.3)).to.eql(0);
-      expect(rotationConstraint(-0.4)).to.eql(-0.4);
+      expect(rotationConstraint(-0.1)).toEqual(0);
+      expect(rotationConstraint(-0.2)).toEqual(0);
+      expect(rotationConstraint(-0.3)).toEqual(0);
+      expect(rotationConstraint(-0.4)).toEqual(-0.4);
     });
 
   });

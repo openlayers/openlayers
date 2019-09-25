@@ -6,25 +6,25 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import Event from '../../../../src/ol/events/Event.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
-describe('ol.interaction.DragRotateAndZoom', function() {
+describe('ol.interaction.DragRotateAndZoom', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new DragRotateAndZoom();
-      expect(instance).to.be.an(DragRotateAndZoom);
+      expect(instance).toBeInstanceOf(DragRotateAndZoom);
     });
 
   });
 
-  describe('#handleDragEvent()', function() {
+  describe('#handleDragEvent()', () => {
 
     let target, map, interaction;
 
     const width = 360;
     const height = 180;
 
-    beforeEach(function(done) {
+    beforeEach(done => {
       target = document.createElement('div');
       const style = target.style;
       style.position = 'absolute';
@@ -51,12 +51,12 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('does not rotate when rotation is disabled on the view', function() {
+    test('does not rotate when rotation is disabled on the view', () => {
       const pointerEvent = new Event();
       pointerEvent.type = 'pointermove';
       pointerEvent.clientX = 20;
@@ -73,8 +73,8 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       });
 
       interaction.handleDragEvent(event);
-      expect(callCount).to.be(1);
-      expect(interaction.lastAngle_).to.be(-0.8308214428190254);
+      expect(callCount).toBe(1);
+      expect(interaction.lastAngle_).toBe(-0.8308214428190254);
 
       callCount = 0;
       view = new View({
@@ -95,7 +95,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       event = new MapBrowserPointerEvent('pointermove', map, pointerEvent, true);
 
       interaction.handleDragEvent(event);
-      expect(callCount).to.be(0);
+      expect(callCount).toBe(0);
     });
   });
 

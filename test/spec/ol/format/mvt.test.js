@@ -8,7 +8,7 @@ import RenderFeature from '../../../../src/ol/render/Feature.js';
 where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
   let data;
-  beforeEach(function(done) {
+  beforeEach(done => {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'spec/ol/data/14-8938-5680.vector.pbf');
     xhr.responseType = 'arraybuffer';
@@ -19,26 +19,26 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
     xhr.send();
   });
 
-  describe('#readFeatures', function() {
+  describe('#readFeatures', () => {
 
     const options = {
       featureProjection: 'EPSG:3857',
       extent: [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608]
     };
 
-    it('uses ol.render.Feature as feature class by default', function() {
+    test('uses ol.render.Feature as feature class by default', () => {
       const format = new MVT({layers: ['water']});
       const features = format.readFeatures(data, options);
-      expect(features[0]).to.be.a(RenderFeature);
+      expect(features[0]).toBeInstanceOf(RenderFeature);
     });
 
-    it('parses only specified layers', function() {
+    test('parses only specified layers', () => {
       const format = new MVT({layers: ['water']});
       const features = format.readFeatures(data, options);
-      expect(features.length).to.be(10);
+      expect(features.length).toBe(10);
     });
 
-    it('parses geometries correctly', function() {
+    test('parses geometries correctly', () => {
       const format = new MVT({
         featureClass: Feature,
         layers: ['poi_label']
@@ -46,39 +46,39 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       let geometry;
 
       geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('Point');
-      expect(geometry.getCoordinates()).to.eql([-1210, 2681]);
+      expect(geometry.getType()).toBe('Point');
+      expect(geometry.getCoordinates()).toEqual([-1210, 2681]);
 
       format.setLayers(['water']);
       geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('Polygon');
-      expect(geometry.getCoordinates()[0].length).to.be(10);
-      expect(geometry.getCoordinates()[0][0]).to.eql([1007, 2302]);
+      expect(geometry.getType()).toBe('Polygon');
+      expect(geometry.getCoordinates()[0].length).toBe(10);
+      expect(geometry.getCoordinates()[0][0]).toEqual([1007, 2302]);
 
       format.setLayers(['barrier_line']);
       geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('MultiLineString');
-      expect(geometry.getCoordinates()[1].length).to.be(6);
-      expect(geometry.getCoordinates()[1][0]).to.eql([4160, 3489]);
+      expect(geometry.getType()).toBe('MultiLineString');
+      expect(geometry.getCoordinates()[1].length).toBe(6);
+      expect(geometry.getCoordinates()[1][0]).toEqual([4160, 3489]);
     });
 
-    it('parses id property', function() {
+    test('parses id property', () => {
       // ol.Feature
       let format = new MVT({
         featureClass: Feature,
         layers: ['building']
       });
       let features = format.readFeatures(data, options);
-      expect(features[0].getId()).to.be(2);
+      expect(features[0].getId()).toBe(2);
       // ol.render.Feature
       format = new MVT({
         layers: ['building']
       });
       features = format.readFeatures(data, options);
-      expect(features[0].getId()).to.be(2);
+      expect(features[0].getId()).toBe(2);
     });
 
-    it('accepts custom idProperty', function() {
+    test('accepts custom idProperty', () => {
       const format = new MVT({
         featureClass: Feature,
         layers: ['poi_label'],
@@ -87,11 +87,11 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       const features = format.readFeatures(data, options);
 
       const first = features[0];
-      expect(first.getId()).to.be(1000000057590683);
-      expect(first.get('osm_id')).to.be(undefined);
+      expect(first.getId()).toBe(1000000057590683);
+      expect(first.get('osm_id')).toBe(undefined);
     });
 
-    it('accepts custom idProperty (render features)', function() {
+    test('accepts custom idProperty (render features)', () => {
       const format = new MVT({
         layers: ['poi_label'],
         idProperty: 'osm_id'
@@ -100,11 +100,11 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       const features = format.readFeatures(data, options);
 
       const first = features[0];
-      expect(first.getId()).to.be(1000000057590683);
-      expect(first.get('osm_id')).to.be(undefined);
+      expect(first.getId()).toBe(1000000057590683);
+      expect(first.get('osm_id')).toBe(undefined);
     });
 
-    it('works if you provide a bogus idProperty', function() {
+    test('works if you provide a bogus idProperty', () => {
       const format = new MVT({
         layers: ['poi_label'],
         idProperty: 'bogus'
@@ -113,22 +113,22 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       const features = format.readFeatures(data, options);
 
       const first = features[0];
-      expect(first.getId()).to.be(undefined);
+      expect(first.getId()).toBe(undefined);
     });
 
   });
 
 });
 
-describe('ol.format.MVT', function() {
+describe('ol.format.MVT', () => {
 
   const options = {
     featureProjection: 'EPSG:3857',
     extent: [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608]
   };
 
-  describe('#createFeature_', function() {
-    it('accepts a geometryName', function() {
+  describe('#createFeature_', () => {
+    test('accepts a geometryName', () => {
       const format = new MVT({
         featureClass: Feature,
         geometryName: 'myGeom'
@@ -149,12 +149,12 @@ describe('ol.format.MVT', function() {
       };
       const feature = format.createFeature_({}, rawFeature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(feature.get('myGeom')).to.equal(geometry);
-      expect(feature.get('geometry')).to.be('foo');
+      expect(geometry).toBeInstanceOf(Point);
+      expect(feature.get('myGeom')).toBe(geometry);
+      expect(feature.get('geometry')).toBe('foo');
     });
 
-    it('detects a Polygon', function() {
+    test('detects a Polygon', () => {
       const format = new MVT({
         featureClass: Feature
       });
@@ -172,10 +172,10 @@ describe('ol.format.MVT', function() {
       };
       const feature = format.createFeature_({}, rawFeature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      expect(geometry).toBeInstanceOf(Polygon);
     });
 
-    it('detects a MultiPolygon', function() {
+    test('detects a MultiPolygon', () => {
       const format = new MVT({
         featureClass: Feature
       });
@@ -193,10 +193,10 @@ describe('ol.format.MVT', function() {
       };
       const feature = format.createFeature_({}, rawFeature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(MultiPolygon);
+      expect(geometry).toBeInstanceOf(MultiPolygon);
     });
 
-    it('creates ol.render.Feature instances', function() {
+    test('creates ol.render.Feature instances', () => {
       const format = new MVT();
       const rawFeature = {
         type: 3,
@@ -219,11 +219,11 @@ describe('ol.format.MVT', function() {
       format.dataProjection.setExtent([0, 0, 4096, 4096]);
       format.dataProjection.setWorldExtent(options.extent);
       const feature = format.createFeature_({}, rawFeature, format.adaptOptions(options));
-      expect(feature).to.be.a(RenderFeature);
-      expect(feature.getType()).to.be('Polygon');
-      expect(feature.getFlatCoordinates()).to.equal(createdFlatCoordinates);
-      expect(feature.getEnds()).to.equal(createdEnds);
-      expect(feature.get('foo')).to.be('bar');
+      expect(feature).toBeInstanceOf(RenderFeature);
+      expect(feature.getType()).toBe('Polygon');
+      expect(feature.getFlatCoordinates()).toBe(createdFlatCoordinates);
+      expect(feature.getEnds()).toBe(createdEnds);
+      expect(feature.get('foo')).toBe('bar');
     });
 
   });

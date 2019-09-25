@@ -32,13 +32,13 @@ function executeInstructions(builder, expectedDrawTextImageCalls, expectedBuilde
   sinon.spy(executor, 'drawTextImageWithPointPlacement_');
   const replayImageStub = sinon.stub(executor, 'replayImage_');
   executor.execute(context, transform);
-  expect(executor.drawTextImageWithPointPlacement_.callCount).to.be(expectedDrawTextImageCalls);
-  expect(replayImageStub.callCount).to.be(expectedBuilderImageCalls);
+  expect(executor.drawTextImageWithPointPlacement_.callCount).toBe(expectedDrawTextImageCalls);
+  expect(replayImageStub.callCount).toBe(expectedBuilderImageCalls);
 }
 
-describe('ol.render.canvas.TextBuilder', function() {
+describe('ol.render.canvas.TextBuilder', () => {
 
-  it('renders polygon labels only when they fit', function() {
+  test('renders polygon labels only when they fit', () => {
     let builder = createBuilder();
     const geometry = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
     const feature = new Feature(geometry);
@@ -47,7 +47,7 @@ describe('ol.render.canvas.TextBuilder', function() {
       text: 'This is a long text'
     }));
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    expect(builder.instructions.length).toBe(3);
     executeInstructions(builder, 1, 0);
 
 
@@ -56,11 +56,11 @@ describe('ol.render.canvas.TextBuilder', function() {
       text: 'short'
     }));
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    expect(builder.instructions.length).toBe(3);
     executeInstructions(builder, 1, 1);
   });
 
-  it('renders multipolygon labels only when they fit', function() {
+  test('renders multipolygon labels only when they fit', () => {
     const geometry = new MultiPolygon([
       [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
       [[[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]]
@@ -72,7 +72,7 @@ describe('ol.render.canvas.TextBuilder', function() {
       text: 'This is a long text'
     }));
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    expect(builder.instructions.length).toBe(3);
     executeInstructions(builder, 1, 0);
 
     builder = createBuilder();
@@ -80,7 +80,7 @@ describe('ol.render.canvas.TextBuilder', function() {
       text: 'short'
     }));
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    expect(builder.instructions.length).toBe(3);
     executeInstructions(builder, 1, 2);
   });
 

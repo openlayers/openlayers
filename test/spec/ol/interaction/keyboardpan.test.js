@@ -3,10 +3,10 @@ import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 
-describe('ol.interaction.KeyboardPan', function() {
+describe('ol.interaction.KeyboardPan', () => {
   let map;
 
-  beforeEach(function() {
+  beforeEach(() => {
     map = new Map({
       target: createMapDiv(100, 100),
       view: new View({
@@ -17,12 +17,12 @@ describe('ol.interaction.KeyboardPan', function() {
     });
     map.renderSync();
   });
-  afterEach(function() {
+  afterEach(() => {
     disposeMap(map);
   });
 
-  describe('handleEvent()', function() {
-    it('pans on arrow keys', function() {
+  describe('handleEvent()', () => {
+    test('pans on arrow keys', () => {
       const view = map.getView();
       const spy = sinon.spy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
@@ -33,22 +33,22 @@ describe('ol.interaction.KeyboardPan', function() {
 
       event.originalEvent.keyCode = 40; // DOWN
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[0].center).to.eql([0, -128]);
+      expect(spy.getCall(0).args[0].center).toEqual([0, -128]);
       view.setCenter([0, 0]);
 
       event.originalEvent.keyCode = 38; // UP
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(1).args[0].center).to.eql([0, 128]);
+      expect(spy.getCall(1).args[0].center).toEqual([0, 128]);
       view.setCenter([0, 0]);
 
       event.originalEvent.keyCode = 37; // LEFT
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(2).args[0].center).to.eql([-128, 0]);
+      expect(spy.getCall(2).args[0].center).toEqual([-128, 0]);
       view.setCenter([0, 0]);
 
       event.originalEvent.keyCode = 39; // RIGHT
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(3).args[0].center).to.eql([128, 0]);
+      expect(spy.getCall(3).args[0].center).toEqual([128, 0]);
       view.setCenter([0, 0]);
 
       view.animateInternal.restore();

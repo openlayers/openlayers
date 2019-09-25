@@ -15,7 +15,7 @@ import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 
 
-describe('ol.render.canvas.Immediate', function() {
+describe('ol.render.canvas.Immediate', () => {
 
   function getMockContext() {
     return {
@@ -28,16 +28,16 @@ describe('ol.render.canvas.Immediate', function() {
     };
   }
 
-  describe('constructor', function() {
-    it('creates an instance', function() {
+  describe('constructor', () => {
+    test('creates an instance', () => {
       const instance = new CanvasImmediateRenderer();
-      expect(instance).to.be.a(CanvasImmediateRenderer);
-      expect(instance).to.be.a(VectorContext);
+      expect(instance).toBeInstanceOf(CanvasImmediateRenderer);
+      expect(instance).toBeInstanceOf(VectorContext);
     });
   });
 
-  describe('#setStyle()', function() {
-    it('calls the more specific methods with style parts', function() {
+  describe('#setStyle()', () => {
+    test('calls the more specific methods with style parts', () => {
       const context = new CanvasImmediateRenderer();
       sinon.spy(context, 'setFillStrokeStyle');
       sinon.spy(context, 'setImageStyle');
@@ -54,80 +54,80 @@ describe('ol.render.canvas.Immediate', function() {
       });
 
       context.setStyle(style);
-      expect(context.setFillStrokeStyle.calledOnce).to.be(true);
-      expect(context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke)).to.be(true);
-      expect(context.setImageStyle.calledOnce).to.be(true);
-      expect(context.setImageStyle.firstCall.calledWithExactly(image)).to.be(true);
-      expect(context.setTextStyle.calledOnce).to.be(true);
-      expect(context.setTextStyle.firstCall.calledWithExactly(text)).to.be(true);
+      expect(context.setFillStrokeStyle.calledOnce).toBe(true);
+      expect(context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke)).toBe(true);
+      expect(context.setImageStyle.calledOnce).toBe(true);
+      expect(context.setImageStyle.firstCall.calledWithExactly(image)).toBe(true);
+      expect(context.setTextStyle.calledOnce).toBe(true);
+      expect(context.setTextStyle.firstCall.calledWithExactly(text)).toBe(true);
     });
   });
 
-  describe('#drawGeometry()', function() {
+  describe('#drawGeometry()', () => {
 
     const extent = [-10, -10, 10, 10];
 
-    it('calls drawPoint() with a Point', function() {
+    test('calls drawPoint() with a Point', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPoint');
 
       const geometry = new Point([1, 2]);
       context.drawGeometry(geometry);
-      expect(context.drawPoint.calledOnce).to.be(true);
-      expect(context.drawPoint.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawPoint.calledOnce).toBe(true);
+      expect(context.drawPoint.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
-    it('calls drawLineString() with a LineString', function() {
+    test('calls drawLineString() with a LineString', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawLineString');
 
       const geometry = new LineString([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
-      expect(context.drawLineString.calledOnce).to.be(true);
-      expect(context.drawLineString.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawLineString.calledOnce).toBe(true);
+      expect(context.drawLineString.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
-    it('calls drawPolygon() with a Polygon', function() {
+    test('calls drawPolygon() with a Polygon', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPolygon');
 
       const geometry = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
       context.drawGeometry(geometry);
-      expect(context.drawPolygon.calledOnce).to.be(true);
-      expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawPolygon.calledOnce).toBe(true);
+      expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
-    it('calls drawMultiPoint() with a MultiPoint', function() {
+    test('calls drawMultiPoint() with a MultiPoint', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPoint');
 
       const geometry = new MultiPoint([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiPoint.calledOnce).to.be(true);
-      expect(context.drawMultiPoint.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawMultiPoint.calledOnce).toBe(true);
+      expect(context.drawMultiPoint.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
-    it('calls drawMultiLineString() with a MultiLineString', function() {
+    test('calls drawMultiLineString() with a MultiLineString', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiLineString');
 
       const geometry = new MultiLineString([[[1, 2], [3, 4]]]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiLineString.calledOnce).to.be(true);
-      expect(context.drawMultiLineString.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawMultiLineString.calledOnce).toBe(true);
+      expect(context.drawMultiLineString.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
-    it('calls drawMultiPolygon() with a MultiPolygon', function() {
+    test('calls drawMultiPolygon() with a MultiPolygon', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPolygon');
 
       const geometry = new MultiPolygon([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiPolygon.calledOnce).to.be(true);
-      expect(context.drawMultiPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawMultiPolygon.calledOnce).toBe(true);
+      expect(context.drawMultiPolygon.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
-    it('calls drawGeometryCollection() with a GeometryCollection', function() {
+    test('calls drawGeometryCollection() with a GeometryCollection', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawGeometryCollection');
       sinon.spy(context, 'drawPoint');
@@ -141,31 +141,31 @@ describe('ol.render.canvas.Immediate', function() {
       const geometry = new GeometryCollection([point, linestring, polygon]);
       context.drawGeometry(geometry);
 
-      expect(context.drawGeometryCollection.calledOnce).to.be(true);
-      expect(context.drawPoint.calledOnce).to.be(true);
-      expect(context.drawPoint.firstCall.calledWithExactly(point)).to.be(true);
-      expect(context.drawLineString.calledOnce).to.be(true);
-      expect(context.drawLineString.firstCall.calledWithExactly(linestring)).to.be(true);
-      expect(context.drawPolygon.calledOnce).to.be(true);
-      expect(context.drawPolygon.firstCall.calledWithExactly(polygon)).to.be(true);
+      expect(context.drawGeometryCollection.calledOnce).toBe(true);
+      expect(context.drawPoint.calledOnce).toBe(true);
+      expect(context.drawPoint.firstCall.calledWithExactly(point)).toBe(true);
+      expect(context.drawLineString.calledOnce).toBe(true);
+      expect(context.drawLineString.firstCall.calledWithExactly(linestring)).toBe(true);
+      expect(context.drawPolygon.calledOnce).toBe(true);
+      expect(context.drawPolygon.firstCall.calledWithExactly(polygon)).toBe(true);
     });
 
-    it('calls drawCircle() with a Circle', function() {
+    test('calls drawCircle() with a Circle', () => {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawCircle');
 
       const geometry = new Circle([0, 0]);
       context.drawGeometry(geometry);
 
-      expect(context.drawCircle.calledOnce).to.be(true);
-      expect(context.drawCircle.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawCircle.calledOnce).toBe(true);
+      expect(context.drawCircle.firstCall.calledWithExactly(geometry)).toBe(true);
     });
 
   });
 
-  describe('#drawMultiPolygon()', function() {
+  describe('#drawMultiPolygon()', () => {
 
-    it('creates the correct canvas instructions for 3D geometries', function() {
+    test('creates the correct canvas instructions for 3D geometries', () => {
 
       const instructions = [];
 
@@ -281,10 +281,10 @@ describe('ol.render.canvas.Immediate', function() {
       for (let i = 0, ii = instructions.length; i < ii; ++i) {
         const actualInstruction = serialize(i, instructions[i]);
         const expectedInstruction = serialize(i, expected[i]);
-        expect(actualInstruction).to.equal(expectedInstruction);
+        expect(actualInstruction).toBe(expectedInstruction);
       }
 
-      expect(instructions.length).to.equal(expected.length);
+      expect(instructions.length).toBe(expected.length);
 
     });
   });

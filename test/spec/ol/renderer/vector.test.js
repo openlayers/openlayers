@@ -14,13 +14,13 @@ import Style from '../../../../src/ol/style/Style.js';
 import Feature from '../../../../src/ol/Feature.js';
 
 
-describe('ol.renderer.vector', function() {
-  describe('#renderFeature', function() {
+describe('ol.renderer.vector', () => {
+  describe('#renderFeature', () => {
     let builderGroup;
     let feature, iconStyle, style, squaredTolerance, listener, listenerThis;
     let iconStyleLoadSpy;
 
-    beforeEach(function() {
+    beforeEach(() => {
       builderGroup = new CanvasBuilderGroup(1);
       feature = new Feature();
       iconStyle = new Icon({
@@ -39,37 +39,37 @@ describe('ol.renderer.vector', function() {
       });
     });
 
-    afterEach(function() {
+    afterEach(() => {
       iconStyleLoadSpy.restore();
     });
 
-    describe('call multiple times', function() {
+    describe('call multiple times', () => {
 
-      it('does not set multiple listeners', function() {
+      test('does not set multiple listeners', () => {
         let listeners;
 
         // call #1
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
 
-        expect(iconStyleLoadSpy.calledOnce).to.be.ok();
+        expect(iconStyleLoadSpy.calledOnce).toBeTruthy();
         listeners = iconStyle.iconImage_.listeners_['change'];
-        expect(listeners.length).to.eql(1);
+        expect(listeners.length).toEqual(1);
 
         // call #2
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
 
-        expect(iconStyleLoadSpy.calledOnce).to.be.ok();
+        expect(iconStyleLoadSpy.calledOnce).toBeTruthy();
         listeners = iconStyle.iconImage_.listeners_['change'];
-        expect(listeners.length).to.eql(1);
+        expect(listeners.length).toEqual(1);
       });
 
     });
 
-    describe('call renderFeature with a loading icon', function() {
+    describe('call renderFeature with a loading icon', () => {
 
-      it('does not render the point', function() {
+      test('does not render the point', () => {
         feature.setGeometry(new Point([0, 0]));
         const imageReplay = builderGroup.getBuilder(
           style.getZIndex(), 'Image');
@@ -77,12 +77,12 @@ describe('ol.renderer.vector', function() {
         const drawPointSpy = sinon.stub(imageReplay, 'drawPoint').callsFake(VOID);
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
-        expect(setImageStyleSpy.called).to.be(false);
+        expect(setImageStyleSpy.called).toBe(false);
         setImageStyleSpy.restore();
         drawPointSpy.restore();
       });
 
-      it('does not render the multipoint', function() {
+      test('does not render the multipoint', () => {
         feature.setGeometry(new MultiPoint([[0, 0], [1, 1]]));
         const imageReplay = builderGroup.getBuilder(
           style.getZIndex(), 'Image');
@@ -90,12 +90,12 @@ describe('ol.renderer.vector', function() {
         const drawMultiPointSpy = sinon.stub(imageReplay, 'drawMultiPoint').callsFake(VOID);
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
-        expect(setImageStyleSpy.called).to.be(false);
+        expect(setImageStyleSpy.called).toBe(false);
         setImageStyleSpy.restore();
         drawMultiPointSpy.restore();
       });
 
-      it('does render the linestring', function() {
+      test('does render the linestring', () => {
         feature.setGeometry(new LineString([[0, 0], [1, 1]]));
         const lineStringReplay = builderGroup.getBuilder(
           style.getZIndex(), 'LineString');
@@ -104,13 +104,13 @@ describe('ol.renderer.vector', function() {
         const drawLineStringSpy = sinon.stub(lineStringReplay, 'drawLineString').callsFake(VOID);
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawLineStringSpy.called).to.be(true);
+        expect(setFillStrokeStyleSpy.called).toBe(true);
+        expect(drawLineStringSpy.called).toBe(true);
         setFillStrokeStyleSpy.restore();
         drawLineStringSpy.restore();
       });
 
-      it('does render the multilinestring', function() {
+      test('does render the multilinestring', () => {
         feature.setGeometry(new MultiLineString([[[0, 0], [1, 1]]]));
         const lineStringReplay = builderGroup.getBuilder(
           style.getZIndex(), 'LineString');
@@ -119,13 +119,13 @@ describe('ol.renderer.vector', function() {
         const drawMultiLineStringSpy = sinon.stub(lineStringReplay, 'drawMultiLineString').callsFake(VOID);
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawMultiLineStringSpy.called).to.be(true);
+        expect(setFillStrokeStyleSpy.called).toBe(true);
+        expect(drawMultiLineStringSpy.called).toBe(true);
         setFillStrokeStyleSpy.restore();
         drawMultiLineStringSpy.restore();
       });
 
-      it('does render the polygon', function() {
+      test('does render the polygon', () => {
         feature.setGeometry(new Polygon(
           [[[0, 0], [1, 1], [1, 0], [0, 0]]]));
         const polygonReplay = builderGroup.getBuilder(
@@ -135,13 +135,13 @@ describe('ol.renderer.vector', function() {
         const drawPolygonSpy = sinon.stub(polygonReplay, 'drawPolygon').callsFake(VOID);
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawPolygonSpy.called).to.be(true);
+        expect(setFillStrokeStyleSpy.called).toBe(true);
+        expect(drawPolygonSpy.called).toBe(true);
         setFillStrokeStyleSpy.restore();
         drawPolygonSpy.restore();
       });
 
-      it('does render the multipolygon', function() {
+      test('does render the multipolygon', () => {
         feature.setGeometry(new MultiPolygon(
           [[[[0, 0], [1, 1], [1, 0], [0, 0]]]]));
         const polygonReplay = builderGroup.getBuilder(
@@ -151,8 +151,8 @@ describe('ol.renderer.vector', function() {
         const drawMultiPolygonSpy = sinon.stub(polygonReplay, 'drawMultiPolygon').callsFake(VOID);
         renderFeature(builderGroup, feature,
           style, squaredTolerance, listener, listenerThis);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawMultiPolygonSpy.called).to.be(true);
+        expect(setFillStrokeStyleSpy.called).toBe(true);
+        expect(drawMultiPolygonSpy.called).toBe(true);
         setFillStrokeStyleSpy.restore();
         drawMultiPolygonSpy.restore();
       });

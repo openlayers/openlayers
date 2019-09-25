@@ -3,10 +3,10 @@ import View from '../../../../src/ol/View.js';
 import Control from '../../../../src/ol/control/Control.js';
 import OverviewMap from '../../../../src/ol/control/OverviewMap.js';
 
-describe('ol.control.OverviewMap', function() {
+describe('ol.control.OverviewMap', () => {
   let map, target;
 
-  beforeEach(function() {
+  beforeEach(() => {
     target = document.createElement('div');
     document.body.appendChild(target);
     map = new Map({
@@ -14,24 +14,24 @@ describe('ol.control.OverviewMap', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     map.dispose();
     document.body.removeChild(target);
     map = null;
     target = null;
   });
 
-  describe('constructor', function() {
-    it('creates an overview map with the default options', function() {
+  describe('constructor', () => {
+    test('creates an overview map with the default options', () => {
       const control = new OverviewMap();
-      expect(control).to.be.a(OverviewMap);
-      expect(control).to.be.a(Control);
+      expect(control).toBeInstanceOf(OverviewMap);
+      expect(control).toBeInstanceOf(Control);
     });
   });
 
-  describe('setMap()', function() {
+  describe('setMap()', () => {
 
-    it('keeps ovmap view rotation in sync with map view rotation', function() {
+    test('keeps ovmap view rotation in sync with map view rotation', () => {
       const view = new View({
         center: [0, 0],
         zoom: 0,
@@ -44,19 +44,19 @@ describe('ol.control.OverviewMap', function() {
       });
       map.addControl(control);
       const ovView = control.ovmap_.getView();
-      expect(ovView.getRotation()).to.be(0);
+      expect(ovView.getRotation()).toBe(0);
 
       view.setRotation(Math.PI / 4);
-      expect(ovView.getRotation()).to.be(Math.PI / 4);
+      expect(ovView.getRotation()).toBe(Math.PI / 4);
     });
 
-    it('maintains rotation in sync if view added later', function() {
+    test('maintains rotation in sync if view added later', () => {
       const control = new OverviewMap({
         rotateWithView: true
       });
       map.addControl(control);
       const ovView = control.ovmap_.getView();
-      expect(ovView.getRotation()).to.be(0);
+      expect(ovView.getRotation()).toBe(0);
 
       const view = new View({
         center: [0, 0],
@@ -65,10 +65,10 @@ describe('ol.control.OverviewMap', function() {
       });
       map.setView(view);
       view.setRotation(Math.PI / 4);
-      expect(ovView.getRotation()).to.be(Math.PI / 4);
+      expect(ovView.getRotation()).toBe(Math.PI / 4);
     });
 
-    it('stops listening to old maps', function() {
+    test('stops listening to old maps', () => {
       const control = new OverviewMap({
         rotateWithView: true
       });
@@ -83,24 +83,24 @@ describe('ol.control.OverviewMap', function() {
       map.addControl(control);
 
       view.setRotation(Math.PI / 8);
-      expect(ovView.getRotation()).to.be(Math.PI / 8);
+      expect(ovView.getRotation()).toBe(Math.PI / 8);
 
       map.removeControl(control);
 
       view.setRotation(Math.PI / 4);
-      expect(ovView.getRotation()).to.be(Math.PI / 8);
+      expect(ovView.getRotation()).toBe(Math.PI / 8);
     });
 
-    it('set target to null', function() {
+    test('set target to null', () => {
       const control = new OverviewMap();
 
       map.addControl(control);
 
-      expect(control.ovmap_.getTarget()).not.to.be(null);
+      expect(control.ovmap_.getTarget()).not.toBe(null);
 
       map.removeControl(control);
 
-      expect(control.ovmap_.getTarget()).to.be(null);
+      expect(control.ovmap_.getTarget()).toBe(null);
     });
 
   });

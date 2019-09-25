@@ -8,36 +8,39 @@ import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 import EventType from '../../../src/ol/events/EventType.js';
 
 
-describe('ol.VectorRenderTile', function() {
+describe('ol.VectorRenderTile', () => {
 
-  it('triggers "change" when previously failed source tiles are loaded', function(done) {
-    let sourceTile;
-    const source = new VectorTileSource({
-      format: new GeoJSON(),
-      url: 'spec/ol/data/unavailable.json',
-      tileLoadFunction: function(tile, url) {
-        sourceTile = tile;
-        defaultLoadFunction(tile, url);
-      }
-    });
-    const tile = source.getTile(0, 0, 0, 1, source.getProjection());
+  test(
+    'triggers "change" when previously failed source tiles are loaded',
+    done => {
+      let sourceTile;
+      const source = new VectorTileSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/data/unavailable.json',
+        tileLoadFunction: function(tile, url) {
+          sourceTile = tile;
+          defaultLoadFunction(tile, url);
+        }
+      });
+      const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
-    tile.load();
-    let calls = 0;
-    listen(tile, 'change', function(e) {
-      ++calls;
-      if (calls === 1) {
-        expect(tile.getState()).to.be(TileState.ERROR);
-        setTimeout(function() {
-          sourceTile.setState(TileState.LOADED);
-        }, 0);
-      } else if (calls === 2) {
-        done();
-      }
-    });
-  });
+      tile.load();
+      let calls = 0;
+      listen(tile, 'change', function(e) {
+        ++calls;
+        if (calls === 1) {
+          expect(tile.getState()).toBe(TileState.ERROR);
+          setTimeout(function() {
+            sourceTile.setState(TileState.LOADED);
+          }, 0);
+        } else if (calls === 2) {
+          done();
+        }
+      });
+    }
+  );
 
-  it('sets ERROR state when source tiles fail to load', function(done) {
+  test('sets ERROR state when source tiles fail to load', done => {
     const source = new VectorTileSource({
       format: new GeoJSON(),
       url: 'spec/ol/data/unavailable.json'
@@ -47,12 +50,12 @@ describe('ol.VectorRenderTile', function() {
     tile.load();
 
     listen(tile, 'change', function(e) {
-      expect(tile.getState()).to.be(TileState.ERROR);
+      expect(tile.getState()).toBe(TileState.ERROR);
       done();
     });
   });
 
-  it('sets EMPTY state when tile has only empty source tiles', function() {
+  test('sets EMPTY state when tile has only empty source tiles', () => {
     const source = new VectorTileSource({
       format: new GeoJSON(),
       url: ''
@@ -60,10 +63,10 @@ describe('ol.VectorRenderTile', function() {
     const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
     tile.load();
-    expect(tile.getState()).to.be(TileState.EMPTY);
+    expect(tile.getState()).toBe(TileState.EMPTY);
   });
 
-  it('only loads tiles within the source tileGrid\'s extent', function(done) {
+  test('only loads tiles within the source tileGrid\'s extent', done => {
     const url = 'spec/ol/data/point.json';
     const source = new VectorTileSource({
       projection: 'EPSG:4326',
@@ -85,14 +88,14 @@ describe('ol.VectorRenderTile', function() {
       if (tile.getState() === TileState.LOADED) {
         unlistenByKey(key);
         const sourceTiles = source.getSourceTiles(1, source.getProjection(), tile);
-        expect(sourceTiles.length).to.be(1);
-        expect(sourceTiles[0].tileCoord).to.eql([0, 16, 9]);
+        expect(sourceTiles.length).toBe(1);
+        expect(sourceTiles[0].tileCoord).toEqual([0, 16, 9]);
         done();
       }
     });
   });
 
-  it('#dispose() while loading', function() {
+  test('#dispose() while loading', () => {
     const source = new VectorTileSource({
       format: new GeoJSON(),
       url: 'spec/ol/data/point.json',
@@ -104,13 +107,13 @@ describe('ol.VectorRenderTile', function() {
     const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
     tile.load();
-    expect(tile.getState()).to.be(TileState.LOADING);
+    expect(tile.getState()).toBe(TileState.LOADING);
     tile.dispose();
-    expect(source.sourceTilesByTileKey_[tile.getKey()]).to.be(undefined);
-    expect(tile.getState()).to.be(TileState.ABORT);
+    expect(source.sourceTilesByTileKey_[tile.getKey()]).toBe(undefined);
+    expect(tile.getState()).toBe(TileState.ABORT);
   });
 
-  it('#dispose() when source tiles are loaded', function(done) {
+  test('#dispose() when source tiles are loaded', done => {
     const source = new VectorTileSource({
       format: new GeoJSON(),
       url: 'spec/ol/data/point.json',
@@ -123,18 +126,18 @@ describe('ol.VectorRenderTile', function() {
 
     tile.load();
     listenOnce(tile, 'change', function() {
-      expect(tile.getState()).to.be(TileState.LOADED);
-      expect(tile.loadingSourceTiles).to.be(0);
+      expect(tile.getState()).toBe(TileState.LOADED);
+      expect(tile.loadingSourceTiles).toBe(0);
       const sourceTiles = source.getSourceTiles(1, source.getProjection(), tile);
-      expect(sourceTiles.length).to.be(4);
+      expect(sourceTiles.length).toBe(4);
       for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        expect(sourceTiles[i].consumers).to.be(1);
+        expect(sourceTiles[i].consumers).toBe(1);
       }
       tile.dispose();
-      expect(tile.getState()).to.be(TileState.ABORT);
+      expect(tile.getState()).toBe(TileState.ABORT);
       for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        expect(sourceTiles[i].consumers).to.be(0);
-        expect(sourceTiles[i].getState()).to.be(TileState.ABORT);
+        expect(sourceTiles[i].consumers).toBe(0);
+        expect(sourceTiles[i].getState()).toBe(TileState.ABORT);
       }
       done();
     });

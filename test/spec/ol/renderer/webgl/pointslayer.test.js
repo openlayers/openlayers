@@ -21,37 +21,37 @@ const baseFrameState = {
   pixelRatio: 1
 };
 
-describe('ol.renderer.webgl.PointsLayer', function() {
+describe('ol.renderer.webgl.PointsLayer', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
     let target;
 
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       document.body.removeChild(target);
     });
 
-    it('creates a new instance', function() {
+    test('creates a new instance', () => {
       const layer = new VectorLayer({
         source: new VectorSource()
       });
       const renderer = new WebGLPointsLayerRenderer(layer);
-      expect(renderer).to.be.a(WebGLPointsLayerRenderer);
+      expect(renderer).toBeInstanceOf(WebGLPointsLayerRenderer);
     });
 
   });
 
-  describe('#prepareFrame', function() {
+  describe('#prepareFrame', () => {
     let layer, renderer, frameState;
 
-    beforeEach(function() {
+    beforeEach(() => {
       layer = new VectorLayer({
         source: new VectorSource()
       });
@@ -62,13 +62,13 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       }, baseFrameState);
     });
 
-    it('calls WebGlHelper#prepareDraw', function() {
+    test('calls WebGlHelper#prepareDraw', () => {
       const spy = sinon.spy(renderer.helper, 'prepareDraw');
       renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(true);
+      expect(spy.called).toBe(true);
     });
 
-    it('fills up a buffer with 2 triangles per point', function(done) {
+    test('fills up a buffer with 2 triangles per point', done => {
       layer.getSource().addFeature(new Feature({
         geometry: new Point([10, 20])
       }));
@@ -83,18 +83,18 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
           return;
         }
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(2 * 4 * attributePerVertex);
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
+        expect(renderer.verticesBuffer_.getArray().length).toEqual(2 * 4 * attributePerVertex);
+        expect(renderer.indicesBuffer_.getArray().length).toEqual(2 * 6);
 
-        expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
-        expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
-        expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]).to.eql(30);
-        expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]).to.eql(40);
+        expect(renderer.verticesBuffer_.getArray()[0]).toEqual(10);
+        expect(renderer.verticesBuffer_.getArray()[1]).toEqual(20);
+        expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]).toEqual(30);
+        expect(renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]).toEqual(40);
         done();
       });
     });
 
-    it('clears the buffers when the features are gone', function(done) {
+    test('clears the buffers when the features are gone', done => {
       const source = layer.getSource();
       source.addFeature(new Feature({
         geometry: new Point([10, 20])
@@ -110,50 +110,53 @@ describe('ol.renderer.webgl.PointsLayer', function() {
           return;
         }
         const attributePerVertex = 12;
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(4 * attributePerVertex);
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+        expect(renderer.verticesBuffer_.getArray().length).toEqual(4 * attributePerVertex);
+        expect(renderer.indicesBuffer_.getArray().length).toEqual(6);
         done();
       });
     });
 
-    it('rebuilds the buffers only when not interacting or animating', function() {
+    test(
+      'rebuilds the buffers only when not interacting or animating',
+      () => {
+        const spy = sinon.spy(renderer, 'rebuildBuffers_');
+
+        frameState.viewHints[ViewHint.INTERACTING] = 1;
+        frameState.viewHints[ViewHint.ANIMATING] = 0;
+        renderer.prepareFrame(frameState);
+        expect(spy.called).toBe(false);
+
+        frameState.viewHints[ViewHint.INTERACTING] = 0;
+        frameState.viewHints[ViewHint.ANIMATING] = 1;
+        renderer.prepareFrame(frameState);
+        expect(spy.called).toBe(false);
+
+        frameState.viewHints[ViewHint.INTERACTING] = 0;
+        frameState.viewHints[ViewHint.ANIMATING] = 0;
+        renderer.prepareFrame(frameState);
+        expect(spy.called).toBe(true);
+      }
+    );
+
+    test('rebuilds the buffers only when the frame extent changed', () => {
       const spy = sinon.spy(renderer, 'rebuildBuffers_');
 
-      frameState.viewHints[ViewHint.INTERACTING] = 1;
-      frameState.viewHints[ViewHint.ANIMATING] = 0;
       renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(false);
-
-      frameState.viewHints[ViewHint.INTERACTING] = 0;
-      frameState.viewHints[ViewHint.ANIMATING] = 1;
-      renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(false);
-
-      frameState.viewHints[ViewHint.INTERACTING] = 0;
-      frameState.viewHints[ViewHint.ANIMATING] = 0;
-      renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(true);
-    });
-
-    it('rebuilds the buffers only when the frame extent changed', function() {
-      const spy = sinon.spy(renderer, 'rebuildBuffers_');
+      expect(spy.callCount).toBe(1);
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
-
-      renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      expect(spy.callCount).toBe(1);
 
       frameState.extent = [10, 20, 30, 40];
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(2);
+      expect(spy.callCount).toBe(2);
     });
   });
 
-  describe('#forEachFeatureAtCoordinate', function() {
+  describe('#forEachFeatureAtCoordinate', () => {
     let layer, renderer, feature, feature2;
 
-    beforeEach(function() {
+    beforeEach(() => {
       feature = new Feature({geometry: new Point([0, 0]), id: 1});
       feature2 = new Feature({geometry: new Point([14, 14]), id: 2});
       layer = new VectorLayer({
@@ -168,7 +171,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       });
     });
 
-    it('correctly hit detects a feature', function(done) {
+    test('correctly hit detects a feature', done => {
       const transform = composeTransform(createTransform(), 20, 20, 1, -1, 0, 0, 0);
       const frameState = Object.assign({
         extent: [-20, -20, 20, 20],
@@ -191,7 +194,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         function checkHit(x, y, expected) {
           found = null;
           renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
-          expect(found).to.be(expected);
+          expect(found).toBe(expected);
         }
 
         checkHit(0, 0, feature);
@@ -210,7 +213,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       });
     });
 
-    it('correctly hit detects with pixelratio != 1', function(done) {
+    test('correctly hit detects with pixelratio != 1', done => {
       const transform = composeTransform(createTransform(), 20, 20, 1, -1, 0, 0, 0);
       const frameState = Object.assign({
         pixelRatio: 3,
@@ -234,7 +237,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         function checkHit(x, y, expected) {
           found = null;
           renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
-          expect(found).to.be(expected);
+          expect(found).toBe(expected);
         }
 
         checkHit(0, 0, feature);

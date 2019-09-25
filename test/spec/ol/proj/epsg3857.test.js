@@ -1,16 +1,16 @@
 import {getPointResolution, transform, get as getProjection, clearAllProjections, addCommon} from '../../../../src/ol/proj.js';
 import {fromEPSG4326, HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
 
-describe('ol/proj/epsg3857', function() {
+describe('ol/proj/epsg3857', () => {
 
-  afterEach(function() {
+  afterEach(() => {
     clearAllProjections();
     addCommon();
   });
 
-  describe('fromEPSG4326()', function() {
+  describe('fromEPSG4326()', () => {
 
-    it('transforms from geographic to Web Mercator', function() {
+    test('transforms from geographic to Web Mercator', () => {
       const tolerance = 1e-5;
 
       const cases = [{
@@ -35,7 +35,7 @@ describe('ol/proj/epsg3857', function() {
       }
     });
 
-    it('does not produce unexpected results for string coordinates', function() {
+    test('does not produce unexpected results for string coordinates', () => {
       const transformed = fromEPSG4326(['180', '90']);
       expect(transformed[0]).to.roughlyEqual(HALF_SIZE, 1e-5);
       expect(transformed[1]).to.roughlyEqual(HALF_SIZE, 1e-5);
@@ -43,9 +43,9 @@ describe('ol/proj/epsg3857', function() {
 
   });
 
-  describe('getPointResolution', function() {
+  describe('getPointResolution', () => {
 
-    it('returns the correct point scale at the equator', function() {
+    test('returns the correct point scale at the equator', () => {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
       const epsg3857 = getProjection('EPSG:3857');
       const resolution = 19.11;
@@ -54,18 +54,17 @@ describe('ol/proj/epsg3857', function() {
         to.roughlyEqual(19.11, 1e-1);
     });
 
-    it('returns the correct point scale at the latitude of Toronto',
-      function() {
-        // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
-        const epsg3857 = getProjection('EPSG:3857');
-        const epsg4326 = getProjection('EPSG:4326');
-        const resolution = 19.11;
-        const point = transform([0, 43.65], epsg4326, epsg3857);
-        expect(getPointResolution(epsg3857, resolution, point)).
-          to.roughlyEqual(19.11 * Math.cos(Math.PI * 43.65 / 180), 1e-9);
-      });
+    test('returns the correct point scale at the latitude of Toronto', () => {
+      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      const epsg3857 = getProjection('EPSG:3857');
+      const epsg4326 = getProjection('EPSG:4326');
+      const resolution = 19.11;
+      const point = transform([0, 43.65], epsg4326, epsg3857);
+      expect(getPointResolution(epsg3857, resolution, point)).
+        to.roughlyEqual(19.11 * Math.cos(Math.PI * 43.65 / 180), 1e-9);
+    });
 
-    it('returns the correct point scale at various latitudes', function() {
+    test('returns the correct point scale at various latitudes', () => {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
       const epsg3857 = getProjection('EPSG:3857');
       const epsg4326 = getProjection('EPSG:4326');

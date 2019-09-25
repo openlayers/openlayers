@@ -1,17 +1,17 @@
 import Stroke from '../../../../src/ol/style/Stroke.js';
 
-describe('ol.style.Stroke', function() {
+describe('ol.style.Stroke', () => {
 
-  describe('#clone', function() {
+  describe('#clone', () => {
 
-    it('creates a new ol.style.Stroke', function() {
+    test('creates a new ol.style.Stroke', () => {
       const original = new Stroke();
       const clone = original.clone();
-      expect(clone).to.be.an(Stroke);
-      expect(clone).to.not.be(original);
+      expect(clone).toBeInstanceOf(Stroke);
+      expect(clone).not.toBe(original);
     });
 
-    it('copies all values', function() {
+    test('copies all values', () => {
       const original = new Stroke({
         color: '#319FD3',
         lineCap: 'square',
@@ -22,29 +22,32 @@ describe('ol.style.Stroke', function() {
         width: 5
       });
       const clone = original.clone();
-      expect(original.getColor()).to.eql(clone.getColor());
-      expect(original.getLineCap()).to.eql(clone.getLineCap());
-      expect(original.getLineJoin()).to.eql(clone.getLineJoin());
-      expect(original.getLineDash()).to.eql(clone.getLineDash());
-      expect(original.getLineDashOffset()).to.eql(clone.getLineDashOffset());
-      expect(original.getMiterLimit()).to.eql(clone.getMiterLimit());
-      expect(original.getWidth()).to.eql(clone.getWidth());
+      expect(original.getColor()).toEqual(clone.getColor());
+      expect(original.getLineCap()).toEqual(clone.getLineCap());
+      expect(original.getLineJoin()).toEqual(clone.getLineJoin());
+      expect(original.getLineDash()).toEqual(clone.getLineDash());
+      expect(original.getLineDashOffset()).toEqual(clone.getLineDashOffset());
+      expect(original.getMiterLimit()).toEqual(clone.getMiterLimit());
+      expect(original.getWidth()).toEqual(clone.getWidth());
     });
 
-    it('the clone does not reference the same objects as the original', function() {
-      const original = new Stroke({
-        color: [1, 2, 3, 0.4],
-        lineDash: [1, 2, 3]
-      });
-      const clone = original.clone();
-      expect(original.getColor()).to.not.be(clone.getColor());
-      expect(original.getLineDash()).to.not.be(clone.getLineDash());
+    test(
+      'the clone does not reference the same objects as the original',
+      () => {
+        const original = new Stroke({
+          color: [1, 2, 3, 0.4],
+          lineDash: [1, 2, 3]
+        });
+        const clone = original.clone();
+        expect(original.getColor()).not.toBe(clone.getColor());
+        expect(original.getLineDash()).not.toBe(clone.getLineDash());
 
-      clone.getColor()[0] = 0;
-      clone.getLineDash()[0] = 0;
-      expect(original.getColor()).to.not.eql(clone.getColor());
-      expect(original.getLineDash()).to.not.eql(clone.getLineDash());
-    });
+        clone.getColor()[0] = 0;
+        clone.getLineDash()[0] = 0;
+        expect(original.getColor()).not.toEqual(clone.getColor());
+        expect(original.getLineDash()).not.toEqual(clone.getLineDash());
+      }
+    );
   });
 
 });

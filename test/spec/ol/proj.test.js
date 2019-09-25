@@ -26,119 +26,119 @@ import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.
 import Projection from '../../../src/ol/proj/Projection.js';
 
 
-describe('ol.proj', function() {
+describe('ol.proj', () => {
 
-  afterEach(function() {
+  afterEach(() => {
     clearAllProjections();
     clearUserProjection();
     addCommon();
   });
 
-  describe('useGeographic()', function() {
-    it('sets the user projection to Geographic/WGS-84', function() {
+  describe('useGeographic()', () => {
+    test('sets the user projection to Geographic/WGS-84', () => {
       useGeographic();
       const projection = getUserProjection();
-      expect(projection).to.be(getProjection('EPSG:4326'));
+      expect(projection).toBe(getProjection('EPSG:4326'));
     });
   });
 
-  describe('getUserProjection()', function() {
-    it('returns null by default', function() {
-      expect(getUserProjection()).to.be(null);
+  describe('getUserProjection()', () => {
+    test('returns null by default', () => {
+      expect(getUserProjection()).toBe(null);
     });
 
-    it('returns the user projection if set', function() {
+    test('returns the user projection if set', () => {
       const projection = getProjection('EPSG:4326');
       setUserProjection(projection);
-      expect(getUserProjection()).to.be(projection);
+      expect(getUserProjection()).toBe(projection);
     });
   });
 
-  describe('setUserProjection()', function() {
-    it('accepts a string identifier', function() {
+  describe('setUserProjection()', () => {
+    test('accepts a string identifier', () => {
       const projection = getProjection('EPSG:4326');
       setUserProjection('EPSG:4326');
-      expect(getUserProjection()).to.be(projection);
+      expect(getUserProjection()).toBe(projection);
     });
   });
 
-  describe('clearUserProjection()', function() {
-    it('clears the user projection', function() {
+  describe('clearUserProjection()', () => {
+    test('clears the user projection', () => {
       useGeographic();
       clearUserProjection();
-      expect(getUserProjection()).to.be(null);
+      expect(getUserProjection()).toBe(null);
     });
   });
 
-  describe('toUserCoordinate()', function() {
-    it('transforms a point to the user projection', function() {
+  describe('toUserCoordinate()', () => {
+    test('transforms a point to the user projection', () => {
       useGeographic();
       const coordinate = fromLonLat([-110, 45]);
       const user = toUserCoordinate(coordinate, 'EPSG:3857');
       const transformed = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-      expect(user).to.eql(transformed);
-      expect(user).not.to.eql(coordinate);
+      expect(user).toEqual(transformed);
+      expect(user).not.toEqual(coordinate);
     });
 
-    it('returns the original if no user projection is set', function() {
+    test('returns the original if no user projection is set', () => {
       const coordinate = fromLonLat([-110, 45]);
       const user = toUserCoordinate(coordinate, 'EPSG:3857');
-      expect(user).to.be(coordinate);
+      expect(user).toBe(coordinate);
     });
   });
 
-  describe('fromUserCoordinate()', function() {
-    it('transforms a point from the user projection', function() {
+  describe('fromUserCoordinate()', () => {
+    test('transforms a point from the user projection', () => {
       useGeographic();
       const user = [-110, 45];
       const coordinate = fromUserCoordinate(user, 'EPSG:3857');
       const transformed = transform(user, 'EPSG:4326', 'EPSG:3857');
-      expect(coordinate).to.eql(transformed);
-      expect(user).not.to.eql(coordinate);
+      expect(coordinate).toEqual(transformed);
+      expect(user).not.toEqual(coordinate);
     });
 
-    it('returns the original if no user projection is set', function() {
+    test('returns the original if no user projection is set', () => {
       const user = fromLonLat([-110, 45]);
       const coordinate = fromUserCoordinate(user, 'EPSG:3857');
-      expect(coordinate).to.be(user);
+      expect(coordinate).toBe(user);
     });
   });
 
-  describe('toUserExtent()', function() {
-    it('transforms an extent to the user projection', function() {
+  describe('toUserExtent()', () => {
+    test('transforms an extent to the user projection', () => {
       useGeographic();
       const extent = transformExtent([-110, 45, -100, 50], 'EPSG:4326', 'EPSG:3857');
       const user = toUserExtent(extent, 'EPSG:3857');
       const transformed = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
-      expect(user).to.eql(transformed);
-      expect(user).not.to.eql(extent);
+      expect(user).toEqual(transformed);
+      expect(user).not.toEqual(extent);
     });
 
-    it('returns the original if no user projection is set', function() {
+    test('returns the original if no user projection is set', () => {
       const extent = transformExtent([-110, 45, -100, 50], 'EPSG:4326', 'EPSG:3857');
       const user = toUserExtent(extent, 'EPSG:3857');
-      expect(user).to.be(extent);
+      expect(user).toBe(extent);
     });
   });
 
-  describe('fromUserExtent()', function() {
-    it('transforms an extent from the user projection', function() {
+  describe('fromUserExtent()', () => {
+    test('transforms an extent from the user projection', () => {
       useGeographic();
       const user = [-110, 45, -100, 50];
       const extent = fromUserExtent(user, 'EPSG:3857');
       const transformed = transformExtent(user, 'EPSG:4326', 'EPSG:3857');
-      expect(extent).to.eql(transformed);
-      expect(extent).not.to.eql(user);
+      expect(extent).toEqual(transformed);
+      expect(extent).not.toEqual(user);
     });
 
-    it('returns the original if no user projection is set', function() {
+    test('returns the original if no user projection is set', () => {
       const user = transformExtent([-110, 45, -100, 50], 'EPSG:4326', 'EPSG:3857');
       const extent = fromUserExtent(user, 'EPSG:3857');
-      expect(extent).to.be(user);
+      expect(extent).toBe(user);
     });
   });
 
-  describe('toLonLat()', function() {
+  describe('toLonLat()', () => {
     const cases = [{
       from: [0, 0],
       to: [0, 0]
@@ -154,7 +154,7 @@ describe('ol.proj', function() {
     }];
 
     cases.forEach(function(c) {
-      it('works for ' + c.from.join(', '), function() {
+      test('works for ' + c.from.join(', '), () => {
         const lonLat = toLonLat(c.from);
         expect(lonLat[0]).to.roughlyEqual(c.to[0], 1e-9);
         expect(lonLat[1]).to.roughlyEqual(c.to[1], 1e-9);
@@ -162,18 +162,18 @@ describe('ol.proj', function() {
     });
   });
 
-  describe('projection equivalence', function() {
+  describe('projection equivalence', () => {
 
     function _testAllEquivalent(codes) {
       const projections = codes.map(getProjection);
       projections.forEach(function(source) {
         projections.forEach(function(destination) {
-          expect(equivalent(source, destination)).to.be.ok();
+          expect(equivalent(source, destination)).toBeTruthy();
         });
       });
     }
 
-    it('gives that 3857, 102100, 102113, 900913 are equivalent ', function() {
+    test('gives that 3857, 102100, 102113, 900913 are equivalent ', () => {
       _testAllEquivalent([
         'EPSG:3857',
         'EPSG:102100',
@@ -182,7 +182,7 @@ describe('ol.proj', function() {
       ]);
     });
 
-    it('gives that custom 3413 is equivalent to self', function() {
+    test('gives that custom 3413 is equivalent to self', () => {
       const code = 'EPSG:3413';
 
       const source = new Projection({
@@ -193,19 +193,18 @@ describe('ol.proj', function() {
         code: code
       });
 
-      expect(equivalent(source, destination)).to.be.ok();
+      expect(equivalent(source, destination)).toBeTruthy();
     });
 
-    it('gives that default 3857 is equivalent to self', function() {
+    test('gives that default 3857 is equivalent to self', () => {
       _testAllEquivalent([
         'EPSG:3857',
         'EPSG:3857'
       ]);
     });
 
-    it('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
-        'equivalent',
-    function() {
+    test('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
+        'equivalent', () => {
       _testAllEquivalent([
         'CRS:84',
         'urn:ogc:def:crs:EPSG:6.6:4326',
@@ -213,8 +212,9 @@ describe('ol.proj', function() {
       ]);
     });
 
-    it('requires code and units to be equal for projection evquivalence',
-      function() {
+    test(
+      'requires code and units to be equal for projection evquivalence',
+      () => {
         const proj1 = new Projection({
           code: 'EPSG:3857',
           units: 'm'
@@ -223,136 +223,137 @@ describe('ol.proj', function() {
           code: 'EPSG:3857',
           units: 'tile-pixels'
         });
-        expect(equivalent(proj1, proj2)).to.not.be.ok();
-      });
+        expect(equivalent(proj1, proj2)).toBeFalsy();
+      }
+    );
 
   });
 
-  describe('identify transform', function() {
+  describe('identify transform', () => {
 
-    it('returns a new object, with same coord values', function() {
+    test('returns a new object, with same coord values', () => {
       const epsg4326 = getProjection('EPSG:4326');
       const uniqueObject = {};
       const sourcePoint = [uniqueObject, uniqueObject];
       const destinationPoint = transform(
         sourcePoint, epsg4326, epsg4326);
-      expect(sourcePoint === destinationPoint).to.not.be();
-      expect(destinationPoint[0] === sourcePoint[0]).to.be.ok();
-      expect(destinationPoint[1] === sourcePoint[1]).to.be.ok();
+      expect(sourcePoint === destinationPoint).not.toBe();
+      expect(destinationPoint[0] === sourcePoint[0]).toBeTruthy();
+      expect(destinationPoint[1] === sourcePoint[1]).toBeTruthy();
     });
   });
 
-  describe('transform 0,0 from 4326 to 3857', function() {
+  describe('transform 0,0 from 4326 to 3857', () => {
 
-    it('returns expected value', function() {
+    test('returns expected value', () => {
       const point = transform([0, 0], 'EPSG:4326', 'EPSG:3857');
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
+      expect(point).not.toBe(undefined);
+      expect(point).not.toBe(null);
       expect(point[1]).to.roughlyEqual(0, 1e-9);
     });
   });
 
-  describe('transform 0,0 from 3857 to 4326', function() {
+  describe('transform 0,0 from 3857 to 4326', () => {
 
-    it('returns expected value', function() {
+    test('returns expected value', () => {
       const point = transform([0, 0], 'EPSG:3857', 'EPSG:4326');
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
-      expect(point[0]).to.eql(0);
-      expect(point[1]).to.eql(0);
+      expect(point).not.toBe(undefined);
+      expect(point).not.toBe(null);
+      expect(point[0]).toEqual(0);
+      expect(point[1]).toEqual(0);
     });
   });
 
-  describe('transform from 4326 to 3857 (Alastaira)', function() {
+  describe('transform from 4326 to 3857 (Alastaira)', () => {
     // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
-    it('returns expected value using ol.proj.transform', function() {
+    test('returns expected value using ol.proj.transform', () => {
       const point = transform(
         [-5.625, 52.4827802220782], 'EPSG:4326', 'EPSG:900913');
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
+      expect(point).not.toBe(undefined);
+      expect(point).not.toBe(null);
       expect(point[0]).to.roughlyEqual(-626172.13571216376, 1e-9);
       expect(point[1]).to.roughlyEqual(6887893.4928337997, 1e-8);
     });
 
-    it('returns expected value using ol.proj.fromLonLat', function() {
+    test('returns expected value using ol.proj.fromLonLat', () => {
       const point = fromLonLat([-5.625, 52.4827802220782]);
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
+      expect(point).not.toBe(undefined);
+      expect(point).not.toBe(null);
       expect(point[0]).to.roughlyEqual(-626172.13571216376, 1e-9);
       expect(point[1]).to.roughlyEqual(6887893.4928337997, 1e-8);
     });
   });
 
-  describe('transform from 3857 to 4326 (Alastaira)', function() {
+  describe('transform from 3857 to 4326 (Alastaira)', () => {
     // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
-    it('returns expected value using ol.proj.transform', function() {
+    test('returns expected value using ol.proj.transform', () => {
       const point = transform([-626172.13571216376, 6887893.4928337997],
         'EPSG:900913', 'EPSG:4326');
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
+      expect(point).not.toBe(undefined);
+      expect(point).not.toBe(null);
       expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
       expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
 
-    it('returns expected value using ol.proj.toLonLat', function() {
+    test('returns expected value using ol.proj.toLonLat', () => {
       const point = toLonLat([-626172.13571216376, 6887893.4928337997]);
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
+      expect(point).not.toBe(undefined);
+      expect(point).not.toBe(null);
       expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
       expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
   });
 
-  describe('canWrapX()', function() {
+  describe('canWrapX()', () => {
 
-    it('requires an extent for allowing wrapX', function() {
+    test('requires an extent for allowing wrapX', () => {
       let proj = new Projection({
         code: 'foo',
         global: true
       });
-      expect(proj.canWrapX()).to.be(false);
+      expect(proj.canWrapX()).toBe(false);
       proj.setExtent([1, 2, 3, 4]);
-      expect(proj.canWrapX()).to.be(true);
+      expect(proj.canWrapX()).toBe(true);
       proj = new Projection({
         code: 'foo',
         global: true,
         extent: [1, 2, 3, 4]
       });
-      expect(proj.canWrapX()).to.be(true);
+      expect(proj.canWrapX()).toBe(true);
       proj.setExtent(null);
-      expect(proj.canWrapX()).to.be(false);
+      expect(proj.canWrapX()).toBe(false);
     });
 
-    it('requires global to be true for allowing wrapX', function() {
+    test('requires global to be true for allowing wrapX', () => {
       let proj = new Projection({
         code: 'foo',
         extent: [1, 2, 3, 4]
       });
-      expect(proj.canWrapX()).to.be(false);
+      expect(proj.canWrapX()).toBe(false);
       proj.setGlobal(true);
-      expect(proj.canWrapX()).to.be(true);
+      expect(proj.canWrapX()).toBe(true);
       proj = new Projection({
         code: 'foo',
         global: true,
         extent: [1, 2, 3, 4]
       });
-      expect(proj.canWrapX()).to.be(true);
+      expect(proj.canWrapX()).toBe(true);
       proj.setGlobal(false);
-      expect(proj.canWrapX()).to.be(false);
+      expect(proj.canWrapX()).toBe(false);
     });
 
   });
 
-  describe('transformExtent()', function() {
+  describe('transformExtent()', () => {
 
-    it('transforms an extent given projection identifiers', function() {
+    test('transforms an extent given projection identifiers', () => {
       const sourceExtent = [-15, -30, 45, 60];
       const destinationExtent = transformExtent(
         sourceExtent, 'EPSG:4326', 'EPSG:3857');
-      expect(destinationExtent).not.to.be(undefined);
-      expect(destinationExtent).not.to.be(null);
+      expect(destinationExtent).not.toBe(undefined);
+      expect(destinationExtent).not.toBe(null);
       expect(destinationExtent[0])
         .to.roughlyEqual(-1669792.3618991037, 1e-9);
       expect(destinationExtent[2]).to.roughlyEqual(5009377.085697311, 1e-9);
@@ -362,68 +363,74 @@ describe('ol.proj', function() {
 
   });
 
-  describe('getPointResolution()', function() {
-    it('returns the correct point resolution for EPSG:4326', function() {
+  describe('getPointResolution()', () => {
+    test('returns the correct point resolution for EPSG:4326', () => {
       let pointResolution = getPointResolution('EPSG:4326', 1, [0, 0]);
-      expect (pointResolution).to.be(1);
+      expect (pointResolution).toBe(1);
       pointResolution = getPointResolution('EPSG:4326', 1, [0, 52]);
-      expect (pointResolution).to.be(1);
+      expect (pointResolution).toBe(1);
     });
-    it('returns the correct point resolution for EPSG:4326 with custom units', function() {
-      let pointResolution = getPointResolution('EPSG:4326', 1, [0, 0], 'm');
-      expect(pointResolution).to.roughlyEqual(111195.0802335329, 1e-5);
-      pointResolution = getPointResolution('EPSG:4326', 1, [0, 52], 'm');
-      expect(pointResolution).to.roughlyEqual(89826.53390979706, 1e-5);
-    });
-    it('returns the correct point resolution for EPSG:3857', function() {
+    test(
+      'returns the correct point resolution for EPSG:4326 with custom units',
+      () => {
+        let pointResolution = getPointResolution('EPSG:4326', 1, [0, 0], 'm');
+        expect(pointResolution).to.roughlyEqual(111195.0802335329, 1e-5);
+        pointResolution = getPointResolution('EPSG:4326', 1, [0, 52], 'm');
+        expect(pointResolution).to.roughlyEqual(89826.53390979706, 1e-5);
+      }
+    );
+    test('returns the correct point resolution for EPSG:3857', () => {
       let pointResolution = getPointResolution('EPSG:3857', 1, [0, 0]);
-      expect(pointResolution).to.be(1);
+      expect(pointResolution).toBe(1);
       pointResolution = getPointResolution('EPSG:3857', 1, fromLonLat([0, 52]));
       expect(pointResolution).to.roughlyEqual(0.615661, 1e-5);
     });
-    it('returns the correct point resolution for EPSG:3857 with custom units', function() {
-      let pointResolution = getPointResolution('EPSG:3857', METERS_PER_UNIT['degrees'], [0, 0], 'degrees');
-      expect(pointResolution).to.be(1);
-      pointResolution = getPointResolution('EPSG:4326', 1, fromLonLat([0, 52]), 'degrees');
-      expect(pointResolution).to.be(1);
-    });
+    test(
+      'returns the correct point resolution for EPSG:3857 with custom units',
+      () => {
+        let pointResolution = getPointResolution('EPSG:3857', METERS_PER_UNIT['degrees'], [0, 0], 'degrees');
+        expect(pointResolution).toBe(1);
+        pointResolution = getPointResolution('EPSG:4326', 1, fromLonLat([0, 52]), 'degrees');
+        expect(pointResolution).toBe(1);
+      }
+    );
   });
 
-  describe('Proj4js integration', function() {
+  describe('Proj4js integration', () => {
 
-    afterEach(function() {
+    afterEach(() => {
       delete proj4.defs['EPSG:21781'];
       clearAllProjections();
       addCommon();
     });
 
-    it('creates ol.proj.Projection instance from EPSG:21781', function() {
+    test('creates ol.proj.Projection instance from EPSG:21781', () => {
       proj4.defs('EPSG:21781',
         '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
       register(proj4);
       const proj = getProjection('EPSG:21781');
-      expect(proj.getCode()).to.eql('EPSG:21781');
-      expect(proj.getUnits()).to.eql('m');
-      expect(proj.getMetersPerUnit()).to.eql(1);
+      expect(proj.getCode()).toEqual('EPSG:21781');
+      expect(proj.getUnits()).toEqual('m');
+      expect(proj.getMetersPerUnit()).toEqual(1);
     });
 
-    it('creates ol.proj.Projection instance from EPSG:3739', function() {
+    test('creates ol.proj.Projection instance from EPSG:3739', () => {
       proj4.defs('EPSG:3739',
         '+proj=tmerc +lat_0=40.5 +lon_0=-110.0833333333333 +k=0.9999375 ' +
           '+x_0=800000.0000101599 +y_0=99999.99998983997 +ellps=GRS80 ' +
           '+towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs');
       register(proj4);
       const proj = getProjection('EPSG:3739');
-      expect(proj.getCode()).to.eql('EPSG:3739');
-      expect(proj.getUnits()).to.eql('us-ft');
-      expect(proj.getMetersPerUnit()).to.eql(1200 / 3937);
+      expect(proj.getCode()).toEqual('EPSG:3739');
+      expect(proj.getUnits()).toEqual('us-ft');
+      expect(proj.getMetersPerUnit()).toEqual(1200 / 3937);
 
       delete proj4.defs['EPSG:3739'];
     });
 
-    it('allows Proj4js projections to be used transparently', function() {
+    test('allows Proj4js projections to be used transparently', () => {
       register(proj4);
       const point = transform(
         [-626172.13571216376, 6887893.4928337997], 'GOOGLE', 'WGS84');
@@ -431,7 +438,7 @@ describe('ol.proj', function() {
       expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
 
-    it('allows new Proj4js projections to be defined', function() {
+    test('allows new Proj4js projections to be defined', () => {
       proj4.defs('EPSG:21781',
         '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
@@ -443,7 +450,7 @@ describe('ol.proj', function() {
       expect(point[1]).to.roughlyEqual(200146.976, 1);
     });
 
-    it('works with ol.proj.fromLonLat and ol.proj.toLonLat', function() {
+    test('works with ol.proj.fromLonLat and ol.proj.toLonLat', () => {
       proj4.defs('EPSG:21781',
         '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
@@ -458,7 +465,7 @@ describe('ol.proj', function() {
       expect(point[1]).to.roughlyEqual(lonLat[1], 1);
     });
 
-    it('caches the new Proj4js projections given their srsCode', function() {
+    test('caches the new Proj4js projections given their srsCode', () => {
       proj4.defs('EPSG:21781',
         '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
@@ -469,18 +476,18 @@ describe('ol.proj', function() {
       register(proj4);
       const proj = getProjection(code);
       const proj2 = getProjection(srsCode);
-      expect(equivalent(proj2, proj)).to.be(true);
+      expect(equivalent(proj2, proj)).toBe(true);
       delete proj4.defs[code];
     });
 
-    it('numerically estimates point scale at the equator', function() {
+    test('numerically estimates point scale at the equator', () => {
       register(proj4);
       const googleProjection = getProjection('GOOGLE');
       expect(getPointResolution(googleProjection, 1, [0, 0])).
         to.roughlyEqual(1, 1e-1);
     });
 
-    it('numerically estimates point scale at various latitudes', function() {
+    test('numerically estimates point scale at various latitudes', () => {
       register(proj4);
       const epsg3857Projection = getProjection('EPSG:3857');
       const googleProjection = getProjection('GOOGLE');
@@ -492,7 +499,7 @@ describe('ol.proj', function() {
       }
     });
 
-    it('numerically estimates point scale at various points', function() {
+    test('numerically estimates point scale at various points', () => {
       register(proj4);
       const epsg3857Projection = getProjection('EPSG:3857');
       const googleProjection = getProjection('GOOGLE');
@@ -506,7 +513,7 @@ describe('ol.proj', function() {
       }
     });
 
-    it('does not overwrite existing projections in the registry', function() {
+    test('does not overwrite existing projections in the registry', () => {
       register(proj4);
       const epsg4326 = getProjection('EPSG:4326');
       new Projection({
@@ -514,21 +521,21 @@ describe('ol.proj', function() {
         units: 'degrees',
         extent: [-45, -45, 45, 45]
       });
-      expect(getProjection('EPSG:4326')).to.equal(epsg4326);
+      expect(getProjection('EPSG:4326')).toBe(epsg4326);
     });
 
   });
 
-  describe('ol.proj.getTransformFromProjections()', function() {
+  describe('ol.proj.getTransformFromProjections()', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       register(proj4);
     });
 
-    it('returns a transform function', function() {
+    test('returns a transform function', () => {
       const transform = getTransformFromProjections(getProjection('GOOGLE'),
         getProjection('EPSG:4326'));
-      expect(typeof transform).to.be('function');
+      expect(typeof transform).toBe('function');
 
       const output = transform([-12000000, 5000000]);
 
@@ -536,10 +543,10 @@ describe('ol.proj', function() {
       expect(output[1]).to.roughlyEqual(40.91627447067577, 1e-9);
     });
 
-    it('works for longer arrays', function() {
+    test('works for longer arrays', () => {
       const transform = getTransformFromProjections(getProjection('GOOGLE'),
         getProjection('EPSG:4326'));
-      expect(typeof transform).to.be('function');
+      expect(typeof transform).toBe('function');
 
       const output = transform([-12000000, 5000000, -12000000, 5000000]);
 
@@ -551,20 +558,20 @@ describe('ol.proj', function() {
 
   });
 
-  describe('ol.proj.getTransform()', function() {
+  describe('ol.proj.getTransform()', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       register(proj4);
     });
 
-    it('returns a function', function() {
+    test('returns a function', () => {
       const transform = getTransform('GOOGLE', 'EPSG:4326');
-      expect(typeof transform).to.be('function');
+      expect(typeof transform).toBe('function');
     });
 
-    it('returns a transform function', function() {
+    test('returns a transform function', () => {
       const transform = getTransform('GOOGLE', 'EPSG:4326');
-      expect(typeof transform).to.be('function');
+      expect(typeof transform).toBe('function');
 
       const output = transform([-626172.13571216376, 6887893.4928337997]);
 
@@ -573,9 +580,9 @@ describe('ol.proj', function() {
 
     });
 
-    it('works for longer arrays of coordinate values', function() {
+    test('works for longer arrays of coordinate values', () => {
       const transform = getTransform('GOOGLE', 'EPSG:4326');
-      expect(typeof transform).to.be('function');
+      expect(typeof transform).toBe('function');
 
       const output = transform([
         -626172.13571216376, 6887893.4928337997,
@@ -591,23 +598,23 @@ describe('ol.proj', function() {
       expect(output[5]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
 
-    it('accepts an optional destination array', function() {
+    test('accepts an optional destination array', () => {
       const transform = getTransform('EPSG:3857', 'EPSG:4326');
       const input = [-12000000, 5000000];
       const output = [];
 
       const got = transform(input, output);
-      expect(got).to.be(output);
+      expect(got).toBe(output);
 
       expect(output[0]).to.roughlyEqual(-107.79783409434258, 1e-9);
       expect(output[1]).to.roughlyEqual(40.91627447067577, 1e-9);
 
-      expect(input).to.eql([-12000000, 5000000]);
+      expect(input).toEqual([-12000000, 5000000]);
     });
 
-    it('accepts a dimension', function() {
+    test('accepts a dimension', () => {
       const transform = getTransform('GOOGLE', 'EPSG:4326');
-      expect(typeof transform).to.be('function');
+      expect(typeof transform).toBe('function');
 
       const dimension = 3;
       const output = transform([
@@ -618,43 +625,43 @@ describe('ol.proj', function() {
 
       expect(output[0]).to.roughlyEqual(-5.625, 1e-9);
       expect(output[1]).to.roughlyEqual(52.4827802220782, 1e-9);
-      expect(output[2]).to.be(100);
+      expect(output[2]).toBe(100);
       expect(output[3]).to.roughlyEqual(-107.79783409434258, 1e-9);
       expect(output[4]).to.roughlyEqual(40.91627447067577, 1e-9);
-      expect(output[5]).to.be(200);
+      expect(output[5]).toBe(200);
       expect(output[6]).to.roughlyEqual(-5.625, 1e-9);
       expect(output[7]).to.roughlyEqual(52.4827802220782, 1e-9);
-      expect(output[8]).to.be(300);
+      expect(output[8]).toBe(300);
     });
   });
 
-  describe('ol.proj.transform()', function() {
+  describe('ol.proj.transform()', () => {
 
-    it('transforms a 2d coordinate', function() {
+    test('transforms a 2d coordinate', () => {
       const got = transform([-10, -20], 'EPSG:4326', 'EPSG:3857');
-      expect(got).to.have.length(2);
+      expect(got).toHaveLength(2);
       expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
       expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
     });
 
-    it('transforms a 3d coordinate', function() {
+    test('transforms a 3d coordinate', () => {
       const got = transform([-10, -20, 3], 'EPSG:4326', 'EPSG:3857');
-      expect(got).to.have.length(3);
+      expect(got).toHaveLength(3);
       expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
       expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
-      expect(got[2]).to.be(3);
+      expect(got[2]).toBe(3);
     });
 
-    it('transforms a 4d coordinate', function() {
+    test('transforms a 4d coordinate', () => {
       const got = transform([-10, -20, 3, 4], 'EPSG:4326', 'EPSG:3857');
-      expect(got).to.have.length(4);
+      expect(got).toHaveLength(4);
       expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
       expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
-      expect(got[2]).to.be(3);
-      expect(got[3]).to.be(4);
+      expect(got[2]).toBe(3);
+      expect(got[3]).toBe(4);
     });
 
-    it('works with 3d points and proj4 defs', function() {
+    test('works with 3d points and proj4 defs', () => {
       proj4.defs('custom',
         '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
@@ -662,10 +669,10 @@ describe('ol.proj', function() {
       register(proj4);
 
       const got = transform([-111, 45.5, 123], 'EPSG:4326', 'custom');
-      expect(got).to.have.length(3);
+      expect(got).toHaveLength(3);
       expect(got[0]).to.roughlyEqual(-6601512.194209638, 1);
       expect(got[1]).to.roughlyEqual(6145843.802742112, 1);
-      expect(got[2]).to.be(123);
+      expect(got[2]).toBe(123);
 
       delete proj4.defs.custom;
       clearAllProjections();
@@ -674,9 +681,9 @@ describe('ol.proj', function() {
 
   });
 
-  describe('ol.proj.Projection.prototype.getMetersPerUnit()', function() {
+  describe('ol.proj.Projection.prototype.getMetersPerUnit()', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       proj4.defs('EPSG:26782',
         '+proj=lcc +lat_1=29.3 +lat_2=30.7 +lat_0=28.66666666666667 ' +
           '+lon_0=-91.33333333333333 +x_0=609601.2192024384 +y_0=0 ' +
@@ -703,7 +710,7 @@ describe('ol.proj', function() {
       register(proj4);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       delete proj4.defs['EPSG:26782'];
       delete proj4.defs['EPSG:3739'];
       delete proj4.defs['EPSG:4269'];
@@ -712,28 +719,26 @@ describe('ol.proj', function() {
       addCommon();
     });
 
-    it('returns value in meters', function() {
+    test('returns value in meters', () => {
       const epsg4326 = getProjection('EPSG:4326');
-      expect(epsg4326.getMetersPerUnit()).to.eql(metersPerDegree);
+      expect(epsg4326.getMetersPerUnit()).toEqual(metersPerDegree);
     });
 
-    it('works for proj4js projections without units', function() {
+    test('works for proj4js projections without units', () => {
       const epsg26782 = getProjection('EPSG:26782');
-      expect(epsg26782.getMetersPerUnit()).to.eql(0.3048006096012192);
+      expect(epsg26782.getMetersPerUnit()).toEqual(0.3048006096012192);
     });
 
-    it('works for proj4js projections with units other than m', function() {
+    test('works for proj4js projections with units other than m', () => {
       const epsg3739 = getProjection('EPSG:3739');
-      expect(epsg3739.getMetersPerUnit()).to.eql(1200 / 3937);
+      expect(epsg3739.getMetersPerUnit()).toEqual(1200 / 3937);
     });
 
-    it('works for proj4js OGC WKT GEOGCS projections', function() {
+    test('works for proj4js OGC WKT GEOGCS projections', () => {
       const epsg4269 = getProjection('EPSG:4269');
-      expect(epsg4269.getMetersPerUnit()).to.eql(
-        6378137 * 0.01745329251994328);
+      expect(epsg4269.getMetersPerUnit()).toEqual(6378137 * 0.01745329251994328);
       const epsg4279 = getProjection('EPSG:4279');
-      expect(epsg4279.getMetersPerUnit()).to.eql(
-        6377563.396 * 0.01745329251994328);
+      expect(epsg4279.getMetersPerUnit()).toEqual(6377563.396 * 0.01745329251994328);
     });
 
   });

@@ -3,7 +3,7 @@ import Feature from '../../../../src/ol/Feature.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
-describe('ol.format.IGC', function() {
+describe('ol.format.IGC', () => {
 
   let format;
   const igc =
@@ -28,41 +28,41 @@ describe('ol.format.IGC', function() {
       'GEC14381987B15F81003EDE1E01A47843\n' +
       'G60189641B00B00800019000000000000';
 
-  beforeEach(function() {
+  beforeEach(() => {
     format = new IGC();
   });
 
-  describe('#readProjectionFromText', function() {
-    it('returns the default projection', function() {
+  describe('#readProjectionFromText', () => {
+    test('returns the default projection', () => {
       const projection = format.readProjectionFromText(igc);
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      expect(projection).toEqual(getProjection('EPSG:4326'));
     });
   });
 
-  describe('#readFeature', function() {
-    it('does not read invalid features', function() {
-      expect(format.readFeature('invalid')).to.be(null);
+  describe('#readFeature', () => {
+    test('does not read invalid features', () => {
+      expect(format.readFeature('invalid')).toBe(null);
     });
 
-    it('does read a feature', function() {
+    test('does read a feature', () => {
       const feature = format.readFeature(igc);
-      expect(feature).to.be.an(Feature);
+      expect(feature).toBeInstanceOf(Feature);
       const geom = feature.getGeometry();
-      expect(geom.getType()).to.eql('LineString');
-      expect(geom.getCoordinates()).to.eql([
+      expect(geom.getType()).toEqual('LineString');
+      expect(geom.getCoordinates()).toEqual([
         [6.851583333333333, 45.9376, 1303202928],
         [6.850183333333334, 45.93395, 1303203353],
         [6.800816666666667, 45.916066666666666, 1303203815],
         [6.851583333333333, 45.9376, 1303289328]]);
     });
 
-    it('does transform and read a feature', function() {
+    test('does transform and read a feature', () => {
       const feature = format.readFeature(igc, {
         featureProjection: 'EPSG:3857'
       });
-      expect(feature).to.be.an(Feature);
+      expect(feature).toBeInstanceOf(Feature);
       const geom = feature.getGeometry();
-      expect(geom.getType()).to.eql('LineString');
+      expect(geom.getType()).toEqual('LineString');
 
       const expectedPoint1 = transform(
         [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
@@ -77,41 +77,40 @@ describe('ol.format.IGC', function() {
         [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
       expectedPoint4.push(1303289328);
 
-      expect(geom.getCoordinates()).to.eql(
-        [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
+      expect(geom.getCoordinates()).toEqual([expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
     });
 
   });
 
-  describe('#readFeatures', function() {
+  describe('#readFeatures', () => {
 
-    it('does not read invalid features', function() {
-      expect(format.readFeatures('invalid')).to.be.empty();
+    test('does not read invalid features', () => {
+      expect(format.readFeatures('invalid')).toHaveLength(0);
     });
 
-    it('does read features', function() {
+    test('does read features', () => {
       const features = format.readFeatures(igc);
-      expect(features.length).to.eql(1);
+      expect(features.length).toEqual(1);
       const feature = features[0];
-      expect(feature).to.be.an(Feature);
+      expect(feature).toBeInstanceOf(Feature);
       const geom = feature.getGeometry();
-      expect(geom.getType()).to.eql('LineString');
-      expect(geom.getCoordinates()).to.eql([
+      expect(geom.getType()).toEqual('LineString');
+      expect(geom.getCoordinates()).toEqual([
         [6.851583333333333, 45.9376, 1303202928],
         [6.850183333333334, 45.93395, 1303203353],
         [6.800816666666667, 45.916066666666666, 1303203815],
         [6.851583333333333, 45.9376, 1303289328]]);
     });
 
-    it('does transform and read features', function() {
+    test('does transform and read features', () => {
       const features = format.readFeatures(igc, {
         featureProjection: 'EPSG:3857'
       });
-      expect(features.length).to.eql(1);
+      expect(features.length).toEqual(1);
       const feature = features[0];
-      expect(feature).to.be.an(Feature);
+      expect(feature).toBeInstanceOf(Feature);
       const geom = feature.getGeometry();
-      expect(geom.getType()).to.eql('LineString');
+      expect(geom.getType()).toEqual('LineString');
 
       const expectedPoint1 = transform(
         [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
@@ -126,8 +125,7 @@ describe('ol.format.IGC', function() {
         [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
       expectedPoint4.push(1303289328);
 
-      expect(geom.getCoordinates()).to.eql(
-        [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
+      expect(geom.getCoordinates()).toEqual([expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
     });
   });
 

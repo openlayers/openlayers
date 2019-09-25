@@ -3,13 +3,13 @@ import Overlay from '../../../src/ol/Overlay.js';
 import View from '../../../src/ol/View.js';
 
 
-describe('ol.Overlay', function() {
+describe('ol.Overlay', () => {
   let target, map;
 
   const width = 360;
   const height = 180;
 
-  beforeEach(function() {
+  beforeEach(() => {
     target = document.createElement('div');
 
     const style = target.style;
@@ -30,43 +30,43 @@ describe('ol.Overlay', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     map.dispose();
     document.body.removeChild(target);
   });
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed with minimal arguments', function() {
+    test('can be constructed with minimal arguments', () => {
       const instance = new Overlay({});
-      expect(instance).to.be.an(Overlay);
+      expect(instance).toBeInstanceOf(Overlay);
     });
 
-    it('can be constructed with className', function() {
+    test('can be constructed with className', () => {
       const instance = new Overlay({className: 'my-class'});
-      expect(instance).to.be.an(Overlay);
-      expect(instance.element.className).to.be('my-class');
+      expect(instance).toBeInstanceOf(Overlay);
+      expect(instance.element.className).toBe('my-class');
     });
 
   });
 
-  describe('#getId()', function() {
+  describe('#getId()', () => {
     let overlay, target;
 
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
     });
-    afterEach(function() {
+    afterEach(() => {
       map.removeOverlay(overlay);
     });
 
-    it('returns the overlay identifier', function() {
+    test('returns the overlay identifier', () => {
       overlay = new Overlay({
         element: target,
         position: [0, 0]
       });
       map.addOverlay(overlay);
-      expect(overlay.getId()).to.be(undefined);
+      expect(overlay.getId()).toBe(undefined);
       map.removeOverlay(overlay);
       overlay = new Overlay({
         id: 'foo',
@@ -74,31 +74,31 @@ describe('ol.Overlay', function() {
         position: [0, 0]
       });
       map.addOverlay(overlay);
-      expect(overlay.getId()).to.be('foo');
+      expect(overlay.getId()).toBe('foo');
     });
 
   });
 
-  describe('#setVisible()', function() {
+  describe('#setVisible()', () => {
     let overlay, target;
 
-    beforeEach(function() {
+    beforeEach(() => {
       target = document.createElement('div');
     });
-    afterEach(function() {
+    afterEach(() => {
       map.removeOverlay(overlay);
     });
 
-    it('changes the CSS display value', function() {
+    test('changes the CSS display value', () => {
       overlay = new Overlay({
         element: target,
         position: [0, 0]
       });
       map.addOverlay(overlay);
       map.renderSync();
-      expect(overlay.element.style.display).not.to.be('none');
+      expect(overlay.element.style.display).not.toBe('none');
       overlay.setVisible(false);
-      expect(overlay.element.style.display).to.be('none');
+      expect(overlay.element.style.display).toBe('none');
     });
 
   });

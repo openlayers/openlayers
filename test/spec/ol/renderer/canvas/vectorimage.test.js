@@ -5,25 +5,25 @@ import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {scaleFromCenter} from '../../../../../src/ol/extent.js';
 
 
-describe('ol/renderer/canvas/VectorImageLayer', function() {
+describe('ol/renderer/canvas/VectorImageLayer', () => {
 
-  describe('#dispose()', function() {
+  describe('#dispose()', () => {
 
-    it('cleans up CanvasVectorRenderer', function() {
+    test('cleans up CanvasVectorRenderer', () => {
       const layer = new VectorImageLayer({
         source: new VectorSource()
       });
       const renderer = new CanvasVectorImageLayerRenderer(layer);
       const spy = sinon.spy(renderer.vectorRenderer_, 'dispose');
       renderer.dispose();
-      expect(spy.called).to.be(true);
+      expect(spy.called).toBe(true);
     });
 
   });
 
-  describe('#prepareFrame', function() {
+  describe('#prepareFrame', () => {
 
-    it('sets correct extent with imageRatio = 2', function() {
+    test('sets correct extent with imageRatio = 2', () => {
       const layer = new VectorImageLayer({
         imageRatio: 2,
         source: new VectorSource()
@@ -50,7 +50,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function() {
 
       scaleFromCenter(extent, 2);
 
-      expect(expected).to.eql(extent);
+      expect(expected).toEqual(extent);
     });
   });
 

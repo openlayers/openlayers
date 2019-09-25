@@ -19,13 +19,13 @@ import Event from '../../../../src/ol/events/Event.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
-describe('ol.interaction.Draw', function() {
+describe('ol.interaction.Draw', () => {
   let target, map, source;
 
   const width = 360;
   const height = 180;
 
-  beforeEach(function(done) {
+  beforeEach(done => {
     target = document.createElement('div');
     const style = target.style;
     style.position = 'absolute';
@@ -50,7 +50,7 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     map.dispose();
     document.body.removeChild(target);
   });
@@ -82,18 +82,18 @@ describe('ol.interaction.Draw', function() {
     return simulatedEvent;
   }
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('creates a new interaction', function() {
+    test('creates a new interaction', () => {
       const draw = new Draw({
         source: source,
         type: 'Point'
       });
-      expect(draw).to.be.a(Draw);
-      expect(draw).to.be.a(Interaction);
+      expect(draw).toBeInstanceOf(Draw);
+      expect(draw).toBeInstanceOf(Interaction);
     });
 
-    it('accepts a freehand option', function() {
+    test('accepts a freehand option', () => {
       const draw = new Draw({
         source: source,
         type: 'LineString',
@@ -106,23 +106,23 @@ describe('ol.interaction.Draw', function() {
         shiftKey: false
       });
 
-      expect(draw.freehandCondition_(event)).to.be(true);
+      expect(draw.freehandCondition_(event)).toBe(true);
     });
 
-    it('accepts a dragVertexDelay option', function() {
+    test('accepts a dragVertexDelay option', () => {
       const draw = new Draw({
         source: source,
         type: 'LineString',
         dragVertexDelay: 42
       });
-      expect(draw.dragVertexDelay_).to.be(42);
+      expect(draw.dragVertexDelay_).toBe(42);
     });
 
   });
 
-  describe('specifying a geometryName', function() {
+  describe('specifying a geometryName', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       const draw = new Draw({
         source: source,
         geometryName: 'the_geom',
@@ -131,19 +131,19 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('creates a feature with the correct geometryName', function() {
+    test('creates a feature with the correct geometryName', () => {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(features[0].getGeometryName()).to.equal('the_geom');
-      expect(geometry).to.be.a(Point);
+      expect(features[0].getGeometryName()).toBe('the_geom');
+      expect(geometry).toBeInstanceOf(Point);
     });
   });
 
-  describe('specifying a clickTolerance', function() {
-    beforeEach(function() {
+  describe('specifying a clickTolerance', () => {
+    beforeEach(() => {
       const draw = new Draw({
         source: source,
         type: 'Point',
@@ -152,27 +152,27 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('adds a point when below the tolerance', function() {
+    test('adds a point when below the tolerance', () => {
       let features;
 
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 15, 25);
       features = source.getFeatures();
-      expect(features).to.length(0);
+      expect(features).toHaveLength(0);
 
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 14, 24);
       features = source.getFeatures();
-      expect(features).to.length(1);
+      expect(features).toHaveLength(1);
     });
   });
 
-  describe('drawing points', function() {
+  describe('drawing points', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'Point'
@@ -180,35 +180,35 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws a point on click', function() {
+    test('draws a point on click', () => {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([10, -20]);
+      expect(geometry).toBeInstanceOf(Point);
+      expect(geometry.getCoordinates()).toEqual([10, -20]);
     });
 
-    it('does not draw a point with a significant drag', function() {
+    test('does not draw a point with a significant drag', () => {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointermove', 18, 20);
       simulateEvent('pointerup', 18, 20);
       const features = source.getFeatures();
-      expect(features).to.have.length(0);
+      expect(features).toHaveLength(0);
     });
 
-    it('does not draw a point when modifier key is pressed', function() {
+    test('does not draw a point when modifier key is pressed', () => {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20, true);
       simulateEvent('pointerup', 10, 20);
       const features = source.getFeatures();
-      expect(features).to.have.length(0);
+      expect(features).toHaveLength(0);
     });
 
-    it('triggers draw events', function() {
+    test('triggers draw events', () => {
       const ds = sinon.spy();
       const de = sinon.spy();
       listen(draw, 'drawstart', ds);
@@ -219,46 +219,49 @@ describe('ol.interaction.Draw', function() {
       expect(ds).to.be.called();
       expect(de).to.be.called();
       simulateEvent('pointermove', 20, 20);
-      expect(ds.callCount).to.be(1);
-      expect(de.callCount).to.be(1);
+      expect(ds.callCount).toBe(1);
+      expect(de.callCount).toBe(1);
     });
 
-    it('triggers drawend event before inserting the feature', function() {
+    test('triggers drawend event before inserting the feature', () => {
       const receivedEvents = {
         end: 0,
         addfeature: 0
       };
       listen(draw, 'drawend',
         function() {
-          expect(receivedEvents.end).to.be(0);
-          expect(receivedEvents.addfeature).to.be(0);
+          expect(receivedEvents.end).toBe(0);
+          expect(receivedEvents.addfeature).toBe(0);
           ++receivedEvents.end;
         });
       source.on('addfeature', function() {
-        expect(receivedEvents.end).to.be(1);
-        expect(receivedEvents.addfeature).to.be(0);
+        expect(receivedEvents.end).toBe(1);
+        expect(receivedEvents.addfeature).toBe(0);
         receivedEvents.addfeature++;
       });
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       simulateEvent('pointermove', 20, 20);
-      expect(receivedEvents.end).to.be(1);
-      expect(receivedEvents.addfeature).to.be(1);
+      expect(receivedEvents.end).toBe(1);
+      expect(receivedEvents.addfeature).toBe(1);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('drawing multipoints', function() {
+  describe('drawing multipoints', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'MultiPoint'
@@ -266,29 +269,32 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws multipoint on click', function() {
+    test('draws multipoint on click', () => {
       simulateEvent('pointermove', 30, 15);
       simulateEvent('pointerdown', 30, 15);
       simulateEvent('pointerup', 30, 15);
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiPoint);
-      expect(geometry.getCoordinates()).to.eql([[30, -15]]);
+      expect(geometry).toBeInstanceOf(MultiPoint);
+      expect(geometry.getCoordinates()).toEqual([[30, -15]]);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('drawing linestrings', function() {
+  describe('drawing linestrings', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'LineString'
@@ -296,7 +302,7 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws linestring with clicks, finishing on last point', function() {
+    test('draws linestring with clicks, finishing on last point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -312,13 +318,13 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
+      expect(geometry).toBeInstanceOf(LineString);
+      expect(geometry.getCoordinates()).toEqual([[10, -20], [30, -20]]);
     });
 
-    it('supports removeLastPoint while drawing', function() {
+    test('supports removeLastPoint while drawing', () => {
 
       draw.removeLastPoint();
 
@@ -340,10 +346,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 38, 31);
       simulateEvent('pointerup', 38, 31);
 
-      expect(source.getFeatures()).to.have.length(0);
+      expect(source.getFeatures()).toHaveLength(0);
     });
 
-    it('supports freehand drawing for linestrings', function() {
+    test('supports freehand drawing for linestrings', () => {
       // freehand sequence
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20, true);
@@ -354,14 +360,13 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 20, 40, true);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql(
-        [[10, -20], [20, -30], [20, -40]]);
+      expect(geometry).toBeInstanceOf(LineString);
+      expect(geometry.getCoordinates()).toEqual([[10, -20], [20, -30], [20, -40]]);
     });
 
-    it('allows freehand mode for part of the drawing', function() {
+    test('allows freehand mode for part of the drawing', () => {
 
       // non-freehand
       simulateEvent('pointerdown', 10, 20);
@@ -392,12 +397,11 @@ describe('ol.interaction.Draw', function() {
       const features = source.getFeatures();
       // expect(features).to.have.length(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql(
-        [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
+      expect(geometry).toBeInstanceOf(LineString);
+      expect(geometry.getCoordinates()).toEqual([[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
     });
 
-    it('does not add a point with a significant drag', function() {
+    test('does not add a point with a significant drag', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -419,13 +423,13 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
+      expect(geometry).toBeInstanceOf(LineString);
+      expect(geometry.getCoordinates()).toEqual([[10, -20], [30, -20]]);
     });
 
-    it('allows dragging of the vertex after dragVertexDelay', function(done) {
+    test('allows dragging of the vertex after dragVertexDelay', done => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -448,16 +452,16 @@ describe('ol.interaction.Draw', function() {
         simulateEvent('pointerup', 30, 20);
 
         const features = source.getFeatures();
-        expect(features).to.have.length(1);
+        expect(features).toHaveLength(1);
         const geometry = features[0].getGeometry();
-        expect(geometry).to.be.a(LineString);
-        expect(geometry.getCoordinates()).to.eql([[10, -20], [20, -10], [30, -20]]);
+        expect(geometry).toBeInstanceOf(LineString);
+        expect(geometry.getCoordinates()).toEqual([[10, -20], [20, -10], [30, -20]]);
 
         done();
       }, 600);
     });
 
-    it('triggers draw events', function() {
+    test('triggers draw events', () => {
       const ds = sinon.spy();
       const de = sinon.spy();
       listen(draw, 'drawstart', ds);
@@ -479,22 +483,25 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointermove', 10, 20);
 
       expect(ds).to.be.called();
-      expect(ds.callCount).to.be(1);
+      expect(ds.callCount).toBe(1);
       expect(de).to.be.called();
-      expect(de.callCount).to.be(1);
+      expect(de.callCount).toBe(1);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('drawing with a condition', function() {
+  describe('drawing with a condition', () => {
     let draw;
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'LineString',
@@ -504,7 +511,7 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('finishes draw sequence correctly', function() {
+    test('finishes draw sequence correctly', () => {
       // first point
       simulateEvent('pointermove', 10, 20, true);
       simulateEvent('pointerdown', 10, 20, true);
@@ -520,21 +527,21 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20, true);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
+      expect(geometry).toBeInstanceOf(LineString);
+      expect(geometry.getCoordinates()).toEqual([[10, -20], [30, -20]]);
 
       // without modifier, to be handled by the map's DragPan interaction
       simulateEvent('pointermove', 20, 20);
       simulateEvent('pointerdown', 20, 20);
       simulateEvent('pointermove', 10, 30);
-      expect(draw.lastDragTime_).to.be(undefined);
+      expect(draw.lastDragTime_).toBe(undefined);
     });
   });
 
-  describe('drawing with a finishCondition', function() {
-    beforeEach(function() {
+  describe('drawing with a finishCondition', () => {
+    beforeEach(() => {
       const draw = new Draw({
         source: source,
         type: 'LineString',
@@ -548,44 +555,47 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws a linestring failing to finish it first, the finishes it', function() {
-      let features;
+    test(
+      'draws a linestring failing to finish it first, the finishes it',
+      () => {
+        let features;
 
-      // first point
-      simulateEvent('pointermove', 10, 20);
-      simulateEvent('pointerdown', 10, 20);
-      simulateEvent('pointerup', 10, 20);
+        // first point
+        simulateEvent('pointermove', 10, 20);
+        simulateEvent('pointerdown', 10, 20);
+        simulateEvent('pointerup', 10, 20);
 
-      // second point
-      simulateEvent('pointermove', 40, 30);
-      simulateEvent('pointerdown', 40, 30);
-      simulateEvent('pointerup', 40, 30);
+        // second point
+        simulateEvent('pointermove', 40, 30);
+        simulateEvent('pointerdown', 40, 30);
+        simulateEvent('pointerup', 40, 30);
 
-      // try to finish on this point
-      simulateEvent('pointerdown', 40, 30);
-      simulateEvent('pointerup', 40, 30);
+        // try to finish on this point
+        simulateEvent('pointerdown', 40, 30);
+        simulateEvent('pointerup', 40, 30);
 
-      features = source.getFeatures();
-      expect(features).to.have.length(0);
+        features = source.getFeatures();
+        expect(features).toHaveLength(0);
 
-      // third point
-      simulateEvent('pointermove', 30, 20);
-      simulateEvent('pointerdown', 30, 20);
-      simulateEvent('pointerup', 30, 20);
+        // third point
+        simulateEvent('pointermove', 30, 20);
+        simulateEvent('pointerdown', 30, 20);
+        simulateEvent('pointerup', 30, 20);
 
-      //  finish on this point
-      simulateEvent('pointerdown', 30, 20);
-      simulateEvent('pointerup', 30, 20);
+        //  finish on this point
+        simulateEvent('pointerdown', 30, 20);
+        simulateEvent('pointerup', 30, 20);
 
-      features = source.getFeatures();
-      expect(features).to.have.length(1);
-    });
+        features = source.getFeatures();
+        expect(features).toHaveLength(1);
+      }
+    );
   });
 
-  describe('drawing multi-linestrings', function() {
+  describe('drawing multi-linestrings', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'MultiLineString'
@@ -593,7 +603,7 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws multi with clicks, finishing on last point', function() {
+    test('draws multi with clicks, finishing on last point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -609,24 +619,27 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiLineString);
-      expect(geometry.getCoordinates()).to.eql([[[10, -20], [30, -20]]]);
+      expect(geometry).toBeInstanceOf(MultiLineString);
+      expect(geometry.getCoordinates()).toEqual([[[10, -20], [30, -20]]]);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('drawing polygons', function() {
+  describe('drawing polygons', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'Polygon'
@@ -637,10 +650,10 @@ describe('ol.interaction.Draw', function() {
     function isClosed(polygon) {
       const first = polygon.getFirstCoordinate();
       const last = polygon.getLastCoordinate();
-      expect(first).to.eql(last);
+      expect(first).toEqual(last);
     }
 
-    it('draws polygon with clicks, finishing on first point', function() {
+    test('draws polygon with clicks, finishing on first point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -665,16 +678,16 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 10, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      expect(geometry).toBeInstanceOf(Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      expect(geometry.getCoordinates()).toEqual([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 
-    it('supports removeLastPoint while drawing', function() {
+    test('supports removeLastPoint while drawing', () => {
 
       draw.removeLastPoint();
 
@@ -696,32 +709,35 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 39, 31);
       simulateEvent('pointerup', 39, 31);
 
-      expect(source.getFeatures()).to.have.length(0);
+      expect(source.getFeatures()).toHaveLength(0);
     });
 
-    it('will tolerate removeLastPoint being called when no coordinates', function() {
+    test(
+      'will tolerate removeLastPoint being called when no coordinates',
+      () => {
 
-      // first point
-      simulateEvent('pointermove', 10, 20);
-      simulateEvent('pointerdown', 10, 20);
-      simulateEvent('pointerup', 10, 20);
+        // first point
+        simulateEvent('pointermove', 10, 20);
+        simulateEvent('pointerdown', 10, 20);
+        simulateEvent('pointerup', 10, 20);
 
-      // second point
-      simulateEvent('pointermove', 40, 30);
-      simulateEvent('pointerdown', 40, 30);
-      simulateEvent('pointerup', 40, 30);
+        // second point
+        simulateEvent('pointermove', 40, 30);
+        simulateEvent('pointerdown', 40, 30);
+        simulateEvent('pointerup', 40, 30);
 
-      simulateEvent('pointermove', 100, 100);
+        simulateEvent('pointermove', 100, 100);
 
-      expect(function() {
-        draw.removeLastPoint();
-        draw.removeLastPoint();
-        draw.removeLastPoint();
-      }).to.not.throwException();
+        expect(function() {
+          draw.removeLastPoint();
+          draw.removeLastPoint();
+          draw.removeLastPoint();
+        }).not.toThrow();
 
-    });
+      }
+    );
 
-    it('draws polygon with clicks, finishing on last point', function() {
+    test('draws polygon with clicks, finishing on last point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -742,16 +758,16 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 40, 10);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      expect(geometry).toBeInstanceOf(Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      expect(geometry.getCoordinates()).toEqual([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 
-    it('supports freehand drawing for polygons', function() {
+    test('supports freehand drawing for polygons', () => {
       // freehand sequence
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20, true);
@@ -766,16 +782,16 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 40, 10);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      expect(geometry).toBeInstanceOf(Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      expect(geometry.getCoordinates()).toEqual([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 
-    it('triggers draw events', function() {
+    test('triggers draw events', () => {
       const ds = sinon.spy();
       const de = sinon.spy();
       listen(draw, 'drawstart', ds);
@@ -802,23 +818,26 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 10, 20);
 
       expect(ds).to.be.called();
-      expect(ds.callCount).to.be(1);
+      expect(ds.callCount).toBe(1);
       expect(de).to.be.called();
-      expect(de.callCount).to.be(1);
+      expect(de.callCount).toBe(1);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('drawing multi-polygons', function() {
+  describe('drawing multi-polygons', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'MultiPolygon'
@@ -826,7 +845,7 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws multi with clicks, finishing on first point', function() {
+    test('draws multi with clicks, finishing on first point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -848,18 +867,18 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 10, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiPolygon);
+      expect(geometry).toBeInstanceOf(MultiPolygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates).to.have.length(1);
+      expect(coordinates).toHaveLength(1);
 
-      expect(coordinates[0]).to.eql([
+      expect(coordinates[0]).toEqual([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 
-    it('draws multi with clicks, finishing on last point', function() {
+    test('draws multi with clicks, finishing on last point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -880,29 +899,32 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 40, 10);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiPolygon);
+      expect(geometry).toBeInstanceOf(MultiPolygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates).to.have.length(1);
+      expect(coordinates).toHaveLength(1);
 
-      expect(coordinates[0]).to.eql([
+      expect(coordinates[0]).toEqual([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('drawing circles', function() {
+  describe('drawing circles', () => {
     let draw;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'Circle'
@@ -910,7 +932,7 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws circle with clicks, finishing on second point', function() {
+    test('draws circle with clicks, finishing on second point', () => {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -922,14 +944,14 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      expect(features).toHaveLength(1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Circle);
-      expect(geometry.getCenter()).to.eql([10, -20]);
-      expect(geometry.getRadius()).to.eql(20);
+      expect(geometry).toBeInstanceOf(Circle);
+      expect(geometry.getCenter()).toEqual([10, -20]);
+      expect(geometry.getRadius()).toEqual(20);
     });
 
-    it('supports freehand drawing for circles', function() {
+    test('supports freehand drawing for circles', () => {
       draw.freehand_ = true;
       draw.freehandCondition_ = always;
 
@@ -937,17 +959,17 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
-      expect(source.getFeatures()).to.have.length(0);
+      expect(source.getFeatures()).toHaveLength(0);
 
       // feature created when moved
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointermove', 30, 20);
       simulateEvent('pointerup', 30, 20);
-      expect(source.getFeatures()).to.have.length(1);
+      expect(source.getFeatures()).toHaveLength(1);
     });
 
-    it('triggers draw events', function() {
+    test('triggers draw events', () => {
       const ds = sinon.spy();
       const de = sinon.spy();
       listen(draw, 'drawstart', ds);
@@ -964,28 +986,31 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
 
       expect(ds).to.be.called();
-      expect(ds.callCount).to.be(1);
+      expect(ds.callCount).toBe(1);
       expect(de).to.be.called();
-      expect(de.callCount).to.be(1);
+      expect(de.callCount).toBe(1);
     });
 
-    it('works if finishDrawing is called when the sketch feature is not defined', function() {
-      expect(function() {
-        draw.finishDrawing();
-      }).to.not.throwException();
-    });
+    test(
+      'works if finishDrawing is called when the sketch feature is not defined',
+      () => {
+        expect(function() {
+          draw.finishDrawing();
+        }).not.toThrow();
+      }
+    );
 
   });
 
-  describe('#setActive()', function() {
+  describe('#setActive()', () => {
     let interaction;
 
-    beforeEach(function() {
+    beforeEach(() => {
       interaction = new Draw({
         type: 'LineString'
       });
 
-      expect(interaction.getActive()).to.be(true);
+      expect(interaction.getActive()).toBe(true);
 
       map.addInteraction(interaction);
 
@@ -994,122 +1019,120 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(interaction.sketchFeature_).not.to.be(null);
+      expect(interaction.sketchFeature_).not.toBe(null);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       map.removeInteraction(interaction);
     });
 
-    describe('#setActive(false)', function() {
-      it('unsets the map from the feature overlay', function() {
+    describe('#setActive(false)', () => {
+      test('unsets the map from the feature overlay', () => {
         const spy = sinon.spy(interaction.overlay_, 'setMap');
         interaction.setActive(false);
-        expect(spy.getCall(0).args[0]).to.be(null);
+        expect(spy.getCall(0).args[0]).toBe(null);
       });
-      it('aborts the drawing', function() {
+      test('aborts the drawing', () => {
         interaction.setActive(false);
-        expect(interaction.sketchFeature_).to.be(null);
+        expect(interaction.sketchFeature_).toBe(null);
       });
-      it('fires change:active', function() {
+      test('fires change:active', () => {
         const spy = sinon.spy(interaction.overlay_, 'setMap');
         const listenerSpy = sinon.spy(function() {
-          // test that the interaction's change:active listener is called first
-          expect(spy.getCall(0).args[0]).to.be(null);
+          expect(spy.getCall(0).args[0]).toBe(null);
         });
         interaction.on('change:active', listenerSpy);
         interaction.setActive(false);
-        expect(listenerSpy.callCount).to.be(1);
+        expect(listenerSpy.callCount).toBe(1);
       });
     });
 
-    describe('#setActive(true)', function() {
-      beforeEach(function() {
+    describe('#setActive(true)', () => {
+      beforeEach(() => {
         interaction.setActive(false);
       });
-      it('sets the map into the feature overlay', function() {
+      test('sets the map into the feature overlay', () => {
         const spy = sinon.spy(interaction.overlay_, 'setMap');
         interaction.setActive(true);
-        expect(spy.getCall(0).args[0]).to.be(map);
+        expect(spy.getCall(0).args[0]).toBe(map);
       });
-      it('fires change:active', function() {
+      test('fires change:active', () => {
         const spy = sinon.spy(interaction.overlay_, 'setMap');
         const listenerSpy = sinon.spy(function() {
-          // test that the interaction's change:active listener is called first
-          expect(spy.getCall(0).args[0]).to.be(map);
+          expect(spy.getCall(0).args[0]).toBe(map);
         });
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
-        expect(listenerSpy.callCount).to.be(1);
+        expect(listenerSpy.callCount).toBe(1);
       });
     });
 
   });
 
-  describe('#setMap()', function() {
+  describe('#setMap()', () => {
     let interaction;
 
-    beforeEach(function() {
+    beforeEach(() => {
       interaction = new Draw({
         type: 'LineString'
       });
-      expect(interaction.getActive()).to.be(true);
+      expect(interaction.getActive()).toBe(true);
     });
 
-    describe('#setMap(null)', function() {
-      beforeEach(function() {
+    describe('#setMap(null)', () => {
+      beforeEach(() => {
         map.addInteraction(interaction);
         // first point
         simulateEvent('pointermove', 10, 20);
         simulateEvent('pointerdown', 10, 20);
         simulateEvent('pointerup', 10, 20);
-        expect(interaction.sketchFeature_).not.to.be(null);
+        expect(interaction.sketchFeature_).not.toBe(null);
       });
-      afterEach(function() {
+      afterEach(() => {
         map.removeInteraction(interaction);
       });
-      describe('#setMap(null) when interaction is active', function() {
-        it('unsets the map from the feature overlay', function() {
+      describe('#setMap(null) when interaction is active', () => {
+        test('unsets the map from the feature overlay', () => {
           const spy = sinon.spy(interaction.overlay_, 'setMap');
           interaction.setMap(null);
-          expect(spy.getCall(0).args[0]).to.be(null);
+          expect(spy.getCall(0).args[0]).toBe(null);
         });
-        it('aborts the drawing', function() {
+        test('aborts the drawing', () => {
           interaction.setMap(null);
-          expect(interaction.sketchFeature_).to.be(null);
+          expect(interaction.sketchFeature_).toBe(null);
         });
       });
     });
 
-    describe('#setMap(map)', function() {
-      describe('#setMap(map) when interaction is active', function() {
-        it('sets the map into the feature overlay', function() {
+    describe('#setMap(map)', () => {
+      describe('#setMap(map) when interaction is active', () => {
+        test('sets the map into the feature overlay', () => {
           const spy = sinon.spy(interaction.overlay_, 'setMap');
           interaction.setMap(map);
-          expect(spy.getCall(0).args[0]).to.be(map);
+          expect(spy.getCall(0).args[0]).toBe(map);
         });
       });
-      describe('#setMap(map) when interaction is not active', function() {
-        it('does not set the map into the feature overlay', function() {
+      describe('#setMap(map) when interaction is not active', () => {
+        test('does not set the map into the feature overlay', () => {
           interaction.setActive(false);
           const spy = sinon.spy(interaction.overlay_, 'setMap');
           interaction.setMap(map);
-          expect(spy.getCall(0).args[0]).to.be(null);
+          expect(spy.getCall(0).args[0]).toBe(null);
         });
       });
 
     });
   });
 
-  describe('#getOverlay', function() {
-    it('returns the feature overlay layer', function() {
+  describe('#getOverlay', () => {
+    test('returns the feature overlay layer', () => {
       const draw = new Draw({});
-      expect (draw.getOverlay()).to.eql(draw.overlay_);
+      expect (draw.getOverlay()).toEqual(draw.overlay_);
     });
   });
 
-  describe('createRegularPolygon', function() {
-    it('creates a regular polygon in Circle mode', function() {
+  describe('createRegularPolygon', () => {
+    test('creates a regular polygon in Circle mode', () => {
       const draw = new Draw({
         source: source,
         type: 'Circle',
@@ -1129,14 +1152,14 @@ describe('ol.interaction.Draw', function() {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      expect(geometry).toBeInstanceOf(Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0].length).to.eql(5);
+      expect(coordinates[0].length).toEqual(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
     });
 
-    it('sketch start point always matches the mouse point', function() {
+    test('sketch start point always matches the mouse point', () => {
       const draw = new Draw({
         source: source,
         type: 'Circle',
@@ -1183,8 +1206,8 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
-  describe('createBox', function() {
-    it('creates a box-shaped polygon in Circle mode', function() {
+  describe('createBox', () => {
+    test('creates a box-shaped polygon in Circle mode', () => {
       const draw = new Draw({
         source: source,
         type: 'Circle',
@@ -1204,19 +1227,19 @@ describe('ol.interaction.Draw', function() {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      expect(geometry).toBeInstanceOf(Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0]).to.have.length(5);
-      expect(geometry.getArea()).to.equal(400);
-      expect(geometry.getExtent()).to.eql([0, -20, 20, 0]);
+      expect(coordinates[0]).toHaveLength(5);
+      expect(geometry.getArea()).toBe(400);
+      expect(geometry.getExtent()).toEqual([0, -20, 20, 0]);
     });
   });
 
-  describe('extend an existing feature', function() {
+  describe('extend an existing feature', () => {
     let draw;
     let feature;
 
-    beforeEach(function() {
+    beforeEach(() => {
       draw = new Draw({
         source: source,
         type: 'LineString'
@@ -1226,18 +1249,18 @@ describe('ol.interaction.Draw', function() {
         new LineString([[0, 0], [1, 1], [2, 0]]));
     });
 
-    it('sets the initial state', function() {
+    test('sets the initial state', () => {
       draw.extend(feature);
-      expect(draw.sketchCoords_).to.have.length(4);
-      expect(draw.sketchCoords_).to.eql([[0, 0], [1, 1], [2, 0], [2, 0]]);
-      expect(draw.finishCoordinate_).to.eql([2, 0]);
+      expect(draw.sketchCoords_).toHaveLength(4);
+      expect(draw.sketchCoords_).toEqual([[0, 0], [1, 1], [2, 0], [2, 0]]);
+      expect(draw.finishCoordinate_).toEqual([2, 0]);
     });
 
-    it('dispatches a drawstart event', function() {
+    test('dispatches a drawstart event', () => {
       const spy = sinon.spy();
       listen(draw, 'drawstart', spy);
       draw.extend(feature);
-      expect(spy.callCount).to.be(1);
+      expect(spy.callCount).toBe(1);
     });
 
   });

@@ -3,60 +3,60 @@ import EventTarget from '../../../../src/ol/events/Target.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import {FALSE} from '../../../../src/ol/functions.js';
 
-describe('ol.interaction.Interaction', function() {
+describe('ol.interaction.Interaction', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
     let interaction;
 
-    beforeEach(function() {
+    beforeEach(() => {
       interaction = new Interaction({});
     });
 
-    it('creates a new interaction', function() {
-      expect(interaction).to.be.a(Interaction);
-      expect(interaction).to.be.a(EventTarget);
+    test('creates a new interaction', () => {
+      expect(interaction).toBeInstanceOf(Interaction);
+      expect(interaction).toBeInstanceOf(EventTarget);
     });
 
-    it('creates an active interaction', function() {
-      expect(interaction.getActive()).to.be(true);
-    });
-
-  });
-
-  describe('#getMap()', function() {
-
-    it('retrieves the associated map', function() {
-      const map = new Map({});
-      const interaction = new Interaction({});
-      interaction.setMap(map);
-      expect(interaction.getMap()).to.be(map);
-    });
-
-    it('returns null if no map', function() {
-      const interaction = new Interaction({});
-      expect(interaction.getMap()).to.be(null);
+    test('creates an active interaction', () => {
+      expect(interaction.getActive()).toBe(true);
     });
 
   });
 
-  describe('#setMap()', function() {
+  describe('#getMap()', () => {
 
-    it('allows a map to be set', function() {
+    test('retrieves the associated map', () => {
       const map = new Map({});
       const interaction = new Interaction({});
       interaction.setMap(map);
-      expect(interaction.getMap()).to.be(map);
+      expect(interaction.getMap()).toBe(map);
     });
 
-    it('accepts null', function() {
+    test('returns null if no map', () => {
+      const interaction = new Interaction({});
+      expect(interaction.getMap()).toBe(null);
+    });
+
+  });
+
+  describe('#setMap()', () => {
+
+    test('allows a map to be set', () => {
+      const map = new Map({});
+      const interaction = new Interaction({});
+      interaction.setMap(map);
+      expect(interaction.getMap()).toBe(map);
+    });
+
+    test('accepts null', () => {
       const interaction = new Interaction({});
       interaction.setMap(null);
-      expect(interaction.getMap()).to.be(null);
+      expect(interaction.getMap()).toBe(null);
     });
 
   });
 
-  describe('#handleEvent()', function() {
+  describe('#handleEvent()', () => {
 
     class MockInteraction extends Interaction {
       constructor() {
@@ -67,21 +67,21 @@ describe('ol.interaction.Interaction', function() {
       }
     }
 
-    it('has a default event handler', function() {
+    test('has a default event handler', () => {
       const interaction = new Interaction({});
-      expect(interaction.handleEvent()).to.be(true);
+      expect(interaction.handleEvent()).toBe(true);
     });
 
-    it('allows event handler overrides via options', function() {
+    test('allows event handler overrides via options', () => {
       const interaction = new Interaction({
         handleEvent: FALSE
       });
-      expect(interaction.handleEvent()).to.be(false);
+      expect(interaction.handleEvent()).toBe(false);
     });
 
-    it('allows event handler overrides via class extension', function() {
+    test('allows event handler overrides via class extension', () => {
       const interaction = new MockInteraction({});
-      expect(interaction.handleEvent()).to.be(false);
+      expect(interaction.handleEvent()).toBe(false);
     });
 
   });

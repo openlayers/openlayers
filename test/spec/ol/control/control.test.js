@@ -1,10 +1,10 @@
 import Map from '../../../../src/ol/Map.js';
 import Control from '../../../../src/ol/control/Control.js';
 
-describe('ol.control.Control', function() {
+describe('ol.control.Control', () => {
   let map, control;
 
-  beforeEach(function() {
+  beforeEach(() => {
     map = new Map({
       target: document.createElement('div')
     });
@@ -13,43 +13,43 @@ describe('ol.control.Control', function() {
     control.setMap(map);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     disposeMap(map);
     map = null;
     control = null;
   });
 
-  describe('dispose', function() {
-    it('removes the control element from its parent', function() {
+  describe('dispose', () => {
+    test('removes the control element from its parent', () => {
       control.dispose();
-      expect(control.element.parentNode).to.be(null);
+      expect(control.element.parentNode).toBe(null);
     });
   });
 });
 
-describe('ol.control.Control\'s target', function() {
-  describe('target as string or element', function() {
-    it('transforms target from string to element', function() {
+describe('ol.control.Control\'s target', () => {
+  describe('target as string or element', () => {
+    test('transforms target from string to element', () => {
       const target = document.createElement('div');
       target.id = 'mycontrol';
       document.body.appendChild(target);
       const ctrl = new Control({target: 'mycontrol'});
-      expect(ctrl.target_.id).to.equal('mycontrol');
+      expect(ctrl.target_.id).toBe('mycontrol');
       ctrl.dispose();
       target.parentNode.removeChild(target);
     });
-    it('accepts element for target', function() {
+    test('accepts element for target', () => {
       const target = document.createElement('div');
       target.id = 'mycontrol';
       document.body.appendChild(target);
       const ctrl = new Control({target: target});
-      expect(ctrl.target_.id).to.equal('mycontrol');
+      expect(ctrl.target_.id).toBe('mycontrol');
       ctrl.dispose();
       target.parentNode.removeChild(target);
     });
-    it('ignores non-existing target id', function() {
+    test('ignores non-existing target id', () => {
       const ctrl = new Control({target: 'doesnotexist'});
-      expect(ctrl.target_).to.equal(null);
+      expect(ctrl.target_).toBe(null);
       ctrl.dispose();
     });
   });

@@ -1,13 +1,13 @@
 import Geolocation from '../../../src/ol/Geolocation.js';
 
 
-describe('ol.Geolocation', function() {
+describe('ol.Geolocation', () => {
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('can be constructed without arguments', function() {
+    test('can be constructed without arguments', () => {
       const instance = new Geolocation();
-      expect(instance).to.be.an(Geolocation);
+      expect(instance).toBeInstanceOf(Geolocation);
     });
 
   });
