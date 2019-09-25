@@ -72,7 +72,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @return {boolean} Tile is drawable.
    */
   isDrawableTile(tile) {
-    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    const tileLayer = this.getLayer();
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     return tileState == TileState.LOADED ||
@@ -90,7 +90,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   getTile(z, x, y, frameState) {
     const pixelRatio = frameState.pixelRatio;
     const projection = frameState.viewState.projection;
-    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() == TileState.ERROR) {
@@ -142,7 +142,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const rotation = viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
 
-    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
@@ -285,7 +285,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const tileGutter = tilePixelRatio * tileSource.getGutterForProjection(projection);
       const tilesToDraw = tilesToDrawByZ[currentZ];
       for (const tileCoordKey in tilesToDraw) {
-        const tile = tilesToDraw[tileCoordKey];
+        const tile = /** @type {import("../../ImageTile.js").default} */ (tilesToDraw[tileCoordKey]);
         const tileCoord = tile.tileCoord;
 
         // Calculate integer positions and sizes so that tiles align
@@ -363,7 +363,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../Tile.js").default} tile Tile.
+   * @param {import("../../ImageTile.js").default} tile Tile.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} x Left of the tile.
    * @param {number} y Top of the tile.
@@ -409,12 +409,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Get the image from a tile.
-   * @param {import("../../Tile.js").default} tile Tile.
+   * @param {import("../../ImageTile.js").default} tile Tile.
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    * @protected
    */
   getTileImage(tile) {
-    return /** @type {import("../../ImageTile.js").default} */ (tile).getImage();
+    return tile.getImage();
   }
 
   /**

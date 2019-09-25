@@ -44,11 +44,12 @@ export const WebGLWorkerMessageType = {
  * @classdesc
  * Base WebGL renderer class.
  * Holds all logic related to data manipulation & some common rendering logic
+ * @template {import("../../layer/Layer.js").default} LayerType
  */
 class WebGLLayerRenderer extends LayerRenderer {
 
   /**
-   * @param {import("../../layer/Layer.js").default} layer Layer.
+   * @param {LayerType} layer Layer.
    * @param {Options=} [opt_options] Options.
    */
   constructor(layer, opt_options) {

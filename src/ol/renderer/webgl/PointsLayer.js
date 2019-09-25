@@ -367,7 +367,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState) {
-    const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const vectorLayer = this.getLayer();
     const vectorSource = vectorLayer.getSource();
     const viewState = frameState.viewState;
 
@@ -418,7 +418,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @private
    */
   rebuildBuffers_(frameState) {
-    const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const vectorLayer = this.getLayer();
     const vectorSource = vectorLayer.getSource();
 
     // saves the projection transform for the current frame state

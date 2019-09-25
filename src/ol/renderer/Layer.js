@@ -7,10 +7,13 @@ import Observable from '../Observable.js';
 import EventType from '../events/EventType.js';
 import SourceState from '../source/State.js';
 
+/**
+ * @template {import("../layer/Layer.js").default} LayerType
+ */
 class LayerRenderer extends Observable {
 
   /**
-   * @param {import("../layer/Layer.js").default} layer Layer.
+   * @param {LayerType} layer Layer.
    */
   constructor(layer) {
 
@@ -21,7 +24,7 @@ class LayerRenderer extends Observable {
 
     /**
      * @private
-     * @type {import("../layer/Layer.js").default}
+     * @type {LayerType}
      */
     this.layer_ = layer;
 
@@ -110,7 +113,7 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @return {import("../layer/Layer.js").default} Layer.
+   * @return {LayerType} Layer.
    */
   getLayer() {
     return this.layer_;
