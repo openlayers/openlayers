@@ -108,15 +108,15 @@ import {assert} from '../../asserts.js';
 class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
-   * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
+   * @param {import("../../layer/Layer.js").default} layer Layer.
    * @param {Options=} options Options.
    */
-  constructor(vectorLayer, options) {
+  constructor(layer, options) {
     const uniforms = options.uniforms || {};
     const projectionMatrixTransform = createTransform();
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 
-    super(vectorLayer, {
+    super(layer, {
       uniforms: uniforms,
       postProcesses: options.postProcesses
     });
@@ -289,8 +289,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState) {
-    const vectorLayer = this.getLayer();
-    const vectorSource = vectorLayer.getSource();
+    const layer = this.getLayer();
+    const vectorSource = layer.getSource();
     const viewState = frameState.viewState;
 
     // the source has changed: clear the feature cache & reload features
@@ -332,8 +332,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @private
    */
   rebuildBuffers_(frameState) {
-    const vectorLayer = this.getLayer();
-    const vectorSource = vectorLayer.getSource();
+    const layer = this.getLayer();
+    const vectorSource = layer.getSource();
 
     // saves the projection transform for the current frame state
     const projectionTransform = createTransform();
