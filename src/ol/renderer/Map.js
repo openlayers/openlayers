@@ -9,7 +9,6 @@ import {inView} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, makeInverse} from '../transform.js';
 import {renderDeclutterItems} from '../render.js';
-import {add} from '../coordinate.js';
 
 /**
  * @abstract
@@ -128,6 +127,8 @@ class MapRenderer extends Disposable {
         return entry.value;
       });
     }
+
+    const tmpCoord = [];
     for (let i = 0; i < offsets.length; i++) {
       for (let j = numLayers - 1; j >= 0; --j) {
         const layerState = layerStates[j];
@@ -135,10 +136,13 @@ class MapRenderer extends Disposable {
         if (layer.hasRenderer() && inView(layerState, viewState) && layerFilter.call(thisArg2, layer)) {
           const layerRenderer = layer.getRenderer();
           const source = layer.getSource();
+          const coordinates = source.getWrapX() ? translatedCoordinate : coordinate;
           if (layerRenderer && source) {
             const callback = forEachFeatureAtCoordinate.bind(null, layerState.managed);
+            tmpCoord[0] = coordinates[0] + offsets[i][0];
+            tmpCoord[1] = coordinates[1] + offsets[i][1];
             result = layerRenderer.forEachFeatureAtCoordinate(
-              add(source.getWrapX() ? translatedCoordinate : coordinate, offsets[i]),
+              tmpCoord,
               frameState, hitTolerance, callback, declutteredFeatures);
           }
           if (result) {
