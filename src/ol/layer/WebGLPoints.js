@@ -17,7 +17,7 @@ import Layer from './Layer.js';
 
 /**
  * @typedef {Object} Options
- * @property {import('../style/LiteralStyle.js').LiteralStyle} literalStyle Literal style to apply to the layer features.
+ * @property {import('../style/LiteralStyle.js').LiteralStyle} style Literal style to apply to the layer features.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -37,7 +37,7 @@ import Layer from './Layer.js';
 
 /**
  * @classdesc
- * Layer optimized for rendering large point datasets. Takes a so-called *literalStyle* property which
+ * Layer optimized for rendering large point datasets. Takes a `style` property which
  * is a serializable JSON object describing how the layer should be rendered.
  *
  * Here are a few samples of literal style objects:
@@ -81,16 +81,16 @@ class WebGLPointsLayer extends Layer {
     /**
      * @type {import('../style/LiteralStyle.js').LiteralStyle}
      */
-    this.literalStyle = options.literalStyle;
+    this.style = options.style;
 
-    assert(this.literalStyle.symbol !== undefined, 65);
+    assert(this.style.symbol !== undefined, 65);
   }
 
   /**
    * @inheritDoc
    */
   createRenderer() {
-    const symbolStyle = this.literalStyle.symbol;
+    const symbolStyle = this.style.symbol;
     const size = Array.isArray(symbolStyle.size) ?
       formatArray(symbolStyle.size) : formatNumber(symbolStyle.size);
     const color = symbolStyle.color !== undefined ?

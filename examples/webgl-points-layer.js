@@ -43,7 +43,7 @@ function refreshLayer() {
   }
   pointsLayer = new WebGLPointsLayer({
     source: vectorSource,
-    literalStyle: literalStyle
+    style: literalStyle
   });
   map.addLayer(pointsLayer);
   editor.value = JSON.stringify(literalStyle, null, ' ');

@@ -13,7 +13,7 @@ const vector = new WebGLPointsLayer({
       extractStyles: false
     })
   }),
-  literalStyle: {
+  style: {
     symbol: {
       size: 4,
       color: 'white'
