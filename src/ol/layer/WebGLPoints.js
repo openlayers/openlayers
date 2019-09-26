@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/WebGLPoints
  */
-import VectorLayer from './Vector.js';
 import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {
@@ -13,6 +12,7 @@ import {
 } from '../webgl/ShaderBuilder.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
+import Layer from './Layer.js';
 
 
 /**
@@ -37,15 +37,39 @@ import {asArray} from '../color.js';
 
 /**
  * @classdesc
- * Layer optimized for rendering large point datasets.
+ * Layer optimized for rendering large point datasets. Takes a so-called *literalStyle* property which
+ * is a serializable JSON object describing how the layer should be rendered.
+ *
+ * Here are a few samples of literal style objects:
+ * ```js
+ * const style = {
+ *   symbol: {
+ *     symbolType: 'circle',
+ *     size: 8,
+ *     color: '#33AAFF',
+ *     opacity: 0.9
+ *   }
+ * }
+ * ```
+ *
+ * ```js
+ * const style = {
+ *   symbol: {
+ *     symbolType: 'image',
+ *     offset: [0, 12],
+ *     size: [4, 8],
+ *     src: '../static/exclamation-mark.png'
+ *   }
+ * }
+ * ```
+ *
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
  * @fires import("../render/Event.js").RenderEvent
- * @api
  */
-class WebGLPointsLayer extends VectorLayer {
+class WebGLPointsLayer extends Layer {
   /**
    * @param {Options} options Options.
    */
