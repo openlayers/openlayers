@@ -57,6 +57,9 @@ class Target extends Disposable {
    * @param {import("../events.js").ListenerFunction} listener Listener.
    */
   addEventListener(type, listener) {
+    if (!type || !listener) {
+      return;
+    }
     let listeners = this.listeners_[type];
     if (!listeners) {
       listeners = this.listeners_[type] = [];
@@ -146,6 +149,9 @@ class Target extends Disposable {
    * @param {import("../events.js").ListenerFunction} listener Listener.
    */
   removeEventListener(type, listener) {
+    if (!type || !listener) {
+      return;
+    }
     const listeners = this.listeners_[type];
     if (listeners) {
       const index = listeners.indexOf(listener);
