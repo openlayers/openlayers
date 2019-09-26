@@ -256,18 +256,19 @@ describe('ol.Map', function() {
 
   describe('#getFeaturesAtPixel', function() {
 
-    let target, map;
+    let target, map, layer;
     beforeEach(function() {
       target = document.createElement('div');
       target.style.width = target.style.height = '100px';
       document.body.appendChild(target);
+      layer = new VectorLayer({
+        source: new VectorSource({
+          features: [new Feature(new LineString([[-50, 0], [50, 0]]))]
+        })
+      });
       map = new Map({
         target: target,
-        layers: [new VectorLayer({
-          source: new VectorSource({
-            features: [new Feature(new LineString([[-50, 0], [50, 0]]))]
-          })
-        })],
+        layers: [layer],
         view: new View({
           center: [0, 0],
           zoom: 17
@@ -310,6 +311,7 @@ describe('ol.Map', function() {
         source: new VectorSource
       });
       map.addLayer(otherLayer);
+      map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50], {
         layerFilter: function(layer) {
           return layer === otherLayer;
@@ -319,6 +321,31 @@ describe('ol.Map', function() {
       expect(features).to.be.empty();
     });
 
+    it('finds off-world geometries', function() {
+      layer.getSource().addFeature(new Feature(new LineString([[130, 0], [230, 0]])));
+      layer.getSource().addFeature(new Feature(new LineString([[-230, 0], [-130, 0]])));
+      map.getView().setCenter([180, 0]);
+      map.renderSync();
+
+      let features = map.getFeaturesAtPixel([60, 50]);
+      expect(features).to.be.an(Array);
+      expect(features.length).to.be(2);
+
+      features = map.getFeaturesAtPixel([60, 50], {checkWrapped: false});
+      expect(features).to.be.an(Array);
+      expect(features.length).to.be(1);
+
+      map.getView().setCenter([-180, 0]);
+      map.renderSync();
+
+      features = map.getFeaturesAtPixel([40, 50]);
+      expect(features).to.be.an(Array);
+      expect(features.length).to.be(2);
+
+      features = map.getFeaturesAtPixel([40, 50], {checkWrapped: false});
+      expect(features).to.be.an(Array);
+      expect(features.length).to.be(1);
+    });
   });
 
   describe('#getFeaturesAtPixel - useGeographic', function() {

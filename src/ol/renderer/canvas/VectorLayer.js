@@ -202,6 +202,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const layer = this.getLayer();
       /** @type {!Object<string, boolean>} */
       const features = {};
+
       const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance,
         /**
          * @param {import("../../Feature.js").FeatureLike} feature Feature.
@@ -214,6 +215,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             return callback(feature, layer);
           }
         }, layer.getDeclutter() ? declutteredFeatures : null);
+
       return result;
     }
   }

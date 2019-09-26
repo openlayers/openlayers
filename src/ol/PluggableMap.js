@@ -75,6 +75,8 @@ import {toUserCoordinate, fromUserCoordinate} from './proj.js';
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels. Pixels
  * inside the radius around the given position will be checked for features.
+ * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for for wrapped geometries inside the range of
+ *   +/- 1 world width. Works only if a projection is used that can be wrapped.
  */
 
 
@@ -553,8 +555,9 @@ class PluggableMap extends BaseObject {
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = opt_options.layerFilter !== undefined ?
       opt_options.layerFilter : TRUE;
+    const checkWrapped = opt_options.checkWrapped !== false;
     return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, callback, null,
+      coordinate, this.frameState_, hitTolerance, checkWrapped, callback, null,
       layerFilter, null);
   }
 
@@ -624,8 +627,9 @@ class PluggableMap extends BaseObject {
     const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
+    const checkWrapped = opt_options.checkWrapped !== false;
     return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, layerFilter, null);
+      coordinate, this.frameState_, hitTolerance, checkWrapped, layerFilter, null);
   }
 
   /**

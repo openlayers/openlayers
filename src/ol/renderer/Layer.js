@@ -86,7 +86,6 @@ class LayerRenderer extends Observable {
       }
     ).bind(this);
   }
-
   /**
    * @abstract
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
