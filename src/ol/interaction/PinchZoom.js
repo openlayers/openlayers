@@ -95,7 +95,7 @@ class PinchZoom extends PointerInteraction {
 
     // scale, bypass the resolution constraint
     map.render();
-    view.adjustResolution(scaleDelta, this.anchor_);
+    view.adjustResolutionInternal(scaleDelta, this.anchor_);
   }
 
   /**

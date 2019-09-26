@@ -1,7 +1,8 @@
-import Map from '../../../../src/ol/Map.js';
+import {Map, View} from '../../../../src/ol/index.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
-import Interaction from '../../../../src/ol/interaction/Interaction.js';
+import Interaction, {zoomByDelta} from '../../../../src/ol/interaction/Interaction.js';
 import {FALSE} from '../../../../src/ol/functions.js';
+import {useGeographic, clearUserProjection} from '../../../../src/ol/proj.js';
 
 describe('ol.interaction.Interaction', function() {
 
@@ -86,4 +87,26 @@ describe('ol.interaction.Interaction', function() {
 
   });
 
+});
+
+describe('zoomByDelta - useGeographic', () => {
+  beforeEach(useGeographic);
+  afterEach(clearUserProjection);
+
+  it('works with a user projection set', done => {
+    const view = new View({
+      center: [0, 0],
+      zoom: 0
+    });
+
+    const anchor = [90, 45];
+    const duration = 10;
+    zoomByDelta(view, 1, anchor, duration);
+    setTimeout(() => {
+      const center = view.getCenter();
+      expect(center[0]).to.be(45);
+      expect(center[1]).to.roughlyEqual(24.4698, 1e-4);
+      done();
+    }, 2 * duration);
+  });
 });

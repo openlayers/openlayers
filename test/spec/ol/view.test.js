@@ -8,6 +8,7 @@ import {createEmpty} from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
+import {useGeographic, clearUserProjection} from '../../../src/ol/proj.js';
 
 describe('ol.View', function() {
 
@@ -1890,6 +1891,63 @@ describe('ol.View', function() {
       expect(view.getCenter()).to.eql([0, 100 - halfSize]);
     });
   });
+
+  describe('#adjustZoom() - useGeographic', () => {
+
+    beforeEach(useGeographic);
+    afterEach(clearUserProjection);
+
+    it('changes view resolution', () => {
+      const view = new View({
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1);
+      expect(view.getResolution()).to.be(0.5);
+
+      view.adjustZoom(-1);
+      expect(view.getResolution()).to.be(1);
+
+      view.adjustZoom(2);
+      expect(view.getResolution()).to.be(0.25);
+
+      view.adjustZoom(-2);
+      expect(view.getResolution()).to.be(1);
+    });
+
+    it('changes view resolution and center relative to the anchor', function() {
+      const view = new View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      let center;
+
+      view.adjustZoom(1, [90, 45]);
+      center = view.getCenter();
+      expect(center[0]).to.be(45);
+      expect(center[1]).to.roughlyEqual(24.4698, 1e-4);
+
+      view.adjustZoom(-1, [90, 45]);
+      center = view.getCenter();
+      expect(center[0]).to.roughlyEqual(0, 1e-10);
+      expect(center[1]).to.roughlyEqual(0, 1e-10);
+
+      view.adjustZoom(2, [-90, -45]);
+      center = view.getCenter();
+      expect(center[0]).to.be(-67.5);
+      expect(center[1]).to.roughlyEqual(-35.3836, 1e-4);
+
+      view.adjustZoom(-2, [-90, -45]);
+      center = view.getCenter();
+      expect(center[0]).to.roughlyEqual(0, 1e-10);
+      expect(center[1]).to.roughlyEqual(0, 1e-10);
+
+    });
+
+  });
+
 });
 
 describe('does not start unexpected animations during interaction', function() {
