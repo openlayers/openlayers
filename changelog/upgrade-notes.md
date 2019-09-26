@@ -279,6 +279,10 @@ The `getGetFeatureInfoUrl` of `ol/source/ImageWMS` and `ol/source/TileWMS` is no
 
 `getFeaturesAtPixel` now returns an empty array instead of null if no features were found.
 
+##### Hit detection with unfilled styles
+
+Hit detection over styled Circle geometry and Circle and RegularShape styles is now consistent with that for styled Polygon geometry. There is no hit detection over the interior of unfilled shapes. To get the previous behavior, specify a Fill style with transparent color.
+
 #### Other changes
 
 ##### Allow declutter in image render mode

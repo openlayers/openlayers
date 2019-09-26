@@ -14,13 +14,31 @@ describe('ol.style.Circle', function() {
       expect(style.getImageSize()).to.eql([21, 21]);
       expect(style.getOrigin()).to.eql([0, 0]);
       expect(style.getAnchor()).to.eql([10.5, 10.5]);
-      // hit-detection image is created, because no fill style is set
+      // no hit-detection image is created, because no fill style is set
+      expect(style.getImage()).to.be(style.getHitDetectionImage());
+      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
+      expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+    });
+
+    it('creates a canvas (transparent fill-style)', function() {
+      const style = new CircleStyle({
+        radius: 10,
+        fill: new Fill({
+          color: 'transparent'
+        })
+      });
+      expect(style.getImage()).to.be.an(HTMLCanvasElement);
+      expect(style.getSize()).to.eql([21, 21]);
+      expect(style.getImageSize()).to.eql([21, 21]);
+      expect(style.getOrigin()).to.eql([0, 0]);
+      expect(style.getAnchor()).to.eql([10.5, 10.5]);
+      // hit-detection image is created, because transparent fill style is set
       expect(style.getImage()).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
-    it('creates a canvas (fill-style)', function() {
+    it('creates a canvas (non-transparent fill-style)', function() {
       const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
@@ -32,7 +50,7 @@ describe('ol.style.Circle', function() {
       expect(style.getImageSize()).to.eql([21, 21]);
       expect(style.getOrigin()).to.eql([0, 0]);
       expect(style.getAnchor()).to.eql([10.5, 10.5]);
-      // no hit-detection image is created, because fill style is set
+      // no hit-detection image is created, because non-transparent fill style is set
       expect(style.getImage()).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
