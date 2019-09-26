@@ -201,8 +201,10 @@ export function parse(value, attributes, attributePrefix) {
       case 'stretch': return `(clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])}) * ((${p(v[5])} - ${p(v[4])}) / (${p(v[3])} - ${p(v[2])})) + ${p(v[4])})`;
       default: throw new Error('Unrecognized literal style expression: ' + JSON.stringify(value));
     }
-  } else {
+  } else if (typeof value === 'number') {
     return formatNumber(value);
+  } else {
+    throw new Error('Invalid value type in expression: ' + JSON.stringify(value));
   }
 }
 
