@@ -67,6 +67,9 @@ export function formatColor(colorArray) {
  * The following attributes are hardcoded and expected to be present in the vertex buffers:
  * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3).
  *
+ * The following varyings are hardcoded and gives the coordinate of the pixel both in the quad on the texture:
+ * `vec2 v_quadCoord`, `vec2 v_texCoord`
+ *
  * @param {ShaderParameters} parameters Parameters for the shader.
  * @returns {string} The full shader as a string.
  */
@@ -92,6 +95,7 @@ ${attributes.map(function(attribute) {
     return 'attribute ' + attribute + ';';
   }).join('\n')}
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 ${varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
@@ -107,6 +111,9 @@ void main(void) {
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
   v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
 ${varyings.map(function(varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
   }).join('\n')}
@@ -133,6 +140,7 @@ ${uniforms.map(function(uniform) {
     return 'uniform ' + uniform + ';';
   }).join('\n')}
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 ${varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
@@ -236,10 +244,29 @@ export function parseSymbolStyle(style) {
     return parse(value, varyings, 'v_');
   }
 
+  let opacityFilter = '1.0';
+  const visibleSize = pV(size[0]);
+  switch (style.symbolType) {
+    case 'square': break;
+    case 'image': break;
+    // taken from https://thebookofshaders.com/07/
+    case 'circle':
+      opacityFilter = `(1.0-smoothstep(1.-4./${visibleSize},1.,dot(v_quadCoord-.5,v_quadCoord-.5)*4.))`;
+      break;
+    case 'triangle':
+      const st = '(v_quadCoord*2.-1.)';
+      const a = `(atan(${st}.x,${st}.y))`;
+      opacityFilter = `(1.0-smoothstep(.5-3./${visibleSize},.5,cos(floor(.5+${a}/2.094395102)*2.094395102-${a})*length(${st})))`;
+      break;
+
+    default: throw new Error('Unexpected symbol type: ' + style.symbolType);
+  }
+
   /** @type {import('../webgl/ShaderBuilder.js').ShaderParameters} */
   const params = {
     uniforms: [],
-    colorExpression: `vec4(${pV(color[0])}, ${pV(color[1])}, ${pV(color[2])}, ${pV(color[3])}) * vec4(1.0, 1.0, 1.0, ${pV(opacity)})`,
+    colorExpression: `vec4(${pV(color[0])}, ${pV(color[1])}, ${pV(color[2])}, ${pV(color[3])})` +
+      ` * vec4(1.0, 1.0, 1.0, ${pV(opacity)} * ${opacityFilter})`,
     sizeExpression: `vec2(${pA(size[0])}, ${pA(size[1])})`,
     offsetExpression: `vec2(${pA(offset[0])}, ${pA(offset[1])})`,
     texCoordExpression: `vec4(${pA(texCoord[0])}, ${pA(texCoord[1])}, ${pA(texCoord[2])}, ${pA(texCoord[3])})`,

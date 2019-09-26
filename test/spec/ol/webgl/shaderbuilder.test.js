@@ -57,6 +57,7 @@ attribute vec2 a_position;
 attribute float a_index;
 
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 varying float v_opacity;
 varying vec3 v_test;
 void main(void) {
@@ -71,6 +72,9 @@ void main(void) {
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
   v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
@@ -94,6 +98,7 @@ attribute vec2 a_position;
 attribute float a_index;
 attribute vec2 a_myAttr;
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -107,6 +112,9 @@ void main(void) {
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
   v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
 
 }`);
     });
@@ -128,6 +136,7 @@ attribute vec2 a_position;
 attribute float a_index;
 
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
@@ -141,6 +150,9 @@ void main(void) {
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
   v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
 
 }`);
     });
@@ -168,6 +180,7 @@ void main(void) {
       expect(getSymbolFragmentShader(parameters)).to.eql(`precision mediump float;
 
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 varying float v_opacity;
 varying vec3 v_test;
 void main(void) {
@@ -188,6 +201,7 @@ void main(void) {
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 
 void main(void) {
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -226,7 +240,7 @@ void main(void) {
   describe('parseSymbolStyle', function() {
     it('parses a style without expressions', function() {
       const result = parseSymbolStyle({
-        symbolType: 'circle',
+        symbolType: 'square',
         size: [4, 8],
         color: '#336699',
         rotateWithView: true
@@ -235,7 +249,7 @@ void main(void) {
         uniforms: [],
         attributes: [],
         varyings: [],
-        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 1.0)',
+        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)',
         sizeExpression: 'vec2(4.0, 8.0)',
         offsetExpression: 'vec2(0.0, 0.0)',
         texCoordExpression: 'vec4(0.0, 0.0, 1.0, 1.0)',
@@ -247,7 +261,7 @@ void main(void) {
 
     it('parses a style with expressions', function() {
       const result = parseSymbolStyle({
-        symbolType: 'circle',
+        symbolType: 'square',
         size: ['get', 'attr1'],
         color: [
           1.0, 0.0, 0.5, ['get', 'attr2']
@@ -259,11 +273,15 @@ void main(void) {
         uniforms: [],
         attributes: ['float a_attr1', 'float a_attr3', 'float a_attr2'],
         varyings: [{
+          name: 'v_attr1',
+          type: 'float',
+          expression: 'a_attr1'
+        }, {
           name: 'v_attr2',
           type: 'float',
           expression: 'a_attr2'
         }],
-        colorExpression: 'vec4(1.0, 0.0, 0.5, v_attr2) * vec4(1.0, 1.0, 1.0, 1.0)',
+        colorExpression: 'vec4(1.0, 0.0, 0.5, v_attr2) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)',
         sizeExpression: 'vec2(a_attr1, a_attr1)',
         offsetExpression: 'vec2(3.0, a_attr3)',
         texCoordExpression: 'vec4(0.5, 0.5, 0.5, 1.0)',
@@ -288,7 +306,7 @@ void main(void) {
         uniforms: ['sampler2D u_texture'],
         attributes: [],
         varyings: [],
-        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 0.5) * texture2D(u_texture, v_texCoord)',
+        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 0.5 * 1.0) * texture2D(u_texture, v_texCoord)',
         sizeExpression: 'vec2(6.0, 6.0)',
         offsetExpression: 'vec2(0.0, 0.0)',
         texCoordExpression: 'vec4(0.0, 0.0, 1.0, 1.0)',
