@@ -70,8 +70,10 @@ export class TranslateEvent extends Event {
    * @param {TranslateEventType} type Type.
    * @param {Collection<import("../Feature.js").default>} features The features translated.
    * @param {import("../coordinate.js").Coordinate} coordinate The event coordinate.
+   * @param {import("../coordinate.js").Coordinate} startCoordinate The original coordinates before.translation started
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    */
-  constructor(type, features, coordinate) {
+  constructor(type, features, coordinate, startCoordinate, mapBrowserEvent) {
 
     super(type);
 
@@ -89,6 +91,21 @@ export class TranslateEvent extends Event {
      * @api
      */
     this.coordinate = coordinate;
+
+    /**
+     * The coordinate of the start position before translation started.
+     * @const
+     * @type {import("../coordinate.js").Coordinate}
+     * @api
+     */
+    this.startCoordinate = startCoordinate;
+
+    /**
+     * Associated {@link module:ol/MapBrowserEvent}.
+     * @type {import("../MapBrowserEvent.js").default}
+     * @api
+     */
+    this.mapBrowserEvent = mapBrowserEvent;
 
   }
 
@@ -117,6 +134,13 @@ class Translate extends PointerInteraction {
      * @private
      */
     this.lastCoordinate_ = null;
+
+    /**
+     * The start position before translation started.
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.startCoordinate_ = null;
 
 
     /**
@@ -174,6 +198,7 @@ class Translate extends PointerInteraction {
   handleDownEvent(event) {
     this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
     if (!this.lastCoordinate_ && this.lastFeature_) {
+      this.startCoordinate_ =
       this.lastCoordinate_ = event.coordinate;
       this.handleMoveEvent(event);
 
@@ -182,7 +207,7 @@ class Translate extends PointerInteraction {
       this.dispatchEvent(
         new TranslateEvent(
           TranslateEventType.TRANSLATESTART, features,
-          event.coordinate));
+          event.coordinate, this.startCoordinate_, event));
       return true;
     }
     return false;
@@ -201,7 +226,9 @@ class Translate extends PointerInteraction {
       this.dispatchEvent(
         new TranslateEvent(
           TranslateEventType.TRANSLATEEND, features,
-          event.coordinate));
+          event.coordinate, this.startCoordinate_, event));
+      // cleanup
+      this.startCoordinate_ = null;
       return true;
     }
     return false;
@@ -228,7 +255,7 @@ class Translate extends PointerInteraction {
       this.dispatchEvent(
         new TranslateEvent(
           TranslateEventType.TRANSLATING, features,
-          newCoordinate));
+          newCoordinate, this.startCoordinate_, event));
     }
   }
 
