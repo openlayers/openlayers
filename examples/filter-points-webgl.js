@@ -7,8 +7,9 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import {Vector} from '../src/ol/source.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer.js';
-import {clamp, lerp} from '../src/ol/math.js';
+import {clamp} from '../src/ol/math.js';
 import Stamen from '../src/ol/source/Stamen.js';
+import {formatColor} from '../src/ol/webgl/ShaderBuilder.js';
 
 const vectorSource = new Vector({
   attributions: 'NASA'
@@ -36,36 +37,58 @@ updateStatusText();
 class WebglPointsLayer extends VectorLayer {
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
-      colorCallback: function(feature, color) {
-        // color is interpolated based on year
-        const ratio = clamp((feature.get('year') - 1800) / (2013 - 1800), 0, 1);
+      attributes: [
+        {
+          name: 'size',
+          callback: function(feature) {
+            return 18 * clamp(feature.get('mass') / 200000, 0, 1) + 8;
+          }
+        },
+        {
+          name: 'year',
+          callback: function(feature) {
+            return feature.get('year');
+          }
+        }
+      ],
+      vertexShader: [
+        'precision mediump float;',
 
-        color[0] = lerp(oldColor[0], newColor[0], ratio) / 255;
-        color[1] = lerp(oldColor[1], newColor[1], ratio) / 255;
-        color[2] = lerp(oldColor[2], newColor[2], ratio) / 255;
-        color[3] = 1;
+        'uniform mat4 u_projectionMatrix;',
+        'uniform mat4 u_offsetScaleMatrix;',
+        'uniform mat4 u_offsetRotateMatrix;',
+        'attribute vec2 a_position;',
+        'attribute float a_index;',
+        'attribute float a_size;',
+        'attribute float a_year;',
+        'varying vec2 v_texCoord;',
+        'varying float v_year;',
 
-        return color;
-      },
-      sizeCallback: function(feature) {
-        return 18 * clamp(feature.get('mass') / 200000, 0, 1) + 8;
-      },
+        'void main(void) {',
+        '  mat4 offsetMatrix = u_offsetScaleMatrix;',
+        '  float offsetX = a_index == 0.0 || a_index == 3.0 ? -a_size / 2.0 : a_size / 2.0;',
+        '  float offsetY = a_index == 0.0 || a_index == 1.0 ? -a_size / 2.0 : a_size / 2.0;',
+        '  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);',
+        '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;',
+        '  float u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;',
+        '  float v = a_index == 0.0 || a_index == 1.0 ? 0.0 : 1.0;',
+        '  v_texCoord = vec2(u, v);',
+        '  v_year = a_year;',
+        '}'
+      ].join(' '),
       fragmentShader: [
         'precision mediump float;',
 
         'uniform float u_time;',
         'uniform float u_minYear;',
         'uniform float u_maxYear;',
-
         'varying vec2 v_texCoord;',
-        'varying float v_opacity;',
-        'varying vec4 v_color;',
+        'varying float v_year;',
 
         'void main(void) {',
-        '  float impactYear = v_opacity;',
 
         // filter out pixels if the year is outside of the given range
-        '  if (impactYear < u_minYear || v_opacity > u_maxYear) {',
+        '  if (v_year < u_minYear || v_year > u_maxYear) {',
         '    discard;',
         '  }',
 
@@ -74,19 +97,19 @@ class WebglPointsLayer extends VectorLayer {
         '  float value = 2.0 * (1.0 - sqRadius);',
         '  float alpha = smoothstep(0.0, 1.0, value);',
 
-        '  vec3 color = v_color.rgb;',
-        '  float period = 8.0;',
-        '  color.g *= 2.0 * (1.0 - sqrt(mod(u_time + impactYear * 0.025, period) / period));',
+        // color is interpolated based on year
+        '  float ratio = clamp((v_year - 1800.0) / (2013.0 - 1800.0), 0.0, 1.1);',
+        '  vec3 color = mix(vec3(' + formatColor(oldColor) + '),',
+        '    vec3(' + formatColor(newColor) + '), ratio);',
 
-        '  gl_FragColor = vec4(color, v_color.a);',
+        '  float period = 8.0;',
+        '  color.g *= 2.0 * (1.0 - sqrt(mod(u_time + v_year * 0.025, period) / period));',
+
+        '  gl_FragColor = vec4(color, 1.0);',
         '  gl_FragColor.a *= alpha;',
         '  gl_FragColor.rgb *= gl_FragColor.a;',
         '}'
       ].join(' '),
-      opacityCallback: function(feature) {
-        // here the opacity channel of the vertices is used to store the year of impact
-        return feature.get('year');
-      },
       uniforms: {
         u_time: function() {
           return Date.now() * 0.001 - startTime;

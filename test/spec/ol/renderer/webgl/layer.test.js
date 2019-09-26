@@ -1,8 +1,8 @@
 import WebGLLayerRenderer, {
   colorDecodeId,
   colorEncodeId,
-  getBlankImageData, POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE,
-  writePointFeatureInstructions, writePointFeatureToBuffers
+  getBlankImageData,
+  writePointFeatureToBuffers
 } from '../../../../../src/ol/renderer/webgl/Layer.js';
 import Layer from '../../../../../src/ol/layer/Layer.js';
 
@@ -32,111 +32,36 @@ describe('ol.renderer.webgl.Layer', function() {
 
   });
 
-  describe('writePointFeatureInstructions', function() {
-    let instructions;
-
-    beforeEach(function() {
-      instructions = new Float32Array(100);
-    });
-
-    it('writes instructions corresponding to the given parameters', function() {
-      const baseIndex = 17;
-      writePointFeatureInstructions(instructions, baseIndex,
-        1, 2, 3, 4, 5, 6,
-        7, 8, true, [10, 11, 12, 13]);
-      expect(instructions[baseIndex + 0]).to.eql(1);
-      expect(instructions[baseIndex + 1]).to.eql(2);
-      expect(instructions[baseIndex + 2]).to.eql(3);
-      expect(instructions[baseIndex + 3]).to.eql(4);
-      expect(instructions[baseIndex + 4]).to.eql(5);
-      expect(instructions[baseIndex + 5]).to.eql(6);
-      expect(instructions[baseIndex + 6]).to.eql(7);
-      expect(instructions[baseIndex + 7]).to.eql(8);
-      expect(instructions[baseIndex + 8]).to.eql(1);
-      expect(instructions[baseIndex + 9]).to.eql(10);
-      expect(instructions[baseIndex + 10]).to.eql(11);
-      expect(instructions[baseIndex + 11]).to.eql(12);
-      expect(instructions[baseIndex + 12]).to.eql(13);
-    });
-
-    it('correctly chains writes', function() {
-      let baseIndex = 0;
-      baseIndex = writePointFeatureInstructions(instructions, baseIndex,
-        1, 2, 3, 4, 5, 6,
-        7, 8, true, [10, 11, 12, 13]);
-      baseIndex = writePointFeatureInstructions(instructions, baseIndex,
-        1, 2, 3, 4, 5, 6,
-        7, 8, true, [10, 11, 12, 13]);
-      writePointFeatureInstructions(instructions, baseIndex,
-        1, 2, 3, 4, 5, 6,
-        7, 8, true, [10, 11, 12, 13]);
-      expect(instructions[baseIndex + 0]).to.eql(1);
-      expect(instructions[baseIndex + 1]).to.eql(2);
-      expect(instructions[baseIndex + 2]).to.eql(3);
-      expect(instructions[baseIndex + 3]).to.eql(4);
-      expect(instructions[baseIndex + 4]).to.eql(5);
-      expect(instructions[baseIndex + 5]).to.eql(6);
-      expect(instructions[baseIndex + 6]).to.eql(7);
-      expect(instructions[baseIndex + 7]).to.eql(8);
-      expect(instructions[baseIndex + 8]).to.eql(1);
-      expect(instructions[baseIndex + 9]).to.eql(10);
-      expect(instructions[baseIndex + 10]).to.eql(11);
-      expect(instructions[baseIndex + 11]).to.eql(12);
-      expect(instructions[baseIndex + 12]).to.eql(13);
-    });
-  });
-
   describe('writePointFeatureToBuffers', function() {
-    let vertexBuffer, indexBuffer, instructions, elementIndex;
+    let vertexBuffer, indexBuffer, instructions;
 
     beforeEach(function() {
       vertexBuffer = new Float32Array(100);
       indexBuffer = new Uint32Array(100);
       instructions = new Float32Array(100);
-      elementIndex = 3;
 
-      writePointFeatureInstructions(instructions, elementIndex,
-        1, 2, 3, 4, 5, 6,
-        7, 8, true, [10, 11, 12, 13]);
+      instructions.set([0, 0, 0, 0, 10, 11]);
     });
 
     it('writes correctly to the buffers (without custom attributes)', function() {
-      const stride = POINT_VERTEX_STRIDE;
-      const positions = writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer);
+      const stride = 3;
+      const positions = writePointFeatureToBuffers(instructions, 4, vertexBuffer, indexBuffer, 0);
 
-      expect(vertexBuffer[0]).to.eql(1);
-      expect(vertexBuffer[1]).to.eql(2);
-      expect(vertexBuffer[2]).to.eql(-3.5);
-      expect(vertexBuffer[3]).to.eql(-3.5);
-      expect(vertexBuffer[4]).to.eql(3);
-      expect(vertexBuffer[5]).to.eql(4);
-      expect(vertexBuffer[6]).to.eql(8);
-      expect(vertexBuffer[7]).to.eql(1);
-      expect(vertexBuffer[8]).to.eql(10);
-      expect(vertexBuffer[9]).to.eql(11);
-      expect(vertexBuffer[10]).to.eql(12);
-      expect(vertexBuffer[11]).to.eql(13);
+      expect(vertexBuffer[0]).to.eql(10);
+      expect(vertexBuffer[1]).to.eql(11);
+      expect(vertexBuffer[2]).to.eql(0);
 
-      expect(vertexBuffer[stride + 0]).to.eql(1);
-      expect(vertexBuffer[stride + 1]).to.eql(2);
-      expect(vertexBuffer[stride + 2]).to.eql(+3.5);
-      expect(vertexBuffer[stride + 3]).to.eql(-3.5);
-      expect(vertexBuffer[stride + 4]).to.eql(5);
-      expect(vertexBuffer[stride + 5]).to.eql(4);
+      expect(vertexBuffer[stride + 0]).to.eql(10);
+      expect(vertexBuffer[stride + 1]).to.eql(11);
+      expect(vertexBuffer[stride + 2]).to.eql(1);
 
-      expect(vertexBuffer[stride * 2 + 0]).to.eql(1);
-      expect(vertexBuffer[stride * 2 + 1]).to.eql(2);
-      expect(vertexBuffer[stride * 2 + 2]).to.eql(+3.5);
-      expect(vertexBuffer[stride * 2 + 3]).to.eql(+3.5);
-      expect(vertexBuffer[stride * 2 + 4]).to.eql(5);
-      expect(vertexBuffer[stride * 2 + 5]).to.eql(6);
+      expect(vertexBuffer[stride * 2 + 0]).to.eql(10);
+      expect(vertexBuffer[stride * 2 + 1]).to.eql(11);
+      expect(vertexBuffer[stride * 2 + 2]).to.eql(2);
 
-      expect(vertexBuffer[stride * 3 + 0]).to.eql(1);
-      expect(vertexBuffer[stride * 3 + 1]).to.eql(2);
-      expect(vertexBuffer[stride * 3 + 2]).to.eql(-3.5);
-      expect(vertexBuffer[stride * 3 + 3]).to.eql(+3.5);
-      expect(vertexBuffer[stride * 3 + 4]).to.eql(3);
-      expect(vertexBuffer[stride * 3 + 5]).to.eql(6);
+      expect(vertexBuffer[stride * 3 + 0]).to.eql(10);
+      expect(vertexBuffer[stride * 3 + 1]).to.eql(11);
+      expect(vertexBuffer[stride * 3 + 2]).to.eql(3);
 
       expect(indexBuffer[0]).to.eql(0);
       expect(indexBuffer[1]).to.eql(1);
@@ -149,43 +74,34 @@ describe('ol.renderer.webgl.Layer', function() {
       expect(positions.vertexPosition).to.eql(stride * 4);
     });
 
-    it('writes correctly to the buffers (with custom attributes)', function() {
-      instructions[elementIndex + POINT_INSTRUCTIONS_COUNT] = 101;
-      instructions[elementIndex + POINT_INSTRUCTIONS_COUNT + 1] = 102;
-      instructions[elementIndex + POINT_INSTRUCTIONS_COUNT + 2] = 103;
+    it('writes correctly to the buffers (with 2 custom attributes)', function() {
+      instructions.set([0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13]);
+      const stride = 5;
+      const positions = writePointFeatureToBuffers(instructions, 8, vertexBuffer, indexBuffer, 2);
 
-      const stride = POINT_VERTEX_STRIDE + 3;
-      const positions = writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer,
-        undefined, POINT_INSTRUCTIONS_COUNT + 3);
+      expect(vertexBuffer[0]).to.eql(10);
+      expect(vertexBuffer[1]).to.eql(11);
+      expect(vertexBuffer[2]).to.eql(0);
+      expect(vertexBuffer[3]).to.eql(12);
+      expect(vertexBuffer[4]).to.eql(13);
 
-      expect(vertexBuffer[0]).to.eql(1);
-      expect(vertexBuffer[1]).to.eql(2);
-      expect(vertexBuffer[2]).to.eql(-3.5);
-      expect(vertexBuffer[3]).to.eql(-3.5);
-      expect(vertexBuffer[4]).to.eql(3);
-      expect(vertexBuffer[5]).to.eql(4);
-      expect(vertexBuffer[6]).to.eql(8);
-      expect(vertexBuffer[7]).to.eql(1);
-      expect(vertexBuffer[8]).to.eql(10);
-      expect(vertexBuffer[9]).to.eql(11);
-      expect(vertexBuffer[10]).to.eql(12);
-      expect(vertexBuffer[11]).to.eql(13);
+      expect(vertexBuffer[stride + 0]).to.eql(10);
+      expect(vertexBuffer[stride + 1]).to.eql(11);
+      expect(vertexBuffer[stride + 2]).to.eql(1);
+      expect(vertexBuffer[stride + 3]).to.eql(12);
+      expect(vertexBuffer[stride + 4]).to.eql(13);
 
-      expect(vertexBuffer[12]).to.eql(101);
-      expect(vertexBuffer[13]).to.eql(102);
-      expect(vertexBuffer[14]).to.eql(103);
+      expect(vertexBuffer[stride * 2 + 0]).to.eql(10);
+      expect(vertexBuffer[stride * 2 + 1]).to.eql(11);
+      expect(vertexBuffer[stride * 2 + 2]).to.eql(2);
+      expect(vertexBuffer[stride * 2 + 3]).to.eql(12);
+      expect(vertexBuffer[stride * 2 + 4]).to.eql(13);
 
-      expect(vertexBuffer[stride + 12]).to.eql(101);
-      expect(vertexBuffer[stride + 13]).to.eql(102);
-      expect(vertexBuffer[stride + 14]).to.eql(103);
-
-      expect(vertexBuffer[stride * 2 + 12]).to.eql(101);
-      expect(vertexBuffer[stride * 2 + 13]).to.eql(102);
-      expect(vertexBuffer[stride * 2 + 14]).to.eql(103);
-
-      expect(vertexBuffer[stride * 3 + 12]).to.eql(101);
-      expect(vertexBuffer[stride * 3 + 13]).to.eql(102);
-      expect(vertexBuffer[stride * 3 + 14]).to.eql(103);
+      expect(vertexBuffer[stride * 3 + 0]).to.eql(10);
+      expect(vertexBuffer[stride * 3 + 1]).to.eql(11);
+      expect(vertexBuffer[stride * 3 + 2]).to.eql(3);
+      expect(vertexBuffer[stride * 3 + 3]).to.eql(12);
+      expect(vertexBuffer[stride * 3 + 4]).to.eql(13);
 
       expect(indexBuffer[0]).to.eql(0);
       expect(indexBuffer[1]).to.eql(1);
@@ -199,25 +115,23 @@ describe('ol.renderer.webgl.Layer', function() {
     });
 
     it('correctly chains buffer writes', function() {
-      const stride = POINT_VERTEX_STRIDE;
-      let positions = writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer);
-      positions = writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer, positions);
-      positions = writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer, positions);
+      instructions.set([10, 11, 20, 21, 30, 31]);
+      const stride = 3;
+      let positions = writePointFeatureToBuffers(instructions, 0, vertexBuffer, indexBuffer, 0);
+      positions = writePointFeatureToBuffers(instructions, 2, vertexBuffer, indexBuffer, 0, positions);
+      positions = writePointFeatureToBuffers(instructions, 4, vertexBuffer, indexBuffer, 0, positions);
 
-      expect(vertexBuffer[0]).to.eql(1);
-      expect(vertexBuffer[1]).to.eql(2);
-      expect(vertexBuffer[2]).to.eql(-3.5);
-      expect(vertexBuffer[3]).to.eql(-3.5);
+      expect(vertexBuffer[0]).to.eql(10);
+      expect(vertexBuffer[1]).to.eql(11);
+      expect(vertexBuffer[2]).to.eql(0);
 
-      expect(vertexBuffer[stride * 4 + 0]).to.eql(1);
-      expect(vertexBuffer[stride * 4 + 1]).to.eql(2);
-      expect(vertexBuffer[stride * 4 + 2]).to.eql(-3.5);
-      expect(vertexBuffer[stride * 4 + 3]).to.eql(-3.5);
+      expect(vertexBuffer[stride * 4 + 0]).to.eql(20);
+      expect(vertexBuffer[stride * 4 + 1]).to.eql(21);
+      expect(vertexBuffer[stride * 4 + 2]).to.eql(0);
 
-      expect(vertexBuffer[stride * 8 + 0]).to.eql(1);
-      expect(vertexBuffer[stride * 8 + 1]).to.eql(2);
-      expect(vertexBuffer[stride * 8 + 2]).to.eql(-3.5);
-      expect(vertexBuffer[stride * 8 + 3]).to.eql(-3.5);
+      expect(vertexBuffer[stride * 8 + 0]).to.eql(30);
+      expect(vertexBuffer[stride * 8 + 1]).to.eql(31);
+      expect(vertexBuffer[stride * 8 + 2]).to.eql(0);
 
       expect(indexBuffer[6 + 0]).to.eql(4);
       expect(indexBuffer[6 + 1]).to.eql(5);

@@ -1,6 +1,5 @@
 import {create} from '../../../../src/ol/worker/webgl.js';
 import {
-  POINT_INSTRUCTIONS_COUNT,
   WebGLWorkerMessageType
 } from '../../../../src/ol/renderer/webgl/Layer.js';
 
@@ -22,7 +21,9 @@ describe('ol/worker/webgl', function() {
   describe('messaging', function() {
     describe('GENERATE_BUFFERS', function() {
       it('responds with buffer data', function(done) {
-        worker.addEventListener('error', done);
+        worker.addEventListener('error', function(error) {
+          expect().fail(error.message);
+        });
 
         worker.addEventListener('message', function(event) {
           expect(event.data.type).to.eql(WebGLWorkerMessageType.GENERATE_BUFFERS);
@@ -34,11 +35,12 @@ describe('ol/worker/webgl', function() {
           done();
         });
 
-        const instructions = new Float32Array(POINT_INSTRUCTIONS_COUNT);
+        const instructions = new Float32Array(10);
 
         const message = {
           type: WebGLWorkerMessageType.GENERATE_BUFFERS,
           renderInstructions: instructions,
+          customAttributesCount: 0,
           testInt: 101,
           testString: 'abcd'
         };

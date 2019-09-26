@@ -14,7 +14,7 @@ import {
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
-import {getContext, getSupportedExtensions} from '../webgl.js';
+import {FLOAT, getContext, getSupportedExtensions, UNSIGNED_BYTE, UNSIGNED_INT, UNSIGNED_SHORT} from '../webgl.js';
 import {includes} from '../array.js';
 import {assert} from '../asserts.js';
 
@@ -46,18 +46,26 @@ export const DefaultUniform = {
 };
 
 /**
- * Attribute names used in the default shaders: `POSITION`, `TEX_COORD`, `OPACITY`,
- * `ROTATE_WITH_VIEW`, `OFFSETS` and `COLOR`
- * @enum {string}
+ * Attribute types, either `UNSIGNED_BYTE`, `UNSIGNED_SHORT`, `UNSIGNED_INT` or `FLOAT`
+ * Note: an attribute stored in a `Float32Array` should be of type `FLOAT`.
+ * @enum {number}
  */
-export const DefaultAttrib = {
-  POSITION: 'a_position',
-  TEX_COORD: 'a_texCoord',
-  OPACITY: 'a_opacity',
-  ROTATE_WITH_VIEW: 'a_rotateWithView',
-  OFFSETS: 'a_offsets',
-  COLOR: 'a_color'
+export const AttributeType = {
+  UNSIGNED_BYTE: UNSIGNED_BYTE,
+  UNSIGNED_SHORT: UNSIGNED_SHORT,
+  UNSIGNED_INT: UNSIGNED_INT,
+  FLOAT: FLOAT
 };
+
+/**
+ * Description of an attribute in a buffer
+ * @typedef {Object} AttributeDescription
+ * @property {string} name Attribute name to use in shaders
+ * @property {number} size Number of components per attributes
+ * @property {AttributeType} [type] Attribute type, i.e. number of bytes used to store the value. This is
+ * determined by the class of typed array which the buffer uses (eg. `Float32Array` for a `FLOAT` attribute).
+ * Default is `FLOAT`.
+ */
 
 /**
  * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|import("../transform").Transform} UniformLiteralValue
@@ -122,14 +130,14 @@ export const DefaultAttrib = {
  *   // for subsequent rendering calls
  *   const vertexShader = new WebGLVertex(VERTEX_SHADER);
  *   const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
- *   this.program = this.context.getProgram(fragmentShader, vertexShader);
- *   this.context.useProgram(this.program);
+ *   const program = this.context.getProgram(fragmentShader, vertexShader);
+ *   helper.useProgram(this.program);
  *   ```
  *
  *   Uniforms are defined using the `uniforms` option and can either be explicit values or callbacks taking the frame state as argument.
  *   You can also change their value along the way like so:
  *   ```js
- *   this.context.setUniformFloatValue('u_value', valueAsNumber);
+ *   helper.setUniformFloatValue('u_value', valueAsNumber);
  *   ```
  *
  * ### Defining post processing passes
@@ -162,32 +170,42 @@ export const DefaultAttrib = {
  *   Examples below:
  *   ```js
  *   // at initialization phase
- *   this.verticesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
- *   this.indicesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+ *   const verticesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+ *   const indicesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
  *
  *   // when array values have changed
- *   this.context.flushBufferData(ARRAY_BUFFER, this.verticesBuffer);
- *   this.context.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+ *   helper.flushBufferData(ARRAY_BUFFER, this.verticesBuffer);
+ *   helper.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
  *
  *   // at rendering phase
- *   this.context.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
- *   this.context.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+ *   helper.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
+ *   helper.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
  *   ```
  *
  * ### Specifying attributes
  *
  *   The GPU only receives the data as arrays of numbers. These numbers must be handled differently depending on what it describes (position, texture coordinate...).
- *   Attributes are used to specify these uses. Use {@link enableAttributeArray} and either
+ *   Attributes are used to specify these uses. Use {@link enableAttributeArray_} and either
  *   the default attribute names in {@link module:ol/webgl/Helper.DefaultAttrib} or custom ones.
  *
  *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGLRenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer) for more explanation.
  *   ```js
  *   // here we indicate that the data array has the following structure:
  *   // [posX, posY, offsetX, offsetY, texCoordU, texCoordV, posX, posY, ...]
- *   let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
- *   this.context.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
- *   this.context.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
- *   this.context.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
+ *   helper.enableAttributes([
+ *     {
+ *        name: 'a_position',
+ *        size: 2
+ *     },
+ *     {
+ *       name: 'a_offset',
+ *       size: 2
+ *     },
+ *     {
+ *       name: 'a_texCoord',
+ *       size: 2
+ *     }
+ *   ])
  *   ```
  *
  * ### Rendering primitives
@@ -195,13 +213,13 @@ export const DefaultAttrib = {
  *   Once all the steps above have been achieved, rendering primitives to the screen is done using {@link prepareDraw}, {@link drawElements} and {@link finalizeDraw}.
  *   ```js
  *   // frame preparation step
- *   this.context.prepareDraw(frameState);
+ *   helper.prepareDraw(frameState);
  *
  *   // call this for every data array that has to be rendered on screen
- *   this.context.drawElements(0, this.indicesBuffer.getArray().length);
+ *   helper.drawElements(0, this.indicesBuffer.getArray().length);
  *
  *   // finalize the rendering by applying post processes
- *   this.context.finalizeDraw(frameState);
+ *   helper.finalizeDraw(frameState);
  *   ```
  *
  * For an example usage of this class, refer to {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
@@ -543,6 +561,7 @@ class WebGLHelper extends Disposable {
     let textureSlot = 0;
     this.uniforms_.forEach(function(uniform) {
       value = typeof uniform.value === 'function' ? uniform.value(frameState) : uniform.value;
+
       // apply value based on type
       if (value instanceof HTMLCanvasElement || value instanceof HTMLImageElement || value instanceof ImageData) {
         // create a texture & put data
@@ -734,15 +753,16 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Will set the currently bound buffer to an attribute of the shader program
+   * Will set the currently bound buffer to an attribute of the shader program. Used by `#enableAttributes`
+   * internally.
    * @param {string} attribName Attribute name
    * @param {number} size Number of components per attributes
    * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
    * @param {number} stride Stride in bytes (0 means attribs are packed)
    * @param {number} offset Offset in bytes
-   * @api
+   * @private
    */
-  enableAttributeArray(attribName, size, type, stride, offset) {
+  enableAttributeArray_(attribName, size, type, stride, offset) {
     const location = this.getAttributeLocation(attribName);
     // the attribute has not been found in the shaders; do not enable it
     if (location < 0) {
@@ -751,6 +771,23 @@ class WebGLHelper extends Disposable {
     this.getGL().enableVertexAttribArray(location);
     this.getGL().vertexAttribPointer(location, size, type,
       false, stride, offset);
+  }
+
+  /**
+   * Will enable the following attributes to be read from the currently bound buffer,
+   * i.e. tell the GPU where to read the different attributes in the buffer. An error in the
+   * size/type/order of attributes will most likely break the rendering and throw a WebGL exception.
+   * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   * @api
+   */
+  enableAttributes(attributes) {
+    const stride = computeAttributesStride(attributes);
+    let offset = 0;
+    for (let i = 0; i < attributes.length; i++) {
+      const attr = attributes[i];
+      this.enableAttributeArray_(attr.name, attr.size, attr.type || FLOAT, stride, offset);
+      offset += attr.size * getByteSizeFromType(attr.type);
+    }
   }
 
   /**
@@ -805,6 +842,36 @@ class WebGLHelper extends Disposable {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
     return texture;
+  }
+}
+
+/**
+ * Compute a stride in bytes based on a list of attributes
+ * @param {Array<AttributeDescription>} attributes Ordered list of attributes
+ * @returns {number} Stride, ie amount of values for each vertex in the vertex buffer
+ * @api
+ */
+export function computeAttributesStride(attributes) {
+  let stride = 0;
+  for (let i = 0; i < attributes.length; i++) {
+    const attr = attributes[i];
+    stride += attr.size * getByteSizeFromType(attr.type);
+  }
+  return stride;
+}
+
+/**
+ * Computes the size in byte of an attribute type.
+ * @param {AttributeType} type Attribute type
+ * @returns {number} The size in bytes
+ */
+function getByteSizeFromType(type) {
+  switch (type) {
+    case AttributeType.UNSIGNED_BYTE: return Uint8Array.BYTES_PER_ELEMENT;
+    case AttributeType.UNSIGNED_SHORT: return Uint16Array.BYTES_PER_ELEMENT;
+    case AttributeType.UNSIGNED_INT: return Uint32Array.BYTES_PER_ELEMENT;
+    case AttributeType.FLOAT:
+    default: return Float32Array.BYTES_PER_ELEMENT;
   }
 }
 
