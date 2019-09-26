@@ -53,6 +53,10 @@ map.on('click', function(event) {
     return;
   }
   const feature = features[0];
+  if (!feature) {
+    return;
+  }
+
   const fid = feature.get(idProp);
 
   if (selectElement.value === 'singleselect') {
