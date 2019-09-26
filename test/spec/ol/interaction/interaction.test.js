@@ -100,13 +100,16 @@ describe('zoomByDelta - useGeographic', () => {
     });
 
     const anchor = [90, 45];
-    const duration = 10;
-    zoomByDelta(view, 1, anchor, duration);
-    setTimeout(() => {
-      const center = view.getCenter();
-      expect(center[0]).to.be(45);
-      expect(center[1]).to.roughlyEqual(24.4698, 1e-4);
-      done();
-    }, 2 * duration);
+    zoomByDelta(view, 1, anchor, 10);
+    view.on('change:resolution', function() {
+      setTimeout(function() {
+        if (!view.getAnimating()) {
+          const center = view.getCenter();
+          expect(center[0]).to.be(45);
+          expect(center[1]).to.roughlyEqual(24.4698, 1e-4);
+          done();
+        }
+      }, 16);
+    });
   });
 });
