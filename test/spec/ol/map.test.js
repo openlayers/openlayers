@@ -7,7 +7,7 @@ import View from '../../../src/ol/View.js';
 import {LineString, Point, Polygon} from '../../../src/ol/geom.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
-import {get as getProjection, useGeographic, transform, clearUserProjection} from '../../../src/ol/proj.js';
+import {get as getProjection, useGeographic, transform, clearUserProjection, fromLonLat} from '../../../src/ol/proj.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import DragPan from '../../../src/ol/interaction/DragPan.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
@@ -322,9 +322,13 @@ describe('ol.Map', function() {
     });
 
     it('finds off-world geometries', function() {
-      layer.getSource().addFeature(new Feature(new LineString([[130, 0], [230, 0]])));
-      layer.getSource().addFeature(new Feature(new LineString([[-230, 0], [-130, 0]])));
-      map.getView().setCenter([180, 0]);
+      const line1 = new LineString([[130, 0], [230, 0]]);
+      line1.transform('EPSG:4326', 'EPSG:3857');
+      const line2 = new LineString([[-230, 0], [-130, 0]]);
+      line2.transform('EPSG:4326', 'EPSG:3857');
+      layer.getSource().addFeature(new Feature(line1));
+      layer.getSource().addFeature(new Feature(line2));
+      map.getView().setCenter(fromLonLat([180, 0]));
       map.renderSync();
 
       let features = map.getFeaturesAtPixel([60, 50]);
@@ -335,7 +339,7 @@ describe('ol.Map', function() {
       expect(features).to.be.an(Array);
       expect(features.length).to.be(1);
 
-      map.getView().setCenter([-180, 0]);
+      map.getView().setCenter(fromLonLat([-180, 0]));
       map.renderSync();
 
       features = map.getFeaturesAtPixel([40, 50]);
