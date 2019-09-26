@@ -5,8 +5,10 @@ import {getUid} from '../util.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
 import {listen, unlistenByKey} from '../events.js';
+import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {boundingExtent, createEmpty} from '../extent.js';
+import {singleClick} from '../events/condition.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
@@ -14,6 +16,19 @@ import PointerInteraction from './Pointer.js';
 import {getValues} from '../obj.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
+
+
+/**
+ * @enum {string}
+ */
+const SnapEventType = {
+  /**
+   * Triggered when feature(s) has been snapped.
+   * @event SnapEvent#snap
+   * @api
+   */
+  SNAP: 'snap'
+};
 
 
 /**
@@ -51,6 +66,47 @@ function getFeatureFromEvent(evt) {
     return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature;
   } else if (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element) {
     return /** @type {import("../Feature.js").default} */ (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element);
+  }
+
+}
+
+/**
+ * @classdesc
+ * Events emitted by {@link module:ol/interaction/Snap~Snap} instances are instances of
+ * this type.
+ */
+class SnapEvent extends Event {
+  /**
+   * @param {SnapEventType} type The event type.
+   * @param {Array} result Snap result array.
+   * @param {Array<import("../Feature.js").default>} features Array with the snapped features.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
+   *     {@link module:ol/MapBrowserEvent}.
+   */
+  constructor(type, result, features, mapBrowserEvent) {
+    super(type);
+
+    /**
+     * Snapped result array.
+     * @type {Array}
+     * @api
+     */
+    this.result = result;
+
+    /**
+     * Snapped features array.
+     * @type {Array<import("../Feature.js").default>}
+     * @api
+     */
+    this.features = features;
+
+    /**
+     * Associated {@link module:ol/MapBrowserEvent}.
+     * @type {import("../MapBrowserEvent.js").default}
+     * @api
+     */
+    this.mapBrowserEvent = mapBrowserEvent;
+
   }
 
 }
@@ -95,6 +151,12 @@ class Snap extends PointerInteraction {
     }
 
     super(pointerOptions);
+
+    /**
+     * @private
+     * @type {import("../events/condition.js").Condition}
+     */
+    this.snapCondition_ = options.snapCondition ? options.snapCondition : singleClick;
 
     /**
      * @type {import("../source/Vector.js").default}
@@ -171,18 +233,18 @@ class Snap extends PointerInteraction {
 
 
     /**
-    * Segment RTree for each layer
-    * @type {import("../structs/RBush.js").default<SegmentData>}
-    * @private
-    */
+     * Segment RTree for each layer
+     * @type {import("../structs/RBush.js").default<SegmentData>}
+     * @private
+     */
     this.rBush_ = new RBush();
 
 
     /**
-    * @const
-    * @private
-    * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default): void>}
-    */
+     * @const
+     * @private
+     * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default): void>}
+     */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,
       'LineString': this.writeLineStringGeometry_,
@@ -258,9 +320,16 @@ class Snap extends PointerInteraction {
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+    evt.snapped = result.snapped;
     if (result.snapped) {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
+
+      if (this.snapCondition_(evt)) {
+        this.dispatchEvent(
+          new SnapEvent(SnapEventType.SNAP,
+            result, evt.map.getFeaturesAtPixel(evt.pixel), evt));
+      }
     }
     return super.handleEvent(evt);
   }
@@ -396,7 +465,7 @@ class Snap extends PointerInteraction {
     if (this.vertex_ && !this.edge_) {
       segments = segments.filter(function(segment) {
         return segment.feature.getGeometry().getType() !==
-            GeometryType.CIRCLE;
+          GeometryType.CIRCLE;
       });
     }
 
@@ -410,7 +479,7 @@ class Snap extends PointerInteraction {
       segments.sort(this.sortByDistance_);
       const closestSegment = segments[0].segment;
       const isCircle = segments[0].feature.getGeometry().getType() ===
-          GeometryType.CIRCLE;
+        GeometryType.CIRCLE;
       if (this.vertex_ && !this.edge_) {
         pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
         pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);

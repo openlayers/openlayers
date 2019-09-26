@@ -50,6 +50,13 @@ class MapBrowserEvent extends MapEvent {
      */
     this.dragging = opt_dragging !== undefined ? opt_dragging : false;
 
+    /**
+     * Indicates if a feature is currently snapped. Default is `false`.
+     *
+     * @type {boolean}
+     */
+    this.snapped_ = false;
+
   }
 
   /**
@@ -65,6 +72,18 @@ class MapBrowserEvent extends MapEvent {
   }
   set pixel(pixel) {
     this.pixel_ = pixel;
+  }
+
+  /**
+   * Indicates if a feature is currently snapped. Default is `false`.
+   * @type {boolean}
+   * @api
+   */
+  get snapped() {
+    return this.snapped_;
+  }
+  set snapped(snapped) {
+    this.snapped_ = snapped;
   }
 
   /**
