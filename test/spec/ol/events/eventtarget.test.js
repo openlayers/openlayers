@@ -64,6 +64,11 @@ describe('ol.events.EventTarget', function() {
       eventTarget.removeEventListener('foo', spy1, false);
       expect(eventTarget.listeners_['foo']).to.have.length(1);
     });
+    it.only('does nothing when called with undefined listener', function() {
+      eventTarget.addEventListener('foo', spy1);
+      eventTarget.removeEventListener('foo', undefined);
+      expect(eventTarget.listeners_['foo']).to.eql([spy1]);
+    });
   });
 
   describe('#dispatchEvent()', function() {
