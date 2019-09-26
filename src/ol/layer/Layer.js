@@ -193,6 +193,15 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * @param {import("../pixel").Pixel} pixel Pixel.
+   * @return {Promise<Array<import("../Feature").default>>} Promise that resolves with
+   * an array of features.
+   */
+  getFeatures(pixel) {
+    return this.renderer_.getFeatures(pixel);
+  }
+
+  /**
    * In charge to manage the rendering of the layer. One layer type is
    * bounded with one layer renderer.
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.

@@ -439,6 +439,13 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
+   * @param {import("../../transform.js").Transform} transform Transform.
+   */
+  setTransform(transform) {
+    this.transform_ = transform;
+  }
+
+  /**
    * Render a geometry into the canvas.  Call
    * {@link module:ol/render/canvas/Immediate#setStyle} first to set the rendering style.
    *

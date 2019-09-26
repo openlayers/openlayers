@@ -31,6 +31,16 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * Asynchronous layer level hit detection.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @return {Promise<Array<import("../Feature").default>>} Promise that resolves with
+   * an array of features.
+   */
+  getFeatures(pixel) {
+    return abstract();
+  }
+
+  /**
    * Determine whether render should be called.
    * @abstract
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.

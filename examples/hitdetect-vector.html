@@ -1,0 +1,15 @@
+---
+layout: example.html
+title: Vector Layer Hit Detection
+shortdesc: Example of hit detection on a countries vector layer with country information.
+docs: >
+  The countries are loaded from a GeoJSON file. Information about countries is
+  on hover and click is retrieved using the layer's `getFeatures()` method. For
+  vector layers, this function resolves with an array of only the topmost
+  feature. It uses a very efficient hit detection algorithm, at the cost of
+  accuracy. For pixel exact hit detection, when performance is not a concern,
+  use the map's `getFeaturesAtPixel()` or `forEachFeatureAtPixel()` methods.
+tags: "vector, geojson, click, hover, hit detection"
+---
+<div id="map" class="map"></div>
+<div id="info">&nbsp;</div>

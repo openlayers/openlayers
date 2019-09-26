@@ -675,14 +675,21 @@ class VectorSource extends Source {
    * all features intersecting the given extent in random order (so it may include
    * features whose geometries do not intersect the extent).
    *
-   * This method is not available when the source is configured with
-   * `useSpatialIndex` set to `false`.
+   * When `useSpatialIndex` is set to false, this method will return all
+   * features.
+   *
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {Array<import("../Feature.js").default<Geometry>>} Features.
    * @api
    */
   getFeaturesInExtent(extent) {
-    return this.featuresRtree_.getInExtent(extent);
+    if (this.featuresRtree_) {
+      return this.featuresRtree_.getInExtent(extent);
+    } else if (this.featuresCollection_) {
+      return this.featuresCollection_.getArray();
+    } else {
+      return [];
+    }
   }
 
 

@@ -428,7 +428,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const declutterReplays = layer.getDeclutter() ? {} : null;
     const replayTypes = VECTOR_REPLAYS[renderMode];
     const pixelRatio = frameState.pixelRatio;
-    const rotation = frameState.viewState.rotation;
+    const viewState = frameState.viewState;
+    const center = viewState.center;
+    const resolution = viewState.resolution;
+    const rotation = viewState.rotation;
     const size = frameState.size;
 
     // set forward and inverse pixel transforms
@@ -462,7 +465,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const tileCoord = tile.tileCoord;
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];
-      const transform = this.getRenderTransform(frameState, width, height, worldOffset);
+      const transform = this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, worldOffset);
       const executorGroups = tile.executorGroups[getUid(layer)];
       let clipped = false;
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
