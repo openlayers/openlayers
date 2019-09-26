@@ -28,9 +28,19 @@ import {clear} from '../obj.js';
  *    returns false.
  */
 class Target extends Disposable {
-  constructor() {
+
+  /**
+   * @param {*=} opt_target Default event target for dispatched events.
+   */
+  constructor(opt_target) {
 
     super();
+
+    /**
+     * @private
+     * @type {*}
+     */
+    this.target_ = opt_target;
 
     /**
      * @private
@@ -86,7 +96,7 @@ class Target extends Disposable {
     const evt = typeof event === 'string' ? new Event(event) : event;
     const type = evt.type;
     if (!evt.target) {
-      evt.target = this;
+      evt.target = this.target_ || this;
     }
     const listeners = this.listeners_[type];
     let propagate;

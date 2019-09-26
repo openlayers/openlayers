@@ -28,6 +28,15 @@ describe('ol.events.EventTarget', function() {
     it('creates an empty listeners_ object', function() {
       expect(Object.keys(eventTarget.listeners_)).to.have.length(0);
     });
+    it('accepts a default target', function(done) {
+      const defaultTarget = {};
+      const target = new EventTarget(defaultTarget);
+      target.addEventListener('my-event', function(event) {
+        expect(event.target).to.eql(defaultTarget);
+        done();
+      });
+      target.dispatchEvent('my-event');
+    });
   });
 
   describe('#hasListener', function() {

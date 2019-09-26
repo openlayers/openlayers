@@ -18,7 +18,7 @@ class MapBrowserEventHandler extends EventTarget {
    */
   constructor(map, moveTolerance) {
 
-    super();
+    super(map);
 
     /**
      * This is the element that we will listen to the real events on.
