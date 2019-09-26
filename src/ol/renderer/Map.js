@@ -97,9 +97,7 @@ class MapRenderer extends Disposable {
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(managed, feature, layer) {
-      if (managed) {
-        return callback.call(thisArg, feature, layer);
-      }
+      return callback.call(thisArg, feature, managed ? layer : null);
     }
 
     const projection = viewState.projection;
