@@ -122,7 +122,7 @@ export function pan(view, delta, opt_duration) {
 /**
  * @param {import("../View.js").default} view View.
  * @param {number} delta Delta from previous zoom level.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
+ * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate in the user projection.
  * @param {number=} opt_duration Duration.
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
@@ -138,7 +138,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   if (view.getAnimating()) {
     view.cancelAnimations();
   }
-  view.animateInternal({
+  view.animate({
     resolution: newResolution,
     anchor: opt_anchor,
     duration: opt_duration !== undefined ? opt_duration : 250,

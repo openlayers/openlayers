@@ -91,7 +91,7 @@ class DragRotateAndZoom extends PointerInteraction {
     }
     this.lastAngle_ = theta;
     if (this.lastMagnitude_ !== undefined) {
-      view.adjustResolution(this.lastMagnitude_ / magnitude);
+      view.adjustResolutionInternal(this.lastMagnitude_ / magnitude);
     }
     if (this.lastMagnitude_ !== undefined) {
       this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;

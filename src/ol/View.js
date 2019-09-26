@@ -1237,6 +1237,17 @@ class View extends BaseObject {
    * @api
    */
   adjustResolution(ratio, opt_anchor) {
+    const anchor = opt_anchor && fromUserCoordinate(opt_anchor, this.getProjection());
+    this.adjustResolutionInternal(ratio, anchor);
+  }
+
+  /**
+   * Multiply the view resolution by a ratio, optionally using an anchor. Any resolution
+   * constraint will apply.
+   * @param {number} ratio The ratio to apply on the view resolution.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   */
+  adjustResolutionInternal(ratio, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
     const size = this.getSizeFromViewport_(this.getRotation());
     const newResolution = this.constraints_.resolution(this.targetResolution_ * ratio, 0, size, isMoving);
@@ -1448,6 +1459,18 @@ class View extends BaseObject {
    * @api
    */
   endInteraction(opt_duration, opt_resolutionDirection, opt_anchor) {
+    const anchor = opt_anchor && fromUserCoordinate(opt_anchor, this.getProjection());
+    this.endInteractionInternal(opt_duration, opt_resolutionDirection, anchor);
+  }
+
+  /**
+   * Notify the View that an interaction has ended. The view state will be resolved
+   * to a stable one if needed (depending on its constraints).
+   * @param {number=} opt_duration Animation duration in ms.
+   * @param {number=} opt_resolutionDirection Which direction to zoom.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   */
+  endInteractionInternal(opt_duration, opt_resolutionDirection, opt_anchor) {
     this.setHint(ViewHint.INTERACTING, -1);
 
     this.resolveConstraints(opt_duration, opt_resolutionDirection, opt_anchor);
