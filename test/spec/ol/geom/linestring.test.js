@@ -73,6 +73,12 @@ describe('ol.geom.LineString', function() {
       expect(lineString.getStride()).to.be(2);
     });
 
+    describe('#intersectsCoordinate', function() {
+      it('returns true for an intersecting coordinate', function() {
+        expect(lineString.intersectsCoordinate([1.5, 2.5])).to.be(true);
+      });
+    });
+
     describe('#intersectsExtent', function() {
 
       it('return false for non matching extent', function() {
@@ -85,6 +91,23 @@ describe('ol.geom.LineString', function() {
 
       it('returns true for the geom\'s own extent', function() {
         expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      });
+
+    });
+
+    describe('#intersectsCoordinate', function() {
+
+      it('detects intersecting coordinates', function() {
+        expect(lineString.intersectsCoordinate([1, 2])).to.be(true);
+      });
+
+    });
+
+    describe('#getClosestPoint', function() {
+
+      it('uses existing vertices', function() {
+        const closestPoint = lineString.getClosestPoint([0.9, 1.8]);
+        expect(closestPoint).to.eql([1, 2]);
       });
 
     });
