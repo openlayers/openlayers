@@ -11,7 +11,7 @@ import {equals as coordinatesEqual, distance as coordinateDistance, squaredDista
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {always, primaryAction, altKeyOnly, singleClick} from '../events/condition.js';
-import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
+import {boundingExtent, buffer as bufferExtent, createOrUpdateFromCoordinate as createExtent} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import PointerInteraction from './Pointer.js';
@@ -20,6 +20,7 @@ import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import {createEditingStyle} from '../style/Style.js';
+import {fromUserExtent, toUserExtent} from '../proj.js';
 
 
 /**
@@ -36,6 +37,7 @@ const CIRCLE_CENTER_INDEX = 0;
  */
 const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
+const tempExtent = [0, 0, 0, 0];
 
 /**
  * @enum {string}
@@ -652,7 +654,7 @@ class Modify extends PointerInteraction {
 
     const featureSegments = [centerSegmentData, circumferenceSegmentData];
     centerSegmentData.featureSegments = circumferenceSegmentData.featureSegments = featureSegments;
-    this.rBush_.insert(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
+    this.rBush_.insert(createExtent(coordinates), centerSegmentData);
     this.rBush_.insert(geometry.getExtent(), circumferenceSegmentData);
   }
 
@@ -801,14 +803,13 @@ class Modify extends PointerInteraction {
       return false;
     }
     this.handlePointerAtPixel_(evt.pixel, evt.map);
-    const pixelCoordinate = evt.map.getCoordinateFromPixelInternal(evt.pixel);
+    const pixelCoordinate = evt.coordinate;
     this.dragSegments_.length = 0;
     this.modified_ = false;
     const vertexFeature = this.vertexFeature_;
     if (vertexFeature) {
       const insertVertices = [];
-      const geometry = vertexFeature.getGeometry();
-      const vertex = geometry.getCoordinates();
+      const vertex = vertexFeature.getGeometry().getCoordinates();
       const vertexExtent = boundingExtent([vertex]);
       const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
       const componentSegments = {};
@@ -824,21 +825,23 @@ class Modify extends PointerInteraction {
         if (!componentSegments[uid]) {
           componentSegments[uid] = new Array(2);
         }
-        if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
-        segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX) {
 
+        if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE && segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX) {
           const closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
           if (coordinatesEqual(closestVertex, vertex) && !componentSegments[uid][0]) {
             this.dragSegments_.push([segmentDataMatch, 0]);
             componentSegments[uid][0] = segmentDataMatch;
           }
-        } else if (coordinatesEqual(segment[0], vertex) &&
-            !componentSegments[uid][0]) {
+          continue;
+        }
+
+        if (coordinatesEqual(segment[0], vertex) && !componentSegments[uid][0]) {
           this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
-        } else if (coordinatesEqual(segment[1], vertex) &&
-            !componentSegments[uid][1]) {
+          continue;
+        }
 
+        if (coordinatesEqual(segment[1], vertex) && !componentSegments[uid][1]) {
           // prevent dragging closed linestrings by the connecting node
           if ((segmentDataMatch.geometry.getType() ===
               GeometryType.LINE_STRING ||
@@ -851,15 +854,20 @@ class Modify extends PointerInteraction {
 
           this.dragSegments_.push([segmentDataMatch, 1]);
           componentSegments[uid][1] = segmentDataMatch;
-        } else if (getUid(segment) in this.vertexSegments_ &&
+          continue;
+        }
+
+        if (getUid(segment) in this.vertexSegments_ &&
             (!componentSegments[uid][0] && !componentSegments[uid][1]) &&
             this.insertVertexCondition_(evt)) {
           insertVertices.push([segmentDataMatch, vertex]);
         }
       }
+
       if (insertVertices.length) {
         this.willModifyFeatures_(evt);
       }
+
       for (let j = insertVertices.length - 1; j >= 0; --j) {
         this.insertVertex_.apply(this, insertVertices[j]);
       }
@@ -881,7 +889,7 @@ class Modify extends PointerInteraction {
         const circumferenceSegmentData = segmentData.featureSegments[1];
         centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
         circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
-        this.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
+        this.rBush_.update(createExtent(coordinates), centerSegmentData);
         this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
       } else {
         this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
@@ -909,14 +917,16 @@ class Modify extends PointerInteraction {
    * @private
    */
   handlePointerAtPixel_(pixel, map) {
-    const pixelCoordinate = map.getCoordinateFromPixelInternal(pixel);
+    const pixelCoordinate = map.getCoordinateFromPixel(pixel);
     const sortByDistance = function(a, b) {
       return pointDistanceToSegmentDataSquared(pixelCoordinate, a) -
           pointDistanceToSegmentDataSquared(pixelCoordinate, b);
     };
 
-    const box = buffer(createOrUpdateFromCoordinate(pixelCoordinate),
-      map.getView().getResolution() * this.pixelTolerance_);
+    const projection = map.getView().getProjection();
+    const viewExtent = fromUserExtent(createExtent(pixelCoordinate, tempExtent), projection);
+    const buffer = map.getView().getResolution() * this.pixelTolerance_;
+    const box = toUserExtent(bufferExtent(viewExtent, buffer, tempExtent), projection);
 
     const rBush = this.rBush_;
     const nodes = rBush.getInExtent(box);
@@ -925,20 +935,18 @@ class Modify extends PointerInteraction {
       const node = nodes[0];
       const closestSegment = node.segment;
       let vertex = closestOnSegmentData(pixelCoordinate, node);
-      const vertexPixel = map.getPixelFromCoordinateInternal(vertex);
+      const vertexPixel = map.getPixelFromCoordinate(vertex);
       let dist = coordinateDistance(pixel, vertexPixel);
       if (dist <= this.pixelTolerance_) {
         /** @type {Object<string, boolean>} */
         const vertexSegments = {};
 
-        if (node.geometry.getType() === GeometryType.CIRCLE &&
-        node.index === CIRCLE_CIRCUMFERENCE_INDEX) {
-
+        if (node.geometry.getType() === GeometryType.CIRCLE && node.index === CIRCLE_CIRCUMFERENCE_INDEX) {
           this.snappedToVertex_ = true;
           this.createOrUpdateVertexFeature_(vertex);
         } else {
-          const pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
-          const pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
+          const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+          const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
           const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
           const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
           dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
@@ -1256,8 +1264,7 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
 function closestOnSegmentData(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
 
-  if (geometry.getType() === GeometryType.CIRCLE &&
-  segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
+  if (geometry.getType() === GeometryType.CIRCLE && segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
   return closestOnSegment(pointCoordinates, segmentData.segment);
