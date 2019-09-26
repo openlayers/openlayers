@@ -267,8 +267,7 @@ class Modify extends PointerInteraction {
         useSpatialIndex: false,
         wrapX: !!options.wrapX
       }),
-      style: options.style ? options.style :
-        getDefaultStyleFunction(),
+      style: options.style ? options.style : getDefaultStyleFunction(),
       updateWhileAnimating: true,
       updateWhileInteracting: true
     });
@@ -279,15 +278,15 @@ class Modify extends PointerInteraction {
      * @type {!Object<string, function(Feature, import("../geom/Geometry.js").default): void>}
      */
     this.SEGMENT_WRITERS_ = {
-      'Point': this.writePointGeometry_,
-      'LineString': this.writeLineStringGeometry_,
-      'LinearRing': this.writeLineStringGeometry_,
-      'Polygon': this.writePolygonGeometry_,
-      'MultiPoint': this.writeMultiPointGeometry_,
-      'MultiLineString': this.writeMultiLineStringGeometry_,
-      'MultiPolygon': this.writeMultiPolygonGeometry_,
-      'Circle': this.writeCircleGeometry_,
-      'GeometryCollection': this.writeGeometryCollectionGeometry_
+      'Point': this.writePointGeometry_.bind(this),
+      'LineString': this.writeLineStringGeometry_.bind(this),
+      'LinearRing': this.writeLineStringGeometry_.bind(this),
+      'Polygon': this.writePolygonGeometry_.bind(this),
+      'MultiPoint': this.writeMultiPointGeometry_.bind(this),
+      'MultiLineString': this.writeMultiLineStringGeometry_.bind(this),
+      'MultiPolygon': this.writeMultiPolygonGeometry_.bind(this),
+      'Circle': this.writeCircleGeometry_.bind(this),
+      'GeometryCollection': this.writeGeometryCollectionGeometry_.bind(this)
     };
 
 
@@ -334,8 +333,11 @@ class Modify extends PointerInteraction {
    */
   addFeature_(feature) {
     const geometry = feature.getGeometry();
-    if (geometry && geometry.getType() in this.SEGMENT_WRITERS_) {
-      this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+    if (geometry) {
+      const writer = this.SEGMENT_WRITERS_[geometry.getType()];
+      if (writer) {
+        writer(feature, geometry);
+      }
     }
     const map = this.getMap();
     if (map && map.isRendered() && this.getActive()) {
@@ -351,8 +353,7 @@ class Modify extends PointerInteraction {
   willModifyFeatures_(evt) {
     if (!this.modified_) {
       this.modified_ = true;
-      this.dispatchEvent(new ModifyEvent(
-        ModifyEventType.MODIFYSTART, this.features_, evt));
+      this.dispatchEvent(new ModifyEvent(ModifyEventType.MODIFYSTART, this.features_, evt));
     }
   }
 
@@ -362,8 +363,7 @@ class Modify extends PointerInteraction {
    */
   removeFeature_(feature) {
     this.removeFeatureSegmentData_(feature);
-    // Remove the vertex feature if the collection of canditate features
-    // is empty.
+    // Remove the vertex feature if the collection of canditate features is empty.
     if (this.vertexFeature_ && this.features_.getLength() === 0) {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
@@ -377,7 +377,8 @@ class Modify extends PointerInteraction {
    */
   removeFeatureSegmentData_(feature) {
     const rBush = this.rBush_;
-    const /** @type {Array<SegmentData>} */ nodesToRemove = [];
+    /** @type {Array<SegmentData>} */
+    const nodesToRemove = [];
     rBush.forEach(
       /**
        * @param {SegmentData} node RTree node.
@@ -482,11 +483,14 @@ class Modify extends PointerInteraction {
    */
   writePointGeometry_(feature, geometry) {
     const coordinates = geometry.getCoordinates();
-    const segmentData = /** @type {SegmentData} */ ({
+
+    /** @type {SegmentData} */
+    const segmentData = {
       feature: feature,
       geometry: geometry,
       segment: [coordinates, coordinates]
-    });
+    };
+
     this.rBush_.insert(geometry.getExtent(), segmentData);
   }
 
@@ -499,13 +503,16 @@ class Modify extends PointerInteraction {
     const points = geometry.getCoordinates();
     for (let i = 0, ii = points.length; i < ii; ++i) {
       const coordinates = points[i];
-      const segmentData = /** @type {SegmentData} */ ({
+
+      /** @type {SegmentData} */
+      const segmentData = {
         feature: feature,
         geometry: geometry,
         depth: [i],
         index: i,
         segment: [coordinates, coordinates]
-      });
+      };
+
       this.rBush_.insert(geometry.getExtent(), segmentData);
     }
   }
@@ -519,12 +526,15 @@ class Modify extends PointerInteraction {
     const coordinates = geometry.getCoordinates();
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {SegmentData} */ ({
+
+      /** @type {SegmentData} */
+      const segmentData = {
         feature: feature,
         geometry: geometry,
         index: i,
         segment: segment
-      });
+      };
+
       this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
@@ -540,13 +550,16 @@ class Modify extends PointerInteraction {
       const coordinates = lines[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {SegmentData} */ ({
+
+        /** @type {SegmentData} */
+        const segmentData = {
           feature: feature,
           geometry: geometry,
           depth: [j],
           index: i,
           segment: segment
-        });
+        };
+
         this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
@@ -563,13 +576,16 @@ class Modify extends PointerInteraction {
       const coordinates = rings[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {SegmentData} */ ({
+
+        /** @type {SegmentData} */
+        const segmentData = {
           feature: feature,
           geometry: geometry,
           depth: [j],
           index: i,
           segment: segment
-        });
+        };
+
         this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
@@ -588,13 +604,16 @@ class Modify extends PointerInteraction {
         const coordinates = rings[j];
         for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
           const segment = coordinates.slice(i, i + 2);
-          const segmentData = /** @type {SegmentData} */ ({
+
+          /** @type {SegmentData} */
+          const segmentData = {
             feature: feature,
             geometry: geometry,
             depth: [j, k],
             index: i,
             segment: segment
-          });
+          };
+
           this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
@@ -614,18 +633,23 @@ class Modify extends PointerInteraction {
    */
   writeCircleGeometry_(feature, geometry) {
     const coordinates = geometry.getCenter();
-    const centerSegmentData = /** @type {SegmentData} */ ({
+
+    /** @type {SegmentData} */
+    const centerSegmentData = {
       feature: feature,
       geometry: geometry,
       index: CIRCLE_CENTER_INDEX,
       segment: [coordinates, coordinates]
-    });
-    const circumferenceSegmentData = /** @type {SegmentData} */ ({
+    };
+
+    /** @type {SegmentData} */
+    const circumferenceSegmentData = {
       feature: feature,
       geometry: geometry,
       index: CIRCLE_CIRCUMFERENCE_INDEX,
       segment: [coordinates, coordinates]
-    });
+    };
+
     const featureSegments = [centerSegmentData, circumferenceSegmentData];
     centerSegmentData.featureSegments = circumferenceSegmentData.featureSegments = featureSegments;
     this.rBush_.insert(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
@@ -640,7 +664,9 @@ class Modify extends PointerInteraction {
   writeGeometryCollectionGeometry_(feature, geometry) {
     const geometries = geometry.getGeometriesArray();
     for (let i = 0; i < geometries.length; ++i) {
-      this.SEGMENT_WRITERS_[geometries[i].getType()].call(this, feature, geometries[i]);
+      const geometry = geometries[i];
+      const writer = this.SEGMENT_WRITERS_[geometry.getType()];
+      writer(feature, geometry);
     }
   }
 
@@ -955,7 +981,7 @@ class Modify extends PointerInteraction {
     const feature = segmentData.feature;
     const geometry = segmentData.geometry;
     const depth = segmentData.depth;
-    const index = /** @type {number} */ (segmentData.index);
+    const index = segmentData.index;
     let coordinates;
 
     while (vertex.length < geometry.getStride()) {
@@ -987,24 +1013,28 @@ class Modify extends PointerInteraction {
     const rTree = this.rBush_;
     rTree.remove(segmentData);
     this.updateSegmentIndices_(geometry, index, depth, 1);
-    const newSegmentData = /** @type {SegmentData} */ ({
+
+    /** @type {SegmentData} */
+    const newSegmentData = {
       segment: [segment[0], vertex],
       feature: feature,
       geometry: geometry,
       depth: depth,
       index: index
-    });
-    rTree.insert(boundingExtent(newSegmentData.segment),
-      newSegmentData);
+    };
+
+    rTree.insert(boundingExtent(newSegmentData.segment), newSegmentData);
     this.dragSegments_.push([newSegmentData, 1]);
 
-    const newSegmentData2 = /** @type {SegmentData} */ ({
+    /** @type {SegmentData} */
+    const newSegmentData2 = {
       segment: [vertex, segment[1]],
       feature: feature,
       geometry: geometry,
       depth: depth,
       index: index + 1
-    });
+    };
+
     rTree.insert(boundingExtent(newSegmentData2.segment), newSegmentData2);
     this.dragSegments_.push([newSegmentData2, 0]);
     this.ignoreNextSingleClick_ = true;
@@ -1123,15 +1153,17 @@ class Modify extends PointerInteraction {
           segments.push(right.segment[1]);
         }
         if (left !== undefined && right !== undefined) {
-          const newSegmentData = /** @type {SegmentData} */ ({
+
+          /** @type {SegmentData} */
+          const newSegmentData = {
             depth: segmentData.depth,
             feature: segmentData.feature,
             geometry: segmentData.geometry,
             index: newIndex,
             segment: segments
-          });
-          this.rBush_.insert(boundingExtent(newSegmentData.segment),
-            newSegmentData);
+          };
+
+          this.rBush_.insert(boundingExtent(newSegmentData.segment), newSegmentData);
         }
         this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
         if (this.vertexFeature_) {
