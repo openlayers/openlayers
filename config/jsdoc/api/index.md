@@ -15,7 +15,7 @@
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
 </tr><tr>
-<td><a href="module-ol_control_util.html#.defaults">Map default controls</a><br>
+<td><a href="module-ol_control.html#.defaults">Map default controls</a><br>
 <a href="module-ol_control_Control-Control.html">All controls</a>
 </td>
 <td>
