@@ -149,20 +149,19 @@ class Target extends Disposable {
    * @param {import("../events.js").ListenerFunction} listener Listener.
    */
   removeEventListener(type, listener) {
-    if (!type || !listener) {
-      return;
-    }
     const listeners = this.listeners_[type];
     if (listeners) {
       const index = listeners.indexOf(listener);
-      if (type in this.pendingRemovals_) {
-        // make listener a no-op, and remove later in #dispatchEvent()
-        listeners[index] = VOID;
-        ++this.pendingRemovals_[type];
-      } else {
-        listeners.splice(index, 1);
-        if (listeners.length === 0) {
-          delete this.listeners_[type];
+      if (index !== -1) {
+        if (type in this.pendingRemovals_) {
+          // make listener a no-op, and remove later in #dispatchEvent()
+          listeners[index] = VOID;
+          ++this.pendingRemovals_[type];
+        } else {
+          listeners.splice(index, 1);
+          if (listeners.length === 0) {
+            delete this.listeners_[type];
+          }
         }
       }
     }
