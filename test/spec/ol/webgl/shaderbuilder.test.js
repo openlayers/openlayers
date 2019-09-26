@@ -2,7 +2,7 @@ import {
   getSymbolVertexShader,
   formatNumber,
   getSymbolFragmentShader,
-  formatColor, formatArray, parse
+  formatColor, formatArray, parse, parseSymbolStyle
 } from '../../../../src/ol/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', function() {
@@ -220,6 +220,82 @@ void main(void) {
       parseFn(['get', 'myAttr']);
       parseFn(['clamp', ['get', 'attr2'], ['get', 'attr2'], ['get', 'myAttr']]);
       expect(attributes).to.eql(['myAttr', 'attr2']);
+    });
+  });
+
+  describe('parseSymbolStyle', function() {
+    it('parses a style without expressions', function() {
+      const result = parseSymbolStyle({
+        symbolType: 'circle',
+        size: [4, 8],
+        color: '#336699',
+        rotateWithView: true
+      });
+      expect(result.params).to.eql({
+        uniforms: [],
+        attributes: [],
+        varyings: [],
+        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 1.0)',
+        sizeExpression: 'vec2(4.0, 8.0)',
+        offsetExpression: 'vec2(0.0, 0.0)',
+        texCoordExpression: 'vec4(0.0, 0.0, 1.0, 1.0)',
+        rotateWithView: true
+      });
+      expect(result.attributes).to.eql([]);
+      expect(result.uniforms).to.eql({});
+    });
+
+    it('parses a style with expressions', function() {
+      const result = parseSymbolStyle({
+        symbolType: 'circle',
+        size: ['get', 'attr1'],
+        color: [
+          1.0, 0.0, 0.5, ['get', 'attr2']
+        ],
+        textureCoord: [0.5, 0.5, 0.5, 1],
+        offset: [3, ['get', 'attr3']]
+      });
+      expect(result.params).to.eql({
+        uniforms: [],
+        attributes: ['float a_attr1', 'float a_attr3', 'float a_attr2'],
+        varyings: [{
+          name: 'v_attr2',
+          type: 'float',
+          expression: 'a_attr2'
+        }],
+        colorExpression: 'vec4(1.0, 0.0, 0.5, v_attr2) * vec4(1.0, 1.0, 1.0, 1.0)',
+        sizeExpression: 'vec2(a_attr1, a_attr1)',
+        offsetExpression: 'vec2(3.0, a_attr3)',
+        texCoordExpression: 'vec4(0.5, 0.5, 0.5, 1.0)',
+        rotateWithView: false
+      });
+      expect(result.attributes.length).to.eql(3);
+      expect(result.attributes[0].name).to.eql('attr1');
+      expect(result.attributes[1].name).to.eql('attr3');
+      expect(result.attributes[2].name).to.eql('attr2');
+      expect(result.uniforms).to.eql({});
+    });
+
+    it('parses a style with a uniform (texture)', function() {
+      const result = parseSymbolStyle({
+        symbolType: 'image',
+        src: '../data/image.png',
+        size: 6,
+        color: '#336699',
+        opacity: 0.5
+      });
+      expect(result.params).to.eql({
+        uniforms: ['sampler2D u_texture'],
+        attributes: [],
+        varyings: [],
+        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 0.5) * texture2D(u_texture, v_texCoord)',
+        sizeExpression: 'vec2(6.0, 6.0)',
+        offsetExpression: 'vec2(0.0, 0.0)',
+        texCoordExpression: 'vec4(0.0, 0.0, 1.0, 1.0)',
+        rotateWithView: false
+      });
+      expect(result.attributes).to.eql([]);
+      expect(result.uniforms).to.have.property('u_texture');
     });
   });
 

@@ -3,6 +3,8 @@
  * @module ol/webgl/ShaderBuilder
  */
 
+import {asArray} from '../color.js';
+
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
  * @param {number} v Numerical value.
@@ -194,4 +196,92 @@ export function parse(value, attributes, attributePrefix) {
   } else {
     return formatNumber(value);
   }
+}
+
+/**
+ * @typedef {Object} StyleParseResult
+ * @property {ShaderParameters} params Symbol shader params.
+ * @property {Object.<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
+ * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
+ */
+
+/**
+ * Parses a {@link import("../style/LiteralStyle").LiteralSymbolStyle} object and outputs shader parameters to be
+ * then fed to {@link getSymbolVertexShader} and {@link getSymbolFragmentShader}.
+ *
+ * Also returns `uniforms` and `attributes` properties as expected by the
+ * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
+ *
+ * @param {import("../style/LiteralStyle").LiteralSymbolStyle} style Symbol style.
+ * @returns {StyleParseResult} Result containing shader params, attributes and uniforms.
+ */
+export function parseSymbolStyle(style) {
+  const size = Array.isArray(style.size) && typeof style.size[0] == 'number' ?
+    style.size : [style.size, style.size];
+  const color = (typeof style.color === 'string' ?
+    asArray(style.color).map(function(c, i) {
+      return i < 3 ? c / 255 : c;
+    }) :
+    style.color || [255, 255, 255, 1]);
+  const texCoord = style.textureCoord || [0, 0, 1, 1];
+  const offset = style.offset || [0, 0];
+  const opacity = style.opacity !== undefined ? style.opacity : 1;
+
+  let attributes = [];
+  const varyings = [];
+  function pA(value) {
+    return parse(value, attributes, 'a_');
+  }
+  function pV(value) {
+    return parse(value, varyings, 'v_');
+  }
+
+  /** @type {import('../webgl/ShaderBuilder.js').ShaderParameters} */
+  const params = {
+    uniforms: [],
+    colorExpression: `vec4(${pV(color[0])}, ${pV(color[1])}, ${pV(color[2])}, ${pV(color[3])}) * vec4(1.0, 1.0, 1.0, ${pV(opacity)})`,
+    sizeExpression: `vec2(${pA(size[0])}, ${pA(size[1])})`,
+    offsetExpression: `vec2(${pA(offset[0])}, ${pA(offset[1])})`,
+    texCoordExpression: `vec4(${pA(texCoord[0])}, ${pA(texCoord[1])}, ${pA(texCoord[2])}, ${pA(texCoord[3])})`,
+    rotateWithView: !!style.rotateWithView
+  };
+
+  attributes = attributes.concat(varyings).filter(function(attrName, index, arr) {
+    return arr.indexOf(attrName) === index;
+  });
+  params.attributes = attributes.map(function(attributeName) {
+    return `float a_${attributeName}`;
+  });
+  params.varyings = varyings.map(function(attributeName) {
+    return {
+      name: `v_${attributeName}`,
+      type: 'float',
+      expression: `a_${attributeName}`
+    };
+  });
+
+  /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
+  const uniforms = {};
+
+  if (style.symbolType === 'image' && style.src) {
+    const texture = new Image();
+    texture.src = style.src;
+    params.uniforms.push('sampler2D u_texture');
+    params.colorExpression = params.colorExpression +
+      ' * texture2D(u_texture, v_texCoord)';
+    uniforms['u_texture'] = texture;
+  }
+
+  return {
+    params: params,
+    attributes: attributes.map(function(attributeName) {
+      return {
+        name: attributeName,
+        callback: function(feature) {
+          return feature.get(attributeName) || 0;
+        }
+      };
+    }),
+    uniforms: uniforms
+  };
 }

@@ -3,15 +3,8 @@
  */
 import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {
-  formatArray,
-  formatColor,
-  formatNumber,
-  getSymbolFragmentShader,
-  getSymbolVertexShader
-} from '../webgl/ShaderBuilder.js';
+import {getSymbolFragmentShader, getSymbolVertexShader, parseSymbolStyle} from '../webgl/ShaderBuilder.js';
 import {assert} from '../asserts.js';
-import {asArray} from '../color.js';
 import Layer from './Layer.js';
 
 
@@ -90,42 +83,13 @@ class WebGLPointsLayer extends Layer {
    * @inheritDoc
    */
   createRenderer() {
-    const symbolStyle = this.style.symbol;
-    const size = Array.isArray(symbolStyle.size) ?
-      formatArray(symbolStyle.size) : formatNumber(symbolStyle.size);
-    const color = symbolStyle.color !== undefined ?
-      (typeof symbolStyle.color === 'string' ? asArray(symbolStyle.color) : symbolStyle.color) :
-      [255, 255, 255, 1];
-    const texCoord = symbolStyle.textureCoord || [0, 0, 1, 1];
-    const offset = symbolStyle.offset || [0, 0];
-    const opacity = symbolStyle.opacity !== undefined ? symbolStyle.opacity : 1;
-
-    /** @type {import('../webgl/ShaderBuilder.js').ShaderParameters} */
-    const params = {
-      uniforms: [],
-      colorExpression: 'vec4(' + formatColor(color) + ') * vec4(1.0, 1.0, 1.0, ' + formatNumber(opacity) + ')',
-      sizeExpression: 'vec2(' + size + ')',
-      offsetExpression: 'vec2(' + formatArray(offset) + ')',
-      texCoordExpression: 'vec4(' + formatArray(texCoord) + ')',
-      rotateWithView: !!symbolStyle.rotateWithView
-    };
-
-    /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
-    const uniforms = {};
-
-    if (symbolStyle.symbolType === 'image' && symbolStyle.src) {
-      const texture = new Image();
-      texture.src = symbolStyle.src;
-      params.uniforms.push('sampler2D u_texture');
-      params.colorExpression = params.colorExpression +
-        ' * texture2D(u_texture, v_texCoord);';
-      uniforms['u_texture'] = texture;
-    }
+    const parseResult = parseSymbolStyle(this.style.symbol);
 
     return new WebGLPointsLayerRenderer(this, {
-      vertexShader: getSymbolVertexShader(params),
-      fragmentShader: getSymbolFragmentShader(params),
-      uniforms: uniforms
+      vertexShader: getSymbolVertexShader(parseResult.params),
+      fragmentShader: getSymbolFragmentShader(parseResult.params),
+      uniforms: parseResult.uniforms,
+      attributes: parseResult.attributes
     });
   }
 }
