@@ -93,20 +93,20 @@ describe('zoomByDelta - useGeographic', () => {
   beforeEach(useGeographic);
   afterEach(clearUserProjection);
 
-  it('works with a user projection set', done => {
+  it('works with a user projection set', () => {
     const view = new View({
       center: [0, 0],
       zoom: 0
     });
 
+    const spy = sinon.spy(view, 'animate');
+
     const anchor = [90, 45];
     const duration = 10;
     zoomByDelta(view, 1, anchor, duration);
-    setTimeout(() => {
-      const center = view.getCenter();
-      expect(center[0]).to.be(45);
-      expect(center[1]).to.roughlyEqual(24.4698, 1e-4);
-      done();
-    }, 2 * duration);
+
+    expect(spy.callCount).to.be(1);
+    const options = spy.getCall(0).args[0];
+    expect(options.anchor).to.be(anchor);
   });
 });
