@@ -417,8 +417,7 @@ class Draw extends PointerInteraction {
         useSpatialIndex: false,
         wrapX: options.wrapX ? options.wrapX : false
       }),
-      style: options.style ? options.style :
-        getDefaultStyleFunction(),
+      style: options.style ? options.style : getDefaultStyleFunction(),
       updateWhileInteracting: true
     });
 
@@ -443,8 +442,7 @@ class Draw extends PointerInteraction {
     if (options.freehand) {
       this.freehandCondition_ = always;
     } else {
-      this.freehandCondition_ = options.freehandCondition ?
-        options.freehandCondition : shiftKeyOnly;
+      this.freehandCondition_ = options.freehandCondition ? options.freehandCondition : shiftKeyOnly;
     }
 
     this.addEventListener(getChangeEventType(InteractionProperty.ACTIVE), this.updateState_);
@@ -639,7 +637,7 @@ class Draw extends PointerInteraction {
         const map = event.map;
         for (let i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
           const finishCoordinate = potentiallyFinishCoordinates[i];
-          const finishPixel = map.getPixelFromCoordinateInternal(finishCoordinate);
+          const finishPixel = map.getPixelFromCoordinate(finishCoordinate);
           const pixel = event.pixel;
           const dx = pixel[0] - finishPixel[0];
           const dy = pixel[1] - finishPixel[1];
