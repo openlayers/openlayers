@@ -8,3 +8,4 @@ The `.html` files in this folder are built by applying the templates in the `tem
 * docs: Documentation of the example. Can be markdown.
 * tags: Tags for the example index
 * resources: Additional js or css resources required by the example. This is a YAML list of URLs.
+* experimental: if true, a warning will appear on the example page mentioning the fact that it uses features not part of the API.

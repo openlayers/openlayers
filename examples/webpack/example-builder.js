@@ -200,6 +200,12 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
     tag: `<script src="${this.common}.js"></script><script src="${jsName}"></script>`,
     source: jsSource
   };
+
+  if (data.experimental) {
+    const prelude = '<script>window.experimental = true;</script>';
+    data.js.tag = prelude + data.js.tag;
+  }
+
   data.pkgJson = JSON.stringify({
     name: name,
     dependencies: getDependencies(jsSource),
