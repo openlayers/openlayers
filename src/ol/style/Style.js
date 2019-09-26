@@ -2,8 +2,67 @@
  * @module ol/style/Style
  */
 
+import {assert} from '../asserts.js';
+import GeometryType from '../geom/GeometryType.js';
+import CircleStyle from './Circle.js';
+import Fill from './Fill.js';
+import Stroke from './Stroke.js';
+
+
 /**
- * Feature styles.
+ * A function that takes an {@link module:ol/Feature} and a `{number}`
+ * representing the view's resolution. The function should return a
+ * {@link module:ol/style/Style} or an array of them. This way e.g. a
+ * vector layer can be styled.
+ *
+ * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>)} StyleFunction
+ */
+
+/**
+ * A {@link Style}, an array of {@link Style}, or a {@link StyleFunction}.
+ * @typedef {Style|Array<Style>|StyleFunction} StyleLike
+ */
+
+/**
+ * A function that takes an {@link module:ol/Feature} as argument and returns an
+ * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
+ *
+ * @typedef {function(import("../Feature.js").FeatureLike):
+ *     (import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined)} GeometryFunction
+ */
+
+
+/**
+ * Custom renderer function. Takes two arguments:
+ *
+ * 1. The pixel coordinates of the geometry in GeoJSON notation.
+ * 2. The {@link module:ol/render~State} of the layer renderer.
+ *
+ * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>),import("../render.js").State): void}
+ * RenderFunction
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {string|import("../geom/Geometry.js").default|GeometryFunction} [geometry] Feature property or geometry
+ * or function returning a geometry to render for this style.
+ * @property {import("./Fill.js").default} [fill] Fill style.
+ * @property {import("./Image.js").default} [image] Image style.
+ * @property {RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
+ * ignored, and the provided function will be called with each render frame for each geometry.
+ * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {import("./Text.js").default} [text] Text style.
+ * @property {number} [zIndex] Z index.
+ */
+
+/**
+ * @classdesc
+ * Container for vector feature rendering styles. Any changes made to the style
+ * or its children through `set*()` methods will not take effect until the
+ * feature or layer that uses the style is re-rendered.
+ *
+ * ## Feature styles
  *
  * If no style is defined, the following default style is used:
  * ```js
@@ -85,66 +144,7 @@
  *          styles[GeometryType.POINT]
  *      );
  * ```
- */
-import {assert} from '../asserts.js';
-import GeometryType from '../geom/GeometryType.js';
-import CircleStyle from './Circle.js';
-import Fill from './Fill.js';
-import Stroke from './Stroke.js';
-
-
-/**
- * A function that takes an {@link module:ol/Feature} and a `{number}`
- * representing the view's resolution. The function should return a
- * {@link module:ol/style/Style} or an array of them. This way e.g. a
- * vector layer can be styled.
  *
- * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>)} StyleFunction
- */
-
-/**
- * A {@link Style}, an array of {@link Style}, or a {@link StyleFunction}.
- * @typedef {Style|Array<Style>|StyleFunction} StyleLike
- */
-
-/**
- * A function that takes an {@link module:ol/Feature} as argument and returns an
- * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
- *
- * @typedef {function(import("../Feature.js").FeatureLike):
- *     (import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined)} GeometryFunction
- */
-
-
-/**
- * Custom renderer function. Takes two arguments:
- *
- * 1. The pixel coordinates of the geometry in GeoJSON notation.
- * 2. The {@link module:ol/render~State} of the layer renderer.
- *
- * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>),import("../render.js").State): void}
- * RenderFunction
- */
-
-
-/**
- * @typedef {Object} Options
- * @property {string|import("../geom/Geometry.js").default|GeometryFunction} [geometry] Feature property or geometry
- * or function returning a geometry to render for this style.
- * @property {import("./Fill.js").default} [fill] Fill style.
- * @property {import("./Image.js").default} [image] Image style.
- * @property {RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
- * ignored, and the provided function will be called with each render frame for each geometry.
- * @property {import("./Stroke.js").default} [stroke] Stroke style.
- * @property {import("./Text.js").default} [text] Text style.
- * @property {number} [zIndex] Z index.
- */
-
-/**
- * @classdesc
- * Container for vector feature rendering styles. Any changes made to the style
- * or its children through `set*()` methods will not take effect until the
- * feature or layer that uses the style is re-rendered.
  * @api
  */
 class Style {

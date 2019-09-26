@@ -55,7 +55,7 @@ import Units from '../proj/Units.js';
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for feature formats.
- * {FeatureFormat} subclasses provide the ability to decode and encode
+ * {@link module:ol/format/Feature~FeatureFormat} subclasses provide the ability to decode and encode
  * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
