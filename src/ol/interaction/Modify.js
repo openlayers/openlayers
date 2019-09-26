@@ -20,7 +20,7 @@ import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import {createEditingStyle} from '../style/Style.js';
-import {fromUserExtent, toUserExtent} from '../proj.js';
+import {fromUserExtent, toUserExtent, fromUserCoordinate, toUserCoordinate} from '../proj.js';
 
 
 /**
@@ -38,6 +38,7 @@ const CIRCLE_CENTER_INDEX = 0;
 const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
 const tempExtent = [0, 0, 0, 0];
+const tempSegment = [];
 
 /**
  * @enum {string}
@@ -808,6 +809,7 @@ class Modify extends PointerInteraction {
     this.modified_ = false;
     const vertexFeature = this.vertexFeature_;
     if (vertexFeature) {
+      const projection = evt.map.getView().getProjection();
       const insertVertices = [];
       const vertex = vertexFeature.getGeometry().getCoordinates();
       const vertexExtent = boundingExtent([vertex]);
@@ -827,7 +829,7 @@ class Modify extends PointerInteraction {
         }
 
         if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE && segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX) {
-          const closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
+          const closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch, projection);
           if (coordinatesEqual(closestVertex, vertex) && !componentSegments[uid][0]) {
             this.dragSegments_.push([segmentDataMatch, 0]);
             componentSegments[uid][0] = segmentDataMatch;
@@ -934,7 +936,7 @@ class Modify extends PointerInteraction {
       nodes.sort(sortByDistance);
       const node = nodes[0];
       const closestSegment = node.segment;
-      let vertex = closestOnSegmentData(pixelCoordinate, node);
+      let vertex = closestOnSegmentData(pixelCoordinate, node, projection);
       const vertexPixel = map.getPixelFromCoordinate(vertex);
       let dist = coordinateDistance(pixel, vertexPixel);
       if (dist <= this.pixelTolerance_) {
@@ -1259,15 +1261,19 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
  *        should be found.
  * @param {SegmentData} segmentData The object describing the line
  *        segment which should contain the closest point.
+ * @param {import("../proj/Projection.js").default} projection The view projection.
  * @return {import("../coordinate.js").Coordinate} The point closest to the specified line segment.
  */
-function closestOnSegmentData(pointCoordinates, segmentData) {
+function closestOnSegmentData(pointCoordinates, segmentData, projection) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE && segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
-  return closestOnSegment(pointCoordinates, segmentData.segment);
+  const coordinate = fromUserCoordinate(pointCoordinates, projection);
+  tempSegment[0] = fromUserCoordinate(segmentData.segment[0], projection);
+  tempSegment[1] = fromUserCoordinate(segmentData.segment[1], projection);
+  return toUserCoordinate(closestOnSegment(coordinate, tempSegment), projection);
 }
 
 
