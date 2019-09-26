@@ -1,14 +1,14 @@
 ## Upgrade notes
 
-### Next version
+### v6.0.0
 
 #### Backwards incompatible changes
 
-##### Usage of `Map.forEachLayerAtPixel`
+##### Usage of `map.forEachLayerAtPixel`
 
 Due to performance considerations, the layers in a map will sometimes be rendered into one
 single canvas instead of separate elements.
-This means `Map.forEachLayerAtPixel` will bring up false positives.
+This means `map.forEachLayerAtPixel` will bring up false positives.
 
 The easiest solution to avoid that is to assign different `className` properties to each layer like so:
 ```js
