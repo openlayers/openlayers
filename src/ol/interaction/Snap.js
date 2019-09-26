@@ -54,6 +54,11 @@ const SnapEventType = {
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
  * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
+ * @property {import("../events/condition.js").Condition} [snapCondition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. This is the event
+ * for the snapped features as a whole. By default, this is
+ * {@link module:ol/events/condition~singleClick}. Clicking on a snapped feature will trigger the SnapEvent
  */
 
 
@@ -78,7 +83,7 @@ function getFeatureFromEvent(evt) {
 class SnapEvent extends Event {
   /**
    * @param {SnapEventType} type The event type.
-   * @param {Array} result Snap result array.
+   * @param {Result} result Snap result array.
    * @param {Array<import("../Feature.js").default>} features Array with the snapped features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
    *     {@link module:ol/MapBrowserEvent}.
@@ -88,7 +93,7 @@ class SnapEvent extends Event {
 
     /**
      * Snapped result array.
-     * @type {Array}
+     * @type {Result}
      * @api
      */
     this.result = result;
