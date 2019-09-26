@@ -40,8 +40,8 @@ import {assert} from '../asserts.js';
  */
 
 /**
- * @typedef {Object<string,string|number|Array<number|string|IiifProfile>|Object<string, number>
- *   |TileInfo>} ImageInformationResponse
+ * @typedef {Object<string,string|number|Array<number|string|IiifProfile>|Object<string, number>|TileInfo>}
+ *    ImageInformationResponse
  */
 
 /**
