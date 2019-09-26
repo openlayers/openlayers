@@ -4,7 +4,7 @@ import {listen} from '../../../src/ol/events.js';
 import {DEVICE_PIXEL_RATIO} from '../../../src/ol/has.js';
 import Event from '../../../src/ol/events/Event.js';
 
-describe('ol.MapBrowserEventHandler', function() {
+describe('ol/MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {
     let clock;
     let handler;

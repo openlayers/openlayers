@@ -36,7 +36,7 @@ class MapBrowserEvent extends MapEvent {
     this.pixel_ = null;
 
     /**
-     * The coordinate in view projection corresponding to the original browser event.
+     * The coordinate in the user projection corresponding to the original browser event.
      * @type {import("./coordinate.js").Coordinate}
      */
     this.coordinate_ = null;
@@ -68,13 +68,14 @@ class MapBrowserEvent extends MapEvent {
   }
 
   /**
-   * The coordinate in view projection corresponding to the original browser event.
+   * The coordinate corresponding to the original browser event.  This will be in the user
+   * projection if one is set.  Otherwise it will be in the view projection.
    * @type {import("./coordinate.js").Coordinate}
    * @api
    */
   get coordinate() {
     if (!this.coordinate_) {
-      this.coordinate_ = this.map.getCoordinateFromPixelInternal(this.pixel);
+      this.coordinate_ = this.map.getCoordinateFromPixel(this.pixel);
     }
     return this.coordinate_;
   }
