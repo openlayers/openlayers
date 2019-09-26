@@ -3,6 +3,8 @@
  * @module ol/webgl/ShaderBuilder
  */
 
+import {asArray} from '../color.js';
+
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
  * @param {number} v Numerical value.
@@ -65,6 +67,9 @@ export function formatColor(colorArray) {
  * The following attributes are hardcoded and expected to be present in the vertex buffers:
  * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3).
  *
+ * The following varyings are hardcoded and gives the coordinate of the pixel both in the quad on the texture:
+ * `vec2 v_quadCoord`, `vec2 v_texCoord`
+ *
  * @param {ShaderParameters} parameters Parameters for the shader.
  * @returns {string} The full shader as a string.
  */
@@ -90,6 +95,7 @@ ${attributes.map(function(attribute) {
     return 'attribute ' + attribute + ';';
   }).join('\n')}
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 ${varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
@@ -105,6 +111,9 @@ void main(void) {
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
   v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
 ${varyings.map(function(varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
   }).join('\n')}
@@ -131,6 +140,7 @@ ${uniforms.map(function(uniform) {
     return 'uniform ' + uniform + ';';
   }).join('\n')}
 varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
 ${varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
@@ -140,4 +150,167 @@ void main(void) {
 }`;
 
   return body;
+}
+
+/**
+ * Base type for values fed to operators; can be a number literal or the output of another operator
+ * @typedef {Array<*>|number} OperatorValue
+ */
+
+/**
+ * Parses the provided expressions and produces a GLSL-compatible assignment string, such as:
+ * `['add', ['*', ['get', 'size'], 0.001], 12] => '(a_size * (0.001)) + (12.0)'
+ *
+ * The following operators can be used:
+ * * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
+ * * `['*', value1, value1]` multiplies value1 by value2
+ * * `['+', value1, value1]` adds value1 and value2
+ * * `['clamp', value1, value2, value3]` clamps value1 between values2 and value3
+ * * `['stretch', value1, value2, value3, value4, value5]` maps value1 from [value2, value3] range to
+ *   [value4, value5] range, clamping values along the way
+ *
+ * Values can either be literals (numbers) or another operator, as they will be evaluated recursively.
+ *
+ * Also takes in an array where new attributes will be pushed, so that the user of the `parse` function
+ * knows which attributes are expected to be available at evaluation time.
+ *
+ * A prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
+ * the final assignment string.
+ *
+ * @param {OperatorValue} value Either literal or an operator.
+ * @param {Array<string>} attributes Array containing the attribute names prefixed with `a_`; it
+ * it passed along recursively
+ * @param {string} attributePrefix Prefix added to attribute names in the final output (typically `a_` or `v_`).
+ * @returns {string} Assignment string.
+ */
+export function parse(value, attributes, attributePrefix) {
+  const v = value;
+  function p(value) {
+    return parse(value, attributes, attributePrefix);
+  }
+  if (Array.isArray(v)) {
+    switch (v[0]) {
+      case 'get':
+        if (attributes.indexOf(v[1]) === -1) {
+          attributes.push(v[1]);
+        }
+        return attributePrefix + v[1];
+      case '*': return `(${p(v[1])} * ${p(v[2])})`;
+      case '+': return `(${p(v[1])} + ${p(v[2])})`;
+      case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
+      case 'stretch': return `(clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])}) * ((${p(v[5])} - ${p(v[4])}) / (${p(v[3])} - ${p(v[2])})) + ${p(v[4])})`;
+      default: throw new Error('Unrecognized literal style expression: ' + JSON.stringify(value));
+    }
+  } else if (typeof value === 'number') {
+    return formatNumber(value);
+  } else {
+    throw new Error('Invalid value type in expression: ' + JSON.stringify(value));
+  }
+}
+
+/**
+ * @typedef {Object} StyleParseResult
+ * @property {ShaderParameters} params Symbol shader params.
+ * @property {Object.<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
+ * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
+ */
+
+/**
+ * Parses a {@link import("../style/LiteralStyle").LiteralSymbolStyle} object and outputs shader parameters to be
+ * then fed to {@link getSymbolVertexShader} and {@link getSymbolFragmentShader}.
+ *
+ * Also returns `uniforms` and `attributes` properties as expected by the
+ * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
+ *
+ * @param {import("../style/LiteralStyle").LiteralSymbolStyle} style Symbol style.
+ * @returns {StyleParseResult} Result containing shader params, attributes and uniforms.
+ */
+export function parseSymbolStyle(style) {
+  const size = Array.isArray(style.size) && typeof style.size[0] == 'number' ?
+    style.size : [style.size, style.size];
+  const color = (typeof style.color === 'string' ?
+    asArray(style.color).map(function(c, i) {
+      return i < 3 ? c / 255 : c;
+    }) :
+    style.color || [255, 255, 255, 1]);
+  const texCoord = style.textureCoord || [0, 0, 1, 1];
+  const offset = style.offset || [0, 0];
+  const opacity = style.opacity !== undefined ? style.opacity : 1;
+
+  let attributes = [];
+  const varyings = [];
+  function pA(value) {
+    return parse(value, attributes, 'a_');
+  }
+  function pV(value) {
+    return parse(value, varyings, 'v_');
+  }
+
+  let opacityFilter = '1.0';
+  const visibleSize = pV(size[0]);
+  switch (style.symbolType) {
+    case 'square': break;
+    case 'image': break;
+    // taken from https://thebookofshaders.com/07/
+    case 'circle':
+      opacityFilter = `(1.0-smoothstep(1.-4./${visibleSize},1.,dot(v_quadCoord-.5,v_quadCoord-.5)*4.))`;
+      break;
+    case 'triangle':
+      const st = '(v_quadCoord*2.-1.)';
+      const a = `(atan(${st}.x,${st}.y))`;
+      opacityFilter = `(1.0-smoothstep(.5-3./${visibleSize},.5,cos(floor(.5+${a}/2.094395102)*2.094395102-${a})*length(${st})))`;
+      break;
+
+    default: throw new Error('Unexpected symbol type: ' + style.symbolType);
+  }
+
+  /** @type {import('../webgl/ShaderBuilder.js').ShaderParameters} */
+  const params = {
+    uniforms: [],
+    colorExpression: `vec4(${pV(color[0])}, ${pV(color[1])}, ${pV(color[2])}, ${pV(color[3])})` +
+      ` * vec4(1.0, 1.0, 1.0, ${pV(opacity)} * ${opacityFilter})`,
+    sizeExpression: `vec2(${pA(size[0])}, ${pA(size[1])})`,
+    offsetExpression: `vec2(${pA(offset[0])}, ${pA(offset[1])})`,
+    texCoordExpression: `vec4(${pA(texCoord[0])}, ${pA(texCoord[1])}, ${pA(texCoord[2])}, ${pA(texCoord[3])})`,
+    rotateWithView: !!style.rotateWithView
+  };
+
+  attributes = attributes.concat(varyings).filter(function(attrName, index, arr) {
+    return arr.indexOf(attrName) === index;
+  });
+  params.attributes = attributes.map(function(attributeName) {
+    return `float a_${attributeName}`;
+  });
+  params.varyings = varyings.map(function(attributeName) {
+    return {
+      name: `v_${attributeName}`,
+      type: 'float',
+      expression: `a_${attributeName}`
+    };
+  });
+
+  /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
+  const uniforms = {};
+
+  if (style.symbolType === 'image' && style.src) {
+    const texture = new Image();
+    texture.src = style.src;
+    params.uniforms.push('sampler2D u_texture');
+    params.colorExpression = params.colorExpression +
+      ' * texture2D(u_texture, v_texCoord)';
+    uniforms['u_texture'] = texture;
+  }
+
+  return {
+    params: params,
+    attributes: attributes.map(function(attributeName) {
+      return {
+        name: attributeName,
+        callback: function(feature) {
+          return feature.get(attributeName) || 0;
+        }
+      };
+    }),
+    uniforms: uniforms
+  };
 }

@@ -11,15 +11,42 @@ const vectorSource = new Vector({
   format: new GeoJSON()
 });
 
-let literalStyle = {
-  symbol: {
-    size: 4,
-    color: '#3388FF',
-    rotateWithView: false,
-    offset: [0, 0],
-    opacity: 1
+const predefinedStyles = {
+  'icons': {
+    symbol: {
+      symbolType: 'image',
+      src: 'data/icon.png',
+      size: [18, 28],
+      color: 'lightyellow',
+      rotateWithView: false,
+      offset: [0, 9]
+    }
+  },
+  'triangles': {
+    symbol: {
+      symbolType: 'triangle',
+      size: 18,
+      color: [
+        ['stretch', ['get', 'population'], 20000, 300000, 0.1, 1.0],
+        ['stretch', ['get', 'population'], 20000, 300000, 0.6, 0.3],
+        0.6,
+        1.0
+      ],
+      rotateWithView: true
+    }
+  },
+  'circles': {
+    symbol: {
+      symbolType: 'circle',
+      size: ['stretch', ['get', 'population'], 40000, 2000000, 8, 28],
+      color: '#006688',
+      rotateWithView: false,
+      offset: [0, 0],
+      opacity: ['stretch', ['get', 'population'], 40000, 2000000, 0.6, 0.92]
+    }
   }
 };
+let literalStyle = predefinedStyles['circles'];
 let pointsLayer;
 
 const map = new Map({
@@ -36,6 +63,7 @@ const map = new Map({
 });
 
 const editor = document.getElementById('style-editor');
+editor.value = JSON.stringify(literalStyle, null, 2);
 
 function refreshLayer() {
   if (pointsLayer) {
@@ -46,7 +74,6 @@ function refreshLayer() {
     style: literalStyle
   });
   map.addLayer(pointsLayer);
-  editor.value = JSON.stringify(literalStyle, null, ' ');
 }
 
 function setStyleStatus(valid) {
@@ -55,8 +82,13 @@ function setStyleStatus(valid) {
 }
 
 editor.addEventListener('input', function() {
+  const textStyle = editor.value;
+  if (JSON.stringify(JSON.parse(textStyle)) === JSON.stringify(literalStyle)) {
+    return;
+  }
+
   try {
-    literalStyle = JSON.parse(editor.value);
+    literalStyle = JSON.parse(textStyle);
     refreshLayer();
     setStyleStatus(true);
   } catch (e) {
@@ -64,3 +96,11 @@ editor.addEventListener('input', function() {
   }
 });
 refreshLayer();
+
+const select = document.getElementById('style-select');
+select.addEventListener('change', function() {
+  const style = select.value;
+  literalStyle = predefinedStyles[style];
+  editor.value = JSON.stringify(literalStyle, null, 2);
+  refreshLayer();
+});

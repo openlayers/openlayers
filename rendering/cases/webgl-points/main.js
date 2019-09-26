@@ -15,6 +15,7 @@ const vector = new WebGLPointsLayer({
   }),
   style: {
     symbol: {
+      symbolType: 'square',
       size: 4,
       color: 'white'
     }
