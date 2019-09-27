@@ -232,7 +232,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {?Array<import("./events.js").EventsKey>}
      */
     this.layerGroupPropertyListenerKeys_ = null;
 
@@ -292,7 +292,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {?Array<import("./events.js").EventsKey>}
      */
     this.keyHandlerKeys_ = null;
 

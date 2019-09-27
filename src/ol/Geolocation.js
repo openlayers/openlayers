@@ -98,7 +98,7 @@ class Geolocation extends BaseObject {
     /**
      * The unprojected (EPSG:4326) device position.
      * @private
-     * @type {import("./coordinate.js").Coordinate}
+     * @type {?import("./coordinate.js").Coordinate}
      */
     this.position_ = null;
 

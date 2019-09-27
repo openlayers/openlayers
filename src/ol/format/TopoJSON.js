@@ -73,7 +73,7 @@ class TopoJSON extends JSONFeature {
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {?Array<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
 
