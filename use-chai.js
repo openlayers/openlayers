@@ -17,36 +17,6 @@ const expectCall = {
   }
 };
 
-// expect().not.to.be()
-const expectNotToBeCall = {
-  type: 'ExpressionStatement',
-  expression: {
-    type: 'CallExpression',
-    callee: {
-      type: 'MemberExpression',
-      object: {
-        type: 'MemberExpression',
-        object: {
-          type: 'MemberExpression',
-          object: expectCall,
-          property: {
-            type: 'Identifier',
-            name: 'not'
-          }
-        },
-        property: {
-          type: 'Identifier',
-          name: 'to'
-        }
-      },
-      property: {
-        type: 'Identifier',
-        name: 'be'
-      }
-    }
-  }
-};
-
 // expect().to
 const expectTo = {
   type: 'MemberExpression',
@@ -163,11 +133,58 @@ const expectToBeACall = {
   }
 };
 
+// expect().not.to.be()
+const expectNotToBeCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'MemberExpression',
+        object: {
+          type: 'MemberExpression',
+          object: expectCall,
+          property: {
+            type: 'Identifier',
+            name: 'not'
+          }
+        },
+        property: {
+          type: 'Identifier',
+          name: 'to'
+        }
+      },
+      property: {
+        type: 'Identifier',
+        name: 'be'
+      }
+    }
+  }
+};
+
+// expect().to.roughlyEqual()
+const expectToRoughlyEqualCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectTo,
+      property: {
+        type: 'Identifier',
+        name: 'roughlyEqual'
+      },
+      computed: false
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
 
-  // replace `expect(foo).to.be(bar)` with `assert.strictEqual(foo, bar)`
+  // replace `expect(actual).to.be(expected)` with `assert.strictEqual(actual, expected)`
   root.find(j.ExpressionStatement, expectToBeCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -179,7 +196,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).to.be.ok()` with `assert.isOk(foo)`
+  // replace `expect(actual).to.be.ok()` with `assert.isOk(actual)`
   root.find(j.ExpressionStatement, expectToBeOkCall)
     .replaceWith(path => {
       const actual = path.value.expression.callee.object.object.object.arguments[0];
@@ -190,7 +207,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).to.equal(bar)` with `assert.equal(foo, bar)`
+  // replace `expect(actual).to.equal(expected)` with `assert.equal(actual, expected)`
   root.find(j.ExpressionStatement, expectToEqualCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -202,7 +219,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).to.eql(bar)` with `assert.deepEqual(foo, bar)`
+  // replace `expect(actual).to.eql(expected)` with `assert.deepEqual(actual, expected)`
   root.find(j.ExpressionStatement, expectToEqlCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -214,7 +231,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).to.be.an(bar)` with `assert.instanceOf(foo, bar)`
+  // replace `expect(actual).to.be.an(expected)` with `assert.instanceOf(actual, expected)`
   root.find(j.ExpressionStatement, expectToBeAnCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -226,7 +243,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).to.be.a(bar)` with `assert.instanceOf(foo, bar)`
+  // replace `expect(actual).to.be.a(expected)` with `assert.instanceOf(actual, expected)`
   root.find(j.ExpressionStatement, expectToBeACall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -238,7 +255,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).not.to.be(bar)` with `assert.notEqual(foo, bar)`
+  // replace `expect(actual).not.to.be(expected)` with `assert.notEqual(actual, expected)`
   root.find(j.ExpressionStatement, expectNotToBeCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -246,6 +263,19 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('notEqual')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.roughlyEqual(expected, delta)` with `assert.approximately(actual, expected, delta)`
+  root.find(j.ExpressionStatement, expectToRoughlyEqualCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const delta = path.value.expression.arguments[1];
+      const actual = path.value.expression.callee.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('approximately')), [actual, expected, delta]
         )
       );
     });
