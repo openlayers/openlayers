@@ -436,8 +436,8 @@ class Overlay extends BaseObject {
 
   /**
    * Get the extent of an element relative to the document
-   * @param {HTMLElement|undefined} element The element.
-   * @param {import("./size.js").Size|undefined} size The size of the element.
+   * @param {HTMLElement} element The element.
+   * @param {import("./size.js").Size} size The size of the element.
    * @return {import("./extent.js").Extent} The extent.
    * @protected
    */
