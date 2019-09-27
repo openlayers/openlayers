@@ -67,7 +67,7 @@ describe('ol.net', function() {
         };
       };
       function callback() {
-        expect.fail();
+        expect().fail();
       }
       function errback() {
         expect(window[key]).to.be(undefined);

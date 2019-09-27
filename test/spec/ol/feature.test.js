@@ -208,7 +208,7 @@ describe('ol.Feature', function() {
       expect(feature.getGeometry()).to.be(point2);
 
       feature.on('change', function() {
-        expect.fail();
+        expect().fail();
       });
       point.setCoordinates([0, 2]);
     });
