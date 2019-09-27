@@ -232,7 +232,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {?Array<import("./events.js").EventsKey>}
      */
     this.layerGroupPropertyListenerKeys_ = null;
 
@@ -292,7 +292,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {Array<import("./events.js").EventsKey>}
+     * @type {?Array<import("./events.js").EventsKey>}
      */
     this.keyHandlerKeys_ = null;
 
@@ -375,9 +375,9 @@ class PluggableMap extends BaseObject {
        * @param {import("./control/Control.js").default} control Control.
        * @this {PluggableMap}
        */
-      (function(control) {
+      function(control) {
         control.setMap(this);
-      }).bind(this));
+      }.bind(this));
 
     this.controls.addEventListener(CollectionEventType.ADD,
       /**
@@ -400,9 +400,9 @@ class PluggableMap extends BaseObject {
        * @param {import("./interaction/Interaction.js").default} interaction Interaction.
        * @this {PluggableMap}
        */
-      (function(interaction) {
+      function(interaction) {
         interaction.setMap(this);
-      }).bind(this));
+      }.bind(this));
 
     this.interactions.addEventListener(CollectionEventType.ADD,
       /**
@@ -604,7 +604,7 @@ class PluggableMap extends BaseObject {
     }
     const options = opt_options || /** @type {AtPixelOptions} */ ({});
     const hitTolerance = options.hitTolerance !== undefined ?
-      opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
+      options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = options.layerFilter || TRUE;
     return this.renderer_.forEachLayerAtPixel(pixel, this.frameState_, hitTolerance, callback, layerFilter);
   }

@@ -72,6 +72,9 @@ export const CLASS_COLLAPSED = 'ol-collapsed';
  * @return {FontParameters} The font families (or null if the input spec is invalid).
  */
 export const getFontParameters = (function() {
+  /**
+   * @type {CSSStyleDeclaration}
+   */
   let style;
   /**
    * @type {Object<string, FontParameters>}

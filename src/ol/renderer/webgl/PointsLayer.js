@@ -109,7 +109,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../layer/Layer.js").default} layer Layer.
-   * @param {Options=} options Options.
+   * @param {Options} options Options.
    */
   constructor(layer, options) {
     const uniforms = options.uniforms || {};
