@@ -8,16 +8,49 @@
  *
  */
 
+// expect()
+const expectCall = {
+  type: 'CallExpression',
+  callee: {
+    type: 'Identifier',
+    name: 'expect'
+  }
+};
+
+// expect().not.to.be()
+const expectNotToBeCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'MemberExpression',
+        object: {
+          type: 'MemberExpression',
+          object: expectCall,
+          property: {
+            type: 'Identifier',
+            name: 'not'
+          }
+        },
+        property: {
+          type: 'Identifier',
+          name: 'to'
+        }
+      },
+      property: {
+        type: 'Identifier',
+        name: 'be'
+      }
+    }
+  }
+};
+
 // expect().to
 const expectTo = {
   type: 'MemberExpression',
-  object: {
-    type: 'CallExpression',
-    callee: {
-      type: 'Identifier',
-      name: 'expect'
-    }
-  },
+  object: expectCall,
   property: {
     type: 'Identifier',
     name: 'to'
@@ -134,14 +167,14 @@ module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
 
-  // replace `expect(foo).to.be(bar)` with `assert.equal(foo, bar)`
+  // replace `expect(foo).to.be(bar)` with `assert.strictEqual(foo, bar)`
   root.find(j.ExpressionStatement, expectToBeCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
-          j.memberExpression(j.identifier('assert'), j.identifier('equal')), [actual, expected]
+          j.memberExpression(j.identifier('assert'), j.identifier('strictEqual')), [actual, expected]
         )
       );
     });
@@ -157,14 +190,14 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(foo).to.equal(bar)` with `assert.strictEqual(foo, bar)`
+  // replace `expect(foo).to.equal(bar)` with `assert.equal(foo, bar)`
   root.find(j.ExpressionStatement, expectToEqualCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
-          j.memberExpression(j.identifier('assert'), j.identifier('strictEqual')), [actual, expected]
+          j.memberExpression(j.identifier('assert'), j.identifier('equal')), [actual, expected]
         )
       );
     });
@@ -201,6 +234,18 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('instanceOf')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(foo).not.to.be(bar)` with `assert.notEqual(foo, bar)`
+  root.find(j.ExpressionStatement, expectNotToBeCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('notEqual')), [actual, expected]
         )
       );
     });
