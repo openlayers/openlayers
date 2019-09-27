@@ -375,9 +375,9 @@ class PluggableMap extends BaseObject {
        * @param {import("./control/Control.js").default} control Control.
        * @this {PluggableMap}
        */
-      (function(control) {
+      function(control) {
         control.setMap(this);
-      }).bind(this));
+      }.bind(this));
 
     this.controls.addEventListener(CollectionEventType.ADD,
       /**
@@ -400,9 +400,9 @@ class PluggableMap extends BaseObject {
        * @param {import("./interaction/Interaction.js").default} interaction Interaction.
        * @this {PluggableMap}
        */
-      (function(interaction) {
+      function(interaction) {
         interaction.setMap(this);
-      }).bind(this));
+      }.bind(this));
 
     this.interactions.addEventListener(CollectionEventType.ADD,
       /**

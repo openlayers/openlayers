@@ -300,6 +300,9 @@ function getMeasureContext() {
  * @return {import("../size.js").Size} Measurement.
  */
 export const measureTextHeight = (function() {
+  /**
+   * @type {HTMLDivElement}
+   */
   let div;
   const heights = textHeights;
   return function(font) {
