@@ -920,12 +920,12 @@ class Modify extends PointerInteraction {
    */
   handlePointerAtPixel_(pixel, map) {
     const pixelCoordinate = map.getCoordinateFromPixel(pixel);
+    const projection = map.getView().getProjection();
     const sortByDistance = function(a, b) {
-      return pointDistanceToSegmentDataSquared(pixelCoordinate, a) -
-          pointDistanceToSegmentDataSquared(pixelCoordinate, b);
+      return projectedDistanceToSegmentDataSquared(pixelCoordinate, a, projection) -
+          projectedDistanceToSegmentDataSquared(pixelCoordinate, b, projection);
     };
 
-    const projection = map.getView().getProjection();
     const viewExtent = fromUserExtent(createExtent(pixelCoordinate, tempExtent), projection);
     const buffer = map.getView().getResolution() * this.pixelTolerance_;
     const box = toUserExtent(bufferExtent(viewExtent, buffer, tempExtent), projection);
@@ -1235,9 +1235,10 @@ function compareIndexes(a, b) {
  *        which to calculate the distance.
  * @param {SegmentData} segmentData The object describing the line
  *        segment we are calculating the distance to.
+ * @param {import("../proj/Projection.js").default} projection The view projection.
  * @return {number} The square of the distance between a point and a line segment.
  */
-function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
+function projectedDistanceToSegmentDataSquared(pointCoordinates, segmentData, projection) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE) {
@@ -1251,7 +1252,11 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
       return distanceToCircumference * distanceToCircumference;
     }
   }
-  return squaredDistanceToSegment(pointCoordinates, segmentData.segment);
+
+  const coordinate = fromUserCoordinate(pointCoordinates, projection);
+  tempSegment[0] = fromUserCoordinate(segmentData.segment[0], projection);
+  tempSegment[1] = fromUserCoordinate(segmentData.segment[1], projection);
+  return squaredDistanceToSegment(coordinate, tempSegment);
 }
 
 /**

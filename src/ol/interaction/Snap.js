@@ -14,6 +14,7 @@ import PointerInteraction from './Pointer.js';
 import {getValues} from '../obj.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
+import {fromUserCoordinate, toUserCoordinate} from '../proj.js';
 
 
 /**
@@ -52,8 +53,9 @@ function getFeatureFromEvent(evt) {
   } else if (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element) {
     return /** @type {import("../Feature.js").default} */ (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element);
   }
-
 }
+
+const tempSegment = [];
 
 /**
  * @classdesc
@@ -70,9 +72,11 @@ function getFeatureFromEvent(evt) {
  *
  *     import Snap from 'ol/interaction/Snap';
  *
- *     var snap = new Snap({
+ *     const snap = new Snap({
  *       source: source
  *     });
+ *
+ *     map.addInteraction(snap);
  *
  * @api
  */
@@ -150,25 +154,11 @@ class Snap extends PointerInteraction {
     this.pendingFeatures_ = {};
 
     /**
-     * Used for distance sorting in sortByDistance_
-     * @type {import("../coordinate.js").Coordinate}
-     * @private
-     */
-    this.pixelCoordinate_ = null;
-
-    /**
      * @type {number}
      * @private
      */
     this.pixelTolerance_ = options.pixelTolerance !== undefined ?
       options.pixelTolerance : 10;
-
-    /**
-     * @type {function(SegmentData, SegmentData): number}
-     * @private
-     */
-    this.sortByDistance_ = sortByDistance.bind(this);
-
 
     /**
     * Segment RTree for each layer
@@ -177,22 +167,21 @@ class Snap extends PointerInteraction {
     */
     this.rBush_ = new RBush();
 
-
     /**
     * @const
     * @private
     * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default): void>}
     */
     this.SEGMENT_WRITERS_ = {
-      'Point': this.writePointGeometry_,
-      'LineString': this.writeLineStringGeometry_,
-      'LinearRing': this.writeLineStringGeometry_,
-      'Polygon': this.writePolygonGeometry_,
-      'MultiPoint': this.writeMultiPointGeometry_,
-      'MultiLineString': this.writeMultiLineStringGeometry_,
-      'MultiPolygon': this.writeMultiPolygonGeometry_,
-      'GeometryCollection': this.writeGeometryCollectionGeometry_,
-      'Circle': this.writeCircleGeometry_
+      'Point': this.writePointGeometry_.bind(this),
+      'LineString': this.writeLineStringGeometry_.bind(this),
+      'LinearRing': this.writeLineStringGeometry_.bind(this),
+      'Polygon': this.writePolygonGeometry_.bind(this),
+      'MultiPoint': this.writeMultiPointGeometry_.bind(this),
+      'MultiLineString': this.writeMultiLineStringGeometry_.bind(this),
+      'MultiPolygon': this.writeMultiPolygonGeometry_.bind(this),
+      'GeometryCollection': this.writeGeometryCollectionGeometry_.bind(this),
+      'Circle': this.writeCircleGeometry_.bind(this)
     };
   }
 
@@ -211,7 +200,7 @@ class Snap extends PointerInteraction {
       const segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
       if (segmentWriter) {
         this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(createEmpty());
-        segmentWriter.call(this, feature, geometry);
+        segmentWriter(feature, geometry);
       }
     }
 
@@ -383,10 +372,9 @@ class Snap extends PointerInteraction {
    * @return {Result} Snap result
    */
   snapTo(pixel, pixelCoordinate, map) {
-
-    const lowerLeft = map.getCoordinateFromPixelInternal(
+    const lowerLeft = map.getCoordinateFromPixel(
       [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
-    const upperRight = map.getCoordinateFromPixelInternal(
+    const upperRight = map.getCoordinateFromPixel(
       [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
     const box = boundingExtent([lowerLeft, upperRight]);
 
@@ -400,57 +388,78 @@ class Snap extends PointerInteraction {
       });
     }
 
-    let snappedToVertex = false;
     let snapped = false;
     let vertex = null;
     let vertexPixel = null;
-    let dist, pixel1, pixel2, squaredDist1, squaredDist2;
-    if (segments.length > 0) {
-      this.pixelCoordinate_ = pixelCoordinate;
-      segments.sort(this.sortByDistance_);
-      const closestSegment = segments[0].segment;
-      const isCircle = segments[0].feature.getGeometry().getType() ===
-          GeometryType.CIRCLE;
-      if (this.vertex_ && !this.edge_) {
-        pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
-        pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
-        squaredDist1 = squaredCoordinateDistance(pixel, pixel1);
-        squaredDist2 = squaredCoordinateDistance(pixel, pixel2);
-        dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-        snappedToVertex = dist <= this.pixelTolerance_;
-        if (snappedToVertex) {
-          snapped = true;
-          vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
-          vertexPixel = map.getPixelFromCoordinateInternal(vertex);
-        }
-      } else if (this.edge_) {
-        if (isCircle) {
-          vertex = closestOnCircle(pixelCoordinate,
-            /** @type {import("../geom/Circle.js").default} */ (segments[0].feature.getGeometry()));
-        } else {
-          vertex = closestOnSegment(pixelCoordinate, closestSegment);
-        }
-        vertexPixel = map.getPixelFromCoordinateInternal(vertex);
-        if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
-          snapped = true;
-          if (this.vertex_ && !isCircle) {
-            pixel1 = map.getPixelFromCoordinateInternal(closestSegment[0]);
-            pixel2 = map.getPixelFromCoordinateInternal(closestSegment[1]);
-            squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
-            squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
-            dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-            snappedToVertex = dist <= this.pixelTolerance_;
-            if (snappedToVertex) {
-              vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
-              vertexPixel = map.getPixelFromCoordinateInternal(vertex);
-            }
+
+    if (segments.length === 0) {
+      return {
+        snapped: snapped,
+        vertex: vertex,
+        vertexPixel: vertexPixel
+      };
+    }
+
+    const projection = map.getView().getProjection();
+    const projectedCoordinate = fromUserCoordinate(pixelCoordinate, projection);
+
+    let closestSegmentData;
+    let minSquaredDistance = Infinity;
+    for (let i = 0; i < segments.length; ++i) {
+      const segmentData = segments[i];
+      tempSegment[0] = fromUserCoordinate(segmentData.segment[0], projection);
+      tempSegment[1] = fromUserCoordinate(segmentData.segment[1], projection);
+      const delta = squaredDistanceToSegment(projectedCoordinate, tempSegment);
+      if (delta < minSquaredDistance) {
+        closestSegmentData = segmentData;
+        minSquaredDistance = delta;
+      }
+    }
+    const closestSegment = closestSegmentData.segment;
+
+    if (this.vertex_ && !this.edge_) {
+      const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+      const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+      const squaredDist1 = squaredCoordinateDistance(pixel, pixel1);
+      const squaredDist2 = squaredCoordinateDistance(pixel, pixel2);
+      const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+      if (dist <= this.pixelTolerance_) {
+        snapped = true;
+        vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
+        vertexPixel = map.getPixelFromCoordinate(vertex);
+      }
+    } else if (this.edge_) {
+      const isCircle = closestSegmentData.feature.getGeometry().getType() === GeometryType.CIRCLE;
+      if (isCircle) {
+        vertex = closestOnCircle(pixelCoordinate,
+          /** @type {import("../geom/Circle.js").default} */ (closestSegmentData.feature.getGeometry()));
+      } else {
+        tempSegment[0] = fromUserCoordinate(closestSegment[0], projection);
+        tempSegment[1] = fromUserCoordinate(closestSegment[1], projection);
+        vertex = toUserCoordinate(closestOnSegment(projectedCoordinate, tempSegment), projection);
+      }
+      vertexPixel = map.getPixelFromCoordinate(vertex);
+
+      if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
+        snapped = true;
+        if (this.vertex_ && !isCircle) {
+          const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+          const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+          const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
+          const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
+          const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+          if (dist <= this.pixelTolerance_) {
+            vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
+            vertexPixel = map.getPixelFromCoordinate(vertex);
           }
         }
       }
-      if (snapped) {
-        vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
-      }
     }
+
+    if (snapped) {
+      vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
+    }
+
     return {
       snapped: snapped,
       vertex: vertex,
@@ -495,7 +504,7 @@ class Snap extends PointerInteraction {
     for (let i = 0; i < geometries.length; ++i) {
       const segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
       if (segmentWriter) {
-        segmentWriter.call(this, feature, geometries[i]);
+        segmentWriter(feature, geometries[i]);
       }
     }
   }
@@ -612,18 +621,5 @@ class Snap extends PointerInteraction {
   }
 }
 
-
-/**
- * Sort segments by distance, helper function
- * @param {SegmentData} a The first segment data.
- * @param {SegmentData} b The second segment data.
- * @return {number} The difference in distance.
- * @this {Snap}
- */
-function sortByDistance(a, b) {
-  const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);
-  const deltaB = squaredDistanceToSegment(this.pixelCoordinate_, b.segment);
-  return deltaA - deltaB;
-}
 
 export default Snap;
