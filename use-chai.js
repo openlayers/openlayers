@@ -195,6 +195,22 @@ const expectToHaveLengthCall = {
   }
 };
 
+// expect().fail()
+const expectFailCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectCall,
+      property: {
+        type: 'Identifier',
+        name: 'fail'
+      }
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -303,6 +319,16 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('lengthOf')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect.fail()` with `assert.fail()`
+  root.find(j.ExpressionStatement, expectFailCall)
+    .replaceWith(path => {
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('fail')), []
         )
       );
     });
