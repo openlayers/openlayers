@@ -1,6 +1,6 @@
 import {Map, View} from '../src/ol/index.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {Modify, Select, Draw} from '../src/ol/interaction.js';
+import {Modify, Select, Draw, Snap} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {useGeographic} from '../src/ol/proj.js';
@@ -39,19 +39,30 @@ const draw = new Draw({
   source: source
 });
 
+const snap = new Snap({
+  source: source
+});
+
+function removeInteractions() {
+  map.removeInteraction(modify);
+  map.removeInteraction(select);
+  map.removeInteraction(draw);
+  map.removeInteraction(select);
+}
+
 const mode = document.getElementById('mode');
 function onChange() {
+  removeInteractions();
   switch (mode.value) {
     case 'draw': {
-      map.removeInteraction(modify);
-      map.removeInteraction(select);
       map.addInteraction(draw);
+      map.addInteraction(snap);
       break;
     }
     case 'modify': {
-      map.removeInteraction(draw);
       map.addInteraction(select);
       map.addInteraction(modify);
+      map.addInteraction(snap);
       break;
     }
     default: {
