@@ -4,7 +4,7 @@
  *
  * Example use on a single file:
  *
- *     git checkout -- test && jscodeshift -t use-chai.js test/spec/ol/array.test.js
+ *     git checkout -- test && jscodeshift -t use-chai.js test/spec/ol/geom
  *
  */
 
@@ -96,6 +96,40 @@ const expectToEqlCall = {
   }
 };
 
+// expect().to.be.an()
+const expectToBeAnCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToBe,
+      property: {
+        type: 'Identifier',
+        name: 'an'
+      },
+      computed: false
+    }
+  }
+};
+
+// expect().to.be.a()
+const expectToBeACall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToBe,
+      property: {
+        type: 'Identifier',
+        name: 'a'
+      },
+      computed: false
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -143,6 +177,30 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('deepEqual')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(foo).to.be.an(bar)` with `assert.instanceOf(foo, bar)`
+  root.find(j.ExpressionStatement, expectToBeAnCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('instanceOf')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(foo).to.be.a(bar)` with `assert.instanceOf(foo, bar)`
+  root.find(j.ExpressionStatement, expectToBeACall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('instanceOf')), [actual, expected]
         )
       );
     });
