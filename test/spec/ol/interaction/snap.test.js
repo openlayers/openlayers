@@ -6,6 +6,8 @@ import Circle from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Snap from '../../../../src/ol/interaction/Snap.js';
+import {useGeographic, clearUserProjection} from '../../../../src/ol/proj.js';
+import {overrideRAF} from '../../util.js';
 
 
 describe('ol.interaction.Snap', function() {
@@ -190,6 +192,78 @@ describe('ol.interaction.Snap', function() {
       expect(event.coordinate).to.eql([10, 0]);
     });
 
+  });
+
+  describe('handleEvent - useGeographic', () => {
+    let target, map;
+    const size = 256;
+
+    let restoreRAF;
+
+    beforeEach(done => {
+      restoreRAF = overrideRAF();
+
+      useGeographic();
+      target = document.createElement('div');
+
+      Object.assign(target.style, {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: `${size}px`,
+        height: `${size}px`
+      });
+      document.body.appendChild(target);
+
+      map = new Map({
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+
+      map.once('postrender', () => {
+        done();
+      });
+    });
+
+    afterEach(() => {
+      map.dispose();
+      document.body.removeChild(target);
+      clearUserProjection();
+      restoreRAF();
+    });
+
+    it('snaps to user coordinates', () => {
+      const lon = -90;
+      const lat = 45;
+      const point = new Feature(new Point([lon, lat]));
+
+      const snap = new Snap({
+        features: new Collection([point])
+      });
+      snap.setMap(map);
+
+      const expectedPixel = map.getPixelFromCoordinate([lon, lat]).map(value => Math.round(value));
+
+      const delta = 5;
+      const pixel = expectedPixel.slice();
+      pixel[0] += delta;
+      pixel[1] += delta;
+
+      const coordinate = map.getCoordinateFromPixel(pixel);
+
+      const event = {
+        pixel: pixel,
+        coordinate: coordinate,
+        map: map
+      };
+      snap.handleEvent(event);
+
+      expect(event.coordinate).to.eql([lon, lat]);
+      expect(event.pixel).to.eql(expectedPixel);
+    });
 
   });
 
