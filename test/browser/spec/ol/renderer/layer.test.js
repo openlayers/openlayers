@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import ImageWrapper from '../../../../../src/ol/Image.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -26,10 +27,10 @@ describe('ol/renderer/Layer', function () {
       const revision = layer.getRevision();
       state = 'foo';
       renderer.renderIfReadyAndVisible();
-      expect(layer.getRevision()).to.be(revision);
+      assert.strictEqual(layer.getRevision(), revision);
       state = 'ready';
       renderer.renderIfReadyAndVisible();
-      expect(layer.getRevision()).to.be(revision + 1);
+      assert.strictEqual(layer.getRevision(), revision + 1);
     });
   });
 
@@ -59,13 +60,13 @@ describe('ol/renderer/Layer', function () {
     describe('load IDLE image', function () {
       it('returns false', function () {
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(false);
+        assert.strictEqual(loaded, false);
       });
 
       it('registers a listener', function () {
         renderer.loadImage(image);
         const listeners = image.listeners_[eventType];
-        expect(listeners).to.have.length(1);
+        assert.lengthOf(listeners, 1);
       });
     });
 
@@ -73,31 +74,31 @@ describe('ol/renderer/Layer', function () {
       it('returns true', function () {
         image.state = 2; // LOADED
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(true);
+        assert.strictEqual(loaded, true);
       });
 
       it('does not register a listener', function () {
         image.state = 2; // LOADED
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(true);
+        assert.strictEqual(loaded, true);
       });
     });
 
     describe('load LOADING image', function () {
       beforeEach(function () {
         renderer.loadImage(image);
-        expect(image.getState()).to.be(1); // LOADING
+        assert.strictEqual(image.getState(), 1);
       });
 
       it('returns false', function () {
         const loaded = renderer.loadImage(image);
-        expect(loaded).to.be(false);
+        assert.strictEqual(loaded, false);
       });
 
       it('does not register a new listener', function () {
         renderer.loadImage(image);
         const listeners = image.listeners_[eventType];
-        expect(listeners).to.have.length(1);
+        assert.lengthOf(listeners, 1);
       });
     });
   });
@@ -148,12 +149,12 @@ describe('ol/renderer/Layer', function () {
     it('accesses tiles from current zoom level last', function (done) {
       // expect most recent tile in the cache to be from zoom level 0
       const z = spy.lastCall.args[0];
-      expect(z).to.be(0);
+      assert.strictEqual(z, 0);
 
       map.once('moveend', function () {
         // expect most recent tile in the cache to be from zoom level 4
         const z = spy.lastCall.args[0];
-        expect(z).to.be(4);
+        assert.strictEqual(z, 4);
         done();
       });
       view.setZoom(4);

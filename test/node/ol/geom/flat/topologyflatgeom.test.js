@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import {lineStringIsClosed} from '../../../../../src/ol/geom/flat/topology.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/topology.js', function () {
   describe('lineStringIsClosed', function () {
@@ -11,7 +11,7 @@ describe('ol/geom/flat/topology.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClosed).to.be(true);
+      assert.strictEqual(isClosed, true);
     });
 
     it('identifies regular linestrings', function () {
@@ -22,7 +22,7 @@ describe('ol/geom/flat/topology.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClosed).to.be(false);
+      assert.strictEqual(isClosed, false);
     });
 
     it('identifies degenerate boundaries', function () {
@@ -33,7 +33,7 @@ describe('ol/geom/flat/topology.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClosed).to.be(false);
+      assert.strictEqual(isClosed, false);
 
       flatCoordinates = [0, 0, 1, 1, 3, 3, 5, 5, 0, 0];
       isClosed = lineStringIsClosed(
@@ -42,7 +42,7 @@ describe('ol/geom/flat/topology.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClosed).to.be(false);
+      assert.strictEqual(isClosed, false);
     });
   });
 });

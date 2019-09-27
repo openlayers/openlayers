@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -46,7 +47,7 @@ describe('ol/layer/VectorImage', function () {
       map.renderSync();
       const pixel = map.getPixelFromCoordinate([-1000000, 0]);
       layer.getFeatures(pixel).then(function (features) {
-        expect(features[0].get('name')).to.be('feature1');
+        assert.strictEqual(features[0].get('name'), 'feature1');
         done();
       });
     });

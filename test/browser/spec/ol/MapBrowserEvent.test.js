@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
@@ -46,7 +47,7 @@ describe('ol/MapBrowserEvent', function () {
       event.clientY = y;
       const mapEvent = new MapBrowserEvent('test', ref.map, event);
 
-      expect(mapEvent.pixel).to.eql([x, y]);
+      assert.deepEqual(mapEvent.pixel, [x, y]);
     });
 
     it('is settable', () => {
@@ -58,11 +59,11 @@ describe('ol/MapBrowserEvent', function () {
       event.clientY = y;
       const mapEvent = new MapBrowserEvent('test', ref.map, event);
 
-      expect(mapEvent.pixel).to.eql([x, y]);
+      assert.deepEqual(mapEvent.pixel, [x, y]);
 
       const pixel = [x + 5, y + 5];
       mapEvent.pixel = pixel;
-      expect(mapEvent.pixel).to.eql(pixel);
+      assert.deepEqual(mapEvent.pixel, pixel);
     });
   });
 
@@ -86,7 +87,7 @@ describe('ol/MapBrowserEvent', function () {
       event.clientY = y;
       const mapEvent = new MapBrowserEvent('test', ref.map, event);
 
-      expect(mapEvent.coordinate).to.eql([0, 0]);
+      assert.deepEqual(mapEvent.coordinate, [0, 0]);
     });
 
     it('is settable', () => {
@@ -98,11 +99,11 @@ describe('ol/MapBrowserEvent', function () {
       event.clientY = y;
       const mapEvent = new MapBrowserEvent('test', ref.map, event);
 
-      expect(mapEvent.coordinate).to.eql([0, 0]);
+      assert.deepEqual(mapEvent.coordinate, [0, 0]);
 
       const coordinate = [1, 2];
       mapEvent.coordinate = coordinate;
-      expect(mapEvent.coordinate).to.eql(coordinate);
+      assert.deepEqual(mapEvent.coordinate, coordinate);
     });
   });
 
@@ -129,8 +130,8 @@ describe('ol/MapBrowserEvent', function () {
       const mapEvent = new MapBrowserEvent('test', ref.map, event);
 
       const coord = mapEvent.coordinate;
-      expect(coord[0]).to.be(-90);
-      expect(coord[1]).to.roughlyEqual(66.5132, 1e-4);
+      assert.strictEqual(coord[0], -90);
+      assert.approximately(coord[1], 66.5132, 1e-4);
     });
   });
 });

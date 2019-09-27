@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -113,15 +114,15 @@ describe('ol.interaction.Select', function () {
   describe('constructor', function () {
     it('creates a new interaction', function () {
       const select = new Select();
-      expect(select).to.be.a(Select);
-      expect(select).to.be.a(Interaction);
+      assert.instanceOf(select, Select);
+      assert.instanceOf(select, Interaction);
     });
 
     describe('user-provided collection', function () {
       it('uses the user-provided collection', function () {
         const features = new Collection();
         const select = new Select({features: features});
-        expect(select.getFeatures()).to.be(features);
+        assert.strictEqual(select.getFeatures(), features);
       });
     });
   });
@@ -136,45 +137,45 @@ describe('ol.interaction.Select', function () {
 
     it('select with single-click', function () {
       const listenerSpy = sinonSpy(function (e) {
-        expect(e.selected).to.have.length(1);
+        assert.lengthOf(e.selected, 1);
       });
       select.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       const features = select.getFeatures();
-      expect(features.getLength()).to.equal(1);
+      assert.equal(features.getLength(), 1);
     });
 
     it('single-click outside the geometry', function () {
       const listenerSpy = sinonSpy(function (e) {
-        expect(e.selected).to.have.length(1);
+        assert.lengthOf(e.selected, 1);
       });
       select.on('select', listenerSpy);
 
       simulateEvent(MapBrowserEventType.SINGLECLICK, -10, -10);
 
-      expect(listenerSpy.callCount).to.be(0);
+      assert.strictEqual(listenerSpy.callCount, 0);
 
       const features = select.getFeatures();
-      expect(features.getLength()).to.equal(0);
+      assert.equal(features.getLength(), 0);
     });
 
     it('select twice with single-click', function () {
       const listenerSpy = sinonSpy(function (e) {
-        expect(e.selected).to.have.length(1);
+        assert.lengthOf(e.selected, 1);
       });
       select.on('select', listenerSpy);
 
       simulateEvent(MapBrowserEventType.SINGLECLICK, 10, -20);
       simulateEvent(MapBrowserEventType.SINGLECLICK, 9, -21);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       const features = select.getFeatures();
-      expect(features.getLength()).to.equal(1);
+      assert.equal(features.getLength(), 1);
     });
 
     it('deselects before select', function () {
@@ -186,33 +187,33 @@ describe('ol.interaction.Select', function () {
 
       const features = select.getFeatures();
       const listenerSpy = sinonSpy(function (e) {
-        expect(features.getLength()).to.be.lessThan(2);
+        assert.isBelow(features.getLength(), 2);
       });
       features.on(['add', 'remove'], listenerSpy);
 
       simulateEvent(MapBrowserEventType.SINGLECLICK, 10, -20);
       simulateEvent(MapBrowserEventType.SINGLECLICK, -10, -21);
 
-      expect(listenerSpy.callCount).to.be(3);
-      expect(listenerSpy.getCall(0).args[0].type).to.be('add');
-      expect(listenerSpy.getCall(1).args[0].type).to.be('remove');
-      expect(listenerSpy.getCall(2).args[0].type).to.be('add');
+      assert.strictEqual(listenerSpy.callCount, 3);
+      assert.strictEqual(listenerSpy.getCall(0).args[0].type, 'add');
+      assert.strictEqual(listenerSpy.getCall(1).args[0].type, 'remove');
+      assert.strictEqual(listenerSpy.getCall(2).args[0].type, 'add');
 
-      expect(features.getLength()).to.be(1);
+      assert.strictEqual(features.getLength(), 1);
     });
 
     it('select with shift single-click', function () {
       const listenerSpy = sinonSpy(function (e) {
-        expect(e.selected).to.have.length(1);
+        assert.lengthOf(e.selected, 1);
       });
       select.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20, true);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       const features = select.getFeatures();
-      expect(features.getLength()).to.equal(1);
+      assert.equal(features.getLength(), 1);
     });
   });
 
@@ -228,40 +229,40 @@ describe('ol.interaction.Select', function () {
 
     it('select with single-click', function () {
       const listenerSpy = sinonSpy(function (e) {
-        expect(e.selected).to.have.length(4);
+        assert.lengthOf(e.selected, 4);
       });
       select.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       const features = select.getFeatures();
-      expect(features.getLength()).to.equal(4);
+      assert.equal(features.getLength(), 4);
     });
 
     it('select with shift single-click', function () {
       const listenerSpy = sinonSpy(function (e) {
-        expect(e.selected).to.have.length(4);
+        assert.lengthOf(e.selected, 4);
       });
       select.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20, true);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       let features = select.getFeatures();
-      expect(features.getLength()).to.equal(4);
-      expect(select.getLayer(features.item(0))).to.equal(layer);
+      assert.equal(features.getLength(), 4);
+      assert.equal(select.getLayer(features.item(0)), layer);
 
       // Select again to make sure the style change does not break selection
       simulateEvent('singleclick', 10, -20);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       features = select.getFeatures();
-      expect(features.getLength()).to.equal(4);
-      expect(select.getLayer(features.item(0))).to.equal(layer);
+      assert.equal(features.getLength(), 4);
+      assert.equal(select.getLayer(features.item(0)), layer);
     });
   });
 
@@ -281,19 +282,19 @@ describe('ol.interaction.Select', function () {
 
       simulateEvent('singleclick', 10, -20, true);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       let features = select.getFeatures();
-      expect(features.getLength()).to.equal(4);
+      assert.equal(features.getLength(), 4);
 
       map.renderSync();
 
       simulateEvent('singleclick', 10, -20, true);
 
-      expect(listenerSpy.callCount).to.be(1);
+      assert.strictEqual(listenerSpy.callCount, 1);
 
       features = select.getFeatures();
-      expect(features.getLength()).to.equal(4);
+      assert.equal(features.getLength(), 4);
     });
   });
 
@@ -310,9 +311,9 @@ describe('ol.interaction.Select', function () {
 
         simulateEvent('singleclick', 10, -20);
         const features = select.getFeatures();
-        expect(features.getLength()).to.equal(2);
-        expect(features.item(0).get('type')).to.be('bar');
-        expect(features.item(1).get('type')).to.be('bar');
+        assert.equal(features.getLength(), 2);
+        assert.strictEqual(features.item(0).get('type'), 'bar');
+        assert.strictEqual(features.item(1).get('type'), 'bar');
       });
 
       it(
@@ -329,9 +330,9 @@ describe('ol.interaction.Select', function () {
 
           simulateEvent('singleclick', 10, -20, true);
           const features = select.getFeatures();
-          expect(features.getLength()).to.equal(2);
-          expect(features.item(0).get('type')).to.be('bar');
-          expect(features.item(1).get('type')).to.be('bar');
+          assert.equal(features.getLength(), 2);
+          assert.strictEqual(features.item(0).get('type'), 'bar');
+          assert.strictEqual(features.item(1).get('type'), 'bar');
         },
       );
     });
@@ -347,8 +348,8 @@ describe('ol.interaction.Select', function () {
         map.addInteraction(select);
         simulateEvent('singleclick', 10, -20);
         const features = select.getFeatures();
-        expect(features.getLength()).to.equal(1);
-        expect(features.item(0).get('type')).to.be('bar');
+        assert.equal(features.getLength(), 1);
+        assert.strictEqual(features.item(0).get('type'), 'bar');
       });
 
       it(
@@ -364,8 +365,8 @@ describe('ol.interaction.Select', function () {
           map.addInteraction(select);
           simulateEvent('singleclick', 10, -20, true);
           const features = select.getFeatures();
-          expect(features.getLength()).to.equal(1);
-          expect(features.item(0).get('type')).to.be('bar');
+          assert.equal(features.getLength(), 1);
+          assert.strictEqual(features.item(0).get('type'), 'bar');
         },
       );
     });
@@ -386,10 +387,10 @@ describe('ol.interaction.Select', function () {
       const listenerSpy = sinonSpy(function (e) {
         const feature = e.selected[0];
         const layer_ = interaction.getLayer(feature);
-        expect(e.selected).to.have.length(1);
-        expect(feature).to.be.a(Feature);
-        expect(layer_).to.be.a(VectorLayer);
-        expect(layer_).to.equal(layer);
+        assert.lengthOf(e.selected, 1);
+        assert.instanceOf(feature, Feature);
+        assert.instanceOf(layer_, VectorLayer);
+        assert.equal(layer_, layer);
       });
       interaction.on('select', listenerSpy);
 
@@ -402,19 +403,19 @@ describe('ol.interaction.Select', function () {
       const feature = source.getFeatures()[0];
       interaction.getFeatures().push(feature);
       const layerWithSelectedFeature = interaction.getLayer(feature);
-      expect(layerWithSelectedFeature).to.equal(layer);
+      assert.equal(layerWithSelectedFeature, layer);
     });
 
     it('removes layer association when removing feature programmatically from collection', function () {
       const features = interaction.getFeatures();
       const feature = source.getFeatures()[0];
       interaction.selectFeature(feature);
-      expect(features.getArray()).to.not.be.empty();
-      features.forEach((f) => expect(interaction.getLayer(f)).to.be.ok());
+      assert.isNotEmpty(features.getArray());
+      features.forEach((f) => assert.ok(interaction.getLayer(f)));
 
       features.clear();
-      expect(features.getArray()).to.be.empty();
-      expect(interaction.getLayer(feature)).to.be(undefined);
+      assert.isEmpty(features.getArray());
+      assert.strictEqual(interaction.getLayer(feature), undefined);
     });
 
     it('returns the correct layer when two layers have features with the same id', function () {
@@ -432,11 +433,11 @@ describe('ol.interaction.Select', function () {
       map.addLayer(layerB);
 
       interaction.getFeatures().push(featureA);
-      expect(interaction.getLayer(featureA)).to.equal(layerA);
+      assert.equal(interaction.getLayer(featureA), layerA);
 
       interaction.getFeatures().clear();
       interaction.getFeatures().push(featureB);
-      expect(interaction.getLayer(featureB)).to.equal(layerB);
+      assert.equal(interaction.getLayer(featureB), layerB);
 
       map.removeLayer(layerA);
       map.removeLayer(layerB);
@@ -449,7 +450,7 @@ describe('ol.interaction.Select', function () {
     beforeEach(function () {
       interaction = new Select();
 
-      expect(interaction.getActive()).to.be(true);
+      assert.strictEqual(interaction.getActive(), true);
 
       map.addInteraction(interaction);
 
@@ -463,7 +464,7 @@ describe('ol.interaction.Select', function () {
     describe('#setActive(false)', function () {
       it('keeps the the selection', function () {
         interaction.setActive(false);
-        expect(interaction.getFeatures().getLength()).to.equal(1);
+        assert.equal(interaction.getFeatures().getLength(), 1);
       });
     });
 
@@ -475,7 +476,7 @@ describe('ol.interaction.Select', function () {
         const listenerSpy = sinonSpy();
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
-        expect(listenerSpy.callCount).to.be(1);
+        assert.strictEqual(listenerSpy.callCount, 1);
       });
     });
   });
@@ -508,7 +509,7 @@ describe('ol.interaction.Select', function () {
 
         simulateEvent('singleclick', 10, -20, false);
 
-        expect(listenerSpy.callCount).to.be(1);
+        assert.strictEqual(listenerSpy.callCount, 1);
       });
     });
 
@@ -524,7 +525,7 @@ describe('ol.interaction.Select', function () {
 
         simulateEvent('singleclick', 10, -20, false);
 
-        expect(listenerSpy.callCount).to.be(1);
+        assert.strictEqual(listenerSpy.callCount, 1);
       });
     });
   });
@@ -557,8 +558,8 @@ describe('ol.interaction.Select', function () {
 
         simulateEvent('singleclick', 10, -20);
 
-        expect(firstSelectSpy.callCount).to.be(1);
-        expect(secondSelectSpy.callCount).to.be(1);
+        assert.strictEqual(firstSelectSpy.callCount, 1);
+        assert.strictEqual(secondSelectSpy.callCount, 1);
       });
     });
 
@@ -574,8 +575,8 @@ describe('ol.interaction.Select', function () {
 
         simulateEvent('singleclick', 10, -20);
 
-        expect(firstSelectSpy.callCount).to.be(0);
-        expect(secondSelectSpy.callCount).to.be(1);
+        assert.strictEqual(firstSelectSpy.callCount, 0);
+        assert.strictEqual(secondSelectSpy.callCount, 1);
       });
     });
   });
@@ -595,11 +596,11 @@ describe('ol.interaction.Select', function () {
       describe('using #selectFeature(feature)', function () {
         it('adds to selection', function () {
           select.selectFeature(feature);
-          expect(selected).to.contain(feature);
+          assert.include(selected, feature);
         });
         it('adds to layer associations', function () {
           select.selectFeature(feature);
-          expect(select.getLayer(feature)).to.equal(layer);
+          assert.equal(select.getLayer(feature), layer);
         });
         it('sends select event with selected feature', function () {
           const listenerSpy = sinonSpy();
@@ -607,16 +608,16 @@ describe('ol.interaction.Select', function () {
 
           select.selectFeature(feature);
 
-          expect(listenerSpy.callCount).to.be(1);
-          expect(listenerSpy.args[0][0].selected).to.have.length(1);
-          expect(listenerSpy.args[0][0].selected).to.contain(feature);
-          expect(listenerSpy.args[0][0].deselected).to.have.length(0);
+          assert.strictEqual(listenerSpy.callCount, 1);
+          assert.lengthOf(listenerSpy.args[0][0].selected, 1);
+          assert.include(listenerSpy.args[0][0].selected, feature);
+          assert.lengthOf(listenerSpy.args[0][0].deselected, 0);
         });
         it("doesn't select duplicates", function () {
           select.selectFeature(feature);
           select.selectFeature(feature);
 
-          expect(selected).to.have.length(1);
+          assert.lengthOf(selected, 1);
         });
       });
       describe('using #deselectFeature(feature)', function () {
@@ -625,7 +626,7 @@ describe('ol.interaction.Select', function () {
         });
         it('removes from selection', function () {
           select.deselectFeature(feature);
-          expect(selected).to.not.contain(feature);
+          assert.notInclude(selected, feature);
         });
         it('sends select event with deselected feature', function () {
           const listenerSpy = sinonSpy();
@@ -633,18 +634,18 @@ describe('ol.interaction.Select', function () {
 
           select.deselectFeature(feature);
 
-          expect(listenerSpy.callCount).to.be(1);
-          expect(listenerSpy.args[0][0].deselected).to.have.length(1);
-          expect(listenerSpy.args[0][0].deselected).to.contain(feature);
-          expect(listenerSpy.args[0][0].selected).to.have.length(0);
+          assert.strictEqual(listenerSpy.callCount, 1);
+          assert.lengthOf(listenerSpy.args[0][0].deselected, 1);
+          assert.include(listenerSpy.args[0][0].deselected, feature);
+          assert.lengthOf(listenerSpy.args[0][0].selected, 0);
         });
         it("doesn't error on repeated calls with the same feature", function () {
           const result1 = select.deselectFeature(feature);
           const result2 = select.deselectFeature(feature);
-          expect(result1).to.be(true);
-          expect(result2).to.be(false);
+          assert.strictEqual(result1, true);
+          assert.strictEqual(result2, false);
 
-          expect(selected).to.be.empty();
+          assert.isEmpty(selected);
         });
       });
 
@@ -656,7 +657,7 @@ describe('ol.interaction.Select', function () {
         });
         it('selects a missing feature', function () {
           select.toggleFeature(otherFeature);
-          expect(selected).to.contain(otherFeature);
+          assert.include(selected, otherFeature);
         });
         it('sends select event with selected feature', function () {
           const listenerSpy = sinonSpy();
@@ -664,14 +665,14 @@ describe('ol.interaction.Select', function () {
 
           select.toggleFeature(otherFeature);
 
-          expect(listenerSpy.callCount).to.be(1);
-          expect(listenerSpy.args[0][0].selected).to.have.length(1);
-          expect(listenerSpy.args[0][0].selected).to.contain(otherFeature);
-          expect(listenerSpy.args[0][0].deselected).to.have.length(0);
+          assert.strictEqual(listenerSpy.callCount, 1);
+          assert.lengthOf(listenerSpy.args[0][0].selected, 1);
+          assert.include(listenerSpy.args[0][0].selected, otherFeature);
+          assert.lengthOf(listenerSpy.args[0][0].deselected, 0);
         });
         it('deselects an existing feature', function () {
           select.toggleFeature(feature);
-          expect(selected).to.not.contain(feature);
+          assert.notInclude(selected, feature);
         });
         it('sends select event with deselected feature', function () {
           const listenerSpy = sinonSpy();
@@ -679,10 +680,10 @@ describe('ol.interaction.Select', function () {
 
           select.toggleFeature(feature);
 
-          expect(listenerSpy.callCount).to.be(1);
-          expect(listenerSpy.args[0][0].deselected).to.have.length(1);
-          expect(listenerSpy.args[0][0].deselected).to.contain(feature);
-          expect(listenerSpy.args[0][0].selected).to.have.length(0);
+          assert.strictEqual(listenerSpy.callCount, 1);
+          assert.lengthOf(listenerSpy.args[0][0].deselected, 1);
+          assert.include(listenerSpy.args[0][0].deselected, feature);
+          assert.lengthOf(listenerSpy.args[0][0].selected, 0);
         });
         it('can be called many times to toggle a feature', function () {
           const listenerSpy = sinonSpy();
@@ -693,7 +694,7 @@ describe('ol.interaction.Select', function () {
           select.toggleFeature(feature); // remove
           select.toggleFeature(feature); // add
 
-          expect(listenerSpy.callCount).to.be(4);
+          assert.strictEqual(listenerSpy.callCount, 4);
         });
       });
       describe('using #clearSelection()', function () {
@@ -705,15 +706,15 @@ describe('ol.interaction.Select', function () {
         it('clears all features', function () {
           select.clearSelection();
 
-          expect(selected).to.have.length(0);
+          assert.lengthOf(selected, 0);
         });
         it('sends a select event with all features deselected', function () {
           const listenerSpy = sinonSpy();
           select.on('select', listenerSpy);
           select.clearSelection();
-          expect(listenerSpy.callCount).to.be(1);
+          assert.strictEqual(listenerSpy.callCount, 1);
           const deselected = listenerSpy.args[0][0].deselected;
-          expect(deselected).to.have.length(allFeatures.length);
+          assert.lengthOf(deselected, allFeatures.length);
         });
       });
     });
@@ -737,29 +738,29 @@ describe('ol.interaction.Select', function () {
         it('only selects matching features', function () {
           allFeatures.forEach((f) => select.selectFeature(f));
 
-          expect(selected).to.have.length(2);
-          expect(selected[0].get('type')).to.be('bar');
-          expect(selected[1].get('type')).to.be('bar');
+          assert.lengthOf(selected, 2);
+          assert.strictEqual(selected[0].get('type'), 'bar');
+          assert.strictEqual(selected[1].get('type'), 'bar');
         });
         it('does not fire select event for feature already selected', function () {
           const spy = sinonSpy();
           select.on('select', spy);
           const result1 = select.selectFeature(allFeatures[0]);
-          expect(result1).to.be(true);
-          expect(spy.callCount).to.be(1);
+          assert.strictEqual(result1, true);
+          assert.strictEqual(spy.callCount, 1);
 
           const result2 = select.selectFeature(allFeatures[0]);
-          expect(result2).to.be(false);
-          expect(spy.callCount).to.be(1);
+          assert.strictEqual(result2, false);
+          assert.strictEqual(spy.callCount, 1);
         });
       });
       describe('using #toggleFeature(feature)', function () {
         it('only selects matching features', function () {
           allFeatures.forEach((f) => select.toggleFeature(f));
 
-          expect(selected).to.have.length(2);
-          expect(selected[0].get('type')).to.be('bar');
-          expect(selected[1].get('type')).to.be('bar');
+          assert.lengthOf(selected, 2);
+          assert.strictEqual(selected[0].get('type'), 'bar');
+          assert.strictEqual(selected[1].get('type'), 'bar');
         });
       });
     });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -47,7 +48,7 @@ describe('ol.interaction.Snap', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new Snap();
-      expect(instance).to.be.an(Snap);
+      assert.instanceOf(instance, Snap);
     });
   });
 
@@ -93,14 +94,13 @@ describe('ol.interaction.Snap', function () {
 
       const event = eventFromCoordinate([0, 0]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.type).to.be('snap');
-        expect(snapEvent.vertex).to.be(event.coordinate);
-        expect(snapEvent.vertexPixel).to.be(event.pixel);
-        expect(snapEvent.feature).to.eql(point);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.type, 'snap');
+        assert.strictEqual(snapEvent.vertex, event.coordinate);
+        assert.strictEqual(snapEvent.vertexPixel, event.pixel);
+        assert.deepEqual(snapEvent.feature, point);
+        assert.strictEqual(snapEvent.segment, null);
 
-        // check that the coordinate is in XY and not XYZ
-        expect(event.coordinate).to.eql([0, 0]);
+        assert.deepEqual(event.coordinate, [0, 0]);
       });
 
       snapInteraction.handleEvent(event);
@@ -118,13 +118,13 @@ describe('ol.interaction.Snap', function () {
 
       const event = eventFromCoordinate([1, 3]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.be(event.coordinate);
-        expect(snapEvent.vertexPixel).to.be(event.pixel);
-        expect(snapEvent.feature).to.be(point);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.vertex, event.coordinate);
+        assert.strictEqual(snapEvent.vertexPixel, event.pixel);
+        assert.strictEqual(snapEvent.feature, point);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([0, 0]);
-        expect(event.pixel).to.eql([width / 2, height / 2]);
+        assert.deepEqual(event.coordinate, [0, 0]);
+        assert.deepEqual(event.pixel, [width / 2, height / 2]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -145,13 +145,13 @@ describe('ol.interaction.Snap', function () {
       const event = eventFromCoordinate([7, 4]);
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.eql(line);
-        expect(snapEvent.segment).to.eql([
+        assert.deepEqual(snapEvent.feature, line);
+        assert.deepEqual(snapEvent.segment, [
           [-10, 0],
           [10, 0],
         ]);
 
-        expect(event.coordinate).to.eql([7, 0]);
+        assert.deepEqual(event.coordinate, [7, 0]);
       });
 
       snapInteraction.handleEvent(event);
@@ -181,14 +181,14 @@ describe('ol.interaction.Snap', function () {
       const coordinate = transform([7, 0], viewProjection, userProjection);
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.eql(line);
-        expect(snapEvent.segment).to.eql([
+        assert.deepEqual(snapEvent.feature, line);
+        assert.deepEqual(snapEvent.segment, [
           transform([-10, 0], viewProjection, userProjection),
           transform([10, 0], viewProjection, userProjection),
         ]);
 
-        expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
-        expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
+        assert.approximately(event.coordinate[0], coordinate[0], 1e-10);
+        assert.approximately(event.coordinate[1], coordinate[1], 1e-10);
       });
       snapInteraction.handleEvent(event);
     });
@@ -209,10 +209,10 @@ describe('ol.interaction.Snap', function () {
 
       const event = eventFromCoordinate([7, 4]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(point);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, point);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([10, 0]);
+        assert.deepEqual(event.coordinate, [10, 0]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -231,10 +231,10 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.setMap(map);
       const event = eventFromCoordinate([3, 0]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(point);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, point);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([5, 0]);
+        assert.deepEqual(event.coordinate, [5, 0]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -260,11 +260,11 @@ describe('ol.interaction.Snap', function () {
         if (snapEvents.length != 2) {
           return;
         }
-        expect(snapEvent.feature).to.be(multiPoint);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, multiPoint);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event1.coordinate).to.eql([0, 0]);
-        expect(event2.coordinate).to.eql([50, 0]);
+        assert.deepEqual(event1.coordinate, [0, 0]);
+        assert.deepEqual(event2.coordinate, [50, 0]);
       });
       snapInteraction.handleEvent(event1);
       snapInteraction.handleEvent(event2);
@@ -288,10 +288,10 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.setMap(map);
       const event = eventFromCoordinate([48, 48]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(line);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, line);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([50, 50]);
+        assert.deepEqual(event.coordinate, [50, 50]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -310,13 +310,13 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.setMap(map);
       const event = eventFromCoordinate([16, 5]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(line);
-        expect(snapEvent.segment).to.eql([
+        assert.strictEqual(snapEvent.feature, line);
+        assert.deepEqual(snapEvent.segment, [
           [0, 0],
           [50, 0],
         ]);
 
-        expect(event.coordinate).to.eql([16, 0]);
+        assert.deepEqual(event.coordinate, [16, 0]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -331,14 +331,16 @@ describe('ol.interaction.Snap', function () {
 
       const event = eventFromCoordinate([5, 5]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.eql(circle);
-        expect(snapEvent.segment).to.be(null);
+        assert.deepEqual(snapEvent.feature, circle);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate[0]).to.roughlyEqual(
+        assert.approximately(
+          event.coordinate[0],
           Math.sin(Math.PI / 4) * 10,
           1e-10,
         );
-        expect(event.coordinate[1]).to.roughlyEqual(
+        assert.approximately(
+          event.coordinate[1],
           Math.sin(Math.PI / 4) * 10,
           1e-10,
         );
@@ -371,11 +373,11 @@ describe('ol.interaction.Snap', function () {
       );
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.eql(circle);
-        expect(snapEvent.segment).to.be(null);
+        assert.deepEqual(snapEvent.feature, circle);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
-        expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
+        assert.approximately(event.coordinate[0], coordinate[0], 1e-10);
+        assert.approximately(event.coordinate[1], coordinate[1], 1e-10);
       });
       snapInteraction.handleEvent(event);
     });
@@ -394,7 +396,7 @@ describe('ol.interaction.Snap', function () {
         },
       });
       snapInteraction.setMap(map);
-      expect(segmenter.called).to.be(true);
+      assert.strictEqual(segmenter.called, true);
     });
 
     it('handle feature without geometry', function () {
@@ -415,10 +417,10 @@ describe('ol.interaction.Snap', function () {
 
       const event = eventFromCoordinate([7, 4]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(feature);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, feature);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([10, 0]);
+        assert.deepEqual(event.coordinate, [10, 0]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -444,10 +446,10 @@ describe('ol.interaction.Snap', function () {
 
       const event = eventFromCoordinate([7, 4]);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(line);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, line);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([10, 0]);
+        assert.deepEqual(event.coordinate, [10, 0]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -475,10 +477,10 @@ describe('ol.interaction.Snap', function () {
       const event = eventFromCoordinate([7, 4]);
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(line);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, line);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([10, 0]);
+        assert.deepEqual(event.coordinate, [10, 0]);
       });
 
       snapInteraction.handleEvent(event);
@@ -502,8 +504,8 @@ describe('ol.interaction.Snap', function () {
       const event = eventFromCoordinate([50, 50]);
 
       snapInteraction.on('unsnap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(point);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, point);
+        assert.strictEqual(snapEvent.segment, null);
       });
       snapInteraction.handleEvent(event);
     });
@@ -530,7 +532,7 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
       snapInteraction.on('snap', (evt) => {
-        expect(evt.vertex).to.eql([0, 0]);
+        assert.deepEqual(evt.vertex, [0, 0]);
       });
       snapInteraction.handleEvent(eventFromCoordinate([0, -10]));
     });
@@ -557,8 +559,14 @@ describe('ol.interaction.Snap', function () {
         if (snapEvents.length !== 2) {
           return;
         }
-        expect(snapEvents.map((e) => e.type)).to.eql(['unsnap', 'snap']);
-        expect(snapEvents.map((e) => e.feature)).to.eql([point1, point2]);
+        assert.deepEqual(
+          snapEvents.map((e) => e.type),
+          ['unsnap', 'snap'],
+        );
+        assert.deepEqual(
+          snapEvents.map((e) => e.feature),
+          [point1, point2],
+        );
       });
 
       snapInteraction.handleEvent(eventFromCoordinate([30, 30]));
@@ -582,7 +590,7 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.handleEvent(
         new MapBrowserEvent('pointerup', map, new PointerEvent('pointerup')),
       );
-      expect(Object.keys(snapInteraction.pendingFeatures_)).to.have.length(0);
+      assert.lengthOf(Object.keys(snapInteraction.pendingFeatures_), 0);
     });
   });
 
@@ -635,11 +643,11 @@ describe('ol.interaction.Snap', function () {
       const pixel = [expectedPixel[0] + delta, expectedPixel[1] + delta];
       const event = eventFromPixel(pixel);
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(point);
-        expect(snapEvent.segment).to.be(null);
+        assert.strictEqual(snapEvent.feature, point);
+        assert.strictEqual(snapEvent.segment, null);
 
-        expect(event.coordinate).to.eql([lon, lat]);
-        expect(event.pixel).to.eql(expectedPixel);
+        assert.deepEqual(event.coordinate, [lon, lat]);
+        assert.deepEqual(event.pixel, expectedPixel);
       });
       snapInteraction.handleEvent(event);
     });
@@ -671,13 +679,13 @@ describe('ol.interaction.Snap', function () {
       const snapInteraction = new Snap({
         features: featureCollection,
       });
-      expect(feature.getListeners('change')).to.be(undefined);
+      assert.strictEqual(feature.getListeners('change'), undefined);
       snapInteraction.setMap(map);
-      expect(snapInteraction.getMap()).to.eql(map);
-      expect(feature.getListeners('change').length).to.be(1);
+      assert.deepEqual(snapInteraction.getMap(), map);
+      assert.strictEqual(feature.getListeners('change').length, 1);
       snapInteraction.setMap(null);
-      expect(snapInteraction.getMap()).to.be(null);
-      expect(feature.getListeners('change')).to.be(undefined);
+      assert.strictEqual(snapInteraction.getMap(), null);
+      assert.strictEqual(feature.getListeners('change'), undefined);
     });
   });
 
@@ -715,10 +723,13 @@ describe('ol.interaction.Snap', function () {
           );
         });
 
-        expect(!!intersectionSegmentData).to.be(intersection);
+        assert.strictEqual(!!intersectionSegmentData, intersection);
         if (intersection) {
-          expect(intersectionSegmentData.segment[0]).to.eql(intersectionPoint);
-          expect(intersectionSegmentData.intersectionFeature).to.be.ok();
+          assert.deepEqual(
+            intersectionSegmentData.segment[0],
+            intersectionPoint,
+          );
+          assert.isOk(intersectionSegmentData.intersectionFeature);
         }
       });
     }
@@ -746,7 +757,7 @@ describe('ol.interaction.Snap', function () {
       const segments = snapInteraction.rBush_
         .getAll()
         .filter((item) => item.intersectionFeature);
-      expect(segments).to.have.length(0);
+      assert.lengthOf(segments, 0);
     });
 
     it('only adds single self intersection point', function () {
@@ -770,8 +781,8 @@ describe('ol.interaction.Snap', function () {
       const segments = snapInteraction.rBush_
         .getAll()
         .filter((item) => item.intersectionFeature);
-      expect(segments).to.have.length(1);
-      expect(segments[0].segment).to.eql([[0, 0]]);
+      assert.lengthOf(segments, 1);
+      assert.deepEqual(segments[0].segment, [[0, 0]]);
     });
 
     for (const i of [0, 1]) {
@@ -802,13 +813,13 @@ describe('ol.interaction.Snap', function () {
         const intersections2 = snapInteraction.rBush_
           .getAll()
           .filter((item) => item.intersectionFeature);
-        expect(intersections2).to.have.length(1);
+        assert.lengthOf(intersections2, 1);
 
         snapInteraction.removeFeature(features[i]);
         const intersections1 = snapInteraction.rBush_
           .getAll()
           .filter((item) => item.intersectionFeature);
-        expect(intersections1).to.have.length(0);
+        assert.lengthOf(intersections1, 0);
       });
     }
   });
@@ -844,7 +855,7 @@ describe('ol.interaction.Snap', function () {
         );
       });
 
-      expect(customSegment).to.be.ok();
+      assert.isOk(customSegment);
     });
   });
 });

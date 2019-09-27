@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
@@ -9,7 +10,7 @@ describe('ol.interaction.DragRotateAndZoom', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new DragRotateAndZoom();
-      expect(instance).to.be.an(DragRotateAndZoom);
+      assert.instanceOf(instance, DragRotateAndZoom);
     });
   });
 
@@ -67,8 +68,8 @@ describe('ol.interaction.DragRotateAndZoom', function () {
       });
 
       interaction.handleDragEvent(event);
-      expect(callCount).to.be(1);
-      expect(interaction.lastAngle_).to.be(-0.8308214428190254);
+      assert.strictEqual(callCount, 1);
+      assert.strictEqual(interaction.lastAngle_, -0.8308214428190254);
 
       callCount = 0;
       view = new View({
@@ -90,7 +91,7 @@ describe('ol.interaction.DragRotateAndZoom', function () {
       event = new MapBrowserEvent('pointermove', map, pointerEvent, true);
 
       interaction.handleDragEvent(event);
-      expect(callCount).to.be(0);
+      assert.strictEqual(callCount, 0);
     });
   });
 });

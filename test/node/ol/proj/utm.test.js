@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import {zoneFromCode} from '../../../../src/ol/proj/utm.js';
-import expect from '../../expect.js';
 
 describe('ol/proj/utm.js', () => {
   describe('zoneFromCode', () => {
@@ -41,7 +41,7 @@ describe('ol/proj/utm.js', () => {
     for (const c of cases) {
       it(`works for ${c.code}`, () => {
         const zone = zoneFromCode(c.code);
-        expect(zone).to.eql(c.zone);
+        assert.deepEqual(zone, c.zone);
       });
     }
   });

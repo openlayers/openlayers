@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
@@ -34,22 +35,22 @@ describe('ol.interaction.KeyboardPan', function () {
 
       event.originalEvent.key = 'ArrowDown';
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[0].center).to.eql([0, -128]);
+      assert.deepEqual(spy.getCall(0).args[0].center, [0, -128]);
       view.setCenter([0, 0]);
 
       event.originalEvent.key = 'ArrowUp';
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(1).args[0].center).to.eql([0, 128]);
+      assert.deepEqual(spy.getCall(1).args[0].center, [0, 128]);
       view.setCenter([0, 0]);
 
       event.originalEvent.key = 'ArrowLeft';
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(2).args[0].center).to.eql([-128, 0]);
+      assert.deepEqual(spy.getCall(2).args[0].center, [-128, 0]);
       view.setCenter([0, 0]);
 
       event.originalEvent.key = 'ArrowRight';
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(3).args[0].center).to.eql([128, 0]);
+      assert.deepEqual(spy.getCall(3).args[0].center, [128, 0]);
       view.setCenter([0, 0]);
 
       view.animateInternal.restore();
@@ -106,22 +107,22 @@ describe('ol.interaction.KeyboardPan', function () {
 
         event.originalEvent.key = 'ArrowDown';
         olMap.handleMapBrowserEvent(event);
-        expect(spy.getCall(0).args[0].center).to.eql([0, -128]);
+        assert.deepEqual(spy.getCall(0).args[0].center, [0, -128]);
         view.setCenter([0, 0]);
 
         event.originalEvent.key = 'ArrowUp';
         map.handleMapBrowserEvent(event);
-        expect(spy.getCall(1).args[0].center).to.eql([0, 128]);
+        assert.deepEqual(spy.getCall(1).args[0].center, [0, 128]);
         view.setCenter([0, 0]);
 
         event.originalEvent.key = 'ArrowLeft';
         map.handleMapBrowserEvent(event);
-        expect(spy.getCall(2).args[0].center).to.eql([-128, 0]);
+        assert.deepEqual(spy.getCall(2).args[0].center, [-128, 0]);
         view.setCenter([0, 0]);
 
         event.originalEvent.key = 'ArrowRight';
         map.handleMapBrowserEvent(event);
-        expect(spy.getCall(3).args[0].center).to.eql([128, 0]);
+        assert.deepEqual(spy.getCall(3).args[0].center, [128, 0]);
         view.setCenter([0, 0]);
 
         view.animateInternal.restore();

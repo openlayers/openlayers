@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -169,18 +170,18 @@ describe('ol.render.canvas.BuilderGroup', function () {
     it('omits lineTo for repeated coordinates', function () {
       renderFeature(builder, feature0, fill0, 1);
       execute(builder);
-      expect(lineToCount).to.be(4);
+      assert.strictEqual(lineToCount, 4);
       lineToCount = 0;
       scaleTransform(transform, 0.25, 0.25);
       execute(builder);
-      expect(lineToCount).to.be(3);
+      assert.strictEqual(lineToCount, 3);
     });
 
     it('does not omit moveTo for repeated coordinates', function () {
       renderFeature(builder, feature0, fill0, 1);
       renderFeature(builder, feature1, fill1, 1);
       execute(builder);
-      expect(moveToCount).to.be(2);
+      assert.strictEqual(moveToCount, 2);
     });
 
     it('does not fill when fill pattern is not loaded', function () {
@@ -189,7 +190,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
       });
       renderFeature(builder, feature1, patternFill, 1);
       execute(builder);
-      expect(fillCount).to.be(0);
+      assert.strictEqual(fillCount, 0);
     });
 
     it('batches fill and stroke instructions for same style', function () {
@@ -197,9 +198,9 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder);
-      expect(fillCount).to.be(1);
-      expect(strokeCount).to.be(1);
-      expect(beginPathCount).to.be(1);
+      assert.strictEqual(fillCount, 1);
+      assert.strictEqual(strokeCount, 1);
+      assert.strictEqual(beginPathCount, 1);
     });
 
     it('batches fill and stroke instructions for different styles', function () {
@@ -207,9 +208,9 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style2, 1);
       execute(builder);
-      expect(fillCount).to.be(2);
-      expect(strokeCount).to.be(2);
-      expect(beginPathCount).to.be(2);
+      assert.strictEqual(fillCount, 2);
+      assert.strictEqual(strokeCount, 2);
+      assert.strictEqual(beginPathCount, 2);
     });
 
     it('overlaps: false - batches fill and stroke instructions for changing from stroke to no stroke', function () {
@@ -217,7 +218,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style3, 1);
       renderFeature(builder, feature3, style3, 1);
       execute(builder, 1, false);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'beginPath',
         'moveTo',
         'lineTo',
@@ -250,7 +251,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style4, 1);
       renderFeature(builder, feature3, style4, 1);
       execute(builder, 1, false);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'beginPath',
         'moveTo',
         'lineTo',
@@ -289,7 +290,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder, 1, false);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'beginPath',
         'moveTo',
         'lineTo',
@@ -326,7 +327,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder, 1, false);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'beginPath',
         'moveTo',
         'lineTo',
@@ -365,9 +366,9 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style2, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder);
-      expect(fillCount).to.be(3);
-      expect(strokeCount).to.be(3);
-      expect(beginPathCount).to.be(3);
+      assert.strictEqual(fillCount, 3);
+      assert.strictEqual(strokeCount, 3);
+      assert.strictEqual(beginPathCount, 3);
     });
 
     it('does not batch when overlaps is set to true', function () {
@@ -376,9 +377,9 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       execute(builder, {}, 1, true);
-      expect(fillCount).to.be(3);
-      expect(strokeCount).to.be(3);
-      expect(beginPathCount).to.be(3);
+      assert.strictEqual(fillCount, 3);
+      assert.strictEqual(strokeCount, 3);
+      assert.strictEqual(beginPathCount, 3);
     });
 
     it('applies the pixelRatio to the linedash array and offset', function () {
@@ -406,13 +407,13 @@ describe('ol.render.canvas.BuilderGroup', function () {
       renderFeature(builder, feature2, style2, 1);
       execute(builder, {}, 2, true);
 
-      expect(lineDashCount).to.be(1);
-      expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
-      expect(lineDash).to.eql([6, 12]);
+      assert.strictEqual(lineDashCount, 1);
+      assert.deepEqual(style2.getStroke().getLineDash(), [3, 6]);
+      assert.deepEqual(lineDash, [6, 12]);
 
-      expect(lineDashOffsetCount).to.be(1);
-      expect(style2.getStroke().getLineDashOffset()).to.be(2);
-      expect(lineDashOffset).to.be(4);
+      assert.strictEqual(lineDashOffsetCount, 1);
+      assert.strictEqual(style2.getStroke().getLineDashOffset(), 2);
+      assert.strictEqual(lineDashOffset, 4);
     });
 
     describe('use renderer and hitDetectionRenderer defined in style', function () {
@@ -506,9 +507,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
         scaleTransform(transform, 0.1, 0.1);
         executeHitDetectionForCoordinate(builder, 1, true, [45, 90]);
 
-        // since renderer will be used for rendering and hit detection
-        // expect calls.length to be ass twice was in rendering
-        expect(calls.length).to.be(18);
+        assert.strictEqual(calls.length, 18);
       });
 
       it('calls the hit detection renderer in hit detection', function () {
@@ -549,8 +548,8 @@ describe('ol.render.canvas.BuilderGroup', function () {
         renderFeature(builder, geometrycollection, style, 1);
         scaleTransform(transform, 0.1, 0.1);
         executeHitDetectionForCoordinate(builder, 1, true, [45, 90]);
-        expect(calls.length).to.be(9);
-        expect(hitDetectionCalls.length).to.be(9);
+        assert.strictEqual(calls.length, 9);
+        assert.strictEqual(hitDetectionCalls.length, 9);
       });
 
       it('calls the renderer function configured for the style', function () {
@@ -579,28 +578,28 @@ describe('ol.render.canvas.BuilderGroup', function () {
         renderFeature(builder, geometrycollection, style, 1);
         scaleTransform(transform, 0.1, 0.1);
         execute(builder, 1, true);
-        expect(calls.length).to.be(9);
-        expect(calls[0].geometry).to.be(point.getGeometry());
-        expect(calls[0].feature).to.be(point);
-        expect(calls[0].context).to.be(context);
-        expect(calls[0].pixelRatio).to.be(1);
-        expect(calls[0].rotation).to.be(0);
-        expect(calls[0].resolution).to.be(1);
-        expect(calls[0].coords).to.eql([4.5, 9]);
-        expect(calls[1].feature).to.be(multipoint);
-        expect(calls[1].coords[0]).to.eql([4.5, 9]);
-        expect(calls[2].feature).to.be(linestring);
-        expect(calls[2].coords[0]).to.eql([4.5, 9]);
-        expect(calls[3].feature).to.be(multilinestring);
-        expect(calls[3].coords[0][0]).to.eql([4.5, 9]);
-        expect(calls[4].feature).to.be(polygon);
-        expect(calls[4].coords[0][0]).to.eql([-9, -4.5]);
-        expect(calls[5].feature).to.be(multipolygon);
-        expect(calls[5].coords[0][0][0]).to.eql([-9, -4.5]);
-        expect(calls[6].feature).to.be(geometrycollection);
-        expect(calls[6].geometry.getCoordinates()).to.eql([45, 90]);
-        expect(calls[7].geometry.getCoordinates()[0]).to.eql([45, 90]);
-        expect(calls[8].geometry.getCoordinates()[0][0]).to.eql([-90, -45]);
+        assert.strictEqual(calls.length, 9);
+        assert.strictEqual(calls[0].geometry, point.getGeometry());
+        assert.strictEqual(calls[0].feature, point);
+        assert.strictEqual(calls[0].context, context);
+        assert.strictEqual(calls[0].pixelRatio, 1);
+        assert.strictEqual(calls[0].rotation, 0);
+        assert.strictEqual(calls[0].resolution, 1);
+        assert.deepEqual(calls[0].coords, [4.5, 9]);
+        assert.strictEqual(calls[1].feature, multipoint);
+        assert.deepEqual(calls[1].coords[0], [4.5, 9]);
+        assert.strictEqual(calls[2].feature, linestring);
+        assert.deepEqual(calls[2].coords[0], [4.5, 9]);
+        assert.strictEqual(calls[3].feature, multilinestring);
+        assert.deepEqual(calls[3].coords[0][0], [4.5, 9]);
+        assert.strictEqual(calls[4].feature, polygon);
+        assert.deepEqual(calls[4].coords[0][0], [-9, -4.5]);
+        assert.strictEqual(calls[5].feature, multipolygon);
+        assert.deepEqual(calls[5].coords[0][0][0], [-9, -4.5]);
+        assert.strictEqual(calls[6].feature, geometrycollection);
+        assert.deepEqual(calls[6].geometry.getCoordinates(), [45, 90]);
+        assert.deepEqual(calls[7].geometry.getCoordinates()[0], [45, 90]);
+        assert.deepEqual(calls[8].geometry.getCoordinates()[0][0], [-90, -45]);
       });
     });
   });
@@ -612,7 +611,7 @@ describe('ol.render.canvas.Builder', function () {
       const tolerance = 10;
       const extent = [-180, -90, 180, 90];
       const replay = new CanvasBuilder(tolerance, extent, 1, 1, true);
-      expect(replay).to.be.a(CanvasBuilder);
+      assert.instanceOf(replay, CanvasBuilder);
     });
   });
 
@@ -625,27 +624,28 @@ describe('ol.render.canvas.Builder', function () {
     it('appends coordinates that are within the max extent', function () {
       const flat = [-110, 45, 110, 45, 110, -45, -110, -45];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('appends polygon coordinates that are within the max extent', function () {
       const flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('appends polygon coordinates that are within the max extent (skipping first)', function () {
       const flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([
-        110, 45, 110, -45, -110, -45, -110, 45,
-      ]);
+      assert.deepEqual(
+        replay.coordinates,
+        [110, 45, 110, -45, -110, -45, -110, 45],
+      );
     });
 
     it('works with a single coordinate (inside)', function () {
       const flat = [-110, 45];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('always appends first point (even if outside)', function () {
@@ -653,7 +653,7 @@ describe('ol.render.canvas.Builder', function () {
       // closing rings, we always add the first point
       const flat = [-110, 145];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('always appends first polygon vertex (even if outside)', function () {
@@ -661,13 +661,13 @@ describe('ol.render.canvas.Builder', function () {
       // closing rings, we always add the first point
       const flat = [-110, 145, -110, 145];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('skips first polygon vertex upon request (also when outside)', function () {
       const flat = [-110, 145, -110, 145];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([-110, 145]);
+      assert.deepEqual(replay.coordinates, [-110, 145]);
     });
 
     it('appends points when segments cross (top to bottom)', function () {
@@ -675,13 +675,13 @@ describe('ol.render.canvas.Builder', function () {
       // part of a linestring or ring, but only a few extra
       const flat = [0, 200, 0, -200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('appends points when segments cross (top to inside)', function () {
       const flat = [0, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('always appends the first segment (even when outside)', function () {
@@ -689,7 +689,7 @@ describe('ol.render.canvas.Builder', function () {
       // closing rings, we always add the first segment
       const flat = [-10, 200, 10, 200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('always appends the first polygon segment (even when outside)', function () {
@@ -697,67 +697,67 @@ describe('ol.render.canvas.Builder', function () {
       // closing rings, we always add the first segment
       const flat = [-10, 200, 10, 200, -10, 200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('skips first polygon segment upon request (also when outside)', function () {
       const flat = [-10, 200, 10, 200, -10, 200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([10, 200, -10, 200]);
+      assert.deepEqual(replay.coordinates, [10, 200, -10, 200]);
     });
 
     it('eliminates segments outside (and not changing rel)', function () {
       const flat = [0, 0, 0, 200, 5, 200, 10, 200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200]);
+      assert.deepEqual(replay.coordinates, [0, 0, 0, 200]);
     });
 
     it('eliminates polygon segments outside (and not changing rel)', function () {
       const flat = [0, 0, 0, 200, 5, 200, 10, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200, 10, 200, 0, 0]);
+      assert.deepEqual(replay.coordinates, [0, 0, 0, 200, 10, 200, 0, 0]);
     });
 
     it('eliminates polygon segments outside (skipping first and not changing rel)', function () {
       const flat = [0, 0, 0, 10, 0, 200, 5, 200, 10, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([0, 10, 0, 200, 10, 200, 0, 0]);
+      assert.deepEqual(replay.coordinates, [0, 10, 0, 200, 10, 200, 0, 0]);
     });
 
     it('eliminates segments outside (and not changing rel)', function () {
       const flat = [0, 0, 0, 200, 10, 200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200]);
+      assert.deepEqual(replay.coordinates, [0, 0, 0, 200]);
     });
 
     it('includes polygon segments outside (and not changing rel) when on last segment', function () {
       const flat = [0, 0, 0, 200, 10, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('includes polygon segments outside (skipping first and not changing rel) when on last segment', function () {
       const flat = [0, 0, 0, 200, 10, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([0, 200, 10, 200, 0, 0]);
+      assert.deepEqual(replay.coordinates, [0, 200, 10, 200, 0, 0]);
     });
 
     it('includes outside segments that change relationship', function () {
       const flat = [0, 0, 0, 200, 200, 200, 250, 200];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, false, false);
-      expect(replay.coordinates).to.eql([0, 0, 0, 200, 200, 200]);
+      assert.deepEqual(replay.coordinates, [0, 0, 0, 200, 200, 200]);
     });
 
     it('includes outside polygon segments that change relationship when on last segment', function () {
       const flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, false);
-      expect(replay.coordinates).to.eql(flat);
+      assert.deepEqual(replay.coordinates, flat);
     });
 
     it('includes outside polygon segments that change relationship when on last segment (when skipping first)', function () {
       const flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([0, 200, 200, 200, 250, 200, 0, 0]);
+      assert.deepEqual(replay.coordinates, [0, 200, 200, 200, 250, 200, 0, 0]);
     });
   });
 });
@@ -774,7 +774,7 @@ describe('ol.render.canvas.LineStringBuilder', function () {
       });
       replay.setFillStrokeStyle(null, stroke);
       const buffered = replay.getBufferedMaxExtent();
-      expect(buffered).to.eql([-195, -105, 195, 105]);
+      assert.deepEqual(buffered, [-195, -105, 195, 105]);
     });
   });
 });
@@ -798,10 +798,10 @@ describe('ol.render.canvas.PolygonBuilder', function () {
       });
       replay.setFillStrokeStyle(null, stroke);
       let offset = replay.drawFlatCoordinatess_(coords, 0, ends, 2);
-      expect(offset).to.be(14);
+      assert.strictEqual(offset, 14);
       replay.setFillStrokeStyle(null, null);
       offset = replay.drawFlatCoordinatess_(coords, 0, ends, 2);
-      expect(offset).to.be(14);
+      assert.strictEqual(offset, 14);
     });
   });
 
@@ -812,7 +812,7 @@ describe('ol.render.canvas.PolygonBuilder', function () {
       });
       replay.setFillStrokeStyle(null, stroke);
       const buffered = replay.getBufferedMaxExtent();
-      expect(buffered).to.eql([-210, -120, 210, 120]);
+      assert.deepEqual(buffered, [-210, -120, 210, 120]);
     });
   });
 });

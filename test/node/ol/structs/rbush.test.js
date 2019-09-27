@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import RBush from '../../../../src/ol/structs/RBush.js';
-import expect from '../../expect.js';
 
 describe('ol/structs/RBush.js', function () {
   let rBush;
@@ -10,13 +10,13 @@ describe('ol/structs/RBush.js', function () {
   describe('when empty', function () {
     describe('#getAll', function () {
       it('returns the expected number of objects', function () {
-        expect(rBush.getAll()).to.be.empty();
+        assert.isEmpty(rBush.getAll());
       });
     });
 
     describe('#isEmpty', function () {
       it('returns true', function () {
-        expect(rBush.isEmpty()).to.be(true);
+        assert.strictEqual(rBush.isEmpty(), true);
       });
     });
   });
@@ -29,19 +29,19 @@ describe('ol/structs/RBush.js', function () {
     });
 
     it('can update the object', function () {
-      expect(rBush.getInExtent([0, 0, 1, 1])).to.eql([obj]);
+      assert.deepEqual(rBush.getInExtent([0, 0, 1, 1]), [obj]);
       rBush.update([2, 2, 3, 3], obj);
-      expect(rBush.getInExtent([0, 0, 1, 1])).to.be.empty();
-      expect(rBush.getAll()).to.eql([obj]);
-      expect(rBush.getInExtent([2, 2, 3, 3])).to.eql([obj]);
+      assert.isEmpty(rBush.getInExtent([0, 0, 1, 1]));
+      assert.deepEqual(rBush.getAll(), [obj]);
+      assert.deepEqual(rBush.getInExtent([2, 2, 3, 3]), [obj]);
     });
 
     it("don't throws an exception if the extent is not modified", function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         rBush.forEach(function (value) {
           rBush.update([0, 0, 1, 1], obj);
         });
-      }).not.to.throwException();
+      });
     });
   });
 
@@ -68,7 +68,7 @@ describe('ol/structs/RBush.js', function () {
         rBush.forEach(function () {
           ++i;
         });
-        expect(i).to.be(objs.length);
+        assert.strictEqual(i, objs.length);
       });
 
       it('stops when the function returns true', function () {
@@ -76,8 +76,8 @@ describe('ol/structs/RBush.js', function () {
         const result = rBush.forEach(function () {
           return ++i >= 4;
         });
-        expect(i).to.be(4);
-        expect(result).to.be(true);
+        assert.strictEqual(i, 4);
+        assert.strictEqual(result, true);
       });
     });
 
@@ -85,25 +85,25 @@ describe('ol/structs/RBush.js', function () {
       it('returns the expected objects', function () {
         let result;
         result = rBush.getInExtent([2, 2, 3, 3]);
-        expect(result).to.contain(objs[1]);
-        expect(result).to.contain(objs[2]);
-        expect(result.length).to.be(2);
+        assert.include(result, objs[1]);
+        assert.include(result, objs[2]);
+        assert.strictEqual(result.length, 2);
         result = rBush.getInExtent([-1, -1, 2, 2]);
-        expect(result).to.contain(objs[0]);
-        expect(result).to.contain(objs[1]);
-        expect(result).to.contain(objs[2]);
-        expect(result).to.contain(objs[4]);
-        expect(result.length).to.be(4);
+        assert.include(result, objs[0]);
+        assert.include(result, objs[1]);
+        assert.include(result, objs[2]);
+        assert.include(result, objs[4]);
+        assert.strictEqual(result.length, 4);
       });
 
       it('returns an empty array when given a disjoint extent', function () {
-        expect(rBush.getInExtent([5, 5, 6, 6]).length).to.be(0);
+        assert.strictEqual(rBush.getInExtent([5, 5, 6, 6]).length, 0);
       });
     });
 
     describe('#isEmpty', function () {
       it('returns false', function () {
-        expect(rBush.isEmpty()).to.be(false);
+        assert.strictEqual(rBush.isEmpty(), false);
       });
     });
 
@@ -111,9 +111,9 @@ describe('ol/structs/RBush.js', function () {
       it('can remove each object', function () {
         let i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          expect(rBush.getAll()).to.contain(objs[i]);
+          assert.include(rBush.getAll(), objs[i]);
           rBush.remove(objs[i]);
-          expect(rBush.getAll()).not.to.contain(objs[i]);
+          assert.notInclude(rBush.getAll(), objs[i]);
         }
       });
     });
@@ -136,14 +136,14 @@ describe('ol/structs/RBush.js', function () {
       it('returns the expected objects', function () {
         let i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          expect(rBush.getInExtent(extents[i])).to.eql([objs[i]]);
+          assert.deepEqual(rBush.getInExtent(extents[i]), [objs[i]]);
         }
       });
     });
 
     describe('#isEmpty', function () {
       it('returns false', function () {
-        expect(rBush.isEmpty()).to.be(false);
+        assert.strictEqual(rBush.isEmpty(), false);
       });
     });
 
@@ -151,12 +151,12 @@ describe('ol/structs/RBush.js', function () {
       it('can remove each object in turn', function () {
         let i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          expect(rBush.getInExtent(extents[i])).to.eql([objs[i]]);
+          assert.deepEqual(rBush.getInExtent(extents[i]), [objs[i]]);
           rBush.remove(objs[i]);
-          expect(rBush.getInExtent(extents[i])).to.be.empty();
+          assert.isEmpty(rBush.getInExtent(extents[i]));
         }
-        expect(rBush.getAll()).to.be.empty();
-        expect(rBush.isEmpty()).to.be(true);
+        assert.isEmpty(rBush.getAll());
+        assert.strictEqual(rBush.isEmpty(), true);
       });
 
       it('can remove objects in random order', function () {
@@ -170,12 +170,12 @@ describe('ol/structs/RBush.js', function () {
         }
         for (i = 0, ii = objs.length; i < ii; ++i) {
           const index = indexes[i];
-          expect(rBush.getInExtent(extents[index])).to.eql([objs[index]]);
+          assert.deepEqual(rBush.getInExtent(extents[index]), [objs[index]]);
           rBush.remove(objs[index]);
-          expect(rBush.getInExtent(extents[index])).to.be.empty();
+          assert.isEmpty(rBush.getInExtent(extents[index]));
         }
-        expect(rBush.getAll()).to.be.empty();
-        expect(rBush.isEmpty()).to.be(true);
+        assert.isEmpty(rBush.getAll());
+        assert.strictEqual(rBush.isEmpty(), true);
       });
     });
   });
@@ -196,13 +196,16 @@ describe('ol/structs/RBush.js', function () {
 
     describe('#getAll', function () {
       it('returns the expected number of objects', function () {
-        expect(rBush.getAll().length).to.be(1000);
+        assert.strictEqual(rBush.getAll().length, 1000);
       });
     });
 
     describe('#getInExtent', function () {
       it('returns the expected number of objects', function () {
-        expect(rBush.getInExtent([0, 0, 10600, 10600]).length).to.be(1000);
+        assert.strictEqual(
+          rBush.getInExtent([0, 0, 10600, 10600]).length,
+          1000,
+        );
       });
 
       it('can perform 1000 in-extent searches', function () {
@@ -217,7 +220,7 @@ describe('ol/structs/RBush.js', function () {
           const extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
-        expect(n).not.to.be(0);
+        assert.notEqual(n, 0);
       });
 
       it('can perform 1000 out-of-extent searches', function () {
@@ -235,7 +238,7 @@ describe('ol/structs/RBush.js', function () {
           const extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
-        expect(n).to.be(0);
+        assert.strictEqual(n, 0);
       });
     });
 
@@ -251,13 +254,16 @@ describe('ol/structs/RBush.js', function () {
           const extent = [min[0], min[1], max[0], max[1]];
           rBush.insert(extent, {id: i});
         }
-        expect(rBush.getInExtent([0, 0, 10600, 10600]).length).to.be(2000);
+        assert.strictEqual(
+          rBush.getInExtent([0, 0, 10600, 10600]).length,
+          2000,
+        );
       });
     });
 
     describe('#isEmpty', function () {
       it('returns false', function () {
-        expect(rBush.isEmpty()).to.be(false);
+        assert.strictEqual(rBush.isEmpty(), false);
       });
     });
 
@@ -269,7 +275,7 @@ describe('ol/structs/RBush.js', function () {
           value = objs[i];
           rBush.remove(value);
         }
-        expect(rBush.isEmpty()).to.be(true);
+        assert.strictEqual(rBush.isEmpty(), true);
       });
     });
   });
@@ -278,7 +284,7 @@ describe('ol/structs/RBush.js', function () {
     it('gets the extent', function () {
       const obj = {};
       rBush.insert([0, 0, 1, 1], obj);
-      expect(rBush.getExtent()).to.eql([0, 0, 1, 1]);
+      assert.deepEqual(rBush.getExtent(), [0, 0, 1, 1]);
     });
   });
 
@@ -290,8 +296,8 @@ describe('ol/structs/RBush.js', function () {
       rBush.insert([0, 0, 1, 1], obj1);
       rBush2.insert([0, 0, 2, 2], obj2);
       rBush.concat(rBush2);
-      expect(rBush.getExtent()).to.eql([0, 0, 2, 2]);
-      expect(rBush.getAll().length).to.be(2);
+      assert.deepEqual(rBush.getExtent(), [0, 0, 2, 2]);
+      assert.strictEqual(rBush.getAll().length, 2);
     });
 
     it("preserves the concatenated object's references", function () {
@@ -302,7 +308,7 @@ describe('ol/structs/RBush.js', function () {
       rBush2.insert([0, 0, 2, 2], obj2);
       rBush.concat(rBush2);
       rBush.update([0, 0, 3, 3], obj2);
-      expect(rBush.getExtent()).to.eql([0, 0, 3, 3]);
+      assert.deepEqual(rBush.getExtent(), [0, 0, 3, 3]);
     });
   });
 });

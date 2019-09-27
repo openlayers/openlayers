@@ -1,16 +1,16 @@
+import {assert} from 'chai';
 import {linearRing, linearRings} from '../../../../../src/ol/geom/flat/area.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/area.js', function () {
   describe('linearRing', function () {
     it('calculates the area of a triangle', function () {
       const area = linearRing([0, 0, 0.5, 1, 1, 0], 0, 6, 2);
-      expect(area).to.be(0.5);
+      assert.strictEqual(area, 0.5);
     });
 
     it('calculates the area of a unit square', function () {
       const area = linearRing([0, 0, 0, 1, 1, 1, 1, 0], 0, 8, 2);
-      expect(area).to.be(1);
+      assert.strictEqual(area, 1);
     });
 
     it('calculates with large coordinate values', function () {
@@ -29,7 +29,7 @@ describe('ol/geom/flat/area.js', function () {
         8,
         2,
       );
-      expect(area).to.be(1);
+      assert.strictEqual(area, 1);
     });
   });
 
@@ -41,7 +41,7 @@ describe('ol/geom/flat/area.js', function () {
         [8, 16],
         2,
       );
-      expect(area).to.be(8);
+      assert.strictEqual(area, 8);
     });
   });
 });

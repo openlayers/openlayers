@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import VectorTile from '../../../../src/ol/VectorTile.js';
 import {listen} from '../../../../src/ol/events.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
@@ -14,9 +15,10 @@ describe('ol.VectorTile', function () {
     defaultLoadFunction(tile, url);
     const loader = tile.loader_;
     listen(tile, 'change', function (e) {
-      expect(tile.getFeatures()[0].getGeometry().getFlatCoordinates()).to.eql([
-        -9724792.346778862, 4164041.638405114,
-      ]);
+      assert.deepEqual(
+        tile.getFeatures()[0].getGeometry().getFlatCoordinates(),
+        [-9724792.346778862, 4164041.638405114],
+      );
       done();
     });
     loader.call(tile, [], 1, getProjection('EPSG:3857'));
@@ -32,9 +34,10 @@ describe('ol.VectorTile', function () {
     defaultLoadFunction(tile, url);
     const loader = tile.loader_;
     listen(tile, 'change', function (e) {
-      expect(
+      assert.deepEqual(
         tile.getFeatures()[1246].getGeometry().getFlatCoordinates(),
-      ).to.eql([1827804.0218549764, 6144812.116688028]);
+        [1827804.0218549764, 6144812.116688028],
+      );
       done();
     });
     const extent = tileGrid.getTileCoordExtent(tile.tileCoord);

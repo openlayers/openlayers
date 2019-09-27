@@ -1,6 +1,6 @@
+import {assert} from 'chai';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import {linearRingss as linearRingssCenter} from '../../../../../src/ol/geom/flat/center.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/center.js', function () {
   describe('linearRingss', function () {
@@ -22,7 +22,7 @@ describe('ol/geom/flat/center.js', function () {
         squareMultiPoly.endss_,
         2,
       );
-      expect(got).to.eql([0.5, 0.5]);
+      assert.deepEqual(got, [0.5, 0.5]);
     });
 
     it('calculates the centers of two squares', function () {
@@ -52,7 +52,7 @@ describe('ol/geom/flat/center.js', function () {
         squareMultiPoly.endss_,
         2,
       );
-      expect(got).to.eql([0.5, 0.5, 3.5, 0.5]);
+      assert.deepEqual(got, [0.5, 0.5, 3.5, 0.5]);
     });
 
     it('does not care about holes', function () {
@@ -80,7 +80,7 @@ describe('ol/geom/flat/center.js', function () {
         polywithHole.endss_,
         2,
       );
-      expect(got).to.eql([2.5, 2.5]);
+      assert.deepEqual(got, [2.5, 2.5]);
     });
   });
 });

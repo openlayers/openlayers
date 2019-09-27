@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {get} from '../../../../src/ol/proj.js';
 import {sourcesFromTileGrid} from '../../../../src/ol/source.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
@@ -26,19 +27,24 @@ describe('ol/source', function () {
         });
       };
       const getSources = sourcesFromTileGrid(tileGrid, factory);
-      expect(getSources(tileGrid.getExtent(), resolutions[1]).length).to.be(2);
-      expect(
+      assert.strictEqual(
+        getSources(tileGrid.getExtent(), resolutions[1]).length,
+        2,
+      );
+      assert.strictEqual(
         getSources(
           [-10000, -10000, -5000, 10000],
           resolutions[1],
         )[0].getUrls()[0],
-      ).to.be('0-0-0/{z}/{x}/{y}.png');
-      expect(
+        '0-0-0/{z}/{x}/{y}.png',
+      );
+      assert.strictEqual(
         getSources(
           [5000, -10000, 10000, 10000],
           resolutions[1],
         )[0].getUrls()[0],
-      ).to.be('0-1-0/{z}/{x}/{y}.png');
+        '0-1-0/{z}/{x}/{y}.png',
+      );
     });
   });
 });

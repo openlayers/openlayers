@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Circle from '../../../../../../src/ol/geom/Circle.js';
@@ -42,10 +43,14 @@ function executeInstructions(
   sinonSpy(executor, 'drawLabelWithPointPlacement_');
   const replayImageOrLabelStub = sinonStub(executor, 'replayImageOrLabel_');
   executor.execute(context, 1, transform);
-  expect(executor.drawLabelWithPointPlacement_.callCount).to.be(
+  assert.strictEqual(
+    executor.drawLabelWithPointPlacement_.callCount,
     expectedDrawTextImageCalls,
   );
-  expect(replayImageOrLabelStub.callCount).to.be(expectedBuilderImageCalls);
+  assert.strictEqual(
+    replayImageOrLabelStub.callCount,
+    expectedBuilderImageCalls,
+  );
 }
 
 describe('ol.render.canvas.TextBuilder', function () {
@@ -121,9 +126,10 @@ describe('ol.render.canvas.TextBuilder', function () {
     features.forEach(function (feature) {
       builder.drawText(feature.getGeometry(), feature);
     });
-    expect(builder.coordinates).to.eql([
-      0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10,
-    ]);
+    assert.deepEqual(
+      builder.coordinates,
+      [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+    );
   });
 
   it('builds correct coordinates array with a stride of 2 for geometries with 3 dimensions', function () {
@@ -198,9 +204,10 @@ describe('ol.render.canvas.TextBuilder', function () {
     features.forEach(function (feature) {
       builder.drawText(feature.getGeometry(), feature);
     });
-    expect(builder.coordinates).to.eql([
-      0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10,
-    ]);
+    assert.deepEqual(
+      builder.coordinates,
+      [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+    );
   });
 
   it('renders polygon labels only when they fit', function () {
@@ -222,7 +229,7 @@ describe('ol.render.canvas.TextBuilder', function () {
       }),
     );
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    assert.strictEqual(builder.instructions.length, 3);
     executeInstructions(builder, 1, 0);
 
     builder = createBuilder();
@@ -232,7 +239,7 @@ describe('ol.render.canvas.TextBuilder', function () {
       }),
     );
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    assert.strictEqual(builder.instructions.length, 3);
     executeInstructions(builder, 1, 1);
   });
 
@@ -266,7 +273,7 @@ describe('ol.render.canvas.TextBuilder', function () {
       }),
     );
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    assert.strictEqual(builder.instructions.length, 3);
     executeInstructions(builder, 1, 0);
 
     builder = createBuilder();
@@ -276,7 +283,7 @@ describe('ol.render.canvas.TextBuilder', function () {
       }),
     );
     builder.drawText(geometry, feature);
-    expect(builder.instructions.length).to.be(3);
+    assert.strictEqual(builder.instructions.length, 3);
     executeInstructions(builder, 1, 2);
   });
 
@@ -319,10 +326,10 @@ describe('ol.render.canvas.TextBuilder', function () {
       }),
     );
     builder.drawText(feature.getGeometry(), feature);
-    expect(builder.coordinates).to.have.length(2);
-    expect(builder.instructions).to.have.length(3);
+    assert.lengthOf(builder.coordinates, 2);
+    assert.lengthOf(builder.instructions, 3);
     const geometryWidths = builder.instructions[1][25];
-    expect(geometryWidths).to.have.length(1);
-    expect(geometryWidths[0]).to.be(120);
+    assert.lengthOf(geometryWidths, 1);
+    assert.strictEqual(geometryWidths[0], 120);
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import TileState from '../../../../src/ol/TileState.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
 import EventType from '../../../../src/ol/events/EventType.js';
@@ -25,12 +26,12 @@ describe('ol.VectorRenderTile', function () {
     listen(tile, 'change', function (e) {
       ++calls;
       if (calls === 1) {
-        expect(tile.getState()).to.be(TileState.ERROR);
+        assert.strictEqual(tile.getState(), TileState.ERROR);
         setTimeout(function () {
           sourceTile.setState(TileState.LOADED);
         }, 0);
       } else if (calls === 2) {
-        expect(tile.getState()).to.be(TileState.LOADED);
+        assert.strictEqual(tile.getState(), TileState.LOADED);
         done();
       }
     });
@@ -46,7 +47,7 @@ describe('ol.VectorRenderTile', function () {
     tile.load();
 
     listen(tile, 'change', function (e) {
-      expect(tile.getState()).to.be(TileState.ERROR);
+      assert.strictEqual(tile.getState(), TileState.ERROR);
       done();
     });
   });
@@ -59,7 +60,7 @@ describe('ol.VectorRenderTile', function () {
     const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
     tile.load();
-    expect(tile.getState()).to.be(TileState.EMPTY);
+    assert.strictEqual(tile.getState(), TileState.EMPTY);
   });
 
   it("only loads tiles within the source tileGrid's extent", function (done) {
@@ -80,10 +81,10 @@ describe('ol.VectorRenderTile', function () {
     });
 
     tile = source.getTile(0, 0, 0, 1, source.getProjection());
-    expect(tile.getState()).to.be(TileState.EMPTY);
+    assert.strictEqual(tile.getState(), TileState.EMPTY);
 
     tile = source.getTile(0, 16, 9, 1, source.getProjection());
-    expect(tile.getState()).to.be(TileState.IDLE);
+    assert.strictEqual(tile.getState(), TileState.IDLE);
     tile.load();
     const key = listen(tile, EventType.CHANGE, function () {
       if (tile.getState() === TileState.LOADED) {
@@ -93,8 +94,8 @@ describe('ol.VectorRenderTile', function () {
           source.getProjection(),
           tile,
         );
-        expect(sourceTiles.length).to.be(1);
-        expect(sourceTiles[0].tileCoord).to.eql([0, 16, 9]);
+        assert.strictEqual(sourceTiles.length, 1);
+        assert.deepEqual(sourceTiles[0].tileCoord, [0, 16, 9]);
         done();
       }
     });

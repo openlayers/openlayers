@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import {stub as sinonStub} from 'sinon';
 import {get} from '../../../../../src/ol/proj.js';
@@ -117,8 +118,8 @@ describe('ol/source/GeoZarr', function () {
         url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b04', 'b03', 'b02'],
       });
-      expect(source).to.be.a(GeoZarr);
-      expect(source.getState()).to.be('loading');
+      assert.instanceOf(source, GeoZarr);
+      assert.strictEqual(source.getState(), 'loading');
     });
 
     it('defaults to wrapX: false', function () {
@@ -126,7 +127,7 @@ describe('ol/source/GeoZarr', function () {
         url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b04', 'b03'],
       });
-      expect(source.getWrapX()).to.be(false);
+      assert.strictEqual(source.getWrapX(), false);
     });
 
     it('respects the wrapX option', function () {
@@ -135,7 +136,7 @@ describe('ol/source/GeoZarr', function () {
         bands: ['b04', 'b03'],
         wrapX: true,
       });
-      expect(source.getWrapX()).to.be(true);
+      assert.strictEqual(source.getWrapX(), true);
     });
 
     it('accepts projection option', function () {
@@ -145,7 +146,7 @@ describe('ol/source/GeoZarr', function () {
         bands: ['b04', 'b03'],
         projection: projection,
       });
-      expect(source.getProjection()).to.be(get(projection));
+      assert.strictEqual(source.getProjection(), get(projection));
     });
 
     it('stores band configuration and sets bandCount', function () {
@@ -154,8 +155,8 @@ describe('ol/source/GeoZarr', function () {
         url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: bands,
       });
-      expect(source.bands_).to.eql(bands);
-      expect(source.bandCount).to.be(bands.length);
+      assert.deepEqual(source.bands_, bands);
+      assert.strictEqual(source.bandCount, bands.length);
     });
   });
 
@@ -170,16 +171,14 @@ describe('ol/source/GeoZarr', function () {
     });
 
     it('should handle multiple bands for arithmetic operations', function () {
-      expect(source.bands_).to.have.length(2);
-      expect(source.bands_[0]).to.be('b05'); // NIR
-      expect(source.bands_[1]).to.be('b04'); // Red
+      assert.lengthOf(source.bands_, 2);
+      assert.strictEqual(source.bands_[0], 'b05');
+      assert.strictEqual(source.bands_[1], 'b04');
     });
 
     it('should be compatible with WebGL expressions', function () {
-      // This test ensures GeoZarr can be used with band arithmetic expressions
-      // The actual band value testing will be done in integration tests
-      expect(source).to.be.a(GeoZarr);
-      expect(source.bands_).to.not.be.empty();
+      assert.instanceOf(source, GeoZarr);
+      assert.isNotEmpty(source.bands_);
     });
   });
 
@@ -199,9 +198,9 @@ describe('ol/source/GeoZarr', function () {
         url: ZARR_URL,
         bands: ['band1'],
       });
-      expect(source.nodataBandIndex).to.be(undefined);
-      expect(source.bandCount).to.be(1);
-      expect(source.hasAlpha).to.be(false);
+      assert.strictEqual(source.nodataBandIndex, undefined);
+      assert.strictEqual(source.bandCount, 1);
+      assert.strictEqual(source.hasAlpha, false);
     });
 
     it('sets nodataBandIndex and increments bandCount when fillValue is present', function (done) {
@@ -215,9 +214,9 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.bandCount).to.be(3);
-          expect(source.nodataBandIndex).to.be(3);
-          expect(source.hasAlpha).to.be(true);
+          assert.strictEqual(source.bandCount, 3);
+          assert.strictEqual(source.nodataBandIndex, 3);
+          assert.strictEqual(source.hasAlpha, true);
           done();
         }
       });
@@ -231,9 +230,9 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.bandCount).to.be(1);
-          expect(source.nodataBandIndex).to.be(undefined);
-          expect(source.hasAlpha).to.be(false);
+          assert.strictEqual(source.bandCount, 1);
+          assert.strictEqual(source.nodataBandIndex, undefined);
+          assert.strictEqual(source.hasAlpha, false);
           done();
         }
       });
@@ -247,10 +246,7 @@ describe('ol/source/GeoZarr', function () {
         bands: ['b04'],
       });
 
-      // Source starts in loading state
-      expect(source.getState()).to.be('loading');
-
-      // Error handling will be tested separately when we can mock the network
+      assert.strictEqual(source.getState(), 'loading');
     });
   });
 
@@ -278,7 +274,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          expect(tileSize).to.eql([512, 512]);
+          assert.deepEqual(tileSize, [512, 512]);
           done();
         }
       });
@@ -298,7 +294,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          expect(tileSize).to.eql([512, 512]);
+          assert.deepEqual(tileSize, [512, 512]);
           done();
         }
       });
@@ -318,8 +314,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          // 500 is the largest divisor of 1000 that is ≤ 512
-          expect(tileSize).to.eql([500, 500]);
+          assert.deepEqual(tileSize, [500, 500]);
           done();
         }
       });
@@ -334,7 +329,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          expect(tileSize).to.be(256);
+          assert.strictEqual(tileSize, 256);
           done();
         }
       });
@@ -356,7 +351,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          expect(tileSize).to.be(256);
+          assert.strictEqual(tileSize, 256);
           done();
         }
       });
@@ -376,7 +371,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          expect(tileSize).to.eql([64, 64]);
+          assert.deepEqual(tileSize, [64, 64]);
           done();
         }
       });
@@ -401,8 +396,7 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileSize = source.tileGrid.getTileSize(0);
-          // Tile must be a multiple of 384 (inner chunk), so 384
-          expect(tileSize).to.eql([384, 384]);
+          assert.deepEqual(tileSize, [384, 384]);
           done();
         }
       });
@@ -461,12 +455,11 @@ describe('ol/source/GeoZarr', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const resolutions = source.tileGrid.getResolutions();
-          // Should be sorted descending
-          expect(resolutions).to.eql([360, 120, 60, 20, 10]);
+          assert.deepEqual(resolutions, [360, 120, 60, 20, 10]);
           // Origins should all inherit from the base level
           const origins = source.tileGrid.getOrigins();
           for (const origin of origins) {
-            expect(origin).to.eql([399960, 8000040]);
+            assert.deepEqual(origin, [399960, 8000040]);
           }
           done();
         }
@@ -532,7 +525,7 @@ describe('ol/source/GeoZarr', function () {
         });
         source.on('change', function () {
           if (source.getState() === 'ready') {
-            expect(source.getProjection()).to.be(get('EPSG:4326'));
+            assert.strictEqual(source.getProjection(), get('EPSG:4326'));
             done();
           }
         });
@@ -565,8 +558,8 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.tileGrid.getResolutions()).to.eql([1]);
-          expect(source.bandSingleScaleResolution_[0]).to.be(1);
+          assert.deepEqual(source.tileGrid.getResolutions(), [1]);
+          assert.strictEqual(source.bandSingleScaleResolution_[0], 1);
           done();
         }
       });
@@ -584,9 +577,9 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.tileGrid.getResolutions()).to.eql([1]);
-          expect(source.bandsByLevel_).to.be(null);
-          expect(source.bandSingleScaleResolution_[0]).to.be(1);
+          assert.deepEqual(source.tileGrid.getResolutions(), [1]);
+          assert.strictEqual(source.bandsByLevel_, null);
+          assert.strictEqual(source.bandSingleScaleResolution_[0], 1);
           done();
         }
       });
@@ -662,9 +655,9 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.bandGroupIndex_).to.eql([0, 1]);
-          expect(source.bandsByLevel_['level0']).to.contain('b04');
-          expect(source.bandsByLevel_['level0']).to.contain('aot');
+          assert.deepEqual(source.bandGroupIndex_, [0, 1]);
+          assert.include(source.bandsByLevel_['level0'], 'b04');
+          assert.include(source.bandsByLevel_['level0'], 'aot');
           done();
         }
       });
@@ -684,9 +677,9 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.bandSingleScaleResolution_[0]).to.be(undefined);
-          expect(source.bandSingleScaleResolution_[1]).to.not.be(undefined);
-          expect(source.bandsByLevel_['level0']).to.contain('aot');
+          assert.strictEqual(source.bandSingleScaleResolution_[0], undefined);
+          assert.notEqual(source.bandSingleScaleResolution_[1], undefined);
+          assert.include(source.bandsByLevel_['level0'], 'aot');
           done();
         }
       });

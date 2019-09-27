@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import GML from '../../../../../src/ol/format/GML.js';
 import GML2 from '../../../../../src/ol/format/GML2.js';
@@ -11,6 +12,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../../src/ol/proj.js';
 import {createElementNS, parse} from '../../../../../src/ol/xml.js';
+import {assertXmlEqual} from '../../../../util/xml.js';
 
 const readGeometry = function (format, text, opt_options) {
   const doc = parse(text);
@@ -41,7 +43,7 @@ describe('ol.format.GML2', function () {
     });
 
     it('reads all features', function () {
-      expect(features.length).to.be(3);
+      assert.strictEqual(features.length, 3);
     });
   });
 
@@ -55,8 +57,8 @@ describe('ol.format.GML2', function () {
           '</gml:Point>';
 
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([-180, -90, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [-180, -90, 0]);
       });
 
       it('can read a 3D point geometry', function () {
@@ -67,8 +69,8 @@ describe('ol.format.GML2', function () {
           '</gml:Point>';
 
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([-180, -90, 42]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [-180, -90, 42]);
       });
 
       it('can read a box element', function () {
@@ -80,7 +82,7 @@ describe('ol.format.GML2', function () {
           '</gml:Box>';
 
         const g = readGeometry(format, text);
-        expect(g).to.eql([47.003018, -0.768746, 47.925567, 3.002191]);
+        assert.deepEqual(g, [47.003018, -0.768746, 47.925567, 3.002191]);
       });
 
       it('can read a multipolygon with gml:coordinates', function () {
@@ -117,8 +119,8 @@ describe('ol.format.GML2', function () {
           '</gml:MultiPolygon>';
 
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [47.003018, -0.318987, 0],
@@ -186,7 +188,7 @@ describe('ol.format.GML2', function () {
       ];
       format.writeFeatureElement(node, feature, objectStack);
 
-      expect(node).to.xmleql(parse(expected));
+      assertXmlEqual(node, parse(expected));
     });
 
     it('can serialize a Polygon', function () {
@@ -225,7 +227,7 @@ describe('ol.format.GML2', function () {
       ];
       format.writeFeatureElement(node, feature, objectStack);
 
-      expect(node).to.xmleql(parse(expected));
+      assertXmlEqual(node, parse(expected));
     });
 
     it('can serialize a Point', function () {
@@ -254,7 +256,7 @@ describe('ol.format.GML2', function () {
       ];
       format.writeFeatureElement(node, feature, objectStack);
 
-      expect(node).to.xmleql(parse(expected));
+      assertXmlEqual(node, parse(expected));
     });
 
     it('can serialize a Multi Point', function () {
@@ -287,7 +289,7 @@ describe('ol.format.GML2', function () {
       ];
       format.writeFeatureElement(node, feature, objectStack);
 
-      expect(node).to.xmleql(parse(expected));
+      assertXmlEqual(node, parse(expected));
     });
 
     it('can serialize a Multi Line String', function () {
@@ -325,7 +327,7 @@ describe('ol.format.GML2', function () {
       ];
       format.writeFeatureElement(node, feature, objectStack);
 
-      expect(node).to.xmleql(parse(expected));
+      assertXmlEqual(node, parse(expected));
     });
 
     it('can serialize a Multi Polygon', function () {
@@ -370,7 +372,7 @@ describe('ol.format.GML2', function () {
       ];
       format.writeFeatureElement(node, feature, objectStack);
 
-      expect(node).to.xmleql(parse(expected));
+      assertXmlEqual(node, parse(expected));
     });
   });
 });
@@ -394,10 +396,10 @@ describe('ol.format.GML3', function () {
           '  <gml:pos srsDimension="2">1 2</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [1, 2, 0]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a point geometry with scientific notation', function () {
@@ -407,16 +409,16 @@ describe('ol.format.GML3', function () {
           '  <gml:pos>1E7 2</gml:pos>' +
           '</gml:Point>';
         let g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [10000000, 2, 0]);
         text =
           '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
           '    srsName="CRS:84">' +
           '  <gml:pos>1e7 2</gml:pos>' +
           '</gml:Point>';
         g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [10000000, 2, 0]);
       });
 
       it('can read, transform and write a point geometry', function () {
@@ -429,17 +431,18 @@ describe('ol.format.GML3', function () {
           '  <gml:pos>1 2</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(format, text, config);
-        expect(g).to.be.an(Point);
+        assert.instanceOf(g, Point);
         const coordinates = g.getCoordinates();
-        expect(coordinates.splice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates.splice(0, 2),
           transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
         config.dataProjection = 'CRS:84';
         const serialized = format.writeGeometryNode(g, config);
         const pos = serialized.firstElementChild.firstElementChild.textContent;
         const coordinate = pos.split(' ');
-        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
-        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
+        assert.approximately(Number(coordinate[0]), 1, 1e-9);
+        assert.approximately(Number(coordinate[1]), 2, 1e-9);
       });
 
       it('can detect SRS, read and transform a point geometry', function () {
@@ -452,9 +455,10 @@ describe('ol.format.GML3', function () {
           '  <gml:pos>1 2</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(formatNoSrs, text, config);
-        expect(g).to.be.an(Point);
+        assert.instanceOf(g, Point);
         const coordinates = g.getCoordinates();
-        expect(coordinates.splice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates.splice(0, 2),
           transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
       });
@@ -466,10 +470,10 @@ describe('ol.format.GML3', function () {
           '  <gml:pos srsDimension="2">2 1</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [1, 2, 0]);
         const serialized = formatWGS84.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -481,13 +485,13 @@ describe('ol.format.GML3', function () {
           '  <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read, transform and write a linestring geometry', function () {
@@ -501,21 +505,23 @@ describe('ol.format.GML3', function () {
           '  <gml:posList>1 2 3 4</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(format, text, config);
-        expect(g).to.be.an(LineString);
+        assert.instanceOf(g, LineString);
         const coordinates = g.getCoordinates();
-        expect(coordinates[0].slice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates[0].slice(0, 2),
           transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
-        expect(coordinates[1].slice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates[1].slice(0, 2),
           transform([3, 4], 'CRS:84', 'EPSG:3857'),
         );
         const serialized = format.writeGeometryNode(g, config);
         const poss = serialized.firstElementChild.firstElementChild.textContent;
         const coordinate = poss.split(' ');
-        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
-        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
-        expect(coordinate[2]).to.roughlyEqual(3, 1e-9);
-        expect(coordinate[3]).to.roughlyEqual(4, 1e-9);
+        assert.approximately(Number(coordinate[0]), 1, 1e-9);
+        assert.approximately(Number(coordinate[1]), 2, 1e-9);
+        assert.approximately(Number(coordinate[2]), 3, 1e-9);
+        assert.approximately(Number(coordinate[3]), 4, 1e-9);
       });
 
       it('can read and write a linestring geometry in EPSG:4326', function () {
@@ -525,13 +531,13 @@ describe('ol.format.GML3', function () {
           '  <gml:posList srsDimension="2">2 1 4 3</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
         ]);
         const serialized = formatWGS84.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -545,13 +551,13 @@ describe('ol.format.GML3', function () {
             ' <gml:posList srsDimension="2">-90 -180 90 180</gml:posList>' +
             '</gml:LineString>';
           const g = readGeometry(format, text);
-          expect(g).to.be.an(LineString);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, LineString);
+          assert.deepEqual(g.getCoordinates(), [
             [-180, -90, 0],
             [180, 90, 0],
           ]);
           const serialized = formatWGS84.writeGeometryNode(g);
-          expect(serialized.firstElementChild).to.xmleql(parse(text));
+          assertXmlEqual(serialized.firstElementChild, parse(text));
         },
       );
 
@@ -562,10 +568,10 @@ describe('ol.format.GML3', function () {
           '  <gml:pos srsDimension="2">-90 -180</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([-180, -90, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [-180, -90, 0]);
         const serialized = formatWGS84.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read and write a surface geometry with right axis order', function () {
@@ -590,14 +596,14 @@ describe('ol.format.GML3', function () {
           '  </gml:surfaceMember>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
-        expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+        assert.equal(g.getCoordinates()[0][0][0][0], -77.0081);
+        assert.equal(g.getCoordinates()[0][0][0][1], 38.9661);
         format = new GML({
           srsName: 'urn:x-ogc:def:crs:EPSG:4326',
           surface: false,
         });
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -609,8 +615,8 @@ describe('ol.format.GML3', function () {
           '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 3],
           [4, 5, 6],
         ]);
@@ -625,15 +631,15 @@ describe('ol.format.GML3', function () {
           '  <gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList>' +
           '</gml:LinearRing>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LinearRing);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LinearRing);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
           [5, 6, 0],
           [1, 2, 0],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -659,8 +665,8 @@ describe('ol.format.GML3', function () {
           '  </gml:interior>' +
           '</gml:Polygon>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Polygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, Polygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [3, 2, 0],
@@ -681,7 +687,7 @@ describe('ol.format.GML3', function () {
           ],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -717,8 +723,8 @@ describe('ol.format.GML3', function () {
           '  </gml:patches>' +
           '</gml:Surface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Polygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, Polygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [3, 2, 0],
@@ -740,7 +746,7 @@ describe('ol.format.GML3', function () {
         ]);
         format = new GML({srsName: 'CRS:84', surface: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -756,14 +762,14 @@ describe('ol.format.GML3', function () {
           '  </gml:segments>' +
           '</gml:Curve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
         ]);
         format = new GML({srsName: 'CRS:84', curve: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -776,7 +782,7 @@ describe('ol.format.GML3', function () {
           '  <gml:upperCorner>3 4</gml:upperCorner>' +
           '</gml:Envelope>';
         const g = readGeometry(format, text);
-        expect(g).to.eql([1, 2, 3, 4]);
+        assert.deepEqual(g, [1, 2, 3, 4]);
       });
     });
 
@@ -802,14 +808,14 @@ describe('ol.format.GML3', function () {
           '  </gml:pointMember>' +
           '</gml:MultiPoint>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPoint);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPoint);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [2, 3, 0],
           [3, 4, 0],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multipoint geometry', function () {
@@ -829,8 +835,8 @@ describe('ol.format.GML3', function () {
           '  </gml:pointMembers>' +
           '</gml:MultiPoint>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPoint);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPoint);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [2, 3, 0],
           [3, 4, 0],
@@ -855,8 +861,8 @@ describe('ol.format.GML3', function () {
           '  </gml:lineStringMember>' +
           '</gml:MultiLineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -868,7 +874,7 @@ describe('ol.format.GML3', function () {
         ]);
         format = new GML({srsName: 'CRS:84', multiCurve: false});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multilinestring geometry', function () {
@@ -885,8 +891,8 @@ describe('ol.format.GML3', function () {
           '  </gml:lineStringMembers>' +
           '</gml:MultiLineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -942,8 +948,8 @@ describe('ol.format.GML3', function () {
           '  </gml:polygonMember>' +
           '</gml:MultiPolygon>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -975,7 +981,7 @@ describe('ol.format.GML3', function () {
         ]);
         format = new GML({srsName: 'CRS:84', multiSurface: false});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multipolygon geometry', function () {
@@ -1010,8 +1016,8 @@ describe('ol.format.GML3', function () {
           '  </gml:polygonMembers>' +
           '</gml:MultiPolygon>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -1061,8 +1067,8 @@ describe('ol.format.GML3', function () {
           '  </gml:curveMember>' +
           '</gml:MultiCurve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -1073,7 +1079,7 @@ describe('ol.format.GML3', function () {
           ],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read and write a singular multicurve-curve geometry', function () {
@@ -1100,8 +1106,8 @@ describe('ol.format.GML3', function () {
           '  </gml:curveMember>' +
           '</gml:MultiCurve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -1113,7 +1119,7 @@ describe('ol.format.GML3', function () {
         ]);
         format = new GML({srsName: 'CRS:84', curve: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -1160,8 +1166,8 @@ describe('ol.format.GML3', function () {
           '  </gml:surfaceMember>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -1192,7 +1198,7 @@ describe('ol.format.GML3', function () {
           ],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multisurface geometry', function () {
@@ -1229,8 +1235,8 @@ describe('ol.format.GML3', function () {
           '  </gml:surfaceMembers>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -1312,8 +1318,8 @@ describe('ol.format.GML3', function () {
           '  </gml:surfaceMember>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -1345,7 +1351,7 @@ describe('ol.format.GML3', function () {
         ]);
         format = new GML({srsName: 'CRS:84', surface: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
   });
@@ -1375,7 +1381,7 @@ describe('ol.format.GML3', function () {
       };
       const features = new GML(config).readFeatures(text);
       const feature = features[0];
-      expect(feature.get('empty')).to.be(undefined);
+      assert.strictEqual(feature.get('empty'), undefined);
     });
   });
 
@@ -1412,11 +1418,11 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 1 feature', function () {
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
     });
 
     it('converts XML attribute to text', function () {
-      expect(features[0].get('cdata')).to.be('<a>b</a>');
+      assert.strictEqual(features[0].get('cdata'), '<a>b</a>');
     });
   });
 
@@ -1435,11 +1441,11 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
 
     it('creates the right id for the feature', function () {
-      expect(features[0].getId()).to.equal('states.1');
+      assert.equal(features[0].getId(), 'states.1');
     });
 
     it('can reuse the parser for a different featureNS', function () {
@@ -1457,8 +1463,8 @@ describe('ol.format.GML3', function () {
         '  </foo:gnis_pop>' +
         '</gml:featureMembers>';
       features = gmlFormat.readFeatures(text);
-      expect(features).to.have.length(1);
-      expect(features[0].get('population')).to.equal('84683');
+      assert.lengthOf(features, 1);
+      assert.equal(features[0].get('population'), '84683');
     });
 
     it('can read an empty collection', function () {
@@ -1466,7 +1472,7 @@ describe('ol.format.GML3', function () {
         '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
         '</gml:featureMembers>';
       features = gmlFormat.readFeatures(text);
-      expect(features).to.have.length(0);
+      assert.lengthOf(features, 0);
     });
   });
 
@@ -1499,16 +1505,16 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 10 features', function () {
-      expect(features).to.have.length(10);
+      assert.lengthOf(features, 10);
     });
 
     it('creates the right id for the feature', function () {
-      expect(features[0].getId()).to.equal('states.1');
+      assert.equal(features[0].getId(), 'states.1');
     });
 
     it('writes back features as GML', function () {
       const serialized = gmlFormat.writeFeaturesNode(features);
-      expect(serialized).to.xmleql(parse(text), {ignoreElementOrder: true});
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1543,7 +1549,7 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
   });
 
@@ -1565,14 +1571,14 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
 
     it('creates a polygon for Illinois', function () {
       feature = features[0];
-      expect(feature.getId()).to.equal('states.1');
-      expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(MultiPolygon);
+      assert.equal(feature.getId(), 'states.1');
+      assert.equal(feature.get('STATE_NAME'), 'Illinois');
+      assert.instanceOf(feature.getGeometry(), MultiPolygon);
     });
   });
 
@@ -1595,8 +1601,8 @@ describe('ol.format.GML3', function () {
 
     it('creates 2 geometries', function () {
       const feature = features[0];
-      expect(feature.get('center')).to.be.a(Point);
-      expect(feature.get('the_geom')).to.be.a(MultiPolygon);
+      assert.instanceOf(feature.get('center'), Point);
+      assert.instanceOf(feature.get('the_geom'), MultiPolygon);
     });
   });
 
@@ -1619,7 +1625,7 @@ describe('ol.format.GML3', function () {
 
     it('creates the correct attribute value', function () {
       const feature = features[0];
-      expect(feature.get('zoning')).to.equal('I-L');
+      assert.equal(feature.get('zoning'), 'I-L');
     });
   });
 
@@ -1638,7 +1644,7 @@ describe('ol.format.GML3', function () {
 
     it('creates a feature without a geometry', function () {
       const feature = features[0];
-      expect(feature.getGeometry()).to.be(undefined);
+      assert.strictEqual(feature.getGeometry(), undefined);
     });
   });
 
@@ -1656,7 +1662,7 @@ describe('ol.format.GML3', function () {
     });
 
     it('reads all features', function () {
-      expect(features.length).to.be(1);
+      assert.strictEqual(features.length, 1);
     });
   });
 
@@ -1680,7 +1686,7 @@ describe('ol.format.GML3', function () {
     });
 
     it('reads all features', function () {
-      expect(features.length).to.be(12);
+      assert.strictEqual(features.length, 12);
     });
   });
 
@@ -1701,7 +1707,7 @@ describe('ol.format.GML3', function () {
     });
 
     it('reads all features with autoconfigure', function () {
-      expect(features.length).to.be(12);
+      assert.strictEqual(features.length, 12);
     });
   });
 
@@ -1726,7 +1732,7 @@ describe('ol.format.GML3', function () {
     });
 
     it('reads all features', function () {
-      expect(features.length).to.be(2);
+      assert.strictEqual(features.length, 2);
     });
   });
 
@@ -1745,7 +1751,7 @@ describe('ol.format.GML3', function () {
     });
 
     it('reads all features with autoconfigure', function () {
-      expect(features.length).to.be(2);
+      assert.strictEqual(features.length, 2);
     });
   });
 
@@ -1770,25 +1776,25 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
 
     it('creates a LineString', function () {
       feature = features[0];
-      expect(feature.getId()).to.equal('geoserver_layer.1');
-      expect(feature.getGeometry()).to.be.an(LineString);
+      assert.equal(feature.getId(), 'geoserver_layer.1');
+      assert.instanceOf(feature.getGeometry(), LineString);
     });
 
     it('creates a Polygon', function () {
       feature = features[1];
-      expect(feature.getId()).to.equal('geoserver_layer.2');
-      expect(feature.getGeometry()).to.be.an(Polygon);
+      assert.equal(feature.getId(), 'geoserver_layer.2');
+      assert.instanceOf(feature.getGeometry(), Polygon);
     });
 
     it('creates a Point', function () {
       feature = features[2];
-      expect(feature.getId()).to.equal('geoserver_layer.3');
-      expect(feature.getGeometry()).to.be.an(Point);
+      assert.equal(feature.getId(), 'geoserver_layer.3');
+      assert.instanceOf(feature.getGeometry(), Point);
     });
 
     it('creates 3D Features with the expected geometries', function () {
@@ -1804,15 +1810,18 @@ describe('ol.format.GML3', function () {
       const expectedGeometry3 = [4.46383715, 51.91125849, 46.04679348];
 
       feature = features[0];
-      expect(feature.getGeometry().getFlatCoordinates()).to.eql(
+      assert.deepEqual(
+        feature.getGeometry().getFlatCoordinates(),
         expectedGeometry1,
       );
       feature = features[1];
-      expect(feature.getGeometry().getFlatCoordinates()).to.eql(
+      assert.deepEqual(
+        feature.getGeometry().getFlatCoordinates(),
         expectedGeometry2,
       );
       feature = features[2];
-      expect(feature.getGeometry().getFlatCoordinates()).to.eql(
+      assert.deepEqual(
+        feature.getGeometry().getFlatCoordinates(),
         expectedGeometry3,
       );
     });
@@ -1833,31 +1842,33 @@ describe('ol.format.GML3', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
 
     it('creates feature with two names', function () {
-      expect(features[0].values_['name']).to.have.length(2);
+      assert.lengthOf(features[0].values_['name'], 2);
     });
 
     it('parses multiple simple elements to strings', function () {
-      expect(features[0].values_['name'][0]).to.be.a('string');
+      assert.isString(features[0].values_['name'][0]);
     });
 
     it('creates nested property', function () {
-      expect(
+      assert.deepEqual(
         features[0].values_['observationMethod']['CGI_TermValue']['value'][
           '_content_'
         ],
-      ).to.eql('urn:ogc:def:nil:OGC:missing');
+        'urn:ogc:def:nil:OGC:missing',
+      );
     });
 
     it('creates nested attribute', function () {
-      expect(
+      assert.deepEqual(
         features[0].values_['observationMethod']['CGI_TermValue']['value'][
           'codeSpace'
         ],
-      ).to.eql('urn:ietf:rfc:2141');
+        'urn:ietf:rfc:2141',
+      );
     });
   });
 });
@@ -1881,10 +1892,10 @@ describe('ol.format.GML32', function () {
           '  <gml:pos srsDimension="2">1 2</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [1, 2, 0]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a point geometry with scientific notation', function () {
@@ -1894,16 +1905,16 @@ describe('ol.format.GML32', function () {
           '  <gml:pos>1E7 2</gml:pos>' +
           '</gml:Point>';
         let g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [10000000, 2, 0]);
         text =
           '<gml:Point xmlns:gml="http://www.opengis.net/gml/3.2" ' +
           '    srsName="CRS:84">' +
           '  <gml:pos>1e7 2</gml:pos>' +
           '</gml:Point>';
         g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [10000000, 2, 0]);
       });
 
       it('can read, transform and write a point geometry', function () {
@@ -1916,17 +1927,18 @@ describe('ol.format.GML32', function () {
           '  <gml:pos>1 2</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(format, text, config);
-        expect(g).to.be.an(Point);
+        assert.instanceOf(g, Point);
         const coordinates = g.getCoordinates();
-        expect(coordinates.splice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates.splice(0, 2),
           transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
         config.dataProjection = 'CRS:84';
         const serialized = format.writeGeometryNode(g, config);
         const pos = serialized.firstElementChild.firstElementChild.textContent;
         const coordinate = pos.split(' ');
-        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
-        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
+        assert.approximately(Number(coordinate[0]), 1, 1e-9);
+        assert.approximately(Number(coordinate[1]), 2, 1e-9);
       });
 
       it('can detect SRS, read and transform a point geometry', function () {
@@ -1939,9 +1951,10 @@ describe('ol.format.GML32', function () {
           '  <gml:pos>1 2</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(formatNoSrs, text, config);
-        expect(g).to.be.an(Point);
+        assert.instanceOf(g, Point);
         const coordinates = g.getCoordinates();
-        expect(coordinates.splice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates.splice(0, 2),
           transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
       });
@@ -1953,10 +1966,10 @@ describe('ol.format.GML32', function () {
           '  <gml:pos srsDimension="2">2 1</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [1, 2, 0]);
         const serialized = formatWGS84.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -1968,13 +1981,13 @@ describe('ol.format.GML32', function () {
           '  <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read, transform and write a linestring geometry', function () {
@@ -1988,21 +2001,23 @@ describe('ol.format.GML32', function () {
           '  <gml:posList>1 2 3 4</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(format, text, config);
-        expect(g).to.be.an(LineString);
+        assert.instanceOf(g, LineString);
         const coordinates = g.getCoordinates();
-        expect(coordinates[0].slice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates[0].slice(0, 2),
           transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
-        expect(coordinates[1].slice(0, 2)).to.eql(
+        assert.deepEqual(
+          coordinates[1].slice(0, 2),
           transform([3, 4], 'CRS:84', 'EPSG:3857'),
         );
         const serialized = format.writeGeometryNode(g, config);
         const poss = serialized.firstElementChild.firstElementChild.textContent;
         const coordinate = poss.split(' ');
-        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
-        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
-        expect(coordinate[2]).to.roughlyEqual(3, 1e-9);
-        expect(coordinate[3]).to.roughlyEqual(4, 1e-9);
+        assert.approximately(Number(coordinate[0]), 1, 1e-9);
+        assert.approximately(Number(coordinate[1]), 2, 1e-9);
+        assert.approximately(Number(coordinate[2]), 3, 1e-9);
+        assert.approximately(Number(coordinate[3]), 4, 1e-9);
       });
 
       it('can read and write a linestring geometry in EPSG:4326', function () {
@@ -2012,13 +2027,13 @@ describe('ol.format.GML32', function () {
           '  <gml:posList srsDimension="2">2 1 4 3</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
         ]);
         const serialized = formatWGS84.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -2032,13 +2047,13 @@ describe('ol.format.GML32', function () {
             ' <gml:posList srsDimension="2">-90 -180 90 180</gml:posList>' +
             '</gml:LineString>';
           const g = readGeometry(format, text);
-          expect(g).to.be.an(LineString);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, LineString);
+          assert.deepEqual(g.getCoordinates(), [
             [-180, -90, 0],
             [180, 90, 0],
           ]);
           const serialized = formatWGS84.writeGeometryNode(g);
-          expect(serialized.firstElementChild).to.xmleql(parse(text));
+          assertXmlEqual(serialized.firstElementChild, parse(text));
         },
       );
 
@@ -2049,10 +2064,10 @@ describe('ol.format.GML32', function () {
           '  <gml:pos srsDimension="2">-90 -180</gml:pos>' +
           '</gml:Point>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Point);
-        expect(g.getCoordinates()).to.eql([-180, -90, 0]);
+        assert.instanceOf(g, Point);
+        assert.deepEqual(g.getCoordinates(), [-180, -90, 0]);
         const serialized = formatWGS84.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read and write a surface geometry with right axis order', function () {
@@ -2077,14 +2092,14 @@ describe('ol.format.GML32', function () {
           '  </gml:surfaceMember>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
-        expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+        assert.equal(g.getCoordinates()[0][0][0][0], -77.0081);
+        assert.equal(g.getCoordinates()[0][0][0][1], 38.9661);
         format = new GML32({
           srsName: 'urn:x-ogc:def:crs:EPSG:4326',
           surface: false,
         });
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -2096,8 +2111,8 @@ describe('ol.format.GML32', function () {
           '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
           '</gml:LineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 3],
           [4, 5, 6],
         ]);
@@ -2112,15 +2127,15 @@ describe('ol.format.GML32', function () {
           '  <gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList>' +
           '</gml:LinearRing>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LinearRing);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LinearRing);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
           [5, 6, 0],
           [1, 2, 0],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -2146,8 +2161,8 @@ describe('ol.format.GML32', function () {
           '  </gml:interior>' +
           '</gml:Polygon>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Polygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, Polygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [3, 2, 0],
@@ -2168,7 +2183,7 @@ describe('ol.format.GML32', function () {
           ],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -2204,8 +2219,8 @@ describe('ol.format.GML32', function () {
           '  </gml:patches>' +
           '</gml:Surface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Polygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, Polygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [3, 2, 0],
@@ -2227,7 +2242,7 @@ describe('ol.format.GML32', function () {
         ]);
         format = new GML32({srsName: 'CRS:84', surface: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -2243,14 +2258,14 @@ describe('ol.format.GML32', function () {
           '  </gml:segments>' +
           '</gml:Curve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
         ]);
         format = new GML32({srsName: 'CRS:84', curve: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read and write a curve geometry', function () {
@@ -2267,8 +2282,8 @@ describe('ol.format.GML32', function () {
           '  </gml:segments>' +
           '</gml:Curve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(LineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, LineString);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [3, 4, 0],
           [5, 6, 0],
@@ -2288,7 +2303,7 @@ describe('ol.format.GML32', function () {
           '    </gml:LineStringSegment>' +
           '  </gml:segments>' +
           '</gml:Curve>';
-        expect(serialized.firstElementChild).to.xmleql(parse(expected));
+        assertXmlEqual(serialized.firstElementChild, parse(expected));
       });
 
       it('can read a polygon with a ring of curves', function () {
@@ -2313,8 +2328,8 @@ describe('ol.format.GML32', function () {
         </gml:Polygon>
         `;
         const g = readGeometry(format, text);
-        expect(g).to.be.an(Polygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, Polygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [3, 4, 0],
@@ -2334,7 +2349,7 @@ describe('ol.format.GML32', function () {
           '  <gml:upperCorner>3 4</gml:upperCorner>' +
           '</gml:Envelope>';
         const g = readGeometry(format, text);
-        expect(g).to.eql([1, 2, 3, 4]);
+        assert.deepEqual(g, [1, 2, 3, 4]);
       });
     });
 
@@ -2360,14 +2375,14 @@ describe('ol.format.GML32', function () {
           '  </gml:pointMember>' +
           '</gml:MultiPoint>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPoint);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPoint);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [2, 3, 0],
           [3, 4, 0],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multipoint geometry', function () {
@@ -2387,8 +2402,8 @@ describe('ol.format.GML32', function () {
           '  </gml:pointMembers>' +
           '</gml:MultiPoint>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPoint);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPoint);
+        assert.deepEqual(g.getCoordinates(), [
           [1, 2, 0],
           [2, 3, 0],
           [3, 4, 0],
@@ -2413,8 +2428,8 @@ describe('ol.format.GML32', function () {
           '  </gml:lineStringMember>' +
           '</gml:MultiLineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -2426,7 +2441,7 @@ describe('ol.format.GML32', function () {
         ]);
         format = new GML32({srsName: 'CRS:84', multiCurve: false});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multilinestring geometry', function () {
@@ -2443,8 +2458,8 @@ describe('ol.format.GML32', function () {
           '  </gml:lineStringMembers>' +
           '</gml:MultiLineString>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -2500,8 +2515,8 @@ describe('ol.format.GML32', function () {
           '  </gml:polygonMember>' +
           '</gml:MultiPolygon>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -2533,7 +2548,7 @@ describe('ol.format.GML32', function () {
         ]);
         format = new GML32({srsName: 'CRS:84', multiSurface: false});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multipolygon geometry', function () {
@@ -2568,8 +2583,8 @@ describe('ol.format.GML32', function () {
           '  </gml:polygonMembers>' +
           '</gml:MultiPolygon>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -2619,8 +2634,8 @@ describe('ol.format.GML32', function () {
           '  </gml:curveMember>' +
           '</gml:MultiCurve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -2631,7 +2646,7 @@ describe('ol.format.GML32', function () {
           ],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read and write a singular multicurve-curve geometry', function () {
@@ -2658,8 +2673,8 @@ describe('ol.format.GML32', function () {
           '  </gml:curveMember>' +
           '</gml:MultiCurve>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiLineString);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiLineString);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [1, 2, 0],
             [2, 3, 0],
@@ -2671,7 +2686,7 @@ describe('ol.format.GML32', function () {
         ]);
         format = new GML32({srsName: 'CRS:84', curve: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
 
@@ -2718,8 +2733,8 @@ describe('ol.format.GML32', function () {
           '  </gml:surfaceMember>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -2750,7 +2765,7 @@ describe('ol.format.GML32', function () {
           ],
         ]);
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multisurface geometry', function () {
@@ -2787,8 +2802,8 @@ describe('ol.format.GML32', function () {
           '  </gml:surfaceMembers>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -2870,8 +2885,8 @@ describe('ol.format.GML32', function () {
           '  </gml:surfaceMember>' +
           '</gml:MultiSurface>';
         const g = readGeometry(format, text);
-        expect(g).to.be.an(MultiPolygon);
-        expect(g.getCoordinates()).to.eql([
+        assert.instanceOf(g, MultiPolygon);
+        assert.deepEqual(g.getCoordinates(), [
           [
             [
               [1, 2, 0],
@@ -2903,7 +2918,7 @@ describe('ol.format.GML32', function () {
         ]);
         format = new GML32({srsName: 'CRS:84', surface: true});
         const serialized = format.writeGeometryNode(g);
-        expect(serialized.firstElementChild).to.xmleql(parse(text));
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
   });
@@ -2933,7 +2948,7 @@ describe('ol.format.GML32', function () {
       };
       const features = new GML32(config).readFeatures(text);
       const feature = features[0];
-      expect(feature.get('empty')).to.be(undefined);
+      assert.strictEqual(feature.get('empty'), undefined);
     });
   });
 
@@ -2970,11 +2985,11 @@ describe('ol.format.GML32', function () {
     });
 
     it('creates 1 feature', function () {
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
     });
 
     it('converts XML attribute to text', function () {
-      expect(features[0].get('cdata')).to.be('<a>b</a>');
+      assert.strictEqual(features[0].get('cdata'), '<a>b</a>');
     });
   });
 
@@ -2994,32 +3009,46 @@ describe('ol.format.GML32', function () {
     });
 
     it('creates 2 features', function () {
-      expect(features).to.have.length(2);
+      assert.lengthOf(features, 2);
     });
 
     it('creates feature with three attributeA properties and two attributeB properties', function () {
-      expect(features[0].values_['attributeA']).to.have.length(3);
-      expect(features[0].values_['attributeB']).to.have.length(2);
+      assert.lengthOf(features[0].values_['attributeA'], 3);
+      assert.lengthOf(features[0].values_['attributeB'], 2);
     });
 
     it('parses multiple complex elements to an array of objects', function () {
-      expect(features[0].values_['attributeA'][0]).to.be.a('object');
+      assert.isObject(features[0].values_['attributeA'][0]);
     });
 
     it('correctly structures multiple elements with attributes', function () {
-      expect(features[0].values_['attributeA'][0]['xlink:href']).to.be(
+      assert.strictEqual(
+        features[0].values_['attributeA'][0]['xlink:href'],
         'http://www.example.com/extern/1',
       );
-      expect(features[0].values_['attributeA'][0]._content_).to.be(undefined);
-      expect(features[0].values_['attributeA'][1]['xlink:href']).to.be(
+      assert.strictEqual(
+        features[0].values_['attributeA'][0]._content_,
+        undefined,
+      );
+      assert.strictEqual(
+        features[0].values_['attributeA'][1]['xlink:href'],
         'http://www.example.com/extern/2',
       );
-      expect(features[0].values_['attributeA'][2]._content_).to.be(undefined);
+      assert.strictEqual(
+        features[0].values_['attributeA'][2]._content_,
+        undefined,
+      );
     });
 
     it('correctly structures multiple elements with complex content', function () {
-      expect(features[0].values_['attributeB'][0].Attribute.value).to.be('foo');
-      expect(features[0].values_['attributeB'][1].Attribute.value).to.be('bar');
+      assert.strictEqual(
+        features[0].values_['attributeB'][0].Attribute.value,
+        'foo',
+      );
+      assert.strictEqual(
+        features[0].values_['attributeB'][1].Attribute.value,
+        'bar',
+      );
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   ceil,
   clamp,
@@ -11,28 +12,27 @@ import {
   toRadians,
   wrap,
 } from '../../../src/ol/math.js';
-import expect from '../expect.js';
 
 describe('ol/math.js', () => {
   describe('clamp', function () {
     it('returns the correct value at -Infinity', function () {
-      expect(clamp(-Infinity, 10, 20)).to.eql(10);
+      assert.deepEqual(clamp(-Infinity, 10, 20), 10);
     });
 
     it('returns the correct value at min', function () {
-      expect(clamp(10, 10, 20)).to.eql(10);
+      assert.deepEqual(clamp(10, 10, 20), 10);
     });
 
     it('returns the correct value at mid point', function () {
-      expect(clamp(15, 10, 20)).to.eql(15);
+      assert.deepEqual(clamp(15, 10, 20), 15);
     });
 
     it('returns the correct value at max', function () {
-      expect(clamp(20, 10, 20)).to.eql(20);
+      assert.deepEqual(clamp(20, 10, 20), 20);
     });
 
     it('returns the correct value at Infinity', function () {
-      expect(clamp(Infinity, 10, 20)).to.eql(20);
+      assert.deepEqual(clamp(Infinity, 10, 20), 20);
     });
   });
 
@@ -43,9 +43,9 @@ describe('ol/math.js', () => {
         [2, 6, 8, 3],
         [6, 8, 18, 5],
       ]);
-      expect(result[0]).to.roughlyEqual(0.3, 1e-9);
-      expect(result[1]).to.roughlyEqual(0.4, 1e-9);
-      expect(result[2]).to.roughlyEqual(0, 1e-9);
+      assert.approximately(result[0], 0.3, 1e-9);
+      assert.approximately(result[1], 0.4, 1e-9);
+      assert.approximately(result[2], 0, 1e-9);
     });
 
     it('can handle singular matrix', function () {
@@ -54,77 +54,77 @@ describe('ol/math.js', () => {
         [2, 6, 8, 3],
         [2, 1, 3, 1],
       ]);
-      expect(result).to.be(null);
+      assert.strictEqual(result, null);
     });
   });
 
   describe('toDegrees', function () {
     it('returns the correct value at -π', function () {
-      expect(toDegrees(-Math.PI)).to.be(-180);
+      assert.strictEqual(toDegrees(-Math.PI), -180);
     });
     it('returns the correct value at 0', function () {
-      expect(toDegrees(0)).to.be(0);
+      assert.strictEqual(toDegrees(0), 0);
     });
     it('returns the correct value at π', function () {
-      expect(toDegrees(Math.PI)).to.be(180);
+      assert.strictEqual(toDegrees(Math.PI), 180);
     });
   });
 
   describe('toRadians', function () {
     it('returns the correct value at -180', function () {
-      expect(toRadians(-180)).to.be(-Math.PI);
+      assert.strictEqual(toRadians(-180), -Math.PI);
     });
     it('returns the correct value at 0', function () {
-      expect(toRadians(0)).to.be(0);
+      assert.strictEqual(toRadians(0), 0);
     });
     it('returns the correct value at 180', function () {
-      expect(toRadians(180)).to.be(Math.PI);
+      assert.strictEqual(toRadians(180), Math.PI);
     });
   });
 
   describe('modulo', function () {
     it('256 / 8 returns 0', function () {
-      expect(modulo(256, 8)).to.be(0);
+      assert.strictEqual(modulo(256, 8), 0);
     });
     it('positive and positive returns a positive ', function () {
-      expect(modulo(7, 8)).to.be(7);
+      assert.strictEqual(modulo(7, 8), 7);
     });
     it('same Dividend and Divisor returns 0', function () {
-      expect(modulo(4, 4)).to.be(0);
+      assert.strictEqual(modulo(4, 4), 0);
     });
     it('negative and positive returns positive', function () {
-      expect(modulo(-3, 4)).to.be(1);
+      assert.strictEqual(modulo(-3, 4), 1);
     });
     it('negative and negative returns negative', function () {
-      expect(modulo(-4, -5)).to.be(-4);
-      expect(modulo(-3, -4)).to.be(-3);
+      assert.strictEqual(modulo(-4, -5), -4);
+      assert.strictEqual(modulo(-3, -4), -3);
     });
     it('positive and negative returns negative', function () {
-      expect(modulo(3, -4)).to.be(-1);
-      expect(modulo(1, -5)).to.be(-4);
-      expect(modulo(6, -5)).to.be(-4);
+      assert.strictEqual(modulo(3, -4), -1);
+      assert.strictEqual(modulo(1, -5), -4);
+      assert.strictEqual(modulo(6, -5), -4);
     });
   });
 
   describe('lerp', function () {
     it('correctly interpolated numbers', function () {
-      expect(lerp(0, 0, 0)).to.be(0);
-      expect(lerp(0, 1, 0)).to.be(0);
-      expect(lerp(1, 11, 5)).to.be(51);
+      assert.strictEqual(lerp(0, 0, 0), 0);
+      assert.strictEqual(lerp(0, 1, 0), 0);
+      assert.strictEqual(lerp(1, 11, 5), 51);
     });
     it('correctly interpolates floats', function () {
-      expect(lerp(0, 1, 0.5)).to.be(0.5);
-      expect(lerp(0.25, 0.75, 0.5)).to.be(0.5);
+      assert.strictEqual(lerp(0, 1, 0.5), 0.5);
+      assert.strictEqual(lerp(0.25, 0.75, 0.5), 0.5);
     });
   });
 
   describe('toFixed', () => {
     it('returns a number with a limited number of decimals', () => {
-      expect(toFixed(0.123456789, 3)).to.be(0.123);
+      assert.strictEqual(toFixed(0.123456789, 3), 0.123);
     });
 
     it('rounds up', () => {
-      expect(toFixed(0.123456789, 4)).to.be(0.1235);
+      assert.strictEqual(toFixed(0.123456789, 4), 0.1235);
     });
 
     const cases = [
@@ -145,7 +145,7 @@ describe('ol/math.js', () => {
         const string = c[0].toFixed(c[1]);
         const expected = parseFloat(string);
         const actual = toFixed(c[0], c[1]);
-        expect(actual).to.be(expected);
+        assert.strictEqual(actual, expected);
       });
     }
   });
@@ -161,7 +161,7 @@ describe('ol/math.js', () => {
 
     for (const c of cases) {
       it(`works for round(${c[0]}, ${c[1]})`, () => {
-        expect(round(c[0], c[1])).to.be(c[2]);
+        assert.strictEqual(round(c[0], c[1]), c[2]);
       });
     }
   });
@@ -176,7 +176,7 @@ describe('ol/math.js', () => {
 
     for (const c of cases) {
       it(`works for floor(${c[0]}, ${c[1]})`, () => {
-        expect(floor(c[0], c[1])).to.be(c[2]);
+        assert.strictEqual(floor(c[0], c[1]), c[2]);
       });
     }
   });
@@ -191,7 +191,7 @@ describe('ol/math.js', () => {
 
     for (const c of cases) {
       it(`works for ceil(${c[0]}, ${c[1]})`, () => {
-        expect(ceil(c[0], c[1])).to.be(c[2]);
+        assert.strictEqual(ceil(c[0], c[1]), c[2]);
       });
     }
   });
@@ -251,7 +251,7 @@ describe('ol/math.js', () => {
     for (const c of cases) {
       it(`works for wrap(${c.value}, ${c.min}, ${c.max})`, () => {
         const wrapped = wrap(c.value, c.min, c.max);
-        expect(wrapped).to.roughlyEqual(c.wrapped, 1e-6);
+        assert.approximately(wrapped, c.wrapped, 1e-6);
       });
     }
   });

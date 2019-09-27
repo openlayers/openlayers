@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -84,8 +85,8 @@ describe('ol/reproj/DataTile', () => {
       transition: 0,
     });
 
-    expect(withTransition.getAlpha('test', 0)).to.be.lessThan(1);
-    expect(withoutTransition.getAlpha('test', 0)).to.be(1);
+    assert.isBelow(withTransition.getAlpha('test', 0), 1);
+    assert.strictEqual(withoutTransition.getAlpha('test', 0), 1);
   });
 
   it('pixel data reprojected from EPSG:4326 to EPSG:3857 exactly matches original', (done) => {
@@ -143,7 +144,7 @@ describe('ol/reproj/DataTile', () => {
           for (let j = -1; j < 2; ++j) {
             dataA.push(layer.getData([pixel[0], pixel[1] + j]).toString());
           }
-          expect(dataA).to.contain(dataR.toString());
+          assert.include(dataA, dataR.toString());
         }
         done();
       });
@@ -202,7 +203,7 @@ describe('ol/reproj/DataTile', () => {
             for (let j = -3; j < 4; ++j) {
               dataA.push(layer.getData([pixel[0], pixel[1] + j]).toString());
             }
-            expect(dataA).to.contain(dataR.toString());
+            assert.include(dataA, dataR.toString());
           }
         }
         done();
@@ -289,7 +290,7 @@ describe('ol/reproj/DataTile', () => {
               dataA.push(data.toString());
             }
           }
-          expect(dataA).to.contain(dataR.toString());
+          assert.include(dataA, dataR.toString());
 
           pixel = [i + 0.5, 255.5 - i];
           coordinate = map.getCoordinateFromPixel(pixel);
@@ -308,7 +309,7 @@ describe('ol/reproj/DataTile', () => {
               dataA.push(data.toString());
             }
           }
-          expect(dataA).to.contain(dataR.toString());
+          assert.include(dataA, dataR.toString());
 
           pixel = [i + 0.5, 1.5];
           coordinate = map.getCoordinateFromPixel(pixel);
@@ -327,7 +328,7 @@ describe('ol/reproj/DataTile', () => {
               dataA.push(data.toString());
             }
           }
-          expect(dataA).to.contain(dataR.toString());
+          assert.include(dataA, dataR.toString());
 
           pixel = [1.5, i + 0.5];
           coordinate = map.getCoordinateFromPixel(pixel);
@@ -346,7 +347,7 @@ describe('ol/reproj/DataTile', () => {
               dataA.push(data.toString());
             }
           }
-          expect(dataA).to.contain(dataR.toString());
+          assert.include(dataA, dataR.toString());
 
           pixel = [i + 0.5, 255.5];
           coordinate = map.getCoordinateFromPixel(pixel);
@@ -365,7 +366,7 @@ describe('ol/reproj/DataTile', () => {
               dataA.push((data || emptyData).toString());
             }
           }
-          expect(dataA).to.contain(dataR.toString());
+          assert.include(dataA, dataR.toString());
         }
         done();
       });

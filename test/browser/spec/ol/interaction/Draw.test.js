@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -128,8 +129,8 @@ describe('ol/interaction/Draw', function () {
         source: source,
         type: 'Point',
       });
-      expect(draw).to.be.a(Draw);
-      expect(draw).to.be.a(Interaction);
+      assert.instanceOf(draw, Draw);
+      assert.instanceOf(draw, Interaction);
     });
 
     it('accepts a freehand option', function () {
@@ -145,7 +146,7 @@ describe('ol/interaction/Draw', function () {
         shiftKey: false,
       });
 
-      expect(draw.freehandCondition_(event)).to.be(true);
+      assert.strictEqual(draw.freehandCondition_(event), true);
     });
 
     describe('trace option', function () {
@@ -165,7 +166,7 @@ describe('ol/interaction/Draw', function () {
           }),
         });
 
-        expect(draw.traceCondition_(event)).to.be(true);
+        assert.strictEqual(draw.traceCondition_(event), true);
       });
 
       it('never goes in trace mode if false', function () {
@@ -184,7 +185,7 @@ describe('ol/interaction/Draw', function () {
           }),
         );
 
-        expect(draw.traceCondition_(event)).to.be(false);
+        assert.strictEqual(draw.traceCondition_(event), false);
       });
 
       it('accepts a condition', function () {
@@ -204,7 +205,7 @@ describe('ol/interaction/Draw', function () {
           }),
         );
 
-        expect(draw.traceCondition_(goodEvent)).to.be(true);
+        assert.strictEqual(draw.traceCondition_(goodEvent), true);
 
         const badEvent = new MapBrowserEvent(
           map,
@@ -216,7 +217,7 @@ describe('ol/interaction/Draw', function () {
           }),
         );
 
-        expect(draw.traceCondition_(badEvent)).to.be(false);
+        assert.strictEqual(draw.traceCondition_(badEvent), false);
       });
     });
 
@@ -226,7 +227,7 @@ describe('ol/interaction/Draw', function () {
         type: 'LineString',
         dragVertexDelay: 42,
       });
-      expect(draw.dragVertexDelay_).to.be(42);
+      assert.strictEqual(draw.dragVertexDelay_, 42);
     });
 
     it('accepts a stopClick option', function () {
@@ -241,8 +242,7 @@ describe('ol/interaction/Draw', function () {
       simulateBrowserEvent('pointermove', 10, 20);
       simulateBrowserEvent('pointerdown', 10, 20);
       simulateBrowserEvent('pointerup', 10, 20);
-      //setTimeout(() => {
-      expect(clicked).to.be(false);
+      assert.strictEqual(clicked, false);
       unByKey(clickKey);
       //}, 300);
     });
@@ -253,7 +253,7 @@ describe('ol/interaction/Draw', function () {
         type: 'Point',
         geometryLayout: 'XYZ',
       });
-      expect(draw.geometryLayout_).to.be('XYZ');
+      assert.strictEqual(draw.geometryLayout_, 'XYZ');
     });
   });
 
@@ -273,8 +273,8 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 20);
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(features[0].getGeometryName()).to.equal('the_geom');
-      expect(geometry).to.be.a(Point);
+      assert.equal(features[0].getGeometryName(), 'the_geom');
+      assert.instanceOf(geometry, Point);
     });
   });
 
@@ -295,13 +295,13 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 15, 25);
       features = source.getFeatures();
-      expect(features).to.length(0);
+      assert.lengthOf(features, 0);
 
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 14, 24);
       features = source.getFeatures();
-      expect(features).to.length(1);
+      assert.lengthOf(features, 1);
     });
   });
 
@@ -321,10 +321,10 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([10, -20]);
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [10, -20]);
     });
 
     it('does not draw a point with a significant drag', function () {
@@ -333,7 +333,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointermove', 18, 20);
       simulateEvent('pointerup', 18, 20);
       const features = source.getFeatures();
-      expect(features).to.have.length(0);
+      assert.lengthOf(features, 0);
     });
 
     it('does not draw a point when modifier key is pressed', function () {
@@ -341,7 +341,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20, true);
       simulateEvent('pointerup', 10, 20);
       const features = source.getFeatures();
-      expect(features).to.have.length(0);
+      assert.lengthOf(features, 0);
     });
 
     it('does not draw a point when multiple pointers are involved', function () {
@@ -352,7 +352,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 30, false, 1);
       simulateEvent('pointerup', 10, 10, false, 2);
       const features = source.getFeatures();
-      expect(features).to.have.length(0);
+      assert.lengthOf(features, 0);
     });
 
     it('triggers draw events', function () {
@@ -365,13 +365,13 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
-      expect(ds.called).to.be(true);
-      expect(de.called).to.be(true);
-      expect(da.called).to.be(false);
+      assert.strictEqual(ds.called, true);
+      assert.strictEqual(de.called, true);
+      assert.strictEqual(da.called, false);
       simulateEvent('pointermove', 20, 20);
-      expect(ds.callCount).to.be(1);
-      expect(de.callCount).to.be(1);
-      expect(da.callCount).to.be(0);
+      assert.strictEqual(ds.callCount, 1);
+      assert.strictEqual(de.callCount, 1);
+      assert.strictEqual(da.callCount, 0);
     });
 
     it('triggers drawend event before inserting the feature', function () {
@@ -380,27 +380,27 @@ describe('ol/interaction/Draw', function () {
         addfeature: 0,
       };
       listen(draw, 'drawend', function () {
-        expect(receivedEvents.end).to.be(0);
-        expect(receivedEvents.addfeature).to.be(0);
+        assert.strictEqual(receivedEvents.end, 0);
+        assert.strictEqual(receivedEvents.addfeature, 0);
         ++receivedEvents.end;
       });
       source.on('addfeature', function () {
-        expect(receivedEvents.end).to.be(1);
-        expect(receivedEvents.addfeature).to.be(0);
+        assert.strictEqual(receivedEvents.end, 1);
+        assert.strictEqual(receivedEvents.addfeature, 0);
         receivedEvents.addfeature++;
       });
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       simulateEvent('pointermove', 20, 20);
-      expect(receivedEvents.end).to.be(1);
-      expect(receivedEvents.addfeature).to.be(1);
+      assert.strictEqual(receivedEvents.end, 1);
+      assert.strictEqual(receivedEvents.addfeature, 1);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -420,16 +420,16 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 30, 15);
       simulateEvent('pointerup', 30, 15);
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiPoint);
-      expect(geometry.getCoordinates()).to.eql([[30, -15]]);
+      assert.instanceOf(geometry, MultiPoint);
+      assert.deepEqual(geometry.getCoordinates(), [[30, -15]]);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -460,10 +460,10 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20],
         [30, -20],
       ]);
@@ -490,7 +490,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 38, 31);
       simulateEvent('pointerup', 38, 31);
 
-      expect(source.getFeatures()).to.have.length(0);
+      assert.lengthOf(source.getFeatures(), 0);
     });
 
     it('supports freehand drawing for linestrings', function () {
@@ -504,10 +504,10 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 20, 40, true);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20],
         [20, -30],
         [20, -40],
@@ -543,8 +543,8 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20],
         [20, -30],
         [30, -40],
@@ -576,10 +576,10 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20],
         [30, -20],
       ]);
@@ -608,10 +608,10 @@ describe('ol/interaction/Draw', function () {
         simulateEvent('pointerup', 30, 20);
 
         const features = source.getFeatures();
-        expect(features).to.have.length(1);
+        assert.lengthOf(features, 1);
         const geometry = features[0].getGeometry();
-        expect(geometry).to.be.a(LineString);
-        expect(geometry.getCoordinates()).to.eql([
+        assert.instanceOf(geometry, LineString);
+        assert.deepEqual(geometry.getCoordinates(), [
           [10, -20],
           [20, -10],
           [30, -20],
@@ -644,18 +644,18 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
       simulateEvent('pointermove', 10, 20);
 
-      expect(ds.called).to.be(true);
-      expect(ds.callCount).to.be(1);
-      expect(de.called).to.be(true);
-      expect(de.callCount).to.be(1);
-      expect(da.called).to.be(false);
-      expect(da.callCount).to.be(0);
+      assert.strictEqual(ds.called, true);
+      assert.strictEqual(ds.callCount, 1);
+      assert.strictEqual(de.called, true);
+      assert.strictEqual(de.callCount, 1);
+      assert.strictEqual(da.called, false);
+      assert.strictEqual(da.callCount, 0);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -687,10 +687,10 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20, true);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20],
         [30, -20],
       ]);
@@ -699,7 +699,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointermove', 20, 20);
       simulateEvent('pointerdown', 20, 20);
       simulateEvent('pointermove', 10, 30);
-      expect(draw.lastDragTime_).to.be(undefined);
+      assert.strictEqual(draw.lastDragTime_, undefined);
     });
   });
 
@@ -741,10 +741,10 @@ describe('ol/interaction/Draw', function () {
     function testFinishConditionTrue(type, amount) {
       const finishCondition = sinonSpy(() => true);
       drawType(type, amount, finishCondition);
-      expect(draw.atFinish_.called).to.be(true);
-      expect(finishCondition.callCount).to.be(1);
-      expect(draw.finishDrawing.callCount).to.be(1);
-      expect(source.getFeatures()).to.have.length(1);
+      assert.strictEqual(draw.atFinish_.called, true);
+      assert.strictEqual(finishCondition.callCount, 1);
+      assert.strictEqual(draw.finishDrawing.callCount, 1);
+      assert.lengthOf(source.getFeatures(), 1);
     }
     it('calls finishCondition:true for POINT type', function () {
       testFinishConditionTrue('Point', 1);
@@ -771,10 +771,10 @@ describe('ol/interaction/Draw', function () {
     function testFinishConditionFalse(type, amount) {
       const finishCondition = sinonSpy(() => false);
       drawType(type, amount, finishCondition);
-      expect(draw.atFinish_.called).to.be(true);
-      expect(finishCondition.callCount).to.be(1);
-      expect(draw.finishDrawing.called).to.be(false);
-      expect(source.getFeatures()).to.have.length(0);
+      assert.strictEqual(draw.atFinish_.called, true);
+      assert.strictEqual(finishCondition.callCount, 1);
+      assert.strictEqual(draw.finishDrawing.called, false);
+      assert.lengthOf(source.getFeatures(), 0);
     }
     it('calls finishCondition:false for POINT type', function () {
       testFinishConditionFalse('Point', 1);
@@ -829,7 +829,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 40, 30);
 
       features = source.getFeatures();
-      expect(features).to.have.length(0);
+      assert.lengthOf(features, 0);
 
       // third point
       simulateEvent('pointermove', 30, 20);
@@ -841,7 +841,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
 
       features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
     });
   });
 
@@ -872,10 +872,10 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiLineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, MultiLineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [30, -20],
@@ -884,9 +884,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -904,7 +904,7 @@ describe('ol/interaction/Draw', function () {
     function isClosed(polygon) {
       const first = polygon.getFirstCoordinate();
       const last = polygon.getLastCoordinate();
-      expect(first).to.eql(last);
+      assert.deepEqual(first, last);
     }
 
     it('draws polygon with clicks, finishing on first point', function () {
@@ -932,11 +932,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [30, -20],
@@ -967,7 +967,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 39, 31);
       simulateEvent('pointerup', 39, 31);
 
-      expect(source.getFeatures()).to.have.length(0);
+      assert.lengthOf(source.getFeatures(), 0);
     });
 
     it('will tolerate removeLastPoint being called when no coordinates', function () {
@@ -983,11 +983,11 @@ describe('ol/interaction/Draw', function () {
 
       simulateEvent('pointermove', 100, 100);
 
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.removeLastPoint();
         draw.removeLastPoint();
         draw.removeLastPoint();
-      }).to.not.throwException();
+      });
     });
 
     it('draws polygon with clicks, finishing on last point', function () {
@@ -1011,11 +1011,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 40, 10);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [30, -20],
@@ -1040,11 +1040,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 40, 10);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [30, -20],
@@ -1082,18 +1082,18 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(ds.called).to.be(true);
-      expect(ds.callCount).to.be(1);
-      expect(de.called).to.be(true);
-      expect(de.callCount).to.be(1);
-      expect(da.called).to.be(false);
-      expect(da.callCount).to.be(0);
+      assert.strictEqual(ds.called, true);
+      assert.strictEqual(ds.callCount, 1);
+      assert.strictEqual(de.called, true);
+      assert.strictEqual(de.callCount, 1);
+      assert.strictEqual(da.called, false);
+      assert.strictEqual(da.callCount, 0);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -1128,28 +1128,28 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointermove', 50, 0);
       simulateEvent('pointerdown', 50, 0);
       simulateEvent('pointerup', 50, 0);
-      expect(draw.traceState_.active).to.be(false);
+      assert.strictEqual(draw.traceState_.active, false);
       draw.shouldHandle_ = false;
 
       // second click activates tracing (center of bottom edge)
       simulateEvent('pointermove', 50, 50);
       simulateEvent('pointerdown', 50, 50);
       simulateEvent('pointerup', 50, 50);
-      expect(draw.traceState_.active).to.be(true);
-      expect(draw.traceState_.targetIndex).to.be(-1);
+      assert.strictEqual(draw.traceState_.active, true);
+      assert.strictEqual(draw.traceState_.targetIndex, -1);
       draw.shouldHandle_ = false;
 
       // move to pick a target
       simulateEvent('pointermove', 75, 10);
-      expect(draw.traceState_.active).to.be(true);
-      expect(draw.traceState_.targetIndex).to.be(0);
+      assert.strictEqual(draw.traceState_.active, true);
+      assert.strictEqual(draw.traceState_.targetIndex, 0);
       draw.shouldHandle_ = false;
 
       // third click ends tracing (right half of top edge)
       simulateEvent('pointermove', 75, 100);
       simulateEvent('pointerdown', 75, 100);
       simulateEvent('pointerup', 75, 100);
-      expect(draw.traceState_.active).to.be(false);
+      assert.strictEqual(draw.traceState_.active, false);
       draw.shouldHandle_ = false;
 
       // finish on first point
@@ -1158,11 +1158,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 50, 0);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(2);
+      assert.lengthOf(features, 2);
       const geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [50, 0],
           [50, -50],
@@ -1208,13 +1208,13 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiPolygon);
+      assert.instanceOf(geometry, MultiPolygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates).to.have.length(1);
+      assert.lengthOf(coordinates, 1);
 
-      expect(coordinates[0]).to.eql([
+      assert.deepEqual(coordinates[0], [
         [
           [10, -20],
           [30, -20],
@@ -1245,13 +1245,13 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 40, 10);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(MultiPolygon);
+      assert.instanceOf(geometry, MultiPolygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates).to.have.length(1);
+      assert.lengthOf(coordinates, 1);
 
-      expect(coordinates[0]).to.eql([
+      assert.deepEqual(coordinates[0], [
         [
           [10, -20],
           [30, -20],
@@ -1262,9 +1262,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -1291,11 +1291,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Circle);
-      expect(geometry.getCenter()).to.eql([10, -20]);
-      expect(geometry.getRadius()).to.eql(20);
+      assert.instanceOf(geometry, Circle);
+      assert.deepEqual(geometry.getCenter(), [10, -20]);
+      assert.deepEqual(geometry.getRadius(), 20);
     });
 
     it('draws circle with clicks, finishing on second point along y axis', function () {
@@ -1310,11 +1310,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 40);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Circle);
-      expect(geometry.getCenter()).to.eql([10, -20]);
-      expect(geometry.getRadius()).to.eql(20);
+      assert.instanceOf(geometry, Circle);
+      assert.deepEqual(geometry.getCenter(), [10, -20]);
+      assert.deepEqual(geometry.getRadius(), 20);
     });
 
     it('draws circle with clicks in a user projection, finishing on second point along x axis', function () {
@@ -1332,18 +1332,19 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Circle);
+      assert.instanceOf(geometry, Circle);
       const viewProjection = map.getView().getProjection();
-      expect(geometry.getCenter()).to.eql(
+      assert.deepEqual(
+        geometry.getCenter(),
         transform([10, -20], viewProjection, userProjection),
       );
       const radius = geometry
         .clone()
         .transform(userProjection, viewProjection)
         .getRadius();
-      expect(radius).to.roughlyEqual(20, 1e-9);
+      assert.approximately(radius, 20, 1e-9);
     });
 
     it('draws circle with clicks in a user projection, finishing on second point along y axis', function () {
@@ -1361,18 +1362,19 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 40);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Circle);
+      assert.instanceOf(geometry, Circle);
       const viewProjection = map.getView().getProjection();
-      expect(geometry.getCenter()).to.eql(
+      assert.deepEqual(
+        geometry.getCenter(),
         transform([10, -20], viewProjection, userProjection),
       );
       const radius = geometry
         .clone()
         .transform(userProjection, viewProjection)
         .getRadius();
-      expect(radius).to.roughlyEqual(20, 1e-9);
+      assert.approximately(radius, 20, 1e-9);
     });
 
     it('supports freehand drawing for circles', function () {
@@ -1383,14 +1385,14 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
-      expect(source.getFeatures()).to.have.length(0);
+      assert.lengthOf(source.getFeatures(), 0);
 
       // feature created when moved
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointermove', 30, 20);
       simulateEvent('pointerup', 30, 20);
-      expect(source.getFeatures()).to.have.length(1);
+      assert.lengthOf(source.getFeatures(), 1);
     });
 
     it('triggers draw events', function () {
@@ -1411,12 +1413,12 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
 
-      expect(ds.called).to.be(true);
-      expect(ds.callCount).to.be(1);
-      expect(de.called).to.be(true);
-      expect(de.callCount).to.be(1);
-      expect(da.called).to.be(false);
-      expect(da.callCount).to.be(0);
+      assert.strictEqual(ds.called, true);
+      assert.strictEqual(ds.callCount, 1);
+      assert.strictEqual(de.called, true);
+      assert.strictEqual(de.callCount, 1);
+      assert.strictEqual(da.called, false);
+      assert.strictEqual(da.callCount, 0);
     });
   });
 
@@ -1444,8 +1446,8 @@ describe('ol/interaction/Draw', function () {
 
       draw.abortDrawing();
 
-      expect(source.getFeatures()).to.have.length(0);
-      expect(draw.sketchFeature_).to.be(null);
+      assert.lengthOf(source.getFeatures(), 0);
+      assert.strictEqual(draw.sketchFeature_, null);
     });
 
     it('triggers draw events', function () {
@@ -1468,12 +1470,12 @@ describe('ol/interaction/Draw', function () {
 
       draw.abortDrawing();
 
-      expect(ds.called).to.be(true);
-      expect(ds.callCount).to.be(1);
-      expect(de.called).to.be(false);
-      expect(de.callCount).to.be(0);
-      expect(da.called).to.be(true);
-      expect(da.callCount).to.be(1);
+      assert.strictEqual(ds.called, true);
+      assert.strictEqual(ds.callCount, 1);
+      assert.strictEqual(de.called, false);
+      assert.strictEqual(de.callCount, 0);
+      assert.strictEqual(da.called, true);
+      assert.strictEqual(da.callCount, 1);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -1489,18 +1491,18 @@ describe('ol/interaction/Draw', function () {
       draw.removeLastPoint();
       draw.removeLastPoint();
 
-      expect(ds.called).to.be(true);
-      expect(ds.callCount).to.be(2);
-      expect(de.called).to.be(false);
-      expect(de.callCount).to.be(0);
-      expect(da.called).to.be(true);
-      expect(da.callCount).to.be(2);
+      assert.strictEqual(ds.called, true);
+      assert.strictEqual(ds.callCount, 2);
+      assert.strictEqual(de.called, false);
+      assert.strictEqual(de.callCount, 0);
+      assert.strictEqual(da.called, true);
+      assert.strictEqual(da.callCount, 2);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         draw.finishDrawing();
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -1512,7 +1514,7 @@ describe('ol/interaction/Draw', function () {
         type: 'LineString',
       });
 
-      expect(interaction.getActive()).to.be(true);
+      assert.strictEqual(interaction.getActive(), true);
 
       map.addInteraction(interaction);
 
@@ -1521,7 +1523,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(interaction.sketchFeature_).not.to.be(null);
+      assert.notEqual(interaction.sketchFeature_, null);
     });
 
     afterEach(function () {
@@ -1532,21 +1534,20 @@ describe('ol/interaction/Draw', function () {
       it('unsets the map from the feature overlay', function () {
         const spy = sinonSpy(interaction.overlay_, 'setMap');
         interaction.setActive(false);
-        expect(spy.getCall(0).args[0]).to.be(null);
+        assert.strictEqual(spy.getCall(0).args[0], null);
       });
       it('aborts the drawing', function () {
         interaction.setActive(false);
-        expect(interaction.sketchFeature_).to.be(null);
+        assert.strictEqual(interaction.sketchFeature_, null);
       });
       it('fires change:active', function () {
         const spy = sinonSpy(interaction.overlay_, 'setMap');
         const listenerSpy = sinonSpy(function () {
-          // test that the interaction's change:active listener is called first
-          expect(spy.getCall(0).args[0]).to.be(null);
+          assert.strictEqual(spy.getCall(0).args[0], null);
         });
         interaction.on('change:active', listenerSpy);
         interaction.setActive(false);
-        expect(listenerSpy.callCount).to.be(1);
+        assert.strictEqual(listenerSpy.callCount, 1);
       });
     });
 
@@ -1557,17 +1558,16 @@ describe('ol/interaction/Draw', function () {
       it('sets the map into the feature overlay', function () {
         const spy = sinonSpy(interaction.overlay_, 'setMap');
         interaction.setActive(true);
-        expect(spy.getCall(0).args[0]).to.be(map);
+        assert.strictEqual(spy.getCall(0).args[0], map);
       });
       it('fires change:active', function () {
         const spy = sinonSpy(interaction.overlay_, 'setMap');
         const listenerSpy = sinonSpy(function () {
-          // test that the interaction's change:active listener is called first
-          expect(spy.getCall(0).args[0]).to.be(map);
+          assert.strictEqual(spy.getCall(0).args[0], map);
         });
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
-        expect(listenerSpy.callCount).to.be(1);
+        assert.strictEqual(listenerSpy.callCount, 1);
       });
     });
   });
@@ -1579,7 +1579,7 @@ describe('ol/interaction/Draw', function () {
       interaction = new Draw({
         type: 'LineString',
       });
-      expect(interaction.getActive()).to.be(true);
+      assert.strictEqual(interaction.getActive(), true);
     });
 
     describe('#setMap(null)', function () {
@@ -1589,7 +1589,7 @@ describe('ol/interaction/Draw', function () {
         simulateEvent('pointermove', 10, 20);
         simulateEvent('pointerdown', 10, 20);
         simulateEvent('pointerup', 10, 20);
-        expect(interaction.sketchFeature_).not.to.be(null);
+        assert.notEqual(interaction.sketchFeature_, null);
       });
       afterEach(function () {
         map.removeInteraction(interaction);
@@ -1598,11 +1598,11 @@ describe('ol/interaction/Draw', function () {
         it('unsets the map from the feature overlay', function () {
           const spy = sinonSpy(interaction.overlay_, 'setMap');
           interaction.setMap(null);
-          expect(spy.getCall(0).args[0]).to.be(null);
+          assert.strictEqual(spy.getCall(0).args[0], null);
         });
         it('aborts the drawing', function () {
           interaction.setMap(null);
-          expect(interaction.sketchFeature_).to.be(null);
+          assert.strictEqual(interaction.sketchFeature_, null);
         });
       });
     });
@@ -1611,17 +1611,17 @@ describe('ol/interaction/Draw', function () {
       beforeEach(function () {
         map.addInteraction(interaction);
         simulateEvent('pointermove', 10, 20);
-        expect(interaction.sketchFeature_).to.be(null);
-        expect(interaction.sketchPoint_).not.to.be(null);
+        assert.strictEqual(interaction.sketchFeature_, null);
+        assert.notEqual(interaction.sketchPoint_, null);
       });
       afterEach(function () {
         map.removeInteraction(interaction);
       });
       it('clears the sketch features', function () {
         interaction.setMap(null);
-        expect(interaction.sketchFeature_).to.be(null);
-        expect(interaction.sketchPoint_).to.be(null);
-        expect(interaction.sketchLine_).to.be(null);
+        assert.strictEqual(interaction.sketchFeature_, null);
+        assert.strictEqual(interaction.sketchPoint_, null);
+        assert.strictEqual(interaction.sketchLine_, null);
       });
     });
 
@@ -1630,7 +1630,7 @@ describe('ol/interaction/Draw', function () {
         it('sets the map into the feature overlay', function () {
           const spy = sinonSpy(interaction.overlay_, 'setMap');
           interaction.setMap(map);
-          expect(spy.getCall(0).args[0]).to.be(map);
+          assert.strictEqual(spy.getCall(0).args[0], map);
         });
       });
       describe('#setMap(map) when interaction is not active', function () {
@@ -1638,7 +1638,7 @@ describe('ol/interaction/Draw', function () {
           interaction.setActive(false);
           const spy = sinonSpy(interaction.overlay_, 'setMap');
           interaction.setMap(map);
-          expect(spy.getCall(0).args[0]).to.be(null);
+          assert.strictEqual(spy.getCall(0).args[0], null);
         });
       });
     });
@@ -1652,7 +1652,7 @@ describe('ol/interaction/Draw', function () {
         type: 'LineString',
       });
 
-      expect(interaction.getActive()).to.be(true);
+      assert.strictEqual(interaction.getActive(), true);
 
       map.addInteraction(interaction);
 
@@ -1661,7 +1661,7 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(interaction.sketchFeature_).not.to.be(null);
+      assert.notEqual(interaction.sketchFeature_, null);
     });
 
     afterEach(function () {
@@ -1671,10 +1671,10 @@ describe('ol/interaction/Draw', function () {
     describe('#setFreehand()', function () {
       it('sets freehand property', function () {
         interaction.setFreehand(true);
-        expect(interaction.getFreehand()).to.be(true);
+        assert.strictEqual(interaction.getFreehand(), true);
 
         interaction.setFreehand(false);
-        expect(interaction.getFreehand()).to.be(false);
+        assert.strictEqual(interaction.getFreehand(), false);
       });
     });
   });
@@ -1682,14 +1682,14 @@ describe('ol/interaction/Draw', function () {
   describe('#getFreehand()', function () {
     it('returns the freehand mode', function () {
       const draw = new Draw({type: 'LineString'});
-      expect(draw.getFreehand()).to.eql(draw.freehand_);
+      assert.deepEqual(draw.getFreehand(), draw.freehand_);
     });
   });
 
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
       const draw = new Draw({type: 'Point'});
-      expect(draw.getOverlay()).to.eql(draw.overlay_);
+      assert.deepEqual(draw.getOverlay(), draw.overlay_);
     });
   });
 
@@ -1714,11 +1714,11 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0].length).to.eql(5);
-      expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
-      expect(coordinates[0][0][1]).to.roughlyEqual(-20, 1e-9);
+      assert.deepEqual(coordinates[0].length, 5);
+      assert.approximately(coordinates[0][0][0], 20, 1e-9);
+      assert.approximately(coordinates[0][0][1], -20, 1e-9);
     });
 
     it('creates a regular polygon at specified angle', function () {
@@ -1741,11 +1741,11 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0].length).to.eql(5);
-      expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
-      expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+      assert.deepEqual(coordinates[0].length, 5);
+      assert.approximately(coordinates[0][0][0], 20, 1e-9);
+      assert.approximately(coordinates[0][0][1], 20, 1e-9);
     });
 
     it('creates a regular polygon at specified 0 angle', function () {
@@ -1768,11 +1768,11 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0].length).to.eql(5);
-      expect(coordinates[0][0][0]).to.roughlyEqual(28.2842712474619, 1e-9);
-      expect(coordinates[0][0][1]).to.roughlyEqual(0, 1e-9);
+      assert.deepEqual(coordinates[0].length, 5);
+      assert.approximately(coordinates[0][0][0], 28.2842712474619, 1e-9);
+      assert.approximately(coordinates[0][0][1], 0, 1e-9);
     });
 
     it('creates a regular polygon in Circle mode in a user projection', function () {
@@ -1798,13 +1798,13 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0].length).to.eql(5);
+      assert.deepEqual(coordinates[0].length, 5);
       const viewProjection = map.getView().getProjection();
       const coordinate = transform([20, 20], viewProjection, userProjection);
-      expect(coordinates[0][0][0]).to.roughlyEqual(coordinate[0], 1e-9);
-      expect(coordinates[0][0][1]).to.roughlyEqual(coordinate[1], 1e-9);
+      assert.approximately(coordinates[0][0][0], coordinate[0], 1e-9);
+      assert.approximately(coordinates[0][0][1], coordinate[1], 1e-9);
     });
 
     it('sketch start point always matches the mouse point', function () {
@@ -1827,8 +1827,8 @@ describe('ol/interaction/Draw', function () {
       const firstQuadrantCoordinate = draw.sketchFeature_
         .getGeometry()
         .getFirstCoordinate();
-      expect(firstQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
-      expect(firstQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+      assert.approximately(firstQuadrantCoordinate[0], coordinate[0], 1e-9);
+      assert.approximately(firstQuadrantCoordinate[1], coordinate[1], 1e-9);
 
       // move to second quadrant
       simulateEvent('pointermove', 41, 80);
@@ -1837,8 +1837,8 @@ describe('ol/interaction/Draw', function () {
       const secondQuadrantCoordinate = draw.sketchFeature_
         .getGeometry()
         .getFirstCoordinate();
-      expect(secondQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
-      expect(secondQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+      assert.approximately(secondQuadrantCoordinate[0], coordinate[0], 1e-9);
+      assert.approximately(secondQuadrantCoordinate[1], coordinate[1], 1e-9);
 
       // move to third quadrant
       simulateEvent('pointermove', 40, 41);
@@ -1847,8 +1847,8 @@ describe('ol/interaction/Draw', function () {
       const thirdQuadrantCoordinate = draw.sketchFeature_
         .getGeometry()
         .getFirstCoordinate();
-      expect(thirdQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
-      expect(thirdQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+      assert.approximately(thirdQuadrantCoordinate[0], coordinate[0], 1e-9);
+      assert.approximately(thirdQuadrantCoordinate[1], coordinate[1], 1e-9);
 
       // move to fourth quadrant
       simulateEvent('pointermove', 79, 40);
@@ -1857,8 +1857,8 @@ describe('ol/interaction/Draw', function () {
       const fourthQuadrantCoordinate = draw.sketchFeature_
         .getGeometry()
         .getFirstCoordinate();
-      expect(fourthQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
-      expect(fourthQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+      assert.approximately(fourthQuadrantCoordinate[0], coordinate[0], 1e-9);
+      assert.approximately(fourthQuadrantCoordinate[1], coordinate[1], 1e-9);
     });
   });
 
@@ -1883,11 +1883,11 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0]).to.have.length(5);
-      expect(geometry.getArea()).to.equal(400);
-      expect(geometry.getExtent()).to.eql([0, -20, 20, 0]);
+      assert.lengthOf(coordinates[0], 5);
+      assert.equal(geometry.getArea(), 400);
+      assert.deepEqual(geometry.getExtent(), [0, -20, 20, 0]);
     });
 
     it('creates a box-shaped polygon in Circle mode in a user projection', function () {
@@ -1918,23 +1918,23 @@ describe('ol/interaction/Draw', function () {
 
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
       const coordinates = geometry.getCoordinates();
-      expect(coordinates[0]).to.have.length(5);
+      assert.lengthOf(coordinates[0], 5);
       const viewProjection = map.getView().getProjection();
       const area = geometry
         .clone()
         .transform(userProjection, viewProjection)
         .getArea();
-      expect(area).to.roughlyEqual(400, 1e-9);
+      assert.approximately(area, 400, 1e-9);
       const extent = geometry
         .clone()
         .transform(userProjection, viewProjection)
         .getExtent();
-      expect(extent[0]).to.roughlyEqual(0, 1e-9);
-      expect(extent[1]).to.roughlyEqual(-20, 1e-9);
-      expect(extent[2]).to.roughlyEqual(20, 1e-9);
-      expect(extent[3]).to.roughlyEqual(0, 1e-9);
+      assert.approximately(extent[0], 0, 1e-9);
+      assert.approximately(extent[1], -20, 1e-9);
+      assert.approximately(extent[2], 20, 1e-9);
+      assert.approximately(extent[3], 0, 1e-9);
     });
   });
 
@@ -1959,21 +1959,21 @@ describe('ol/interaction/Draw', function () {
 
     it('sets the initial state', function () {
       draw.extend(feature);
-      expect(draw.sketchCoords_).to.have.length(4);
-      expect(draw.sketchCoords_).to.eql([
+      assert.lengthOf(draw.sketchCoords_, 4);
+      assert.deepEqual(draw.sketchCoords_, [
         [0, 0],
         [1, 1],
         [2, 0],
         [2, 0],
       ]);
-      expect(draw.finishCoordinate_).to.eql([2, 0]);
+      assert.deepEqual(draw.finishCoordinate_, [2, 0]);
     });
 
     it('dispatches a drawstart event', function () {
       const spy = sinonSpy();
       listen(draw, 'drawstart', spy);
       draw.extend(feature);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
   });
 
@@ -1991,7 +1991,7 @@ describe('ol/interaction/Draw', function () {
       draw.once('drawend', () => {
         try {
           setTimeout(() => {
-            expect(source.getFeatures()).to.have.length(1);
+            assert.lengthOf(source.getFeatures(), 1);
             done();
           }, 0);
         } catch (e) {
@@ -2037,7 +2037,7 @@ describe('ol/interaction/Draw', function () {
     function isClosed(polygon) {
       const first = polygon.getFirstCoordinate();
       const last = polygon.getLastCoordinate();
-      expect(first).to.eql(last);
+      assert.deepEqual(first, last);
     }
 
     it('draws polygon with clicks, adds coordinates to drawing, finishing on first point', function () {
@@ -2056,11 +2056,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [0, 0],
@@ -2088,11 +2088,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 0, 0);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [0, 0],
           [1, 1],
@@ -2122,7 +2122,7 @@ describe('ol/interaction/Draw', function () {
 
       // sketchGeom should have a complete ring, with a double coordinate for cursor
       const sketchGeom = draw.sketchFeature_.getGeometry();
-      expect(sketchGeom.getCoordinates()).to.eql([
+      assert.deepEqual(sketchGeom.getCoordinates(), [
         [
           [10, -20],
           [0, 0],
@@ -2162,11 +2162,11 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 10, 20);
 
       const features = source.getFeatures();
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [0, 0],
@@ -2262,83 +2262,83 @@ describe('ol/interaction/Draw', function () {
       drawPoint('XY');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([10, -20]);
-      expect(geometry.getLayout()).to.eql('XY');
+      assert.deepEqual(geometry.getCoordinates(), [10, -20]);
+      assert.deepEqual(geometry.getLayout(), 'XY');
     });
 
     it('respects XYZ layout for POINT type', function () {
       drawPoint('XYZ');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([10, -20, 0]);
-      expect(geometry.getLayout()).to.eql('XYZ');
+      assert.deepEqual(geometry.getCoordinates(), [10, -20, 0]);
+      assert.deepEqual(geometry.getLayout(), 'XYZ');
     });
 
     it('respects XYM layout for POINT type', function () {
       drawPoint('XYM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([10, -20, 0]);
-      expect(geometry.getLayout()).to.eql('XYM');
+      assert.deepEqual(geometry.getCoordinates(), [10, -20, 0]);
+      assert.deepEqual(geometry.getLayout(), 'XYM');
     });
 
     it('respects XYZM layout for POINT type', function () {
       drawPoint('XYZM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([10, -20, 0, 0]);
-      expect(geometry.getLayout()).to.eql('XYZM');
+      assert.deepEqual(geometry.getCoordinates(), [10, -20, 0, 0]);
+      assert.deepEqual(geometry.getLayout(), 'XYZM');
     });
 
     it('respects XY layout for LINESTRING type', function () {
       drawLineString('XY');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20],
         [30, -20],
       ]);
-      expect(geometry.getLayout()).to.eql('XY');
+      assert.deepEqual(geometry.getLayout(), 'XY');
     });
 
     it('respects XYZ layout for LINESTRING type', function () {
       drawLineString('XYZ');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20, 0],
         [30, -20, 0],
       ]);
-      expect(geometry.getLayout()).to.eql('XYZ');
+      assert.deepEqual(geometry.getLayout(), 'XYZ');
     });
 
     it('respects XYM layout for LINESTRING type', function () {
       drawLineString('XYM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20, 0],
         [30, -20, 0],
       ]);
-      expect(geometry.getLayout()).to.eql('XYM');
+      assert.deepEqual(geometry.getLayout(), 'XYM');
     });
 
     it('respects XYZM layout for LINESTRING type', function () {
       drawLineString('XYZM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [10, -20, 0, 0],
         [30, -20, 0, 0],
       ]);
-      expect(geometry.getLayout()).to.eql('XYZM');
+      assert.deepEqual(geometry.getLayout(), 'XYZM');
     });
 
     it('respects XY layout for POLYGON type', function () {
       drawPolygon('XY');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20],
           [30, -20],
@@ -2346,14 +2346,14 @@ describe('ol/interaction/Draw', function () {
           [10, -20],
         ],
       ]);
-      expect(geometry.getLayout()).to.eql('XY');
+      assert.deepEqual(geometry.getLayout(), 'XY');
     });
 
     it('respects XYZ layout for POLYGON type', function () {
       drawPolygon('XYZ');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20, 0],
           [30, -20, 0],
@@ -2361,14 +2361,14 @@ describe('ol/interaction/Draw', function () {
           [10, -20, 0],
         ],
       ]);
-      expect(geometry.getLayout()).to.eql('XYZ');
+      assert.deepEqual(geometry.getLayout(), 'XYZ');
     });
 
     it('respects XYM layout for POLYGON type', function () {
       drawPolygon('XYM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20, 0],
           [30, -20, 0],
@@ -2376,14 +2376,14 @@ describe('ol/interaction/Draw', function () {
           [10, -20, 0],
         ],
       ]);
-      expect(geometry.getLayout()).to.eql('XYM');
+      assert.deepEqual(geometry.getLayout(), 'XYM');
     });
 
     it('respects XYZM layout for POLYGON type', function () {
       drawPolygon('XYZM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [10, -20, 0, 0],
           [30, -20, 0, 0],
@@ -2391,43 +2391,43 @@ describe('ol/interaction/Draw', function () {
           [10, -20, 0, 0],
         ],
       ]);
-      expect(geometry.getLayout()).to.eql('XYZM');
+      assert.deepEqual(geometry.getLayout(), 'XYZM');
     });
 
     it('respects XY layout for CIRCLE type', function () {
       drawCircle('XY');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCenter()).to.eql([10, -20]);
-      expect(geometry.getRadius()).to.eql(20);
-      expect(geometry.getLayout()).to.eql('XY');
+      assert.deepEqual(geometry.getCenter(), [10, -20]);
+      assert.deepEqual(geometry.getRadius(), 20);
+      assert.deepEqual(geometry.getLayout(), 'XY');
     });
 
     it('respects XYZ layout for CIRCLE type', function () {
       drawCircle('XYZ');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCenter()).to.eql([10, -20, 0]);
-      expect(geometry.getRadius()).to.eql(20);
-      expect(geometry.getLayout()).to.eql('XYZ');
+      assert.deepEqual(geometry.getCenter(), [10, -20, 0]);
+      assert.deepEqual(geometry.getRadius(), 20);
+      assert.deepEqual(geometry.getLayout(), 'XYZ');
     });
 
     it('respects XYM layout for CIRCLE type', function () {
       drawCircle('XYM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCenter()).to.eql([10, -20, 0]);
-      expect(geometry.getRadius()).to.eql(20);
-      expect(geometry.getLayout()).to.eql('XYM');
+      assert.deepEqual(geometry.getCenter(), [10, -20, 0]);
+      assert.deepEqual(geometry.getRadius(), 20);
+      assert.deepEqual(geometry.getLayout(), 'XYM');
     });
 
     it('respects XYZM layout for CIRCLE type', function () {
       drawCircle('XYZM');
       const features = source.getFeatures();
       const geometry = features[0].getGeometry();
-      expect(geometry.getCenter()).to.eql([10, -20, 0, 0]);
-      expect(geometry.getRadius()).to.eql(20);
-      expect(geometry.getLayout()).to.eql('XYZM');
+      assert.deepEqual(geometry.getCenter(), [10, -20, 0, 0]);
+      assert.deepEqual(geometry.getRadius(), 20);
+      assert.deepEqual(geometry.getLayout(), 'XYZM');
     });
   });
 });

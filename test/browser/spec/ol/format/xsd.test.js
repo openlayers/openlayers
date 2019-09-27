@@ -1,16 +1,19 @@
+import {assert} from 'chai';
 import {
   readDateTime,
   writeCDATASection,
   writeStringTextNode,
 } from '../../../../../src/ol/format/xsd.js';
 import {getDocument, parse} from '../../../../../src/ol/xml.js';
+import {assertXmlEqual} from '../../../../util/xml.js';
 
 describe('ol/format/xsd', function () {
   describe('readDateTime', function () {
     it('can handle non-Zulu time zones', function () {
       const node = document.createElement('time');
       node.textContent = '2016-07-12T15:00:00+03:00';
-      expect(new Date(readDateTime(node) * 1000).toISOString()).to.eql(
+      assert.deepEqual(
+        new Date(readDateTime(node) * 1000).toISOString(),
         '2016-07-12T12:00:00.000Z',
       );
     });
@@ -24,8 +27,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'Test');
 
-        expect(node.textContent).to.be('Test');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'Test');
+        assertXmlEqual(node, parse(text));
       });
 
       it('can handle number data', function () {
@@ -34,8 +37,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 123456);
 
-        expect(node.textContent).to.be('123456');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, '123456');
+        assertXmlEqual(node, parse(text));
       });
 
       it('can handle string data with spaces', function () {
@@ -44,8 +47,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'Basic string with spaces');
 
-        expect(node.textContent).to.be('Basic string with spaces');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'Basic string with spaces');
+        assertXmlEqual(node, parse(text));
       });
     });
 
@@ -56,8 +59,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'two  spaces');
 
-        expect(node.textContent).to.be('two  spaces');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'two  spaces');
+        assertXmlEqual(node, parse(text));
       });
 
       it('starting with a space', function () {
@@ -66,8 +69,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, ' test');
 
-        expect(node.textContent).to.be(' test');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, ' test');
+        assertXmlEqual(node, parse(text));
       });
 
       it('ending with a space', function () {
@@ -76,8 +79,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test ');
 
-        expect(node.textContent).to.be('test ');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'test ');
+        assertXmlEqual(node, parse(text));
       });
 
       it('containing a linebreak', function () {
@@ -86,8 +89,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test\ntest');
 
-        expect(node.textContent).to.be('test\ntest');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'test\ntest');
+        assertXmlEqual(node, parse(text));
       });
 
       it('containing a tab', function () {
@@ -96,8 +99,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test\ttest');
 
-        expect(node.textContent).to.be('test\ttest');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'test\ttest');
+        assertXmlEqual(node, parse(text));
       });
     });
 
@@ -108,8 +111,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test<test');
 
-        expect(node.textContent).to.be('test<test');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'test<test');
+        assertXmlEqual(node, parse(text));
       });
 
       it('containing "&"', function () {
@@ -118,8 +121,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test&test');
 
-        expect(node.textContent).to.be('test&test');
-        expect(node).to.xmleql(parse(text));
+        assert.strictEqual(node.textContent, 'test&test');
+        assertXmlEqual(node, parse(text));
       });
     });
 
@@ -133,8 +136,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test]]>\ntest');
 
-        expect(node.textContent).to.be('test]]>\ntest');
-        expect(node).to.xmleql(check);
+        assert.strictEqual(node.textContent, 'test]]>\ntest');
+        assertXmlEqual(node, check);
       });
 
       it('containing "]]>" at the start', function () {
@@ -146,8 +149,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, ']]>test\ntest');
 
-        expect(node.textContent).to.be(']]>test\ntest');
-        expect(node).to.xmleql(check);
+        assert.strictEqual(node.textContent, ']]>test\ntest');
+        assertXmlEqual(node, check);
       });
 
       it('containing "]]>" at the end', function () {
@@ -159,8 +162,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test\ntest]]>');
 
-        expect(node.textContent).to.be('test\ntest]]>');
-        expect(node).to.xmleql(check);
+        assert.strictEqual(node.textContent, 'test\ntest]]>');
+        assertXmlEqual(node, check);
       });
 
       it('containing "]]>" at the start, middle and the end', function () {
@@ -174,8 +177,8 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, ']]>\ntest]]>\ntest]]>');
 
-        expect(node.textContent).to.be(']]>\ntest]]>\ntest]]>');
-        expect(node).to.xmleql(check);
+        assert.strictEqual(node.textContent, ']]>\ntest]]>\ntest]]>');
+        assertXmlEqual(node, check);
       });
     });
   });

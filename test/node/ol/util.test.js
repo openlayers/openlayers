@@ -1,11 +1,11 @@
+import {assert} from 'chai';
 import {getUid} from '../../../src/ol/util.js';
-import expect from '../expect.js';
 
 describe('ol/util.js', () => {
   describe('getUid()', function () {
     it('is constant once generated', function () {
       const a = {};
-      expect(getUid(a)).to.be(getUid(a));
+      assert.strictEqual(getUid(a), getUid(a));
     });
 
     it('generates a strictly increasing sequence', function () {
@@ -16,10 +16,9 @@ describe('ol/util.js', () => {
       getUid(c);
       getUid(b);
 
-      // uid order should be a < c < b
-      expect(getUid(a)).to.be.lessThan(getUid(c));
-      expect(getUid(c)).to.be.lessThan(getUid(b));
-      expect(getUid(a)).to.be.lessThan(getUid(b));
+      assert.isBelow(Number(getUid(a)), Number(getUid(c)));
+      assert.isBelow(Number(getUid(c)), Number(getUid(b)));
+      assert.isBelow(Number(getUid(a)), Number(getUid(b)));
     });
   });
 });

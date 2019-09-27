@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import MousePosition from '../../../../../src/ol/control/MousePosition.js';
@@ -12,8 +13,8 @@ describe('ol/control/MousePosition', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new MousePosition();
-      expect(instance).to.be.an(MousePosition);
-      expect(instance.element.className).to.be('ol-mouse-position');
+      assert.instanceOf(instance, MousePosition);
+      assert.strictEqual(instance.element.className, 'ol-mouse-position');
     });
 
     it('creates the element with the provided class name', function () {
@@ -21,7 +22,7 @@ describe('ol/control/MousePosition', function () {
       const instance = new MousePosition({
         className: className,
       });
-      expect(instance.element.className).to.be(className);
+      assert.strictEqual(instance.element.className, className);
     });
   });
 
@@ -77,13 +78,13 @@ describe('ol/control/MousePosition', function () {
         const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('some text');
+        assert.strictEqual(element.innerHTML, 'some text');
 
         simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
+        assert.strictEqual(element.innerHTML, '20,-30');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('some text');
+        assert.strictEqual(element.innerHTML, 'some text');
       });
 
       it('renders the last posisition if placeholder is not set and mouse moves outside the viewport', function () {
@@ -94,14 +95,14 @@ describe('ol/control/MousePosition', function () {
         const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('&nbsp;');
+        assert.strictEqual(element.innerHTML, '&nbsp;');
 
         target.dispatchEvent(new PointerEvent('pointermove'));
         simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
+        assert.strictEqual(element.innerHTML, '20,-30');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('20,-30');
+        assert.strictEqual(element.innerHTML, '20,-30');
       });
 
       it('renders an empty space if placeholder is set to the same and mouse moves outside the viewport', function () {
@@ -114,14 +115,14 @@ describe('ol/control/MousePosition', function () {
         const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('');
+        assert.strictEqual(element.innerHTML, '');
 
         target.dispatchEvent(new PointerEvent('pointermove'));
         simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
+        assert.strictEqual(element.innerHTML, '20,-30');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('');
+        assert.strictEqual(element.innerHTML, '');
       });
     });
 
@@ -131,7 +132,7 @@ describe('ol/control/MousePosition', function () {
       map.getView().setCenter([-360, 0]);
       map.renderSync();
       simulateEvent(EventType.POINTERMOVE, 0, 0);
-      expect(ctrl.element.innerHTML).to.be('-360,0');
+      assert.strictEqual(ctrl.element.innerHTML, '-360,0');
     });
 
     it('can wrapX', function () {
@@ -140,7 +141,7 @@ describe('ol/control/MousePosition', function () {
       map.getView().setCenter([-360, 0]);
       map.renderSync();
       simulateEvent(EventType.POINTERMOVE, 0, 0);
-      expect(ctrl.element.innerHTML).to.be('0,0');
+      assert.strictEqual(ctrl.element.innerHTML, '0,0');
     });
 
     it('can wrapX with projection', function () {
@@ -150,7 +151,7 @@ describe('ol/control/MousePosition', function () {
       map.getView().setCenter(fromLonLat([-360, 0]));
       map.renderSync();
       simulateEvent(EventType.POINTERMOVE, 0, 0);
-      expect(ctrl.element.innerHTML).to.be('0,0');
+      assert.strictEqual(ctrl.element.innerHTML, '0,0');
     });
 
     it('can wrapX with user projection', function () {
@@ -161,7 +162,7 @@ describe('ol/control/MousePosition', function () {
       map.getView().setCenter([-360, 0]);
       map.renderSync();
       simulateEvent(EventType.POINTERMOVE, 0, 0);
-      expect(ctrl.element.innerHTML).to.be('0,0');
+      assert.strictEqual(ctrl.element.innerHTML, '0,0');
     });
   });
 });

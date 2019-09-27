@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import View, {
   withExtentCenter,
   withHigherResolutions,
@@ -10,7 +11,6 @@ import {
   clearUserProjection,
   useGeographic,
 } from '../../../src/ol/proj.js';
-import expect from '../expect.js';
 
 describe('ol/View.js', function () {
   afterEach(function () {
@@ -29,8 +29,8 @@ describe('ol/View.js', function () {
       const center = view.getCenter();
       view.padding = [0, 0, 0, 0];
       const point = view.getCenter();
-      expect(point[0]).to.roughlyEqual(center[0], 1e-9);
-      expect(point[1]).to.roughlyEqual(center[1], 1e-9);
+      assert.approximately(point[0], center[0], 1e-9);
+      assert.approximately(point[1], center[1], 1e-9);
     });
   });
 
@@ -39,7 +39,7 @@ describe('ol/View.js', function () {
       const config = {zoom: 2};
       const transform = withZoom(42);
       const transformed = transform(config);
-      expect(transformed.zoom).to.eql(42);
+      assert.deepEqual(transformed.zoom, 42);
     });
   });
 
@@ -48,7 +48,7 @@ describe('ol/View.js', function () {
       const config = {zoom: 2};
       const transform = withZoom(42);
       const transformed = transform(config);
-      expect(transformed.zoom).to.eql(42);
+      assert.deepEqual(transformed.zoom, 42);
     });
   });
 
@@ -57,8 +57,8 @@ describe('ol/View.js', function () {
       const config = {extent: [-180, 0, 0, 90]};
       const transform = withExtentCenter();
       const transformed = transform(config);
-      expect(transformed.center).to.eql([-90, 45]);
-      expect(transformed.extent).to.be(undefined);
+      assert.deepEqual(transformed.center, [-90, 45]);
+      assert.strictEqual(transformed.extent, undefined);
     });
   });
 
@@ -67,7 +67,7 @@ describe('ol/View.js', function () {
       const config = {resolutions: [100, 50]};
       const transform = withHigherResolutions(2);
       const transformed = transform(config);
-      expect(transformed.resolutions).to.eql([100, 50, 25, 12.5]);
+      assert.deepEqual(transformed.resolutions, [100, 50, 25, 12.5]);
     });
   });
 
@@ -76,7 +76,7 @@ describe('ol/View.js', function () {
       const config = {resolutions: [100, 50]};
       const transform = withLowerResolutions(3);
       const transformed = transform(config);
-      expect(transformed.resolutions).to.eql([800, 400, 200, 100, 50]);
+      assert.deepEqual(transformed.resolutions, [800, 400, 200, 100, 50]);
     });
   });
 });

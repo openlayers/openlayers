@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {
@@ -11,12 +12,12 @@ describe('ol.TileUrlFunction', function () {
     const tileGrid = createXYZ();
     it('creates expected URL', function () {
       const tileUrl = createFromTemplate('{z}/{x}/{y}', tileGrid);
-      expect(tileUrl([3, 2, 1])).to.eql('3/2/1');
-      expect(tileUrl(null)).to.be(undefined);
+      assert.deepEqual(tileUrl([3, 2, 1]), '3/2/1');
+      assert.strictEqual(tileUrl(null), undefined);
     });
     it('accepts {-y} placeholder', function () {
       const tileUrl = createFromTemplate('{z}/{x}/{-y}', tileGrid);
-      expect(tileUrl([3, 2, 2])).to.eql('3/2/5');
+      assert.deepEqual(tileUrl([3, 2, 2]), '3/2/5');
     });
     it('returns correct value for {-y} with custom tile grids', function () {
       const customTileGrid = new TileGrid({
@@ -25,11 +26,11 @@ describe('ol.TileUrlFunction', function () {
         resolutions: [360 / 256, 360 / 512, 360 / 1024, 360 / 2048],
       });
       const tileUrl = createFromTemplate('{z}/{x}/{-y}', customTileGrid);
-      expect(tileUrl([3, 2, 2])).to.eql('3/2/1');
+      assert.deepEqual(tileUrl([3, 2, 2]), '3/2/1');
     });
     it('replaces multiple placeholder occurrences', function () {
       const tileUrl = createFromTemplate('{z}/{z}{x}{y}', tileGrid);
-      expect(tileUrl([3, 2, 1])).to.eql('3/321');
+      assert.deepEqual(tileUrl([3, 2, 1]), '3/321');
     });
   });
 
@@ -40,7 +41,7 @@ describe('ol.TileUrlFunction', function () {
       const tileUrlFunction = createFromTemplates(templates, tileGrid);
       const tileCoord = [3, 2, 1];
 
-      expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
+      assert.deepEqual(tileUrlFunction(tileCoord), 'http://tile-1/3/2/1');
     });
   });
 
@@ -53,8 +54,8 @@ describe('ol.TileUrlFunction', function () {
       ]);
       const tileUrl1 = tileUrl([1, 0, 0]);
       const tileUrl2 = tileUrl([1, 0, 1]);
-      expect(tileUrl1).not.to.be(tileUrl2);
-      expect(tileUrl(null)).to.be(undefined);
+      assert.notEqual(tileUrl1, tileUrl2);
+      assert.strictEqual(tileUrl(null), undefined);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import {
   getBottomLeft,
@@ -22,12 +23,12 @@ describe('ol/source/ImageStatic', function () {
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new Static({imageExtent: extent});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new Static({imageExtent: extent, interpolate: false});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -47,7 +48,7 @@ describe('ol/source/ImageStatic', function () {
       source.on('imageloadend', function (event) {
         try {
           const [resolutionX, resolutionY] = image.getResolution();
-          expect(resolutionY).to.be(resolutionX * 2);
+          assert.strictEqual(resolutionY, resolutionX * 2);
           done();
         } catch (e) {
           done(e);
@@ -72,7 +73,7 @@ describe('ol/source/ImageStatic', function () {
       source.on('imageloadend', function (event) {
         try {
           const [resolutionX, resolutionY] = image.getResolution();
-          expect(resolutionX).to.be(2 * resolutionY);
+          assert.strictEqual(resolutionX, 2 * resolutionY);
           done();
         } catch (e) {
           done(e);
@@ -107,8 +108,14 @@ describe('ol/source/ImageStatic', function () {
       source.on('imageloadend', function (event) {
         try {
           const [resolutionX, resolutionY] = image.getResolution();
-          expect(Math.round(getWidth(imageExtent) / resolutionX)).to.be(254);
-          expect(Math.round(getHeight(imageExtent) / resolutionY)).to.be(254);
+          assert.strictEqual(
+            Math.round(getWidth(imageExtent) / resolutionX),
+            254,
+          );
+          assert.strictEqual(
+            Math.round(getHeight(imageExtent) / resolutionY),
+            254,
+          );
           done();
         } catch (e) {
           done(e);
@@ -134,8 +141,8 @@ describe('ol/source/ImageStatic', function () {
       source.on('imageloadstart', imageloadstart);
       source.on('imageloaderror', imageloaderror);
       source.on('imageloadend', function (event) {
-        expect(imageloadstart.callCount).to.be(1);
-        expect(imageloaderror.callCount).to.be(0);
+        assert.strictEqual(imageloadstart.callCount, 1);
+        assert.strictEqual(imageloaderror.callCount, 0);
         done();
       });
 

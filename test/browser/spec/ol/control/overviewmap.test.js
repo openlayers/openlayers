@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -29,8 +30,8 @@ describe('ol.control.OverviewMap', function () {
   describe('constructor', function () {
     it('creates an overview map with the default options', function () {
       const control = new OverviewMap();
-      expect(control).to.be.a(OverviewMap);
-      expect(control).to.be.a(Control);
+      assert.instanceOf(control, OverviewMap);
+      assert.instanceOf(control, Control);
     });
   });
 
@@ -61,7 +62,7 @@ describe('ol.control.OverviewMap', function () {
       });
       control.ovmapDiv_.dispatchEvent(down);
       map.getOwnerDocument().dispatchEvent(up);
-      expect(map.getView().getCenter()).to.eql([100, 100]);
+      assert.deepEqual(map.getView().getCenter(), [100, 100]);
     });
   });
 
@@ -79,10 +80,10 @@ describe('ol.control.OverviewMap', function () {
       });
       map.addControl(control);
       const ovView = control.ovmap_.getView();
-      expect(ovView.getRotation()).to.be(Math.PI / 2);
+      assert.strictEqual(ovView.getRotation(), Math.PI / 2);
 
       view.setRotation(Math.PI / 4);
-      expect(ovView.getRotation()).to.be(Math.PI / 4);
+      assert.strictEqual(ovView.getRotation(), Math.PI / 4);
     });
 
     it('maintains rotation in sync if view added later', function () {
@@ -91,7 +92,7 @@ describe('ol.control.OverviewMap', function () {
       });
       map.addControl(control);
       const ovInitialView = control.ovmap_.getView();
-      expect(ovInitialView.getRotation()).to.be(0);
+      assert.strictEqual(ovInitialView.getRotation(), 0);
 
       const view = new View({
         center: [0, 0],
@@ -100,10 +101,10 @@ describe('ol.control.OverviewMap', function () {
       });
       map.setView(view);
       const ovView = control.ovmap_.getView();
-      expect(ovView.getRotation()).to.be(Math.PI / 2);
+      assert.strictEqual(ovView.getRotation(), Math.PI / 2);
 
       view.setRotation(Math.PI / 4);
-      expect(ovView.getRotation()).to.be(Math.PI / 4);
+      assert.strictEqual(ovView.getRotation(), Math.PI / 4);
     });
 
     it('stops listening to old maps', function () {
@@ -121,12 +122,12 @@ describe('ol.control.OverviewMap', function () {
       const ovView = control.ovmap_.getView();
 
       view.setRotation(Math.PI / 8);
-      expect(ovView.getRotation()).to.be(Math.PI / 8);
+      assert.strictEqual(ovView.getRotation(), Math.PI / 8);
 
       map.removeControl(control);
 
       view.setRotation(Math.PI / 4);
-      expect(ovView.getRotation()).to.be(Math.PI / 8);
+      assert.strictEqual(ovView.getRotation(), Math.PI / 8);
     });
 
     it('reflects projection change of main map', function () {
@@ -135,7 +136,8 @@ describe('ol.control.OverviewMap', function () {
       });
 
       map.addControl(control);
-      expect(control.ovmap_.getView().getProjection().getCode()).to.be(
+      assert.strictEqual(
+        control.ovmap_.getView().getProjection().getCode(),
         'EPSG:3857',
       );
 
@@ -144,7 +146,8 @@ describe('ol.control.OverviewMap', function () {
           projection: 'EPSG:4326',
         }),
       );
-      expect(control.ovmap_.getView().getProjection().getCode()).to.be(
+      assert.strictEqual(
+        control.ovmap_.getView().getProjection().getCode(),
         'EPSG:4326',
       );
     });
@@ -157,8 +160,9 @@ describe('ol.control.OverviewMap', function () {
       });
 
       map.addControl(control);
-      expect(control.ovmap_.getView()).to.be(overviewMapView);
-      expect(control.ovmap_.getView().getProjection().getCode()).to.be(
+      assert.strictEqual(control.ovmap_.getView(), overviewMapView);
+      assert.strictEqual(
+        control.ovmap_.getView().getProjection().getCode(),
         'EPSG:3857',
       );
 
@@ -167,8 +171,9 @@ describe('ol.control.OverviewMap', function () {
           projection: 'EPSG:4326',
         }),
       );
-      expect(control.ovmap_.getView()).to.be(overviewMapView);
-      expect(control.ovmap_.getView().getProjection().getCode()).to.be(
+      assert.strictEqual(control.ovmap_.getView(), overviewMapView);
+      assert.strictEqual(
+        control.ovmap_.getView().getProjection().getCode(),
         'EPSG:3857',
       );
     });
@@ -178,11 +183,11 @@ describe('ol.control.OverviewMap', function () {
 
       map.addControl(control);
 
-      expect(control.ovmap_.getTarget()).not.to.be(null);
+      assert.notEqual(control.ovmap_.getTarget(), null);
 
       map.removeControl(control);
 
-      expect(control.ovmap_.getTarget()).to.be(null);
+      assert.strictEqual(control.ovmap_.getTarget(), null);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -36,7 +37,10 @@ describe('ol/renderer/canvas/TileLayer', function () {
       map.once('rendercomplete', function () {
         const tileCache = layer.getRenderer().tileCache_;
         const keys = tileCache.getKeys();
-        expect(keys.some((key) => key.startsWith('6/'))).to.be(false);
+        assert.strictEqual(
+          keys.some((key) => key.startsWith('6/')),
+          false,
+        );
         done();
       });
     });
@@ -48,7 +52,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
         context.imageSmoothingEnabled = false;
       });
       map.on('postrender', function () {
-        expect(context.imageSmoothingEnabled).to.be(true);
+        assert.strictEqual(context.imageSmoothingEnabled, true);
         done();
       });
     });
@@ -63,7 +67,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
           // rendercomplete triggers before the postrender functions with the cleanup are run,
           // so wait another cycle
           setTimeout(() => {
-            expect(spy.called).to.be(true);
+            assert.strictEqual(spy.called, true);
             done();
           }, 0);
         });
@@ -77,14 +81,14 @@ describe('ol/renderer/canvas/TileLayer', function () {
         });
         map.addLayer(layer);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(layer.getRenderer().tileCache_.highWaterMark).to.be(4);
+        assert.strictEqual(layer.getRenderer().tileCache_.highWaterMark, 4);
         for (let i = 0; i < 4; ++i) {
           map.getView().setZoom(map.getView().getZoom() + 1);
           await new Promise((resolve) => map.once('rendercomplete', resolve));
         }
-        expect(tiles.length).to.be(12);
+        assert.strictEqual(tiles.length, 12);
         for (let i = 0; i < 4; ++i) {
-          expect(tiles[i].disposed).to.be(true);
+          assert.strictEqual(tiles[i].disposed, true);
         }
       });
 
@@ -97,13 +101,13 @@ describe('ol/renderer/canvas/TileLayer', function () {
         });
         map.addLayer(layer);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(tiles.length).to.be(2);
+        assert.strictEqual(tiles.length, 2);
         map.render();
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(tiles.length).to.be(2);
+        assert.strictEqual(tiles.length, 2);
         source.refresh();
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(tiles.length).to.be(4);
+        assert.strictEqual(tiles.length, 4);
       });
 
       it('clears the cache when the layer has a new source with the same key', async () => {
@@ -116,7 +120,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
         const layer = new TileLayer({source: source});
         map.addLayer(layer);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(tiles.length).to.be(2);
+        assert.strictEqual(tiles.length, 2);
         source.dispose();
         source = new TileDebug();
         source.on('tileloadend', (event) => {
@@ -125,7 +129,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
         source.setKey('foo');
         layer.setSource(source);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(tiles.length).to.be(4);
+        assert.strictEqual(tiles.length, 4);
       });
 
       it('does not mark alt/stale error tiles as newer', async () => {
@@ -139,14 +143,15 @@ describe('ol/renderer/canvas/TileLayer', function () {
         });
         map.addLayer(layer);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(layer.getRenderer().tileCache_.highWaterMark).to.be(4);
+        assert.strictEqual(layer.getRenderer().tileCache_.highWaterMark, 4);
         for (let i = 0; i < 4; ++i) {
           map.getView().setZoom(map.getView().getZoom() + 1);
           await new Promise((resolve) => map.once('rendercomplete', resolve));
         }
-        expect(
+        assert.strictEqual(
           layer.getRenderer().tileCache_.newest_.value_.tileCoord[0],
-        ).to.be(9);
+          9,
+        );
       });
 
       it('caches source tiles when reprojecting', async () => {
@@ -163,9 +168,10 @@ describe('ol/renderer/canvas/TileLayer', function () {
           }),
         );
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(
+        assert.isAbove(
           layer.getRenderer().sourceTileCache_.getKeys().length,
-        ).to.be.greaterThan(0);
+          0,
+        );
       });
 
       it('does not cache source tiles when not reprojecting', async () => {
@@ -175,7 +181,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
         });
         map.addLayer(layer);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
-        expect(layer.getRenderer().sourceTileCache_).to.be(null);
+        assert.strictEqual(layer.getRenderer().sourceTileCache_, null);
       });
     });
   });

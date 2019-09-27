@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   AnyType,
   BooleanType,
@@ -17,38 +18,40 @@ import {
   numberToGlsl,
   stringToGlsl,
 } from '../../../../src/ol/expr/gpu.js';
-import expect from '../../expect.js';
 
 describe('ol/expr/gpu.js', () => {
   describe('numberToGlsl()', () => {
     it('does a simple transform when a fraction is present', () => {
-      expect(numberToGlsl(1.3456)).to.eql('1.3456');
+      assert.deepEqual(numberToGlsl(1.3456), '1.3456');
     });
     it('adds a fraction separator when missing', () => {
-      expect(numberToGlsl(1)).to.eql('1.0');
-      expect(numberToGlsl(2.0)).to.eql('2.0');
+      assert.deepEqual(numberToGlsl(1), '1.0');
+      assert.deepEqual(numberToGlsl(2.0), '2.0');
     });
   });
 
   describe('arrayToGlsl()', () => {
     it('outputs numbers with dot separators', () => {
-      expect(arrayToGlsl([1, 0, 3.45, 0.8888])).to.eql(
+      assert.deepEqual(
+        arrayToGlsl([1, 0, 3.45, 0.8888]),
         'vec4(1.0, 0.0, 3.45, 0.8888)',
       );
-      expect(arrayToGlsl([3, 4])).to.eql('vec2(3.0, 4.0)');
+      assert.deepEqual(arrayToGlsl([3, 4]), 'vec2(3.0, 4.0)');
     });
     it('throws on invalid lengths', () => {
-      expect(() => arrayToGlsl([3])).to.throwException();
-      expect(() => arrayToGlsl([3, 2, 1, 0, -1])).to.throwException();
+      assert.throws(() => arrayToGlsl([3]));
+      assert.throws(() => arrayToGlsl([3, 2, 1, 0, -1]));
     });
   });
 
   describe('colorToGlsl()', () => {
     it('normalizes color and outputs numbers with dot separators', () => {
-      expect(colorToGlsl([100, 0, 255])).to.eql(
+      assert.deepEqual(
+        colorToGlsl([100, 0, 255]),
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
       );
-      expect(colorToGlsl([100, 0, 255, 0.7])).to.eql(
+      assert.deepEqual(
+        colorToGlsl([100, 0, 255, 0.7]),
         'vec4(0.39215686274509803, 0.0, 1.0, 0.7)',
       );
     });
@@ -56,19 +59,24 @@ describe('ol/expr/gpu.js', () => {
 
   describe('stringToGlsl()', () => {
     it('maps input string to stable numbers', () => {
-      expect(stringToGlsl('abcd')).to.eql(
+      assert.deepEqual(
+        stringToGlsl('abcd'),
         numberToGlsl(getStringNumberEquivalent('abcd')),
       );
-      expect(stringToGlsl('defg')).to.eql(
+      assert.deepEqual(
+        stringToGlsl('defg'),
         numberToGlsl(getStringNumberEquivalent('defg')),
       );
-      expect(stringToGlsl('hijk')).to.eql(
+      assert.deepEqual(
+        stringToGlsl('hijk'),
         numberToGlsl(getStringNumberEquivalent('hijk')),
       );
-      expect(stringToGlsl('abcd')).to.eql(
+      assert.deepEqual(
+        stringToGlsl('abcd'),
         numberToGlsl(getStringNumberEquivalent('abcd')),
       );
-      expect(stringToGlsl('def')).to.eql(
+      assert.deepEqual(
+        stringToGlsl('def'),
         numberToGlsl(getStringNumberEquivalent('def')),
       );
     });
@@ -122,7 +130,7 @@ describe('ol/expr/gpu.js', () => {
         expression: ['id'],
         expected: 'a_featureId',
         contextAssertion: (context) => {
-          expect(context.featureId).to.be(true);
+          assert.strictEqual(context.featureId, true);
         },
       },
       {
@@ -136,7 +144,7 @@ describe('ol/expr/gpu.js', () => {
           },
         },
         contextAssertion: (context) => {
-          expect(context.variables.get('myVar')).to.equal(StringType);
+          assert.equal(context.variables.get('myVar'), StringType);
         },
       },
       {
@@ -145,7 +153,7 @@ describe('ol/expr/gpu.js', () => {
         expression: ['var', 'myVar'],
         expected: 'u_var_myVar',
         contextAssertion: (context) => {
-          expect(context.variables.get('myVar')).to.equal(AnyType);
+          assert.equal(context.variables.get('myVar'), AnyType);
         },
       },
       {
@@ -154,7 +162,7 @@ describe('ol/expr/gpu.js', () => {
         expression: ['geometry-type'],
         expected: 'a_geometryType',
         contextAssertion: (context) => {
-          expect(context.geometryType).to.be(true);
+          assert.strictEqual(context.geometryType, true);
         },
       },
       {
@@ -403,8 +411,9 @@ describe('ol/expr/gpu.js', () => {
           bandCount: 3,
         },
         contextAssertion: (context) => {
-          expect(context.functions['getBandValue']).to
-            .equal(`float getBandValue(float band, float xOffset, float yOffset) {
+          assert.equal(
+            context.functions['getBandValue'],
+            `float getBandValue(float band, float xOffset, float yOffset) {
   float dx = xOffset / u_texturePixelWidth;
   float dy = yOffset / u_texturePixelHeight;
   if (band == 1.0) {
@@ -417,7 +426,8 @@ describe('ol/expr/gpu.js', () => {
     return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[2];
   }
 
-}`);
+}`,
+          );
         },
       },
       {
@@ -540,13 +550,15 @@ describe('ol/expr/gpu.js', () => {
         },
         expected: 'operator_in_2(a_prop_attr)',
         contextAssertion: (context) => {
-          expect(context.functions['operator_in_2']).to
-            .equal(`bool operator_in_2(float inputValue) {
+          assert.equal(
+            context.functions['operator_in_2'],
+            `bool operator_in_2(float inputValue) {
   if (inputValue == 0.0) { return true; }
   if (inputValue == 20.0) { return true; }
   if (inputValue == 50.0) { return true; }
   return false;
-}`);
+}`,
+          );
         },
       },
       {
@@ -555,13 +567,15 @@ describe('ol/expr/gpu.js', () => {
         type: AnyType,
         expected: 'operator_in_0(a_prop_attr)',
         contextAssertion: (context) => {
-          expect(context.functions['operator_in_0']).to
-            .equal(`bool operator_in_0(float inputValue) {
+          assert.equal(
+            context.functions['operator_in_0'],
+            `bool operator_in_0(float inputValue) {
   if (inputValue == 0.0) { return true; }
   if (inputValue == 20.0) { return true; }
   if (inputValue == 50.0) { return true; }
   return false;
-}`);
+}`,
+          );
         },
       },
       {
@@ -570,13 +584,15 @@ describe('ol/expr/gpu.js', () => {
         type: AnyType,
         expected: 'operator_in_0(a_prop_attr)',
         contextAssertion: (context) => {
-          expect(context.functions['operator_in_0']).to
-            .equal(`bool operator_in_0(float inputValue) {
+          assert.equal(
+            context.functions['operator_in_0'],
+            `bool operator_in_0(float inputValue) {
   if (inputValue == ${stringToGlsl('abc')}) { return true; }
   if (inputValue == ${stringToGlsl('def')}) { return true; }
   if (inputValue == ${stringToGlsl('ghi')}) { return true; }
   return false;
-}`);
+}`,
+          );
         },
       },
       {
@@ -645,12 +661,12 @@ describe('ol/expr/gpu.js', () => {
         },
         expected: `((u_var_symbolType == ${stringToGlsl('dynamic')}) ? vec2((a_prop_type == ${stringToGlsl('low')} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl('medium')} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
         contextAssertion: (context) => {
-          expect(context.properties.get('type')).to.eql(StringType);
-          expect(context.properties.get('height')).to.eql(NumberType);
-          expect(context.variables.get('fixedSize')).to.eql(NumberArrayType);
-          expect(context.variables.get('symbolType')).to.eql(StringType);
-          expect(context.variables.get('mediumHeight')).to.eql(NumberType);
-          expect(context.variables.get('lowHeight')).to.eql(NumberType);
+          assert.deepEqual(context.properties.get('type'), StringType);
+          assert.deepEqual(context.properties.get('height'), NumberType);
+          assert.deepEqual(context.variables.get('fixedSize'), NumberArrayType);
+          assert.deepEqual(context.variables.get('symbolType'), StringType);
+          assert.deepEqual(context.variables.get('mediumHeight'), NumberType);
+          assert.deepEqual(context.variables.get('lowHeight'), NumberType);
         },
       },
       {
@@ -682,8 +698,8 @@ describe('ol/expr/gpu.js', () => {
           },
         },
         contextAssertion: (context) => {
-          expect(context.variables.get('x')).to.eql(NumberType);
-          expect(context.properties.get('y')).to.eql(NumberType);
+          assert.deepEqual(context.variables.get('x'), NumberType);
+          assert.deepEqual(context.properties.get('y'), NumberType);
         },
       },
     ];
@@ -700,7 +716,7 @@ describe('ol/expr/gpu.js', () => {
           parsingContext,
           compilationContext,
         );
-        expect(result).to.eql(c.expected);
+        assert.deepEqual(result, c.expected);
         if (c.contextAssertion) {
           c.contextAssertion(compilationContext);
         }
@@ -808,11 +824,9 @@ describe('ol/expr/gpu.js', () => {
             compilationContext,
           );
         if (c.exception === true) {
-          expect(build).to.throwException();
+          assert.throws(build);
         } else {
-          expect(build).to.throwError((e) =>
-            expect(e.message).to.eql(c.exception),
-          );
+          assert.throws(build, c.exception);
         }
       });
     }

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import Graticule from '../../../../src/ol/layer/Graticule.js';
@@ -27,10 +28,10 @@ describe('ol.layer.Graticule', function () {
       const squaredTolerance = (resolution * resolution) / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      expect(graticule.getMeridians().length).to.be(13);
-      expect(graticule.getParallels().length).to.be(3);
-      expect(graticule.meridiansLabels_).to.be(null);
-      expect(graticule.parallelsLabels_).to.be(null);
+      assert.strictEqual(graticule.getMeridians().length, 13);
+      assert.strictEqual(graticule.getParallels().length, 3);
+      assert.strictEqual(graticule.meridiansLabels_, null);
+      assert.strictEqual(graticule.parallelsLabels_, null);
     });
 
     it('creates a graticule with normal world labels', function () {
@@ -64,20 +65,30 @@ describe('ol.layer.Graticule', function () {
         },
       };
       graticule.drawLabels_(event);
-      expect(graticule.meridiansLabels_.length).to.be(13);
-      expect(graticule.meridiansLabels_[0].text).to.be('0°');
-      expect(
+      assert.strictEqual(graticule.meridiansLabels_.length, 13);
+      assert.strictEqual(graticule.meridiansLabels_[0].text, '0°');
+      assert.approximately(
         graticule.meridiansLabels_[0].geom.getCoordinates()[0],
-      ).to.roughlyEqual(0, 1e-9);
-      expect(graticule.parallelsLabels_.length).to.be(3);
-      expect(graticule.parallelsLabels_[0].text).to.be('0°');
-      expect(
+        0,
+        1e-9,
+      );
+      assert.strictEqual(graticule.parallelsLabels_.length, 3);
+      assert.strictEqual(graticule.parallelsLabels_[0].text, '0°');
+      assert.approximately(
         graticule.parallelsLabels_[0].geom.getCoordinates()[1],
-      ).to.roughlyEqual(0, 1e-9);
+        0,
+        1e-9,
+      );
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
-      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0°');
+      assert.strictEqual(
+        graticule.lonLabelStyle_(feature).getText().getText(),
+        '0°',
+      );
       feature.set('graticule_label', graticule.parallelsLabels_[0].text);
-      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be('0°');
+      assert.strictEqual(
+        graticule.latLabelStyle_(feature).getText().getText(),
+        '0°',
+      );
     });
 
     it('creates a graticule with wrapped world labels', function () {
@@ -110,29 +121,39 @@ describe('ol.layer.Graticule', function () {
         },
       };
       graticule.drawLabels_(event);
-      expect(graticule.meridiansLabels_.length).to.be(13);
-      expect(graticule.meridiansLabels_[0].text).to.be('0°');
+      assert.strictEqual(graticule.meridiansLabels_.length, 13);
+      assert.strictEqual(graticule.meridiansLabels_[0].text, '0°');
       const coordinates = fromLonLat([360, 0]);
-      expect(
+      assert.approximately(
         graticule.meridiansLabels_[0].geom.getCoordinates()[0],
-      ).to.roughlyEqual(coordinates[0], 1e-9);
-      expect(graticule.parallelsLabels_.length).to.be(3);
-      expect(graticule.parallelsLabels_[0].text).to.be('0°');
-      expect(
+        coordinates[0],
+        1e-9,
+      );
+      assert.strictEqual(graticule.parallelsLabels_.length, 3);
+      assert.strictEqual(graticule.parallelsLabels_[0].text, '0°');
+      assert.approximately(
         graticule.parallelsLabels_[0].geom.getCoordinates()[1],
-      ).to.roughlyEqual(0, 1e-9);
+        0,
+        1e-9,
+      );
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
-      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0°');
+      assert.strictEqual(
+        graticule.lonLabelStyle_(feature).getText().getText(),
+        '0°',
+      );
       feature.set('graticule_label', graticule.parallelsLabels_[0].text);
-      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be('0°');
+      assert.strictEqual(
+        graticule.latLabelStyle_(feature).getText().getText(),
+        '0°',
+      );
     });
 
     it('has a default stroke style', function () {
       createGraticule();
       const actualStyle = graticule.strokeStyle_;
 
-      expect(actualStyle).not.to.be(undefined);
-      expect(actualStyle instanceof Stroke).to.be(true);
+      assert.notEqual(actualStyle, undefined);
+      assert.strictEqual(actualStyle instanceof Stroke, true);
     });
 
     it('can be configured with a stroke style', function () {
@@ -146,8 +167,8 @@ describe('ol.layer.Graticule', function () {
       });
       const actualStyle = styledGraticule.strokeStyle_;
 
-      expect(actualStyle).not.to.be(undefined);
-      expect(actualStyle).to.be(customStrokeStyle);
+      assert.notEqual(actualStyle, undefined);
+      assert.strictEqual(actualStyle, customStrokeStyle);
     });
 
     it('can be configured with label options', function () {
@@ -177,20 +198,28 @@ describe('ol.layer.Graticule', function () {
       const squaredTolerance = (resolution * resolution) / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      expect(graticule.meridiansLabels_[0].text).to.be('lon: 0');
-      expect(graticule.parallelsLabels_[0].text).to.be('lat: 0');
-      expect(graticule.lonLabelStyle_(feature).getText()).to.eql(lonLabelStyle);
-      expect(graticule.latLabelStyle_(feature).getText()).to.eql(latLabelStyle);
+      assert.strictEqual(graticule.meridiansLabels_[0].text, 'lon: 0');
+      assert.strictEqual(graticule.parallelsLabels_[0].text, 'lat: 0');
+      assert.deepEqual(
+        graticule.lonLabelStyle_(feature).getText(),
+        lonLabelStyle,
+      );
+      assert.deepEqual(
+        graticule.latLabelStyle_(feature).getText(),
+        latLabelStyle,
+      );
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
-      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be(
+      assert.strictEqual(
+        graticule.lonLabelStyle_(feature).getText().getText(),
         'lon: 0',
       );
       feature.set('graticule_label', graticule.parallelsLabels_[0].text);
-      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be(
+      assert.strictEqual(
+        graticule.latLabelStyle_(feature).getText().getText(),
         'lat: 0',
       );
-      expect(graticule.lonLabelPosition_).to.be(0.9);
-      expect(graticule.latLabelPosition_).to.be(0.1);
+      assert.strictEqual(graticule.lonLabelPosition_, 0.9);
+      assert.strictEqual(graticule.latLabelPosition_, 0.1);
     });
 
     it('can be configured with interval limits', function () {
@@ -217,15 +246,15 @@ describe('ol.layer.Graticule', function () {
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
 
-      expect(graticule.meridiansLabels_[0].text).to.be('0');
-      expect(graticule.parallelsLabels_[0].text).to.be('0');
-      expect(graticule.meridiansLabels_[1].text).to.be('-10');
-      expect(graticule.parallelsLabels_[1].text).to.be('-10');
-      expect(graticule.meridiansLabels_[2].text).to.be('-20');
-      expect(graticule.parallelsLabels_[2].text).to.be('-20');
+      assert.strictEqual(graticule.meridiansLabels_[0].text, '0');
+      assert.strictEqual(graticule.parallelsLabels_[0].text, '0');
+      assert.strictEqual(graticule.meridiansLabels_[1].text, '-10');
+      assert.strictEqual(graticule.parallelsLabels_[1].text, '-10');
+      assert.strictEqual(graticule.meridiansLabels_[2].text, '-20');
+      assert.strictEqual(graticule.parallelsLabels_[2].text, '-20');
 
-      expect(graticule.getMeridians().length).to.be(37);
-      expect(graticule.getParallels().length).to.be(11);
+      assert.strictEqual(graticule.getMeridians().length, 37);
+      assert.strictEqual(graticule.getParallels().length, 11);
     });
   });
 });

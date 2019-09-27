@@ -1,14 +1,14 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Observable, {unByKey} from '../../../src/ol/Observable.js';
 import EventTarget from '../../../src/ol/events/Target.js';
-import expect from '../expect.js';
 
 describe('ol/Observable.js', function () {
   describe('constructor', function () {
     it('creates a new observable', function () {
       const observable = new Observable();
-      expect(observable).to.be.a(Observable);
-      expect(observable).to.be.a(EventTarget);
+      assert.instanceOf(observable, Observable);
+      assert.instanceOf(observable, EventTarget);
     });
   });
 
@@ -23,26 +23,26 @@ describe('ol/Observable.js', function () {
       observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
 
       observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
     });
 
     it('accepts an array of event types', function () {
       observable.on(['foo', 'bar'], listener);
 
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
 
       observable.dispatchEvent('bar');
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
     });
 
     it('returns a listener key', function () {
       const key = observable.on('foo', listener);
 
-      expect(typeof key).to.be('object');
+      assert.strictEqual(typeof key, 'object');
     });
   });
 
@@ -57,10 +57,10 @@ describe('ol/Observable.js', function () {
       observable.once('foo', listener);
 
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
 
       observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(1);
+      assert.strictEqual(listener.callCount, 1);
     });
 
     it('is safe to dispatch events of same type in a once listener', function () {
@@ -72,39 +72,39 @@ describe('ol/Observable.js', function () {
       observable.on('change', function () {
         ++callCount;
       });
-      expect(function () {
+      assert.doesNotThrow(function () {
         observable.changed();
-      }).to.not.throwException();
-      expect(callCount).to.be(3);
+      });
+      assert.strictEqual(callCount, 3);
     });
 
     it('accepts an array of event types (called once for each)', function () {
       observable.once(['foo', 'bar'], listener);
 
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
 
       observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(1);
+      assert.strictEqual(listener.callCount, 1);
 
       observable.dispatchEvent('bar');
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
 
       observable.dispatchEvent('bar');
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
     });
 
     it('returns a listener key', function () {
       const key = observable.once('foo', listener);
 
-      expect(typeof key).to.be('object');
+      assert.strictEqual(typeof key, 'object');
     });
 
     it('can be unregistered with un()', function () {
       observable.once('foo', listener);
       observable.un('foo', listener);
       observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(0);
+      assert.strictEqual(listener.callCount, 0);
     });
   });
 
@@ -119,11 +119,11 @@ describe('ol/Observable.js', function () {
       observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
 
       observable.un('foo', listener);
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
     });
   });
 
@@ -138,11 +138,11 @@ describe('ol/Observable.js', function () {
       const key = observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
 
       unByKey(key);
       observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(1);
+      assert.strictEqual(listener.callCount, 1);
     });
   });
 });

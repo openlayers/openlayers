@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, useFakeTimers} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
@@ -52,11 +53,10 @@ describe('ol.interaction.MouseWheelZoom', function () {
 
       map.handleMapBrowserEvent(event);
       clock.tick(50);
-      // default timeout is 80 ms, not called yet
-      expect(interaction.handleWheelZoom_.called).to.be(false);
+      assert.strictEqual(interaction.handleWheelZoom_.called, false);
 
       clock.tick(30);
-      expect(interaction.handleWheelZoom_.called).to.be(true);
+      assert.strictEqual(interaction.handleWheelZoom_.called, true);
 
       done();
     });
@@ -95,29 +95,23 @@ describe('ol.interaction.MouseWheelZoom', function () {
 
     it('applies 3x multiplier for pinch-to-zoom (ctrlKey synthesized by browser)', function () {
       map.handleMapBrowserEvent(makeTrackpadWheelEvent(true));
-      expect(view.adjustZoom.calledOnce).to.be(true);
-      expect(view.adjustZoom.getCall(0).args[0]).to.roughlyEqual(
-        -3 / 300,
-        1e-10,
-      );
+      assert.strictEqual(view.adjustZoom.calledOnce, true);
+      assert.approximately(view.adjustZoom.getCall(0).args[0], -3 / 300, 1e-10);
     });
 
     it('does not apply 3x multiplier when ctrl key is physically pressed', function () {
       document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
       map.handleMapBrowserEvent(makeTrackpadWheelEvent(true));
       document.dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}));
-      expect(view.adjustZoom.calledOnce).to.be(true);
-      expect(view.adjustZoom.getCall(0).args[0]).to.roughlyEqual(
-        -1 / 300,
-        1e-10,
-      );
+      assert.strictEqual(view.adjustZoom.calledOnce, true);
+      assert.approximately(view.adjustZoom.getCall(0).args[0], -1 / 300, 1e-10);
     });
   });
 
   describe('handleEvent()', function () {
     it('works in DOM_DELTA_PIXEL mode (trackpad)', function (done) {
       map.once('postrender', function () {
-        expect(interaction.mode_).to.be('trackpad');
+        assert.strictEqual(interaction.mode_, 'trackpad');
         done();
       });
       const event = new MapBrowserEvent('wheel', map, {
@@ -146,8 +140,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
       it('works in DOM_DELTA_LINE mode (wheel)', function (done) {
         map.once('postrender', function () {
           const call = view.animateInternal.getCall(0);
-          expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql(map.getView().getCenter());
+          assert.strictEqual(call.args[0].resolution, 2);
+          assert.deepEqual(call.args[0].anchor, map.getView().getCenter());
           done();
         });
 
@@ -167,8 +161,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
       it('works in DOM_DELTA_PAGE mode (wheel)', function (done) {
         map.once('postrender', function () {
           const call = view.animateInternal.getCall(0);
-          expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql(map.getView().getCenter());
+          assert.strictEqual(call.args[0].resolution, 2);
+          assert.deepEqual(call.args[0].anchor, map.getView().getCenter());
           done();
         });
 
@@ -188,8 +182,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
       it('works on all browsers (wheel)', function (done) {
         map.once('postrender', function () {
           const call = view.animateInternal.getCall(0);
-          expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql(map.getView().getCenter());
+          assert.strictEqual(call.args[0].resolution, 2);
+          assert.deepEqual(call.args[0].anchor, map.getView().getCenter());
           done();
         });
 

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
@@ -56,19 +57,19 @@ describe('ol/layer/Image', () => {
       map.renderSync();
       const pixel = [10, 10];
       const data = layer.getData(pixel);
-      expect(data).to.be(null);
+      assert.strictEqual(data, null);
     });
 
     it('should detect pixels in the layer extent', () => {
       map.renderSync();
       const pixel = [50, 50];
       const data = layer.getData(pixel);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(255);
-      expect(data[1]).to.be(255);
-      expect(data[2]).to.be(255);
-      expect(data[3]).to.be(255);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 255);
+      assert.strictEqual(data[1], 255);
+      assert.strictEqual(data[2], 255);
+      assert.strictEqual(data[3], 255);
     });
   });
 });

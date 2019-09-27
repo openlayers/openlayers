@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageWrapper, {load} from '../../../../../src/ol/Image.js';
 import {listen} from '../../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
@@ -44,7 +45,7 @@ describe('ol.reproj.Image', function () {
 
   it('changes state as expected', function (done) {
     const image = createImage(1);
-    expect(image.getState()).to.be(0); // IDLE
+    assert.strictEqual(image.getState(), 0);
     listen(image, 'change', function () {
       if (image.getState() == 2) {
         // LOADED
@@ -60,8 +61,8 @@ describe('ol.reproj.Image', function () {
       if (image.getState() == 2) {
         // LOADED
         const canvas = image.getImage();
-        expect(canvas.width).to.be(36);
-        expect(canvas.height).to.be(17);
+        assert.strictEqual(canvas.width, 36);
+        assert.strictEqual(canvas.height, 17);
         done();
       }
     });
@@ -74,8 +75,8 @@ describe('ol.reproj.Image', function () {
       if (image.getState() == 2) {
         // LOADED
         const canvas = image.getImage();
-        expect(canvas.width).to.be(72);
-        expect(canvas.height).to.be(34);
+        assert.strictEqual(canvas.width, 72);
+        assert.strictEqual(canvas.height, 34);
         done();
       }
     });
@@ -88,19 +89,20 @@ describe('ol.reproj.Image', function () {
       if (image.getState() == 2) {
         // LOADED
         const canvas = image.getImage();
-        expect(canvas.width).to.be(36);
-        expect(canvas.height).to.be(17);
+        assert.strictEqual(canvas.width, 36);
+        assert.strictEqual(canvas.height, 17);
         const pixels = canvas
           .getContext('2d')
           .getImageData(0, 0, canvas.width, canvas.height).data;
 
         for (let i = 0; i < canvas.width * canvas.height * 4; i += 4) {
-          expect(
+          assert.isBelow(
             Math.abs(pixels[i + 0] - pixels[0]) +
               Math.abs(pixels[i + 1] - pixels[1]) +
               Math.abs(pixels[i + 2] - pixels[2]) +
               Math.abs(pixels[i + 3] - pixels[3]),
-          ).to.be.lessThan(5);
+            5,
+          );
         }
         done();
       }

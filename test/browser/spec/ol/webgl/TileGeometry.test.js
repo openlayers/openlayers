@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import TileState from '../../../../../src/ol/TileState.js';
@@ -10,6 +11,7 @@ import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometry
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
+import {assertArrayLikeEqual} from '../../../../util/equal.js';
 
 class MockRenderer {
   generateBuffers = sinonStub().callsFake(
@@ -58,10 +60,10 @@ describe('ol/webgl/TileGeometry', function () {
 
   describe('tile provided initially', () => {
     it('assigns the given tile', () => {
-      expect(tileGeometry.tile).to.be.a(VectorRenderTile);
+      assert.instanceOf(tileGeometry.tile, VectorRenderTile);
     });
     it('creates a new geometry batch', () => {
-      expect(tileGeometry.batch_).to.be.a(MixedGeometryBatch);
+      assert.instanceOf(tileGeometry.batch_, MixedGeometryBatch);
     });
   });
 
@@ -106,30 +108,35 @@ describe('ol/webgl/TileGeometry', function () {
       setTimeout(done, 10);
     });
     it('first clears the geometry batch', () => {
-      expect(tileGeometry.batch_.clear.calledOnce).to.be(true);
+      assert.strictEqual(tileGeometry.batch_.clear.calledOnce, true);
     });
     it('adds all features from the source tiles into the batch', () => {
-      expect(tileGeometry.batch_.addFeatures.calledOnce).to.be(true);
-      expect(tileGeometry.batch_.addFeatures.calledWith(features)).to.be(true);
+      assert.strictEqual(tileGeometry.batch_.addFeatures.calledOnce, true);
+      assert.strictEqual(
+        tileGeometry.batch_.addFeatures.calledWith(features),
+        true,
+      );
     });
     it('calls generateBuffers for each renderer with the tile origin as transform', () => {
       const originTransform = [1, 0, 0, 1, 100, 200];
-      expect(styleRenderer.generateBuffers.callCount).to.be(1);
-      expect(styleRenderer.generateBuffers.getCall(0).args[1]).to.eql(
+      assert.strictEqual(styleRenderer.generateBuffers.callCount, 1);
+      assert.deepEqual(
+        styleRenderer.generateBuffers.getCall(0).args[1],
         originTransform,
       );
     });
     it('becomes ready when each of the renderers have finished generating buffers', async () => {
-      expect(tileGeometry.ready).to.be(false);
+      assert.strictEqual(tileGeometry.ready, false);
       styleRenderer.endGenerate_();
-      expect(tileGeometry.ready).to.be(false);
+      assert.strictEqual(tileGeometry.ready, false);
       await new Promise((resolve) => setTimeout(resolve));
-      expect(tileGeometry.ready).to.be(true);
+      assert.strictEqual(tileGeometry.ready, true);
     });
     it('fills the mask buffer with the tile extent (expressed relative to the tile origin)', () => {
-      expect(tileGeometry.maskVertices.getArray()).to.eql([
-        0, 0, 400, 0, 400, 600, 0, 600,
-      ]);
+      assertArrayLikeEqual(
+        tileGeometry.maskVertices.getArray(),
+        [0, 0, 400, 0, 400, 600, 0, 600],
+      );
     });
 
     describe('#dispose', () => {
@@ -145,7 +152,7 @@ describe('ol/webgl/TileGeometry', function () {
         tileGeometry.dispose();
       });
       it('deletes webgl buffers', () => {
-        expect(deleteBufferSpy.callCount).to.be(4); // 2 for points, 2 for polygons
+        assert.strictEqual(deleteBufferSpy.callCount, 4);
       });
     });
   });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import ImageWrapper from '../../../../../../src/ol/Image.js';
@@ -59,8 +60,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
     it('properly detects pixels', function () {
       map.renderSync();
 
-      expect(layer.getData([20, 80])[3]).to.not.be(0);
-      expect(layer.getData([10, 90])[3]).to.be(0);
+      assert.notEqual(layer.getData([20, 80])[3], 0);
+      assert.strictEqual(layer.getData([10, 90])[3], 0);
     });
   });
 
@@ -135,8 +136,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       imageLayer.setVisible(true);
       map.renderSync();
 
-      expect(imageLayer.getData([50, 50])).to.be(null);
-      expect(imageLayer.getData([10, 10])).to.be(null);
+      assert.strictEqual(imageLayer.getData([50, 50]), null);
+      assert.strictEqual(imageLayer.getData([10, 10]), null);
     });
 
     it('should not detect pixels outside of the layer extent with crossOrigin set', function () {
@@ -144,8 +145,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       imageLayer.setVisible(false);
       map.renderSync();
 
-      expect(imageLayerCross.getData([50, 50])).to.not.be(null);
-      expect(imageLayerCross.getData([10, 10])).to.be(null);
+      assert.notEqual(imageLayerCross.getData([50, 50]), null);
+      assert.strictEqual(imageLayerCross.getData([10, 10]), null);
     });
 
     it('should not detect pixels outside of the layer extent with extent set', function () {
@@ -154,8 +155,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       imageLayer.setVisible(false);
       map.renderSync();
 
-      expect(imageLayerCross.getData([50, 50])).to.not.be(null);
-      expect(imageLayerCross.getData([10, 10])).to.be(null);
+      assert.notEqual(imageLayerCross.getData([50, 50]), null);
+      assert.strictEqual(imageLayerCross.getData([10, 10]), null);
     });
   });
 
@@ -203,8 +204,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         ++postrender;
       });
       map.on('postrender', function () {
-        expect(prerender).to.be(1);
-        expect(postrender).to.be(1);
+        assert.strictEqual(prerender, 1);
+        assert.strictEqual(postrender, 1);
         done();
       });
     });
@@ -216,7 +217,7 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         context.imageSmoothingEnabled = false;
       });
       map.on('postrender', function () {
-        expect(context.imageSmoothingEnabled).to.be(true);
+        assert.strictEqual(context.imageSmoothingEnabled, true);
         done();
       });
     });
@@ -260,8 +261,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         ++postrender;
       });
       map.once('postrender', function () {
-        expect(prerender).to.be(1);
-        expect(postrender).to.be(1);
+        assert.strictEqual(prerender, 1);
+        assert.strictEqual(postrender, 1);
         done();
       });
     });
@@ -314,7 +315,7 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       const frameState = createLayerFrameState([200, 200, 300, 300]);
       layer.getSource().on('imageloadend', function () {
         try {
-          expect(renderer.prepareFrame(frameState)).to.be(false);
+          assert.strictEqual(renderer.prepareFrame(frameState), false);
           done();
         } catch (e) {
           done(e);
@@ -328,8 +329,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
           renderer.renderFrame(frameState, null);
         }
         try {
-          expect(renderer.clipUnrotated.callCount).to.be(1);
-          expect(renderer.context.drawImage.callCount).to.be(1);
+          assert.strictEqual(renderer.clipUnrotated.callCount, 1);
+          assert.strictEqual(renderer.context.drawImage.callCount, 1);
           done();
         } catch (e) {
           done(e);
@@ -343,8 +344,8 @@ describe('ol/renderer/canvas/ImageLayer', function () {
           renderer.renderFrame(frameState, null);
         }
         try {
-          expect(renderer.clipUnrotated.callCount).to.be(0);
-          expect(renderer.context.drawImage.callCount).to.be(1);
+          assert.strictEqual(renderer.clipUnrotated.callCount, 0);
+          assert.strictEqual(renderer.context.drawImage.callCount, 1);
           done();
         } catch (e) {
           done(e);
@@ -359,10 +360,10 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         }
         try {
           const image = renderer.image;
-          expect(image).to.be.a(ImageWrapper);
+          assert.instanceOf(image, ImageWrapper);
           image.state = ImageState.EMPTY;
-          expect(renderer.prepareFrame(frameState)).to.be(false);
-          expect(renderer.image).to.be(null);
+          assert.strictEqual(renderer.prepareFrame(frameState), false);
+          assert.strictEqual(renderer.image, null);
           done();
         } catch (e) {
           done(e);
@@ -430,20 +431,20 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       map.renderSync();
 
       const revision = source.getRevision();
-      expect(renderer.renderedSourceRevision_).to.be(revision);
+      assert.strictEqual(renderer.renderedSourceRevision_, revision);
 
       source.changed();
       const newRevision = source.getRevision();
-      expect(newRevision).to.be.greaterThan(revision);
+      assert.isAbove(newRevision, revision);
 
       map.renderSync();
-      expect(renderer.renderedSourceRevision_).to.be(newRevision);
+      assert.strictEqual(renderer.renderedSourceRevision_, newRevision);
     });
 
     it('clears cached image when source changed while hidden', function () {
       const renderer = layer.getRenderer();
       map.renderSync();
-      expect(renderer.image).to.not.be(null);
+      assert.notEqual(renderer.image, null);
 
       layer.setVisible(false);
       map.renderSync();
@@ -468,7 +469,7 @@ describe('ol/renderer/canvas/ImageLayer', function () {
 
       layer.setVisible(true);
       map.renderSync();
-      expect(imageWasCleared).to.be(true);
+      assert.strictEqual(imageWasCleared, true);
     });
 
     it('preserves cached image when source unchanged while hidden', function () {
@@ -476,14 +477,14 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       map.renderSync();
 
       const cachedImage = renderer.image;
-      expect(cachedImage).to.not.be(null);
+      assert.notEqual(cachedImage, null);
 
       layer.setVisible(false);
       map.renderSync();
 
       layer.setVisible(true);
       map.renderSync();
-      expect(renderer.image).to.be(cachedImage);
+      assert.strictEqual(renderer.image, cachedImage);
     });
 
     it('keeps cached image when source changes while visible', function () {
@@ -491,12 +492,12 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       map.renderSync();
 
       const cachedImage = renderer.image;
-      expect(cachedImage).to.not.be(null);
+      assert.notEqual(cachedImage, null);
 
       source.changed();
       map.renderSync();
 
-      expect(renderer.image).to.be(cachedImage);
+      assert.strictEqual(renderer.image, cachedImage);
     });
   });
 });

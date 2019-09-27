@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
@@ -30,13 +31,13 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
     it('uses ol.render.Feature as feature class by default', function () {
       const format = new MVT({layers: ['water']});
       const features = format.readFeatures(data, options);
-      expect(features[0]).to.be.a(RenderFeature);
+      assert.instanceOf(features[0], RenderFeature);
     });
 
     it('parses only specified layers', function () {
       const format = new MVT({layers: ['water']});
       const features = format.readFeatures(data, options);
-      expect(features.length).to.be(10);
+      assert.strictEqual(features.length, 10);
     });
 
     it('parses geometries correctly', function () {
@@ -47,20 +48,20 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
       let geometry;
 
       geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('Point');
-      expect(geometry.getCoordinates()).to.eql([-1210, 2681]);
+      assert.strictEqual(geometry.getType(), 'Point');
+      assert.deepEqual(geometry.getCoordinates(), [-1210, 2681]);
 
       format.setLayers(['water']);
       geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('Polygon');
-      expect(geometry.getCoordinates()[0].length).to.be(10);
-      expect(geometry.getCoordinates()[0][0]).to.eql([1007, 2302]);
+      assert.strictEqual(geometry.getType(), 'Polygon');
+      assert.strictEqual(geometry.getCoordinates()[0].length, 10);
+      assert.deepEqual(geometry.getCoordinates()[0][0], [1007, 2302]);
 
       format.setLayers(['barrier_line']);
       geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('MultiLineString');
-      expect(geometry.getCoordinates()[1].length).to.be(6);
-      expect(geometry.getCoordinates()[1][0]).to.eql([4160, 3489]);
+      assert.strictEqual(geometry.getType(), 'MultiLineString');
+      assert.strictEqual(geometry.getCoordinates()[1].length, 6);
+      assert.deepEqual(geometry.getCoordinates()[1][0], [4160, 3489]);
     });
 
     it('avoids unnecessary reprojections of the ol.render.Feature', function () {
@@ -68,8 +69,8 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
         layers: ['poi_label'],
       });
       const geometry = format.readFeatures(data)[0].getGeometry();
-      expect(geometry.getType()).to.be('Point');
-      expect(geometry.getFlatCoordinates()).to.eql([-1210, 2681]);
+      assert.strictEqual(geometry.getType(), 'Point');
+      assert.deepEqual(geometry.getFlatCoordinates(), [-1210, 2681]);
     });
 
     it('parses id property', function () {
@@ -79,13 +80,13 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
         layers: ['building'],
       });
       let features = format.readFeatures(data, options);
-      expect(features[0].getId()).to.be(2);
+      assert.strictEqual(features[0].getId(), 2);
       // ol.render.Feature
       format = new MVT({
         layers: ['building'],
       });
       features = format.readFeatures(data, options);
-      expect(features[0].getId()).to.be(2);
+      assert.strictEqual(features[0].getId(), 2);
     });
 
     it('accepts custom idProperty', function () {
@@ -97,8 +98,8 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
       const features = format.readFeatures(data, options);
 
       const first = features[0];
-      expect(first.getId()).to.be(1000000057590683);
-      expect(first.get('osm_id')).to.be(undefined);
+      assert.strictEqual(first.getId(), 1000000057590683);
+      assert.strictEqual(first.get('osm_id'), undefined);
     });
 
     it('accepts custom idProperty (render features)', function () {
@@ -110,8 +111,8 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
       const features = format.readFeatures(data, options);
 
       const first = features[0];
-      expect(first.getId()).to.be(1000000057590683);
-      expect(first.get('osm_id')).to.be(undefined);
+      assert.strictEqual(first.getId(), 1000000057590683);
+      assert.strictEqual(first.get('osm_id'), undefined);
     });
 
     it('works if you provide a bogus idProperty', function () {
@@ -123,7 +124,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
       const features = format.readFeatures(data, options);
 
       const first = features[0];
-      expect(first.getId()).to.be(undefined);
+      assert.strictEqual(first.getId(), undefined);
     });
   });
 });
@@ -164,9 +165,9 @@ describe('ol.format.MVT', function () {
       };
       const feature = format.createFeature_({}, rawFeature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(feature.get('myGeom')).to.equal(geometry);
-      expect(feature.get('geometry')).to.be('foo');
+      assert.instanceOf(geometry, Point);
+      assert.equal(feature.get('myGeom'), geometry);
+      assert.strictEqual(feature.get('geometry'), 'foo');
     });
 
     it('detects a Polygon', function () {
@@ -192,7 +193,7 @@ describe('ol.format.MVT', function () {
       };
       const feature = format.createFeature_({}, rawFeature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
     });
 
     it('detects a MultiPolygon', function () {
@@ -218,7 +219,7 @@ describe('ol.format.MVT', function () {
       };
       const feature = format.createFeature_({}, rawFeature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(MultiPolygon);
+      assert.instanceOf(geometry, MultiPolygon);
     });
 
     it('creates ol.render.Feature instances', function () {
@@ -253,11 +254,11 @@ describe('ol.format.MVT', function () {
         rawFeature,
         format.adaptOptions(options),
       );
-      expect(feature).to.be.a(RenderFeature);
-      expect(feature.getType()).to.be('Polygon');
-      expect(feature.getFlatCoordinates()).to.equal(createdFlatCoordinates);
-      expect(feature.getEnds()).to.equal(createdEnds);
-      expect(feature.get('foo')).to.be('bar');
+      assert.instanceOf(feature, RenderFeature);
+      assert.strictEqual(feature.getType(), 'Polygon');
+      assert.equal(feature.getFlatCoordinates(), createdFlatCoordinates);
+      assert.equal(feature.getEnds(), createdEnds);
+      assert.strictEqual(feature.get('foo'), 'bar');
     });
   });
 });

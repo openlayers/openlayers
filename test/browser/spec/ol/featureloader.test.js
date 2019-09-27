@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import {xhr} from '../../../../src/ol/featureloader.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
@@ -21,7 +22,7 @@ describe('ol.featureloader', function () {
       loader = xhr(url, format);
       source.on('addfeature', function (e) {
         setTimeout(function () {
-          expect(source.getFeatures().length).to.be.greaterThan(0);
+          assert.isAbove(source.getFeatures().length, 0);
           done();
         }, 0);
       });
@@ -37,7 +38,7 @@ describe('ol.featureloader', function () {
 
         source.on('addfeature', function (e) {
           setTimeout(function () {
-            expect(source.getFeatures().length).to.be.greaterThan(0);
+            assert.isAbove(source.getFeatures().length, 0);
             done();
           }, 0);
         });
@@ -49,9 +50,9 @@ describe('ol.featureloader', function () {
         const resolution = 1;
         const projection = 'EPSG:3857';
         url = function (extent_, resolution_, projection_) {
-          expect(extent_).to.eql(extent);
-          expect(resolution_).to.eql(resolution);
-          expect(projection_).to.eql(projection);
+          assert.deepEqual(extent_, extent);
+          assert.deepEqual(resolution_, resolution);
+          assert.deepEqual(projection_, projection);
           done();
           return 'spec/ol/data/point.json';
         };
@@ -70,7 +71,7 @@ describe('ol.featureloader', function () {
         'EPSG:3857',
         function () {
           setTimeout(function () {
-            expect(errorSpy.callCount).to.be(0);
+            assert.strictEqual(errorSpy.callCount, 0);
             done();
           }, 0);
         },
@@ -83,7 +84,7 @@ describe('ol.featureloader', function () {
       loader = xhr('spec/ol/data/exceptionreport.xml', format);
       loader.call(source, [], 1, 'EPSG:3857', successSpy, function () {
         setTimeout(function () {
-          expect(successSpy.callCount).to.be(0);
+          assert.strictEqual(successSpy.callCount, 0);
           done();
         }, 0);
       });
@@ -94,7 +95,7 @@ describe('ol.featureloader', function () {
       loader = xhr('spec/ol/data/exceptionreport.json', format);
       loader.call(source, [], 1, 'EPSG:3857', successSpy, function () {
         setTimeout(function () {
-          expect(successSpy.callCount).to.be(0);
+          assert.strictEqual(successSpy.callCount, 0);
           done();
         }, 0);
       });

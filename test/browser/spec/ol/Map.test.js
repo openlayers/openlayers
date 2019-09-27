@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
@@ -49,7 +50,7 @@ describe('ol/Map', function () {
   describe('constructor', function () {
     it('creates a new map', function () {
       const map = new Map({});
-      expect(map).to.be.a(Map);
+      assert.instanceOf(map, Map);
     });
 
     it('accepts a promise for view options', (done) => {
@@ -61,15 +62,15 @@ describe('ol/Map', function () {
         }),
       });
 
-      expect(map.getView()).to.be.a(View);
-      expect(map.getView().isDef()).to.be(false);
+      assert.instanceOf(map.getView(), View);
+      assert.strictEqual(map.getView().isDef(), false);
 
       map.once('change:view', () => {
         const view = map.getView();
-        expect(view).to.be.a(View);
-        expect(view.isDef()).to.be(true);
-        expect(view.getCenter()).to.eql([1, 2]);
-        expect(view.getZoom()).to.be(3);
+        assert.instanceOf(view, View);
+        assert.strictEqual(view.isDef(), true);
+        assert.deepEqual(view.getCenter(), [1, 2]);
+        assert.strictEqual(view.getZoom(), 3);
         done();
       });
 
@@ -84,8 +85,8 @@ describe('ol/Map', function () {
         view: new View({zoom: 1, center: [0, 0]}),
       });
 
-      expect(map.getView()).to.be.a(View);
-      expect(map.getView().isDef()).to.be(true);
+      assert.instanceOf(map.getView(), View);
+      assert.strictEqual(map.getView().isDef(), true);
 
       let resolve;
       map.setView(
@@ -94,15 +95,15 @@ describe('ol/Map', function () {
         }),
       );
 
-      expect(map.getView()).to.be.a(View);
-      expect(map.getView().isDef()).to.be(false);
+      assert.instanceOf(map.getView(), View);
+      assert.strictEqual(map.getView().isDef(), false);
 
       map.once('change:view', () => {
         const view = map.getView();
-        expect(view).to.be.a(View);
-        expect(view.isDef()).to.be(true);
-        expect(view.getCenter()).to.eql([1, 2]);
-        expect(view.getZoom()).to.be(3);
+        assert.instanceOf(view, View);
+        assert.strictEqual(view.isDef(), true);
+        assert.deepEqual(view.getCenter(), [1, 2]);
+        assert.strictEqual(view.getZoom(), 3);
         done();
       });
 
@@ -116,10 +117,10 @@ describe('ol/Map', function () {
       const map = new Map({});
       const interactions = map.getInteractions();
       const length = interactions.getLength();
-      expect(length).to.be.greaterThan(0);
+      assert.isAbove(length, 0);
 
       for (let i = 0; i < length; ++i) {
-        expect(interactions.item(i).getMap()).to.be(map);
+        assert.strictEqual(interactions.item(i).getMap(), map);
       }
     });
 
@@ -128,16 +129,19 @@ describe('ol/Map', function () {
       const viewport = map.getViewport();
       const className =
         'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
-      expect(viewport.className).to.be(className);
+      assert.strictEqual(viewport.className, className);
     });
 
     it('creates the overlay containers', function () {
       const map = new Map({});
       const container = map.getOverlayContainer();
-      expect(container.className).to.be('ol-overlaycontainer');
+      assert.strictEqual(container.className, 'ol-overlaycontainer');
 
       const containerStop = map.getOverlayContainerStopEvent();
-      expect(containerStop.className).to.be('ol-overlaycontainer-stopevent');
+      assert.strictEqual(
+        containerStop.className,
+        'ol-overlaycontainer-stopevent',
+      );
     });
 
     it('calls setMap for controls added by other controls', function () {
@@ -166,7 +170,7 @@ describe('ol/Map', function () {
           }),
         ],
       });
-      expect(subSetMapCalled).to.be(true);
+      assert.strictEqual(subSetMapCalled, true);
     });
   });
 
@@ -176,8 +180,8 @@ describe('ol/Map', function () {
       const layer = new TileLayer();
       map.addLayer(layer);
 
-      expect(map.getLayers().item(0)).to.be(layer);
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(map.getLayers().item(0), layer);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('throws if a layer is added twice', function () {
@@ -188,7 +192,7 @@ describe('ol/Map', function () {
       const call = function () {
         map.addLayer(layer);
       };
-      expect(call).to.throwException();
+      assert.throws(call);
     });
   });
 
@@ -198,9 +202,9 @@ describe('ol/Map', function () {
       const layer = new TileLayer();
       map.addLayer(layer);
 
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
       map.removeLayer(layer);
-      expect(layer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(layer.get(Property.MAP), null);
     });
 
     it('removes a layer group from the map', function () {
@@ -208,10 +212,10 @@ describe('ol/Map', function () {
       const layer = new TileLayer();
       const group = new LayerGroup({layers: [layer]});
       map.addLayer(group);
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
 
       map.removeLayer(group);
-      expect(layer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(layer.get(Property.MAP), null);
     });
   });
 
@@ -223,21 +227,21 @@ describe('ol/Map', function () {
       const group = new LayerGroup({layers: [layer]});
       map.setLayerGroup(group);
 
-      expect(map.getLayerGroup()).to.be(group);
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(map.getLayerGroup(), group);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('removes the map property from old layers', function () {
       const oldLayer = new Layer({});
       const map = new Map({layers: [oldLayer]});
-      expect(oldLayer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(oldLayer.get(Property.MAP), map);
 
       const layer = new Layer({});
       const group = new LayerGroup({layers: [layer]});
       map.setLayerGroup(group);
 
-      expect(layer.get(Property.MAP)).to.be(map);
-      expect(oldLayer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(layer.get(Property.MAP), map);
+      assert.strictEqual(oldLayer.get(Property.MAP), null);
     });
   });
 
@@ -249,8 +253,8 @@ describe('ol/Map', function () {
       map.addLayer(group);
 
       const allLayers = map.getAllLayers();
-      expect(allLayers.length).to.be(1);
-      expect(allLayers[0]).to.be(layer);
+      assert.strictEqual(allLayers.length, 1);
+      assert.strictEqual(allLayers[0], layer);
     });
   });
 
@@ -263,26 +267,26 @@ describe('ol/Map', function () {
       map.setLayers([layer0, layer1]);
 
       const collection = map.getLayers();
-      expect(collection.getLength()).to.be(2);
-      expect(collection.item(0)).to.be(layer0);
-      expect(collection.item(1)).to.be(layer1);
-      expect(layer0.get(Property.MAP)).to.be(map);
-      expect(layer1.get(Property.MAP)).to.be(map);
+      assert.strictEqual(collection.getLength(), 2);
+      assert.strictEqual(collection.item(0), layer0);
+      assert.strictEqual(collection.item(1), layer1);
+      assert.strictEqual(layer0.get(Property.MAP), map);
+      assert.strictEqual(layer1.get(Property.MAP), map);
     });
 
     it('clears any existing layers', function () {
       const oldLayer = new TileLayer();
       const map = new Map({layers: [oldLayer]});
-      expect(oldLayer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(oldLayer.get(Property.MAP), map);
 
       const newLayer1 = new TileLayer();
       const newLayer2 = new TileLayer();
       map.setLayers([newLayer1, newLayer2]);
-      expect(newLayer1.get(Property.MAP)).to.be(map);
-      expect(newLayer2.get(Property.MAP)).to.be(map);
-      expect(oldLayer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(newLayer1.get(Property.MAP), map);
+      assert.strictEqual(newLayer2.get(Property.MAP), map);
+      assert.strictEqual(oldLayer.get(Property.MAP), null);
 
-      expect(map.getLayers().getLength()).to.be(2);
+      assert.strictEqual(map.getLayers().getLength(), 2);
     });
 
     it('also works with collections', function () {
@@ -293,9 +297,9 @@ describe('ol/Map', function () {
       map.setLayers(new Collection([layer0, layer1]));
 
       const collection = map.getLayers();
-      expect(collection.getLength()).to.be(2);
-      expect(collection.item(0)).to.be(layer0);
-      expect(collection.item(1)).to.be(layer1);
+      assert.strictEqual(collection.getLength(), 2);
+      assert.strictEqual(collection.item(0), layer0);
+      assert.strictEqual(collection.item(1), layer1);
     });
   });
 
@@ -307,8 +311,8 @@ describe('ol/Map', function () {
       const before = map.getInteractions().getLength();
       map.addInteraction(interaction);
       const after = map.getInteractions().getLength();
-      expect(after).to.be(before + 1);
-      expect(interaction.getMap()).to.be(map);
+      assert.strictEqual(after, before + 1);
+      assert.strictEqual(interaction.getMap(), map);
     });
   });
 
@@ -321,9 +325,9 @@ describe('ol/Map', function () {
       map.addInteraction(interaction);
 
       map.removeInteraction(interaction);
-      expect(map.getInteractions().getLength()).to.be(before);
+      assert.strictEqual(map.getInteractions().getLength(), before);
 
-      expect(interaction.getMap()).to.be(null);
+      assert.strictEqual(interaction.getMap(), null);
     });
   });
 
@@ -368,13 +372,13 @@ describe('ol/Map', function () {
       let endCalls = 0;
       map.on('movestart', function () {
         ++startCalls;
-        expect(startCalls).to.be(1);
+        assert.strictEqual(startCalls, 1);
       });
       map.on('moveend', function () {
         ++endCalls;
-        expect(endCalls).to.be(1);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getZoom()).to.be(zoom);
+        assert.strictEqual(endCalls, 1);
+        assert.deepEqual(view.getCenter(), center);
+        assert.strictEqual(view.getZoom(), zoom);
         window.setTimeout(done, 1000);
       });
 
@@ -391,15 +395,15 @@ describe('ol/Map', function () {
       const calls = [];
       map.on('movestart', function (e) {
         calls.push('start');
-        expect(calls).to.eql(['start']);
-        expect(e.frameState.viewState.center).to.eql([0, 0]);
-        expect(e.frameState.viewState.resolution).to.be(0.703125);
+        assert.deepEqual(calls, ['start']);
+        assert.deepEqual(e.frameState.viewState.center, [0, 0]);
+        assert.strictEqual(e.frameState.viewState.resolution, 0.703125);
       });
       map.on('moveend', function () {
         calls.push('end');
-        expect(calls).to.eql(['start', 'end']);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getZoom()).to.be(zoom);
+        assert.deepEqual(calls, ['start', 'end']);
+        assert.deepEqual(view.getCenter(), center);
+        assert.strictEqual(view.getZoom(), zoom);
         done();
       });
 
@@ -481,8 +485,8 @@ describe('ol/Map', function () {
       it('triggers when all tiles and sources are loaded and faded in', function (done) {
         const layers = map.getLayers().getArray();
         map.once('rendercomplete', function () {
-          expect(map.tileQueue_.getTilesLoading()).to.be(0);
-          expect(
+          assert.strictEqual(map.tileQueue_.getTilesLoading(), 0);
+          assert.strictEqual(
             layers[1]
               .getSource()
               .getImage(
@@ -492,9 +496,10 @@ describe('ol/Map', function () {
                 map.getView().getProjection(),
               )
               .getState(),
-          ).to.be(ImageState.LOADED);
-          expect(layers[2].getSource().getFeatures().length).to.be(1);
-          expect(layers[6].getRenderer().ready).to.be(true);
+            ImageState.LOADED,
+          );
+          assert.strictEqual(layers[2].getSource().getFeatures().length, 1);
+          assert.strictEqual(layers[6].getRenderer().ready, true);
           done();
         });
         map.setView(
@@ -604,8 +609,8 @@ describe('ol/Map', function () {
         });
         map.once('rendercomplete', function () {
           try {
-            expect(tilesRequested).to.be.greaterThan(delayIconAtTile);
-            expect(iconLoaded).to.be(true);
+            assert.isAbove(tilesRequested, delayIconAtTile);
+            assert.strictEqual(iconLoaded, true);
             done();
           } catch (e) {
             done(e);
@@ -639,7 +644,7 @@ describe('ol/Map', function () {
         });
         map.once('rendercomplete', function () {
           try {
-            expect(iconLoaded).to.be(true);
+            assert.strictEqual(iconLoaded, true);
             done();
           } catch (e) {
             done(e);
@@ -722,7 +727,7 @@ describe('ol/Map', function () {
         loading++;
       });
       map.on('loadend', () => {
-        expect(loading).to.be(1);
+        assert.strictEqual(loading, 1);
         done();
       });
       map.setView(
@@ -769,14 +774,14 @@ describe('ol/Map', function () {
 
     it('returns an empty array if no feature was found', function () {
       const features = map.getFeaturesAtPixel([0, 0]);
-      expect(features).to.be.an(Array);
-      expect(features).to.be.empty();
+      assert.instanceOf(features, Array);
+      assert.isEmpty(features);
     });
 
     it('returns an array of found features', function () {
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(Feature);
+      assert.instanceOf(features, Array);
+      assert.instanceOf(features[0], Feature);
     });
 
     it('returns an array of found features with declutter: true', function () {
@@ -789,8 +794,8 @@ describe('ol/Map', function () {
       map.addLayer(otherLayer);
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features).to.be.an(Array);
-      expect(features[0]).to.be.a(Feature);
+      assert.instanceOf(features, Array);
+      assert.instanceOf(features[0], Feature);
     });
 
     it('respects options', function () {
@@ -804,8 +809,8 @@ describe('ol/Map', function () {
           return layer === otherLayer;
         },
       });
-      expect(features).to.be.an(Array);
-      expect(features).to.be.empty();
+      assert.instanceOf(features, Array);
+      assert.isEmpty(features);
     });
 
     it('finds off-world geometries', function () {
@@ -825,23 +830,23 @@ describe('ol/Map', function () {
       map.renderSync();
 
       let features = map.getFeaturesAtPixel([60, 50]);
-      expect(features).to.be.an(Array);
-      expect(features.length).to.be(2);
+      assert.instanceOf(features, Array);
+      assert.strictEqual(features.length, 2);
 
       features = map.getFeaturesAtPixel([60, 50], {checkWrapped: false});
-      expect(features).to.be.an(Array);
-      expect(features.length).to.be(1);
+      assert.instanceOf(features, Array);
+      assert.strictEqual(features.length, 1);
 
       map.getView().setCenter(fromLonLat([-180, 0]));
       map.renderSync();
 
       features = map.getFeaturesAtPixel([40, 50]);
-      expect(features).to.be.an(Array);
-      expect(features.length).to.be(2);
+      assert.instanceOf(features, Array);
+      assert.strictEqual(features.length, 2);
 
       features = map.getFeaturesAtPixel([40, 50], {checkWrapped: false});
-      expect(features).to.be.an(Array);
-      expect(features.length).to.be(1);
+      assert.instanceOf(features, Array);
+      assert.strictEqual(features.length, 1);
     });
   });
 
@@ -892,16 +897,16 @@ describe('ol/Map', function () {
 
     it('returns an empty array if no feature was found', function () {
       const features = map.getFeaturesAtPixel([size / 2, size / 2]);
-      expect(features).to.be.an(Array);
-      expect(features).to.be.empty();
+      assert.instanceOf(features, Array);
+      assert.isEmpty(features);
     });
 
     it('returns an array of found features', function () {
       const coordinate = [-95, 45];
       const pixel = map.getPixelFromCoordinate(coordinate);
       const features = map.getFeaturesAtPixel(pixel);
-      expect(features).to.be.an(Array);
-      expect(features[0]).to.be.a(Feature);
+      assert.instanceOf(features, Array);
+      assert.instanceOf(features[0], Feature);
     });
   });
 
@@ -952,14 +957,14 @@ describe('ol/Map', function () {
 
     it('returns false if no feature was found', function () {
       const has = map.hasFeatureAtPixel([size / 2, size / 2]);
-      expect(has).to.be(false);
+      assert.strictEqual(has, false);
     });
 
     it('returns true if there are features found', function () {
       const coordinate = [-95, 45];
       const pixel = map.getPixelFromCoordinate(coordinate);
       const has = map.hasFeatureAtPixel(pixel);
-      expect(has).to.be(true);
+      assert.strictEqual(has, true);
     });
   });
 
@@ -1018,7 +1023,7 @@ describe('ol/Map', function () {
           () => true,
         );
         try {
-          expect(hit).to.be(true);
+          assert.strictEqual(hit, true);
           done();
         } catch (e) {
           done(e);
@@ -1058,7 +1063,7 @@ describe('ol/Map', function () {
 
       const spy = sinonSpy(map, 'render');
       view.changed();
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
 
     it('is not called on view changes after the view has been removed', function () {
@@ -1067,17 +1072,17 @@ describe('ol/Map', function () {
 
       const spy = sinonSpy(map, 'render');
       view.changed();
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(spy.callCount, 0);
     });
 
     it('calls renderFrame_ and results in a postrender event', function (done) {
       const spy = sinonSpy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function (event) {
-        expect(event).to.be.a(MapEvent);
-        expect(typeof spy.firstCall.args[0]).to.be('number');
+        assert.instanceOf(event, MapEvent);
+        assert.strictEqual(typeof spy.firstCall.args[0], 'number');
         spy.restore();
-        expect(event.frameState).not.to.be(null);
+        assert.notEqual(event.frameState, null);
         done();
       });
     });
@@ -1089,15 +1094,15 @@ describe('ol/Map', function () {
       const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
       layer.on('prerender', () => (prerender = true));
       layer.on('postrender', () => {
-        expect(renderDeferredSpy.callCount).to.be(0);
+        assert.strictEqual(renderDeferredSpy.callCount, 0);
         renderDeferredSpy.restore();
         postrender = true;
       });
       map.addLayer(layer);
       map.once('postrender', () => {
         try {
-          expect(prerender).to.be(true);
-          expect(postrender).to.be(true);
+          assert.strictEqual(prerender, true);
+          assert.strictEqual(postrender, true);
           done();
         } catch (e) {
           done(e);
@@ -1116,15 +1121,15 @@ describe('ol/Map', function () {
       const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
       layer.on('prerender', () => (prerender = true));
       layer.on('postrender', () => {
-        expect(renderDeferredSpy.callCount).to.be(1);
+        assert.strictEqual(renderDeferredSpy.callCount, 1);
         renderDeferredSpy.restore();
         postrender = true;
       });
       map.addLayer(layer);
       map.once('postrender', () => {
         try {
-          expect(prerender).to.be(true);
-          expect(postrender).to.be(true);
+          assert.strictEqual(prerender, true);
+          assert.strictEqual(postrender, true);
           done();
         } catch (e) {
           done(e);
@@ -1138,15 +1143,15 @@ describe('ol/Map', function () {
       const id1 = map.animationDelayKey_;
       map.render();
       const id2 = map.animationDelayKey_;
-      expect(id1).to.be(id2);
+      assert.strictEqual(id1, id2);
     });
 
     it('creates a new render frame after renderSync()', function () {
       map.render();
-      expect(map.animationDelayKey_).to.not.be(undefined);
+      assert.notEqual(map.animationDelayKey_, undefined);
 
       map.renderSync();
-      expect(map.animationDelayKey_).to.be(undefined);
+      assert.strictEqual(map.animationDelayKey_, undefined);
     });
 
     it('results in an postrender event (for zero height map)', function (done) {
@@ -1155,9 +1160,9 @@ describe('ol/Map', function () {
 
       map.render();
       map.once('postrender', function (event) {
-        expect(event).to.be.a(MapEvent);
+        assert.instanceOf(event, MapEvent);
         const frameState = event.frameState;
-        expect(frameState).to.be(null);
+        assert.strictEqual(frameState, null);
         done();
       });
     });
@@ -1168,9 +1173,9 @@ describe('ol/Map', function () {
 
       map.render();
       map.once('postrender', function (event) {
-        expect(event).to.be.a(MapEvent);
+        assert.instanceOf(event, MapEvent);
         const frameState = event.frameState;
-        expect(frameState).to.be(null);
+        assert.strictEqual(frameState, null);
         done();
       });
     });
@@ -1205,8 +1210,8 @@ describe('ol/Map', function () {
       map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
       map.handlePostRender();
 
-      expect(loadSpy.callCount).to.be(1);
-      expect(reprioritizeSpy.callCount).to.be(1);
+      assert.strictEqual(loadSpy.callCount, 1);
+      assert.strictEqual(reprioritizeSpy.callCount, 1);
     });
 
     it('loads tiles after animation ends without calling reprioritize', function () {
@@ -1219,8 +1224,8 @@ describe('ol/Map', function () {
       map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
       map.handlePostRender();
 
-      expect(loadSpy.callCount).to.be(1);
-      expect(reprioritizeSpy.callCount).to.be(0);
+      assert.strictEqual(loadSpy.callCount, 1);
+      assert.strictEqual(reprioritizeSpy.callCount, 0);
     });
   });
 
@@ -1235,12 +1240,12 @@ describe('ol/Map', function () {
 
     it('removes the viewport from its parent', function () {
       map.dispose();
-      expect(map.getViewport().parentNode).to.be(null);
+      assert.strictEqual(map.getViewport().parentNode, null);
     });
 
     it('removes window listeners', function () {
       map.dispose();
-      expect(map.targetChangeHandlerKeys_).to.be(null);
+      assert.strictEqual(map.targetChangeHandlerKeys_, null);
     });
   });
 
@@ -1252,7 +1257,7 @@ describe('ol/Map', function () {
       map = new Map({
         target: document.createElement('div'),
       });
-      expect(map.targetChangeHandlerKeys_).to.be.ok();
+      assert.isOk(map.targetChangeHandlerKeys_);
     });
 
     afterEach(() => {
@@ -1261,7 +1266,7 @@ describe('ol/Map', function () {
 
     describe('map with target not attached to dom', function () {
       it('has undefined as size with target not in document', function () {
-        expect(map.getSize()).to.be(undefined);
+        assert.strictEqual(map.getSize(), undefined);
       });
     });
 
@@ -1273,14 +1278,14 @@ describe('ol/Map', function () {
         target.style.display = 'none';
         map.updateSize();
         document.body.removeChild(target);
-        expect(map.getSize()).to.eql([0, 0]);
+        assert.deepEqual(map.getSize(), [0, 0]);
       });
     });
 
     describe('call setTarget with null', function () {
       it('unregisters the viewport resize listener', function () {
         map.setTarget(null);
-        expect(map.targetChangeHandlerKeys_).to.be(null);
+        assert.strictEqual(map.targetChangeHandlerKeys_, null);
       });
     });
 
@@ -1288,7 +1293,7 @@ describe('ol/Map', function () {
       it('registers a viewport resize listener', function () {
         map.setTarget(null);
         map.setTarget(document.createElement('div'));
-        expect(map.targetChangeHandlerKeys_).to.be.ok();
+        assert.isOk(map.targetChangeHandlerKeys_);
       });
     });
 
@@ -1310,13 +1315,16 @@ describe('ol/Map', function () {
       map.getView().setZoom(0);
       map.renderSync();
       try {
-        expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+        assert.instanceOf(target.querySelector('canvas'), HTMLCanvasElement);
         map.setTarget(null);
-        expect(target.querySelector('canvas')).to.be(null);
+        assert.strictEqual(target.querySelector('canvas'), null);
         map.setTarget(target);
         map.once('rendercomplete', () => {
           try {
-            expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+            assert.instanceOf(
+              target.querySelector('canvas'),
+              HTMLCanvasElement,
+            );
             done();
           } catch (e) {
             done(e);
@@ -1342,14 +1350,14 @@ describe('ol/Map', function () {
     });
 
     it('gets the pixel ratio', function () {
-      expect(map.getPixelRatio()).to.be(window.devicePixelRatio || 1);
+      assert.strictEqual(map.getPixelRatio(), window.devicePixelRatio || 1);
     });
 
     it('sets the pixel ratio and re-renders the map', function () {
       const spy = sinonSpy(map, 'render');
       map.setPixelRatio(2);
-      expect(map.getPixelRatio()).to.be(2);
-      expect(spy.called).to.be(true);
+      assert.strictEqual(map.getPixelRatio(), 2);
+      assert.strictEqual(spy.called, true);
       spy.restore();
     });
   });
@@ -1434,27 +1442,27 @@ describe('ol/Map', function () {
       it('creates mousewheel interaction', function () {
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(MouseWheelZoom);
-        expect(interactions.item(0).useAnchor_).to.eql(true);
+        assert.deepEqual(interactions.getLength(), 1);
+        assert.instanceOf(interactions.item(0), MouseWheelZoom);
+        assert.deepEqual(interactions.item(0).useAnchor_, true);
         interactions.item(0).setMouseAnchor(false);
-        expect(interactions.item(0).useAnchor_).to.eql(false);
-        expect(interactions.item(0).condition_).to.be(TRUE);
+        assert.deepEqual(interactions.item(0).useAnchor_, false);
+        assert.strictEqual(interactions.item(0).condition_, TRUE);
       });
       it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.not.be(TRUE);
+        assert.notEqual(interactions.item(0).condition_, TRUE);
         let event = createEvent('pointerdown');
-        expect(interactions.item(0).condition_(event)).to.be(true);
+        assert.strictEqual(interactions.item(0).condition_(event), true);
         event = createEvent('pointerdown', {hasFocus: false});
-        expect(interactions.item(0).condition_(event)).to.be(false);
+        assert.strictEqual(interactions.item(0).condition_(event), false);
         event = createEvent('pointerdown', {
           hasTabIndex: false,
           hasFocus: false,
         });
-        expect(interactions.item(0).condition_(event)).to.be(true);
+        assert.strictEqual(interactions.item(0).condition_(event), true);
       });
     });
 
@@ -1462,30 +1470,30 @@ describe('ol/Map', function () {
       it('creates dragpan interaction', function () {
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(DragPan);
+        assert.deepEqual(interactions.getLength(), 1);
+        assert.instanceOf(interactions.item(0), DragPan);
         let event = createEvent('pointerdown');
-        expect(interactions.item(0).condition_(event)).to.be(true);
+        assert.strictEqual(interactions.item(0).condition_(event), true);
         event = createEvent('pointerdown', {hasFocus: false});
-        expect(interactions.item(0).condition_(event)).to.be(true);
+        assert.strictEqual(interactions.item(0).condition_(event), true);
         event = createEvent('pointerdown', {altKey: true, hasFocus: false});
-        expect(interactions.item(0).condition_(event)).to.be(false);
+        assert.strictEqual(interactions.item(0).condition_(event), false);
         event = createEvent('pointerdown', {button: 1, hasFocus: false});
-        expect(interactions.item(0).condition_(event)).to.be(false);
+        assert.strictEqual(interactions.item(0).condition_(event), false);
       });
       it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
         let event = createEvent('pointerdown');
-        expect(interactions.item(0).condition_(event)).to.be(true);
+        assert.strictEqual(interactions.item(0).condition_(event), true);
         event = createEvent('pointerdown', {hasFocus: false});
-        expect(interactions.item(0).condition_(event)).to.be(false);
+        assert.strictEqual(interactions.item(0).condition_(event), false);
         event = createEvent('pointerdown', {
           hasTabIndex: false,
           hasFocus: false,
         });
-        expect(interactions.item(0).condition_(event)).to.be(true);
+        assert.strictEqual(interactions.item(0).condition_(event), true);
       });
     });
 
@@ -1493,8 +1501,8 @@ describe('ol/Map', function () {
       it('creates pinchZoom interaction', function () {
         options.pinchZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(PinchZoom);
+        assert.deepEqual(interactions.getLength(), 1);
+        assert.instanceOf(interactions.item(0), PinchZoom);
       });
     });
 
@@ -1506,9 +1514,9 @@ describe('ol/Map', function () {
       describe('default zoomDelta', function () {
         it('create double click interaction with default delta', function () {
           const interactions = defaultInteractions(options);
-          expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(DoubleClickZoom);
-          expect(interactions.item(0).delta_).to.eql(1);
+          assert.deepEqual(interactions.getLength(), 1);
+          assert.instanceOf(interactions.item(0), DoubleClickZoom);
+          assert.deepEqual(interactions.item(0).delta_, 1);
         });
       });
 
@@ -1516,9 +1524,9 @@ describe('ol/Map', function () {
         it('create double click interaction with set delta', function () {
           options.zoomDelta = 7;
           const interactions = defaultInteractions(options);
-          expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(DoubleClickZoom);
-          expect(interactions.item(0).delta_).to.eql(7);
+          assert.deepEqual(interactions.getLength(), 1);
+          assert.instanceOf(interactions.item(0), DoubleClickZoom);
+          assert.deepEqual(interactions.item(0).delta_, 7);
         });
       });
     });
@@ -1556,10 +1564,8 @@ describe('ol/Map', function () {
           ],
         };
         const position = map.getEventPixel(browserEvent);
-        // 80 = clientX - target.style.left
-        expect(position[0]).to.eql(80);
-        // 190 = clientY - target.style.top
-        expect(position[1]).to.eql(190);
+        assert.deepEqual(position[0], 80);
+        assert.deepEqual(position[1], 190);
 
         disposeMap(map);
       });
@@ -1599,7 +1605,7 @@ describe('ol/Map', function () {
           position: [0, 0],
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(overlay);
+        assert.strictEqual(map.getOverlayById('foo'), overlay);
       });
 
       it('returns null when no overlay is found', function () {
@@ -1609,7 +1615,7 @@ describe('ol/Map', function () {
           position: [0, 0],
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('bar')).to.be(null);
+        assert.strictEqual(map.getOverlayById('bar'), null);
       });
 
       it('returns null after removing overlay', function () {
@@ -1619,9 +1625,9 @@ describe('ol/Map', function () {
           position: [0, 0],
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(overlay);
+        assert.strictEqual(map.getOverlayById('foo'), overlay);
         map.removeOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(null);
+        assert.strictEqual(map.getOverlayById('foo'), null);
       });
     });
 
@@ -1673,11 +1679,13 @@ describe('ol/Map', function () {
       it('gets coordinates in user projection', function (done) {
         map.renderSync();
         const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
-        expect(coordinateGeographic[0]).to.roughlyEqual(
+        assert.approximately(
+          coordinateGeographic[0],
           centerGeographic[0],
           1e-5,
         );
-        expect(coordinateGeographic[1]).to.roughlyEqual(
+        assert.approximately(
+          coordinateGeographic[1],
           centerGeographic[1],
           1e-5,
         );
@@ -1688,22 +1696,22 @@ describe('ol/Map', function () {
         map.renderSync();
         const coordinateMercator =
           map.getCoordinateFromPixelInternal(screenCenter);
-        expect(coordinateMercator[0]).to.roughlyEqual(centerMercator[0], 1e-5);
-        expect(coordinateMercator[1]).to.roughlyEqual(centerMercator[1], 1e-5);
+        assert.approximately(coordinateMercator[0], centerMercator[0], 1e-5);
+        assert.approximately(coordinateMercator[1], centerMercator[1], 1e-5);
         done();
       });
 
       it('gets pixel from coordinates in user projection', function (done) {
         map.renderSync();
         const pixel = map.getPixelFromCoordinate(centerGeographic);
-        expect(pixel).to.eql(screenCenter);
+        assert.deepEqual(pixel, screenCenter);
         done();
       });
 
       it('gets pixel from coordinates in view projection', function (done) {
         map.renderSync();
         const pixel = map.getPixelFromCoordinateInternal(centerMercator);
-        expect(pixel).to.eql(screenCenter);
+        assert.deepEqual(pixel, screenCenter);
         done();
       });
     });
@@ -1748,7 +1756,7 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
       spy.restore();
     });
 
@@ -1762,7 +1770,7 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(spy.callCount, 0);
       spy.restore();
     });
 
@@ -1784,8 +1792,8 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      expect(callCount).to.be(1);
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(callCount, 1);
+      assert.strictEqual(spy.callCount, 0);
       spy.restore();
     });
 
@@ -1805,8 +1813,8 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      expect(spy.callCount).to.be(0);
-      expect(selectStub.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 0);
+      assert.strictEqual(selectStub.callCount, 1);
       spy.restore();
       selectStub.restore();
     });
@@ -1835,8 +1843,8 @@ describe('ol/Map', function () {
           map.setTarget(iframe.contentDocument.getElementById('map'));
           win.postMessage('test');
           setTimeout(() => {
-            expect(spy.callCount).to.be(1);
-            expect(spy.firstCall.returnValue).to.be(true);
+            assert.strictEqual(spy.callCount, 1);
+            assert.strictEqual(spy.firstCall.returnValue, true);
             done();
           }, 100);
         });
@@ -1849,7 +1857,7 @@ describe('ol/Map', function () {
           const externalTarget = iframe.contentDocument.getElementById('map');
           map.setTarget(externalTarget);
           map.once('change:size', () => {
-            expect(map.getSize()).to.eql([50, 50]);
+            assert.deepEqual(map.getSize(), [50, 50]);
             done();
           });
           // Trigger a resize in the external window; the ResizeObserver must
@@ -1887,7 +1895,7 @@ describe('ol/Map', function () {
         interactions: [],
       });
       map.on('change:size', () => {
-        expect(map.getView().getViewportSize_()).to.eql([width, height]);
+        assert.deepEqual(map.getView().getViewportSize_(), [width, height]);
         done();
       });
       document.body.appendChild(target);

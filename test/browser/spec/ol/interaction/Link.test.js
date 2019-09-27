@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import Link from '../../../../../src/ol/interaction/Link.js';
@@ -34,11 +35,11 @@ describe('ol/interaction/Link', () => {
       map.once('moveend', () => {
         const url = new URL(window.location.href);
         const params = url.searchParams;
-        expect(params.get('z')).to.be('2');
-        expect(params.get('x')).to.be('3');
-        expect(params.get('y')).to.be('4');
-        expect(params.get('r')).to.be('0.5');
-        expect(params.get('l')).to.be('101');
+        assert.strictEqual(params.get('z'), '2');
+        assert.strictEqual(params.get('x'), '3');
+        assert.strictEqual(params.get('y'), '4');
+        assert.strictEqual(params.get('r'), '0.5');
+        assert.strictEqual(params.get('l'), '101');
         done();
       });
 
@@ -50,9 +51,9 @@ describe('ol/interaction/Link', () => {
 
     it('works with a view that is not fully defined', () => {
       map.setView(new View({}));
-      expect(() => {
+      assert.doesNotThrow(() => {
         map.addInteraction(new Link());
-      }).to.not.throwError();
+      });
     });
 
     it('accepts a prefix', (done) => {
@@ -61,11 +62,11 @@ describe('ol/interaction/Link', () => {
       map.once('moveend', () => {
         const url = new URL(window.location.href);
         const params = url.searchParams;
-        expect(params.get('ol:z')).to.be('2');
-        expect(params.get('ol:x')).to.be('3');
-        expect(params.get('ol:y')).to.be('4');
-        expect(params.get('ol:r')).to.be('0.5');
-        expect(params.get('ol:l')).to.be('101');
+        assert.strictEqual(params.get('ol:z'), '2');
+        assert.strictEqual(params.get('ol:x'), '3');
+        assert.strictEqual(params.get('ol:y'), '4');
+        assert.strictEqual(params.get('ol:r'), '0.5');
+        assert.strictEqual(params.get('ol:l'), '101');
         done();
       });
 
@@ -81,11 +82,11 @@ describe('ol/interaction/Link', () => {
       map.once('moveend', () => {
         const url = new URL(window.location.href);
         const params = url.searchParams;
-        expect(params.get('z')).to.be('2');
-        expect(params.get('x')).to.be(null);
-        expect(params.get('y')).to.be(null);
-        expect(params.get('r')).to.be('0.5');
-        expect(params.get('l')).to.be(null);
+        assert.strictEqual(params.get('z'), '2');
+        assert.strictEqual(params.get('x'), null);
+        assert.strictEqual(params.get('y'), null);
+        assert.strictEqual(params.get('r'), '0.5');
+        assert.strictEqual(params.get('l'), null);
         done();
       });
 
@@ -105,11 +106,11 @@ describe('ol/interaction/Link', () => {
       const testValue = 'test-value';
 
       const initialValue = link.track(testProperty, (newValue) => {
-        expect(newValue).to.be(testValue);
+        assert.strictEqual(newValue, testValue);
         done();
       });
 
-      expect(initialValue).to.be(null);
+      assert.strictEqual(initialValue, null);
       link.update(testProperty, testValue);
     });
   });

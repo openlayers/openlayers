@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import fse from 'fs-extra';
 import Feature from '../../../../src/ol/Feature.js';
 import FeatureFormat from '../../../../src/ol/format/Feature.js';
@@ -5,7 +6,6 @@ import TopoJSON from '../../../../src/ol/format/TopoJSON.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
-import expect from '../../expect.js';
 
 const aruba = {
   type: 'Topology',
@@ -71,51 +71,52 @@ describe('ol/format/TopoJSON.js', function () {
 
   describe('constructor', function () {
     it('creates a new format', function () {
-      expect(format).to.be.a(FeatureFormat);
-      expect(format).to.be.a(TopoJSON);
+      assert.instanceOf(format, FeatureFormat);
+      assert.instanceOf(format, TopoJSON);
     });
   });
 
   describe('#readFeaturesFromTopology_()', function () {
     it('creates an array of features from a topology', function () {
       const features = format.readFeaturesFromObject(aruba);
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
 
       const feature = features[0];
-      expect(feature).to.be.a(Feature);
+      assert.instanceOf(feature, Feature);
 
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Polygon);
+      assert.instanceOf(geometry, Polygon);
 
-      // Parses identifier
-      expect(feature.getId()).to.be(533);
-      // Parses properties
-      expect(feature.get('prop0')).to.be('value0');
+      assert.strictEqual(feature.getId(), 533);
+      assert.strictEqual(feature.get('prop0'), 'value0');
 
-      expect(geometry.getExtent()).to.eql([
-        -70.08100810081008, 12.417091709170947, -69.9009900990099,
-        12.608069195591469,
-      ]);
+      assert.deepEqual(
+        geometry.getExtent(),
+        [
+          -70.08100810081008, 12.417091709170947, -69.9009900990099,
+          12.608069195591469,
+        ],
+      );
     });
 
     it('can read a feature with id equal to 0', function () {
       const features = format.readFeaturesFromObject(zeroId);
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
 
       const feature = features[0];
-      expect(feature).to.be.a(Feature);
-      expect(feature.getId()).to.be(0);
+      assert.instanceOf(feature, Feature);
+      assert.strictEqual(feature.getId(), 0);
     });
 
     it('can read a feature with null geometry', function () {
       const features = format.readFeaturesFromObject(nullGeometry);
-      expect(features).to.have.length(1);
+      assert.lengthOf(features, 1);
 
       const feature = features[0];
-      expect(feature).to.be.a(Feature);
-      expect(feature.getGeometry()).to.be(null);
-      expect(feature.getId()).to.be(533);
-      expect(feature.get('prop0')).to.be('value0');
+      assert.instanceOf(feature, Feature);
+      assert.strictEqual(feature.getGeometry(), null);
+      assert.strictEqual(feature.getId(), 533);
+      assert.strictEqual(feature.get('prop0'), 'value0');
     });
   });
 
@@ -127,23 +128,25 @@ describe('ol/format/TopoJSON.js', function () {
       );
 
       const features = format.readFeatures(text);
-      expect(features.length).to.be(3);
+      assert.strictEqual(features.length, 3);
 
       const point = features[0].getGeometry();
-      expect(point.getType()).to.be('Point');
-      expect(point.getFlatCoordinates()).to.eql([102, 0.5]);
+      assert.strictEqual(point.getType(), 'Point');
+      assert.deepEqual(point.getFlatCoordinates(), [102, 0.5]);
 
       const line = features[1].getGeometry();
-      expect(line.getType()).to.be('LineString');
-      expect(line.getFlatCoordinates()).to.eql([
-        102, 0, 103, 1, 104, 0, 105, 1,
-      ]);
+      assert.strictEqual(line.getType(), 'LineString');
+      assert.deepEqual(
+        line.getFlatCoordinates(),
+        [102, 0, 103, 1, 104, 0, 105, 1],
+      );
 
       const polygon = features[2].getGeometry();
-      expect(polygon.getType()).to.be('Polygon');
-      expect(polygon.getFlatCoordinates()).to.eql([
-        100, 0, 100, 1, 101, 1, 101, 0, 100, 0,
-      ]);
+      assert.strictEqual(polygon.getType(), 'Polygon');
+      assert.deepEqual(
+        polygon.getFlatCoordinates(),
+        [100, 0, 100, 1, 101, 1, 101, 0, 100, 0],
+      );
     });
 
     it('parses simple.json and transforms', async () => {
@@ -154,17 +157,18 @@ describe('ol/format/TopoJSON.js', function () {
       const features = format.readFeatures(text, {
         featureProjection: 'EPSG:3857',
       });
-      expect(features.length).to.be(3);
+      assert.strictEqual(features.length, 3);
 
       const point = features[0].getGeometry();
-      expect(point.getType()).to.be('Point');
-      expect(features[0].getGeometry().getCoordinates()).to.eql(
+      assert.strictEqual(point.getType(), 'Point');
+      assert.deepEqual(
+        features[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
 
       const line = features[1].getGeometry();
-      expect(line.getType()).to.be('LineString');
-      expect(line.getCoordinates()).to.eql([
+      assert.strictEqual(line.getType(), 'LineString');
+      assert.deepEqual(line.getCoordinates(), [
         transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
         transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
         transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
@@ -172,8 +176,8 @@ describe('ol/format/TopoJSON.js', function () {
       ]);
 
       const polygon = features[2].getGeometry();
-      expect(polygon.getType()).to.be('Polygon');
-      expect(polygon.getCoordinates()).to.eql([
+      assert.strictEqual(polygon.getType(), 'Polygon');
+      assert.deepEqual(polygon.getCoordinates(), [
         [
           transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
           transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
@@ -191,24 +195,28 @@ describe('ol/format/TopoJSON.js', function () {
       );
 
       const features = format.readFeatures(text);
-      expect(features.length).to.be(178);
+      assert.strictEqual(features.length, 178);
 
       const first = features[0];
-      expect(first).to.be.a(Feature);
+      assert.instanceOf(first, Feature);
       const firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(MultiPolygon);
-      expect(firstGeom.getExtent()).to.eql([
-        -180, -85.60903777459777, 180, 83.64513000000002,
-      ]);
+      assert.instanceOf(firstGeom, MultiPolygon);
+      assert.deepEqual(
+        firstGeom.getExtent(),
+        [-180, -85.60903777459777, 180, 83.64513000000002],
+      );
 
       const last = features[177];
-      expect(last).to.be.a(Feature);
+      assert.instanceOf(last, Feature);
       const lastGeom = last.getGeometry();
-      expect(lastGeom).to.be.a(Polygon);
-      expect(lastGeom.getExtent()).to.eql([
-        25.26325263252633, -22.271802279310577, 32.848528485284874,
-        -15.50833810039586,
-      ]);
+      assert.instanceOf(lastGeom, Polygon);
+      assert.deepEqual(
+        lastGeom.getExtent(),
+        [
+          25.26325263252633, -22.271802279310577, 32.848528485284874,
+          -15.50833810039586,
+        ],
+      );
     });
 
     it("sets the topology's child names as feature property", async () => {
@@ -220,8 +228,8 @@ describe('ol/format/TopoJSON.js', function () {
         layerName: 'layer',
       });
       const features = format.readFeatures(text);
-      expect(features[0].get('layer')).to.be('land');
-      expect(features[177].get('layer')).to.be('countries');
+      assert.strictEqual(features[0].get('layer'), 'land');
+      assert.strictEqual(features[177].get('layer'), 'countries');
     });
 
     it("only parses features from specified topology's children", async () => {
@@ -233,7 +241,7 @@ describe('ol/format/TopoJSON.js', function () {
         layers: ['land'],
       });
       const features = format.readFeatures(text);
-      expect(features.length).to.be(1);
+      assert.strictEqual(features.length, 1);
     });
   });
 });

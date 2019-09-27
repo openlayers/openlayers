@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
@@ -43,9 +44,10 @@ describe('hitdetect', function () {
       1,
       0,
     );
-    expect(Array.prototype.slice.call(imageData.data, 0, 3)).to.eql([
-      255, 255, 252,
-    ]);
+    assert.deepEqual(
+      Array.prototype.slice.call(imageData.data, 0, 3),
+      [255, 255, 252],
+    );
   });
   it('detects hit at the correct position', function () {
     const context = createCanvasContext2D(3, 3);
@@ -53,25 +55,25 @@ describe('hitdetect', function () {
     context.fillRect(1, 1, 1, 1);
     const features = [new Feature()];
     const imageData = context.getImageData(0, 0, 3, 3);
-    expect(hitDetect([2, 2], features, imageData)).to.have.length(1);
-    expect(hitDetect([2, 3], features, imageData)).to.have.length(1);
-    expect(hitDetect([3, 2], features, imageData)).to.have.length(1);
-    expect(hitDetect([3, 3], features, imageData)).to.have.length(1);
+    assert.lengthOf(hitDetect([2, 2], features, imageData), 1);
+    assert.lengthOf(hitDetect([2, 3], features, imageData), 1);
+    assert.lengthOf(hitDetect([3, 2], features, imageData), 1);
+    assert.lengthOf(hitDetect([3, 3], features, imageData), 1);
 
-    expect(hitDetect([1.5, 1.5], features, imageData)).to.have.length(1);
-    expect(hitDetect([3.4, 3.4], features, imageData)).to.have.length(1);
+    assert.lengthOf(hitDetect([1.5, 1.5], features, imageData), 1);
+    assert.lengthOf(hitDetect([3.4, 3.4], features, imageData), 1);
 
-    expect(hitDetect([1.4, 1], features, imageData)).to.have.length(0);
-    expect(hitDetect([1, 2.4], features, imageData)).to.have.length(0);
-    expect(hitDetect([2.4, 1], features, imageData)).to.have.length(0);
+    assert.lengthOf(hitDetect([1.4, 1], features, imageData), 0);
+    assert.lengthOf(hitDetect([1, 2.4], features, imageData), 0);
+    assert.lengthOf(hitDetect([2.4, 1], features, imageData), 0);
 
-    expect(hitDetect([3.5, 4.5], features, imageData)).to.have.length(0);
-    expect(hitDetect([5, 4], features, imageData)).to.have.length(0);
-    expect(hitDetect([4.5, 5], features, imageData)).to.have.length(0);
+    assert.lengthOf(hitDetect([3.5, 4.5], features, imageData), 0);
+    assert.lengthOf(hitDetect([5, 4], features, imageData), 0);
+    assert.lengthOf(hitDetect([4.5, 5], features, imageData), 0);
 
-    expect(hitDetect([1.4, 3.5], features, imageData)).to.have.length(0);
-    expect(hitDetect([1, 4.5], features, imageData)).to.have.length(0);
-    expect(hitDetect([1.5, 5], features, imageData)).to.have.length(0);
+    assert.lengthOf(hitDetect([1.4, 3.5], features, imageData), 0);
+    assert.lengthOf(hitDetect([1, 4.5], features, imageData), 0);
+    assert.lengthOf(hitDetect([1.5, 5], features, imageData), 0);
   });
   it('correctly detects hit for pixel exceeding canvas dimension', function () {
     const features = [new Feature()];
@@ -80,21 +82,21 @@ describe('hitdetect', function () {
 
     context.fillRect(1, 1, 1, 1);
     let imageData = context.getImageData(0, 0, 2, 2);
-    expect(hitDetect([4, 2], features, imageData)).to.have.length(1);
-    expect(hitDetect([2, 4], features, imageData)).to.have.length(1);
+    assert.lengthOf(hitDetect([4, 2], features, imageData), 1);
+    assert.lengthOf(hitDetect([2, 4], features, imageData), 1);
 
-    expect(hitDetect([-2, 4], features, imageData)).to.have.length(0);
-    expect(hitDetect([4, -2], features, imageData)).to.have.length(0);
+    assert.lengthOf(hitDetect([-2, 4], features, imageData), 0);
+    assert.lengthOf(hitDetect([4, -2], features, imageData), 0);
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     context.fillRect(0, 0, 1, 1);
     imageData = context.getImageData(0, 0, 2, 2);
-    expect(hitDetect([-2, 0], features, imageData)).to.have.length(1);
-    expect(hitDetect([0, -2], features, imageData)).to.have.length(1);
+    assert.lengthOf(hitDetect([-2, 0], features, imageData), 1);
+    assert.lengthOf(hitDetect([0, -2], features, imageData), 1);
 
-    expect(hitDetect([-2, 4], features, imageData)).to.have.length(0);
-    expect(hitDetect([4, -2], features, imageData)).to.have.length(0);
+    assert.lengthOf(hitDetect([-2, 4], features, imageData), 0);
+    assert.lengthOf(hitDetect([4, -2], features, imageData), 0);
   });
   it('finds correct geometry when overlapping', function () {
     const bottomPoint = new Feature(new Point([90, 100]));
@@ -208,24 +210,40 @@ describe('hitdetect', function () {
       0,
     );
 
-    expect(hitDetect([55, 100], features, imageData)[0]).to.be(bottomPoint);
-    expect(hitDetect([65, 100], features, imageData)[0]).to.be(
+    assert.strictEqual(
+      hitDetect([55, 100], features, imageData)[0],
+      bottomPoint,
+    );
+    assert.strictEqual(
+      hitDetect([65, 100], features, imageData)[0],
       geometryCollection,
     );
-    expect(hitDetect([75, 100], features, imageData)[0]).to.be(topPoint);
+    assert.strictEqual(hitDetect([75, 100], features, imageData)[0], topPoint);
 
-    expect(hitDetect([33, 190], features, imageData)[0]).to.be(bottomPolygon);
-    expect(hitDetect([100, 190], features, imageData)[0]).to.be(
+    assert.strictEqual(
+      hitDetect([33, 190], features, imageData)[0],
+      bottomPolygon,
+    );
+    assert.strictEqual(
+      hitDetect([100, 190], features, imageData)[0],
       geometryCollection,
     );
-    expect(hitDetect([166, 190], features, imageData)[0]).to.be(topPolygon);
+    assert.strictEqual(
+      hitDetect([166, 190], features, imageData)[0],
+      topPolygon,
+    );
 
-    expect(hitDetect([10, 130], features, imageData)[0]).to.be(
+    assert.strictEqual(
+      hitDetect([10, 130], features, imageData)[0],
       bottomLineString,
     );
-    expect(hitDetect([10, 110], features, imageData)[0]).to.be(
+    assert.strictEqual(
+      hitDetect([10, 110], features, imageData)[0],
       geometryCollection,
     );
-    expect(hitDetect([10, 90], features, imageData)[0]).to.be(topLineString);
+    assert.strictEqual(
+      hitDetect([10, 90], features, imageData)[0],
+      topLineString,
+    );
   });
 });

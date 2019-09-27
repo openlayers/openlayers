@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import UrlTile from '../../../../../src/ol/source/UrlTile.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
@@ -10,7 +11,7 @@ describe('ol/source/UrlTile', function () {
       const url = 'https://example.com/';
       source.setUrl(url);
 
-      expect(source.getUrls()).to.eql([url]);
+      assert.deepEqual(source.getUrls(), [url]);
     });
 
     it('updates the key for the source', function () {
@@ -19,19 +20,19 @@ describe('ol/source/UrlTile', function () {
       const url = 'https://example.com/';
       source.setUrl(url);
 
-      expect(source.getKey()).to.eql(url);
+      assert.deepEqual(source.getKey(), url);
     });
   });
 
   describe('#getInterpolate()', function () {
     it('is false by default', function () {
       const source = new UrlTile({});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
 
     it('is true if constructed with interpolate: true', function () {
       const source = new UrlTile({interpolate: true});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
   });
 
@@ -46,7 +47,7 @@ describe('ol/source/UrlTile', function () {
       ];
       source.setUrls(urls);
 
-      expect(source.getUrls()).to.eql(urls);
+      assert.deepEqual(source.getUrls(), urls);
     });
 
     it('updates the key for the source', function () {
@@ -59,7 +60,7 @@ describe('ol/source/UrlTile', function () {
       ];
       source.setUrls(urls);
 
-      expect(source.getKey()).to.eql(urls.join('\n'));
+      assert.deepEqual(source.getKey(), urls.join('\n'));
     });
   });
 
@@ -70,7 +71,7 @@ describe('ol/source/UrlTile', function () {
       });
 
       const urls = tileSource.getUrls();
-      expect(urls).to.eql(['1', '2', '3']);
+      assert.deepEqual(urls, ['1', '2', '3']);
     });
   });
 
@@ -94,37 +95,37 @@ describe('ol/source/UrlTile', function () {
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 0),
       );
-      expect(tileUrl).to.eql('0/0/0');
+      assert.deepEqual(tileUrl, '0/0/0');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 1),
       );
-      expect(tileUrl).to.eql('1/1/0');
+      assert.deepEqual(tileUrl, '1/1/0');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 2),
       );
-      expect(tileUrl).to.eql('2/2/1');
+      assert.deepEqual(tileUrl, '2/2/1');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 3),
       );
-      expect(tileUrl).to.eql('3/4/2');
+      assert.deepEqual(tileUrl, '3/4/2');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 4),
       );
-      expect(tileUrl).to.eql('4/8/5');
+      assert.deepEqual(tileUrl, '4/8/5');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 5),
       );
-      expect(tileUrl).to.eql('5/16/11');
+      assert.deepEqual(tileUrl, '5/16/11');
 
       tileUrl = tileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 6),
       );
-      expect(tileUrl).to.eql('6/33/22');
+      assert.deepEqual(tileUrl, '6/33/22');
     });
 
     describe('wrap x', function () {
@@ -133,17 +134,17 @@ describe('ol/source/UrlTile', function () {
         let tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, -31, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 97, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
       });
     });
 
@@ -153,17 +154,17 @@ describe('ol/source/UrlTile', function () {
         let tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, -1], projection),
         );
-        expect(tileUrl).to.be(undefined);
+        assert.strictEqual(tileUrl, undefined);
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
 
         tileUrl = tileSource.tileUrlFunction(
           tileSource.getTileCoordForTileUrlFunction([6, 33, 64], projection),
         );
-        expect(tileUrl).to.be(undefined);
+        assert.strictEqual(tileUrl, undefined);
       });
     });
   });
@@ -189,7 +190,7 @@ describe('ol/source/UrlTile', function () {
 
       it('returns the XYZ URL', function () {
         const urls = source.getUrls();
-        expect(urls).to.be.eql([url]);
+        assert.deepEqual(urls, [url]);
       });
     });
 
@@ -201,7 +202,7 @@ describe('ol/source/UrlTile', function () {
 
       it('returns the XYZ URLs', function () {
         const urls = source.getUrls();
-        expect(urls).to.be.eql(['some_xyz_url1', 'some_xyz_url2']);
+        assert.deepEqual(urls, ['some_xyz_url1', 'some_xyz_url2']);
       });
     });
 
@@ -215,7 +216,7 @@ describe('ol/source/UrlTile', function () {
 
       it('returns null', function () {
         const urls = source.getUrls();
-        expect(urls).to.be(null);
+        assert.strictEqual(urls, null);
       });
     });
   });

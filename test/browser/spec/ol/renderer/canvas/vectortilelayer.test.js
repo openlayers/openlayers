@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
@@ -120,8 +121,8 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('creates a new instance', function () {
       const renderer = new CanvasVectorTileLayerRenderer(layer);
-      expect(renderer).to.be.a(CanvasVectorTileLayerRenderer);
-      expect(renderer.getLayer()).to.be(layer);
+      assert.instanceOf(renderer, CanvasVectorTileLayerRenderer);
+      assert.strictEqual(renderer.getLayer(), layer);
     });
 
     it('does not render images for pure vector rendering', function () {
@@ -137,7 +138,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         'renderTileImage_',
       );
       map.renderSync();
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(spy.callCount, 0);
       spy.restore();
     });
 
@@ -151,8 +152,8 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         'renderTileImage_',
       );
       map.renderSync();
-      expect(spy1.callCount).to.be(1);
-      expect(spy2.callCount).to.be(1);
+      assert.strictEqual(spy1.callCount, 1);
+      assert.strictEqual(spy2.callCount, 1);
       spy1.restore();
       spy2.restore();
     });
@@ -168,15 +169,19 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         'getRenderTransform',
       );
       map.renderSync();
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
       spy.restore();
     });
 
     it('gives precedence to feature styles over layer styles', function () {
       const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layer.getStyleFunction()(feature1));
-      expect(spy.getCall(1).args[2]).to.be(
+      assert.strictEqual(
+        spy.getCall(0).args[2],
+        layer.getStyleFunction()(feature1),
+      );
+      assert.strictEqual(
+        spy.getCall(1).args[2],
         feature2.getStyleFunction()(feature2),
       );
       spy.restore();
@@ -189,7 +194,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       const revision = layer.getRevision();
       setTimeout(function () {
         try {
-          expect(layer.getRevision()).to.be(revision);
+          assert.strictEqual(layer.getRevision(), revision);
           done();
         } catch (e) {
           done(e);
@@ -204,7 +209,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       const revision = layer.getRevision();
       setTimeout(function () {
         try {
-          expect(layer.getRevision()).to.be(revision);
+          assert.strictEqual(layer.getRevision(), revision);
           done();
         } catch (e) {
           done(e);
@@ -224,7 +229,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           checkedFonts.removeEventListener('propertychange', onPropertyChange);
           try {
             font.remove();
-            expect(layer.getRevision()).to.be(revision + 1);
+            assert.strictEqual(layer.getRevision(), revision + 1);
             done();
           } catch (e) {
             done(e);
@@ -246,9 +251,9 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
       map.renderSync();
       const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
-      expect(Object.keys(tile.executorGroups)).to.have.length(1);
+      assert.lengthOf(Object.keys(tile.executorGroups), 1);
       const tile2 = layer2.getRenderer().getTile(0, 0, 0, map.frameState_);
-      expect(Object.keys(tile2.executorGroups)).to.have.length(1);
+      assert.lengthOf(Object.keys(tile2.executorGroups), 1);
     });
 
     it('sets the correct `wantedResolution`', (done) => {
@@ -257,13 +262,12 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       map.frameState_;
       const resolution = map.frameState_.viewState.resolution;
       const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
-      // hifi - use exact view resolution
-      expect(tile.wantedResolution).to.be(resolution);
+      assert.strictEqual(tile.wantedResolution, resolution);
       map.getView().animate({zoom: 0.6, duration: 200}, () => {
         setTimeout(() => {
           try {
-            // hifi - use exact view resolution
-            expect(tile.wantedResolution).to.be(
+            assert.strictEqual(
+              tile.wantedResolution,
               map.frameState_.viewState.resolution,
             );
             done();
@@ -274,7 +278,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
       setTimeout(
         // not hifi - use previous resolution
-        () => expect(tile.wantedResolution).to.be(resolution),
+        () => assert.strictEqual(tile.wantedResolution, resolution),
         100,
       );
     });
@@ -289,11 +293,20 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         }),
       );
       map.once('rendercomplete', function () {
-        expect(document.querySelector('.ol-layers').childElementCount).to.be(1);
-        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
+        assert.strictEqual(
+          document.querySelector('.ol-layers').childElementCount,
+          1,
+        );
+        assert.strictEqual(
+          document.querySelector('.ol-layer').childElementCount,
+          1,
+        );
         map.removeLayer(map.getLayers().item(1));
         map.renderSync();
-        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
+        assert.strictEqual(
+          document.querySelector('.ol-layer').childElementCount,
+          1,
+        );
         done();
       });
     });
@@ -309,11 +322,20 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         }),
       );
       map.once('rendercomplete', function () {
-        expect(document.querySelector('.ol-layers').childElementCount).to.be(1);
-        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
+        assert.strictEqual(
+          document.querySelector('.ol-layers').childElementCount,
+          1,
+        );
+        assert.strictEqual(
+          document.querySelector('.ol-layer').childElementCount,
+          1,
+        );
         map.removeLayer(map.getLayers().item(1));
         map.renderSync();
-        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
+        assert.strictEqual(
+          document.querySelector('.ol-layer').childElementCount,
+          1,
+        );
         done();
       });
     });
@@ -338,11 +360,20 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         }),
       );
       map.once('rendercomplete', function () {
-        expect(document.querySelector('.ol-layers').childElementCount).to.be(2);
-        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
+        assert.strictEqual(
+          document.querySelector('.ol-layers').childElementCount,
+          2,
+        );
+        assert.strictEqual(
+          document.querySelector('.ol-layer').childElementCount,
+          1,
+        );
         map.removeLayer(map.getLayers().item(1));
         map.renderSync();
-        expect(document.querySelector('.ol-layers').childElementCount).to.be(1);
+        assert.strictEqual(
+          document.querySelector('.ol-layers').childElementCount,
+          1,
+        );
         done();
       });
     });
@@ -350,7 +381,8 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     it('sets the configured background (string) on the container', function (done) {
       layer.setBackground('rgba(255, 0, 0, 0.5)');
       map.once('rendercomplete', function () {
-        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+        assert.strictEqual(
+          layer.getRenderer().container.style.backgroundColor,
           'rgba(255, 0, 0, 0.5)',
         );
         done();
@@ -359,11 +391,12 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('sets the configured background (function) on the container', function (done) {
       layer.setBackground(function (resolution) {
-        expect(resolution).to.be(map.getView().getResolution());
+        assert.strictEqual(resolution, map.getView().getResolution());
         return 'rgba(255, 0, 0, 0.5)';
       });
       map.once('rendercomplete', function () {
-        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+        assert.strictEqual(
+          layer.getRenderer().container.style.backgroundColor,
           'rgba(255, 0, 0, 0.5)',
         );
         done();
@@ -380,21 +413,29 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           undefined,
         ];
 
-        expect(resolution).to.be(map.getView().getResolution());
+        assert.strictEqual(resolution, map.getView().getResolution());
         return backgrounds[count++];
       });
       map.once('rendercomplete', function () {
-        expect(layer.getRenderer().container.style.backgroundColor).to.be('');
+        assert.strictEqual(
+          layer.getRenderer().container.style.backgroundColor,
+          '',
+        );
         map.renderSync();
-        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+        assert.strictEqual(
+          layer.getRenderer().container.style.backgroundColor,
           'rgba(255, 0, 0, 0.5)',
         );
         map.renderSync();
-        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+        assert.strictEqual(
+          layer.getRenderer().container.style.backgroundColor,
           'rgba(0, 0, 255, 0.5)',
         );
         map.renderSync();
-        expect(layer.getRenderer().container.style.backgroundColor).to.be('');
+        assert.strictEqual(
+          layer.getRenderer().container.style.backgroundColor,
+          '',
+        );
         done();
       });
     });
@@ -451,10 +492,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       const replayState = renderer.renderedTiles[0].getReplayState(layer);
       const revision = replayState.renderedTileRevision;
       renderer.renderFrame(frameState, null);
-      expect(replayState.renderedTileRevision).to.be(revision);
+      assert.strictEqual(replayState.renderedTileRevision, revision);
       layer.changed();
       renderer.renderFrame(frameState, null);
-      expect(replayState.renderedTileRevision).to.be(revision + 1);
+      assert.strictEqual(replayState.renderedTileRevision, revision + 1);
     });
 
     it('re-renders when pixelRatio changed', function () {
@@ -505,10 +546,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       };
       renderer.renderFrame(frameState);
       const replayState = renderer.renderedTiles[0].getReplayState(layer);
-      expect(replayState.renderedPixelRatio).to.be(1);
+      assert.strictEqual(replayState.renderedPixelRatio, 1);
       frameState.pixelRatio = 2;
       renderer.renderFrame(frameState, null);
-      expect(replayState.renderedPixelRatio).to.be(2);
+      assert.strictEqual(replayState.renderedPixelRatio, 2);
     });
   });
 
@@ -588,7 +629,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.on('prerender', () => sequence.push('prerender'));
       layer.on('postrender', () => sequence.push('postrender'));
       renderer.renderFrame(frameState);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'prerender',
         'save',
         'drawImage',
@@ -676,7 +717,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.on('prerender', () => sequence.push('prerender'));
       layer.on('postrender', () => sequence.push('postrender'));
       renderer.renderFrame(frameState);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'prerender',
         'save',
         'beginPath',
@@ -777,7 +818,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
 
       renderer.renderFrame(frameState);
-      expect(sequence).to.eql([
+      assert.deepEqual(sequence, [
         'save',
         'drawImage',
         'restore',
@@ -868,9 +909,9 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         spy,
         matches,
       );
-      expect(spy.callCount).to.be(1);
-      expect(spy.getCall(0).args[1]).to.be(layer);
-      expect(matches).to.be.empty();
+      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.getCall(0).args[1], layer);
+      assert.isEmpty(matches);
     });
 
     it('does not give false positives when overzoomed', function (done) {
@@ -905,8 +946,8 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         setTimeout(function () {
           const features = map.getFeaturesAtPixel([96, 96]);
           disposeMap(map);
-          expect(features).to.be.an(Array);
-          expect(features).to.be.empty();
+          assert.instanceOf(features, Array);
+          assert.isEmpty(features);
           done();
         }, 200);
       });
@@ -944,7 +985,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         setTimeout(() => {
           disposeMap(map);
         }, 0);
-        expect(() => {
+        assert.doesNotThrow(() => {
           layer
             .getRenderer()
             .forEachFeatureAtCoordinate(
@@ -954,7 +995,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
               VOID,
               [],
             );
-        }).to.not.throwException();
+        });
         done();
       });
     });
@@ -999,7 +1040,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           disposeMap(map);
         }, 0);
         const features = map.getFeaturesAtPixel([11, 75]);
-        expect(features).to.have.length(1);
+        assert.lengthOf(features, 1);
         done();
       });
     });
@@ -1049,7 +1090,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('works with a mix of decluttering enabled and disabled', () => {
       map.getLayers().item(1).declutter_ = false;
-      expect(() => map.renderSync()).to.not.throwException();
+      assert.doesNotThrow(() => map.renderSync());
     });
   });
 });

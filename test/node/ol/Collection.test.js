@@ -1,8 +1,8 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../src/ol/Collection.js';
 import CollectionEventType from '../../../src/ol/CollectionEventType.js';
 import {listen} from '../../../src/ol/events.js';
-import expect from '../expect.js';
 
 describe('ol/Collection.js', function () {
   /** @type {Collection} */
@@ -14,9 +14,9 @@ describe('ol/Collection.js', function () {
 
   describe('create an empty collection', function () {
     it('creates an empty collection', function () {
-      expect(collection.getLength()).to.eql(0);
-      expect(collection.getArray()).to.be.empty();
-      expect(collection.item(0)).to.be(undefined);
+      assert.deepEqual(collection.getLength(), 0);
+      assert.isEmpty(collection.getArray());
+      assert.strictEqual(collection.item(0), undefined);
     });
   });
 
@@ -24,18 +24,18 @@ describe('ol/Collection.js', function () {
     it('creates the expected collection', function () {
       const array = [0, 1, 2];
       const collection = new Collection(array);
-      expect(collection.item(0)).to.eql(0);
-      expect(collection.item(1)).to.eql(1);
-      expect(collection.item(2)).to.eql(2);
+      assert.deepEqual(collection.item(0), 0);
+      assert.deepEqual(collection.item(1), 1);
+      assert.deepEqual(collection.item(2), 2);
     });
   });
 
   describe('push to a collection', function () {
     it('adds elements to the collection', function () {
       const length = collection.push(1);
-      expect(collection.getLength()).to.eql(length);
-      expect(collection.getArray()).to.eql([1]);
-      expect(collection.item(0)).to.eql(1);
+      assert.deepEqual(collection.getLength(), length);
+      assert.deepEqual(collection.getArray(), [1]);
+      assert.deepEqual(collection.item(0), 1);
     });
     it('returns the correct new length of the collection', function () {
       let length;
@@ -45,9 +45,9 @@ describe('ol/Collection.js', function () {
         }
       });
       length = collection.push('keep_me');
-      expect(collection.getLength()).to.eql(length);
+      assert.deepEqual(collection.getLength(), length);
       length = collection.push('remove_me');
-      expect(collection.getLength()).to.eql(length);
+      assert.deepEqual(collection.getLength(), length);
     });
   });
 
@@ -55,9 +55,9 @@ describe('ol/Collection.js', function () {
     it('removes elements from the collection', function () {
       collection.push(1);
       collection.pop();
-      expect(collection.getLength()).to.eql(0);
-      expect(collection.getArray()).to.be.empty();
-      expect(collection.item(0)).to.be(undefined);
+      assert.deepEqual(collection.getLength(), 0);
+      assert.isEmpty(collection.getArray());
+      assert.strictEqual(collection.item(0), undefined);
     });
   });
 
@@ -65,9 +65,9 @@ describe('ol/Collection.js', function () {
     it('inserts elements at the correct location', function () {
       collection = new Collection([0, 2]);
       collection.insertAt(1, 1);
-      expect(collection.item(0)).to.eql(0);
-      expect(collection.item(1)).to.eql(1);
-      expect(collection.item(2)).to.eql(2);
+      assert.deepEqual(collection.item(0), 0);
+      assert.deepEqual(collection.item(1), 1);
+      assert.deepEqual(collection.item(2), 2);
     });
   });
 
@@ -75,13 +75,13 @@ describe('ol/Collection.js', function () {
     it('sets at the correct location', function () {
       collection.setAt(0, 1);
       collection.setAt(1, 2);
-      expect(collection.getLength()).to.be(2);
-      expect(collection.item(0)).to.be(1);
-      expect(collection.item(1)).to.be(2);
+      assert.strictEqual(collection.getLength(), 2);
+      assert.strictEqual(collection.item(0), 1);
+      assert.strictEqual(collection.item(1), 2);
 
       collection.setAt(0, 3);
-      expect(collection.getLength()).to.be(2);
-      expect(collection.item(0)).to.be(3);
+      assert.strictEqual(collection.getLength(), 2);
+      assert.strictEqual(collection.item(0), 3);
     });
   });
 
@@ -89,15 +89,15 @@ describe('ol/Collection.js', function () {
     it('removes elements at the correction', function () {
       const collection = new Collection([0, 1, 2]);
       collection.removeAt(1);
-      expect(collection.item(0)).to.eql(0);
-      expect(collection.item(1)).to.eql(2);
+      assert.deepEqual(collection.item(0), 0);
+      assert.deepEqual(collection.item(1), 2);
     });
     it('does not fire event for invalid index', function () {
       const collection = new Collection([0, 1, 2]);
       collection.on('remove', function () {
         throw new Error('Should not fire event for invalid index');
       });
-      expect(collection.removeAt(3)).to.be(undefined);
+      assert.strictEqual(collection.removeAt(3), undefined);
     });
   });
 
@@ -109,7 +109,7 @@ describe('ol/Collection.js', function () {
     describe('on an empty collection', function () {
       it('does not call the callback', function () {
         collection.forEach(cb);
-        expect(cb.called).to.be(false);
+        assert.strictEqual(cb.called, false);
       });
     });
     describe('on a non-empty collection', function () {
@@ -117,7 +117,7 @@ describe('ol/Collection.js', function () {
         collection.push(1);
         collection.push(2);
         collection.forEach(cb);
-        expect(cb.callCount).to.eql(2);
+        assert.deepEqual(cb.callCount, 2);
       });
     });
   });
@@ -125,29 +125,29 @@ describe('ol/Collection.js', function () {
   describe('remove', function () {
     it('removes the first matching element', function () {
       const collection = new Collection([0, 1, 2]);
-      expect(collection.remove(1)).to.eql(1);
-      expect(collection.getArray()).to.eql([0, 2]);
-      expect(collection.getLength()).to.eql(2);
+      assert.deepEqual(collection.remove(1), 1);
+      assert.deepEqual(collection.getArray(), [0, 2]);
+      assert.deepEqual(collection.getLength(), 2);
     });
     it('fires a remove event', function () {
       const collection = new Collection([0, 1, 2]);
       const cb = sinonSpy();
       listen(collection, CollectionEventType.REMOVE, cb);
-      expect(collection.remove(1)).to.eql(1);
-      expect(cb.called).to.be(true);
-      expect(cb.lastCall.args[0].element).to.eql(1);
+      assert.deepEqual(collection.remove(1), 1);
+      assert.strictEqual(cb.called, true);
+      assert.deepEqual(cb.lastCall.args[0].element, 1);
     });
     it('does not remove more than one matching element', function () {
       const collection = new Collection([0, 1, 1, 2]);
-      expect(collection.remove(1)).to.eql(1);
-      expect(collection.getArray()).to.eql([0, 1, 2]);
-      expect(collection.getLength()).to.eql(3);
+      assert.deepEqual(collection.remove(1), 1);
+      assert.deepEqual(collection.getArray(), [0, 1, 2]);
+      assert.deepEqual(collection.getLength(), 3);
     });
     it('returns undefined if the element is not found', function () {
       const collection = new Collection([0, 1, 2]);
-      expect(collection.remove(3)).to.be(undefined);
-      expect(collection.getArray()).to.eql([0, 1, 2]);
-      expect(collection.getLength()).to.eql(3);
+      assert.strictEqual(collection.remove(3), undefined);
+      assert.deepEqual(collection.getArray(), [0, 1, 2]);
+      assert.deepEqual(collection.getLength(), 3);
     });
   });
 
@@ -164,10 +164,10 @@ describe('ol/Collection.js', function () {
         removedIndex = e.index;
       });
       collection.setAt(1, 1);
-      expect(added).to.eql(1);
-      expect(addedIndex).to.eql(1);
-      expect(removed).to.eql('b');
-      expect(removedIndex).to.eql(1);
+      assert.deepEqual(added, 1);
+      assert.deepEqual(addedIndex, 1);
+      assert.deepEqual(removed, 'b');
+      assert.deepEqual(removedIndex, 1);
     });
   });
 
@@ -180,8 +180,8 @@ describe('ol/Collection.js', function () {
         removedIndex = e.index;
       });
       collection.pop();
-      expect(removed).to.eql('a');
-      expect(removedIndex).to.eql(0);
+      assert.deepEqual(removed, 'a');
+      assert.deepEqual(removedIndex, 0);
     });
   });
 
@@ -194,8 +194,8 @@ describe('ol/Collection.js', function () {
         addedIndex = e.index;
       });
       collection.insertAt(1, 1);
-      expect(added).to.eql(1);
-      expect(addedIndex).to.eql(1);
+      assert.deepEqual(added, 1);
+      assert.deepEqual(addedIndex, 1);
     });
   });
 
@@ -218,14 +218,14 @@ describe('ol/Collection.js', function () {
       collection.setAt(0, 0);
       collection.setAt(1, 1);
       collection.setAt(0, 2);
-      expect(collection.getLength()).to.be(2);
-      expect(collection.item(0)).to.be(2);
-      expect(collection.item(1)).to.be(1);
-      expect(added.length).to.be(3);
-      expect(added[0]).to.be(0);
-      expect(added[1]).to.be(1);
-      expect(added[2]).to.be(2);
-      expect(addedIndexes).to.eql([0, 1, 0]);
+      assert.strictEqual(collection.getLength(), 2);
+      assert.strictEqual(collection.item(0), 2);
+      assert.strictEqual(collection.item(1), 1);
+      assert.strictEqual(added.length, 3);
+      assert.strictEqual(added[0], 0);
+      assert.strictEqual(added[1], 1);
+      assert.strictEqual(added[2], 2);
+      assert.deepEqual(addedIndexes, [0, 1, 0]);
     });
   });
 
@@ -240,21 +240,21 @@ describe('ol/Collection.js', function () {
     describe('insertAt', function () {
       it('triggers change:length event', function () {
         collection.insertAt(2, 3);
-        expect(cb.called).to.be(true);
+        assert.strictEqual(cb.called, true);
       });
     });
 
     describe('removeAt', function () {
       it('triggers change:length event', function () {
         collection.removeAt(0);
-        expect(cb.called).to.be(true);
+        assert.strictEqual(cb.called, true);
       });
     });
 
     describe('setAt', function () {
       it('does not trigger change:length event', function () {
         collection.setAt(1, 1);
-        expect(cb.called).to.be(false);
+        assert.strictEqual(cb.called, false);
       });
     });
   });
@@ -268,8 +268,8 @@ describe('ol/Collection.js', function () {
         addedIndex = e.index;
       });
       const length = collection.push(1);
-      expect(elem).to.eql(length);
-      expect(addedIndex).to.eql(0);
+      assert.deepEqual(elem, length);
+      assert.deepEqual(addedIndex, 0);
     });
   });
 
@@ -285,15 +285,15 @@ describe('ol/Collection.js', function () {
         listen(collection, CollectionEventType.ADD, cb1);
         listen(collection, CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
-        expect(cb2.lastCall.args[0].element).to.eql(1);
-        expect(cb1.lastCall.args[0].element).to.eql(2);
+        assert.deepEqual(cb2.lastCall.args[0].element, 1);
+        assert.deepEqual(cb1.lastCall.args[0].element, 2);
       });
     });
     describe('pop', function () {
       it('triggers remove', function () {
         listen(collection, CollectionEventType.REMOVE, cb1);
         collection.pop();
-        expect(cb1.lastCall.args[0].element).to.eql(1);
+        assert.deepEqual(cb1.lastCall.args[0].element, 1);
       });
     });
   });
@@ -301,10 +301,10 @@ describe('ol/Collection.js', function () {
   describe('extending a collection', function () {
     it('adds elements to end of the collection', function () {
       collection.extend([1, 2]);
-      expect(collection.getLength()).to.eql(2);
-      expect(collection.getArray()).to.eql([1, 2]);
-      expect(collection.item(0)).to.eql(1);
-      expect(collection.item(1)).to.eql(2);
+      assert.deepEqual(collection.getLength(), 2);
+      assert.deepEqual(collection.getArray(), [1, 2]);
+      assert.deepEqual(collection.item(0), 1);
+      assert.deepEqual(collection.item(1), 2);
     });
     it('fires events', function () {
       const collection = new Collection();
@@ -315,8 +315,8 @@ describe('ol/Collection.js', function () {
         addedIndexes.push(e.index);
       });
       collection.extend([1, 2]);
-      expect(elems).to.eql([1, 2]);
-      expect(addedIndexes).to.eql([0, 1]);
+      assert.deepEqual(elems, [1, 2]);
+      assert.deepEqual(addedIndexes, [0, 1]);
     });
   });
 
@@ -330,7 +330,7 @@ describe('ol/Collection.js', function () {
       const call = function () {
         new Collection([item, item], {unique: true});
       };
-      expect(call).to.throwException();
+      assert.throws(call);
     });
 
     it('allows unique items to be added via push', function () {
@@ -346,7 +346,7 @@ describe('ol/Collection.js', function () {
       const call = function () {
         unique.push(item);
       };
-      expect(call).to.throwException();
+      assert.throws(call);
     });
 
     it('allows unique items to be added via insertAt', function () {
@@ -362,7 +362,7 @@ describe('ol/Collection.js', function () {
       const call = function () {
         unique.insertAt(0, item);
       };
-      expect(call).to.throwException();
+      assert.throws(call);
     });
 
     it('allows unique items to be added via setAt', function () {
@@ -385,14 +385,14 @@ describe('ol/Collection.js', function () {
       const call = function () {
         unique.setAt(1, item);
       };
-      expect(call).to.throwException();
+      assert.throws(call);
 
       const item2 = {};
       unique.setAt(1, item2);
       const call2 = function () {
         unique.setAt(0, item2);
       };
-      expect(call2).to.throwException();
+      assert.throws(call2);
     });
   });
 });

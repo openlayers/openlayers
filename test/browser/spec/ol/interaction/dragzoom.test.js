@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -54,15 +55,21 @@ describe('ol.interaction.DragZoom', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new DragZoom();
-      expect(instance).to.be.an(DragZoom);
+      assert.instanceOf(instance, DragZoom);
     });
     it('sets "ol-dragzoom" as box className', function () {
       const instance = new DragZoom();
-      expect(instance.box_.element_.className).to.be('ol-box ol-dragzoom');
+      assert.strictEqual(
+        instance.box_.element_.className,
+        'ol-box ol-dragzoom',
+      );
     });
     it('sets a custom box className', function () {
       const instance = new DragZoom({className: 'test-dragzoom'});
-      expect(instance.box_.element_.className).to.be('ol-box test-dragzoom');
+      assert.strictEqual(
+        instance.box_.element_.className,
+        'ol-box test-dragzoom',
+      );
     });
   });
 
@@ -82,8 +89,8 @@ describe('ol.interaction.DragZoom', function () {
 
       interaction.onBoxEnd();
 
-      expect(view.fitInternal.calledOnce).to.be(true);
-      expect(view.fitInternal.args[0][1].duration).to.be(1);
+      assert.strictEqual(view.fitInternal.calledOnce, true);
+      assert.strictEqual(view.fitInternal.args[0][1].duration, 1);
     });
     it('centers the view on the box geometry', function () {
       const interaction = new DragZoom({
@@ -99,7 +106,7 @@ describe('ol.interaction.DragZoom', function () {
       interaction.onBoxEnd();
       const view = map.getView();
       const center = view.getCenterInternal();
-      expect(center).to.eql(getCenter(extent));
+      assert.deepEqual(center, getCenter(extent));
     });
 
     it('centers the rotated view on the box geometry', function () {
@@ -127,11 +134,11 @@ describe('ol.interaction.DragZoom', function () {
       const extentBefore = view.calculateExtentInternal();
       interaction.onBoxEnd();
       const newExtent = view.calculateExtentInternal();
-      expect(newExtent[0]).to.roughlyEqual(extentBefore[0], 1e-9);
-      expect(newExtent[1]).to.roughlyEqual(extentBefore[1], 1e-9);
-      expect(newExtent[2]).to.roughlyEqual(extentBefore[2], 1e-9);
-      expect(newExtent[3]).to.roughlyEqual(extentBefore[3], 1e-9);
-      expect(view.getResolution()).to.roughlyEqual(1, 1e-9);
+      assert.approximately(newExtent[0], extentBefore[0], 1e-9);
+      assert.approximately(newExtent[1], extentBefore[1], 1e-9);
+      assert.approximately(newExtent[2], extentBefore[2], 1e-9);
+      assert.approximately(newExtent[3], extentBefore[3], 1e-9);
+      assert.approximately(view.getResolution(), 1, 1e-9);
     });
     it('centers the padded view on the box geometry', function () {
       map.getView().padding = [0, 180, 0, 0];
@@ -148,8 +155,8 @@ describe('ol.interaction.DragZoom', function () {
 
       interaction.onBoxEnd();
       const view = map.getView();
-      expect(view.getResolution()).to.be(1);
-      expect(view.calculateExtentInternal()).to.eql(extent);
+      assert.strictEqual(view.getResolution(), 1);
+      assert.deepEqual(view.calculateExtentInternal(), extent);
     });
     it('sets new resolution while zooming out', function () {
       const interaction = new DragZoom({
@@ -167,7 +174,7 @@ describe('ol.interaction.DragZoom', function () {
       interaction.onBoxEnd();
       const view = map.getView();
       const resolution = view.getResolution();
-      expect(resolution).to.eql(view.getConstrainedResolution(0.5));
+      assert.deepEqual(resolution, view.getConstrainedResolution(0.5));
     });
     it('sets new resolution while zooming out with view padding and rotation', function () {
       const view = map.getView();
@@ -198,11 +205,11 @@ describe('ol.interaction.DragZoom', function () {
       scaleFromCenter(expected, 2);
       interaction.onBoxEnd();
       const newExtent = view.calculateExtentInternal();
-      expect(view.getResolution()).to.roughlyEqual(1, 1e-9);
-      expect(newExtent[0]).to.roughlyEqual(expected[0], 1e-9);
-      expect(newExtent[1]).to.roughlyEqual(expected[1], 1e-9);
-      expect(newExtent[2]).to.roughlyEqual(expected[2], 1e-9);
-      expect(newExtent[3]).to.roughlyEqual(expected[3], 1e-9);
+      assert.approximately(view.getResolution(), 1, 1e-9);
+      assert.approximately(newExtent[0], expected[0], 1e-9);
+      assert.approximately(newExtent[1], expected[1], 1e-9);
+      assert.approximately(newExtent[2], expected[2], 1e-9);
+      assert.approximately(newExtent[3], expected[3], 1e-9);
     });
   });
 });

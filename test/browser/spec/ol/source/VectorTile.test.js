@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
@@ -24,29 +25,29 @@ describe('ol/source/VectorTile', function () {
 
   describe('constructor', function () {
     it('sets the format on the instance', function () {
-      expect(source.format_).to.equal(format);
+      assert.equal(source.format_, format);
     });
 
     it('sets the default zDirection on the instance', function () {
-      expect(source.zDirection).to.be(1);
+      assert.strictEqual(source.zDirection, 1);
     });
 
     it('uses ol.VectorTile as default tileClass', function () {
-      expect(source.tileClass).to.equal(VectorTile);
+      assert.equal(source.tileClass, VectorTile);
     });
 
     it('creates a 512 XYZ tilegrid by default', function () {
       const tileGrid = createXYZ({tileSize: 512});
-      expect(source.tileGrid.tileSize_).to.equal(tileGrid.tileSize_);
-      expect(source.tileGrid.extent_).to.equal(tileGrid.extent_);
+      assert.equal(source.tileGrid.tileSize_, tileGrid.tileSize_);
+      assert.equal(source.tileGrid.extent_, tileGrid.extent_);
     });
   });
 
   describe('#getTile()', function () {
     it('creates a tile with the correct tile class', function () {
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(VectorRenderTile);
-      expect(tile.getTileCoord()).to.eql([0, 0, 0]);
+      assert.instanceOf(tile, VectorRenderTile);
+      assert.deepEqual(tile.getTileCoord(), [0, 0, 0]);
     });
 
     it('loads source tiles', function (done) {
@@ -64,7 +65,7 @@ describe('ol/source/VectorTile', function () {
             source.getProjection(),
             tile,
           )[0];
-          expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
+          assert.isAbove(sourceTile.getFeatures().length, 0);
           unlistenByKey(key);
           done();
         }
@@ -94,7 +95,7 @@ describe('ol/source/VectorTile', function () {
           originalSetState.call(this, state);
           states.push([state, tile.getState()]);
           if (state === TileState.ERROR) {
-            expect(states).to.eql([
+            assert.deepEqual(states, [
               // [requested state, actual state]
               [TileState.LOADING, TileState.LOADING],
               [TileState.EMPTY, TileState.EMPTY],
@@ -116,13 +117,13 @@ describe('ol/source/VectorTile', function () {
       const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
       tile.load();
-      expect(Object.keys(source.sourceTiles_).length).to.be(1);
-      expect(source.tileKeysBySourceTileUrl_).to.eql({
+      assert.strictEqual(Object.keys(source.sourceTiles_).length, 1);
+      assert.deepEqual(source.tileKeysBySourceTileUrl_, {
         'spec/ol/data/point.json': ['spec/ol/data/point.json/0,0,0'],
       });
       tile.dispose();
-      expect(Object.keys(source.sourceTiles_).length).to.be(0);
-      expect(source.tileKeysBySourceTileUrl_).to.eql({});
+      assert.strictEqual(Object.keys(source.sourceTiles_).length, 0);
+      assert.deepEqual(source.tileKeysBySourceTileUrl_, {});
     });
 
     it('unreferences source tiles with different source and render tile grids', () => {
@@ -145,8 +146,8 @@ describe('ol/source/VectorTile', function () {
         source.getTile(14, 8939, 5680, 1, source.getProjection()),
       ];
       tiles.forEach((tile) => tile.load());
-      expect(Object.keys(source.sourceTiles_).length).to.be(3);
-      expect(source.tileKeysBySourceTileUrl_).to.eql({
+      assert.strictEqual(Object.keys(source.sourceTiles_).length, 3);
+      assert.deepEqual(source.tileKeysBySourceTileUrl_, {
         'spec/ol/data/point.json?13-5988-6377': [
           'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
         ],
@@ -159,8 +160,8 @@ describe('ol/source/VectorTile', function () {
         ],
       });
       tiles[1].dispose();
-      expect(Object.keys(source.sourceTiles_).length).to.be(2);
-      expect(source.tileKeysBySourceTileUrl_).to.eql({
+      assert.strictEqual(Object.keys(source.sourceTiles_).length, 2);
+      assert.deepEqual(source.tileKeysBySourceTileUrl_, {
         'spec/ol/data/point.json?13-5988-6377': [
           'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
         ],
@@ -176,7 +177,7 @@ describe('ol/source/VectorTile', function () {
         url: '',
       });
       const tile = source.getTile(0, 0, 0, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.EMPTY);
+      assert.strictEqual(tile.getState(), TileState.EMPTY);
     });
 
     it('creates empty tiles outside the source extent', function () {
@@ -185,7 +186,7 @@ describe('ol/source/VectorTile', function () {
         extent: [fullExtent[0], fullExtent[1], 0, 0],
       });
       const tile = source.getTile(1, 1, 1, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.EMPTY);
+      assert.strictEqual(tile.getState(), TileState.EMPTY);
     });
 
     it('creates empty tiles outside the world extent when wrapX === false', function () {
@@ -193,7 +194,7 @@ describe('ol/source/VectorTile', function () {
         wrapX: false,
       });
       const tile = source.getTile(0, -1, 0, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.EMPTY);
+      assert.strictEqual(tile.getState(), TileState.EMPTY);
     });
 
     it('creates empty tiles when the tileUrlFunction returns undefined', function () {
@@ -203,7 +204,7 @@ describe('ol/source/VectorTile', function () {
         },
       });
       const tile = source.getTile(1, 1, 1, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.EMPTY);
+      assert.strictEqual(tile.getState(), TileState.EMPTY);
     });
 
     it('creates non-empty tiles outside the world extent when wrapX === true', function () {
@@ -211,7 +212,7 @@ describe('ol/source/VectorTile', function () {
         url: '{z}/{x}/{y}.pbf',
       });
       const tile = source.getTile(0, -1, 0, 1, source.getProjection());
-      expect(tile.getState()).to.be(TileState.IDLE);
+      assert.strictEqual(tile.getState(), TileState.IDLE);
     });
 
     it('creates non-empty tiles for overzoomed resolutions', function () {
@@ -230,7 +231,7 @@ describe('ol/source/VectorTile', function () {
         source.getProjection(),
       );
       tile.load();
-      expect(tile.getState()).to.be(TileState.LOADING);
+      assert.strictEqual(tile.getState(), TileState.LOADING);
     });
 
     it('uses the expected source z when reprojecting', function () {
@@ -260,10 +261,10 @@ describe('ol/source/VectorTile', function () {
 
       const tile = source.getTile(z, tileCoord[1], tileCoord[2], 1, projection);
 
-      expect(tile.getState()).to.be(TileState.IDLE);
-      expect(sourceTileCoords.length).to.be.greaterThan(0);
+      assert.strictEqual(tile.getState(), TileState.IDLE);
+      assert.isAbove(sourceTileCoords.length, 0);
       sourceTileCoords.forEach(function (sourceTileCoord) {
-        expect(sourceTileCoord[0]).to.be(expectedSourceZ);
+        assert.strictEqual(sourceTileCoord[0], expectedSourceZ);
       });
     });
 
@@ -272,8 +273,8 @@ describe('ol/source/VectorTile', function () {
       const tile1 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       source.setKey('key2');
       const tile2 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile1.key).to.be('key1');
-      expect(tile2.key).to.be('key2');
+      assert.strictEqual(tile1.key, 'key1');
+      assert.strictEqual(tile2.key, 'key2');
     });
   });
 
@@ -282,7 +283,7 @@ describe('ol/source/VectorTile', function () {
       const tileGrid = source.getTileGridForProjection(
         getProjection('EPSG:3857'),
       );
-      expect(tileGrid.getTileSize(0)).to.be(512);
+      assert.strictEqual(tileGrid.getTileSize(0), 512);
     });
   });
 
@@ -300,9 +301,9 @@ describe('ol/source/VectorTile', function () {
         started = true;
       });
       source.on('tileloadend', function (e) {
-        expect(started).to.be(true);
-        expect(e.tile).to.be.a(VectorTile);
-        expect(e.tile.getFeatures().length).to.be(1327);
+        assert.strictEqual(started, true);
+        assert.instanceOf(e.tile, VectorTile);
+        assert.strictEqual(e.tile.getFeatures().length, 1327);
         done();
       });
       tile.load();
@@ -322,7 +323,7 @@ describe('ol/source/VectorTile', function () {
         1,
         getProjection('EPSG:3857'),
       );
-      expect(tile2.wrappedTileCoord).to.eql([14, 8938, 5680]);
+      assert.deepEqual(tile2.wrappedTileCoord, [14, 8938, 5680]);
       let loadstart = 0;
       source.on('tileloadstart', function () {
         ++loadstart;
@@ -336,12 +337,12 @@ describe('ol/source/VectorTile', function () {
         tile.addEventListener('change', (e) => {
           if (e.target.getState() === TileState.LOADED) {
             const sourceTiles = e.target.getSourceTiles();
-            expect(sourceTiles.length).to.be(1);
-            expect(sourceTiles[0].getState()).to.be(TileState.LOADED);
+            assert.strictEqual(sourceTiles.length, 1);
+            assert.strictEqual(sourceTiles[0].getState(), TileState.LOADED);
             ++loaded;
             if (loaded === 2) {
-              expect(loadstart).to.be(1);
-              expect(loadend).to.be(1);
+              assert.strictEqual(loadstart, 1);
+              assert.strictEqual(loadend, 1);
               done();
             }
           }
@@ -404,7 +405,7 @@ describe('ol/source/VectorTile', function () {
     it('loads only required tiles', function (done) {
       map.renderSync();
       setTimeout(function () {
-        expect(loaded).to.eql(['5/13/-28']);
+        assert.deepEqual(loaded, ['5/13/-28']);
         done();
       }, 0);
     });
@@ -452,7 +453,7 @@ describe('ol/source/VectorTile', function () {
       map.on('rendercomplete', () => {
         ++count;
 
-        expect(tileQueue.getTilesLoading()).to.be(0);
+        assert.strictEqual(tileQueue.getTilesLoading(), 0);
         if (count === max) {
           done();
           return;
@@ -465,10 +466,10 @@ describe('ol/source/VectorTile', function () {
 
     it('clears source tiles on refresh()', async () => {
       await new Promise((resolve) => map.once('rendercomplete', resolve));
-      expect(Object.keys(source.sourceTiles_).length).to.be.greaterThan(0);
+      assert.isAbove(Object.keys(source.sourceTiles_).length, 0);
       source.refresh();
       map.renderSync();
-      expect(Object.keys(source.sourceTiles_).length).to.be(0);
+      assert.strictEqual(Object.keys(source.sourceTiles_).length, 0);
     });
 
     it('uses the tileUrlFunction from tile creation time', function () {
@@ -480,7 +481,7 @@ describe('ol/source/VectorTile', function () {
       });
       const projection = testSource.getProjection();
       const tile = testSource.getTile(0, 0, 0, 1, projection);
-      expect(tile.getState()).to.be(TileState.IDLE);
+      assert.strictEqual(tile.getState(), TileState.IDLE);
 
       // Change URL, which changes the source key
       testSource.setUrl('{z}/{x}/{y}/B');
@@ -488,8 +489,8 @@ describe('ol/source/VectorTile', function () {
       // When the tile loads, it should use the original URL function (A),
       // not the current one (B).
       tile.load();
-      expect(tile.sourceTiles.length).to.be(1);
-      expect(tile.sourceTiles[0].getTileUrl()).to.contain('/A');
+      assert.strictEqual(tile.sourceTiles.length, 1);
+      assert.include(tile.sourceTiles[0].getTileUrl(), '/A');
     });
   });
 });

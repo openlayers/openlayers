@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -94,13 +95,13 @@ describe('ol/layer/WebGLTile', function () {
 
       map.once('rendercomplete', () => {
         const data = layer.getData([50, 25]);
-        expect(data).to.be.a(Uint8Array);
-        expect(data.length).to.be(5);
-        expect(data[0]).to.be(5);
-        expect(data[1]).to.be(4);
-        expect(data[2]).to.be(3);
-        expect(data[3]).to.be(2);
-        expect(data[4]).to.be(1);
+        assert.instanceOf(data, Uint8Array);
+        assert.strictEqual(data.length, 5);
+        assert.strictEqual(data[0], 5);
+        assert.strictEqual(data[1], 4);
+        assert.strictEqual(data[2], 3);
+        assert.strictEqual(data[3], 2);
+        assert.strictEqual(data[4], 1);
         done();
       });
     });
@@ -130,33 +131,33 @@ describe('ol/layer/WebGLTile', function () {
       map.once('rendercomplete', () => {
         let data;
         data = layer.getData([25, 25]);
-        expect(data).to.be.a(Uint8Array);
-        expect(data.length).to.be(4);
-        expect(data[0]).to.be(0);
-        expect(data[1]).to.be(0);
-        expect(data[2]).to.be(1);
-        expect(data[3]).to.be(1);
+        assert.instanceOf(data, Uint8Array);
+        assert.strictEqual(data.length, 4);
+        assert.strictEqual(data[0], 0);
+        assert.strictEqual(data[1], 0);
+        assert.strictEqual(data[2], 1);
+        assert.strictEqual(data[3], 1);
         data = layer.getData([75, 25]);
-        expect(data).to.be.a(Uint8Array);
-        expect(data.length).to.be(4);
-        expect(data[0]).to.be(1);
-        expect(data[1]).to.be(0);
-        expect(data[2]).to.be(0);
-        expect(data[3]).to.be(1);
+        assert.instanceOf(data, Uint8Array);
+        assert.strictEqual(data.length, 4);
+        assert.strictEqual(data[0], 1);
+        assert.strictEqual(data[1], 0);
+        assert.strictEqual(data[2], 0);
+        assert.strictEqual(data[3], 1);
         data = layer.getData([25, 75]);
-        expect(data).to.be.a(Uint8Array);
-        expect(data.length).to.be(4);
-        expect(data[0]).to.be(0);
-        expect(data[1]).to.be(1);
-        expect(data[2]).to.be(1);
-        expect(data[3]).to.be(0);
+        assert.instanceOf(data, Uint8Array);
+        assert.strictEqual(data.length, 4);
+        assert.strictEqual(data[0], 0);
+        assert.strictEqual(data[1], 1);
+        assert.strictEqual(data[2], 1);
+        assert.strictEqual(data[3], 0);
         data = layer.getData([75, 75]);
-        expect(data).to.be.a(Uint8Array);
-        expect(data.length).to.be(4);
-        expect(data[0]).to.be(1);
-        expect(data[1]).to.be(1);
-        expect(data[2]).to.be(0);
-        expect(data[3]).to.be(0);
+        assert.instanceOf(data, Uint8Array);
+        assert.strictEqual(data.length, 4);
+        assert.strictEqual(data[0], 1);
+        assert.strictEqual(data[1], 1);
+        assert.strictEqual(data[2], 0);
+        assert.strictEqual(data[3], 0);
         done();
       });
     });
@@ -176,13 +177,13 @@ describe('ol/layer/WebGLTile', function () {
 
       map.once('rendercomplete', () => {
         const data = layer.getData([50, 25]);
-        expect(data).to.be.a(Float32Array);
-        expect(data.length).to.be(5);
-        expect(data[0]).to.roughlyEqual(1.11, 1e-5);
-        expect(data[1]).to.roughlyEqual(2.22, 1e-5);
-        expect(data[2]).to.roughlyEqual(3.33, 1e-5);
-        expect(data[3]).to.roughlyEqual(4.44, 1e-5);
-        expect(data[4]).to.roughlyEqual(5.55, 1e-5);
+        assert.instanceOf(data, Float32Array);
+        assert.strictEqual(data.length, 5);
+        assert.approximately(data[0], 1.11, 1e-5);
+        assert.approximately(data[1], 2.22, 1e-5);
+        assert.approximately(data[2], 3.33, 1e-5);
+        assert.approximately(data[3], 4.44, 1e-5);
+        assert.approximately(data[4], 5.55, 1e-5);
         done();
       });
     });
@@ -225,36 +226,36 @@ describe('ol/layer/WebGLTile', function () {
 
     it('gets pixel data', () => {
       data = layer.getData([76, 114]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(77);
-      expect(data[1]).to.be(255);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 77);
+      assert.strictEqual(data[1], 255);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
 
       data = layer.getData([76, 118]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(255);
-      expect(data[1]).to.be(77);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 255);
+      assert.strictEqual(data[1], 77);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
 
       data = layer.getData([80, 114]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(255);
-      expect(data[1]).to.be(77);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 255);
+      assert.strictEqual(data[1], 77);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
 
       data = layer.getData([80, 118]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(77);
-      expect(data[1]).to.be(255);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 77);
+      assert.strictEqual(data[1], 255);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
     });
   });
 
@@ -263,7 +264,7 @@ describe('ol/layer/WebGLTile', function () {
       const renderer = layer.getRenderer();
       const spy = sinonSpy(renderer, 'dispose');
       layer.dispose();
-      expect(spy.called).to.be(true);
+      assert.strictEqual(spy.called, true);
     });
   });
 
@@ -285,67 +286,69 @@ describe('ol/layer/WebGLTile', function () {
     };
     renderer.prepareFrame(frameState);
     compileShaderSpy.restore();
-    expect(compileShaderSpy.callCount).to.be(2);
-    expect(compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' ')).to.be(
+    assert.strictEqual(compileShaderSpy.callCount, 2);
+    assert.strictEqual(
+      compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' '),
       `
-      #ifdef GL_FRAGMENT_PRECISION_HIGH
-      precision highp float;
-      #else
-      precision mediump float;
-      #endif
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    #else
+    precision mediump float;
+    #endif
 
-      varying vec2 v_textureCoord;
-      varying vec2 v_localMapCoord;
+    varying vec2 v_textureCoord;
+    varying vec2 v_localMapCoord;
 
-      uniform vec4 u_renderExtent;
-      uniform float u_transitionAlpha;
-      uniform float u_texturePixelWidth;
-      uniform float u_texturePixelHeight;
-      uniform float u_resolution;
-      uniform float u_zoom;
-      uniform float u_var_r;
-      uniform float u_var_g;
-      uniform float u_var_b;
-      uniform sampler2D u_tileTextures[1];
+    uniform vec4 u_renderExtent;
+    uniform float u_transitionAlpha;
+    uniform float u_texturePixelWidth;
+    uniform float u_texturePixelHeight;
+    uniform float u_resolution;
+    uniform float u_zoom;
+    uniform float u_var_r;
+    uniform float u_var_g;
+    uniform float u_var_b;
+    uniform sampler2D u_tileTextures[1];
 
-      void main() {
-        if (
-          v_localMapCoord[0] < u_renderExtent[0] ||
-          v_localMapCoord[1] < u_renderExtent[1] ||
-          v_localMapCoord[0] > u_renderExtent[2] ||
-          v_localMapCoord[1] > u_renderExtent[3]
-        ) {
-          discard;
-        }
-        vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
-        color = vec4(u_var_r / 255.0, u_var_g / 255.0, u_var_b / 255.0, 1.0);
-        gl_FragColor = color;
-        gl_FragColor.rgb *= gl_FragColor.a;
-        gl_FragColor *= u_transitionAlpha;
-      }`.replace(/[ \n]+/g, ' '),
+    void main() {
+      if (
+        v_localMapCoord[0] < u_renderExtent[0] ||
+        v_localMapCoord[1] < u_renderExtent[1] ||
+        v_localMapCoord[0] > u_renderExtent[2] ||
+        v_localMapCoord[1] > u_renderExtent[3]
+      ) {
+        discard;
+      }
+      vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
+      color = vec4(u_var_r / 255.0, u_var_g / 255.0, u_var_b / 255.0, 1.0);
+      gl_FragColor = color;
+      gl_FragColor.rgb *= gl_FragColor.a;
+      gl_FragColor *= u_transitionAlpha;
+    }`.replace(/[ \n]+/g, ' '),
     );
 
-    expect(compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' ')).to.be(
+    assert.strictEqual(
+      compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' '),
       `
-      attribute vec2 a_textureCoord;
-      uniform mat4 u_tileTransform;
-      uniform float u_texturePixelWidth;
-      uniform float u_texturePixelHeight;
-      uniform float u_textureResolution;
-      uniform float u_depth;
+    attribute vec2 a_textureCoord;
+    uniform mat4 u_tileTransform;
+    uniform float u_texturePixelWidth;
+    uniform float u_texturePixelHeight;
+    uniform float u_textureResolution;
+    uniform float u_depth;
 
-      varying vec2 v_textureCoord;
-      varying vec2 v_localMapCoord;
+    varying vec2 v_textureCoord;
+    varying vec2 v_localMapCoord;
 
-      void main() {
-        v_textureCoord = a_textureCoord;
-        v_localMapCoord = vec2(
-          u_texturePixelWidth * u_textureResolution * v_textureCoord[0],
-          -1. * u_texturePixelHeight * u_textureResolution * v_textureCoord[1]
-        );
-        gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
-      }
-      `.replace(/[ \n]+/g, ' '),
+    void main() {
+      v_textureCoord = a_textureCoord;
+      v_localMapCoord = vec2(
+        u_texturePixelWidth * u_textureResolution * v_textureCoord[0],
+        -1. * u_texturePixelHeight * u_textureResolution * v_textureCoord[1]
+      );
+      gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
+    }
+    `.replace(/[ \n]+/g, ' '),
     );
   });
 
@@ -380,57 +383,58 @@ describe('ol/layer/WebGLTile', function () {
     };
     renderer.prepareFrame(frameState);
     compileShaderSpy.restore();
-    expect(compileShaderSpy.callCount).to.be(2);
-    expect(compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' ')).to.be(
+    assert.strictEqual(compileShaderSpy.callCount, 2);
+    assert.strictEqual(
+      compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' '),
       `
-      #ifdef GL_FRAGMENT_PRECISION_HIGH
-      precision highp float;
-      #else
-      precision mediump float;
-      #endif varying vec2 v_textureCoord;
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    #else
+    precision mediump float;
+    #endif varying vec2 v_textureCoord;
 
-      varying vec2 v_localMapCoord;
+    varying vec2 v_localMapCoord;
 
-      uniform vec4 u_renderExtent;
-      uniform float u_transitionAlpha;
-      uniform float u_texturePixelWidth;
-      uniform float u_texturePixelHeight;
-      uniform float u_resolution;
-      uniform float u_zoom;
-      uniform sampler2D u_tileTextures[1];
+    uniform vec4 u_renderExtent;
+    uniform float u_transitionAlpha;
+    uniform float u_texturePixelWidth;
+    uniform float u_texturePixelHeight;
+    uniform float u_resolution;
+    uniform float u_zoom;
+    uniform sampler2D u_tileTextures[1];
 
-      float getBandValue(float band, float xOffset, float yOffset) {
-        float dx = xOffset / u_texturePixelWidth;
-        float dy = yOffset / u_texturePixelHeight;
-        if (band == 1.0) {
-          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[0];
-        }
-        if (band == 2.0) {
-          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[1];
-        }
-        if (band == 3.0) {
-          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[2];
-        }
-        if (band == 4.0) {
-          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[3];
-        }
+    float getBandValue(float band, float xOffset, float yOffset) {
+      float dx = xOffset / u_texturePixelWidth;
+      float dy = yOffset / u_texturePixelHeight;
+      if (band == 1.0) {
+        return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[0];
       }
+      if (band == 2.0) {
+        return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[1];
+      }
+      if (band == 3.0) {
+        return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[2];
+      }
+      if (band == 4.0) {
+        return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[3];
+      }
+    }
 
-      void main() {
-        if (
-          v_localMapCoord[0] < u_renderExtent[0] ||
-          v_localMapCoord[1] < u_renderExtent[1] ||
-          v_localMapCoord[0] > u_renderExtent[2] ||
-          v_localMapCoord[1] > u_renderExtent[3]
-        ) {
-          discard;
-        }
-        vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
-        color = vec4((getBandValue(4.0, 0.0, 0.0) / 3000.0), (getBandValue(1.0, 0.0, 0.0) / 3000.0), (getBandValue(2.0, 0.0, 0.0) / 3000.0), 1.0);
-        gl_FragColor = color;
-        gl_FragColor.rgb *= gl_FragColor.a;
-        gl_FragColor *= u_transitionAlpha;
-      }`.replace(/[ \n]+/g, ' '),
+    void main() {
+      if (
+        v_localMapCoord[0] < u_renderExtent[0] ||
+        v_localMapCoord[1] < u_renderExtent[1] ||
+        v_localMapCoord[0] > u_renderExtent[2] ||
+        v_localMapCoord[1] > u_renderExtent[3]
+      ) {
+        discard;
+      }
+      vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
+      color = vec4((getBandValue(4.0, 0.0, 0.0) / 3000.0), (getBandValue(1.0, 0.0, 0.0) / 3000.0), (getBandValue(2.0, 0.0, 0.0) / 3000.0), 1.0);
+      gl_FragColor = color;
+      gl_FragColor.rgb *= gl_FragColor.a;
+      gl_FragColor *= u_transitionAlpha;
+    }`.replace(/[ \n]+/g, ' '),
     );
   });
 
@@ -441,16 +445,17 @@ describe('ol/layer/WebGLTile', function () {
         g: 0,
         b: 255,
       });
-      expect(layer.styleVariables_['r']).to.be(255);
+      assert.strictEqual(layer.styleVariables_['r'], 255);
       const targetContext = createCanvasContext2D(100, 100);
       layer.on('postrender', () => {
         targetContext.clearRect(0, 0, 100, 100);
         targetContext.drawImage(target.querySelector('.testlayer'), 0, 0);
       });
       map.once('rendercomplete', () => {
-        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
-          255, 0, 255, 255,
-        ]);
+        assert.deepEqual(
+          Array.from(targetContext.getImageData(0, 0, 1, 1).data),
+          [255, 0, 255, 255],
+        );
         done();
       });
     });
@@ -472,7 +477,7 @@ describe('ol/layer/WebGLTile', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      assert.strictEqual(layer.styleVariables_.foo, 'bam');
     });
 
     it('can be called even if no initial variables are provided', function () {
@@ -487,7 +492,7 @@ describe('ol/layer/WebGLTile', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      assert.strictEqual(layer.styleVariables_.foo, 'bam');
     });
 
     it('also works after setStyle()', function (done) {
@@ -519,16 +524,17 @@ describe('ol/layer/WebGLTile', function () {
         b: 255,
       });
 
-      expect(layer.styleVariables_['r']).to.be(255);
+      assert.strictEqual(layer.styleVariables_['r'], 255);
       const targetContext = createCanvasContext2D(100, 100);
       layer.on('postrender', () => {
         targetContext.clearRect(0, 0, 100, 100);
         targetContext.drawImage(target.querySelector('.testlayer2'), 0, 0);
       });
       map.once('rendercomplete', () => {
-        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
-          255, 0, 255, 255,
-        ]);
+        assert.deepEqual(
+          Array.from(targetContext.getImageData(0, 0, 1, 1).data),
+          [255, 0, 255, 255],
+        );
         done();
       });
     });
@@ -543,7 +549,7 @@ describe('ol/layer/WebGLTile', function () {
           }),
         ],
       });
-      expect(layer.getSourceBandCount_()).to.be(7);
+      assert.strictEqual(layer.getSourceBandCount_(), 7);
     });
     it('can determine the correct band count for sources function', () => {
       const layer = new WebGLTileLayer({
@@ -555,7 +561,7 @@ describe('ol/layer/WebGLTile', function () {
             }),
         ),
       });
-      expect(layer.getSourceBandCount_()).to.be(7);
+      assert.strictEqual(layer.getSourceBandCount_(), 7);
     });
   });
 
@@ -597,8 +603,9 @@ describe('ol/layer/WebGLTile', function () {
       compileShaderSpy.restore();
 
       const fragmentShader = compileShaderSpy.getCall(0).args[0];
-      expect(fragmentShader).to.contain('getBandValue');
-      expect(fragmentShader).to.contain(
+      assert.include(fragmentShader, 'getBandValue');
+      assert.include(
+        fragmentShader,
         'if (getBandValue(4.0, 0.0, 0.0) == 0.0) { discard; }',
       );
 
@@ -639,10 +646,9 @@ describe('ol/layer/WebGLTile', function () {
       compileShaderSpy.restore();
 
       const fragmentShader = compileShaderSpy.getCall(0).args[0];
-      expect(fragmentShader).to.contain(
-        'color.a = getBandValue(5.0, 0.0, 0.0);',
-      );
-      expect(fragmentShader).to.contain(
+      assert.include(fragmentShader, 'color.a = getBandValue(5.0, 0.0, 0.0);');
+      assert.include(
+        fragmentShader,
         'if (getBandValue(5.0, 0.0, 0.0) == 0.0) { discard; }',
       );
 
@@ -685,9 +691,7 @@ describe('ol/layer/WebGLTile', function () {
       compileShaderSpy.restore();
 
       const fragmentShader = compileShaderSpy.getCall(0).args[0];
-      expect(fragmentShader).not.to.contain(
-        'getBandValue(4.0, 0.0, 0.0) == 0.0',
-      );
+      assert.notInclude(fragmentShader, 'getBandValue(4.0, 0.0, 0.0) == 0.0');
 
       normalLayer.dispose();
     });
@@ -735,15 +739,14 @@ describe('ol/layer/WebGLTile', function () {
       compileShaderSpy.restore();
 
       const fragmentShader = compileShaderSpy.getCall(0).args[0];
-      // getBandValue should exist (from the band expressions)
-      expect(fragmentShader).to.contain('getBandValue');
-      // discard line should still be present
-      expect(fragmentShader).to.contain(
+      assert.include(fragmentShader, 'getBandValue');
+      assert.include(
+        fragmentShader,
         'if (getBandValue(4.0, 0.0, 0.0) == 0.0) { discard; }',
       );
       // getBandValue should only be defined once
       const matches = fragmentShader.match(/float getBandValue\(float band/g);
-      expect(matches.length).to.be(1);
+      assert.strictEqual(matches.length, 1);
 
       nodataLayer.dispose();
     });
@@ -755,7 +758,7 @@ describe('ol/layer/WebGLTile', function () {
       source.nodataBandIndex = 4;
 
       const testLayer = new WebGLTileLayer({source: source});
-      expect(testLayer.getSourceNodataBandIndex_()).to.be(4);
+      assert.strictEqual(testLayer.getSourceNodataBandIndex_(), 4);
       testLayer.dispose();
     });
 
@@ -763,7 +766,7 @@ describe('ol/layer/WebGLTile', function () {
       const testLayer = new WebGLTileLayer({
         source: new DataTileSource({bandCount: 3}),
       });
-      expect(testLayer.getSourceNodataBandIndex_()).to.be(undefined);
+      assert.strictEqual(testLayer.getSourceNodataBandIndex_(), undefined);
       testLayer.dispose();
     });
   });
@@ -771,12 +774,12 @@ describe('ol/layer/WebGLTile', function () {
   it('dispatches a precompose event with WebGL context', (done) => {
     let called = false;
     layer.on('precompose', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      assert.instanceOf(event.context, WebGLRenderingContext);
       called = true;
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
 
@@ -786,15 +789,15 @@ describe('ol/layer/WebGLTile', function () {
   it('dispatches a prerender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('prerender', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      assert.instanceOf(event.context, WebGLRenderingContext);
       const mapSize = event.frameState.size;
       const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
-      expect(bottomLeft).to.eql([0, 0]);
+      assert.deepEqual(bottomLeft, [0, 0]);
       called = true;
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
 
@@ -804,11 +807,11 @@ describe('ol/layer/WebGLTile', function () {
   it('dispatches a postrender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('postrender', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      assert.instanceOf(event.context, WebGLRenderingContext);
       const mapSize = event.frameState.size;
       const topRight = getRenderPixel(event, [mapSize[1], 0]);
       const pixelRatio = event.frameState.pixelRatio;
-      expect(topRight).to.eql([
+      assert.deepEqual(topRight, [
         mapSize[0] * pixelRatio,
         mapSize[1] * pixelRatio,
       ]);
@@ -816,7 +819,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
 
@@ -837,7 +840,7 @@ describe('ol/layer/WebGLTile', function () {
       };
       layer.createRenderer();
     }
-    expect(incorrectStyle).to.throwException(); // missing 'blue' in styleVariables
+    assert.throws(incorrectStyle);
   });
 
   it('works if the layer is constructed without a source', (done) => {
@@ -869,14 +872,14 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
   });
 
   it('handles multiple sources correctly', () => {
     const source = layer.getSource();
-    expect(layer.getRenderSource()).to.be(source);
+    assert.strictEqual(layer.getRenderSource(), source);
     layer.sources_ = (extent, resolution) => {
       return [
         {
@@ -896,14 +899,14 @@ describe('ol/layer/WebGLTile', function () {
     const sourceIds = [];
     layer.getRenderer().prepareFrame = (frameState) => {
       const renderedSource = layer.getRenderSource();
-      expect(renderedSource.extent).to.eql([0, 0, 100, 100]);
-      expect(renderedSource.resolution).to.be(1);
+      assert.deepEqual(renderedSource.extent, [0, 0, 100, 100]);
+      assert.strictEqual(renderedSource.resolution, 1);
       sourceIds.push(renderedSource.id);
     };
     layer.render({
       extent: [0, 0, 100, 100],
       viewState: {resolution: 1},
     });
-    expect(sourceIds).to.eql(['source1', 'source2']);
+    assert.deepEqual(sourceIds, ['source1', 'source2']);
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {
@@ -26,13 +27,15 @@ import {
 describe('ol/render/webgl/compileUtil', () => {
   describe('packColor and unpackColor', () => {
     it('unpacks colors from packed colors correctly', () => {
-      expect(unpackColor(packColor('red'))).to.eql([1, 0, 0, 1]);
-      expect(unpackColor(packColor('rgba(0, 255, 255, 0.4)'))).to.eql([
-        0, 1, 1, 0.4,
-      ]);
-      expect(unpackColor(packColor('rgba(51, 51, 0, 0.8)'))).to.eql([
-        0.2, 0.2, 0, 0.8,
-      ]);
+      assert.deepEqual(unpackColor(packColor('red')), [1, 0, 0, 1]);
+      assert.deepEqual(
+        unpackColor(packColor('rgba(0, 255, 255, 0.4)')),
+        [0, 1, 1, 0.4],
+      );
+      assert.deepEqual(
+        unpackColor(packColor('rgba(51, 51, 0, 0.8)')),
+        [0.2, 0.2, 0, 0.8],
+      );
     });
   });
 
@@ -45,8 +48,8 @@ describe('ol/render/webgl/compileUtil', () => {
         NumberType,
       );
 
-      expect(glsl).to.be('(a_prop_size * 3.0 * u_zoom)');
-      expect(Array.from(compilationContext.properties)).to.eql([
+      assert.strictEqual(glsl, '(a_prop_size * 3.0 * u_zoom)');
+      assert.deepEqual(Array.from(compilationContext.properties), [
         ['size', NumberType],
       ]);
     });
@@ -54,21 +57,21 @@ describe('ol/render/webgl/compileUtil', () => {
 
   describe('getGlslSizeFromType', () => {
     it('returns the amount of components according to type', () => {
-      expect(getGlslSizeFromType(ColorType)).to.equal(2);
-      expect(getGlslSizeFromType(SizeType)).to.equal(2);
-      expect(getGlslSizeFromType(NumberArrayType)).to.equal(4);
-      expect(getGlslSizeFromType(NumberType)).to.equal(1);
-      expect(getGlslSizeFromType(StringType)).to.equal(1);
+      assert.equal(getGlslSizeFromType(ColorType), 2);
+      assert.equal(getGlslSizeFromType(SizeType), 2);
+      assert.equal(getGlslSizeFromType(NumberArrayType), 4);
+      assert.equal(getGlslSizeFromType(NumberType), 1);
+      assert.equal(getGlslSizeFromType(StringType), 1);
     });
   });
 
   describe('getGlslTypeFromType', () => {
     it('returns the correct GLSL type descriptor', () => {
-      expect(getGlslTypeFromType(ColorType)).to.equal('vec2');
-      expect(getGlslTypeFromType(SizeType)).to.equal('vec2');
-      expect(getGlslTypeFromType(NumberArrayType)).to.equal('vec4');
-      expect(getGlslTypeFromType(NumberType)).to.equal('float');
-      expect(getGlslTypeFromType(StringType)).to.equal('float');
+      assert.equal(getGlslTypeFromType(ColorType), 'vec2');
+      assert.equal(getGlslTypeFromType(SizeType), 'vec2');
+      assert.equal(getGlslTypeFromType(NumberArrayType), 'vec4');
+      assert.equal(getGlslTypeFromType(NumberType), 'float');
+      assert.equal(getGlslTypeFromType(StringType), 'float');
     });
   });
 
@@ -91,30 +94,35 @@ describe('ol/render/webgl/compileUtil', () => {
 
       applyContextToBuilder(builder, context);
 
-      expect(builder.addUniform.calledWith('u_var_myColor', 'vec4')).to.be(
+      assert.strictEqual(
+        builder.addUniform.calledWith('u_var_myColor', 'vec4'),
         true,
       );
-      expect(
+      assert.strictEqual(
         builder.addAttribute.calledWith(
           'a_prop_colorProp',
           'vec2',
           'unpackColor(a_prop_colorProp)',
           'vec4',
         ),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         builder.addAttribute.calledWith('a_prop_stringProp', 'float'),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         builder.addVertexShaderFunction.calledWith(
           'function myFunction() { return 1.0; }',
         ),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         builder.addFragmentShaderFunction.calledWith(
           'function myFunction() { return 1.0; }',
         ),
-      ).to.be(true);
+        true,
+      );
     });
   });
 
@@ -138,16 +146,16 @@ describe('ol/render/webgl/compileUtil', () => {
       };
       const uniforms = generateUniformsFromContext(context, styleVariables);
 
-      expect(uniforms).to.have.property('u_var_colorVar');
-      expect(uniforms).to.have.property('u_var_anotherColorVar');
-      expect(uniforms).to.have.property('u_var_stringVar');
-      expect(uniforms).to.have.property('u_var_arrayVar');
-      expect(uniforms).to.have.property('u_var_booleanVar');
-      expect(uniforms.u_var_colorVar()).to.eql([1, 1, 1, 1]);
-      expect(uniforms.u_var_anotherColorVar()).to.eql([0.2, 0.4, 0, 0.4]);
-      expect(uniforms.u_var_stringVar()).to.eql(stringToGlsl('hello world'));
-      expect(uniforms.u_var_arrayVar()).to.eql([1, 2, 3]);
-      expect(uniforms.u_var_booleanVar()).to.eql(1);
+      assert.property(uniforms, 'u_var_colorVar');
+      assert.property(uniforms, 'u_var_anotherColorVar');
+      assert.property(uniforms, 'u_var_stringVar');
+      assert.property(uniforms, 'u_var_arrayVar');
+      assert.property(uniforms, 'u_var_booleanVar');
+      assert.deepEqual(uniforms.u_var_colorVar(), [1, 1, 1, 1]);
+      assert.deepEqual(uniforms.u_var_anotherColorVar(), [0.2, 0.4, 0, 0.4]);
+      assert.equal(uniforms.u_var_stringVar(), stringToGlsl('hello world'));
+      assert.deepEqual(uniforms.u_var_arrayVar(), [1, 2, 3]);
+      assert.deepEqual(uniforms.u_var_booleanVar(), 1);
     });
   });
 
@@ -170,23 +178,24 @@ describe('ol/render/webgl/compileUtil', () => {
         booleanProp: true,
       });
 
-      expect(attributes).to.have.property('prop_colorProp');
-      expect(attributes.prop_colorProp.size).to.eql(2);
-      expect(attributes.prop_colorProp.callback(feature)).to.eql([255, 255]);
+      assert.property(attributes, 'prop_colorProp');
+      assert.deepEqual(attributes.prop_colorProp.size, 2);
+      assert.deepEqual(attributes.prop_colorProp.callback(feature), [255, 255]);
 
-      expect(attributes).to.have.property('prop_stringProp');
-      expect(attributes.prop_stringProp.size).to.eql(1);
-      expect(attributes.prop_stringProp.callback(feature)).to.eql(
+      assert.property(attributes, 'prop_stringProp');
+      assert.deepEqual(attributes.prop_stringProp.size, 1);
+      assert.equal(
+        attributes.prop_stringProp.callback(feature),
         stringToGlsl('hello world'),
       );
 
-      expect(attributes).to.have.property('prop_arrayProp');
-      expect(attributes.prop_arrayProp.size).to.eql(4);
-      expect(attributes.prop_arrayProp.callback(feature)).to.eql([1, 2, 3]);
+      assert.property(attributes, 'prop_arrayProp');
+      assert.deepEqual(attributes.prop_arrayProp.size, 4);
+      assert.deepEqual(attributes.prop_arrayProp.callback(feature), [1, 2, 3]);
 
-      expect(attributes).to.have.property('prop_booleanProp');
-      expect(attributes.prop_booleanProp.size).to.eql(1);
-      expect(attributes.prop_booleanProp.callback(feature)).to.eql(1);
+      assert.property(attributes, 'prop_booleanProp');
+      assert.deepEqual(attributes.prop_booleanProp.size, 1);
+      assert.deepEqual(attributes.prop_booleanProp.callback(feature), 1);
     });
   });
 });

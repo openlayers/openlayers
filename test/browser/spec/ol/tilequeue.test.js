@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import Tile from '../../../../src/ol/Tile.js';
 import TileQueue from '../../../../src/ol/TileQueue.js';
@@ -65,37 +66,33 @@ describe('ol.TileQueue', function () {
         q2.enqueue([tile]);
       }
 
-      // Initially, both have all tiles.
-      expect(q1.getCount()).to.equal(numTiles);
-      expect(q2.getCount()).to.equal(numTiles);
+      assert.equal(q1.getCount(), numTiles);
+      assert.equal(q2.getCount(), numTiles);
 
-      // and nothing is loading
-      expect(q1.getTilesLoading()).to.equal(0);
-      expect(q2.getTilesLoading()).to.equal(0);
+      assert.equal(q1.getTilesLoading(), 0);
+      assert.equal(q2.getTilesLoading(), 0);
 
       // ask both to load
       q1.loadMoreTiles(maxLoading, maxLoading);
       q2.loadMoreTiles(maxLoading, maxLoading);
 
-      // both tiles will be loading the max
-      expect(q1.getTilesLoading()).to.equal(maxLoading);
-      expect(q2.getTilesLoading()).to.equal(maxLoading);
+      assert.equal(q1.getTilesLoading(), maxLoading);
+      assert.equal(q2.getTilesLoading(), maxLoading);
 
-      // the second queue will be empty now
-      expect(q1.getCount()).to.equal(numTiles - maxLoading);
-      expect(q2.getCount()).to.equal(0);
+      assert.equal(q1.getCount(), numTiles - maxLoading);
+      assert.equal(q2.getCount(), 0);
 
       // let all tiles load
       function finish() {
-        expect(q1.getTilesLoading()).to.equal(0);
-        expect(q2.getTilesLoading()).to.equal(0);
+        assert.equal(q1.getTilesLoading(), 0);
+        assert.equal(q2.getTilesLoading(), 0);
 
         // ask both to load, this should clear q1
         q1.loadMoreTiles(maxLoading, maxLoading);
         q2.loadMoreTiles(maxLoading, maxLoading);
 
-        expect(q1.getCount()).to.equal(0);
-        expect(q2.getCount()).to.equal(0);
+        assert.equal(q1.getCount(), 0);
+        assert.equal(q2.getCount(), 0);
 
         done();
       }
@@ -130,8 +127,8 @@ describe('ol.TileQueue', function () {
       };
 
       tq.reprioritize();
-      expect(tq.elements_.length).to.eql(50);
-      expect(tq.priorities_.length).to.eql(50);
+      assert.deepEqual(tq.elements_.length, 50);
+      assert.deepEqual(tq.priorities_.length, 50);
     });
   });
 
@@ -141,13 +138,13 @@ describe('ol.TileQueue', function () {
     it('loaded tiles', function () {
       const tq = new TileQueue(noop, noop);
       const tile = createImageTile();
-      expect(tile.hasListener('change')).to.be(false);
+      assert.strictEqual(tile.hasListener('change'), false);
 
       tq.enqueue([tile]);
-      expect(tile.hasListener('change')).to.be(true);
+      assert.strictEqual(tile.hasListener('change'), true);
 
       tile.setState(TileState.LOADED);
-      expect(tile.hasListener('change')).to.be(false);
+      assert.strictEqual(tile.hasListener('change'), false);
     });
 
     it('error tiles - with retry', function (done) {
@@ -156,20 +153,20 @@ describe('ol.TileQueue', function () {
 
       tq.enqueue([tile]);
       tq.loadMoreTiles(Infinity, Infinity);
-      expect(tq.getTilesLoading()).to.eql(1);
-      expect(tile.getState()).to.eql(1); // LOADING
+      assert.deepEqual(tq.getTilesLoading(), 1);
+      assert.deepEqual(tile.getState(), 1);
 
       tile.setState(TileState.ERROR);
-      expect(tq.getTilesLoading()).to.eql(0);
-      expect(tile.hasListener('change')).to.be(true);
+      assert.deepEqual(tq.getTilesLoading(), 0);
+      assert.strictEqual(tile.hasListener('change'), true);
 
       tile.setState(TileState.IDLE);
       setTimeout(() => tile.setState(TileState.LOADING), 100);
       setTimeout(() => tile.setState(TileState.LOADED), 200);
       setTimeout(() => {
         try {
-          expect(tq.getTilesLoading()).to.eql(0);
-          expect(tile.hasListener('change')).to.be(false);
+          assert.deepEqual(tq.getTilesLoading(), 0);
+          assert.strictEqual(tile.hasListener('change'), false);
           done();
         } catch (e) {
           done(e);
@@ -185,18 +182,18 @@ describe('ol.TileQueue', function () {
 
       tq.enqueue([tile]);
       tq.loadMoreTiles(Infinity, Infinity);
-      expect(tq.getTilesLoading()).to.eql(1);
-      expect(tile.getState()).to.eql(1); // LOADING
+      assert.deepEqual(tq.getTilesLoading(), 1);
+      assert.deepEqual(tile.getState(), 1);
 
       tile.setState(TileState.ERROR);
-      expect(tq.getTilesLoading()).to.eql(0);
-      expect(tile.hasListener('change')).to.be(true);
+      assert.deepEqual(tq.getTilesLoading(), 0);
+      assert.strictEqual(tile.hasListener('change'), true);
 
       setTimeout(() => tileCache.clear(), 100);
       setTimeout(() => {
         try {
-          expect(tq.getTilesLoading()).to.eql(0);
-          expect(tile.hasListener('change')).to.be(false);
+          assert.deepEqual(tq.getTilesLoading(), 0);
+          assert.strictEqual(tile.hasListener('change'), false);
           done();
         } catch (e) {
           done(e);

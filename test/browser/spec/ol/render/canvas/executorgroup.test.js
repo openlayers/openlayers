@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {getPixelIndexArray} from '../../../../../../src/ol/render/canvas/ExecutorGroup.js';
 
 describe('ol.render.canvas.ExecutorGroup', function () {
@@ -20,18 +21,19 @@ describe('ol.render.canvas.ExecutorGroup', function () {
 
       const minRadiusSq = Math.pow(radius - Math.SQRT2, 2);
       const maxRadiusSq = Math.pow(radius + Math.SQRT2, 2);
-      expect(circleArray.length).to.be(size);
+      assert.strictEqual(circleArray.length, size);
 
       for (let i = 0; i < size; i++) {
-        expect(circleArray[i].length).to.be(size);
+        assert.strictEqual(circleArray[i].length, size);
         for (let j = 0; j < size; j++) {
           const dx = Math.abs(radius - i);
           const dy = Math.abs(radius - j);
           const distanceSq = Math.pow(dx, 2) + Math.pow(dy, 2);
           if (circleArray[i][j] === true) {
-            expect(distanceSq).to.be.within(0, maxRadiusSq);
+            assert.isAtLeast(distanceSq, 0);
+            assert.isAtMost(distanceSq, maxRadiusSq);
           } else {
-            expect(distanceSq).to.be.within(minRadiusSq, Infinity);
+            assert.isAtLeast(distanceSq, minRadiusSq);
           }
         }
       }
@@ -41,28 +43,27 @@ describe('ol.render.canvas.ExecutorGroup', function () {
       const size = radius * 2 + 1;
       const hitIndexes = getPixelIndexArray(radius);
 
-      // Center first
-      expect(hitIndexes[0]).to.be((size * radius + radius) * 4 + 3);
+      assert.strictEqual(hitIndexes[0], (size * radius + radius) * 4 + 3);
 
       // 4 Pixels above/below/left/right of center next
       const begin = hitIndexes.slice(1, 5);
-      expect(begin).to.contain((radius * size + radius + 1) * 4 + 3);
-      expect(begin).to.contain(((radius + 1) * size + radius) * 4 + 3);
-      expect(begin).to.contain(((radius - 1) * size + radius) * 4 + 3);
-      expect(begin).to.contain((radius * size + radius - 1) * 4 + 3);
+      assert.include(begin, (radius * size + radius + 1) * 4 + 3);
+      assert.include(begin, ((radius + 1) * size + radius) * 4 + 3);
+      assert.include(begin, ((radius - 1) * size + radius) * 4 + 3);
+      assert.include(begin, (radius * size + radius - 1) * 4 + 3);
 
       // 4 Pixels in the middle of each side in the last 12 elements (at radius 10)
       const last = hitIndexes.slice(hitIndexes.length - 12);
-      expect(last).to.contain((0 * size + radius) * 4 + 3);
-      expect(last).to.contain((radius * size + 0) * 4 + 3);
-      expect(last).to.contain((radius * size + size - 1) * 4 + 3);
-      expect(last).to.contain(((size - 1) * size + radius) * 4 + 3);
+      assert.include(last, (0 * size + radius) * 4 + 3);
+      assert.include(last, (radius * size + 0) * 4 + 3);
+      assert.include(last, (radius * size + size - 1) * 4 + 3);
+      assert.include(last, ((size - 1) * size + radius) * 4 + 3);
     });
     it('has no duplicate indexes', function () {
       const radius = 10;
       const hitIndexes = getPixelIndexArray(radius);
 
-      expect(new Set(hitIndexes).size).to.be(hitIndexes.length);
+      assert.strictEqual(new Set(hitIndexes).size, hitIndexes.length);
     });
   });
 });

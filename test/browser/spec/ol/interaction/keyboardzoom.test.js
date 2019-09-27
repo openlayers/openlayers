@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
@@ -35,12 +36,12 @@ describe('ol.interaction.KeyboardZoom', function () {
 
       event.originalEvent.key = '+';
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[0].resolution).to.eql(1);
+      assert.deepEqual(spy.getCall(0).args[0].resolution, 1);
       view.setResolution(2);
 
       event.originalEvent.key = '-';
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(1).args[0].resolution).to.eql(4);
+      assert.deepEqual(spy.getCall(1).args[0].resolution, 4);
       view.setResolution(2);
 
       view.animateInternal.restore();
@@ -57,7 +58,7 @@ describe('ol.interaction.KeyboardZoom', function () {
 
       event.originalEvent.key = '+';
       map.handleMapBrowserEvent(event);
-      expect(spy.called).to.be(false);
+      assert.strictEqual(spy.called, false);
     });
 
     it('does nothing if platform modifier key is pressed at the same time', function () {
@@ -76,7 +77,7 @@ describe('ol.interaction.KeyboardZoom', function () {
         event.originalEvent.ctrlKey = true;
       }
       map.handleMapBrowserEvent(event);
-      expect(spy.called).to.be(false);
+      assert.strictEqual(spy.called, false);
     });
   });
 
@@ -130,12 +131,12 @@ describe('ol.interaction.KeyboardZoom', function () {
 
         event.originalEvent.key = '+';
         olMap.handleMapBrowserEvent(event);
-        expect(spy.getCall(0).args[0].resolution).to.eql(1);
+        assert.deepEqual(spy.getCall(0).args[0].resolution, 1);
         view.setResolution(2);
 
         event.originalEvent.key = '-';
         olMap.handleMapBrowserEvent(event);
-        expect(spy.getCall(1).args[0].resolution).to.eql(4);
+        assert.deepEqual(spy.getCall(1).args[0].resolution, 4);
         view.setResolution(2);
 
         view.animateInternal.restore();

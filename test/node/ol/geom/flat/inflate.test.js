@@ -1,14 +1,14 @@
+import {assert} from 'chai';
 import {
   inflateCoordinates,
   inflateCoordinatesArray,
 } from '../../../../../src/ol/geom/flat/inflate.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/inflate.js', function () {
   describe('inflateCoordinates', function () {
     it('inflates coordinates', function () {
       const coordinates = inflateCoordinates([1, 2, 3, 4], 0, 4, 2);
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [1, 2],
         [3, 4],
       ]);
@@ -23,7 +23,7 @@ describe('ol/geom/flat/inflate.js', function () {
         [4, 8],
         2,
       );
-      expect(coordinatess).to.eql([
+      assert.deepEqual(coordinatess, [
         [
           [1, 2],
           [3, 4],

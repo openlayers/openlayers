@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Disposable from '../../../../../src/ol/Disposable.js';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -25,8 +26,8 @@ describe('ol/renderer/Map.js', function () {
     it('createst an instance', function () {
       const map = new Map({});
       const renderer = new MapRenderer(null, map);
-      expect(renderer).to.be.a(MapRenderer);
-      expect(renderer).to.be.a(Disposable);
+      assert.instanceOf(renderer, MapRenderer);
+      assert.instanceOf(renderer, Disposable);
       renderer.dispose();
       map.dispose();
     });
@@ -81,9 +82,9 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit.feature).to.be(geometryCollection);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(point);
+        assert.strictEqual(hit.feature, geometryCollection);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, point);
         hit = map.forEachFeatureAtPixel(
           [75, 50],
           (feature, layer, geometry) => ({
@@ -92,8 +93,8 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit.feature).to.be(geometryCollection);
-        expect(hit.geometry).to.be(polygon);
+        assert.strictEqual(hit.feature, geometryCollection);
+        assert.strictEqual(hit.geometry, polygon);
         hit = map.forEachFeatureAtPixel(
           [25, 25],
           (feature, layer, geometry) => ({
@@ -102,8 +103,8 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit.feature).to.be(multiGeometry);
-        expect(hit.geometry).to.be(multiPoint);
+        assert.strictEqual(hit.feature, multiGeometry);
+        assert.strictEqual(hit.geometry, multiPoint);
       });
 
       it('hits Polygon, Circle geometry, Circle style stroke and transparent fill', function () {
@@ -228,94 +229,94 @@ describe('ol/renderer/Map.js', function () {
         let res;
 
         res = hitTest([0, 12]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(0);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 0);
         res = hitTest([1, 12]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(1);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 1);
         res = hitTest([2, 12]);
-        expect(res.count).to.be(0);
+        assert.strictEqual(res.count, 0);
         res = hitTest([3, 12]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(0);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 0);
         res = hitTest([4, 12]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(1);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 1);
         res = hitTest([5, 12]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 5);
         res = hitTest([6, 12]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 6);
         res = hitTest([7, 12]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 6);
         res = hitTest([8, 12]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 6);
         res = hitTest([9, 12]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 6);
 
         res = hitTest([0, 6.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(0);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 0);
         res = hitTest([1, 7.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(1);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 1);
         res = hitTest([2, 7.0]);
-        expect(res.count).to.be(0);
+        assert.strictEqual(res.count, 0);
         res = hitTest([3, 6.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(0);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 0);
         res = hitTest([4, 7.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(1);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 1);
         res = hitTest([5, 6.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 5);
         res = hitTest([6, 7.5]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 6);
         res = hitTest([7, 7.0]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 6);
         res = hitTest([8, 6.5]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 6);
         res = hitTest([9, 7.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(6);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 6);
 
         res = hitTest([0, 1.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(1.5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 1.5);
         res = hitTest([1, 2.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(2.5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 2.5);
         res = hitTest([2, 2.0]);
-        expect(res.count).to.be(0);
+        assert.strictEqual(res.count, 0);
         res = hitTest([3, 1.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(1.5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 1.5);
         res = hitTest([4, 2.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(2.5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 2.5);
         res = hitTest([5, 1.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(6.5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 6.5);
         res = hitTest([6, 2.5]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(7.5);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 7.5);
         res = hitTest([7, 2.0]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(7.5);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 7.5);
         res = hitTest([8, 1.5]);
-        expect(res.count).to.be(2);
-        expect(res.extent[0]).to.be(7.5);
+        assert.strictEqual(res.count, 2);
+        assert.strictEqual(res.extent[0], 7.5);
         res = hitTest([9, 2.5]);
-        expect(res.count).to.be(1);
-        expect(res.extent[0]).to.be(7.5);
+        assert.strictEqual(res.count, 1);
+        assert.strictEqual(res.extent[0], 7.5);
       });
 
       it('hits lines even if they are dashed', function () {
@@ -350,10 +351,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new MultiLineString([
           [
@@ -371,10 +372,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new Polygon([
           [
@@ -395,10 +396,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new MultiPolygon([
           [
@@ -421,10 +422,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
         feature.setGeometry(geometry);
@@ -437,10 +438,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
       });
 
       it('hits lines even if they are transparent', function () {
@@ -474,10 +475,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new MultiLineString([
           [
@@ -495,10 +496,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new Polygon([
           [
@@ -519,10 +520,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new MultiPolygon([
           [
@@ -545,10 +546,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
         feature.setGeometry(geometry);
@@ -561,10 +562,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
       });
 
       it('hits Text stroke, transparent fill and background fill', function () {
@@ -596,10 +597,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         layer.setStyle({
           'text-value': 'X',
@@ -619,7 +620,7 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be(undefined);
+        assert.strictEqual(hit, undefined);
 
         layer.setStyle({
           'text-value': 'X',
@@ -639,10 +640,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
 
         layer.setStyle({
           'text-value': 'X',
@@ -663,10 +664,10 @@ describe('ol/renderer/Map.js', function () {
             geometry,
           }),
         );
-        expect(hit).to.be.ok();
-        expect(hit.feature).to.be(feature);
-        expect(hit.layer).to.be(layer);
-        expect(hit.geometry).to.be(geometry);
+        assert.isOk(hit);
+        assert.strictEqual(hit.feature, feature);
+        assert.strictEqual(hit.layer, layer);
+        assert.strictEqual(hit.geometry, geometry);
       });
 
       describe('Line placement text', function () {
@@ -711,10 +712,10 @@ describe('ol/renderer/Map.js', function () {
                   geometry,
                 }),
               );
-              expect(hit).to.be.ok();
-              expect(hit.feature).to.be(feature);
-              expect(hit.layer).to.be(layer);
-              expect(hit.geometry).to.be(geometry);
+              assert.isOk(hit);
+              assert.strictEqual(hit.feature, feature);
+              assert.strictEqual(hit.layer, layer);
+              assert.strictEqual(hit.geometry, geometry);
               done();
             } catch (e) {
               done(e);
@@ -744,7 +745,7 @@ describe('ol/renderer/Map.js', function () {
                   geometry,
                 }),
               );
-              expect(hit).to.be(undefined);
+              assert.strictEqual(hit, undefined);
               done();
             } catch (e) {
               done(e);
@@ -774,10 +775,10 @@ describe('ol/renderer/Map.js', function () {
                   geometry,
                 }),
               );
-              expect(hit).to.be.ok();
-              expect(hit.feature).to.be(feature);
-              expect(hit.layer).to.be(layer);
-              expect(hit.geometry).to.be(geometry);
+              assert.isOk(hit);
+              assert.strictEqual(hit.feature, feature);
+              assert.strictEqual(hit.layer, layer);
+              assert.strictEqual(hit.geometry, geometry);
               done();
             } catch (e) {
               done(e);
@@ -807,10 +808,10 @@ describe('ol/renderer/Map.js', function () {
                   geometry,
                 }),
               );
-              expect(hit).to.be.ok();
-              expect(hit.feature).to.be(feature);
-              expect(hit.layer).to.be(layer);
-              expect(hit.geometry).to.be(geometry);
+              assert.isOk(hit);
+              assert.strictEqual(hit.feature, feature);
+              assert.strictEqual(hit.layer, layer);
+              assert.strictEqual(hit.geometry, geometry);
               done();
             } catch (e) {
               done(e);
@@ -848,28 +849,28 @@ describe('ol/renderer/Map.js', function () {
           (feature) => feature,
           {hitTolerance: 20},
         );
-        expect(feature.getGeometry().getCoordinates()).to.eql([10, 0]);
+        assert.deepEqual(feature.getGeometry().getCoordinates(), [10, 0]);
 
         feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([6, -8]),
           (feature) => feature,
           {hitTolerance: 20},
         );
-        expect(feature.getGeometry().getCoordinates()).to.eql([0, -10]);
+        assert.deepEqual(feature.getGeometry().getCoordinates(), [0, -10]);
 
         feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([-6, -4]),
           (feature) => feature,
           {hitTolerance: 20},
         );
-        expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+        assert.deepEqual(feature.getGeometry().getCoordinates(), [0, 0]);
 
         feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([-6, 7]),
           (feature) => feature,
           {hitTolerance: 20},
         );
-        expect(feature.getGeometry().getCoordinates()).to.eql([0, 10]);
+        assert.deepEqual(feature.getGeometry().getCoordinates(), [0, 10]);
       });
     });
   });
@@ -921,21 +922,21 @@ describe('ol/renderer/Map.js', function () {
     it('works with custom projection', function () {
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features.length).to.be(1);
+      assert.strictEqual(features.length, 1);
     });
 
     it('works with negative image scale', function () {
       style.getImage().setScale([-1, -1]);
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features.length).to.be(1);
+      assert.strictEqual(features.length, 1);
     });
 
     it('works with zero opacity image', function () {
       style.getImage().setOpacity(0);
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
-      expect(features.length).to.be(1);
+      assert.strictEqual(features.length, 1);
     });
 
     it('only draws features that intersect the hit detection viewport', function () {
@@ -949,8 +950,8 @@ describe('ol/renderer/Map.js', function () {
       map.renderSync();
       const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
       const features = map.getFeaturesAtPixel([50, 44]);
-      expect(features.length).to.be(1);
-      expect(spy.callCount).to.be(2);
+      assert.strictEqual(features.length, 1);
+      assert.strictEqual(spy.callCount, 2);
       spy.restore();
     });
   });
@@ -979,7 +980,7 @@ describe('ol/renderer/Map.js', function () {
       // Render again — alpha should not accumulate
       map.renderSync();
       const secondRender = ctx.getImageData(50, 50, 1, 1).data;
-      expect(secondRender[3]).to.be(firstRender[3]);
+      assert.strictEqual(secondRender[3], firstRender[3]);
       map.dispose();
     });
 
@@ -1004,8 +1005,7 @@ describe('ol/renderer/Map.js', function () {
         });
         const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
         map.renderSync();
-        // No drawImage call means the layer drew directly onto the target canvas
-        expect(spy.callCount).to.be(0);
+        assert.strictEqual(spy.callCount, 0);
         spy.restore();
         map.dispose();
       });

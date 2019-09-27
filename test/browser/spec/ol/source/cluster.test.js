@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import EventType from '../../../../../src/ol/events/EventType.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -15,9 +16,9 @@ describe('ol.source.Cluster', function () {
         projection: getProjection('EPSG:4326'),
         source: new VectorSource(),
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(Cluster);
-      expect(source.getDistance()).to.be(20);
+      assert.instanceOf(source, Source);
+      assert.instanceOf(source, Cluster);
+      assert.strictEqual(source.getDistance(), 20);
     });
   });
 
@@ -34,8 +35,8 @@ describe('ol.source.Cluster', function () {
         }),
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('features').length).to.be(2);
+      assert.strictEqual(source.getFeatures().length, 1);
+      assert.strictEqual(source.getFeatures()[0].get('features').length, 2);
     });
     it('clusters a source with point and null features', function () {
       const source = new Cluster({
@@ -44,8 +45,8 @@ describe('ol.source.Cluster', function () {
         }),
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('features').length).to.be(1);
+      assert.strictEqual(source.getFeatures().length, 1);
+      assert.strictEqual(source.getFeatures()[0].get('features').length, 1);
     });
     it('clusters with a custom geometryFunction', function () {
       const source = new Cluster({
@@ -83,8 +84,8 @@ describe('ol.source.Cluster', function () {
         }),
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('features').length).to.be(2);
+      assert.strictEqual(source.getFeatures().length, 1);
+      assert.strictEqual(source.getFeatures()[0].get('features').length, 2);
     });
     it('custom cluster feature with additional fields', function () {
       const feature1 = new Feature(new Point([0, 0]));
@@ -107,8 +108,8 @@ describe('ol.source.Cluster', function () {
         },
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('sum')).to.be(3);
+      assert.strictEqual(source.getFeatures().length, 1);
+      assert.strictEqual(source.getFeatures()[0].get('sum'), 3);
     });
   });
 
@@ -118,9 +119,9 @@ describe('ol.source.Cluster', function () {
         distance: 100,
         source: new VectorSource(),
       });
-      expect(source.getDistance()).to.be(100);
+      assert.strictEqual(source.getDistance(), 100);
       source.setDistance(10);
-      expect(source.getDistance()).to.be(10);
+      assert.strictEqual(source.getDistance(), 10);
     });
   });
 });
@@ -131,9 +132,9 @@ describe('#setSource', function () {
     const clusterSource = new Cluster({
       source: source,
     });
-    expect(source.hasListener(EventType.CHANGE)).to.be(true);
+    assert.strictEqual(source.hasListener(EventType.CHANGE), true);
     clusterSource.setSource(null);
-    expect(source.hasListener(EventType.CHANGE)).to.be(false);
+    assert.strictEqual(source.hasListener(EventType.CHANGE), false);
   });
 
   it('properly removes the previous features', function () {
@@ -147,8 +148,8 @@ describe('#setSource', function () {
     const extent = [-1, -1, 1, 1];
     source.loadFeatures(extent, 1, projection);
 
-    expect(source.features.length).to.be(1);
+    assert.strictEqual(source.features.length, 1);
     source.setSource(null);
-    expect(source.features.length).to.be(0);
+    assert.strictEqual(source.features.length, 0);
   });
 });

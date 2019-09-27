@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import OSMXML from '../../../../../src/ol/format/OSMXML.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -13,12 +14,12 @@ describe('ol.format.OSMXML', function () {
   describe('#readProjection', function () {
     it('returns the default projection from document', function () {
       const projection = format.readProjectionFromDocument();
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      assert.deepEqual(projection, getProjection('EPSG:4326'));
     });
 
     it('returns the default projection from node', function () {
       const projection = format.readProjectionFromNode();
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      assert.deepEqual(projection, getProjection('EPSG:4326'));
     });
   });
 
@@ -29,7 +30,7 @@ describe('ol.format.OSMXML', function () {
         '<osm version="0.6" generator="my hand">' +
         '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(0);
+      assert.lengthOf(fs, 0);
     });
 
     it('can read nodes', function () {
@@ -44,12 +45,12 @@ describe('ol.format.OSMXML', function () {
         '  </node>' +
         '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(2);
+      assert.lengthOf(fs, 2);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1]);
+      assert.instanceOf(g, Point);
+      assert.deepEqual(g.getCoordinates(), [2, 1]);
     });
 
     it('can read nodes and ways', function () {
@@ -69,17 +70,17 @@ describe('ol.format.OSMXML', function () {
         '  </way>' +
         '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      assert.lengthOf(fs, 3);
       const point = fs[0];
-      expect(point).to.be.an(Feature);
+      assert.instanceOf(point, Feature);
       let g = point.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1]);
+      assert.instanceOf(g, Point);
+      assert.deepEqual(g.getCoordinates(), [2, 1]);
       const line = fs[2];
-      expect(line).to.be.an(Feature);
+      assert.instanceOf(line, Feature);
       g = line.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([
+      assert.instanceOf(g, LineString);
+      assert.deepEqual(g.getCoordinates(), [
         [2, 1],
         [4, 3],
       ]);
@@ -102,12 +103,12 @@ describe('ol.format.OSMXML', function () {
         '  </node>' +
         '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      assert.lengthOf(fs, 3);
       const line = fs[2];
-      expect(line).to.be.an(Feature);
+      assert.instanceOf(line, Feature);
       const g = line.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([
+      assert.instanceOf(g, LineString);
+      assert.deepEqual(g.getCoordinates(), [
         [2, 1],
         [4, 3],
       ]);
@@ -124,12 +125,12 @@ describe('ol.format.OSMXML', function () {
         '  </way>' +
         '</osm>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const line = fs[0];
-      expect(line).to.be.an(Feature);
+      assert.instanceOf(line, Feature);
       const g = line.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([
+      assert.instanceOf(g, LineString);
+      assert.deepEqual(g.getCoordinates(), [
         [2, 1],
         [4, 3],
       ]);
@@ -149,12 +150,13 @@ describe('ol.format.OSMXML', function () {
       const fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857',
       });
-      expect(fs).to.have.length(2);
+      assert.lengthOf(fs, 2);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql(
+      assert.instanceOf(g, Point);
+      assert.deepEqual(
+        g.getCoordinates(),
         transform([2, 1], 'EPSG:4326', 'EPSG:3857'),
       );
     });

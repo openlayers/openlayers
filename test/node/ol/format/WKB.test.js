@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../src/ol/Feature.js';
 import WKB from '../../../../src/ol/format/WKB.js';
 import WKT from '../../../../src/ol/format/WKT.js';
@@ -5,7 +6,6 @@ import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import SimpleGeometry from '../../../../src/ol/geom/SimpleGeometry.js';
 import {transform} from '../../../../src/ol/proj.js';
-import expect from '../../expect.js';
 
 const patterns = [
   [
@@ -965,13 +965,13 @@ describe('ol/format/WKB.js', function () {
     it('returns the default projection', function () {
       const wkb = '0101000000000000000000F03F0000000000000040'; // POINT(1 2)
       const projection = format.readProjection(wkb);
-      expect(projection).to.be(undefined);
+      assert.strictEqual(projection, undefined);
     });
 
     it('returns an embed projection', function () {
       const wkb = '0101000020E6100000000000000000F03F0000000000000040'; // SRID=4326;POINT(1 2)
       const projection = format.readProjection(wkb);
-      expect(projection.getCode()).to.be('EPSG:4326');
+      assert.strictEqual(projection.getCode(), 'EPSG:4326');
     });
   });
 
@@ -983,7 +983,7 @@ describe('ol/format/WKB.js', function () {
         0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40,
       ]);
       const projection = format.readProjection(wkb);
-      expect(projection).to.be(undefined);
+      assert.strictEqual(projection, undefined);
     });
 
     it('returns an embed projection', function () {
@@ -994,7 +994,7 @@ describe('ol/format/WKB.js', function () {
         0x40,
       ]);
       const projection = format.readProjection(wkb);
-      expect(projection.getCode()).to.be('EPSG:4326');
+      assert.strictEqual(projection.getCode(), 'EPSG:4326');
     });
   });
 
@@ -1005,7 +1005,8 @@ describe('ol/format/WKB.js', function () {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857',
       });
-      expect(geom.getCoordinates()).to.eql(
+      assert.deepEqual(
+        geom.getCoordinates(),
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -1015,7 +1016,8 @@ describe('ol/format/WKB.js', function () {
       const geom = format.readGeometry(wkb, {
         featureProjection: 'EPSG:3857',
       });
-      expect(geom.getCoordinates()).to.eql(
+      assert.deepEqual(
+        geom.getCoordinates(),
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -1032,7 +1034,8 @@ describe('ol/format/WKB.js', function () {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857',
       });
-      expect(geom.getCoordinates()).to.eql(
+      assert.deepEqual(
+        geom.getCoordinates(),
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -1047,7 +1050,8 @@ describe('ol/format/WKB.js', function () {
       const geom = format.readGeometry(wkb, {
         featureProjection: 'EPSG:3857',
       });
-      expect(geom.getCoordinates()).to.eql(
+      assert.deepEqual(
+        geom.getCoordinates(),
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -1055,16 +1059,16 @@ describe('ol/format/WKB.js', function () {
 
   describe('#readGeometry(string)', function () {
     function compareGeometries(a, b) {
-      expect(a.getType()).to.eql(b.getType());
+      assert.deepEqual(a.getType(), b.getType());
 
       if (a instanceof GeometryCollection || b instanceof GeometryCollection) {
-        expect(a).to.be.a(GeometryCollection);
-        expect(b).to.be.a(GeometryCollection);
+        assert.instanceOf(a, GeometryCollection);
+        assert.instanceOf(b, GeometryCollection);
 
         const aGeoms = a.getGeometries();
         const bGeoms = b.getGeometries();
 
-        expect(aGeoms.length).to.eql(bGeoms.length);
+        assert.deepEqual(aGeoms.length, bGeoms.length);
 
         for (let i = 0; i < aGeoms.length; i++) {
           compareGeometries(aGeoms[i], bGeoms[i]);
@@ -1073,17 +1077,17 @@ describe('ol/format/WKB.js', function () {
         return;
       }
 
-      expect(a).to.be.a(SimpleGeometry);
-      expect(b).to.be.a(SimpleGeometry);
+      assert.instanceOf(a, SimpleGeometry);
+      assert.instanceOf(b, SimpleGeometry);
 
-      expect(a.getLayout()).to.eql(b.getLayout());
+      assert.deepEqual(a.getLayout(), b.getLayout());
 
       const aCoords = a.getCoordinates();
       const bCoords = b.getCoordinates();
 
-      expect(aCoords.length).to.eql(bCoords.length);
+      assert.deepEqual(aCoords.length, bCoords.length);
 
-      expect(JSON.stringify(aCoords)).to.eql(JSON.stringify(bCoords)); // compare arrays
+      assert.deepEqual(JSON.stringify(aCoords), JSON.stringify(bCoords));
     }
 
     // tests for several patterns
@@ -1108,8 +1112,8 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       const got = format.readGeometry(wkb).getCoordinates();
-      expect(got[0]).to.roughlyEqual(1, 1e-6);
-      expect(got[1]).to.roughlyEqual(2, 1e-6);
+      assert.approximately(got[0], 1, 1e-6);
+      assert.approximately(got[1], 2, 1e-6);
     });
 
     // tests for several patterns
@@ -1122,7 +1126,7 @@ describe('ol/format/WKB.js', function () {
         const wkt_result = new WKT().readGeometry(wkt);
         const wkb_result = new WKB(opts).writeGeometry(wkt_result);
 
-        expect(wkb_result.toLowerCase()).to.eql(wkb);
+        assert.deepEqual(wkb_result.toLowerCase(), wkb);
       });
     }
 
@@ -1196,7 +1200,7 @@ describe('ol/format/WKB.js', function () {
         const opts = item[2];
 
         const geom = new Point([], opts.geometryLayout);
-        expect(new WKB(opts).writeGeometry(geom).toLowerCase()).to.eql(wkb);
+        assert.deepEqual(new WKB(opts).writeGeometry(geom).toLowerCase(), wkb);
       }
     });
 
@@ -1210,7 +1214,7 @@ describe('ol/format/WKB.js', function () {
       const geoms = new WKB().readGeometry(wkb).getGeometries();
 
       for (let i = 0; i < geoms.length; i++) {
-        expect(geoms[i].getLayout()).to.eql('XYZ');
+        assert.deepEqual(geoms[i].getLayout(), 'XYZ');
       }
     });
 
@@ -1224,7 +1228,7 @@ describe('ol/format/WKB.js', function () {
       const geoms = new WKB().readGeometry(wkb).getGeometries();
 
       for (let i = 0; i < geoms.length; i++) {
-        expect(geoms[i].getLayout()).to.eql('XY');
+        assert.deepEqual(geoms[i].getLayout(), 'XY');
       }
     });
 
@@ -1238,8 +1242,8 @@ describe('ol/format/WKB.js', function () {
         geom,
       );
 
-      // GEOMETRYCOLLECTION Z (POINT Z (1 2 98),POINT Z (1 2 98),POINT Z (1 2 3))
-      expect(wkb).to.eql(
+      assert.deepEqual(
+        wkb,
         '0107000080030000000101000080000000000000F03F000000000000004000000000008058400101000080000000000000F03F000000000000004000000000008058400101000080000000000000F03F00000000000000400000000000000840',
       );
     });
@@ -1254,8 +1258,8 @@ describe('ol/format/WKB.js', function () {
         geom,
       );
 
-      // GEOMETRYCOLLECTION M (POINT M (1 2 99),POINT M (1 2 4),POINT M (1 2 4))
-      expect(wkb).to.eql(
+      assert.deepEqual(
+        wkb,
         '0107000040030000000101000040000000000000F03F00000000000000400000000000C058400101000040000000000000F03F000000000000004000000000000010400101000040000000000000F03F00000000000000400000000000001040',
       );
     });
@@ -1272,8 +1276,8 @@ describe('ol/format/WKB.js', function () {
         geometryLayout: 'XYZM',
       }).writeGeometry(geom);
 
-      // GEOMETRYCOLLECTION ZM (POINT ZM (1 2 98 99),POINT ZM (1 2 98 4),POINT ZM (1 2 3 4))
-      expect(wkb).to.eql(
+      assert.deepEqual(
+        wkb,
         '01070000C00300000001010000C0000000000000F03F000000000000004000000000008058400000000000C0584001010000C0000000000000F03F00000000000000400000000000805840000000000000104001010000C0000000000000F03F000000000000004000000000000008400000000000001040',
       );
     });
@@ -1287,7 +1291,8 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       const geom = feature.getGeometry();
-      expect(geom.getCoordinates()).to.eql(
+      assert.deepEqual(
+        geom.getCoordinates(),
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -1303,10 +1308,10 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       const gotFeature = format.readFeature(wkt);
-      expect(gotFeature).to.be.a(Feature);
+      assert.instanceOf(gotFeature, Feature);
       const got = gotFeature.getGeometry().getCoordinates();
-      expect(got[0]).to.roughlyEqual(1, 1e-6);
-      expect(got[1]).to.roughlyEqual(2, 1e-6);
+      assert.approximately(got[0], 1, 1e-6);
+      assert.approximately(got[1], 2, 1e-6);
     });
   });
 
@@ -1320,15 +1325,17 @@ describe('ol/format/WKB.js', function () {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857',
       });
-      expect(features.length).to.eql(2);
+      assert.deepEqual(features.length, 2);
       const point1 = features[0].getGeometry();
       const point2 = features[1].getGeometry();
-      expect(point1.getType()).to.eql('Point');
-      expect(point2.getType()).to.eql('Point');
-      expect(point1.getCoordinates()).to.eql(
+      assert.deepEqual(point1.getType(), 'Point');
+      assert.deepEqual(point2.getType(), 'Point');
+      assert.deepEqual(
+        point1.getCoordinates(),
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
-      expect(point2.getCoordinates()).to.eql(
+      assert.deepEqual(
+        point2.getCoordinates(),
         transform([4, 5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -1347,20 +1354,24 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       const gotFeatures = format.readFeatures(wkt);
-      expect(gotFeatures).to.have.length(2);
-      expect(gotFeatures[0].getGeometry().getCoordinates()[0]).to.roughlyEqual(
+      assert.lengthOf(gotFeatures, 2);
+      assert.approximately(
+        gotFeatures[0].getGeometry().getCoordinates()[0],
         1,
         1e-6,
       );
-      expect(gotFeatures[0].getGeometry().getCoordinates()[1]).to.roughlyEqual(
+      assert.approximately(
+        gotFeatures[0].getGeometry().getCoordinates()[1],
         2,
         1e-6,
       );
-      expect(gotFeatures[1].getGeometry().getCoordinates()[0]).to.roughlyEqual(
+      assert.approximately(
+        gotFeatures[1].getGeometry().getCoordinates()[0],
         4,
         1e-6,
       );
-      expect(gotFeatures[1].getGeometry().getCoordinates()[1]).to.roughlyEqual(
+      assert.approximately(
+        gotFeatures[1].getGeometry().getCoordinates()[1],
         5,
         1e-6,
       );

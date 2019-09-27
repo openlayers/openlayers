@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   AnyType,
   BooleanType,
@@ -13,12 +14,14 @@ import {
 describe('ol/expr/gpu', () => {
   describe('colorToGlsl()', () => {
     it('handles colors in string format', () => {
-      expect(colorToGlsl('red')).to.eql('vec4(1.0, 0.0, 0.0, 1.0)');
-      expect(colorToGlsl('#00ff99')).to.eql('vec4(0.0, 1.0, 0.6, 1.0)');
-      expect(colorToGlsl('rgb(100, 0, 255)')).to.eql(
+      assert.deepEqual(colorToGlsl('red'), 'vec4(1.0, 0.0, 0.0, 1.0)');
+      assert.deepEqual(colorToGlsl('#00ff99'), 'vec4(0.0, 1.0, 0.6, 1.0)');
+      assert.deepEqual(
+        colorToGlsl('rgb(100, 0, 255)'),
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
       );
-      expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql(
+      assert.deepEqual(
+        colorToGlsl('rgba(100, 0, 255, 0.3)'),
         'vec4(0.39215686274509803, 0.0, 1.0, 0.3)',
       );
     });
@@ -80,7 +83,7 @@ describe('ol/expr/gpu', () => {
         expected:
           'texture2D(u_paletteTextures[0], vec2((a_prop_color + 0.5) / 3.0, 0.5))',
         contextAssertion: (context) => {
-          expect(context.paletteTextures[0]).to.eql({
+          assert.deepEqual(context.paletteTextures[0], {
             name: 'u_paletteTextures[0]',
             data: Uint8Array.from([
               // red
@@ -162,10 +165,10 @@ describe('ol/expr/gpu', () => {
         expected:
           '((u_var_selected > 0.0) == false ? vec4(1.0, 0.0, 0.0, 1.0) : ((u_var_selected > 0.0) == (a_prop_validValue > 0.0) ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
         contextAssertion: (context) => {
-          expect(Array.from(context.properties)).to.eql([
+          assert.deepEqual(Array.from(context.properties), [
             ['validValue', BooleanType],
           ]);
-          expect(Array.from(context.variables)).to.eql([
+          assert.deepEqual(Array.from(context.variables), [
             ['newColor', ColorType],
             ['oldColor', ColorType],
             ['selected', BooleanType],
@@ -187,7 +190,7 @@ describe('ol/expr/gpu', () => {
           parsingContext,
           compilationContext,
         );
-        expect(result).to.eql(c.expected);
+        assert.deepEqual(result, c.expected);
         if (c.contextAssertion) {
           c.contextAssertion(compilationContext);
         }

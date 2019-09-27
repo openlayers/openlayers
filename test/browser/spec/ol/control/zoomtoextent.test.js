@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ZoomToExtent from '../../../../../src/ol/control/ZoomToExtent.js';
@@ -10,7 +11,7 @@ describe('ol.control.ZoomToExtent', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new ZoomToExtent();
-      expect(instance).to.be.an(ZoomToExtent);
+      assert.instanceOf(instance, ZoomToExtent);
     });
   });
 
@@ -41,10 +42,10 @@ describe('ol.control.ZoomToExtent', function () {
       control.handleZoomToExtent();
       map.renderSync();
       const extent = map.getView().calculateExtent();
-      expect(extent[0]).to.roughlyEqual(10, 1e-10);
-      expect(extent[1]).to.roughlyEqual(48, 1e-10);
-      expect(extent[2]).to.roughlyEqual(12, 1e-10);
-      expect(extent[3]).to.roughlyEqual(50, 1e-10);
+      assert.approximately(extent[0], 10, 1e-10);
+      assert.approximately(extent[1], 48, 1e-10);
+      assert.approximately(extent[2], 12, 1e-10);
+      assert.approximately(extent[3], 50, 1e-10);
     });
 
     it('it handles user coordinates', function () {
@@ -54,10 +55,10 @@ describe('ol.control.ZoomToExtent', function () {
       control.handleZoomToExtent();
       map.renderSync();
       const extent = map.getView().calculateExtent();
-      expect(extent[0]).to.roughlyEqual(9.4754646122, 1e-10);
-      expect(extent[1]).to.roughlyEqual(48, 1e-10);
-      expect(extent[2]).to.roughlyEqual(12.5245353878, 1e-10);
-      expect(extent[3]).to.roughlyEqual(50, 1e-10);
+      assert.approximately(extent[0], 9.4754646122, 1e-10);
+      assert.approximately(extent[1], 48, 1e-10);
+      assert.approximately(extent[2], 12.5245353878, 1e-10);
+      assert.approximately(extent[3], 50, 1e-10);
     });
 
     it('it handles projection extent', function () {
@@ -67,10 +68,10 @@ describe('ol.control.ZoomToExtent', function () {
       control.handleZoomToExtent();
       map.renderSync();
       const extent = map.getView().calculateExtent();
-      expect(extent[0]).to.roughlyEqual(-180, 1e-10);
-      expect(extent[1]).to.roughlyEqual(-85.0511287798, 1e-10);
-      expect(extent[2]).to.roughlyEqual(180, 1e-10);
-      expect(extent[3]).to.roughlyEqual(85.0511287798, 1e-10);
+      assert.approximately(extent[0], -180, 1e-10);
+      assert.approximately(extent[1], -85.0511287798, 1e-10);
+      assert.approximately(extent[2], 180, 1e-10);
+      assert.approximately(extent[3], 85.0511287798, 1e-10);
     });
   });
 });

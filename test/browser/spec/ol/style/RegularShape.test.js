@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import RegularShape from '../../../../../src/ol/style/RegularShape.js';
@@ -10,7 +11,7 @@ describe('ol/style/RegularShape', function () {
         rotateWithView: true,
         radius: 0,
       });
-      expect(style.getRotateWithView()).to.be(true);
+      assert.strictEqual(style.getRotateWithView(), true);
     });
 
     it('can use radius', function () {
@@ -18,20 +19,19 @@ describe('ol/style/RegularShape', function () {
         radius: 5,
         radius2: 10,
       });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(10);
+      assert.deepEqual(style.getRadius(), 5);
+      assert.deepEqual(style.getRadius2(), 10);
     });
 
     it('creates a canvas (no fill-style)', function () {
       const style = new RegularShape({radius: 10});
-      expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([20, 20]);
-      expect(style.getImageSize()).to.eql([20, 20]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10, 10]);
-      // no hit-detection image is created, because no fill style is set
-      expect(style.getImage(1)).to.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
+      assert.instanceOf(style.getImage(1), HTMLCanvasElement);
+      assert.deepEqual(style.getSize(), [20, 20]);
+      assert.deepEqual(style.getImageSize(), [20, 20]);
+      assert.deepEqual(style.getOrigin(), [0, 0]);
+      assert.deepEqual(style.getAnchor(), [10, 10]);
+      assert.strictEqual(style.getImage(1), style.getHitDetectionImage());
+      assert.instanceOf(style.getHitDetectionImage(), HTMLCanvasElement);
     });
 
     it('creates a canvas (transparent fill-style)', function () {
@@ -41,18 +41,17 @@ describe('ol/style/RegularShape', function () {
           color: 'transparent',
         }),
       });
-      expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getImage(1).width).to.be(20);
-      expect(style.getImage(2).width).to.be(40);
-      expect(style.getPixelRatio(2)).to.be(2);
-      expect(style.getSize()).to.eql([20, 20]);
-      expect(style.getImageSize()).to.eql([20, 20]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10, 10]);
-      // hit-detection image is created, because transparent fill style is set
-      expect(style.getImage(1)).to.not.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImage().width).to.be(20);
+      assert.instanceOf(style.getImage(1), HTMLCanvasElement);
+      assert.strictEqual(style.getImage(1).width, 20);
+      assert.strictEqual(style.getImage(2).width, 40);
+      assert.strictEqual(style.getPixelRatio(2), 2);
+      assert.deepEqual(style.getSize(), [20, 20]);
+      assert.deepEqual(style.getImageSize(), [20, 20]);
+      assert.deepEqual(style.getOrigin(), [0, 0]);
+      assert.deepEqual(style.getAnchor(), [10, 10]);
+      assert.notEqual(style.getImage(1), style.getHitDetectionImage());
+      assert.instanceOf(style.getHitDetectionImage(), HTMLCanvasElement);
+      assert.strictEqual(style.getHitDetectionImage().width, 20);
     });
 
     it('creates a canvas (non-transparent fill-style)', function () {
@@ -62,36 +61,35 @@ describe('ol/style/RegularShape', function () {
           color: '#FFFF00',
         }),
       });
-      expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([20, 20]);
-      expect(style.getImageSize()).to.eql([20, 20]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10, 10]);
-      // no hit-detection image is created, because non-transparent fill style is set
-      expect(style.getImage(1)).to.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
+      assert.instanceOf(style.getImage(1), HTMLCanvasElement);
+      assert.deepEqual(style.getSize(), [20, 20]);
+      assert.deepEqual(style.getImageSize(), [20, 20]);
+      assert.deepEqual(style.getOrigin(), [0, 0]);
+      assert.deepEqual(style.getAnchor(), [10, 10]);
+      assert.strictEqual(style.getImage(1), style.getHitDetectionImage());
+      assert.instanceOf(style.getHitDetectionImage(), HTMLCanvasElement);
     });
 
     it('sets default displacement [0, 0]', function () {
       const style = new RegularShape({
         radius: 5,
       });
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(0);
-      expect(style.getDisplacement()[1]).to.eql(0);
-      expect(style.getAnchor()).to.eql([5, 5]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 0);
+      assert.deepEqual(style.getDisplacement()[1], 0);
+      assert.deepEqual(style.getAnchor(), [5, 5]);
     });
     it('will use the larger radius to calculate the size', function () {
       let style = new RegularShape({
         radius: 10,
         radius2: 5,
       });
-      expect(style.getSize()).to.eql([20, 20]);
+      assert.deepEqual(style.getSize(), [20, 20]);
       style = new RegularShape({
         radius: 5,
         radius2: 10,
       });
-      expect(style.getSize()).to.eql([20, 20]);
+      assert.deepEqual(style.getSize(), [20, 20]);
     });
 
     it('can use offset', function () {
@@ -99,15 +97,15 @@ describe('ol/style/RegularShape', function () {
         radius: 5,
         displacement: [10, 20],
       });
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(10);
-      expect(style.getDisplacement()[1]).to.eql(20);
-      expect(style.getAnchor()).to.eql([-5, 25]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 10);
+      assert.deepEqual(style.getDisplacement()[1], 20);
+      assert.deepEqual(style.getAnchor(), [-5, 25]);
       style.setDisplacement([20, 10]);
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(20);
-      expect(style.getDisplacement()[1]).to.eql(10);
-      expect(style.getAnchor()).to.eql([-15, 15]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 20);
+      assert.deepEqual(style.getDisplacement()[1], 10);
+      assert.deepEqual(style.getAnchor(), [-15, 15]);
     });
 
     it('scale applies to rendered radius, not offset', function () {
@@ -118,29 +116,29 @@ describe('ol/style/RegularShape', function () {
         displacement: [10, 20],
         scale: 4,
       });
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(10);
-      expect(style.getDisplacement()[1]).to.eql(20);
-      expect(style.getAnchor()).to.eql([2.5, 10]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 10);
+      assert.deepEqual(style.getDisplacement()[1], 20);
+      assert.deepEqual(style.getAnchor(), [2.5, 10]);
       style.setDisplacement([20, 10]);
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(20);
-      expect(style.getDisplacement()[1]).to.eql(10);
-      expect(style.getAnchor()).to.eql([0, 7.5]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 20);
+      assert.deepEqual(style.getDisplacement()[1], 10);
+      assert.deepEqual(style.getAnchor(), [0, 7.5]);
 
       style = new RegularShape({
         radius: 20,
         displacement: [10, 20],
       });
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(10);
-      expect(style.getDisplacement()[1]).to.eql(20);
-      expect(style.getAnchor()).to.eql([10, 40]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 10);
+      assert.deepEqual(style.getDisplacement()[1], 20);
+      assert.deepEqual(style.getAnchor(), [10, 40]);
       style.setDisplacement([20, 10]);
-      expect(style.getDisplacement()).to.an('array');
-      expect(style.getDisplacement()[0]).to.eql(20);
-      expect(style.getDisplacement()[1]).to.eql(10);
-      expect(style.getAnchor()).to.eql([0, 30]);
+      assert.isArray(style.getDisplacement());
+      assert.deepEqual(style.getDisplacement()[0], 20);
+      assert.deepEqual(style.getDisplacement()[1], 10);
+      assert.deepEqual(style.getAnchor(), [0, 30]);
     });
   });
 
@@ -150,8 +148,8 @@ describe('ol/style/RegularShape', function () {
         points: 5,
       });
       const clone = original.clone();
-      expect(clone).to.be.an(RegularShape);
-      expect(clone).to.not.be(original);
+      assert.instanceOf(clone, RegularShape);
+      assert.notEqual(clone, original);
     });
 
     it('copies all values', function () {
@@ -173,20 +171,30 @@ describe('ol/style/RegularShape', function () {
       original.setOpacity(0.5);
       original.setScale(1.5);
       const clone = original.clone();
-      expect(original.getAngle()).to.eql(clone.getAngle());
-      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
-      expect(original.getOpacity()).to.eql(clone.getOpacity());
-      expect(original.getPoints()).to.eql(clone.getPoints());
-      expect(original.getRadius()).to.eql(clone.getRadius());
-      expect(original.getRadius2()).to.eql(clone.getRadius2());
-      expect(original.getRotation()).to.eql(clone.getRotation());
-      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
-      expect(original.getScale()).to.eql(clone.getScale());
-      expect(original.getStroke().getColor()).to.eql(
+      assert.deepEqual(original.getAngle(), clone.getAngle());
+      assert.deepEqual(
+        original.getFill().getColor(),
+        clone.getFill().getColor(),
+      );
+      assert.deepEqual(original.getOpacity(), clone.getOpacity());
+      assert.deepEqual(original.getPoints(), clone.getPoints());
+      assert.deepEqual(original.getRadius(), clone.getRadius());
+      assert.deepEqual(original.getRadius2(), clone.getRadius2());
+      assert.deepEqual(original.getRotation(), clone.getRotation());
+      assert.deepEqual(original.getRotateWithView(), clone.getRotateWithView());
+      assert.deepEqual(original.getScale(), clone.getScale());
+      assert.deepEqual(
+        original.getStroke().getColor(),
         clone.getStroke().getColor(),
       );
-      expect(original.getDisplacement()[0]).to.eql(clone.getDisplacement()[0]);
-      expect(original.getDisplacement()[1]).to.eql(clone.getDisplacement()[1]);
+      assert.deepEqual(
+        original.getDisplacement()[0],
+        clone.getDisplacement()[0],
+      );
+      assert.deepEqual(
+        original.getDisplacement()[1],
+        clone.getDisplacement()[1],
+      );
     });
 
     it('the clone does not reference the same objects as the original', function () {
@@ -200,16 +208,18 @@ describe('ol/style/RegularShape', function () {
         displacement: [0, 5],
       });
       const clone = original.clone();
-      expect(original.getFill()).to.not.be(clone.getFill());
-      expect(original.getStroke()).to.not.be(clone.getStroke());
-      expect(original.getDisplacement()).to.not.be(clone.getDisplacement());
+      assert.notEqual(original.getFill(), clone.getFill());
+      assert.notEqual(original.getStroke(), clone.getStroke());
+      assert.notEqual(original.getDisplacement(), clone.getDisplacement());
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(
+      assert.notDeepEqual(
+        original.getFill().getColor(),
         clone.getFill().getColor(),
       );
-      expect(original.getStroke().getColor()).to.not.eql(
+      assert.notDeepEqual(
+        original.getStroke().getColor(),
         clone.getStroke().getColor(),
       );
     });
@@ -230,9 +240,9 @@ describe('ol/style/RegularShape', function () {
         points: 4,
       });
       style.createPath_(canvas);
-      expect(canvas.arc.callCount).to.be(0);
-      expect(canvas.lineTo.callCount).to.be(4);
-      expect(canvas.closePath.callCount).to.be(1);
+      assert.strictEqual(canvas.arc.callCount, 0);
+      assert.strictEqual(canvas.lineTo.callCount, 4);
+      assert.strictEqual(canvas.closePath.callCount, 1);
     });
     it('doubles the points with radius2', function () {
       const style = new RegularShape({
@@ -241,9 +251,9 @@ describe('ol/style/RegularShape', function () {
         points: 4,
       });
       style.createPath_(canvas);
-      expect(canvas.arc.callCount).to.be(0);
-      expect(canvas.lineTo.callCount).to.be(8);
-      expect(canvas.closePath.callCount).to.be(1);
+      assert.strictEqual(canvas.arc.callCount, 0);
+      assert.strictEqual(canvas.lineTo.callCount, 8);
+      assert.strictEqual(canvas.closePath.callCount, 1);
     });
     it('doubles the points when radius2 equals radius', function () {
       const style = new RegularShape({
@@ -252,9 +262,9 @@ describe('ol/style/RegularShape', function () {
         points: 4,
       });
       style.createPath_(canvas);
-      expect(canvas.arc.callCount).to.be(0);
-      expect(canvas.lineTo.callCount).to.be(8);
-      expect(canvas.closePath.callCount).to.be(1);
+      assert.strictEqual(canvas.arc.callCount, 0);
+      assert.strictEqual(canvas.lineTo.callCount, 8);
+      assert.strictEqual(canvas.closePath.callCount, 1);
     });
   });
 
@@ -282,41 +292,41 @@ describe('ol/style/RegularShape', function () {
     describe('polygon', function () {
       it('sets size to diameter', function () {
         const style = create({strokeWidth: 0});
-        expect(style.getSize()).to.eql([20, 20]);
+        assert.deepEqual(style.getSize(), [20, 20]);
       });
       it('sets size to diameter rounded up', function () {
         const style = create({radius: 9.9, strokeWidth: 0});
-        expect(style.getSize()).to.eql([20, 20]);
+        assert.deepEqual(style.getSize(), [20, 20]);
       });
       it('sets size to diameter plus miter', function () {
         const style = create({});
-        expect(style.getSize()).to.eql([35, 35]);
+        assert.deepEqual(style.getSize(), [35, 35]);
       });
       it('sets size to diameter plus miter with miter limit', function () {
         const style = create({miterLimit: 0});
-        expect(style.getSize()).to.eql([28, 28]);
+        assert.deepEqual(style.getSize(), [28, 28]);
       });
       it('sets size to diameter plus bevel', function () {
         const style = create({lineJoin: 'bevel'});
-        expect(style.getSize()).to.eql([28, 28]);
+        assert.deepEqual(style.getSize(), [28, 28]);
       });
       it('sets size to diameter plus stroke width with round line join', function () {
         const style = create({lineJoin: 'round'});
-        expect(style.getSize()).to.eql([30, 30]);
+        assert.deepEqual(style.getSize(), [30, 30]);
       });
     });
     describe('star', function () {
       it('sets size to diameter plus miter r1 > r2', function () {
         const style = create({radius2: 1, miterLimit: 100});
-        expect(style.getSize()).to.eql([152, 152]);
+        assert.deepEqual(style.getSize(), [152, 152]);
       });
       it('sets size to diameter plus miter r1 < r2', function () {
         const style = create({radius2: 2, points: 7, miterLimit: 100});
-        expect(style.getSize()).to.eql([116, 116]);
+        assert.deepEqual(style.getSize(), [116, 116]);
       });
       it('sets size with spokes through center and outer bevel', function () {
         const style = create({radius2: 80, points: 9, strokeWidth: 90});
-        expect(style.getSize()).to.eql([213, 213]);
+        assert.deepEqual(style.getSize(), [213, 213]);
       });
     });
   });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
@@ -34,6 +35,7 @@ import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 import {parse} from '../../../../../src/ol/xml.js';
+import {assertXmlEqual} from '../../../../util/xml.js';
 
 describe('ol.format.KML', function () {
   let format;
@@ -48,7 +50,7 @@ describe('ol.format.KML', function () {
     });
 
     it('set constant variables', function () {
-      expect(getDefaultStyleArray()).to.be.an(Array);
+      assert.instanceOf(getDefaultStyleArray(), Array);
     });
 
     describe('#readFeatures', function () {
@@ -60,17 +62,17 @@ describe('ol.format.KML', function () {
           '  </Document>' +
           '</kml>';
         const fs = format.readFeatures(text);
-        expect(fs).to.have.length(1);
+        assert.lengthOf(fs, 1);
         const f = fs[0];
-        expect(f).to.be.an(Feature);
+        assert.instanceOf(f, Feature);
         const styleFunction = f.getStyleFunction();
-        expect(styleFunction).not.to.be(undefined);
+        assert.notEqual(styleFunction, undefined);
         const styleArray = styleFunction(f, 0);
-        expect(styleArray).to.be.an(Array);
-        expect(styleArray).to.have.length(1);
+        assert.instanceOf(styleArray, Array);
+        assert.lengthOf(styleArray, 1);
         const style = styleArray[0];
-        expect(style).to.be.an(Style);
-        expect(style).to.be(dfltStyle);
+        assert.instanceOf(style, Style);
+        assert.strictEqual(style, dfltStyle);
       });
     });
   });
@@ -81,18 +83,18 @@ describe('ol.format.KML', function () {
     });
 
     it('set constant variables', function () {
-      expect(getDefaultStyleArray()).to.be.an(Array);
+      assert.instanceOf(getDefaultStyleArray(), Array);
     });
 
     describe('#readProjection', function () {
       it('returns the default projection from document', function () {
         const projection = format.readProjectionFromDocument();
-        expect(projection).to.eql(getProjection('EPSG:4326'));
+        assert.deepEqual(projection, getProjection('EPSG:4326'));
       });
 
       it('returns the default projection from node', function () {
         const projection = format.readProjectionFromNode();
-        expect(projection).to.eql(getProjection('EPSG:4326'));
+        assert.deepEqual(projection, getProjection('EPSG:4326'));
       });
     });
 
@@ -104,10 +106,10 @@ describe('ol.format.KML', function () {
             '  <Placemark id="foo"/>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getId()).to.be('foo');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.getId(), 'foo');
         });
 
         it('treats a missing id as undefined', function () {
@@ -116,10 +118,10 @@ describe('ol.format.KML', function () {
             '  <Placemark/>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getId()).to.be(undefined);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.getId(), undefined);
         });
 
         it('can write a Feature', function () {
@@ -133,7 +135,7 @@ describe('ol.format.KML', function () {
             ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark/>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write a Feature as string', function () {
@@ -147,7 +149,7 @@ describe('ol.format.KML', function () {
             ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark/>' +
             '</kml>';
-          expect(parse(node)).to.xmleql(parse(text));
+          assertXmlEqual(parse(node), parse(text));
         });
 
         it("can write a Feature's id", function () {
@@ -163,7 +165,7 @@ describe('ol.format.KML', function () {
             ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark id="foo"/>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
       });
 
@@ -174,11 +176,11 @@ describe('ol.format.KML', function () {
             '  <Placemark/>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be(null);
+          assert.strictEqual(g, null);
         });
 
         it('can write feature with null geometries', function () {
@@ -192,7 +194,7 @@ describe('ol.format.KML', function () {
             ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark/>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write properties', function () {
@@ -221,7 +223,7 @@ describe('ol.format.KML', function () {
             '    </LineString>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read Point geometries', function () {
@@ -240,14 +242,14 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
-          expect(g.getCoordinates()).to.eql([1, 2, 3]);
-          expect(g.get('extrude')).to.be(false);
-          expect(g.get('altitudeMode')).to.be('absolute');
+          assert.instanceOf(g, Point);
+          assert.deepEqual(g.getCoordinates(), [1, 2, 3]);
+          assert.strictEqual(g.get('extrude'), false);
+          assert.strictEqual(g.get('altitudeMode'), 'absolute');
         });
 
         it('can transform and read Point geometries', function () {
@@ -266,14 +268,14 @@ describe('ol.format.KML', function () {
           const fs = format.readFeatures(text, {
             featureProjection: 'EPSG:3857',
           });
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
+          assert.instanceOf(g, Point);
           const expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
-          expect(g.getCoordinates()).to.eql(expectedPoint);
+          assert.deepEqual(g.getCoordinates(), expectedPoint);
         });
 
         it('can read a single Point geometry', function () {
@@ -290,10 +292,10 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const f = format.readFeature(text);
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
-          expect(g.getCoordinates()).to.eql([1, 2, 3]);
+          assert.instanceOf(g, Point);
+          assert.deepEqual(g.getCoordinates(), [1, 2, 3]);
         });
 
         it('can transform and read a single Point geometry', function () {
@@ -312,12 +314,12 @@ describe('ol.format.KML', function () {
           const f = format.readFeature(text, {
             featureProjection: 'EPSG:3857',
           });
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
+          assert.instanceOf(g, Point);
           const expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
-          expect(g.getCoordinates()).to.eql(expectedPoint);
+          assert.deepEqual(g.getCoordinates(), expectedPoint);
         });
 
         it('can write XY Point geometries', function () {
@@ -337,7 +339,7 @@ describe('ol.format.KML', function () {
             '    </Point>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZ Point geometries', function () {
@@ -357,7 +359,7 @@ describe('ol.format.KML', function () {
             '    </Point>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can transform and write XYZ Point geometries', function () {
@@ -394,7 +396,7 @@ describe('ol.format.KML', function () {
             '    </Point>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
 
           removeTransform(getProjection('EPSG:4326'), getProjection('double'));
           removeTransform(getProjection('double'), getProjection('EPSG:4326'));
@@ -417,7 +419,7 @@ describe('ol.format.KML', function () {
             '    </Point>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZM Point geometries', function () {
@@ -437,7 +439,7 @@ describe('ol.format.KML', function () {
             '    </Point>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read LineString geometries', function () {
@@ -453,18 +455,18 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(LineString);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, LineString);
+          assert.deepEqual(g.getCoordinates(), [
             [1, 2, 3],
             [4, 5, 6],
           ]);
-          expect(g.get('extrude')).to.be(false);
-          expect(g.get('tessellate')).to.be(true);
-          expect(g.get('altitudeMode')).to.be('absolute');
+          assert.strictEqual(g.get('extrude'), false);
+          assert.strictEqual(g.get('tessellate'), true);
+          assert.strictEqual(g.get('altitudeMode'), 'absolute');
         });
 
         it('can read XY coordinates', function () {
@@ -480,12 +482,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(LineString);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, LineString);
+          assert.deepEqual(g.getCoordinates(), [
             [1, 2, 0],
             [3, 4, 0],
           ]);
@@ -504,12 +506,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(LineString);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, LineString);
+          assert.deepEqual(g.getCoordinates(), [
             [1, 2, 0],
             [3, 4, 0],
           ]);
@@ -538,7 +540,7 @@ describe('ol.format.KML', function () {
             '    </LineString>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZ LineString geometries', function () {
@@ -564,7 +566,7 @@ describe('ol.format.KML', function () {
             '    </LineString>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYM LineString geometries', function () {
@@ -590,7 +592,7 @@ describe('ol.format.KML', function () {
             '    </LineString>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZM LineString geometries', function () {
@@ -616,7 +618,7 @@ describe('ol.format.KML', function () {
             '    </LineString>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read LinearRing geometries', function () {
@@ -629,12 +631,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, Polygon);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [1, 2, 3],
               [4, 5, 6],
@@ -667,7 +669,7 @@ describe('ol.format.KML', function () {
             '    </LinearRing>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZ LinearRing geometries', function () {
@@ -694,7 +696,7 @@ describe('ol.format.KML', function () {
             '    </LinearRing>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYM LinearRing geometries', function () {
@@ -721,7 +723,7 @@ describe('ol.format.KML', function () {
             '    </LinearRing>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZM LinearRing geometries', function () {
@@ -748,7 +750,7 @@ describe('ol.format.KML', function () {
             '    </LinearRing>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read Polygon geometries', function () {
@@ -767,12 +769,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, Polygon);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [0, 0, 1],
               [0, 5, 1],
@@ -780,8 +782,8 @@ describe('ol.format.KML', function () {
               [5, 0, 3],
             ],
           ]);
-          expect(g.get('extrude')).to.be(false);
-          expect(g.get('altitudeMode')).to.be('absolute');
+          assert.strictEqual(g.get('extrude'), false);
+          assert.strictEqual(g.get('altitudeMode'), 'absolute');
         });
 
         it('can write XY Polygon geometries', function () {
@@ -816,7 +818,7 @@ describe('ol.format.KML', function () {
             '    </Polygon>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZ Polygon geometries', function () {
@@ -853,7 +855,7 @@ describe('ol.format.KML', function () {
             '    </Polygon>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYM Polygon geometries', function () {
@@ -890,7 +892,7 @@ describe('ol.format.KML', function () {
             '    </Polygon>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write XYZM Polygon geometries', function () {
@@ -925,7 +927,7 @@ describe('ol.format.KML', function () {
             '    </Polygon>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read complex Polygon geometries', function () {
@@ -952,12 +954,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, Polygon);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [0, 0, 1],
               [0, 5, 1],
@@ -1001,12 +1003,12 @@ describe('ol.format.KML', function () {
               </Placemark>
             </kml>`;
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Polygon);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, Polygon);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [0, 0, 1],
               [0, 5, 1],
@@ -1081,7 +1083,7 @@ describe('ol.format.KML', function () {
             '    </Polygon>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read MultiPolygon geometries', function () {
@@ -1109,12 +1111,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiPolygon);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, MultiPolygon);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [
                 [0, 0, 0],
@@ -1132,14 +1134,14 @@ describe('ol.format.KML', function () {
               ],
             ],
           ]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(undefined);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be(undefined);
+          assert.isArray(g.get('extrude'));
+          assert.lengthOf(g.get('extrude'), 2);
+          assert.strictEqual(g.get('extrude')[0], false);
+          assert.strictEqual(g.get('extrude')[1], undefined);
+          assert.isArray(g.get('altitudeMode'));
+          assert.lengthOf(g.get('altitudeMode'), 2);
+          assert.strictEqual(g.get('altitudeMode')[0], 'absolute');
+          assert.strictEqual(g.get('altitudeMode')[1], undefined);
         });
 
         it('can write MultiPolygon geometries', function () {
@@ -1192,7 +1194,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read MultiPoint geometries', function () {
@@ -1214,23 +1216,23 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiPoint);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, MultiPoint);
+          assert.deepEqual(g.getCoordinates(), [
             [1, 2, 3],
             [4, 5, 6],
           ]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(true);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be('clampToGround');
+          assert.isArray(g.get('extrude'));
+          assert.lengthOf(g.get('extrude'), 2);
+          assert.strictEqual(g.get('extrude')[0], false);
+          assert.strictEqual(g.get('extrude')[1], true);
+          assert.isArray(g.get('altitudeMode'));
+          assert.lengthOf(g.get('altitudeMode'), 2);
+          assert.strictEqual(g.get('altitudeMode')[0], 'absolute');
+          assert.strictEqual(g.get('altitudeMode')[1], 'clampToGround');
         });
 
         it('can write MultiPoint geometries', function () {
@@ -1261,7 +1263,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read MultiLineString geometries', function () {
@@ -1282,12 +1284,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiLineString);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, MultiLineString);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [1, 2, 3],
               [4, 5, 6],
@@ -1297,18 +1299,18 @@ describe('ol.format.KML', function () {
               [10, 11, 12],
             ],
           ]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(undefined);
-          expect(g.get('tessellate')).to.be.an('array');
-          expect(g.get('tessellate')).to.have.length(2);
-          expect(g.get('tessellate')[0]).to.be(false);
-          expect(g.get('tessellate')[1]).to.be(undefined);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be(undefined);
+          assert.isArray(g.get('extrude'));
+          assert.lengthOf(g.get('extrude'), 2);
+          assert.strictEqual(g.get('extrude')[0], false);
+          assert.strictEqual(g.get('extrude')[1], undefined);
+          assert.isArray(g.get('tessellate'));
+          assert.lengthOf(g.get('tessellate'), 2);
+          assert.strictEqual(g.get('tessellate')[0], false);
+          assert.strictEqual(g.get('tessellate')[1], undefined);
+          assert.isArray(g.get('altitudeMode'));
+          assert.lengthOf(g.get('altitudeMode'), 2);
+          assert.strictEqual(g.get('altitudeMode')[0], 'absolute');
+          assert.strictEqual(g.get('altitudeMode')[1], undefined);
         });
 
         it('can write MultiLineString geometries', function () {
@@ -1345,7 +1347,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read MultiPolygon geometries', function () {
@@ -1373,12 +1375,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiPolygon);
-          expect(g.getCoordinates()).to.eql([
+          assert.instanceOf(g, MultiPolygon);
+          assert.deepEqual(g.getCoordinates(), [
             [
               [
                 [0, 0, 0],
@@ -1396,14 +1398,14 @@ describe('ol.format.KML', function () {
               ],
             ],
           ]);
-          expect(g.get('extrude')).to.be.an('array');
-          expect(g.get('extrude')).to.have.length(2);
-          expect(g.get('extrude')[0]).to.be(false);
-          expect(g.get('extrude')[1]).to.be(undefined);
-          expect(g.get('altitudeMode')).to.be.an('array');
-          expect(g.get('altitudeMode')).to.have.length(2);
-          expect(g.get('altitudeMode')[0]).to.be('absolute');
-          expect(g.get('altitudeMode')[1]).to.be(undefined);
+          assert.isArray(g.get('extrude'));
+          assert.lengthOf(g.get('extrude'), 2);
+          assert.strictEqual(g.get('extrude')[0], false);
+          assert.strictEqual(g.get('extrude')[1], undefined);
+          assert.isArray(g.get('altitudeMode'));
+          assert.lengthOf(g.get('altitudeMode'), 2);
+          assert.strictEqual(g.get('altitudeMode')[0], 'absolute');
+          assert.strictEqual(g.get('altitudeMode')[1], undefined);
         });
 
         it('can write MultiPolygon geometries', function () {
@@ -1456,7 +1458,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read empty GeometryCollection geometries', function () {
@@ -1468,12 +1470,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
-          expect(g.getGeometries()).to.be.empty();
+          assert.instanceOf(g, GeometryCollection);
+          assert.isEmpty(g.getGeometries());
         });
 
         it('can read heterogeneous GeometryCollection geometries', function () {
@@ -1501,17 +1503,17 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
+          assert.instanceOf(g, GeometryCollection);
           const gs = g.getGeometries();
-          expect(gs).to.have.length(4);
-          expect(gs[0]).to.be.an(Point);
-          expect(gs[1]).to.be.an(LineString);
-          expect(gs[2]).to.be.an(Polygon);
-          expect(gs[3]).to.be.an(Polygon);
+          assert.lengthOf(gs, 4);
+          assert.instanceOf(gs[0], Point);
+          assert.instanceOf(gs[1], LineString);
+          assert.instanceOf(gs[2], Polygon);
+          assert.instanceOf(gs[3], Polygon);
         });
 
         it('can read nested GeometryCollection geometries', function () {
@@ -1525,14 +1527,14 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
+          assert.instanceOf(g, GeometryCollection);
           const gs = g.getGeometries();
-          expect(gs).to.have.length(1);
-          expect(gs[0]).to.be.an(GeometryCollection);
+          assert.lengthOf(gs, 1);
+          assert.instanceOf(gs[0], GeometryCollection);
         });
 
         it('can read nested MultiPolygon geometries', function () {
@@ -1562,16 +1564,16 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
+          assert.instanceOf(g, GeometryCollection);
           const gs = g.getGeometries();
-          expect(gs).to.have.length(1);
+          assert.lengthOf(gs, 1);
           const m = gs[0];
-          expect(m).to.be.an(MultiPolygon);
-          expect(m.getCoordinates()).to.eql([
+          assert.instanceOf(m, MultiPolygon);
+          assert.deepEqual(m.getCoordinates(), [
             [
               [
                 [0, 0, 0],
@@ -1589,14 +1591,14 @@ describe('ol.format.KML', function () {
               ],
             ],
           ]);
-          expect(m.get('extrude')).to.be.an('array');
-          expect(m.get('extrude')).to.have.length(2);
-          expect(m.get('extrude')[0]).to.be(false);
-          expect(m.get('extrude')[1]).to.be(undefined);
-          expect(m.get('altitudeMode')).to.be.an('array');
-          expect(m.get('altitudeMode')).to.have.length(2);
-          expect(m.get('altitudeMode')[0]).to.be('absolute');
-          expect(m.get('altitudeMode')[1]).to.be(undefined);
+          assert.isArray(m.get('extrude'));
+          assert.lengthOf(m.get('extrude'), 2);
+          assert.strictEqual(m.get('extrude')[0], false);
+          assert.strictEqual(m.get('extrude')[1], undefined);
+          assert.isArray(m.get('altitudeMode'));
+          assert.lengthOf(m.get('altitudeMode'), 2);
+          assert.strictEqual(m.get('altitudeMode')[0], 'absolute');
+          assert.strictEqual(m.get('altitudeMode')[1], undefined);
         });
 
         it('can write GeometryCollection geometries', function () {
@@ -1703,7 +1705,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read gx:Track', function () {
@@ -1724,11 +1726,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(LineString);
+          assert.instanceOf(g, LineString);
         });
 
         it('can read gx:MultiTrack', function () {
@@ -1751,14 +1753,14 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(MultiLineString);
+          assert.instanceOf(g, MultiLineString);
           const gs = g.getLineStrings();
-          expect(gs).to.have.length(2);
-          expect(gs[0]).to.be.an(LineString);
+          assert.lengthOf(gs, 2);
+          assert.instanceOf(gs[0], LineString);
         });
 
         it('can read dateTime', function () {
@@ -1784,13 +1786,15 @@ describe('ol.format.KML', function () {
           const f = fs[0];
           const g = f.getGeometry();
           const flatCoordinates = g.flatCoordinates;
-          expect(flatCoordinates[3]).to.be.eql(Date.UTC(2014, 0, 1, 0, 0, 0));
-          expect(flatCoordinates[7]).to.be.eql(Date.UTC(2014, 1, 1, 0, 0, 0));
-          expect(flatCoordinates[11]).to.be.eql(Date.UTC(2014, 1, 6, 0, 0, 0));
-          expect(flatCoordinates[15]).to.be.eql(
+          assert.deepEqual(flatCoordinates[3], Date.UTC(2014, 0, 1, 0, 0, 0));
+          assert.deepEqual(flatCoordinates[7], Date.UTC(2014, 1, 1, 0, 0, 0));
+          assert.deepEqual(flatCoordinates[11], Date.UTC(2014, 1, 6, 0, 0, 0));
+          assert.deepEqual(
+            flatCoordinates[15],
             Date.UTC(2014, 1, 6, 19, 39, 3),
           );
-          expect(flatCoordinates[19]).to.be.eql(
+          assert.deepEqual(
+            flatCoordinates[19],
             Date.UTC(2014, 1, 6, 16, 39, 10),
           );
         });
@@ -1806,11 +1810,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('open')).to.be(true);
-          expect(f.get('visibility')).to.be(false);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('open'), true);
+          assert.strictEqual(f.get('visibility'), false);
         });
 
         it('can read string attributes', function () {
@@ -1824,13 +1828,13 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('address')).to.be('My address');
-          expect(f.get('description')).to.be('My description');
-          expect(f.get('name')).to.be('My name');
-          expect(f.get('phoneNumber')).to.be('My phone number');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('address'), 'My address');
+          assert.strictEqual(f.get('description'), 'My description');
+          assert.strictEqual(f.get('name'), 'My name');
+          assert.strictEqual(f.get('phoneNumber'), 'My phone number');
         });
 
         it('strips leading and trailing whitespace in strings', function () {
@@ -1841,10 +1845,10 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('description')).to.be('My  description');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('description'), 'My  description');
         });
 
         it('can read CDATA sections in strings', function () {
@@ -1855,10 +1859,10 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('name')).to.be('My name in CDATA');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('name'), 'My name in CDATA');
         });
 
         it('strips leading and trailing whitespace around CDATA', function () {
@@ -1869,10 +1873,10 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('name')).to.be('My name in CDATA');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('name'), 'My name in CDATA');
         });
 
         it("can write Feature's string attributes", function () {
@@ -1896,7 +1900,7 @@ describe('ol.format.KML', function () {
             '    <description>My description</description>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it("can write Feature's boolean attributes", function () {
@@ -1916,7 +1920,7 @@ describe('ol.format.KML', function () {
             '    <visibility>0</visibility>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
       });
 
@@ -1941,19 +1945,19 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const extent = f.get('extent');
-          expect(extent).to.be.an(Array);
-          expect(extent).to.have.length(4);
-          expect(extent[0]).to.be(1.384133);
-          expect(extent[1]).to.be(43.540908);
-          expect(extent[2]).to.be(1.514582);
-          expect(extent[3]).to.be(43.651015);
-          expect(f.get('altitudeMode')).to.be('relativeToGround');
-          expect(f.get('minAltitude')).to.be(133.57);
-          expect(f.get('maxAltitude')).to.be(146.16);
+          assert.instanceOf(extent, Array);
+          assert.lengthOf(extent, 4);
+          assert.strictEqual(extent[0], 1.384133);
+          assert.strictEqual(extent[1], 43.540908);
+          assert.strictEqual(extent[2], 1.514582);
+          assert.strictEqual(extent[3], 43.651015);
+          assert.strictEqual(f.get('altitudeMode'), 'relativeToGround');
+          assert.strictEqual(f.get('minAltitude'), 133.57);
+          assert.strictEqual(f.get('maxAltitude'), 146.16);
         });
 
         it('can read Lod', function () {
@@ -1973,13 +1977,13 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('minLodPixels')).to.be(128);
-          expect(f.get('maxLodPixels')).to.be(2048);
-          expect(f.get('minFadeExtent')).to.be(0.2);
-          expect(f.get('maxFadeExtent')).to.be(10.5);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('minLodPixels'), 128);
+          assert.strictEqual(f.get('maxLodPixels'), 2048);
+          assert.strictEqual(f.get('minFadeExtent'), 0.2);
+          assert.strictEqual(f.get('maxFadeExtent'), 10.5);
         });
       });
 
@@ -2003,7 +2007,7 @@ describe('ol.format.KML', function () {
             '    </ExtendedData>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write ExtendedData with values', function () {
@@ -2029,7 +2033,7 @@ describe('ol.format.KML', function () {
             '    </ExtendedData>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write ExtendedData pair with displayName and value', function () {
@@ -2058,7 +2062,7 @@ describe('ol.format.KML', function () {
             '    </ExtendedData>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write ExtendedData after Style tag', function () {
@@ -2094,7 +2098,7 @@ describe('ol.format.KML', function () {
             '    </ExtendedData>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can read ExtendedData', function () {
@@ -2109,11 +2113,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getProperties()).to.only.have.keys(['foo', 'geometry']);
-          expect(f.get('foo')).to.be('bar');
+          assert.instanceOf(f, Feature);
+          assert.hasAllKeys(f.getProperties(), ['foo', 'geometry']);
+          assert.strictEqual(f.get('foo'), 'bar');
         });
 
         it('can read ExtendedData with no values', function () {
@@ -2129,16 +2133,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getProperties()).to.only.have.keys([
-            'foo',
-            'bar',
-            'geometry',
-          ]);
-          expect(f.get('foo')).to.be('200');
-          expect(f.get('bar')).to.be(undefined);
+          assert.instanceOf(f, Feature);
+          assert.hasAllKeys(f.getProperties(), ['foo', 'bar', 'geometry']);
+          assert.strictEqual(f.get('foo'), '200');
+          assert.strictEqual(f.get('bar'), undefined);
         });
 
         it('can read ExtendedData with displayName instead of name', function () {
@@ -2154,10 +2154,10 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('foo')).to.be('bar');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('foo'), 'bar');
         });
 
         it('can read SchemaData', function () {
@@ -2173,11 +2173,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('capital')).to.be('London');
-          expect(f.get('population')).to.be('60000000');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('capital'), 'London');
+          assert.strictEqual(f.get('population'), '60000000');
         });
 
         it('can read ExtendedData with displayName', function () {
@@ -2197,12 +2197,12 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('capital')).to.be('London');
-          expect(f.get('country').value).to.be('United-Kingdom');
-          expect(f.get('country').displayName).to.be('Country');
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('capital'), 'London');
+          assert.strictEqual(f.get('country').value, 'United-Kingdom');
+          assert.strictEqual(f.get('country').displayName, 'Country');
         });
       });
 
@@ -2218,23 +2218,22 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getFill().getColor()).to.eql([255, 255, 255, 1]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          // FIXME check image style
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
-          expect(style.getStroke().getColor()).to.eql([255, 255, 255, 1]);
-          expect(style.getStroke().getWidth()).to.be(1);
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.deepEqual(style.getFill().getColor(), [255, 255, 255, 1]);
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
+          assert.deepEqual(style.getStroke().getColor(), [255, 255, 255, 1]);
+          assert.strictEqual(style.getStroke().getWidth(), 1);
         });
 
         it("can read a feature's IconStyle using default crossOrigin", function () {
@@ -2251,31 +2250,32 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('http://foo.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.deepEqual(imageStyle.getImage().crossOrigin, 'anonymous');
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's IconStyle (and set the crossOrigin option)", function () {
@@ -2293,31 +2293,32 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('http://foo.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.be(null);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.strictEqual(imageStyle.getImage().crossOrigin, null);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's IconStyle and apply an iconUrlFunction", function () {
@@ -2339,31 +2340,32 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('https://foo.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.deepEqual(imageStyle.getImage().crossOrigin, 'anonymous');
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's IconStyle, load the image and reset the scale", function (done) {
@@ -2385,34 +2387,34 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = /** @type {Array<Style>} */ (styleFunction(f, 0));
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(imageStyle.getSrc()).to.eql('spec/ol/data/dot.png');
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(imageStyle.getSrc(), 'spec/ol/data/dot.png');
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.deepEqual(imageStyle.getImage().crossOrigin, 'anonymous');
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
 
           imageStyle.listenImageChange(function (evt) {
             if (imageStyle.getImageState() === ImageState.LOADED) {
-              expect(imageStyle.getSize()).to.eql([20, 20]);
-              expect(imageStyle.getScale()).to.be(1.6); // 32 / 20
+              assert.deepEqual(imageStyle.getSize(), [20, 20]);
+              assert.strictEqual(imageStyle.getScale(), 1.6);
               done();
             }
           });
@@ -2473,55 +2475,57 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(5);
+          assert.lengthOf(fs, 5);
           fs.forEach(function (f) {
-            expect(f).to.be.an(Feature);
-            expect(f.getId()).to.be.within(1, 5);
+            assert.instanceOf(f, Feature);
+            assert.isAtLeast(Number(f.getId()), 1);
+            assert.isAtMost(Number(f.getId()), 5);
             const styleFunction = f.getStyleFunction();
-            expect(styleFunction).not.to.be(undefined);
+            assert.notEqual(styleFunction, undefined);
             const styleArray = styleFunction(f, 0);
-            expect(styleArray).to.be.an(Array);
-            expect(styleArray).to.have.length(1);
+            assert.instanceOf(styleArray, Array);
+            assert.lengthOf(styleArray, 1);
             const style = styleArray[0];
-            expect(style).to.be.an(Style);
-            expect(style.getFill()).to.be(getDefaultFillStyle());
-            expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+            assert.instanceOf(style, Style);
+            assert.strictEqual(style.getFill(), getDefaultFillStyle());
+            assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
             const imageStyle = style.getImage();
-            expect(imageStyle).to.be.an(Icon);
-            expect(new URL(imageStyle.getSrc()).href).to.eql(
+            assert.instanceOf(imageStyle, Icon);
+            assert.deepEqual(
+              new URL(imageStyle.getSrc()).href,
               new URL('http://foo.png').href,
             );
-            expect(imageStyle.anchor_).to.be.an(Array);
-            expect(imageStyle.anchor_).to.have.length(2);
+            assert.instanceOf(imageStyle.anchor_, Array);
+            assert.lengthOf(imageStyle.anchor_, 2);
             if (f.getId() == 1) {
-              expect(imageStyle.anchor_[0]).to.be(0.5);
-              expect(imageStyle.anchor_[1]).to.be(0.5);
-              expect(imageStyle.anchorOrigin_).to.be('bottom-left');
-              expect(imageStyle.anchorXUnits_).to.be('fraction');
-              expect(imageStyle.anchorYUnits_).to.be('fraction');
+              assert.strictEqual(imageStyle.anchor_[0], 0.5);
+              assert.strictEqual(imageStyle.anchor_[1], 0.5);
+              assert.strictEqual(imageStyle.anchorOrigin_, 'bottom-left');
+              assert.strictEqual(imageStyle.anchorXUnits_, 'fraction');
+              assert.strictEqual(imageStyle.anchorYUnits_, 'fraction');
             } else {
-              expect(imageStyle.anchor_[0]).to.be(5);
-              expect(imageStyle.anchor_[1]).to.be(5);
-              expect(imageStyle.anchorXUnits_).to.be('pixels');
-              expect(imageStyle.anchorYUnits_).to.be('pixels');
+              assert.strictEqual(imageStyle.anchor_[0], 5);
+              assert.strictEqual(imageStyle.anchor_[1], 5);
+              assert.strictEqual(imageStyle.anchorXUnits_, 'pixels');
+              assert.strictEqual(imageStyle.anchorYUnits_, 'pixels');
               if (f.getId() == 2) {
-                expect(imageStyle.anchorOrigin_).to.be('bottom-left');
+                assert.strictEqual(imageStyle.anchorOrigin_, 'bottom-left');
               }
               if (f.getId() == 3) {
-                expect(imageStyle.anchorOrigin_).to.be('bottom-right');
+                assert.strictEqual(imageStyle.anchorOrigin_, 'bottom-right');
               }
               if (f.getId() == 4) {
-                expect(imageStyle.anchorOrigin_).to.be('top-left');
+                assert.strictEqual(imageStyle.anchorOrigin_, 'top-left');
               }
               if (f.getId() == 5) {
-                expect(imageStyle.anchorOrigin_).to.be('top-right');
+                assert.strictEqual(imageStyle.anchorOrigin_, 'top-right');
               }
             }
-            expect(imageStyle.getRotation()).to.eql(0);
-            expect(imageStyle.getSize()).to.be(null);
-            expect(imageStyle.getScale()).to.be(1);
-            expect(style.getText()).to.be(getDefaultTextStyle());
-            expect(style.getZIndex()).to.be(undefined);
+            assert.deepEqual(imageStyle.getRotation(), 0);
+            assert.strictEqual(imageStyle.getSize(), null);
+            assert.strictEqual(imageStyle.getScale(), 1);
+            assert.strictEqual(style.getText(), getDefaultTextStyle());
+            assert.strictEqual(style.getZIndex(), undefined);
           });
         });
 
@@ -2547,27 +2551,27 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
           imageStyle.iconImage_.size_ = [144, 192];
-          expect(imageStyle.getSize()).to.eql([48, 48]);
-          expect(imageStyle.getAnchor()).to.eql([24, 36]);
-          expect(imageStyle.getOrigin()).to.eql([24, 108]);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getScale()).to.eql(2.0); // 3.0 * 32 / 48
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.deepEqual(imageStyle.getSize(), [48, 48]);
+          assert.deepEqual(imageStyle.getAnchor(), [24, 36]);
+          assert.deepEqual(imageStyle.getOrigin(), [24, 108]);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.deepEqual(imageStyle.getScale(), 2.0);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's IconStyle and set color of image", () => {
@@ -2586,19 +2590,19 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle.getColor()).to.eql([0xff, 0, 0, 0xff / 255]);
+          assert.deepEqual(imageStyle.getColor(), [0xff, 0, 0, 0xff / 255]);
         });
 
         it("can read a feature's LabelStyle", function () {
@@ -2614,31 +2618,31 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const textStyle = style.getText();
-          expect(textStyle).to.be.an(Text);
-          expect(textStyle.getScale()).to.be(0.25);
+          assert.instanceOf(textStyle, Text);
+          assert.strictEqual(textStyle.getScale(), 0.25);
           const textFillStyle = textStyle.getFill();
-          expect(textFillStyle).to.be.an(Fill);
-          expect(textFillStyle.getColor()).to.eql([
+          assert.instanceOf(textFillStyle, Fill);
+          assert.deepEqual(textFillStyle.getColor(), [
             0x78,
             0x56,
             0x34,
             0x12 / 255,
           ]);
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's LineStyle", function () {
@@ -2654,24 +2658,29 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getImage()).to.be(getDefaultImageStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
           const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.instanceOf(strokeStyle, Stroke);
+          assert.deepEqual(strokeStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(strokeStyle.getWidth(), 9);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's PolyStyle", function () {
@@ -2686,23 +2695,28 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          assert.instanceOf(style, Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.instanceOf(fillStyle, Fill);
+          assert.deepEqual(fillStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("can read a feature's LineStyle and PolyStyle", function () {
@@ -2721,26 +2735,36 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          assert.instanceOf(style, Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
+          assert.instanceOf(fillStyle, Fill);
+          assert.deepEqual(fillStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
           const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.instanceOf(strokeStyle, Stroke);
+          assert.deepEqual(strokeStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(strokeStyle.getWidth(), 9);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it("disables the fill when fill is '0'", function () {
@@ -2760,24 +2784,29 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(null);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), null);
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
           const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.instanceOf(strokeStyle, Stroke);
+          assert.deepEqual(strokeStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(strokeStyle.getWidth(), 9);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
 
           const lineString = new LineString([
             [1, 2],
@@ -2825,7 +2854,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text1));
+          assertXmlEqual(node, parse(text1));
         });
 
         it("disables the stroke when outline is '0'", function () {
@@ -2863,55 +2892,73 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 2);
 
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getGeometryFunction()(lineStringFeature)).to.be(
+          assert.instanceOf(style, Style);
+          assert.strictEqual(
+            style.getGeometryFunction()(lineStringFeature),
             lineString,
           );
-          expect(style.getGeometryFunction()(polygonFeature)).to.be(undefined);
-          const gc = style.getGeometryFunction()(collectionFeature);
-          expect(gc).to.be.an(GeometryCollection);
-          const gs = gc.getGeometries();
-          expect(gs).to.be.an(Array);
-          expect(gs).to.have.length(1);
-          expect(gs[0]).to.be.an(LineString);
-          expect(gs[0].getCoordinates()).to.eql(lineString.getCoordinates());
-          const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
-
-          const style1 = styleArray[1];
-          expect(style1).to.be.an(Style);
-          expect(style1.getGeometryFunction()(lineStringFeature)).to.be(
+          assert.strictEqual(
+            style.getGeometryFunction()(polygonFeature),
             undefined,
           );
-          expect(style1.getGeometryFunction()(polygonFeature)).to.be(polygon);
+          const gc = style.getGeometryFunction()(collectionFeature);
+          assert.instanceOf(gc, GeometryCollection);
+          const gs = gc.getGeometries();
+          assert.instanceOf(gs, Array);
+          assert.lengthOf(gs, 1);
+          assert.instanceOf(gs[0], LineString);
+          assert.deepEqual(gs[0].getCoordinates(), lineString.getCoordinates());
+          const fillStyle = style.getFill();
+          assert.instanceOf(fillStyle, Fill);
+          assert.deepEqual(fillStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
+          const strokeStyle = style.getStroke();
+          assert.instanceOf(strokeStyle, Stroke);
+          assert.deepEqual(strokeStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(strokeStyle.getWidth(), 9);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
+
+          const style1 = styleArray[1];
+          assert.instanceOf(style1, Style);
+          assert.strictEqual(
+            style1.getGeometryFunction()(lineStringFeature),
+            undefined,
+          );
+          assert.strictEqual(
+            style1.getGeometryFunction()(polygonFeature),
+            polygon,
+          );
           const gc1 = style1.getGeometryFunction()(collectionFeature);
-          expect(gc1).to.be.an(GeometryCollection);
+          assert.instanceOf(gc1, GeometryCollection);
           const gs1 = gc1.getGeometries();
-          expect(gs1).to.be.an(Array);
-          expect(gs1).to.have.length(1);
-          expect(gs1[0]).to.be.an(Polygon);
-          expect(gs1[0].getCoordinates()).to.eql(polygon.getCoordinates());
-          expect(style1.getFill()).to.be(fillStyle);
-          expect(style1.getStroke()).to.be(null);
-          expect(style1.getZIndex()).to.be(undefined);
+          assert.instanceOf(gs1, Array);
+          assert.lengthOf(gs1, 1);
+          assert.instanceOf(gs1[0], Polygon);
+          assert.deepEqual(gs1[0].getCoordinates(), polygon.getCoordinates());
+          assert.strictEqual(style1.getFill(), fillStyle);
+          assert.strictEqual(style1.getStroke(), null);
+          assert.strictEqual(style1.getZIndex(), undefined);
 
           f.setGeometry(collectionFeature.getGeometry());
           const node = format.writeFeaturesNode(fs);
@@ -2946,7 +2993,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text1));
+          assertXmlEqual(node, parse(text1));
         });
 
         it("disables both fill and stroke when fill and outline are '0'", function () {
@@ -2985,53 +3032,66 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 2);
 
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getGeometryFunction()(lineStringFeature)).to.be(
+          assert.instanceOf(style, Style);
+          assert.strictEqual(
+            style.getGeometryFunction()(lineStringFeature),
             lineString,
           );
-          expect(style.getGeometryFunction()(polygonFeature)).to.be(undefined);
-          const gc = style.getGeometryFunction()(collectionFeature);
-          expect(gc).to.be.an(GeometryCollection);
-          const gs = gc.getGeometries();
-          expect(gs).to.be.an(Array);
-          expect(gs).to.have.length(1);
-          expect(gs[0]).to.be.an(LineString);
-          expect(gs[0].getCoordinates()).to.eql(lineString.getCoordinates());
-          expect(style.getFill()).to.be(null);
-          expect(style.getImage()).to.be(getDefaultImageStyle());
-          const strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(Stroke);
-          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
-
-          const style1 = styleArray[1];
-          expect(style1).to.be.an(Style);
-          expect(style1.getGeometryFunction()(lineStringFeature)).to.be(
+          assert.strictEqual(
+            style.getGeometryFunction()(polygonFeature),
             undefined,
           );
-          expect(style1.getGeometryFunction()(polygonFeature)).to.be(polygon);
+          const gc = style.getGeometryFunction()(collectionFeature);
+          assert.instanceOf(gc, GeometryCollection);
+          const gs = gc.getGeometries();
+          assert.instanceOf(gs, Array);
+          assert.lengthOf(gs, 1);
+          assert.instanceOf(gs[0], LineString);
+          assert.deepEqual(gs[0].getCoordinates(), lineString.getCoordinates());
+          assert.strictEqual(style.getFill(), null);
+          assert.strictEqual(style.getImage(), getDefaultImageStyle());
+          const strokeStyle = style.getStroke();
+          assert.instanceOf(strokeStyle, Stroke);
+          assert.deepEqual(strokeStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
+          assert.strictEqual(strokeStyle.getWidth(), 9);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
+
+          const style1 = styleArray[1];
+          assert.instanceOf(style1, Style);
+          assert.strictEqual(
+            style1.getGeometryFunction()(lineStringFeature),
+            undefined,
+          );
+          assert.strictEqual(
+            style1.getGeometryFunction()(polygonFeature),
+            polygon,
+          );
           const gc1 = style1.getGeometryFunction()(collectionFeature);
-          expect(gc1).to.be.an(GeometryCollection);
+          assert.instanceOf(gc1, GeometryCollection);
           const gs1 = gc1.getGeometries();
-          expect(gs1).to.be.an(Array);
-          expect(gs1).to.have.length(1);
-          expect(gs1[0]).to.be.an(Polygon);
-          expect(gs1[0].getCoordinates()).to.eql(polygon.getCoordinates());
-          expect(style1.getFill()).to.be(null);
-          expect(style1.getStroke()).to.be(null);
-          expect(style1.getZIndex()).to.be(undefined);
+          assert.instanceOf(gs1, Array);
+          assert.lengthOf(gs1, 1);
+          assert.instanceOf(gs1[0], Polygon);
+          assert.deepEqual(gs1[0].getCoordinates(), polygon.getCoordinates());
+          assert.strictEqual(style1.getFill(), null);
+          assert.strictEqual(style1.getStroke(), null);
+          assert.strictEqual(style1.getZIndex(), undefined);
 
           f.setGeometry(collectionFeature.getGeometry());
           const node = format.writeFeaturesNode(fs);
@@ -3066,7 +3126,7 @@ describe('ol.format.KML', function () {
             '    </MultiGeometry>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text1));
+          assertXmlEqual(node, parse(text1));
         });
 
         it('can create text style for named point placemarks (including html character codes)', function () {
@@ -3105,14 +3165,14 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const style = styleFunction(f, 0);
-          expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql("Joe's Test");
+          assert.instanceOf(style, Style);
+          assert.deepEqual(style.getText().getText(), "Joe's Test");
         });
 
         it("can write an feature's icon style", function () {
@@ -3166,7 +3226,7 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('does not write styles when writeStyles option is false', function () {
@@ -3188,7 +3248,7 @@ describe('ol.format.KML', function () {
             '  <Placemark>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('skips image styles that are not icon styles', function () {
@@ -3218,7 +3278,7 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it("can write an feature's text style", function () {
@@ -3254,7 +3314,7 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it("can write an feature's stroke style without fill", function () {
@@ -3285,7 +3345,7 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it("can write an feature's fill style without outline", function () {
@@ -3312,7 +3372,7 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it("can write an feature's fill style and outline", function () {
@@ -3346,7 +3406,7 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '  </Placemark>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
 
         it('can write multiple features with Style', function () {
@@ -3385,7 +3445,7 @@ describe('ol.format.KML', function () {
             '    </Placemark>' +
             '  </Document>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
       });
 
@@ -3409,18 +3469,18 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
+          assert.instanceOf(s, Style);
+          assert.notEqual(s.getFill(), null);
+          assert.deepEqual(s.getFill().getColor(), [0, 0, 0, 0]);
         });
 
         it('can read a normal IconStyle (and set the crossOrigin option)', function () {
@@ -3445,31 +3505,32 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('http://bar.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.be(null);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.strictEqual(imageStyle.getImage().crossOrigin, null);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it('ignores highlight styles', function () {
@@ -3491,17 +3552,17 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s).to.be(getDefaultStyle());
+          assert.instanceOf(s, Style);
+          assert.strictEqual(s, getDefaultStyle());
         });
 
         it('uses normal styles instead of highlight styles', function () {
@@ -3531,18 +3592,18 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
+          assert.instanceOf(s, Style);
+          assert.notEqual(s.getFill(), null);
+          assert.deepEqual(s.getFill().getColor(), [0, 0, 0, 0]);
         });
 
         it('can read normal styleUrls', function () {
@@ -3565,18 +3626,18 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
+          assert.instanceOf(s, Style);
+          assert.notEqual(s.getFill(), null);
+          assert.deepEqual(s.getFill().getColor(), [0, 0, 0, 0]);
         });
 
         it('ignores highlight styleUrls', function () {
@@ -3599,17 +3660,17 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s).to.be(getDefaultStyle());
+          assert.instanceOf(s, Style);
+          assert.strictEqual(s, getDefaultStyle());
         });
 
         it('can use Styles in StyleMaps before they are defined', function () {
@@ -3633,18 +3694,18 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+          assert.instanceOf(s, Style);
+          assert.notEqual(s.getFill(), null);
+          assert.deepEqual(s.getFill().getColor(), [120, 86, 52, 18 / 255]);
         });
 
         it('can use Styles in StyleMaps if # is missing', function () {
@@ -3668,18 +3729,18 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const s = styleArray[0];
-          expect(s).to.be.an(Style);
-          expect(s.getFill()).not.to.be(null);
-          expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+          assert.instanceOf(s, Style);
+          assert.notEqual(s.getFill(), null);
+          assert.deepEqual(s.getFill().getColor(), [120, 86, 52, 18 / 255]);
         });
 
         it('can use IconStyles in StyleMaps before they are defined (and set the crossOrigin option)', function () {
@@ -3706,31 +3767,32 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('http://bar.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.be(null);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.strictEqual(imageStyle.getImage().crossOrigin, null);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
       });
 
@@ -3750,19 +3812,24 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          assert.instanceOf(style, Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+          assert.instanceOf(fillStyle, Fill);
+          assert.deepEqual(fillStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
         });
 
         it('can apply a shared IconStyle to a feature (and set the crossOrigin option)', function () {
@@ -3783,31 +3850,32 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('http://bar.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.be(null);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.strictEqual(imageStyle.getImage().crossOrigin, null);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it('can read a shared style from a Folder', function () {
@@ -3827,19 +3895,24 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
+          assert.instanceOf(style, Style);
           const fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(Fill);
-          expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+          assert.instanceOf(fillStyle, Fill);
+          assert.deepEqual(fillStyle.getColor(), [
+            0x78,
+            0x56,
+            0x34,
+            0x12 / 255,
+          ]);
         });
 
         it('can read a shared IconStyle from a Folder (and set the crossOrigin option)', function () {
@@ -3862,31 +3935,32 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
+          assert.notEqual(styleFunction, undefined);
           const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          assert.instanceOf(styleArray, Array);
+          assert.lengthOf(styleArray, 1);
           const style = styleArray[0];
-          expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(getDefaultFillStyle());
-          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          assert.instanceOf(style, Style);
+          assert.strictEqual(style.getFill(), getDefaultFillStyle());
+          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
           const imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(Icon);
-          expect(new URL(imageStyle.getSrc()).href).to.eql(
+          assert.instanceOf(imageStyle, Icon);
+          assert.deepEqual(
+            new URL(imageStyle.getSrc()).href,
             new URL('http://bar.png').href,
           );
-          expect(imageStyle.getAnchor()).to.be(null);
-          expect(imageStyle.getOrigin()).to.be(null);
-          expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(1);
-          expect(imageStyle.getImage().crossOrigin).to.be(null);
-          expect(style.getText()).to.be(getDefaultTextStyle());
-          expect(style.getZIndex()).to.be(undefined);
+          assert.strictEqual(imageStyle.getAnchor(), null);
+          assert.strictEqual(imageStyle.getOrigin(), null);
+          assert.deepEqual(imageStyle.getRotation(), 0);
+          assert.strictEqual(imageStyle.getSize(), null);
+          assert.strictEqual(imageStyle.getScale(), 1);
+          assert.strictEqual(imageStyle.getImage().crossOrigin, null);
+          assert.strictEqual(style.getText(), getDefaultTextStyle());
+          assert.strictEqual(style.getZIndex(), undefined);
         });
 
         it('can apply a shared style to multiple features', function () {
@@ -3907,20 +3981,20 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(2);
+          assert.lengthOf(fs, 2);
           const f1 = fs[0];
-          expect(f1).to.be.an(Feature);
+          assert.instanceOf(f1, Feature);
           const styleFunction1 = f1.getStyleFunction();
-          expect(styleFunction1).not.to.be(undefined);
+          assert.notEqual(styleFunction1, undefined);
           const styleArray1 = styleFunction1(f1, 0);
-          expect(styleArray1).to.be.an(Array);
+          assert.instanceOf(styleArray1, Array);
           const f2 = fs[1];
-          expect(f2).to.be.an(Feature);
+          assert.instanceOf(f2, Feature);
           const styleFunction2 = f2.getStyleFunction();
-          expect(styleFunction2).not.to.be(undefined);
+          assert.notEqual(styleFunction2, undefined);
           const styleArray2 = styleFunction2(f2, 0);
-          expect(styleArray2).to.be.an(Array);
-          expect(styleArray1).to.be(styleArray2);
+          assert.instanceOf(styleArray2, Array);
+          assert.strictEqual(styleArray1, styleArray2);
         });
       });
 
@@ -3930,7 +4004,7 @@ describe('ol.format.KML', function () {
             '<Document xmlns="http://earth.google.com/kml/2.2">' +
             '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.be.empty();
+          assert.isEmpty(fs);
         });
 
         it('can read a single feature from a Document', function () {
@@ -3940,8 +4014,8 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          assert.lengthOf(fs, 1);
+          assert.instanceOf(fs[0], Feature);
         });
 
         it('can read a single feature from nested Document', function () {
@@ -3953,8 +4027,8 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          assert.lengthOf(fs, 1);
+          assert.instanceOf(fs[0], Feature);
         });
 
         it('can transform and read a single feature from a Document', function () {
@@ -3969,14 +4043,14 @@ describe('ol.format.KML', function () {
           const fs = format.readFeatures(text, {
             featureProjection: 'EPSG:3857',
           });
-          expect(fs).to.have.length(1);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(Point);
+          assert.instanceOf(g, Point);
           const expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
-          expect(g.getCoordinates()).to.eql(expectedPoint);
+          assert.deepEqual(g.getCoordinates(), expectedPoint);
         });
 
         it('can read a multiple features from a Document', function () {
@@ -3988,18 +4062,18 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(2);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('1');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('2');
+          assert.lengthOf(fs, 2);
+          assert.instanceOf(fs[0], Feature);
+          assert.strictEqual(fs[0].getId(), '1');
+          assert.instanceOf(fs[1], Feature);
+          assert.strictEqual(fs[1].getId(), '2');
         });
 
         it('returns no features from an empty Folder', function () {
           const text =
             '<Folder xmlns="http://earth.google.com/kml/2.2">' + '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.be.empty();
+          assert.isEmpty(fs);
         });
 
         it('can read a single feature from a Folder', function () {
@@ -4009,8 +4083,8 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          assert.lengthOf(fs, 1);
+          assert.instanceOf(fs[0], Feature);
         });
 
         it('can read a multiple features from a Folder', function () {
@@ -4022,11 +4096,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(2);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('1');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('2');
+          assert.lengthOf(fs, 2);
+          assert.instanceOf(fs[0], Feature);
+          assert.strictEqual(fs[0].getId(), '1');
+          assert.instanceOf(fs[1], Feature);
+          assert.strictEqual(fs[1].getId(), '2');
         });
 
         it('can read features from Folders nested in Documents', function () {
@@ -4038,8 +4112,8 @@ describe('ol.format.KML', function () {
             '  </Folder>' +
             '</Document>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          assert.lengthOf(fs, 1);
+          assert.instanceOf(fs[0], Feature);
         });
 
         it('can read features from Folders nested in Folders', function () {
@@ -4051,8 +4125,8 @@ describe('ol.format.KML', function () {
             '  </Folder>' +
             '</Folder>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          assert.lengthOf(fs, 1);
+          assert.instanceOf(fs[0], Feature);
         });
 
         it('can read a single feature', function () {
@@ -4060,8 +4134,8 @@ describe('ol.format.KML', function () {
             '<Placemark xmlns="http://earth.google.com/kml/2.2">' +
             '</Placemark>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(Feature);
+          assert.lengthOf(fs, 1);
+          assert.instanceOf(fs[0], Feature);
         });
 
         it('can read features at multiple levels', function () {
@@ -4080,51 +4154,54 @@ describe('ol.format.KML', function () {
             '  </Document>' +
             '</kml>';
           const fs = format.readFeatures(text);
-          expect(fs).to.have.length(5);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('a');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('b');
-          expect(fs[2]).to.be.an(Feature);
-          expect(fs[2].getId()).to.be('c');
-          expect(fs[3]).to.be.an(Feature);
-          expect(fs[3].getId()).to.be('d');
-          expect(fs[4]).to.be.an(Feature);
-          expect(fs[4].getId()).to.be('e');
+          assert.lengthOf(fs, 5);
+          assert.instanceOf(fs[0], Feature);
+          assert.strictEqual(fs[0].getId(), 'a');
+          assert.instanceOf(fs[1], Feature);
+          assert.strictEqual(fs[1].getId(), 'b');
+          assert.instanceOf(fs[2], Feature);
+          assert.strictEqual(fs[2].getId(), 'c');
+          assert.instanceOf(fs[3], Feature);
+          assert.strictEqual(fs[3].getId(), 'd');
+          assert.instanceOf(fs[4], Feature);
+          assert.strictEqual(fs[4].getId(), 'e');
         });
 
         it('supports common namespaces', function () {
-          expect(
+          assert.lengthOf(
             format.readFeatures(
               '<kml xmlns="http://earth.google.com/kml/2.0">' +
                 '  <Placemark/>' +
                 '</kml>',
             ),
-          ).to.have.length(1);
-          expect(
+            1,
+          );
+          assert.lengthOf(
             format.readFeatures(
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
                 '  <Placemark/>' +
                 '</kml>',
             ),
-          ).to.have.length(1);
-          expect(
+            1,
+          );
+          assert.lengthOf(
             format.readFeatures(
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
                 '  <Placemark/>' +
                 '</kml>',
             ),
-          ).to.have.length(1);
+            1,
+          );
         });
 
         it('ignores unknown namespaces', function () {
-          expect(
+          assert.isEmpty(
             format.readFeatures(
               '<kml xmlns="http://example.com/notkml/1.0">' +
                 '  <Placemark/>' +
                 '</kml>',
             ),
-          ).to.be.empty();
+          );
         });
 
         it('can write multiple features', function () {
@@ -4146,7 +4223,7 @@ describe('ol.format.KML', function () {
             '    </Placemark>' +
             '  </Document>' +
             '</kml>';
-          expect(node).to.xmleql(parse(text));
+          assertXmlEqual(node, parse(text));
         });
       });
 
@@ -4157,7 +4234,7 @@ describe('ol.format.KML', function () {
             'application/xml',
           );
           const node = doc.firstChild;
-          expect(readFlatCoordinates(node)).to.be(undefined);
+          assert.strictEqual(readFlatCoordinates(node), undefined);
         });
 
         it('should ignore Points with invalid coordinates', function () {
@@ -4170,11 +4247,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.getGeometry(), null);
         });
 
         it('should ignore LineStrings with invalid coordinates', function () {
@@ -4187,11 +4264,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.getGeometry(), null);
         });
 
         it('should ignore Polygons with no rings', function () {
@@ -4204,11 +4281,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.getGeometry(), null);
         });
 
         it('should ignore Polygons with no outer ring', function () {
@@ -4225,11 +4302,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.getGeometry()).to.be(null);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.getGeometry(), null);
         });
 
         it('should ignore geometries with invalid coordinates', function () {
@@ -4244,13 +4321,13 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
+          assert.instanceOf(f, Feature);
           const g = f.getGeometry();
-          expect(g).to.be.an(GeometryCollection);
-          expect(g.getGeometries()).to.be.empty();
+          assert.instanceOf(g, GeometryCollection);
+          assert.isEmpty(g.getGeometries());
         });
 
         it('should ignore invalid booleans', function () {
@@ -4261,11 +4338,11 @@ describe('ol.format.KML', function () {
             '  </Placemark>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(1);
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 1);
           const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('visibility')).to.be(undefined);
+          assert.instanceOf(f, Feature);
+          assert.strictEqual(f.get('visibility'), undefined);
         });
 
         it('parse all valid features in a Folder, without error', function () {
@@ -4282,18 +4359,18 @@ describe('ol.format.KML', function () {
             '  <Placemark id="e"/>' +
             '</kml>';
           const fs = format.readFeatures(kml);
-          expect(fs).to.be.an(Array);
-          expect(fs).to.have.length(5);
-          expect(fs[0]).to.be.an(Feature);
-          expect(fs[0].getId()).to.be('a');
-          expect(fs[1]).to.be.an(Feature);
-          expect(fs[1].getId()).to.be('b');
-          expect(fs[2]).to.be.an(Feature);
-          expect(fs[2].getId()).to.be('c');
-          expect(fs[3]).to.be.an(Feature);
-          expect(fs[3].getId()).to.be('d');
-          expect(fs[4]).to.be.an(Feature);
-          expect(fs[4].getId()).to.be('e');
+          assert.instanceOf(fs, Array);
+          assert.lengthOf(fs, 5);
+          assert.instanceOf(fs[0], Feature);
+          assert.strictEqual(fs[0].getId(), 'a');
+          assert.instanceOf(fs[1], Feature);
+          assert.strictEqual(fs[1].getId(), 'b');
+          assert.instanceOf(fs[2], Feature);
+          assert.strictEqual(fs[2].getId(), 'c');
+          assert.instanceOf(fs[3], Feature);
+          assert.strictEqual(fs[3].getId(), 'd');
+          assert.instanceOf(fs[4], Feature);
+          assert.strictEqual(fs[4].getId(), 'e');
         });
       });
     });
@@ -4312,72 +4389,84 @@ describe('ol.format.KML', function () {
       });
 
       it('creates 50 features', function () {
-        expect(features).to.have.length(50);
+        assert.lengthOf(features, 50);
       });
 
       it('creates features with heterogeneous geometry collections', function () {
         // FIXME decide if we should instead create features with multiple geoms
         const feature = features[0];
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geometry = feature.getGeometry();
-        expect(geometry).to.be.an(GeometryCollection);
+        assert.instanceOf(geometry, GeometryCollection);
       });
 
       it('creates a Point and a MultiPolygon for Alaska', function () {
         const alaska = features.find(function (feature) {
           return feature.get('name') === 'Alaska';
         });
-        expect(alaska).to.be.an(Feature);
+        assert.instanceOf(alaska, Feature);
         const geometry = alaska.getGeometry();
-        expect(geometry).to.be.an(GeometryCollection);
+        assert.instanceOf(geometry, GeometryCollection);
         const components = geometry.getGeometries();
-        expect(components).to.have.length(2);
-        expect(components[0]).to.be.an(Point);
-        expect(components[1]).to.be.an(MultiPolygon);
+        assert.lengthOf(components, 2);
+        assert.instanceOf(components[0], Point);
+        assert.instanceOf(components[1], MultiPolygon);
       });
 
       it('reads style and icon', function () {
         const f = features[0];
         const styleFunction = f.getStyleFunction();
-        expect(styleFunction).not.to.be(undefined);
+        assert.notEqual(styleFunction, undefined);
         const styleArray = styleFunction(f, 0);
-        expect(styleArray).to.be.an(Array);
-        expect(styleArray).to.have.length(2);
+        assert.instanceOf(styleArray, Array);
+        assert.lengthOf(styleArray, 2);
 
         const style = styleArray[0];
-        expect(style).to.be.an(Style);
+        assert.instanceOf(style, Style);
         const gc = style.getGeometryFunction()(f);
-        expect(gc).to.be.an(GeometryCollection);
+        assert.instanceOf(gc, GeometryCollection);
         const gs = gc.getGeometries();
-        expect(gs).to.be.an(Array);
-        expect(gs).to.have.length(1);
-        expect(gs[0]).to.be.an(Point);
-        expect(gs[0].getCoordinates()).to.eql(
+        assert.instanceOf(gs, Array);
+        assert.lengthOf(gs, 1);
+        assert.instanceOf(gs[0], Point);
+        assert.deepEqual(
+          gs[0].getCoordinates(),
           f.getGeometry().getGeometries()[0].getCoordinates(),
         );
         const imageStyle = style.getImage();
-        expect(imageStyle).to.be.an(Icon);
-        expect(imageStyle.getScale()).to.eql(0.4);
-        expect(imageStyle.getSrc()).to.eql(
+        assert.instanceOf(imageStyle, Icon);
+        assert.deepEqual(imageStyle.getScale(), 0.4);
+        assert.deepEqual(
+          imageStyle.getSrc(),
           'http://maps.google.com/mapfiles/kml/shapes/star.png',
         );
         const textStyle = style.getText();
-        expect(textStyle).to.be.an(Text);
+        assert.instanceOf(textStyle, Text);
         const textFillStyle = textStyle.getFill();
-        expect(textFillStyle).to.be.an(Fill);
-        expect(textFillStyle.getColor()).to.eql([0xff, 0xff, 0x00, 0x99 / 255]);
-        expect(textStyle.getText()).to.eql(f.get('name'));
+        assert.instanceOf(textFillStyle, Fill);
+        assert.deepEqual(textFillStyle.getColor(), [
+          0xff,
+          0xff,
+          0x00,
+          0x99 / 255,
+        ]);
+        assert.deepEqual(textStyle.getText(), f.get('name'));
 
         const style1 = styleArray[1];
-        expect(style1).to.be.an(Style);
-        expect(style1.getGeometryFunction()(f)).to.be(f.getGeometry());
-        expect(style1.getFill()).to.be(null);
-        expect(style1.getImage()).to.be(null);
+        assert.instanceOf(style1, Style);
+        assert.strictEqual(style1.getGeometryFunction()(f), f.getGeometry());
+        assert.strictEqual(style1.getFill(), null);
+        assert.strictEqual(style1.getImage(), null);
         const strokeStyle = style1.getStroke();
-        expect(strokeStyle).to.be.an(Stroke);
-        expect(strokeStyle.getColor()).to.eql([0xff, 0x00, 0xff, 0xff / 255]);
-        expect(strokeStyle.getWidth()).to.be(2);
-        expect(style1.getText()).to.be(null);
+        assert.instanceOf(strokeStyle, Stroke);
+        assert.deepEqual(strokeStyle.getColor(), [
+          0xff,
+          0x00,
+          0xff,
+          0xff / 255,
+        ]);
+        assert.strictEqual(strokeStyle.getWidth(), 2);
+        assert.strictEqual(style1.getText(), null);
       });
     });
 
@@ -4398,7 +4487,7 @@ describe('ol.format.KML', function () {
         const geojsonFormat = new GeoJSON();
         features.forEach(function (feature) {
           const geojsonFeature = geojsonFormat.writeFeatureObject(feature);
-          expect(geojsonFeature.properties).to.be(null);
+          assert.strictEqual(geojsonFeature.properties, null);
           JSON.stringify(geojsonFeature);
         });
       });
@@ -4414,7 +4503,7 @@ describe('ol.format.KML', function () {
           '    </Folder>' +
           '  </Document>' +
           '</kml>';
-        expect(format.readName(kml)).to.be(undefined);
+        assert.strictEqual(format.readName(kml), undefined);
       });
 
       it('returns the name of the first Document', function () {
@@ -4424,7 +4513,7 @@ describe('ol.format.KML', function () {
           '    <name>Document name</name>' +
           '  </Document>' +
           '</kml>';
-        expect(format.readName(kml)).to.be('Document name');
+        assert.strictEqual(format.readName(kml), 'Document name');
       });
 
       it('returns the name of the first Folder', function () {
@@ -4434,7 +4523,7 @@ describe('ol.format.KML', function () {
           '    <name>Folder name</name>' +
           '  </Folder>' +
           '</kml>';
-        expect(format.readName(kml)).to.be('Folder name');
+        assert.strictEqual(format.readName(kml), 'Folder name');
       });
 
       it('returns the name of the first Placemark', function () {
@@ -4444,7 +4533,7 @@ describe('ol.format.KML', function () {
           '    <name>Placemark name</name>' +
           '  </Placemark>' +
           '</kml>';
-        expect(format.readName(kml)).to.be('Placemark name');
+        assert.strictEqual(format.readName(kml), 'Placemark name');
       });
 
       it('searches breadth-first', function () {
@@ -4457,7 +4546,7 @@ describe('ol.format.KML', function () {
           '    <name>Document name</name>' +
           '  </Document>' +
           '</kml>';
-        expect(format.readName(kml)).to.be('Document name');
+        assert.strictEqual(format.readName(kml), 'Document name');
       });
     });
 
@@ -4469,7 +4558,7 @@ describe('ol.format.KML', function () {
           '  </Document>' +
           '</kml>';
         const nl = format.readNetworkLinks(text);
-        expect(nl).to.have.length(0);
+        assert.lengthOf(nl, 0);
       });
 
       it('returns an array of network links', function () {
@@ -4492,12 +4581,13 @@ describe('ol.format.KML', function () {
           '  </Folder>' +
           '</kml>';
         const nl = format.readNetworkLinks(text);
-        expect(nl).to.have.length(2);
-        expect(nl[0].name).to.be('bar');
-        expect(nl[0].href.replace(window.location.origin, '')).to.be(
+        assert.lengthOf(nl, 2);
+        assert.strictEqual(nl[0].name, 'bar');
+        assert.strictEqual(
+          nl[0].href.replace(window.location.origin, ''),
           '/bar/bar.kml',
         );
-        expect(nl[1].href).to.be('http://foo.com/foo.kml');
+        assert.strictEqual(nl[1].href, 'http://foo.com/foo.kml');
       });
     });
 
@@ -4515,10 +4605,10 @@ describe('ol.format.KML', function () {
       });
 
       it('returns an array of network links', function () {
-        expect(nl).to.have.length(2);
-        expect(nl[0].name).to.be('bar');
-        expect(/\/bar\/bar\.kml$/.test(nl[0].href)).to.be.ok();
-        expect(nl[1].href).to.be('http://foo.com/foo.kml');
+        assert.lengthOf(nl, 2);
+        assert.strictEqual(nl[0].name, 'bar');
+        assert.isOk(/\/bar\/bar\.kml$/.test(nl[0].href));
+        assert.strictEqual(nl[1].href, 'http://foo.com/foo.kml');
       });
     });
 
@@ -4566,16 +4656,16 @@ describe('ol.format.KML', function () {
           '  </Folder>' +
           '</kml>';
         const nl = format.readRegion(text);
-        expect(nl).to.have.length(2);
-        expect(nl[0].extent).to.eql([-180, -90, 0, 0]);
-        expect(nl[0].minAltitude).to.be(0);
-        expect(nl[0].maxAltitude).to.be(4000);
-        expect(nl[0].altitudeMode).to.be('clampToGround');
-        expect(nl[0].minLodPixels).to.be(0);
-        expect(nl[0].maxLodPixels).to.be(-1);
-        expect(nl[0].minFadeExtent).to.be(0);
-        expect(nl[0].maxFadeExtent).to.be(0);
-        expect(nl[1].extent).to.eql([0, 0, 180, 90]);
+        assert.lengthOf(nl, 2);
+        assert.deepEqual(nl[0].extent, [-180, -90, 0, 0]);
+        assert.strictEqual(nl[0].minAltitude, 0);
+        assert.strictEqual(nl[0].maxAltitude, 4000);
+        assert.strictEqual(nl[0].altitudeMode, 'clampToGround');
+        assert.strictEqual(nl[0].minLodPixels, 0);
+        assert.strictEqual(nl[0].maxLodPixels, -1);
+        assert.strictEqual(nl[0].minFadeExtent, 0);
+        assert.strictEqual(nl[0].maxFadeExtent, 0);
+        assert.deepEqual(nl[1].extent, [0, 0, 180, 90]);
       });
     });
   });
@@ -4614,21 +4704,21 @@ describe('ol.format.KML', function () {
         '</kml>';
 
       const nl = format.readCamera(text);
-      expect(nl).to.have.length(2);
-      expect(nl[0].Latitude).to.be(11);
-      expect(nl[0].Longitude).to.be(46);
-      expect(nl[0].Altitude).to.be(4000);
-      expect(nl[0].Heading).to.be(18.0);
-      expect(nl[0].Tilt).to.be(85);
-      expect(nl[0].Roll).to.be(0);
-      expect(nl[0].AltitudeMode).to.be('clampToGround');
-      expect(nl[1].Latitude).to.be(22);
-      expect(nl[1].Longitude).to.be(10);
-      expect(nl[1].Altitude).to.be(40);
-      expect(nl[1].Heading).to.be(75);
-      expect(nl[1].Tilt).to.be(30);
-      expect(nl[1].Roll).to.be(80);
-      expect(nl[1].AltitudeMode).to.be('clampToGround');
+      assert.lengthOf(nl, 2);
+      assert.strictEqual(nl[0].Latitude, 11);
+      assert.strictEqual(nl[0].Longitude, 46);
+      assert.strictEqual(nl[0].Altitude, 4000);
+      assert.strictEqual(nl[0].Heading, 18.0);
+      assert.strictEqual(nl[0].Tilt, 85);
+      assert.strictEqual(nl[0].Roll, 0);
+      assert.strictEqual(nl[0].AltitudeMode, 'clampToGround');
+      assert.strictEqual(nl[1].Latitude, 22);
+      assert.strictEqual(nl[1].Longitude, 10);
+      assert.strictEqual(nl[1].Altitude, 40);
+      assert.strictEqual(nl[1].Heading, 75);
+      assert.strictEqual(nl[1].Tilt, 30);
+      assert.strictEqual(nl[1].Roll, 80);
+      assert.strictEqual(nl[1].AltitudeMode, 'clampToGround');
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -55,14 +56,14 @@ describe('ol/layer/WebGLVector', function () {
       const renderer = layer.getRenderer();
       const spy = sinonSpy(renderer, 'dispose');
       layer.dispose();
-      expect(spy.called).to.be(true);
+      assert.strictEqual(spy.called, true);
     });
   });
 
   it('creates a renderer with the given parameters', function () {
     const renderer = layer.getRenderer();
-    expect(renderer).to.be.a(WebGLVectorLayerRenderer);
-    expect(renderer.style_).to.eql([
+    assert.instanceOf(renderer, WebGLVectorLayerRenderer);
+    assert.deepEqual(renderer.style_, [
       {
         'circle-radius': 4,
         'circle-fill-color': ['var', 'fillColor'],
@@ -71,10 +72,10 @@ describe('ol/layer/WebGLVector', function () {
         'fill-color': ['var', 'fillColor'],
       },
     ]);
-    expect(renderer.styleVariables_).to.eql({
+    assert.deepEqual(renderer.styleVariables_, {
       fillColor: 'rgba(255, 0, 0, 0.5)',
     });
-    expect(renderer.hitDetectionEnabled_).to.be(true);
+    assert.strictEqual(renderer.hitDetectionEnabled_, true);
   });
 
   describe('updateStyleVariables()', function () {
@@ -82,10 +83,10 @@ describe('ol/layer/WebGLVector', function () {
       layer.updateStyleVariables({
         fillColor: 'yellow',
       });
-      expect(layer.styleVariables_['fillColor']).to.be('yellow');
+      assert.strictEqual(layer.styleVariables_['fillColor'], 'yellow');
       const renderer = layer.getRenderer();
       const uniforms = renderer.styleRenderer_.uniforms_;
-      expect(uniforms.u_var_fillColor()).to.eql([1, 1, 0, 1]);
+      assert.deepEqual(uniforms.u_var_fillColor(), [1, 1, 0, 1]);
     });
 
     it('can be called before the layer is rendered', function () {
@@ -97,7 +98,7 @@ describe('ol/layer/WebGLVector', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      assert.strictEqual(layer.styleVariables_.foo, 'bam');
     });
 
     it('can be called even if no initial variables are provided', function () {
@@ -106,7 +107,7 @@ describe('ol/layer/WebGLVector', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      assert.strictEqual(layer.styleVariables_.foo, 'bam');
     });
   });
 
@@ -121,26 +122,26 @@ describe('ol/layer/WebGLVector', function () {
         },
       ];
       layer.setStyle(newStyle);
-      expect(layer.style_).to.eql(newStyle);
+      assert.deepEqual(layer.style_, newStyle);
     });
 
     it('disposes of the previous renderer', function () {
       const renderer = layer.getRenderer();
       const spy = sinonSpy(renderer, 'dispose');
       layer.setStyle({});
-      expect(spy.called).to.be(true);
+      assert.strictEqual(spy.called, true);
     });
   });
 
   it('dispatches a precompose event with WebGL context', (done) => {
     let called = false;
     layer.on('precompose', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      assert.instanceOf(event.context, WebGLRenderingContext);
       called = true;
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
 
@@ -150,15 +151,15 @@ describe('ol/layer/WebGLVector', function () {
   it('dispatches a prerender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('prerender', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      assert.instanceOf(event.context, WebGLRenderingContext);
       const mapSize = event.frameState.size;
       const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
-      expect(bottomLeft).to.eql([0, 0]);
+      assert.deepEqual(bottomLeft, [0, 0]);
       called = true;
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
 
@@ -168,11 +169,11 @@ describe('ol/layer/WebGLVector', function () {
   it('dispatches a postrender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('postrender', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      assert.instanceOf(event.context, WebGLRenderingContext);
       const mapSize = event.frameState.size;
       const topRight = getRenderPixel(event, [mapSize[1], 0]);
       const pixelRatio = event.frameState.pixelRatio;
-      expect(topRight).to.eql([
+      assert.deepEqual(topRight, [
         mapSize[0] * pixelRatio,
         mapSize[1] * pixelRatio,
       ]);
@@ -180,7 +181,7 @@ describe('ol/layer/WebGLVector', function () {
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
 
@@ -205,7 +206,7 @@ describe('ol/layer/WebGLVector', function () {
     });
 
     map.once('rendercomplete', () => {
-      expect(called).to.be(true);
+      assert.strictEqual(called, true);
       done();
     });
   });

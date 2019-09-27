@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import TileState from '../../../../../src/ol/TileState.js';
 import ImageTile from '../../../../../src/ol/source/ImageTile.js';
 import {pickUrl, renderXYZTemplate} from '../../../../../src/ol/uri.js';
@@ -170,12 +171,12 @@ describe('ol/source/ImageTile', () => {
   describe('#getInterpolate()', () => {
     it('is true by default', () => {
       const source = new ImageTile({});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', () => {
       const source = new ImageTile({interpolate: false});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 

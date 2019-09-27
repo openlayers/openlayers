@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import IGC from '../../../../../src/ol/format/IGC.js';
 import {get as getProjection, transform} from '../../../../../src/ol/proj.js';
@@ -34,21 +35,21 @@ describe('ol/format/IGC', function () {
     describe('#readProjectionFromText', function () {
       it('returns the default projection', function () {
         const projection = format.readProjectionFromText(igc);
-        expect(projection).to.eql(getProjection('EPSG:4326'));
+        assert.deepEqual(projection, getProjection('EPSG:4326'));
       });
     });
 
     describe('#readFeature', function () {
       it('does not read invalid features', function () {
-        expect(format.readFeature('invalid')).to.be(null);
+        assert.strictEqual(format.readFeature('invalid'), null);
       });
 
       it('does read a feature', function () {
         const feature = format.readFeature(igc);
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getType(), 'LineString');
+        assert.deepEqual(geom.getCoordinates(), [
           [6.851583333333333, 45.9376, 1303202928],
           [6.850183333333334, 45.93395, 1303203353],
           [6.800816666666667, 45.916066666666666, 1303203815],
@@ -60,9 +61,9 @@ describe('ol/format/IGC', function () {
         const feature = format.readFeature(igc, {
           featureProjection: 'EPSG:3857',
         });
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
+        assert.deepEqual(geom.getType(), 'LineString');
 
         const expectedPoint1 = transform(
           [6.851583333333333, 45.9376],
@@ -89,7 +90,7 @@ describe('ol/format/IGC', function () {
         );
         expectedPoint4.push(1303289328);
 
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getCoordinates(), [
           expectedPoint1,
           expectedPoint2,
           expectedPoint3,
@@ -100,17 +101,17 @@ describe('ol/format/IGC', function () {
 
     describe('#readFeatures', function () {
       it('does not read invalid features', function () {
-        expect(format.readFeatures('invalid')).to.be.empty();
+        assert.isEmpty(format.readFeatures('invalid'));
       });
 
       it('does read features', function () {
         const features = format.readFeatures(igc);
-        expect(features.length).to.eql(1);
+        assert.deepEqual(features.length, 1);
         const feature = features[0];
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getType(), 'LineString');
+        assert.deepEqual(geom.getCoordinates(), [
           [6.851583333333333, 45.9376, 1303202928],
           [6.850183333333334, 45.93395, 1303203353],
           [6.800816666666667, 45.916066666666666, 1303203815],
@@ -122,11 +123,11 @@ describe('ol/format/IGC', function () {
         const features = format.readFeatures(igc, {
           featureProjection: 'EPSG:3857',
         });
-        expect(features.length).to.eql(1);
+        assert.deepEqual(features.length, 1);
         const feature = features[0];
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
+        assert.deepEqual(geom.getType(), 'LineString');
 
         const expectedPoint1 = transform(
           [6.851583333333333, 45.9376],
@@ -153,7 +154,7 @@ describe('ol/format/IGC', function () {
         );
         expectedPoint4.push(1303289328);
 
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getCoordinates(), [
           expectedPoint1,
           expectedPoint2,
           expectedPoint3,
@@ -205,21 +206,21 @@ describe('ol/format/IGC', function () {
     describe('#readProjectionFromText', function () {
       it('returns the default projection', function () {
         const projection = format.readProjectionFromText(igc);
-        expect(projection).to.eql(getProjection('EPSG:4326'));
+        assert.deepEqual(projection, getProjection('EPSG:4326'));
       });
     });
 
     describe('#readFeature', function () {
       it('does not read invalid features', function () {
-        expect(format.readFeature('invalid')).to.be(null);
+        assert.strictEqual(format.readFeature('invalid'), null);
       });
 
       it('does read a feature', function () {
         const feature = format.readFeature(igc);
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getType(), 'LineString');
+        assert.deepEqual(geom.getCoordinates(), [
           [5.828213333333333, 43.32027666666667, 1709814099],
           [5.828191666666667, 43.32033333333333, 1709814119],
           [5.828203333333333, 43.32037166666667, 1709814121],
@@ -242,9 +243,9 @@ describe('ol/format/IGC', function () {
         const feature = format.readFeature(igc, {
           featureProjection: 'EPSG:3857',
         });
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
+        assert.deepEqual(geom.getType(), 'LineString');
 
         const expectedPoint1 = transform(
           [5.828213333333333, 43.32027666666667],
@@ -337,7 +338,7 @@ describe('ol/format/IGC', function () {
         );
         expectedPoint15.push(1709814251);
 
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getCoordinates(), [
           expectedPoint1,
           expectedPoint2,
           expectedPoint3,
@@ -359,17 +360,17 @@ describe('ol/format/IGC', function () {
 
     describe('#readFeatures', function () {
       it('does not read invalid features', function () {
-        expect(format.readFeatures('invalid')).to.be.empty();
+        assert.isEmpty(format.readFeatures('invalid'));
       });
 
       it('does read features', function () {
         const features = format.readFeatures(igc);
-        expect(features.length).to.eql(1);
+        assert.deepEqual(features.length, 1);
         const feature = features[0];
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getType(), 'LineString');
+        assert.deepEqual(geom.getCoordinates(), [
           [5.828213333333333, 43.32027666666667, 1709814099],
           [5.828191666666667, 43.32033333333333, 1709814119],
           [5.828203333333333, 43.32037166666667, 1709814121],
@@ -392,11 +393,11 @@ describe('ol/format/IGC', function () {
         const features = format.readFeatures(igc, {
           featureProjection: 'EPSG:3857',
         });
-        expect(features.length).to.eql(1);
+        assert.deepEqual(features.length, 1);
         const feature = features[0];
-        expect(feature).to.be.an(Feature);
+        assert.instanceOf(feature, Feature);
         const geom = feature.getGeometry();
-        expect(geom.getType()).to.eql('LineString');
+        assert.deepEqual(geom.getType(), 'LineString');
 
         const expectedPoint1 = transform(
           [5.828213333333333, 43.32027666666667],
@@ -489,7 +490,7 @@ describe('ol/format/IGC', function () {
         );
         expectedPoint15.push(1709814251);
 
-        expect(geom.getCoordinates()).to.eql([
+        assert.deepEqual(geom.getCoordinates(), [
           expectedPoint1,
           expectedPoint2,
           expectedPoint3,

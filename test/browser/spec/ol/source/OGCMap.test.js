@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -31,23 +32,23 @@ describe('ol/source/OGCMap', function () {
     it('verify getting a param', function () {
       const source = new OGCMap(options);
       const setParams = source.getParams();
-      expect(setParams).to.eql({param: 'test'});
+      assert.deepEqual(setParams, {param: 'test'});
     });
 
     it('verify on adding a param', function () {
       const source = new OGCMap(options);
       source.updateParams({'test': 'value'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({param: 'test', test: 'value'});
-      expect(options.params).to.eql({param: 'test'});
+      assert.deepEqual(setParams, {param: 'test', test: 'value'});
+      assert.deepEqual(options.params, {param: 'test'});
     });
 
     it('verify on update a param', function () {
       const source = new OGCMap(options);
       source.updateParams({'param': 'newValue'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({'param': 'newValue'});
-      expect(options.params).to.eql({'param': 'test'});
+      assert.deepEqual(setParams, {'param': 'newValue'});
+      assert.deepEqual(options.params, {'param': 'test'});
     });
   });
 
@@ -58,9 +59,9 @@ describe('ol/source/OGCMap', function () {
       source.setParams({test: 'after'});
 
       const params = source.getParams();
-      expect(params).to.eql({test: 'after'});
+      assert.deepEqual(params, {test: 'after'});
 
-      expect(before).to.eql({test: 'before', foo: 'bar'});
+      assert.deepEqual(before, {test: 'before', foo: 'bar'});
     });
 
     it('sets new parameters and applies them on the next image load', function () {
@@ -80,7 +81,7 @@ describe('ol/source/OGCMap', function () {
       );
       image.load();
       let uri = new URL(image.getImage().src);
-      expect(uri.searchParams.get('f')).to.be('image/jpeg');
+      assert.strictEqual(uri.searchParams.get('f'), 'image/jpeg');
 
       source.setParams({
         ...options.params,
@@ -89,7 +90,7 @@ describe('ol/source/OGCMap', function () {
       image = source.getImage(viewExtent, resolution, pixelRatio, projection);
       image.load();
       uri = new URL(image.getImage().src);
-      expect(uri.searchParams.get('f')).to.be('image/png');
+      assert.strictEqual(uri.searchParams.get('f'), 'image/png');
     });
   });
 
@@ -122,13 +123,15 @@ describe('ol/source/OGCMap', function () {
           ((ratio - 1) * viewHeight) / resolution / 2,
         );
 
-        expect(imageWidth).to.be(
+        assert.strictEqual(
+          imageWidth,
           Math.round(viewWidth / resolution) + 2 * marginWidth,
         );
-        expect(imageHeight).to.be(
+        assert.strictEqual(
+          imageHeight,
           Math.round(viewHeight / resolution) + 2 * marginHeight,
         );
-        expect(bboxAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
+        assert.approximately(bboxAspectRatio, imageAspectRatio, 1e-12);
       });
     });
 
@@ -141,10 +144,10 @@ describe('ol/source/OGCMap', function () {
       const queryData = uri.searchParams;
       const width = Number(queryData.get('width'));
       const height = Number(queryData.get('height'));
-      expect(width).to.be(400);
-      expect(height).to.be(400);
+      assert.strictEqual(width, 400);
+      assert.strictEqual(height, 400);
       const mmPerPixel = Number(queryData.get('mm-per-pixel'));
-      expect(mmPerPixel).to.be(0.28 / 2);
+      assert.strictEqual(mmPerPixel, 0.28 / 2);
     });
 
     it('requests integer width and height', function () {
@@ -161,8 +164,8 @@ describe('ol/source/OGCMap', function () {
       const queryData = uri.searchParams;
       const width = parseFloat(queryData.get('width'));
       const height = parseFloat(queryData.get('height'));
-      expect(width).to.be(Math.round(width));
-      expect(height).to.be(Math.round(height));
+      assert.strictEqual(width, Math.round(width));
+      assert.strictEqual(height, Math.round(height));
     });
 
     it('does not request extra pixels due to floating point issues', function () {
@@ -183,8 +186,8 @@ describe('ol/source/OGCMap', function () {
 
       const imageWidth = Number(params.get('width'));
       const imageHeight = Number(params.get('height'));
-      expect(imageWidth).to.be(mapSize[0]);
-      expect(imageHeight).to.be(mapSize[1]);
+      assert.strictEqual(imageWidth, mapSize[0]);
+      assert.strictEqual(imageHeight, mapSize[1]);
     });
 
     it('sets width and height to match the aspect ratio of bbox', function () {
@@ -192,16 +195,16 @@ describe('ol/source/OGCMap', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       const uri = new URL(image.getImage().src);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/ogcapi/map');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/ogcapi/map');
       const queryData = uri.searchParams;
-      expect(queryData.get('bbox')).to.be('20,10,40,30');
-      expect(queryData.get('crs')).to.be('EPSG:4326');
-      expect(queryData.get('bbox-crs')).to.be('EPSG:4326');
-      expect(queryData.get('height')).to.be('200');
-      expect(queryData.get('width')).to.be('200');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.strictEqual(queryData.get('bbox'), '20,10,40,30');
+      assert.strictEqual(queryData.get('crs'), 'EPSG:4326');
+      assert.strictEqual(queryData.get('bbox-crs'), 'EPSG:4326');
+      assert.strictEqual(queryData.get('height'), '200');
+      assert.strictEqual(queryData.get('width'), '200');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it('sets crs and bbox-crs to match the projection', function () {
@@ -215,9 +218,9 @@ describe('ol/source/OGCMap', function () {
       image1.load();
       const uri1 = new URL(image1.getImage().src);
       const queryData1 = uri1.searchParams;
-      expect(queryData1.get('bbox')).to.be('20,10,40,30');
-      expect(queryData1.get('crs')).to.be('EPSG:4326');
-      expect(queryData1.get('bbox-crs')).to.be('EPSG:4326');
+      assert.strictEqual(queryData1.get('bbox'), '20,10,40,30');
+      assert.strictEqual(queryData1.get('crs'), 'EPSG:4326');
+      assert.strictEqual(queryData1.get('bbox-crs'), 'EPSG:4326');
 
       const projection2 = getProjection('EPSG:3857');
       const image2 = source.getImage(
@@ -229,9 +232,9 @@ describe('ol/source/OGCMap', function () {
       image2.load();
       const uri2 = new URL(image2.getImage().src);
       const queryData2 = uri2.searchParams;
-      expect(queryData2.get('bbox')).to.be('10,20,30,40');
-      expect(queryData2.get('crs')).to.be('EPSG:3857');
-      expect(queryData2.get('bbox-crs')).to.be('EPSG:3857');
+      assert.strictEqual(queryData2.get('bbox'), '10,20,30,40');
+      assert.strictEqual(queryData2.get('crs'), 'EPSG:3857');
+      assert.strictEqual(queryData2.get('bbox-crs'), 'EPSG:3857');
 
       const projection3 = getProjection('EPSG:900913');
       const image3 = source.getImage(
@@ -243,9 +246,9 @@ describe('ol/source/OGCMap', function () {
       image3.load();
       const uri3 = new URL(image3.getImage().src);
       const queryData3 = uri3.searchParams;
-      expect(queryData3.get('bbox')).to.be('10,20,30,40');
-      expect(queryData3.get('crs')).to.be('EPSG:900913');
-      expect(queryData3.get('bbox-crs')).to.be('EPSG:900913');
+      assert.strictEqual(queryData3.get('bbox'), '10,20,30,40');
+      assert.strictEqual(queryData3.get('crs'), 'EPSG:900913');
+      assert.strictEqual(queryData3.get('bbox-crs'), 'EPSG:900913');
     });
 
     it('changes the bbox order for EN axis orientations', function () {
@@ -255,7 +258,7 @@ describe('ol/source/OGCMap', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('bbox')).to.be('10,20,30,40');
+      assert.strictEqual(queryData.get('bbox'), '10,20,30,40');
     });
 
     it('creates an image with a custom imageLoadFunction', function () {
@@ -264,9 +267,10 @@ describe('ol/source/OGCMap', function () {
       const source = new OGCMap(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
-      expect(imageLoadFunction.called).to.be(true);
-      expect(imageLoadFunction.getCall(0).args[0]).to.eql(image);
-      expect(imageLoadFunction.getCall(0).args[1]).to.be(
+      assert.strictEqual(imageLoadFunction.called, true);
+      assert.deepEqual(imageLoadFunction.getCall(0).args[0], image);
+      assert.strictEqual(
+        imageLoadFunction.getCall(0).args[1],
         window.location.origin +
           '/ogcapi/map?param=test&width=200&height=200&crs=EPSG%3A4326&bbox-crs=EPSG%3A4326&bbox=20%2C10%2C40%2C30',
       );
@@ -287,7 +291,7 @@ describe('ol/source/OGCMap', function () {
         pixelRatio,
         projection,
       );
-      expect(image1).to.equal(image2);
+      assert.equal(image1, image2);
     });
 
     it('returns same image for calls with similar extents', function (done) {
@@ -302,7 +306,7 @@ describe('ol/source/OGCMap', function () {
         extent = [10.01, 20.1, 30.01, 40.1];
         image2 = source.getImage(extent, resolution, pixelRatio, projection);
         try {
-          expect(image1).to.equal(image2);
+          assert.equal(image1, image2);
           done();
         } catch (e) {
           done(e);
@@ -322,7 +326,7 @@ describe('ol/source/OGCMap', function () {
         Number(uri.searchParams.get('width')),
         Number(uri.searchParams.get('height')),
       ];
-      expect(size).to.eql([300, 600]);
+      assert.deepEqual(size, [300, 600]);
     });
   });
 
@@ -364,7 +368,7 @@ describe('ol/source/OGCMap', function () {
 
     it('reloads from server', function (done) {
       map.once('rendercomplete', function () {
-        expect(callCount).to.be(1);
+        assert.strictEqual(callCount, 1);
         done();
       });
       source.refresh();
@@ -412,10 +416,13 @@ describe('ol/source/OGCMap', function () {
 
     it('loads wrapped extents when both projections are global', function (done) {
       map.once('rendercomplete', function () {
-        expect(queryData.length).to.be(1);
-        expect(queryData[0].get('bbox')).to.be('-85.078125,181,85.078125,541');
-        expect(queryData[0].get('width')).to.be('256');
-        expect(queryData[0].get('height')).to.be('121');
+        assert.strictEqual(queryData.length, 1);
+        assert.strictEqual(
+          queryData[0].get('bbox'),
+          '-85.078125,181,85.078125,541',
+        );
+        assert.strictEqual(queryData[0].get('width'), '256');
+        assert.strictEqual(queryData[0].get('height'), '121');
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));
@@ -424,7 +431,7 @@ describe('ol/source/OGCMap', function () {
     it('does not load outside extent when view projection is not global', function (done) {
       getProjection('EPSG:3857').setGlobal(false);
       map.once('rendercomplete', function () {
-        expect(queryData.length).to.be(0);
+        assert.strictEqual(queryData.length, 0);
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));
@@ -433,7 +440,7 @@ describe('ol/source/OGCMap', function () {
     it('does not load outside extent when source projection is not global', function (done) {
       getProjection('EPSG:4326').setGlobal(false);
       map.once('rendercomplete', function () {
-        expect(queryData.length).to.be(0);
+        assert.strictEqual(queryData.length, 0);
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));

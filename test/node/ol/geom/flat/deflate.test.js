@@ -1,8 +1,8 @@
+import {assert} from 'chai';
 import {
   deflateCoordinates,
   deflateCoordinatesArray,
 } from '../../../../../src/ol/geom/flat/deflate.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/deflate.js', function () {
   describe('deflateCoordinates', function () {
@@ -21,8 +21,8 @@ describe('ol/geom/flat/deflate.js', function () {
         ],
         2,
       );
-      expect(offset).to.be(4);
-      expect(flatCoordinates).to.eql([1, 2, 3, 4]);
+      assert.strictEqual(offset, 4);
+      assert.deepEqual(flatCoordinates, [1, 2, 3, 4]);
     });
   });
 
@@ -48,8 +48,8 @@ describe('ol/geom/flat/deflate.js', function () {
         ],
         2,
       );
-      expect(ends).to.eql([4, 8]);
-      expect(flatCoordinates).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
+      assert.deepEqual(ends, [4, 8]);
+      assert.deepEqual(flatCoordinates, [1, 2, 3, 4, 5, 6, 7, 8]);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
 import WMTSCapabilities from '../../../../../src/ol/format/WMTSCapabilities.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
@@ -28,7 +29,7 @@ describe('ol/source/WMTS', function () {
         layer: 'invalid',
       });
 
-      expect(options).to.be(null);
+      assert.strictEqual(options, null);
     });
 
     it('passes the crossOrigin option', function () {
@@ -38,7 +39,7 @@ describe('ol/source/WMTS', function () {
         crossOrigin: '',
       });
 
-      expect(options.crossOrigin).to.be.eql('');
+      assert.deepEqual(options.crossOrigin, '');
     });
 
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml', function () {
@@ -47,30 +48,31 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'google3857',
       });
 
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?',
       );
 
-      expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
+      assert.deepEqual(options.layer, 'BlueMarbleNextGeneration');
 
-      expect(options.matrixSet).to.be.eql('google3857');
+      assert.deepEqual(options.matrixSet, 'google3857');
 
-      expect(options.format).to.be.eql('image/jpeg');
+      assert.deepEqual(options.format, 'image/jpeg');
 
-      expect(options.projection).to.be.a(Projection);
-      expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
+      assert.instanceOf(options.projection, Projection);
+      assert.deepEqual(options.projection, getProjection('EPSG:3857'));
 
-      expect(options.requestEncoding).to.be.eql('KVP');
+      assert.deepEqual(options.requestEncoding, 'KVP');
 
-      expect(options.tileGrid).to.be.a(WMTSTileGrid);
+      assert.instanceOf(options.tileGrid, WMTSTileGrid);
 
-      expect(options.style).to.be.eql('DarkBlue');
+      assert.deepEqual(options.style, 'DarkBlue');
 
-      expect(options.dimensions).to.eql({Time: '20110805'});
+      assert.deepEqual(options.dimensions, {Time: '20110805'});
 
-      expect(options.crossOrigin).to.be(undefined);
+      assert.strictEqual(options.crossOrigin, undefined);
     });
 
     it('can create REST options from spec/ol/format/wmts/ogcsample.xml', function () {
@@ -80,28 +82,29 @@ describe('ol/source/WMTS', function () {
         requestEncoding: 'REST',
       });
 
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png',
       );
 
-      expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
+      assert.deepEqual(options.layer, 'BlueMarbleNextGeneration');
 
-      expect(options.matrixSet).to.be.eql('google3857');
+      assert.deepEqual(options.matrixSet, 'google3857');
 
-      expect(options.format).to.be.eql('image/png');
+      assert.deepEqual(options.format, 'image/png');
 
-      expect(options.projection).to.be.a(Projection);
-      expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
+      assert.instanceOf(options.projection, Projection);
+      assert.deepEqual(options.projection, getProjection('EPSG:3857'));
 
-      expect(options.requestEncoding).to.be.eql('REST');
+      assert.deepEqual(options.requestEncoding, 'REST');
 
-      expect(options.tileGrid).to.be.a(WMTSTileGrid);
+      assert.instanceOf(options.tileGrid, WMTSTileGrid);
 
-      expect(options.style).to.be.eql('DarkBlue');
+      assert.deepEqual(options.style, 'DarkBlue');
 
-      expect(options.dimensions).to.eql({Time: '20110805'});
+      assert.deepEqual(options.dimensions, {Time: '20110805'});
     });
 
     it('can find a MatrixSet by SRS identifier', function () {
@@ -111,8 +114,8 @@ describe('ol/source/WMTS', function () {
         requestEncoding: 'REST',
       });
 
-      expect(options.matrixSet).to.be.eql('google3857');
-      expect(options.projection.getCode()).to.be.eql('EPSG:3857');
+      assert.deepEqual(options.matrixSet, 'google3857');
+      assert.deepEqual(options.projection.getCode(), 'EPSG:3857');
     });
 
     it('can find a MatrixSet by equivalent SRS identifier', function () {
@@ -122,8 +125,8 @@ describe('ol/source/WMTS', function () {
         requestEncoding: 'REST',
       });
 
-      expect(options.matrixSet).to.be.eql('google3857');
-      expect(options.projection.getCode()).to.be.eql('EPSG:900913');
+      assert.deepEqual(options.matrixSet, 'google3857');
+      assert.deepEqual(options.projection.getCode(), 'EPSG:900913');
     });
 
     it('can find the default MatrixSet', function () {
@@ -132,8 +135,9 @@ describe('ol/source/WMTS', function () {
         requestEncoding: 'REST',
       });
 
-      expect(options.matrixSet).to.be.eql('BigWorldPixel');
-      expect(options.projection.getCode()).to.be.eql(
+      assert.deepEqual(options.matrixSet, 'BigWorldPixel');
+      assert.deepEqual(
+        options.projection.getCode(),
         'urn:ogc:def:crs:OGC:1.3:CRS84',
       );
     });
@@ -147,8 +151,9 @@ describe('ol/source/WMTS', function () {
         }),
       });
 
-      expect(options.matrixSet).to.be.eql('BigWorldPixel');
-      expect(options.projection.getCode()).to.be.eql(
+      assert.deepEqual(options.matrixSet, 'BigWorldPixel');
+      assert.deepEqual(
+        options.projection.getCode(),
         'urn:ogc:def:crs:OGC:1.3:CRS84',
       );
     });
@@ -167,18 +172,18 @@ describe('ol/source/WMTS', function () {
       const gridExtent = options.tileGrid.getExtent();
       const gridBottomLeft = getBottomLeft(gridExtent);
       const gridTopRight = getTopRight(gridExtent);
-      expect(Math.round(gridBottomLeft[0])).to.be.eql(-10000000);
-      expect(Math.round(gridBottomLeft[1])).to.be.eql(9999847);
-      expect(Math.round(gridTopRight[0])).to.be.eql(-9999847);
-      expect(Math.round(gridTopRight[1])).to.be.eql(10000000);
+      assert.deepEqual(Math.round(gridBottomLeft[0]), -10000000);
+      assert.deepEqual(Math.round(gridBottomLeft[1]), 9999847);
+      assert.deepEqual(Math.round(gridTopRight[0]), -9999847);
+      assert.deepEqual(Math.round(gridTopRight[1]), 10000000);
 
       const projExtent = options.projection.getExtent();
       const projBottomLeft = getBottomLeft(projExtent);
       const projTopRight = getTopRight(projExtent);
-      expect(Math.round(projBottomLeft[0])).to.be.eql(-20037508);
-      expect(Math.round(projBottomLeft[1])).to.be.eql(-20037508);
-      expect(Math.round(projTopRight[0])).to.be.eql(20037508);
-      expect(Math.round(projTopRight[1])).to.be.eql(20037508);
+      assert.deepEqual(Math.round(projBottomLeft[0]), -20037508);
+      assert.deepEqual(Math.round(projBottomLeft[1]), -20037508);
+      assert.deepEqual(Math.round(projTopRight[0]), 20037508);
+      assert.deepEqual(Math.round(projTopRight[1]), 20037508);
     });
 
     it("doesn't fail if the GetCap doesn't contains Constraint tags", function () {
@@ -187,17 +192,18 @@ describe('ol/source/WMTS', function () {
         '',
       );
       const tmpCapabilities = parser.read(tmpXml);
-      expect(
+      assert.strictEqual(
         tmpCapabilities['OperationsMetadata']['GetTile']['DCP']['HTTP'][
           'Get'
         ][0]['Constraint'],
-      ).to.be(undefined);
+        undefined,
+      );
       const options = optionsFromCapabilities(tmpCapabilities, {
         layer: 'BlueMarbleNextGeneration',
         matrixSet: 'google3857',
       });
-      expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
-      expect(options.matrixSet).to.be.eql('google3857');
+      assert.deepEqual(options.layer, 'BlueMarbleNextGeneration');
+      assert.deepEqual(options.matrixSet, 'google3857');
     });
 
     it("set KVP as default request encoding if the GetCap doesn't contains Constraint and ResourceUrl tags", function () {
@@ -208,23 +214,26 @@ describe('ol/source/WMTS', function () {
       tmpXml = tmpXml.replace(/<ResourceURL[\s\S]*?"\/>/g, '');
 
       const tmpCapabilities = parser.read(tmpXml);
-      expect(
+      assert.strictEqual(
         tmpCapabilities['OperationsMetadata']['GetTile']['DCP']['HTTP'][
           'Get'
         ][0]['Constraint'],
-      ).to.be(undefined);
-      expect(tmpCapabilities['Contents']['Layer'][0]['ResourceURL']).to.be(
+        undefined,
+      );
+      assert.strictEqual(
+        tmpCapabilities['Contents']['Layer'][0]['ResourceURL'],
         undefined,
       );
       const options = optionsFromCapabilities(tmpCapabilities, {
         layer: 'BlueMarbleNextGeneration',
         matrixSet: 'google3857',
       });
-      expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
-      expect(options.matrixSet).to.be.eql('google3857');
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.deepEqual(options.layer, 'BlueMarbleNextGeneration');
+      assert.deepEqual(options.matrixSet, 'google3857');
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?',
       );
     });
@@ -233,12 +242,12 @@ describe('ol/source/WMTS', function () {
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new WMTS({});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new WMTS({interpolate: false});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -271,7 +280,7 @@ describe('ol/source/WMTS', function () {
         1,
         projection,
       );
-      expect(url).to.be.eql('http://host/layer/default/EPSG:3857/1/1/1.jpg');
+      assert.deepEqual(url, 'http://host/layer/default/EPSG:3857/1/1/1.jpg');
     });
 
     it('can replace camelcase REST parameters', function () {
@@ -292,7 +301,7 @@ describe('ol/source/WMTS', function () {
         1,
         projection,
       );
-      expect(url).to.be.eql('http://host/layer/default/EPSG:3857/1/1/1.jpg');
+      assert.deepEqual(url, 'http://host/layer/default/EPSG:3857/1/1/1.jpg');
     });
 
     it('can replace dimensions', function () {
@@ -314,8 +323,9 @@ describe('ol/source/WMTS', function () {
         1,
         projection,
       );
-      expect(url).to.be.eql('http://host/layer/default/42/EPSG:3857/1/1/1.jpg');
-      expect(source.getKey()).to.be.eql(
+      assert.deepEqual(url, 'http://host/layer/default/42/EPSG:3857/1/1/1.jpg');
+      assert.deepEqual(
+        source.getKey(),
         'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg/Time-42',
       );
     });
@@ -339,10 +349,12 @@ describe('ol/source/WMTS', function () {
         1,
         projection,
       );
-      expect(url).to.be.eql(
+      assert.deepEqual(
+        url,
         'http://host/layer/default/2010%2F2020/EPSG:3857/1/1/1.jpg',
       );
-      expect(source.getKey()).to.be.eql(
+      assert.deepEqual(
+        source.getKey(),
         'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg/Time-2010/2020',
       );
     });
@@ -369,9 +381,10 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'default028mm',
       });
 
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'https://services.arcgisonline.com/arcgis/rest/services/' +
           'Demographics/USA_Population_Density/MapServer/WMTS?',
       );
@@ -383,9 +396,10 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'default028mm',
       });
 
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'https://services.arcgisonline.com/arcgis/rest/services/' +
           'Demographics/USA_Population_Density/MapServer/WMTS/' +
           'tile/1.0.0/Demographics_USA_Population_Density/' +
@@ -418,31 +432,32 @@ describe('ol/source/WMTS', function () {
         requestEncoding: 'REST',
       });
 
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'https://example.com/wmts/baselayer/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
       );
 
-      expect(options.layer).to.be.eql('baselayer');
+      assert.deepEqual(options.layer, 'baselayer');
 
-      expect(options.matrixSet).to.be.eql('inspire_quad');
+      assert.deepEqual(options.matrixSet, 'inspire_quad');
 
-      expect(options.format).to.be.eql('image/png');
+      assert.deepEqual(options.format, 'image/png');
 
-      expect(options.projection).to.be.a(Projection);
-      expect(options.projection).to.be.eql(getProjection('EPSG:4326'));
+      assert.instanceOf(options.projection, Projection);
+      assert.deepEqual(options.projection, getProjection('EPSG:4326'));
 
-      expect(options.requestEncoding).to.be.eql('REST');
+      assert.deepEqual(options.requestEncoding, 'REST');
 
-      expect(options.tileGrid).to.be.a(WMTSTileGrid);
-      expect(options.style).to.be.eql('default');
+      assert.instanceOf(options.tileGrid, WMTSTileGrid);
+      assert.deepEqual(options.style, 'default');
 
       const extent = options.tileGrid.getExtent();
 
       // compare with delta, due to rounding not the exact bounding box is returned...
       const expectDelta = (value, expected) =>
-        expect(Math.abs(value - expected)).to.below(1e-10);
+        assert.isBelow(Math.abs(value - expected), 1e-10);
 
       expectDelta(extent[0], -180);
       expectDelta(extent[1], -90);
@@ -474,26 +489,26 @@ describe('ol/source/WMTS', function () {
         style: 'normal',
       });
 
-      expect(options.layer).to.be.eql('bmaphidpi');
+      assert.deepEqual(options.layer, 'bmaphidpi');
 
-      expect(options.matrixSet).to.be.eql('google3857');
+      assert.deepEqual(options.matrixSet, 'google3857');
 
-      expect(options.format).to.be.eql('image/jpeg');
+      assert.deepEqual(options.format, 'image/jpeg');
 
-      expect(options.requestEncoding).to.be.eql('REST');
+      assert.deepEqual(options.requestEncoding, 'REST');
 
-      expect(options.tileGrid).to.be.a(WMTSTileGrid);
-      expect(options.style).to.be.eql('normal');
+      assert.instanceOf(options.tileGrid, WMTSTileGrid);
+      assert.deepEqual(options.style, 'normal');
 
-      expect(options.projection).to.be.a(Projection);
-      expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
+      assert.instanceOf(options.projection, Projection);
+      assert.deepEqual(options.projection, getProjection('EPSG:3857'));
 
       const expectedMatrixSetExtend = [977650, 5838030, 1913530, 6281290];
       const extent = options.tileGrid.getExtent();
 
       // compare with delta, due to rounding not the exact bounding box is returned...
       const expectDelta = (value, expected) =>
-        expect(Math.abs(value - expected)).to.below(1e-1);
+        assert.isBelow(Math.abs(value - expected), 1e-1);
       expectDelta(extent[0], expectedMatrixSetExtend[0]);
       expectDelta(extent[1], expectedMatrixSetExtend[1]);
       expectDelta(extent[2], expectedMatrixSetExtend[2]);
@@ -524,7 +539,7 @@ describe('ol/source/WMTS', function () {
       });
 
       const extent = options.tileGrid.getExtent();
-      expect(extent).to.eql([-180, -90, 180, 90]);
+      assert.deepEqual(extent, [-180, -90, 180, 90]);
     });
   });
 
@@ -552,10 +567,13 @@ describe('ol/source/WMTS', function () {
       });
 
       const extent = options.tileGrid.getExtent();
-      expect(extent).to.eql([
-        -20037508.3427892, -20037508.3427892, 20037508.3427892,
-        20037508.3427892,
-      ]);
+      assert.deepEqual(
+        extent,
+        [
+          -20037508.3427892, -20037508.3427892, 20037508.3427892,
+          20037508.3427892,
+        ],
+      );
     });
   });
 
@@ -582,7 +600,7 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'EPSG:3857',
         crossOrigin: 'anonymous',
       });
-      expect(options.wrapX).to.be(true);
+      assert.strictEqual(options.wrapX, true);
     });
     it('sets wrapx when only wgs 84 bb is set', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -590,7 +608,7 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'EPSG:3857',
         crossOrigin: 'anonymous',
       });
-      expect(options.wrapX).to.be(true);
+      assert.strictEqual(options.wrapX, true);
     });
     it('does not set wrapx when wgs84 bb is set', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -598,7 +616,7 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'EPSG:3857',
         crossOrigin: 'anonymous',
       });
-      expect(options.wrapX).to.be(false);
+      assert.strictEqual(options.wrapX, false);
     });
     it('does not set wrapx when tile matrix does not wrap', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -606,7 +624,7 @@ describe('ol/source/WMTS', function () {
         matrixSet: 'EPSG:3857',
         crossOrigin: 'anonymous',
       });
-      expect(options.wrapX).to.be(false);
+      assert.strictEqual(options.wrapX, false);
     });
   });
   describe('when creating options from capabilities with TileMatrixSetLink', function () {
@@ -633,25 +651,26 @@ describe('ol/source/WMTS', function () {
         requestEncoding: 'REST',
       });
 
-      expect(options.urls).to.be.an('array');
-      expect(options.urls).to.have.length(1);
-      expect(options.urls[0]).to.be.eql(
+      assert.isArray(options.urls);
+      assert.lengthOf(options.urls, 1);
+      assert.deepEqual(
+        options.urls[0],
         'https://example.com/wmts/mean_atlas_land/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
       );
 
-      expect(options.layer).to.be.eql('mean_atlas_land');
+      assert.deepEqual(options.layer, 'mean_atlas_land');
 
-      expect(options.matrixSet).to.be.eql('inspire_quad');
+      assert.deepEqual(options.matrixSet, 'inspire_quad');
 
-      expect(options.format).to.be.eql('image/png');
+      assert.deepEqual(options.format, 'image/png');
 
-      expect(options.projection).to.be.a(Projection);
-      expect(options.projection).to.be.eql(getProjection('EPSG:4326'));
+      assert.instanceOf(options.projection, Projection);
+      assert.deepEqual(options.projection, getProjection('EPSG:4326'));
 
-      expect(options.requestEncoding).to.be.eql('REST');
+      assert.deepEqual(options.requestEncoding, 'REST');
 
-      expect(options.tileGrid).to.be.a(WMTSTileGrid);
-      expect(options.style).to.be.eql('default');
+      assert.instanceOf(options.tileGrid, WMTSTileGrid);
+      assert.deepEqual(options.style, 'default');
 
       const extent = options.tileGrid.getExtent();
 
@@ -663,7 +682,7 @@ describe('ol/source/WMTS', function () {
 
       // compare with delta, due to rounding not the exact bounding box is returned...
       const expectDelta = (value, expected) =>
-        expect(Math.abs(value - expected)).to.below(tile_width + 1e-10);
+        assert.isBelow(Math.abs(value - expected), tile_width + 1e-10);
 
       expectDelta(extent[0], -36);
       expectDelta(extent[1], 15);
@@ -683,7 +702,7 @@ describe('ol/source/WMTS', function () {
       ];
       source.setUrls(urls);
 
-      expect(source.getUrls()).to.eql(urls);
+      assert.deepEqual(source.getUrls(), urls);
     });
 
     it('updates the key for the source', function () {
@@ -696,7 +715,7 @@ describe('ol/source/WMTS', function () {
       ];
       source.setUrls(urls);
 
-      expect(source.getKey()).to.eql(urls.join('\n'));
+      assert.deepEqual(source.getKey(), urls.join('\n'));
     });
 
     it('generates the correct tileUrlFunction during application of setUrl()', function () {
@@ -721,7 +740,7 @@ describe('ol/source/WMTS', function () {
       ];
       source.setUrls(urls);
       const tileUrl1 = source.tileUrlFunction([2, 9, -5], 1, projection);
-      expect(tileUrl1).to.match(/https\:\/\/[ab]\.example\.com\/2\/-5\/9\.jpg/);
+      assert.match(tileUrl1, /https\:\/\/[ab]\.example\.com\/2\/-5\/9\.jpg/);
     });
   });
 
@@ -732,7 +751,7 @@ describe('ol/source/WMTS', function () {
       });
 
       const urls = tileSource.getUrls();
-      expect(urls).to.eql(['1', '2', '3']);
+      assert.deepEqual(urls, ['1', '2', '3']);
     });
   });
 
@@ -762,7 +781,7 @@ describe('ol/source/WMTS', function () {
 
       it('returns the WMTS URLs', function () {
         const urls = source.getUrls();
-        expect(urls).to.be.eql(['some_wmts_url']);
+        assert.deepEqual(urls, ['some_wmts_url']);
       });
     });
 
@@ -774,7 +793,7 @@ describe('ol/source/WMTS', function () {
 
       it('returns the WMTS URLs', function () {
         const urls = source.getUrls();
-        expect(urls).to.be.eql(['some_wmts_url1', 'some_wmts_url2']);
+        assert.deepEqual(urls, ['some_wmts_url1', 'some_wmts_url2']);
       });
     });
   });
@@ -798,7 +817,7 @@ describe('ol/source/WMTS', function () {
 
     it('returns the request encoding', function () {
       const requestEncoding = source.getRequestEncoding();
-      expect(requestEncoding).to.be.eql('REST');
+      assert.deepEqual(requestEncoding, 'REST');
     });
   });
 });

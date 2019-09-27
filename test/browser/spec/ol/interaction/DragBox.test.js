@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
@@ -65,9 +66,9 @@ describe('ol/interaction/DragBox', () => {
       simulateEvent('pointermove', 10, 10);
       simulateEvent('pointerdown', 10, 10);
       simulateEvent('pointerdrag', 20, 20);
-      expect(dragBox.box_.map_).to.be(map);
+      assert.strictEqual(dragBox.box_.map_, map);
       map.removeInteraction(dragBox);
-      expect(dragBox.box_.map_).to.be(null);
+      assert.strictEqual(dragBox.box_.map_, null);
       done();
     } catch (error) {
       done(error);

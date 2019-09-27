@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -46,7 +47,7 @@ describe('ol/layer/Heatmap', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       layer = new HeatmapLayer();
-      expect(layer).to.be.an(HeatmapLayer);
+      assert.instanceOf(layer, HeatmapLayer);
     });
 
     it('has a default className', function () {
@@ -57,7 +58,7 @@ describe('ol/layer/Heatmap', function () {
       map.renderSync();
 
       const canvas = layer.getRenderer().helper.getCanvas();
-      expect(canvas.className).to.eql('ol-layer');
+      assert.deepEqual(canvas.className, 'ol-layer');
     });
 
     it('accepts a custom className', function () {
@@ -69,7 +70,7 @@ describe('ol/layer/Heatmap', function () {
       map.renderSync();
 
       const canvas = layer.getRenderer().helper.getCanvas();
-      expect(canvas.className).to.eql('a-class-name');
+      assert.deepEqual(canvas.className, 'a-class-name');
     });
   });
 
@@ -80,17 +81,17 @@ describe('ol/layer/Heatmap', function () {
       });
     });
     it('default value', () => {
-      expect(layer.getBlur()).to.eql(15);
+      assert.deepEqual(layer.getBlur(), 15);
     });
     it('updates blur value', () => {
       layer.setBlur(['get', 'weight']);
-      expect(layer.getBlur()).to.eql(['get', 'weight']);
+      assert.deepEqual(layer.getBlur(), ['get', 'weight']);
     });
     it('recreates the renderer', () => {
       sinonSpy(layer, 'createRenderer');
       layer.setBlur(['get', 'weight']);
       layer.getRenderer();
-      expect(layer.createRenderer.calledOnce).to.be(true);
+      assert.strictEqual(layer.createRenderer.calledOnce, true);
     });
 
     describe('numerical value', () => {
@@ -99,8 +100,8 @@ describe('ol/layer/Heatmap', function () {
         layer.getRenderer();
         const rendererOpts = rendererSpy.getCall(0).args[1];
         const uniforms = rendererOpts.style.uniforms;
-        expect(uniforms).to.have.key('a_blur');
-        expect(uniforms.a_blur()).to.eql(12);
+        assert.property(uniforms, 'a_blur');
+        assert.deepEqual(uniforms.a_blur(), 12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
         sinonSpy(layer, 'createRenderer');
@@ -108,7 +109,7 @@ describe('ol/layer/Heatmap', function () {
         layer.setBlur(17);
         layer.setBlur(20);
         layer.getRenderer();
-        expect(layer.createRenderer.callCount).to.be(1);
+        assert.strictEqual(layer.createRenderer.callCount, 1);
       });
     });
   });
@@ -120,17 +121,17 @@ describe('ol/layer/Heatmap', function () {
       });
     });
     it('default value', () => {
-      expect(layer.getRadius()).to.eql(8);
+      assert.deepEqual(layer.getRadius(), 8);
     });
     it('updates blur value', () => {
       layer.setRadius(['get', 'size']);
-      expect(layer.getRadius()).to.eql(['get', 'size']);
+      assert.deepEqual(layer.getRadius(), ['get', 'size']);
     });
     it('recreates the renderer', () => {
       sinonSpy(layer, 'createRenderer');
       layer.setRadius(['get', 'size']);
       layer.getRenderer();
-      expect(layer.createRenderer.calledOnce).to.be(true);
+      assert.strictEqual(layer.createRenderer.calledOnce, true);
     });
 
     describe('numerical value', () => {
@@ -139,8 +140,8 @@ describe('ol/layer/Heatmap', function () {
         layer.getRenderer();
         const rendererOpts = rendererSpy.getCall(0).args[1];
         const uniforms = rendererOpts.style.uniforms;
-        expect(uniforms).to.have.key('a_radius');
-        expect(uniforms.a_radius()).to.eql(12);
+        assert.property(uniforms, 'a_radius');
+        assert.deepEqual(uniforms.a_radius(), 12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
         sinonSpy(layer, 'createRenderer');
@@ -148,7 +149,7 @@ describe('ol/layer/Heatmap', function () {
         layer.setRadius(17);
         layer.setRadius(20);
         layer.getRenderer();
-        expect(layer.createRenderer.callCount).to.be(1);
+        assert.strictEqual(layer.createRenderer.callCount, 1);
       });
     });
   });
@@ -158,7 +159,7 @@ describe('ol/layer/Heatmap', function () {
       layer = new HeatmapLayer({
         source: new VectorSource(),
       });
-      expect(layer.weight_).to.eql('weight');
+      assert.deepEqual(layer.weight_, 'weight');
     });
     it('supports an attribute name as weight', () => {
       layer = new HeatmapLayer({
@@ -169,15 +170,15 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.getCall(0).args[1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_weight');
+      assert.property(attrs, 'prop_weight');
 
       const attrCallback = attrs['prop_weight'].callback;
       const feature = new Feature({foo: 0.5});
-      expect(attrCallback(feature)).to.eql(0.5);
+      assert.deepEqual(attrCallback(feature), 0.5);
 
       const builder = rendererOpts.style.builder;
-      // weight expression is clamped between 0 and 1
-      expect(builder.getSymbolColorExpression()).to.eql(
+      assert.deepEqual(
+        builder.getSymbolColorExpression(),
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * a_prop_weight)',
       );
     });
@@ -190,14 +191,15 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.getCall(0).args[1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_weight');
+      assert.property(attrs, 'prop_weight');
 
       const attrCallback = attrs['prop_weight'].callback;
       const feature = new Feature({size: 3.75});
-      expect(attrCallback(feature)).to.eql(0.75);
+      assert.deepEqual(attrCallback(feature), 0.75);
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getSymbolColorExpression()).to.eql(
+      assert.deepEqual(
+        builder.getSymbolColorExpression(),
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * a_prop_weight)',
       );
     });
@@ -210,15 +212,15 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.getCall(0).args[1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_sizeAttr');
+      assert.property(attrs, 'prop_sizeAttr');
 
       const attrCallback = attrs['prop_sizeAttr'].callback;
       const feature = new Feature({sizeAttr: 34});
-      expect(attrCallback(feature)).to.eql(34);
+      assert.deepEqual(attrCallback(feature), 34);
 
       const builder = rendererOpts.style.builder;
-      // weight expression is clamped between 0 and 1
-      expect(builder.getSymbolColorExpression()).to.eql(
+      assert.deepEqual(
+        builder.getSymbolColorExpression(),
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * clamp((a_prop_sizeAttr / 10.0), 0.0, 1.0))',
       );
     });
@@ -231,13 +233,13 @@ describe('ol/layer/Heatmap', function () {
       });
       it('updates weight value', () => {
         layer.setWeight('bla');
-        expect(layer.weight_).to.eql('bla');
+        assert.deepEqual(layer.weight_, 'bla');
       });
       it('recreates the renderer', () => {
         sinonSpy(layer, 'createRenderer');
         layer.setWeight('bla');
         layer.getRenderer();
-        expect(layer.createRenderer.calledOnce).to.be(true);
+        assert.strictEqual(layer.createRenderer.calledOnce, true);
       });
     });
   });
@@ -257,10 +259,11 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.getCall(0).args[1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_sizeAttr');
+      assert.property(attrs, 'prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getShapeDiscardExpression()).to.eql(
+      assert.deepEqual(
+        builder.getShapeDiscardExpression(),
         '!(a_prop_sizeAttr > 10.0)',
       );
     });
@@ -273,10 +276,11 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.getCall(0).args[1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_sizeAttr');
+      assert.property(attrs, 'prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getFragmentDiscardExpression()).to.eql(
+      assert.deepEqual(
+        builder.getFragmentDiscardExpression(),
         '!(a_prop_sizeAttr > currentLineMetric)',
       );
     });
@@ -284,13 +288,13 @@ describe('ol/layer/Heatmap', function () {
       it('updates filter value', () => {
         const filter = ['==', ['get', 'type'], 'foo'];
         layer.setFilter(filter);
-        expect(layer.filter_).to.eql(filter);
+        assert.deepEqual(layer.filter_, filter);
       });
       it('recreates the renderer', () => {
         sinonSpy(layer, 'createRenderer');
         layer.setFilter(true);
         layer.getRenderer();
-        expect(layer.createRenderer.calledOnce).to.be(true);
+        assert.strictEqual(layer.createRenderer.calledOnce, true);
       });
     });
   });
@@ -306,11 +310,12 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.getCall(0).args[1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_myBlur');
-      expect(attrs).to.have.key('prop_myRadius');
+      assert.property(attrs, 'prop_myBlur');
+      assert.property(attrs, 'prop_myRadius');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getSymbolColorExpression()).to.eql(
+      assert.deepEqual(
+        builder.getSymbolColorExpression(),
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_prop_myRadius / max(1., a_prop_myBlur))) * a_prop_weight)',
       );
     });
@@ -359,17 +364,17 @@ describe('ol/layer/Heatmap', function () {
         map.renderSync();
         let res;
         res = hitTest([0, 0]);
-        expect(res).to.be(feature);
+        assert.strictEqual(res, feature);
         res = hitTest([20, 0]);
-        expect(res).to.be(null);
+        assert.strictEqual(res, null);
         res = hitTest([14, 14]);
-        expect(res).to.be(feature2);
+        assert.strictEqual(res, feature2);
         res = hitTest([0, 14]);
-        expect(res).to.be(null);
+        assert.strictEqual(res, null);
         res = hitTest([-3, 10]);
-        expect(res).to.be(feature3);
+        assert.strictEqual(res, feature3);
         res = hitTest([3, 7]);
-        expect(res).to.be(null);
+        assert.strictEqual(res, null);
         done();
       });
     });
@@ -385,7 +390,7 @@ describe('ol/layer/Heatmap', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      assert.strictEqual(layer.styleVariables_.foo, 'bam');
     });
     it('can be called even if no initial variables are provided', function () {
       const layer = new HeatmapLayer({
@@ -393,7 +398,7 @@ describe('ol/layer/Heatmap', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      assert.strictEqual(layer.styleVariables_.foo, 'bam');
     });
   });
 });

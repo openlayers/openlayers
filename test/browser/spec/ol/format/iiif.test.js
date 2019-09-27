@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import IIIFInfo, {Versions} from '../../../../../src/ol/format/IIIFInfo.js';
 
 describe('ol.format.IIIFInfo', function () {
@@ -9,12 +10,12 @@ describe('ol.format.IIIFInfo', function () {
         '@context': 'http://iiif.io/api/image/3/context.json',
         '@id': 'http://iiif.test/id',
       });
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION3);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION3);
 
       iiifInfo.setImageInfo(
         '{"@context": "http://iiif.io/api/image/2/context.json","@id":"http://iiif.test/id"}',
       );
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION2);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION2);
     });
   });
 
@@ -23,57 +24,57 @@ describe('ol.format.IIIFInfo', function () {
       iiifInfo.setImageInfo({
         '@id': 'http://iiif.test/id',
       });
-      expect(function () {
+      assert.throws(function () {
         iiifInfo.getImageApiVersion();
-      }).to.throwException();
+      });
 
       iiifInfo.setImageInfo({
         identifier: 'http://iiif.test/id',
         profile: 'this is no valid profile',
       });
-      expect(function () {
+      assert.throws(function () {
         iiifInfo.getImageApiVersion();
-      }).to.throwException();
+      });
 
       iiifInfo.setImageInfo({
         '@context': 'this is no valid context',
         '@id': 'http://iiif.test/id',
       });
-      expect(function () {
+      assert.throws(function () {
         iiifInfo.getImageApiVersion();
-      }).to.throwException();
+      });
 
       iiifInfo.setImageInfo({
         identifier: 'http://iiif.test/id',
         profile:
           'http://library.stanford.edu/iiif/image-api/compliance.html#level0',
       });
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION1);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION1);
 
       iiifInfo.setImageInfo({
         '@context':
           'http://library.stanford.edu/iiif/image-api/1.1/context.json',
         '@id': 'http://iiif.test/id',
       });
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION1);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION1);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/1/context.json',
         identifier: 'http://iiif.test/id',
       });
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION1);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION1);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         '@id': 'http://iiif.test/id',
       });
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION2);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION2);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         id: 'http://iiif.test/id',
       });
-      expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION3);
+      assert.strictEqual(iiifInfo.getImageApiVersion(), Versions.VERSION3);
     });
   });
 
@@ -83,61 +84,61 @@ describe('ol.format.IIIFInfo', function () {
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'level0',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'http://iiif.io/api/image/level3.json',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'level1',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'http://iiif.io/api/image/2/level2.json',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level2');
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), 'level2');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: ['http://iiif.io/api/image/2/level1.json'],
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level1');
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), 'level1');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'level4',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'http://iiif.io/api/image/3/level3.json',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'http://iiif.io/api/image/2/level1.json',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'level2',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level2');
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), 'level2');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'http://iiif.io/api/image/3/level1.json',
       });
-      expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level1');
+      assert.strictEqual(iiifInfo.getComplianceLevelFromProfile(), 'level1');
     });
   });
 
@@ -150,7 +151,7 @@ describe('ol.format.IIIFInfo', function () {
           'http://library.stanford.edu/iiif/image-api/compliance.html#level0',
       });
       let level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.be.empty();
+      assert.isEmpty(level.supports);
 
       iiifInfo.setImageInfo({
         '@context':
@@ -159,11 +160,11 @@ describe('ol.format.IIIFInfo', function () {
           'http://library.stanford.edu/iiif/image-api/compliance.html#level1',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.have.length(4);
-      expect(level.supports).to.contain('regionByPx');
-      expect(level.supports).to.contain('sizeByW');
-      expect(level.supports).to.contain('sizeByH');
-      expect(level.supports).to.contain('sizeByPct');
+      assert.lengthOf(level.supports, 4);
+      assert.include(level.supports, 'regionByPx');
+      assert.include(level.supports, 'sizeByW');
+      assert.include(level.supports, 'sizeByH');
+      assert.include(level.supports, 'sizeByPct');
 
       iiifInfo.setImageInfo({
         '@context':
@@ -172,93 +173,93 @@ describe('ol.format.IIIFInfo', function () {
           'http://library.stanford.edu/iiif/image-api/compliance.html#level2',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.have.length(7);
-      expect(level.supports).to.contain('regionByPx');
-      expect(level.supports).to.contain('regionByPct');
-      expect(level.supports).to.contain('sizeByW');
-      expect(level.supports).to.contain('sizeByH');
-      expect(level.supports).to.contain('sizeByPct');
-      expect(level.supports).to.contain('sizeByConfinedWh');
-      expect(level.supports).to.contain('sizeByWh');
+      assert.lengthOf(level.supports, 7);
+      assert.include(level.supports, 'regionByPx');
+      assert.include(level.supports, 'regionByPct');
+      assert.include(level.supports, 'sizeByW');
+      assert.include(level.supports, 'sizeByH');
+      assert.include(level.supports, 'sizeByPct');
+      assert.include(level.supports, 'sizeByConfinedWh');
+      assert.include(level.supports, 'sizeByWh');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'http://iiif.io/api/image/2/level0.json',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.be.empty();
+      assert.isEmpty(level.supports);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'http://iiif.io/api/image/2/level1.json',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.have.length(4);
-      expect(level.supports).to.contain('regionByPx');
-      expect(level.supports).to.contain('sizeByW');
-      expect(level.supports).to.contain('sizeByH');
-      expect(level.supports).to.contain('sizeByPct');
+      assert.lengthOf(level.supports, 4);
+      assert.include(level.supports, 'regionByPx');
+      assert.include(level.supports, 'sizeByW');
+      assert.include(level.supports, 'sizeByH');
+      assert.include(level.supports, 'sizeByPct');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         profile: 'http://iiif.io/api/image/2/level2.json',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.have.length(8);
-      expect(level.supports).to.contain('regionByPx');
-      expect(level.supports).to.contain('regionByPct');
-      expect(level.supports).to.contain('sizeByW');
-      expect(level.supports).to.contain('sizeByH');
-      expect(level.supports).to.contain('sizeByPct');
-      expect(level.supports).to.contain('sizeByConfinedWh');
-      expect(level.supports).to.contain('sizeByDistortedWh');
-      expect(level.supports).to.contain('sizeByWh');
+      assert.lengthOf(level.supports, 8);
+      assert.include(level.supports, 'regionByPx');
+      assert.include(level.supports, 'regionByPct');
+      assert.include(level.supports, 'sizeByW');
+      assert.include(level.supports, 'sizeByH');
+      assert.include(level.supports, 'sizeByPct');
+      assert.include(level.supports, 'sizeByConfinedWh');
+      assert.include(level.supports, 'sizeByDistortedWh');
+      assert.include(level.supports, 'sizeByWh');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'level0',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.be.empty();
+      assert.isEmpty(level.supports);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'level1',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.have.length(5);
-      expect(level.supports).to.contain('regionByPx');
-      expect(level.supports).to.contain('regionSquare');
-      expect(level.supports).to.contain('sizeByW');
-      expect(level.supports).to.contain('sizeByH');
-      expect(level.supports).to.contain('sizeByWh');
+      assert.lengthOf(level.supports, 5);
+      assert.include(level.supports, 'regionByPx');
+      assert.include(level.supports, 'regionSquare');
+      assert.include(level.supports, 'sizeByW');
+      assert.include(level.supports, 'sizeByH');
+      assert.include(level.supports, 'sizeByWh');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
         profile: 'level2',
       });
       level = iiifInfo.getComplianceLevelSupportedFeatures();
-      expect(level.supports).to.have.length(8);
-      expect(level.supports).to.contain('regionByPx');
-      expect(level.supports).to.contain('regionByPct');
-      expect(level.supports).to.contain('regionSquare');
-      expect(level.supports).to.contain('sizeByW');
-      expect(level.supports).to.contain('sizeByH');
-      expect(level.supports).to.contain('sizeByWh');
-      expect(level.supports).to.contain('sizeByConfinedWh');
-      expect(level.supports).to.contain('sizeByPct');
+      assert.lengthOf(level.supports, 8);
+      assert.include(level.supports, 'regionByPx');
+      assert.include(level.supports, 'regionByPct');
+      assert.include(level.supports, 'regionSquare');
+      assert.include(level.supports, 'sizeByW');
+      assert.include(level.supports, 'sizeByH');
+      assert.include(level.supports, 'sizeByWh');
+      assert.include(level.supports, 'sizeByConfinedWh');
+      assert.include(level.supports, 'sizeByPct');
     });
   });
 
   describe('getTileSourceOptions', function () {
     it('produces options from minimal information responses', function () {
-      expect(function () {
+      assert.throws(function () {
         iiifInfo.setImageInfo({
           width: 2000,
           height: 1500,
         });
         iiifInfo.getTileSourceOptions();
-      }).to.throwException();
+      });
 
       iiifInfo.setImageInfo({
         identifier: 'id',
@@ -267,8 +268,8 @@ describe('ol.format.IIIFInfo', function () {
       });
       let options = iiifInfo.getTileSourceOptions();
 
-      expect(options).to.be.an('object');
-      expect(options).to.have.property('version', Versions.VERSION1);
+      assert.isObject(options);
+      assert.propertyVal(options, 'version', Versions.VERSION1);
 
       iiifInfo.setImageInfo({
         identifier: 'identifier-version-1.0',
@@ -279,20 +280,20 @@ describe('ol.format.IIIFInfo', function () {
       });
       options = iiifInfo.getTileSourceOptions();
 
-      expect(options).to.not.be(undefined);
-      expect(options).to.not.be(null);
-      expect(options).to.have.property('version', Versions.VERSION1);
-      expect(options).to.have.property('size');
-      expect(options.size).to.be.an('array');
-      expect(options.size.length).to.be(2);
-      expect(options.size[0]).to.be(2000);
-      expect(options.size[1]).to.be(1500);
-      expect(options.quality).to.be('native');
-      expect(options.url).to.be(undefined);
-      expect(options.sizes).to.be(undefined);
-      expect(options.tileSize).to.be(undefined);
-      expect(options.format).to.be('jpg');
-      expect(options.supports).to.be.empty();
+      assert.notEqual(options, undefined);
+      assert.notEqual(options, null);
+      assert.propertyVal(options, 'version', Versions.VERSION1);
+      assert.property(options, 'size');
+      assert.isArray(options.size);
+      assert.strictEqual(options.size.length, 2);
+      assert.strictEqual(options.size[0], 2000);
+      assert.strictEqual(options.size[1], 1500);
+      assert.strictEqual(options.quality, 'native');
+      assert.strictEqual(options.url, undefined);
+      assert.strictEqual(options.sizes, undefined);
+      assert.strictEqual(options.tileSize, undefined);
+      assert.strictEqual(options.format, 'jpg');
+      assert.isEmpty(options.supports);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
@@ -300,10 +301,10 @@ describe('ol.format.IIIFInfo', function () {
       });
       options = iiifInfo.getTileSourceOptions();
 
-      expect(options).to.be.an('object');
-      expect(options).to.have.property('version', Versions.VERSION2);
-      expect(options).to.have.property('url', 'http://iiif.test/version2/id');
-      expect(options).to.have.property('format', 'jpg');
+      assert.isObject(options);
+      assert.propertyVal(options, 'version', Versions.VERSION2);
+      assert.propertyVal(options, 'url', 'http://iiif.test/version2/id');
+      assert.propertyVal(options, 'format', 'jpg');
     });
 
     it('uses preferred options if applicable', function () {
@@ -318,8 +319,8 @@ describe('ol.format.IIIFInfo', function () {
         quality: 'bitonal',
         format: 'png',
       });
-      expect(options).to.have.property('quality', 'bitonal');
-      expect(options).to.have.property('format', 'png');
+      assert.propertyVal(options, 'quality', 'bitonal');
+      assert.propertyVal(options, 'format', 'png');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
@@ -333,8 +334,8 @@ describe('ol.format.IIIFInfo', function () {
         quality: 'bitonal',
         format: 'png',
       });
-      expect(options).to.have.property('quality', 'bitonal');
-      expect(options).to.have.property('format', 'png');
+      assert.propertyVal(options, 'quality', 'bitonal');
+      assert.propertyVal(options, 'format', 'png');
     });
 
     it('ignores preferred options that are not supported', function () {
@@ -349,8 +350,8 @@ describe('ol.format.IIIFInfo', function () {
         quality: 'bitonal',
         format: 'png',
       });
-      expect(options).to.have.property('quality', 'default');
-      expect(options).to.have.property('format', 'jpg');
+      assert.propertyVal(options, 'quality', 'default');
+      assert.propertyVal(options, 'format', 'jpg');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
@@ -363,8 +364,8 @@ describe('ol.format.IIIFInfo', function () {
         quality: 'bitonal',
         format: 'png',
       });
-      expect(options).to.have.property('quality', 'default');
-      expect(options).to.have.property('format', 'jpg');
+      assert.propertyVal(options, 'quality', 'default');
+      assert.propertyVal(options, 'format', 'jpg');
     });
 
     it('combines supported features indicated by compliance level and explicitly stated in image info', function () {
@@ -380,13 +381,13 @@ describe('ol.format.IIIFInfo', function () {
       });
 
       let options = iiifInfo.getTileSourceOptions();
-      expect(options.supports).to.contain('regionByPct');
-      expect(options.supports).to.contain('sizeByWh');
-      expect(options.supports).to.contain('regionByPx');
-      expect(options.supports).to.contain('sizeByW');
-      expect(options.supports).to.contain('sizeByH');
-      expect(options.supports).to.contain('sizeByPct');
-      expect(options.supports).to.have.length(6);
+      assert.include(options.supports, 'regionByPct');
+      assert.include(options.supports, 'sizeByWh');
+      assert.include(options.supports, 'regionByPx');
+      assert.include(options.supports, 'sizeByW');
+      assert.include(options.supports, 'sizeByH');
+      assert.include(options.supports, 'sizeByPct');
+      assert.lengthOf(options.supports, 6);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
@@ -396,14 +397,14 @@ describe('ol.format.IIIFInfo', function () {
       });
 
       options = iiifInfo.getTileSourceOptions();
-      expect(options.supports).to.contain('regionByPct');
-      expect(options.supports).to.contain('sizeByPct');
-      expect(options.supports).to.contain('regionByPx');
-      expect(options.supports).to.contain('regionSquare');
-      expect(options.supports).to.contain('sizeByW');
-      expect(options.supports).to.contain('sizeByH');
-      expect(options.supports).to.contain('sizeByWh');
-      expect(options.supports).to.have.length(7);
+      assert.include(options.supports, 'regionByPct');
+      assert.include(options.supports, 'sizeByPct');
+      assert.include(options.supports, 'regionByPx');
+      assert.include(options.supports, 'regionSquare');
+      assert.include(options.supports, 'sizeByW');
+      assert.include(options.supports, 'sizeByH');
+      assert.include(options.supports, 'sizeByWh');
+      assert.lengthOf(options.supports, 7);
     });
 
     it('uses the first available scale factors and tile sizes', function () {
@@ -415,8 +416,8 @@ describe('ol.format.IIIFInfo', function () {
           'http://library.stanford.edu/iiif/image-api/compliance.html#level0',
       });
       let options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.be(undefined);
-      expect(options.tileSize).to.be(undefined);
+      assert.strictEqual(options.resolutions, undefined);
+      assert.strictEqual(options.tileSize, undefined);
 
       iiifInfo.setImageInfo({
         '@context':
@@ -428,13 +429,13 @@ describe('ol.format.IIIFInfo', function () {
         tile_width: 512,
       });
       options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.have.length(3);
-      expect(options.resolutions).to.contain(1);
-      expect(options.resolutions).to.contain(2);
-      expect(options.resolutions).to.contain(4);
-      expect(options.tileSize).to.have.length(2);
-      expect(options.tileSize[0]).to.be(512);
-      expect(options.tileSize[1]).to.be(512);
+      assert.lengthOf(options.resolutions, 3);
+      assert.include(options.resolutions, 1);
+      assert.include(options.resolutions, 2);
+      assert.include(options.resolutions, 4);
+      assert.lengthOf(options.tileSize, 2);
+      assert.strictEqual(options.tileSize[0], 512);
+      assert.strictEqual(options.tileSize[1], 512);
 
       iiifInfo.setImageInfo({
         '@context':
@@ -447,13 +448,13 @@ describe('ol.format.IIIFInfo', function () {
         tile_height: 1024,
       });
       options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.have.length(3);
-      expect(options.resolutions).to.contain(1);
-      expect(options.resolutions).to.contain(2);
-      expect(options.resolutions).to.contain(4);
-      expect(options.tileSize).to.have.length(2);
-      expect(options.tileSize[0]).to.be(512);
-      expect(options.tileSize[1]).to.be(1024);
+      assert.lengthOf(options.resolutions, 3);
+      assert.include(options.resolutions, 1);
+      assert.include(options.resolutions, 2);
+      assert.include(options.resolutions, 4);
+      assert.lengthOf(options.tileSize, 2);
+      assert.strictEqual(options.tileSize[0], 512);
+      assert.strictEqual(options.tileSize[1], 1024);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
@@ -461,8 +462,8 @@ describe('ol.format.IIIFInfo', function () {
         profile: 'http://iiif.io/api/image/2/level0.json',
       });
       options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.be(undefined);
-      expect(options.tileSize).to.be(undefined);
+      assert.strictEqual(options.resolutions, undefined);
+      assert.strictEqual(options.tileSize, undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
@@ -480,13 +481,13 @@ describe('ol.format.IIIFInfo', function () {
         ],
       });
       options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.have.length(3);
-      expect(options.resolutions).to.contain(1);
-      expect(options.resolutions).to.contain(2);
-      expect(options.resolutions).to.contain(4);
-      expect(options.tileSize).to.have.length(2);
-      expect(options.tileSize[0]).to.be(512);
-      expect(options.tileSize[1]).to.be(512);
+      assert.lengthOf(options.resolutions, 3);
+      assert.include(options.resolutions, 1);
+      assert.include(options.resolutions, 2);
+      assert.include(options.resolutions, 4);
+      assert.lengthOf(options.tileSize, 2);
+      assert.strictEqual(options.tileSize[0], 512);
+      assert.strictEqual(options.tileSize[1], 512);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
@@ -501,13 +502,13 @@ describe('ol.format.IIIFInfo', function () {
         ],
       });
       options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.have.length(3);
-      expect(options.resolutions).to.contain(1);
-      expect(options.resolutions).to.contain(2);
-      expect(options.resolutions).to.contain(4);
-      expect(options.tileSize).to.have.length(2);
-      expect(options.tileSize[0]).to.be(512);
-      expect(options.tileSize[1]).to.be(1024);
+      assert.lengthOf(options.resolutions, 3);
+      assert.include(options.resolutions, 1);
+      assert.include(options.resolutions, 2);
+      assert.include(options.resolutions, 4);
+      assert.lengthOf(options.tileSize, 2);
+      assert.strictEqual(options.tileSize[0], 512);
+      assert.strictEqual(options.tileSize[1], 1024);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
@@ -522,14 +523,14 @@ describe('ol.format.IIIFInfo', function () {
         ],
       });
       options = iiifInfo.getTileSourceOptions();
-      expect(options.resolutions).to.have.length(4);
-      expect(options.resolutions).to.contain(1);
-      expect(options.resolutions).to.contain(2);
-      expect(options.resolutions).to.contain(4);
-      expect(options.resolutions).to.contain(8);
-      expect(options.tileSize).to.have.length(2);
-      expect(options.tileSize[0]).to.be(512);
-      expect(options.tileSize[1]).to.be(256);
+      assert.lengthOf(options.resolutions, 4);
+      assert.include(options.resolutions, 1);
+      assert.include(options.resolutions, 2);
+      assert.include(options.resolutions, 4);
+      assert.include(options.resolutions, 8);
+      assert.lengthOf(options.tileSize, 2);
+      assert.strictEqual(options.tileSize[0], 512);
+      assert.strictEqual(options.tileSize[1], 256);
     });
   });
 
@@ -553,16 +554,16 @@ describe('ol.format.IIIFInfo', function () {
       ],
     });
     let options = iiifInfo.getTileSourceOptions();
-    expect(options.sizes).to.have.length(3);
-    expect(options.sizes[0]).to.have.length(2);
-    expect(options.sizes[0][0]).to.be(2000);
-    expect(options.sizes[0][1]).to.be(1000);
-    expect(options.sizes[1]).to.have.length(2);
-    expect(options.sizes[1][0]).to.be(1000);
-    expect(options.sizes[1][1]).to.be(500);
-    expect(options.sizes[2]).to.have.length(2);
-    expect(options.sizes[2][0]).to.be(500);
-    expect(options.sizes[2][1]).to.be(250);
+    assert.lengthOf(options.sizes, 3);
+    assert.lengthOf(options.sizes[0], 2);
+    assert.strictEqual(options.sizes[0][0], 2000);
+    assert.strictEqual(options.sizes[0][1], 1000);
+    assert.lengthOf(options.sizes[1], 2);
+    assert.strictEqual(options.sizes[1][0], 1000);
+    assert.strictEqual(options.sizes[1][1], 500);
+    assert.lengthOf(options.sizes[2], 2);
+    assert.strictEqual(options.sizes[2][0], 500);
+    assert.strictEqual(options.sizes[2][1], 250);
 
     iiifInfo.setImageInfo({
       '@context': 'http://iiif.io/api/image/3/context.json',
@@ -575,10 +576,10 @@ describe('ol.format.IIIFInfo', function () {
       ],
     });
     options = iiifInfo.getTileSourceOptions();
-    expect(options.sizes).to.have.length(1);
-    expect(options.sizes[0]).to.have.length(2);
-    expect(options.sizes[0][0]).to.be(1500);
-    expect(options.sizes[0][1]).to.be(800);
+    assert.lengthOf(options.sizes, 1);
+    assert.lengthOf(options.sizes[0], 2);
+    assert.strictEqual(options.sizes[0][0], 1500);
+    assert.strictEqual(options.sizes[0][1], 800);
   });
 
   it('respects the preferred image formats', function () {
@@ -589,7 +590,7 @@ describe('ol.format.IIIFInfo', function () {
       'preferredFormats': ['png', 'gif'],
     });
     let options = iiifInfo.getTileSourceOptions();
-    expect(options.format).to.be('jpg');
+    assert.strictEqual(options.format, 'jpg');
 
     iiifInfo.setImageInfo({
       '@context': 'http://iiif.io/api/image/3/context.json',
@@ -598,7 +599,7 @@ describe('ol.format.IIIFInfo', function () {
       'preferredFormats': ['png', 'gif'],
     });
     options = iiifInfo.getTileSourceOptions();
-    expect(options.format).to.be('jpg');
+    assert.strictEqual(options.format, 'jpg');
 
     iiifInfo.setImageInfo({
       '@context': 'http://iiif.io/api/image/3/context.json',
@@ -608,7 +609,7 @@ describe('ol.format.IIIFInfo', function () {
       'preferredFormats': ['webp', 'png', 'gif'],
     });
     options = iiifInfo.getTileSourceOptions();
-    expect(options.format).to.be('gif');
+    assert.strictEqual(options.format, 'gif');
 
     iiifInfo.setImageInfo({
       '@context': 'http://iiif.io/api/image/3/context.json',
@@ -617,6 +618,6 @@ describe('ol.format.IIIFInfo', function () {
       'preferredFormats': ['png', 'gif'],
     });
     options = iiifInfo.getTileSourceOptions();
-    expect(options.format).to.be('png');
+    assert.strictEqual(options.format, 'png');
   });
 });

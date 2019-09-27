@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import TileState from '../../../../src/ol/TileState.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
@@ -18,12 +19,12 @@ describe('ol.ImageTile', function () {
       listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();
         if (previousState == TileState.IDLE) {
-          expect(state).to.be(TileState.LOADING);
+          assert.strictEqual(state, TileState.LOADING);
         } else if (previousState == TileState.LOADING) {
-          expect(state).to.be(TileState.LOADED);
+          assert.strictEqual(state, TileState.LOADED);
           done();
         } else {
-          expect().fail();
+          assert.fail();
         }
         previousState = state;
       });
@@ -37,7 +38,7 @@ describe('ol.ImageTile', function () {
       const src = 'spec/ol/data/osm-0-0-0.png';
       const referrerPolicy = 'no-referrer';
       const tile = new ImageTile(tileCoord, state, src, {referrerPolicy});
-      expect(tile.getImage().referrerPolicy).to.be(referrerPolicy);
+      assert.strictEqual(tile.getImage().referrerPolicy, referrerPolicy);
     });
 
     it('can load error tile', function (done) {
@@ -52,12 +53,12 @@ describe('ol.ImageTile', function () {
       listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();
         if (previousState == TileState.ERROR) {
-          expect(state).to.be(TileState.LOADING);
+          assert.strictEqual(state, TileState.LOADING);
         } else if (previousState == TileState.LOADING) {
-          expect(state).to.be(TileState.LOADED);
+          assert.strictEqual(state, TileState.LOADED);
           done();
         } else {
-          expect().fail();
+          assert.fail();
         }
         previousState = state;
       });
@@ -75,11 +76,11 @@ describe('ol.ImageTile', function () {
       const key = listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();
         if (state == TileState.ERROR) {
-          expect(state).to.be(TileState.ERROR);
-          expect(tile.image_).to.be.a(HTMLCanvasElement);
+          assert.strictEqual(state, TileState.ERROR);
+          assert.instanceOf(tile.image_, HTMLCanvasElement);
           unlistenByKey(key);
           tile.load();
-          expect(tile.image_).to.be.a(HTMLImageElement);
+          assert.instanceOf(tile.image_, HTMLImageElement);
           done();
         }
       });

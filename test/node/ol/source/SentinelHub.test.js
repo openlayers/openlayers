@@ -1,10 +1,10 @@
+import {assert} from 'chai';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import {
   getProjectionIdentifier,
   parseTokenClaims,
   serializeFunction,
 } from '../../../../src/ol/source/SentinelHub.js';
-import expect from '../../expect.js';
 
 function trim(block) {
   return block
@@ -21,7 +21,7 @@ describe('ol/source/SentinelHub.js', () => {
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NlcnZpY2VzLnNlbnRpbmVsLWh1Yi5jb20vYXV0aC9yZWFsbXMvbWFpbiIsImlhdCI6MTcxNzQyOTYwMCwiZXhwIjoxNzQ4OTY1NjAwLCJhdWQiOiJ3d3cuZXhhbXBsZS5jb20iLCJzdWIiOiJqcm9ja2V0QGV4YW1wbGUuY29tIiwianRpIjoiMTJiYWRhNTUtMTIzNC00ZjVhLTY1MjgtZjEyOWFhMTkzOGJiIiwiY2xpZW50SWQiOiIyY2c1ZjBmMS1hYjA0LTNlMWMtM2E1Mi0zMDg0ODEwN2I5OWEiLCJjbGllbnRBZGRyZXNzIjoiMjI0LjEyMy4xMjMuMTU1IiwiY2xpZW50SG9zdCI6IjIyNC4xMjMuMTIzLjE1NSIsImFjY291bnQiOiIzZmVlMWIyOS1mMTViLWE0MjMtYzZjMS0yOWEwMmZmMmZhY2UifQ.tJOgcaeOwwvEQDVOThYXiJHIaIom4fi6psATnda7m0k';
       const claims = parseTokenClaims(token);
 
-      expect(claims).to.eql({
+      assert.deepEqual(claims, {
         iss: 'https://services.sentinel-hub.com/auth/realms/main',
         iat: 1717429600,
         exp: 1748965600,
@@ -77,7 +77,7 @@ describe('ol/source/SentinelHub.js', () => {
       it(`works for ${c.input}`, () => {
         const projection = getProjection(c.input);
         const identifier = getProjectionIdentifier(projection);
-        expect(identifier).to.equal(c.output);
+        assert.equal(identifier, c.output);
       });
     }
   });
@@ -94,7 +94,7 @@ describe('ol/source/SentinelHub.js', () => {
           return a + b;
         };
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works for functions named fun', () => {
@@ -108,7 +108,7 @@ describe('ol/source/SentinelHub.js', () => {
           return a + b;
         };
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works for anonymous functions', () => {
@@ -122,7 +122,7 @@ describe('ol/source/SentinelHub.js', () => {
           return a + b;
         };
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works for arrow functions', () => {
@@ -132,7 +132,7 @@ describe('ol/source/SentinelHub.js', () => {
       const exp = `
         var sum = (a, b) => a + b;
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works for arrow functions without parens around args', () => {
@@ -142,7 +142,7 @@ describe('ol/source/SentinelHub.js', () => {
       const exp = `
         var double = a => 2 * a;
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works for anonymous functions assigned to object properties', () => {
@@ -158,7 +158,7 @@ describe('ol/source/SentinelHub.js', () => {
           return a + b;
         };
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works with method syntax', () => {
@@ -174,7 +174,7 @@ describe('ol/source/SentinelHub.js', () => {
           return a + b;
         };
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
 
     it('works even if method name is "function"', () => {
@@ -190,7 +190,7 @@ describe('ol/source/SentinelHub.js', () => {
           return a + b;
         };
       `;
-      expect(trim(got)).to.equal(trim(exp));
+      assert.equal(trim(got), trim(exp));
     });
   });
 });

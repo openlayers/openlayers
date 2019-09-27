@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import TileState from '../../../../../src/ol/TileState.js';
 import {get} from '../../../../../src/ol/proj.js';
 import GeoTIFFSource from '../../../../../src/ol/source/GeoTIFF.js';
@@ -12,7 +13,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.convertToRGB_).to.be(false);
+      assert.strictEqual(source.convertToRGB_, false);
     });
 
     it('respects the convertToRGB option', function () {
@@ -24,7 +25,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.convertToRGB_).to.be(true);
+      assert.strictEqual(source.convertToRGB_, true);
     });
 
     it('accepts auto convertToRGB', function () {
@@ -36,7 +37,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.convertToRGB_).to.be('auto');
+      assert.strictEqual(source.convertToRGB_, 'auto');
     });
 
     it('defaults to wrapX: false', function () {
@@ -47,7 +48,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.getWrapX()).to.be(false);
+      assert.strictEqual(source.getWrapX(), false);
     });
 
     it('allows wrapX to be set', function () {
@@ -59,7 +60,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.getWrapX()).to.be(true);
+      assert.strictEqual(source.getWrapX(), true);
     });
 
     it('defaults to projection: null', function () {
@@ -70,7 +71,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.getProjection()).to.be(null);
+      assert.strictEqual(source.getProjection(), null);
     });
 
     it('allows projection to be set', function () {
@@ -84,7 +85,7 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.getProjection()).to.be(expected);
+      assert.strictEqual(source.getProjection(), expected);
     });
 
     it('generates Float32Array data if normalize is set to false', (done) => {
@@ -95,8 +96,8 @@ describe('ol/source/GeoTIFF', function () {
       source.on('change', () => {
         const tile = source.getTile(0, 0, 0);
         source.on('tileloadend', () => {
-          expect(tile.getState()).to.be(TileState.LOADED);
-          expect(tile.getData()).to.be.a(Float32Array);
+          assert.strictEqual(tile.getState(), TileState.LOADED);
+          assert.instanceOf(tile.getData(), Float32Array);
           done();
         });
         tile.load();
@@ -110,8 +111,8 @@ describe('ol/source/GeoTIFF', function () {
       source.on('change', () => {
         const tile = source.getTile(0, 0, 0);
         source.on('tileloadend', () => {
-          expect(tile.getState()).to.be(TileState.LOADED);
-          expect(tile.getData()).to.be.a(Uint8Array);
+          assert.strictEqual(tile.getState(), TileState.LOADED);
+          assert.instanceOf(tile.getData(), Uint8Array);
           done();
         });
         tile.load();
@@ -128,8 +129,8 @@ describe('ol/source/GeoTIFF', function () {
           source.on('change', () => {
             const tile = source.getTile(0, 0, 0);
             source.on('tileloadend', () => {
-              expect(tile.getState()).to.be(TileState.LOADED);
-              expect(tile.getData()).to.be.a(Uint8Array);
+              assert.strictEqual(tile.getState(), TileState.LOADED);
+              assert.instanceOf(tile.getData(), Uint8Array);
               done();
             });
             tile.load();
@@ -155,13 +156,13 @@ describe('ol/source/GeoTIFF', function () {
         if (source.getState() !== 'ready') {
           return;
         }
-        expect(called).to.be(true);
+        assert.strictEqual(called, true);
         done();
       });
     });
 
     it('errors when overviews are configured with a custom loader', () => {
-      expect(
+      assert.throws(
         () =>
           new GeoTIFFSource({
             sources: [
@@ -172,10 +173,7 @@ describe('ol/source/GeoTIFF', function () {
               },
             ],
           }),
-      ).to.throwError((error) =>
-        expect(error.message).to.be(
-          'Source overviews are not supported when using a custom loader',
-        ),
+        'Source overviews are not supported when using a custom loader',
       );
     });
   });
@@ -194,22 +192,22 @@ describe('ol/source/GeoTIFF', function () {
     });
 
     it('manages load states', function (done) {
-      expect(source.getState()).to.be('loading');
+      assert.strictEqual(source.getState(), 'loading');
       source.on('change', () => {
-        expect(source.getState()).to.be('ready');
+        assert.strictEqual(source.getState(), 'ready');
         done();
       });
     });
 
     it('configures itself from source metadata', function (done) {
       source.on('change', () => {
-        expect(source.hasAlpha).to.be(true);
-        expect(source.bandCount).to.be(4);
-        expect(source.nodataBandIndex).to.be(4);
-        expect(source.nodataValues_).to.eql([[0]]);
-        expect(source.getTileGrid().getResolutions().length).to.be(1);
-        expect(source.projection.getCode()).to.be('EPSG:4326');
-        expect(source.projection.getUnits()).to.be('degrees');
+        assert.strictEqual(source.hasAlpha, true);
+        assert.strictEqual(source.bandCount, 4);
+        assert.strictEqual(source.nodataBandIndex, 4);
+        assert.deepEqual(source.nodataValues_, [[0]]);
+        assert.strictEqual(source.getTileGrid().getResolutions().length, 1);
+        assert.strictEqual(source.projection.getCode(), 'EPSG:4326');
+        assert.strictEqual(source.projection.getUnits(), 'degrees');
         done();
       });
     });
@@ -217,12 +215,15 @@ describe('ol/source/GeoTIFF', function () {
     it('resolves view properties', function (done) {
       source.getView().then((viewOptions) => {
         const projection = viewOptions.projection;
-        expect(projection.getCode()).to.be('EPSG:4326');
-        expect(projection.getUnits()).to.be('degrees');
-        expect(viewOptions.extent).to.eql([-180, -90, 180, 90]);
-        expect(viewOptions.center).to.eql([0, 0]);
-        expect(viewOptions.resolutions).to.eql([1.40625, 0.703125, 0.3515625]);
-        expect(viewOptions.showFullExtent).to.be(true);
+        assert.strictEqual(projection.getCode(), 'EPSG:4326');
+        assert.strictEqual(projection.getUnits(), 'degrees');
+        assert.deepEqual(viewOptions.extent, [-180, -90, 180, 90]);
+        assert.deepEqual(viewOptions.center, [0, 0]);
+        assert.deepEqual(
+          viewOptions.resolutions,
+          [1.40625, 0.703125, 0.3515625],
+        );
+        assert.strictEqual(viewOptions.showFullExtent, true);
         done();
       });
     });
@@ -231,7 +232,7 @@ describe('ol/source/GeoTIFF', function () {
       source.on('change', () => {
         const tile = source.getTile(0, 0, 0);
         source.on('tileloadend', () => {
-          expect(tile.getState()).to.be(TileState.LOADED);
+          assert.strictEqual(tile.getState(), TileState.LOADED);
           done();
         });
         tile.load();

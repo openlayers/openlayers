@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -128,24 +129,20 @@ describe('ol.interaction.Translate', function () {
     const startevent = events[0];
     const endevent = events[events.length - 1];
 
-    // first event should be translatestart
-    expect(startevent).to.be.an(TranslateEvent);
-    expect(startevent.type).to.eql('translatestart');
+    assert.instanceOf(startevent, TranslateEvent);
+    assert.deepEqual(startevent.type, 'translatestart');
 
-    // last event should be translateend
-    expect(endevent).to.be.an(TranslateEvent);
-    expect(endevent.type).to.eql('translateend');
+    assert.instanceOf(endevent, TranslateEvent);
+    assert.deepEqual(endevent.type, 'translateend');
 
-    // make sure we get change events to events array
-    expect(events.length > 2).to.be(true);
+    assert.strictEqual(events.length > 2, true);
     // middle events should be feature modification events
     for (let i = 1; i < events.length - 1; i++) {
-      expect(events[i]).to.equal('change');
+      assert.equal(events[i], 'change');
     }
 
-    // TranslateEvents should include the expected features
-    expect(startevent.features.getArray()).to.eql(features);
-    expect(endevent.features.getArray()).to.eql(features);
+    assert.deepEqual(startevent.features.getArray(), features);
+    assert.deepEqual(endevent.features.getArray(), features);
   }
 
   describe('constructor', function () {
@@ -153,8 +150,8 @@ describe('ol.interaction.Translate', function () {
       const translate = new Translate({
         features: features,
       });
-      expect(translate).to.be.a(Translate);
-      expect(translate).to.be.a(Interaction);
+      assert.instanceOf(translate, Translate);
+      assert.instanceOf(translate, Interaction);
     });
   });
 
@@ -163,9 +160,9 @@ describe('ol.interaction.Translate', function () {
       const translate = new Translate({
         features: features,
       });
-      expect(translate.getActive()).to.be(true);
+      assert.strictEqual(translate.getActive(), true);
       translate.setActive(false);
-      expect(translate.getActive()).to.be(false);
+      assert.strictEqual(translate.getActive(), false);
     });
   });
 
@@ -187,8 +184,8 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([50, 40]);
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [50, 40]);
 
       validateEvents(events, [features[0]]);
     });
@@ -201,10 +198,10 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([20, -30]);
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [20, -30]);
 
-      expect(events).to.be.empty();
+      assert.isEmpty(events);
     });
   });
 
@@ -223,8 +220,8 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
-      expect(features[0].getGeometry().getCoordinates()).to.eql([50, 40]);
-      expect(features[1].getGeometry().getCoordinates()).to.eql([20, -30]);
+      assert.deepEqual(features[0].getGeometry().getCoordinates(), [50, 40]);
+      assert.deepEqual(features[1].getGeometry().getCoordinates(), [20, -30]);
 
       validateEvents(events, [features[0]]);
     });
@@ -250,8 +247,8 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([50, 40]);
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [50, 40]);
 
       validateEvents(events, [features[0]]);
     });
@@ -264,10 +261,10 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       const geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(geometry.getCoordinates()).to.eql([20, -30]);
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [20, -30]);
 
-      expect(events).to.be.empty();
+      assert.isEmpty(events);
     });
   });
 
@@ -286,7 +283,7 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdown', 10, 20, true);
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
-      expect(features[0].getGeometry().getCoordinates()).to.eql([50, 40]);
+      assert.deepEqual(features[0].getGeometry().getCoordinates(), [50, 40]);
 
       validateEvents(events, [features[0]]);
     });
@@ -298,9 +295,9 @@ describe('ol.interaction.Translate', function () {
       simulateEvent('pointerdown', 20, 30);
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
-      expect(features[1].getGeometry().getCoordinates()).to.eql([20, -30]);
+      assert.deepEqual(features[1].getGeometry().getCoordinates(), [20, -30]);
 
-      expect(events).to.be.empty();
+      assert.isEmpty(events);
     });
   });
 
@@ -337,9 +334,9 @@ describe('ol.interaction.Translate', function () {
         simulateEvent('pointerup', 50, -40);
 
         const geometries = feature.getGeometry().getGeometriesArray();
-        expect(geometries[0].getRadius()).to.equal(10);
-        expect(geometries[0].getCenter()).to.eql([50, 50]);
-        expect(geometries[1].getCoordinates()).to.eql([
+        assert.equal(geometries[0].getRadius(), 10);
+        assert.deepEqual(geometries[0].getCenter(), [50, 50]);
+        assert.deepEqual(geometries[1].getCoordinates(), [
           [
             [70, 60],
             [60, 40],
@@ -389,22 +386,22 @@ describe('ol.interaction.Translate', function () {
         const circle = geometries[0]
           .clone()
           .transform(userProjection, viewProjection);
-        expect(circle.getRadius()).to.roughlyEqual(10, 1e-9);
+        assert.approximately(circle.getRadius(), 10, 1e-9);
         const center = circle.getCenter();
-        expect(center[0]).to.roughlyEqual(50, 1e-9);
-        expect(center[1]).to.roughlyEqual(50, 1e-9);
+        assert.approximately(center[0], 50, 1e-9);
+        assert.approximately(center[1], 50, 1e-9);
         const polygon = geometries[1]
           .clone()
           .transform(userProjection, viewProjection);
         const coordinates = polygon.getCoordinates()[0];
-        expect(coordinates[0][0]).to.roughlyEqual(70, 1e-9);
-        expect(coordinates[0][1]).to.roughlyEqual(60, 1e-9);
-        expect(coordinates[1][0]).to.roughlyEqual(60, 1e-9);
-        expect(coordinates[1][1]).to.roughlyEqual(40, 1e-9);
-        expect(coordinates[2][0]).to.roughlyEqual(80, 1e-9);
-        expect(coordinates[2][1]).to.roughlyEqual(40, 1e-9);
-        expect(coordinates[3][0]).to.equal(coordinates[0][0]);
-        expect(coordinates[3][1]).to.equal(coordinates[0][1]);
+        assert.approximately(coordinates[0][0], 70, 1e-9);
+        assert.approximately(coordinates[0][1], 60, 1e-9);
+        assert.approximately(coordinates[1][0], 60, 1e-9);
+        assert.approximately(coordinates[1][1], 40, 1e-9);
+        assert.approximately(coordinates[2][0], 80, 1e-9);
+        assert.approximately(coordinates[2][1], 40, 1e-9);
+        assert.equal(coordinates[3][0], coordinates[0][0]);
+        assert.equal(coordinates[3][1], coordinates[0][1]);
 
         validateEvents(events, [feature]);
         done();
@@ -422,62 +419,62 @@ describe('ol.interaction.Translate', function () {
     });
 
     it('changes css cursor', function () {
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), false);
 
       simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), true);
 
       simulateEvent('pointerdown', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(true);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), true);
+      assert.strictEqual(element.classList.contains('ol-grab'), false);
 
       simulateEvent('pointerup', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), true);
 
       simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), false);
     });
 
     it('resets css cursor when interaction is deactivated while pointer is on feature', function () {
       simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), true);
 
       translate.setActive(false);
 
       simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), false);
     });
 
     it('resets css cursor interaction is removed while pointer is on feature', function () {
       simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), true);
 
       map.removeInteraction(translate);
 
       simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), false);
     });
 
     it('resets css cursor to existing cursor interaction is removed while pointer is on feature', function () {
       element.style.cursor = 'pointer';
 
       simulateEvent('pointermove', 10, 20);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(true);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), true);
 
       map.removeInteraction(translate);
 
       simulateEvent('pointermove', 0, 0);
-      expect(element.classList.contains('ol-grabbing')).to.be(false);
-      expect(element.classList.contains('ol-grab')).to.be(false);
+      assert.strictEqual(element.classList.contains('ol-grabbing'), false);
+      assert.strictEqual(element.classList.contains('ol-grab'), false);
     });
   });
 });

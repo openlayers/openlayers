@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
@@ -67,11 +68,11 @@ describe('ol.interaction.Extent', function () {
 
   describe('Constructor', function () {
     it('can be configured with an extent', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         new ExtentInteraction({
           extent: [-10, -10, 10, 10],
         });
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -79,16 +80,16 @@ describe('ol.interaction.Extent', function () {
     it('snap to vertex works', function () {
       interaction.setExtent([-50, -50, 50, 50]);
 
-      expect(interaction.snapToVertex_([230, 40], map)).to.eql([50, 50]);
-      expect(interaction.snapToVertex_([231, 41], map)).to.eql([50, 50]);
+      assert.deepEqual(interaction.snapToVertex_([230, 40], map), [50, 50]);
+      assert.deepEqual(interaction.snapToVertex_([231, 41], map), [50, 50]);
     });
 
     it('snap to edge works', function () {
       interaction.setExtent([-50, -50, 50, 50]);
 
-      expect(interaction.snapToVertex_([230, 90], map)).to.eql([50, 0]);
-      expect(interaction.snapToVertex_([230, 89], map)).to.eql([50, 1]);
-      expect(interaction.snapToVertex_([231, 90], map)).to.eql([50, 0]);
+      assert.deepEqual(interaction.snapToVertex_([230, 90], map), [50, 0]);
+      assert.deepEqual(interaction.snapToVertex_([230, 89], map), [50, 1]);
+      assert.deepEqual(interaction.snapToVertex_([231, 90], map), [50, 0]);
     });
   });
 
@@ -106,7 +107,7 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdrag', 50, 50, false, 0);
       simulateEvent('pointerup', 50, 50, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
+      assert.deepEqual(interaction.getExtent(), [-50, -50, 50, 50]);
     });
 
     it('clicking off extent nulls extent', function () {
@@ -115,8 +116,8 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdown', -10, -10, false, 0);
       simulateEvent('pointerup', -10, -10, false, 0);
 
-      expect(interaction.getExtent()).to.equal(null);
-      expect(spy.lastCall.returnValue).to.be(false);
+      assert.equal(interaction.getExtent(), null);
+      assert.strictEqual(spy.lastCall.returnValue, false);
     });
 
     it('clicking off extent does not null extent if createCondition is false', function () {
@@ -126,8 +127,8 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdown', -10, -10, false, 0);
       simulateEvent('pointerup', -10, -10, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
-      expect(spy.lastCall.returnValue).to.be(true);
+      assert.deepEqual(interaction.getExtent(), [-50, -50, 50, 50]);
+      assert.strictEqual(spy.lastCall.returnValue, true);
     });
 
     it('clicking on extent does not null extent', function () {
@@ -136,7 +137,7 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdown', 50, 50, false, 0);
       simulateEvent('pointerup', 50, 50, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
+      assert.deepEqual(interaction.getExtent(), [-50, -50, 50, 50]);
     });
 
     it('snap and drag vertex works', function () {
@@ -146,7 +147,7 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdrag', -70, -40, false, 0);
       simulateEvent('pointerup', -70, -40, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-70, -50, -50, -40]);
+      assert.deepEqual(interaction.getExtent(), [-70, -50, -50, -40]);
     });
 
     it('snap and drag edge works', function () {
@@ -156,7 +157,7 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdrag', 20, -30, false, 0);
       simulateEvent('pointerup', 20, -30, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-50, -50, 20, 50]);
+      assert.deepEqual(interaction.getExtent(), [-50, -50, 20, 50]);
     });
 
     it('drag extent works', function () {
@@ -167,7 +168,7 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerdrag', -100, -100, false, 0);
       simulateEvent('pointerup', -100, -100, false, 0);
 
-      expect(interaction.getExtent()).to.eql([-150, -150, -50, -50]);
+      assert.deepEqual(interaction.getExtent(), [-150, -150, -50, -50]);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   apply,
   compose,
@@ -19,29 +20,29 @@ import {
 describe('ol.transform', function () {
   function assertRoughlyEqual(t1, t2) {
     t1.forEach(function (item, index) {
-      expect(item).to.roughlyEqual(t2[index], 1e-8);
+      assert.approximately(item, t2[index], 1e-8);
     });
   }
 
   describe('create()', function () {
     it('creates an identity transform', function () {
-      expect(create()).to.eql([1, 0, 0, 1, 0, 0]);
+      assert.deepEqual(create(), [1, 0, 0, 1, 0, 0]);
     });
   });
 
   describe('reset()', function () {
     it('resets tansform to an identity transform', function () {
       const transform = [1, 2, 3, 4, 5, 6];
-      expect(reset(transform)).to.eql([1, 0, 0, 1, 0, 0]);
-      expect(transform).to.eql([1, 0, 0, 1, 0, 0]);
+      assert.deepEqual(reset(transform), [1, 0, 0, 1, 0, 0]);
+      assert.deepEqual(transform, [1, 0, 0, 1, 0, 0]);
     });
   });
 
   describe('set()', function () {
     it('sets the given values', function () {
       const transform = create();
-      expect(set(transform, 1, 2, 3, 4, 5, 6)).to.eql([1, 2, 3, 4, 5, 6]);
-      expect(transform).to.eql([1, 2, 3, 4, 5, 6]);
+      assert.deepEqual(set(transform, 1, 2, 3, 4, 5, 6), [1, 2, 3, 4, 5, 6]);
+      assert.deepEqual(transform, [1, 2, 3, 4, 5, 6]);
     });
   });
 
@@ -49,24 +50,24 @@ describe('ol.transform', function () {
     it('sets values of 2nd transform on 1st transform', function () {
       const transform1 = create();
       const transform2 = [1, 2, 3, 4, 5, 6];
-      expect(setFromArray(transform1, transform2)).to.eql(transform2);
-      expect(transform1).to.eql(transform2);
+      assert.deepEqual(setFromArray(transform1, transform2), transform2);
+      assert.deepEqual(transform1, transform2);
     });
   });
 
   describe('translate()', function () {
     it('applies translation to a transform', function () {
       const transform = create();
-      expect(translate(transform, 3, 4)).to.eql([1, 0, 0, 1, 3, 4]);
-      expect(transform).to.eql([1, 0, 0, 1, 3, 4]);
+      assert.deepEqual(translate(transform, 3, 4), [1, 0, 0, 1, 3, 4]);
+      assert.deepEqual(transform, [1, 0, 0, 1, 3, 4]);
     });
   });
 
   describe('scale()', function () {
     it('applies scaling to a transform', function () {
       const transform = create();
-      expect(scale(transform, 3, 4)).to.eql([3, 0, 0, 4, 0, 0]);
-      expect(transform).to.eql([3, 0, 0, 4, 0, 0]);
+      assert.deepEqual(scale(transform, 3, 4), [3, 0, 0, 4, 0, 0]);
+      assert.deepEqual(transform, [3, 0, 0, 4, 0, 0]);
     });
   });
 
@@ -74,13 +75,13 @@ describe('ol.transform', function () {
     it('creates a scale transform', function () {
       const target = create();
       makeScale(target, 2, 3);
-      expect(target).to.eql([2, 0, 0, 3, 0, 0]);
+      assert.deepEqual(target, [2, 0, 0, 3, 0, 0]);
     });
 
     it('returns the target', function () {
       const target = create();
       const transform = makeScale(target, 2, 3);
-      expect(transform).to.be(target);
+      assert.strictEqual(transform, target);
     });
   });
 
@@ -96,8 +97,8 @@ describe('ol.transform', function () {
     it('multiplies two transforms', function () {
       const transform1 = [1, 2, 1, 2, 1, 2];
       const transform2 = [1, 2, 1, 2, 1, 2];
-      expect(multiply(transform1, transform2)).to.eql([3, 6, 3, 6, 4, 8]);
-      expect(transform1).to.eql([3, 6, 3, 6, 4, 8]);
+      assert.deepEqual(multiply(transform1, transform2), [3, 6, 3, 6, 4, 8]);
+      assert.deepEqual(transform1, [3, 6, 3, 6, 4, 8]);
     });
   });
 
@@ -128,29 +129,29 @@ describe('ol.transform', function () {
         dx2,
         dy2,
       );
-      expect(composed).to.equal(composedReturn);
-      expect(composed).to.eql(expected);
+      assert.equal(composed, composedReturn);
+      assert.deepEqual(composed, expected);
     });
   });
 
   describe('invert()', function () {
     it('inverts a transform', function () {
       const transform = [1, 1, 1, 2, 2, 0];
-      expect(invert(transform)).to.eql([2, -1, -1, 1, -4, 2]);
+      assert.deepEqual(invert(transform), [2, -1, -1, 1, -4, 2]);
     });
 
     it('throws if the transform cannot be inverted', function () {
       const indeterminant = [1, 0, 1, 0, 1, 0];
-      expect(function () {
+      assert.throws(function () {
         invert(indeterminant);
-      }).to.throwException();
+      });
     });
 
     it('modifies the source', function () {
       const source = [1, 1, 1, 2, 2, 0];
       const inverted = invert(source);
-      expect(inverted).to.eql([2, -1, -1, 1, -4, 2]);
-      expect(source).to.be(inverted);
+      assert.deepEqual(inverted, [2, -1, -1, 1, -4, 2]);
+      assert.strictEqual(source, inverted);
     });
   });
 
@@ -159,15 +160,15 @@ describe('ol.transform', function () {
       const source = [1, 1, 1, 2, 2, 0];
       const target = [1, 0, 0, 1, 0, 0];
       makeInverse(target, source);
-      expect(source).to.eql([1, 1, 1, 2, 2, 0]);
-      expect(target).to.eql([2, -1, -1, 1, -4, 2]);
+      assert.deepEqual(source, [1, 1, 1, 2, 2, 0]);
+      assert.deepEqual(target, [2, -1, -1, 1, -4, 2]);
     });
 
     it('returns the target', function () {
       const source = [1, 1, 1, 2, 2, 0];
       const target = [1, 0, 0, 1, 0, 0];
       const inverted = makeInverse(target, source);
-      expect(target).to.be(inverted);
+      assert.strictEqual(target, inverted);
     });
   });
 
@@ -175,8 +176,8 @@ describe('ol.transform', function () {
     it('applies a transform to a 2d vector', function () {
       const transform = translate(create(), 2, 3);
       const point = [1, 2];
-      expect(apply(transform, point)).to.eql([3, 5]);
-      expect(point).to.eql([3, 5]);
+      assert.deepEqual(apply(transform, point), [3, 5]);
+      assert.deepEqual(point, [3, 5]);
     });
   });
   describe('equivalent()', function () {
@@ -184,9 +185,9 @@ describe('ol.transform', function () {
       const mat = toString([1 / 3, 0, 0, 1 / 3, 0, 0]);
       const node = document.createElement('div');
       node.style.transform = mat;
-      expect(equivalent(mat, node.style.transform)).to.be(true);
+      assert.strictEqual(equivalent(mat, node.style.transform), true);
       const otherMat = toString([1 / 32, 0, 0, 1 / 3, 0, 1]);
-      expect(equivalent(mat, otherMat)).to.be(false);
+      assert.strictEqual(equivalent(mat, otherMat), false);
     });
   });
 });

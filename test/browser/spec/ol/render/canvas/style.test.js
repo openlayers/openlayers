@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
 import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
 import {
@@ -17,14 +18,14 @@ import Text from '../../../../../../src/ol/style/Text.js';
  * @param {Style} expected The expected style.
  */
 function expectStyleEquals(style, expected) {
-  expect(style).to.be.a(Style);
+  assert.instanceOf(style, Style);
 
   const gotFill = style.getFill();
   const expectedFill = expected.getFill();
   if (expectedFill) {
     expectFillEquals(gotFill, expectedFill);
   } else {
-    expect(gotFill).to.be(null);
+    assert.strictEqual(gotFill, null);
   }
 
   const gotStroke = style.getStroke();
@@ -32,7 +33,7 @@ function expectStyleEquals(style, expected) {
   if (expectedStroke) {
     expectStrokeEquals(gotStroke, expectedStroke);
   } else {
-    expect(gotStroke).to.be(null);
+    assert.strictEqual(gotStroke, null);
   }
 
   const gotImage = style.getImage();
@@ -40,7 +41,7 @@ function expectStyleEquals(style, expected) {
   if (expectedImage) {
     expectImageEquals(gotImage, expectedImage);
   } else {
-    expect(gotImage).to.be(null);
+    assert.strictEqual(gotImage, null);
   }
 
   const gotText = style.getText();
@@ -48,7 +49,7 @@ function expectStyleEquals(style, expected) {
   if (expectedText) {
     expectTextEquals(gotText, expectedText);
   } else {
-    expect(gotText).to.be(null);
+    assert.strictEqual(gotText, null);
   }
 }
 
@@ -57,10 +58,10 @@ function expectStyleEquals(style, expected) {
  * @param {Fill} expected The expected fill.
  */
 function expectFillEquals(fill, expected) {
-  expect(fill).to.be.a(Fill);
+  assert.instanceOf(fill, Fill);
 
   const expectedColor = expected.getColor();
-  expect(fill.getColor()).to.eql(expectedColor);
+  assert.deepEqual(fill.getColor(), expectedColor);
 }
 
 /**
@@ -68,28 +69,28 @@ function expectFillEquals(fill, expected) {
  * @param {Stroke} expected The expected stroke.
  */
 function expectStrokeEquals(stroke, expected) {
-  expect(stroke).to.be.a(Stroke);
+  assert.instanceOf(stroke, Stroke);
 
   const expectedColor = expected.getColor();
-  expect(stroke.getColor()).to.eql(expectedColor);
+  assert.deepEqual(stroke.getColor(), expectedColor);
 
   const expectedWidth = expected.getWidth();
-  expect(stroke.getWidth()).to.eql(expectedWidth);
+  assert.deepEqual(stroke.getWidth(), expectedWidth);
 
   const expectedLineCap = expected.getLineCap();
-  expect(stroke.getLineCap()).to.eql(expectedLineCap);
+  assert.deepEqual(stroke.getLineCap(), expectedLineCap);
 
   const expectedLineJoin = expected.getLineJoin();
-  expect(stroke.getLineJoin()).to.eql(expectedLineJoin);
+  assert.deepEqual(stroke.getLineJoin(), expectedLineJoin);
 
   const expectedMiterLimit = expected.getMiterLimit();
-  expect(stroke.getMiterLimit()).to.eql(expectedMiterLimit);
+  assert.deepEqual(stroke.getMiterLimit(), expectedMiterLimit);
 
   const expectedLineDash = expected.getLineDash();
-  expect(stroke.getLineDash()).to.eql(expectedLineDash);
+  assert.deepEqual(stroke.getLineDash(), expectedLineDash);
 
   const expectedLineDashOffset = expected.getLineDashOffset();
-  expect(stroke.getLineDashOffset()).to.eql(expectedLineDashOffset);
+  assert.deepEqual(stroke.getLineDashOffset(), expectedLineDashOffset);
 }
 
 /**
@@ -97,42 +98,42 @@ function expectStrokeEquals(stroke, expected) {
  * @param {Image} expected The expected image symbolizer.
  */
 function expectImageEquals(image, expected) {
-  expect(image).to.be.a(Image);
+  assert.instanceOf(image, Image);
 
   const expectedScale = expected.getScale();
-  expect(image.getScale()).to.eql(expectedScale);
+  assert.deepEqual(image.getScale(), expectedScale);
 
   if (expected instanceof Icon) {
     if (!(image instanceof Icon)) {
       throw new Error('Expected image to be an Icon');
     }
     const expectedSrc = expected.getSrc();
-    expect(image.getSrc()).to.eql(expectedSrc);
-    expect(image.getColor()).to.eql(expected.getColor());
+    assert.deepEqual(image.getSrc(), expectedSrc);
+    assert.deepEqual(image.getColor(), expected.getColor());
     return;
   }
   if (expected instanceof RegularShape) {
     if (!(image instanceof RegularShape)) {
       throw new Error('Expected image to be a RegularShape');
     }
-    expect(image.getPoints()).to.eql(expected.getPoints());
-    expect(image.getRadius()).to.eql(expected.getRadius());
-    expect(image.getRadius2()).to.eql(expected.getRadius2());
-    expect(image.getAngle()).to.eql(expected.getAngle());
-    expect(image.getRotateWithView()).to.eql(expected.getRotateWithView());
-    expect(image.getScale()).to.eql(expected.getScale());
-    expect(image.getDisplacement()).to.eql(expected.getDisplacement());
+    assert.deepEqual(image.getPoints(), expected.getPoints());
+    assert.deepEqual(image.getRadius(), expected.getRadius());
+    assert.deepEqual(image.getRadius2(), expected.getRadius2());
+    assert.deepEqual(image.getAngle(), expected.getAngle());
+    assert.deepEqual(image.getRotateWithView(), expected.getRotateWithView());
+    assert.deepEqual(image.getScale(), expected.getScale());
+    assert.deepEqual(image.getDisplacement(), expected.getDisplacement());
     const expectedFill = expected.getFill();
     if (expectedFill) {
       expectFillEquals(image.getFill(), expectedFill);
     } else {
-      expect(image.getFill()).to.be(null);
+      assert.strictEqual(image.getFill(), null);
     }
     const expectedStroke = expected.getStroke();
     if (expectedStroke) {
       expectStrokeEquals(image.getStroke(), expectedStroke);
     } else {
-      expect(image.getStroke()).to.be(null);
+      assert.strictEqual(image.getStroke(), null);
     }
     return;
   }
@@ -147,32 +148,32 @@ function expectImageEquals(image, expected) {
  * @param {Text} expected The expected text symbolizer.
  */
 function expectTextEquals(text, expected) {
-  expect(text).to.be.a(Text);
+  assert.instanceOf(text, Text);
 
-  expect(text.getText()).to.eql(expected.getText());
-  expect(text.getScale()).to.eql(expected.getScale());
-  expect(text.getRotation()).to.eql(expected.getRotation());
-  expect(text.getRotateWithView()).to.eql(expected.getRotateWithView());
-  expect(text.getOffsetX()).to.eql(expected.getOffsetX());
-  expect(text.getOffsetY()).to.eql(expected.getOffsetY());
-  expect(text.getPadding()).to.eql(expected.getPadding());
-  expect(text.getKeepUpright()).to.eql(expected.getKeepUpright());
-  expect(text.getTextAlign()).to.eql(expected.getTextAlign());
-  expect(text.getJustify()).to.eql(expected.getJustify());
-  expect(text.getTextBaseline()).to.eql(expected.getTextBaseline());
+  assert.deepEqual(text.getText(), expected.getText());
+  assert.deepEqual(text.getScale(), expected.getScale());
+  assert.deepEqual(text.getRotation(), expected.getRotation());
+  assert.deepEqual(text.getRotateWithView(), expected.getRotateWithView());
+  assert.deepEqual(text.getOffsetX(), expected.getOffsetX());
+  assert.deepEqual(text.getOffsetY(), expected.getOffsetY());
+  assert.deepEqual(text.getPadding(), expected.getPadding());
+  assert.deepEqual(text.getKeepUpright(), expected.getKeepUpright());
+  assert.deepEqual(text.getTextAlign(), expected.getTextAlign());
+  assert.deepEqual(text.getJustify(), expected.getJustify());
+  assert.deepEqual(text.getTextBaseline(), expected.getTextBaseline());
 
   const expectedFill = expected.getFill();
   if (expectedFill) {
     expectFillEquals(text.getFill(), expectedFill);
   } else {
-    expect(text.getFill()).to.be(null);
+    assert.strictEqual(text.getFill(), null);
   }
 
   const expectedStroke = expected.getStroke();
   if (expectedStroke) {
     expectStrokeEquals(text.getStroke(), expectedStroke);
   } else {
-    expect(text.getStroke()).to.be(null);
+    assert.strictEqual(text.getStroke(), null);
   }
 }
 
@@ -270,7 +271,7 @@ describe('ol/render/canvas/style.js', () => {
 
         const context = c.context || newEvaluationContext();
         const styles = evaluator(context);
-        expect(styles).to.have.length(c.expected.length);
+        assert.lengthOf(styles, c.expected.length);
         for (let i = 0; i < styles.length; ++i) {
           try {
             expectStyleEquals(styles[i], c.expected[i]);
@@ -747,8 +748,8 @@ describe('ol/render/canvas/style.js', () => {
         }
 
         if (c.error) {
-          expect(error).to.be.an(Error);
-          expect(error.message).to.contain(c.error);
+          assert.instanceOf(error, Error);
+          assert.include(error.message, c.error);
           return;
         }
         if (error) {

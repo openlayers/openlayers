@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import WMSGetFeatureInfo from '../../../../../src/ol/format/WMSGetFeatureInfo.js';
 import {addCommon, clearAllProjections} from '../../../../../src/ol/proj.js';
@@ -7,14 +8,14 @@ describe('ol.format.WMSGetFeatureInfo', function () {
   describe('#getLayers', function () {
     it('returns null if layers is undefined', function () {
       const format = new WMSGetFeatureInfo();
-      expect(format.getLayers()).to.be(null);
+      assert.strictEqual(format.getLayers(), null);
     });
 
     it('returns the value provided in the layers option', function () {
       const format = new WMSGetFeatureInfo({
         layers: ['a', 'z'],
       });
-      expect(format.getLayers()).to.eql(['a', 'z']);
+      assert.deepEqual(format.getLayers(), ['a', 'z']);
     });
   });
 
@@ -42,22 +43,23 @@ describe('ol.format.WMSGetFeatureInfo', function () {
       });
 
       it('creates 3 features', function () {
-        expect(features).to.have.length(3);
+        assert.lengthOf(features, 3);
       });
 
       it('creates a feature for 1071', function () {
         const feature = features[0];
-        expect(feature.getId()).to.be(undefined);
-        expect(feature.get('FID')).to.equal('1071');
-        expect(feature.get('NO_CAMPAGNE')).to.equal('1020050');
+        assert.strictEqual(feature.getId(), undefined);
+        assert.equal(feature.get('FID'), '1071');
+        assert.equal(feature.get('NO_CAMPAGNE'), '1020050');
       });
 
       it('read boundedBy but no geometry', function () {
         const feature = features[0];
-        expect(feature.getGeometry()).to.be(undefined);
-        expect(feature.get('boundedBy')).to.eql([
-          -531138.686422, 5386348.414671, -117252.819653, 6144475.186022,
-        ]);
+        assert.strictEqual(feature.getGeometry(), undefined);
+        assert.deepEqual(
+          feature.get('boundedBy'),
+          [-531138.686422, 5386348.414671, -117252.819653, 6144475.186022],
+        );
       });
 
       it('read empty response', function () {
@@ -71,7 +73,7 @@ describe('ol.format.WMSGetFeatureInfo', function () {
           '  </AAA64_layer>' +
           '</msGMLOutput>';
         const features = new WMSGetFeatureInfo().readFeatures(text);
-        expect(features.length).to.be(0);
+        assert.strictEqual(features.length, 0);
       });
 
       it('read empty attributes', function () {
@@ -96,10 +98,9 @@ describe('ol.format.WMSGetFeatureInfo', function () {
           '  </AAA64_layer>' +
           '</msGMLOutput>';
         const features = new WMSGetFeatureInfo().readFeatures(text);
-        expect(features.length).to.be(1);
-        expect(features[0].get('FOO')).to.be('bar');
-        // FIXME is that really wanted ?
-        expect(features[0].get('EMPTY')).to.be(undefined);
+        assert.strictEqual(features.length, 1);
+        assert.strictEqual(features[0].get('FOO'), 'bar');
+        assert.strictEqual(features[0].get('EMPTY'), undefined);
       });
 
       it('read features from multiple layers', function () {
@@ -157,18 +158,18 @@ describe('ol.format.WMSGetFeatureInfo', function () {
           '</msGMLOutput>';
         const format = new WMSGetFeatureInfo();
         const features = format.readFeatures(text);
-        expect(features.length).to.be(2);
-        expect(features[0].get('OBJECTID')).to.be('287');
-        expect(features[1].get('OBJECTID')).to.be('1251');
+        assert.strictEqual(features.length, 2);
+        assert.strictEqual(features[0].get('OBJECTID'), '287');
+        assert.strictEqual(features[1].get('OBJECTID'), '1251');
         format.setLayers(['AAA64']);
         const aaa64Features = format.readFeatures(text);
-        expect(aaa64Features.length).to.be(1);
+        assert.strictEqual(aaa64Features.length, 1);
         format.setLayers(['AAA64', 'AAA62']);
         const allFeatures = format.readFeatures(text);
-        expect(allFeatures.length).to.be(2);
+        assert.strictEqual(allFeatures.length, 2);
         format.setLayers(['foo', 'bar']);
         const dummyFeatures = format.readFeatures(text);
-        expect(dummyFeatures.length).to.be(0);
+        assert.strictEqual(dummyFeatures.length, 0);
       });
 
       it('read geoserver’s response', function () {
@@ -222,9 +223,12 @@ describe('ol.format.WMSGetFeatureInfo', function () {
           '  </gml:featureMember>' +
           '</wfs:FeatureCollection>';
         const features = new WMSGetFeatureInfo().readFeatures(text);
-        expect(features.length).to.be(1);
-        expect(features[0].get('cat')).to.be('3');
-        expect(features[0].getGeometry().getType()).to.be('MultiLineString');
+        assert.strictEqual(features.length, 1);
+        assert.strictEqual(features[0].get('cat'), '3');
+        assert.strictEqual(
+          features[0].getGeometry().getType(),
+          'MultiLineString',
+        );
       });
     });
   });

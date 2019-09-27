@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, useFakeTimers} from 'sinon';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventHandler from '../../../../src/ol/MapBrowserEventHandler.js';
@@ -43,7 +44,7 @@ describe('ol/MapBrowserEventHandler', function () {
       (event.target = target), (event.clientX = 0);
       event.clientY = 0;
       handler.emulateClick_(event);
-      expect(clickSpy.called).to.be.ok();
+      assert.isOk(clickSpy.called);
     });
 
     it('emulates singleclick', function () {
@@ -53,16 +54,16 @@ describe('ol/MapBrowserEventHandler', function () {
       event.clientX = 0;
       event.clientY = 0;
       handler.emulateClick_(event);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isNotOk(dblclickSpy.called);
 
       clock.tick(250);
-      expect(singleclickSpy.calledOnce).to.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isOk(singleclickSpy.calledOnce);
+      assert.isNotOk(dblclickSpy.called);
 
       handler.emulateClick_(event);
-      expect(singleclickSpy.calledOnce).to.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isOk(singleclickSpy.calledOnce);
+      assert.isNotOk(dblclickSpy.called);
     });
 
     it('emulates dblclick', function () {
@@ -72,16 +73,16 @@ describe('ol/MapBrowserEventHandler', function () {
       event.clientX = 0;
       event.clientY = 0;
       handler.emulateClick_(event);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isNotOk(dblclickSpy.called);
 
       handler.emulateClick_(event);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.calledOnce).to.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isOk(dblclickSpy.calledOnce);
 
       clock.tick(250);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.calledOnce).to.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isOk(dblclickSpy.calledOnce);
     });
   });
 
@@ -92,7 +93,7 @@ describe('ol/MapBrowserEventHandler', function () {
     });
 
     it('is null if no "down" type event has been handled', function () {
-      expect(handler.down_).to.be(null);
+      assert.strictEqual(handler.down_, null);
     });
 
     it('is properly set after handlePointerDown_ has been called', function () {
@@ -101,10 +102,10 @@ describe('ol/MapBrowserEventHandler', function () {
       event.clientY = 666;
       event.target = 'foo';
       handler.handlePointerDown_(event);
-      expect(handler.down_.type).to.be('pointerdown');
-      expect(handler.down_.clientX).to.be(42);
-      expect(handler.down_.clientY).to.be(666);
-      expect(handler.down_.target).to.be('foo');
+      assert.strictEqual(handler.down_.type, 'pointerdown');
+      assert.strictEqual(handler.down_.clientX, 42);
+      assert.strictEqual(handler.down_.clientY, 666);
+      assert.strictEqual(handler.down_.target, 'foo');
     });
   });
 
@@ -128,7 +129,7 @@ describe('ol/MapBrowserEventHandler', function () {
       pointerdownAt0.type = 'pointerdown';
       pointerdownAt0.clientX = 0;
       pointerdownAt0.clientY = 0;
-      expect(defaultHandler.isMoving_(pointerdownAt0)).to.be(false);
+      assert.strictEqual(defaultHandler.isMoving_(pointerdownAt0), false);
     });
 
     it('is moving if distance is 2', function () {
@@ -136,7 +137,7 @@ describe('ol/MapBrowserEventHandler', function () {
       pointerdownAt2.type = 'pointerdown';
       pointerdownAt2.clientX = DEVICE_PIXEL_RATIO + 1;
       pointerdownAt2.clientY = DEVICE_PIXEL_RATIO + 1;
-      expect(defaultHandler.isMoving_(pointerdownAt2)).to.be(true);
+      assert.strictEqual(defaultHandler.isMoving_(pointerdownAt2), true);
     });
 
     it('is moving with negative distance', function () {
@@ -144,7 +145,7 @@ describe('ol/MapBrowserEventHandler', function () {
       pointerdownAt2.type = 'pointerdown';
       pointerdownAt2.clientX = -(DEVICE_PIXEL_RATIO + 1);
       pointerdownAt2.clientY = -(DEVICE_PIXEL_RATIO + 1);
-      expect(defaultHandler.isMoving_(pointerdownAt2)).to.be(true);
+      assert.strictEqual(defaultHandler.isMoving_(pointerdownAt2), true);
     });
 
     it('is not moving if distance is less than move tolerance', function () {
@@ -152,7 +153,7 @@ describe('ol/MapBrowserEventHandler', function () {
       pointerdownAt2.type = 'pointerdown';
       pointerdownAt2.clientX = DEVICE_PIXEL_RATIO + 1;
       pointerdownAt2.clientY = DEVICE_PIXEL_RATIO + 1;
-      expect(moveToleranceHandler.isMoving_(pointerdownAt2)).to.be(false);
+      assert.strictEqual(moveToleranceHandler.isMoving_(pointerdownAt2), false);
     });
 
     it('is moving if distance is greater than move tolerance', function () {
@@ -160,7 +161,7 @@ describe('ol/MapBrowserEventHandler', function () {
       pointerdownAt9.type = 'pointerdown';
       pointerdownAt9.clientX = DEVICE_PIXEL_RATIO * 8 + 1;
       pointerdownAt9.clientY = DEVICE_PIXEL_RATIO * 8 + 1;
-      expect(moveToleranceHandler.isMoving_(pointerdownAt9)).to.be(true);
+      assert.strictEqual(moveToleranceHandler.isMoving_(pointerdownAt9), true);
     });
 
     it('is moving when moving back close to the down pixel', function () {
@@ -169,13 +170,13 @@ describe('ol/MapBrowserEventHandler', function () {
       pointermoveAt9.clientX = DEVICE_PIXEL_RATIO * 8 + 1;
       pointermoveAt9.clientY = DEVICE_PIXEL_RATIO * 8 + 1;
       moveToleranceHandler.handlePointerMove_(pointermoveAt9);
-      expect(moveToleranceHandler.isMoving_(pointermoveAt9)).to.be(true);
+      assert.strictEqual(moveToleranceHandler.isMoving_(pointermoveAt9), true);
       const pointermoveAt2 = new OlEvent();
       pointermoveAt2.type = 'pointermove';
       pointermoveAt2.clientX = DEVICE_PIXEL_RATIO + 1;
       pointermoveAt2.clientY = DEVICE_PIXEL_RATIO + 1;
       moveToleranceHandler.handlePointerMove_(pointermoveAt2);
-      expect(moveToleranceHandler.isMoving_(pointermoveAt2)).to.be(true);
+      assert.strictEqual(moveToleranceHandler.isMoving_(pointermoveAt2), true);
     });
   });
 
@@ -192,7 +193,7 @@ describe('ol/MapBrowserEventHandler', function () {
         preventDefault: sinonSpy(),
       };
       handler.handleTouchMove_(event);
-      expect(event.preventDefault.callCount).to.be(1);
+      assert.strictEqual(event.preventDefault.callCount, 1);
     });
   });
 
@@ -253,33 +254,33 @@ describe('ol/MapBrowserEventHandler', function () {
     it('emulates dblclick', function () {
       element.dispatchEvent(down1);
       document.dispatchEvent(up1);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isNotOk(dblclickSpy.called);
 
       element.dispatchEvent(down2);
       document.dispatchEvent(up2);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isOk(dblclickSpy.called);
 
       clock.tick(250);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isOk(dblclickSpy.called);
     });
 
     it('does not emulate dblclick and singleclick when multiple pointers are active', function () {
       element.dispatchEvent(down1);
       element.dispatchEvent(down2);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isNotOk(dblclickSpy.called);
 
       document.dispatchEvent(up1);
       document.dispatchEvent(up2);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isNotOk(dblclickSpy.called);
 
       clock.tick(250);
-      expect(singleclickSpy.called).to.not.be.ok();
-      expect(dblclickSpy.called).to.not.be.ok();
+      assert.isNotOk(singleclickSpy.called);
+      assert.isNotOk(dblclickSpy.called);
     });
   });
 
@@ -319,11 +320,11 @@ describe('ol/MapBrowserEventHandler', function () {
     it('keeps activePointers up to date when event target changes', function () {
       element.dispatchEvent(down1);
       element.dispatchEvent(down2);
-      expect(handler.activePointers_[0].pointerId).to.be(1);
-      expect(handler.activePointers_[1].pointerId).to.be(2);
+      assert.strictEqual(handler.activePointers_[0].pointerId, 1);
+      assert.strictEqual(handler.activePointers_[1].pointerId, 2);
       document.dispatchEvent(up1);
       document.dispatchEvent(up2);
-      expect(handler.activePointers_).to.have.length(0);
+      assert.lengthOf(handler.activePointers_, 0);
     });
   });
 });

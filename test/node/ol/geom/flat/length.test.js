@@ -1,8 +1,8 @@
+import {assert} from 'chai';
 import {
   lineStringLength,
   linearRingLength,
 } from '../../../../../src/ol/geom/flat/length.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/length.js', function () {
   describe('lineStringLength', function () {
@@ -15,7 +15,7 @@ describe('ol/geom/flat/length.js', function () {
         const end = 8;
         const expected = 3;
         const got = lineStringLength(flatCoords, offset, end, stride);
-        expect(got).to.be(expected);
+        assert.strictEqual(got, expected);
       });
 
       it('calculates a partwise length of a lineString (offset)', function () {
@@ -23,7 +23,7 @@ describe('ol/geom/flat/length.js', function () {
         const end = 8;
         const expected = 2;
         const got = lineStringLength(flatCoords, offset, end, stride);
-        expect(got).to.be(expected);
+        assert.strictEqual(got, expected);
       });
 
       it('calculates a partwise length of a lineString (end)', function () {
@@ -31,7 +31,7 @@ describe('ol/geom/flat/length.js', function () {
         const end = 4;
         const expected = 1;
         const got = lineStringLength(flatCoords, offset, end, stride);
-        expect(got).to.be(expected);
+        assert.strictEqual(got, expected);
       });
     });
 
@@ -44,7 +44,7 @@ describe('ol/geom/flat/length.js', function () {
         const end = 12;
         const expected = 3;
         const got = lineStringLength(flatCoords, offset, end, stride);
-        expect(got).to.be(expected);
+        assert.strictEqual(got, expected);
       });
 
       it('calculates a partwise length of a lineString (offset)', function () {
@@ -52,7 +52,7 @@ describe('ol/geom/flat/length.js', function () {
         const end = 12;
         const expected = 2;
         const got = lineStringLength(flatCoords, offset, end, stride);
-        expect(got).to.be(expected);
+        assert.strictEqual(got, expected);
       });
 
       it('calculates a partwise length of a lineString (end)', function () {
@@ -60,7 +60,7 @@ describe('ol/geom/flat/length.js', function () {
         const end = 6;
         const expected = 1;
         const got = lineStringLength(flatCoords, offset, end, stride);
-        expect(got).to.be(expected);
+        assert.strictEqual(got, expected);
       });
     });
   });
@@ -73,7 +73,7 @@ describe('ol/geom/flat/length.js', function () {
       const end = 8;
       const expected = 4;
       const got = linearRingLength(flatCoords, offset, end, stride);
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
 
     it('calculates the total length of a figure-8 linearRing', function () {
@@ -83,7 +83,7 @@ describe('ol/geom/flat/length.js', function () {
       const end = 14;
       const expected = 8;
       const got = linearRingLength(flatCoords, offset, end, stride);
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
   });
 });

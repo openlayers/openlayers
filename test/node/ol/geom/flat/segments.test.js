@@ -1,9 +1,9 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import {
   forEach as forEachSegment,
   getIntersectionPoint,
 } from '../../../../../src/ol/geom/flat/segments.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/segments.js', function () {
   describe('forEach', function () {
@@ -21,20 +21,20 @@ describe('ol/geom/flat/segments.js', function () {
           args.push([point1[0], point1[1], point2[0], point2[1]]);
         });
         const ret = forEachSegment(flatCoordinates, offset, end, stride, spy);
-        expect(spy.callCount).to.be(3);
-        expect(args[0][0]).to.be(0);
-        expect(args[0][1]).to.be(0);
-        expect(args[0][2]).to.be(1);
-        expect(args[0][3]).to.be(1);
-        expect(args[1][0]).to.be(1);
-        expect(args[1][1]).to.be(1);
-        expect(args[1][2]).to.be(2);
-        expect(args[1][3]).to.be(2);
-        expect(args[2][0]).to.be(2);
-        expect(args[2][1]).to.be(2);
-        expect(args[2][2]).to.be(3);
-        expect(args[2][3]).to.be(3);
-        expect(ret).to.be(false);
+        assert.strictEqual(spy.callCount, 3);
+        assert.strictEqual(args[0][0], 0);
+        assert.strictEqual(args[0][1], 0);
+        assert.strictEqual(args[0][2], 1);
+        assert.strictEqual(args[0][3], 1);
+        assert.strictEqual(args[1][0], 1);
+        assert.strictEqual(args[1][1], 1);
+        assert.strictEqual(args[1][2], 2);
+        assert.strictEqual(args[1][3], 2);
+        assert.strictEqual(args[2][0], 2);
+        assert.strictEqual(args[2][1], 2);
+        assert.strictEqual(args[2][2], 3);
+        assert.strictEqual(args[2][3], 3);
+        assert.strictEqual(ret, false);
       });
     });
     describe('callback returns true', function () {
@@ -45,23 +45,23 @@ describe('ol/geom/flat/segments.js', function () {
           return true;
         });
         const ret = forEachSegment(flatCoordinates, offset, end, stride, spy);
-        expect(spy.callCount).to.be(1);
-        expect(args[0][0]).to.be(0);
-        expect(args[0][1]).to.be(0);
-        expect(args[0][2]).to.be(1);
-        expect(args[0][3]).to.be(1);
-        expect(ret).to.be(true);
+        assert.strictEqual(spy.callCount, 1);
+        assert.strictEqual(args[0][0], 0);
+        assert.strictEqual(args[0][1], 0);
+        assert.strictEqual(args[0][2], 1);
+        assert.strictEqual(args[0][3], 1);
+        assert.strictEqual(ret, true);
       });
     });
     it('returns coordinates with the correct stride', function () {
       const spy = sinonSpy();
       forEachSegment([0, 0, 0, 1, 1, 1, 2, 2, 2], 0, 9, 3, spy);
-      expect(spy.callCount).to.be(2);
-      expect(spy.firstCall.args).to.eql([
+      assert.strictEqual(spy.callCount, 2);
+      assert.deepEqual(spy.firstCall.args, [
         [0, 0, 0],
         [1, 1, 1],
       ]);
-      expect(spy.secondCall.args).to.eql([
+      assert.deepEqual(spy.secondCall.args, [
         [1, 1, 1],
         [2, 2, 2],
       ]);
@@ -79,7 +79,7 @@ describe('ol/geom/flat/segments.js', function () {
         [1, 0],
       ];
       const intersection = getIntersectionPoint(segment1, segment2);
-      expect(intersection).to.eql([0.5, 0.5]);
+      assert.deepEqual(intersection, [0.5, 0.5]);
     });
     it('returns undefined if there is no intersection', () => {
       const segment1 = [
@@ -91,7 +91,7 @@ describe('ol/geom/flat/segments.js', function () {
         [1, 3],
       ];
       const intersection = getIntersectionPoint(segment1, segment2);
-      expect(intersection).to.be(undefined);
+      assert.strictEqual(intersection, undefined);
     });
     it('returns undefined if the segments are collinear', () => {
       const segment1 = [
@@ -103,7 +103,7 @@ describe('ol/geom/flat/segments.js', function () {
         [3, 3],
       ];
       const intersection = getIntersectionPoint(segment1, segment2);
-      expect(intersection).to.be(undefined);
+      assert.strictEqual(intersection, undefined);
     });
   });
 });

@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import {linearRingContainsXY} from '../../../../../src/ol/geom/flat/contains.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/contains.js', function () {
   describe('with simple data', function () {
@@ -10,7 +10,7 @@ describe('ol/geom/flat/contains.js', function () {
 
     describe('linearRingContainsXY', function () {
       it('returns true for point inside a simple polygon', function () {
-        expect(
+        assert.strictEqual(
           linearRingContainsXY(
             flatCoordinatesSimple,
             0,
@@ -19,11 +19,12 @@ describe('ol/geom/flat/contains.js', function () {
             0.5,
             0.5,
           ),
-        ).to.be(true);
+          true,
+        );
       });
 
       it('returns false for point outside a simple polygon', function () {
-        expect(
+        assert.strictEqual(
           linearRingContainsXY(
             flatCoordinatesSimple,
             0,
@@ -32,11 +33,12 @@ describe('ol/geom/flat/contains.js', function () {
             1.5,
             1.5,
           ),
-        ).to.be(false);
+          false,
+        );
       });
 
       it('returns true for point inside a non-simple polygon', function () {
-        expect(
+        assert.strictEqual(
           linearRingContainsXY(
             flatCoordinatesNonSimple,
             0,
@@ -45,11 +47,12 @@ describe('ol/geom/flat/contains.js', function () {
             1,
             1,
           ),
-        ).to.be(true);
+          true,
+        );
       });
 
       it('returns true for point inside an overlap of a non-simple polygon', function () {
-        expect(
+        assert.strictEqual(
           linearRingContainsXY(
             flatCoordinatesNonSimple,
             0,
@@ -58,11 +61,12 @@ describe('ol/geom/flat/contains.js', function () {
             1.5,
             2.5,
           ),
-        ).to.be(true);
+          true,
+        );
       });
 
       it('returns false for a point inside a hole of a non-simple polygon', function () {
-        expect(
+        assert.strictEqual(
           linearRingContainsXY(
             flatCoordinatesNonSimple,
             0,
@@ -71,7 +75,8 @@ describe('ol/geom/flat/contains.js', function () {
             2.5,
             1.5,
           ),
-        ).to.be(false);
+          false,
+        );
       });
     });
   });

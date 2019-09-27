@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import {matchingChunk} from '../../../../../src/ol/geom/flat/straightchunk.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/straightchunk.js', function () {
   describe('matchingChunk', function () {
@@ -9,12 +9,12 @@ describe('ol/geom/flat/straightchunk.js', function () {
 
       it('returns whole line with angle delta', function () {
         const got = matchingChunk(Math.PI / 4, flatCoords, 0, 6, stride);
-        expect(got).to.eql([0, 6]);
+        assert.deepEqual(got, [0, 6]);
       });
 
       it('returns whole line with zero angle delta', function () {
         const got = matchingChunk(0, flatCoords, 0, 6, stride);
-        expect(got).to.eql([0, 6]);
+        assert.deepEqual(got, [0, 6]);
       });
     });
 
@@ -24,12 +24,12 @@ describe('ol/geom/flat/straightchunk.js', function () {
 
       it('returns whole line if straight enough', function () {
         const got = matchingChunk(Math.PI, flatCoords, 0, 8, stride);
-        expect(got).to.eql([0, 8]);
+        assert.deepEqual(got, [0, 8]);
       });
 
       it('returns first matching chunk if all chunk lengths are the same', function () {
         const got = matchingChunk(Math.PI / 4, flatCoords, 0, 8, stride);
-        expect(got).to.eql([0, 4]);
+        assert.deepEqual(got, [0, 4]);
       });
     });
 
@@ -41,12 +41,12 @@ describe('ol/geom/flat/straightchunk.js', function () {
 
       it('returns stright chunk from within the linestring', function () {
         const got = matchingChunk(0, flatCoords, 0, 18, stride);
-        expect(got).to.eql([10, 16]);
+        assert.deepEqual(got, [10, 16]);
       });
 
       it('returns long chunk at the end if angle and length within threshold', function () {
         const got = matchingChunk(Math.PI / 4, flatCoords, 0, 18, stride);
-        expect(got).to.eql([10, 18]);
+        assert.deepEqual(got, [10, 18]);
       });
     });
   });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   asArray,
   asString,
@@ -7,34 +8,33 @@ import {
   rgbaToLcha,
   toString,
 } from '../../../src/ol/color.js';
-import expect from '../expect.js';
 
 describe('ol/color', () => {
   describe('asArray()', () => {
     it('returns the same for an array', () => {
       const color = [1, 2, 3, 0.4];
       const got = asArray(color);
-      expect(got).to.be(color);
+      assert.strictEqual(got, color);
     });
 
     it('returns an array given an rgba string', () => {
       const color = asArray('rgba(1,2,3,0.4)');
-      expect(color).to.eql([1, 2, 3, 0.4]);
+      assert.deepEqual(color, [1, 2, 3, 0.4]);
     });
 
     it('returns an array given an rgb string', () => {
       const color = asArray('rgb(1,2,3)');
-      expect(color).to.eql([1, 2, 3, 1]);
+      assert.deepEqual(color, [1, 2, 3, 1]);
     });
 
     it('returns an array given a hex string', () => {
       const color = asArray('#00ccff');
-      expect(color).to.eql([0, 204, 255, 1]);
+      assert.deepEqual(color, [0, 204, 255, 1]);
     });
 
     it('returns an array given a hex string with alpha', () => {
       const color = asArray('#00ccffb0');
-      expect(color).to.eql([0, 204, 255, 176 / 255]);
+      assert.deepEqual(color, [0, 204, 255, 176 / 255]);
     });
   });
 
@@ -42,17 +42,17 @@ describe('ol/color', () => {
     it('returns the same for a string', () => {
       const color = 'rgba(0,1,2,0.3)';
       const got = asString(color);
-      expect(got).to.be(color);
+      assert.strictEqual(got, color);
     });
 
     it('returns a string given an rgba array', () => {
       const color = asString([1, 2, 3, 0.4]);
-      expect(color).to.eql('rgba(1,2,3,0.4)');
+      assert.deepEqual(color, 'rgba(1,2,3,0.4)');
     });
 
     it('returns a string given an rgb array', () => {
       const color = asString([1, 2, 3]);
-      expect(color).to.eql('rgba(1,2,3,1)');
+      assert.deepEqual(color, 'rgba(1,2,3,1)');
     });
   });
 
@@ -72,73 +72,78 @@ describe('ol/color', () => {
         it(`works for ${c[0]}`, () => {
           const expected = c[1];
           if (typeof expected === 'string') {
-            expect(() => {
-              fromString(c[0]);
-            }).to.throwException((e) => {
-              expect(e.message).to.be(expected);
-            });
+            assert.throws(
+              () => {
+                fromString(c[0]);
+              },
+              (e) => {
+                assert.strictEqual(e.message, expected);
+              },
+            );
             return;
           }
-          expect(fromString(c[0])).to.eql(c[1]);
+          assert.deepEqual(fromString(c[0]), c[1]);
         });
       }
     });
 
     it('can parse 3-digit hex colors', () => {
-      expect(fromString('#087')).to.eql([0, 136, 119, 1]);
+      assert.deepEqual(fromString('#087'), [0, 136, 119, 1]);
     });
 
     it('can parse 4-digit hex colors', () => {
-      expect(fromString('#0876')).to.eql([0, 136, 119, 102 / 255]);
+      assert.deepEqual(fromString('#0876'), [0, 136, 119, 102 / 255]);
     });
 
     it('can parse 6-digit hex colors', () => {
-      expect(fromString('#56789a')).to.eql([86, 120, 154, 1]);
+      assert.deepEqual(fromString('#56789a'), [86, 120, 154, 1]);
     });
 
     it('can parse 8-digit hex colors', () => {
-      expect(fromString('#56789acc')).to.eql([86, 120, 154, 204 / 255]);
+      assert.deepEqual(fromString('#56789acc'), [86, 120, 154, 204 / 255]);
     });
 
     it('can parse rgb colors', () => {
-      expect(fromString('rgb(0, 0, 255)')).to.eql([0, 0, 255, 1]);
+      assert.deepEqual(fromString('rgb(0, 0, 255)'), [0, 0, 255, 1]);
     });
 
     it('ignores whitespace before, between & after numbers (rgb)', () => {
-      expect(fromString('rgb( \t 0  ,   0 \n , 255  )')).to.eql([0, 0, 255, 1]);
+      assert.deepEqual(
+        fromString('rgb( \t 0  ,   0 \n , 255  )'),
+        [0, 0, 255, 1],
+      );
     });
 
     it('can parse rgba colors', () => {
-      // opacity 0
-      expect(fromString('rgba(255, 255, 0, 0)')).to.eql([255, 255, 0, 0]);
-      // opacity 0.0 (simple float)
-      expect(fromString('rgba(255, 255, 0, 0.0)')).to.eql([255, 255, 0, 0]);
-      // opacity 0.0000000000000000 (float with 16 digits)
-      expect(fromString('rgba(255, 255, 0, 0.0000000000000000)')).to.eql([
-        255, 255, 0, 0,
-      ]);
-      // opacity 0.1 (simple float)
-      expect(fromString('rgba(255, 255, 0, 0.1)')).to.eql([255, 255, 0, 0.1]);
-      // opacity 0.1111111111111111 (float with 16 digits)
-      expect(fromString('rgba(255, 255, 0, 0.1111111111111111)')).to.eql([
-        255, 255, 0, 0.1111111111111111,
-      ]);
-      // opacity 1
-      expect(fromString('rgba(255, 255, 0, 1)')).to.eql([255, 255, 0, 1]);
-      // opacity 1.0
-      expect(fromString('rgba(255, 255, 0, 1.0)')).to.eql([255, 255, 0, 1]);
-      // opacity 1.0000000000000000
-      expect(fromString('rgba(255, 255, 0, 1.0000000000000000)')).to.eql([
-        255, 255, 0, 1,
-      ]);
-      // with 30 decimal digits
-      expect(
+      assert.deepEqual(fromString('rgba(255, 255, 0, 0)'), [255, 255, 0, 0]);
+      assert.deepEqual(fromString('rgba(255, 255, 0, 0.0)'), [255, 255, 0, 0]);
+      assert.deepEqual(
+        fromString('rgba(255, 255, 0, 0.0000000000000000)'),
+        [255, 255, 0, 0],
+      );
+      assert.deepEqual(
+        fromString('rgba(255, 255, 0, 0.1)'),
+        [255, 255, 0, 0.1],
+      );
+      assert.deepEqual(
+        fromString('rgba(255, 255, 0, 0.1111111111111111)'),
+        [255, 255, 0, 0.1111111111111111],
+      );
+      assert.deepEqual(fromString('rgba(255, 255, 0, 1)'), [255, 255, 0, 1]);
+      assert.deepEqual(fromString('rgba(255, 255, 0, 1.0)'), [255, 255, 0, 1]);
+      assert.deepEqual(
+        fromString('rgba(255, 255, 0, 1.0000000000000000)'),
+        [255, 255, 0, 1],
+      );
+      assert.deepEqual(
         fromString('rgba(255, 255, 0, 0.123456789012345678901234567890)'),
-      ).to.eql([255, 255, 0, 0.12345678901234567890123456789]);
+        [255, 255, 0, 0.12345678901234567890123456789],
+      );
     });
 
     it('ignores whitespace before, between & after numbers (rgba)', () => {
-      expect(fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')).to.eql(
+      assert.deepEqual(
+        fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )'),
         [0, 0, 255, 0.4711],
       );
     });
@@ -146,15 +151,15 @@ describe('ol/color', () => {
 
   describe('toString()', () => {
     it('converts valid colors', () => {
-      expect(toString([1, 2, 3, 0.4])).to.be('rgba(1,2,3,0.4)');
+      assert.strictEqual(toString([1, 2, 3, 0.4]), 'rgba(1,2,3,0.4)');
     });
 
     it('rounds to integers if needed', () => {
-      expect(toString([1.2, 2.5, 3.7, 0.4])).to.be('rgba(1,3,4,0.4)');
+      assert.strictEqual(toString([1.2, 2.5, 3.7, 0.4]), 'rgba(1,3,4,0.4)');
     });
 
     it('sets default alpha value if undefined', () => {
-      expect(toString([0, 0, 0])).to.be('rgba(0,0,0,1)');
+      assert.strictEqual(toString([0, 0, 0]), 'rgba(0,0,0,1)');
     });
   });
 
@@ -170,10 +175,10 @@ describe('ol/color', () => {
     for (const c of cases) {
       it(`throws an error on ${c}`, () => {
         try {
-          const color = fromString(c);
-          expect().fail(`Expected an error, got ${color}`);
+          fromString(c);
+          assert.fail();
         } catch (err) {
-          expect(err.message).to.be(`failed to parse "${c}" as color`);
+          assert.strictEqual(err.message, `failed to parse "${c}" as color`);
         }
       });
     }
@@ -181,8 +186,8 @@ describe('ol/color', () => {
 
   describe('isValid()', () => {
     it('correctly detects valid colors', () => {
-      expect(isStringColor('rgba(1,3,4,0.4)')).to.be(true);
-      expect(isStringColor('rgb(1,3,4)')).to.be(true);
+      assert.strictEqual(isStringColor('rgba(1,3,4,0.4)'), true);
+      assert.strictEqual(isStringColor('rgb(1,3,4)'), true);
     });
   });
 
@@ -243,11 +248,11 @@ describe('ol/color', () => {
         const [h, c, l] = toHCL(...rgb);
         const lch1 = [l, c, h];
         const lch2 = rgbaToLcha([...rgb, 1]).slice(0, 3);
-        expect(lch2).to.eql(lch1);
+        assert.deepEqual(lch2, lch1);
         const rgb1 = fromHCL(lch1[2], lch1[1], lch1[0]).map(Math.round);
         const rgb2 = lchaToRgba([...lch1, 1]).slice(0, 3);
-        expect(rgb2).to.eql(rgb1);
-        expect(rgb1).to.eql(rgb);
+        assert.deepEqual(rgb2, rgb1);
+        assert.deepEqual(rgb1, rgb);
       }
     });
   });

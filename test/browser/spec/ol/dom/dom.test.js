@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   createCanvasContext2D,
   createMockDiv,
@@ -15,34 +16,34 @@ describe('ol.dom', function () {
 
     it('returns a CanvasRenderingContext2D', function () {
       const ctx = createCanvasContext2D();
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(defaultWidth);
-      expect(ctx.canvas.height).to.be(defaultHeight);
+      assert.instanceOf(ctx, CanvasRenderingContext2D);
+      assert.instanceOf(ctx.canvas, HTMLCanvasElement);
+      assert.strictEqual(ctx.canvas.width, defaultWidth);
+      assert.strictEqual(ctx.canvas.height, defaultHeight);
     });
 
     it('has the desired width', function () {
       const ctx = createCanvasContext2D(42);
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(42);
-      expect(ctx.canvas.height).to.be(defaultHeight);
+      assert.instanceOf(ctx, CanvasRenderingContext2D);
+      assert.instanceOf(ctx.canvas, HTMLCanvasElement);
+      assert.strictEqual(ctx.canvas.width, 42);
+      assert.strictEqual(ctx.canvas.height, defaultHeight);
     });
 
     it('has the desired height', function () {
       const ctx = createCanvasContext2D(undefined, 42);
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(defaultWidth);
-      expect(ctx.canvas.height).to.be(42);
+      assert.instanceOf(ctx, CanvasRenderingContext2D);
+      assert.instanceOf(ctx.canvas, HTMLCanvasElement);
+      assert.strictEqual(ctx.canvas.width, defaultWidth);
+      assert.strictEqual(ctx.canvas.height, 42);
     });
 
     it('has the desired height and width', function () {
       const ctx = createCanvasContext2D(42, 42);
-      expect(ctx).to.be.a(CanvasRenderingContext2D);
-      expect(ctx.canvas).to.be.a(HTMLCanvasElement);
-      expect(ctx.canvas.width).to.be(42);
-      expect(ctx.canvas.height).to.be(42);
+      assert.instanceOf(ctx, CanvasRenderingContext2D);
+      assert.instanceOf(ctx.canvas, HTMLCanvasElement);
+      assert.strictEqual(ctx.canvas.width, 42);
+      assert.strictEqual(ctx.canvas.height, 42);
     });
   });
 
@@ -65,7 +66,7 @@ describe('ol.dom', function () {
     describe('without padding, margin or border', function () {
       it('calculates correctly', function () {
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(10);
+        assert.strictEqual(calcWidth, 10);
       });
     });
 
@@ -73,13 +74,13 @@ describe('ol.dom', function () {
       it('calculates correctly (both sides)', function () {
         element.style.padding = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        assert.strictEqual(calcWidth, 20);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.paddingLeft = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(15);
+        assert.strictEqual(calcWidth, 15);
       });
     });
 
@@ -87,13 +88,13 @@ describe('ol.dom', function () {
       it('calculates correctly (both sides)', function () {
         element.style.margin = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        assert.strictEqual(calcWidth, 20);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.marginLeft = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(15);
+        assert.strictEqual(calcWidth, 15);
       });
     });
 
@@ -101,14 +102,14 @@ describe('ol.dom', function () {
       it('calculates correctly (both sides)', function () {
         element.style.border = '5px solid chocolate';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        assert.strictEqual(calcWidth, 20);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(15);
+        assert.strictEqual(calcWidth, 15);
       });
     });
 
@@ -117,14 +118,14 @@ describe('ol.dom', function () {
         element.style.padding = '5px';
         element.style.margin = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(30);
+        assert.strictEqual(calcWidth, 30);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.paddingLeft = '5px';
         element.style.marginLeft = '5px';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        assert.strictEqual(calcWidth, 20);
       });
     });
 
@@ -133,7 +134,7 @@ describe('ol.dom', function () {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(30);
+        assert.strictEqual(calcWidth, 30);
       });
 
       it('calculates correctly (one side)', function () {
@@ -141,7 +142,7 @@ describe('ol.dom', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        assert.strictEqual(calcWidth, 20);
       });
     });
 
@@ -150,7 +151,7 @@ describe('ol.dom', function () {
         element.style.margin = '5px';
         element.style.border = '5px solid chocolate';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(30);
+        assert.strictEqual(calcWidth, 30);
       });
 
       it('calculates correctly (one side)', function () {
@@ -158,7 +159,7 @@ describe('ol.dom', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(20);
+        assert.strictEqual(calcWidth, 20);
       });
     });
 
@@ -168,7 +169,7 @@ describe('ol.dom', function () {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(40);
+        assert.strictEqual(calcWidth, 40);
       });
 
       it('calculates correctly (one side)', function () {
@@ -177,7 +178,7 @@ describe('ol.dom', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
         const calcWidth = outerWidth(element);
-        expect(calcWidth).to.be(25);
+        assert.strictEqual(calcWidth, 25);
       });
     });
   });
@@ -201,7 +202,7 @@ describe('ol.dom', function () {
     describe('without padding, margin or border', function () {
       it('calculates correctly', function () {
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(10);
+        assert.strictEqual(calcHeight, 10);
       });
     });
 
@@ -209,13 +210,13 @@ describe('ol.dom', function () {
       it('calculates correctly (both sides)', function () {
         element.style.padding = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        assert.strictEqual(calcHeight, 20);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.paddingTop = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(15);
+        assert.strictEqual(calcHeight, 15);
       });
     });
 
@@ -223,13 +224,13 @@ describe('ol.dom', function () {
       it('calculates correctly (both sides)', function () {
         element.style.margin = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        assert.strictEqual(calcHeight, 20);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.marginTop = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(15);
+        assert.strictEqual(calcHeight, 15);
       });
     });
 
@@ -237,14 +238,14 @@ describe('ol.dom', function () {
       it('calculates correctly (both sides)', function () {
         element.style.border = '5px solid chocolate';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        assert.strictEqual(calcHeight, 20);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(15);
+        assert.strictEqual(calcHeight, 15);
       });
     });
 
@@ -253,14 +254,14 @@ describe('ol.dom', function () {
         element.style.padding = '5px';
         element.style.margin = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(30);
+        assert.strictEqual(calcHeight, 30);
       });
 
       it('calculates correctly (one side)', function () {
         element.style.paddingTop = '5px';
         element.style.marginTop = '5px';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        assert.strictEqual(calcHeight, 20);
       });
     });
 
@@ -269,7 +270,7 @@ describe('ol.dom', function () {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(30);
+        assert.strictEqual(calcHeight, 30);
       });
 
       it('calculates correctly (one side)', function () {
@@ -277,7 +278,7 @@ describe('ol.dom', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        assert.strictEqual(calcHeight, 20);
       });
     });
 
@@ -286,7 +287,7 @@ describe('ol.dom', function () {
         element.style.margin = '5px';
         element.style.border = '5px solid chocolate';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(30);
+        assert.strictEqual(calcHeight, 30);
       });
 
       it('calculates correctly (one side)', function () {
@@ -294,7 +295,7 @@ describe('ol.dom', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(20);
+        assert.strictEqual(calcHeight, 20);
       });
     });
 
@@ -304,7 +305,7 @@ describe('ol.dom', function () {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(40);
+        assert.strictEqual(calcHeight, 40);
       });
 
       it('calculates correctly (one side)', function () {
@@ -313,16 +314,16 @@ describe('ol.dom', function () {
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
         const calcHeight = outerHeight(element);
-        expect(calcHeight).to.be(25);
+        assert.strictEqual(calcHeight, 25);
       });
     });
   });
 
   function assertChildrenMatch(parent, children) {
     const actual = parent.childNodes;
-    expect(actual).to.have.length(children.length);
+    assert.lengthOf(actual, children.length);
     for (let i = 0; i < children.length; i++) {
-      expect(actual[i]).to.be(children[i]);
+      assert.strictEqual(actual[i], children[i]);
     }
   }
 
@@ -351,7 +352,7 @@ describe('ol.dom', function () {
       });
 
       replaceChildren(parent, []);
-      expect(parent.childNodes).to.have.length(0);
+      assert.lengthOf(parent.childNodes, 0);
     });
 
     it('swaps children', function () {
@@ -468,8 +469,7 @@ describe('ol.dom', function () {
       replaceChildren(parent, desiredChildren);
       assertChildrenMatch(parent, desiredChildren);
 
-      // confirm we haven't modified the input
-      expect(desiredChildren).to.eql(clone);
+      assert.deepEqual(desiredChildren, clone);
     });
   });
 
@@ -503,11 +503,11 @@ describe('ol.dom', function () {
       const childB = createMockDiv();
       parent.appendChild(childA);
       parent.appendChild(childB);
-      expect(parent.firstElementChild).to.be(childA);
+      assert.strictEqual(parent.firstElementChild, childA);
     });
     it('mocks remove()', function () {
       const parent = createMockDiv();
-      expect(() => parent.remove()).to.not.throwError();
+      assert.doesNotThrow(() => parent.remove());
     });
   });
 });

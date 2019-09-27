@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
 import Layer from '../../../../../../src/ol/layer/Layer.js';
@@ -26,7 +27,7 @@ describe('ol/renderer/webgl/Layer', function () {
     it('creates a new instance', function () {
       const layer = new Layer({});
       const renderer = new WebGLLayerRenderer(layer);
-      expect(renderer).to.be.a(WebGLLayerRenderer);
+      assert.instanceOf(renderer, WebGLLayerRenderer);
     });
   });
 
@@ -64,7 +65,10 @@ describe('ol/renderer/webgl/Layer', function () {
     }
 
     function expectCacheKeyMatches(layer, key) {
-      expect(layer.getRenderer().helper.canvasCacheKeyMatches(key)).to.be(true);
+      assert.strictEqual(
+        layer.getRenderer().helper.canvasCacheKeyMatches(key),
+        true,
+      );
     }
 
     function dispose(map) {
@@ -158,7 +162,7 @@ describe('ol/renderer/webgl/Layer', function () {
       map.renderSync();
 
       expectCacheKeyMatches(layer1, `map/${mapId}/group/0`);
-      expect(layer2.getRenderer().helper).to.be(undefined);
+      assert.strictEqual(layer2.getRenderer().helper, undefined);
       expectCacheKeyMatches(layer3, `map/${mapId}/group/0`);
 
       dispose(map);

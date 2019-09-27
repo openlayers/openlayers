@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {listen} from '../../../../../src/ol/events.js';
 import {VOID} from '../../../../../src/ol/functions.js';
 import IconImage from '../../../../../src/ol/style/IconImage.js';
@@ -27,35 +28,35 @@ describe('ol.style.IconImageCache', function () {
         iconImageCache.set(src, null, iconImage);
       }
 
-      expect(iconImageCache.cacheSize_).to.eql(4);
+      assert.deepEqual(iconImageCache.cacheSize_, 4);
 
       iconImageCache.expire();
-      expect(iconImageCache.cacheSize_).to.eql(4);
+      assert.deepEqual(iconImageCache.cacheSize_, 4);
 
       src = '4';
       iconImage = new IconImage(null, src);
       iconImageCache.set(src, null, iconImage);
-      expect(iconImageCache.cacheSize_).to.eql(5);
+      assert.deepEqual(iconImageCache.cacheSize_, 5);
 
       iconImageCache.expire(); // remove '0' and '4'
-      expect(iconImageCache.cacheSize_).to.eql(3);
+      assert.deepEqual(iconImageCache.cacheSize_, 3);
 
       src = '0';
       iconImage = new IconImage(null, src);
       listen(iconImage, 'change', VOID, false);
       iconImageCache.set(src, null, iconImage);
-      expect(iconImageCache.cacheSize_).to.eql(4);
+      assert.deepEqual(iconImageCache.cacheSize_, 4);
 
       src = '4';
       iconImage = new IconImage(null, src);
       listen(iconImage, 'change', VOID, false);
       iconImageCache.set(src, null, iconImage);
-      expect(iconImageCache.cacheSize_).to.eql(5);
+      assert.deepEqual(iconImageCache.cacheSize_, 5);
 
       // check that '0' and '4' are not removed from the cache
       iconImageCache.expire();
-      expect(iconImageCache.get('0', null, null, null)).to.not.be(null);
-      expect(iconImageCache.get('4', null, null, null)).to.not.be(null);
+      assert.notEqual(iconImageCache.get('0', null, null, null), null);
+      assert.notEqual(iconImageCache.get('4', null, null, null), null);
     });
   });
 
@@ -69,12 +70,12 @@ describe('ol.style.IconImageCache', function () {
         iconImageCache.set(src, null, iconImage);
       }
 
-      expect(iconImageCache.cacheSize_).to.eql(3);
+      assert.deepEqual(iconImageCache.cacheSize_, 3);
 
       iconImageCache.setSize(2);
 
-      expect(iconImageCache.maxCacheSize_).to.eql(2);
-      expect(iconImageCache.cacheSize_).to.eql(2);
+      assert.deepEqual(iconImageCache.maxCacheSize_, 2);
+      assert.deepEqual(iconImageCache.cacheSize_, 2);
     });
   });
 });

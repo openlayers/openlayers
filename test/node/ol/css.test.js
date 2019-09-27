@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import {getFontParameters} from '../../../src/ol/css.js';
-import expect from '../expect.js';
 
 describe('ol.css', function () {
   describe('getFontParameters()', function () {
@@ -56,7 +56,7 @@ describe('ol.css', function () {
       it('works for ' + c.font, function () {
         const font = getFontParameters(c.font);
         if (c.families === null) {
-          expect(font).to.be(null);
+          assert.strictEqual(font, null);
           return;
         }
         font.families.forEach(function (family, j) {
@@ -67,9 +67,9 @@ describe('ol.css', function () {
             font.families[j] = '"' + family.slice(1, -1) + '"';
           }
         });
-        expect(font.style).to.eql(c.style);
-        expect(font.weight).to.eql(c.weight);
-        expect(font.families).to.eql(c.families);
+        assert.equal(font.style, c.style);
+        assert.equal(font.weight, c.weight);
+        assert.deepEqual(font.families, c.families);
       });
     });
   });

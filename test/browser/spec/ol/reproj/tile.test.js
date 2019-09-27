@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
 import {listen} from '../../../../../src/ol/events.js';
@@ -59,7 +60,7 @@ describe('ol.reproj.Tile', function () {
 
   it('changes state as expected', function (done) {
     const tile = createTile(1);
-    expect(tile.getState()).to.be(0); // IDLE
+    assert.strictEqual(tile.getState(), 0);
     listen(tile, 'change', function () {
       if (tile.getState() == 2) {
         // LOADED
@@ -82,10 +83,10 @@ describe('ol.reproj.Tile', function () {
       1,
       0,
       function () {
-        expect().fail('No tiles should be required');
+        assert.fail();
       },
     );
-    expect(tile.getState()).to.be(4); // EMPTY
+    assert.strictEqual(tile.getState(), 4);
   });
 
   it('is empty when outside source tile grid', function () {
@@ -101,10 +102,10 @@ describe('ol.reproj.Tile', function () {
       1,
       0,
       function () {
-        expect().fail('No tiles should be required');
+        assert.fail();
       },
     );
-    expect(tile.getState()).to.be(4); // EMPTY
+    assert.strictEqual(tile.getState(), 4);
   });
 
   it('respects tile size of target tile grid', function (done) {
@@ -113,8 +114,8 @@ describe('ol.reproj.Tile', function () {
       if (tile.getState() == 2) {
         // LOADED
         const canvas = tile.getImage();
-        expect(canvas.width).to.be(100);
-        expect(canvas.height).to.be(40);
+        assert.strictEqual(canvas.width, 100);
+        assert.strictEqual(canvas.height, 40);
         done();
       }
     });
@@ -127,8 +128,8 @@ describe('ol.reproj.Tile', function () {
       if (tile.getState() == 2) {
         // LOADED
         const canvas = tile.getImage();
-        expect(canvas.width).to.be(180);
-        expect(canvas.height).to.be(60);
+        assert.strictEqual(canvas.width, 180);
+        assert.strictEqual(canvas.height, 60);
         done();
       }
     });

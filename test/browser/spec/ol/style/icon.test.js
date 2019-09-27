@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Icon from '../../../../../src/ol/style/Icon.js';
 import IconImage, {
@@ -20,7 +21,7 @@ describe('ol.style.Icon', function () {
       new Icon({
         img: canvas,
       });
-      expect(getIconImage(canvas, getUid(canvas)).getImage()).to.eql(canvas);
+      assert.deepEqual(getIconImage(canvas, getUid(canvas)).getImage(), canvas);
     });
 
     it('set referrerPolicy on image elements', function () {
@@ -29,7 +30,8 @@ describe('ol.style.Icon', function () {
         src,
         referrerPolicy,
       });
-      expect(iconStyle.iconImage_.getImage().referrerPolicy).to.be(
+      assert.strictEqual(
+        iconStyle.iconImage_.getImage().referrerPolicy,
         referrerPolicy,
       );
     });
@@ -41,8 +43,8 @@ describe('ol.style.Icon', function () {
         src: src,
       });
       const clone = original.clone();
-      expect(clone).to.be.an(Icon);
-      expect(clone).to.not.be(original);
+      assert.instanceOf(clone, Icon);
+      assert.notEqual(clone, original);
     });
 
     it('copies all values with img', function () {
@@ -67,34 +69,34 @@ describe('ol.style.Icon', function () {
       });
 
       const clone = original.clone();
-      expect(original.getImage(1)).to.be(clone.getImage(1));
-      expect(original.iconImage_).to.be(clone.iconImage_);
-      expect(original.getAnchor()).to.eql(clone.getAnchor());
-      expect(original.anchorOrigin_).to.eql(clone.anchorOrigin_);
-      expect(original.anchorXUnits_).to.eql(clone.anchorXUnits_);
-      expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
-      expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
-      expect(original.referrerPolicy_).to.eql(clone.referrerPolicy_);
-      expect(original.getColor()).to.eql(clone.getColor());
-      expect(original.offset_).to.eql(clone.offset_);
-      expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
-      expect(original.getScale()).to.eql(clone.getScale());
-      expect(original.getSize()).to.eql(clone.getSize());
-      expect(original.getSrc()).to.eql(clone.getSrc());
-      expect(original.getOpacity()).to.eql(clone.getOpacity());
-      expect(original.getRotation()).to.eql(clone.getRotation());
-      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
-      expect(original.getDisplacement()).to.eql(clone.getDisplacement());
-      expect(original.getDeclutterMode()).to.eql(clone.getDeclutterMode());
+      assert.strictEqual(original.getImage(1), clone.getImage(1));
+      assert.strictEqual(original.iconImage_, clone.iconImage_);
+      assert.deepEqual(original.getAnchor(), clone.getAnchor());
+      assert.deepEqual(original.anchorOrigin_, clone.anchorOrigin_);
+      assert.deepEqual(original.anchorXUnits_, clone.anchorXUnits_);
+      assert.deepEqual(original.anchorYUnits_, clone.anchorYUnits_);
+      assert.deepEqual(original.crossOrigin_, clone.crossOrigin_);
+      assert.deepEqual(original.referrerPolicy_, clone.referrerPolicy_);
+      assert.deepEqual(original.getColor(), clone.getColor());
+      assert.deepEqual(original.offset_, clone.offset_);
+      assert.deepEqual(original.offsetOrigin_, clone.offsetOrigin_);
+      assert.deepEqual(original.getScale(), clone.getScale());
+      assert.deepEqual(original.getSize(), clone.getSize());
+      assert.deepEqual(original.getSrc(), clone.getSrc());
+      assert.deepEqual(original.getOpacity(), clone.getOpacity());
+      assert.deepEqual(original.getRotation(), clone.getRotation());
+      assert.deepEqual(original.getRotateWithView(), clone.getRotateWithView());
+      assert.deepEqual(original.getDisplacement(), clone.getDisplacement());
+      assert.deepEqual(original.getDeclutterMode(), clone.getDeclutterMode());
     });
     it('copies all values with src', function () {
       const original = new Icon({
         src: src,
       });
       const clone = original.clone();
-      expect(original.getImage(1)).to.be(clone.getImage(1));
-      expect(original.iconImage_).to.be(clone.iconImage_);
-      expect(original.getSrc()).to.be(clone.getSrc());
+      assert.strictEqual(original.getImage(1), clone.getImage(1));
+      assert.strictEqual(original.iconImage_, clone.iconImage_);
+      assert.strictEqual(original.getSrc(), clone.getSrc());
     });
     it('copies all values with src without shared IconImageCache', function (done) {
       const original = new Icon({
@@ -114,10 +116,13 @@ describe('ol.style.Icon', function () {
           clone.iconImage_.addEventListener('change', resolve);
         }),
       ]).then(function () {
-        expect(original.getSrc()).to.be(clone.getSrc());
-        expect(original.iconImage_).to.not.be(clone.iconImage_);
-        expect(original.getImage(1).width).to.be(clone.getImage(1).width);
-        expect(original.getImage(1).height).to.be(clone.getImage(1).height);
+        assert.strictEqual(original.getSrc(), clone.getSrc());
+        assert.notEqual(original.iconImage_, clone.iconImage_);
+        assert.strictEqual(original.getImage(1).width, clone.getImage(1).width);
+        assert.strictEqual(
+          original.getImage(1).height,
+          clone.getImage(1).height,
+        );
         done();
       });
     });
@@ -127,13 +132,13 @@ describe('ol.style.Icon', function () {
         src: 'spec/ol/data/dot.png',
       });
       original.setScale(2);
-      expect(original.getScale()).to.be(2);
+      assert.strictEqual(original.getScale(), 2);
       const clone = original.clone();
-      expect(original.getScale()).to.eql(clone.getScale());
+      assert.deepEqual(original.getScale(), clone.getScale());
       original.load();
       original.getImage(1).addEventListener('load', () => {
         const clone = original.clone();
-        expect(original.getScale()).to.eql(clone.getScale());
+        assert.deepEqual(original.getScale(), clone.getScale());
         done();
       });
     });
@@ -146,8 +151,8 @@ describe('ol.style.Icon', function () {
       });
       const clone = original.clone();
       clone.listenImageChange(() => {
-        expect(clone.getWidth()).to.eql(42);
-        expect(clone.getHeight()).to.eql(24);
+        assert.deepEqual(clone.getWidth(), 42);
+        assert.deepEqual(clone.getHeight(), 24);
         done();
       });
       clone.load();
@@ -163,22 +168,22 @@ describe('ol.style.Icon', function () {
         displacement: [5, 6],
       });
       const clone = original.clone();
-      expect(original.getAnchor()).not.to.be(clone.getAnchor());
-      expect(original.offset_).not.to.be(clone.offset_);
-      expect(original.getColor()).not.to.be(clone.getColor());
-      expect(original.getSize()).not.to.be(clone.getSize());
-      expect(original.getDisplacement()).not.to.be(clone.getDisplacement());
+      assert.notEqual(original.getAnchor(), clone.getAnchor());
+      assert.notEqual(original.offset_, clone.offset_);
+      assert.notEqual(original.getColor(), clone.getColor());
+      assert.notEqual(original.getSize(), clone.getSize());
+      assert.notEqual(original.getDisplacement(), clone.getDisplacement());
 
       clone.anchor_[0] = 0;
       clone.offset_[0] = 0;
       clone.color_[0] = 0;
       clone.size_[0] = 5;
       clone.displacement_[0] = 10;
-      expect(original.anchor_).not.to.eql(clone.anchor_);
-      expect(original.offset_).not.to.eql(clone.offset_);
-      expect(original.color_).not.to.eql(clone.color_);
-      expect(original.size_).not.to.eql(clone.size_);
-      expect(original.displacement_).not.to.eql(clone.displacement_);
+      assert.notDeepEqual(original.anchor_, clone.anchor_);
+      assert.notDeepEqual(original.offset_, clone.offset_);
+      assert.notDeepEqual(original.color_, clone.color_);
+      assert.notDeepEqual(original.size_, clone.size_);
+      assert.notDeepEqual(original.displacement_, clone.displacement_);
     });
 
     it('autocalculated scale (due to width/height) does not halt cloning', () => {
@@ -188,10 +193,10 @@ describe('ol.style.Icon', function () {
         height: 5,
       });
       let clone;
-      expect(() => (clone = original.clone())).to.not.throwException();
-      expect(original.getWidth()).to.eql(clone.getWidth());
-      expect(original.getHeight()).to.eql(clone.getHeight());
-      expect(original.getScale()).to.eql(clone.getScale());
+      assert.doesNotThrow(() => (clone = original.clone()));
+      assert.deepEqual(original.getWidth(), clone.getWidth());
+      assert.deepEqual(original.getHeight(), clone.getHeight());
+      assert.deepEqual(original.getScale(), clone.getScale());
     });
   });
 
@@ -204,8 +209,8 @@ describe('ol.style.Icon', function () {
       });
       const oldIconImage = icon.iconImage_;
       icon.setSrc(newSrc);
-      expect(icon.getSrc()).to.be(newSrc);
-      expect(icon.iconImage_).to.not.be(oldIconImage);
+      assert.strictEqual(icon.getSrc(), newSrc);
+      assert.notEqual(icon.iconImage_, oldIconImage);
     });
 
     it('loads the new image', function (done) {
@@ -213,10 +218,10 @@ describe('ol.style.Icon', function () {
         src,
       });
       icon.setSrc(newSrc);
-      expect(icon.getImageState()).to.be(ImageState.IDLE);
+      assert.strictEqual(icon.getImageState(), ImageState.IDLE);
       icon.load();
       icon.listenImageChange(() => {
-        expect(icon.getImageState()).to.be(ImageState.LOADED);
+        assert.strictEqual(icon.getImageState(), ImageState.LOADED);
         done();
       });
     });
@@ -231,7 +236,7 @@ describe('ol.style.Icon', function () {
         size: size,
         anchor: fractionAnchor,
       });
-      expect(iconStyle.getAnchor()).to.eql([9, 12]);
+      assert.deepEqual(iconStyle.getAnchor(), [9, 12]);
     });
 
     it('uses pixels units', function () {
@@ -242,7 +247,7 @@ describe('ol.style.Icon', function () {
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
       });
-      expect(iconStyle.getAnchor()).to.eql([2, 18]);
+      assert.deepEqual(iconStyle.getAnchor(), [2, 18]);
     });
 
     it('uses a bottom left anchor origin', function () {
@@ -252,7 +257,7 @@ describe('ol.style.Icon', function () {
         anchor: fractionAnchor,
         anchorOrigin: 'bottom-left',
       });
-      expect(iconStyle.getAnchor()).to.eql([9, 36]);
+      assert.deepEqual(iconStyle.getAnchor(), [9, 36]);
     });
 
     it('uses a bottom right anchor origin', function () {
@@ -262,7 +267,7 @@ describe('ol.style.Icon', function () {
         anchor: fractionAnchor,
         anchorOrigin: 'bottom-right',
       });
-      expect(iconStyle.getAnchor()).to.eql([27, 36]);
+      assert.deepEqual(iconStyle.getAnchor(), [27, 36]);
     });
 
     it('uses a top right anchor origin', function () {
@@ -272,7 +277,7 @@ describe('ol.style.Icon', function () {
         anchor: fractionAnchor,
         anchorOrigin: 'top-right',
       });
-      expect(iconStyle.getAnchor()).to.eql([27, 12]);
+      assert.deepEqual(iconStyle.getAnchor(), [27, 12]);
     });
 
     it('uses a top right anchor origin + displacement', function () {
@@ -283,7 +288,7 @@ describe('ol.style.Icon', function () {
         anchorOrigin: 'top-right',
         displacement: [20, 10],
       });
-      expect(iconStyle.getAnchor()).to.eql([
+      assert.deepEqual(iconStyle.getAnchor(), [
         size[0] * (1 - fractionAnchor[0]) - 20,
         size[1] * fractionAnchor[1] + 10,
       ]);
@@ -295,12 +300,12 @@ describe('ol.style.Icon', function () {
         size: size,
         displacement: [20, 10],
       });
-      expect(iconStyle.getAnchor()).to.eql([
+      assert.deepEqual(iconStyle.getAnchor(), [
         size[0] / 2 - 20,
         size[1] / 2 + 10,
       ]);
       iconStyle.setDisplacement([10, 20]);
-      expect(iconStyle.getAnchor()).to.eql([
+      assert.deepEqual(iconStyle.getAnchor(), [
         size[0] / 2 - 10,
         size[1] / 2 + 20,
       ]);
@@ -323,13 +328,19 @@ describe('ol.style.Icon', function () {
       });
       anchorScaled = iconStyleScaled.getAnchor();
       anchorBig = iconStyleBig.getAnchor();
-      expect(anchorScaled).to.eql([anchorBig[0] / scale, anchorBig[1] / scale]);
+      assert.deepEqual(anchorScaled, [
+        anchorBig[0] / scale,
+        anchorBig[1] / scale,
+      ]);
 
       iconStyleScaled.setDisplacement([10, 20]);
       iconStyleBig.setDisplacement([10, 20]);
       anchorScaled = iconStyleScaled.getAnchor();
       anchorBig = iconStyleBig.getAnchor();
-      expect(anchorScaled).to.eql([anchorBig[0] / scale, anchorBig[1] / scale]);
+      assert.deepEqual(anchorScaled, [
+        anchorBig[0] / scale,
+        anchorBig[1] / scale,
+      ]);
     });
   });
 
@@ -340,10 +351,10 @@ describe('ol.style.Icon', function () {
         size: size,
         anchor: [0.25, 0.25],
       });
-      expect(iconStyle.getAnchor()).to.eql([9, 12]);
+      assert.deepEqual(iconStyle.getAnchor(), [9, 12]);
 
       iconStyle.setAnchor([0.5, 0.5]);
-      expect(iconStyle.getAnchor()).to.eql([18, 24]);
+      assert.deepEqual(iconStyle.getAnchor(), [18, 24]);
     });
   });
 
@@ -357,7 +368,7 @@ describe('ol.style.Icon', function () {
         size: size,
         offset: offset,
       });
-      expect(iconStyle.getOrigin()).to.eql([16, 20]);
+      assert.deepEqual(iconStyle.getOrigin(), [16, 20]);
     });
 
     it('uses a bottom left offset origin', function () {
@@ -368,7 +379,7 @@ describe('ol.style.Icon', function () {
         offsetOrigin: 'bottom-left',
       });
       iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([16, 124]);
+      assert.deepEqual(iconStyle.getOrigin(), [16, 124]);
     });
 
     it('uses a bottom right offset origin', function () {
@@ -379,7 +390,7 @@ describe('ol.style.Icon', function () {
         offsetOrigin: 'bottom-right',
       });
       iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([92, 124]);
+      assert.deepEqual(iconStyle.getOrigin(), [92, 124]);
     });
 
     it('uses a top right offset origin', function () {
@@ -390,7 +401,7 @@ describe('ol.style.Icon', function () {
         offsetOrigin: 'top-right',
       });
       iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([92, 20]);
+      assert.deepEqual(iconStyle.getOrigin(), [92, 20]);
     });
   });
 
@@ -408,9 +419,9 @@ describe('ol.style.Icon', function () {
         if (iconImage.getImageState() === ImageState.LOADED) {
           iconImage.removeEventListener('change', changed);
           try {
-            expect(iconStyle.getImage()).to.eql(iconImage.getImage());
-            expect(iconStyle.getImage()).to.be.a(HTMLImageElement);
-            expect(iconStyle.getImageSize()).to.eql([
+            assert.deepEqual(iconStyle.getImage(), iconImage.getImage());
+            assert.instanceOf(iconStyle.getImage(), HTMLImageElement);
+            assert.deepEqual(iconStyle.getImageSize(), [
               iconStyle.getImage().width,
               iconStyle.getImage().height,
             ]);
@@ -431,7 +442,7 @@ describe('ol.style.Icon', function () {
         if (iconStyle.getImageState() === ImageState.LOADED) {
           iconStyle.iconImage_.removeEventListener('change', changed);
           try {
-            expect(iconStyle.getImageSize()).to.eql([
+            assert.deepEqual(iconStyle.getImageSize(), [
               image.width,
               image.height,
             ]);
@@ -458,7 +469,7 @@ describe('ol.style.Icon', function () {
       });
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
-        expect(iconStyle.getScale()).to.eql(2);
+        assert.deepEqual(iconStyle.getScale(), 2);
         done();
       });
       iconStyle.load();
@@ -470,7 +481,7 @@ describe('ol.style.Icon', function () {
       });
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
-        expect(iconStyle.getScale()).to.eql(3);
+        assert.deepEqual(iconStyle.getScale(), 3);
         done();
       });
       iconStyle.load();
@@ -483,7 +494,7 @@ describe('ol.style.Icon', function () {
       });
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
-        expect(iconStyle.getScale()).to.eql([2, 3]);
+        assert.deepEqual(iconStyle.getScale(), [2, 3]);
         done();
       });
       iconStyle.load();
@@ -494,7 +505,7 @@ describe('ol.style.Icon', function () {
         width: 10,
       });
       iconStyle.listenImageChange(() => {
-        expect(iconStyle.getWidth()).to.eql(10);
+        assert.deepEqual(iconStyle.getWidth(), 10);
         done();
       });
       iconStyle.load();
@@ -505,7 +516,7 @@ describe('ol.style.Icon', function () {
         height: 20,
       });
       iconStyle.listenImageChange(() => {
-        expect(iconStyle.getHeight()).to.eql(20);
+        assert.deepEqual(iconStyle.getHeight(), 20);
         done();
       });
       iconStyle.load();
@@ -517,8 +528,8 @@ describe('ol.style.Icon', function () {
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
         iconStyle.setScale(2);
-        expect(iconStyle.getWidth()).to.eql(6);
-        expect(iconStyle.getHeight()).to.eql(8);
+        assert.deepEqual(iconStyle.getWidth(), 6);
+        assert.deepEqual(iconStyle.getHeight(), 8);
         done();
       });
       iconStyle.load();
@@ -530,8 +541,8 @@ describe('ol.style.Icon', function () {
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
         iconStyle.setScale([3, 4]);
-        expect(iconStyle.getWidth()).to.eql(9);
-        expect(iconStyle.getHeight()).to.eql(16);
+        assert.deepEqual(iconStyle.getWidth(), 9);
+        assert.deepEqual(iconStyle.getHeight(), 16);
         done();
       });
       iconStyle.load();
@@ -545,9 +556,9 @@ describe('ol.style.Icon', function () {
       iconStyle.setScale(1);
       iconStyle.listenImageChange(() => {
         try {
-          expect(iconStyle.getWidth()).to.eql(3);
-          expect(iconStyle.getHeight()).to.eql(4);
-          expect(iconStyle.getScale()).to.eql(1);
+          assert.deepEqual(iconStyle.getWidth(), 3);
+          assert.deepEqual(iconStyle.getHeight(), 4);
+          assert.deepEqual(iconStyle.getScale(), 1);
           done();
         } catch (e) {
           done(e);

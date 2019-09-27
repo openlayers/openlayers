@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import StadiaMaps from '../../../../../src/ol/source/StadiaMaps.js';
 
 describe('ol.source.StadiaMaps', function () {
@@ -7,7 +8,7 @@ describe('ol.source.StadiaMaps', function () {
         layer: 'stamen_watercolor',
         minZoom: 10,
       });
-      expect(source.getTileGrid().getMinZoom()).to.be(10);
+      assert.strictEqual(source.getTileGrid().getMinZoom(), 10);
     });
 
     it('can be constructed with a custom maxZoom', function () {
@@ -15,14 +16,14 @@ describe('ol.source.StadiaMaps', function () {
         layer: 'stamen_watercolor',
         maxZoom: 8,
       });
-      expect(source.getTileGrid().getMaxZoom()).to.be(8);
+      assert.strictEqual(source.getTileGrid().getMaxZoom(), 8);
     });
 
     it('uses the correct identifier for the outdoors style', function () {
       const source = new StadiaMaps({
         layer: 'outdoors',
       });
-      expect(source.getUrls()[0]).to.contain('/outdoors/');
+      assert.include(source.getUrls()[0], '/outdoors/');
     });
   });
 });

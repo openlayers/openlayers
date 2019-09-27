@@ -1,48 +1,49 @@
+import {assert} from 'chai';
 import TileRange from '../../../../src/ol/TileRange.js';
 
 describe('ol.TileRange', function () {
   describe('constructor', function () {
     it('creates a range', function () {
       const range = new TileRange(1, 3, 2, 4);
-      expect(range).to.be.a(TileRange);
+      assert.instanceOf(range, TileRange);
     });
 
     it('can represent a range of one tile', function () {
       const range = new TileRange(2, 2, 3, 3);
-      expect(range).to.be.a(TileRange);
-      expect(range.getHeight()).to.be(1);
-      expect(range.getWidth()).to.be(1);
+      assert.instanceOf(range, TileRange);
+      assert.strictEqual(range.getHeight(), 1);
+      assert.strictEqual(range.getWidth(), 1);
     });
   });
 
   describe('contains', function () {
     it('returns the expected value', function () {
       const tileRange = new TileRange(1, 3, 1, 3);
-      expect(tileRange.contains([0, 0, 0])).to.not.be();
-      expect(tileRange.contains([0, 0, 1])).to.not.be();
-      expect(tileRange.contains([0, 0, 2])).to.not.be();
-      expect(tileRange.contains([0, 0, 3])).to.not.be();
-      expect(tileRange.contains([0, 0, 4])).to.not.be();
-      expect(tileRange.contains([0, 1, 0])).to.not.be();
-      expect(tileRange.contains([0, 1, 1])).to.be.ok();
-      expect(tileRange.contains([0, 1, 2])).to.be.ok();
-      expect(tileRange.contains([0, 1, 3])).to.be.ok();
-      expect(tileRange.contains([0, 1, 4])).to.not.be();
-      expect(tileRange.contains([0, 2, 0])).to.not.be();
-      expect(tileRange.contains([0, 2, 1])).to.be.ok();
-      expect(tileRange.contains([0, 2, 2])).to.be.ok();
-      expect(tileRange.contains([0, 2, 3])).to.be.ok();
-      expect(tileRange.contains([0, 2, 4])).to.not.be();
-      expect(tileRange.contains([0, 3, 0])).to.not.be();
-      expect(tileRange.contains([0, 3, 1])).to.be.ok();
-      expect(tileRange.contains([0, 3, 2])).to.be.ok();
-      expect(tileRange.contains([0, 3, 3])).to.be.ok();
-      expect(tileRange.contains([0, 3, 4])).to.not.be();
-      expect(tileRange.contains([0, 4, 0])).to.not.be();
-      expect(tileRange.contains([0, 4, 1])).to.not.be();
-      expect(tileRange.contains([0, 4, 2])).to.not.be();
-      expect(tileRange.contains([0, 4, 3])).to.not.be();
-      expect(tileRange.contains([0, 4, 4])).to.not.be();
+      assert.isFalse(tileRange.contains([0, 0, 0]));
+      assert.isFalse(tileRange.contains([0, 0, 1]));
+      assert.isFalse(tileRange.contains([0, 0, 2]));
+      assert.isFalse(tileRange.contains([0, 0, 3]));
+      assert.isFalse(tileRange.contains([0, 0, 4]));
+      assert.isFalse(tileRange.contains([0, 1, 0]));
+      assert.isOk(tileRange.contains([0, 1, 1]));
+      assert.isOk(tileRange.contains([0, 1, 2]));
+      assert.isOk(tileRange.contains([0, 1, 3]));
+      assert.isFalse(tileRange.contains([0, 1, 4]));
+      assert.isFalse(tileRange.contains([0, 2, 0]));
+      assert.isOk(tileRange.contains([0, 2, 1]));
+      assert.isOk(tileRange.contains([0, 2, 2]));
+      assert.isOk(tileRange.contains([0, 2, 3]));
+      assert.isFalse(tileRange.contains([0, 2, 4]));
+      assert.isFalse(tileRange.contains([0, 3, 0]));
+      assert.isOk(tileRange.contains([0, 3, 1]));
+      assert.isOk(tileRange.contains([0, 3, 2]));
+      assert.isOk(tileRange.contains([0, 3, 3]));
+      assert.isFalse(tileRange.contains([0, 3, 4]));
+      assert.isFalse(tileRange.contains([0, 4, 0]));
+      assert.isFalse(tileRange.contains([0, 4, 1]));
+      assert.isFalse(tileRange.contains([0, 4, 2]));
+      assert.isFalse(tileRange.contains([0, 4, 3]));
+      assert.isFalse(tileRange.contains([0, 4, 4]));
     });
   });
 
@@ -54,11 +55,11 @@ describe('ol.TileRange', function () {
       const diff2 = new TileRange(0, 3, 1, 4);
       const diff3 = new TileRange(0, 2, 2, 4);
       const diff4 = new TileRange(1, 2, 1, 4);
-      expect(one.equals(same)).to.be(true);
-      expect(one.equals(diff1)).to.be(false);
-      expect(one.equals(diff2)).to.be(false);
-      expect(one.equals(diff3)).to.be(false);
-      expect(one.equals(diff4)).to.be(false);
+      assert.strictEqual(one.equals(same), true);
+      assert.strictEqual(one.equals(diff1), false);
+      assert.strictEqual(one.equals(diff2), false);
+      assert.strictEqual(one.equals(diff3), false);
+      assert.strictEqual(one.equals(diff4), false);
     });
   });
 
@@ -68,10 +69,10 @@ describe('ol.TileRange', function () {
       const other = new TileRange(-1, -3, 10, 12);
       one.extend(other);
 
-      expect(one.minX).to.be(-1);
-      expect(one.maxX).to.be(2);
-      expect(one.minY).to.be(1);
-      expect(one.maxY).to.be(12);
+      assert.strictEqual(one.minX, -1);
+      assert.strictEqual(one.maxX, 2);
+      assert.strictEqual(one.minY, 1);
+      assert.strictEqual(one.maxY, 12);
     });
   });
 
@@ -79,7 +80,7 @@ describe('ol.TileRange', function () {
     it('returns the expected size', function () {
       const tileRange = new TileRange(0, 2, 1, 4);
       const size = tileRange.getSize();
-      expect(size).to.eql([3, 4]);
+      assert.deepEqual(size, [3, 4]);
     });
   });
 
@@ -90,19 +91,19 @@ describe('ol.TileRange', function () {
       const overlapsLeft = new TileRange(-3, 0, 1, 4);
       const overlapsTop = new TileRange(0, 2, 4, 5);
       const overlapsBottom = new TileRange(0, 2, -3, 1);
-      expect(one.intersects(overlapsLeft)).to.be(true);
-      expect(one.intersects(overlapsRight)).to.be(true);
-      expect(one.intersects(overlapsTop)).to.be(true);
-      expect(one.intersects(overlapsBottom)).to.be(true);
+      assert.strictEqual(one.intersects(overlapsLeft), true);
+      assert.strictEqual(one.intersects(overlapsRight), true);
+      assert.strictEqual(one.intersects(overlapsTop), true);
+      assert.strictEqual(one.intersects(overlapsBottom), true);
 
       const right = new TileRange(3, 5, 1, 4);
       const left = new TileRange(-3, -1, 1, 4);
       const above = new TileRange(0, 2, 5, 6);
       const below = new TileRange(0, 2, -3, 0);
-      expect(one.intersects(right)).to.be(false);
-      expect(one.intersects(left)).to.be(false);
-      expect(one.intersects(above)).to.be(false);
-      expect(one.intersects(below)).to.be(false);
+      assert.strictEqual(one.intersects(right), false);
+      assert.strictEqual(one.intersects(left), false);
+      assert.strictEqual(one.intersects(above), false);
+      assert.strictEqual(one.intersects(below), false);
     });
   });
 });

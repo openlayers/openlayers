@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import DblClickDragZoom from '../../../../../src/ol/interaction/DblClickDragZoom.js';
@@ -8,7 +9,7 @@ describe('ol.interaction.DblClickDragZoom', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new DblClickDragZoom();
-      expect(instance).to.be.an(DblClickDragZoom);
+      assert.instanceOf(instance, DblClickDragZoom);
     });
   });
 
@@ -85,17 +86,17 @@ describe('ol.interaction.DblClickDragZoom', function () {
       });
 
       const view = map.getView();
-      expect(view.getZoom()).to.be(3);
+      assert.strictEqual(view.getZoom(), 3);
       map.getViewport().dispatchEvent(down1);
       document.dispatchEvent(up1);
       map.getViewport().dispatchEvent(down2);
       document.dispatchEvent(move1);
       document.dispatchEvent(move2);
       document.dispatchEvent(up2);
-      expect(view.getZoom()).to.be(3.3219280948873626);
+      assert.strictEqual(view.getZoom(), 3.3219280948873626);
       document.dispatchEvent(ignoreMove1);
       document.dispatchEvent(ignoreMove2);
-      expect(view.getZoom()).to.be(3.3219280948873626);
+      assert.strictEqual(view.getZoom(), 3.3219280948873626);
     });
 
     it('does zoom out', function () {
@@ -133,17 +134,17 @@ describe('ol.interaction.DblClickDragZoom', function () {
       });
 
       const view = map.getView();
-      expect(view.getZoom()).to.be(3);
+      assert.strictEqual(view.getZoom(), 3);
       map.getViewport().dispatchEvent(down1);
       document.dispatchEvent(up1);
       map.getViewport().dispatchEvent(down2);
       document.dispatchEvent(move1);
       document.dispatchEvent(move2);
       document.dispatchEvent(up2);
-      expect(view.getZoom()).to.be(2.6214883767462704);
+      assert.strictEqual(view.getZoom(), 2.6214883767462704);
       document.dispatchEvent(ignoreMove1);
       document.dispatchEvent(ignoreMove2);
-      expect(view.getZoom()).to.be(2.6214883767462704);
+      assert.strictEqual(view.getZoom(), 2.6214883767462704);
     });
   });
 });

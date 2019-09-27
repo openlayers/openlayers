@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -36,10 +37,10 @@ describe('ol/source/Vector', function () {
     describe('#getExtent', function () {
       it('returns null when `useSpatialIndex` is `false`', () => {
         const source = new VectorSource({useSpatialIndex: false});
-        expect(source.getExtent()).to.be(null);
+        assert.strictEqual(source.getExtent(), null);
       });
       it('returns an empty extent when no features', () => {
-        expect(isEmpty(vectorSource.getExtent())).to.be(true);
+        assert.strictEqual(isEmpty(vectorSource.getExtent()), true);
       });
     });
 
@@ -47,49 +48,49 @@ describe('ol/source/Vector', function () {
       it('does not call the callback', function () {
         const f = sinonSpy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
-        expect(f.called).to.be(false);
+        assert.strictEqual(f.called, false);
       });
     });
 
     describe('#getFeaturesInExtent', function () {
       it('returns an empty array', function () {
         const features = vectorSource.getFeaturesInExtent(infiniteExtent);
-        expect(features).to.be.an(Array);
-        expect(features).to.be.empty();
+        assert.instanceOf(features, Array);
+        assert.isEmpty(features);
       });
     });
 
     describe('#isEmpty', function () {
       it('returns true', function () {
-        expect(vectorSource.isEmpty()).to.be(true);
+        assert.strictEqual(vectorSource.isEmpty(), true);
       });
       it('returns true without spatial index', function () {
         const source = new VectorSource({
           useSpatialIndex: false,
         });
-        expect(source.isEmpty()).to.be(true);
+        assert.strictEqual(source.isEmpty(), true);
       });
       it('returns false with geometry', function () {
         vectorSource.addFeature(new Feature(new Point([0, 0])));
-        expect(vectorSource.isEmpty()).to.be(false);
+        assert.strictEqual(vectorSource.isEmpty(), false);
       });
       it('returns false without spatial index and geometry', function () {
         const source = new VectorSource({
           useSpatialIndex: false,
         });
         source.addFeature(new Feature(new Point([0, 0])));
-        expect(source.isEmpty()).to.be(false);
+        assert.strictEqual(source.isEmpty(), false);
       });
       it('returns false with null geometry', function () {
         vectorSource.addFeature(new Feature());
-        expect(vectorSource.isEmpty()).to.be(false);
+        assert.strictEqual(vectorSource.isEmpty(), false);
       });
       it('returns false without spatial index and null geometry', function () {
         const source = new VectorSource({
           useSpatialIndex: false,
         });
         source.addFeature(new Feature());
-        expect(source.isEmpty()).to.be(false);
+        assert.strictEqual(source.isEmpty(), false);
       });
     });
 
@@ -97,16 +98,16 @@ describe('ol/source/Vector', function () {
       it('can add a single point feature', function () {
         vectorSource.addFeature(pointFeature);
         const features = vectorSource.getFeaturesInExtent(infiniteExtent);
-        expect(features).to.be.an(Array);
-        expect(features).to.have.length(1);
-        expect(features[0]).to.be(pointFeature);
+        assert.instanceOf(features, Array);
+        assert.lengthOf(features, 1);
+        assert.strictEqual(features[0], pointFeature);
       });
 
       it('fires a change event', function () {
         const listener = sinonSpy();
         listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
-        expect(listener.called).to.be(true);
+        assert.strictEqual(listener.called, true);
       });
 
       it('adds same id features only once', function () {
@@ -117,7 +118,7 @@ describe('ol/source/Vector', function () {
         feature2.setId('1');
         source.addFeature(feature1);
         source.addFeature(feature2);
-        expect(source.getFeatures().length).to.be(1);
+        assert.strictEqual(source.getFeatures().length, 1);
       });
 
       it('Render features with the same id are gathered in an array', function () {
@@ -126,8 +127,8 @@ describe('ol/source/Vector', function () {
         const feature2 = new RenderFeature('Point', [2, 2], [], 2, {}, 1);
         source.addFeature(feature1);
         source.addFeature(feature2);
-        expect(source.getFeatures().length).to.be(2);
-        expect(source.getFeatureById(1)).to.eql([feature1, feature2]);
+        assert.strictEqual(source.getFeatures().length, 2);
+        assert.deepEqual(source.getFeatureById(1), [feature1, feature2]);
       });
     });
 
@@ -135,26 +136,26 @@ describe('ol/source/Vector', function () {
       it('returns true for added feature without id', function () {
         const feature = new Feature();
         vectorSource.addFeature(feature);
-        expect(vectorSource.hasFeature(feature)).to.be(true);
+        assert.strictEqual(vectorSource.hasFeature(feature), true);
       });
 
       it('returns true for added feature with id', function () {
         const feature = new Feature();
         feature.setId('1');
         vectorSource.addFeature(feature);
-        expect(vectorSource.hasFeature(feature)).to.be(true);
+        assert.strictEqual(vectorSource.hasFeature(feature), true);
       });
 
       it('return false for removed feature', function () {
         const feature = new Feature();
         vectorSource.addFeature(feature);
         vectorSource.removeFeature(feature);
-        expect(vectorSource.hasFeature(feature)).to.be(false);
+        assert.strictEqual(vectorSource.hasFeature(feature), false);
       });
 
       it('returns false for non-added feature', function () {
         const feature = new Feature();
-        expect(vectorSource.hasFeature(feature)).to.be(false);
+        assert.strictEqual(vectorSource.hasFeature(feature), false);
       });
 
       it('returns false for a different feature with the same id', function () {
@@ -163,7 +164,7 @@ describe('ol/source/Vector', function () {
         vectorSource.addFeature(feature);
         const otherFeature = new Feature();
         otherFeature.setId('1');
-        expect(vectorSource.hasFeature(otherFeature)).to.be(false);
+        assert.strictEqual(vectorSource.hasFeature(otherFeature), false);
       });
     });
   });
@@ -190,7 +191,7 @@ describe('ol/source/Vector', function () {
     describe('#getClosestFeatureToCoordinate', function () {
       it('returns the expected feature', function () {
         const feature = vectorSource.getClosestFeatureToCoordinate([1, 9]);
-        expect(feature).to.be(features[1]);
+        assert.strictEqual(feature, features[1]);
       });
 
       it('returns the expected feature when a filter is used', function () {
@@ -200,7 +201,7 @@ describe('ol/source/Vector', function () {
             return feature.getGeometry().getType() == 'LineString';
           },
         );
-        expect(feature).to.be(features[0]);
+        assert.strictEqual(feature, features[0]);
       });
     });
 
@@ -210,7 +211,8 @@ describe('ol/source/Vector', function () {
           useSpatialIndex: false,
           features: vectorSource.getFeatures(),
         });
-        expect(noSpatialIndexSource.getFeatures()).to.not.be(
+        assert.notEqual(
+          noSpatialIndexSource.getFeatures(),
           noSpatialIndexSource.getFeaturesCollection().getArray(),
         );
       });
@@ -254,20 +256,20 @@ describe('ol/source/Vector', function () {
     });
 
     it('#refresh() reloads from server', function (done) {
-      expect(source.getFeatures()).to.have.length(1);
+      assert.lengthOf(source.getFeatures(), 1);
       map.once('rendercomplete', function () {
-        expect(source.getFeatures()).to.have.length(1);
-        expect(spy.callCount).to.be(1);
+        assert.lengthOf(source.getFeatures(), 1);
+        assert.strictEqual(spy.callCount, 1);
         done();
       });
       source.refresh();
     });
 
     it('#clear() removes all features from the source', function (done) {
-      expect(source.getFeatures()).to.have.length(1);
+      assert.lengthOf(source.getFeatures(), 1);
       map.once('rendercomplete', function () {
-        expect(source.getFeatures()).to.have.length(0);
-        expect(spy.callCount).to.be(0);
+        assert.lengthOf(source.getFeatures(), 0);
+        assert.strictEqual(spy.callCount, 0);
         done();
       });
       source.clear();
@@ -276,18 +278,18 @@ describe('ol/source/Vector', function () {
     it('After #setUrl(), refresh() loads from the new url', function (done) {
       source.loader_.restore();
       spy = undefined;
-      expect(source.getFeatures()).to.have.length(1);
+      assert.lengthOf(source.getFeatures(), 1);
       const oldCoordinates = source
         .getFeatures()[0]
         .getGeometry()
         .getCoordinates();
       map.on('rendercomplete', function () {
-        expect(source.getFeatures()).to.have.length(1);
+        assert.lengthOf(source.getFeatures(), 1);
         const newCoordinates = source
           .getFeatures()[0]
           .getGeometry()
           .getCoordinates();
-        expect(newCoordinates).to.not.eql(oldCoordinates);
+        assert.notDeepEqual(newCoordinates, oldCoordinates);
         done();
       });
       source.setUrl('spec/ol/data/point.json');
@@ -317,12 +319,12 @@ describe('ol/source/Vector', function () {
         const clearSourceSpy = sinonSpy();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear(true);
-        expect(vectorSource.getFeatures()).to.eql([]);
-        expect(vectorSource.isEmpty()).to.be(true);
-        expect(removeFeatureSpy.called).to.be(false);
-        expect(removeFeatureSpy.callCount).to.be(0);
-        expect(clearSourceSpy.called).to.be(true);
-        expect(clearSourceSpy.callCount).to.be(1);
+        assert.deepEqual(vectorSource.getFeatures(), []);
+        assert.strictEqual(vectorSource.isEmpty(), true);
+        assert.strictEqual(removeFeatureSpy.called, false);
+        assert.strictEqual(removeFeatureSpy.callCount, 0);
+        assert.strictEqual(clearSourceSpy.called, true);
+        assert.strictEqual(clearSourceSpy.callCount, 1);
       });
 
       it('removes all features using slow path', function () {
@@ -331,12 +333,12 @@ describe('ol/source/Vector', function () {
         const clearSourceSpy = sinonSpy();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear();
-        expect(vectorSource.getFeatures()).to.eql([]);
-        expect(vectorSource.isEmpty()).to.be(true);
-        expect(removeFeatureSpy.called).to.be(true);
-        expect(removeFeatureSpy.callCount).to.be(features.length);
-        expect(clearSourceSpy.called).to.be(true);
-        expect(clearSourceSpy.callCount).to.be(1);
+        assert.deepEqual(vectorSource.getFeatures(), []);
+        assert.strictEqual(vectorSource.isEmpty(), true);
+        assert.strictEqual(removeFeatureSpy.called, true);
+        assert.strictEqual(removeFeatureSpy.callCount, features.length);
+        assert.strictEqual(clearSourceSpy.called, true);
+        assert.strictEqual(clearSourceSpy.callCount, 1);
       });
     });
 
@@ -344,7 +346,7 @@ describe('ol/source/Vector', function () {
       it('is called the expected number of times', function () {
         const f = sinonSpy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
-        expect(f.callCount).to.be(10);
+        assert.strictEqual(f.callCount, 10);
       });
 
       it('allows breaking out', function () {
@@ -355,22 +357,20 @@ describe('ol/source/Vector', function () {
             return ++count == 5;
           },
         );
-        expect(result).to.be(true);
-        expect(count).to.be(5);
+        assert.strictEqual(result, true);
+        assert.strictEqual(count, 5);
       });
     });
 
     describe('#getFeaturesInExtent', function () {
       it('returns the expected number of features', function () {
-        expect(vectorSource.getFeaturesInExtent(infiniteExtent)).to.have.length(
-          10,
-        );
+        assert.lengthOf(vectorSource.getFeaturesInExtent(infiniteExtent), 10);
       });
     });
 
     describe('#isEmpty', function () {
       it('returns false', function () {
-        expect(vectorSource.isEmpty()).to.be(false);
+        assert.strictEqual(vectorSource.isEmpty(), false);
       });
     });
 
@@ -379,9 +379,7 @@ describe('ol/source/Vector', function () {
         let i;
         for (i = features.length - 1; i >= 0; --i) {
           vectorSource.removeFeature(features[i]);
-          expect(vectorSource.getFeaturesInExtent(infiniteExtent)).have.length(
-            i,
-          );
+          assert.lengthOf(vectorSource.getFeaturesInExtent(infiniteExtent), i);
         }
       });
 
@@ -404,25 +402,28 @@ describe('ol/source/Vector', function () {
         );
 
         const vectorSource = new VectorSource({features: [feature1, feature2]});
-        expect(vectorSource.getFeatureById('foo')).to.eql([feature1, feature2]);
+        assert.deepEqual(vectorSource.getFeatureById('foo'), [
+          feature1,
+          feature2,
+        ]);
         vectorSource.removeFeature(feature1);
-        expect(vectorSource.getFeatureById('foo')).to.be(feature2);
+        assert.strictEqual(vectorSource.getFeatureById('foo'), feature2);
         vectorSource.removeFeature(feature2);
-        expect(vectorSource.getFeatureById('foo')).to.be(null);
+        assert.strictEqual(vectorSource.getFeatureById('foo'), null);
       });
 
       it('fires a change event', function () {
         const listener = sinonSpy();
         listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
-        expect(listener.called).to.be(true);
+        assert.strictEqual(listener.called, true);
       });
 
       it('fires a removefeature event', function () {
         const listener = sinonSpy();
         listen(vectorSource, 'removefeature', listener);
         vectorSource.removeFeature(features[0]);
-        expect(listener.called).to.be(true);
+        assert.strictEqual(listener.called, true);
       });
 
       it('accepts features that are not in the source', function () {
@@ -434,36 +435,26 @@ describe('ol/source/Vector', function () {
 
         const feature = new Feature(new Point([0, 0]));
         vectorSource.removeFeature(feature);
-        expect(changeListener.called).to.be(false);
-        expect(removeFeatureListener.called).to.be(false);
+        assert.strictEqual(changeListener.called, false);
+        assert.strictEqual(removeFeatureListener.called, false);
       });
     });
 
     describe("modifying a feature's geometry", function () {
       it('keeps the R-Tree index up to date', function () {
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          10,
-        );
+        assert.lengthOf(vectorSource.getFeaturesInExtent([0, 0, 1, 1]), 10);
         features[0].getGeometry().setCoordinates([100, 100]);
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          9,
-        );
+        assert.lengthOf(vectorSource.getFeaturesInExtent([0, 0, 1, 1]), 9);
         features[0].getGeometry().setCoordinates([0.5, 0.5]);
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          10,
-        );
+        assert.lengthOf(vectorSource.getFeaturesInExtent([0, 0, 1, 1]), 10);
       });
     });
 
     describe('setting a features geometry', function () {
       it('keeps the R-Tree index up to date', function () {
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          10,
-        );
+        assert.lengthOf(vectorSource.getFeaturesInExtent([0, 0, 1, 1]), 10);
         features[0].setGeometry(new Point([100, 100]));
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          9,
-        );
+        assert.lengthOf(vectorSource.getFeaturesInExtent([0, 0, 1, 1]), 9);
       });
     });
   });
@@ -477,35 +468,43 @@ describe('ol/source/Vector', function () {
     it('keeps its index up-to-date', function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.eql([feature]);
+      assert.deepEqual(vectorSource.getFeaturesInExtent([0, 0, 2, 2]), [
+        feature,
+      ]);
       feature.getGeometry().setCoordinates([3, 3]);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
-      expect(vectorSource.getFeaturesInExtent([2, 2, 4, 4])).to.eql([feature]);
+      assert.isEmpty(vectorSource.getFeaturesInExtent([0, 0, 2, 2]));
+      assert.deepEqual(vectorSource.getFeaturesInExtent([2, 2, 4, 4]), [
+        feature,
+      ]);
     });
 
     it('handles features with null geometries', function () {
       const feature = new Feature(null);
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      assert.deepEqual(vectorSource.getFeatures(), [feature]);
     });
 
     it('handles features with geometries changing from null', function () {
       const feature = new Feature(null);
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      assert.deepEqual(vectorSource.getFeatures(), [feature]);
       feature.setGeometry(new Point([1, 1]));
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.eql([feature]);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      assert.deepEqual(vectorSource.getFeaturesInExtent([0, 0, 2, 2]), [
+        feature,
+      ]);
+      assert.deepEqual(vectorSource.getFeatures(), [feature]);
     });
 
     it('handles features with geometries changing to null', function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeatures()).to.eql([feature]);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.eql([feature]);
+      assert.deepEqual(vectorSource.getFeatures(), [feature]);
+      assert.deepEqual(vectorSource.getFeaturesInExtent([0, 0, 2, 2]), [
+        feature,
+      ]);
       feature.setGeometry(null);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
-      expect(vectorSource.getFeatures()).to.eql([feature]);
+      assert.isEmpty(vectorSource.getFeaturesInExtent([0, 0, 2, 2]));
+      assert.deepEqual(vectorSource.getFeatures(), [feature]);
     });
 
     it("fires a change event when setting a feature's property", function () {
@@ -514,18 +513,18 @@ describe('ol/source/Vector', function () {
       const listener = sinonSpy();
       listen(vectorSource, 'change', listener);
       feature.set('foo', 'bar');
-      expect(listener.called).to.be(true);
+      assert.strictEqual(listener.called, true);
     });
 
     it('fires a changefeature event when updating a feature', function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       const listener = sinonSpy(function (event) {
-        expect(event.feature).to.be(feature);
+        assert.strictEqual(event.feature, feature);
       });
       vectorSource.on('changefeature', listener);
       feature.setStyle(null);
-      expect(listener.called).to.be(true);
+      assert.strictEqual(listener.called, true);
     });
   });
 
@@ -539,80 +538,80 @@ describe('ol/source/Vector', function () {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
     });
 
     it('returns a feature by id (set after add)', function () {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
       feature.setId('foo');
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
     });
 
     it('returns null when no feature is found', function () {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('bar')).to.be(null);
+      assert.strictEqual(source.getFeatureById('bar'), null);
     });
 
     it('returns null after removing feature', function () {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
       source.removeFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
     });
 
     it('returns null after unsetting id', function () {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
       feature.setId(undefined);
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
     });
 
     it('returns null after clear', function () {
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
       source.clear();
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
     });
 
     it('returns null when no features are indexed', function () {
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
       source.addFeature(new Feature());
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
     });
 
     it('returns correct feature after add/remove/add', function () {
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
       const first = new Feature();
       first.setId('foo');
       source.addFeature(first);
-      expect(source.getFeatureById('foo')).to.be(first);
+      assert.strictEqual(source.getFeatureById('foo'), first);
       source.removeFeature(first);
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
       const second = new Feature();
       second.setId('foo');
       source.addFeature(second);
-      expect(source.getFeatureById('foo')).to.be(second);
+      assert.strictEqual(source.getFeatureById('foo'), second);
     });
 
     it('returns correct feature after add/change', function () {
-      expect(source.getFeatureById('foo')).to.be(null);
+      assert.strictEqual(source.getFeatureById('foo'), null);
       const feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
       feature.setId('bar');
-      expect(source.getFeatureById('foo')).to.be(null);
-      expect(source.getFeatureById('bar')).to.be(feature);
+      assert.strictEqual(source.getFeatureById('foo'), null);
+      assert.strictEqual(source.getFeatureById('bar'), feature);
     });
   });
 
@@ -626,13 +625,13 @@ describe('ol/source/Vector', function () {
       const feature = new Feature();
       feature.setId('abcd');
       source.addFeature(feature);
-      expect(source.getFeatureByUid(getUid(feature))).to.be(feature);
+      assert.strictEqual(source.getFeatureByUid(getUid(feature)), feature);
     });
 
     it('returns a feature without id', function () {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(source.getFeatureByUid(getUid(feature))).to.be(feature);
+      assert.strictEqual(source.getFeatureByUid(getUid(feature)), feature);
     });
 
     it('returns null when no feature is found', function () {
@@ -640,7 +639,7 @@ describe('ol/source/Vector', function () {
       feature.setId('abcd');
       source.addFeature(feature);
       const wrongId = 'abcd';
-      expect(source.getFeatureByUid(wrongId)).to.be(null);
+      assert.strictEqual(source.getFeatureByUid(wrongId), null);
     });
 
     it('returns null after removing feature', function () {
@@ -648,9 +647,9 @@ describe('ol/source/Vector', function () {
       feature.setId('abcd');
       source.addFeature(feature);
       const uid = getUid(feature);
-      expect(source.getFeatureByUid(uid)).to.be(feature);
+      assert.strictEqual(source.getFeatureByUid(uid), feature);
       source.removeFeature(feature);
-      expect(source.getFeatureByUid(uid)).to.be(null);
+      assert.strictEqual(source.getFeatureByUid(uid), null);
     });
 
     it('returns null after clear', function () {
@@ -658,13 +657,13 @@ describe('ol/source/Vector', function () {
       feature.setId('abcd');
       source.addFeature(feature);
       const uid = getUid(feature);
-      expect(source.getFeatureByUid(uid)).to.be(feature);
+      assert.strictEqual(source.getFeatureByUid(uid), feature);
       source.clear();
-      expect(source.getFeatureByUid(uid)).to.be(null);
+      assert.strictEqual(source.getFeatureByUid(uid), null);
     });
 
     it('returns null when no features are present', function () {
-      expect(source.getFeatureByUid('abcd')).to.be(null);
+      assert.strictEqual(source.getFeatureByUid('abcd'), null);
     });
   });
 
@@ -703,8 +702,8 @@ describe('ol/source/Vector', function () {
       });
       source.on('featuresloadend', function () {
         const features = source.getFeatures();
-        expect(features).to.be.an('array');
-        expect(features.length).to.be(1);
+        assert.isArray(features);
+        assert.strictEqual(features.length, 1);
         done();
       });
       source.loadFeatures(
@@ -720,8 +719,8 @@ describe('ol/source/Vector', function () {
         url: 'spec/ol/source/vectorsource/single-feature.json',
       });
       source.on('featuresloadend', function (event) {
-        expect(event.features).to.be.an('array');
-        expect(event.features.length).to.be(1);
+        assert.isArray(event.features);
+        assert.strictEqual(event.features.length, 1);
         done();
       });
       source.loadFeatures(
@@ -743,8 +742,8 @@ describe('ol/source/Vector', function () {
                 'EPSG:3857',
                 'EPSG:4326',
               );
-              expect(lonLatExtent[0]).to.roughlyEqual(-99.259349218, 1e-9);
-              expect(lonLatExtent[2]).to.roughlyEqual(-95.963450781, 1e-9);
+              assert.approximately(lonLatExtent[0], -99.259349218, 1e-9);
+              assert.approximately(lonLatExtent[2], -95.963450781, 1e-9);
               done();
             }, 0);
           },
@@ -779,8 +778,8 @@ describe('ol/source/Vector', function () {
           getProjection('EPSG:3857'),
         );
         const loadedExtents = source.loadedExtentsRtree_.getAll();
-        expect(loadedExtents).to.have.length(1);
-        expect(loadedExtents[0].extent).to.eql([
+        assert.lengthOf(loadedExtents, 1);
+        assert.deepEqual(loadedExtents[0].extent, [
           -Infinity,
           -Infinity,
           Infinity,
@@ -812,17 +811,17 @@ describe('ol/source/Vector', function () {
           1,
           getProjection('EPSG:3857'),
         );
-        expect(count1).to.eql(1);
-        expect(count2).to.eql(1);
+        assert.deepEqual(count1, 1);
+        assert.deepEqual(count2, 1);
       });
 
       it('removes extents with #removeLoadedExtent()', function (done) {
         const source = new VectorSource();
         source.setLoader(function (bbox, resolution, projection) {
           setTimeout(function () {
-            expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
+            assert.lengthOf(source.loadedExtentsRtree_.getAll(), 1);
             source.removeLoadedExtent(bbox);
-            expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+            assert.lengthOf(source.loadedExtentsRtree_.getAll(), 0);
             done();
           }, 0);
         });
@@ -846,13 +845,12 @@ describe('ol/source/Vector', function () {
         setTimeout(() => {
           // Verify we have loaded extents in the tree
           const initialExtents = source.loadedExtentsRtree_.getAll();
-          expect(initialExtents.length).to.be.greaterThan(0);
+          assert.isAbove(initialExtents.length, 0);
 
           // Remove the infinite extent
           source.removeLoadedExtent([-Infinity, -Infinity, Infinity, Infinity]);
 
-          // Verify the tree is empty after removal
-          expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+          assert.lengthOf(source.loadedExtentsRtree_.getAll(), 0);
           done();
         }, 0);
       });
@@ -867,9 +865,9 @@ describe('ol/source/Vector', function () {
         source.setLoader(function (bbox, resolution, projection, success) {
           success(features);
           setTimeout(function () {
-            expect(spy.calledOnce).to.be(true);
+            assert.strictEqual(spy.calledOnce, true);
             const event = spy.getCall(0).args[0];
-            expect(event.features).to.be(features);
+            assert.strictEqual(event.features, features);
             done();
           }, 0);
         });
@@ -889,7 +887,7 @@ describe('ol/source/Vector', function () {
           function (bbox, resolution, projection, success, failure) {
             failure();
             setTimeout(function () {
-              expect(spy.calledOnce).to.be(true);
+              assert.strictEqual(spy.calledOnce, true);
               done();
             }, 0);
           },
@@ -906,7 +904,7 @@ describe('ol/source/Vector', function () {
         let error = false;
         source.on('featuresloaderror', () => {
           error = true;
-          expect(!!source.loading).to.be(false);
+          assert.strictEqual(!!source.loading, false);
         });
         source.setLoader(
           (extent, resolution, projection) =>
@@ -915,8 +913,8 @@ describe('ol/source/Vector', function () {
         map.addLayer(new VectorLayer({source}));
 
         map.once('loadend', () => {
-          expect(!!source.loading).to.be(false);
-          expect(error).to.be(true);
+          assert.strictEqual(!!source.loading, false);
+          assert.strictEqual(error, true);
           done();
         });
       });
@@ -949,10 +947,10 @@ describe('ol/source/Vector', function () {
         });
 
         map.on('loadend', function onloadend() {
-          expect(loadCount).to.be(2);
-          expect(failures).to.be(1);
-          expect(successes).to.be(1);
-          expect(source.getFeatures()).to.have.length(1);
+          assert.strictEqual(loadCount, 2);
+          assert.strictEqual(failures, 1);
+          assert.strictEqual(successes, 1);
+          assert.lengthOf(source.getFeatures(), 1);
           done();
         });
       });
@@ -960,7 +958,7 @@ describe('ol/source/Vector', function () {
       it('clears loading state and map fires loadend with empty success [Promise]', function (done) {
         const source = new VectorSource();
         source.on('featuresloadend', function () {
-          expect(!!source.loading).to.be(false);
+          assert.strictEqual(!!source.loading, false);
         });
         source.setLoader(function (bbox, resolution, projection, success) {
           return new Promise((resolve) => setTimeout(() => resolve([]), 0));
@@ -968,7 +966,7 @@ describe('ol/source/Vector', function () {
         map.addLayer(new VectorLayer({source}));
 
         map.once('loadend', function () {
-          expect(!!source.loading).to.be(false);
+          assert.strictEqual(!!source.loading, false);
           done();
         });
       });
@@ -978,7 +976,7 @@ describe('ol/source/Vector', function () {
         let error = false;
         source.on('featuresloaderror', () => {
           error = true;
-          expect(!!source.loading).to.be(false);
+          assert.strictEqual(!!source.loading, false);
         });
         source.setLoader((extent, resolution, projection, success, failure) => {
           setTimeout(failure, 0);
@@ -986,8 +984,8 @@ describe('ol/source/Vector', function () {
         map.addLayer(new VectorLayer({source}));
 
         map.once('loadend', () => {
-          expect(!!source.loading).to.be(false);
-          expect(error).to.be(true);
+          assert.strictEqual(!!source.loading, false);
+          assert.strictEqual(error, true);
           done();
         });
       });
@@ -1023,9 +1021,9 @@ describe('ol/source/Vector', function () {
         );
 
         map.once('loadend', function () {
-          expect(loadCount).to.be(2);
-          expect(failures).to.be(1);
-          expect(successes).to.be(1);
+          assert.strictEqual(loadCount, 2);
+          assert.strictEqual(failures, 1);
+          assert.strictEqual(successes, 1);
           done();
         });
       });
@@ -1033,7 +1031,7 @@ describe('ol/source/Vector', function () {
       it('clears loading state and map fires loadend with empty success [callback]', function (done) {
         const source = new VectorSource();
         source.on('featuresloadend', function () {
-          expect(!!source.loading).to.be(false);
+          assert.strictEqual(!!source.loading, false);
         });
         source.setLoader(function (bbox, resolution, projection, success) {
           setTimeout(() => {
@@ -1045,7 +1043,7 @@ describe('ol/source/Vector', function () {
         map.addLayer(new VectorLayer({source}));
 
         map.once('loadend', function () {
-          expect(!!source.loading).to.be(false);
+          assert.strictEqual(!!source.loading, false);
           done();
         });
       });
@@ -1065,8 +1063,8 @@ describe('ol/source/Vector', function () {
       const dupe = new Feature();
       dupe.setId('foo');
       source.addFeature(dupe);
-      expect(source.getFeatures()).to.have.length(1);
-      expect(source.getFeatureById('foo')).to.be(feature);
+      assert.lengthOf(source.getFeatures(), 1);
+      assert.strictEqual(source.getFeatureById('foo'), feature);
     });
 
     it('allows changing feature and set the same id', function () {
@@ -1077,7 +1075,7 @@ describe('ol/source/Vector', function () {
       bar.setId('bar');
       source.addFeature(bar);
       bar.setId('foo');
-      expect(source.getFeatureById('foo')).to.be(bar);
+      assert.strictEqual(source.getFeatureById('foo'), bar);
     });
   });
 
@@ -1090,9 +1088,9 @@ describe('ol/source/Vector', function () {
     it('disallows adding the same feature twice', function () {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(function () {
+      assert.throws(function () {
         source.addFeature(feature);
-      }).to.throwException();
+      });
     });
   });
 
@@ -1103,14 +1101,14 @@ describe('ol/source/Vector', function () {
     });
 
     it('returns a features collection', function () {
-      expect(source.getFeaturesCollection()).to.be.a(Collection);
+      assert.instanceOf(source.getFeaturesCollection(), Collection);
     });
 
     it('#forEachFeatureInExtent loops through all features', function () {
       source.addFeatures([new Feature(), new Feature()]);
       const spy = sinonSpy();
       source.forEachFeatureInExtent([0, 0, 0, 0], spy);
-      expect(spy.callCount).to.be(2);
+      assert.strictEqual(spy.callCount, 2);
     });
   });
 
@@ -1124,39 +1122,39 @@ describe('ol/source/Vector', function () {
     });
 
     it('creates a features collection', function () {
-      expect(source.getFeaturesCollection()).to.not.be(null);
+      assert.notEqual(source.getFeaturesCollection(), null);
     });
 
     it('adding/removing features keeps the collection in sync', function () {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
       source.removeFeature(feature);
-      expect(collection.getLength()).to.be(0);
+      assert.strictEqual(collection.getLength(), 0);
     });
 
     it('#clear() features keeps the collection in sync', function () {
       const feature = new Feature();
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
       source.clear();
-      expect(collection.getLength()).to.be(0);
+      assert.strictEqual(collection.getLength(), 0);
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
       source.clear(true);
-      expect(collection.getLength()).to.be(0);
+      assert.strictEqual(collection.getLength(), 0);
     });
 
     it("keeps the source's features in sync with the collection", function () {
       const feature = new Feature();
       collection.push(feature);
-      expect(source.getFeatures().length).to.be(1);
+      assert.strictEqual(source.getFeatures().length, 1);
       collection.remove(feature);
-      expect(source.getFeatures().length).to.be(0);
+      assert.strictEqual(source.getFeatures().length, 0);
       collection.extend([feature]);
-      expect(source.getFeatures().length).to.be(1);
+      assert.strictEqual(source.getFeatures().length, 1);
       collection.clear();
-      expect(source.getFeatures().length).to.be(0);
+      assert.strictEqual(source.getFeatures().length, 0);
     });
 
     it('prevents adding two features with a duplicate id in the collection', function () {
@@ -1170,7 +1168,7 @@ describe('ol/source/Vector', function () {
       const collection = source.getFeaturesCollection();
       collection.push(feature1);
       collection.push(feature2);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
     });
   });
 
@@ -1184,39 +1182,39 @@ describe('ol/source/Vector', function () {
     });
 
     it('#getFeaturesCollection returns the configured collection', function () {
-      expect(source.getFeaturesCollection()).to.equal(collection);
+      assert.equal(source.getFeaturesCollection(), collection);
     });
 
     it('adding/removing features keeps the collection in sync', function () {
       const feature = new Feature();
       source.addFeature(feature);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
       source.removeFeature(feature);
-      expect(collection.getLength()).to.be(0);
+      assert.strictEqual(collection.getLength(), 0);
     });
 
     it('#clear() features keeps the collection in sync', function () {
       const feature = new Feature();
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
       source.clear();
-      expect(collection.getLength()).to.be(0);
+      assert.strictEqual(collection.getLength(), 0);
       source.addFeatures([feature]);
-      expect(collection.getLength()).to.be(1);
+      assert.strictEqual(collection.getLength(), 1);
       source.clear(true);
-      expect(collection.getLength()).to.be(0);
+      assert.strictEqual(collection.getLength(), 0);
     });
 
     it("keeps the source's features in sync with the collection", function () {
       const feature = new Feature();
       collection.push(feature);
-      expect(source.getFeatures().length).to.be(1);
+      assert.strictEqual(source.getFeatures().length, 1);
       collection.remove(feature);
-      expect(source.getFeatures().length).to.be(0);
+      assert.strictEqual(source.getFeatures().length, 0);
       collection.extend([feature]);
-      expect(source.getFeatures().length).to.be(1);
+      assert.strictEqual(source.getFeatures().length, 1);
       collection.clear();
-      expect(source.getFeatures().length).to.be(0);
+      assert.strictEqual(source.getFeatures().length, 0);
     });
   });
 
@@ -1232,32 +1230,33 @@ describe('ol/source/Vector', function () {
 
       const projection = getProjection('EPSG:4326');
 
-      expect(
+      assert.strictEqual(
         source.getFeaturesInExtent([-180, -90, 180, 90], projection).length,
-      ).to.be(3);
+        3,
+      );
       const onlyB = source.getFeaturesInExtent([1, -90, 180, 90], projection);
-      expect(onlyB.length).to.be(1);
-      expect(onlyB).to.contain(b);
+      assert.strictEqual(onlyB.length, 1);
+      assert.include(onlyB, b);
       const bAndC = source.getFeaturesInExtent([1, -90, 182, 90], projection);
-      expect(bAndC.length).to.be(2);
-      expect(bAndC).to.contain(b);
-      expect(bAndC).to.contain(c);
+      assert.strictEqual(bAndC.length, 2);
+      assert.include(bAndC, b);
+      assert.include(bAndC, c);
 
       const onlyC = source.getFeaturesInExtent([-180, -90, -1, 90], projection);
-      expect(onlyC.length).to.be(1);
-      expect(onlyC).to.contain(c);
+      assert.strictEqual(onlyC.length, 1);
+      assert.include(onlyC, c);
 
       const bAndCAgain = source.getFeaturesInExtent(
         [-182, -90, -1, 90],
         projection,
       );
-      expect(bAndCAgain.length).to.be(2);
-      expect(bAndCAgain).to.contain(b);
-      expect(bAndCAgain).to.contain(c);
+      assert.strictEqual(bAndCAgain.length, 2);
+      assert.include(bAndCAgain, b);
+      assert.include(bAndCAgain, c);
 
       const onlyA = source.getFeaturesInExtent([359, -90, 361, 90], projection);
-      expect(onlyA.length).to.be(1);
-      expect(onlyA).to.contain(a);
+      assert.strictEqual(onlyA.length, 1);
+      assert.include(onlyA, a);
     });
   });
 });

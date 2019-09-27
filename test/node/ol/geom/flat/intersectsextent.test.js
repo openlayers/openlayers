@@ -1,9 +1,9 @@
+import {assert} from 'chai';
 import {
   intersectsLineString,
   intersectsLinearRing,
   intersectsLinearRingArray,
 } from '../../../../../src/ol/geom/flat/intersectsextent.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/intersectsextent.js', function () {
   describe('intersectsLineString', function () {
@@ -21,7 +21,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(false);
+        assert.strictEqual(r, false);
       });
     });
     describe('linestring envelope within the extent', function () {
@@ -34,7 +34,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(true);
+        assert.strictEqual(r, true);
       });
     });
     describe('linestring envelope bisected by an edge of the extent', function () {
@@ -47,7 +47,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(true);
+        assert.strictEqual(r, true);
       });
     });
     describe('a segment intersects the extent', function () {
@@ -60,7 +60,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(true);
+        assert.strictEqual(r, true);
       });
     });
     describe('no segments intersect the extent', function () {
@@ -73,7 +73,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(false);
+        assert.strictEqual(r, false);
       });
       it('returns false', function () {
         const extent = [1, 0.25, 1.5, 0.5];
@@ -84,7 +84,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(false);
+        assert.strictEqual(r, false);
       });
     });
   });
@@ -104,7 +104,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(true);
+        assert.strictEqual(r, true);
       });
     });
     describe(
@@ -120,7 +120,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
             2,
             extent,
           );
-          expect(r).to.be(false);
+          assert.strictEqual(r, false);
         });
       },
     );
@@ -134,7 +134,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(true);
+        assert.strictEqual(r, true);
       });
     });
   });
@@ -159,7 +159,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(false);
+        assert.strictEqual(r, false);
       });
     });
     describe('ring with hole intersects the extent', function () {
@@ -172,7 +172,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           2,
           extent,
         );
-        expect(r).to.be(true);
+        assert.strictEqual(r, true);
       });
     });
   });

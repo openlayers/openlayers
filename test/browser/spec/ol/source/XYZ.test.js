@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
@@ -11,17 +12,17 @@ describe('ol/source/XYZ', function () {
   describe('constructor', function () {
     it('can be constructed without options', function () {
       const source = new XYZ();
-      expect(source).to.be.an(XYZ);
-      expect(source).to.be.an(TileImage);
-      expect(source).to.be.an(UrlTile);
-      expect(source).to.be.an(TileSource);
+      assert.instanceOf(source, XYZ);
+      assert.instanceOf(source, TileImage);
+      assert.instanceOf(source, UrlTile);
+      assert.instanceOf(source, TileSource);
     });
 
     it('can be constructed with a custom zDirection', function () {
       const source = new XYZ({
         zDirection: -1,
       });
-      expect(source.zDirection).to.be(-1);
+      assert.strictEqual(source.zDirection, -1);
     });
 
     it('can be constructed with a custom tile grid', function () {
@@ -29,33 +30,33 @@ describe('ol/source/XYZ', function () {
       const tileSource = new XYZ({
         tileGrid: tileGrid,
       });
-      expect(tileSource.getTileGrid()).to.be(tileGrid);
+      assert.strictEqual(tileSource.getTileGrid(), tileGrid);
     });
 
     it('can be constructed with a custom tile size', function () {
       const tileSource = new XYZ({
         tileSize: 512,
       });
-      expect(tileSource.getTileGrid().getTileSize(0)).to.be(512);
+      assert.strictEqual(tileSource.getTileGrid().getTileSize(0), 512);
     });
 
     it('can be constructed with a custom min zoom', function () {
       const tileSource = new XYZ({
         minZoom: 2,
       });
-      expect(tileSource.getTileGrid().getMinZoom()).to.be(2);
+      assert.strictEqual(tileSource.getTileGrid().getMinZoom(), 2);
     });
   });
 
   describe('getInterpolate()', function () {
     it('is true by default', function () {
       const source = new XYZ();
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new XYZ({interpolate: false});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -77,37 +78,37 @@ describe('ol/source/XYZ', function () {
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 0),
       );
-      expect(tileUrl).to.eql('0/0/0');
+      assert.deepEqual(tileUrl, '0/0/0');
 
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 1),
       );
-      expect(tileUrl).to.eql('1/1/0');
+      assert.deepEqual(tileUrl, '1/1/0');
 
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 2),
       );
-      expect(tileUrl).to.eql('2/2/1');
+      assert.deepEqual(tileUrl, '2/2/1');
 
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 3),
       );
-      expect(tileUrl).to.eql('3/4/2');
+      assert.deepEqual(tileUrl, '3/4/2');
 
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 4),
       );
-      expect(tileUrl).to.eql('4/8/5');
+      assert.deepEqual(tileUrl, '4/8/5');
 
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 5),
       );
-      expect(tileUrl).to.eql('5/16/11');
+      assert.deepEqual(tileUrl, '5/16/11');
 
       tileUrl = xyzTileSource.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 6),
       );
-      expect(tileUrl).to.eql('6/33/22');
+      assert.deepEqual(tileUrl, '6/33/22');
     });
 
     describe('wrap x', function () {
@@ -119,17 +120,17 @@ describe('ol/source/XYZ', function () {
             projection,
           ),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
 
         tileUrl = xyzTileSource.tileUrlFunction(
           xyzTileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
 
         tileUrl = xyzTileSource.tileUrlFunction(
           xyzTileSource.getTileCoordForTileUrlFunction([6, 97, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
       });
     });
 
@@ -139,17 +140,17 @@ describe('ol/source/XYZ', function () {
         let tileUrl = xyzTileSource.tileUrlFunction(
           xyzTileSource.getTileCoordForTileUrlFunction([6, 33, -1], projection),
         );
-        expect(tileUrl).to.be(undefined);
+        assert.strictEqual(tileUrl, undefined);
 
         tileUrl = xyzTileSource.tileUrlFunction(
           xyzTileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection),
         );
-        expect(tileUrl).to.eql('6/33/22');
+        assert.deepEqual(tileUrl, '6/33/22');
 
         tileUrl = xyzTileSource.tileUrlFunction(
           xyzTileSource.getTileCoordForTileUrlFunction([6, 33, 64], projection),
         );
-        expect(tileUrl).to.be(undefined);
+        assert.strictEqual(tileUrl, undefined);
       });
     });
   });
@@ -173,7 +174,7 @@ describe('ol/source/XYZ', function () {
 
       it('returns the XYZ URL', function () {
         const urls = source.getUrls();
-        expect(urls).to.be.eql([url]);
+        assert.deepEqual(urls, [url]);
       });
     });
 
@@ -185,7 +186,7 @@ describe('ol/source/XYZ', function () {
 
       it('returns the XYZ URLs', function () {
         const urls = source.getUrls();
-        expect(urls).to.be.eql(['some_xyz_url1', 'some_xyz_url2']);
+        assert.deepEqual(urls, ['some_xyz_url1', 'some_xyz_url2']);
       });
     });
 
@@ -199,7 +200,7 @@ describe('ol/source/XYZ', function () {
 
       it('returns null', function () {
         const urls = source.getUrls();
-        expect(urls).to.be(null);
+        assert.strictEqual(urls, null);
       });
     });
   });
@@ -243,7 +244,7 @@ describe('ol/source/XYZ', function () {
 
     it('#refresh() reloads from server', function (done) {
       map.once('rendercomplete', function () {
-        expect(callCount).to.be(1);
+        assert.strictEqual(callCount, 1);
         done();
       });
       source.refresh();
