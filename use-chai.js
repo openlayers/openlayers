@@ -24,8 +24,7 @@ const expectTo = {
   property: {
     type: 'Identifier',
     name: 'to'
-  },
-  computed: false
+  }
 };
 
 // expect().to.be
@@ -35,8 +34,7 @@ const expectToBe = {
   property: {
     type: 'Identifier',
     name: 'be'
-  },
-  computed: false
+  }
 };
 
 // expect().to.be()
@@ -59,8 +57,7 @@ const expectToBeOkCall = {
       property: {
         type: 'Identifier',
         name: 'ok'
-      },
-      computed: false
+      }
     }
   }
 };
@@ -76,8 +73,7 @@ const expectToEqualCall = {
       property: {
         type: 'Identifier',
         name: 'equal'
-      },
-      computed: false
+      }
     }
   }
 };
@@ -93,8 +89,7 @@ const expectToEqlCall = {
       property: {
         type: 'Identifier',
         name: 'eql'
-      },
-      computed: false
+      }
     }
   }
 };
@@ -110,8 +105,7 @@ const expectToBeAnCall = {
       property: {
         type: 'Identifier',
         name: 'an'
-      },
-      computed: false
+      }
     }
   }
 };
@@ -127,8 +121,7 @@ const expectToBeACall = {
       property: {
         type: 'Identifier',
         name: 'a'
-      },
-      computed: false
+      }
     }
   }
 };
@@ -174,8 +167,30 @@ const expectToRoughlyEqualCall = {
       property: {
         type: 'Identifier',
         name: 'roughlyEqual'
+      }
+    }
+  }
+};
+
+// expect().to.have.length()
+const expectToHaveLengthCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'MemberExpression',
+        object: expectTo,
+        property: {
+          type: 'Identifier',
+          name: 'have'
+        }
       },
-      computed: false
+      property: {
+        type: 'Identifier',
+        name: 'length'
+      }
     }
   }
 };
@@ -276,6 +291,18 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('approximately')), [actual, expected, delta]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.have.length(expected)` with `assert.lengthOf(actual, expected)`
+  root.find(j.ExpressionStatement, expectToHaveLengthCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('lengthOf')), [actual, expected]
         )
       );
     });
