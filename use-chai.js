@@ -156,6 +156,36 @@ const expectNotToBeCall = {
   }
 };
 
+// expect().to.not.be()
+const expectToNotBeCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'MemberExpression',
+        object: {
+          type: 'MemberExpression',
+          object: expectCall,
+          property: {
+            type: 'Identifier',
+            name: 'to'
+          }
+        },
+        property: {
+          type: 'Identifier',
+          name: 'not'
+        }
+      },
+      property: {
+        type: 'Identifier',
+        name: 'be'
+      }
+    }
+  }
+};
+
 // expect().to.roughlyEqual()
 const expectToRoughlyEqualCall = {
   type: 'ExpressionStatement',
@@ -298,6 +328,18 @@ module.exports = function(info, api) {
       );
     });
 
+  // replace `expect(actual).to.not.be(expected)` with `assert.notEqual(actual, expected)`
+  root.find(j.ExpressionStatement, expectToNotBeCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('notEqual')), [actual, expected]
+        )
+      );
+    });
+
   // replace `expect(actual).to.roughlyEqual(expected, delta)` with `assert.approximately(actual, expected, delta)`
   root.find(j.ExpressionStatement, expectToRoughlyEqualCall)
     .replaceWith(path => {
@@ -323,7 +365,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect.fail()` with `assert.fail()`
+  // replace `expect().fail()` with `assert.fail()`
   root.find(j.ExpressionStatement, expectFailCall)
     .replaceWith(path => {
       return j.expressionStatement(
