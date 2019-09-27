@@ -71,19 +71,13 @@ describe('ol.source.VectorTile', function() {
       });
     });
 
-    it('handles empty tiles', function(done) {
+    it('handles empty tiles', function() {
       const source = new VectorTileSource({
         format: new GeoJSON(),
         url: ''
       });
       const tile = source.getTile(0, 0, 0, 1, source.getProjection());
-
-      const key = listen(tile, 'change', function(e) {
-        unlistenByKey(key);
-        expect(tile.getState()).to.be(TileState.EMPTY);
-        done();
-      });
-      tile.load();
+      expect(tile.getState()).to.be(TileState.EMPTY);
     });
 
     it('creates empty tiles outside the source extent', function() {
@@ -103,14 +97,30 @@ describe('ol.source.VectorTile', function() {
       expect(tile.getState()).to.be(TileState.EMPTY);
     });
 
+    it('creates empty tiles when the tileUrlFunction returns undefined', function() {
+      const source = new VectorTileSource({
+        tileUrlFunction: function(tileCoord) {
+          return;
+        }
+      });
+      const tile = source.getTile(1, 1, 1, 1, source.getProjection());
+      expect(tile.getState()).to.be(TileState.EMPTY);
+    });
+
     it('creates non-empty tiles outside the world extent when wrapX === true', function() {
-      const source = new VectorTileSource({});
+      const source = new VectorTileSource({
+        url: '{z}/{x}/{y}.pbf'
+      });
       const tile = source.getTile(0, -1, 0, 1, source.getProjection());
       expect(tile.getState()).to.be(TileState.IDLE);
     });
 
     it('creates non-empty tiles for overzoomed resolutions', function() {
       const source = new VectorTileSource({
+        url: '{z}/{x}/{y}.pbf',
+        tileLoadFunction: function(tile) {
+          tile.setLoader(function() {});
+        },
         maxZoom: 16
       });
       const tile = source.getTile(24, 9119385, 5820434, 1, source.getProjection());
