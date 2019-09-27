@@ -9,6 +9,8 @@ import {
   scale as scaleTransform
 } from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
+import {getSquaredTolerance} from './renderer/vector.js';
+import {getUserProjection, getTransformFromProjections} from './proj.js';
 
 
 /**
@@ -92,9 +94,15 @@ export function toContext(context, opt_options) {
 export function getVectorContext(event) {
   const frameState = event.frameState;
   const transform = multiplyTransform(event.inversePixelTransform.slice(), frameState.coordinateToPixelTransform);
+  const squaredTolerance = getSquaredTolerance(frameState.viewState.resolution, frameState.pixelRatio);
+  let userTransform;
+  const userProjection = getUserProjection();
+  if (userProjection) {
+    userTransform = getTransformFromProjections(userProjection, frameState.viewState.projection);
+  }
   return new CanvasImmediateRenderer(
     event.context, frameState.pixelRatio, frameState.extent, transform,
-    frameState.viewState.rotation);
+    frameState.viewState.rotation, squaredTolerance, userTransform);
 }
 
 /**

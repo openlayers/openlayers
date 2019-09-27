@@ -5,7 +5,7 @@ import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {transform2D} from './flat/transform.js';
-import {get as getProjection, getTransform, getTransformFromProjections} from '../proj.js';
+import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
 import {memoizeOne} from '../functions.js';
@@ -62,17 +62,15 @@ class Geometry extends BaseObject {
      * @abstract
      * @param {number} revision The geometry revision.
      * @param {number} squaredTolerance Squared tolerance.
-     * @param {import("../proj/Projection.js").default} [sourceProjection] The source projection.
-     * @param {import("../proj/Projection.js").default} [destProjection] The destination projection.
+     * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
      * @return {Geometry} Simplified geometry.
      */
-    this.simplifyTransformedInternal = memoizeOne(function(revision, squaredTolerance, sourceProjection, destProjection) {
-      if (!sourceProjection || !destProjection) {
+    this.simplifyTransformedInternal = memoizeOne(function(revision, squaredTolerance, opt_transform) {
+      if (!opt_transform) {
         return this.getSimplifiedGeometry(squaredTolerance);
       }
-      const transform = getTransformFromProjections(sourceProjection, destProjection);
       const clone = this.clone();
-      clone.applyTransform(transform);
+      clone.applyTransform(opt_transform);
       return clone.getSimplifiedGeometry(squaredTolerance);
     });
 
@@ -82,12 +80,11 @@ class Geometry extends BaseObject {
    * Get a transformed and simplified version of the geometry.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {import("../proj/Projection.js").default} sourceProjection The source projection.
-   * @param {import("../proj/Projection.js").default} destProjection The destination projection.
+   * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
    * @return {Geometry} Simplified geometry.
    */
-  simplifyTransformed(squaredTolerance, sourceProjection, destProjection) {
-    return this.simplifyTransformedInternal(this.getRevision(), squaredTolerance, sourceProjection, destProjection);
+  simplifyTransformed(squaredTolerance, opt_transform) {
+    return this.simplifyTransformedInternal(this.getRevision(), squaredTolerance, opt_transform);
   }
 
   /**

@@ -1,0 +1,14 @@
+---
+layout: example.html
+title: Immediate Rendering (Geographic)
+shortdesc: Using the immediate rendering API with geometries in geographic coordinates.
+docs: >
+  This example uses the "immediate" rendering API with geometries in geographic coordinates.
+  The immediate rendering API lets you draw styled geometries without adding them to a layer first.
+  Use the `getVectorContext` function to create a rendering context from a render event.  Using the
+  `context.drawGeometry()` and `context.setStyle()` methods on this rendering context, you can draw
+  any geometry on each render frame.  The `useGeographic` function is used in this example so that
+  geometries can be in geographic coordinates.
+tags: "immediate, geographic"
+---
+<div id="map" class="map"></div>
