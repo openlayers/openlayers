@@ -604,7 +604,7 @@ class PluggableMap extends BaseObject {
     }
     const options = opt_options || /** @type {AtPixelOptions} */ ({});
     const hitTolerance = options.hitTolerance !== undefined ?
-      opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
+      options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = options.layerFilter || TRUE;
     return this.renderer_.forEachLayerAtPixel(pixel, this.frameState_, hitTolerance, callback, layerFilter);
   }
