@@ -112,12 +112,10 @@ class TileQueue extends PriorityQueue {
       if (state === TileState.ABORT) {
         abortedTiles = true;
       } else if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+        this.tilesLoadingKeys_[tileKey] = true;
+        ++this.tilesLoading_;
+        ++newLoads;
         tile.load();
-        if (tile.getState() === TileState.LOADING) {
-          this.tilesLoadingKeys_[tileKey] = true;
-          ++this.tilesLoading_;
-          ++newLoads;
-        }
       }
     }
     if (newLoads === 0 && abortedTiles) {
