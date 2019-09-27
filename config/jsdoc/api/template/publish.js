@@ -215,39 +215,39 @@ function buildNav(members) {
     return 0;
   });
 
-  function createEntry(type, v) {
-    return {
-      type: type,
-      longname: v.longname,
-      name: v.name,
-      classes: find({
-        kind: 'class',
-        memberof: v.longname
-      }).map(createEntry.bind(this, 'class')),
-      members: find({
-        kind: 'member',
-        memberof: v.longname
-      }),
-      methods: find({
-        kind: 'function',
-        memberof: v.longname
-      }),
-      typedefs: find({
-        kind: 'typedef',
-        memberof: v.longname
-      }),
-      events: find({
-        kind: 'event',
-        memberof: v.longname
-      })
-    };
-  }
   _.each(merged, function(v) {
     // exclude interfaces from sidebar
-    if (v.interface !== true) {
-      if (v.kind == 'module') {
-        nav.push(createEntry('module', v));
-      }
+    if (v.interface !== true && v.kind === 'class') {
+      nav.push({
+        type: 'class',
+        longname: v.longname,
+        prettyname: v.longname
+          .substring(0, v.longname.indexOf('~'))
+          .replace('module:', '')
+          .replace('ol/', ''),
+        name: v.name,
+        module: find({
+          kind: 'module',
+          longname: v.memberof
+        })[0],
+        members: find({
+          kind: 'member',
+          memberof: v.longname
+        }),
+        methods: find({
+          kind: 'function',
+          memberof: v.longname
+        }),
+        typedefs: find({
+          kind: 'typedef',
+          memberof: v.longname
+        }),
+        fires: v.fires,
+        events: find({
+          kind: 'event',
+          memberof: v.longname
+        })
+      });
     }
   });
   return nav;
