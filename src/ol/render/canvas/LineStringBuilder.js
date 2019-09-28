@@ -58,13 +58,13 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ];
-		const keyHash = JSON.stringify(arr);
-		if (keyHash in this.cacheInstructions_) {
-			arr = this.cacheInstructions_[keyHash];
-		} else {
-			this.cacheInstructions_[keyHash] = arr;
-		}
-		this.hitDetectionInstructions.push(arr, beginPathInstruction);
+    const keyHash = JSON.stringify(arr);
+    if (keyHash in this.cacheInstructions_) {
+      arr = this.cacheInstructions_[keyHash];
+    } else {
+      this.cacheInstructions_[keyHash] = arr;
+    }
+    this.hitDetectionInstructions.push(arr, beginPathInstruction);
 
     const flatCoordinates = lineStringGeometry.getFlatCoordinates();
     const stride = lineStringGeometry.getStride();
@@ -91,12 +91,12 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ];
-		const keyHash = JSON.stringify(arr);
-		if (keyHash in this.cacheInstructions_) {
-			arr = this.cacheInstructions_[keyHash];
-		} else {
-			this.cacheInstructions_[keyHash] = arr;
-		}
+    const keyHash = JSON.stringify(arr);
+    if (keyHash in this.cacheInstructions_) {
+      arr = this.cacheInstructions_[keyHash];
+    } else {
+      this.cacheInstructions_[keyHash] = arr;
+    }
     this.hitDetectionInstructions.push(arr, beginPathInstruction);
     
     const ends = multiLineStringGeometry.getEnds();
