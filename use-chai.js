@@ -257,6 +257,22 @@ const expectToBeEmptyCall = {
   }
 };
 
+// expect().to.throwException()
+const expectToThrowExceptionCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectTo,
+      property: {
+        type: 'Identifier',
+        name: 'throwException'
+      }
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -398,6 +414,21 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('isEmpty')), [actual]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.throwException(expected)` with `assert.throws(actual, expected)`
+  root.find(j.ExpressionStatement, expectToThrowExceptionCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.arguments[0];
+      const args = [actual];
+      if (path.value.expression.arguments.length > 0) {
+        args.push(path.value.expression.arguments[0]);
+      }
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('throws')), args
         )
       );
     });
