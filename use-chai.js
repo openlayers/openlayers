@@ -37,6 +37,23 @@ const expectToBe = {
   }
 };
 
+// expect().to.not.be
+const expectToNotBe = {
+  type: 'MemberExpression',
+  object: {
+    type: 'MemberExpression',
+    object: expectTo,
+    property: {
+      type: 'Identifier',
+      name: 'not'
+    }
+  },
+  property: {
+    type: 'Identifier',
+    name: 'be'
+  }
+};
+
 // expect().to.be()
 const expectToBeCall = {
   type: 'ExpressionStatement',
@@ -54,6 +71,22 @@ const expectToBeOkCall = {
     callee: {
       type: 'MemberExpression',
       object: expectToBe,
+      property: {
+        type: 'Identifier',
+        name: 'ok'
+      }
+    }
+  }
+};
+
+// expect().to.not.be.ok()
+const expectToNotBeOkCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToNotBe,
       property: {
         type: 'Identifier',
         name: 'ok'
@@ -161,28 +194,7 @@ const expectToNotBeCall = {
   type: 'ExpressionStatement',
   expression: {
     type: 'CallExpression',
-    callee: {
-      type: 'MemberExpression',
-      object: {
-        type: 'MemberExpression',
-        object: {
-          type: 'MemberExpression',
-          object: expectCall,
-          property: {
-            type: 'Identifier',
-            name: 'to'
-          }
-        },
-        property: {
-          type: 'Identifier',
-          name: 'not'
-        }
-      },
-      property: {
-        type: 'Identifier',
-        name: 'be'
-      }
-    }
+    callee: expectToNotBe
   }
 };
 
@@ -342,6 +354,17 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('isOk')), [actual]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.not.be.ok()` with `assert.isNotOk(actual)`
+  root.find(j.ExpressionStatement, expectToNotBeOkCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('isNotOk')), [actual]
         )
       );
     });
