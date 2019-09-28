@@ -322,7 +322,7 @@ class Snap extends PointerInteraction {
       evt.pixel = result.vertexPixel;
 
       if (this.snapCondition_(evt)) {
-        const features = new Collection([evt.map.getFeaturesAtPixel(evt.pixel)]);
+        const features = new Collection(evt.map.getFeaturesAtPixel(evt.pixel));
         this.dispatchEvent(
           new SnapEvent(SnapEventType.SNAP,
             result, features, evt));
