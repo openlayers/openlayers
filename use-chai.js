@@ -377,10 +377,18 @@ module.exports = function(info, api) {
     });
 
   // replace `expect(actual).to.not.be(expected)` with `assert.notEqual(actual, expected)`
+  // replace `expect(actual).to.not.be()` with `assert.isFalse(actual)`
   root.find(j.ExpressionStatement, expectToNotBeCall)
     .replaceWith(path => {
-      const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.object.arguments[0];
+      if (path.value.expression.arguments.length === 0) {
+        return j.expressionStatement(
+          j.callExpression(
+            j.memberExpression(j.identifier('assert'), j.identifier('isFalse')), [actual]
+          )
+        );
+      }
+      const expected = path.value.expression.arguments[0];
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('notEqual')), [actual, expected]
