@@ -216,8 +216,8 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
-      expect(ds).to.be.called();
-      expect(de).to.be.called();
+      expect(ds.called).to.be(true);
+      expect(de.called).to.be(true);
       simulateEvent('pointermove', 20, 20);
       expect(ds.callCount).to.be(1);
       expect(de.callCount).to.be(1);
@@ -478,9 +478,9 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
       simulateEvent('pointermove', 10, 20);
 
-      expect(ds).to.be.called();
+      expect(ds.called).to.be(true);
       expect(ds.callCount).to.be(1);
-      expect(de).to.be.called();
+      expect(de.called).to.be(true);
       expect(de.callCount).to.be(1);
     });
 
@@ -801,9 +801,9 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(ds).to.be.called();
+      expect(ds.called).to.be(true);
       expect(ds.callCount).to.be(1);
-      expect(de).to.be.called();
+      expect(de.called).to.be(true);
       expect(de.callCount).to.be(1);
     });
 
@@ -963,9 +963,9 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
 
-      expect(ds).to.be.called();
+      expect(ds.called).to.be(true);
       expect(ds.callCount).to.be(1);
-      expect(de).to.be.called();
+      expect(de.called).to.be(true);
       expect(de.callCount).to.be(1);
     });
 

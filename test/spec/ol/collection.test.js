@@ -95,7 +95,7 @@ describe('ol.collection', function() {
     describe('on an empty collection', function() {
       it('does not call the callback', function() {
         collection.forEach(cb);
-        expect(cb).to.not.be.called();
+        expect(cb.called).to.be(false);
       });
     });
     describe('on a non-empty collection', function() {
@@ -120,7 +120,7 @@ describe('ol.collection', function() {
       const cb = sinon.spy();
       listen(collection, CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
-      expect(cb).to.be.called();
+      expect(cb.called).to.be(true);
       expect(cb.lastCall.args[0].element).to.eql(1);
     });
     it('does not remove more than one matching element', function() {
@@ -216,21 +216,21 @@ describe('ol.collection', function() {
     describe('insertAt', function() {
       it('triggers change:length event', function() {
         collection.insertAt(2, 3);
-        expect(cb).to.be.called();
+        expect(cb.called).to.be(true);
       });
     });
 
     describe('removeAt', function() {
       it('triggers change:length event', function() {
         collection.removeAt(0);
-        expect(cb).to.be.called();
+        expect(cb.called).to.be(true);
       });
     });
 
     describe('setAt', function() {
       it('does not trigger change:length event', function() {
         collection.setAt(1, 1);
-        expect(cb).to.not.be.called();
+        expect(cb.called).to.be(false);
       });
     });
   });

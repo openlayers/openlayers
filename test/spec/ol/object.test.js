@@ -156,7 +156,7 @@ describe('ol.Object', function() {
 
     it('dispatches events to object', function() {
       o.set('k', 1);
-      expect(listener1).to.be.called();
+      expect(listener1.called).to.be(true);
 
       expect(o.getKeys()).to.eql(['k']);
     });
@@ -190,7 +190,7 @@ describe('ol.Object', function() {
     it('does not call the setter', function() {
       o.set('x', 1);
       expect(o.get('x')).to.eql(1);
-      expect(o.setX).to.not.be.called();
+      expect(o.setX.called).to.be(false);
 
       expect(o.getKeys()).to.eql(['x']);
     });
@@ -206,7 +206,7 @@ describe('ol.Object', function() {
 
     it('does not call the getter', function() {
       expect(o.get('x')).to.be(undefined);
-      expect(o.getX).to.not.be.called();
+      expect(o.getX.called).to.be(false);
     });
   });
 
@@ -231,8 +231,8 @@ describe('ol.Object', function() {
 
     it('dispatches the expected event', function() {
       o.set('K', 1);
-      expect(listener1).to.not.be.called();
-      expect(listener2).to.be.called();
+      expect(listener1.called).to.be(false);
+      expect(listener2.called).to.be(true);
 
       expect(o.getKeys()).to.eql(['K']);
     });

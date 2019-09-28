@@ -15,8 +15,8 @@ describe('HTML Image loading', function() {
     listenImage(img, handleLoad, handleError);
 
     setTimeout(function() {
-      expect(handleLoad).to.be.called();
-      expect(handleError).not.to.be.called();
+      expect(handleLoad.called).to.be(true);
+      expect(handleError.called).to.be(false);
       done();
     }, 200);
   });
@@ -26,8 +26,8 @@ describe('HTML Image loading', function() {
     img.src = 'spec/ol/data/dot.png';
 
     setTimeout(function() {
-      expect(handleLoad).to.be.called();
-      expect(handleError).not.to.be.called();
+      expect(handleLoad.called).to.be(true);
+      expect(handleError.called).to.be(false);
       done();
     }, 200);
   });
@@ -37,8 +37,8 @@ describe('HTML Image loading', function() {
     listenImage(img, handleLoad, handleError);
 
     setTimeout(function() {
-      expect(handleLoad).not.to.be.called();
-      expect(handleError).to.be.called();
+      expect(handleLoad.called).to.be(false);
+      expect(handleError.called).to.be(true);
       done();
     }, 200);
   });
@@ -48,8 +48,8 @@ describe('HTML Image loading', function() {
     listenImage(img, handleLoad, handleError)();
 
     setTimeout(function() {
-      expect(handleLoad).not.to.be.called();
-      expect(handleError).not.to.be.called();
+      expect(handleLoad.called).to.be(false);
+      expect(handleError.called).to.be(false);
       done();
     }, 200);
   });
