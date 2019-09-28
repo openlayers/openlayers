@@ -115,7 +115,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array<import("../events.js").EventsKey>}
+     * @type {?Array<import("../events.js").EventsKey>}
      */
     this.dropListenKeys_ = null;
 

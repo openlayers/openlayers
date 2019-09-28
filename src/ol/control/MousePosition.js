@@ -97,7 +97,7 @@ class MousePosition extends Control {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {?import("../proj/Projection.js").default}
      */
     this.mapProjection_ = null;
 

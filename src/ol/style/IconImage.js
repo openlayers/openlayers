@@ -53,7 +53,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {function():void}
+     * @type {?function():void}
      */
     this.unlisten_ = null;
 

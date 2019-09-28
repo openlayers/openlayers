@@ -30,15 +30,11 @@ describe('ol.obj.assign()', function() {
   });
 
   it('throws a TypeError with `undefined` as target', function() {
-    expect(assign).withArgs(undefined).to.throwException(function(e) {
-      expect(e).to.be.a(TypeError);
-    });
+    expect(() => assign()).to.throwException(/Cannot convert undefined or null to object/);
   });
 
   it('throws a TypeError with `null` as target', function() {
-    expect(assign).withArgs(null).to.throwException(function(e) {
-      expect(e).to.be.a(TypeError);
-    });
+    expect(() => assign(null)).to.throwException(/Cannot convert undefined or null to object/);
   });
 
 });

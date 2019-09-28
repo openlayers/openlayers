@@ -14,7 +14,7 @@ async function build(input, {minify = true} = {}) {
         if (id !== input) {
           return null;
         }
-        return code.replace('export let create;\n', '');
+        return code.replace('export let create;', '');
       }
     },
     common(),

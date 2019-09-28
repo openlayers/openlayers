@@ -104,7 +104,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {Array<import("../events.js").EventsKey>}
+     * @type {?Array<import("../events.js").EventsKey>}
      */
     this.sourcesListenerKeys_ = null;
 

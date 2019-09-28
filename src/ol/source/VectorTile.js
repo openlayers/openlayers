@@ -200,11 +200,10 @@ class VectorTile extends UrlTile {
     const minZoom = sourceTileGrid.getMinZoom();
 
     const previousSourceTiles = this.sourceTilesByTileKey_[tile.getKey()];
-    let sourceTiles, covered, empty, loadedZ;
+    let sourceTiles, covered, loadedZ;
     if (previousSourceTiles && previousSourceTiles.length > 0 && previousSourceTiles[0].tileCoord[0] === sourceZ) {
       sourceTiles = previousSourceTiles;
       covered = true;
-      empty = false;
       loadedZ = sourceZ;
     } else {
       sourceTiles = [];
@@ -212,7 +211,6 @@ class VectorTile extends UrlTile {
       do {
         --loadedZ;
         covered = true;
-        empty = true;
         sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
           const coordKey = getKey(sourceTileCoord);
           let sourceTile;
@@ -220,7 +218,6 @@ class VectorTile extends UrlTile {
             sourceTile = this.sourceTileByCoordKey_[coordKey];
             const state = sourceTile.getState();
             if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
-              empty = empty && state === TileState.EMPTY;
               sourceTiles.push(sourceTile);
               return;
             }
@@ -233,20 +230,15 @@ class VectorTile extends UrlTile {
               sourceTile.projection = projection;
               sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
               this.sourceTileByCoordKey_[coordKey] = sourceTile;
-              empty = false;
               sourceTile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
               sourceTile.load();
-            } else {
-              sourceTile = null;
             }
-          } else {
-            empty = false;
           }
           covered = false;
-          if (sourceTile === undefined) {
+          if (!sourceTile) {
             return;
           }
-          if (sourceTile !== null && tile.getState() === TileState.IDLE) {
+          if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
             tile.loadingSourceTiles++;
             const key = listen(sourceTile, EventType.CHANGE, function() {
               const state = sourceTile.getState();
@@ -274,14 +266,14 @@ class VectorTile extends UrlTile {
       } while (!covered && loadedZ > minZoom);
     }
 
-    if (!empty && tile.getState() === TileState.IDLE) {
+    if (tile.getState() === TileState.IDLE) {
       tile.setState(TileState.LOADING);
     }
-    if (covered || empty) {
+    if (covered) {
       tile.hifi = sourceZ === loadedZ;
       tile.sourceZ = loadedZ;
       if (tile.getState() < TileState.LOADED) {
-        tile.setState(empty ? TileState.EMPTY : TileState.LOADED);
+        tile.setState(TileState.LOADED);
       } else if (!previousSourceTiles || !equals(sourceTiles, previousSourceTiles)) {
         this.removeSourceTiles(tile);
         this.addSourceTiles(tile, sourceTiles);
@@ -336,8 +328,8 @@ class VectorTile extends UrlTile {
     const tileCoord = [z, x, y];
     let urlTileCoord = this.getTileCoordForTileUrlFunction(tileCoord, projection);
     const sourceExtent = this.getTileGrid().getExtent();
+    const tileGrid = this.getTileGridForProjection(projection);
     if (urlTileCoord && sourceExtent) {
-      const tileGrid = this.getTileGridForProjection(projection);
       const tileExtent = tileGrid.getTileCoordExtent(urlTileCoord);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       bufferExtent(tileExtent, -tileGrid.getResolution(z), tileExtent);
@@ -345,9 +337,21 @@ class VectorTile extends UrlTile {
         urlTileCoord = null;
       }
     }
+    let empty = true;
+    if (urlTileCoord !== null) {
+      const sourceTileGrid = this.tileGrid;
+      const resolution = tileGrid.getResolution(z);
+      const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
+      // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
+      const extent = tileGrid.getTileCoordExtent(urlTileCoord);
+      bufferExtent(extent, -resolution, extent);
+      sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
+        empty = empty && !this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+      }.bind(this));
+    }
     const newTile = new VectorRenderTile(
       tileCoord,
-      urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
+      empty ? TileState.EMPTY : TileState.IDLE,
       urlTileCoord,
       this.tileGrid,
       this.getSourceTiles.bind(this, pixelRatio, projection),

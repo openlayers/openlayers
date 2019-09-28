@@ -101,7 +101,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 class WebGLPostProcessingPass {
 
   /**
-   * @param {Options=} options Options.
+   * @param {Options} options Options.
    */
   constructor(options) {
     this.gl_ = options.webGlContext;
