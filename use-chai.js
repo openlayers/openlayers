@@ -2,9 +2,9 @@
  * A transform for use with jscodeshift that replaces expect.js assertions with
  * assert style assertions from Chai.
  *
- * Example use on a single file:
+ * Example use on a directory:
  *
- *     git checkout -- test && jscodeshift -t use-chai.js test/spec/ol/geom
+ *     git checkout -- test && jscodeshift -t use-chai.js test/spec/ol
  *
  */
 
@@ -225,6 +225,22 @@ const expectToHaveLengthCall = {
   }
 };
 
+// expect().to.length()
+const expectToLengthCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectTo,
+      property: {
+        type: 'Identifier',
+        name: 'length'
+      }
+    }
+  }
+};
+
 // expect().fail()
 const expectFailCall = {
   type: 'ExpressionStatement',
@@ -390,6 +406,18 @@ module.exports = function(info, api) {
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('lengthOf')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.length(expected)` with `assert.lengthOf(actual, expected)`
+  root.find(j.ExpressionStatement, expectToLengthCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('lengthOf')), [actual, expected]
