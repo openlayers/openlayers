@@ -74,7 +74,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       source = new VectorTileSource({
         format: new MVT(),
         tileClass: TileClass,
-        tileGrid: createXYZ()
+        tileGrid: createXYZ(),
+        url: '{z}/{x}/{y}.pbf'
       });
       source.getSourceTiles = function() {
         return [new TileClass([0, 0, 0])];
