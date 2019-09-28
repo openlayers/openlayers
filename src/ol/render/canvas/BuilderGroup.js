@@ -32,7 +32,7 @@ class BuilderGroup {
    * @param {boolean} declutter Decluttering enabled.
    * @param {object} cacheInstructions Shared hitDetectionInstructions cache, for the entire layer.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, declutter, cacheInstructions) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio, declutter, cacheInstructions = {}) {
 
     /**
      * @type {boolean}
