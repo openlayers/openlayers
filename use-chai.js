@@ -289,6 +289,36 @@ const expectToThrowExceptionCall = {
   }
 };
 
+// expect().to.not.equal()
+const expectToNotEqualCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'MemberExpression',
+        object: {
+          type: 'MemberExpression',
+          object: expectCall,
+          property: {
+            type: 'Identifier',
+            name: 'to'
+          }
+        },
+        property: {
+          type: 'Identifier',
+          name: 'not'
+        }
+      },
+      property: {
+        type: 'Identifier',
+        name: 'equal'
+      }
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -465,6 +495,18 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('throws')), args
+        )
+      );
+    });
+
+  // replace `expect(actual).to.not.equal(expected)` with `assert.notStrictEqual(actual, expected)`
+  root.find(j.ExpressionStatement, expectToNotEqualCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      const expected = path.value.expression.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('notStrictEqual')), [actual, expected]
         )
       );
     });
