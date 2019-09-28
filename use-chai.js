@@ -347,6 +347,22 @@ const expectToBeGreaterThanCall = {
   }
 };
 
+// expect().to.be.lessThan()
+const expectToBeLessThanCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToBe,
+      property: {
+        type: 'Identifier',
+        name: 'lessThan'
+      }
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -562,6 +578,17 @@ module.exports = function(info, api) {
       );
     });
 
+  // replace `expect(actual).to.be.lessThan(expected)` with `assert.isBelow(actual, expected)`
+  root.find(j.ExpressionStatement, expectToBeLessThanCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('isBelow')), [actual, expected]
+        )
+      );
+    });
 
   // add the `import {assert} from 'chai';`
   const body = root.find(j.Program).get('body');
