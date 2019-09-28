@@ -241,6 +241,9 @@ class Tile extends EventTarget {
    * @api
    */
   setState(state) {
+    if (this.state !== TileState.ERROR && this.state > state) {
+      throw new Error('Tile load sequence violation');
+    }
     this.state = state;
     this.changed();
   }
