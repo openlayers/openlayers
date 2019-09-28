@@ -98,7 +98,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       this.cacheInstructions_[keyHash] = arr;
     }
     this.hitDetectionInstructions.push(arr, beginPathInstruction);
-    
+
     const ends = multiLineStringGeometry.getEnds();
     const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
     const stride = multiLineStringGeometry.getStride();
