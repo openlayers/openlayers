@@ -1,4 +1,3 @@
-import {equals} from '../src/ol/array.js';
 // avoid importing anything that results in an instanceof check
 // since these extensions are global, instanceof checks fail with modules
 
@@ -308,50 +307,6 @@ import {equals} from '../src/ol/array.js';
     return this;
   };
 
-
-  /**
-   * Checks if the array sort of equals another array.
-   * @param {Object} obj The other object.
-   * @return {expect.Assertion} The assertion.
-   */
-  expect.Assertion.prototype.arreql = function(obj) {
-    this.assert(
-      equals(this.obj, obj),
-      function() {
-        return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of equal ' + expect.stringify(obj);
-      },
-      function() {
-        return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of not equal ' + expect.stringify(obj);
-      });
-    return this;
-  };
-
-
-  /**
-   * Checks if the array sort of equals another array (allows NaNs to be equal).
-   * @param {Object} obj The other object.
-   * @return {expect.Assertion} The assertion.
-   */
-  expect.Assertion.prototype.arreqlNaN = function(obj) {
-    function compare(a, i) {
-      const b = obj[i];
-      return a === b || (typeof a === 'number' && typeof b === 'number' &&
-          isNaN(a) && isNaN(b));
-    }
-    this.assert(
-      this.obj.length === obj.length && this.obj.every(compare),
-      function() {
-        return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of equal ' + expect.stringify(obj);
-      },
-      function() {
-        return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of not equal ' + expect.stringify(obj);
-      });
-    return this;
-  };
 
   global.createMapDiv = function(width, height) {
     const target = document.createElement('div');
