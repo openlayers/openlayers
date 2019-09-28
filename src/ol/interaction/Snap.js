@@ -135,6 +135,7 @@ class SnapEvent extends Event {
  *       source: source
  *     });
  *
+ * @fires SnapEvent
  * @api
  */
 class Snap extends PointerInteraction {
