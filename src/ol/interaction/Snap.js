@@ -2,6 +2,7 @@
  * @module ol/interaction/Snap
  */
 import {getUid} from '../util.js';
+import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -86,7 +87,7 @@ class SnapEvent extends Event {
   /**
    * @param {SnapEventType} type The event type.
    * @param {Result} result Snap result array.
-   * @param {Array<import("../Feature.js").default>} features Array with the snapped features.
+   * @param {Collection<import("../Feature.js").default>} features The snapped features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
    *     {@link module:ol/MapBrowserEvent}.
    */
@@ -101,8 +102,8 @@ class SnapEvent extends Event {
     this.result = result;
 
     /**
-     * Snapped features array.
-     * @type {Array<import("../Feature.js").default>}
+     * Snapped features collection.
+     * @type {Collection<import("../Feature.js").default>}
      * @api
      */
     this.features = features;
@@ -321,9 +322,10 @@ class Snap extends PointerInteraction {
       evt.pixel = result.vertexPixel;
 
       if (this.snapCondition_(evt)) {
+        const features = new Collection([evt.map.getFeaturesAtPixel(evt.pixel)]);
         this.dispatchEvent(
           new SnapEvent(SnapEventType.SNAP,
-            result, evt.map.getFeaturesAtPixel(evt.pixel), evt));
+            result, features, evt));
       }
     }
     return super.handleEvent(evt);
