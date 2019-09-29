@@ -115,7 +115,8 @@ IIIF_PROFILE_VALUES[Versions.VERSION3] = {
     qualities: ['default']
   }
 };
-IIIF_PROFILE_VALUES['none'] = {
+
+const NO_IIIF_PROFILE_VALUES = {
   'none': {
     supports: [],
     formats: [],
@@ -343,7 +344,7 @@ class IIIFInfo {
     const version = this.getImageApiVersion();
     const level = this.getComplianceLevelFromProfile(version);
     if (level === undefined) {
-      return IIIF_PROFILE_VALUES['none']['none'];
+      return NO_IIIF_PROFILE_VALUES['none'];
     }
     return IIIF_PROFILE_VALUES[version][level];
   }

@@ -95,7 +95,7 @@
     "shx": "^0.3.2",
     "sinon": "^7.3.2",
     "terser-webpack-plugin": "^2.0.1",
-    "typescript": "3.5.3",
+    "typescript": "^3.7.0-dev.20190928",
     "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
     "webpack": "4.41.0",
