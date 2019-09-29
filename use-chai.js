@@ -130,6 +130,22 @@ const expectToEqlCall = {
   }
 };
 
+// expect().to.be.eql()
+const expectToBeEqlCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToBe,
+      property: {
+        type: 'Identifier',
+        name: 'eql'
+      }
+    }
+  }
+};
+
 // expect().to.be.an()
 const expectToBeAnCall = {
   type: 'ExpressionStatement',
@@ -460,6 +476,18 @@ module.exports = function(info, api) {
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('deepEqual')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.be.eql(expected)` with `assert.deepEqual(actual, expected)`
+  root.find(j.ExpressionStatement, expectToBeEqlCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('deepEqual')), [actual, expected]
