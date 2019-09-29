@@ -34,7 +34,7 @@ describe('ol.source.Vector', function() {
       it('does not call the callback', function() {
         const f = sinon.spy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
-        expect(f).not.to.be.called();
+        expect(f.called).to.be(false);
       });
 
     });
@@ -71,7 +71,7 @@ describe('ol.source.Vector', function() {
         const listener = sinon.spy();
         listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
-        expect(listener).to.be.called();
+        expect(listener.called).to.be(true);
       });
 
       it('adds same id features only once', function() {
@@ -249,9 +249,9 @@ describe('ol.source.Vector', function() {
         vectorSource.clear(true);
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
-        expect(removeFeatureSpy).not.to.be.called();
+        expect(removeFeatureSpy.called).to.be(false);
         expect(removeFeatureSpy.callCount).to.be(0);
-        expect(clearSourceSpy).to.be.called();
+        expect(clearSourceSpy.called).to.be(true);
         expect(clearSourceSpy.callCount).to.be(1);
       });
 
@@ -263,9 +263,9 @@ describe('ol.source.Vector', function() {
         vectorSource.clear();
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
-        expect(removeFeatureSpy).to.be.called();
+        expect(removeFeatureSpy.called).to.be(true);
         expect(removeFeatureSpy.callCount).to.be(features.length);
-        expect(clearSourceSpy).to.be.called();
+        expect(clearSourceSpy.called).to.be(true);
         expect(clearSourceSpy.callCount).to.be(1);
       });
 
@@ -323,14 +323,14 @@ describe('ol.source.Vector', function() {
         const listener = sinon.spy();
         listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
-        expect(listener).to.be.called();
+        expect(listener.called).to.be(true);
       });
 
       it('fires a removefeature event', function() {
         const listener = sinon.spy();
         listen(vectorSource, 'removefeature', listener);
         vectorSource.removeFeature(features[0]);
-        expect(listener).to.be.called();
+        expect(listener.called).to.be(true);
       });
 
     });
@@ -416,7 +416,7 @@ describe('ol.source.Vector', function() {
       const listener = sinon.spy();
       listen(vectorSource, 'change', listener);
       feature.set('foo', 'bar');
-      expect(listener).to.be.called();
+      expect(listener.called).to.be(true);
     });
 
     it('fires a changefeature event when updating a feature', function() {
@@ -427,7 +427,7 @@ describe('ol.source.Vector', function() {
       });
       vectorSource.on('changefeature', listener);
       feature.setStyle(null);
-      expect(listener).to.be.called();
+      expect(listener.called).to.be(true);
     });
 
   });

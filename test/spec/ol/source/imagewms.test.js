@@ -211,7 +211,7 @@ describe('ol.source.ImageWMS', function() {
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
-      expect(imageLoadFunction).to.be.called();
+      expect(imageLoadFunction.called).to.be(true);
       expect(imageLoadFunction.calledWith(image, image.src_)).to.be(true);
     });
 

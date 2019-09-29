@@ -88,23 +88,6 @@ import {equals} from '../src/ol/array.js';
   };
 
 
-  /**
-   * Assert that a sinon spy was called.
-   * @return {expect.Assertion} The assertion.
-   */
-  expect.Assertion.prototype.called = function() {
-    this.assert(
-      this.obj.called,
-      function() {
-        return 'expected ' + expect.stringify(this.obj) + ' to be called';
-      },
-      function() {
-        return 'expected ' + expect.stringify(this.obj) + ' not to be called';
-      });
-    return this;
-  };
-
-
   function getChildNodes(node, options) {
     // check whitespace
     if (options && options.includeWhiteSpace) {

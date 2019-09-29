@@ -42,38 +42,6 @@ describe('expect.js', function() {
 
   });
 
-  describe('called', function() {
-
-    let telephone;
-    beforeEach(function() {
-      telephone = sinon.spy();
-    });
-
-    it('has caller ID', function() {
-      telephone();
-      expect(telephone).to.be.called();
-    });
-
-    it('also knows when it\'s speaking to the hand', function() {
-      (function() {})();
-      expect(telephone).not.to.be.called();
-    });
-
-    it('reminds you that you forgot', function() {
-      expect(function() {
-        expect(telephone).to.be.called();
-      }).to.throwException();
-    });
-
-    it('gets moody all too quickly', function() {
-      telephone();
-      expect(function() {
-        expect(telephone).not.to.be.called();
-      }).to.throwException();
-    });
-
-  });
-
   describe('Test equality of XML documents - xmleql', function() {
 
     it('Test XML document with single root, different prefix', function() {
