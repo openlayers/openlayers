@@ -390,7 +390,6 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 60, 70);
 
       const features = source.getFeatures();
-      // expect(features).to.have.length(1);
       const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(LineString);
       expect(geometry.getCoordinates()).to.eql(
