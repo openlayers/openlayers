@@ -13,7 +13,7 @@ import EventType from './events/EventType.js';
  * and unregistration. A generic `change` event is always available through
  * {@link module:ol/Observable~Observable#changed}.
  *
- * @fires import("./events/Event.js").Event
+ * @fires import("./events/Event.js").default
  * @api
  */
 class Observable extends EventTarget {

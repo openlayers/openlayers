@@ -81,7 +81,7 @@ class GeolocationError extends BaseEvent {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
- * @fires module:ol/events/Event~Event#event:error
+ * @fires module:ol/events/Event~BaseEvent#event:error
  * @api
  */
 class Geolocation extends BaseObject {

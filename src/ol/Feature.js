@@ -231,7 +231,7 @@ class Feature extends BaseObject {
    * styles. If it is `null` the feature has no style (a `null` style).
    * @param {import("./style/Style.js").StyleLike} style Style for this feature.
    * @api
-   * @fires module:ol/events/Event~Event#event:change
+   * @fires module:ol/events/Event~BaseEvent#event:change
    */
   setStyle(style) {
     this.style_ = style;
@@ -246,7 +246,7 @@ class Feature extends BaseObject {
    * {@link module:ol/source/Vector~VectorSource#getFeatureById} method.
    * @param {number|string|undefined} id The feature id.
    * @api
-   * @fires module:ol/events/Event~Event#event:change
+   * @fires module:ol/events/Event~BaseEvent#event:change
    */
   setId(id) {
     this.id_ = id;

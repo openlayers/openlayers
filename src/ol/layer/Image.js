@@ -6,11 +6,6 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 
 
 /**
- * @typedef {import("./BaseImage.js").Options} Options
- */
-
-
-/**
  * @classdesc
  * Server-rendered images that are available for arbitrary extents and
  * resolutions.
@@ -23,7 +18,7 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 class ImageLayer extends BaseImageLayer {
 
   /**
-   * @param {Options=} opt_options Layer options.
+   * @param {import("./BaseImage.js").Options=} opt_options Layer options.
    */
   constructor(opt_options) {
     super(opt_options);
