@@ -631,7 +631,7 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(actual).to.roughlyEqual(expected, delta)` with `assert.approximately(actual, expected, delta)`
+  // replace `expect(actual).to.roughlyEqual(expected, delta)` with `assert.closeTo(actual, expected, delta)`
   root.find(j.ExpressionStatement, expectToRoughlyEqualCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
@@ -639,7 +639,7 @@ module.exports = function(info, api) {
       const actual = path.value.expression.callee.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
-          j.memberExpression(j.identifier('assert'), j.identifier('approximately')), [actual, expected, delta]
+          j.memberExpression(j.identifier('assert'), j.identifier('closeTo')), [actual, expected, delta]
         )
       );
     });
