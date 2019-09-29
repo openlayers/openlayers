@@ -388,6 +388,23 @@ const expectNotToThrowExceptionCall = {
   }
 };
 
+// expect().to.xmleql()
+const expectToXmleqlCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectTo,
+      property: {
+        type: 'Identifier',
+        name: 'xmleql'
+      }
+    }
+  }
+};
+
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -641,6 +658,18 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('doesNotThrow')), args
+        )
+      );
+    });
+
+  // replace `expect(actual).to.xmleql(expected)` with `assert.xmlEqual(actual, expected)`
+  root.find(j.ExpressionStatement, expectToXmleqlCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.arguments[0];
+      const expected = path.value.expression.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('xmlEqual')), [actual, expected]
         )
       );
     });
