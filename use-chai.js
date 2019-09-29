@@ -356,6 +356,22 @@ const expectToBeGreaterThanCall = {
   }
 };
 
+// expect().to.greaterThan()
+const expectToGreaterThanCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectTo,
+      property: {
+        type: 'Identifier',
+        name: 'greaterThan'
+      }
+    }
+  }
+};
+
 // expect().to.be.lessThan()
 const expectToBeLessThanCall = {
   type: 'ExpressionStatement',
@@ -656,6 +672,18 @@ module.exports = function(info, api) {
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('isAbove')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.greaterThan(expected)` with `assert.isAbove(actual, expected)`
+  root.find(j.ExpressionStatement, expectToGreaterThanCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('isAbove')), [actual, expected]
