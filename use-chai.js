@@ -4,7 +4,7 @@
  *
  * Example use on a directory:
  *
- *     git checkout -- test && jscodeshift -t use-chai.js test/spec/ol
+ *     git checkout -- test && jscodeshift -t use-chai.js test
  *
  */
 
@@ -37,17 +37,20 @@ const expectToBe = {
   }
 };
 
+// expect().to.not
+const expectToNot = {
+  type: 'MemberExpression',
+  object: expectTo,
+  property: {
+    type: 'Identifier',
+    name: 'not'
+  }
+};
+
 // expect().to.not.be
 const expectToNotBe = {
   type: 'MemberExpression',
-  object: {
-    type: 'MemberExpression',
-    object: expectTo,
-    property: {
-      type: 'Identifier',
-      name: 'not'
-    }
-  },
+  object: expectToNot,
   property: {
     type: 'Identifier',
     name: 'be'
@@ -159,6 +162,24 @@ const expectToBeACall = {
   }
 };
 
+// expect().not.to
+const expectNotTo = {
+  type: 'MemberExpression',
+  object: {
+    type: 'MemberExpression',
+    object: expectCall,
+    property: {
+      type: 'Identifier',
+      name: 'not'
+    }
+  },
+  property: {
+    type: 'Identifier',
+    name: 'to'
+  }
+};
+
+
 // expect().not.to.be()
 const expectNotToBeCall = {
   type: 'ExpressionStatement',
@@ -166,21 +187,7 @@ const expectNotToBeCall = {
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object: {
-        type: 'MemberExpression',
-        object: {
-          type: 'MemberExpression',
-          object: expectCall,
-          property: {
-            type: 'Identifier',
-            name: 'not'
-          }
-        },
-        property: {
-          type: 'Identifier',
-          name: 'to'
-        }
-      },
+      object: expectNotTo,
       property: {
         type: 'Identifier',
         name: 'be'
@@ -308,21 +315,7 @@ const expectToNotEqualCall = {
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object: {
-        type: 'MemberExpression',
-        object: {
-          type: 'MemberExpression',
-          object: expectCall,
-          property: {
-            type: 'Identifier',
-            name: 'to'
-          }
-        },
-        property: {
-          type: 'Identifier',
-          name: 'not'
-        }
-      },
+      object: expectToNot,
       property: {
         type: 'Identifier',
         name: 'equal'
@@ -358,6 +351,38 @@ const expectToBeLessThanCall = {
       property: {
         type: 'Identifier',
         name: 'lessThan'
+      }
+    }
+  }
+};
+
+// expect().to.not.throwException()
+const expectToNotThrowExceptionCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToNot,
+      property: {
+        type: 'Identifier',
+        name: 'throwException'
+      }
+    }
+  }
+};
+
+// expect().not.to.throwException()
+const expectNotToThrowExceptionCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectNotTo,
+      property: {
+        type: 'Identifier',
+        name: 'throwException'
       }
     }
   }
@@ -586,6 +611,36 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('isBelow')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.not.throwException(expected)` with `assert.doesNotThrow(actual, expected)`
+  root.find(j.ExpressionStatement, expectToNotThrowExceptionCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      const args = [actual];
+      if (path.value.expression.arguments.length > 0) {
+        args.push(path.value.expression.arguments[0]);
+      }
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('doesNotThrow')), args
+        )
+      );
+    });
+
+  // replace `expect(actual).not.to.throwException(expected)` with `assert.doesNotThrow(actual, expected)`
+  root.find(j.ExpressionStatement, expectNotToThrowExceptionCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      const args = [actual];
+      if (path.value.expression.arguments.length > 0) {
+        args.push(path.value.expression.arguments[0]);
+      }
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('doesNotThrow')), args
         )
       );
     });
