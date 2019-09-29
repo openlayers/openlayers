@@ -22,7 +22,7 @@ import EventType from '../events/EventType.js';
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  *
- * @fires import("../events/Event.js").Event
+ * @fires import("../events/Event.js").default
  * @template T
  */
 class LRUCache extends EventTarget {
