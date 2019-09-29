@@ -708,7 +708,7 @@ describe('ol.interaction.Modify', function() {
       collection.remove(features[0]);
       expect(function() {
         simulateEvent('pointerup', -10, -10, null, 0);
-      }).to.not.throwError();
+      }).to.not.throwException();
     });
   });
 
