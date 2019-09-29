@@ -509,14 +509,14 @@ module.exports = function(info, api) {
       );
     });
 
-  // replace `expect(actual).to.equal(expected)` with `assert.equal(actual, expected)`
+  // replace `expect(actual).to.equal(expected)` with `assert.strictEqual(actual, expected)`
   root.find(j.ExpressionStatement, expectToEqualCall)
     .replaceWith(path => {
       const expected = path.value.expression.arguments[0];
       const actual = path.value.expression.callee.object.object.arguments[0];
       return j.expressionStatement(
         j.callExpression(
-          j.memberExpression(j.identifier('assert'), j.identifier('equal')), [actual, expected]
+          j.memberExpression(j.identifier('assert'), j.identifier('strictEqual')), [actual, expected]
         )
       );
     });
