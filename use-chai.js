@@ -237,6 +237,16 @@ const expectToRoughlyEqualCall = {
   }
 };
 
+// expect().to.have
+const expectToHave = {
+  type: 'MemberExpression',
+  object: expectTo,
+  property: {
+    type: 'Identifier',
+    name: 'have'
+  }
+};
+
 // expect().to.have.length()
 const expectToHaveLengthCall = {
   type: 'ExpressionStatement',
@@ -244,14 +254,7 @@ const expectToHaveLengthCall = {
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object: {
-        type: 'MemberExpression',
-        object: expectTo,
-        property: {
-          type: 'Identifier',
-          name: 'have'
-        }
-      },
+      object: expectToHave,
       property: {
         type: 'Identifier',
         name: 'length'
@@ -447,6 +450,22 @@ const expectToContainCall = {
       property: {
         type: 'Identifier',
         name: 'contain'
+      }
+    }
+  }
+};
+
+// expect().to.have.property()
+const expectToHavePropertyCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectToHave,
+      property: {
+        type: 'Identifier',
+        name: 'property'
       }
     }
   }
@@ -755,6 +774,28 @@ module.exports = function(info, api) {
           j.memberExpression(j.identifier('assert'), j.identifier('include')), [actual, expected]
         )
       );
+    });
+
+  // replace `expect(actual).to.have.property(expected)` with `assert.property(actual, expected)`
+  // replace `expect(actual).to.have.property(expected, val)` with `assert.propertyVal(actual, expected, val)`
+  root.find(j.ExpressionStatement, expectToHavePropertyCall)
+    .replaceWith(path => {
+      const args = path.value.expression.arguments;
+      const actual = path.value.expression.callee.object.object.object.arguments[0];
+      if (args.length === 1) {
+        return j.expressionStatement(
+          j.callExpression(
+            j.memberExpression(j.identifier('assert'), j.identifier('property')), [actual, args[0]]
+          )
+        );
+      }
+      if (args.length === 2) {
+        return j.expressionStatement(
+          j.callExpression(
+            j.memberExpression(j.identifier('assert'), j.identifier('propertyVal')), [actual, args[0], args[1]]
+          )
+        );
+      }
     });
 
   // add the `import {assert} from 'chai';`
