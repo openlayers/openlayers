@@ -420,6 +420,21 @@ const expectToXmleqlCall = {
   }
 };
 
+// expect().to.contain()
+const expectToContainCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: expectTo,
+      property: {
+        type: 'Identifier',
+        name: 'contain'
+      }
+    }
+  }
+};
 
 module.exports = function(info, api) {
   const j = api.jscodeshift;
@@ -698,6 +713,18 @@ module.exports = function(info, api) {
       return j.expressionStatement(
         j.callExpression(
           j.memberExpression(j.identifier('assert'), j.identifier('xmlEqual')), [actual, expected]
+        )
+      );
+    });
+
+  // replace `expect(actual).to.contain(expected)` with `assert.include(actual, expected)`
+  root.find(j.ExpressionStatement, expectToContainCall)
+    .replaceWith(path => {
+      const expected = path.value.expression.arguments[0];
+      const actual = path.value.expression.callee.object.object.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('include')), [actual, expected]
         )
       );
     });
