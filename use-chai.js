@@ -471,6 +471,36 @@ const expectToHavePropertyCall = {
   }
 };
 
+// expect().to.only.have.keys()
+const expectToOnlyHaveKeysCall = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'MemberExpression',
+        object: {
+          type: 'MemberExpression',
+          object: expectTo,
+          property: {
+            type: 'Identifier',
+            name: 'only'
+          }
+        },
+        property: {
+          type: 'Identifier',
+          name: 'have'
+        }
+      },
+      property: {
+        type: 'Identifier',
+        name: 'keys'
+      }
+    }
+  }
+};
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -796,6 +826,18 @@ module.exports = function(info, api) {
           )
         );
       }
+    });
+
+  // replace `expect(actual).to.only.have.keys(expected)` with `assert.keys(actual, expected)`
+  root.find(j.ExpressionStatement, expectToOnlyHaveKeysCall)
+    .replaceWith(path => {
+      const actual = path.value.expression.callee.object.object.object.object.arguments[0];
+      const expected = path.value.expression.arguments[0];
+      return j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(j.identifier('assert'), j.identifier('hasAllKeys')), [actual, expected]
+        )
+      );
     });
 
   // add the `import {assert} from 'chai';`
