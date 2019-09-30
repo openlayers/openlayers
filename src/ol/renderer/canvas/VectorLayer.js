@@ -4,7 +4,7 @@
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, createEmpty, containsExtent, getWidth, intersects as intersectsExtent} from '../../extent.js';
-import {fromUserExtent, toUserExtent, getUserProjection} from '../../proj.js';
+import {fromUserExtent, toUserExtent, getUserProjection, getTransformFromProjections} from '../../proj.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
@@ -307,8 +307,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       pixelRatio, vectorLayer.getDeclutter());
 
     const userProjection = getUserProjection();
+    let userTransform;
     if (userProjection) {
       vectorSource.loadFeatures(toUserExtent(extent, projection), resolution, userProjection);
+      userTransform = getTransformFromProjections(userProjection, projection);
     } else {
       vectorSource.loadFeatures(extent, resolution, projection);
     }
@@ -326,7 +328,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         styles = styleFunction(feature, resolution);
       }
       if (styles) {
-        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup, projection);
+        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup, userTransform);
         this.dirty_ = this.dirty_ || dirty;
       }
     }.bind(this);
@@ -370,10 +372,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
-   * @param {import("../../proj/Projection.js").default} projection The view projection.
+   * @param {import("../../proj.js").TransformFunction} opt_transform Transform from user to view projection.
    * @return {boolean} `true` if an image is loading.
    */
-  renderFeature(feature, squaredTolerance, styles, builderGroup, projection) {
+  renderFeature(feature, squaredTolerance, styles, builderGroup, opt_transform) {
     if (!styles) {
       return false;
     }
@@ -382,12 +384,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
           builderGroup, feature, styles[i], squaredTolerance,
-          this.boundHandleStyleImageChange_, projection) || loading;
+          this.boundHandleStyleImageChange_, opt_transform) || loading;
       }
     } else {
       loading = renderFeature(
         builderGroup, feature, styles, squaredTolerance,
-        this.boundHandleStyleImageChange_, projection);
+        this.boundHandleStyleImageChange_, opt_transform);
     }
     return loading;
   }

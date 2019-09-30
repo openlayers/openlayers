@@ -1,5 +1,5 @@
 import Point from '../../../../src/ol/geom/Point.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
+import {get as getProjection, getTransformFromProjections} from '../../../../src/ol/proj.js';
 
 
 describe('ol.geom.Point', function() {
@@ -161,9 +161,10 @@ describe('ol.geom.Point', function() {
       const geom = new Point([1, 2]);
       const source = getProjection('EPSG:4326');
       const dest = getProjection('EPSG:3857');
+      const transform = getTransformFromProjections(source, dest);
       const squaredTolerance = 0.5;
-      const first = geom.simplifyTransformed(squaredTolerance, source, dest);
-      const second = geom.simplifyTransformed(squaredTolerance, source, dest);
+      const first = geom.simplifyTransformed(squaredTolerance, transform);
+      const second = geom.simplifyTransformed(squaredTolerance, transform);
       expect(second).to.be(first);
     });
 
@@ -171,9 +172,10 @@ describe('ol.geom.Point', function() {
       const geom = new Point([1, 2]);
       const source = getProjection('EPSG:4326');
       const dest = getProjection('EPSG:3857');
+      const transform = getTransformFromProjections(source, dest);
       const squaredTolerance = 0.5;
-      const first = geom.simplifyTransformed(squaredTolerance, source, dest);
-      const second = geom.simplifyTransformed(squaredTolerance * 2, source, dest);
+      const first = geom.simplifyTransformed(squaredTolerance, transform);
+      const second = geom.simplifyTransformed(squaredTolerance * 2, transform);
       expect(second).not.to.be(first);
     });
 
@@ -181,11 +183,12 @@ describe('ol.geom.Point', function() {
       const geom = new Point([1, 2]);
       const source = getProjection('EPSG:4326');
       const dest = getProjection('EPSG:3857');
+      const transform = getTransformFromProjections(source, dest);
       const squaredTolerance = 0.5;
-      const first = geom.simplifyTransformed(squaredTolerance, source, dest);
+      const first = geom.simplifyTransformed(squaredTolerance, transform);
 
       geom.setCoordinates([3, 4]);
-      const second = geom.simplifyTransformed(squaredTolerance * 2, source, dest);
+      const second = geom.simplifyTransformed(squaredTolerance * 2, transform);
       expect(second).not.to.be(first);
     });
 

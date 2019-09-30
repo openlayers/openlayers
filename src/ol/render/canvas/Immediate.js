@@ -31,8 +31,10 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {import("../../extent.js").Extent} extent Extent.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
+   * @param {number=} opt_squaredTolerance Optional squared tolerance for simplification.
+   * @param {import("../../proj.js").TransformFunction=} opt_userTransform Transform from user to view projection.
    */
-  constructor(context, pixelRatio, extent, transform, viewRotation) {
+  constructor(context, pixelRatio, extent, transform, viewRotation, opt_squaredTolerance, opt_userTransform) {
     super();
 
     /**
@@ -64,6 +66,18 @@ class CanvasImmediateRenderer extends VectorContext {
      * @type {number}
      */
     this.viewRotation_ = viewRotation;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.squaredTolerance_ = opt_squaredTolerance;
+
+    /**
+     * @private
+     * @type {import("../../proj.js").TransformFunction}
+     */
+    this.userTransform_ = opt_userTransform;
 
     /**
      * @private
@@ -505,6 +519,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   drawPoint(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/Point.js").default} */ (geometry.simplifyTransformed(this.squaredTolerance_, this.userTransform_));
+    }
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     if (this.image_) {
@@ -523,6 +540,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   drawMultiPoint(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/MultiPoint.js").default} */ (geometry.simplifyTransformed(this.squaredTolerance_, this.userTransform_));
+    }
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     if (this.image_) {
@@ -541,6 +561,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   drawLineString(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/LineString.js").default} */ (geometry.simplifyTransformed(this.squaredTolerance_, this.userTransform_));
+    }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
     }
@@ -567,6 +590,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   drawMultiLineString(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry.simplifyTransformed(this.squaredTolerance_, this.userTransform_));
+    }
     const geometryExtent = geometry.getExtent();
     if (!intersects(this.extent_, geometryExtent)) {
       return;
@@ -598,6 +624,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   drawPolygon(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/Polygon.js").default} */ (geometry.simplifyTransformed(this.squaredTolerance_, this.userTransform_));
+    }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
     }
@@ -632,6 +661,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   drawMultiPolygon(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry.simplifyTransformed(this.squaredTolerance_, this.userTransform_));
+    }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
     }
