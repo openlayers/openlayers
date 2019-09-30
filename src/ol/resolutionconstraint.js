@@ -127,10 +127,14 @@ export function createSnapToPower(power, maxResolution, opt_minResolution, opt_s
           return getSmoothClampedResolution(resolution, cappedMaxRes, minResolution);
         }
 
-        const offset = -direction * (0.5 - 1e-9) + 0.5;
+        const tolerance = 1e-9;
+        const minZoomLevel = Math.ceil(
+          Math.log(maxResolution / cappedMaxRes) / Math.log(power) - tolerance);
+        const offset = -direction * (0.5 - tolerance) + 0.5;
         const capped = Math.min(cappedMaxRes, resolution);
-        const zoomLevel = Math.floor(
+        const cappedZoomLevel = Math.floor(
           Math.log(maxResolution / capped) / Math.log(power) + offset);
+        const zoomLevel = Math.max(minZoomLevel, cappedZoomLevel);
         const newResolution = maxResolution / Math.pow(power, zoomLevel);
         return clamp(newResolution, minResolution, cappedMaxRes);
       } else {

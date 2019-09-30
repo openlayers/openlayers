@@ -454,7 +454,7 @@ describe('ol.View', function() {
             maxResolution: maxResolution,
             constrainResolution: true
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+          expect(fn(defaultMaxRes, 0, size)).to.be(maxResolution / 4);
         });
 
         it('enabled, with constrainResolution', function() {
