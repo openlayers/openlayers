@@ -46,7 +46,7 @@ class ImageCanvas extends ImageBase {
 
     /**
      * @private
-     * @type {Error}
+     * @type {?Error}
      */
     this.error_ = null;
 
@@ -54,7 +54,7 @@ class ImageCanvas extends ImageBase {
 
   /**
    * Get any error associated with asynchronous rendering.
-   * @return {Error} Any error that occurred during rendering.
+   * @return {?Error} Any error that occurred during rendering.
    */
   getError() {
     return this.error_;

@@ -421,7 +421,7 @@ class Graticule extends VectorLayer {
     });
 
     /**
-     * @type {import("../extent.js").Extent}
+     * @type {?import("../extent.js").Extent}
      */
     this.renderedExtent_ = null;
 

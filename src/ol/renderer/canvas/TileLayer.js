@@ -31,7 +31,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../extent.js").Extent}
+     * @type {?import("../../extent.js").Extent}
      */
     this.renderedExtent_ = null;
 
