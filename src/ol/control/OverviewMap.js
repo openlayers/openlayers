@@ -216,8 +216,8 @@ class OverviewMap extends Control {
 
     const computeDesiredMousePosition = function(mousePosition) {
       return {
-        clientX: mousePosition.clientX - (overlayBox.offsetWidth / 2),
-        clientY: mousePosition.clientY + (overlayBox.offsetHeight / 2)
+        clientX: mousePosition.clientX,
+        clientY: mousePosition.clientY
       };
     };
 
