@@ -313,16 +313,6 @@ class PluggableMap extends BaseObject {
     this.interactions = optionsInternal.interactions || new Collection();
 
     /**
-     * @type {import("./events/Target.js").default}
-     */
-    this.labelCache_ = null;
-
-    /**
-     * @type {import("./events.js").EventsKey}
-     */
-    this.labelCacheListenerKey_;
-
-    /**
      * @type {Collection<import("./Overlay.js").default>}
      * @private
      */
@@ -342,7 +332,7 @@ class PluggableMap extends BaseObject {
     this.renderer_ = null;
 
     /**
-     * @type {function(Event): void|undefined}
+     * @type {undefined|function(Event): void}
      * @private
      */
     this.handleResize_;

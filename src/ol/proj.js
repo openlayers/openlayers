@@ -499,7 +499,7 @@ export function transformWithProjections(point, sourceProjection, destinationPro
 }
 
 /**
- * @type {Projection}
+ * @type {?Projection}
  */
 let userProjection = null;
 
@@ -526,7 +526,7 @@ export function clearUserProjection() {
  * Get the projection for coordinates supplied from and returned by API methods.
  * Note that this method is not yet a part of the stable API.  Support for user
  * projections is not yet complete and should be considered experimental.
- * @returns {Projection} The user projection (or null if not set).
+ * @returns {?Projection} The user projection (or null if not set).
  */
 export function getUserProjection() {
   return userProjection;
