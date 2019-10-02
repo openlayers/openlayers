@@ -81,13 +81,12 @@ function setStyleStatus(valid) {
 const editor = document.getElementById('style-editor');
 editor.addEventListener('input', function() {
   const textStyle = editor.value;
-  if (JSON.stringify(JSON.parse(textStyle)) === JSON.stringify(literalStyle)) {
-    return;
-  }
-
   try {
-    literalStyle = JSON.parse(textStyle);
-    refreshLayer();
+    const newLiteralStyle = JSON.parse(textStyle);
+    if (JSON.stringify(newLiteralStyle) !== JSON.stringify(literalStyle)) {
+      literalStyle = newLiteralStyle;
+      refreshLayer();
+    }
     setStyleStatus(true);
   } catch (e) {
     setStyleStatus(false);
