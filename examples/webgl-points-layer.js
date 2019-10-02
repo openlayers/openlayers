@@ -74,8 +74,8 @@ function refreshLayer() {
 }
 
 function setStyleStatus(valid) {
-  document.getElementById('style-valid').style.display = valid ? 'initial' : 'none';
-  document.getElementById('style-invalid').style.display = !valid ? 'initial' : 'none';
+  document.getElementById('style-valid').style.display = valid === true ? 'initial' : 'none';
+  document.getElementById('style-invalid').style.display = valid === false ? 'initial' : 'none';
 }
 
 const editor = document.getElementById('style-editor');
@@ -101,6 +101,7 @@ function onSelectChange() {
   literalStyle = predefinedStyles[style];
   editor.value = JSON.stringify(literalStyle, null, 2);
   refreshLayer();
+  setStyleStatus();
 }
 onSelectChange();
 select.addEventListener('change', onSelectChange);
