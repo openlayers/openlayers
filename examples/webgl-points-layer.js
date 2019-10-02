@@ -62,15 +62,23 @@ const map = new Map({
 
 let literalStyle;
 let pointsLayer;
-function refreshLayer() {
-  if (pointsLayer) {
-    map.removeLayer(pointsLayer);
+function refreshLayer(newStyle) {
+  try {
+    const previousLayer = pointsLayer;
+    pointsLayer = new WebGLPointsLayer({
+      source: vectorSource,
+      style: newStyle
+    });
+    map.addLayer(pointsLayer);
+
+    if (previousLayer) {
+      map.removeLayer(previousLayer);
+    }
+    literalStyle = newStyle;
+    return true;
+  } catch (e) {
+    return false;
   }
-  pointsLayer = new WebGLPointsLayer({
-    source: vectorSource,
-    style: literalStyle
-  });
-  map.addLayer(pointsLayer);
 }
 
 function setStyleStatus(valid) {
@@ -83,11 +91,8 @@ editor.addEventListener('input', function() {
   const textStyle = editor.value;
   try {
     const newLiteralStyle = JSON.parse(textStyle);
-    if (JSON.stringify(newLiteralStyle) !== JSON.stringify(literalStyle)) {
-      literalStyle = newLiteralStyle;
-      refreshLayer();
-    }
-    setStyleStatus(true);
+    const same = JSON.stringify(newLiteralStyle) === JSON.stringify(literalStyle);
+    setStyleStatus(same || refreshLayer(newLiteralStyle));
   } catch (e) {
     setStyleStatus(false);
   }
@@ -97,9 +102,10 @@ const select = document.getElementById('style-select');
 select.value = 'circles';
 function onSelectChange() {
   const style = select.value;
-  literalStyle = predefinedStyles[style];
-  editor.value = JSON.stringify(literalStyle, null, 2);
-  refreshLayer();
+  const newLiteralStyle = predefinedStyles[style];
+  if (refreshLayer(newLiteralStyle)) {
+    editor.value = JSON.stringify(newLiteralStyle, null, 2);
+  }
   setStyleStatus();
 }
 onSelectChange();
