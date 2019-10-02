@@ -98,8 +98,7 @@ class RegularShape extends ImageStyle {
      * @protected
      * @type {number}
      */
-    this.radius_ = /** @type {number} */ (options.radius !== undefined ?
-      options.radius : options.radius1);
+    this.radius_ = options.radius !== undefined ? options.radius : options.radius1;
 
     /**
      * @private

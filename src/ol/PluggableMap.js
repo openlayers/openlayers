@@ -539,8 +539,7 @@ class PluggableMap extends BaseObject {
       return;
     }
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
-    opt_options = opt_options !== undefined ? opt_options :
-      /** @type {AtPixelOptions} */ ({});
+    opt_options = opt_options !== undefined ? opt_options : {};
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = opt_options.layerFilter !== undefined ?
@@ -592,7 +591,7 @@ class PluggableMap extends BaseObject {
     if (!this.frameState_) {
       return;
     }
-    const options = opt_options || /** @type {AtPixelOptions} */ ({});
+    const options = opt_options || {};
     const hitTolerance = options.hitTolerance !== undefined ?
       options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = options.layerFilter || TRUE;
@@ -612,8 +611,7 @@ class PluggableMap extends BaseObject {
       return false;
     }
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
-    opt_options = opt_options !== undefined ? opt_options :
-      /** @type {AtPixelOptions} */ ({});
+    opt_options = opt_options !== undefined ? opt_options : {};
     const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;

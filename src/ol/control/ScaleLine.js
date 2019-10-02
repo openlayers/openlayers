@@ -126,7 +126,7 @@ class ScaleLine extends Control {
 
     this.addEventListener(getChangeEventType(UNITS_PROP), this.handleUnitsChanged_);
 
-    this.setUnits(/** @type {Units} */ (options.units) || Units.METRIC);
+    this.setUnits(options.units || Units.METRIC);
 
     /**
      * @private
