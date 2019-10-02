@@ -88,12 +88,10 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
  * @api
  */
 export function createXYZ(opt_options) {
-  /** @type {XYZOptions} */
   const xyzOptions = opt_options || {};
 
   const extent = xyzOptions.extent || getProjection('EPSG:3857').getExtent();
 
-  /** @type {import("./tilegrid/TileGrid.js").Options} */
   const gridOptions = {
     extent: extent,
     minZoom: xyzOptions.minZoom,
