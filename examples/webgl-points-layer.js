@@ -46,8 +46,6 @@ const predefinedStyles = {
     }
   }
 };
-let literalStyle = predefinedStyles['circles'];
-let pointsLayer;
 
 const map = new Map({
   layers: [
@@ -62,9 +60,8 @@ const map = new Map({
   })
 });
 
-const editor = document.getElementById('style-editor');
-editor.value = JSON.stringify(literalStyle, null, 2);
-
+let literalStyle;
+let pointsLayer;
 function refreshLayer() {
   if (pointsLayer) {
     map.removeLayer(pointsLayer);
@@ -81,6 +78,7 @@ function setStyleStatus(valid) {
   document.getElementById('style-invalid').style.display = !valid ? 'initial' : 'none';
 }
 
+const editor = document.getElementById('style-editor');
 editor.addEventListener('input', function() {
   const textStyle = editor.value;
   if (JSON.stringify(JSON.parse(textStyle)) === JSON.stringify(literalStyle)) {
@@ -95,12 +93,14 @@ editor.addEventListener('input', function() {
     setStyleStatus(false);
   }
 });
-refreshLayer();
 
 const select = document.getElementById('style-select');
-select.addEventListener('change', function() {
+select.value = 'circles';
+function onSelectChange() {
   const style = select.value;
   literalStyle = predefinedStyles[style];
   editor.value = JSON.stringify(literalStyle, null, 2);
   refreshLayer();
-});
+}
+onSelectChange();
+select.addEventListener('change', onSelectChange);
