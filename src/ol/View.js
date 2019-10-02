@@ -584,13 +584,21 @@ class View extends BaseObject {
    */
   cancelAnimations() {
     this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
+    let anchor;
     for (let i = 0, ii = this.animations_.length; i < ii; ++i) {
       const series = this.animations_[i];
       if (series[0].callback) {
         animationCallback(series[0].callback, false);
       }
+      anchor = anchor ||
+        series.filter(function(animation) {
+          return !animation.complete;
+        })[0].anchor;
     }
     this.animations_.length = 0;
+    if (anchor) {
+      this.resolveConstraints(0, undefined, anchor);
+    }
   }
 
   /**
@@ -1410,7 +1418,7 @@ class View extends BaseObject {
     const newResolution = this.constraints_.resolution(this.targetResolution_, direction, size);
     const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size);
 
-    if (duration === 0) {
+    if (duration === 0 && !opt_anchor) {
       this.targetResolution_ = newResolution;
       this.targetRotation_ = newRotation;
       this.targetCenter_ = newCenter;
