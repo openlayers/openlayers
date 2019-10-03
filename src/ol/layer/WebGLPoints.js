@@ -74,10 +74,7 @@ class WebGLPointsLayer extends Layer {
      * @private
      * @type {import('../webgl/ShaderBuilder.js').StyleParseResult}
      */
-    this.parseResult_ = parseSymbolStyle(
-      /** @type {import('../style/LiteralStyle.js').LiteralStyle} */
-      (options.style).symbol
-    );
+    this.parseResult_ = parseSymbolStyle(options.style.symbol);
   }
 
   /**
