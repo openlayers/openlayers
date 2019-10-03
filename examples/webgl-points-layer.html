@@ -29,10 +29,8 @@ experimental: true
   <option value="circles">Circles, size related to population</option>
 </select>
 <textarea style="width: 100%; height: 20rem; font-family: monospace; font-size: small;" id="style-editor"></textarea>
-<small id="style-valid" style="display: none; color: forestgreen">
-  ✓ style is valid
+<small>
+  <span id="style-valid" style="display: none; color: forestgreen">✓ style is valid</span>
+  <span id="style-invalid" style="display: none; color: grey">✗ <span>style not yet valid...</span></span>
+  &nbsp;
 </small>
-<small id="style-invalid" style="display: none; color: grey">
-  ✗ style not yet valid...
-</small>
-<small>&nbsp;</small>
