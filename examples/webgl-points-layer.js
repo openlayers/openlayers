@@ -46,8 +46,6 @@ const predefinedStyles = {
     }
   }
 };
-let literalStyle = predefinedStyles['circles'];
-let pointsLayer;
 
 const map = new Map({
   layers: [
@@ -62,45 +60,57 @@ const map = new Map({
   })
 });
 
-const editor = document.getElementById('style-editor');
-editor.value = JSON.stringify(literalStyle, null, 2);
-
-function refreshLayer() {
-  if (pointsLayer) {
-    map.removeLayer(pointsLayer);
-  }
+let literalStyle;
+let pointsLayer;
+function refreshLayer(newStyle) {
+  const previousLayer = pointsLayer;
   pointsLayer = new WebGLPointsLayer({
     source: vectorSource,
-    style: literalStyle
+    style: newStyle
   });
   map.addLayer(pointsLayer);
+
+  if (previousLayer) {
+    map.removeLayer(previousLayer);
+  }
+  literalStyle = newStyle;
 }
 
-function setStyleStatus(valid) {
-  document.getElementById('style-valid').style.display = valid ? 'initial' : 'none';
-  document.getElementById('style-invalid').style.display = !valid ? 'initial' : 'none';
+const spanValid = document.getElementById('style-valid');
+const spanInvalid = document.getElementById('style-invalid');
+function setStyleStatus(errorMsg) {
+  const isError = typeof errorMsg === 'string';
+  spanValid.style.display = errorMsg === null ? 'initial' : 'none';
+  spanInvalid.firstElementChild.innerText = isError ? errorMsg : '';
+  spanInvalid.style.display = isError ? 'initial' : 'none';
 }
 
+const editor = document.getElementById('style-editor');
 editor.addEventListener('input', function() {
   const textStyle = editor.value;
-  if (JSON.stringify(JSON.parse(textStyle)) === JSON.stringify(literalStyle)) {
-    return;
-  }
-
   try {
-    literalStyle = JSON.parse(textStyle);
-    refreshLayer();
-    setStyleStatus(true);
+    const newLiteralStyle = JSON.parse(textStyle);
+    if (JSON.stringify(newLiteralStyle) !== JSON.stringify(literalStyle)) {
+      refreshLayer(newLiteralStyle);
+    }
+    setStyleStatus(null);
   } catch (e) {
-    setStyleStatus(false);
+    setStyleStatus(e.message);
   }
 });
-refreshLayer();
 
 const select = document.getElementById('style-select');
-select.addEventListener('change', function() {
+select.value = 'circles';
+function onSelectChange() {
   const style = select.value;
-  literalStyle = predefinedStyles[style];
-  editor.value = JSON.stringify(literalStyle, null, 2);
-  refreshLayer();
-});
+  const newLiteralStyle = predefinedStyles[style];
+  editor.value = JSON.stringify(newLiteralStyle, null, 2);
+  try {
+    refreshLayer(newLiteralStyle);
+    setStyleStatus();
+  } catch (e) {
+    setStyleStatus(e.message);
+  }
+}
+onSelectChange();
+select.addEventListener('change', onSelectChange);

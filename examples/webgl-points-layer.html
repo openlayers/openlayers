@@ -24,15 +24,13 @@ experimental: true
 <div id="map" class="map"></div>
 <label>Choose a predefined style from the list below or edit it as JSON manually.</label><br>
 <select id="style-select">
-  <option>Predefined styles</option>
   <option value="icons">Icons</option>
   <option value="triangles">Triangles, color related to population</option>
   <option value="circles">Circles, size related to population</option>
 </select>
 <textarea style="width: 100%; height: 20rem; font-family: monospace; font-size: small;" id="style-editor"></textarea>
-<small id="style-valid" style="display: none; color: forestgreen">
-  ✓ style is valid
-</small>
-<small id="style-invalid" style="display: none; color: grey">
-  ✗ style not yet valid...
+<small>
+  <span id="style-valid" style="display: none; color: forestgreen">✓ style is valid</span>
+  <span id="style-invalid" style="display: none; color: grey">✗ <span>style not yet valid...</span></span>
+  &nbsp;
 </small>

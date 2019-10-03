@@ -4,7 +4,6 @@
 import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {getSymbolFragmentShader, getSymbolVertexShader, parseSymbolStyle} from '../webgl/ShaderBuilder.js';
-import {assert} from '../asserts.js';
 import Layer from './Layer.js';
 
 
@@ -72,24 +71,21 @@ class WebGLPointsLayer extends Layer {
     super(baseOptions);
 
     /**
-     * @type {import('../style/LiteralStyle.js').LiteralStyle}
+     * @private
+     * @type {import('../webgl/ShaderBuilder.js').StyleParseResult}
      */
-    this.style = options.style;
-
-    assert(this.style.symbol !== undefined, 65);
+    this.parseResult_ = parseSymbolStyle(options.style.symbol);
   }
 
   /**
    * @inheritDoc
    */
   createRenderer() {
-    const parseResult = parseSymbolStyle(this.style.symbol);
-
     return new WebGLPointsLayerRenderer(this, {
-      vertexShader: getSymbolVertexShader(parseResult.params),
-      fragmentShader: getSymbolFragmentShader(parseResult.params),
-      uniforms: parseResult.uniforms,
-      attributes: parseResult.attributes
+      vertexShader: getSymbolVertexShader(this.parseResult_.params),
+      fragmentShader: getSymbolFragmentShader(this.parseResult_.params),
+      uniforms: this.parseResult_.uniforms,
+      attributes: this.parseResult_.attributes
     });
   }
 }
