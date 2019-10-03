@@ -103,10 +103,8 @@ select.value = 'circles';
 function onSelectChange() {
   const style = select.value;
   const newLiteralStyle = predefinedStyles[style];
-  if (refreshLayer(newLiteralStyle)) {
-    editor.value = JSON.stringify(newLiteralStyle, null, 2);
-  }
-  setStyleStatus();
+  setStyleStatus(refreshLayer(newLiteralStyle) ? undefined : false);
+  editor.value = JSON.stringify(newLiteralStyle, null, 2);
 }
 onSelectChange();
 select.addEventListener('change', onSelectChange);
