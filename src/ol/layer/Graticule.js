@@ -332,9 +332,8 @@ class Graticule extends VectorLayer {
         const label = feature.get('graticule_label');
         if (!this.lonLabelStyleCache_[label]) {
           this.lonLabelStyleCache_[label] = new Style({
-            text: options.lonLabelStyle !== undefined ? options.lonLabelStyle :
+            text: options.lonLabelStyle !== undefined ? options.lonLabelStyle.clone() :
               new Text({
-                text: label,
                 font: '12px Calibri,sans-serif',
                 textBaseline: 'bottom',
                 fill: new Fill({
@@ -346,6 +345,7 @@ class Graticule extends VectorLayer {
                 })
               })
           });
+          this.lonLabelStyleCache_[label].getText().setText(label);
         }
         return this.lonLabelStyleCache_[label];
       }.bind(this);
@@ -365,9 +365,8 @@ class Graticule extends VectorLayer {
         const label = feature.get('graticule_label');
         if (!this.latLabelStyleCache_[label]) {
           this.latLabelStyleCache_[label] = new Style({
-            text: options.latLabelStyle !== undefined ? options.latLabelStyle :
+            text: options.latLabelStyle !== undefined ? options.latLabelStyle.clone() :
               new Text({
-                text: label,
                 font: '12px Calibri,sans-serif',
                 textAlign: 'right',
                 fill: new Fill({
@@ -379,6 +378,7 @@ class Graticule extends VectorLayer {
                 })
               })
           });
+          this.latLabelStyleCache_[label].getText().setText(label);
         }
         return this.latLabelStyleCache_[label];
       }.bind(this);
