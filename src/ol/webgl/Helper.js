@@ -247,6 +247,7 @@ class WebGLHelper extends Disposable {
      */
     this.canvas_ = document.createElement('canvas');
     this.canvas_.style.position = 'absolute';
+    this.canvas_.style.left = '0';
 
 
     /**

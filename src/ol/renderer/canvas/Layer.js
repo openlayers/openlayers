@@ -109,6 +109,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       container.appendChild(canvas);
       style = canvas.style;
       style.position = 'absolute';
+      style.left = '0';
       style.transformOrigin = 'top left';
       this.container = container;
       this.context = context;
