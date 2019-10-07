@@ -117,6 +117,24 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
+   * Get the topmost feature that intersects the given pixel on the viewport. Returns a promise
+   * that resolves with an array of features. The array will either contain the topmost feature
+   * when a hit was detected, or it will be empty.
+   *
+   * The hit detection algorithm used for this method is optimized for performance, but is less
+   * accurate than the one used in {@link import("../PluggableMap.js").default#getFeaturesAtPixel}: Text
+   * is not considered, and icons are only represented by their bounding box instead of the exact
+   * image.
+   *
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @return {Promise<Array<import("../Feature").default>>} Promise that resolves with an array of features.
+   * @api
+   */
+  getFeatures(pixel) {
+    return super.getFeatures(pixel);
+  }
+
+  /**
    * @return {VectorTileRenderType} The render mode.
    */
   getRenderMode() {

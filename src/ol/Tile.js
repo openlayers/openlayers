@@ -88,6 +88,11 @@ class Tile extends EventTarget {
     const options = opt_options ? opt_options : {};
 
     /**
+     * @type {ImageData}
+     */
+    this.hitDetectionImageData = null;
+
+    /**
      * @type {import("./tilecoord.js").TileCoord}
      */
     this.tileCoord = tileCoord;

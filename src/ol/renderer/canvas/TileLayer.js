@@ -39,6 +39,18 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @protected
      * @type {number}
      */
+    this.renderedPixelRatio;
+
+    /**
+     * @protected
+     * @type {import("../../proj/Projection.js").default}
+     */
+    this.renderedProjection = null;
+
+    /**
+     * @protected
+     * @type {number}
+     */
     this.renderedRevision;
 
     /**
@@ -342,6 +354,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedResolution = tileResolution;
     this.extentChanged = !this.renderedExtent_ || !equals(this.renderedExtent_, canvasExtent);
     this.renderedExtent_ = canvasExtent;
+    this.renderedPixelRatio = pixelRatio;
+    this.renderedProjection = projection;
 
     this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
       projection, extent, z, tileLayer.getPreload());
