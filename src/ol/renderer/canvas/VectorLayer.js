@@ -10,12 +10,7 @@ import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {toString as transformToString, makeScale, makeInverse, apply} from '../../transform.js';
-import {createCanvasContext2D} from '../../dom.js';
-import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
-import {Icon} from '../../style.js';
-import IconAnchorUnits from '../../style/IconAnchorUnits.js';
-import GeometryType from '../../geom/GeometryType.js';
-import {numberSafeCompareFunction} from '../../array.js';
+import {createHitDetectionImageData, hitDetect} from '../../render/canvas/Immediate.js';
 
 /**
  * @classdesc
@@ -231,170 +226,53 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @private
-   */
-  createHitDetectionImageData_() {
-    const features = this.renderedFeatures_;
-    const layer = this.getLayer();
-    const resolution = this.renderedResolution_;
-    const size = [this.context.canvas.width, this.context.canvas.height];
-    apply(this.pixelTransform, size);
-    const width = size[0] / 2;
-    const height = size[1] / 2;
-    const context = createCanvasContext2D(width, height);
-    context.imageSmoothingEnabled = false;
-    const canvas = context.canvas;
-    const styleFunction = layer.getStyleFunction();
-    const center = this.renderedCenter_;
-    const rotation = this.renderedRotation_;
-    const projection = this.renderedProjection_;
-    const extent = this.renderedExtent_;
-    const transforms = [];
-    transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, 0).slice());
-    const source = layer.getSource();
-    const projectionExtent = projection.getExtent();
-    if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
-      let startX = extent[0];
-      const worldWidth = getWidth(projectionExtent);
-      let world = 0;
-      let offsetX;
-      while (startX < projectionExtent[0]) {
-        --world;
-        offsetX = worldWidth * world;
-        transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
-        startX += worldWidth;
-      }
-      world = 0;
-      startX = extent[2];
-      while (startX > projectionExtent[2]) {
-        ++world;
-        offsetX = worldWidth * world;
-        transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
-        startX -= worldWidth;
-      }
-    }
-    const renderer = new CanvasImmediateRenderer(context, 0.5, extent, null, rotation);
-    const featureCount = features.length;
-    // Stretch hit detection index to use the whole available color range
-    const indexFactor = Math.ceil((256 * 256 * 256) / featureCount);
-    const featuresByZIndex = {};
-    for (let i = 0; i < featureCount; ++i) {
-      const feature = features[i];
-      const featureStyleFunction = feature.getStyleFunction() || styleFunction;
-      let styles = featureStyleFunction(feature, resolution);
-      if (!Array.isArray(styles)) {
-        styles = [styles];
-      }
-      const index = i * indexFactor;
-      const color = '#' + ('000000' + index.toString(16)).slice(-6);
-      for (let j = 0, jj = styles.length; j < jj; ++j) {
-        const originalStyle = styles[j];
-        const style = originalStyle.clone();
-        const fill = style.getFill();
-        if (fill) {
-          fill.setColor(color);
-        }
-        const stroke = style.getStroke();
-        if (stroke) {
-          stroke.setColor(color);
-        }
-        style.setText(undefined);
-        const image = originalStyle.getImage();
-        if (image) {
-          const imgSize = image.getImageSize();
-          const imgContext = createCanvasContext2D(imgSize[0], imgSize[1]);
-          imgContext.fillStyle = color;
-          const img = imgContext.canvas;
-          imgContext.fillRect(0, 0, img.width, img.height);
-          const width = imgSize ? imgSize[0] : img.width;
-          const height = imgSize ? imgSize[1] : img.height;
-          const iconContext = createCanvasContext2D(width, height);
-          iconContext.drawImage(img, 0, 0);
-          style.setImage(new Icon({
-            img: img,
-            imgSize: imgSize,
-            anchor: image.getAnchor(),
-            anchorXUnits: IconAnchorUnits.PIXELS,
-            anchorYUnits: IconAnchorUnits.PIXELS,
-            offset: image.getOrigin(),
-            size: image.getSize(),
-            opacity: image.getOpacity(),
-            scale: image.getScale(),
-            rotation: image.getRotation(),
-            rotateWithView: image.getRotateWithView()
-          }));
-        }
-        const zIndex = Number(style.getZIndex());
-        let byGeometryType = featuresByZIndex[zIndex];
-        if (!byGeometryType) {
-          byGeometryType = featuresByZIndex[zIndex] = {};
-          byGeometryType[GeometryType.POLYGON] = [];
-          byGeometryType[GeometryType.CIRCLE] = [];
-          byGeometryType[GeometryType.LINE_STRING] = [];
-          byGeometryType[GeometryType.POINT] = [];
-        }
-        const geometry = style.getGeometryFunction()(feature);
-        if (geometry && intersectsExtent(extent, geometry.getExtent())) {
-          byGeometryType[geometry.getType().replace('Multi', '')].push(geometry, style);
-        }
-      }
-    }
-
-    const zIndexKeys = Object.keys(featuresByZIndex).map(Number).sort(numberSafeCompareFunction);
-    for (let i = 0, ii = zIndexKeys.length; i < ii; ++i) {
-      const byGeometryType = featuresByZIndex[zIndexKeys[i]];
-      for (const type in byGeometryType) {
-        const geomAndStyle = byGeometryType[type];
-        for (let j = 0, jj = geomAndStyle.length; j < jj; j += 2) {
-          renderer.setStyle(geomAndStyle[j + 1]);
-          for (let k = 0, kk = transforms.length; k < kk; ++k) {
-            renderer.setTransform(transforms[k]);
-            renderer.drawGeometry(geomAndStyle[j]);
-          }
-        }
-      }
-    }
-    this.hitDetectionImageData_ = context.getImageData(0, 0, canvas.width, canvas.height);
-  }
-
-  /**
-   * @param {import("../../pixel").Pixel} pixel Pixel.
-   * @return {Array<import("../../Feature").default>} features Features.
-   */
-  hitDetect_(pixel) {
-    const renderPixel = apply(this.pixelTransform, pixel.slice());
-    const features = this.renderedFeatures_;
-    const imageData = this.hitDetectionImageData_;
-    const resultFeatures = [];
-    if (imageData) {
-      const index = (Math.round(renderPixel[0]) + Math.round(renderPixel[1]) * imageData.width) * 4;
-      const r = imageData.data[index];
-      const g = imageData.data[index + 1];
-      const b = imageData.data[index + 2];
-      const a = imageData.data[index + 3];
-      if (a === 255) {
-        const i = b + (256 * (g + (256 * r)));
-        const indexFactor = Math.ceil((256 * 256 * 256) / features.length);
-        if (i % indexFactor === 0) {
-          resultFeatures.push(features[i / indexFactor]);
-        }
-      }
-    }
-    return resultFeatures;
-  }
-
-  /**
    * @inheritDoc
    */
   getFeatures(pixel) {
     return new Promise(function(resolve, reject) {
       if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
         requestAnimationFrame(function() {
-          this.createHitDetectionImageData_();
-          resolve(this.hitDetect_(pixel));
+          const size = [this.context.canvas.width, this.context.canvas.height];
+          apply(this.pixelTransform, size);
+          const center = this.renderedCenter_;
+          const resolution = this.renderedResolution_;
+          const rotation = this.renderedRotation_;
+          const projection = this.renderedProjection_;
+          const extent = this.renderedExtent_;
+          const layer = this.getLayer();
+          const transforms = [];
+          const width = size[0] / 2;
+          const height = size[1] / 2;
+          transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, 0).slice());
+          const source = layer.getSource();
+          const projectionExtent = projection.getExtent();
+          if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
+            let startX = extent[0];
+            const worldWidth = getWidth(projectionExtent);
+            let world = 0;
+            let offsetX;
+            while (startX < projectionExtent[0]) {
+              --world;
+              offsetX = worldWidth * world;
+              transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
+              startX += worldWidth;
+            }
+            world = 0;
+            startX = extent[2];
+            while (startX > projectionExtent[2]) {
+              ++world;
+              offsetX = worldWidth * world;
+              transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
+              startX -= worldWidth;
+            }
+          }
+
+          this.hitDetectionImageData_ = createHitDetectionImageData(size, transforms,
+            this.renderedFeatures_, layer.getStyleFunction(), extent, resolution, rotation);
+          resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
         }.bind(this));
       } else {
-        resolve(this.hitDetect_(pixel));
+        resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
       }
     }.bind(this));
   }
