@@ -22,7 +22,7 @@ function toShortName(name) {
             </span>
             <?js if (item.module && item.module.longname) { ?>
                 <span class="modulelink">
-                  <?js= self.linkto(item.module.longname, '↳ module') ?>
+                  <?js= self.linkto(item.module.longname, '↳ part of ' + item.module.name) ?>
                 </span>
             <?js } ?>
             <ul class="members itemMembers">
