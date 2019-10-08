@@ -248,6 +248,40 @@ function buildNav(members) {
           memberof: v.longname
         })
       });
+    } else if (v.kind == 'module') {
+      const classes = find({
+        kind: 'class',
+        memberof: v.longname
+      });
+      // only add modules without classes
+      if (classes.length === 0) {
+        nav.push({
+          type: 'module',
+          longname: v.longname,
+          prettyname: v.longname
+            .substring(0, v.longname.indexOf('~'))
+            .replace('module:', '')
+            .replace('ol/', ''),
+          name: v.name,
+          members: find({
+            kind: 'member',
+            memberof: v.longname
+          }),
+          methods: find({
+            kind: 'function',
+            memberof: v.longname
+          }),
+          typedefs: find({
+            kind: 'typedef',
+            memberof: v.longname
+          }),
+          fires: v.fires,
+          events: find({
+            kind: 'event',
+            memberof: v.longname
+          })
+        });
+      }
     }
   });
   return nav;
