@@ -23,7 +23,7 @@ map.on('pointermove', showInfo);
 const info = document.getElementById('info');
 function showInfo(event) {
   const features = map.getFeaturesAtPixel(event.pixel);
-  if (!features) {
+  if (features.length == 0) {
     info.innerText = '';
     info.style.opacity = 0;
     return;
