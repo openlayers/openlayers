@@ -12,7 +12,6 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
 import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
-import {isEmpty} from '../obj.js';
 import {equals} from '../array.js';
 
 /**
@@ -252,10 +251,11 @@ class VectorTile extends UrlTile {
                 } else if (state === TileState.ERROR) {
                   tile.errorSourceTileKeys[sourceTileKey] = true;
                 }
-                if (tile.loadingSourceTiles - Object.keys(tile.errorSourceTileKeys).length === 0) {
-                  tile.hifi = true;
+                const errorTileCount = Object.keys(tile.errorSourceTileKeys).length;
+                if (tile.loadingSourceTiles - errorTileCount === 0) {
+                  tile.hifi = errorTileCount === 0;
                   tile.sourceZ = sourceZ;
-                  tile.setState(isEmpty(tile.errorSourceTileKeys) ? TileState.LOADED : TileState.ERROR);
+                  tile.setState(TileState.LOADED);
                 }
               }
             };
