@@ -94,7 +94,7 @@ class VectorTile extends UrlTile {
 
     const tileGrid = options.tileGrid || createXYZ({
       extent: extent,
-      maxZoom: options.maxZoom || 22,
+      maxZoom: options.maxZoom !== undefined ? options.maxZoom : 22,
       minZoom: options.minZoom,
       tileSize: options.tileSize || 512
     });
