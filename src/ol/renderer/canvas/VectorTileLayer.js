@@ -138,6 +138,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const overlayContext = createCanvasContext2D();
       const style = overlayContext.canvas.style;
       style.position = 'absolute';
+      style.left = '0';
       style.transformOrigin = 'top left';
       this.overlayContext_ = overlayContext;
       this.overlayContextUid_ = getUid(overlayContext);
