@@ -25,7 +25,7 @@ import TileImage from './TileImage.js';
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {Array<number>} [resolutions] Supported resolutions as given in IIIF 'scaleFactors'
  * @property {import("../size.js").Size} size Size of the image [width, height].
- * @property {import("../size.js").Size[]} [sizes] Supported scaled image sizes.
+ * @property {Array<import("../size.js").Size>} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
  * @property {import("./State.js").default} [state] Source state.
  * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation

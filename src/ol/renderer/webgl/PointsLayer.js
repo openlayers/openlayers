@@ -401,7 +401,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
+    /** @type {import('./Layer').WebGLWorkerGenerateBuffersMessage} */
     const message = {
       type: WebGLWorkerMessageType.GENERATE_BUFFERS,
       renderInstructions: this.renderInstructions_.buffer,
@@ -412,7 +412,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
 
-    /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
+    /** @type {import('./Layer').WebGLWorkerGenerateBuffersMessage} */
     if (this.hitDetectionEnabled_) {
       const hitMessage = {
         type: WebGLWorkerMessageType.GENERATE_BUFFERS,

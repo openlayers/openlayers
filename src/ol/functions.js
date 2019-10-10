@@ -39,10 +39,10 @@ export function VOID() {}
 export function memoizeOne(fn) {
   let called = false;
 
-  /** @type ReturnType */
+  /** @type {ReturnType} */
   let lastResult;
 
-  /** @type Array<any> */
+  /** @type {Array<any>} */
   let lastArgs;
 
   let lastThis;
