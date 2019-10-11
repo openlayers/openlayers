@@ -44,7 +44,7 @@ describe('ol.layer.Heatmap', function() {
         }),
         target: target
       });
-      map.renderSync();
+      map.render();
 
       function hitTest(coordinate) {
         const features = map.getFeaturesAtPixel(
@@ -53,7 +53,13 @@ describe('ol.layer.Heatmap', function() {
         return features.length ? features[0] : null;
       }
 
-      setTimeout(function() {
+      const renderer = layer.getRenderer();
+      renderer.worker_.addEventListener('message', function(event) {
+        if (!renderer.hitRenderInstructions_) {
+          return;
+        }
+        map.renderSync();
+
         let res;
 
         res = hitTest([0, 0]);
@@ -67,7 +73,7 @@ describe('ol.layer.Heatmap', function() {
 
         document.body.removeChild(target);
         done();
-      }, 100);
+      });
     });
 
   });
