@@ -27,9 +27,11 @@ describe('ol.VectorRenderTile', function() {
     listen(tile, 'change', function(e) {
       ++calls;
       if (calls === 1) {
-        expect(tile.getState()).to.be(TileState.ERROR);
+        expect(tile.getState()).to.be(TileState.LOADED);
+        expect(tile.hifi).to.be(false);
         setTimeout(function() {
           sourceTile.setState(TileState.LOADED);
+          expect(tile.hifi).to.be(true);
         }, 0);
       } else if (calls === 2) {
         done();
@@ -37,7 +39,7 @@ describe('ol.VectorRenderTile', function() {
     });
   });
 
-  it('sets ERROR state when source tiles fail to load', function(done) {
+  it('sets LOADED state and hifi==false when source tiles fail to load', function(done) {
     const source = new VectorTileSource({
       format: new GeoJSON(),
       url: 'spec/ol/data/unavailable.json'
@@ -47,7 +49,8 @@ describe('ol.VectorRenderTile', function() {
     tile.load();
 
     listen(tile, 'change', function(e) {
-      expect(tile.getState()).to.be(TileState.ERROR);
+      expect(tile.getState()).to.be(TileState.LOADED);
+      expect(tile.hifi).to.be(false);
       done();
     });
   });
