@@ -20,9 +20,11 @@ import {getValues} from '../obj.js';
  * propagation of the event to other interactions in the map's interactions
  * chain.
  * @property {function(import("../MapBrowserPointerEvent.js").default)} [handleMoveEvent]
- * Function handling "move" events. This function is called on "move" events,
- * also during a drag sequence (so during a drag sequence both the
- * `handleDragEvent` function and this function are called).
+ * Function handling "move" events. This function is called on "move" events.
+ * This functions is also called during a drag sequence, so during a drag
+ * sequence both the `handleDragEvent` function and this function are called.
+ * If `handleDownEvent` is defined and it returns true this function will not
+ * be called during a drag sequence.
  * @property {function(import("../MapBrowserPointerEvent.js").default):boolean} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
