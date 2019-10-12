@@ -1797,6 +1797,47 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getRotation()).to.eql(0);
           expect(imageStyle.getSize()).to.be(null);
           expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
+        it('can read a feature\'s IconStyle with crossOrigin option', function() {
+          format = new KML({crossOrigin: null});
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Placemark>' +
+              '    <Style>' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://foo.png</href>' +
+              '        </Icon>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '  </Placemark>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.be(null);
           expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
@@ -2066,8 +2107,6 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           const fs = format.readFeatures(text);
-
-
           expect(fs).to.have.length(1);
           const f = fs[0];
           expect(f).to.be.an(Feature);
@@ -2552,6 +2591,99 @@ describe('ol.format.KML', function() {
           expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
         });
 
+        it('can read a normal IconStyle', function() {
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <Placemark id="a">' +
+              '      <StyleMap>' +
+              '        <Pair>' +
+              '          <key>normal</key>' +
+              '          <Style>' +
+              '            <IconStyle>' +
+              '              <Icon>' +
+              '                <href>http://bar.png</href>' +
+              '              </Icon>' +
+              '            </IconStyle>' +
+              '          </Style>' +
+              '        </Pair>' +
+              '      </StyleMap>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
+        it('can read a normal IconStyle with crossOrigin option', function() {
+          format = new KML({crossOrigin: null});
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <Placemark id="a">' +
+              '      <StyleMap>' +
+              '        <Pair>' +
+              '          <key>normal</key>' +
+              '          <Style>' +
+              '            <IconStyle>' +
+              '              <Icon>' +
+              '                <href>http://bar.png</href>' +
+              '              </Icon>' +
+              '            </IconStyle>' +
+              '          </Style>' +
+              '        </Pair>' +
+              '      </StyleMap>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.be(null);
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
         it('ignores highlight styles', function() {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2582,7 +2714,6 @@ describe('ol.format.KML', function() {
           const s = styleArray[0];
           expect(s).to.be.an(Style);
           expect(s).to.be(getDefaultStyle());
-
         });
 
         it('uses normal styles instead of highlight styles', function() {
@@ -2701,7 +2832,7 @@ describe('ol.format.KML', function() {
               '      <Pair>' +
               '        <key>normal</key>' +
               '        <styleUrl>#foo</styleUrl>' +
-              '       </Pair>' +
+              '      </Pair>' +
               '    </StyleMap>' +
               '    <Style id="foo">' +
               '      <PolyStyle>' +
@@ -2726,6 +2857,103 @@ describe('ol.format.KML', function() {
           expect(s).to.be.an(Style);
           expect(s.getFill()).not.to.be(null);
           expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+        });
+
+        it('can use IconStyles in StyleMaps before they are defined', function() {
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <StyleMap id="fooMap">' +
+              '      <Pair>' +
+              '        <key>normal</key>' +
+              '        <styleUrl>#foo</styleUrl>' +
+              '      </Pair>' +
+              '    </StyleMap>' +
+              '    <Style id="foo">' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://bar.png</href>' +
+              '        </Icon>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '    <Placemark>' +
+              '      <styleUrl>#fooMap</styleUrl>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
+        it('can use IconStyles with crossOrigin option in StyleMaps before they are defined', function() {
+          format = new KML({crossOrigin: null});
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <StyleMap id="fooMap">' +
+              '      <Pair>' +
+              '        <key>normal</key>' +
+              '        <styleUrl>#foo</styleUrl>' +
+              '      </Pair>' +
+              '    </StyleMap>' +
+              '    <Style id="foo">' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://bar.png</href>' +
+              '        </Icon>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '    <Placemark>' +
+              '      <styleUrl>#fooMap</styleUrl>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.be(null);
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
         });
 
       });
@@ -2762,6 +2990,91 @@ describe('ol.format.KML', function() {
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
         });
 
+        it('can apply a shared IconStyle to a feature', function() {
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <Style id="foo">' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://bar.png</href>' +
+              '        </Icon>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '    <Placemark>' +
+              '      <styleUrl>#foo</styleUrl>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
+        it('can apply a shared IconStyle with crossOrigin option to a feature', function() {
+          format = new KML({crossOrigin: null});
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <Style id="foo">' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://bar.png</href>' +
+              '        </Icon>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '    <Placemark>' +
+              '      <styleUrl>#foo</styleUrl>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.be(null);
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
         it('can read a shared style from a Folder', function() {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2792,6 +3105,95 @@ describe('ol.format.KML', function() {
           const fillStyle = style.getFill();
           expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+        });
+
+        it('can read a shared IconStyle from a Folder', function() {
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <Folder>' +
+              '      <Style id="foo">' +
+              '        <IconStyle>' +
+              '          <Icon>' +
+              '            <href>http://bar.png</href>' +
+              '          </Icon>' +
+              '        </IconStyle>' +
+              '      </Style>' +
+              '    </Folder>' +
+              '    <Placemark>' +
+              '      <styleUrl>#foo</styleUrl>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
+        it('can read a shared IconStyle with crossOrigin option from a Folder', function() {
+          format = new KML({crossOrigin: null});
+          const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Document>' +
+              '    <Folder>' +
+              '      <Style id="foo">' +
+              '        <IconStyle>' +
+              '          <Icon>' +
+              '            <href>http://bar.png</href>' +
+              '          </Icon>' +
+              '        </IconStyle>' +
+              '      </Style>' +
+              '    </Folder>' +
+              '    <Placemark>' +
+              '      <styleUrl>#foo</styleUrl>' +
+              '    </Placemark>' +
+              '  </Document>' +
+              '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://bar.png').href);
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.be(null);
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
         });
 
         it('can apply a shared style to multiple features', function() {
