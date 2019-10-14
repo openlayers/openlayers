@@ -432,6 +432,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           break;
         }
       }
+      if (!sourceTile) {
+        resolve([]);
+        return;
+      }
       const corner = getTopLeft(tileGrid.getTileCoordExtent(sourceTile.tileCoord));
       const tilePixel = [
         (coordinate[0] - corner[0]) / resolution,
