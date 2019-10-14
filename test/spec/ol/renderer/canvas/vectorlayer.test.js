@@ -208,6 +208,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       const frameState = {
         layerStatesArray: [{}],
         viewState: {
+          center: [0, 0],
           resolution: 1,
           rotation: 0
         }
@@ -234,6 +235,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       frameState = {
         viewHints: [],
         viewState: {
+          center: [0, 0],
           projection: projection,
           resolution: 1,
           rotation: 0

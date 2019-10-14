@@ -45,26 +45,27 @@ const map = new Map({
 const selectElement = document.getElementById('type');
 
 map.on('click', function(event) {
-  const features = map.getFeaturesAtPixel(event.pixel);
-  if (!features) {
-    selection = {};
+  vtLayer.getFeatures(event.pixel).then(function(features) {
+    if (!features.length) {
+      selection = {};
+      // force redraw of layer style
+      vtLayer.setStyle(vtLayer.getStyle());
+      return;
+    }
+    const feature = features[0];
+    if (!feature) {
+      return;
+    }
+    const fid = feature.get(idProp);
+
+    if (selectElement.value === 'singleselect') {
+      selection = {};
+    }
+    // add selected feature to lookup
+    selection[fid] = feature;
+
     // force redraw of layer style
     vtLayer.setStyle(vtLayer.getStyle());
-    return;
-  }
-  const feature = features[0];
-  if (!feature) {
-    return;
-  }
+  });
 
-  const fid = feature.get(idProp);
-
-  if (selectElement.value === 'singleselect') {
-    selection = {};
-  }
-  // add selected feature to lookup
-  selection[fid] = feature;
-
-  // force redraw of layer style
-  vtLayer.setStyle(vtLayer.getStyle());
 });

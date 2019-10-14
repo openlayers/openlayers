@@ -22,6 +22,7 @@ import VectorTileRenderType from '../../../../../src/ol/layer/VectorTileRenderTy
 import {getUid} from '../../../../../src/ol/util.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
+import {create} from '../../../../../src/ol/transform.js';
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {
@@ -262,6 +263,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         layerIndex: 0,
         extent: proj.getExtent(),
         pixelRatio: 1,
+        pixelToCoordinateTransform: create(),
         time: Date.now(),
         viewHints: [],
         viewState: {

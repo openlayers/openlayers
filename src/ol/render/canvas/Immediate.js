@@ -15,6 +15,7 @@ import VectorContext from '../VectorContext.js';
 import {defaultTextAlign, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline, defaultFont} from '../canvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
+
 /**
  * @classdesc
  * A concrete subclass of {@link module:ol/render/VectorContext} that implements
@@ -436,6 +437,13 @@ class CanvasImmediateRenderer extends VectorContext {
     this.setFillStrokeStyle(style.getFill(), style.getStroke());
     this.setImageStyle(style.getImage());
     this.setTextStyle(style.getText());
+  }
+
+  /**
+   * @param {import("../../transform.js").Transform} transform Transform.
+   */
+  setTransform(transform) {
+    this.transform_ = transform;
   }
 
   /**

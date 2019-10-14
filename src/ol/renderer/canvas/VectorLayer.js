@@ -9,7 +9,8 @@ import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
-import {toString as transformToString, makeScale, makeInverse} from '../../transform.js';
+import {toString as transformToString, makeScale, makeInverse, apply} from '../../transform.js';
+import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
 
 /**
  * @classdesc
@@ -28,12 +29,26 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     /** @private */
     this.boundHandleStyleImageChange_ = this.handleStyleImageChange_.bind(this);
 
+    /**
+     * @type {boolean}
+     */
+    this.animatingOrInteracting_;
 
     /**
      * @private
      * @type {boolean}
      */
     this.dirty_ = false;
+
+    /**
+     * @type {ImageData}
+     */
+    this.hitDetectionImageData_ = null;
+
+    /**
+     * @type {Array<import("../../Feature.js").default>}
+     */
+    this.renderedFeatures_ = null;
 
     /**
      * @private
@@ -52,6 +67,24 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {import("../../extent.js").Extent}
      */
     this.renderedExtent_ = createEmpty();
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.renderedRotation_;
+
+    /**
+     * @private
+     * @type {import("../../coordinate").Coordinate}
+     */
+    this.renderedCenter_ = null;
+
+    /**
+     * @private
+     * @type {import("../../proj/Projection").default}
+     */
+    this.renderedProjection_ = null;
 
     /**
      * @private
@@ -124,6 +157,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const extent = frameState.extent;
     const viewState = frameState.viewState;
+    const center = viewState.center;
+    const resolution = viewState.resolution;
     const projection = viewState.projection;
     const rotation = viewState.rotation;
     const projectionExtent = projection.getExtent();
@@ -143,7 +178,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const viewHints = frameState.viewHints;
     const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
 
-    const transform = this.getRenderTransform(frameState, width, height, 0);
+    const transform = this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, 0);
     const declutterReplays = this.getLayer().getDeclutter() ? {} : null;
     replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
 
@@ -155,7 +190,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       while (startX < projectionExtent[0]) {
         --world;
         offsetX = worldWidth * world;
-        const transform = this.getRenderTransform(frameState, width, height, offsetX);
+        const transform = this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, offsetX);
         replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
         startX += worldWidth;
       }
@@ -164,7 +199,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       while (startX > projectionExtent[2]) {
         ++world;
         offsetX = worldWidth * world;
-        const transform = this.getRenderTransform(frameState, width, height, offsetX);
+        const transform = this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, offsetX);
         replayGroup.execute(context, transform, rotation, snapToPixel, undefined, declutterReplays);
         startX -= worldWidth;
       }
@@ -188,6 +223,58 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     return this.container;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getFeatures(pixel) {
+    return new Promise(function(resolve, reject) {
+      if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
+        requestAnimationFrame(function() {
+          const size = [this.context.canvas.width, this.context.canvas.height];
+          apply(this.pixelTransform, size);
+          const center = this.renderedCenter_;
+          const resolution = this.renderedResolution_;
+          const rotation = this.renderedRotation_;
+          const projection = this.renderedProjection_;
+          const extent = this.renderedExtent_;
+          const layer = this.getLayer();
+          const transforms = [];
+          const width = size[0] / 2;
+          const height = size[1] / 2;
+          transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, 0).slice());
+          const source = layer.getSource();
+          const projectionExtent = projection.getExtent();
+          if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
+            let startX = extent[0];
+            const worldWidth = getWidth(projectionExtent);
+            let world = 0;
+            let offsetX;
+            while (startX < projectionExtent[0]) {
+              --world;
+              offsetX = worldWidth * world;
+              transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
+              startX += worldWidth;
+            }
+            world = 0;
+            startX = extent[2];
+            while (startX > projectionExtent[2]) {
+              ++world;
+              offsetX = worldWidth * world;
+              transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
+              startX -= worldWidth;
+            }
+          }
+
+          this.hitDetectionImageData_ = createHitDetectionImageData(size, transforms,
+            this.renderedFeatures_, layer.getStyleFunction(), extent, resolution, rotation);
+          resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
+        }.bind(this));
+      } else {
+        resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
+      }
+    }.bind(this));
   }
 
   /**
@@ -253,8 +340,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     if (!this.dirty_ && (!updateWhileAnimating && animating) ||
         (!updateWhileInteracting && interacting)) {
+      this.animatingOrInteracting_ = true;
       return true;
     }
+    this.animatingOrInteracting_ = false;
 
     const frameStateExtent = frameState.extent;
     const viewState = frameState.viewState;
@@ -269,6 +358,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       vectorLayerRenderOrder = defaultRenderOrder;
     }
 
+    const center = viewState.center.slice();
     const extent = buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
     const projectionExtent = viewState.projection.getExtent();
@@ -284,6 +374,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const gutter = Math.max(getWidth(extent) / 2, worldWidth);
       extent[0] = projectionExtent[0] - gutter;
       extent[2] = projectionExtent[2] + gutter;
+      const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
+      center[0] -= (worldsAway * worldWidth);
     }
 
     if (!this.dirty_ &&
@@ -334,23 +426,15 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }.bind(this);
 
     const userExtent = toUserExtent(extent, projection);
+    /** @type {Array<import("../../Feature.js").default>} */
+    const features = vectorSource.getFeaturesInExtent(userExtent);
     if (vectorLayerRenderOrder) {
-      /** @type {Array<import("../../Feature.js").default>} */
-      const features = [];
-      vectorSource.forEachFeatureInExtent(userExtent,
-        /**
-         * @param {import("../../Feature.js").default} feature Feature.
-         */
-        function(feature) {
-          features.push(feature);
-        });
       features.sort(vectorLayerRenderOrder);
-      for (let i = 0, ii = features.length; i < ii; ++i) {
-        render(features[i]);
-      }
-    } else {
-      vectorSource.forEachFeatureInExtent(userExtent, render);
     }
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      render(features[i]);
+    }
+    this.renderedFeatures_ = features;
 
     const replayGroupInstructions = replayGroup.finish();
     const executorGroup = new ExecutorGroup(extent, resolution,
@@ -361,7 +445,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
+    this.renderedRotation_ = viewState.rotation;
+    this.renderedCenter_ = center;
+    this.renderedProjection_ = projection;
     this.replayGroup_ = executorGroup;
+    this.hitDetectionImageData_ = null;
 
     this.replayGroupChanged = true;
     return true;

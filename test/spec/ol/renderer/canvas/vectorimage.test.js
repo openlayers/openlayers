@@ -40,6 +40,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function() {
         extent: extent,
         viewHints: [],
         viewState: {
+          center: [0, 0],
           projection: projection,
           resolution: 1,
           rotation: 0
