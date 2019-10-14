@@ -1,0 +1,146 @@
+/**
+ * @module ol/render/canvas/hitdetet
+ */
+
+import CanvasImmediateRenderer from './Immediate.js';
+import {createCanvasContext2D} from '../../dom.js';
+import {Icon} from '../../style.js';
+import IconAnchorUnits from '../../style/IconAnchorUnits.js';
+import GeometryType from '../../geom/GeometryType.js';
+import {intersects} from '../../extent.js';
+import {numberSafeCompareFunction} from '../../array.js';
+
+/**
+ * @param {import("../../size.js").Size} size Canvas size in css pixels.
+ * @param {Array<import("../../transform.js").Transform>} transforms Transforms
+ * for rendering features to all worlds of the viewport, from coordinates to css
+ * pixels.
+ * @param {Array<import("../../Feature.js").FeatureLike>} features
+ * Features to consider for hit detection.
+ * @param {import("../../style/Style.js").StyleFunction|undefined} styleFunction
+ * Layer style function.
+ * @param {import("../../extent.js").Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @return {ImageData} Hit detection image data.
+ */
+export function createHitDetectionImageData(size, transforms, features, styleFunction, extent, resolution, rotation) {
+  const width = size[0] / 2;
+  const height = size[1] / 2;
+  const context = createCanvasContext2D(width, height);
+  context.imageSmoothingEnabled = false;
+  const canvas = context.canvas;
+  const renderer = new CanvasImmediateRenderer(context, 0.5, extent, null, rotation);
+  const featureCount = features.length;
+  // Stretch hit detection index to use the whole available color range
+  const indexFactor = Math.ceil((256 * 256 * 256) / featureCount);
+  const featuresByZIndex = {};
+  for (let i = 0; i < featureCount; ++i) {
+    const feature = features[i];
+    const featureStyleFunction = feature.getStyleFunction() || styleFunction;
+    if (!styleFunction) {
+      continue;
+    }
+    let styles = featureStyleFunction(feature, resolution);
+    if (!Array.isArray(styles)) {
+      styles = [styles];
+    }
+    const index = i * indexFactor;
+    const color = '#' + ('000000' + index.toString(16)).slice(-6);
+    for (let j = 0, jj = styles.length; j < jj; ++j) {
+      const originalStyle = styles[j];
+      const style = originalStyle.clone();
+      const fill = style.getFill();
+      if (fill) {
+        fill.setColor(color);
+      }
+      const stroke = style.getStroke();
+      if (stroke) {
+        stroke.setColor(color);
+      }
+      style.setText(undefined);
+      const image = originalStyle.getImage();
+      if (image) {
+        const imgSize = image.getImageSize();
+        const imgContext = createCanvasContext2D(imgSize[0], imgSize[1]);
+        imgContext.fillStyle = color;
+        const img = imgContext.canvas;
+        imgContext.fillRect(0, 0, img.width, img.height);
+        const width = imgSize ? imgSize[0] : img.width;
+        const height = imgSize ? imgSize[1] : img.height;
+        const iconContext = createCanvasContext2D(width, height);
+        iconContext.drawImage(img, 0, 0);
+        style.setImage(new Icon({
+          img: img,
+          imgSize: imgSize,
+          anchor: image.getAnchor(),
+          anchorXUnits: IconAnchorUnits.PIXELS,
+          anchorYUnits: IconAnchorUnits.PIXELS,
+          offset: image.getOrigin(),
+          size: image.getSize(),
+          opacity: image.getOpacity(),
+          scale: image.getScale(),
+          rotation: image.getRotation(),
+          rotateWithView: image.getRotateWithView()
+        }));
+      }
+      const zIndex = Number(style.getZIndex());
+      let byGeometryType = featuresByZIndex[zIndex];
+      if (!byGeometryType) {
+        byGeometryType = featuresByZIndex[zIndex] = {};
+        byGeometryType[GeometryType.POLYGON] = [];
+        byGeometryType[GeometryType.CIRCLE] = [];
+        byGeometryType[GeometryType.LINE_STRING] = [];
+        byGeometryType[GeometryType.POINT] = [];
+      }
+      const geometry = style.getGeometryFunction()(feature);
+      if (geometry && intersects(extent, geometry.getExtent())) {
+        byGeometryType[geometry.getType().replace('Multi', '')].push(geometry, style);
+      }
+    }
+  }
+
+  const zIndexKeys = Object.keys(featuresByZIndex).map(Number).sort(numberSafeCompareFunction);
+  for (let i = 0, ii = zIndexKeys.length; i < ii; ++i) {
+    const byGeometryType = featuresByZIndex[zIndexKeys[i]];
+    for (const type in byGeometryType) {
+      const geomAndStyle = byGeometryType[type];
+      for (let j = 0, jj = geomAndStyle.length; j < jj; j += 2) {
+        renderer.setStyle(geomAndStyle[j + 1]);
+        for (let k = 0, kk = transforms.length; k < kk; ++k) {
+          renderer.setTransform(transforms[k]);
+          renderer.drawGeometry(geomAndStyle[j]);
+        }
+      }
+    }
+  }
+  return context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+/**
+ * @param {import("../../pixel").Pixel} pixel Pixel coordinate on the hit
+ * detection canvas in css pixels.
+ * @param {Array<import("../../Feature").FeatureLike>} features Features. Has to
+ * match the `features` array that was passed to `createHitDetectionImageData()`.
+ * @param {ImageData} imageData Hit detection image data generated by
+ * `createHitDetectionImageData()`.
+ * @return {Array<import("../../Feature").FeatureLike>} features Features.
+ */
+export function hitDetect(pixel, features, imageData) {
+  const resultFeatures = [];
+  if (imageData) {
+    const index = (Math.round(pixel[0] / 2) + Math.round(pixel[1] / 2) * imageData.width) * 4;
+    const r = imageData.data[index];
+    const g = imageData.data[index + 1];
+    const b = imageData.data[index + 2];
+    const a = imageData.data[index + 3];
+    if (a === 255) {
+      const i = b + (256 * (g + (256 * r)));
+      const indexFactor = Math.ceil((256 * 256 * 256) / features.length);
+      if (i % indexFactor === 0) {
+        resultFeatures.push(features[i / indexFactor]);
+      }
+    }
+  }
+  return resultFeatures;
+}

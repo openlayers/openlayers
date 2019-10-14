@@ -26,7 +26,7 @@ import {
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import {clear} from '../../obj.js';
-import {createHitDetectionImageData, hitDetect} from '../../render/canvas/Immediate.js';
+import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
 
 
 /**

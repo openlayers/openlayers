@@ -10,7 +10,7 @@ import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {toString as transformToString, makeScale, makeInverse, apply} from '../../transform.js';
-import {createHitDetectionImageData, hitDetect} from '../../render/canvas/Immediate.js';
+import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
 
 /**
  * @classdesc
