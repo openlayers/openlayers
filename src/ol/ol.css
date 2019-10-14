@@ -182,15 +182,12 @@
 .ol-attribution ul {
   margin: 0;
   padding: 0 .5em;
-  font-size: .7rem;
-  line-height: 1.375em;
   color: #000;
   text-shadow: 0 0 2px #fff;
 }
 .ol-attribution li {
   display: inline;
   list-style: none;
-  line-height: inherit;
 }
 .ol-attribution li:not(:last-child):after {
   content: " ";
@@ -213,8 +210,6 @@
   bottom: 0;
   right: 0;
   border-radius: 4px 0 0;
-  height: 1.1em;
-  line-height: 1em;
 }
 .ol-attribution.ol-uncollapsible img {
   margin-top: -.2em;

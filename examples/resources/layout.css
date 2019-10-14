@@ -74,13 +74,9 @@ ol.inline>li {
 .ol-attribution.ol-logo-only,
 .ol-attribution.ol-uncollapsible {
   max-width: calc(100% - 3em);
-  height: 1.5em;
 }
 .ol-attribution ul {
-  font-size: 1rem;
-}
-.ol-control button, .ol-attribution, .ol-scale-line-inner {
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  font-size: 14px;
 }
 .iframe-info iframe {
   width: 100%;
