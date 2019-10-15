@@ -5,6 +5,7 @@ import {getUid} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
+import {unlistenByKey} from './events.js';
 
 
 /**
@@ -88,6 +89,11 @@ class VectorRenderTile extends Tile {
     this.sourceTileGrid_ = sourceTileGrid;
 
     /**
+     * @type {Array<import("./events.js").EventsKey>}
+     */
+    this.sourceTileListenerKeys = [];
+
+    /**
      * z of the source tiles of the last getSourceTiles call.
      * @type {number}
      */
@@ -109,6 +115,8 @@ class VectorRenderTile extends Tile {
    * @inheritDoc
    */
   disposeInternal() {
+    this.sourceTileListenerKeys.forEach(unlistenByKey);
+    this.sourceTileListenerKeys.length = 0;
     this.removeSourceTiles_(this);
     for (const key in this.context_) {
       const canvas = this.context_[key].canvas;

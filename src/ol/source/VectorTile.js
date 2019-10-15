@@ -12,7 +12,8 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
 import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
-import {equals} from '../array.js';
+import {equals, remove} from '../array.js';
+import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Options
@@ -238,15 +239,14 @@ class VectorTile extends UrlTile {
           }
           if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
             tile.loadingSourceTiles++;
-            const onSourceTileChange = function() {
+            const key = listen(sourceTile, EventType.CHANGE, function() {
               const state = sourceTile.getState();
               const sourceTileKey = sourceTile.getKey();
               if (state === TileState.LOADED || state === TileState.ERROR) {
                 if (state === TileState.LOADED) {
-                  sourceTile.removeEventListener(EventType.CHANGE, onSourceTileChange);
+                  remove(tile.sourceTileListenerKeys, key);
+                  unlistenByKey(key);
                   tile.loadingSourceTiles--;
-                  // eslint-disable-next-line no-use-before-define
-                  tile.removeEventListener(EventType.CHANGE, onTileChange);
                   delete tile.errorSourceTileKeys[sourceTileKey];
                 } else if (state === TileState.ERROR) {
                   tile.errorSourceTileKeys[sourceTileKey] = true;
@@ -258,15 +258,8 @@ class VectorTile extends UrlTile {
                   tile.setState(TileState.LOADED);
                 }
               }
-            };
-            const onTileChange = function() {
-              if (tile.getState() === TileState.ABORT) {
-                sourceTile.removeEventListener(EventType.CHANGE, onSourceTileChange);
-                tile.removeEventListener(EventType.CHANGE, onTileChange);
-              }
-            };
-            sourceTile.addEventListener(EventType.CHANGE, onSourceTileChange);
-            tile.addEventListener(EventType.CHANGE, onTileChange);
+            });
+            tile.sourceTileListenerKeys.push(key);
           }
         }.bind(this));
         if (!covered) {
