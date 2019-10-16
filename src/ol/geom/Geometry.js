@@ -229,12 +229,13 @@ class Geometry extends BaseObject {
   }
 
   /**
-   * Apply a transform function to each coordinate of the geometry.
+   * Apply a transform function to the coordinates of the geometry.
    * The geometry is modified in place.
    * If you do not want the geometry modified in place, first `clone()` it and
    * then use this function on the clone.
    * @abstract
-   * @param {import("../proj.js").TransformFunction} transformFn Transform.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * Called with a flat array of geometry coordinates.
    */
   applyTransform(transformFn) {
     abstract();
