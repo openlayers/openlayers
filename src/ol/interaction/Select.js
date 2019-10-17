@@ -206,7 +206,7 @@ class Select extends Interaction {
      * @private
      * @type {import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
      */
-    this.style_ = options.style ? options.style : getDefaultStyleFunction();
+    this.style_ = options.style !== undefined ? options.style : getDefaultStyleFunction();
 
     /**
      * An association between selected feature (key)
