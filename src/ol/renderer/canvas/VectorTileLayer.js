@@ -167,10 +167,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
    * @param {boolean} queue Queue tile for rendering.
-   * @return {boolean} Tile needs to be rendered.
+   * @return {boolean|undefined} Tile needs to be rendered.
    */
   prepareTile(tile, pixelRatio, projection, queue) {
-    let render = false;
+    let render;
     const tileUid = getUid(tile);
     const state = tile.getState();
     if (((state === TileState.LOADED && tile.hifi) ||
