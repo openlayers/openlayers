@@ -47,7 +47,7 @@
     "@openlayers/eslint-plugin": "^4.0.0",
     "@types/arcgis-rest-api": "^10.4.4",
     "@types/geojson": "^7946.0.7",
-    "@types/pbf": "^3.0.1",
+    "@types/pbf": "^3.0.2",
     "@types/topojson-specification": "^1.0.1",
     "babel-loader": "^8.0.5",
     "buble": "^0.19.7",
