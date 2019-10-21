@@ -102,7 +102,7 @@
     "webpack-cli": "^3.3.2",
     "webpack-dev-middleware": "^3.6.2",
     "webpack-dev-server": "^3.3.1",
-    "yargs": "^14.0.0"
+    "yargs": "^14.2.0"
   },
   "eslintConfig": {
     "extends": "openlayers",
