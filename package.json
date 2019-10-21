@@ -42,7 +42,7 @@
     "rbush": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0",
+    "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.4.4",
     "@openlayers/eslint-plugin": "^4.0.0",
     "@types/arcgis-rest-api": "^10.4.4",
