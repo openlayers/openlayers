@@ -2,6 +2,9 @@ import {
   formatArray,
   formatColor,
   formatNumber,
+  isValueTypeColor,
+  isValueTypeNumber,
+  isValueTypeString,
   parse,
   parseLiteralStyle,
   ShaderBuilder
@@ -33,6 +36,46 @@ describe('ol.webgl.ShaderBuilder', function() {
       expect(formatColor('red')).to.eql('1.0, 0.0, 0.0, 1.0');
       expect(formatColor('rgb(100, 0, 255)')).to.eql('0.39215686274509803, 0.0, 1.0, 1.0');
       expect(formatColor('rgba(100, 0, 255, 0.3)')).to.eql('0.39215686274509803, 0.0, 1.0, 0.3');
+    });
+  });
+
+  describe('value type checking', function() {
+    it('correctly recognizes a number value', function() {
+      expect(isValueTypeNumber(1234)).to.eql(true);
+      expect(isValueTypeNumber(['time'])).to.eql(true);
+      expect(isValueTypeNumber(['clamp', ['get', 'attr'], -1, 1])).to.eql(true);
+      expect(isValueTypeNumber(['interpolate', ['get', 'attr'], 'red', 'green'])).to.eql(false);
+      expect(isValueTypeNumber('yellow')).to.eql(false);
+      expect(isValueTypeNumber('#113366')).to.eql(false);
+      expect(isValueTypeNumber('rgba(252,171,48,0.62)')).to.eql(false);
+    });
+    it('correctly recognizes a color value', function() {
+      expect(isValueTypeColor(1234)).to.eql(false);
+      expect(isValueTypeColor(['time'])).to.eql(false);
+      expect(isValueTypeColor(['clamp', ['get', 'attr'], -1, 1])).to.eql(false);
+      expect(isValueTypeColor(['interpolate', ['get', 'attr'], 'red', 'green'])).to.eql(true);
+      expect(isValueTypeColor('yellow')).to.eql(true);
+      expect(isValueTypeColor('#113366')).to.eql(true);
+      expect(isValueTypeColor('rgba(252,171,48,0.62)')).to.eql(true);
+      expect(isValueTypeColor('abcd')).to.eql(false);
+    });
+    it('correctly recognizes a string value', function() {
+      expect(isValueTypeString(1234)).to.eql(false);
+      expect(isValueTypeString(['time'])).to.eql(false);
+      expect(isValueTypeString(['clamp', ['get', 'attr'], -1, 1])).to.eql(false);
+      expect(isValueTypeString(['interpolate', ['get', 'attr'], 'red', 'green'])).to.eql(false);
+      expect(isValueTypeString('yellow')).to.eql(true);
+      expect(isValueTypeString('#113366')).to.eql(true);
+      expect(isValueTypeString('rgba(252,171,48,0.62)')).to.eql(true);
+      expect(isValueTypeString('abcd')).to.eql(true);
+    });
+    it('throws on an unsupported type', function(done) {
+      try {
+        isValueTypeColor(true);
+      } catch (e) {
+        done();
+      }
+      done(true);
     });
   });
 

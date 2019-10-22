@@ -3,7 +3,7 @@
  * @module ol/webgl/ShaderBuilder
  */
 
-import {asArray} from '../color.js';
+import {asArray, isStringColor} from '../color.js';
 
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
@@ -35,6 +35,89 @@ export function formatColor(color) {
   return asArray(color).map(function(c, i) {
     return i < 3 ? c / 255 : c;
   }).map(formatNumber).join(', ');
+}
+
+/**
+ * Possible inferred types from a given value or expression
+ * @enum {number}
+ */
+const ValueTypes = {
+  UNKNOWN: -1,
+  NUMBER: 0,
+  STRING: 1,
+  COLOR: 2,
+  COLOR_OR_STRING: 3
+};
+
+function getValueType(value) {
+  if (typeof value === 'number') {
+    return ValueTypes.NUMBER;
+  }
+  if (typeof value === 'string') {
+    if (isStringColor(value)) {
+      return ValueTypes.COLOR_OR_STRING;
+    }
+    return ValueTypes.STRING;
+  }
+  if (!Array.isArray(value)) {
+    throw new Error(`Unrecognized value type: ${JSON.stringify(value)}`);
+  }
+  if (value.length === 3 || value.length === 4) {
+    const onlyNumbers = value.every(function(v) {
+      return typeof v === 'number';
+    });
+    if (onlyNumbers) {
+      return ValueTypes.COLOR;
+    }
+  }
+  if (typeof value[0] !== 'string') {
+    return ValueTypes.UNKNOWN;
+  }
+  switch (value[0]) {
+    case 'get':
+    case 'var':
+    case 'time':
+    case '*':
+    case '+':
+    case 'clamp':
+    case 'stretch':
+    case '>':
+    case '>=':
+    case '<':
+    case '<=':
+    case '==':
+    case '!':
+    case 'between':
+      return ValueTypes.NUMBER;
+    case 'interpolate':
+      return ValueTypes.COLOR;
+    default:
+      return ValueTypes.UNKNOWN;
+  }
+}
+
+/**
+ * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
+ * @returns {boolean} True if a numeric value, false otherwise
+ */
+export function isValueTypeNumber(value) {
+  return getValueType(value) === ValueTypes.NUMBER;
+}
+
+/**
+ * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
+ * @returns {boolean} True if a string value, false otherwise
+ */
+export function isValueTypeString(value) {
+  return getValueType(value) === ValueTypes.STRING || getValueType(value) === ValueTypes.COLOR_OR_STRING;
+}
+
+/**
+ * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
+ * @returns {boolean} True if a color value, false otherwise
+ */
+export function isValueTypeColor(value) {
+  return getValueType(value) === ValueTypes.COLOR || getValueType(value) === ValueTypes.COLOR_OR_STRING;
 }
 
 /**
