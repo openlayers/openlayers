@@ -27,10 +27,10 @@ const predefinedStyles = {
       symbolType: 'triangle',
       size: 18,
       color: [
-        ['stretch', ['get', 'population'], 20000, 300000, 0.1, 1.0],
-        ['stretch', ['get', 'population'], 20000, 300000, 0.6, 0.3],
-        0.6,
-        1.0
+        'interpolate',
+        ['stretch', ['get', 'population'], 20000, 300000, 0, 1],
+        '#5aca5b',
+        '#ff6a19'
       ],
       rotateWithView: true
     }
