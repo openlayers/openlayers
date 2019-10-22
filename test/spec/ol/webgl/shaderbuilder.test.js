@@ -382,7 +382,7 @@ void main(void) {
       expect(parseFn(['time'])).to.eql('u_time');
       expect(parseFn(['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(parseFn(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
-      expect(parseFn(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('(clamp(a_size, 10.0, 100.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');
+      expect(parseFn(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('((clamp(a_size, 10.0, 100.0) - 10.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');
       expect(parseFn(['>', 10, ['get', 'attr4']])).to.eql('(10.0 > a_attr4 ? 1.0 : 0.0)');
       expect(parseFn(['>=', 10, ['get', 'attr4']])).to.eql('(10.0 >= a_attr4 ? 1.0 : 0.0)');
       expect(parseFn(['<', 10, ['get', 'attr4']])).to.eql('(10.0 < a_attr4 ? 1.0 : 0.0)');
@@ -516,7 +516,7 @@ void main(void) {
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
       );
       expect(result.builder.sizeExpression).to.eql(
-        'vec2((clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0), (clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))'
+        'vec2(((clamp(a_population, u_lower, u_higher) - u_lower) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0), ((clamp(a_population, u_lower, u_higher) - u_lower) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))'
       );
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');

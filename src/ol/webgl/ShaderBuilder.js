@@ -274,7 +274,12 @@ export function parse(value, attributes, attributePrefix, variables, typeHint) {
       case '*': return `(${p(v[1])} * ${p(v[2])})`;
       case '+': return `(${p(v[1])} + ${p(v[2])})`;
       case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
-      case 'stretch': return `(clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])}) * ((${p(v[5])} - ${p(v[4])}) / (${p(v[3])} - ${p(v[2])})) + ${p(v[4])})`;
+      case 'stretch':
+        const low1 = p(v[2]);
+        const high1 = p(v[3]);
+        const low2 = p(v[4]);
+        const high2 = p(v[5]);
+        return `((clamp(${p(v[1])}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
 
       // color operators
       case 'interpolate':
