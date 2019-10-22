@@ -417,7 +417,7 @@ void main(void) {
         symbol: {
           symbolType: 'square',
           size: [4, 8],
-          color: '#336699',
+          color: '#ff0000',
           rotateWithView: true
         }
       });
@@ -425,7 +425,8 @@ void main(void) {
       expect(result.builder.uniforms).to.eql([]);
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0 * 1.0 * 1.0)');
+      expect(result.builder.colorExpression).to.eql(
+        'vec4(vec4(1.0, 0.0, 0.0, 1.0).rgb, vec4(1.0, 0.0, 0.0, 1.0).a * 1.0 * 1.0)');
       expect(result.builder.sizeExpression).to.eql('vec2(4.0, 8.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
@@ -439,35 +440,29 @@ void main(void) {
         symbol: {
           symbolType: 'square',
           size: ['get', 'attr1'],
-          color: [
-            1.0, 0.0, 0.5, ['get', 'attr2']
-          ],
+          color: [255, 127.5, 63.75, 0.25],
           textureCoord: [0.5, 0.5, 0.5, 1],
           offset: [3, ['get', 'attr3']]
         }
       });
 
       expect(result.builder.uniforms).to.eql([]);
-      expect(result.builder.attributes).to.eql(['float a_attr1', 'float a_attr3', 'float a_attr2']);
+      expect(result.builder.attributes).to.eql(['float a_attr1', 'float a_attr3']);
       expect(result.builder.varyings).to.eql([{
         name: 'v_attr1',
         type: 'float',
         expression: 'a_attr1'
-      }, {
-        name: 'v_attr2',
-        type: 'float',
-        expression: 'a_attr2'
       }]);
       expect(result.builder.colorExpression).to.eql(
-        'vec4(1.0, 0.0, 0.5, v_attr2 * 1.0 * 1.0)');
+        'vec4(vec4(1.0, 0.5, 0.25, 0.25).rgb, vec4(1.0, 0.5, 0.25, 0.25).a * 1.0 * 1.0)'
+      );
       expect(result.builder.sizeExpression).to.eql('vec2(a_attr1, a_attr1)');
       expect(result.builder.offsetExpression).to.eql('vec2(3.0, a_attr3)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.5, 0.5, 0.5, 1.0)');
       expect(result.builder.rotateWithView).to.eql(false);
-      expect(result.attributes.length).to.eql(3);
+      expect(result.attributes.length).to.eql(2);
       expect(result.attributes[0].name).to.eql('attr1');
       expect(result.attributes[1].name).to.eql('attr3');
-      expect(result.attributes[2].name).to.eql('attr2');
       expect(result.uniforms).to.eql({});
     });
 
@@ -486,7 +481,8 @@ void main(void) {
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
       expect(result.builder.colorExpression).to.eql(
-        'vec4(0.2, 0.4, 0.6, 1.0 * 0.5 * 1.0) * texture2D(u_texture, v_texCoord)');
+        'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0) * texture2D(u_texture, v_texCoord)'
+      );
       expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
@@ -516,9 +512,12 @@ void main(void) {
         type: 'float',
         expression: 'a_population'
       }]);
-      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0 * 0.5 * 1.0)');
+      expect(result.builder.colorExpression).to.eql(
+        'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
+      );
       expect(result.builder.sizeExpression).to.eql(
-        'vec2((clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0), (clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))');
+        'vec2((clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0), (clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))'
+      );
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
       expect(result.builder.rotateWithView).to.eql(false);
@@ -544,7 +543,9 @@ void main(void) {
         type: 'float',
         expression: 'a_attr0'
       }]);
-      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0 * 1.0 * 1.0)');
+      expect(result.builder.colorExpression).to.eql(
+        'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 1.0 * 1.0)'
+      );
       expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
@@ -552,6 +553,28 @@ void main(void) {
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(1);
       expect(result.attributes[0].name).to.eql('attr0');
+    });
+
+    it('parses a style with a color interpolation', function() {
+      const result = parseLiteralStyle({
+        symbol: {
+          symbolType: 'square',
+          size: 6,
+          color: ['interpolate', ['var', 'ratio'], [255, 255, 0], 'red']
+        }
+      });
+
+      expect(result.builder.attributes).to.eql([]);
+      expect(result.builder.varyings).to.eql([]);
+      expect(result.builder.colorExpression).to.eql(
+        'vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), u_ratio).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), u_ratio).a * 1.0 * 1.0)'
+      );
+      expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
+      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
+      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.attributes).to.eql([]);
+      expect(result.uniforms).to.have.property('u_ratio');
     });
   });
 

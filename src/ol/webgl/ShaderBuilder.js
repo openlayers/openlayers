@@ -642,11 +642,7 @@ export function parseLiteralStyle(style) {
   const symbStyle = style.symbol;
   const size = Array.isArray(symbStyle.size) && typeof symbStyle.size[0] == 'number' ?
     symbStyle.size : [symbStyle.size, symbStyle.size];
-  const color = (typeof symbStyle.color === 'string' ?
-    asArray(symbStyle.color).map(function(c, i) {
-      return i < 3 ? c / 255 : c;
-    }) :
-    symbStyle.color || [255, 255, 255, 1]);
+  const color = symbStyle.color || 'white';
   const texCoord = symbStyle.textureCoord || [0, 0, 1, 1];
   const offset = symbStyle.offset || [0, 0];
   const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
@@ -660,8 +656,8 @@ export function parseLiteralStyle(style) {
 
   const fragAttributes = [];
   // parse function for fragment shader
-  function pFrag(value) {
-    return parse(value, fragAttributes, 'v_', variables);
+  function pFrag(value, type) {
+    return parse(value, fragAttributes, 'v_', variables, type);
   }
 
   let opacityFilter = '1.0';
@@ -682,6 +678,8 @@ export function parseLiteralStyle(style) {
     default: throw new Error('Unexpected symbol type: ' + symbStyle.symbolType);
   }
 
+  const parsedColor = pFrag(color, ValueTypes.COLOR);
+
   const builder = new ShaderBuilder()
     .setSizeExpression(`vec2(${pVert(size[0])}, ${pVert(size[1])})`)
     .setSymbolOffsetExpression(`vec2(${pVert(offset[0])}, ${pVert(offset[1])})`)
@@ -689,7 +687,7 @@ export function parseLiteralStyle(style) {
       `vec4(${pVert(texCoord[0])}, ${pVert(texCoord[1])}, ${pVert(texCoord[2])}, ${pVert(texCoord[3])})`)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)
     .setColorExpression(
-      `vec4(${pFrag(color[0])}, ${pFrag(color[1])}, ${pFrag(color[2])}, ${pFrag(color[3])} * ${pFrag(opacity)} * ${opacityFilter})`);
+      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${pFrag(opacity)} * ${opacityFilter})`);
 
   if (style.filter) {
     builder.setFragmentDiscardExpression(`${pFrag(style.filter)} <= 0.0`);
