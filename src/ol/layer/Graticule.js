@@ -318,10 +318,23 @@ class Graticule extends VectorLayer {
         options.latLabelPosition;
 
       /**
-       * @type {Object.<string,Style>}
+       * @type {Style}
        * @private
        */
-      this.lonLabelStyleCache_ = {};
+      this.lonLabelStyleBase_ = new Style({
+        text: options.lonLabelStyle !== undefined ? options.lonLabelStyle.clone() :
+          new Text({
+            font: '12px Calibri,sans-serif',
+            textBaseline: 'bottom',
+            fill: new Fill({
+              color: 'rgba(0,0,0,1)'
+            }),
+            stroke: new Stroke({
+              color: 'rgba(255,255,255,1)',
+              width: 3
+            })
+          })
+      });
 
       /**
        * @private
@@ -330,31 +343,28 @@ class Graticule extends VectorLayer {
        */
       this.lonLabelStyle_ = function(feature) {
         const label = feature.get('graticule_label');
-        if (!this.lonLabelStyleCache_[label]) {
-          this.lonLabelStyleCache_[label] = new Style({
-            text: options.lonLabelStyle !== undefined ? options.lonLabelStyle.clone() :
-              new Text({
-                font: '12px Calibri,sans-serif',
-                textBaseline: 'bottom',
-                fill: new Fill({
-                  color: 'rgba(0,0,0,1)'
-                }),
-                stroke: new Stroke({
-                  color: 'rgba(255,255,255,1)',
-                  width: 3
-                })
-              })
-          });
-          this.lonLabelStyleCache_[label].getText().setText(label);
-        }
-        return this.lonLabelStyleCache_[label];
+        this.lonLabelStyleBase_.getText().setText(label);
+        return this.lonLabelStyleBase_;
       }.bind(this);
 
       /**
-       * @type {Object.<string,Style>}
+       * @type {Style}
        * @private
        */
-      this.latLabelStyleCache_ = {};
+      this.latLabelStyleBase_ = new Style({
+        text: options.latLabelStyle !== undefined ? options.latLabelStyle.clone() :
+          new Text({
+            font: '12px Calibri,sans-serif',
+            textAlign: 'right',
+            fill: new Fill({
+              color: 'rgba(0,0,0,1)'
+            }),
+            stroke: new Stroke({
+              color: 'rgba(255,255,255,1)',
+              width: 3
+            })
+          })
+      });
 
       /**
        * @private
@@ -363,24 +373,8 @@ class Graticule extends VectorLayer {
        */
       this.latLabelStyle_ = function(feature) {
         const label = feature.get('graticule_label');
-        if (!this.latLabelStyleCache_[label]) {
-          this.latLabelStyleCache_[label] = new Style({
-            text: options.latLabelStyle !== undefined ? options.latLabelStyle.clone() :
-              new Text({
-                font: '12px Calibri,sans-serif',
-                textAlign: 'right',
-                fill: new Fill({
-                  color: 'rgba(0,0,0,1)'
-                }),
-                stroke: new Stroke({
-                  color: 'rgba(255,255,255,1)',
-                  width: 3
-                })
-              })
-          });
-          this.latLabelStyleCache_[label].getText().setText(label);
-        }
-        return this.latLabelStyleCache_[label];
+        this.latLabelStyleBase_.getText().setText(label);
+        return this.latLabelStyleBase_;
       }.bind(this);
 
       this.meridiansLabels_ = [];
