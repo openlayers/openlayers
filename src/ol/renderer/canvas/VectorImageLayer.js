@@ -10,6 +10,7 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import EventType from '../../events/EventType.js';
 import ImageState from '../../ImageState.js';
 import {renderDeclutterItems} from '../../render.js';
+import {apply, compose, create} from '../../transform.js';
 
 /**
  * @classdesc
@@ -36,6 +37,18 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
      */
     this.layerImageRatio_ = layer.getImageRatio();
 
+    /**
+     * @private
+     * @type {import("../../transform.js").Transform};
+     */
+    this.coordinateToVectorPixelTransform_ = create();
+
+    /**
+     * @private
+     * @type {import("../../transform.js").Transform};
+     */
+    this.renderedPixelToCoordinateTransform_ = null;
+
   }
 
   /**
@@ -44,6 +57,22 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   disposeInternal() {
     this.vectorRenderer_.dispose();
     super.disposeInternal();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getFeatures(pixel) {
+    if (this.vectorRenderer_) {
+      const vectorPixel = apply(this.coordinateToVectorPixelTransform_,
+        apply(this.renderedPixelToCoordinateTransform_, pixel.slice()));
+      return this.vectorRenderer_.getFeatures(vectorPixel);
+    } else {
+      const promise = new Promise(function(resolve, reject) {
+        resolve([]);
+      });
+      return promise;
+    }
   }
 
   /**
@@ -68,16 +97,15 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       renderedExtent = renderedExtent.slice(0);
       scaleFromCenter(renderedExtent, this.layerImageRatio_);
     }
+    const width = getWidth(renderedExtent) / viewResolution;
+    const height = getHeight(renderedExtent) / viewResolution;
 
     if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] && !isEmpty(renderedExtent)) {
       vectorRenderer.useContainer(null, null, 1);
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
         declutterItems: [],
-        size: [
-          getWidth(renderedExtent) / viewResolution,
-          getHeight(renderedExtent) / viewResolution
-        ],
+        size: [width, height],
         viewState: /** @type {import("../../View.js").State} */ (assign({}, frameState.viewState, {
           rotation: 0
         }))
@@ -102,7 +130,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const image = this.image_;
       const imageResolution = image.getResolution();
       const imagePixelRatio = image.getPixelRatio();
-      this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
+      const renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
+      this.renderedResolution = renderedResolution;
+      this.renderedPixelToCoordinateTransform_ = frameState.pixelToCoordinateTransform.slice();
+      this.coordinateToVectorPixelTransform_ = compose(this.coordinateToVectorPixelTransform_,
+        width / 2, height / 2,
+        1 / renderedResolution, -1 / renderedResolution,
+        0,
+        -viewState.center[0], -viewState.center[1]);
     }
 
     return !!this.image_;
