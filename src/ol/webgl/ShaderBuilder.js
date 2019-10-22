@@ -18,23 +18,32 @@ export function formatNumber(v) {
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
  * @param {Array<number>} array Numerical values array.
- * @returns {string} The array as string, e. g.: `1.0, 2.0, 3.0`.
+ * @returns {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
  */
 export function formatArray(array) {
-  return array.map(formatNumber).join(', ');
+  if (array.length < 2 || array.length > 4) {
+    throw new Error('`formatArray` can only output `vec2`, `vec3` or `vec4` arrays.');
+  }
+  return `vec${array.length}(${array.map(formatNumber).join(', ')})`;
 }
 
 /**
- * Will normalize and converts to string a color array compatible with GLSL.
+ * Will normalize and converts to string a `vec4` color array compatible with GLSL.
  * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
- * with RGB components in the 0..255 range and the alpha component in the 0..1 range. Note that if the A component is
- * missing, only 3 values will be output.
- * @returns {string} The color components concatenated in `1.0, 1.0, 1.0, 1.0` form.
+ * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
+ * Note that the final array will always have 4 components.
+ * @returns {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function formatColor(color) {
-  return asArray(color).map(function(c, i) {
-    return i < 3 ? c / 255 : c;
-  }).map(formatNumber).join(', ');
+  const array = asArray(color).slice();
+  if (array.length < 4) {
+    array.push(1);
+  }
+  return formatArray(
+    array.map(function(c, i) {
+      return i < 3 ? c / 255 : c;
+    })
+  );
 }
 
 /**

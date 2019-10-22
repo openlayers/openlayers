@@ -25,18 +25,35 @@ describe('ol.webgl.ShaderBuilder', function() {
 
   describe('formatArray', function() {
     it('outputs numbers with dot separators', function() {
-      expect(formatArray([1, 0, 3.45, 0.8888])).to.eql('1.0, 0.0, 3.45, 0.8888');
+      expect(formatArray([1, 0, 3.45, 0.8888])).to.eql('vec4(1.0, 0.0, 3.45, 0.8888)');
+      expect(formatArray([3, 4])).to.eql('vec2(3.0, 4.0)');
+    });
+    it('throws on invalid lengths', function() {
+      let thrown = false;
+      try {
+        formatArray([3]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        formatArray([3, 2, 1, 0, -1]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
     });
   });
 
   describe('formatColor', function() {
     it('normalizes color and outputs numbers with dot separators', function() {
-      expect(formatColor([100, 0, 255, 1])).to.eql('0.39215686274509803, 0.0, 1.0, 1.0');
+      expect(formatColor([100, 0, 255])).to.eql('vec4(0.39215686274509803, 0.0, 1.0, 1.0)');
+      expect(formatColor([100, 0, 255, 1])).to.eql('vec4(0.39215686274509803, 0.0, 1.0, 1.0)');
     });
     it('handles colors in string format', function() {
-      expect(formatColor('red')).to.eql('1.0, 0.0, 0.0, 1.0');
-      expect(formatColor('rgb(100, 0, 255)')).to.eql('0.39215686274509803, 0.0, 1.0, 1.0');
-      expect(formatColor('rgba(100, 0, 255, 0.3)')).to.eql('0.39215686274509803, 0.0, 1.0, 0.3');
+      expect(formatColor('red')).to.eql('vec4(1.0, 0.0, 0.0, 1.0)');
+      expect(formatColor('#00ff99')).to.eql('vec4(0.0, 1.0, 0.6, 1.0)');
+      expect(formatColor('rgb(100, 0, 255)')).to.eql('vec4(0.39215686274509803, 0.0, 1.0, 1.0)');
+      expect(formatColor('rgba(100, 0, 255, 0.3)')).to.eql('vec4(0.39215686274509803, 0.0, 1.0, 0.3)');
     });
   });
 
@@ -84,11 +101,11 @@ describe('ol.webgl.ShaderBuilder', function() {
     it('generates a symbol vertex shader (with varying)', function() {
       const builder = new ShaderBuilder();
       builder.addVarying('v_opacity', 'float', formatNumber(0.4));
-      builder.addVarying('v_test', 'vec3', 'vec3(' + formatArray([1, 2, 3]) + ')');
-      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
-      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
-      builder.setColorExpression('vec4(' + formatColor([80, 0, 255, 1]) + ')');
-      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.addVarying('v_test', 'vec3', formatArray([1, 2, 3]));
+      builder.setSizeExpression(`vec2(${formatNumber(6)})`);
+      builder.setSymbolOffsetExpression(formatArray([5, -7]));
+      builder.setColorExpression(formatColor([80, 0, 255, 1]));
+      builder.setTextureCoordinateExpression(formatArray([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
@@ -126,10 +143,10 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
       builder.addAttribute('vec2 a_myAttr');
-      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
-      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
-      builder.setColorExpression('vec4(' + formatColor([80, 0, 255, 1]) + ')');
-      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.setSizeExpression(`vec2(${formatNumber(6)})`);
+      builder.setSymbolOffsetExpression(formatArray([5, -7]));
+      builder.setColorExpression(formatColor([80, 0, 255, 1]));
+      builder.setTextureCoordinateExpression(formatArray([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
@@ -163,10 +180,10 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with rotateWithView)', function() {
       const builder = new ShaderBuilder();
-      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
-      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
-      builder.setColorExpression('vec4(' + formatColor([80, 0, 255, 1]) + ')');
-      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.setSizeExpression(`vec2(${formatNumber(6)})`);
+      builder.setSymbolOffsetExpression(formatArray([5, -7]));
+      builder.setColorExpression(formatColor([80, 0, 255, 1]));
+      builder.setTextureCoordinateExpression(formatArray([0, 0.5, 0.5, 1]));
       builder.setSymbolRotateWithView(true);
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
@@ -205,11 +222,11 @@ void main(void) {
     it('generates a symbol fragment shader (with varying)', function() {
       const builder = new ShaderBuilder();
       builder.addVarying('v_opacity', 'float', formatNumber(0.4));
-      builder.addVarying('v_test', 'vec3', 'vec3(' + formatArray([1, 2, 3]) + ')');
-      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
-      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
-      builder.setColorExpression('vec4(' + formatColor([80, 0, 255]) + ', v_opacity)');
-      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.addVarying('v_test', 'vec3', formatArray([1, 2, 3]));
+      builder.setSizeExpression(`vec2(${formatNumber(6)})`);
+      builder.setSymbolOffsetExpression(formatArray([5, -7]));
+      builder.setColorExpression(formatColor([80, 0, 255]));
+      builder.setTextureCoordinateExpression(formatArray([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
 uniform float u_time;
@@ -220,7 +237,7 @@ varying float v_opacity;
 varying vec3 v_test;
 void main(void) {
   if (false) { discard; }
-  gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, v_opacity);
+  gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
 }`);
     });
@@ -228,10 +245,10 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
       builder.addUniform('vec2 u_myUniform2');
-      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
-      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
-      builder.setColorExpression('vec4(' + formatColor([255, 255, 255, 1]) + ')');
-      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.setSizeExpression(`vec2(${formatNumber(6)})`);
+      builder.setSymbolOffsetExpression(formatArray([5, -7]));
+      builder.setColorExpression(formatColor([255, 255, 255, 1]));
+      builder.setTextureCoordinateExpression(formatArray([0, 0.5, 0.5, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
