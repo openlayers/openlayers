@@ -12,6 +12,9 @@
  *
  * * Reading operators:
  *   * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
+ *     Note: those will be taken from the attributes provided to the renderer
+ *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
+ *   * `['time']` returns the time in seconds since the creation of the layer
  *
  * * Math operators:
  *   * `['*', value1, value1]` multiplies value1 by value2
@@ -39,6 +42,8 @@
  * @typedef {Object} LiteralStyle
  * @property {ExpressionValue} [filter] Filter expression. If it resolves to a number strictly greater than 0, the
  * point will be displayed. If undefined, all points will show.
+ * @property {Object<string, number>} [variables] Style variables; each variable must hold a number.
+ * Note: **this object is meant to be mutated**: changes to the values will immediately be visible on the rendered features
  * @property {LiteralSymbolStyle} [symbol] Symbol representation.
  */
 

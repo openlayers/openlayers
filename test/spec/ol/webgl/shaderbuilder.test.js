@@ -201,19 +201,21 @@ void main(void) {
   });
 
   describe('parse', function() {
-    let attributes, prefix, parseFn;
+    let attributes, prefix, variables, parseFn;
 
     beforeEach(function() {
       attributes = [];
+      variables = [];
       prefix = 'a_';
       parseFn = function(value) {
-        return parse(value, attributes, prefix);
+        return parse(value, attributes, prefix, variables);
       };
     });
 
     it('parses expressions & literal values', function() {
       expect(parseFn(1)).to.eql('1.0');
       expect(parseFn(['get', 'myAttr'])).to.eql('a_myAttr');
+      expect(parseFn(['var', 'myValue'])).to.eql('u_myValue');
       expect(parseFn(['time'])).to.eql('u_time');
       expect(parseFn(['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(parseFn(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
@@ -226,12 +228,16 @@ void main(void) {
       expect(parseFn(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0 ? 1.0 : 0.0)');
       expect(parseFn(['!', ['get', 'attr4']])).to.eql('(a_attr4 > 0.0 ? 0.0 : 1.0)');
       expect(attributes).to.eql(['myAttr', 'size', 'attr2', 'attr3', 'attr4']);
+      expect(variables).to.eql(['myValue']);
     });
 
     it('does not register an attribute several times', function() {
       parseFn(['get', 'myAttr']);
+      parseFn(['var', 'myVar']);
       parseFn(['clamp', ['get', 'attr2'], ['get', 'attr2'], ['get', 'myAttr']]);
+      parseFn(['*', ['get', 'attr2'], ['var', 'myVar']]);
       expect(attributes).to.eql(['myAttr', 'attr2']);
+      expect(variables).to.eql(['myVar']);
     });
   });
 
@@ -317,6 +323,39 @@ void main(void) {
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.have.property('u_texture');
+    });
+
+    it('parses a style with variables', function() {
+      const result = parseLiteralStyle({
+        variables: {
+          lower: 100,
+          higher: 400
+        },
+        symbol: {
+          symbolType: 'square',
+          size: ['stretch', ['get', 'population'], ['var', 'lower'], ['var', 'higher'], 4, 8],
+          color: '#336699',
+          opacity: 0.5
+        }
+      });
+
+      expect(result.builder.uniforms).to.eql(['float u_lower', 'float u_higher']);
+      expect(result.builder.attributes).to.eql(['float a_population']);
+      expect(result.builder.varyings).to.eql([{
+        name: 'v_population',
+        type: 'float',
+        expression: 'a_population'
+      }]);
+      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0 * 0.5 * 1.0)');
+      expect(result.builder.sizeExpression).to.eql(
+        'vec2((clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0), (clamp(a_population, u_lower, u_higher) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))');
+      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
+      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.attributes.length).to.eql(1);
+      expect(result.attributes[0].name).to.eql('population');
+      expect(result.uniforms).to.have.property('u_lower');
+      expect(result.uniforms).to.have.property('u_higher');
     });
 
     it('parses a style with a filter', function() {

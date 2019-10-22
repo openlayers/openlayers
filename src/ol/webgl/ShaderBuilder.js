@@ -41,22 +41,24 @@ export function formatColor(colorArray) {
  * Parses the provided expressions and produces a GLSL-compatible assignment string, such as:
  * `['add', ['*', ['get', 'size'], 0.001], 12] => '(a_size * (0.001)) + (12.0)'
  *
- * Also takes in an array where new attributes will be pushed, so that the user of the `parse` function
- * knows which attributes are expected to be available at evaluation time.
+ * Also takes in two arrays where new attributes and variables will be pushed, so that the user of the `parse` function
+ * knows which attributes/variables are expected to be available at evaluation time.
  *
- * A prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
- * the final assignment string.
+ * For attributes, a prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
+ * the final assignment string (depending on whether we're outputting a vertex or fragment shader).
  *
  * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
  * @param {Array<string>} attributes Array containing the attribute names **without a prefix**;
- * it passed along recursively
+ * it is passed along recursively
  * @param {string} attributePrefix Prefix added to attribute names in the final output (typically `a_` or `v_`).
+ * @param {Array<string>} variables Array containing the variable names **without a prefix**;
+ * it is passed along recursively
  * @returns {string} Assignment string.
  */
-export function parse(value, attributes, attributePrefix) {
+export function parse(value, attributes, attributePrefix, variables) {
   const v = value;
   function p(value) {
-    return parse(value, attributes, attributePrefix);
+    return parse(value, attributes, attributePrefix, variables);
   }
   if (Array.isArray(v)) {
     switch (v[0]) {
@@ -66,6 +68,11 @@ export function parse(value, attributes, attributePrefix) {
           attributes.push(v[1]);
         }
         return attributePrefix + v[1];
+      case 'var':
+        if (variables.indexOf(v[1]) === -1) {
+          variables.push(v[1]);
+        }
+        return `u_${v[1]}`;
       case 'time':
         return 'u_time';
 
@@ -444,16 +451,17 @@ export function parseLiteralStyle(style) {
   const offset = symbStyle.offset || [0, 0];
   const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
 
+  const variables = [];
   const vertAttributes = [];
   // parse function for vertex shader
   function pVert(value) {
-    return parse(value, vertAttributes, 'a_');
+    return parse(value, vertAttributes, 'a_', variables);
   }
 
   const fragAttributes = [];
   // parse function for fragment shader
   function pFrag(value) {
-    return parse(value, fragAttributes, 'v_');
+    return parse(value, fragAttributes, 'v_', variables);
   }
 
   let opacityFilter = '1.0';
@@ -487,6 +495,27 @@ export function parseLiteralStyle(style) {
     builder.setFragmentDiscardExpression(`${pFrag(style.filter)} <= 0.0`);
   }
 
+  /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
+  const uniforms = {};
+
+  // define one uniform per variable
+  variables.forEach(function(varName) {
+    builder.addUniform(`float u_${varName}`);
+    uniforms[`u_${varName}`] = function() {
+      return style.variables && style.variables[varName] !== undefined ?
+        style.variables[varName] : 0;
+    };
+  });
+
+  if (symbStyle.symbolType === 'image' && symbStyle.src) {
+    const texture = new Image();
+    texture.src = symbStyle.src;
+    builder.addUniform('sampler2D u_texture')
+      .setColorExpression(builder.getColorExpression() +
+        ' * texture2D(u_texture, v_texCoord)');
+    uniforms['u_texture'] = texture;
+  }
+
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
   fragAttributes.forEach(function(attrName) {
@@ -500,18 +529,6 @@ export function parseLiteralStyle(style) {
   vertAttributes.forEach(function(attrName) {
     builder.addAttribute(`float a_${attrName}`);
   });
-
-  /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
-  const uniforms = {};
-
-  if (symbStyle.symbolType === 'image' && symbStyle.src) {
-    const texture = new Image();
-    texture.src = symbStyle.src;
-    builder.addUniform('sampler2D u_texture')
-      .setColorExpression(builder.getColorExpression() +
-        ' * texture2D(u_texture, v_texCoord)');
-    uniforms['u_texture'] = texture;
-  }
 
   return {
     builder: builder,
