@@ -120,6 +120,93 @@ export function isValueTypeColor(value) {
   return getValueType(value) === ValueTypes.COLOR || getValueType(value) === ValueTypes.COLOR_OR_STRING;
 }
 
+
+/**
+ * Check that the provided value or expression is valid, and that the types used are compatible.
+ *
+ * Will throw an exception if found to be invalid.
+ *
+ * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
+ */
+export function check(value) {
+  const v = value;
+
+  // these will be used to validate types in the expressions
+  function checkNumber(value) {
+    if (!isValueTypeNumber(value)) {
+      throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
+    }
+  }
+  function checkColor(value) {
+    if (!isValueTypeColor(value)) {
+      throw new Error(`A color value was expected, got ${JSON.stringify(value)} instead`);
+    }
+  }
+  function checkString(value) {
+    if (!isValueTypeString(value)) {
+      throw new Error(`A string value was expected, got ${JSON.stringify(value)} instead`);
+    }
+  }
+
+  // first check that the value is of a recognized kind
+  if (!isValueTypeColor(value) && !isValueTypeNumber(value) && !isValueTypeString(value)) {
+    throw new Error(`No type could be inferred from the following expression: ${JSON.stringify(value)}`);
+  }
+
+  // check operator arguments
+  if (Array.isArray(value)) {
+    switch (value[0]) {
+      case 'get':
+      case 'var':
+        checkString(v[1]);
+        break;
+      case 'time':
+        break;
+      case '*':
+      case '+':
+        checkNumber(v[1]);
+        checkNumber(v[2]);
+        break;
+      case 'clamp':
+        checkNumber(v[1]);
+        checkNumber(v[2]);
+        checkNumber(v[3]);
+        break;
+      case 'stretch':
+        checkNumber(v[1]);
+        checkNumber(v[2]);
+        checkNumber(v[3]);
+        checkNumber(v[4]);
+        checkNumber(v[5]);
+        break;
+      case '>':
+      case '>=':
+      case '<':
+      case '<=':
+      case '==':
+        checkNumber(v[1]);
+        checkNumber(v[2]);
+        break;
+      case '!':
+        checkNumber(v[1]);
+        break;
+      case 'between':
+        checkNumber(v[1]);
+        checkNumber(v[2]);
+        checkNumber(v[3]);
+        break;
+
+      case 'interpolate':
+        checkNumber(v[1]);
+        checkColor(v[2]);
+        checkColor(v[3]);
+        break;
+
+      default: throw new Error(`Unrecognized operator in style expression: ${JSON.stringify(value)}`);
+    }
+  }
+}
+
 /**
  * Parses the provided expressions and produces a GLSL-compatible assignment string, such as:
  * `['add', ['*', ['get', 'size'], 0.001], 12] => '(a_size * (0.001)) + (12.0)'
@@ -139,6 +226,8 @@ export function isValueTypeColor(value) {
  * @returns {string} Assignment string.
  */
 export function parse(value, attributes, attributePrefix, variables) {
+  check(value);
+
   const v = value;
   function p(value) {
     return parse(value, attributes, attributePrefix, variables);

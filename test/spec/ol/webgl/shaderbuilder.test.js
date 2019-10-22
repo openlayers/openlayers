@@ -1,4 +1,5 @@
 import {
+  check,
   formatArray,
   formatColor,
   formatNumber,
@@ -246,6 +247,88 @@ void main(void) {
   gl_FragColor.rgb *= gl_FragColor.a;
 }`);
     });
+  });
+
+  describe('check', function() {
+
+    it('does not throw on valid expressions', function(done) {
+      check(1);
+      check(['get', 'myAttr']);
+      check(['var', 'myValue']);
+      check(['time']);
+      check(['+', ['*', ['get', 'size'], 0.001], 12]);
+      check(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20]);
+      check(['stretch', ['get', 'size'], 10, 100, 4, 8]);
+      check(['>', 10, ['get', 'attr4']]);
+      check(['>=', 10, ['get', 'attr4']]);
+      check(['<', 10, ['get', 'attr4']]);
+      check(['<=', 10, ['get', 'attr4']]);
+      check(['==', 10, ['get', 'attr4']]);
+      check(['between', ['get', 'attr4'], -4.0, 5.0]);
+      check(['!', ['get', 'attr4']]);
+      done();
+    });
+
+    it('throws on unsupported types for operators', function() {
+      let thrown = false;
+      try {
+        check(['var', 1234]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check(['<', 0, 'aa']);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check(['+', true, ['get', 'attr']]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws with the wrong number of arguments', function() {
+      let thrown = false;
+      try {
+        check(['var', 1234, 456]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check(['<', 4]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check(['+']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws on invalid expressions', function() {
+      let thrown = false;
+      try {
+        check(true);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check([123, 456]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check(null);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
   });
 
   describe('parse', function() {
