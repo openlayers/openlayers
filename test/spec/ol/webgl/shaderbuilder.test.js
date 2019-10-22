@@ -45,6 +45,7 @@ describe('ol.webgl.ShaderBuilder', function() {
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
+uniform float u_time;
 
 attribute vec2 a_position;
 attribute float a_index;
@@ -85,6 +86,7 @@ void main(void) {
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
+uniform float u_time;
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute float a_index;
@@ -122,6 +124,7 @@ void main(void) {
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
+uniform float u_time;
 
 attribute vec2 a_position;
 attribute float a_index;
@@ -160,6 +163,7 @@ void main(void) {
       builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
+uniform float u_time;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -182,6 +186,7 @@ void main(void) {
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
+uniform float u_time;
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
@@ -209,6 +214,7 @@ void main(void) {
     it('parses expressions & literal values', function() {
       expect(parseFn(1)).to.eql('1.0');
       expect(parseFn(['get', 'myAttr'])).to.eql('a_myAttr');
+      expect(parseFn(['time'])).to.eql('u_time');
       expect(parseFn(['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(parseFn(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
       expect(parseFn(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('(clamp(a_size, 10.0, 100.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');

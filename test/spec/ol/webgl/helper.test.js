@@ -1,4 +1,4 @@
-import WebGLHelper from '../../../../src/ol/webgl/Helper.js';
+import WebGLHelper, {DefaultUniform} from '../../../../src/ol/webgl/Helper.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
@@ -11,9 +11,9 @@ import {FLOAT} from '../../../../src/ol/webgl.js';
 const VERTEX_SHADER = `
   precision mediump float;
   
-  uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
+  uniform float u_time;
   
   attribute float a_test;
   uniform float u_test;
@@ -25,9 +25,9 @@ const VERTEX_SHADER = `
 const INVALID_VERTEX_SHADER = `
   precision mediump float;
   
-  uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
+  uniform float u_time;
   
   bla
   uniform float u_test;
@@ -121,6 +121,12 @@ describe('ol.webgl.WebGLHelper', function() {
       it('has resized the canvas', function() {
         expect(h.getCanvas().width).to.eql(100);
         expect(h.getCanvas().height).to.eql(160);
+      });
+
+      it('has processed default uniforms', function() {
+        expect(h.uniformLocations_[DefaultUniform.OFFSET_ROTATION_MATRIX]).not.to.eql(undefined);
+        expect(h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]).not.to.eql(undefined);
+        expect(h.uniformLocations_[DefaultUniform.TIME]).not.to.eql(undefined);
       });
 
       it('has processed uniforms', function() {

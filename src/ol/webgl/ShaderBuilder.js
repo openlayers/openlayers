@@ -66,6 +66,8 @@ export function parse(value, attributes, attributePrefix) {
           attributes.push(v[1]);
         }
         return attributePrefix + v[1];
+      case 'time':
+        return 'u_time';
 
       // math operators
       case '*': return `(${p(v[1])} * ${p(v[2])})`;
@@ -328,8 +330,8 @@ export class ShaderBuilder {
    * Generates a symbol vertex shader from the builder parameters,
    * intended to be used on point geometries.
    *
-   * Three uniforms are hardcoded in all shaders: `u_projectionMatrix`, `u_offsetScaleMatrix` and
-   * `u_offsetRotateMatrix`.
+   * Three uniforms are hardcoded in all shaders: `u_projectionMatrix`, `u_offsetScaleMatrix`,
+   * `u_offsetRotateMatrix`, `u_time`.
    *
    * The following attributes are hardcoded and expected to be present in the vertex buffers:
    * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3).
@@ -348,6 +350,7 @@ export class ShaderBuilder {
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
+uniform float u_time;
 ${this.uniforms.map(function(uniform) {
     return 'uniform ' + uniform + ';';
   }).join('\n')}
@@ -393,6 +396,7 @@ ${this.varyings.map(function(varying) {
    */
   getSymbolFragmentShader() {
     return `precision mediump float;
+uniform float u_time;
 ${this.uniforms.map(function(uniform) {
     return 'uniform ' + uniform + ';';
   }).join('\n')}
