@@ -5,7 +5,40 @@
  */
 
 /**
+ * Base type used for literal style parameters; can be a number literal or the output of an operator,
+ * which in turns takes {@link ExpressionValue} arguments.
+ *
+ * The following operators can be used:
+ *
+ * * Reading operators:
+ *   * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
+ *
+ * * Math operators:
+ *   * `['*', value1, value1]` multiplies value1 by value2
+ *   * `['+', value1, value1]` adds value1 and value2
+ *   * `['clamp', value1, value2, value3]` clamps value1 between values2 and value3
+ *   * `['stretch', value1, value2, value3, value4, value5]` maps value1 from [value2, value3] range to
+ *     [value4, value5] range, clamping values along the way
+ *
+ * * Logical operators:
+ *   * `['<', value1, value2]` returns `1` if `value1` is strictly lower than value 2, or `0` otherwise.
+ *   * `['<=', value1, value2]` returns `1` if `value1` is lower than or equals value 2, or `0` otherwise.
+ *   * `['>', value1, value2]` returns `1` if `value1` is strictly greater than value 2, or `0` otherwise.
+ *   * `['>=', value1, value2]` returns `1` if `value1` is greater than or equals value 2, or `0` otherwise.
+ *   * `['==', value1, value2]` returns `1` if `value1` equals value 2, or `0` otherwise.
+ *   * `['!', value1]` returns `0` if `value1` strictly greater than `0`, or `1` otherwise.
+ *   * `['between', value1, value2, value3]` returns `1` if `value1` is contained between `value2` and `value3`
+ *     (inclusively), or `0` otherwise.
+ *
+ * Values can either be literals (numbers) or another operator, as they will be evaluated recursively.
+ *
+ * @typedef {Array<*>|number} ExpressionValue
+ */
+
+/**
  * @typedef {Object} LiteralStyle
+ * @property {ExpressionValue} [filter] Filter expression. If it resolves to a number strictly greater than 0, the
+ * point will be displayed. If undefined, all points will show.
  * @property {LiteralSymbolStyle} [symbol] Symbol representation.
  */
 
@@ -22,12 +55,12 @@ export const SymbolType = {
 
 /**
  * @typedef {Object} LiteralSymbolStyle
- * @property {number|Array.<number, number>} size Size, mandatory.
+ * @property {ExpressionValue|Array<ExpressionValue, ExpressionValue>} size Size, mandatory.
  * @property {SymbolType} symbolType Symbol type to use, either a regular shape or an image.
  * @property {string} [src] Path to the image to be used for the symbol. Only required with `symbolType: 'image'`.
- * @property {import("../color.js").Color|string} [color='#FFFFFF'] Color used for the representation (either fill, line or symbol).
- * @property {number} [opacity=1] Opacity.
- * @property {Array.<number, number>} [offset] Offset on X and Y axis for symbols. If not specified, the symbol will be centered.
- * @property {Array.<number, number, number, number>} [textureCoord] Texture coordinates. If not specified, the whole texture will be used (range for 0 to 1 on both axes).
+ * @property {import("../color.js").Color|Array<ExpressionValue>|string} [color='#FFFFFF'] Color used for the representation (either fill, line or symbol).
+ * @property {ExpressionValue} [opacity=1] Opacity.
+ * @property {Array<ExpressionValue, ExpressionValue>} [offset] Offset on X and Y axis for symbols. If not specified, the symbol will be centered.
+ * @property {Array<ExpressionValue, ExpressionValue, ExpressionValue, ExpressionValue>} [textureCoord] Texture coordinates. If not specified, the whole texture will be used (range for 0 to 1 on both axes).
  * @property {boolean} [rotateWithView=false] Specify whether the symbol must rotate with the view or stay upwards.
  */

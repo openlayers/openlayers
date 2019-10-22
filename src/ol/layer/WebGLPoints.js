@@ -3,7 +3,7 @@
  */
 import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {parseSymbolStyle} from '../webgl/ShaderBuilder.js';
+import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
 import Layer from './Layer.js';
 
 
@@ -74,7 +74,7 @@ class WebGLPointsLayer extends Layer {
      * @private
      * @type {import('../webgl/ShaderBuilder.js').StyleParseResult}
      */
-    this.parseResult_ = parseSymbolStyle(options.style.symbol);
+    this.parseResult_ = parseLiteralStyle(options.style);
   }
 
   /**

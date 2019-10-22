@@ -3,7 +3,7 @@ import {
   formatColor,
   formatNumber,
   parse,
-  parseSymbolStyle,
+  parseLiteralStyle,
   ShaderBuilder
 } from '../../../../src/ol/webgl/ShaderBuilder.js';
 
@@ -212,7 +212,14 @@ void main(void) {
       expect(parseFn(['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(parseFn(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
       expect(parseFn(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('(clamp(a_size, 10.0, 100.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');
-      expect(attributes).to.eql(['myAttr', 'size', 'attr2', 'attr3']);
+      expect(parseFn(['>', 10, ['get', 'attr4']])).to.eql('(10.0 > a_attr4 ? 1.0 : 0.0)');
+      expect(parseFn(['>=', 10, ['get', 'attr4']])).to.eql('(10.0 >= a_attr4 ? 1.0 : 0.0)');
+      expect(parseFn(['<', 10, ['get', 'attr4']])).to.eql('(10.0 < a_attr4 ? 1.0 : 0.0)');
+      expect(parseFn(['<=', 10, ['get', 'attr4']])).to.eql('(10.0 <= a_attr4 ? 1.0 : 0.0)');
+      expect(parseFn(['==', 10, ['get', 'attr4']])).to.eql('(10.0 == a_attr4 ? 1.0 : 0.0)');
+      expect(parseFn(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0 ? 1.0 : 0.0)');
+      expect(parseFn(['!', ['get', 'attr4']])).to.eql('(a_attr4 > 0.0 ? 0.0 : 1.0)');
+      expect(attributes).to.eql(['myAttr', 'size', 'attr2', 'attr3', 'attr4']);
     });
 
     it('does not register an attribute several times', function() {
@@ -224,17 +231,19 @@ void main(void) {
 
   describe('parseSymbolStyle', function() {
     it('parses a style without expressions', function() {
-      const result = parseSymbolStyle({
-        symbolType: 'square',
-        size: [4, 8],
-        color: '#336699',
-        rotateWithView: true
+      const result = parseLiteralStyle({
+        symbol: {
+          symbolType: 'square',
+          size: [4, 8],
+          color: '#336699',
+          rotateWithView: true
+        }
       });
 
       expect(result.builder.uniforms).to.eql([]);
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)');
+      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0 * 1.0 * 1.0)');
       expect(result.builder.sizeExpression).to.eql('vec2(4.0, 8.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
@@ -244,14 +253,16 @@ void main(void) {
     });
 
     it('parses a style with expressions', function() {
-      const result = parseSymbolStyle({
-        symbolType: 'square',
-        size: ['get', 'attr1'],
-        color: [
-          1.0, 0.0, 0.5, ['get', 'attr2']
-        ],
-        textureCoord: [0.5, 0.5, 0.5, 1],
-        offset: [3, ['get', 'attr3']]
+      const result = parseLiteralStyle({
+        symbol: {
+          symbolType: 'square',
+          size: ['get', 'attr1'],
+          color: [
+            1.0, 0.0, 0.5, ['get', 'attr2']
+          ],
+          textureCoord: [0.5, 0.5, 0.5, 1],
+          offset: [3, ['get', 'attr3']]
+        }
       });
 
       expect(result.builder.uniforms).to.eql([]);
@@ -266,7 +277,7 @@ void main(void) {
         expression: 'a_attr2'
       }]);
       expect(result.builder.colorExpression).to.eql(
-        'vec4(1.0, 0.0, 0.5, v_attr2) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)');
+        'vec4(1.0, 0.0, 0.5, v_attr2 * 1.0 * 1.0)');
       expect(result.builder.sizeExpression).to.eql('vec2(a_attr1, a_attr1)');
       expect(result.builder.offsetExpression).to.eql('vec2(3.0, a_attr3)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.5, 0.5, 0.5, 1.0)');
@@ -279,25 +290,53 @@ void main(void) {
     });
 
     it('parses a style with a uniform (texture)', function() {
-      const result = parseSymbolStyle({
-        symbolType: 'image',
-        src: '../data/image.png',
-        size: 6,
-        color: '#336699',
-        opacity: 0.5
+      const result = parseLiteralStyle({
+        symbol: {
+          symbolType: 'image',
+          src: '../data/image.png',
+          size: 6,
+          color: '#336699',
+          opacity: 0.5
+        }
       });
 
       expect(result.builder.uniforms).to.eql(['sampler2D u_texture']);
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
       expect(result.builder.colorExpression).to.eql(
-        'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 0.5 * 1.0) * texture2D(u_texture, v_texCoord)');
+        'vec4(0.2, 0.4, 0.6, 1.0 * 0.5 * 1.0) * texture2D(u_texture, v_texCoord)');
       expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.have.property('u_texture');
+    });
+
+    it('parses a style with a filter', function() {
+      const result = parseLiteralStyle({
+        filter: ['between', ['get', 'attr0'], 0, 10],
+        symbol: {
+          symbolType: 'square',
+          size: 6,
+          color: '#336699'
+        }
+      });
+
+      expect(result.builder.attributes).to.eql(['float a_attr0']);
+      expect(result.builder.varyings).to.eql([{
+        name: 'v_attr0',
+        type: 'float',
+        expression: 'a_attr0'
+      }]);
+      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0 * 1.0 * 1.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
+      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
+      expect(result.builder.discardExpression).to.eql('(v_attr0 >= 0.0 && v_attr0 <= 10.0 ? 1.0 : 0.0) <= 0.0');
+      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.attributes.length).to.eql(1);
+      expect(result.attributes[0].name).to.eql('attr0');
     });
   });
 

@@ -38,23 +38,8 @@ export function formatColor(colorArray) {
 }
 
 /**
- * Base type for values fed to operators; can be a number literal or the output of another operator
- * @typedef {Array<*>|number} OperatorValue
- */
-
-/**
  * Parses the provided expressions and produces a GLSL-compatible assignment string, such as:
  * `['add', ['*', ['get', 'size'], 0.001], 12] => '(a_size * (0.001)) + (12.0)'
- *
- * The following operators can be used:
- * * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
- * * `['*', value1, value1]` multiplies value1 by value2
- * * `['+', value1, value1]` adds value1 and value2
- * * `['clamp', value1, value2, value3]` clamps value1 between values2 and value3
- * * `['stretch', value1, value2, value3, value4, value5]` maps value1 from [value2, value3] range to
- *   [value4, value5] range, clamping values along the way
- *
- * Values can either be literals (numbers) or another operator, as they will be evaluated recursively.
  *
  * Also takes in an array where new attributes will be pushed, so that the user of the `parse` function
  * knows which attributes are expected to be available at evaluation time.
@@ -62,7 +47,7 @@ export function formatColor(colorArray) {
  * A prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
  * the final assignment string.
  *
- * @param {OperatorValue} value Either literal or an operator.
+ * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
  * @param {Array<string>} attributes Array containing the attribute names **without a prefix**;
  * it passed along recursively
  * @param {string} attributePrefix Prefix added to attribute names in the final output (typically `a_` or `v_`).
@@ -75,15 +60,31 @@ export function parse(value, attributes, attributePrefix) {
   }
   if (Array.isArray(v)) {
     switch (v[0]) {
+      // reading operators
       case 'get':
         if (attributes.indexOf(v[1]) === -1) {
           attributes.push(v[1]);
         }
         return attributePrefix + v[1];
+
+      // math operators
       case '*': return `(${p(v[1])} * ${p(v[2])})`;
       case '+': return `(${p(v[1])} + ${p(v[2])})`;
       case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
       case 'stretch': return `(clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])}) * ((${p(v[5])} - ${p(v[4])}) / (${p(v[3])} - ${p(v[2])})) + ${p(v[4])})`;
+
+      // logical operators
+      case '>':
+      case '>=':
+      case '<':
+      case '<=':
+      case '==':
+        return `(${p(v[1])} ${v[0]} ${p(v[2])} ? 1.0 : 0.0)`;
+      case '!':
+        return `(${p(v[1])} > 0.0 ? 0.0 : 1.0)`;
+      case 'between':
+        return `(${p(v[1])} >= ${p(v[2])} && ${p(v[1])} <= ${p(v[3])} ? 1.0 : 0.0)`;
+
       default: throw new Error('Unrecognized literal style expression: ' + JSON.stringify(value));
     }
   } else if (typeof value === 'number') {
@@ -273,7 +274,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setFragmentDiscardExpression(expression) {
-    this.texCoordExpression = expression;
+    this.discardExpression = expression;
     return this;
   }
 
@@ -416,27 +417,28 @@ void main(void) {
  */
 
 /**
- * Parses a {@link import("../style/LiteralStyle").LiteralSymbolStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../style/LiteralStyle").LiteralStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/LiteralStyle").LiteralSymbolStyle} style Symbol style.
+ * @param {import("../style/LiteralStyle").LiteralStyle} style Literal style.
  * @returns {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
-export function parseSymbolStyle(style) {
-  const size = Array.isArray(style.size) && typeof style.size[0] == 'number' ?
-    style.size : [style.size, style.size];
-  const color = (typeof style.color === 'string' ?
-    asArray(style.color).map(function(c, i) {
+export function parseLiteralStyle(style) {
+  const symbStyle = style.symbol;
+  const size = Array.isArray(symbStyle.size) && typeof symbStyle.size[0] == 'number' ?
+    symbStyle.size : [symbStyle.size, symbStyle.size];
+  const color = (typeof symbStyle.color === 'string' ?
+    asArray(symbStyle.color).map(function(c, i) {
       return i < 3 ? c / 255 : c;
     }) :
-    style.color || [255, 255, 255, 1]);
-  const texCoord = style.textureCoord || [0, 0, 1, 1];
-  const offset = style.offset || [0, 0];
-  const opacity = style.opacity !== undefined ? style.opacity : 1;
+    symbStyle.color || [255, 255, 255, 1]);
+  const texCoord = symbStyle.textureCoord || [0, 0, 1, 1];
+  const offset = symbStyle.offset || [0, 0];
+  const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
 
   const vertAttributes = [];
   // parse function for vertex shader
@@ -452,7 +454,7 @@ export function parseSymbolStyle(style) {
 
   let opacityFilter = '1.0';
   const visibleSize = pFrag(size[0]);
-  switch (style.symbolType) {
+  switch (symbStyle.symbolType) {
     case 'square': break;
     case 'image': break;
     // taken from https://thebookofshaders.com/07/
@@ -465,7 +467,7 @@ export function parseSymbolStyle(style) {
       opacityFilter = `(1.0-smoothstep(.5-3./${visibleSize},.5,cos(floor(.5+${a}/2.094395102)*2.094395102-${a})*length(${st})))`;
       break;
 
-    default: throw new Error('Unexpected symbol type: ' + style.symbolType);
+    default: throw new Error('Unexpected symbol type: ' + symbStyle.symbolType);
   }
 
   const builder = new ShaderBuilder()
@@ -473,9 +475,13 @@ export function parseSymbolStyle(style) {
     .setSymbolOffsetExpression(`vec2(${pVert(offset[0])}, ${pVert(offset[1])})`)
     .setTextureCoordinateExpression(
       `vec4(${pVert(texCoord[0])}, ${pVert(texCoord[1])}, ${pVert(texCoord[2])}, ${pVert(texCoord[3])})`)
-    .setSymbolRotateWithView(!!style.rotateWithView)
-    .setColorExpression(`vec4(${pFrag(color[0])}, ${pFrag(color[1])}, ${pFrag(color[2])}, ${pFrag(color[3])})` +
-      ` * vec4(1.0, 1.0, 1.0, ${pFrag(opacity)} * ${opacityFilter})`);
+    .setSymbolRotateWithView(!!symbStyle.rotateWithView)
+    .setColorExpression(
+      `vec4(${pFrag(color[0])}, ${pFrag(color[1])}, ${pFrag(color[2])}, ${pFrag(color[3])} * ${pFrag(opacity)} * ${opacityFilter})`);
+
+  if (style.filter) {
+    builder.setFragmentDiscardExpression(`${pFrag(style.filter)} <= 0.0`);
+  }
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
@@ -491,13 +497,12 @@ export function parseSymbolStyle(style) {
     builder.addAttribute(`float a_${attrName}`);
   });
 
-
   /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
-  if (style.symbolType === 'image' && style.src) {
+  if (symbStyle.symbolType === 'image' && symbStyle.src) {
     const texture = new Image();
-    texture.src = style.src;
+    texture.src = symbStyle.src;
     builder.addUniform('sampler2D u_texture')
       .setColorExpression(builder.getColorExpression() +
         ' * texture2D(u_texture, v_texCoord)');
