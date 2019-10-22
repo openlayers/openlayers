@@ -8,7 +8,8 @@ import {
   isValueTypeString,
   parse,
   parseLiteralStyle,
-  ShaderBuilder
+  ShaderBuilder,
+  ValueTypes
 } from '../../../../src/ol/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', function() {
@@ -270,6 +271,10 @@ void main(void) {
 
     it('does not throw on valid expressions', function(done) {
       check(1);
+      check('attr');
+      check('rgba(12, 34, 56, 0.5)');
+      check([255, 255, 255, 1]);
+      check([255, 255, 255]);
       check(['get', 'myAttr']);
       check(['var', 'myValue']);
       check(['time']);
@@ -283,6 +288,8 @@ void main(void) {
       check(['==', 10, ['get', 'attr4']]);
       check(['between', ['get', 'attr4'], -4.0, 5.0]);
       check(['!', ['get', 'attr4']]);
+      check(['interpolate', ['get', 'attr4'], 'green', '#3344FF']);
+      check(['interpolate', 0.2, [10, 20, 30], [255, 255, 255, 1]]);
       done();
     });
 
@@ -300,6 +307,11 @@ void main(void) {
       }
       try {
         check(['+', true, ['get', 'attr']]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        check(['interpolate', ['get', 'attr4'], 1, '#3344FF']);
       } catch (e) {
         thrown = true;
       }
@@ -355,13 +367,16 @@ void main(void) {
       attributes = [];
       variables = [];
       prefix = 'a_';
-      parseFn = function(value) {
-        return parse(value, attributes, prefix, variables);
+      parseFn = function(value, type) {
+        return parse(value, attributes, prefix, variables, type);
       };
     });
 
     it('parses expressions & literal values', function() {
       expect(parseFn(1)).to.eql('1.0');
+      expect(parseFn('a_random_string')).to.eql('"a_random_string"');
+      expect(parseFn([255, 127.5, 63.75, 0.1])).to.eql('vec4(1.0, 0.5, 0.25, 0.1)');
+      expect(parseFn([255, 127.5, 63.75])).to.eql('vec4(1.0, 0.5, 0.25, 1.0)');
       expect(parseFn(['get', 'myAttr'])).to.eql('a_myAttr');
       expect(parseFn(['var', 'myValue'])).to.eql('u_myValue');
       expect(parseFn(['time'])).to.eql('u_time');
@@ -375,8 +390,15 @@ void main(void) {
       expect(parseFn(['==', 10, ['get', 'attr4']])).to.eql('(10.0 == a_attr4 ? 1.0 : 0.0)');
       expect(parseFn(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0 ? 1.0 : 0.0)');
       expect(parseFn(['!', ['get', 'attr4']])).to.eql('(a_attr4 > 0.0 ? 0.0 : 1.0)');
+      expect(parseFn(['interpolate', ['get', 'attr4'], [255, 255, 255, 1], 'transparent'])).to.eql(
+        'mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.0, 0.0, 0.0, 0.0), a_attr4)');
       expect(attributes).to.eql(['myAttr', 'size', 'attr2', 'attr3', 'attr4']);
       expect(variables).to.eql(['myValue']);
+    });
+
+    it('gives precedence to the string type unless asked otherwise', function() {
+      expect(parseFn('lightgreen')).to.eql('"lightgreen"');
+      expect(parseFn('lightgreen', ValueTypes.COLOR)).to.eql('vec4(0.5647058823529412, 0.9333333333333333, 0.5647058823529412, 1.0)');
     });
 
     it('does not register an attribute several times', function() {

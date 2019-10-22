@@ -50,7 +50,7 @@ export function formatColor(color) {
  * Possible inferred types from a given value or expression
  * @enum {number}
  */
-const ValueTypes = {
+export const ValueTypes = {
   UNKNOWN: -1,
   NUMBER: 0,
   STRING: 1,
@@ -163,7 +163,7 @@ export function check(value) {
   }
 
   // check operator arguments
-  if (Array.isArray(value)) {
+  if (Array.isArray(value) && typeof value[0] === 'string') {
     switch (value[0]) {
       case 'get':
       case 'var':
@@ -226,22 +226,35 @@ export function check(value) {
  * For attributes, a prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
  * the final assignment string (depending on whether we're outputting a vertex or fragment shader).
  *
+ * If a wrong value type is supplied to an operator (i. e. using colors with the `clamp` operator), an exception
+ * will be thrown.
+ *
+ * Note that by default, the `string` value type will be given precedence over `color`, so for example the
+ * `'yellow'` literal value will be parsed as a `string` while being a valid CSS color. This can be changed with
+ * the `typeHint` optional parameter which disambiguates what kind of value is expected.
+ *
  * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
  * @param {Array<string>} attributes Array containing the attribute names **without a prefix**;
  * it is passed along recursively
  * @param {string} attributePrefix Prefix added to attribute names in the final output (typically `a_` or `v_`).
  * @param {Array<string>} variables Array containing the variable names **without a prefix**;
  * it is passed along recursively
+ * @param {ValueTypes} [typeHint] Hint for inferred type
  * @returns {string} Assignment string.
  */
-export function parse(value, attributes, attributePrefix, variables) {
+export function parse(value, attributes, attributePrefix, variables, typeHint) {
   check(value);
 
   const v = value;
   function p(value) {
     return parse(value, attributes, attributePrefix, variables);
   }
-  if (Array.isArray(v)) {
+  function pC(value) {
+    return parse(value, attributes, attributePrefix, variables, ValueTypes.COLOR);
+  }
+
+  // operator
+  if (Array.isArray(v) && typeof value[0] === 'string') {
     switch (v[0]) {
       // reading operators
       case 'get':
@@ -263,6 +276,10 @@ export function parse(value, attributes, attributePrefix, variables) {
       case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
       case 'stretch': return `(clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])}) * ((${p(v[5])} - ${p(v[4])}) / (${p(v[3])} - ${p(v[2])})) + ${p(v[4])})`;
 
+      // color operators
+      case 'interpolate':
+        return `mix(${pC(v[2])}, ${pC(v[3])}, ${p(v[1])})`;
+
       // logical operators
       case '>':
       case '>=':
@@ -275,12 +292,14 @@ export function parse(value, attributes, attributePrefix, variables) {
       case 'between':
         return `(${p(v[1])} >= ${p(v[2])} && ${p(v[1])} <= ${p(v[3])} ? 1.0 : 0.0)`;
 
-      default: throw new Error('Unrecognized literal style expression: ' + JSON.stringify(value));
+      default: throw new Error('Invalid style expression: ' + JSON.stringify(value));
     }
-  } else if (typeof value === 'number') {
-    return formatNumber(value);
+  } else if (isValueTypeNumber(value)) {
+    return formatNumber(/** @type {number} */(value));
+  } else if (isValueTypeString(value) && (typeHint === undefined || typeHint == ValueTypes.STRING)) {
+    return `"${value}"`;
   } else {
-    throw new Error('Invalid value type in expression: ' + JSON.stringify(value));
+    return formatColor(/** @type {number[]|string} */(value));
   }
 }
 
