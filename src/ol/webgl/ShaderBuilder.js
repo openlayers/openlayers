@@ -26,13 +26,13 @@ export function formatArray(array) {
 
 /**
  * Will normalize and converts to string a color array compatible with GLSL.
- * @param {Array<number>} colorArray Color in [r, g, b, a] array form, with RGB components in the
- * 0..255 range and the alpha component in the 0..1 range. Note that if the A component is
+ * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
+ * with RGB components in the 0..255 range and the alpha component in the 0..1 range. Note that if the A component is
  * missing, only 3 values will be output.
  * @returns {string} The color components concatenated in `1.0, 1.0, 1.0, 1.0` form.
  */
-export function formatColor(colorArray) {
-  return colorArray.map(function(c, i) {
+export function formatColor(color) {
+  return asArray(color).map(function(c, i) {
     return i < 3 ? c / 255 : c;
   }).map(formatNumber).join(', ');
 }

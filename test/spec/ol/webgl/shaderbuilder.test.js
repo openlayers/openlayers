@@ -29,6 +29,11 @@ describe('ol.webgl.ShaderBuilder', function() {
     it('normalizes color and outputs numbers with dot separators', function() {
       expect(formatColor([100, 0, 255, 1])).to.eql('0.39215686274509803, 0.0, 1.0, 1.0');
     });
+    it('handles colors in string format', function() {
+      expect(formatColor('red')).to.eql('1.0, 0.0, 0.0, 1.0');
+      expect(formatColor('rgb(100, 0, 255)')).to.eql('0.39215686274509803, 0.0, 1.0, 1.0');
+      expect(formatColor('rgba(100, 0, 255, 0.3)')).to.eql('0.39215686274509803, 0.0, 1.0, 0.3');
+    });
   });
 
   describe('getSymbolVertexShader', function() {
