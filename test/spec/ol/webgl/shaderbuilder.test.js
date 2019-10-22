@@ -1,8 +1,10 @@
 import {
-  getSymbolVertexShader,
+  formatArray,
+  formatColor,
   formatNumber,
-  getSymbolFragmentShader,
-  formatColor, formatArray, parse, parseSymbolStyle
+  parse,
+  parseSymbolStyle,
+  ShaderBuilder
 } from '../../../../src/ol/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', function() {
@@ -31,24 +33,15 @@ describe('ol.webgl.ShaderBuilder', function() {
 
   describe('getSymbolVertexShader', function() {
     it('generates a symbol vertex shader (with varying)', function() {
-      const parameters = {
-        varyings: [{
-          name: 'v_opacity',
-          type: 'float',
-          expression: formatNumber(0.4)
-        }, {
-          name: 'v_test',
-          type: 'vec3',
-          expression: 'vec3(' + formatArray([1, 2, 3]) + ')'
-        }],
-        sizeExpression: 'vec2(' + formatNumber(6) + ')',
-        offsetExpression: 'vec2(' + formatArray([5, -7]) + ')',
-        colorExpression: 'vec4(' + formatColor([80, 0, 255, 1]) + ')',
-        texCoordExpression: 'vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')',
-        rotateWithView: false
-      };
+      const builder = new ShaderBuilder();
+      builder.addVarying('v_opacity', 'float', formatNumber(0.4));
+      builder.addVarying('v_test', 'vec3', 'vec3(' + formatArray([1, 2, 3]) + ')');
+      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
+      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
+      builder.setColorExpression('vec4(' + formatColor([80, 0, 255, 1]) + ')');
+      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
 
-      expect(getSymbolVertexShader(parameters)).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
@@ -80,16 +73,15 @@ void main(void) {
 }`);
     });
     it('generates a symbol vertex shader (with uniforms and attributes)', function() {
-      const parameters = {
-        uniforms: ['float u_myUniform'],
-        attributes: ['vec2 a_myAttr'],
-        sizeExpression: 'vec2(' + formatNumber(6) + ')',
-        offsetExpression: 'vec2(' + formatArray([5, -7]) + ')',
-        colorExpression: 'vec4(' + formatColor([80, 0, 255, 1]) + ')',
-        texCoordExpression: 'vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')'
-      };
+      const builder = new ShaderBuilder();
+      builder.addUniform('float u_myUniform');
+      builder.addAttribute('vec2 a_myAttr');
+      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
+      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
+      builder.setColorExpression('vec4(' + formatColor([80, 0, 255, 1]) + ')');
+      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
 
-      expect(getSymbolVertexShader(parameters)).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
@@ -119,15 +111,14 @@ void main(void) {
 }`);
     });
     it('generates a symbol vertex shader (with rotateWithView)', function() {
-      const parameters = {
-        sizeExpression: 'vec2(' + formatNumber(6) + ')',
-        offsetExpression: 'vec2(' + formatArray([5, -7]) + ')',
-        colorExpression: 'vec4(' + formatColor([80, 0, 255, 1]) + ')',
-        texCoordExpression: 'vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')',
-        rotateWithView: true
-      };
+      const builder = new ShaderBuilder();
+      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
+      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
+      builder.setColorExpression('vec4(' + formatColor([80, 0, 255, 1]) + ')');
+      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.setSymbolRotateWithView(true);
 
-      expect(getSymbolVertexShader(parameters)).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
@@ -160,24 +151,15 @@ void main(void) {
 
   describe('getSymbolFragmentShader', function() {
     it('generates a symbol fragment shader (with varying)', function() {
-      const parameters = {
-        varyings: [{
-          name: 'v_opacity',
-          type: 'float',
-          expression: formatNumber(0.4)
-        }, {
-          name: 'v_test',
-          type: 'vec3',
-          expression: 'vec3(' + formatArray([1, 2, 3]) + ')'
-        }],
-        sizeExpression: 'vec2(' + formatNumber(6) + ')',
-        offsetExpression: 'vec2(' + formatArray([5, -7]) + ')',
-        colorExpression: 'vec4(' + formatColor([80, 0, 255]) + ', v_opacity)',
-        texCoordExpression: 'vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')',
-        rotateWithView: false
-      };
+      const builder = new ShaderBuilder();
+      builder.addVarying('v_opacity', 'float', formatNumber(0.4));
+      builder.addVarying('v_test', 'vec3', 'vec3(' + formatArray([1, 2, 3]) + ')');
+      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
+      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
+      builder.setColorExpression('vec4(' + formatColor([80, 0, 255]) + ', v_opacity)');
+      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
 
-      expect(getSymbolFragmentShader(parameters)).to.eql(`precision mediump float;
+      expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -189,15 +171,15 @@ void main(void) {
 }`);
     });
     it('generates a symbol fragment shader (with uniforms)', function() {
-      const parameters = {
-        uniforms: ['float u_myUniform', 'vec2 u_myUniform2'],
-        sizeExpression: 'vec2(' + formatNumber(6) + ')',
-        offsetExpression: 'vec2(' + formatArray([5, -7]) + ')',
-        colorExpression: 'vec4(' + formatColor([255, 255, 255, 1]) + ')',
-        texCoordExpression: 'vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')'
-      };
+      const builder = new ShaderBuilder();
+      builder.addUniform('float u_myUniform');
+      builder.addUniform('vec2 u_myUniform2');
+      builder.setSizeExpression('vec2(' + formatNumber(6) + ')');
+      builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
+      builder.setColorExpression('vec4(' + formatColor([255, 255, 255, 1]) + ')');
+      builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
 
-      expect(getSymbolFragmentShader(parameters)).to.eql(`precision mediump float;
+      expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
@@ -245,16 +227,15 @@ void main(void) {
         color: '#336699',
         rotateWithView: true
       });
-      expect(result.params).to.eql({
-        uniforms: [],
-        attributes: [],
-        varyings: [],
-        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)',
-        sizeExpression: 'vec2(4.0, 8.0)',
-        offsetExpression: 'vec2(0.0, 0.0)',
-        texCoordExpression: 'vec4(0.0, 0.0, 1.0, 1.0)',
-        rotateWithView: true
-      });
+
+      expect(result.builder.uniforms).to.eql([]);
+      expect(result.builder.attributes).to.eql([]);
+      expect(result.builder.varyings).to.eql([]);
+      expect(result.builder.colorExpression).to.eql('vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(4.0, 8.0)');
+      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
+      expect(result.builder.rotateWithView).to.eql(true);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.eql({});
     });
@@ -269,24 +250,24 @@ void main(void) {
         textureCoord: [0.5, 0.5, 0.5, 1],
         offset: [3, ['get', 'attr3']]
       });
-      expect(result.params).to.eql({
-        uniforms: [],
-        attributes: ['float a_attr1', 'float a_attr3', 'float a_attr2'],
-        varyings: [{
-          name: 'v_attr1',
-          type: 'float',
-          expression: 'a_attr1'
-        }, {
-          name: 'v_attr2',
-          type: 'float',
-          expression: 'a_attr2'
-        }],
-        colorExpression: 'vec4(1.0, 0.0, 0.5, v_attr2) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)',
-        sizeExpression: 'vec2(a_attr1, a_attr1)',
-        offsetExpression: 'vec2(3.0, a_attr3)',
-        texCoordExpression: 'vec4(0.5, 0.5, 0.5, 1.0)',
-        rotateWithView: false
-      });
+
+      expect(result.builder.uniforms).to.eql([]);
+      expect(result.builder.attributes).to.eql(['float a_attr1', 'float a_attr3', 'float a_attr2']);
+      expect(result.builder.varyings).to.eql([{
+        name: 'v_attr1',
+        type: 'float',
+        expression: 'a_attr1'
+      }, {
+        name: 'v_attr2',
+        type: 'float',
+        expression: 'a_attr2'
+      }]);
+      expect(result.builder.colorExpression).to.eql(
+        'vec4(1.0, 0.0, 0.5, v_attr2) * vec4(1.0, 1.0, 1.0, 1.0 * 1.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(a_attr1, a_attr1)');
+      expect(result.builder.offsetExpression).to.eql('vec2(3.0, a_attr3)');
+      expect(result.builder.texCoordExpression).to.eql('vec4(0.5, 0.5, 0.5, 1.0)');
+      expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(3);
       expect(result.attributes[0].name).to.eql('attr1');
       expect(result.attributes[1].name).to.eql('attr3');
@@ -302,16 +283,16 @@ void main(void) {
         color: '#336699',
         opacity: 0.5
       });
-      expect(result.params).to.eql({
-        uniforms: ['sampler2D u_texture'],
-        attributes: [],
-        varyings: [],
-        colorExpression: 'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 0.5 * 1.0) * texture2D(u_texture, v_texCoord)',
-        sizeExpression: 'vec2(6.0, 6.0)',
-        offsetExpression: 'vec2(0.0, 0.0)',
-        texCoordExpression: 'vec4(0.0, 0.0, 1.0, 1.0)',
-        rotateWithView: false
-      });
+
+      expect(result.builder.uniforms).to.eql(['sampler2D u_texture']);
+      expect(result.builder.attributes).to.eql([]);
+      expect(result.builder.varyings).to.eql([]);
+      expect(result.builder.colorExpression).to.eql(
+        'vec4(0.2, 0.4, 0.6, 1.0) * vec4(1.0, 1.0, 1.0, 0.5 * 1.0) * texture2D(u_texture, v_texCoord)');
+      expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
+      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
+      expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.have.property('u_texture');
     });
