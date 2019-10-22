@@ -18,10 +18,14 @@
  *
  * * Math operators:
  *   * `['*', value1, value1]` multiplies `value1` by `value2`
+ *   * `['/', value1, value1]` divides `value1` by `value2`
  *   * `['+', value1, value1]` adds `value1` and `value2`
+ *   * `['-', value1, value1]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
  *   * `['stretch', value, low1, high1, low2, high2]` maps `value` from [`low1`, `high1`] range to
  *     [`low2`, `high2`] range, clamping values along the way
+ *   * `['mod', value1, value1]` returns the result of `value1 % value2` (modulo)
+ *   * `['pow', value1, value1]` returns the value of `value1` raised to the `value2` power
  *
  * * Color operators:
  *   * `['interpolate', ratio, color1, color2]` returns a color through interpolation between `color1` and

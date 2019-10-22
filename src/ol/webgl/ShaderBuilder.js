@@ -87,9 +87,13 @@ function getValueType(value) {
     case 'var':
     case 'time':
     case '*':
+    case '/':
     case '+':
+    case '-':
     case 'clamp':
     case 'stretch':
+    case 'mod':
+    case 'pow':
     case '>':
     case '>=':
     case '<':
@@ -172,7 +176,11 @@ export function check(value) {
       case 'time':
         break;
       case '*':
+      case '/':
       case '+':
+      case '-':
+      case 'mod':
+      case 'pow':
         checkNumber(v[1]);
         checkNumber(v[2]);
         break;
@@ -271,8 +279,11 @@ export function parse(value, attributes, attributePrefix, variables, typeHint) {
         return 'u_time';
 
       // math operators
-      case '*': return `(${p(v[1])} * ${p(v[2])})`;
-      case '+': return `(${p(v[1])} + ${p(v[2])})`;
+      case '*':
+      case '/':
+      case '+':
+      case '-':
+        return `(${p(v[1])} ${v[0]} ${p(v[2])})`;
       case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
       case 'stretch':
         const low1 = p(v[2]);
@@ -280,6 +291,8 @@ export function parse(value, attributes, attributePrefix, variables, typeHint) {
         const low2 = p(v[4]);
         const high2 = p(v[5]);
         return `((clamp(${p(v[1])}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
+      case 'mod': return `mod(${p(v[1])}, ${p(v[2])})`;
+      case 'pow': return `pow(${p(v[1])}, ${p(v[2])})`;
 
       // color operators
       case 'interpolate':

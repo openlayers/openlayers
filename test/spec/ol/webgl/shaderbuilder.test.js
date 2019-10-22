@@ -279,8 +279,10 @@ void main(void) {
       check(['var', 'myValue']);
       check(['time']);
       check(['+', ['*', ['get', 'size'], 0.001], 12]);
+      check(['/', ['-', ['get', 'size'], 0.001], 12]);
       check(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20]);
       check(['stretch', ['get', 'size'], 10, 100, 4, 8]);
+      check(['mod', ['pow', ['get', 'size'], 0.5], 12]);
       check(['>', 10, ['get', 'attr4']]);
       check(['>=', 10, ['get', 'attr4']]);
       check(['<', 10, ['get', 'attr4']]);
@@ -381,8 +383,10 @@ void main(void) {
       expect(parseFn(['var', 'myValue'])).to.eql('u_myValue');
       expect(parseFn(['time'])).to.eql('u_time');
       expect(parseFn(['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
+      expect(parseFn(['/', ['-', ['get', 'size'], 20], 100])).to.eql('((a_size - 20.0) / 100.0)');
       expect(parseFn(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
       expect(parseFn(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('((clamp(a_size, 10.0, 100.0) - 10.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');
+      expect(parseFn(['pow', ['mod', ['time'], 10], 2])).to.eql('pow(mod(u_time, 10.0), 2.0)');
       expect(parseFn(['>', 10, ['get', 'attr4']])).to.eql('(10.0 > a_attr4 ? 1.0 : 0.0)');
       expect(parseFn(['>=', 10, ['get', 'attr4']])).to.eql('(10.0 >= a_attr4 ? 1.0 : 0.0)');
       expect(parseFn(['<', 10, ['get', 'attr4']])).to.eql('(10.0 < a_attr4 ? 1.0 : 0.0)');
