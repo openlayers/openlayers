@@ -166,6 +166,7 @@ varying vec2 v_quadCoord;
 varying float v_opacity;
 varying vec3 v_test;
 void main(void) {
+  if (false) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, v_opacity);
   gl_FragColor.rgb *= gl_FragColor.a;
 }`);
@@ -178,6 +179,7 @@ void main(void) {
       builder.setSymbolOffsetExpression('vec2(' + formatArray([5, -7]) + ')');
       builder.setColorExpression('vec4(' + formatColor([255, 255, 255, 1]) + ')');
       builder.setTextureCoordinateExpression('vec4(' + formatArray([0, 0.5, 0.5, 1]) + ')');
+      builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
 uniform float u_myUniform;
@@ -186,6 +188,7 @@ varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 
 void main(void) {
+  if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
 }`);

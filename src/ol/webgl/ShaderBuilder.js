@@ -163,6 +163,12 @@ export class ShaderBuilder {
     this.texCoordExpression = 'vec4(0.0, 0.0, 1.0, 1.0)';
 
     /**
+     * @type {string}
+     * @private
+     */
+    this.discardExpression = 'false';
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -258,6 +264,20 @@ export class ShaderBuilder {
   }
 
   /**
+   * Sets an expression to determine whether a fragment (pixel) should be discarded,
+   * i.e. not drawn at all.
+   * This expression can use all the uniforms, varyings and attributes available
+   * in the fragment shader, and should evaluate to a `bool` value (it will be
+   * used in an `if` statement)
+   * @param {string} expression Fragment discard expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setFragmentDiscardExpression(expression) {
+    this.texCoordExpression = expression;
+    return this;
+  }
+
+  /**
    * Sets whether the symbols should rotate with the view or stay aligned with the map.
    * Note: will only be used for point geometry shaders.
    * @param {boolean} rotateWithView Rotate with view
@@ -294,6 +314,13 @@ export class ShaderBuilder {
    */
   getTextureCoordinateExpression() {
     return this.texCoordExpression;
+  }
+
+  /**
+   * @returns {string} Previously set fragment discard expression
+   */
+  getFragmentDiscardExpression() {
+    return this.discardExpression;
   }
 
   /**
@@ -374,6 +401,7 @@ ${this.varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
 void main(void) {
+  if (${this.discardExpression}) { discard; }
   gl_FragColor = ${this.colorExpression};
   gl_FragColor.rgb *= gl_FragColor.a;
 }`;
