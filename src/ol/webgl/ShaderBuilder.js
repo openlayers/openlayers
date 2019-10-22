@@ -410,17 +410,20 @@ export function parseSymbolStyle(style) {
   const offset = style.offset || [0, 0];
   const opacity = style.opacity !== undefined ? style.opacity : 1;
 
-  const attributes = [];
-  const varyings = [];
-  function pA(value) {
-    return parse(value, attributes, 'a_');
+  const vertAttributes = [];
+  // parse function for vertex shader
+  function pVert(value) {
+    return parse(value, vertAttributes, 'a_');
   }
-  function pV(value) {
-    return parse(value, varyings, 'v_');
+
+  const fragAttributes = [];
+  // parse function for fragment shader
+  function pFrag(value) {
+    return parse(value, fragAttributes, 'v_');
   }
 
   let opacityFilter = '1.0';
-  const visibleSize = pV(size[0]);
+  const visibleSize = pFrag(size[0]);
   switch (style.symbolType) {
     case 'square': break;
     case 'image': break;
@@ -438,26 +441,26 @@ export function parseSymbolStyle(style) {
   }
 
   const builder = new ShaderBuilder()
-    .setSizeExpression(`vec2(${pA(size[0])}, ${pA(size[1])})`)
-    .setSymbolOffsetExpression(`vec2(${pA(offset[0])}, ${pA(offset[1])})`)
+    .setSizeExpression(`vec2(${pVert(size[0])}, ${pVert(size[1])})`)
+    .setSymbolOffsetExpression(`vec2(${pVert(offset[0])}, ${pVert(offset[1])})`)
     .setTextureCoordinateExpression(
-      `vec4(${pA(texCoord[0])}, ${pA(texCoord[1])}, ${pA(texCoord[2])}, ${pA(texCoord[3])})`)
+      `vec4(${pVert(texCoord[0])}, ${pVert(texCoord[1])}, ${pVert(texCoord[2])}, ${pVert(texCoord[3])})`)
     .setSymbolRotateWithView(!!style.rotateWithView)
-    .setColorExpression(`vec4(${pV(color[0])}, ${pV(color[1])}, ${pV(color[2])}, ${pV(color[3])})` +
-      ` * vec4(1.0, 1.0, 1.0, ${pV(opacity)} * ${opacityFilter})`);
+    .setColorExpression(`vec4(${pFrag(color[0])}, ${pFrag(color[1])}, ${pFrag(color[2])}, ${pFrag(color[3])})` +
+      ` * vec4(1.0, 1.0, 1.0, ${pFrag(opacity)} * ${opacityFilter})`);
 
-  // define the varyings that will be used to pass data from the vertex to the fragment shaders
-  // note: these should also be defined as attributes (if not already)
-  varyings.forEach(function(varyingName) {
-    if (attributes.indexOf(varyingName) === -1) {
-      attributes.push(varyingName);
+  // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
+  // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
+  fragAttributes.forEach(function(attrName) {
+    if (vertAttributes.indexOf(attrName) === -1) {
+      vertAttributes.push(attrName);
     }
-    builder.addVarying(`v_${varyingName}`, 'float', `a_${varyingName}`);
+    builder.addVarying(`v_${attrName}`, 'float', `a_${attrName}`);
   });
 
-  // define the attributes from the features in the buffer
-  attributes.forEach(function(attributeName) {
-    builder.addAttribute(`float a_${attributeName}`);
+  // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
+  vertAttributes.forEach(function(attrName) {
+    builder.addAttribute(`float a_${attrName}`);
   });
 
 
@@ -475,7 +478,7 @@ export function parseSymbolStyle(style) {
 
   return {
     builder: builder,
-    attributes: attributes.map(function(attributeName) {
+    attributes: vertAttributes.map(function(attributeName) {
       return {
         name: attributeName,
         callback: function(feature) {
