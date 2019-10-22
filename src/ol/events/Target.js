@@ -40,7 +40,7 @@ class Target extends Disposable {
      * @private
      * @type {*}
      */
-    this.target_ = opt_target;
+    this.eventTarget_ = opt_target;
 
     /**
      * @private
@@ -96,7 +96,7 @@ class Target extends Disposable {
     const evt = typeof event === 'string' ? new Event(event) : event;
     const type = evt.type;
     if (!evt.target) {
-      evt.target = this.target_ || this;
+      evt.target = this.eventTarget_ || this;
     }
     const listeners = this.listeners_[type];
     let propagate;
