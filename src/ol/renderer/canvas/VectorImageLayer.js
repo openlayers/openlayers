@@ -39,13 +39,13 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../transform.js").Transform};
+     * @type {import("../../transform.js").Transform}
      */
     this.coordinateToVectorPixelTransform_ = create();
 
     /**
      * @private
-     * @type {import("../../transform.js").Transform};
+     * @type {import("../../transform.js").Transform}
      */
     this.renderedPixelToCoordinateTransform_ = null;
 
