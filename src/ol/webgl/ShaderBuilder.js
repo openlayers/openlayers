@@ -142,8 +142,6 @@ export function isValueTypeColor(value) {
  * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
  */
 export function check(value) {
-  const v = value;
-
   // these will be used to validate types in the expressions
   function checkNumber(value) {
     if (!isValueTypeNumber(value)) {
@@ -171,7 +169,7 @@ export function check(value) {
     switch (value[0]) {
       case 'get':
       case 'var':
-        checkString(v[1]);
+        checkString(value[1]);
         break;
       case 'time':
         break;
@@ -181,44 +179,42 @@ export function check(value) {
       case '-':
       case 'mod':
       case 'pow':
-        checkNumber(v[1]);
-        checkNumber(v[2]);
+        checkNumber(value[1]);
+        checkNumber(value[2]);
         break;
       case 'clamp':
-        checkNumber(v[1]);
-        checkNumber(v[2]);
-        checkNumber(v[3]);
+        checkNumber(value[1]);
+        checkNumber(value[2]);
+        checkNumber(value[3]);
         break;
       case 'stretch':
-        checkNumber(v[1]);
-        checkNumber(v[2]);
-        checkNumber(v[3]);
-        checkNumber(v[4]);
-        checkNumber(v[5]);
+        checkNumber(value[1]);
+        checkNumber(value[2]);
+        checkNumber(value[3]);
+        checkNumber(value[4]);
+        checkNumber(value[5]);
         break;
       case '>':
       case '>=':
       case '<':
       case '<=':
       case '==':
-        checkNumber(v[1]);
-        checkNumber(v[2]);
+        checkNumber(value[1]);
+        checkNumber(value[2]);
         break;
       case '!':
-        checkNumber(v[1]);
+        checkNumber(value[1]);
         break;
       case 'between':
-        checkNumber(v[1]);
-        checkNumber(v[2]);
-        checkNumber(v[3]);
+        checkNumber(value[1]);
+        checkNumber(value[2]);
+        checkNumber(value[3]);
         break;
-
       case 'interpolate':
-        checkNumber(v[1]);
-        checkColor(v[2]);
-        checkColor(v[3]);
+        checkNumber(value[1]);
+        checkColor(value[2]);
+        checkColor(value[3]);
         break;
-
       default: throw new Error(`Unrecognized operator in style expression: ${JSON.stringify(value)}`);
     }
   }
@@ -253,7 +249,6 @@ export function check(value) {
 export function parse(value, attributes, attributePrefix, variables, typeHint) {
   check(value);
 
-  const v = value;
   function p(value) {
     return parse(value, attributes, attributePrefix, variables);
   }
@@ -262,19 +257,19 @@ export function parse(value, attributes, attributePrefix, variables, typeHint) {
   }
 
   // operator
-  if (Array.isArray(v) && typeof value[0] === 'string') {
-    switch (v[0]) {
+  if (Array.isArray(value) && typeof value[0] === 'string') {
+    switch (value[0]) {
       // reading operators
       case 'get':
-        if (attributes.indexOf(v[1]) === -1) {
-          attributes.push(v[1]);
+        if (attributes.indexOf(value[1]) === -1) {
+          attributes.push(value[1]);
         }
-        return attributePrefix + v[1];
+        return attributePrefix + value[1];
       case 'var':
-        if (variables.indexOf(v[1]) === -1) {
-          variables.push(v[1]);
+        if (variables.indexOf(value[1]) === -1) {
+          variables.push(value[1]);
         }
-        return `u_${v[1]}`;
+        return `u_${value[1]}`;
       case 'time':
         return 'u_time';
 
@@ -283,20 +278,20 @@ export function parse(value, attributes, attributePrefix, variables, typeHint) {
       case '/':
       case '+':
       case '-':
-        return `(${p(v[1])} ${v[0]} ${p(v[2])})`;
-      case 'clamp': return `clamp(${p(v[1])}, ${p(v[2])}, ${p(v[3])})`;
+        return `(${p(value[1])} ${value[0]} ${p(value[2])})`;
+      case 'clamp': return `clamp(${p(value[1])}, ${p(value[2])}, ${p(value[3])})`;
       case 'stretch':
-        const low1 = p(v[2]);
-        const high1 = p(v[3]);
-        const low2 = p(v[4]);
-        const high2 = p(v[5]);
-        return `((clamp(${p(v[1])}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
-      case 'mod': return `mod(${p(v[1])}, ${p(v[2])})`;
-      case 'pow': return `pow(${p(v[1])}, ${p(v[2])})`;
+        const low1 = p(value[2]);
+        const high1 = p(value[3]);
+        const low2 = p(value[4]);
+        const high2 = p(value[5]);
+        return `((clamp(${p(value[1])}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
+      case 'mod': return `mod(${p(value[1])}, ${p(value[2])})`;
+      case 'pow': return `pow(${p(value[1])}, ${p(value[2])})`;
 
       // color operators
       case 'interpolate':
-        return `mix(${pC(v[2])}, ${pC(v[3])}, ${p(v[1])})`;
+        return `mix(${pC(value[2])}, ${pC(value[3])}, ${p(value[1])})`;
 
       // logical operators
       case '>':
@@ -304,11 +299,11 @@ export function parse(value, attributes, attributePrefix, variables, typeHint) {
       case '<':
       case '<=':
       case '==':
-        return `(${p(v[1])} ${v[0]} ${p(v[2])} ? 1.0 : 0.0)`;
+        return `(${p(value[1])} ${value[0]} ${p(value[2])} ? 1.0 : 0.0)`;
       case '!':
-        return `(${p(v[1])} > 0.0 ? 0.0 : 1.0)`;
+        return `(${p(value[1])} > 0.0 ? 0.0 : 1.0)`;
       case 'between':
-        return `(${p(v[1])} >= ${p(v[2])} && ${p(v[1])} <= ${p(v[3])} ? 1.0 : 0.0)`;
+        return `(${p(value[1])} >= ${p(value[2])} && ${p(value[1])} <= ${p(value[3])} ? 1.0 : 0.0)`;
 
       default: throw new Error('Invalid style expression: ' + JSON.stringify(value));
     }
