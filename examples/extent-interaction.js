@@ -2,6 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import ExtentInteraction from '../src/ol/interaction/Extent.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
@@ -26,18 +27,8 @@ const map = new Map({
   })
 });
 
-const extent = new ExtentInteraction();
+const extent = new ExtentInteraction({
+  condition:platformModifierKeyOnly
+});
 map.addInteraction(extent);
-extent.setActive(false);
 
-//Enable interaction by holding shift
-window.addEventListener('keydown', function(event) {
-  if (event.keyCode == 16) {
-    extent.setActive(true);
-  }
-});
-window.addEventListener('keyup', function(event) {
-  if (event.keyCode == 16) {
-    extent.setActive(false);
-  }
-});

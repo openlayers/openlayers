@@ -14,7 +14,7 @@ import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import {createEditingStyle} from '../style/Style.js';
 import {toUserExtent} from '../proj.js';
-
+import {always} from '../events/condition.js';
 
 /**
  * @typedef {Object} Options
@@ -23,6 +23,9 @@ import {toUserExtent} from '../proj.js';
  * @property {import("../style/Style.js").StyleLike} [boxStyle]
  * Style for the drawn extent box. Defaults to
  * {@link module:ol/style/Style~createEditing()['Polygon']}
+ * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol/events/condition~always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style.js").StyleLike} [pointerStyle]
@@ -102,6 +105,14 @@ class Extent extends PointerInteraction {
      * @private
      */
     this.pointerHandler_ = null;
+
+    /**
+     * Condition function for drawing the extent
+     * @private
+     * @type {import("../events/condition.js").Condition}
+     */
+
+    this.condition_ = options.condition ? options.condition : always;
 
     /**
      * Pixel threshold to snap to extent
@@ -218,6 +229,10 @@ class Extent extends PointerInteraction {
    * @private
    */
   handlePointerMove_(mapBrowserEvent) {
+    if (!this.condition_(mapBrowserEvent)) {
+      this.removePointFeature_()
+      return
+    }
     const pixel = mapBrowserEvent.pixel;
     const map = mapBrowserEvent.map;
 
@@ -273,6 +288,16 @@ class Extent extends PointerInteraction {
   }
 
   /**
+   * @private
+   */
+  removePointFeature_() {
+    if (this.vertexFeature_) {
+      this.vertexOverlay_.getSource().removeFeature(this.vertexFeature_);
+      this.vertexFeature_ = null
+    }
+  }
+
+  /**
    * @inheritDoc
    */
   handleEvent(mapBrowserEvent) {
@@ -293,6 +318,9 @@ class Extent extends PointerInteraction {
    * @inheritDoc
    */
   handleDownEvent(mapBrowserEvent) {
+    if (!this.condition_(mapBrowserEvent)) {
+      return
+    }
     const pixel = mapBrowserEvent.pixel;
     const map = mapBrowserEvent.map;
 
@@ -368,6 +396,7 @@ class Extent extends PointerInteraction {
     if (!extent || getArea(extent) === 0) {
       this.setExtent(null);
     }
+    this.removePointFeature_()
     return false; //Stop handling downup sequence
   }
 
