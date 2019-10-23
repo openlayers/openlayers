@@ -2,6 +2,7 @@ import {
   asArray,
   asString,
   fromString,
+  isStringColor,
   normalize,
   toString
 } from '../../../src/ol/color.js';
@@ -156,6 +157,20 @@ describe('ol.color', function() {
 
     it('sets default alpha value if undefined', function() {
       expect(toString([0, 0, 0])).to.be('rgba(0,0,0,1)');
+    });
+
+  });
+
+  describe('isValid()', function() {
+
+    it('correctly detects valid colors', function() {
+      expect(isStringColor('rgba(1,3,4,0.4)')).to.be(true);
+      expect(isStringColor('rgb(1,3,4)')).to.be(true);
+      expect(isStringColor('lightgreen')).to.be(true);
+      expect(isStringColor('yellow')).to.be(true);
+      expect(isStringColor('GREEN')).to.be(true);
+      expect(isStringColor('notacolor')).to.be(false);
+      expect(isStringColor('red_')).to.be(false);
     });
 
   });

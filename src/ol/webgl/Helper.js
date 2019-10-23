@@ -42,7 +42,8 @@ export const ShaderType = {
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
   OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
-  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix'
+  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
+  TIME: 'u_time'
 };
 
 /**
@@ -355,6 +356,12 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.shaderCompileErrors_ = null;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.startTime_ = Date.now();
   }
 
   /**
@@ -548,6 +555,8 @@ class WebGLHelper extends Disposable {
 
     this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, fromTransform(this.tmpMat4_, offsetScaleMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
+
+    this.setUniformFloatValue(DefaultUniform.TIME, (Date.now() - this.startTime_) * 0.001);
   }
 
   /**

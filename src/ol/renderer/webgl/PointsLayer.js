@@ -132,6 +132,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       options.vertexShader
     );
 
+    if (this.getShaderCompileErrors()) {
+      throw new Error(this.getShaderCompileErrors());
+    }
+
     /**
      * @type {boolean}
      * @private
