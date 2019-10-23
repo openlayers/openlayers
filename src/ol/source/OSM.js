@@ -13,7 +13,7 @@ import XYZ from './XYZ.js';
  * @api
  */
 export const ATTRIBUTION = '&#169; ' +
-      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+      '<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> ' +
       'contributors.';
 
 
