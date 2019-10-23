@@ -111,19 +111,6 @@ export const never = FALSE;
 
 
 /**
- * Return `true` if the browser event is a `pointermove` event, `false`
- * otherwise.
- *
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
- * @return {boolean} True if the browser event is a `pointermove` event.
- * @api
- */
-export const pointerMove = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == 'pointermove';
-};
-
-
-/**
  * Return `true` if the event is a map `singleclick` event, `false` otherwise.
  *
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.

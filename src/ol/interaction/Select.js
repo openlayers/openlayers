@@ -5,7 +5,7 @@ import {getUid} from '../util.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
 import Event from '../events/Event.js';
-import {singleClick, never, shiftKeyOnly, pointerMove} from '../events/condition.js';
+import {singleClick, never, shiftKeyOnly} from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import Interaction from './Interaction.js';
@@ -468,7 +468,7 @@ function handleEvent(mapBrowserEvent) {
       new SelectEvent(SelectEventType.SELECT,
         selected, deselected, mapBrowserEvent));
   }
-  return pointerMove(mapBrowserEvent);
+  return true;
 }
 
 
