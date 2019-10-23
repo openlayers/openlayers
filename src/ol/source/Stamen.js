@@ -11,8 +11,8 @@ import XYZ from './XYZ.js';
  * @type {Array<string>}
  */
 const ATTRIBUTIONS = [
-  'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
-        'under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY' +
+  'Map tiles by <a href="https://stamen.com/" target="_blank">Stamen Design</a>, ' +
+        'under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY' +
         ' 3.0</a>.',
   OSM_ATTRIBUTION
 ];

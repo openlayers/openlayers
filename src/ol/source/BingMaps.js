@@ -44,7 +44,7 @@ export function quadKey(tileCoord) {
  * @type {string}
  */
 const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
-      'href="https://www.microsoft.com/maps/product/terms.html">' +
+      'href="https://www.microsoft.com/maps/product/terms.html" target="_blank">' +
       'Terms of Use</a>';
 
 
