@@ -230,8 +230,8 @@ class Extent extends PointerInteraction {
    */
   handlePointerMove_(mapBrowserEvent) {
     if (!this.condition_(mapBrowserEvent)) {
-      this.removePointFeature_()
-      return
+      this.removePointFeature_();
+      return;
     }
     const pixel = mapBrowserEvent.pixel;
     const map = mapBrowserEvent.map;
@@ -293,7 +293,7 @@ class Extent extends PointerInteraction {
   removePointFeature_() {
     if (this.vertexFeature_) {
       this.vertexOverlay_.getSource().removeFeature(this.vertexFeature_);
-      this.vertexFeature_ = null
+      this.vertexFeature_ = null;
     }
   }
 
@@ -319,7 +319,7 @@ class Extent extends PointerInteraction {
    */
   handleDownEvent(mapBrowserEvent) {
     if (!this.condition_(mapBrowserEvent)) {
-      return
+      return;
     }
     const pixel = mapBrowserEvent.pixel;
     const map = mapBrowserEvent.map;
@@ -396,7 +396,7 @@ class Extent extends PointerInteraction {
     if (!extent || getArea(extent) === 0) {
       this.setExtent(null);
     }
-    this.removePointFeature_()
+    this.removePointFeature_();
     return false; //Stop handling downup sequence
   }
 

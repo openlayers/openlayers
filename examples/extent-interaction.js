@@ -28,7 +28,7 @@ const map = new Map({
 });
 
 const extent = new ExtentInteraction({
-  condition:platformModifierKeyOnly
+  condition: platformModifierKeyOnly
 });
 map.addInteraction(extent);
 
