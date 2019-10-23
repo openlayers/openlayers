@@ -187,7 +187,12 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * Called with a flat array of geometry coordinates.
    * @api
    */
   applyTransform(transformFn) {
@@ -198,7 +203,10 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Rotate the geometry around a given coordinate. This modifies the geometry
+   * coordinates in place.
+   * @param {number} angle Rotation angle in radians.
+   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
   rotate(angle, anchor) {
@@ -213,7 +221,13 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Scale the geometry (with an optional origin).  This modifies the geometry
+   * coordinates in place.
+    * @param {number} sx The scaling factor in the x-direction.
+   * @param {number=} opt_sy The scaling factor in the y-direction (defaults to
+   *     sx).
+   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
+   *     of the geometry extent).
    * @api
    */
   scale(sx, opt_sy, opt_anchor) {
@@ -236,7 +250,10 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Translate the geometry.  This modifies the geometry coordinates in place.  If
+   * instead you want a new geometry, first `clone()` this geometry.
+   * @param {number} deltaX Delta X.
+   * @param {number} deltaY Delta Y.
    * @api
    */
   translate(deltaX, deltaY) {
