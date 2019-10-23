@@ -56,35 +56,32 @@ const featureOverlay = new VectorLayer({
 let highlight;
 const displayFeatureInfo = function(pixel) {
 
-  const feature = map.forEachFeatureAtPixel(pixel, function(feature) {
-    return feature;
-  });
+  map.getLayers().item(0).getFeatures(pixel).then(function(features) {
+    const feature = features.length > 0 ? features[0] : undefined;
 
-  const info = document.getElementById('info');
-  if (feature) {
-    info.innerHTML = feature.getId() + ': ' + feature.get('name');
-  } else {
-    info.innerHTML = '&nbsp;';
-  }
-
-  if (feature !== highlight) {
-    if (highlight) {
-      featureOverlay.getSource().removeFeature(highlight);
-    }
+    const info = document.getElementById('info');
     if (feature) {
-      featureOverlay.getSource().addFeature(feature);
+      info.innerHTML = feature.getId() + ': ' + feature.get('name');
+    } else {
+      info.innerHTML = '&nbsp;';
     }
-    highlight = feature;
-  }
 
+    if (feature !== highlight) {
+      if (highlight) {
+        featureOverlay.getSource().removeFeature(highlight);
+      }
+      if (feature) {
+        featureOverlay.getSource().addFeature(feature);
+      }
+      highlight = feature;
+    }
+  });
 };
 
 map.on('pointermove', function(evt) {
-  if (evt.dragging) {
-    return;
+  if (!evt.dragging) {
+    displayFeatureInfo(evt.pixel);
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
 });
 
 map.on('click', function(evt) {

@@ -3,6 +3,7 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import CanvasVectorImageLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorImageLayer.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {scaleFromCenter} from '../../../../../src/ol/extent.js';
+import {create} from '../../../../../src/ol/transform.js';
 
 
 describe('ol/renderer/canvas/VectorImageLayer', function() {
@@ -39,6 +40,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function() {
         layerIndex: 0,
         extent: extent,
         viewHints: [],
+        pixelToCoordinateTransform: create(),
         viewState: {
           center: [0, 0],
           projection: projection,
