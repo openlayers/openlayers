@@ -13,14 +13,14 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
-import CircleStyle from '../../../../src/ol/style/Circle.js';
+//import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Icon from '../../../../src/ol/style/Icon.js';
-import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
-import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
+//import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
+//import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
-import Text from '../../../../src/ol/style/Text.js';
+//import Text from '../../../../src/ol/style/Text.js';
 import {parse} from '../../../../src/ol/xml.js';
 
 
@@ -1800,7 +1800,7 @@ describe('ol.format.KML', function() {
           expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
-/*
+        /*
         it('can read a IconStyle\'s hotspot', function() {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2515,7 +2515,7 @@ describe('ol.format.KML', function() {
               '</kml>';
           expect(node).to.xmleql(parse(text));
         });
-*/
+        */
       });
 
       describe('style maps', function() {
