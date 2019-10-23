@@ -222,9 +222,8 @@ function buildNav(members) {
         type: 'class',
         longname: v.longname,
         prettyname: v.longname
-          .substring(0, v.longname.indexOf('~'))
-          .replace('module:', '')
-          .replace('ol/', ''),
+          .split('~')[0]
+          .replace('module:', ''),
         name: v.name,
         module: find({
           kind: 'module',
@@ -253,33 +252,36 @@ function buildNav(members) {
         kind: 'class',
         memberof: v.longname
       });
-      // only add modules without classes
-      if (classes.length === 0) {
+      const members = find({
+        kind: 'member',
+        memberof: v.longname
+      });
+      const methods = find({
+        kind: 'function',
+        memberof: v.longname
+      });
+      const typedefs = find({
+        kind: 'typedef',
+        memberof: v.longname
+      });
+      const events = find({
+        kind: 'event',
+        memberof: v.longname
+      });
+      // only add modules that have more to show than just a single class
+      if (classes.length !== 1 && (classes.length + members.length + methods.length + typedefs.length + events.length > 0)) {
         nav.push({
           type: 'module',
           longname: v.longname,
           prettyname: v.longname
-            .substring(0, v.longname.indexOf('~'))
-            .replace('module:', '')
-            .replace('ol/', ''),
+            .split('~')[0]
+            .replace('module:', ''),
           name: v.name,
-          members: find({
-            kind: 'member',
-            memberof: v.longname
-          }),
-          methods: find({
-            kind: 'function',
-            memberof: v.longname
-          }),
-          typedefs: find({
-            kind: 'typedef',
-            memberof: v.longname
-          }),
+          members: members,
+          methods: methods,
+          typedefs: typedefs,
           fires: v.fires,
-          events: find({
-            kind: 'event',
-            memberof: v.longname
-          })
+          events: events
         });
       }
     }
