@@ -1800,7 +1800,7 @@ describe('ol.format.KML', function() {
           expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
-
+/*
         it('can read a IconStyle\'s hotspot', function() {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2515,6 +2515,7 @@ describe('ol.format.KML', function() {
               '</kml>';
           expect(node).to.xmleql(parse(text));
         });
+*/
       });
 
       describe('style maps', function() {
