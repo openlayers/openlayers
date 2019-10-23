@@ -15,9 +15,9 @@ function toShortName(name) {
         <li class="item" data-name="<?js= item.longname ?>" data-shortname="<?js= item.name.toLowerCase() ?>">
             <span class="title">
                 <?js if (item.type === 'module') { ?>
-                    <span class="glyphicon glyphicon-plus"></span> 
+                    <span class="glyphicon glyphicon-plus toggle"></span>
                 <?js } else if (item.type === 'class') { ?>
-                    <span class="glyphicon glyphicon-chevron-right"></span> 
+                    <span class="glyphicon glyphicon-chevron-right toggle"></span>
                 <?js } ?>
                 <?js= self.linkto(item.longname, item.prettyname) ?>
                 <?js if (item.type === 'namespace' &&
