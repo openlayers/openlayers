@@ -92,41 +92,285 @@ export function getValueType(value) {
   if (!Array.isArray(value)) {
     throw new Error(`Unhandled value type: ${JSON.stringify(value)}`);
   }
-  const onlyNumbers = value.every(function(v) {
+  const valueArr = /** @type {Array<*>} */(value);
+  const onlyNumbers = valueArr.every(function(v) {
     return typeof v === 'number';
   });
   if (onlyNumbers) {
-    if (value.length === 3 || value.length === 4) {
+    if (valueArr.length === 3 || valueArr.length === 4) {
       return ValueTypes.COLOR | ValueTypes.NUMBER_ARRAY;
     }
     return ValueTypes.NUMBER_ARRAY;
   }
-  if (typeof value[0] !== 'string') {
-    throw new Error(`Expected an expression operator but received: ${JSON.stringify(value)}`);
+  if (typeof valueArr[0] !== 'string') {
+    throw new Error(`Expected an expression operator but received: ${JSON.stringify(valueArr)}`);
   }
-  switch (value[0]) {
-    case 'get':
-    case 'var':
-    case 'time':
-    case '*':
-    case '/':
-    case '+':
-    case '-':
-    case 'clamp':
-    case 'stretch':
-    case 'mod':
-    case 'pow':
-    case '>':
-    case '>=':
-    case '<':
-    case '<=':
-    case '==':
-    case '!':
-    case 'between':
-      return ValueTypes.NUMBER;
-    case 'interpolate':
-      return ValueTypes.COLOR;
-    default:
-      throw new Error(`Unrecognized expression operator: ${JSON.stringify(value)}`);
+  const operator = Operators[valueArr[0]];
+  if (operator === undefined) {
+    throw new Error(`Unrecognized expression operator: ${JSON.stringify(valueArr)}`);
+  }
+  return operator.getReturnType(valueArr.slice(1));
+}
+
+function assertNumber(value) {
+  if (!(getValueType(value) & ValueTypes.NUMBER)) {
+    throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
   }
 }
+function assertColor(value) {
+  if (!(getValueType(value) & ValueTypes.COLOR)) {
+    throw new Error(`A color value was expected, got ${JSON.stringify(value)} instead`);
+  }
+}
+function assertString(value) {
+  if (!(getValueType(value) & ValueTypes.STRING)) {
+    throw new Error(`A string value was expected, got ${JSON.stringify(value)} instead`);
+  }
+}
+function assertBoolean(value) {
+  if (!(getValueType(value) & ValueTypes.BOOLEAN)) {
+    throw new Error(`A boolean value was expected, got ${JSON.stringify(value)} instead`);
+  }
+}
+function assertArgsCount(args, count) {
+  if (args.length !== count) {
+    throw new Error(`Exactly ${count} arguments were expected, got ${args.length} instead`);
+  }
+}
+
+/**
+ * Context available during the parsing of an expression.
+ * @typedef {Object} ParsingContext
+ * @property {boolean} inFragmentShader If false, means the expression output should be made for a vertex shader
+ */
+
+/**
+ * An operator declaration must contain two methods: `getReturnType` which returns a type based on
+ * the operator arguments, and `toGlsl` which returns a GLSL-compatible string.
+ * Note: both methods can process arguments recursively.
+ * @typedef {Object} Operator
+ * @property {function(...ExpressionValue): ValueTypes|number} getReturnType Returns one or several types
+ * @property {function(ParsingContext, ...ExpressionValue): string} toGlsl Returns a GLSL-compatible string
+ */
+
+/**
+ * Operator declarations
+ * @type {Object<string, Operator>}
+ */
+export const Operators = {
+  'get': {
+    getReturnType: function(...args) {
+      return ValueTypes.ANY;
+    },
+    toGlsl: function(context, ...args) {
+      const prefix = context.inFragmentShader ? 'v_' : 'a_';
+      assertArgsCount(args, 1);
+      assertString(args[0]);
+      return prefix + args[0];
+    }
+  },
+  'var': {
+    getReturnType: function(...args) {
+      return ValueTypes.ANY;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 1);
+      assertString(args[0]);
+      return `u_${args[0]}`;
+    }
+  },
+  'time': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 0);
+      return 'u_time';
+    }
+  },
+  '*': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} * ${args[1]})`;
+    }
+  },
+  '/': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} / ${args[1]})`;
+    }
+  },
+  '+': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} + ${args[1]})`;
+    }
+  },
+  '-': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} - ${args[1]})`;
+    }
+  },
+  'clamp': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 3);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      assertNumber(args[2]);
+      return `clamp(${args[0]}, ${args[1]}, ${args[2]})`;
+    }
+  },
+  'stretch': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 5);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      assertNumber(args[2]);
+      assertNumber(args[3]);
+      assertNumber(args[4]);
+      const low1 = args[1];
+      const high1 = args[2];
+      const low2 = args[3];
+      const high2 = args[4];
+      return `((clamp(${args[0]}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
+    }
+  },
+  'mod': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `mod(${args[0]}, ${args[1]})`;
+    }
+  },
+  'pow': {
+    getReturnType: function(...args) {
+      return ValueTypes.NUMBER;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `pow(${args[0]}, ${args[1]})`;
+    }
+  },
+  '>': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} > ${args[1]})`;
+    }
+  },
+  '>=': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} >= ${args[1]})`;
+    }
+  },
+  '<': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} < ${args[1]})`;
+    }
+  },
+  '<=': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} <= ${args[1]})`;
+    }
+  },
+  '==': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 2);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      return `(${args[0]} == ${args[1]})`;
+    }
+  },
+  '!': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 1);
+      assertBoolean(args[0]);
+      return `(!${args[0]})`;
+    }
+  },
+  'between': {
+    getReturnType: function(...args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 3);
+      assertNumber(args[0]);
+      assertNumber(args[1]);
+      assertNumber(args[2]);
+      return `(${args[0]} >= ${args[1]} && ${args[0]} <= ${args[2]})`;
+    }
+  },
+  'interpolate': {
+    getReturnType: function(...args) {
+      return ValueTypes.COLOR;
+    },
+    toGlsl: function(context, ...args) {
+      assertArgsCount(args, 3);
+      assertNumber(args[0]);
+      assertColor(args[1]);
+      assertColor(args[2]);
+      return `mix(${args[1]}, ${args[2]}, ${args[0]})`;
+    }
+  }
+};

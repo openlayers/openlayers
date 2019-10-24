@@ -36,6 +36,28 @@ describe('ol.style.expressions', function() {
       done(true);
     });
 
+    it('correctly analyzes operator return types', function() {
+      expect(getValueType(['get', 'myAttr'])).to.eql(ValueTypes.ANY);
+      expect(getValueType(['var', 'myValue'])).to.eql(ValueTypes.ANY);
+      expect(getValueType(['time'])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['+', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['-', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['/', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['*', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['pow', 10, 2])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['mod', ['time'], 10])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['>', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['>=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['<', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['<=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['==', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['!', ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['interpolate', ['get', 'attr4'], [255, 255, 255, 1], 'transparent'])).to.eql(ValueTypes.COLOR);
+    });
+
   });
 
 });
