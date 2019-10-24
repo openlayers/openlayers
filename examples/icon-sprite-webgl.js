@@ -8,7 +8,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import {Vector} from '../src/ol/source.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer.js';
-import {formatColor, formatNumber} from '../src/ol/webgl/ShaderBuilder.js';
+import {colorToGlsl, numberToGlsl} from '../src/ol/style/expressions.js';
 
 const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 
@@ -88,9 +88,9 @@ class WebglPointsLayer extends VectorLayer {
         'void main(void) {',
         '  mat4 offsetMatrix = u_offsetScaleMatrix;',
         '  float offsetX = a_index == 0.0 || a_index == 3.0 ? ',
-        '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
+        '    ' + numberToGlsl(-size / 2) + ' : ' + numberToGlsl(size / 2) + ';',
         '  float offsetY = a_index == 0.0 || a_index == 1.0 ? ',
-        '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
+        '    ' + numberToGlsl(-size / 2) + ' : ' + numberToGlsl(size / 2) + ';',
         '  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);',
         '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;',
         '  float u = a_index == 0.0 || a_index == 3.0 ? a_texCoordU : a_texCoordU + 0.25;',
@@ -117,8 +117,8 @@ class WebglPointsLayer extends VectorLayer {
 
         // color is interpolated based on year
         '  float ratio = clamp((v_year - 1950.0) / (2013.0 - 1950.0), 0.0, 1.1);',
-        '  vec3 color = mix(vec3(' + formatColor(oldColor) + '),',
-        '    vec3(' + formatColor(newColor) + '), ratio);',
+        '  vec3 color = mix(vec3(' + colorToGlsl(oldColor) + '),',
+        '    vec3(' + colorToGlsl(newColor) + '), ratio);',
 
         '  gl_FragColor = vec4(color, 1.0) * textureColor;',
         '  gl_FragColor.rgb *= gl_FragColor.a;',
@@ -141,9 +141,9 @@ class WebglPointsLayer extends VectorLayer {
         'void main(void) {',
         '  mat4 offsetMatrix = u_offsetScaleMatrix;',
         '  float offsetX = a_index == 0.0 || a_index == 3.0 ? ',
-        '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
+        '    ' + numberToGlsl(-size / 2) + ' : ' + numberToGlsl(size / 2) + ';',
         '  float offsetY = a_index == 0.0 || a_index == 1.0 ? ',
-        '    ' + formatNumber(-size / 2) + ' : ' + formatNumber(size / 2) + ';',
+        '    ' + numberToGlsl(-size / 2) + ' : ' + numberToGlsl(size / 2) + ';',
         '  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);',
         '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;',
         '  float u = a_index == 0.0 || a_index == 3.0 ? a_texCoordU : a_texCoordU + 0.25;',
