@@ -662,6 +662,21 @@ describe('ol.Map', function() {
       expect(map.handleResize_).to.be.ok();
     });
 
+    it('handles touch-action on focus and blur', function() {
+      expect(map.focusHandlerKeys_).to.be(null);
+      expect(map.getViewport().getAttribute('touch-action')).to.be('none');
+      const target = document.createElement('div');
+      target.setAttribute('tabindex', 1);
+      map.setTarget(target);
+      expect(Array.isArray(map.focusHandlerKeys_)).to.be(true);
+      expect(map.getViewport().getAttribute('touch-action')).to.be('auto');
+      target.dispatchEvent(new Event('focus'));
+      expect(map.getViewport().getAttribute('touch-action')).to.be('none');
+      map.setTarget(null);
+      expect(map.focusHandlerKeys_).to.be(null);
+      expect(map.getViewport().getAttribute('touch-action')).to.be('none');
+    });
+
     describe('call setTarget with null', function() {
       it('unregisters the viewport resize listener', function() {
         map.setTarget(null);

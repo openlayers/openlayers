@@ -21,6 +21,7 @@ export default {
    */
   ERROR: 'error',
 
+  BLUR: 'blur',
   CLEAR: 'clear',
   CONTEXTMENU: 'contextmenu',
   CLICK: 'click',
@@ -28,6 +29,7 @@ export default {
   DRAGENTER: 'dragenter',
   DRAGOVER: 'dragover',
   DROP: 'drop',
+  FOCUS: 'focus',
   KEYDOWN: 'keydown',
   KEYPRESS: 'keypress',
   LOAD: 'load',

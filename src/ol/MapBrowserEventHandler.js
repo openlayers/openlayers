@@ -61,7 +61,6 @@ class MapBrowserEventHandler extends EventTarget {
     this.down_ = null;
 
     const element = this.map_.getViewport();
-    element.setAttribute('touch-action', 'none');
 
     /**
      * @type {number}

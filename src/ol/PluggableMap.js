@@ -132,6 +132,17 @@ import {toUserCoordinate, fromUserCoordinate} from './proj.js';
 
 
 /**
+ * @param {HTMLElement} element Element.
+ * @param {string} touchAction Value for `touch-action'.
+ */
+function setTouchAction(element, touchAction) {
+  element.style.msTouchAction = touchAction;
+  element.style.touchAction = touchAction;
+  element.setAttribute('touch-action', touchAction);
+}
+
+
+/**
  * @fires import("./MapBrowserEvent.js").MapBrowserEvent
  * @fires import("./MapEvent.js").MapEvent
  * @fires import("./render/Event.js").default#precompose
@@ -246,9 +257,7 @@ class PluggableMap extends BaseObject {
     this.viewport_.style.overflow = 'hidden';
     this.viewport_.style.width = '100%';
     this.viewport_.style.height = '100%';
-    // prevent page zoom on IE >= 10 browsers
-    this.viewport_.style.msTouchAction = 'none';
-    this.viewport_.style.touchAction = 'none';
+
 
     /**
      * @private
@@ -295,6 +304,12 @@ class PluggableMap extends BaseObject {
      * @type {?Array<import("./events.js").EventsKey>}
      */
     this.keyHandlerKeys_ = null;
+
+    /**
+     * @private
+     * @type {?Array<import("./events.js").EventsKey>}
+     */
+    this.focusHandlerKeys_ = null;
 
     const handleBrowserEvent = this.handleBrowserEvent.bind(this);
     this.viewport_.addEventListener(EventType.CONTEXTMENU, handleBrowserEvent, false);
@@ -1028,6 +1043,12 @@ class PluggableMap extends BaseObject {
       targetElement = this.getTargetElement();
     }
 
+    if (this.focusHandlerKeys_) {
+      for (let i = 0, ii = this.focusHandlerKeys_.length; i < ii; ++i) {
+        unlistenByKey(this.focusHandlerKeys_[i]);
+      }
+      this.focusHandlerKeys_ = null;
+    }
     if (this.keyHandlerKeys_) {
       for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.keyHandlerKeys_[i]);
@@ -1056,6 +1077,15 @@ class PluggableMap extends BaseObject {
       if (!this.renderer_) {
         this.renderer_ = this.createRenderer();
       }
+      let hasFocus = true;
+      if (targetElement.hasAttribute('tabindex')) {
+        hasFocus = document.activeElement === targetElement;
+        this.focusHandlerKeys_ = [
+          listen(targetElement, EventType.FOCUS, setTouchAction.bind(this, this.viewport_, 'none')),
+          listen(targetElement, EventType.BLUR, setTouchAction.bind(this, this.viewport_, 'auto'))
+        ];
+      }
+      setTouchAction(this.viewport_, hasFocus ? 'none' : 'auto');
 
       const keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
