@@ -4,6 +4,7 @@
  */
 
 import {asArray, isStringColor} from '../color.js';
+import {assign} from '../obj.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
@@ -67,7 +68,8 @@ export const ValueTypes = {
   COLOR: 0b00100,
   BOOLEAN: 0b01000,
   NUMBER_ARRAY: 0b10000,
-  ANY: 0b11111
+  ANY: 0b11111,
+  NONE: 0
 };
 
 /**
@@ -113,11 +115,21 @@ export function getValueType(value) {
 }
 
 /**
+ * Checks if only one value type is enabled in the input number.
+ * @param {ValueTypes|number} valueType Number containing value type binary flags
+ * @return {boolean} True if only one type flag is enabled, false if zero or multiple
+ */
+export function isTypeUnique(valueType) {
+  return Math.log2(valueType) % 1 === 0;
+}
+
+/**
  * Context available during the parsing of an expression.
  * @typedef {Object} ParsingContext
  * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
  * @property {Array<string>} variables List of variables used in the expression; contains **unprefixed names**
  * @property {Array<string>} attributes List of attributes used in the expression; contains **unprefixed names**
+ * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
  */
 
 /**
@@ -162,6 +174,20 @@ export function colorToGlsl(color) {
 }
 
 /**
+ * Returns a stable equivalent number for the string literal, for use in shaders. This number is then
+ * converted to be a GLSL-compatible string.
+ * @param {ParsingContext} context Parsing context
+ * @param {string} string String literal value
+ * @returns {string} GLSL-compatible string containing a number
+ */
+export function stringToGlsl(context, string) {
+  if (context.stringLiteralsMap[string] === undefined) {
+    context.stringLiteralsMap[string] = Object.keys(context.stringLiteralsMap).length;
+  }
+  return numberToGlsl(context.stringLiteralsMap[string]);
+}
+
+/**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a parsing context that
  * will be read and modified during the parsing operation.
  * @param {ParsingContext} context Parsing context
@@ -176,7 +202,7 @@ export function expressionToGlsl(context, value, typeHint) {
     if (operator === undefined) {
       throw new Error(`Unrecognized expression operator: ${JSON.stringify(value)}`);
     }
-    return operator.toGlsl(context, value.slice(1));
+    return operator.toGlsl(context, value.slice(1), typeHint);
   } else if ((getValueType(value) & ValueTypes.NUMBER) > 0) {
     return numberToGlsl(/** @type {number} */(value));
   } else if ((getValueType(value) & ValueTypes.BOOLEAN) > 0) {
@@ -185,7 +211,7 @@ export function expressionToGlsl(context, value, typeHint) {
     ((getValueType(value) & ValueTypes.STRING) > 0) &&
     (typeHint === undefined || typeHint == ValueTypes.STRING)
   ) {
-    return value.toString();
+    return stringToGlsl(context, value.toString());
   } else if (
     ((getValueType(value) & ValueTypes.COLOR) > 0) &&
     (typeHint === undefined || typeHint == ValueTypes.COLOR)
@@ -221,6 +247,16 @@ function assertArgsCount(args, count) {
     throw new Error(`Exactly ${count} arguments were expected, got ${args.length} instead`);
   }
 }
+function assertArgsEven(args) {
+  if (args.length % 2 !== 0) {
+    throw new Error(`An even amount of arguments was expected, got ${args} instead`);
+  }
+}
+function assertUniqueInferredType(args, types) {
+  if (!isTypeUnique(types)) {
+    throw new Error(`Could not infer only one type from the following expression: ${JSON.stringify(args)}`);
+  }
+}
 
 /**
  * An operator declaration must contain two methods: `getReturnType` which returns a type based on
@@ -228,7 +264,8 @@ function assertArgsCount(args, count) {
  * Note: both methods can process arguments recursively.
  * @typedef {Object} Operator
  * @property {function(Array<ExpressionValue>): ValueTypes|number} getReturnType Returns one or several types
- * @property {function(ParsingContext, Array<ExpressionValue>): string} toGlsl Returns a GLSL-compatible string
+ * @property {function(ParsingContext, Array<ExpressionValue>, ValueTypes=): string} toGlsl Returns a GLSL-compatible string
+ * Note: takes in an optional type hint as 3rd parameter
  */
 
 /**
@@ -243,7 +280,7 @@ export const Operators = {
     toGlsl: function(context, args) {
       assertArgsCount(args, 1);
       assertString(args[0]);
-      const value = expressionToGlsl(context, args[0]);
+      const value = args[0].toString();
       if (context.attributes.indexOf(value) === -1) {
         context.attributes.push(value);
       }
@@ -258,7 +295,7 @@ export const Operators = {
     toGlsl: function(context, args) {
       assertArgsCount(args, 1);
       assertString(args[0]);
-      const value = expressionToGlsl(context, args[0]);
+      const value = args[0].toString();
       if (context.variables.indexOf(value) === -1) {
         context.variables.push(value);
       }
@@ -461,8 +498,9 @@ export const Operators = {
       assertNumber(args[0]);
       assertColor(args[1]);
       assertColor(args[2]);
-      const start = expressionToGlsl(context, args[1], ValueTypes.COLOR);
-      const end = expressionToGlsl(context, args[2], ValueTypes.COLOR);
+      const newContext = assign({}, context);
+      const start = expressionToGlsl(newContext, args[1], ValueTypes.COLOR);
+      const end = expressionToGlsl(newContext, args[2], ValueTypes.COLOR);
       return `mix(${start}, ${end}, ${expressionToGlsl(context, args[0])})`;
     }
   }

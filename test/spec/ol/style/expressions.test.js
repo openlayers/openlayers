@@ -1,8 +1,8 @@
 import {
   arrayToGlsl, colorToGlsl,
   expressionToGlsl,
-  getValueType,
-  numberToGlsl,
+  getValueType, isTypeUnique,
+  numberToGlsl, stringToGlsl,
   ValueTypes
 } from '../../../../src/ol/style/expressions.js';
 
@@ -50,6 +50,38 @@ describe('ol.style.expressions', function() {
       expect(colorToGlsl('#00ff99')).to.eql('vec4(0.0, 1.0, 0.6, 1.0)');
       expect(colorToGlsl('rgb(100, 0, 255)')).to.eql('vec4(0.39215686274509803, 0.0, 1.0, 1.0)');
       expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql('vec4(0.39215686274509803, 0.0, 1.0, 0.3)');
+    });
+  });
+
+  describe('stringToGlsl', function() {
+    let context;
+    beforeEach(function() {
+      context = {
+        stringLiteralsMap: {}
+      };
+    });
+
+    it('maps input string to stable numbers', function() {
+      expect(stringToGlsl(context, 'abcd')).to.eql('0.0');
+      expect(stringToGlsl(context, 'defg')).to.eql('1.0');
+      expect(stringToGlsl(context, 'hijk')).to.eql('2.0');
+      expect(stringToGlsl(context, 'abcd')).to.eql('0.0');
+      expect(stringToGlsl(context, 'def')).to.eql('3.0');
+    });
+  });
+
+  describe('isTypeUnique', function() {
+    it('return true if only one value type', function() {
+      expect(isTypeUnique(ValueTypes.NUMBER)).to.eql(true);
+      expect(isTypeUnique(ValueTypes.STRING)).to.eql(true);
+      expect(isTypeUnique(ValueTypes.COLOR)).to.eql(true);
+    });
+    it('return false if several value types', function() {
+      expect(isTypeUnique(ValueTypes.NUMBER | ValueTypes.COLOR)).to.eql(false);
+      expect(isTypeUnique(ValueTypes.ANY)).to.eql(false);
+    });
+    it('return false if no value type', function() {
+      expect(isTypeUnique(ValueTypes.NUMBER & ValueTypes.COLOR)).to.eql(false);
     });
   });
 
@@ -116,7 +148,8 @@ describe('ol.style.expressions', function() {
     beforeEach(function() {
       context = {
         variables: [],
-        attributes: []
+        attributes: [],
+        stringLiteralsMap: {}
       };
     });
 
@@ -156,7 +189,7 @@ describe('ol.style.expressions', function() {
     });
 
     it('gives precedence to the string type unless asked otherwise', function() {
-      expect(expressionToGlsl(context, 'lightgreen')).to.eql('lightgreen');
+      expect(expressionToGlsl(context, 'lightgreen')).to.eql('0.0');
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.COLOR)).to.eql(
         'vec4(0.5647058823529412, 0.9333333333333333, 0.5647058823529412, 1.0)');
     });
@@ -225,7 +258,6 @@ describe('ol.style.expressions', function() {
       }
       expect(thrown).to.be(true);
     });
-
   });
 
 });
