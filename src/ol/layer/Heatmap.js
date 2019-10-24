@@ -4,6 +4,7 @@
 import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from './Vector.js';
+import {clamp} from '../math.js';
 import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 
@@ -180,7 +181,10 @@ class Heatmap extends VectorLayer {
       attributes: [
         {
           name: 'weight',
-          callback: this.weightFunction_
+          callback: function(feature) {
+            const weight = this.weightFunction_(feature);
+            return weight !== undefined ? clamp(weight, 0, 1) : 1;
+          }.bind(this)
         }
       ],
       vertexShader: `
