@@ -138,8 +138,12 @@ ExampleBuilder.prototype.apply = function(compiler) {
       .filter(chunk => chunk.names[0] !== this.common);
 
     const exampleData = [];
+    const uniqueTags = new Set();
     const promises = chunks.map(async chunk => {
       const [assets, data] = await this.render(compiler.context, chunk);
+
+      // collect tags for main page... TODO: implement index tag links
+      data.tags.forEach(tag => uniqueTags.add(tag));
 
       exampleData.push({
         link: data.filename,
@@ -158,7 +162,8 @@ ExampleBuilder.prototype.apply = function(compiler) {
 
     const info = {
       examples: exampleData,
-      index: createWordIndex(exampleData)
+      index: createWordIndex(exampleData),
+      tags: Array.from(uniqueTags)
     };
 
     const indexSource = `var info = ${JSON.stringify(info)}`;
@@ -181,6 +186,13 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
 
   data.olVersion = pkg.version;
   data.filename = htmlName;
+
+  // process tags
+  if (data.tags) {
+    data.tags = data.tags.replace(/[\s"]+/g, '').split(',');
+  } else {
+    data.tags = [];
+  }
 
   // add in script tag
   const jsName = `${name}.js`;
