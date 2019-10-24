@@ -114,7 +114,10 @@ describe('ol.style.expressions', function() {
     let context;
 
     beforeEach(function() {
-      context = {};
+      context = {
+        variables: [],
+        attributes: []
+      };
     });
 
     it('correctly converts expressions to GLSL', function() {
@@ -135,6 +138,21 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql('(!a_attr4)');
       expect(expressionToGlsl(context, ['interpolate', ['get', 'attr4'], [255, 255, 255, 1], 'transparent'])).to.eql(
         'mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.0, 0.0, 0.0, 0.0), a_attr4)');
+    });
+
+    it('correctly adapts output for fragment shaders', function() {
+      context.inFragmentShader = true;
+      expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('v_myAttr');
+    });
+
+    it('correctly adapts output for fragment shaders', function() {
+      expressionToGlsl(context, ['get', 'myAttr']);
+      expressionToGlsl(context, ['var', 'myVar']);
+      expressionToGlsl(context, ['clamp', ['get', 'attr2'], ['get', 'attr2'], ['get', 'myAttr']]);
+      expressionToGlsl(context, ['*', ['get', 'attr2'], ['var', 'myVar']]);
+      expressionToGlsl(context, ['*', ['get', 'attr3'], ['var', 'myVar2']]);
+      expect(context.attributes).to.eql(['myAttr', 'attr2', 'attr3']);
+      expect(context.variables).to.eql(['myVar', 'myVar2']);
     });
 
   });

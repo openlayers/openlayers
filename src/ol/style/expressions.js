@@ -115,7 +115,9 @@ export function getValueType(value) {
 /**
  * Context available during the parsing of an expression.
  * @typedef {Object} ParsingContext
- * @property {boolean} inFragmentShader If false, means the expression output should be made for a vertex shader
+ * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
+ * @property {Array<string>} variables List of variables used in the expression; contains **unprefixed names**
+ * @property {Array<string>} attributes List of attributes used in the expression; contains **unprefixed names**
  */
 
 /**
@@ -239,10 +241,14 @@ export const Operators = {
       return ValueTypes.ANY;
     },
     toGlsl: function(context, args) {
-      const prefix = context.inFragmentShader ? 'v_' : 'a_';
       assertArgsCount(args, 1);
       assertString(args[0]);
-      return prefix + expressionToGlsl(context, args[0]);
+      const value = expressionToGlsl(context, args[0]);
+      if (context.attributes.indexOf(value) === -1) {
+        context.attributes.push(value);
+      }
+      const prefix = context.inFragmentShader ? 'v_' : 'a_';
+      return prefix + value;
     }
   },
   'var': {
@@ -252,7 +258,11 @@ export const Operators = {
     toGlsl: function(context, args) {
       assertArgsCount(args, 1);
       assertString(args[0]);
-      return `u_${expressionToGlsl(context, args[0])}`;
+      const value = expressionToGlsl(context, args[0]);
+      if (context.variables.indexOf(value) === -1) {
+        context.variables.push(value);
+      }
+      return `u_${value}`;
     }
   },
   'time': {
