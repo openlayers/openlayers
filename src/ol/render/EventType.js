@@ -23,6 +23,7 @@ export default {
 
   /**
    * Triggered before layers are rendered.
+   * The event object will not have a `context` set.
    * @event module:ol/render/Event~RenderEvent#precompose
    * @api
    */
@@ -30,6 +31,7 @@ export default {
 
   /**
    * Triggered after all layers are rendered.
+   * The event object will not have a `context` set.
    * @event module:ol/render/Event~RenderEvent#postcompose
    * @api
    */
@@ -38,6 +40,7 @@ export default {
   /**
    * Triggered when rendering is complete, i.e. all sources and tiles have
    * finished loading for the current viewport, and all tiles are faded in.
+   * The event object will not have a `context` set.
    * @event module:ol/render/Event~RenderEvent#rendercomplete
    * @api
    */

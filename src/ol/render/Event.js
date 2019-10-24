@@ -33,8 +33,8 @@ class RenderEvent extends Event {
     this.frameState = opt_frameState;
 
     /**
-     * Canvas context. Only available when a Canvas renderer is used, null
-     * otherwise.
+     * Canvas context. Not available when the event is dispatched by the map. Only available
+     * when a Canvas renderer is used, null otherwise.
      * @type {CanvasRenderingContext2D|null|undefined}
      * @api
      */
