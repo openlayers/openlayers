@@ -3,318 +3,7 @@
  * @module ol/webgl/ShaderBuilder
  */
 
-import {asArray, isStringColor} from '../color.js';
-
-/**
- * Will return the number as a float with a dot separator, which is required by GLSL.
- * @param {number} v Numerical value.
- * @returns {string} The value as string.
- */
-export function formatNumber(v) {
-  const s = v.toString();
-  return s.indexOf('.') === -1 ? s + '.0' : s;
-}
-
-/**
- * Will return the number array as a float with a dot separator, concatenated with ', '.
- * @param {Array<number>} array Numerical values array.
- * @returns {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
- */
-export function formatArray(array) {
-  if (array.length < 2 || array.length > 4) {
-    throw new Error('`formatArray` can only output `vec2`, `vec3` or `vec4` arrays.');
-  }
-  return `vec${array.length}(${array.map(formatNumber).join(', ')})`;
-}
-
-/**
- * Will normalize and converts to string a `vec4` color array compatible with GLSL.
- * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
- * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
- * Note that the final array will always have 4 components.
- * @returns {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
- */
-export function formatColor(color) {
-  const array = asArray(color).slice();
-  if (array.length < 4) {
-    array.push(1);
-  }
-  return formatArray(
-    array.map(function(c, i) {
-      return i < 3 ? c / 255 : c;
-    })
-  );
-}
-
-/**
- * Possible inferred types from a given value or expression
- * @enum {number}
- */
-export const ValueTypes = {
-  UNKNOWN: -1,
-  NUMBER: 0,
-  STRING: 1,
-  COLOR: 2,
-  COLOR_OR_STRING: 3
-};
-
-function getValueType(value) {
-  if (typeof value === 'number') {
-    return ValueTypes.NUMBER;
-  }
-  if (typeof value === 'string') {
-    if (isStringColor(value)) {
-      return ValueTypes.COLOR_OR_STRING;
-    }
-    return ValueTypes.STRING;
-  }
-  if (!Array.isArray(value)) {
-    throw new Error(`Unrecognized value type: ${JSON.stringify(value)}`);
-  }
-  if (value.length === 3 || value.length === 4) {
-    const onlyNumbers = value.every(function(v) {
-      return typeof v === 'number';
-    });
-    if (onlyNumbers) {
-      return ValueTypes.COLOR;
-    }
-  }
-  if (typeof value[0] !== 'string') {
-    return ValueTypes.UNKNOWN;
-  }
-  switch (value[0]) {
-    case 'get':
-    case 'var':
-    case 'time':
-    case '*':
-    case '/':
-    case '+':
-    case '-':
-    case 'clamp':
-    case 'stretch':
-    case 'mod':
-    case 'pow':
-    case '>':
-    case '>=':
-    case '<':
-    case '<=':
-    case '==':
-    case '!':
-    case 'between':
-      return ValueTypes.NUMBER;
-    case 'interpolate':
-      return ValueTypes.COLOR;
-    default:
-      return ValueTypes.UNKNOWN;
-  }
-}
-
-/**
- * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
- * @returns {boolean} True if a numeric value, false otherwise
- */
-export function isValueTypeNumber(value) {
-  return getValueType(value) === ValueTypes.NUMBER;
-}
-
-/**
- * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
- * @returns {boolean} True if a string value, false otherwise
- */
-export function isValueTypeString(value) {
-  return getValueType(value) === ValueTypes.STRING || getValueType(value) === ValueTypes.COLOR_OR_STRING;
-}
-
-/**
- * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
- * @returns {boolean} True if a color value, false otherwise
- */
-export function isValueTypeColor(value) {
-  return getValueType(value) === ValueTypes.COLOR || getValueType(value) === ValueTypes.COLOR_OR_STRING;
-}
-
-
-/**
- * Check that the provided value or expression is valid, and that the types used are compatible.
- *
- * Will throw an exception if found to be invalid.
- *
- * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
- */
-export function check(value) {
-  // these will be used to validate types in the expressions
-  function checkNumber(value) {
-    if (!isValueTypeNumber(value)) {
-      throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
-    }
-  }
-  function checkColor(value) {
-    if (!isValueTypeColor(value)) {
-      throw new Error(`A color value was expected, got ${JSON.stringify(value)} instead`);
-    }
-  }
-  function checkString(value) {
-    if (!isValueTypeString(value)) {
-      throw new Error(`A string value was expected, got ${JSON.stringify(value)} instead`);
-    }
-  }
-
-  // first check that the value is of a recognized kind
-  if (!isValueTypeColor(value) && !isValueTypeNumber(value) && !isValueTypeString(value)) {
-    throw new Error(`No type could be inferred from the following expression: ${JSON.stringify(value)}`);
-  }
-
-  // check operator arguments
-  if (Array.isArray(value) && typeof value[0] === 'string') {
-    switch (value[0]) {
-      case 'get':
-      case 'var':
-        checkString(value[1]);
-        break;
-      case 'time':
-        break;
-      case '*':
-      case '/':
-      case '+':
-      case '-':
-      case 'mod':
-      case 'pow':
-        checkNumber(value[1]);
-        checkNumber(value[2]);
-        break;
-      case 'clamp':
-        checkNumber(value[1]);
-        checkNumber(value[2]);
-        checkNumber(value[3]);
-        break;
-      case 'stretch':
-        checkNumber(value[1]);
-        checkNumber(value[2]);
-        checkNumber(value[3]);
-        checkNumber(value[4]);
-        checkNumber(value[5]);
-        break;
-      case '>':
-      case '>=':
-      case '<':
-      case '<=':
-      case '==':
-        checkNumber(value[1]);
-        checkNumber(value[2]);
-        break;
-      case '!':
-        checkNumber(value[1]);
-        break;
-      case 'between':
-        checkNumber(value[1]);
-        checkNumber(value[2]);
-        checkNumber(value[3]);
-        break;
-      case 'interpolate':
-        checkNumber(value[1]);
-        checkColor(value[2]);
-        checkColor(value[3]);
-        break;
-      default: throw new Error(`Unrecognized operator in style expression: ${JSON.stringify(value)}`);
-    }
-  }
-}
-
-/**
- * Parses the provided expressions and produces a GLSL-compatible assignment string, such as:
- * `['add', ['*', ['get', 'size'], 0.001], 12] => '(a_size * (0.001)) + (12.0)'
- *
- * Also takes in two arrays where new attributes and variables will be pushed, so that the user of the `parse` function
- * knows which attributes/variables are expected to be available at evaluation time.
- *
- * For attributes, a prefix must be specified so that the attributes can either be written as `a_name` or `v_name` in
- * the final assignment string (depending on whether we're outputting a vertex or fragment shader).
- *
- * If a wrong value type is supplied to an operator (i. e. using colors with the `clamp` operator), an exception
- * will be thrown.
- *
- * Note that by default, the `string` value type will be given precedence over `color`, so for example the
- * `'yellow'` literal value will be parsed as a `string` while being a valid CSS color. This can be changed with
- * the `typeHint` optional parameter which disambiguates what kind of value is expected.
- *
- * @param {import("../style/LiteralStyle").ExpressionValue} value Either literal or an operator.
- * @param {Array<string>} attributes Array containing the attribute names **without a prefix**;
- * it is passed along recursively
- * @param {string} attributePrefix Prefix added to attribute names in the final output (typically `a_` or `v_`).
- * @param {Array<string>} variables Array containing the variable names **without a prefix**;
- * it is passed along recursively
- * @param {ValueTypes} [typeHint] Hint for inferred type
- * @returns {string} Assignment string.
- */
-export function parse(value, attributes, attributePrefix, variables, typeHint) {
-  check(value);
-
-  function p(value) {
-    return parse(value, attributes, attributePrefix, variables);
-  }
-  function pC(value) {
-    return parse(value, attributes, attributePrefix, variables, ValueTypes.COLOR);
-  }
-
-  // operator
-  if (Array.isArray(value) && typeof value[0] === 'string') {
-    switch (value[0]) {
-      // reading operators
-      case 'get':
-        if (attributes.indexOf(value[1]) === -1) {
-          attributes.push(value[1]);
-        }
-        return attributePrefix + value[1];
-      case 'var':
-        if (variables.indexOf(value[1]) === -1) {
-          variables.push(value[1]);
-        }
-        return `u_${value[1]}`;
-      case 'time':
-        return 'u_time';
-
-      // math operators
-      case '*':
-      case '/':
-      case '+':
-      case '-':
-        return `(${p(value[1])} ${value[0]} ${p(value[2])})`;
-      case 'clamp': return `clamp(${p(value[1])}, ${p(value[2])}, ${p(value[3])})`;
-      case 'stretch':
-        const low1 = p(value[2]);
-        const high1 = p(value[3]);
-        const low2 = p(value[4]);
-        const high2 = p(value[5]);
-        return `((clamp(${p(value[1])}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
-      case 'mod': return `mod(${p(value[1])}, ${p(value[2])})`;
-      case 'pow': return `pow(${p(value[1])}, ${p(value[2])})`;
-
-      // color operators
-      case 'interpolate':
-        return `mix(${pC(value[2])}, ${pC(value[3])}, ${p(value[1])})`;
-
-      // logical operators
-      case '>':
-      case '>=':
-      case '<':
-      case '<=':
-      case '==':
-        return `(${p(value[1])} ${value[0]} ${p(value[2])} ? 1.0 : 0.0)`;
-      case '!':
-        return `(${p(value[1])} > 0.0 ? 0.0 : 1.0)`;
-      case 'between':
-        return `(${p(value[1])} >= ${p(value[2])} && ${p(value[1])} <= ${p(value[3])} ? 1.0 : 0.0)`;
-
-      default: throw new Error('Invalid style expression: ' + JSON.stringify(value));
-    }
-  } else if (isValueTypeNumber(value)) {
-    return formatNumber(/** @type {number} */(value));
-  } else if (isValueTypeString(value) && (typeHint === undefined || typeHint == ValueTypes.STRING)) {
-    return `"${value}"`;
-  } else {
-    return formatColor(/** @type {number[]|string} */(value));
-  }
-}
+import {expressionToGlsl, ValueTypes} from '../style/expressions.js';
 
 /**
  * @typedef {Object} VaryingDescription
@@ -660,21 +349,30 @@ export function parseLiteralStyle(style) {
   const offset = symbStyle.offset || [0, 0];
   const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
 
-  const variables = [];
-  const vertAttributes = [];
-  // parse function for vertex shader
-  function pVert(value) {
-    return parse(value, vertAttributes, 'a_', variables);
-  }
+  const vertContext = {
+    inFragmentShader: false,
+    variables: [],
+    attributes: []
+  };
+  const parseSizeX = expressionToGlsl(vertContext, size[0], ValueTypes.NUMBER);
+  const parseSizeY = expressionToGlsl(vertContext, size[1], ValueTypes.NUMBER);
+  const parsedOffsetX = expressionToGlsl(vertContext, offset[0], ValueTypes.NUMBER);
+  const parsedOffsetY = expressionToGlsl(vertContext, offset[1], ValueTypes.NUMBER);
+  const parsedTexCoordU1 = expressionToGlsl(vertContext, texCoord[0], ValueTypes.NUMBER);
+  const parsedTexCoordV1 = expressionToGlsl(vertContext, texCoord[1], ValueTypes.NUMBER);
+  const parsedTexCoordU2 = expressionToGlsl(vertContext, texCoord[2], ValueTypes.NUMBER);
+  const parsedTexCoordV2 = expressionToGlsl(vertContext, texCoord[3], ValueTypes.NUMBER);
 
-  const fragAttributes = [];
-  // parse function for fragment shader
-  function pFrag(value, type) {
-    return parse(value, fragAttributes, 'v_', variables, type);
-  }
+  const fragContext = {
+    inFragmentShader: true,
+    variables: vertContext.variables,
+    attributes: []
+  };
+  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
+  const parsedOpacity = expressionToGlsl(fragContext, opacity, ValueTypes.NUMBER);
 
   let opacityFilter = '1.0';
-  const visibleSize = pFrag(size[0]);
+  const visibleSize = expressionToGlsl(fragContext, size[0], ValueTypes.NUMBER);
   switch (symbStyle.symbolType) {
     case 'square': break;
     case 'image': break;
@@ -691,26 +389,25 @@ export function parseLiteralStyle(style) {
     default: throw new Error('Unexpected symbol type: ' + symbStyle.symbolType);
   }
 
-  const parsedColor = pFrag(color, ValueTypes.COLOR);
-
   const builder = new ShaderBuilder()
-    .setSizeExpression(`vec2(${pVert(size[0])}, ${pVert(size[1])})`)
-    .setSymbolOffsetExpression(`vec2(${pVert(offset[0])}, ${pVert(offset[1])})`)
+    .setSizeExpression(`vec2(${parseSizeX}, ${parseSizeY})`)
+    .setSymbolOffsetExpression(`vec2(${parsedOffsetX}, ${parsedOffsetY})`)
     .setTextureCoordinateExpression(
-      `vec4(${pVert(texCoord[0])}, ${pVert(texCoord[1])}, ${pVert(texCoord[2])}, ${pVert(texCoord[3])})`)
+      `vec4(${parsedTexCoordU1}, ${parsedTexCoordV1}, ${parsedTexCoordU2}, ${parsedTexCoordV2})`)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)
     .setColorExpression(
-      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${pFrag(opacity)} * ${opacityFilter})`);
+      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`);
 
   if (style.filter) {
-    builder.setFragmentDiscardExpression(`${pFrag(style.filter)} <= 0.0`);
+    const parsedFilter = expressionToGlsl(fragContext, style.filter, ValueTypes.BOOLEAN);
+    builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
 
   /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   // define one uniform per variable
-  variables.forEach(function(varName) {
+  fragContext.variables.forEach(function(varName) {
     builder.addUniform(`float u_${varName}`);
     uniforms[`u_${varName}`] = function() {
       return style.variables && style.variables[varName] !== undefined ?
@@ -729,21 +426,21 @@ export function parseLiteralStyle(style) {
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  fragAttributes.forEach(function(attrName) {
-    if (vertAttributes.indexOf(attrName) === -1) {
-      vertAttributes.push(attrName);
+  fragContext.attributes.forEach(function(attrName) {
+    if (vertContext.attributes.indexOf(attrName) === -1) {
+      vertContext.attributes.push(attrName);
     }
     builder.addVarying(`v_${attrName}`, 'float', `a_${attrName}`);
   });
 
   // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
-  vertAttributes.forEach(function(attrName) {
+  vertContext.attributes.forEach(function(attrName) {
     builder.addAttribute(`float a_${attrName}`);
   });
 
   return {
     builder: builder,
-    attributes: vertAttributes.map(function(attributeName) {
+    attributes: vertContext.attributes.map(function(attributeName) {
       return {
         name: attributeName,
         callback: function(feature) {
