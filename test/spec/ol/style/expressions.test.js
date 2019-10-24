@@ -260,4 +260,101 @@ describe('ol.style.expressions', function() {
     });
   });
 
+  describe('match operator', function() {
+    let context;
+
+    beforeEach(function() {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {}
+      };
+    });
+
+    it('correctly guesses the output type', function() {
+      expect(getValueType(['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green']))
+        .to.eql(ValueTypes.STRING | ValueTypes.COLOR);
+      expect(getValueType(['match', ['get', 'attr'], 0, 'not_a_color', 1, 'yellow', 'green']))
+        .to.eql(ValueTypes.STRING);
+      expect(getValueType(['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'not_a_color']))
+        .to.eql(ValueTypes.STRING);
+      expect(getValueType(['match', ['get', 'attr'], 0, [1, 1, 0], 1, [1, 0, 1], [0, 1, 1]]))
+        .to.eql(ValueTypes.COLOR | ValueTypes.NUMBER_ARRAY);
+      expect(getValueType(['match', ['get', 'attr'], 0, [1, 1, 0], 1, [1, 0, 1], 'white']))
+        .to.eql(ValueTypes.COLOR);
+      expect(getValueType(['match', ['get', 'attr'], 0, 'red', 1, true, 100]))
+        .to.eql(ValueTypes.NONE);
+      expect(getValueType(['match', ['get', 'attr'], 0, false, 1, true, false]))
+        .to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['match', ['get', 'attr'], 0, 100, 1, 200, 300]))
+        .to.eql(ValueTypes.NUMBER);
+    });
+
+    it('throws if no single output type could be inferred', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green'], ValueTypes.COLOR);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(false);
+
+      try {
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green'], ValueTypes.NUMBER);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws if invalid argument count', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0, true, false, false]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0, true]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('correctly parses the expression (colors)', function() {
+      expect(expressionToGlsl(context, ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'white'], ValueTypes.COLOR))
+        .to.eql('(a_attr == 0.0 ? vec4(1.0, 0.0, 0.0, 1.0) : (a_attr == 1.0 ? vec4(1.0, 1.0, 0.0, 1.0) : vec4(1.0, 1.0, 1.0, 1.0)))');
+    });
+
+    it('correctly parses the expression (strings)', function() {
+      function toGlsl(string) {
+        return stringToGlsl(context, string);
+      }
+      expect(expressionToGlsl(context, ['match', ['get', 'attr'], 10, 'red', 20, 'yellow', 'white'], ValueTypes.STRING))
+        .to.eql(`(a_attr == 10.0 ? ${toGlsl('red')} : (a_attr == 20.0 ? ${toGlsl('yellow')} : ${toGlsl('white')}))`);
+    });
+
+    it('correctly parses the expression (number arrays)', function() {
+      function toGlsl(string) {
+        return stringToGlsl(context, string);
+      }
+      expect(expressionToGlsl(context, ['match', ['get', 'attr'], 'low', [0, 0], 'high', [0, 1], [1, 0]]))
+        .to.eql(`(a_attr == ${toGlsl('low')} ? vec2(0.0, 0.0) : (a_attr == ${toGlsl('high')} ? vec2(0.0, 1.0) : vec2(1.0, 0.0)))`);
+      expect(expressionToGlsl(context, ['match', ['get', 'attr'], 0, [0, 0, 1, 1], 1, [1, 1, 2, 2], 2, [2, 2, 3, 3], [3, 3, 4, 4]], ValueTypes.NUMBER_ARRAY))
+        .to.eql('(a_attr == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))');
+    });
+
+  });
 });

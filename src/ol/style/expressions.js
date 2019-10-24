@@ -503,5 +503,33 @@ export const Operators = {
       const end = expressionToGlsl(newContext, args[2], ValueTypes.COLOR);
       return `mix(${start}, ${end}, ${expressionToGlsl(context, args[0])})`;
     }
+  },
+  'match': {
+    getReturnType: function(args) {
+      let type = ValueTypes.ANY;
+      for (let i = 2; i < args.length; i += 2) {
+        type = type & getValueType(args[i]);
+      }
+      type = type & getValueType(args[args.length - 1]);
+      return type;
+    },
+    toGlsl: function(context, args, opt_typeHint) {
+      assertArgsEven(args);
+
+      // compute input/output types
+      const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+      const outputType = Operators['match'].getReturnType(args) & typeHint;
+      assertUniqueInferredType(args, outputType);
+
+      const input = expressionToGlsl(context, args[0]);
+      const fallback = expressionToGlsl(context, args[args.length - 1], outputType);
+      let result = null;
+      for (let i = args.length - 3; i >= 1; i -= 2) {
+        const match = expressionToGlsl(context, args[i]);
+        const output = expressionToGlsl(context, args[i + 1], outputType);
+        result = `(${input} == ${match} ? ${output} : ${result || fallback})`;
+      }
+      return result;
+    }
   }
 };
