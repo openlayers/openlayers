@@ -155,6 +155,77 @@ describe('ol.style.expressions', function() {
       expect(context.variables).to.eql(['myVar', 'myVar2']);
     });
 
+    it('gives precedence to the string type unless asked otherwise', function() {
+      expect(expressionToGlsl(context, 'lightgreen')).to.eql('lightgreen');
+      expect(expressionToGlsl(context, 'lightgreen', ValueTypes.COLOR)).to.eql(
+        'vec4(0.5647058823529412, 0.9333333333333333, 0.5647058823529412, 1.0)');
+    });
+
+    it('throws on unsupported types for operators', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['var', 1234]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, ['<', 0, 'aa']);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, ['+', true, ['get', 'attr']]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, ['interpolate', ['get', 'attr4'], 1, '#3344FF']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws with the wrong number of arguments', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['var', 1234, 456]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, ['<', 4]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, ['+']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws on invalid expressions', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, true);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, [123, 456]);
+      } catch (e) {
+        thrown = true;
+      }
+      try {
+        expressionToGlsl(context, null);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
   });
 
 });
