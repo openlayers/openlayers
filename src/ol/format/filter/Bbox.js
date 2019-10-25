@@ -30,7 +30,11 @@ class Bbox extends Filter {
     /**
      * @type {import("../../extent.js").Extent}
      */
-    this.extent = extent;
+      if(extent.length === 4) {
+          this.extent = extent;
+      } else {
+        throw new Error('Error: Extent should look like this: [minx, miny, maxx, maxy]');
+      }
 
     /**
      * @type {string|undefined}
