@@ -36,6 +36,29 @@ const predefinedStyles = {
       rotateWithView: true
     }
   },
+  'triangles-latitude': {
+    symbol: {
+      symbolType: 'triangle',
+      size: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        40000, 12,
+        2000000, 24
+      ],
+      color: [
+        'interpolate',
+        ['linear'],
+        ['get', 'latitude'],
+        -60, '#ff14c3',
+        -20, '#ff621d',
+        20, '#ffed02',
+        60, '#00ff67'
+      ],
+      offset: [0, 0],
+      opacity: 0.95
+    }
+  },
   'circles': {
     symbol: {
       symbolType: 'circle',
@@ -56,6 +79,21 @@ const predefinedStyles = {
         40000, 0.6,
         2000000, 0.92
       ]
+    }
+  },
+  'circles-zoom': {
+    symbol: {
+      symbolType: 'circle',
+      size: [
+        'interpolate',
+        ['exponential', 2.5],
+        ['zoom'],
+        2, 1,
+        14, 32
+      ],
+      color: '#240572',
+      offset: [0, 0],
+      opacity: 0.95
     }
   }
 };
