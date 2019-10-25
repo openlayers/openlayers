@@ -84,6 +84,8 @@ class WebGLPointsLayer extends Layer {
     return new WebGLPointsLayerRenderer(this, {
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),
       fragmentShader: this.parseResult_.builder.getSymbolFragmentShader(),
+      hitVertexShader: this.parseResult_.builder.getSymbolVertexShader(true),
+      hitFragmentShader: this.parseResult_.builder.getSymbolFragmentShader(true),
       uniforms: this.parseResult_.uniforms,
       attributes: this.parseResult_.attributes
     });

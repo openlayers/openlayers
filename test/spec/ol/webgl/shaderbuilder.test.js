@@ -122,6 +122,39 @@ void main(void) {
 
 }`);
     });
+    it('generates a symbol vertex shader for hitDetection', function() {
+      const builder = new ShaderBuilder();
+
+      expect(builder.getSymbolVertexShader(true)).to.eql(`precision mediump float;
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_offsetScaleMatrix;
+uniform mat4 u_offsetRotateMatrix;
+uniform float u_time;
+
+attribute vec2 a_position;
+attribute float a_index;
+attribute vec4 a_hitColor;
+varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
+void main(void) {
+  mat4 offsetMatrix = u_offsetScaleMatrix;
+  vec2 size = vec2(1.0);
+  vec2 offset = vec2(0.0);
+  float offsetX = a_index == 0.0 || a_index == 3.0 ? offset.x - size.x / 2.0 : offset.x + size.x / 2.0;
+  float offsetY = a_index == 0.0 || a_index == 1.0 ? offset.y - size.y / 2.0 : offset.y + size.y / 2.0;
+  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  vec4 texCoord = vec4(0.0, 0.0, 1.0, 1.0);
+  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
+  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
+  v_hitColor = a_hitColor;
+}`);
+    });
   });
 
   describe('getSymbolFragmentShader', function() {
@@ -145,6 +178,7 @@ void main(void) {
   if (false) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
+
 }`);
     });
     it('generates a symbol fragment shader (with uniforms)', function() {
@@ -168,6 +202,23 @@ void main(void) {
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
+
+}`);
+    });
+    it('generates a symbol fragment shader for hit detection', function() {
+      const builder = new ShaderBuilder();
+
+      expect(builder.getSymbolFragmentShader(true)).to.eql(`precision mediump float;
+uniform float u_time;
+
+varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
+void main(void) {
+  if (false) { discard; }
+  gl_FragColor = vec4(1.0);
+  gl_FragColor.rgb *= gl_FragColor.a;
+  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;
 }`);
     });
   });

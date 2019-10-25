@@ -147,6 +147,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       options.hitVertexShader
     );
 
+    if (this.getShaderCompileErrors()) {
+      throw new Error(this.getShaderCompileErrors());
+    }
+
     const customAttributes = options.attributes ?
       options.attributes.map(function(attribute) {
         return {

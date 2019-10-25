@@ -248,12 +248,26 @@ export class ShaderBuilder {
    * The following varyings are hardcoded and gives the coordinate of the pixel both in the quad and on the texture:
    * `vec2 v_quadCoord`, `vec2 v_texCoord`
    *
+   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
+   * (namely, hit color with encoded feature id).
    * @returns {string} The full shader as a string.
    */
-  getSymbolVertexShader() {
+  getSymbolVertexShader(forHitDetection) {
     const offsetMatrix = this.rotateWithView ?
       'u_offsetScaleMatrix * u_offsetRotateMatrix' :
       'u_offsetScaleMatrix';
+
+    let attributes = this.attributes;
+    let varyings = this.varyings;
+
+    if (forHitDetection) {
+      attributes = attributes.concat('vec4 a_hitColor');
+      varyings = varyings.concat({
+        name: 'v_hitColor',
+        type: 'vec4',
+        expression: 'a_hitColor'
+      });
+    }
 
     return `precision mediump float;
 uniform mat4 u_projectionMatrix;
@@ -265,12 +279,12 @@ ${this.uniforms.map(function(uniform) {
   }).join('\n')}
 attribute vec2 a_position;
 attribute float a_index;
-${this.attributes.map(function(attribute) {
+${attributes.map(function(attribute) {
     return 'attribute ' + attribute + ';';
   }).join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-${this.varyings.map(function(varying) {
+${varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
 void main(void) {
@@ -288,7 +302,7 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
-${this.varyings.map(function(varying) {
+${varyings.map(function(varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
   }).join('\n')}
 }`;
@@ -301,9 +315,24 @@ ${this.varyings.map(function(varying) {
    * Expects the following varyings to be transmitted by the vertex shader:
    * `vec2 v_quadCoord`, `vec2 v_texCoord`
    *
+   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
+   * (namely, hit color with encoded feature id).
    * @returns {string} The full shader as a string.
    */
-  getSymbolFragmentShader() {
+  getSymbolFragmentShader(forHitDetection) {
+    const hitDetectionBypass = forHitDetection ?
+      '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;' : '';
+
+    let varyings = this.varyings;
+
+    if (forHitDetection) {
+      varyings = varyings.concat({
+        name: 'v_hitColor',
+        type: 'vec4',
+        expression: 'a_hitColor'
+      });
+    }
+
     return `precision mediump float;
 uniform float u_time;
 ${this.uniforms.map(function(uniform) {
@@ -311,13 +340,14 @@ ${this.uniforms.map(function(uniform) {
   }).join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-${this.varyings.map(function(varying) {
+${varyings.map(function(varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   }).join('\n')}
 void main(void) {
   if (${this.discardExpression}) { discard; }
   gl_FragColor = ${this.colorExpression};
   gl_FragColor.rgb *= gl_FragColor.a;
+${hitDetectionBypass}
 }`;
   }
 }
