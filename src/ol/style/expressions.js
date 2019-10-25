@@ -252,6 +252,11 @@ function assertNumber(value) {
     throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
   }
 }
+function assertNumbers(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    assertNumber(arr[i]);
+  }
+}
 function assertString(value) {
   if (!(getValueType(value) & ValueTypes.STRING)) {
     throw new Error(`A string value was expected, got ${JSON.stringify(value)} instead`);
@@ -350,8 +355,7 @@ Operators['*'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} * ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -361,8 +365,7 @@ Operators['/'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} / ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -372,8 +375,7 @@ Operators['+'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} + ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -383,8 +385,7 @@ Operators['-'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} - ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -394,9 +395,7 @@ Operators['clamp'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 3);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
-    assertNumber(args[2]);
+    assertNumbers(args);
     const min = expressionToGlsl(context, args[1]);
     const max = expressionToGlsl(context, args[2]);
     return `clamp(${expressionToGlsl(context, args[0])}, ${min}, ${max})`;
@@ -408,8 +407,7 @@ Operators['mod'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `mod(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -419,8 +417,7 @@ Operators['^'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `pow(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -430,8 +427,7 @@ Operators['>'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} > ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -441,8 +437,7 @@ Operators['>='] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} >= ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -452,8 +447,7 @@ Operators['<'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} < ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -463,8 +457,7 @@ Operators['<='] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} <= ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -474,8 +467,7 @@ Operators['=='] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 2);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
+    assertNumbers(args);
     return `(${expressionToGlsl(context, args[0])} == ${expressionToGlsl(context, args[1])})`;
   }
 };
@@ -495,9 +487,7 @@ Operators['between'] = {
   },
   toGlsl: function(context, args) {
     assertArgsCount(args, 3);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
-    assertNumber(args[2]);
+    assertNumbers(args);
     const min = expressionToGlsl(context, args[1]);
     const max = expressionToGlsl(context, args[2]);
     const value = expressionToGlsl(context, args[0]);
@@ -511,9 +501,7 @@ Operators['array'] = {
   toGlsl: function(context, args) {
     assertArgsMinCount(args, 2);
     assertArgsMaxCount(args, 4);
-    for (let i = 0; i < args.length; i++) {
-      assertNumber(args[i]);
-    }
+    assertNumbers(args);
     const parsedArgs = args.map(function(val) {
       return expressionToGlsl(context, val, ValueTypes.NUMBER);
     });
@@ -527,9 +515,7 @@ Operators['color'] = {
   toGlsl: function(context, args) {
     assertArgsMinCount(args, 3);
     assertArgsMaxCount(args, 4);
-    for (let i = 0; i < args.length; i++) {
-      assertNumber(args[i]);
-    }
+    assertNumbers(args);
     const array = /** @type {number[]} */(args);
     if (args.length === 3) {
       array.push(1);
