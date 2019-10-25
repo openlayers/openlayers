@@ -192,7 +192,7 @@ export function stringToGlsl(context, string) {
  * will be read and modified during the parsing operation.
  * @param {ParsingContext} context Parsing context
  * @param {ExpressionValue} value Value
- * @param {ValueTypes} [typeHint] Hint for the expected final type
+ * @param {ValueTypes|number} [typeHint] Hint for the expected final type (can be several types combined)
  * @returns {string} GLSL-compatible output
  */
 export function expressionToGlsl(context, value, typeHint) {

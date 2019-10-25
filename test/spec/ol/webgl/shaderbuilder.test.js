@@ -35,8 +35,8 @@ void main(void) {
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
+  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
+  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
@@ -75,8 +75,8 @@ void main(void) {
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
+  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
+  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
@@ -113,8 +113,8 @@ void main(void) {
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
+  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
+  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
@@ -188,7 +188,7 @@ void main(void) {
       expect(result.builder.varyings).to.eql([]);
       expect(result.builder.colorExpression).to.eql(
         'vec4(vec4(1.0, 0.0, 0.0, 1.0).rgb, vec4(1.0, 0.0, 0.0, 1.0).a * 1.0 * 1.0)');
-      expect(result.builder.sizeExpression).to.eql('vec2(4.0, 8.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(vec2(4.0, 8.0))');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
       expect(result.builder.rotateWithView).to.eql(true);
@@ -203,7 +203,7 @@ void main(void) {
           size: ['get', 'attr1'],
           color: [255, 127.5, 63.75, 0.25],
           textureCoord: [0.5, 0.5, 0.5, 1],
-          offset: [3, ['get', 'attr3']]
+          offset: ['match', ['get', 'attr3'], 'red', [6, 0], 'green', [3, 0], [0, 0]]
         }
       });
 
@@ -217,8 +217,8 @@ void main(void) {
       expect(result.builder.colorExpression).to.eql(
         'vec4(vec4(1.0, 0.5, 0.25, 0.25).rgb, vec4(1.0, 0.5, 0.25, 0.25).a * 1.0 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(a_attr1, a_attr1)');
-      expect(result.builder.offsetExpression).to.eql('vec2(3.0, a_attr3)');
+      expect(result.builder.sizeExpression).to.eql('vec2(a_attr1)');
+      expect(result.builder.offsetExpression).to.eql('(a_attr3 == 1.0 ? vec2(6.0, 0.0) : (a_attr3 == 0.0 ? vec2(3.0, 0.0) : vec2(0.0, 0.0)))');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.5, 0.5, 0.5, 1.0)');
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(2);
@@ -244,7 +244,7 @@ void main(void) {
       expect(result.builder.colorExpression).to.eql(
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0) * texture2D(u_texture, v_texCoord)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
       expect(result.builder.rotateWithView).to.eql(false);
@@ -277,7 +277,7 @@ void main(void) {
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
       );
       expect(result.builder.sizeExpression).to.eql(
-        'vec2(((clamp(a_population, u_lower, u_higher) - u_lower) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0), ((clamp(a_population, u_lower, u_higher) - u_lower) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))'
+        'vec2(((clamp(a_population, u_lower, u_higher) - u_lower) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))'
       );
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
@@ -307,10 +307,10 @@ void main(void) {
       expect(result.builder.colorExpression).to.eql(
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 1.0 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
-      expect(result.builder.discardExpression).to.eql('(v_attr0 >= 0.0 && v_attr0 <= 10.0)');
+      expect(result.builder.discardExpression).to.eql('!(v_attr0 >= 0.0 && v_attr0 <= 10.0)');
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(1);
       expect(result.attributes[0].name).to.eql('attr0');
@@ -330,7 +330,7 @@ void main(void) {
       expect(result.builder.colorExpression).to.eql(
         'vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), u_ratio).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), u_ratio).a * 1.0 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0, 6.0)');
+      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
       expect(result.builder.rotateWithView).to.eql(false);

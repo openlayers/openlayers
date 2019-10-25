@@ -282,8 +282,8 @@ void main(void) {
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = ${this.texCoordExpression};
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.q;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.p;
+  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
+  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
@@ -342,37 +342,39 @@ void main(void) {
  */
 export function parseLiteralStyle(style) {
   const symbStyle = style.symbol;
-  const size = Array.isArray(symbStyle.size) && typeof symbStyle.size[0] == 'number' ?
-    symbStyle.size : [symbStyle.size, symbStyle.size];
+  const size = symbStyle.size !== undefined ? symbStyle.size : 1;
   const color = symbStyle.color || 'white';
   const texCoord = symbStyle.textureCoord || [0, 0, 1, 1];
   const offset = symbStyle.offset || [0, 0];
   const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
 
+  /**
+   * @type {import("../style/expressions.js").ParsingContext}
+   */
   const vertContext = {
     inFragmentShader: false,
     variables: [],
-    attributes: []
+    attributes: [],
+    stringLiteralsMap: {}
   };
-  const parseSizeX = expressionToGlsl(vertContext, size[0], ValueTypes.NUMBER);
-  const parseSizeY = expressionToGlsl(vertContext, size[1], ValueTypes.NUMBER);
-  const parsedOffsetX = expressionToGlsl(vertContext, offset[0], ValueTypes.NUMBER);
-  const parsedOffsetY = expressionToGlsl(vertContext, offset[1], ValueTypes.NUMBER);
-  const parsedTexCoordU1 = expressionToGlsl(vertContext, texCoord[0], ValueTypes.NUMBER);
-  const parsedTexCoordV1 = expressionToGlsl(vertContext, texCoord[1], ValueTypes.NUMBER);
-  const parsedTexCoordU2 = expressionToGlsl(vertContext, texCoord[2], ValueTypes.NUMBER);
-  const parsedTexCoordV2 = expressionToGlsl(vertContext, texCoord[3], ValueTypes.NUMBER);
+  const parsedSize = expressionToGlsl(vertContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER);
+  const parsedOffset = expressionToGlsl(vertContext, offset, ValueTypes.NUMBER_ARRAY);
+  const parsedTexCoord = expressionToGlsl(vertContext, texCoord, ValueTypes.NUMBER_ARRAY);
 
+  /**
+   * @type {import("../style/expressions.js").ParsingContext}
+   */
   const fragContext = {
     inFragmentShader: true,
     variables: vertContext.variables,
-    attributes: []
+    attributes: [],
+    stringLiteralsMap: vertContext.stringLiteralsMap
   };
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
   const parsedOpacity = expressionToGlsl(fragContext, opacity, ValueTypes.NUMBER);
 
   let opacityFilter = '1.0';
-  const visibleSize = expressionToGlsl(fragContext, size[0], ValueTypes.NUMBER);
+  const visibleSize = `vec2(${expressionToGlsl(fragContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER)}).x`;
   switch (symbStyle.symbolType) {
     case 'square': break;
     case 'image': break;
@@ -390,10 +392,9 @@ export function parseLiteralStyle(style) {
   }
 
   const builder = new ShaderBuilder()
-    .setSizeExpression(`vec2(${parseSizeX}, ${parseSizeY})`)
-    .setSymbolOffsetExpression(`vec2(${parsedOffsetX}, ${parsedOffsetY})`)
-    .setTextureCoordinateExpression(
-      `vec4(${parsedTexCoordU1}, ${parsedTexCoordV1}, ${parsedTexCoordU2}, ${parsedTexCoordV2})`)
+    .setSizeExpression(`vec2(${parsedSize})`)
+    .setSymbolOffsetExpression(parsedOffset)
+    .setTextureCoordinateExpression(parsedTexCoord)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)
     .setColorExpression(
       `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`);
@@ -444,7 +445,11 @@ export function parseLiteralStyle(style) {
       return {
         name: attributeName,
         callback: function(feature) {
-          return feature.get(attributeName) || 0;
+          let value = feature.get(attributeName);
+          if (typeof value === 'string') {
+            value = vertContext.stringLiteralsMap[value];
+          }
+          return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
         }
       };
     }),
