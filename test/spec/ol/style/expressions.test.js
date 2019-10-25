@@ -169,8 +169,6 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql('(10.0 == a_attr4)');
       expect(expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
       expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql('(!a_attr4)');
-      expect(expressionToGlsl(context, ['interpolate', ['get', 'attr4'], [255, 255, 255, 1], 'transparent'])).to.eql(
-        'mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.0, 0.0, 0.0, 0.0), a_attr4)');
     });
 
     it('correctly adapts output for fragment shaders', function() {
@@ -208,11 +206,6 @@ describe('ol.style.expressions', function() {
       }
       try {
         expressionToGlsl(context, ['+', true, ['get', 'attr']]);
-      } catch (e) {
-        thrown = true;
-      }
-      try {
-        expressionToGlsl(context, ['interpolate', ['get', 'attr4'], 1, '#3344FF']);
       } catch (e) {
         thrown = true;
       }
@@ -331,6 +324,13 @@ describe('ol.style.expressions', function() {
         thrown = true;
       }
       expect(thrown).to.be(true);
+
+      try {
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
     });
 
     it('correctly parses the expression (colors)', function() {
@@ -354,6 +354,122 @@ describe('ol.style.expressions', function() {
         .to.eql(`(a_attr == ${toGlsl('low')} ? vec2(0.0, 0.0) : (a_attr == ${toGlsl('high')} ? vec2(0.0, 1.0) : vec2(1.0, 0.0)))`);
       expect(expressionToGlsl(context, ['match', ['get', 'attr'], 0, [0, 0, 1, 1], 1, [1, 1, 2, 2], 2, [2, 2, 3, 3], [3, 3, 4, 4]], ValueTypes.NUMBER_ARRAY))
         .to.eql('(a_attr == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))');
+    });
+
+  });
+
+  describe('interpolate operator', function() {
+    let context;
+
+    beforeEach(function() {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {}
+      };
+    });
+
+    it('correctly guesses the output type', function() {
+      expect(getValueType(['interpolate', ['linear'], ['get', 'attr'], 0, 'red', 100, 'yellow']))
+        .to.eql(ValueTypes.COLOR);
+      expect(getValueType(['interpolate', ['linear'], ['get', 'attr'], 0, [1, 2, 3], 1, [0, 0, 0, 4]]))
+        .to.eql(ValueTypes.COLOR);
+      expect(getValueType(['interpolate', ['linear'], ['get', 'attr'], 1000, -10, 2000, 10]))
+        .to.eql(ValueTypes.NUMBER);
+    });
+
+    it('throws if no single output type could be inferred', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', ['linear'], ['get', 'attr'], 1000, -10, 2000, 10], ValueTypes.COLOR);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      try {
+        expressionToGlsl(context, ['interpolate', ['linear'], ['get', 'attr'], 0, [1, 2, 3], 1, 222]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', ['linear'], ['get', 'attr'], 0, [1, 2, 3], 1, [0, 0, 0, 4]], ValueTypes.NUMBER);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws if invalid argument count', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', ['linear'], ['get', 'attr'], 1000]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', ['linear'], ['get', 'attr'], 1000, -10, 2000, 10, 5000]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws if an invalid interpolation type is given', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', 'linear', ['get', 'attr'], 1000, 0, 2000, 1]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', ['exponential'], ['get', 'attr'], 1000, -10, 2000, 1]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['interpolate', ['not_a_type'], ['get', 'attr'], 1000, -10, 2000, 1]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('correctly parses the expression (colors, linear)', function() {
+      expect(expressionToGlsl(context,
+        ['interpolate', ['linear'], ['get', 'attr'], 1000, [255, 0, 0], 2000, [0, 255, 0]]
+      )).to.eql(
+        'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0))');
+      expect(expressionToGlsl(context,
+        ['interpolate', ['linear'], ['get', 'attr'], 1000, [255, 0, 0], 2000, [0, 255, 0], 5000, [0, 0, 255]]
+      )).to.eql(
+        'mix(mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0)), vec4(0.0, 0.0, 1.0, 1.0), pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 1.0))');
+    });
+
+    it('correctly parses the expression (number, linear)', function() {
+      expect(expressionToGlsl(context,
+        ['interpolate', ['linear'], ['get', 'attr'], 1000, -10, 2000, 0, 5000, 10]
+      )).to.eql(
+        'mix(mix(-10.0, 0.0, pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0)), 10.0, pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 1.0))');
+    });
+
+    it('correctly parses the expression (number, exponential)', function() {
+      expect(expressionToGlsl(context,
+        ['interpolate', ['exponential', 0.5], ['get', 'attr'], 1000, -10, 2000, 0, 5000, 10]
+      )).to.eql(
+        'mix(mix(-10.0, 0.0, pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 0.5)), 10.0, pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 0.5))');
     });
 
   });

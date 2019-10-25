@@ -24,14 +24,22 @@ import {assign} from '../obj.js';
  *   * `['+', value1, value1]` adds `value1` and `value2`
  *   * `['-', value1, value1]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
- *   * `['stretch', value, low1, high1, low2, high2]` maps `value` from [`low1`, `high1`] range to
- *     [`low2`, `high2`] range, clamping values along the way
  *   * `['mod', value1, value1]` returns the result of `value1 % value2` (modulo)
  *   * `['pow', value1, value1]` returns the value of `value1` raised to the `value2` power
  *
- * * Color operators:
- *   * `['interpolate', ratio, color1, color2]` returns a color through interpolation between `color1` and
- *     `color2` with the given `ratio`
+ * * Transform operators:
+ *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
+ *     provided `matchX` values, returning the output associated with the first valid match. If no match is found,
+ *     returns the `fallback` value.
+ *     `input` and `matchX` values must all be of the same type, and can be `number` or `string`. `outputX` and
+ *     `fallback` values must be of the same type, and can be of any kind.
+ *   * `['interpolate', interpolation, input, stop1, output1, ...stopN, outputN]` returns a value by interpolating between
+ *     pairs of inputs and outputs; `interpolation` can either be `['linear']` or `['exponential', base]` where `base` is
+ *     the rate of increase from stop A to stop B (i.e. power to which the interpolation ratio is raised); a value
+ *     of 1 is equivalent to `['linear']`.
+ *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
+ *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
+ *     between `output1` and `outputN`.
  *
  * * Logical operators:
  *   * `['<', value1, value2]` returns `1` if `value1` is strictly lower than value 2, or `0` otherwise.
@@ -42,11 +50,6 @@ import {assign} from '../obj.js';
  *   * `['!', value1]` returns `0` if `value1` strictly greater than `0`, or `1` otherwise.
  *   * `['between', value1, value2, value3]` returns `1` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `0` otherwise.
- *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
- *     provided `matchX` values, returning the output associated with the first valid match. If no match is found,
- *     returns the `fallback` value.
- *     `input` and `matchX` values must all be of the same type, and can be `number` or `string`. `outputX` and
- *     `fallback` values must be of the same type, and can be any kind.
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
@@ -261,6 +264,11 @@ function assertBoolean(value) {
 function assertArgsCount(args, count) {
   if (args.length !== count) {
     throw new Error(`Exactly ${count} arguments were expected, got ${args.length} instead`);
+  }
+}
+function assertArgsMinCount(args, count) {
+  if (args.length < count) {
+    throw new Error(`At least ${count} arguments were expected, got ${args.length} instead`);
   }
 }
 function assertArgsEven(args) {
@@ -492,17 +500,43 @@ Operators['between'] = {
 };
 Operators['interpolate'] = {
   getReturnType: function(args) {
-    return ValueTypes.COLOR;
+    let type = ValueTypes.COLOR | ValueTypes.NUMBER;
+    for (let i = 3; i < args.length; i += 2) {
+      type = type & getValueType(args[i]);
+    }
+    return type;
   },
-  toGlsl: function(context, args) {
-    assertArgsCount(args, 3);
-    assertNumber(args[0]);
-    assertColor(args[1]);
-    assertColor(args[2]);
-    const newContext = assign({}, context);
-    const start = expressionToGlsl(newContext, args[1], ValueTypes.COLOR);
-    const end = expressionToGlsl(newContext, args[2], ValueTypes.COLOR);
-    return `mix(${start}, ${end}, ${expressionToGlsl(context, args[0])})`;
+  toGlsl: function(context, args, opt_typeHint) {
+    assertArgsEven(args);
+    assertArgsMinCount(args, 6);
+
+    // validate interpolation type
+    const type = args[0];
+    let interpolation;
+    switch (type[0]) {
+      case 'linear': interpolation = 1; break;
+      case 'exponential': interpolation = type[1]; break;
+      default: interpolation = null;
+    }
+    if (!interpolation) {
+      throw new Error(`Invalid interpolation type for "interpolate" operator, received: ${JSON.stringify(type)}`);
+    }
+
+    // compute input/output types
+    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    const outputType = Operators['interpolate'].getReturnType(args) & typeHint;
+    assertUniqueInferredType(args, outputType);
+
+    const input = expressionToGlsl(context, args[1]);
+    let result = null;
+    for (let i = 2; i < args.length - 2; i += 2) {
+      const stop1 = expressionToGlsl(context, args[i]);
+      const output1 = expressionToGlsl(context, args[i + 1], outputType);
+      const stop2 = expressionToGlsl(context, args[i + 2]);
+      const output2 = expressionToGlsl(context, args[i + 3], outputType);
+      result = `mix(${result || output1}, ${output2}, pow(clamp((${input} - ${stop1}) / (${stop2} - ${stop1}), 0.0, 1.0), ${numberToGlsl(interpolation)}))`;
+    }
+    return result;
   }
 };
 Operators['match'] = {
@@ -516,6 +550,7 @@ Operators['match'] = {
   },
   toGlsl: function(context, args, opt_typeHint) {
     assertArgsEven(args);
+    assertArgsMinCount(args, 4);
 
     // compute input/output types
     const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
