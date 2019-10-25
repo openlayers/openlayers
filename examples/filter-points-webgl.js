@@ -122,7 +122,8 @@ const map = new Map({
     }),
     new WebGLPointsLayer({
       style: style,
-      source: vectorSource
+      source: vectorSource,
+      disableHitDetection: true
     })
   ],
   target: document.getElementById('map'),

@@ -117,7 +117,8 @@ function refreshLayer(newStyle) {
   const previousLayer = pointsLayer;
   pointsLayer = new WebGLPointsLayer({
     source: vectorSource,
-    style: newStyle
+    style: newStyle,
+    disableHitDetection: true
   });
   map.addLayer(pointsLayer);
 
