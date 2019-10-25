@@ -26,9 +26,10 @@ const style = {
     size: size,
     color: [
       'interpolate',
-      ['stretch', ['get', 'year'], 1950, 2013, 0, 1],
-      oldColor,
-      newColor
+      ['linear'],
+      ['get', 'year'],
+      1950, oldColor,
+      2013, newColor
     ],
     rotateWithView: false,
     offset: [

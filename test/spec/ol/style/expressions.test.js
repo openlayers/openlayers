@@ -127,7 +127,6 @@ describe('ol.style.expressions', function() {
       expect(getValueType(['/', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['*', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql(ValueTypes.NUMBER);
-      expect(getValueType(['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['pow', 10, 2])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['mod', ['time'], 10])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['>', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
@@ -160,7 +159,6 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(expressionToGlsl(context, ['/', ['-', ['get', 'size'], 20], 100])).to.eql('((a_size - 20.0) / 100.0)');
       expect(expressionToGlsl(context, ['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
-      expect(expressionToGlsl(context, ['stretch', ['get', 'size'], 10, 100, 4, 8])).to.eql('((clamp(a_size, 10.0, 100.0) - 10.0) * ((8.0 - 4.0) / (100.0 - 10.0)) + 4.0)');
       expect(expressionToGlsl(context, ['pow', ['mod', ['time'], 10], 2])).to.eql('pow(mod(u_time, 10.0), 2.0)');
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql('(10.0 > a_attr4)');
       expect(expressionToGlsl(context, ['>=', 10, ['get', 'attr4']])).to.eql('(10.0 >= a_attr4)');
@@ -487,12 +485,19 @@ describe('ol.style.expressions', function() {
 
     it('correctly parses a combination of interpolate, match, color and number', function() {
       const expression = ['interpolate',
+        ['linear'],
         ['pow',
           ['/',
             ['mod',
               ['+',
                 ['time'],
-                ['stretch', ['get', 'year'], 1850, 2020, 0, 8]
+                [
+                  'interpolate',
+                  ['linear'],
+                  ['get', 'year'],
+                  1850, 0,
+                  2015, 8
+                ]
               ],
               8
             ],
@@ -500,15 +505,15 @@ describe('ol.style.expressions', function() {
           ],
           0.5
         ],
-        'rgba(242,56,22,0.61)',
-        ['match',
+        0, 'rgba(255, 255, 0, 0.5)',
+        1, ['match',
           ['get', 'year'],
           2000, 'green',
           '#ffe52c'
         ]
       ];
       expect(expressionToGlsl(context, expression)).to.eql(
-        'mix(vec4(0.9490196078431372, 0.2196078431372549, 0.08627450980392157, 0.61), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow((mod((u_time + ((clamp(a_year, 1850.0, 2020.0) - 1850.0) * ((8.0 - 0.0) / (2020.0 - 1850.0)) + 0.0)), 8.0) / 8.0), 0.5))'
+        'mix(vec4(1.0, 1.0, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
       );
     });
   });

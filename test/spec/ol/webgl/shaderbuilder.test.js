@@ -311,7 +311,7 @@ void main(void) {
         },
         symbol: {
           symbolType: 'square',
-          size: ['stretch', ['get', 'population'], ['var', 'lower'], ['var', 'higher'], 4, 8],
+          size: ['interpolate', ['linear'], ['get', 'population'], ['var', 'lower'], 4, ['var', 'higher'], 8],
           color: '#336699',
           opacity: 0.5
         }
@@ -328,7 +328,7 @@ void main(void) {
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
       );
       expect(result.builder.sizeExpression).to.eql(
-        'vec2(((clamp(a_population, u_lower, u_higher) - u_lower) * ((8.0 - 4.0) / (u_higher - u_lower)) + 4.0))'
+        'vec2(mix(4.0, 8.0, pow(clamp((a_population - u_lower) / (u_higher - u_lower), 0.0, 1.0), 1.0)))'
       );
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql('vec4(0.0, 0.0, 1.0, 1.0)');
@@ -372,14 +372,14 @@ void main(void) {
         symbol: {
           symbolType: 'square',
           size: 6,
-          color: ['interpolate', ['var', 'ratio'], [255, 255, 0], 'red']
+          color: ['interpolate', ['linear'], ['var', 'ratio'], 0, [255, 255, 0], 1, 'red']
         }
       });
 
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
       expect(result.builder.colorExpression).to.eql(
-        'vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), u_ratio).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), u_ratio).a * 1.0 * 1.0)'
+        'vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((u_ratio - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((u_ratio - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).a * 1.0 * 1.0)'
       );
       expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');

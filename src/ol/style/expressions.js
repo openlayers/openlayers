@@ -4,7 +4,6 @@
  */
 
 import {asArray, isStringColor} from '../color.js';
-import {assign} from '../obj.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
@@ -246,11 +245,6 @@ function assertNumber(value) {
     throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
   }
 }
-function assertColor(value) {
-  if (!(getValueType(value) & ValueTypes.COLOR)) {
-    throw new Error(`A color value was expected, got ${JSON.stringify(value)} instead`);
-  }
-}
 function assertString(value) {
   if (!(getValueType(value) & ValueTypes.STRING)) {
     throw new Error(`A string value was expected, got ${JSON.stringify(value)} instead`);
@@ -376,24 +370,6 @@ Operators['clamp'] = {
     const min = expressionToGlsl(context, args[1]);
     const max = expressionToGlsl(context, args[2]);
     return `clamp(${expressionToGlsl(context, args[0])}, ${min}, ${max})`;
-  }
-};
-Operators['stretch'] = {
-  getReturnType: function(args) {
-    return ValueTypes.NUMBER;
-  },
-  toGlsl: function(context, args) {
-    assertArgsCount(args, 5);
-    assertNumber(args[0]);
-    assertNumber(args[1]);
-    assertNumber(args[2]);
-    assertNumber(args[3]);
-    assertNumber(args[4]);
-    const low1 = expressionToGlsl(context, args[1]);
-    const high1 = expressionToGlsl(context, args[2]);
-    const low2 = expressionToGlsl(context, args[3]);
-    const high2 = expressionToGlsl(context, args[4]);
-    return `((clamp(${expressionToGlsl(context, args[0])}, ${low1}, ${high1}) - ${low1}) * ((${high2} - ${low2}) / (${high1} - ${low1})) + ${low2})`;
   }
 };
 Operators['mod'] = {

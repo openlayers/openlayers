@@ -28,9 +28,10 @@ const predefinedStyles = {
       size: 18,
       color: [
         'interpolate',
-        ['stretch', ['get', 'population'], 20000, 300000, 0, 1],
-        '#5aca5b',
-        '#ff6a19'
+        ['linear'],
+        ['get', 'population'],
+        20000, '#5aca5b',
+        300000, '#ff6a19'
       ],
       rotateWithView: true
     }
@@ -38,11 +39,23 @@ const predefinedStyles = {
   'circles': {
     symbol: {
       symbolType: 'circle',
-      size: ['stretch', ['get', 'population'], 40000, 2000000, 8, 28],
+      size: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        40000, 8,
+        2000000, 28
+      ],
       color: '#006688',
       rotateWithView: false,
       offset: [0, 0],
-      opacity: ['stretch', ['get', 'population'], 40000, 2000000, 0.6, 0.92]
+      opacity: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        40000, 0.6,
+        2000000, 0.92
+      ]
     }
   }
 };
