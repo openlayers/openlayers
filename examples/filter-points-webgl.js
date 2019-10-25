@@ -16,7 +16,7 @@ const oldColor = 'rgba(242,56,22,0.61)';
 const newColor = '#ffe52c';
 const period = 12; // animation period in seconds
 const animRatio =
-  ['pow',
+  ['^',
     ['/',
       ['mod',
         ['+',

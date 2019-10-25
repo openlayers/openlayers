@@ -24,7 +24,7 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['-', value1, value1]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
  *   * `['mod', value1, value1]` returns the result of `value1 % value2` (modulo)
- *   * `['pow', value1, value1]` returns the value of `value1` raised to the `value2` power
+ *   * `['^', value1, value1]` returns the value of `value1` raised to the `value2` power
  *
  * * Transform operators:
  *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
@@ -401,7 +401,7 @@ Operators['mod'] = {
     return `mod(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(context, args[1])})`;
   }
 };
-Operators['pow'] = {
+Operators['^'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER;
   },
