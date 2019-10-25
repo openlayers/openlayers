@@ -7,7 +7,7 @@ import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
 import GeometryType from '../../geom/GeometryType.js';
 import WebGLLayerRenderer, {colorDecodeId, colorEncodeId, WebGLWorkerMessageType} from './Layer.js';
 import ViewHint from '../../ViewHint.js';
-import {createEmpty, equals} from '../../extent.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -18,6 +18,7 @@ import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {assert} from '../../asserts.js';
+import BaseVector from '../../layer/BaseVector.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -296,20 +297,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
     const viewState = frameState.viewState;
-
-    // the source has changed: clear the feature cache & reload features
-    const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
-    if (sourceChanged) {
-      this.sourceRevision_ = vectorSource.getRevision();
-
-      const projection = viewState.projection;
-      const resolution = viewState.resolution;
-      vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
-    }
-
     const viewNotMoving = !frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING];
     const extentChanged = !equals(this.previousExtent_, frameState.extent);
-    if ((sourceChanged || extentChanged) && viewNotMoving) {
+    const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
+
+    if (sourceChanged) {
+      this.sourceRevision_ = vectorSource.getRevision();
+    }
+
+    if (viewNotMoving && (extentChanged || sourceChanged)) {
+      const projection = viewState.projection;
+      const resolution = viewState.resolution;
+
+      const renderBuffer = layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
+      const extent = buffer(frameState.extent, renderBuffer * resolution);
+      vectorSource.loadFeatures(extent, resolution, projection);
+
       this.rebuildBuffers_(frameState);
       this.previousExtent_ = frameState.extent.slice();
     }
