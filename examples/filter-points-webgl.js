@@ -44,7 +44,8 @@ const style = {
     ],
     color: ['interpolate',
       animRatio,
-      newColor, oldColor],
+      newColor, oldColor
+    ],
     opacity: ['-', 1.0, ['*', animRatio, 0.75]]
   }
 };
