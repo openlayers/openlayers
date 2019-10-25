@@ -357,4 +357,43 @@ describe('ol.style.expressions', function() {
     });
 
   });
+
+  describe('complex expressions', function() {
+    let context;
+
+    beforeEach(function() {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {}
+      };
+    });
+
+    it('correctly parses a combination of interpolate, match, color and number', function() {
+      const expression = ['interpolate',
+        ['pow',
+          ['/',
+            ['mod',
+              ['+',
+                ['time'],
+                ['stretch', ['get', 'year'], 1850, 2020, 0, 8]
+              ],
+              8
+            ],
+            8
+          ],
+          0.5
+        ],
+        'rgba(242,56,22,0.61)',
+        ['match',
+          ['get', 'year'],
+          2000, 'green',
+          '#ffe52c'
+        ]
+      ];
+      expect(expressionToGlsl(context, expression)).to.eql(
+        'mix(vec4(0.9490196078431372, 0.2196078431372549, 0.08627450980392157, 0.61), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow((mod((u_time + ((clamp(a_year, 1850.0, 2020.0) - 1850.0) * ((8.0 - 0.0) / (2020.0 - 1850.0)) + 0.0)), 8.0) / 8.0), 0.5))'
+      );
+    });
+  });
 });
