@@ -138,7 +138,8 @@ describe('ol.style.expressions', function() {
       expect(getValueType(['==', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['!', ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
-      expect(getValueType(['interpolate', ['get', 'attr4'], [255, 255, 255, 1], 'transparent'])).to.eql(ValueTypes.COLOR);
+      expect(getValueType(['array', ['get', 'attr4'], 1, 2, 3])).to.eql(ValueTypes.NUMBER_ARRAY);
+      expect(getValueType(['color', ['get', 'attr4'], 1, 2])).to.eql(ValueTypes.COLOR);
     });
 
   });
@@ -171,6 +172,8 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql('(10.0 == a_attr4)');
       expect(expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
       expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql('(!a_attr4)');
+      expect(expressionToGlsl(context, ['array', ['get', 'attr4'], 1, 2, 3])).to.eql('vec4(a_attr4, 1.0, 2.0, 3.0)');
+      expect(expressionToGlsl(context, ['color', ['get', 'attr4'], 1, 2, 0.5])).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
     });
 
     it('correctly adapts output for fragment shaders', function() {
@@ -201,13 +204,35 @@ describe('ol.style.expressions', function() {
       } catch (e) {
         thrown = true;
       }
+      expect(thrown).to.be(true);
+
+      thrown = false;
       try {
         expressionToGlsl(context, ['<', 0, 'aa']);
       } catch (e) {
         thrown = true;
       }
+      expect(thrown).to.be(true);
+
+      thrown = false;
       try {
         expressionToGlsl(context, ['+', true, ['get', 'attr']]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['color', 1, 2, 'red']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['array', 1, '2', 3]);
       } catch (e) {
         thrown = true;
       }
@@ -221,13 +246,35 @@ describe('ol.style.expressions', function() {
       } catch (e) {
         thrown = true;
       }
+      expect(thrown).to.be(true);
+
+      thrown = false;
       try {
         expressionToGlsl(context, ['<', 4]);
       } catch (e) {
         thrown = true;
       }
+      expect(thrown).to.be(true);
+
+      thrown = false;
       try {
         expressionToGlsl(context, ['+']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['array', 1]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['color', 1, 2, 3, 4, 5]);
       } catch (e) {
         thrown = true;
       }
@@ -236,16 +283,6 @@ describe('ol.style.expressions', function() {
 
     it('throws on invalid expressions', function() {
       let thrown = false;
-      try {
-        expressionToGlsl(context, true);
-      } catch (e) {
-        thrown = true;
-      }
-      try {
-        expressionToGlsl(context, [123, 456]);
-      } catch (e) {
-        thrown = true;
-      }
       try {
         expressionToGlsl(context, null);
       } catch (e) {

@@ -50,6 +50,13 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['between', value1, value2, value3]` returns `1` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `0` otherwise.
  *
+ * * Conversion operators:
+ *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
+ *     values can currently only be 2, 3 or 4.
+ *   * `['color', red, green, blue, alpha]` creates a `color` value from `number` values; the `alpha` parameter is
+ *     optional; if not specified, it will be set to 1.
+ *     Note: `red`, `green` and `blue` components must be values between 0 and 255; `alpha` between 0 and 1.
+ *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
  * * `number`
@@ -263,6 +270,11 @@ function assertArgsCount(args, count) {
 function assertArgsMinCount(args, count) {
   if (args.length < count) {
     throw new Error(`At least ${count} arguments were expected, got ${args.length} instead`);
+  }
+}
+function assertArgsMaxCount(args, count) {
+  if (args.length > count) {
+    throw new Error(`At most ${count} arguments were expected, got ${args.length} instead`);
   }
 }
 function assertArgsEven(args) {
@@ -490,6 +502,42 @@ Operators['between'] = {
     const max = expressionToGlsl(context, args[2]);
     const value = expressionToGlsl(context, args[0]);
     return `(${value} >= ${min} && ${value} <= ${max})`;
+  }
+};
+Operators['array'] = {
+  getReturnType: function(args) {
+    return ValueTypes.NUMBER_ARRAY;
+  },
+  toGlsl: function(context, args) {
+    assertArgsMinCount(args, 2);
+    assertArgsMaxCount(args, 4);
+    for (let i = 0; i < args.length; i++) {
+      assertNumber(args[i]);
+    }
+    const parsedArgs = args.map(function(val) {
+      return expressionToGlsl(context, val, ValueTypes.NUMBER);
+    });
+    return `vec${args.length}(${parsedArgs.join(', ')})`;
+  }
+};
+Operators['color'] = {
+  getReturnType: function(args) {
+    return ValueTypes.COLOR;
+  },
+  toGlsl: function(context, args) {
+    assertArgsMinCount(args, 3);
+    assertArgsMaxCount(args, 4);
+    for (let i = 0; i < args.length; i++) {
+      assertNumber(args[i]);
+    }
+    const array = /** @type {number[]} */(args);
+    if (args.length === 3) {
+      array.push(1);
+    }
+    const parsedArgs = args.map(function(val, i) {
+      return expressionToGlsl(context, val, ValueTypes.NUMBER) + (i < 3 ? ' / 255.0' : '');
+    });
+    return `vec${args.length}(${parsedArgs.join(', ')})`;
   }
 };
 Operators['interpolate'] = {
