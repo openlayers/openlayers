@@ -274,6 +274,8 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 ${this.uniforms.map(function(uniform) {
     return 'uniform ' + uniform + ';';
   }).join('\n')}
@@ -335,6 +337,8 @@ ${varyings.map(function(varying) {
 
     return `precision mediump float;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 ${this.uniforms.map(function(uniform) {
     return 'uniform ' + uniform + ';';
   }).join('\n')}

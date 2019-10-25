@@ -122,6 +122,8 @@ describe('ol.style.expressions', function() {
       expect(getValueType(['get', 'myAttr'])).to.eql(ValueTypes.ANY);
       expect(getValueType(['var', 'myValue'])).to.eql(ValueTypes.ANY);
       expect(getValueType(['time'])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['zoom'])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['resolution'])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['+', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['-', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['/', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
@@ -156,6 +158,8 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('a_myAttr');
       expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql('u_myValue');
       expect(expressionToGlsl(context, ['time'])).to.eql('u_time');
+      expect(expressionToGlsl(context, ['zoom'])).to.eql('u_zoom');
+      expect(expressionToGlsl(context, ['resolution'])).to.eql('u_resolution');
       expect(expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(expressionToGlsl(context, ['/', ['-', ['get', 'size'], 20], 100])).to.eql('((a_size - 20.0) / 100.0)');
       expect(expressionToGlsl(context, ['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');

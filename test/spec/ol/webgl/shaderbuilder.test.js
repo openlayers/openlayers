@@ -18,6 +18,8 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 
 attribute vec2 a_position;
 attribute float a_index;
@@ -59,6 +61,8 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute float a_index;
@@ -97,6 +101,8 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 
 attribute vec2 a_position;
 attribute float a_index;
@@ -130,6 +136,8 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 
 attribute vec2 a_position;
 attribute float a_index;
@@ -169,6 +177,8 @@ void main(void) {
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -193,6 +203,8 @@ void main(void) {
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
@@ -210,6 +222,8 @@ void main(void) {
 
       expect(builder.getSymbolFragmentShader(true)).to.eql(`precision mediump float;
 uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;

@@ -314,6 +314,24 @@ Operators['time'] = {
     return 'u_time';
   }
 };
+Operators['zoom'] = {
+  getReturnType: function(args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function(context, args) {
+    assertArgsCount(args, 0);
+    return 'u_zoom';
+  }
+};
+Operators['resolution'] = {
+  getReturnType: function(args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function(context, args) {
+    assertArgsCount(args, 0);
+    return 'u_resolution';
+  }
+};
 Operators['*'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER;
