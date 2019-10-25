@@ -14,6 +14,8 @@ const VERTEX_SHADER = `
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
   uniform float u_time;
+  uniform float u_zoom;
+  uniform float u_resolution;
   
   attribute float a_test;
   uniform float u_test;
@@ -28,6 +30,8 @@ const INVALID_VERTEX_SHADER = `
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
   uniform float u_time;
+  uniform float u_zoom;
+  uniform float u_resolution;
   
   bla
   uniform float u_test;

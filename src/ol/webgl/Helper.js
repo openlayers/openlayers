@@ -43,7 +43,9 @@ export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
   OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
   OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
-  TIME: 'u_time'
+  TIME: 'u_time',
+  ZOOM: 'u_zoom',
+  RESOLUTION: 'u_resolution'
 };
 
 /**
@@ -557,6 +559,8 @@ class WebGLHelper extends Disposable {
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
 
     this.setUniformFloatValue(DefaultUniform.TIME, (Date.now() - this.startTime_) * 0.001);
+    this.setUniformFloatValue(DefaultUniform.ZOOM, frameState.viewState.zoom);
+    this.setUniformFloatValue(DefaultUniform.RESOLUTION, frameState.viewState.resolution);
   }
 
   /**

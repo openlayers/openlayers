@@ -28,21 +28,72 @@ const predefinedStyles = {
       size: 18,
       color: [
         'interpolate',
-        ['stretch', ['get', 'population'], 20000, 300000, 0, 1],
-        '#5aca5b',
-        '#ff6a19'
+        ['linear'],
+        ['get', 'population'],
+        20000, '#5aca5b',
+        300000, '#ff6a19'
       ],
       rotateWithView: true
+    }
+  },
+  'triangles-latitude': {
+    symbol: {
+      symbolType: 'triangle',
+      size: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        40000, 12,
+        2000000, 24
+      ],
+      color: [
+        'interpolate',
+        ['linear'],
+        ['get', 'latitude'],
+        -60, '#ff14c3',
+        -20, '#ff621d',
+        20, '#ffed02',
+        60, '#00ff67'
+      ],
+      offset: [0, 0],
+      opacity: 0.95
     }
   },
   'circles': {
     symbol: {
       symbolType: 'circle',
-      size: ['stretch', ['get', 'population'], 40000, 2000000, 8, 28],
+      size: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        40000, 8,
+        2000000, 28
+      ],
       color: '#006688',
       rotateWithView: false,
       offset: [0, 0],
-      opacity: ['stretch', ['get', 'population'], 40000, 2000000, 0.6, 0.92]
+      opacity: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        40000, 0.6,
+        2000000, 0.92
+      ]
+    }
+  },
+  'circles-zoom': {
+    symbol: {
+      symbolType: 'circle',
+      size: [
+        'interpolate',
+        ['exponential', 2.5],
+        ['zoom'],
+        2, 1,
+        14, 32
+      ],
+      color: '#240572',
+      offset: [0, 0],
+      opacity: 0.95
     }
   }
 };
@@ -66,7 +117,8 @@ function refreshLayer(newStyle) {
   const previousLayer = pointsLayer;
   pointsLayer = new WebGLPointsLayer({
     source: vectorSource,
-    style: newStyle
+    style: newStyle,
+    disableHitDetection: true
   });
   map.addLayer(pointsLayer);
 

@@ -24,6 +24,8 @@ import Layer from './Layer.js';
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
  * @property {import("../source/Vector.js").default} [source] Source.
+ * @property {boolean} [disableHitDetection] Setting this to true will provide a slight performance boost, but will
+ * prevent all hit detection on the layer.
  */
 
 
@@ -75,6 +77,12 @@ class WebGLPointsLayer extends Layer {
      * @type {import('../webgl/ShaderBuilder.js').StyleParseResult}
      */
     this.parseResult_ = parseLiteralStyle(options.style);
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.hitDetectionDisabled_ = !!options.disableHitDetection;
   }
 
   /**
@@ -84,6 +92,10 @@ class WebGLPointsLayer extends Layer {
     return new WebGLPointsLayerRenderer(this, {
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),
       fragmentShader: this.parseResult_.builder.getSymbolFragmentShader(),
+      hitVertexShader: !this.hitDetectionDisabled_ &&
+        this.parseResult_.builder.getSymbolVertexShader(true),
+      hitFragmentShader: !this.hitDetectionDisabled_ &&
+        this.parseResult_.builder.getSymbolFragmentShader(true),
       uniforms: this.parseResult_.uniforms,
       attributes: this.parseResult_.attributes
     });

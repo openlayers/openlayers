@@ -16,12 +16,18 @@ const oldColor = 'rgba(242,56,22,0.61)';
 const newColor = '#ffe52c';
 const period = 12; // animation period in seconds
 const animRatio =
-  ['pow',
+  ['^',
     ['/',
       ['mod',
         ['+',
           ['time'],
-          ['stretch', ['get', 'year'], 1850, 2020, 0, period]
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'year'],
+            1850, 0,
+            2015, period
+          ]
         ],
         period
       ],
@@ -39,12 +45,15 @@ const style = {
   symbol: {
     symbolType: 'circle',
     size: ['*',
-      ['stretch', ['get', 'mass'], 0, 200000, 8, 26],
-      ['-', 1.5, ['*', animRatio, 0.5]]
+      ['interpolate', ['linear'], ['get', 'mass'], 0, 8, 200000, 26],
+      ['-', 1.75, ['*', animRatio, 0.75]]
     ],
     color: ['interpolate',
+      ['linear'],
       animRatio,
-      newColor, oldColor],
+      0, newColor,
+      1, oldColor
+    ],
     opacity: ['-', 1.0, ['*', animRatio, 0.75]]
   }
 };
@@ -113,7 +122,8 @@ const map = new Map({
     }),
     new WebGLPointsLayer({
       style: style,
-      source: vectorSource
+      source: vectorSource,
+      disableHitDetection: true
     })
   ],
   target: document.getElementById('map'),
