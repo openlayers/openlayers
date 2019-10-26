@@ -1,14 +1,18 @@
 /* Carbon adds (see https://sell.buysellads.com) */
 
+#ad {
+  margin-left: 1em;
+  float: right;
+  width: 330px;
+  min-height: 125px;
+}
+
 #carbonads {
   font-family: "Quattrocento Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }
 
 #carbonads {
   display: flex;
-  max-width: 330px;
-  float: right;
-  margin-left: 1em;
 }
 
 #carbonads a {
@@ -58,8 +62,16 @@
   line-height: 1;
 }
 
+#carbonads a.carbon-poweredby {
+  color: #aaa;
+}
+
 /* Clear the float after the advertisement. */
 
 .container-overview {
+  clear: both;
+}
+
+pre.source {
   clear: both;
 }
