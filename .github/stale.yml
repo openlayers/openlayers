@@ -8,6 +8,8 @@ exemptLabels:
   - regression
   - bug
   - 'pull request accepted'
+# Issues assigned to a milestone will not go stale
+exemptMilestones: true
 # Label to use when marking an issue as stale
 staleLabel: stale
 # Comment to post when marking an issue as stale. Set to `false` to disable
