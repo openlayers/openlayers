@@ -112,7 +112,7 @@ $(function () {
     var branchSearch = url.match(/\/([^\/]*)\/apidoc\//);
     var cookieText = 'dismissed=-' + latestVersion + '-';
     var dismissed = document.cookie.indexOf(cookieText) != -1;
-    if (!dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && currentVersion != latestVersion) {
+    if (branchSearch && !dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && currentVersion != latestVersion) {
       var link = url.replace(branchSearch[0], '/latest/apidoc/');
       fetch(link, {method: 'head'}).then(function(response) {
         var a = document.getElementById('latest-link');
