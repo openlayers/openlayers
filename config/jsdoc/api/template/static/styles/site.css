@@ -75,3 +75,7 @@
 pre.source {
   clear: both;
 }
+
+section.content {
+  overflow-y: auto;
+}
