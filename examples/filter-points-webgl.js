@@ -18,7 +18,7 @@ const period = 12; // animation period in seconds
 const animRatio =
   ['^',
     ['/',
-      ['mod',
+      ['%',
         ['+',
           ['time'],
           [

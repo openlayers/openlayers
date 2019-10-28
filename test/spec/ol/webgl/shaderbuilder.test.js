@@ -402,6 +402,56 @@ void main(void) {
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.have.property('u_ratio');
     });
+
+    it('correctly adds string variables to the string literals mapping', function() {
+      const result = parseLiteralStyle({
+        variables: {
+          mySize: 'abcdef'
+        },
+        symbol: {
+          symbolType: 'square',
+          size: ['match', ['var', 'mySize'], 'abc', 10, 'def', 20, 30],
+          color: 'red'
+        }
+      });
+
+      expect(result.uniforms['u_mySize']()).to.be.greaterThan(0);
+    });
+
+    it('throws when a variable is requested but not present in the style', function(done) {
+      const result = parseLiteralStyle({
+        variables: {},
+        symbol: {
+          symbolType: 'square',
+          size: ['var', 'mySize'],
+          color: 'red'
+        }
+      });
+
+      try {
+        result.uniforms['u_mySize']();
+      } catch (e) {
+        done();
+      }
+      done(true);
+    });
+
+    it('throws when a variable is requested but the style does not have a variables dict', function(done) {
+      const result = parseLiteralStyle({
+        symbol: {
+          symbolType: 'square',
+          size: ['var', 'mySize'],
+          color: 'red'
+        }
+      });
+
+      try {
+        result.uniforms['u_mySize']();
+      } catch (e) {
+        done();
+      }
+      done(true);
+    });
   });
 
 });

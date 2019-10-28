@@ -130,12 +130,13 @@ describe('ol.style.expressions', function() {
       expect(getValueType(['*', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['^', 10, 2])).to.eql(ValueTypes.NUMBER);
-      expect(getValueType(['mod', ['time'], 10])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['%', ['time'], 10])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['>', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['>=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['<', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['<=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['==', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['!=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['!', ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['array', ['get', 'attr4'], 1, 2, 3])).to.eql(ValueTypes.NUMBER_ARRAY);
@@ -164,12 +165,13 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(expressionToGlsl(context, ['/', ['-', ['get', 'size'], 20], 100])).to.eql('((a_size - 20.0) / 100.0)');
       expect(expressionToGlsl(context, ['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
-      expect(expressionToGlsl(context, ['^', ['mod', ['time'], 10], 2])).to.eql('pow(mod(u_time, 10.0), 2.0)');
+      expect(expressionToGlsl(context, ['^', ['%', ['time'], 10], 2])).to.eql('pow(mod(u_time, 10.0), 2.0)');
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql('(10.0 > a_attr4)');
       expect(expressionToGlsl(context, ['>=', 10, ['get', 'attr4']])).to.eql('(10.0 >= a_attr4)');
       expect(expressionToGlsl(context, ['<', 10, ['get', 'attr4']])).to.eql('(10.0 < a_attr4)');
       expect(expressionToGlsl(context, ['<=', 10, ['get', 'attr4']])).to.eql('(10.0 <= a_attr4)');
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql('(10.0 == a_attr4)');
+      expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql('(10.0 != a_attr4)');
       expect(expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
       expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql('(!a_attr4)');
       expect(expressionToGlsl(context, ['array', ['get', 'attr4'], 1, 2, 3])).to.eql('vec4(a_attr4, 1.0, 2.0, 3.0)');
@@ -289,6 +291,94 @@ describe('ol.style.expressions', function() {
         thrown = true;
       }
       expect(thrown).to.be(true);
+    });
+  });
+
+  describe('case operator', function() {
+    let context;
+
+    beforeEach(function() {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {}
+      };
+    });
+
+    it('correctly guesses the output type', function() {
+      expect(getValueType(['case', true, 0, false, [3, 4, 5], 'green']))
+        .to.eql(ValueTypes.NONE);
+      expect(getValueType(['case', true, 0, false, 1, 2]))
+        .to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['case', true, [0, 0, 0], true, [1, 2, 3], ['get', 'attr'], [4, 5, 6, 7], [8, 9, 0]]))
+        .to.eql(ValueTypes.COLOR | ValueTypes.NUMBER_ARRAY);
+      expect(getValueType(['case', true, 'red', true, 'yellow', ['get', 'attr'], 'green', 'white']))
+        .to.eql(ValueTypes.COLOR | ValueTypes.STRING);
+      expect(getValueType(['case', true, [0, 0], false, [1, 1], [2, 2]]))
+        .to.eql(ValueTypes.NUMBER_ARRAY);
+    });
+
+    it('throws if no single output type could be inferred', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['case', false, 'red', true, 'yellow', 'green'], ValueTypes.COLOR);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(false);
+
+      try {
+        expressionToGlsl(context, ['case', true, 'red', true, 'yellow', 'green']);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['case', true, 'red', false, 'yellow', 'green'], ValueTypes.NUMBER);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['case', true, 'red', false, 'yellow', 'not_a_color'], ValueTypes.COLOR);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('throws if invalid argument count', function() {
+      let thrown = false;
+      try {
+        expressionToGlsl(context, ['case', true, 0, false, 1]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['case', true, 0]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      try {
+        expressionToGlsl(context, ['case', false]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+    });
+
+    it('correctly parses the expression (colors)', function() {
+      expect(expressionToGlsl(context, ['case', ['>', ['get', 'attr'], 3], 'red', ['>', ['get', 'attr'], 1], 'yellow', 'white'], ValueTypes.COLOR))
+        .to.eql('((a_attr > 3.0) ? vec4(1.0, 0.0, 0.0, 1.0) : ((a_attr > 1.0) ? vec4(1.0, 1.0, 0.0, 1.0) : vec4(1.0, 1.0, 1.0, 1.0)))');
     });
   });
 
@@ -529,7 +619,7 @@ describe('ol.style.expressions', function() {
         ['linear'],
         ['^',
           ['/',
-            ['mod',
+            ['%',
               ['+',
                 ['time'],
                 [

@@ -23,10 +23,13 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['+', value1, value1]` adds `value1` and `value2`
  *   * `['-', value1, value1]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
- *   * `['mod', value1, value1]` returns the result of `value1 % value2` (modulo)
+ *   * `['%', value1, value1]` returns the result of `value1 % value2` (modulo)
  *   * `['^', value1, value1]` returns the value of `value1` raised to the `value2` power
  *
  * * Transform operators:
+ *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
+ *     condition evaluates to `true`. If no match is found, returns the `fallback` value.
+ *     All conditions should be `boolean`, output and fallback can be any kind.
  *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
  *     provided `matchX` values, returning the output associated with the first valid match. If no match is found,
  *     returns the `fallback` value.
@@ -41,14 +44,15 @@ import {asArray, isStringColor} from '../color.js';
  *     between `output1` and `outputN`.
  *
  * * Logical operators:
- *   * `['<', value1, value2]` returns `1` if `value1` is strictly lower than value 2, or `0` otherwise.
- *   * `['<=', value1, value2]` returns `1` if `value1` is lower than or equals value 2, or `0` otherwise.
- *   * `['>', value1, value2]` returns `1` if `value1` is strictly greater than value 2, or `0` otherwise.
- *   * `['>=', value1, value2]` returns `1` if `value1` is greater than or equals value 2, or `0` otherwise.
- *   * `['==', value1, value2]` returns `1` if `value1` equals value 2, or `0` otherwise.
- *   * `['!', value1]` returns `0` if `value1` strictly greater than `0`, or `1` otherwise.
- *   * `['between', value1, value2, value3]` returns `1` if `value1` is contained between `value2` and `value3`
- *     (inclusively), or `0` otherwise.
+ *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than value 2, or `false` otherwise.
+ *   * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals value 2, or `false` otherwise.
+ *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than value 2, or `false` otherwise.
+ *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals value 2, or `false` otherwise.
+ *   * `['==', value1, value2]` returns `true` if `value1` equals value 2, or `false` otherwise.
+ *   * `['!=', value1, value2]` returns `true` if `value1` equals value 2, or `false` otherwise.
+ *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
+ *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
+ *     (inclusively), or `false` otherwise.
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -59,6 +63,7 @@ import {asArray, isStringColor} from '../color.js';
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
+ * * `boolean`
  * * `number`
  * * `string`
  * * {@link module:ol/color~Color}
@@ -252,9 +257,9 @@ function assertNumber(value) {
     throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
   }
 }
-function assertNumbers(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    assertNumber(arr[i]);
+function assertNumbers(values) {
+  for (let i = 0; i < values.length; i++) {
+    assertNumber(values[i]);
   }
 }
 function assertString(value) {
@@ -284,6 +289,11 @@ function assertArgsMaxCount(args, count) {
 }
 function assertArgsEven(args) {
   if (args.length % 2 !== 0) {
+    throw new Error(`An even amount of arguments was expected, got ${args} instead`);
+  }
+}
+function assertArgsOdd(args) {
+  if (args.length % 2 === 0) {
     throw new Error(`An even amount of arguments was expected, got ${args} instead`);
   }
 }
@@ -349,6 +359,7 @@ Operators['resolution'] = {
     return 'u_resolution';
   }
 };
+
 Operators['*'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER;
@@ -401,7 +412,7 @@ Operators['clamp'] = {
     return `clamp(${expressionToGlsl(context, args[0])}, ${min}, ${max})`;
   }
 };
-Operators['mod'] = {
+Operators['%'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER;
   },
@@ -421,6 +432,7 @@ Operators['^'] = {
     return `pow(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(context, args[1])})`;
   }
 };
+
 Operators['>'] = {
   getReturnType: function(args) {
     return ValueTypes.BOOLEAN;
@@ -461,16 +473,31 @@ Operators['<='] = {
     return `(${expressionToGlsl(context, args[0])} <= ${expressionToGlsl(context, args[1])})`;
   }
 };
-Operators['=='] = {
-  getReturnType: function(args) {
-    return ValueTypes.BOOLEAN;
-  },
-  toGlsl: function(context, args) {
-    assertArgsCount(args, 2);
-    assertNumbers(args);
-    return `(${expressionToGlsl(context, args[0])} == ${expressionToGlsl(context, args[1])})`;
-  }
-};
+
+function getEqualOperator(operator) {
+  return {
+    getReturnType: function(args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, args) {
+      assertArgsCount(args, 2);
+
+      // find common type
+      let type = ValueTypes.ANY;
+      for (let i = 0; i < args.length; i++) {
+        type = type & getValueType(args[i]);
+      }
+      if (type === 0) {
+        throw new Error(`All arguments should be of compatible type, got ${JSON.stringify(args)} instead`);
+      }
+
+      return `(${expressionToGlsl(context, args[0], type)} ${operator} ${expressionToGlsl(context, args[1], type)})`;
+    }
+  };
+}
+Operators['=='] = getEqualOperator('==');
+Operators['!='] = getEqualOperator('!=');
+
 Operators['!'] = {
   getReturnType: function(args) {
     return ValueTypes.BOOLEAN;
@@ -494,6 +521,7 @@ Operators['between'] = {
     return `(${value} >= ${min} && ${value} <= ${max})`;
   }
 };
+
 Operators['array'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER_ARRAY;
@@ -526,6 +554,7 @@ Operators['color'] = {
     return `vec${args.length}(${parsedArgs.join(', ')})`;
   }
 };
+
 Operators['interpolate'] = {
   getReturnType: function(args) {
     let type = ValueTypes.COLOR | ValueTypes.NUMBER;
@@ -580,7 +609,6 @@ Operators['match'] = {
     assertArgsEven(args);
     assertArgsMinCount(args, 4);
 
-    // compute input/output types
     const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
     const outputType = Operators['match'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
@@ -592,6 +620,36 @@ Operators['match'] = {
       const match = expressionToGlsl(context, args[i]);
       const output = expressionToGlsl(context, args[i + 1], outputType);
       result = `(${input} == ${match} ? ${output} : ${result || fallback})`;
+    }
+    return result;
+  }
+};
+Operators['case'] = {
+  getReturnType: function(args) {
+    let type = ValueTypes.ANY;
+    for (let i = 1; i < args.length; i += 2) {
+      type = type & getValueType(args[i]);
+    }
+    type = type & getValueType(args[args.length - 1]);
+    return type;
+  },
+  toGlsl: function(context, args, opt_typeHint) {
+    assertArgsOdd(args);
+    assertArgsMinCount(args, 3);
+
+    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    const outputType = Operators['case'].getReturnType(args) & typeHint;
+    assertUniqueInferredType(args, outputType);
+    for (let i = 0; i < args.length - 1; i += 2) {
+      assertBoolean(args[i]);
+    }
+
+    const fallback = expressionToGlsl(context, args[args.length - 1], outputType);
+    let result = null;
+    for (let i = args.length - 3; i >= 0; i -= 2) {
+      const condition = expressionToGlsl(context, args[i]);
+      const output = expressionToGlsl(context, args[i + 1], outputType);
+      result = `(${condition} ? ${output} : ${result || fallback})`;
     }
     return result;
   }
