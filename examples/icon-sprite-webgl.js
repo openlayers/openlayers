@@ -10,6 +10,22 @@ import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
 
 const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 
+const map = new Map({
+  layers: [
+    new TileLayer({
+      source: new TileJSON({
+        url: 'https://api.tiles.mapbox.com/v4/mapbox.world-dark.json?secure&access_token=' + key,
+        crossOrigin: 'anonymous'
+      })
+    })
+  ],
+  target: document.getElementById('map'),
+  view: new View({
+    center: [0, 4000000],
+    zoom: 2
+  })
+});
+
 const vectorSource = new Vector({
   features: [],
   attributions: 'National UFO Reporting Center'
@@ -20,6 +36,15 @@ const newColor = [180, 255, 200];
 const size = 16;
 
 const style = {
+  variables: {
+    filterShape: 'all'
+  },
+  filter: [
+    'case',
+    ['!=', ['var', 'filterShape'], 'all'],
+    ['==', ['get', 'shape'], ['var', 'filterShape']],
+    true
+  ],
   symbol: {
     symbolType: 'image',
     src: 'data/ufo_shapes.png',
@@ -51,61 +76,71 @@ const style = {
   }
 };
 
-function loadData() {
-  const client = new XMLHttpRequest();
-  client.open('GET', 'data/csv/ufo_sighting_data.csv');
-  client.onload = function() {
-    const csv = client.responseText;
-    const features = [];
-
-    let prevIndex = csv.indexOf('\n') + 1; // scan past the header line
-
-    let curIndex;
-    while ((curIndex = csv.indexOf('\n', prevIndex)) != -1) {
-      const line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
-      prevIndex = curIndex + 1;
-
-      const coords = fromLonLat([parseFloat(line[5]), parseFloat(line[4])]);
-
-      // only keep valid points
-      if (isNaN(coords[0]) || isNaN(coords[1])) {
-        continue;
-      }
-
-      features.push(new Feature({
-        datetime: line[0],
-        year: parseInt(/[0-9]{4}/.exec(line[0])[0]), // extract the year as int
-        shape: line[2],
-        duration: line[3],
-        geometry: new Point(coords)
-      }));
-    }
-    vectorSource.addFeatures(features);
-  };
-  client.send();
+// key is shape name, value is sightings count
+const shapeTypes = {
+  all: 0
+};
+const shapeSelect = document.getElementById('shape-filter');
+shapeSelect.addEventListener('input', function() {
+  style.variables.filterShape = shapeSelect.options[shapeSelect.selectedIndex].value;
+  map.render();
+});
+function fillShapeSelect() {
+  Object.keys(shapeTypes)
+    .sort(function(a, b) {
+      return shapeTypes[b] - shapeTypes[a];
+    })
+    .forEach(function(shape) {
+      const option = document.createElement('option');
+      option.text = `${shape} (${shapeTypes[shape]} sightings)`;
+      option.value = shape;
+      shapeSelect.appendChild(option);
+    });
 }
 
-loadData();
+const client = new XMLHttpRequest();
+client.open('GET', 'data/csv/ufo_sighting_data.csv');
+client.onload = function() {
+  const csv = client.responseText;
+  const features = [];
 
-const map = new Map({
-  layers: [
-    new TileLayer({
-      source: new TileJSON({
-        url: 'https://api.tiles.mapbox.com/v4/mapbox.world-dark.json?secure&access_token=' + key,
-        crossOrigin: 'anonymous'
-      })
-    }),
-    new WebGLPointsLayer({
-      source: vectorSource,
-      style: style
-    })
-  ],
-  target: document.getElementById('map'),
-  view: new View({
-    center: [0, 4000000],
-    zoom: 2
+  let prevIndex = csv.indexOf('\n') + 1; // scan past the header line
+
+  let curIndex;
+  while ((curIndex = csv.indexOf('\n', prevIndex)) != -1) {
+    const line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
+    prevIndex = curIndex + 1;
+
+    const coords = fromLonLat([parseFloat(line[5]), parseFloat(line[4])]);
+
+    // only keep valid points
+    if (isNaN(coords[0]) || isNaN(coords[1])) {
+      continue;
+    }
+
+    const shape = line[2];
+    shapeTypes[shape] = (shapeTypes[shape] ? shapeTypes[shape] : 0) + 1;
+    shapeTypes['all']++;
+
+    features.push(new Feature({
+      datetime: line[0],
+      year: parseInt(/[0-9]{4}/.exec(line[0])[0]), // extract the year as int
+      shape: shape,
+      duration: line[3],
+      geometry: new Point(coords)
+    }));
+  }
+  vectorSource.addFeatures(features);
+  fillShapeSelect();
+};
+client.send();
+
+map.addLayer(
+  new WebGLPointsLayer({
+    source: vectorSource,
+    style: style
   })
-});
+);
 
 const info = document.getElementById('info');
 map.on('pointermove', function(evt) {
