@@ -23,7 +23,7 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['+', value1, value1]` adds `value1` and `value2`
  *   * `['-', value1, value1]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
- *   * `['mod', value1, value1]` returns the result of `value1 % value2` (modulo)
+ *   * `['%', value1, value1]` returns the result of `value1 % value2` (modulo)
  *   * `['^', value1, value1]` returns the value of `value1` raised to the `value2` power
  *
  * * Transform operators:
@@ -412,7 +412,7 @@ Operators['clamp'] = {
     return `clamp(${expressionToGlsl(context, args[0])}, ${min}, ${max})`;
   }
 };
-Operators['mod'] = {
+Operators['%'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER;
   },

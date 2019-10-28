@@ -130,7 +130,7 @@ describe('ol.style.expressions', function() {
       expect(getValueType(['*', ['get', 'size'], 12])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['^', 10, 2])).to.eql(ValueTypes.NUMBER);
-      expect(getValueType(['mod', ['time'], 10])).to.eql(ValueTypes.NUMBER);
+      expect(getValueType(['%', ['time'], 10])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['>', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['>=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['<', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
@@ -165,7 +165,7 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])).to.eql('((a_size * 0.001) + 12.0)');
       expect(expressionToGlsl(context, ['/', ['-', ['get', 'size'], 20], 100])).to.eql('((a_size - 20.0) / 100.0)');
       expect(expressionToGlsl(context, ['clamp', ['get', 'attr2'], ['get', 'attr3'], 20])).to.eql('clamp(a_attr2, a_attr3, 20.0)');
-      expect(expressionToGlsl(context, ['^', ['mod', ['time'], 10], 2])).to.eql('pow(mod(u_time, 10.0), 2.0)');
+      expect(expressionToGlsl(context, ['^', ['%', ['time'], 10], 2])).to.eql('pow(mod(u_time, 10.0), 2.0)');
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql('(10.0 > a_attr4)');
       expect(expressionToGlsl(context, ['>=', 10, ['get', 'attr4']])).to.eql('(10.0 >= a_attr4)');
       expect(expressionToGlsl(context, ['<', 10, ['get', 'attr4']])).to.eql('(10.0 < a_attr4)');
@@ -297,7 +297,7 @@ describe('ol.style.expressions', function() {
   describe('case operator', function() {
     let context;
 
-    beforeEach(function () {
+    beforeEach(function() {
       context = {
         variables: [],
         attributes: [],
@@ -619,7 +619,7 @@ describe('ol.style.expressions', function() {
         ['linear'],
         ['^',
           ['/',
-            ['mod',
+            ['%',
               ['+',
                 ['time'],
                 [
