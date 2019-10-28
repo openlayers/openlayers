@@ -61,7 +61,7 @@
     "expect.js": "0.3.1",
     "front-matter": "^3.0.2",
     "fs-extra": "^8.0.0",
-    "glob": "^7.1.4",
+    "glob": "^7.1.5",
     "globby": "^10.0.0",
     "handlebars": "4.4.5",
     "html-to-image": "^0.1.0",
