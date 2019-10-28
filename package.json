@@ -81,7 +81,7 @@
     "loglevelnext": "^3.0.1",
     "marked": "0.7.0",
     "mocha": "6.2.2",
-    "ol-mapbox-style": "^5.0.0-beta.3",
+    "ol-mapbox-style": "^5.0.2",
     "pixelmatch": "^5.0.0",
     "pngjs": "^3.4.0",
     "proj4": "2.5.0",
