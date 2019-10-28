@@ -3,7 +3,7 @@
  * @module ol/webgl/ShaderBuilder
  */
 
-import {expressionToGlsl, ValueTypes} from '../style/expressions.js';
+import {expressionToGlsl, stringToGlsl, ValueTypes} from '../style/expressions.js';
 
 /**
  * @typedef {Object} VaryingDescription
@@ -445,8 +445,14 @@ export function parseLiteralStyle(style) {
   fragContext.variables.forEach(function(varName) {
     builder.addUniform(`float u_${varName}`);
     uniforms[`u_${varName}`] = function() {
-      return style.variables && style.variables[varName] !== undefined ?
-        style.variables[varName] : 0;
+      if (!style.variables || style.variables[varName] === undefined) {
+        throw new Error(`The following variable is missing from the style: ${varName}`);
+      }
+      let value = style.variables[varName];
+      if (typeof value === 'string') {
+        value = parseFloat(stringToGlsl(vertContext, value));
+      }
+      return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
     };
   });
 
@@ -481,7 +487,7 @@ export function parseLiteralStyle(style) {
         callback: function(feature) {
           let value = feature.get(attributeName);
           if (typeof value === 'string') {
-            value = vertContext.stringLiteralsMap[value];
+            value = parseFloat(stringToGlsl(vertContext, value));
           }
           return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
         }
