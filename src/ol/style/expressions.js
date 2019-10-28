@@ -27,6 +27,9 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['^', value1, value1]` returns the value of `value1` raised to the `value2` power
  *
  * * Transform operators:
+ *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
+ *     condition evaluates to `true`. If no match is found, returns the `fallback` value.
+ *     All conditions should be `boolean`, output and fallback can be any kind.
  *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
  *     provided `matchX` values, returning the output associated with the first valid match. If no match is found,
  *     returns the `fallback` value.
@@ -286,6 +289,11 @@ function assertArgsMaxCount(args, count) {
 }
 function assertArgsEven(args) {
   if (args.length % 2 !== 0) {
+    throw new Error(`An even amount of arguments was expected, got ${args} instead`);
+  }
+}
+function assertArgsOdd(args) {
+  if (args.length % 2 === 0) {
     throw new Error(`An even amount of arguments was expected, got ${args} instead`);
   }
 }
@@ -601,7 +609,6 @@ Operators['match'] = {
     assertArgsEven(args);
     assertArgsMinCount(args, 4);
 
-    // compute input/output types
     const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
     const outputType = Operators['match'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
@@ -613,6 +620,36 @@ Operators['match'] = {
       const match = expressionToGlsl(context, args[i]);
       const output = expressionToGlsl(context, args[i + 1], outputType);
       result = `(${input} == ${match} ? ${output} : ${result || fallback})`;
+    }
+    return result;
+  }
+};
+Operators['case'] = {
+  getReturnType: function(args) {
+    let type = ValueTypes.ANY;
+    for (let i = 1; i < args.length; i += 2) {
+      type = type & getValueType(args[i]);
+    }
+    type = type & getValueType(args[args.length - 1]);
+    return type;
+  },
+  toGlsl: function(context, args, opt_typeHint) {
+    assertArgsOdd(args);
+    assertArgsMinCount(args, 3);
+
+    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    const outputType = Operators['case'].getReturnType(args) & typeHint;
+    assertUniqueInferredType(args, outputType);
+    for (let i = 0; i < args.length - 1; i += 2) {
+      assertBoolean(args[i]);
+    }
+
+    const fallback = expressionToGlsl(context, args[args.length - 1], outputType);
+    let result = null;
+    for (let i = args.length - 3; i >= 0; i -= 2) {
+      const condition = expressionToGlsl(context, args[i]);
+      const output = expressionToGlsl(context, args[i + 1], outputType);
+      result = `(${condition} ? ${output} : ${result || fallback})`;
     }
     return result;
   }
