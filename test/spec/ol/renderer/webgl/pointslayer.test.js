@@ -104,7 +104,8 @@ describe('ol.renderer.webgl.PointsLayer', function() {
 
     beforeEach(function() {
       layer = new VectorLayer({
-        source: new VectorSource()
+        source: new VectorSource(),
+        renderBuffer: 10
       });
       renderer = new WebGLPointsLayerRenderer(layer, {
         vertexShader: simpleVertexShader,
@@ -230,6 +231,35 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       expect(spy.callCount).to.be(1);
 
       frameState.extent = [10, 20, 30, 40];
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(2);
+    });
+
+    it('triggers source loading when the extent changes', function() {
+      const spy = sinon.spy(layer.getSource(), 'loadFeatures');
+
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(1);
+
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(1);
+
+      frameState.extent = [10, 20, 30, 40];
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(2);
+      expect(spy.getCall(1).args[0]).to.eql([0, 10, 40, 50]); // renderBuffer is 10
+    });
+
+    it('triggers source loading when the source revision changes', function() {
+      const spy = sinon.spy(layer.getSource(), 'loadFeatures');
+
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(1);
+
+      renderer.prepareFrame(frameState);
+      expect(spy.callCount).to.be(1);
+
+      layer.getSource().changed();
       renderer.prepareFrame(frameState);
       expect(spy.callCount).to.be(2);
     });
