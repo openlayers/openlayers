@@ -136,6 +136,7 @@ describe('ol.style.expressions', function() {
       expect(getValueType(['<', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['<=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['==', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
+      expect(getValueType(['!=', 10, ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['!', ['get', 'attr4']])).to.eql(ValueTypes.BOOLEAN);
       expect(getValueType(['array', ['get', 'attr4'], 1, 2, 3])).to.eql(ValueTypes.NUMBER_ARRAY);
@@ -170,6 +171,7 @@ describe('ol.style.expressions', function() {
       expect(expressionToGlsl(context, ['<', 10, ['get', 'attr4']])).to.eql('(10.0 < a_attr4)');
       expect(expressionToGlsl(context, ['<=', 10, ['get', 'attr4']])).to.eql('(10.0 <= a_attr4)');
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql('(10.0 == a_attr4)');
+      expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql('(10.0 != a_attr4)');
       expect(expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
       expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql('(!a_attr4)');
       expect(expressionToGlsl(context, ['array', ['get', 'attr4'], 1, 2, 3])).to.eql('vec4(a_attr4, 1.0, 2.0, 3.0)');

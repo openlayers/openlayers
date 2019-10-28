@@ -41,14 +41,15 @@ import {asArray, isStringColor} from '../color.js';
  *     between `output1` and `outputN`.
  *
  * * Logical operators:
- *   * `['<', value1, value2]` returns `1` if `value1` is strictly lower than value 2, or `0` otherwise.
- *   * `['<=', value1, value2]` returns `1` if `value1` is lower than or equals value 2, or `0` otherwise.
- *   * `['>', value1, value2]` returns `1` if `value1` is strictly greater than value 2, or `0` otherwise.
- *   * `['>=', value1, value2]` returns `1` if `value1` is greater than or equals value 2, or `0` otherwise.
- *   * `['==', value1, value2]` returns `1` if `value1` equals value 2, or `0` otherwise.
- *   * `['!', value1]` returns `0` if `value1` strictly greater than `0`, or `1` otherwise.
- *   * `['between', value1, value2, value3]` returns `1` if `value1` is contained between `value2` and `value3`
- *     (inclusively), or `0` otherwise.
+ *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than value 2, or `false` otherwise.
+ *   * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals value 2, or `false` otherwise.
+ *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than value 2, or `false` otherwise.
+ *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals value 2, or `false` otherwise.
+ *   * `['==', value1, value2]` returns `true` if `value1` equals value 2, or `false` otherwise.
+ *   * `['!=', value1, value2]` returns `true` if `value1` equals value 2, or `false` otherwise.
+ *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
+ *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
+ *     (inclusively), or `false` otherwise.
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -59,6 +60,7 @@ import {asArray, isStringColor} from '../color.js';
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
+ * * `boolean`
  * * `number`
  * * `string`
  * * {@link module:ol/color~Color}
@@ -252,9 +254,9 @@ function assertNumber(value) {
     throw new Error(`A numeric value was expected, got ${JSON.stringify(value)} instead`);
   }
 }
-function assertNumbers(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    assertNumber(arr[i]);
+function assertNumbers(values) {
+  for (let i = 0; i < values.length; i++) {
+    assertNumber(values[i]);
   }
 }
 function assertString(value) {
@@ -349,6 +351,7 @@ Operators['resolution'] = {
     return 'u_resolution';
   }
 };
+
 Operators['*'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER;
@@ -421,6 +424,7 @@ Operators['^'] = {
     return `pow(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(context, args[1])})`;
   }
 };
+
 Operators['>'] = {
   getReturnType: function(args) {
     return ValueTypes.BOOLEAN;
@@ -461,16 +465,31 @@ Operators['<='] = {
     return `(${expressionToGlsl(context, args[0])} <= ${expressionToGlsl(context, args[1])})`;
   }
 };
-Operators['=='] = {
-  getReturnType: function(args) {
-    return ValueTypes.BOOLEAN;
-  },
-  toGlsl: function(context, args) {
-    assertArgsCount(args, 2);
-    assertNumbers(args);
-    return `(${expressionToGlsl(context, args[0])} == ${expressionToGlsl(context, args[1])})`;
-  }
-};
+
+function getEqualOperator(operator) {
+  return {
+    getReturnType: function(args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function(context, args) {
+      assertArgsCount(args, 2);
+
+      // find common type
+      let type = ValueTypes.ANY;
+      for (let i = 0; i < args.length; i++) {
+        type = type & getValueType(args[i]);
+      }
+      if (type === 0) {
+        throw new Error(`All arguments should be of compatible type, got ${JSON.stringify(args)} instead`);
+      }
+
+      return `(${expressionToGlsl(context, args[0], type)} ${operator} ${expressionToGlsl(context, args[1], type)})`;
+    }
+  };
+}
+Operators['=='] = getEqualOperator('==');
+Operators['!='] = getEqualOperator('!=');
+
 Operators['!'] = {
   getReturnType: function(args) {
     return ValueTypes.BOOLEAN;
@@ -494,6 +513,7 @@ Operators['between'] = {
     return `(${value} >= ${min} && ${value} <= ${max})`;
   }
 };
+
 Operators['array'] = {
   getReturnType: function(args) {
     return ValueTypes.NUMBER_ARRAY;
@@ -526,6 +546,7 @@ Operators['color'] = {
     return `vec${args.length}(${parsedArgs.join(', ')})`;
   }
 };
+
 Operators['interpolate'] = {
   getReturnType: function(args) {
     let type = ValueTypes.COLOR | ValueTypes.NUMBER;
