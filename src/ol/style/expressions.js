@@ -49,7 +49,7 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than `value2`, or `false` otherwise.
  *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals `value2`, or `false` otherwise.
  *   * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
- *   * `['!=', value1, value2]` returns `true` if `value1` is not equals to `value2`, or `false` otherwise.
+ *   * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
  *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
