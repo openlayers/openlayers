@@ -433,14 +433,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           break;
         }
       }
-      if (!sourceTile) {
+      if (!sourceTile || sourceTile.getState() !== TileState.LOADED) {
         resolve([]);
         return;
       }
-      const corner = getTopLeft(tileGrid.getTileCoordExtent(sourceTile.tileCoord));
+      const sourceTileCoord = sourceTile.tileCoord;
+      const corner = getTopLeft(tileGrid.getTileCoordExtent(sourceTileCoord));
+      const renderScale = sourceTileGrid.getResolution(sourceTileCoord[0]) / resolution;
       const tilePixel = [
-        (coordinate[0] - corner[0]) / resolution,
-        (corner[1] - coordinate[1]) / resolution
+        (coordinate[0] - corner[0]) / resolution / renderScale,
+        (corner[1] - coordinate[1]) / resolution / renderScale
       ];
       if (!sourceTile.hitDetectionImageData) {
         const tileSize = toSize(sourceTileGrid.getTileSize(sourceTileGrid.getZForResolution(resolution)));
@@ -448,7 +450,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const rotation = this.renderedRotation_;
         const transforms = [
           this.getRenderTransform(tileGrid.getTileCoordCenter(sourceTile.tileCoord),
-            resolution, 0, 0.5, size[0], size[1], 0)
+            resolution * renderScale, 0, 0.5, size[0], size[1], 0)
         ];
         requestAnimationFrame(function() {
           sourceTile.hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
