@@ -134,8 +134,8 @@ class MapRenderer extends Disposable {
         if (layer.hasRenderer() && inView(layerState, viewState) && layerFilter.call(thisArg2, layer)) {
           const layerRenderer = layer.getRenderer();
           const source = layer.getSource();
-          const coordinates = source.getWrapX() ? translatedCoordinate : coordinate;
           if (layerRenderer && source) {
+            const coordinates = source.getWrapX() ? translatedCoordinate : coordinate;
             const callback = forEachFeatureAtCoordinate.bind(null, layerState.managed);
             tmpCoord[0] = coordinates[0] + offsets[i][0];
             tmpCoord[1] = coordinates[1] + offsets[i][1];
