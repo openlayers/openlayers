@@ -18,13 +18,13 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['time']` returns the time in seconds since the creation of the layer
  *
  * * Math operators:
- *   * `['*', value1, value1]` multiplies `value1` by `value2`
- *   * `['/', value1, value1]` divides `value1` by `value2`
- *   * `['+', value1, value1]` adds `value1` and `value2`
- *   * `['-', value1, value1]` subtracts `value2` from `value1`
+ *   * `['*', value1, value2]` multiplies `value1` by `value2`
+ *   * `['/', value1, value2]` divides `value1` by `value2`
+ *   * `['+', value1, value2]` adds `value1` and `value2`
+ *   * `['-', value1, value2]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
- *   * `['%', value1, value1]` returns the result of `value1 % value2` (modulo)
- *   * `['^', value1, value1]` returns the value of `value1` raised to the `value2` power
+ *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
+ *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
  *
  * * Transform operators:
  *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
@@ -44,12 +44,12 @@ import {asArray, isStringColor} from '../color.js';
  *     between `output1` and `outputN`.
  *
  * * Logical operators:
- *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than value 2, or `false` otherwise.
- *   * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals value 2, or `false` otherwise.
- *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than value 2, or `false` otherwise.
- *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals value 2, or `false` otherwise.
- *   * `['==', value1, value2]` returns `true` if `value1` equals value 2, or `false` otherwise.
- *   * `['!=', value1, value2]` returns `true` if `value1` equals value 2, or `false` otherwise.
+ *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
+ *   * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals `value2`, or `false` otherwise.
+ *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than `value2`, or `false` otherwise.
+ *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals `value2`, or `false` otherwise.
+ *   * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
+ *   * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
  *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
