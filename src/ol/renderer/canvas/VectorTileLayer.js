@@ -433,7 +433,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           break;
         }
       }
-      if (!sourceTile) {
+      if (!sourceTile || sourceTile.getState() !== TileState.LOADED) {
         resolve([]);
         return;
       }
