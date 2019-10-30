@@ -281,6 +281,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         executorGroups[i].dispose();
       }
     }
+    tile.hitDetectionImageData = null;
     tile.executorGroups[layerUid] = [];
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
       const sourceTile = sourceTiles[t];
@@ -318,7 +319,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (renderOrder && renderOrder !== builderState.renderedRenderOrder) {
         features.sort(renderOrder);
       }
-      sourceTile.hitDetectionImageData = null;
       for (let i = 0, ii = features.length; i < ii; ++i) {
         const feature = features[i];
         if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
@@ -405,61 +405,55 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const projection = this.renderedProjection;
       const projectionExtent = projection.getExtent();
       const resolution = this.renderedResolution;
-      const pixelRatio = this.renderedPixelRatio;
       const tileGrid = source.getTileGridForProjection(projection);
-      const sourceTileGrid = source.getTileGrid();
       const coordinate = applyTransform(this.renderedPixelToCoordinateTransform_, pixel.slice());
       const tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
-      let sourceTile;
+      let tile;
       for (let i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
         if (tileCoord.toString() === this.renderedTiles[i].tileCoord.toString()) {
-          const tile = this.renderedTiles[i];
+          tile = this.renderedTiles[i];
           if (tile.getState() === TileState.LOADED && tile.hifi) {
-            const extent = tileGrid.getTileCoordExtent(tileCoord);
+            const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
             if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
               const worldWidth = getWidth(projectionExtent);
               const worldsAway = Math.floor((coordinate[0] - projectionExtent[0]) / worldWidth);
               coordinate[0] -= (worldsAway * worldWidth);
             }
-            const sourceTiles = source.getSourceTiles(pixelRatio, projection, tile);
-            const sourceTileCoord = sourceTileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
-            for (let j = 0, jj = sourceTiles.length; j < jj; ++j) {
-              if (sourceTileCoord.toString() === sourceTiles[j].tileCoord.toString()) {
-                sourceTile = sourceTiles[j];
-                break;
-              }
-            }
+            break;
           }
-          break;
+          tile = undefined;
         }
       }
-      if (!sourceTile || sourceTile.getState() !== TileState.LOADED) {
+      if (!tile) {
         resolve([]);
         return;
       }
-      const sourceTileCoord = sourceTile.tileCoord;
-      const corner = getTopLeft(tileGrid.getTileCoordExtent(sourceTileCoord));
-      const renderScale = sourceTileGrid.getResolution(sourceTileCoord[0]) / resolution;
+      const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+      const corner = getTopLeft(extent);
+      const renderScale = tileGrid.getResolution(tileCoord[0]) / resolution;
       const tilePixel = [
         (coordinate[0] - corner[0]) / resolution / renderScale,
         (corner[1] - coordinate[1]) / resolution / renderScale
       ];
-      if (!sourceTile.hitDetectionImageData) {
-        const tileSize = toSize(sourceTileGrid.getTileSize(sourceTileGrid.getZForResolution(resolution)));
+      const features = tile.getSourceTiles().reduce(function(accumulator, sourceTile) {
+        return accumulator.concat(sourceTile.getFeatures());
+      }, []);
+      if (!tile.hitDetectionImageData) {
+        const tileSize = toSize(tileGrid.getTileSize(tileGrid.getZForResolution(resolution)));
         const size = [tileSize[0] / 2, tileSize[1] / 2];
         const rotation = this.renderedRotation_;
         const transforms = [
-          this.getRenderTransform(tileGrid.getTileCoordCenter(sourceTile.tileCoord),
+          this.getRenderTransform(tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
             resolution * renderScale, 0, 0.5, size[0], size[1], 0)
         ];
         requestAnimationFrame(function() {
-          sourceTile.hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
-            sourceTile.getFeatures(), layer.getStyleFunction(),
-            tileGrid.getTileCoordExtent(sourceTile.tileCoord), resolution, rotation);
-          resolve(hitDetect(tilePixel, sourceTile.getFeatures(), sourceTile.hitDetectionImageData));
+          tile.hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
+            features, layer.getStyleFunction(),
+            tileGrid.getTileCoordExtent(tile.wrappedTileCoord), resolution, rotation);
+          resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
         });
       } else {
-        resolve(hitDetect(tilePixel, sourceTile.getFeatures(), sourceTile.hitDetectionImageData));
+        resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
       }
     }.bind(this));
   }

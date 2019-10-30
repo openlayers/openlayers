@@ -62,6 +62,11 @@ class VectorRenderTile extends Tile {
     this.errorSourceTileKeys = {};
 
     /**
+     * @type {ImageData}
+     */
+    this.hitDetectionImageData = null;
+
+    /**
      * @private
      * @type {!Object<string, ReplayState>}
      */
@@ -73,9 +78,9 @@ class VectorRenderTile extends Tile {
     this.wantedResolution;
 
     /**
-     * @type {!function(import("./VectorRenderTile.js").default):Array<import("./VectorTile.js").default>}
+     * @type {!function():Array<import("./VectorTile.js").default>}
      */
-    this.getSourceTiles_ = getSourceTiles;
+    this.getSourceTiles = getSourceTiles.bind(this, this);
 
     /**
      * @type {!function(import("./VectorRenderTile.js").default):void}
@@ -186,7 +191,7 @@ class VectorRenderTile extends Tile {
    * @inheritDoc
    */
   load() {
-    this.getSourceTiles_(this);
+    this.getSourceTiles();
   }
 }
 
