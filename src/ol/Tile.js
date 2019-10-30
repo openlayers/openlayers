@@ -150,6 +150,13 @@ class Tile extends EventTarget {
   }
 
   /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    this.setState(TileState.ABORT);
+  }
+
+  /**
    * @return {string} Key.
    */
   getKey() {

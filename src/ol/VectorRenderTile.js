@@ -3,7 +3,6 @@
  */
 import {getUid} from './util.js';
 import Tile from './Tile.js';
-import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import {unlistenByKey} from './events.js';
 
@@ -25,7 +24,7 @@ class VectorRenderTile extends Tile {
 
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
    * @param {import("./tilegrid/TileGrid.js").default} sourceTileGrid Tile grid of the source.
    * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
@@ -128,7 +127,6 @@ class VectorRenderTile extends Tile {
         executorGroups[i].disposeInternal();
       }
     }
-    this.setState(TileState.ABORT);
     super.disposeInternal();
   }
 
