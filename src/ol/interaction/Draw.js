@@ -816,6 +816,16 @@ class Draw extends PointerInteraction {
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
+      
+      if(coordinates.length > 1) {
+        coordinates[coordinates.length - 1] = coordinates[coordinates.length - 2].slice();
+        let lastPoint = coordinates[coordinates.length - 1].slice()
+        this.sketchPoint_.getGeometry().setCoordinates(lastPoint)
+      } else {
+        this.abortDrawing_()
+        return
+      }
+      
       sketchLineGeom = this.sketchLine_.getGeometry();
       sketchLineGeom.setCoordinates(coordinates);
       this.geometryFunction_(this.sketchCoords_, geometry);
