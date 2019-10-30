@@ -69,8 +69,6 @@ class ImageTile extends Tile {
     if (this.interimTile) {
       this.interimTile.dispose();
     }
-    this.state = TileState.ABORT;
-    this.changed();
     super.disposeInternal();
   }
 
