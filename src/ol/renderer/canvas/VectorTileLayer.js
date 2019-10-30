@@ -430,10 +430,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const corner = getTopLeft(extent);
-      const renderScale = tileGrid.getResolution(tileCoord[0]) / resolution;
       const tilePixel = [
-        (coordinate[0] - corner[0]) / resolution / renderScale,
-        (corner[1] - coordinate[1]) / resolution / renderScale
+        (coordinate[0] - corner[0]) / resolution,
+        (corner[1] - coordinate[1]) / resolution
       ];
       const features = tile.getSourceTiles().reduce(function(accumulator, sourceTile) {
         return accumulator.concat(sourceTile.getFeatures());
@@ -444,12 +443,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const rotation = this.renderedRotation_;
         const transforms = [
           this.getRenderTransform(tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
-            resolution * renderScale, 0, 0.5, size[0], size[1], 0)
+            resolution, 0, 0.5, size[0], size[1], 0)
         ];
         requestAnimationFrame(function() {
           tile.hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
             features, layer.getStyleFunction(),
-            tileGrid.getTileCoordExtent(tile.wrappedTileCoord), resolution, rotation);
+            tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
+            tile.getReplayState(layer).renderedResolution, rotation);
           resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
         });
       } else {

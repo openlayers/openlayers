@@ -62,7 +62,10 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       const image = originalStyle.getImage();
       if (image) {
         const imgSize = image.getImageSize();
-        const imgContext = createCanvasContext2D(imgSize[0], imgSize[1]);
+        const canvas = document.createElement('canvas');
+        canvas.width = imgSize[0];
+        canvas.height = imgSize[1];
+        const imgContext = canvas.getContext('2d', {alpha: false});
         imgContext.fillStyle = color;
         const img = imgContext.canvas;
         imgContext.fillRect(0, 0, img.width, img.height);
@@ -133,13 +136,10 @@ export function hitDetect(pixel, features, imageData) {
     const r = imageData.data[index];
     const g = imageData.data[index + 1];
     const b = imageData.data[index + 2];
-    const a = imageData.data[index + 3];
-    if (a === 255) {
-      const i = b + (256 * (g + (256 * r)));
-      const indexFactor = Math.ceil((256 * 256 * 256) / features.length);
-      if (i % indexFactor === 0) {
-        resultFeatures.push(features[i / indexFactor]);
-      }
+    const i = b + (256 * (g + (256 * r)));
+    const indexFactor = Math.ceil((256 * 256 * 256) / features.length);
+    if (i % indexFactor === 0) {
+      resultFeatures.push(features[i / indexFactor]);
     }
   }
   return resultFeatures;
