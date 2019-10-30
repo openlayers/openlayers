@@ -57,6 +57,9 @@ import Layer from './Layer.js';
  * }
  * ```
  *
+ * **Important: a `WebGLPoints` layer must be manually disposed when removed, otherwise the underlying WebGL context
+ * will not be garbage collected.**
+ *
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
@@ -99,6 +102,15 @@ class WebGLPointsLayer extends Layer {
       uniforms: this.parseResult_.uniforms,
       attributes: this.parseResult_.attributes
     });
+  }
+
+  /**
+   *
+   * @inheritDoc
+   */
+  disposeInternal() {
+    this.renderer_.dispose();
+    super.disposeInternal();
   }
 }
 

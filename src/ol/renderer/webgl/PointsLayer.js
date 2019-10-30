@@ -19,7 +19,7 @@ import {getUid} from '../../util.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {assert} from '../../asserts.js';
 import BaseVector from '../../layer/BaseVector.js';
-import {listen} from '../../events.js';
+import {listen, unlistenByKey} from '../../events.js';
 import VectorEventType from '../../source/VectorEventType.js';
 
 /**
@@ -288,9 +288,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.featureCache_ = {};
 
     const source = this.getLayer().getSource();
-    listen(source, VectorEventType.ADDFEATURE, this.handleSourceFeatureChanged_, this);
-    listen(source, VectorEventType.CHANGEFEATURE, this.handleSourceFeatureChanged_, this);
-    listen(source, VectorEventType.REMOVEFEATURE, this.handleSourceFeatureDelete_, this);
+    this.sourceListenKeys_ = [
+      listen(source, VectorEventType.ADDFEATURE, this.handleSourceFeatureChanged_, this),
+      listen(source, VectorEventType.CHANGEFEATURE, this.handleSourceFeatureChanged_, this),
+      listen(source, VectorEventType.REMOVEFEATURE, this.handleSourceFeatureDelete_, this)
+    ];
     source.getFeatures().forEach(function(feature) {
       const uid = getUid(feature);
       this.featureCache_[uid] = {
@@ -548,6 +550,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     this.worker_.terminate();
+    this.layer_ = null;
+    this.sourceListenKeys_.forEach(function(key) {
+      unlistenByKey(key);
+    });
+    this.sourceListenKeys_ = null;
     super.disposeInternal();
   }
 }

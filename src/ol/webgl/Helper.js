@@ -268,18 +268,6 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {!Array<WebGLShader>}
-     */
-    this.shaderCache_ = [];
-
-    /**
-     * @private
-     * @type {!Array<WebGLProgram>}
-     */
-    this.programCache_ = [];
-
-    /**
-     * @private
      * @type {WebGLProgram}
      */
     this.currentProgram_ = null;
@@ -419,18 +407,6 @@ class WebGLHelper extends Disposable {
   disposeInternal() {
     this.canvas_.removeEventListener(ContextEventType.LOST, this.boundHandleWebGLContextLost_);
     this.canvas_.removeEventListener(ContextEventType.RESTORED, this.boundHandleWebGLContextRestored_);
-    const gl = this.getGL();
-    if (!gl.isContextLost()) {
-      for (const key in this.bufferCache_) {
-        gl.deleteBuffer(this.bufferCache_[key].buffer);
-      }
-      for (const key in this.programCache_) {
-        gl.deleteProgram(this.programCache_[key]);
-      }
-      for (const key in this.shaderCache_) {
-        gl.deleteShader(this.shaderCache_[key]);
-      }
-    }
   }
 
   /**
@@ -652,7 +628,6 @@ class WebGLHelper extends Disposable {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    this.shaderCache_.push(shader);
     return shader;
   }
 
@@ -684,7 +659,6 @@ class WebGLHelper extends Disposable {
     gl.attachShader(program, fragmentShader);
     gl.attachShader(program, vertexShader);
     gl.linkProgram(program);
-    this.programCache_.push(program);
     return program;
   }
 
@@ -811,8 +785,6 @@ class WebGLHelper extends Disposable {
    */
   handleWebGLContextLost() {
     clear(this.bufferCache_);
-    clear(this.shaderCache_);
-    clear(this.programCache_);
     this.currentProgram_ = null;
   }
 
@@ -822,8 +794,6 @@ class WebGLHelper extends Disposable {
    */
   handleWebGLContextRestored() {
   }
-
-  // TODO: shutdown program
 
   /**
    * Will create or reuse a given webgl texture and apply the given size. If no image data
