@@ -7,6 +7,7 @@ import {get as getProjection} from '../../../../../src/ol/proj.js';
 import ViewHint from '../../../../../src/ol/ViewHint.js';
 import {WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
 import {compose as composeTransform, create as createTransform} from '../../../../../src/ol/transform.js';
+import {getUid} from '../../../../../src/ol/util.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -385,6 +386,122 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       renderer.disposeInternal();
       expect(spyHelper.called).to.be(true);
       expect(spyWorker.called).to.be(true);
+    });
+  });
+
+  describe('featureCache_', function() {
+    let source, layer, features;
+
+    function getCache(feature, renderer) {
+      return renderer.featureCache_[getUid(feature)];
+    }
+
+    beforeEach(function() {
+      source = new VectorSource();
+      layer = new VectorLayer({
+        source
+      });
+      features = [
+        new Feature({
+          id: 'A',
+          test: 'abcd',
+          geometry: new Point([0, 1])
+        }),
+        new Feature({
+          id: 'D',
+          test: 'efgh',
+          geometry: new Point([2, 3])
+        }),
+        new Feature({
+          id: 'C',
+          test: 'ijkl',
+          geometry: new Point([4, 5])
+        })
+      ];
+    });
+
+    it('contains no features initially', function() {
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader
+      });
+      expect(Object.keys(renderer.featureCache_).length).to.be(0);
+    });
+
+    it('contains the features initially present in the source', function() {
+      source.addFeatures(features);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader
+      });
+      expect(Object.keys(renderer.featureCache_).length).to.be(3);
+      expect(getCache(features[0], renderer).feature).to.be(features[0]);
+      expect(getCache(features[0], renderer).geometry).to.be(features[0].getGeometry());
+      expect(getCache(features[0], renderer).properties['test']).to.be(features[0].get('test'));
+      expect(getCache(features[1], renderer).feature).to.be(features[1]);
+      expect(getCache(features[1], renderer).geometry).to.be(features[1].getGeometry());
+      expect(getCache(features[1], renderer).properties['test']).to.be(features[1].get('test'));
+      expect(getCache(features[2], renderer).feature).to.be(features[2]);
+      expect(getCache(features[2], renderer).geometry).to.be(features[2].getGeometry());
+      expect(getCache(features[2], renderer).properties['test']).to.be(features[2].get('test'));
+    });
+
+    it('contains the features added to the source', function() {
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader
+      });
+
+      source.addFeature(features[0]);
+      expect(Object.keys(renderer.featureCache_).length).to.be(1);
+
+      source.addFeature(features[1]);
+      expect(Object.keys(renderer.featureCache_).length).to.be(2);
+
+      expect(getCache(features[0], renderer).feature).to.be(features[0]);
+      expect(getCache(features[0], renderer).geometry).to.be(features[0].getGeometry());
+      expect(getCache(features[0], renderer).properties['test']).to.be(features[0].get('test'));
+      expect(getCache(features[1], renderer).feature).to.be(features[1]);
+      expect(getCache(features[1], renderer).geometry).to.be(features[1].getGeometry());
+      expect(getCache(features[1], renderer).properties['test']).to.be(features[1].get('test'));
+    });
+
+    it('does not contain the features removed to the source', function() {
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader
+      });
+
+      source.addFeatures(features);
+      expect(Object.keys(renderer.featureCache_).length).to.be(3);
+
+      source.removeFeature(features[1]);
+      expect(Object.keys(renderer.featureCache_).length).to.be(2);
+
+      expect(getCache(features[0], renderer).feature).to.be(features[0]);
+      expect(getCache(features[0], renderer).geometry).to.be(features[0].getGeometry());
+      expect(getCache(features[0], renderer).properties['test']).to.be(features[0].get('test'));
+      expect(getCache(features[2], renderer).feature).to.be(features[2]);
+      expect(getCache(features[2], renderer).geometry).to.be(features[2].getGeometry());
+      expect(getCache(features[2], renderer).properties['test']).to.be(features[2].get('test'));
+    });
+
+    it('contains up to date properties and geometry', function() {
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader
+      });
+
+      source.addFeatures(features);
+      features[0].set('test', 'updated');
+      features[0].set('added', true);
+      features[0].getGeometry().setCoordinates([10, 20]);
+      expect(Object.keys(renderer.featureCache_).length).to.be(3);
+
+      expect(getCache(features[0], renderer).feature).to.be(features[0]);
+      expect(getCache(features[0], renderer).geometry.getCoordinates()).to.eql([10, 20]);
+      expect(getCache(features[0], renderer).properties['test']).to.be(features[0].get('test'));
+      expect(getCache(features[0], renderer).properties['added']).to.be(features[0].get('added'));
     });
   });
 
