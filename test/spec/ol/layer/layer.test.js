@@ -592,7 +592,7 @@ describe('ol.layer.Layer', function() {
         const frameState = {
           layerStatesArray: []
         };
-        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null, null));
+        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
         expect(frameState.layerStatesArray.length).to.be(1);
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.layer).to.equal(layer);
@@ -644,16 +644,14 @@ describe('ol.layer.Layer', function() {
       });
 
       it('has Infinity as zIndex when not configured otherwise', function() {
-        map.dispatchEvent(new RenderEvent('precompose', null,
-          frameState, null, null));
+        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.zIndex).to.be(Infinity);
       });
 
       it('respects the configured zIndex', function() {
         layer.setZIndex(42);
-        map.dispatchEvent(new RenderEvent('precompose', null,
-          frameState, null, null));
+        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.zIndex).to.be(42);
       });
