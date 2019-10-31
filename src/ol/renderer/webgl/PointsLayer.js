@@ -503,7 +503,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const pixel = applyTransform(frameState.coordinateToPixelTransform, coordinate.slice());
 
-    const data = this.hitRenderTarget_.readPixel(pixel[0], pixel[1]);
+    const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
     const color = [
       data[0] / 255,
       data[1] / 255,
@@ -531,7 +531,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       return;
     }
 
-    this.hitRenderTarget_.setSize(frameState.size);
+    this.hitRenderTarget_.setSize([
+      Math.floor(frameState.size[0] / 2),
+      Math.floor(frameState.size[1] / 2)
+    ]);
 
     this.helper.useProgram(this.hitProgram_);
     this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
