@@ -59,7 +59,7 @@ const style = {
     rotateWithView: false,
     offset: [
       0,
-      9
+      0
     ],
     textureCoord: [
       'match',
@@ -144,7 +144,7 @@ map.addLayer(
 
 const info = document.getElementById('info');
 map.on('pointermove', function(evt) {
-  if (map.getView().getInteracting()) {
+  if (map.getView().getInteracting() || map.getView().getAnimating()) {
     return;
   }
   const pixel = evt.pixel;
