@@ -204,6 +204,19 @@ export function colorToGlsl(color) {
 }
 
 /**
+ * Returns a stable equivalent number for the string literal.
+ * @param {ParsingContext} context Parsing context
+ * @param {string} string String literal value
+ * @returns {number} Number equivalent
+ */
+export function getStringNumberEquivalent(context, string) {
+  if (context.stringLiteralsMap[string] === undefined) {
+    context.stringLiteralsMap[string] = Object.keys(context.stringLiteralsMap).length;
+  }
+  return context.stringLiteralsMap[string];
+}
+
+/**
  * Returns a stable equivalent number for the string literal, for use in shaders. This number is then
  * converted to be a GLSL-compatible string.
  * @param {ParsingContext} context Parsing context
@@ -211,10 +224,7 @@ export function colorToGlsl(color) {
  * @returns {string} GLSL-compatible string containing a number
  */
 export function stringToGlsl(context, string) {
-  if (context.stringLiteralsMap[string] === undefined) {
-    context.stringLiteralsMap[string] = Object.keys(context.stringLiteralsMap).length;
-  }
-  return numberToGlsl(context.stringLiteralsMap[string]);
+  return numberToGlsl(getStringNumberEquivalent(context, string));
 }
 
 /**
