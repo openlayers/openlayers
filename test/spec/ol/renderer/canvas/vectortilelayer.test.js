@@ -215,12 +215,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
         })
       }));
-      map.once('postcompose', function(e) {
-        expect(e.frameState.layerStatesArray[1].hasOverlay).to.be(true);
-      });
       map.once('rendercomplete', function() {
         expect(document.querySelector('.ol-layers').childElementCount).to.be(1);
-        expect(document.querySelector('.ol-layer').childElementCount).to.be(2);
+        expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
         map.removeLayer(map.getLayers().item(1));
         map.renderSync();
         expect(document.querySelector('.ol-layer').childElementCount).to.be(1);
