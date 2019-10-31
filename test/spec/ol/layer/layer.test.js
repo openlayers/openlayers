@@ -650,10 +650,12 @@ describe('ol.layer.Layer', function() {
       });
 
       it('respects the configured zIndex', function() {
-        layer.setZIndex(42);
-        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
-        const layerState = frameState.layerStatesArray[0];
-        expect(layerState.zIndex).to.be(42);
+        [-5, 0, 42].forEach(index => {
+          layer.setZIndex(index);
+          map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
+          const layerState = frameState.layerStatesArray[0];
+          expect(layerState.zIndex).to.be(index);
+        });
       });
 
     });
