@@ -7,7 +7,7 @@ import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, equals, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
+import {apply as applyTransform, compose as composeTransform, makeInverse} from '../../transform.js';
 import {numberSafeCompareFunction} from '../../array.js';
 
 /**
@@ -242,7 +242,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -width / 2, -height / 2
     );
 
-    this.useContainer(target, this.pixelTransform, layerState.opacity);
+    const canvasTransform = this.createTransformString(this.pixelTransform);
+
+    this.useContainer(target, canvasTransform, layerState.opacity);
     const context = this.context;
     const canvas = context.canvas;
 
@@ -368,7 +370,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const canvasTransform = transformToString(this.pixelTransform);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }

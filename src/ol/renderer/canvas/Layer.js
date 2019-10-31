@@ -7,7 +7,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform, toString} from '../../transform.js';
 
 /**
  * @abstract
@@ -69,12 +69,18 @@ class CanvasLayerRenderer extends LayerRenderer {
      */
     this.containerReused = false;
 
+    /**
+     * @type {HTMLCanvasElement}
+     * @private
+     */
+    this.createTransformStringCanvas_ = createCanvasContext2D(1, 1).canvas;
+
   }
 
   /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
-   * @param {import("../../transform").Transform} transform Transform.
+   * @param {string} transform CSS Transform.
    * @param {number} opacity Opacity.
    */
   useContainer(target, transform, opacity) {
@@ -86,7 +92,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         context = canvas.getContext('2d');
       }
     }
-    if (context && context.canvas.style.transform === transformToString(transform)) {
+    if (context && context.canvas.style.transform === transform) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
@@ -261,6 +267,15 @@ class CanvasLayerRenderer extends LayerRenderer {
       return null;
     }
     return data;
+  }
+
+  /**
+   * @param {import("../../transform.js").Transform} transform Transform.
+   * @return {string} CSS transform.
+   */
+  createTransformString(transform) {
+    this.createTransformStringCanvas_.style.transform = toString(transform);
+    return this.createTransformStringCanvas_.style.transform;
   }
 
 }
