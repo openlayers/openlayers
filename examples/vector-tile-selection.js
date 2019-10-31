@@ -7,18 +7,19 @@ import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 // lookup for selection objects
 let selection = {};
-// feature property to act as identifier
-const idProp = 'iso_a3';
 
 const vtLayer = new VectorTileLayer({
   declutter: true,
   source: new VectorTileSource({
-    format: new MVT(),
+    maxZoom: 15,
+    format: new MVT({
+      idProperty: 'iso_a3'
+    }),
     url: 'https://ahocevar.com/geoserver/gwc/service/tms/1.0.0/' +
       'ne:ne_10m_admin_0_countries@EPSG%3A900913@pbf/{z}/{x}/{-y}.pbf'
   }),
   style: function(feature) {
-    const selected = !!selection[feature.get(idProp)];
+    const selected = !!selection[feature.getId()];
     return new Style({
       stroke: new Stroke({
         color: selected ? 'rgba(200,20,20,0.8)' : 'gray',
@@ -56,7 +57,7 @@ map.on('click', function(event) {
     if (!feature) {
       return;
     }
-    const fid = feature.get(idProp);
+    const fid = feature.getId();
 
     if (selectElement.value === 'singleselect') {
       selection = {};
