@@ -333,7 +333,8 @@ export const measureTextHeight = (function() {
 export function measureTextWidth(font, text) {
   const measureContext = getMeasureContext();
   if (font != measureFont) {
-    measureContext.font = measureFont = font;
+    measureContext.font = font;
+    measureFont = measureContext.font;
   }
   return measureContext.measureText(text).width;
 }
