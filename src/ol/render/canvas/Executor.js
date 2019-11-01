@@ -537,6 +537,7 @@ class Executor extends Disposable {
     let lastStrokeInstruction = null;
     const coordinateCache = this.coordinateCache_;
     const viewRotation = this.viewRotation_;
+    const viewRotationFromTransform = Math.round(Math.atan2(-transform[1], transform[0]) * 1e12) / 1e12;
 
     const state = /** @type {import("../../render.js").State} */ ({
       context: context,
@@ -667,8 +668,12 @@ class Executor extends Disposable {
             backgroundFill = backgroundStroke = false;
           }
 
-          if (rotateWithView) {
+          if (rotateWithView && viewRotationFromTransform) {
+            // Canvas is expected to be rotated to reverse view rotation.
             rotation += viewRotation;
+          } else if (!rotateWithView && !viewRotationFromTransform) {
+            // Canvas is not rotated, images need to be rotated back to be north-up.
+            rotation -= viewRotation;
           }
           let widthIndex = 0;
           let declutterGroupIndex = 0;

@@ -7,7 +7,7 @@ import {containsExtent, intersects} from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
+import {compose as composeTransform, makeInverse} from '../../transform.js';
 
 /**
  * @classdesc
@@ -104,7 +104,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     );
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
-    this.useContainer(target, this.pixelTransform, layerState.opacity);
+    const canvasTransform = this.createTransformString(this.pixelTransform);
+
+    this.useContainer(target, canvasTransform, layerState.opacity);
 
     const context = this.context;
     const canvas = context.canvas;
@@ -162,7 +164,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const canvasTransform = transformToString(this.pixelTransform);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }

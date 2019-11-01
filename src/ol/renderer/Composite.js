@@ -98,11 +98,9 @@ class CompositeMapRenderer extends MapRenderer {
     const viewState = frameState.viewState;
 
     this.children_.length = 0;
-    let hasOverlay = false;
     let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
-      hasOverlay = hasOverlay || layerState.hasOverlay;
       frameState.layerIndex = i;
       if (!inView(layerState, viewState) ||
         (layerState.sourceState != SourceState.READY && layerState.sourceState != SourceState.UNDEFINED)) {
@@ -114,13 +112,8 @@ class CompositeMapRenderer extends MapRenderer {
       if (!element) {
         continue;
       }
-      const childElementCount = element.childElementCount;
-      if ((element !== previousElement || i == ii - 1) && childElementCount === 2 && !hasOverlay) {
-        element.removeChild(element.lastElementChild);
-      }
       if (element !== previousElement) {
         this.children_.push(element);
-        hasOverlay = childElementCount === 2;
         previousElement = element;
       }
     }

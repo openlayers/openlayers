@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/VectorTileLayer
  */
 import {getUid} from '../../util.js';
-import {createCanvasContext2D} from '../../dom.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {listen, unlistenByKey} from '../../events.js';
@@ -20,9 +19,8 @@ import {
   reset as resetTransform,
   scale as scaleTransform,
   translate as translateTransform,
-  toString as transformToString,
-  makeScale,
-  makeInverse
+  multiply,
+  scale
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import {clear} from '../../obj.js';
@@ -66,31 +64,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
-     */
-    this.overlayContext_ = null;
-
-    /**
-     * @type {string}
-     */
-    this.overlayContextUid_;
-
-    /**
-     * The transform for rendered pixels to viewport CSS pixels for the overlay canvas.
-     * @private
-     * @type {import("../../transform.js").Transform}
-     */
-    this.overlayPixelTransform_ = createTransform();
-
-    /**
-     * The transform for viewport CSS pixels to rendered pixels for the overlay canvas.
-     * @private
-     * @type {import("../../transform.js").Transform}
-     */
-    this.inverseOverlayPixelTransform_ = createTransform();
-
-    /**
-     * @private
      * @type {boolean}
      */
     this.dirty_ = false;
@@ -129,37 +102,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  useContainer(target, transform, opacity) {
-    let overlayContext;
-    if (target && target.childElementCount === 2) {
-      overlayContext = target.lastElementChild.getContext('2d');
-      if (!overlayContext) {
-        target = null;
-      }
-    }
-    const containerReused = this.containerReused;
-    super.useContainer(target, transform, opacity);
-    if (containerReused) {
-      this.overlayContext_ = overlayContext || null;
-      this.overlayContextUid_ = overlayContext ? getUid(overlayContext) : undefined;
-    }
-    if (!this.overlayContext_) {
-      const overlayContext = createCanvasContext2D();
-      const style = overlayContext.canvas.style;
-      style.position = 'absolute';
-      style.left = '0';
-      style.transformOrigin = 'top left';
-      this.overlayContext_ = overlayContext;
-      this.overlayContextUid_ = getUid(overlayContext);
-    }
-    if (this.container.childElementCount === 1) {
-      this.container.appendChild(this.overlayContext_.canvas);
-    }
   }
 
   /**
@@ -239,8 +181,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState) {
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    layerState.hasOverlay = true;
     const layerRevision = this.getLayer().getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
@@ -506,7 +446,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
 
-    const context = this.overlayContext_;
+    const context = this.context;
     const declutterReplays = layer.getDeclutter() ? {} : null;
     const replayTypes = VECTOR_REPLAYS[renderMode];
     const pixelRatio = frameState.pixelRatio;
@@ -516,24 +456,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = viewState.rotation;
     const size = frameState.size;
 
-    // set forward and inverse pixel transforms
-    makeScale(this.overlayPixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-    makeInverse(this.inverseOverlayPixelTransform_, this.overlayPixelTransform_);
-
-    // resize and clear
-    const canvas = context.canvas;
     const width = Math.round(size[0] * pixelRatio);
     const height = Math.round(size[1] * pixelRatio);
-    if (canvas.width != width || canvas.height != height) {
-      canvas.width = width;
-      canvas.height = height;
-      const canvasTransform = transformToString(this.overlayPixelTransform_);
-      if (canvas.style.transform !== canvasTransform) {
-        canvas.style.transform = canvasTransform;
-      }
-    } else if (getUid(context) === this.overlayContextUid_) {
-      context.clearRect(0, 0, width, height);
-    }
 
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
@@ -547,7 +471,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const tileCoord = tile.tileCoord;
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];
-      const transform = this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, worldOffset);
+      const transform = multiply(
+        scale(this.inversePixelTransform.slice(), 1 / pixelRatio, 1 / pixelRatio),
+        this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, worldOffset)
+      );
       const executorGroups = tile.executorGroups[getUid(layer)];
       let clipped = false;
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
@@ -705,34 +632,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       executorGroup.execute(context, transform, 0, true, IMAGE_REPLAYS[layer.getRenderMode()]);
     }
     replayState.renderedTileResolution = tile.wantedResolution;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getDataAtPixel(pixel, frameState, hitTolerance) {
-    let data = super.getDataAtPixel(pixel, frameState, hitTolerance);
-    if (data) {
-      return data;
-    }
-
-    const renderPixel = applyTransform(this.inverseOverlayPixelTransform_, pixel.slice());
-    const context = this.overlayContext_;
-
-    try {
-      data = context.getImageData(Math.round(renderPixel[0]), Math.round(renderPixel[1]), 1, 1).data;
-    } catch (err) {
-      if (err.name === 'SecurityError') {
-        // tainted canvas, we assume there is data at the given pixel (although there might not be)
-        return new Uint8Array();
-      }
-      return data;
-    }
-
-    if (data[3] === 0) {
-      return null;
-    }
-    return data;
   }
 
 }
