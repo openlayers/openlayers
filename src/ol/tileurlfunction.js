@@ -114,7 +114,7 @@ export function expandUrl(url) {
     }
     return urls;
   }
-  match = match = /\{(\d+)-(\d+)\}/.exec(url);
+  match = /\{(\d+)-(\d+)\}/.exec(url);
   if (match) {
     // number range
     const stop = parseInt(match[2], 10);

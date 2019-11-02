@@ -315,10 +315,14 @@ class Executor extends Disposable {
     const boxY = y - padding[0];
 
     if (fillStroke || rotation !== 0) {
-      p1[0] = p4[0] = boxX;
-      p1[1] = p2[1] = boxY;
-      p2[0] = p3[0] = boxX + boxW;
-      p3[1] = p4[1] = boxY + boxH;
+      p1[0] = boxX;
+      p4[0] = boxX;
+      p1[1] = boxY;
+      p2[1] = boxY;
+      p2[0] = boxX + boxW;
+      p3[0] = p2[0];
+      p3[1] = boxY + boxH;
+      p4[1] = p3[1];
     }
 
     let transform = null;
@@ -576,7 +580,8 @@ class Executor extends Disposable {
           }
           if (!pendingFill && !pendingStroke) {
             context.beginPath();
-            prevX = prevY = NaN;
+            prevX = NaN;
+            prevY = NaN;
           }
           ++i;
           break;
@@ -644,13 +649,18 @@ class Executor extends Disposable {
             strokeKey = /** @type {string} */ (instruction[20]);
             fillKey = /** @type {string} */ (instruction[21]);
             const labelWithAnchor = this.drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey);
-            image = instruction[3] = labelWithAnchor.label;
+            image = labelWithAnchor.label;
+            instruction[3] = image;
             const textOffsetX = /** @type {number} */ (instruction[22]);
-            anchorX = instruction[4] = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
+            anchorX = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
+            instruction[4] = anchorX;
             const textOffsetY = /** @type {number} */ (instruction[23]);
-            anchorY = instruction[5] = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
-            height = instruction[7] = image.height;
-            width = instruction[14] = image.width;
+            anchorY = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
+            instruction[5] = anchorY;
+            height = image.height;
+            instruction[7] = height;
+            width = image.width;
+            instruction[14] = width;
           }
 
           let geometryWidths;
@@ -665,7 +675,8 @@ class Executor extends Disposable {
             backgroundStroke = /** @type {boolean} */ (instruction[17]);
           } else {
             padding = defaultPadding;
-            backgroundFill = backgroundStroke = false;
+            backgroundFill = false;
+            backgroundStroke = false;
           }
 
           if (rotateWithView && viewRotationFromTransform) {
@@ -730,7 +741,8 @@ class Executor extends Disposable {
           if (font in this.widths_) {
             cachedWidths = this.widths_[font];
           } else {
-            cachedWidths = this.widths_[font] = {};
+            cachedWidths = {};
+            this.widths_[font] = cachedWidths;
           }
 
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);

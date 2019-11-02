@@ -215,7 +215,8 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
         if (property in object) {
           array = object[property];
         } else {
-          array = object[property] = [];
+          array = [];
+          object[property] = array;
         }
         array.push(value);
       }

@@ -180,7 +180,8 @@ class UrlTile extends TileSource {
    * @api
    */
   setUrl(url) {
-    const urls = this.urls = expandUrl(url);
+    const urls = expandUrl(url);
+    this.urls = urls;
     this.setUrls(urls);
   }
 

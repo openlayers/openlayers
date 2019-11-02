@@ -197,7 +197,8 @@ describe('ol.Map', function() {
     let map;
     beforeEach(function() {
       const target = document.createElement('div');
-      target.style.width = target.style.height = '100px';
+      target.style.width = '100px';
+      target.style.height = '100px';
       document.body.appendChild(target);
       map = new Map({
         target: target,
@@ -259,7 +260,8 @@ describe('ol.Map', function() {
     let target, map, layer;
     beforeEach(function() {
       target = document.createElement('div');
-      target.style.width = target.style.height = '100px';
+      target.style.width = '100px';
+      target.style.height = '100px';
       document.body.appendChild(target);
       layer = new VectorLayer({
         source: new VectorSource({
@@ -360,7 +362,8 @@ describe('ol.Map', function() {
       useGeographic();
 
       target = document.createElement('div');
-      target.style.width = target.style.height = size + 'px';
+      target.style.width = size + 'px';
+      target.style.height = size + 'px';
       document.body.appendChild(target);
 
       map = new Map({
@@ -413,7 +416,8 @@ describe('ol.Map', function() {
       useGeographic();
 
       target = document.createElement('div');
-      target.style.width = target.style.height = size + 'px';
+      target.style.width = size + 'px';
+      target.style.height = size + 'px';
       document.body.appendChild(target);
 
       map = new Map({

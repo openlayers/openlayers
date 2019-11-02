@@ -380,8 +380,9 @@ class VectorTile extends UrlTile {
       // A tile grid that matches the tile size of the source tile grid is more
       // likely to have 1:1 relationships between source tiles and rendered tiles.
       const sourceTileGrid = this.tileGrid;
-      tileGrid = this.tileGrids_[code] = createForProjection(projection, undefined,
+      tileGrid = createForProjection(projection, undefined,
         sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
+      this.tileGrids_[code] = tileGrid;
     }
     return tileGrid;
   }

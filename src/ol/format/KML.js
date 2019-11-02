@@ -1777,7 +1777,9 @@ function setCommonGeometryProperties(multiGeometry, geometries) {
   const tessellates = new Array(geometries.length);
   const altitudeModes = new Array(geometries.length);
   let hasExtrude, hasTessellate, hasAltitudeMode;
-  hasExtrude = hasTessellate = hasAltitudeMode = false;
+  hasExtrude = false;
+  hasTessellate = false;
+  hasAltitudeMode = false;
   for (let i = 0; i < ii; ++i) {
     const geometry = geometries[i];
     extrudes[i] = geometry.get('extrude');

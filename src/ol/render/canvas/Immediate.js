@@ -719,7 +719,8 @@ class CanvasImmediateRenderer extends VectorContext {
       };
     } else {
       if (contextFillState.fillStyle != fillState.fillStyle) {
-        contextFillState.fillStyle = context.fillStyle = fillState.fillStyle;
+        contextFillState.fillStyle = fillState.fillStyle;
+        context.fillStyle = fillState.fillStyle;
       }
     }
   }
@@ -752,30 +753,33 @@ class CanvasImmediateRenderer extends VectorContext {
       };
     } else {
       if (contextStrokeState.lineCap != strokeState.lineCap) {
-        contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
+        contextStrokeState.lineCap = strokeState.lineCap;
+        context.lineCap = strokeState.lineCap;
       }
       if (context.setLineDash) {
         if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
           context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
         }
         if (contextStrokeState.lineDashOffset != strokeState.lineDashOffset) {
-          contextStrokeState.lineDashOffset = context.lineDashOffset =
-              strokeState.lineDashOffset;
+          contextStrokeState.lineDashOffset = strokeState.lineDashOffset;
+          context.lineDashOffset = strokeState.lineDashOffset;
         }
       }
       if (contextStrokeState.lineJoin != strokeState.lineJoin) {
-        contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
+        contextStrokeState.lineJoin = strokeState.lineJoin;
+        context.lineJoin = strokeState.lineJoin;
       }
       if (contextStrokeState.lineWidth != strokeState.lineWidth) {
-        contextStrokeState.lineWidth = context.lineWidth = strokeState.lineWidth;
+        contextStrokeState.lineWidth = strokeState.lineWidth;
+        context.lineWidth = strokeState.lineWidth;
       }
       if (contextStrokeState.miterLimit != strokeState.miterLimit) {
-        contextStrokeState.miterLimit = context.miterLimit =
-            strokeState.miterLimit;
+        contextStrokeState.miterLimit = strokeState.miterLimit;
+        context.miterLimit = strokeState.miterLimit;
       }
       if (contextStrokeState.strokeStyle != strokeState.strokeStyle) {
-        contextStrokeState.strokeStyle = context.strokeStyle =
-            strokeState.strokeStyle;
+        contextStrokeState.strokeStyle = strokeState.strokeStyle;
+        context.strokeStyle = strokeState.strokeStyle;
       }
     }
   }
@@ -800,14 +804,16 @@ class CanvasImmediateRenderer extends VectorContext {
       };
     } else {
       if (contextTextState.font != textState.font) {
-        contextTextState.font = context.font = textState.font;
+        contextTextState.font = textState.font;
+        context.font = textState.font;
       }
       if (contextTextState.textAlign != textAlign) {
-        contextTextState.textAlign = context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
+        contextTextState.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
+        context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
       }
       if (contextTextState.textBaseline != textState.textBaseline) {
-        contextTextState.textBaseline = context.textBaseline =
-          /** @type {CanvasTextBaseline} */ (textState.textBaseline);
+        contextTextState.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
+        context.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
       }
     }
   }

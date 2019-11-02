@@ -581,7 +581,8 @@ class Graticule extends VectorLayer {
   createGraticule_(extent, center, resolution, squaredTolerance) {
     const interval = this.getInterval_(resolution);
     if (interval == -1) {
-      this.meridians_.length = this.parallels_.length = 0;
+      this.meridians_.length = 0;
+      this.parallels_.length = 0;
       if (this.meridiansLabels_) {
         this.meridiansLabels_.length = 0;
       }
@@ -708,7 +709,8 @@ class Graticule extends VectorLayer {
     const flatCoordinates = meridian(lon, minLat, maxLat, this.projection_, squaredTolerance);
     let lineString = this.meridians_[index];
     if (!lineString) {
-      lineString = this.meridians_[index] = new LineString(flatCoordinates, GeometryLayout.XY);
+      lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+      this.meridians_[index] = lineString;
     } else {
       lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
       lineString.changed();

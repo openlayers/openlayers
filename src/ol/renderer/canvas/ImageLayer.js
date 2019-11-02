@@ -92,7 +92,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const rotation = viewState.rotation;
     if (rotation) {
       const size = Math.round(Math.sqrt(width * width + height * height));
-      width = height = size;
+      width = size;
+      height = size;
     }
 
     // set forward and inverse pixel transforms

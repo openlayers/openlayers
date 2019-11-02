@@ -654,7 +654,8 @@ class Modify extends PointerInteraction {
     };
 
     const featureSegments = [centerSegmentData, circumferenceSegmentData];
-    centerSegmentData.featureSegments = circumferenceSegmentData.featureSegments = featureSegments;
+    centerSegmentData.featureSegments = featureSegments;
+    circumferenceSegmentData.featureSegments = featureSegments;
     this.rBush_.insert(createExtent(coordinates), centerSegmentData);
     this.rBush_.insert(geometry.getExtent(), circumferenceSegmentData);
   }
@@ -746,12 +747,14 @@ class Modify extends PointerInteraction {
       switch (geometry.getType()) {
         case GeometryType.POINT:
           coordinates = vertex;
-          segment[0] = segment[1] = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
           break;
         case GeometryType.MULTI_POINT:
           coordinates = geometry.getCoordinates();
           coordinates[segmentData.index] = vertex;
-          segment[0] = segment[1] = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
           break;
         case GeometryType.LINE_STRING:
           coordinates = geometry.getCoordinates();
@@ -774,7 +777,8 @@ class Modify extends PointerInteraction {
           segment[index] = vertex;
           break;
         case GeometryType.CIRCLE:
-          segment[0] = segment[1] = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
           if (segmentData.index === CIRCLE_CENTER_INDEX) {
             this.changingFeature_ = true;
             geometry.setCenter(vertex);
@@ -889,8 +893,10 @@ class Modify extends PointerInteraction {
         const coordinates = geometry.getCenter();
         const centerSegmentData = segmentData.featureSegments[0];
         const circumferenceSegmentData = segmentData.featureSegments[1];
-        centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
-        circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
+        centerSegmentData.segment[0] = coordinates;
+        centerSegmentData.segment[1] = coordinates;
+        circumferenceSegmentData.segment[0] = coordinates;
+        circumferenceSegmentData.segment[1] = coordinates;
         this.rBush_.update(createExtent(coordinates), centerSegmentData);
         this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
       } else {

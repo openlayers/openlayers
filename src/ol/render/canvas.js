@@ -311,13 +311,15 @@ export const measureTextHeight = (function() {
       if (!div) {
         div = document.createElement('div');
         div.innerHTML = 'M';
-        div.style.margin = div.style.padding = '0 !important';
+        div.style.margin = '0 !important';
+        div.style.padding = '0 !important';
         div.style.position = 'absolute !important';
         div.style.left = '-99999px !important';
       }
       div.style.font = font;
       document.body.appendChild(div);
-      height = heights[font] = div.offsetHeight;
+      height = div.offsetHeight;
+      heights[font] = height;
       document.body.removeChild(div);
     }
     return height;
@@ -351,7 +353,8 @@ export function measureAndCacheTextWidth(font, text, cache) {
   if (text in cache) {
     return cache[text];
   }
-  const width = cache[text] = measureTextWidth(font, text);
+  const width = measureTextWidth(font, text);
+  cache[text] = width;
   return width;
 }
 

@@ -37,10 +37,12 @@ export function createExtent(extent, onlyCenter, smooth) {
         // note: when zooming out of bounds, min and max values for x and y may
         // end up inverted (min > max); this has to be accounted for
         if (minX > maxX) {
-          minX = maxX = (maxX + minX) / 2;
+          minX = (maxX + minX) / 2;
+          maxX = minX;
         }
         if (minY > maxY) {
-          minY = maxY = (maxY + minY) / 2;
+          minY = (maxY + minY) / 2;
+          maxY = minY;
         }
 
         let x = clamp(center[0], minX, maxX);

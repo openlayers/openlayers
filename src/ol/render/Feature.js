@@ -268,10 +268,10 @@ class RenderFeature {
 /**
  * @return {Array<number>|Array<Array<number>>} Ends or endss.
  */
-RenderFeature.prototype.getEnds =
-RenderFeature.prototype.getEndss = function() {
+RenderFeature.prototype.getEnds = function() {
   return this.ends_;
 };
+RenderFeature.prototype.getEndss = RenderFeature.prototype.getEnds;
 
 
 /**

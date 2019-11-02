@@ -70,7 +70,8 @@ export function toSize(size, opt_size) {
     if (opt_size === undefined) {
       opt_size = [size, size];
     } else {
-      opt_size[0] = opt_size[1] = size;
+      opt_size[0] = size;
+      opt_size[1] = size;
     }
     return opt_size;
   }

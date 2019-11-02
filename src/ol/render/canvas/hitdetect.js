@@ -90,7 +90,8 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       const zIndex = Number(style.getZIndex());
       let byGeometryType = featuresByZIndex[zIndex];
       if (!byGeometryType) {
-        byGeometryType = featuresByZIndex[zIndex] = {};
+        byGeometryType = {};
+        featuresByZIndex[zIndex] = byGeometryType;
         byGeometryType[GeometryType.POLYGON] = [];
         byGeometryType[GeometryType.CIRCLE] = [];
         byGeometryType[GeometryType.LINE_STRING] = [];
