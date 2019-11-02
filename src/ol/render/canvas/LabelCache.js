@@ -50,7 +50,8 @@ class LabelCache extends LRUCache {
         }
       }
       const canvas = this.pop();
-      canvas.width = canvas.height = 0;
+      canvas.width = 0;
+      canvas.height = 0;
       for (const consumerId in this.consumers) {
         delete this.consumers[consumerId][key];
       }

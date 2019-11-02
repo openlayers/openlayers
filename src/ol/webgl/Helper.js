@@ -379,10 +379,11 @@ class WebGLHelper extends Disposable {
     let bufferCache = this.bufferCache_[bufferKey];
     if (!bufferCache) {
       const webGlBuffer = gl.createBuffer();
-      bufferCache = this.bufferCache_[bufferKey] = {
+      bufferCache = {
         buffer: buffer,
         webGlBuffer: webGlBuffer
       };
+      this.bufferCache_[bufferKey] = bufferCache;
     }
     gl.bindBuffer(buffer.getType(), bufferCache.webGlBuffer);
   }

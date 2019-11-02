@@ -116,7 +116,8 @@ class ExecutorGroup extends Disposable {
     for (const zIndex in allInstructions) {
       let executors = this.executorsByZIndex_[zIndex];
       if (executors === undefined) {
-        this.executorsByZIndex_[zIndex] = executors = {};
+        executors = {};
+        this.executorsByZIndex_[zIndex] = executors;
       }
       const instructionByZindex = allInstructions[zIndex];
       for (const builderType in instructionByZindex) {
@@ -139,7 +140,8 @@ class ExecutorGroup extends Disposable {
     }
     if (this.hitDetectionContext_) {
       const canvas = this.hitDetectionContext_.canvas;
-      canvas.width = canvas.height = 0;
+      canvas.width = 0;
+      canvas.height = 0;
     }
 
     super.disposeInternal();

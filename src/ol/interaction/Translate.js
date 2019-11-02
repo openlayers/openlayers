@@ -198,7 +198,7 @@ class Translate extends PointerInteraction {
   handleDownEvent(event) {
     this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
     if (!this.lastCoordinate_ && this.lastFeature_) {
-      this.startCoordinate_ =
+      this.startCoordinate_ = event.coordinate;
       this.lastCoordinate_ = event.coordinate;
       this.handleMoveEvent(event);
 

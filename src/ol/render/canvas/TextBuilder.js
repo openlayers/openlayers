@@ -392,11 +392,13 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       const textFillStyle = textStyle.getFill();
       if (!textFillStyle) {
-        fillState = this.textFillState_ = null;
+        fillState = null;
+        this.textFillState_ = fillState;
       } else {
         fillState = this.textFillState_;
         if (!fillState) {
-          fillState = this.textFillState_ = /** @type {import("../canvas.js").FillState} */ ({});
+          fillState = /** @type {import("../canvas.js").FillState} */ ({});
+          this.textFillState_ = fillState;
         }
         fillState.fillStyle = asColorLike(
           textFillStyle.getColor() || defaultFillStyle);
@@ -404,11 +406,13 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       const textStrokeStyle = textStyle.getStroke();
       if (!textStrokeStyle) {
-        strokeState = this.textStrokeState_ = null;
+        strokeState = null;
+        this.textStrokeState_ = strokeState;
       } else {
         strokeState = this.textStrokeState_;
         if (!strokeState) {
-          strokeState = this.textStrokeState_ = /** @type {import("../canvas.js").StrokeState} */ ({});
+          strokeState = /** @type {import("../canvas.js").StrokeState} */ ({});
+          this.textStrokeState_ = strokeState;
         }
         const lineDash = textStrokeStyle.getLineDash();
         const lineDashOffset = textStrokeStyle.getLineDashOffset();

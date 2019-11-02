@@ -175,7 +175,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     if (rotation) {
       const size = Math.round(Math.sqrt(width * width + height * height));
-      width = height = size;
+      width = size;
+      height = size;
     }
 
     const dx = tileResolution * width / 2 / tilePixelRatio;

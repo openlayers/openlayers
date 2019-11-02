@@ -74,7 +74,10 @@ class RenderBox extends Disposable {
     if (this.map_) {
       this.map_.getOverlayContainer().removeChild(this.element_);
       const style = this.element_.style;
-      style.left = style.top = style.width = style.height = 'inherit';
+      style.left = 'inherit';
+      style.top = 'inherit';
+      style.width = 'inherit';
+      style.height = 'inherit';
     }
     this.map_ = map;
     if (this.map_) {

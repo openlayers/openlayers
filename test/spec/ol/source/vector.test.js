@@ -158,7 +158,8 @@ describe('ol.source.Vector', function() {
         url: 'spec/ol/source/vectorsource/single-feature.json'
       });
       const target = document.createElement('div');
-      target.style.width = target.style.height = '100px';
+      target.style.width = '100px';
+      target.style.height = '100px';
       document.body.appendChild(target);
       map = new Map({
         target: target,
@@ -592,7 +593,8 @@ describe('ol.source.Vector', function() {
           }
         });
         const div = document.createElement('div');
-        div.style.width = div.style.height = '100px';
+        div.style.width = '100px';
+        div.style.height = '100px';
         document.body.appendChild(div);
         const map = new Map({
           target: div,

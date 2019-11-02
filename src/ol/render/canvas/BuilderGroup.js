@@ -87,7 +87,8 @@ class BuilderGroup {
         declutter = this.declutterGroups_;
         /** @type {number} */ (declutter[0][4])++;
       } else {
-        declutter = this.declutterGroups_ = [createEmpty()];
+        declutter = [createEmpty()];
+        this.declutterGroups_ = declutter;
         declutter[0].push(1);
       }
     }

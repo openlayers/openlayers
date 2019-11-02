@@ -198,7 +198,8 @@ describe('ol.source.VectorTile', function() {
       });
 
       target = document.createElement('div');
-      target.style.width = target.style.height = '100px';
+      target.style.width = '100px';
+      target.style.height = '100px';
       document.body.appendChild(target);
 
       map = new Map({
