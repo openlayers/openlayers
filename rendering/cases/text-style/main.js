@@ -65,6 +65,22 @@ feature.setStyle(new Style({
 }));
 vectorSource.addFeature(feature);
 
+// align left
+feature = new Feature({
+  geometry: new Point([50, 50])
+});
+feature.setStyle(new Style({
+  text: new Text({
+    font: 'Ubuntu',
+    text: 'align left',
+    textAlign: 'left',
+    stroke: new Stroke({
+      color: [10, 10, 10, 0.5]
+    })
+  })
+}));
+vectorSource.addFeature(feature);
+
 // background and padding
 feature = new Feature({
   geometry: new Point([-10, 0])
