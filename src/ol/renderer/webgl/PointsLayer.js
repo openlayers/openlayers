@@ -287,20 +287,41 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.featureCache_ = {};
 
+    /**
+     * Amount of features in the cache.
+     * @type {number}
+     * @private
+     */
+    this.featureCount_ = 0;
+
     const source = this.getLayer().getSource();
     this.sourceListenKeys_ = [
-      listen(source, VectorEventType.ADDFEATURE, this.handleSourceFeatureChanged_, this),
+      listen(source, VectorEventType.ADDFEATURE, this.handleSourceFeatureAdded_, this),
       listen(source, VectorEventType.CHANGEFEATURE, this.handleSourceFeatureChanged_, this),
       listen(source, VectorEventType.REMOVEFEATURE, this.handleSourceFeatureDelete_, this)
     ];
-    source.getFeatures().forEach(function(feature) {
-      const uid = getUid(feature);
-      this.featureCache_[uid] = {
+    source.forEachFeature(function(feature) {
+      this.featureCache_[getUid(feature)] = {
         feature: feature,
         properties: feature.getProperties(),
         geometry: feature.getGeometry()
       };
+      this.featureCount_++;
     }.bind(this));
+  }
+
+  /**
+   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @private
+   */
+  handleSourceFeatureAdded_(event) {
+    const feature = event.feature;
+    this.featureCache_[getUid(feature)] = {
+      feature: feature,
+      properties: feature.getProperties(),
+      geometry: feature.getGeometry()
+    };
+    this.featureCount_++;
   }
 
   /**
@@ -309,8 +330,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureChanged_(event) {
     const feature = event.feature;
-    const uid = getUid(feature);
-    this.featureCache_[uid] = {
+    this.featureCache_[getUid(feature)] = {
       feature: feature,
       properties: feature.getProperties(),
       geometry: feature.getGeometry()
@@ -323,8 +343,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureDelete_(event) {
     const feature = event.feature;
-    const uid = getUid(feature);
-    delete this.featureCache_[uid];
+    delete this.featureCache_[getUid(feature)];
+    this.featureCount_--;
   }
 
   /**
@@ -403,32 +423,29 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const projectionTransform = createTransform();
     this.helper.makeProjectionTransform(frameState, projectionTransform);
 
-    const featureUids = Object.keys(this.featureCache_);
-
     // here we anticipate the amount of render instructions that we well generate
     // this can be done since we know that for normal render we only have x, y as base instructions,
     // and x, y, r, g, b, a and featureUid for hit render instructions
     // and we also know the amount of custom attributes to append to these
-    const totalInstructionsCount = (2 + this.customAttributes.length) * featureUids.length;
+    const totalInstructionsCount = (2 + this.customAttributes.length) * this.featureCount_;
     if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
       this.renderInstructions_ = new Float32Array(totalInstructionsCount);
     }
     if (this.hitDetectionEnabled_) {
-      const totalHitInstructionsCount = (7 + this.customAttributes.length) * featureUids.length;
+      const totalHitInstructionsCount = (7 + this.customAttributes.length) * this.featureCount_;
       if (!this.hitRenderInstructions_ || this.hitRenderInstructions_.length !== totalHitInstructionsCount) {
         this.hitRenderInstructions_ = new Float32Array(totalHitInstructionsCount);
       }
     }
 
     // loop on features to fill the buffer
-    let featureUid, featureCache, geometry;
+    let featureCache, geometry;
     const tmpCoords = [];
     const tmpColor = [];
     let renderIndex = 0;
     let hitIndex = 0;
     let hitColor;
-    for (let i = 0; i < featureUids.length; i++) {
-      featureUid = featureUids[i];
+    for (const featureUid in this.featureCache_) {
       featureCache = this.featureCache_[featureUid];
       geometry = /** @type {import("../../geom").Point} */(featureCache.geometry);
       if (!geometry || geometry.getType() !== GeometryType.POINT) {

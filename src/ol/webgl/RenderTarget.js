@@ -123,7 +123,10 @@ class WebGLRenderTarget {
    */
   readPixel(x, y) {
     if (x < 0 || y < 0 || x > this.size_[0] || y >= this.size_[1]) {
-      tmpArray4[0] = tmpArray4[1] = tmpArray4[2] = tmpArray4[3] = 0;
+      tmpArray4[0] = 0;
+      tmpArray4[1] = 0;
+      tmpArray4[2] = 0;
+      tmpArray4[3] = 0;
       return tmpArray4;
     }
 

@@ -425,7 +425,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader
       });
-      expect(Object.keys(renderer.featureCache_).length).to.be(0);
+      expect(renderer.featureCount_).to.be(0);
     });
 
     it('contains the features initially present in the source', function() {
@@ -434,7 +434,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader
       });
-      expect(Object.keys(renderer.featureCache_).length).to.be(3);
+      expect(renderer.featureCount_).to.be(3);
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry).to.be(features[0].getGeometry());
       expect(getCache(features[0], renderer).properties['test']).to.be(features[0].get('test'));
@@ -453,10 +453,10 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       });
 
       source.addFeature(features[0]);
-      expect(Object.keys(renderer.featureCache_).length).to.be(1);
+      expect(renderer.featureCount_).to.be(1);
 
       source.addFeature(features[1]);
-      expect(Object.keys(renderer.featureCache_).length).to.be(2);
+      expect(renderer.featureCount_).to.be(2);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry).to.be(features[0].getGeometry());
@@ -473,10 +473,10 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       });
 
       source.addFeatures(features);
-      expect(Object.keys(renderer.featureCache_).length).to.be(3);
+      expect(renderer.featureCount_).to.be(3);
 
       source.removeFeature(features[1]);
-      expect(Object.keys(renderer.featureCache_).length).to.be(2);
+      expect(renderer.featureCount_).to.be(2);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry).to.be(features[0].getGeometry());
@@ -496,7 +496,7 @@ describe('ol.renderer.webgl.PointsLayer', function() {
       features[0].set('test', 'updated');
       features[0].set('added', true);
       features[0].getGeometry().setCoordinates([10, 20]);
-      expect(Object.keys(renderer.featureCache_).length).to.be(3);
+      expect(renderer.featureCount_).to.be(3);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry.getCoordinates()).to.eql([10, 20]);
