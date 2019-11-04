@@ -287,6 +287,13 @@ class Layer extends BaseLayer {
     return null;
   }
 
+  /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    this.setSource(null);
+    super.disposeInternal();
+  }
 }
 
 

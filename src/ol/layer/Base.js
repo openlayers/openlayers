@@ -320,6 +320,17 @@ class BaseLayer extends BaseObject {
   setZIndex(zindex) {
     this.set(LayerProperty.Z_INDEX, zindex);
   }
+
+  /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    if (this.state_) {
+      this.state_.layer = null;
+      this.state_ = null;
+    }
+    super.disposeInternal();
+  }
 }
 
 

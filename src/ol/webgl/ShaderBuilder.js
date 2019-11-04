@@ -3,7 +3,7 @@
  * @module ol/webgl/ShaderBuilder
  */
 
-import {expressionToGlsl, stringToGlsl, ValueTypes} from '../style/expressions.js';
+import {expressionToGlsl, getStringNumberEquivalent, ValueTypes} from '../style/expressions.js';
 
 /**
  * @typedef {Object} VaryingDescription
@@ -450,7 +450,7 @@ export function parseLiteralStyle(style) {
       }
       let value = style.variables[varName];
       if (typeof value === 'string') {
-        value = parseFloat(stringToGlsl(vertContext, value));
+        value = getStringNumberEquivalent(vertContext, value);
       }
       return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
     };
@@ -484,10 +484,10 @@ export function parseLiteralStyle(style) {
     attributes: vertContext.attributes.map(function(attributeName) {
       return {
         name: attributeName,
-        callback: function(feature) {
-          let value = feature.get(attributeName);
+        callback: function(feature, props) {
+          let value = props[attributeName];
           if (typeof value === 'string') {
-            value = parseFloat(stringToGlsl(vertContext, value));
+            value = getStringNumberEquivalent(vertContext, value);
           }
           return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
         }

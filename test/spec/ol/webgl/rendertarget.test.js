@@ -123,6 +123,26 @@ describe('ol.webgl.RenderTarget', function() {
       expect(spy.callCount).to.eql(2);
     });
 
+    it('returns an array filled with 0 if outside of range', function() {
+      const rt = new WebGLRenderTarget(helper, [4, 4]);
+      helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
+
+      let data = rt.readPixel(-1, 0);
+      expect(data).to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(3, -1);
+      expect(data).to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(6, 2);
+      expect(data).to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(2, 7);
+      expect(data).to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(2, 3);
+      expect(data).not.to.eql([0, 0, 0, 0]);
+    });
+
   });
 
 });

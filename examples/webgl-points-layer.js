@@ -124,6 +124,7 @@ function refreshLayer(newStyle) {
 
   if (previousLayer) {
     map.removeLayer(previousLayer);
+    previousLayer.dispose();
   }
   literalStyle = newStyle;
 }
