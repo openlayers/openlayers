@@ -949,8 +949,8 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    let target = mapBrowserEvent.originalEvent.target;
-    while (target instanceof HTMLElement) {
+    let target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
+    while (target) {
       if (target.parentElement === this.overlayContainerStopEvent_) {
         return;
       }
