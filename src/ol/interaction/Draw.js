@@ -881,12 +881,10 @@ class Draw extends PointerInteraction {
   abortDrawing_() {
     this.finishCoordinate_ = null;
     const sketchFeature = this.sketchFeature_;
-    if (sketchFeature) {
-      this.sketchFeature_ = null;
-      this.sketchPoint_ = null;
-      this.sketchLine_ = null;
-      this.overlay_.getSource().clear(true);
-    }
+    this.sketchFeature_ = null;
+    this.sketchPoint_ = null;
+    this.sketchLine_ = null;
+    this.overlay_.getSource().clear(true);
     return sketchFeature;
   }
 
