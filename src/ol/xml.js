@@ -2,6 +2,7 @@
  * @module ol/xml
  */
 import {extend} from './array.js';
+import {getDocument} from './dom.js';
 
 
 /**
@@ -24,15 +25,6 @@ import {extend} from './array.js';
 
 
 /**
- * This document should be used when creating nodes for XML serializations. This
- * document is also used by {@link module:ol/xml~createElementNS}
- * @const
- * @type {Document}
- */
-export const DOCUMENT = document.implementation.createDocument('', '', null);
-
-
-/**
  * @type {string}
  */
 export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instance';
@@ -44,7 +36,7 @@ export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instanc
  * @return {Element} Node.
  */
 export function createElementNS(namespaceURI, qualifiedName) {
-  return DOCUMENT.createElementNS(namespaceURI, qualifiedName);
+  return getDocument().createElementNS(namespaceURI, qualifiedName);
 }
 
 

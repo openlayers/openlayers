@@ -1,7 +1,8 @@
 /**
  * @module ol/format/xsd
  */
-import {getAllTextContent, DOCUMENT} from '../xml.js';
+import {getDocument} from '../dom.js';
+import {getAllTextContent} from '../xml.js';
 import {padNumber} from '../string.js';
 
 
@@ -112,7 +113,7 @@ export function writeBooleanTextNode(node, bool) {
  * @param {string} string String.
  */
 export function writeCDATASection(node, string) {
-  node.appendChild(DOCUMENT.createCDATASection(string));
+  node.appendChild(getDocument().createCDATASection(string));
 }
 
 
@@ -128,7 +129,7 @@ export function writeDateTimeTextNode(node, dateTime) {
       padNumber(date.getUTCHours(), 2) + ':' +
       padNumber(date.getUTCMinutes(), 2) + ':' +
       padNumber(date.getUTCSeconds(), 2) + 'Z';
-  node.appendChild(DOCUMENT.createTextNode(string));
+  node.appendChild(getDocument().createTextNode(string));
 }
 
 
@@ -138,7 +139,7 @@ export function writeDateTimeTextNode(node, dateTime) {
  */
 export function writeDecimalTextNode(node, decimal) {
   const string = decimal.toPrecision();
-  node.appendChild(DOCUMENT.createTextNode(string));
+  node.appendChild(getDocument().createTextNode(string));
 }
 
 
@@ -148,7 +149,7 @@ export function writeDecimalTextNode(node, decimal) {
  */
 export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
   const string = nonNegativeInteger.toString();
-  node.appendChild(DOCUMENT.createTextNode(string));
+  node.appendChild(getDocument().createTextNode(string));
 }
 
 
@@ -157,5 +158,5 @@ export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
  * @param {string} string String.
  */
 export function writeStringTextNode(node, string) {
-  node.appendChild(DOCUMENT.createTextNode(string));
+  node.appendChild(getDocument().createTextNode(string));
 }

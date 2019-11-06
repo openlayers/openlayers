@@ -122,3 +122,32 @@ export function replaceChildren(node, children) {
     node.insertBefore(newChild, oldChild);
   }
 }
+
+let domImplementation_ = undefined;
+
+/**
+ * Register an external DOMImplementation. Can be used to supply a DOMImplementation
+ * in non-browser environments.
+ *
+ * @param {DOMImplementation} domImplementation A DOMImplementation.
+ * @api
+ */
+export function registerDOMImplementation(domImplementation) {
+  domImplementation_ = document;
+}
+
+let document_ = undefined;
+
+/**
+ * Get a document that should be used when creating nodes for XML serializations.
+ * @return {Document} The document.
+ */
+export function getDocument() {
+  if (document_ === undefined) {
+    if (!domImplementation_ && typeof document !== 'undefined') {
+      domImplementation_ = document.implementation;
+    }
+    document_ = domImplementation_.createDocument('', '', null);
+  }
+  return document_;
+}
