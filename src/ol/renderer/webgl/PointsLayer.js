@@ -143,10 +143,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       options.vertexShader
     );
 
-    if (this.getShaderCompileErrors()) {
-      throw new Error(this.getShaderCompileErrors());
-    }
-
     /**
      * @type {boolean}
      * @private
@@ -157,10 +153,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       options.hitFragmentShader,
       options.hitVertexShader
     );
-
-    if (this.getShaderCompileErrors()) {
-      throw new Error(this.getShaderCompileErrors());
-    }
 
     const customAttributes = options.attributes ?
       options.attributes.map(function(attribute) {
