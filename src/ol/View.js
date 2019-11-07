@@ -1252,7 +1252,7 @@ class View extends BaseObject {
     const size = this.getSizeFromViewport_(this.getRotation());
     const newResolution = this.constraints_.resolution(this.targetResolution_ * ratio, 0, size, isMoving);
 
-    if (opt_anchor !== undefined) {
+    if (opt_anchor) {
       this.targetCenter_ = this.calculateCenterZoom(newResolution, opt_anchor);
     }
 
@@ -1292,7 +1292,7 @@ class View extends BaseObject {
   adjustRotationInternal(delta, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
     const newRotation = this.constraints_.rotation(this.targetRotation_ + delta, isMoving);
-    if (opt_anchor !== undefined) {
+    if (opt_anchor) {
       this.targetCenter_ = this.calculateCenterRotate(newRotation, opt_anchor);
     }
     this.targetRotation_ += delta;
