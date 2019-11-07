@@ -216,15 +216,12 @@ export const checkFont = (function() {
    * @return {boolean} Font with style and weight is available
    */
   function isAvailable(fontStyle, fontWeight, fontFamily) {
-    const context = getMeasureContext();
     let available = true;
     for (let i = 0; i < len; ++i) {
       const referenceFont = referenceFonts[i];
-      context.font = fontStyle + ' ' + fontWeight + ' ' + size + referenceFont;
-      referenceWidth = context.measureText(text).width;
+      referenceWidth = measureTextWidth(fontStyle + ' ' + fontWeight + ' ' + size + referenceFont, text);
       if (fontFamily != referenceFont) {
-        context.font = fontStyle + ' ' + fontWeight + ' ' + size + fontFamily + ',' + referenceFont;
-        const width = context.measureText(text).width;
+        const width = measureTextWidth(fontStyle + ' ' + fontWeight + ' ' + size + fontFamily + ',' + referenceFont, text);
         // If width and referenceWidth are the same, then the fallback was used
         // instead of the font we wanted, so the font is not available.
         available = available && width != referenceWidth;
@@ -285,17 +282,6 @@ export const checkFont = (function() {
 
 
 /**
- * @return {CanvasRenderingContext2D} Measure context.
- */
-function getMeasureContext() {
-  if (!measureContext) {
-    measureContext = createCanvasContext2D(1, 1);
-  }
-  return measureContext;
-}
-
-
-/**
  * @param {string} font Font to use for measuring.
  * @return {import("../size.js").Size} Measurement.
  */
@@ -333,7 +319,9 @@ export const measureTextHeight = (function() {
  * @return {number} Width.
  */
 export function measureTextWidth(font, text) {
-  const measureContext = getMeasureContext();
+  if (!measureContext) {
+    measureContext = createCanvasContext2D(1, 1);
+  }
   if (font != measureFont) {
     measureContext.font = font;
     measureFont = measureContext.font;
