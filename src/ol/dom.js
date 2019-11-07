@@ -133,7 +133,7 @@ let domImplementation_ = undefined;
  * @api
  */
 export function registerDOMImplementation(domImplementation) {
-  domImplementation_ = document;
+  domImplementation_ = domImplementation;
 }
 
 let document_ = undefined;
