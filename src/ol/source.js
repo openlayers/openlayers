@@ -19,6 +19,7 @@ export {default as Stamen} from './source/Stamen.js';
 export {default as Tile} from './source/Tile.js';
 export {default as TileArcGISRest} from './source/TileArcGISRest.js';
 export {default as TileDebug} from './source/TileDebug.js';
+export {default as TileDebugAsync} from './source/TileDebugAsync.js';
 export {default as TileImage} from './source/TileImage.js';
 export {default as TileJSON} from './source/TileJSON.js';
 export {default as TileWMS} from './source/TileWMS.js';
