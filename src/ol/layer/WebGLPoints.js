@@ -24,7 +24,7 @@ import Layer from './Layer.js';
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
  * @property {import("../source/Vector.js").default} [source] Source.
- * @property {boolean} [disableHitDetection] Setting this to true will provide a slight performance boost, but will
+ * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
  */
 

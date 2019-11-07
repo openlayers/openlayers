@@ -24,7 +24,6 @@ const DEFAULT_FRAGMENT_SHADER = `
   uniform sampler2D u_image;
    
   varying vec2 v_texCoord;
-  varying vec2 v_screenCoord;
    
   void main() {
     gl_FragColor = texture2D(u_image, v_texCoord);
@@ -89,7 +88,6 @@ const DEFAULT_FRAGMENT_SHADER = `
  *   uniform sampler2D u_image;
  *
  *   varying vec2 v_texCoord;
- *   varying vec2 v_screenCoord;
  *
  *   void main() {
  *     gl_FragColor = texture2D(u_image, v_texCoord);
