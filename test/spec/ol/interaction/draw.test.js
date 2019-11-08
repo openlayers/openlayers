@@ -1080,6 +1080,24 @@ describe('ol.interaction.Draw', function() {
       });
     });
 
+    describe('#setMap(null) when no drawing is in progress', function() {
+      beforeEach(function() {
+        map.addInteraction(interaction);
+        simulateEvent('pointermove', 10, 20);
+        expect(interaction.sketchFeature_).to.be(null);
+        expect(interaction.sketchPoint_).not.to.be(null);
+      });
+      afterEach(function() {
+        map.removeInteraction(interaction);
+      });
+      it('clears the sketch features', function() {
+        interaction.setMap(null);
+        expect(interaction.sketchFeature_).to.be(null);
+        expect(interaction.sketchPoint_).to.be(null);
+        expect(interaction.sketchLine_).to.be(null);
+      });
+    });
+
     describe('#setMap(map)', function() {
       describe('#setMap(map) when interaction is active', function() {
         it('sets the map into the feature overlay', function() {
