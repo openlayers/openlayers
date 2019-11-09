@@ -54,9 +54,9 @@ class GeolocationError extends BaseEvent {
  * @typedef {Object} Options
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
- * @property {PositionOptions} [trackingOptions] Tracking options.
+ * @property {PositionOptions=} trackingOptions Tracking options.
  * See http://www.w3.org/TR/geolocation-API/#position_options_interface.
- * @property {import("./proj.js").ProjectionLike} [projection] The projection the position
+ * @property {import("./proj.js").ProjectionLike=} projection The projection the position
  * is reported in.
  */
 

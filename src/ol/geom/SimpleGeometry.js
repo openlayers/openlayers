@@ -22,7 +22,7 @@ class SimpleGeometry extends Geometry {
 
     /**
      * @protected
-     * @type {GeometryLayout}
+     * @type {import("./GeometryLayout.js").default}
      */
     this.layout = GeometryLayout.XY;
 
@@ -50,7 +50,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @abstract
-   * @return {Array<*>} Coordinates.
+   * @return {import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>|Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
    */
   getCoordinates() {
     return abstract();
@@ -83,7 +83,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * Return the {@link module:ol/geom/GeometryLayout layout} of the geometry.
-   * @return {GeometryLayout} Layout.
+   * @return {import("./GeometryLayout.js").default} Layout.
    * @api
    */
   getLayout() {
@@ -140,7 +140,7 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @param {GeometryLayout} layout Layout.
+   * @param {import("./GeometryLayout.js").default} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
    */
   setFlatCoordinates(layout, flatCoordinates) {
@@ -152,14 +152,14 @@ class SimpleGeometry extends Geometry {
   /**
    * @abstract
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    */
   setCoordinates(coordinates, opt_layout) {
     abstract();
   }
 
   /**
-   * @param {GeometryLayout|undefined} layout Layout.
+   * @param {import("./GeometryLayout.js").default} layout Layout.
    * @param {Array<*>} coordinates Coordinates.
    * @param {number} nesting Nesting.
    * @protected
@@ -271,7 +271,7 @@ class SimpleGeometry extends Geometry {
 
 /**
  * @param {number} stride Stride.
- * @return {GeometryLayout} layout Layout.
+ * @return {import("./GeometryLayout.js").default} layout Layout.
  */
 function getLayoutForStride(stride) {
   let layout;
@@ -283,13 +283,13 @@ function getLayoutForStride(stride) {
     layout = GeometryLayout.XYZM;
   }
   return (
-    /** @type {GeometryLayout} */ (layout)
+    /** @type {import("./GeometryLayout.js").default} */ (layout)
   );
 }
 
 
 /**
- * @param {GeometryLayout} layout Layout.
+ * @param {import("./GeometryLayout.js").default} layout Layout.
  * @return {number} Stride.
  */
 export function getStrideForLayout(layout) {

@@ -90,7 +90,7 @@ class Geometry extends BaseObject {
   /**
    * Make a complete copy of the geometry.
    * @abstract
-   * @return {!Geometry} Clone.
+   * @return {Geometry} Clone.
    */
   clone() {
     return abstract();

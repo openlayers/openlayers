@@ -41,6 +41,9 @@ export class ObjectEvent extends Event {
 
 }
 
+/**
+ * @typedef {Object<string, *>=} Options
+ */
 
 /**
  * @classdesc
@@ -88,7 +91,7 @@ export class ObjectEvent extends Event {
 class BaseObject extends Observable {
 
   /**
-   * @param {Object<string, *>=} opt_values An object with key-value pairs.
+   * @param {Options=} opt_values An object with key-value pairs.
    */
   constructor(opt_values) {
     super();

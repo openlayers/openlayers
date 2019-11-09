@@ -24,7 +24,7 @@ const Property = {
 export class CollectionEvent extends Event {
 
   /**
-   * @param {CollectionEventType} type Type.
+   * @param {import("./CollectionEventType.js").default} type Type.
    * @param {*=} opt_element Element.
    * @param {number} opt_index The index of the added or removed element.
    */
