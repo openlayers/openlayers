@@ -1007,19 +1007,19 @@ class Modify extends PointerInteraction {
     switch (geometry.getType()) {
       case GeometryType.MULTI_LINE_STRING:
         coordinates = geometry.getCoordinates();
-        coordinates[depth[0]].splice(index + 1, 0, vertex);
+        (/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates))[depth[0]].splice(index + 1, 0, vertex);
         break;
       case GeometryType.POLYGON:
         coordinates = geometry.getCoordinates();
-        coordinates[depth[0]].splice(index + 1, 0, vertex);
+        (/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates))[depth[0]].splice(index + 1, 0, vertex);
         break;
       case GeometryType.MULTI_POLYGON:
         coordinates = geometry.getCoordinates();
-        coordinates[depth[1]][depth[0]].splice(index + 1, 0, vertex);
+        (/** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (coordinates))[depth[1]][depth[0]].splice(index + 1, 0, vertex);
         break;
       case GeometryType.LINE_STRING:
         coordinates = geometry.getCoordinates();
-        coordinates.splice(index + 1, 0, vertex);
+        (/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates)).splice(index + 1, 0, vertex);
         break;
       default:
         return;

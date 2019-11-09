@@ -99,23 +99,23 @@ export function getLength(geometry, opt_options) {
     }
     case GeometryType.LINE_STRING:
     case GeometryType.LINEAR_RING: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
-      length = getLengthInternal(coordinates, radius);
+      coordinates = (/** @type {import("./geom/SimpleGeometry.js").default} */ (geometry)).getCoordinates();
+      length = getLengthInternal((/** @type {Array<import("./coordinate.js").Coordinate>} */ (coordinates)), radius);
       break;
     }
     case GeometryType.MULTI_LINE_STRING:
     case GeometryType.POLYGON: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
+      coordinates = (/** @type {import("./geom/SimpleGeometry.js").default} */ (geometry)).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
-        length += getLengthInternal(coordinates[i], radius);
+        length += getLengthInternal((/** @type {Array<Array<import("./coordinate.js").Coordinate>>} */ (coordinates))[i], radius);
       }
       break;
     }
     case GeometryType.MULTI_POLYGON: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
+      coordinates = (/** @type {import("./geom/SimpleGeometry.js").default} */ (geometry)).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
-        for (j = 0, jj = coords.length; j < jj; ++j) {
+        for (j = 0, jj = (/** @type {Array<import("./coordinate.js").Coordinate>} */ (coords)).length; j < jj; ++j) {
           length += getLengthInternal(coords[j], radius);
         }
       }
@@ -209,7 +209,7 @@ export function getArea(geometry, opt_options) {
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
         area += Math.abs(getAreaInternal(coords[0], radius));
-        for (j = 1, jj = coords.length; j < jj; ++j) {
+        for (j = 1, jj = (/** @type {Array<import("./coordinate.js").Coordinate>} */ (coords)).length; j < jj; ++j) {
           area -= Math.abs(getAreaInternal(coords[j], radius));
         }
       }

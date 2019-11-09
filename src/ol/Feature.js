@@ -61,7 +61,7 @@ import BaseObject, {getChangeEventType} from './Object.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {Geometry|import("./Object.js").Options} opt_geometryOrProperties
+   * @param {Geometry|import("./Object.js").Options=} opt_geometryOrProperties
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
