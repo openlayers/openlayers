@@ -43,6 +43,21 @@ describe('ol.interaction.KeyboardZoom', function() {
 
       view.animateInternal.restore();
     });
+
+    it('does nothing if the target is editable', function() {
+      const view = map.getView();
+      const spy = sinon.spy(view, 'animateInternal');
+      const event = new MapBrowserEvent('keydown', map, {
+        type: 'keydown',
+        target: document.createElement('input'),
+        preventDefault: Event.prototype.preventDefault
+      });
+
+      event.originalEvent.charCode = '+'.charCodeAt(0);
+      map.handleMapBrowserEvent(event);
+      expect(spy.called).to.be(false);
+    });
+
   });
 
 });
