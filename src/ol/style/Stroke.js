@@ -10,7 +10,7 @@
  * Default null; if null, the Canvas/renderer default black will be used.
  * @property {CanvasLineCap} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
  * @property {CanvasLineJoin} [lineJoin='round'] Line join style: `bevel`, `round`, or `miter`.
- * @property {Array<number>} [lineDash] Line dash pattern. Default is `undefined` (no dash).
+ * @property {Array<number>} [lineDash] Line dash pattern. Default is `null` (no dash).
  * Please note that Internet Explorer 10 and lower do not support the `setLineDash` method on
  * the `CanvasRenderingContext2D` and therefore this option will have no visual effect in these browsers.
  * @property {number} [lineDashOffset=0] Line dash offset.
