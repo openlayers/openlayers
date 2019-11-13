@@ -490,8 +490,8 @@ export function pushSerializeAndPop(object, serializersNS, nodeFactory, values, 
 let xmlSerializer_ = undefined;
 
 /**
- * Register a XMLSerializer. Can be used
- * to inject a XMLSerializer where there is no globally available implementation.
+ * Register a XMLSerializer. Can be used  to inject a XMLSerializer
+ * where there is no globally available implementation.
  *
  * @param {XMLSerializer} xmlSerializer A XMLSerializer.
  * @api
@@ -501,7 +501,6 @@ export function registerXMLSerializer(xmlSerializer) {
 }
 
 /**
- * Get a document that should be used when creating nodes for XML serializations.
  * @return {XMLSerializer} The XMLSerializer.
  */
 export function getXMLSerializer() {
