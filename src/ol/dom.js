@@ -123,31 +123,26 @@ export function replaceChildren(node, children) {
   }
 }
 
-let domImplementation_ = undefined;
+let document_ = undefined;
 
 /**
- * Register an external DOMImplementation. Can be used to supply a DOMImplementation
- * in non-browser environments.
+ * Register a Document to use when creating nodes for XML serializations. Can be used
+ * to inject a Document where there is no globally available implementation.
  *
- * @param {DOMImplementation} domImplementation A DOMImplementation.
+ * @param {Document} document A Document.
  * @api
  */
-export function registerDOMImplementation(domImplementation) {
-  domImplementation_ = domImplementation;
+export function registerDocument(document) {
+  document_ = document;
 }
-
-let document_ = undefined;
 
 /**
  * Get a document that should be used when creating nodes for XML serializations.
  * @return {Document} The document.
  */
 export function getDocument() {
-  if (document_ === undefined) {
-    if (!domImplementation_ && typeof document !== 'undefined') {
-      domImplementation_ = document.implementation;
-    }
-    document_ = domImplementation_.createDocument('', '', null);
+  if (document_ === undefined && typeof document !== 'undefined') {
+    document_ = document.implementation.createDocument('', '', null);
   }
   return document_;
 }
