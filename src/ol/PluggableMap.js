@@ -22,7 +22,7 @@ import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import {clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
-import {DEVICE_PIXEL_RATIO, IMAGE_DECODE} from './has.js';
+import {DEVICE_PIXEL_RATIO, IMAGE_DECODE, PASSIVE_EVENT_LISTENERS} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
@@ -313,7 +313,8 @@ class PluggableMap extends BaseObject {
 
     const handleBrowserEvent = this.handleBrowserEvent.bind(this);
     this.viewport_.addEventListener(EventType.CONTEXTMENU, handleBrowserEvent, false);
-    this.viewport_.addEventListener(EventType.WHEEL, handleBrowserEvent, false);
+    this.viewport_.addEventListener(EventType.WHEEL, handleBrowserEvent,
+      PASSIVE_EVENT_LISTENERS ? {passive: false} : false);
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
