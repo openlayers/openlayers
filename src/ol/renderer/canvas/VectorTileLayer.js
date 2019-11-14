@@ -364,7 +364,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           tile = undefined;
         }
       }
-      if (!tile) {
+      if (!tile || tile.loadingSourceTiles > 0) {
         resolve([]);
         return;
       }
