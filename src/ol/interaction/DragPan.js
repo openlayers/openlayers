@@ -3,7 +3,7 @@
  */
 import {scale as scaleCoordinate, rotate as rotateCoordinate} from '../coordinate.js';
 import {easeOut} from '../easing.js';
-import {noModifierKeys, primaryAction} from '../events/condition.js';
+import {noModifierKeys, primaryAction, focus} from '../events/condition.js';
 import {FALSE} from '../functions.js';
 import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 
@@ -68,6 +68,20 @@ class DragPan extends PointerInteraction {
     this.noKinetic_ = false;
 
   }
+
+  /**
+   * @private
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
+   * @return {boolean} Condition passes.
+   */
+  conditionInternal_(mapBrowserEvent) {
+    let pass = true;
+    if (mapBrowserEvent.map.getTargetElement().hasAttribute('tabindex')) {
+      pass = focus(mapBrowserEvent);
+    }
+    return pass && this.condition_(mapBrowserEvent);
+  }
+
 
   /**
    * @inheritDoc
@@ -145,7 +159,7 @@ class DragPan extends PointerInteraction {
    * @inheritDoc
    */
   handleDownEvent(mapBrowserEvent) {
-    if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
+    if (this.targetPointers.length > 0 && this.conditionInternal_(mapBrowserEvent)) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
       this.lastCentroid = null;
