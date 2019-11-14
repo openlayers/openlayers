@@ -42,6 +42,9 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       continue;
     }
     let styles = featureStyleFunction(feature, resolution);
+    if (!styles) {
+      continue;
+    }
     if (!Array.isArray(styles)) {
       styles = [styles];
     }
