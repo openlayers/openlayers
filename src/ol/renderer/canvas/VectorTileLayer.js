@@ -221,7 +221,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         executorGroups[i].dispose();
       }
     }
-    tile.hitDetectionImageData = null;
+    delete tile.hitDetectionImageData[layerUid];
     tile.executorGroups[layerUid] = [];
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
       const sourceTile = sourceTiles[t];
@@ -341,6 +341,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getFeatures(pixel) {
     return new Promise(function(resolve, reject) {
       const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+      const layerUid = getUid(layer);
       const source = layer.getSource();
       const projection = this.renderedProjection;
       const projectionExtent = projection.getExtent();
@@ -377,7 +378,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const features = tile.getSourceTiles().reduce(function(accumulator, sourceTile) {
         return accumulator.concat(sourceTile.getFeatures());
       }, []);
-      if (!tile.hitDetectionImageData) {
+      let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
+      if (!hitDetectionImageData && !this.animatingOrInteracting_) {
         const tileSize = toSize(tileGrid.getTileSize(tileGrid.getZForResolution(resolution)));
         const size = [tileSize[0] / 2, tileSize[1] / 2];
         const rotation = this.renderedRotation_;
@@ -385,16 +387,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           this.getRenderTransform(tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
             resolution, 0, 0.5, size[0], size[1], 0)
         ];
-        requestAnimationFrame(function() {
-          tile.hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
-            features, layer.getStyleFunction(),
-            tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
-            tile.getReplayState(layer).renderedResolution, rotation);
-          resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
-        });
-      } else {
-        resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
+        hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
+          features, layer.getStyleFunction(),
+          tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
+          tile.getReplayState(layer).renderedResolution, rotation);
+        tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
       }
+      resolve(hitDetect(tilePixel, features, hitDetectionImageData));
     }.bind(this));
   }
 

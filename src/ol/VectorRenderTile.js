@@ -61,9 +61,9 @@ class VectorRenderTile extends Tile {
     this.errorSourceTileKeys = {};
 
     /**
-     * @type {ImageData}
+     * @type {Object<number, ImageData>}
      */
-    this.hitDetectionImageData = null;
+    this.hitDetectionImageData = {};
 
     /**
      * @private
