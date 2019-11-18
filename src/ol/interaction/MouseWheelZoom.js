@@ -154,7 +154,7 @@ class MouseWheelZoom extends Interaction {
   endInteraction_() {
     this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
-    view.endInteraction(undefined, Math.sign(this.lastDelta_), this.lastAnchor_);
+    view.endInteraction(undefined, this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0, this.lastAnchor_);
   }
 
   /**
