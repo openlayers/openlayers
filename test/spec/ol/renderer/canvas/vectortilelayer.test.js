@@ -122,6 +122,22 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       spy.restore();
     });
 
+    it('does not render images for pure vector rendering', function() {
+      const testLayer = new VectorTileLayer({
+        renderMode: VectorTileRenderType.VECTOR,
+        source: source,
+        style: layerStyle
+      });
+      map.removeLayer(layer);
+      map.addLayer(testLayer);
+      const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
+        'renderTileImage_');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+
     it('renders both replays and images for hybrid rendering', function() {
       const spy1 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform');

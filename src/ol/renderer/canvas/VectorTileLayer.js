@@ -33,7 +33,8 @@ import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdet
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
     ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
-  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
+  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING],
+  'vector': []
 };
 
 
@@ -42,7 +43,8 @@ const IMAGE_REPLAYS = {
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
-  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT]
+  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
+  'vector': [ReplayType.POLYGON, ReplayType.CIRCLE, ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT]
 };
 
 
@@ -156,7 +158,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         tile.wantedResolution = resolution;
       }
       const render = this.prepareTile(tile, pixelRatio, projection, false);
-      if (render) {
+      if (render && this.getLayer().getRenderMode() !== VectorTileRenderType.VECTOR) {
         this.renderTileImage_(tile, frameState);
       }
     }
@@ -167,7 +169,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritdoc
    */
   isDrawableTile(tile) {
-    return super.isDrawableTile(tile) && tile.hasContext(this.getLayer());
+    const layer = this.getLayer();
+    return super.isDrawableTile(tile) && layer.getRenderMode() === VectorTileRenderType.VECTOR || tile.hasContext(layer);
   }
 
   /**
@@ -267,7 +270,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       const executorGroupInstructions = builderGroup.finish();
       // no need to clip when the render tile is covered by a single source tile
-      const replayExtent = layer.getDeclutter() && sourceTiles.length === 1 ?
+      const replayExtent = layer.getRenderMode() !== VectorTileRenderType.VECTOR && layer.getDeclutter() && sourceTiles.length === 1 ?
         null :
         sharedExtent;
       const renderingReplayGroup = new CanvasExecutorGroup(replayExtent, resolution,
