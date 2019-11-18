@@ -35,7 +35,7 @@ describe('ol.control.OverviewMap', function() {
       const view = new View({
         center: [0, 0],
         zoom: 0,
-        rotation: 0
+        rotation: Math.PI / 2
       });
       map.setView(view);
 
@@ -44,7 +44,7 @@ describe('ol.control.OverviewMap', function() {
       });
       map.addControl(control);
       const ovView = control.ovmap_.getView();
-      expect(ovView.getRotation()).to.be(0);
+      expect(ovView.getRotation()).to.be(Math.PI / 2);
 
       view.setRotation(Math.PI / 4);
       expect(ovView.getRotation()).to.be(Math.PI / 4);
@@ -61,9 +61,11 @@ describe('ol.control.OverviewMap', function() {
       const view = new View({
         center: [0, 0],
         zoom: 0,
-        rotation: 0
+        rotation: Math.PI / 2
       });
       map.setView(view);
+      expect(ovView.getRotation()).to.be(Math.PI / 2);
+
       view.setRotation(Math.PI / 4);
       expect(ovView.getRotation()).to.be(Math.PI / 4);
     });
