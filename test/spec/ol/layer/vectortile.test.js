@@ -125,7 +125,32 @@ describe('ol.layer.VectorTile', function() {
         layer.getFeatures(pixel).then(function(features) {
           expect(features[0].get('name')).to.be('feature1');
           done();
-        });
+        }).catch(done);
+      });
+    });
+
+    it('does not give false positives', function(done) {
+      map.once('rendercomplete', function() {
+        const pixel = map.getPixelFromCoordinate(fromLonLat([0, 0]));
+        layer.getFeatures(pixel).then(function(features) {
+          expect(features.length).to.be(0);
+          done();
+        }).catch(done);
+      });
+    });
+
+    it('stores separate hit detection data for each layer that uses the source', function(done) {
+      const layer2 = new VectorTileLayer({
+        source: layer.getSource()
+      });
+      map.addLayer(layer2);
+      map.once('rendercomplete', function() {
+        const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
+        Promise.all([layer.getFeatures(pixel), layer2.getFeatures(pixel)]).then(function(result) {
+          const tile = layer.getSource().tileCache.get('0/0/0');
+          expect(Object.keys(tile.hitDetectionImageData).length).to.be(2);
+          done();
+        }).catch(done);
       });
     });
 
