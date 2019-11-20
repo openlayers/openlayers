@@ -25,17 +25,23 @@ const tmpTileCoord = [0, 0, 0];
  * `origins` are configured, the `origin` will be set to the top-left corner of the extent.
  * @property {number} [minZoom=0] Minimum zoom.
  * @property {import("../coordinate.js").Coordinate} [origin] The tile grid origin, i.e. where the `x`
- * and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left to right and upwards. If not
+ * and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left to right and downwards. If not
  * specified, `extent` or `origins` must be provided.
  * @property {Array<import("../coordinate.js").Coordinate>} [origins] Tile grid origins, i.e. where
  * the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If given, the array length
  * should match the length of the `resolutions` array, i.e. each resolution can have a different
- * origin. Tile coordinates increase left to right and upwards. If not specified, `extent` or
+ * origin. Tile coordinates increase left to right and downwards. If not specified, `extent` or
  * `origin` must be provided.
  * @property {!Array<number>} resolutions Resolutions. The array index of each resolution needs
  * to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
  * array will have a length of `maxZoom + 1`.
- * @property {Array<import("../size.js").Size>} [sizes] Sizes.
+ * @property {Array<import("../size.js").Size>} [sizes] Number of tile rows and columns
+ * of the grid for each zoom level. If specified the values 
+ * define each zoom level's extent together with the `origin` or `origins`.
+ * A grid `extent` can be configured in addition, and will further limit the extent
+ * for which tile requests are made by sources. If the bottom-left corner of
+ * an extent is used as `origin` or `origins`, then the `y` value must be
+ * negative because OpenLayers tile coordinates use the top left as the origin.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Default is `[256, 256]`.
  * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
