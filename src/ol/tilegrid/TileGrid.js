@@ -36,7 +36,7 @@ const tmpTileCoord = [0, 0, 0];
  * to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
  * array will have a length of `maxZoom + 1`.
  * @property {Array<import("../size.js").Size>} [sizes] Number of tile rows and columns
- * of the grid for each zoom level. If specified the values 
+ * of the grid for each zoom level. If specified the values
  * define each zoom level's extent together with the `origin` or `origins`.
  * A grid `extent` can be configured in addition, and will further limit the extent
  * for which tile requests are made by sources. If the bottom-left corner of
