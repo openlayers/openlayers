@@ -3,7 +3,7 @@
  */
 // FIXME draw drag box
 import Event from '../events/Event.js';
-import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
+import {mouseActionButton} from '../events/condition.js';
 import {VOID} from '../functions.js';
 import PointerInteraction from './Pointer.js';
 import RenderBox from '../render/Box.js';
@@ -148,7 +148,7 @@ class DragBox extends PointerInteraction {
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : always;
+    this.condition_ = options.condition ? options.condition : mouseActionButton;
 
     /**
      * @private
@@ -186,10 +186,6 @@ class DragBox extends PointerInteraction {
    * @inheritDoc
    */
   handleDragEvent(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return;
-    }
-
     this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
     this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
@@ -200,10 +196,6 @@ class DragBox extends PointerInteraction {
    * @inheritDoc
    */
   handleUpEvent(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return true;
-    }
-
     this.box_.setMap(null);
 
     if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
@@ -218,12 +210,7 @@ class DragBox extends PointerInteraction {
    * @inheritDoc
    */
   handleDownEvent(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return false;
-    }
-
-    if (mouseActionButton(mapBrowserEvent) &&
-        this.condition_(mapBrowserEvent)) {
+    if (this.condition_(mapBrowserEvent)) {
       this.startPixel_ = mapBrowserEvent.pixel;
       this.box_.setMap(mapBrowserEvent.map);
       this.box_.setPixels(this.startPixel_, this.startPixel_);
