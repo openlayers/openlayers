@@ -1,12 +1,13 @@
 /**
  * @module ol/control/MousePosition
  */
+
+import 'elm-pep';
 import {listen} from '../events.js';
 import EventType from '../pointer/EventType.js';
 import {getChangeEventType} from '../Object.js';
 import Control from './Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection, getUserProjection} from '../proj.js';
-import '@openlayers/pepjs';
 
 
 /**
