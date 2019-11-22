@@ -22,7 +22,7 @@ import RenderBox from '../render/Box.js';
  * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
  * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * Default is {@link ol/events/condition~always}.
+ * Default is {@link ol/events/condition~mouseActionButton}.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
  * `boxEndCondition` function.
  * @property {EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
@@ -103,8 +103,6 @@ class DragBoxEvent extends Event {
  * for zooming to a specific area of the map
  * (see {@link module:ol/interaction/DragZoom~DragZoom} and
  * {@link module:ol/interaction/DragRotateAndZoom}).
- *
- * This interaction is only supported for mouse devices.
  *
  * @fires DragBoxEvent
  * @api
