@@ -174,4 +174,21 @@ describe('ol/MapBrowserEventHandler', function() {
       expect(moveToleranceHandler.isMoving_(pointermoveAt2)).to.be(true);
     });
   });
+
+  describe('handleTouchMove_', function() {
+    let handler;
+    beforeEach(function() {
+      handler = new MapBrowserEventHandler(new Map({}));
+    });
+    it('prevents default on touchmove event', function() {
+      handler.originalPointerMoveEvent_ = {
+        defaultPrevented: true
+      };
+      const event = {
+        preventDefault: sinon.spy()
+      };
+      handler.handleTouchMove_(event);
+      expect(event.preventDefault.callCount).to.be(1);
+    });
+  });
 });

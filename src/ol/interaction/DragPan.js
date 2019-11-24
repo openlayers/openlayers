@@ -115,6 +115,7 @@ class DragPan extends PointerInteraction {
     }
     this.lastCentroid = centroid;
     this.lastPointersCount_ = targetPointers.length;
+    mapBrowserEvent.originalEvent.preventDefault();
   }
 
   /**
