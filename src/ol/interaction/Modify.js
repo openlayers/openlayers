@@ -807,8 +807,8 @@ class Modify extends PointerInteraction {
     if (!this.condition_(evt)) {
       return false;
     }
-    this.handlePointerAtPixel_(evt.pixel, evt.map);
     const pixelCoordinate = evt.coordinate;
+    this.handlePointerAtPixel_(evt.pixel, evt.map, pixelCoordinate);
     this.dragSegments_.length = 0;
     this.modified_ = false;
     const vertexFeature = this.vertexFeature_;
@@ -916,16 +916,17 @@ class Modify extends PointerInteraction {
    */
   handlePointerMove_(evt) {
     this.lastPixel_ = evt.pixel;
-    this.handlePointerAtPixel_(evt.pixel, evt.map);
+    this.handlePointerAtPixel_(evt.pixel, evt.map, evt.coordinate);
   }
 
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../coordinate.js").Coordinate=} opt_coordinate The pixel Coordinate.
    * @private
    */
-  handlePointerAtPixel_(pixel, map) {
-    const pixelCoordinate = map.getCoordinateFromPixel(pixel);
+  handlePointerAtPixel_(pixel, map, opt_coordinate) {
+    const pixelCoordinate = opt_coordinate || map.getCoordinateFromPixel(pixel);
     const projection = map.getView().getProjection();
     const sortByDistance = function(a, b) {
       return projectedDistanceToSegmentDataSquared(pixelCoordinate, a, projection) -

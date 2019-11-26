@@ -9,6 +9,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
+import Snap from '../../../../src/ol/interaction/Snap.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Event from '../../../../src/ol/events/Event.js';
@@ -734,6 +735,45 @@ describe('ol.interaction.Modify', function() {
         features: new Collection()
       });
       expect (modify.getOverlay()).to.eql(modify.overlay_);
+    });
+  });
+
+  describe('circle modification with snap', function() {
+    it('changes the circle radius and center', function() {
+      const circleFeature = new Feature(new Circle([10, 10], 20));
+      features.length = 0;
+      features.push(circleFeature);
+
+      const modify = new Modify({
+        features: new Collection(features)
+      });
+      map.addInteraction(modify);
+
+      const snap = new Snap({
+        features: new Collection(features),
+        pixelTolerance: 1
+      });
+      map.addInteraction(snap);
+
+      // Change center
+      simulateEvent('pointermove', 10, -10, null, 0);
+      simulateEvent('pointerdown', 10, -10, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      expect(circleFeature.getGeometry().getRadius()).to.equal(20);
+      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+
+      // Increase radius
+      simulateEvent('pointermove', 25, -4, null, 0);
+      simulateEvent('pointerdown', 25, -4, null, 0);
+      simulateEvent('pointermove', 30, -5, null, 0);
+      simulateEvent('pointerdrag', 30, -5, null, 0);
+      simulateEvent('pointerup', 30, -5, null, 0);
+
+      expect(circleFeature.getGeometry().getRadius()).to.equal(25);
+      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
     });
   });
 
