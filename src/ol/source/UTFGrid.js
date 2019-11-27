@@ -187,7 +187,7 @@ export class CustomTile extends Tile {
     this.keys_ = json['keys'];
     this.data_ = json['data'];
 
-    this.state = TileState.EMPTY;
+    this.state = TileState.LOADED;
     this.changed();
   }
 
