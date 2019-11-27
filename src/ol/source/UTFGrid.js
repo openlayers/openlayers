@@ -143,7 +143,8 @@ export class CustomTile extends Tile {
    *                               The tile data is requested if not yet loaded.
    */
   forDataAtCoordinate(coordinate, callback, opt_request) {
-    if (this.state == TileState.IDLE && opt_request === true) {
+    if (this.state == TileState.EMPTY && opt_request === true) {
+      this.state = TileState.IDLE;
       listenOnce(this, EventType.CHANGE, function(e) {
         callback(this.getData(coordinate));
       }, this);
@@ -248,6 +249,8 @@ export class CustomTile extends Tile {
   load() {
     if (this.preemptive_) {
       this.loadInternal_();
+    } else {
+      this.setState(TileState.EMPTY);
     }
   }
 }
@@ -258,9 +261,9 @@ export class CustomTile extends Tile {
  * @property {boolean} [preemptive=true]
  * If `true` the UTFGrid source loads the tiles based on their "visibility".
  * This improves the speed of response, but increases traffic.
- * Note that if set to `false`, you need to pass `true` as `opt_request`
- * to the `forDataAtCoordinateAndResolution` method otherwise no data
- * will ever be loaded.
+ * Note that if set to `false` (lazy loading), you need to pass `true` as
+ * `opt_request` to the `forDataAtCoordinateAndResolution` method otherwise no
+ * data will ever be loaded.
  * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
  * Useful when the server does not support CORS..
  * @property {import("./TileJSON.js").Config} [tileJSON] TileJSON configuration for this source.
