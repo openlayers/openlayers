@@ -136,7 +136,6 @@ class ZoomSlider extends Control {
     thumbElement.setAttribute('type', 'button');
     thumbElement.className = className + '-thumb ' + CLASS_UNSELECTABLE;
     const containerElement = this.element;
-    containerElement.setAttribute('touch-action', 'none');
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
 
