@@ -232,49 +232,45 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   getFeatures(pixel) {
     return new Promise(function(resolve, reject) {
       if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
-        requestAnimationFrame(function() {
-          const size = [this.context.canvas.width, this.context.canvas.height];
-          apply(this.pixelTransform, size);
-          const center = this.renderedCenter_;
-          const resolution = this.renderedResolution_;
-          const rotation = this.renderedRotation_;
-          const projection = this.renderedProjection_;
-          const extent = this.renderedExtent_;
-          const layer = this.getLayer();
-          const transforms = [];
-          const width = size[0] / 2;
-          const height = size[1] / 2;
-          transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, 0).slice());
-          const source = layer.getSource();
-          const projectionExtent = projection.getExtent();
-          if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
-            let startX = extent[0];
-            const worldWidth = getWidth(projectionExtent);
-            let world = 0;
-            let offsetX;
-            while (startX < projectionExtent[0]) {
-              --world;
-              offsetX = worldWidth * world;
-              transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
-              startX += worldWidth;
-            }
-            world = 0;
-            startX = extent[2];
-            while (startX > projectionExtent[2]) {
-              ++world;
-              offsetX = worldWidth * world;
-              transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
-              startX -= worldWidth;
-            }
+        const size = [this.context.canvas.width, this.context.canvas.height];
+        apply(this.pixelTransform, size);
+        const center = this.renderedCenter_;
+        const resolution = this.renderedResolution_;
+        const rotation = this.renderedRotation_;
+        const projection = this.renderedProjection_;
+        const extent = this.renderedExtent_;
+        const layer = this.getLayer();
+        const transforms = [];
+        const width = size[0] / 2;
+        const height = size[1] / 2;
+        transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, 0).slice());
+        const source = layer.getSource();
+        const projectionExtent = projection.getExtent();
+        if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
+          let startX = extent[0];
+          const worldWidth = getWidth(projectionExtent);
+          let world = 0;
+          let offsetX;
+          while (startX < projectionExtent[0]) {
+            --world;
+            offsetX = worldWidth * world;
+            transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
+            startX += worldWidth;
           }
+          world = 0;
+          startX = extent[2];
+          while (startX > projectionExtent[2]) {
+            ++world;
+            offsetX = worldWidth * world;
+            transforms.push(this.getRenderTransform(center, resolution, rotation, 0.5, width, height, offsetX).slice());
+            startX -= worldWidth;
+          }
+        }
 
-          this.hitDetectionImageData_ = createHitDetectionImageData(size, transforms,
-            this.renderedFeatures_, layer.getStyleFunction(), extent, resolution, rotation);
-          resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
-        }.bind(this));
-      } else {
-        resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
+        this.hitDetectionImageData_ = createHitDetectionImageData(size, transforms,
+          this.renderedFeatures_, layer.getStyleFunction(), extent, resolution, rotation);
       }
+      resolve(hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_));
     }.bind(this));
   }
 
