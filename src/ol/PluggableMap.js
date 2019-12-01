@@ -922,7 +922,6 @@ class PluggableMap extends BaseObject {
     const type = opt_type || browserEvent.type;
     const mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
     this.handleMapBrowserEvent(mapBrowserEvent);
-    browserEvent.preventDefault();
   }
 
   /**
