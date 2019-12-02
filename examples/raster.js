@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import RasterSource from '../src/ol/source/Raster.js';
 
 const minVgi = 0;
@@ -46,9 +46,16 @@ function summarize(value, counts) {
 /**
  * Use aerial imagery as the input data for the raster source.
  */
-const bing = new BingMaps({
-  key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
-  imagerySet: 'Aerial'
+
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
+const aerial = new XYZ({
+  attributions: attributions,
+  url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+  maxZoom: 20,
+  crossOrigin: ''
 });
 
 
@@ -57,7 +64,7 @@ const bing = new BingMaps({
  * be colored green.
  */
 const raster = new RasterSource({
-  sources: [bing],
+  sources: [aerial],
   /**
    * Run calculations on pixel data.
    * @param {Array} pixels List of pixels (one per source).
@@ -110,7 +117,7 @@ raster.on('afteroperations', function(event) {
 const map = new Map({
   layers: [
     new TileLayer({
-      source: bing
+      source: aerial
     }),
     new ImageLayer({
       source: raster
