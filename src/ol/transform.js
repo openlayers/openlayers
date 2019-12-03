@@ -210,6 +210,24 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
   return transform;
 }
 
+/**
+ * Creates a composite transform given an initial translation, scale, rotation, and
+ * final translation (in that order only, not commutative). The resulting transform
+ * string can be applied as `transform` porperty of an HTMLElement's style.
+ * @param {number} dx1 Initial translation x.
+ * @param {number} dy1 Initial translation y.
+ * @param {number} sx Scale factor x.
+ * @param {number} sy Scale factor y.
+ * @param {number} angle Rotation (in counter-clockwise radians).
+ * @param {number} dx2 Final translation x.
+ * @param {number} dy2 Final translation y.
+ * @return {string} The composite css transform.
+ * @api
+ */
+export function composeCssTransform(dx1, dy1, sx, sy, angle, dx2, dy2) {
+  return toString(compose(create(), dx1, dy1, sx, sy, angle, dx2, dy2));
+}
+
 
 /**
  * Invert the given transform.
