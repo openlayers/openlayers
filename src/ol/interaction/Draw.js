@@ -889,11 +889,10 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Append the geometry that is currently being drawn with a copy of the
-   * linear coordinates given as the parameter.
-   * This can be used when drawing LineStrings or Polygons. Appending supports
-   * only linear coordinates, such as the coordinates from a LineString
-   * or a LinearRing of a Polygon.
+   * Append coordinates to the end of the geometry that is currently being drawn.
+   * This can be used when drawing LineStrings or Polygons. Coordinates will
+   * either be appended to the current LineString or the outer ring of the current
+   * Polygon.
    * @param {!LineCoordType} coordinateExtension Linear coordinates to be appended into
    * the coordinate array.
    * @api
