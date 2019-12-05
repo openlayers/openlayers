@@ -16,11 +16,11 @@ class GlTile extends Tile {
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("../size.js").Size} tileSize Tile size.
    *
-   * @param {glContext} The GL context from the parent GlTiles source
+   * @param {gl} The GL context from the parent GlTiles source
    * @param {texFetches} An array of `Promise`s for each of the textures to be
    * fetched for this tile.
    */
-  constructor(tileCoord, tileSize, glContext, texFetches = []) {
+  constructor(tileCoord, tileSize, gl, texFetches = []) {
 
     super(tileCoord, TileState.LOADING);
 
@@ -36,14 +36,22 @@ class GlTile extends Tile {
     */
     this.canvas_ = null;
 
-    this.gl = glContext;
+    this.gl = gl;
 
 
     Promise.all(texFetches).then(textures=>{
 
       // TODO: attach textures
-      // TODO: trigger draw call
       // TODO: copy-paste code from Leaflet.TileLayerGL's render() method
+      // to update the per-tile attributes
+
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+		gl.clearColor(0.5, 0.5, 0.5, 0);
+		gl.enable(gl.BLEND);
+
+      // TODO: trigger draw call
+    		// ... and then the magic happens.
+		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
       const tileSize = this.tileSize_;
       const context2d = createCanvasContext2D(tileSize[0], tileSize[1]);
@@ -65,7 +73,7 @@ class GlTile extends Tile {
 
       /// Copy gl canvas over tile's canvas
 
-      context2d.drawImage(glContext, 0, 0);
+      context2d.drawImage(gl.canvas, 0, 0);
       this.canvas_ = context2d.canvas;
 
 //       this.state = TileState.LOADED;
@@ -176,6 +184,9 @@ class GlTiles extends XYZ {
 // 			gl.uniform1i(gl.getUniformLocation(this._glProgram, "uTexture" + i), i);
 // 		}
 
+    /// for DEBUG only
+//     document.body.append(this._renderer);
+
   }
 
   /**
@@ -197,7 +208,8 @@ class GlTiles extends XYZ {
       }
 
       // Instantiate tile
-      const tile = new LabeledTileAsync(tileCoord, tileSize, text);
+      /// TODO: pass an array of texfetches for this particular tile
+      const tile = new GlTile(tileCoord, tileSize, this._gl, []);
 
       // Listen to the tile when it has finished loading, mark the tile layer as
       // changed in order to trigger a redraw
