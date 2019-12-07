@@ -11,6 +11,8 @@ import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
 import TileState from '../../../../src/ol/TileState.js';
+import {getCenter} from '../../../../src/ol/extent.js';
+import {unByKey} from '../../../../src/ol/Observable.js';
 
 describe('ol.source.VectorTile', function() {
 
@@ -291,6 +293,63 @@ describe('ol.source.VectorTile', function() {
         tile.addEventListener('change', onTileChange);
       });
 
+    });
+
+  });
+
+  describe('interim tile handling', function() {
+
+    let map, source, target;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      const extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
+      source = new VectorTileSource({
+        format: new MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: target,
+        layers: [
+          new VectorTileLayer({
+            extent: extent,
+            source: source
+          })
+        ],
+        view: new View({
+          center: getCenter(extent),
+          zoom: 15
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('re-renders when source changes', function(done) {
+      map.once('rendercomplete', function() {
+        const key = map.on('rendercomplete', function() {
+          const tile = source.getTile(14, 8938, 5680, 1, map.getView().getProjection());
+          expect(tile.getKey()).to.be('spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680');
+          expect(tile.interimTile).to.be.a(VectorRenderTile);
+          expect(tile.interimTile.getKey()).to.be('spec/ol/data/14-8938-5680.vector.pbf/14,8938,5680');
+          const sourceTiles = source.getSourceTiles(1, map.getView().getProjection(), tile);
+          if (sourceTiles) {
+            expect(sourceTiles[0].getKey()).to.be('spec/ol/data/14-8938-5680.vector.pbf?new');
+            unByKey(key);
+            done();
+          }
+        });
+        source.setUrl('spec/ol/data/14-8938-5680.vector.pbf?new');
+      });
     });
 
   });

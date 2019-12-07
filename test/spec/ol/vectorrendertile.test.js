@@ -116,7 +116,7 @@ describe('ol.VectorRenderTile', function() {
   it('#dispose() when source tiles are loaded', function(done) {
     const source = new VectorTileSource({
       format: new GeoJSON(),
-      url: 'spec/ol/data/point.json',
+      url: 'spec/ol/data/point.json?{z}/{x}/{y}',
       tileGrid: createXYZ()
     });
     source.getTileGridForProjection = function() {

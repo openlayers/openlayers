@@ -7,7 +7,7 @@ import VectorRenderTile from '../VectorRenderTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
-import {getKeyZXY, getKey} from '../tilecoord.js';
+import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import EventType from '../events/EventType.js';
@@ -131,7 +131,7 @@ class VectorTile extends UrlTile {
      * @private
      * @type {Object<string, import("../VectorTile.js").default>}
      */
-    this.sourceTileByCoordKey_ = {};
+    this.sourceTileByKey_ = {};
 
     /**
      * @private
@@ -172,7 +172,7 @@ class VectorTile extends UrlTile {
    */
   clear() {
     this.tileCache.clear();
-    this.sourceTileByCoordKey_ = {};
+    this.sourceTileByKey_ = {};
     this.sourceTilesByTileKey_ = {};
   }
 
@@ -211,24 +211,23 @@ class VectorTile extends UrlTile {
         --loadedZ;
         covered = true;
         sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
-          const coordKey = getKey(sourceTileCoord);
+          const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           let sourceTile;
-          if (coordKey in this.sourceTileByCoordKey_) {
-            sourceTile = this.sourceTileByCoordKey_[coordKey];
-            const state = sourceTile.getState();
-            if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
-              sourceTiles.push(sourceTile);
-              return;
-            }
-          } else if (loadedZ === sourceZ) {
-            const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-            if (tileUrl !== undefined) {
+          if (tileUrl !== undefined) {
+            if (tileUrl in this.sourceTileByKey_) {
+              sourceTile = this.sourceTileByKey_[tileUrl];
+              const state = sourceTile.getState();
+              if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
+                sourceTiles.push(sourceTile);
+                return;
+              }
+            } else if (loadedZ === sourceZ) {
               sourceTile = new this.tileClass(sourceTileCoord, TileState.IDLE, tileUrl,
                 this.format_, this.tileLoadFunction);
               sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
               sourceTile.projection = projection;
               sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-              this.sourceTileByCoordKey_[coordKey] = sourceTile;
+              this.sourceTileByKey_[tileUrl] = sourceTile;
               sourceTile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
               sourceTile.load();
             }
@@ -307,7 +306,7 @@ class VectorTile extends UrlTile {
         sourceTile.consumers--;
         if (sourceTile.consumers === 0) {
           sourceTile.dispose();
-          delete this.sourceTileByCoordKey_[getKey(sourceTile.tileCoord)];
+          delete this.sourceTileByKey_[sourceTile.getKey()];
         }
       }
     }
