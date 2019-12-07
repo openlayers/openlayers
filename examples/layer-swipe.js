@@ -3,6 +3,7 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import XYZ from '../src/ol/source/XYZ.js';
+import {getRenderPixel} from '../src/ol/render.js';
 
 const osm = new TileLayer({
   source: new OSM()
@@ -33,11 +34,20 @@ const swipe = document.getElementById('swipe');
 
 aerial.on('prerender', function(event) {
   const ctx = event.context;
-  const width = ctx.canvas.width * (swipe.value / 100);
+  const mapSize = map.getSize();
+  const width = mapSize[0] * (swipe.value / 100);
+  const tl = getRenderPixel(event, [width, 0]);
+  const tr = getRenderPixel(event, [mapSize[0], 0]);
+  const bl = getRenderPixel(event, [width, mapSize[1]]);
+  const br = getRenderPixel(event, mapSize);
 
   ctx.save();
   ctx.beginPath();
-  ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height);
+  ctx.moveTo(tl[0], tl[1]);
+  ctx.lineTo(bl[0], bl[1]);
+  ctx.lineTo(br[0], br[1]);
+  ctx.lineTo(tr[0], tr[1]);
+  ctx.closePath();
   ctx.clip();
 });
 
