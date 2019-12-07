@@ -496,7 +496,7 @@ class Draw extends PointerInteraction {
     if (this.freehand_ &&
         event.type === MapBrowserEventType.POINTERDRAG &&
         this.sketchFeature_ !== null) {
-      this.addToDrawing_(event);
+      this.addToDrawing_(event.coordinate);
       pass = false;
     } else if (this.freehand_ &&
         event.type === MapBrowserEventType.POINTERDOWN) {
@@ -571,7 +571,7 @@ class Draw extends PointerInteraction {
           this.finishDrawing();
         }
       } else {
-        this.addToDrawing_(event);
+        this.addToDrawing_(event.coordinate);
       }
       pass = false;
     } else if (this.freehand_) {
@@ -753,11 +753,10 @@ class Draw extends PointerInteraction {
 
   /**
    * Add a new coordinate to the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {!PointCoordType} coordinate Coordinate
    * @private
    */
-  addToDrawing_(event) {
-    const coordinate = event.coordinate;
+  addToDrawing_(coordinate) {
     const geometry = this.sketchFeature_.getGeometry();
     let done;
     let coordinates;
@@ -898,36 +897,25 @@ class Draw extends PointerInteraction {
    * @api
    */
   appendCoordinates(coordinateExtension) {
-    const ending = coordinateExtension[coordinateExtension.length - 1].slice();
     const mode = this.mode_;
-
     let coordinates = [];
     if (mode === Mode.LINE_STRING) {
-      coordinates = this.sketchCoords_;
+      coordinates = /** @type {LineCoordType} */ this.sketchCoords_;
     } else if (mode === Mode.POLYGON) {
-      coordinates = (this.sketchCoords_)[0];
-    } else {
-      return;
+      coordinates = this.sketchCoords_ && this.sketchCoords_.length ? /** @type {PolyCoordType} */ (this.sketchCoords_)[0] : [];
     }
 
-    // (1) Remove last coordinate, (2) append coordinate list and (3) clone last coordinate
-    coordinates.pop();
-    Array.prototype.push.apply(coordinates, coordinateExtension);
-    coordinates.push(ending);
+    // Remove last coordinate from sketch drawing (this coordinate follows cursor position)
+    const ending = coordinates.pop();
 
-    // Update geometry and sketch line
-    this.geometryFunction_(this.sketchCoords_, this.sketchFeature_.getGeometry());
-
-    if (mode === Mode.POLYGON) {
-      this.sketchLineCoords_ = this.sketchCoords_[0];
-      if (this.sketchLine_ !== null) {
-        this.sketchLine_.getGeometry().setCoordinates(this.sketchLineCoords_);
-      } else {
-        this.sketchLine_ = new Feature(
-          new LineString(this.sketchLineCoords_));
-      }
+    // Append coordinate list
+    for (let i = 0; i < coordinateExtension.length; i++) {
+      this.addToDrawing_(coordinateExtension[i]);
     }
-    this.updateSketchFeatures_();
+
+    // Duplicate last coordinate for sketch drawing
+    this.addToDrawing_(ending);
+    //this.addToDrawing_(coordinateExtension[coordinateExtension.length - 1]);
   }
 
   /**
