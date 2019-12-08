@@ -52,6 +52,17 @@ import {listen, unlistenByKey} from '../events.js';
  *   });
  * }
  * ```
+ * If you do not need extent, resolution and projection to get the features for a tile (e.g.
+ * for GeoJSON tiles), your `tileLoadFunction` does not need a `setLoader()` call. Only make sure
+ * to call `setFeatures()` on the tile:
+ * ```js
+ * const format = new GeoJSON({featureProjection: map.getView().getProjection()});
+ * async function tileLoadFunction(tile, url) {
+ *   const response = await fetch(url);
+ *   const data = await response.json();
+ *   tile.setFeatures(format.readFeatures(data));
+ * }
+ * ```
  * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
@@ -232,7 +243,7 @@ class VectorTile extends UrlTile {
               sourceTile.load();
             }
           }
-          covered = false;
+          covered = covered && sourceTile && sourceTile.getState() === TileState.LOADED;
           if (!sourceTile) {
             return;
           }
