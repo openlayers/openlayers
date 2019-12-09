@@ -87,42 +87,19 @@ const ICON_ANCHOR_UNITS_MAP = {
   'insetPixels': IconAnchorUnits.PIXELS
 };
 
+
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 // @ts-ignore
-const PLACEMARK_PARSERS = makeStructureNS(
+const ICON_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ExtendedData': extendedDataParser,
-    'Region': regionParser,
-    'MultiGeometry': makeObjectPropertySetter(
-      readMultiGeometry, 'geometry'),
-    'LineString': makeObjectPropertySetter(
-      readLineString, 'geometry'),
-    'LinearRing': makeObjectPropertySetter(
-      readLinearRing, 'geometry'),
-    'Point': makeObjectPropertySetter(
-      readPoint, 'geometry'),
-    'Polygon': makeObjectPropertySetter(
-      readPolygon, 'geometry'),
-    'Style': makeObjectPropertySetter(readStyle),
-    'StyleMap': placemarkStyleMapParser,
-    'address': makeObjectPropertySetter(readString),
-    'description': makeObjectPropertySetter(readString),
-    'name': makeObjectPropertySetter(readString),
-    'open': makeObjectPropertySetter(readBoolean),
-    'phoneNumber': makeObjectPropertySetter(readString),
-    'styleUrl': makeObjectPropertySetter(readURI),
-    'visibility': makeObjectPropertySetter(readBoolean)
-  }, makeStructureNS(
-    GX_NAMESPACE_URIS, {
-      'MultiTrack': makeObjectPropertySetter(
-        readGxMultiTrack, 'geometry'),
-      'Track': makeObjectPropertySetter(
-        readGxTrack, 'geometry')
-    }
-  ));
+    'Icon': makeObjectPropertySetter(readIcon),
+    'heading': makeObjectPropertySetter(readDecimal),
+    'hotSpot': makeObjectPropertySetter(readVec2),
+    'scale': makeObjectPropertySetter(readScale)
+  });
 
 
 /**
@@ -386,6 +363,8 @@ function createStyleDefaults() {
  * @property {Array<Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
+ * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
+ * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  */
 
 
@@ -458,6 +437,99 @@ class KML extends XMLFeature {
     this.showPointNames_ = options.showPointNames !== undefined ?
       options.showPointNames : true;
 
+    /**
+     * @private
+     * @type {null|string}
+     */
+    this.crossOrigin_ = options.crossOrigin !== undefined ?
+      options.crossOrigin : 'anonymous';
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+     */
+    // @ts-ignore
+    this.documentOrFolder_parsers_ = makeStructureNS(
+      NAMESPACE_URIS, {
+        'Document': makeArrayExtender(this.readDocumentOrFolder_, this),
+        'Folder': makeArrayExtender(this.readDocumentOrFolder_, this),
+        'Placemark': makeArrayPusher(this.readPlacemark_, this),
+        'Style': this.readSharedStyle_.bind(this),
+        'StyleMap': this.readSharedStyleMap_.bind(this)
+      });
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+     */
+    // @ts-ignore
+    this.placemark_parsers_ = makeStructureNS(
+      NAMESPACE_URIS, {
+        'ExtendedData': extendedDataParser,
+        'Region': regionParser,
+        'MultiGeometry': makeObjectPropertySetter(
+          readMultiGeometry, 'geometry'),
+        'LineString': makeObjectPropertySetter(
+          readLineString, 'geometry'),
+        'LinearRing': makeObjectPropertySetter(
+          readLinearRing, 'geometry'),
+        'Point': makeObjectPropertySetter(
+          readPoint, 'geometry'),
+        'Polygon': makeObjectPropertySetter(
+          readPolygon, 'geometry'),
+        'Style': makeObjectPropertySetter(this.readStyle_.bind(this)),
+        'StyleMap': this.placemarkStyleMapParser_.bind(this),
+        'address': makeObjectPropertySetter(readString),
+        'description': makeObjectPropertySetter(readString),
+        'name': makeObjectPropertySetter(readString),
+        'open': makeObjectPropertySetter(readBoolean),
+        'phoneNumber': makeObjectPropertySetter(readString),
+        'styleUrl': makeObjectPropertySetter(readURI),
+        'visibility': makeObjectPropertySetter(readBoolean)
+      }, makeStructureNS(
+        GX_NAMESPACE_URIS, {
+          'MultiTrack': makeObjectPropertySetter(
+            readGxMultiTrack, 'geometry'),
+          'Track': makeObjectPropertySetter(
+            readGxTrack, 'geometry')
+        }
+      ));
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+     */
+    // @ts-ignore
+    this.style_parsers_ = makeStructureNS(
+      NAMESPACE_URIS, {
+        'IconStyle': this.iconStyleParser_.bind(this),
+        'LabelStyle': labelStyleParser,
+        'LineStyle': lineStyleParser,
+        'PolyStyle': polyStyleParser
+      });
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+     */
+    // @ts-ignore
+    this.style_map_parsers_ = makeStructureNS(
+      NAMESPACE_URIS, {
+        'Pair': this.pairDataParser_.bind(this)
+      });
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+     */
+    // @ts-ignore
+    this.pair_parsers_ = makeStructureNS(
+      NAMESPACE_URIS, {
+        'Style': makeObjectPropertySetter(this.readStyle_.bind(this)),
+        'key': makeObjectPropertySetter(readString),
+        'styleUrl': makeObjectPropertySetter(readURI)
+      });
+
   }
 
   /**
@@ -467,18 +539,9 @@ class KML extends XMLFeature {
    * @return {Array<Feature>|undefined} Features.
    */
   readDocumentOrFolder_(node, objectStack) {
-    // FIXME use scope somehow
-    const parsersNS = makeStructureNS(
-      NAMESPACE_URIS, {
-        'Document': makeArrayExtender(this.readDocumentOrFolder_, this),
-        'Folder': makeArrayExtender(this.readDocumentOrFolder_, this),
-        'Placemark': makeArrayPusher(this.readPlacemark_, this),
-        'Style': this.readSharedStyle_.bind(this),
-        'StyleMap': this.readSharedStyleMap_.bind(this)
-      });
     /** @type {Array<Feature>} */
-    // @ts-ignore
-    const features = pushParseAndPop([], parsersNS, node, objectStack, this);
+    const features = pushParseAndPop([], this.documentOrFolder_parsers_,
+      /** @type {Element} */ (node), objectStack, this);
     if (features) {
       return features;
     } else {
@@ -494,7 +557,7 @@ class KML extends XMLFeature {
    */
   readPlacemark_(node, objectStack) {
     const object = pushParseAndPop({'geometry': null},
-      PLACEMARK_PARSERS, node, objectStack);
+      this.placemark_parsers_, node, objectStack);
     if (!object) {
       return undefined;
     }
@@ -537,7 +600,7 @@ class KML extends XMLFeature {
   readSharedStyle_(node, objectStack) {
     const id = node.getAttribute('id');
     if (id !== null) {
-      const style = readStyle(node, objectStack);
+      const style = this.readStyle_(node, objectStack);
       if (style) {
         let styleUri;
         let baseURI = node.baseURI;
@@ -558,6 +621,176 @@ class KML extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
+   * @return {Array<Style>} Style.
+   * @private
+   */
+  readStyle_(node, objectStack) {
+    const styleObject = pushParseAndPop(
+      {}, this.style_parsers_, node, objectStack);
+    if (!styleObject) {
+      return null;
+    }
+    let fillStyle = /** @type {Fill} */
+        ('fillStyle' in styleObject ?
+          styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
+    const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
+    if (fill !== undefined && !fill) {
+      fillStyle = null;
+    }
+    let imageStyle;
+    if ('imageStyle' in styleObject) {
+      if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
+        imageStyle = styleObject['imageStyle'];
+      }
+    } else {
+      imageStyle = DEFAULT_IMAGE_STYLE;
+    }
+    const textStyle = /** @type {Text} */
+        ('textStyle' in styleObject ?
+          styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
+    let strokeStyle = /** @type {Stroke} */
+        ('strokeStyle' in styleObject ?
+          styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
+    const outline = /** @type {boolean|undefined} */
+        (styleObject['outline']);
+    if (outline !== undefined && !outline) {
+      strokeStyle = null;
+    }
+    return [new Style({
+      fill: fillStyle,
+      image: imageStyle,
+      stroke: strokeStyle,
+      text: textStyle,
+      zIndex: undefined // FIXME
+    })];
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @private
+   */
+  iconStyleParser_(node, objectStack) {
+    // FIXME refreshMode
+    // FIXME refreshInterval
+    // FIXME viewRefreshTime
+    // FIXME viewBoundScale
+    // FIXME viewFormat
+    // FIXME httpQuery
+    const object = pushParseAndPop(
+      {}, ICON_STYLE_PARSERS, node, objectStack);
+    if (!object) {
+      return;
+    }
+    const styleObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+    const IconObject = 'Icon' in object ? object['Icon'] : {};
+    const drawIcon = (!('Icon' in object) || Object.keys(IconObject).length > 0);
+    let src;
+    const href = /** @type {string|undefined} */
+        (IconObject['href']);
+    if (href) {
+      src = href;
+    } else if (drawIcon) {
+      src = DEFAULT_IMAGE_STYLE_SRC;
+    }
+    let anchor, anchorXUnits, anchorYUnits;
+    let anchorOrigin = IconOrigin.BOTTOM_LEFT;
+    const hotSpot = /** @type {Vec2|undefined} */
+        (object['hotSpot']);
+    if (hotSpot) {
+      anchor = [hotSpot.x, hotSpot.y];
+      anchorXUnits = hotSpot.xunits;
+      anchorYUnits = hotSpot.yunits;
+      anchorOrigin = hotSpot.origin;
+    } else if (src === DEFAULT_IMAGE_STYLE_SRC) {
+      anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
+      anchor = [0.5, 0];
+      anchorXUnits = IconAnchorUnits.FRACTION;
+      anchorYUnits = IconAnchorUnits.FRACTION;
+    }
+
+    let offset;
+    const x = /** @type {number|undefined} */
+        (IconObject['x']);
+    const y = /** @type {number|undefined} */
+        (IconObject['y']);
+    if (x !== undefined && y !== undefined) {
+      offset = [x, y];
+    }
+
+    let size;
+    const w = /** @type {number|undefined} */
+        (IconObject['w']);
+    const h = /** @type {number|undefined} */
+        (IconObject['h']);
+    if (w !== undefined && h !== undefined) {
+      size = [w, h];
+    }
+
+    let rotation;
+    const heading = /** @type {number} */
+        (object['heading']);
+    if (heading !== undefined) {
+      rotation = toRadians(heading);
+    }
+
+    let scale = /** @type {number|undefined} */
+        (object['scale']);
+
+    if (drawIcon) {
+      if (src == DEFAULT_IMAGE_STYLE_SRC) {
+        size = DEFAULT_IMAGE_STYLE_SIZE;
+        if (scale === undefined) {
+          scale = DEFAULT_IMAGE_SCALE_MULTIPLIER;
+        }
+      }
+
+      const imageStyle = new Icon({
+        anchor: anchor,
+        anchorOrigin: anchorOrigin,
+        anchorXUnits: anchorXUnits,
+        anchorYUnits: anchorYUnits,
+        crossOrigin: this.crossOrigin_,
+        offset: offset,
+        offsetOrigin: IconOrigin.BOTTOM_LEFT,
+        rotation: rotation,
+        scale: scale,
+        size: size,
+        src: src
+      });
+      styleObject['imageStyle'] = imageStyle;
+    } else {
+      // handle the case when we explicitly want to draw no icon.
+      styleObject['imageStyle'] = DEFAULT_NO_IMAGE_STYLE;
+    }
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @private
+   */
+  placemarkStyleMapParser_(node, objectStack) {
+    const styleMapValue = this.readStyleMapValue_(node, objectStack);
+    if (!styleMapValue) {
+      return;
+    }
+    const placemarkObject = objectStack[objectStack.length - 1];
+    if (Array.isArray(styleMapValue)) {
+      placemarkObject['Style'] = styleMapValue;
+    } else if (typeof styleMapValue === 'string') {
+      placemarkObject['styleUrl'] = styleMapValue;
+    } else {
+      assert(false, 38); // `styleMapValue` has an unknown type
+    }
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    */
   readSharedStyleMap_(node, objectStack) {
@@ -565,7 +798,7 @@ class KML extends XMLFeature {
     if (id === null) {
       return;
     }
-    const styleMapValue = readStyleMapValue(node, objectStack);
+    const styleMapValue = this.readStyleMapValue_(node, objectStack);
     if (!styleMapValue) {
       return;
     }
@@ -582,6 +815,45 @@ class KML extends XMLFeature {
     }
     this.sharedStyles_[styleUri] = styleMapValue;
   }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @private
+   * @return {Array<Style>|string|undefined} StyleMap.
+   */
+  readStyleMapValue_(node, objectStack) {
+    return pushParseAndPop(undefined,
+      this.style_map_parsers_, node, objectStack);
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @private
+   */
+  pairDataParser_(node, objectStack) {
+    const pairObject = pushParseAndPop(
+      {}, this.pair_parsers_, node, objectStack);
+    if (!pairObject) {
+      return;
+    }
+    const key = /** @type {string|undefined} */
+        (pairObject['key']);
+    if (key && key == 'normal') {
+      const styleUrl = /** @type {string|undefined} */
+          (pairObject['styleUrl']);
+      if (styleUrl) {
+        objectStack[objectStack.length - 1] = styleUrl;
+      }
+      const style = /** @type {Style} */
+          (pairObject['Style']);
+      if (style) {
+        objectStack[objectStack.length - 1] = style;
+      }
+    }
+  }
+
 
   /**
    * @inheritDoc
@@ -1105,145 +1377,6 @@ function readScale(node) {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 // @ts-ignore
-const STYLE_MAP_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Pair': pairDataParser
-  });
-
-
-/**
- * @param {Element} node Node.
- * @param {Array<*>} objectStack Object stack.
- * @return {Array<Style>|string|undefined} StyleMap.
- */
-function readStyleMapValue(node, objectStack) {
-  return pushParseAndPop(undefined,
-    STYLE_MAP_PARSERS, node, objectStack);
-}
-
-
-/**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- */
-// @ts-ignore
-const ICON_STYLE_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Icon': makeObjectPropertySetter(readIcon),
-    'heading': makeObjectPropertySetter(readDecimal),
-    'hotSpot': makeObjectPropertySetter(readVec2),
-    'scale': makeObjectPropertySetter(readScale)
-  });
-
-
-/**
- * @param {Element} node Node.
- * @param {Array<*>} objectStack Object stack.
- */
-function iconStyleParser(node, objectStack) {
-  // FIXME refreshMode
-  // FIXME refreshInterval
-  // FIXME viewRefreshTime
-  // FIXME viewBoundScale
-  // FIXME viewFormat
-  // FIXME httpQuery
-  const object = pushParseAndPop(
-    {}, ICON_STYLE_PARSERS, node, objectStack);
-  if (!object) {
-    return;
-  }
-  const styleObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const IconObject = 'Icon' in object ? object['Icon'] : {};
-  const drawIcon = (!('Icon' in object) || Object.keys(IconObject).length > 0);
-  let src;
-  const href = /** @type {string|undefined} */
-      (IconObject['href']);
-  if (href) {
-    src = href;
-  } else if (drawIcon) {
-    src = DEFAULT_IMAGE_STYLE_SRC;
-  }
-  let anchor, anchorXUnits, anchorYUnits;
-  let anchorOrigin = IconOrigin.BOTTOM_LEFT;
-  const hotSpot = /** @type {Vec2|undefined} */
-      (object['hotSpot']);
-  if (hotSpot) {
-    anchor = [hotSpot.x, hotSpot.y];
-    anchorXUnits = hotSpot.xunits;
-    anchorYUnits = hotSpot.yunits;
-    anchorOrigin = hotSpot.origin;
-  } else if (src === DEFAULT_IMAGE_STYLE_SRC) {
-    anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
-    anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
-    anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
-  } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
-    anchor = [0.5, 0];
-    anchorXUnits = IconAnchorUnits.FRACTION;
-    anchorYUnits = IconAnchorUnits.FRACTION;
-  }
-
-  let offset;
-  const x = /** @type {number|undefined} */
-      (IconObject['x']);
-  const y = /** @type {number|undefined} */
-      (IconObject['y']);
-  if (x !== undefined && y !== undefined) {
-    offset = [x, y];
-  }
-
-  let size;
-  const w = /** @type {number|undefined} */
-      (IconObject['w']);
-  const h = /** @type {number|undefined} */
-      (IconObject['h']);
-  if (w !== undefined && h !== undefined) {
-    size = [w, h];
-  }
-
-  let rotation;
-  const heading = /** @type {number} */
-      (object['heading']);
-  if (heading !== undefined) {
-    rotation = toRadians(heading);
-  }
-
-  let scale = /** @type {number|undefined} */
-      (object['scale']);
-
-  if (drawIcon) {
-    if (src == DEFAULT_IMAGE_STYLE_SRC) {
-      size = DEFAULT_IMAGE_STYLE_SIZE;
-      if (scale === undefined) {
-        scale = DEFAULT_IMAGE_SCALE_MULTIPLIER;
-      }
-    }
-
-    const imageStyle = new Icon({
-      anchor: anchor,
-      anchorOrigin: anchorOrigin,
-      anchorXUnits: anchorXUnits,
-      anchorYUnits: anchorYUnits,
-      crossOrigin: 'anonymous', // FIXME should this be configurable?
-      offset: offset,
-      offsetOrigin: IconOrigin.BOTTOM_LEFT,
-      rotation: rotation,
-      scale: scale,
-      size: size,
-      src: src
-    });
-    styleObject['imageStyle'] = imageStyle;
-  } else {
-    // handle the case when we explicitly want to draw no icon.
-    styleObject['imageStyle'] = DEFAULT_NO_IMAGE_STYLE;
-  }
-}
-
-
-/**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- */
-// @ts-ignore
 const LABEL_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'color': makeObjectPropertySetter(readColor),
@@ -1705,67 +1838,6 @@ function readPolygon(node, objectStack) {
 
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- */
-// @ts-ignore
-const STYLE_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'IconStyle': iconStyleParser,
-    'LabelStyle': labelStyleParser,
-    'LineStyle': lineStyleParser,
-    'PolyStyle': polyStyleParser
-  });
-
-
-/**
- * @param {Element} node Node.
- * @param {Array<*>} objectStack Object stack.
- * @return {Array<Style>} Style.
- */
-function readStyle(node, objectStack) {
-  const styleObject = pushParseAndPop(
-    {}, STYLE_PARSERS, node, objectStack);
-  if (!styleObject) {
-    return null;
-  }
-  let fillStyle = /** @type {Fill} */
-      ('fillStyle' in styleObject ?
-        styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
-  const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
-  if (fill !== undefined && !fill) {
-    fillStyle = null;
-  }
-  let imageStyle;
-  if ('imageStyle' in styleObject) {
-    if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
-      imageStyle = styleObject['imageStyle'];
-    }
-  } else {
-    imageStyle = DEFAULT_IMAGE_STYLE;
-  }
-  const textStyle = /** @type {Text} */
-      ('textStyle' in styleObject ?
-        styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {Stroke} */
-      ('strokeStyle' in styleObject ?
-        styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
-  const outline = /** @type {boolean|undefined} */
-      (styleObject['outline']);
-  if (outline !== undefined && !outline) {
-    strokeStyle = null;
-  }
-  return [new Style({
-    fill: fillStyle,
-    image: imageStyle,
-    stroke: strokeStyle,
-    text: textStyle,
-    zIndex: undefined // FIXME
-  })];
-}
-
-
-/**
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
  * @param {MultiPoint|MultiLineString|MultiPolygon} multiGeometry A multi-geometry.
@@ -1864,65 +1936,6 @@ function extendedDataParser(node, objectStack) {
  */
 function regionParser(node, objectStack) {
   parseNode(REGION_PARSERS, node, objectStack);
-}
-
-/**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- */
-// @ts-ignore
-const PAIR_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Style': makeObjectPropertySetter(readStyle),
-    'key': makeObjectPropertySetter(readString),
-    'styleUrl': makeObjectPropertySetter(readURI)
-  });
-
-
-/**
- * @param {Element} node Node.
- * @param {Array<*>} objectStack Object stack.
- */
-function pairDataParser(node, objectStack) {
-  const pairObject = pushParseAndPop(
-    {}, PAIR_PARSERS, node, objectStack);
-  if (!pairObject) {
-    return;
-  }
-  const key = /** @type {string|undefined} */
-      (pairObject['key']);
-  if (key && key == 'normal') {
-    const styleUrl = /** @type {string|undefined} */
-        (pairObject['styleUrl']);
-    if (styleUrl) {
-      objectStack[objectStack.length - 1] = styleUrl;
-    }
-    const style = /** @type {Style} */
-        (pairObject['Style']);
-    if (style) {
-      objectStack[objectStack.length - 1] = style;
-    }
-  }
-}
-
-
-/**
- * @param {Element} node Node.
- * @param {Array<*>} objectStack Object stack.
- */
-function placemarkStyleMapParser(node, objectStack) {
-  const styleMapValue = readStyleMapValue(node, objectStack);
-  if (!styleMapValue) {
-    return;
-  }
-  const placemarkObject = objectStack[objectStack.length - 1];
-  if (Array.isArray(styleMapValue)) {
-    placemarkObject['Style'] = styleMapValue;
-  } else if (typeof styleMapValue === 'string') {
-    placemarkObject['styleUrl'] = styleMapValue;
-  } else {
-    assert(false, 38); // `styleMapValue` has an unknown type
-  }
 }
 
 
