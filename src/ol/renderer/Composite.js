@@ -74,6 +74,7 @@ class CompositeMapRenderer extends MapRenderer {
 
   disposeInternal() {
     unlistenByKey(this.labelCacheKey_);
+    this.element_.parentNode.removeChild(this.element_);
     super.disposeInternal();
   }
 
