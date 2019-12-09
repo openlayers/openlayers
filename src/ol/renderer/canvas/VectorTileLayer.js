@@ -139,11 +139,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   getTile(z, x, y, frameState) {
-    const tile = /** @type {import("../../VectorRenderTile.js").default} */ (super.getTile(z, x, y, frameState));
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
     const projection = viewState.projection;
+    const layer = this.getLayer();
+    const tile = layer.getSource().getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() < TileState.LOADED) {
       tile.wantedResolution = resolution;
       const tileUid = getUid(tile);
@@ -158,11 +159,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         tile.wantedResolution = resolution;
       }
       const render = this.prepareTile(tile, pixelRatio, projection, false);
-      if (render && this.getLayer().getRenderMode() !== VectorTileRenderType.VECTOR) {
+      if (render && layer.getRenderMode() !== VectorTileRenderType.VECTOR) {
         this.renderTileImage_(tile, frameState);
       }
     }
-    return tile;
+    return super.getTile(z, x, y, frameState);
   }
 
   /**
