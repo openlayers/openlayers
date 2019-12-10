@@ -55,15 +55,6 @@ proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
 const layers = {};
 
-layers['bng'] = new TileLayer({
-  source: new XYZ({
-    projection: 'EPSG:27700',
-    url: 'https://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
-    crossOrigin: '',
-    maxZoom: 6
-  })
-});
-
 layers['osm'] = new TileLayer({
   source: new OSM()
 });
@@ -95,9 +86,11 @@ layers['wms21781'] = new TileLayer({
 });
 
 const parser = new WMTSCapabilities();
-const url = 'https://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
+
+layers['wmts3413'] = new TileLayer();
+const urlA = 'https://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
     'wmts.cgi?SERVICE=WMTS&request=GetCapabilities';
-fetch(url).then(function(response) {
+fetch(urlA).then(function(response) {
   return response.text();
 }).then(function(text) {
   const result = parser.read(text);
@@ -108,9 +101,23 @@ fetch(url).then(function(response) {
   options.crossOrigin = '';
   options.projection = 'EPSG:3413';
   options.wrapX = false;
-  layers['wmts3413'] = new TileLayer({
-    source: new WMTS(options)
+  layers['wmts3413'].setSource(new WMTS(options));
+});
+
+layers['bng'] = new TileLayer();
+const urlB = 'https://tiles.arcgis.com/tiles/qHLhLQrcvEnxjtPr/arcgis/rest/services/OS_Open_Raster/MapServer/WMTS';
+fetch(urlB).then(function(response) {
+  return response.text();
+}).then(function(text) {
+  const result = parser.read(text);
+  const options = optionsFromCapabilities(result, {
+    layer: 'OS_Open_Raster'
   });
+  options.attributions = 'Contains OS data © Crown Copyright and database right 2019';
+  options.crossOrigin = '';
+  options.projection = 'EPSG:27700';
+  options.wrapX = false;
+  layers['bng'].setSource(new WMTS(options));
 });
 
 layers['grandcanyon'] = new TileLayer({
