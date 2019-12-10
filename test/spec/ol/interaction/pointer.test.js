@@ -22,14 +22,14 @@ describe('ol.interaction.Pointer', function() {
       defaultPrevented = false;
     });
 
-    it('prevents default on handled down event', function() {
+    it('does not prevent default on handled down event', function() {
       const interaction = new PointerInteraction({
         handleDownEvent: function() {
           return true;
         }
       });
       interaction.handleEvent(event);
-      expect(defaultPrevented).to.be(true);
+      expect(defaultPrevented).to.be(false);
     });
 
     it('does not prevent default on unhandled down event', function() {

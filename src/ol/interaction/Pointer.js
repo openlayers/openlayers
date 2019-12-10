@@ -146,9 +146,6 @@ class PointerInteraction extends Interaction {
     } else {
       if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
         const handled = this.handleDownEvent(mapBrowserEvent);
-        if (handled) {
-          mapBrowserEvent.preventDefault();
-        }
         this.handlingDownUpSequence = handled;
         stopEvent = this.stopDown(handled);
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
