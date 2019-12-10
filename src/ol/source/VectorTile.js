@@ -7,7 +7,7 @@ import VectorRenderTile from '../VectorRenderTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
-import {getKeyZXY} from '../tilecoord.js';
+import {getKeyZXY, fromKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import EventType from '../events/EventType.js';
@@ -50,6 +50,17 @@ import {listen, unlistenByKey} from '../events.js';
  *       });
  *     });
  *   });
+ * }
+ * ```
+ * If you do not need extent, resolution and projection to get the features for a tile (e.g.
+ * for GeoJSON tiles), your `tileLoadFunction` does not need a `setLoader()` call. Only make sure
+ * to call `setFeatures()` on the tile:
+ * ```js
+ * const format = new GeoJSON({featureProjection: map.getView().getProjection()});
+ * async function tileLoadFunction(tile, url) {
+ *   const response = await fetch(url);
+ *   const data = await response.json();
+ *   tile.setFeatures(format.readFeatures(data));
  * }
  * ```
  * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
@@ -160,6 +171,51 @@ class VectorTile extends UrlTile {
   }
 
   /**
+   * Get features whose bounding box intersects the provided extent. Only features for cached
+   * tiles for the last rendered zoom level are available in the source. So this method is only
+   * suitable for requesting tiles for extents that are currently rendered.
+   *
+   * Features are returned in random tile order and as they are included in the tiles. This means
+   * they can be clipped, duplicated across tiles, and simplified to the render resolution.
+   *
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @api
+   */
+  getFeaturesInExtent(extent) {
+    const features = [];
+    const tileCache = this.tileCache;
+    if (tileCache.getCount() === 0) {
+      return features;
+    }
+    const z = fromKey(tileCache.peekFirstKey())[0];
+    const tileGrid = this.tileGrid;
+    tileCache.forEach(function(tile) {
+      if (tile.tileCoord[0] !== z || tile.getState() !== TileState.LOADED) {
+        return;
+      }
+      const sourceTiles = tile.getSourceTiles();
+      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+        const sourceTile = sourceTiles[i];
+        const tileCoord = sourceTile.tileCoord;
+        if (intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
+          const tileFeatures = sourceTile.getFeatures();
+          if (tileFeatures) {
+            for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
+              const candidate = tileFeatures[j];
+              const geometry = candidate.getGeometry();
+              if (geometry.intersectsExtent(extent)) {
+                features.push(candidate);
+              }
+            }
+          }
+        }
+      }
+    });
+    return features;
+  }
+
+  /**
    * @return {boolean} The source can have overlapping geometries.
    */
   getOverlaps() {
@@ -232,7 +288,7 @@ class VectorTile extends UrlTile {
               sourceTile.load();
             }
           }
-          covered = false;
+          covered = covered && sourceTile && sourceTile.getState() === TileState.LOADED;
           if (!sourceTile) {
             return;
           }

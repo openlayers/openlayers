@@ -105,7 +105,9 @@ class VectorTile extends Tile {
     if (this.state == TileState.IDLE) {
       this.setState(TileState.LOADING);
       this.tileLoadFunction_(this, this.url_);
-      this.loader_(this.extent, this.resolution, this.projection);
+      if (this.loader_) {
+        this.loader_(this.extent, this.resolution, this.projection);
+      }
     }
   }
 
