@@ -1121,6 +1121,7 @@ const STYLE_MAP_PARSERS = makeStructureNS(
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<Style>|string|undefined} StyleMap.
@@ -1146,6 +1147,7 @@ const ICON_STYLE_PARSERS = makeStructureNS(
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -1728,6 +1730,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<Style>} Style.
@@ -1914,6 +1917,7 @@ function pairDataParser(node, objectStack) {
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
