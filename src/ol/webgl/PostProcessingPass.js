@@ -174,17 +174,19 @@ class WebGLPostProcessingPass {
    */
   init(frameState) {
     const gl = this.getGL();
-    const canvas = gl.canvas;
-    const size = frameState.size;
+    const textureSize = [
+      gl.drawingBufferWidth * this.scaleRatio_,
+      gl.drawingBufferHeight * this.scaleRatio_
+    ];
 
     // rendering goes to my buffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFrameBuffer());
-    gl.viewport(0, 0, canvas.width * this.scaleRatio_, canvas.height * this.scaleRatio_);
+    gl.viewport(0, 0, textureSize[0], textureSize[1]);
 
     // if size has changed: adjust canvas & render target texture
     if (!this.renderTargetTextureSize_ ||
-      this.renderTargetTextureSize_[0] !== size[0] || this.renderTargetTextureSize_[1] !== size[1]) {
-      this.renderTargetTextureSize_ = size;
+      this.renderTargetTextureSize_[0] !== textureSize[0] || this.renderTargetTextureSize_[1] !== textureSize[1]) {
+      this.renderTargetTextureSize_ = textureSize;
 
       // create a new texture
       const level = 0;
@@ -195,8 +197,8 @@ class WebGLPostProcessingPass {
       const data = null;
       gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
       gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
-        canvas.width * this.scaleRatio_, canvas.height * this.scaleRatio_, border,
-        format, type, data);
+        textureSize[0], textureSize[1],
+        border, format, type, data);
 
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -215,7 +217,7 @@ class WebGLPostProcessingPass {
    */
   apply(frameState, nextPass) {
     const gl = this.getGL();
-    const canvas = gl.canvas;
+    const size = frameState.size;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, nextPass ? nextPass.getFrameBuffer() : null);
     gl.activeTexture(gl.TEXTURE0);
@@ -226,14 +228,14 @@ class WebGLPostProcessingPass {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
 
     gl.useProgram(this.renderTargetProgram_);
     gl.enableVertexAttribArray(this.renderTargetAttribLocation_);
     gl.vertexAttribPointer(this.renderTargetAttribLocation_, 2, gl.FLOAT, false, 0, 0);
-    gl.uniform2f(this.renderTargetUniformLocation_, canvas.width, canvas.height);
+    gl.uniform2f(this.renderTargetUniformLocation_, size[0], size[1]);
     gl.uniform1i(this.renderTargetTextureLocation_, 0);
 
     this.applyUniforms(frameState);
