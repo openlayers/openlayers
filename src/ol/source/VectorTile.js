@@ -204,7 +204,7 @@ class VectorTile extends UrlTile {
             for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
               const candidate = tileFeatures[j];
               const geometry = candidate.getGeometry();
-              if (geometry.intersectsExtent(extent)) {
+              if (intersects(extent, geometry.getExtent())) {
                 features.push(candidate);
               }
             }
