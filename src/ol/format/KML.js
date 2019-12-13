@@ -386,6 +386,8 @@ function createStyleDefaults() {
  * @property {Array<Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
+ * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
+ * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  */
 
 
@@ -458,6 +460,13 @@ class KML extends XMLFeature {
     this.showPointNames_ = options.showPointNames !== undefined ?
       options.showPointNames : true;
 
+    /**
+     * @private
+     * @type {null|string}
+     */
+    this.crossOrigin_ = options.crossOrigin !== undefined ?
+      options.crossOrigin : 'anonymous';
+
   }
 
   /**
@@ -494,7 +503,7 @@ class KML extends XMLFeature {
    */
   readPlacemark_(node, objectStack) {
     const object = pushParseAndPop({'geometry': null},
-      PLACEMARK_PARSERS, node, objectStack);
+      PLACEMARK_PARSERS, node, objectStack, this);
     if (!object) {
       return undefined;
     }
@@ -537,7 +546,7 @@ class KML extends XMLFeature {
   readSharedStyle_(node, objectStack) {
     const id = node.getAttribute('id');
     if (id !== null) {
-      const style = readStyle(node, objectStack);
+      const style = readStyle.call(this, node, objectStack);
       if (style) {
         let styleUri;
         let baseURI = node.baseURI;
@@ -565,7 +574,7 @@ class KML extends XMLFeature {
     if (id === null) {
       return;
     }
-    const styleMapValue = readStyleMapValue(node, objectStack);
+    const styleMapValue = readStyleMapValue.call(this, node, objectStack);
     if (!styleMapValue) {
       return;
     }
@@ -1112,13 +1121,14 @@ const STYLE_MAP_PARSERS = makeStructureNS(
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<Style>|string|undefined} StyleMap.
  */
 function readStyleMapValue(node, objectStack) {
   return pushParseAndPop(undefined,
-    STYLE_MAP_PARSERS, node, objectStack);
+    STYLE_MAP_PARSERS, node, objectStack, this);
 }
 
 
@@ -1137,6 +1147,7 @@ const ICON_STYLE_PARSERS = makeStructureNS(
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -1223,7 +1234,7 @@ function iconStyleParser(node, objectStack) {
       anchorOrigin: anchorOrigin,
       anchorXUnits: anchorXUnits,
       anchorYUnits: anchorYUnits,
-      crossOrigin: 'anonymous', // FIXME should this be configurable?
+      crossOrigin: this.crossOrigin_,
       offset: offset,
       offsetOrigin: IconOrigin.BOTTOM_LEFT,
       rotation: rotation,
@@ -1719,13 +1730,14 @@ const STYLE_PARSERS = makeStructureNS(
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<Style>} Style.
  */
 function readStyle(node, objectStack) {
   const styleObject = pushParseAndPop(
-    {}, STYLE_PARSERS, node, objectStack);
+    {}, STYLE_PARSERS, node, objectStack, this);
   if (!styleObject) {
     return null;
   }
@@ -1885,7 +1897,7 @@ const PAIR_PARSERS = makeStructureNS(
  */
 function pairDataParser(node, objectStack) {
   const pairObject = pushParseAndPop(
-    {}, PAIR_PARSERS, node, objectStack);
+    {}, PAIR_PARSERS, node, objectStack, this);
   if (!pairObject) {
     return;
   }
@@ -1907,11 +1919,12 @@ function pairDataParser(node, objectStack) {
 
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function placemarkStyleMapParser(node, objectStack) {
-  const styleMapValue = readStyleMapValue(node, objectStack);
+  const styleMapValue = readStyleMapValue.call(this, node, objectStack);
   if (!styleMapValue) {
     return;
   }
