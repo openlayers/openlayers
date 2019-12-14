@@ -150,6 +150,9 @@
   border: none;
   padding: 0;
 }
+.ol-control button span {
+  pointer-events: none;
+}
 .ol-zoom-extent button {
   line-height: 1.4em;
 }
