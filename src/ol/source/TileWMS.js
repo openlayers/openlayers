@@ -42,6 +42,8 @@ import {appendParams} from '../uri.js';
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
+ * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
@@ -94,6 +96,7 @@ class TileWMS extends TileImage {
       opaque: !transparent,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      reprojectionContextOptions: options.reprojectionContextOptions,
       tileClass: options.tileClass,
       tileGrid: options.tileGrid,
       tileLoadFunction: options.tileLoadFunction,

@@ -93,6 +93,8 @@ export class CustomTile extends ImageTile {
  * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
+ * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {string} [url] URL template or base URL of the Zoomify service.
  * A base URL is the fixed part
  * of the URL, excluding the tile group, z, x, and y folder structure, e.g.
@@ -255,6 +257,7 @@ class Zoomify extends TileImage {
       projection: options.projection,
       tilePixelRatio: tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      reprojectionContextOptions: options.reprojectionContextOptions,
       tileClass: ZoomifyTileClass,
       tileGrid: tileGrid,
       tileUrlFunction: tileUrlFunction,

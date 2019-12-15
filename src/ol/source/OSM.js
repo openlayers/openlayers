@@ -26,8 +26,10 @@ export const ATTRIBUTION = '&#169; ' +
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {number} [maxZoom=19] Max zoom.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
- * @property {number} [reprojectionErrorThreshold=1.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
+ * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -73,6 +75,7 @@ class OSM extends XYZ {
       opaque: options.opaque !== undefined ? options.opaque : true,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      reprojectionContextOptions: options.reprojectionContextOptions,
       tileLoadFunction: options.tileLoadFunction,
       url: url,
       wrapX: options.wrapX,

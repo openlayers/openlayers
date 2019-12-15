@@ -17,6 +17,8 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
+ * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {number} [maxZoom=18] Optional max zoom level.
  * @property {number} [minZoom=0] Optional min zoom level.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
@@ -90,6 +92,7 @@ class XYZ extends TileImage {
       opaque: options.opaque,
       projection: projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      reprojectionContextOptions: options.reprojectionContextOptions,
       tileGrid: tileGrid,
       tileLoadFunction: options.tileLoadFunction,
       tilePixelRatio: options.tilePixelRatio,

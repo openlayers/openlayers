@@ -23,6 +23,8 @@ import TileImage from './TileImage.js';
  * for version 1, 'default' for versions 2 and 3.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
+ * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {Array<number>} [resolutions] Supported resolutions as given in IIIF 'scaleFactors'
  * @property {import("../size.js").Size} size Size of the image [width, height].
  * @property {Array<import("../size.js").Size>} [sizes] Supported scaled image sizes.
@@ -274,6 +276,7 @@ class IIIF extends TileImage {
       crossOrigin: options.crossOrigin,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      reprojectionContextOptions: options.reprojectionContextOptions,
       state: options.state,
       tileClass: IiifTileClass,
       tileGrid: tileGrid,

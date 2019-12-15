@@ -96,6 +96,8 @@ const ProviderConfig = {
  * @property {number} [maxZoom] Maximum zoom.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
+ * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
+ * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. The default is
  * ```js
@@ -138,6 +140,7 @@ class Stamen extends XYZ {
       minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
       opaque: layerConfig.opaque,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      reprojectionContextOptions: options.reprojectionContextOptions,
       tileLoadFunction: options.tileLoadFunction,
       transition: options.transition,
       url: url,
