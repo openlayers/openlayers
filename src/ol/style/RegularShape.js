@@ -371,11 +371,11 @@ class RegularShape extends ImageStyle {
     size = this.canvas_.width;
     const imageSize = size;
 
-    this.draw_(renderOptions, context, this.offset_[0], this.offset_[1]);
+    this.draw_(renderOptions, context, 0, 0);
 
     this.createHitDetectionCanvas_(renderOptions);
 
-    this.anchor_ = [size / 2, size / 2];
+    this.anchor_ = [size / 2 - this.offset_[0], size / 2 + this.offset_[1]];
     this.size_ = [size, size];
     this.imageSize_ = [imageSize, imageSize];
   }
