@@ -20,6 +20,7 @@ import ImageStyle from './Image.js';
  * @property {number} [radius1] Outer radius of a star.
  * @property {number} [radius2] Inner radius of a star.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
+ * @property {Array<number>} [offset] Offset of the shape
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
@@ -87,6 +88,12 @@ class RegularShape extends ImageStyle {
      * @type {Array<number>}
      */
     this.origin_ = [0, 0];
+
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.offset_ = options.offset ? options.offset : [0, 0];
 
     /**
      * @private
@@ -160,7 +167,8 @@ class RegularShape extends ImageStyle {
       angle: this.getAngle(),
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
-      rotateWithView: this.getRotateWithView()
+      rotateWithView: this.getRotateWithView(),
+      offset: this.getOffset()
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());
@@ -182,6 +190,15 @@ class RegularShape extends ImageStyle {
    */
   getAngle() {
     return this.angle_;
+  }
+
+  /**
+   * Get the offset of the shape
+   * @return {Array<number>} Shape's center offset
+   * @api
+   */
+  getOffset() {
+    return this.offset_;
   }
 
   /**
@@ -354,7 +371,7 @@ class RegularShape extends ImageStyle {
     size = this.canvas_.width;
     const imageSize = size;
 
-    this.draw_(renderOptions, context, 0, 0);
+    this.draw_(renderOptions, context, this.offset_[0], this.offset_[1]);
 
     this.createHitDetectionCanvas_(renderOptions);
 

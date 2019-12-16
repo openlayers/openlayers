@@ -82,6 +82,24 @@ describe('ol.style.RegularShape', function() {
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
+    it('sets default offset [0, 0]', function() {
+      const style = new RegularShape({
+        radius: 5
+      });
+      expect(style.getOffset()).to.an('array');
+      expect(style.getOffset()[0]).to.eql(0);
+      expect(style.getOffset()[1]).to.eql(0);
+    });
+
+    it('can use offset', function() {
+      const style = new RegularShape({
+        radius: 5,
+        offset: [10, 20]
+      });
+      expect(style.getOffset()).to.an('array');
+      expect(style.getOffset()[0]).to.eql(10);
+      expect(style.getOffset()[1]).to.eql(20);
+    });
   });
 
   describe('#clone', function() {
@@ -108,7 +126,8 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         }),
         rotation: 2,
-        rotateWithView: true
+        rotateWithView: true,
+        offest: [10, 20]
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
@@ -123,6 +142,8 @@ describe('ol.style.RegularShape', function() {
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
       expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getOffset()[0]).to.eql(clone.getOffset()[0]);
+      expect(original.getOffset()[1]).to.eql(clone.getOffset()[1]);
     });
 
     it('the clone does not reference the same objects as the original', function() {
