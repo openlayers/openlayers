@@ -79,7 +79,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.0-rc.2",
     "loglevelnext": "^3.0.1",
-    "marked": "0.7.0",
+    "marked": "0.8.0",
     "mocha": "6.2.2",
     "ol-mapbox-style": "^5.0.2",
     "pixelmatch": "^5.1.0",
