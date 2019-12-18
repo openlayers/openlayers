@@ -10,6 +10,7 @@ import {abstract} from '../util.js';
  * @property {boolean} rotateWithView
  * @property {number} rotation
  * @property {number} scale
+ * @property {Array<number>} offset
  */
 
 
@@ -51,6 +52,12 @@ class ImageStyle {
      */
     this.scale_ = options.scale;
 
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.offset_ = options.offset;
+
   }
 
   /**
@@ -63,7 +70,8 @@ class ImageStyle {
       opacity: this.getOpacity(),
       scale: this.getScale(),
       rotation: this.getRotation(),
-      rotateWithView: this.getRotateWithView()
+      rotateWithView: this.getRotateWithView(),
+      offset: this.getOffset().slice()
     });
   }
 
@@ -101,6 +109,15 @@ class ImageStyle {
    */
   getScale() {
     return this.scale_;
+  }
+
+  /**
+   * Get the offset of the shape
+   * @return {Array<number>} Shape's center offset
+   * @api
+   */
+  getOffset() {
+    return this.offset_;
   }
 
   /**

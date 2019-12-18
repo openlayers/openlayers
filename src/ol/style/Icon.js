@@ -84,6 +84,7 @@ class Icon extends ImageStyle {
       opacity: opacity,
       rotation: rotation,
       scale: scale,
+      offset: options.offset !== undefined ? options.offset : [0, 0],
       rotateWithView: rotateWithView
     });
 
@@ -171,12 +172,6 @@ class Icon extends ImageStyle {
      */
     this.iconImage_ = getIconImage(
       image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
-
-    /**
-     * @private
-     * @type {Array<number>}
-     */
-    this.offset_ = options.offset !== undefined ? options.offset : [0, 0];
 
     /**
      * @private
