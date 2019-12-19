@@ -22,9 +22,15 @@ function flood(pixels, data) {
 }
 
 const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
-const elevation = new XYZ({
-  url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
-  crossOrigin: 'anonymous'
+const elevation = new TileLayer({
+  source: new XYZ({
+    url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
+    crossOrigin: 'anonymous'
+  })
+});
+elevation.on('prerender', function(evt) {
+  evt.context.imageSmoothingEnabled = false;
+  evt.context.msImageSmoothingEnabled = false;
 });
 
 const raster = new RasterSource({
