@@ -230,13 +230,16 @@ class Feature extends BaseObject {
    * of styles, or a function that takes a resolution and returns an array of
    * styles. If it is `null` the feature has no style (a `null` style).
    * @param {import("./style/Style.js").StyleLike} style Style for this feature.
+   * @param {boolean|false}  silent change style in silent mode, not fire changed event.
    * @api
    * @fires module:ol/events/Event~BaseEvent#event:change
    */
-  setStyle(style) {
+  setStyle(style,silent=false) {
     this.style_ = style;
     this.styleFunction_ = !style ? undefined : createStyleFunction(style);
-    this.changed();
+    if(!silent){
+      this.changed();
+    }
   }
 
   /**
