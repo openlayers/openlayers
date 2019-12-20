@@ -945,7 +945,7 @@ class View extends BaseObject {
    */
   getResolutionForValueFunction(opt_power) {
     const power = opt_power || 2;
-    const maxResolution = this.maxResolution_;
+    const maxResolution = this.getConstrainedResolution(this.maxResolution_);
     const minResolution = this.minResolution_;
     const max = Math.log(maxResolution / minResolution) / Math.log(power);
     return (
@@ -977,7 +977,7 @@ class View extends BaseObject {
    */
   getValueForResolutionFunction(opt_power) {
     const logPower = Math.log(opt_power || 2);
-    const maxResolution = this.maxResolution_;
+    const maxResolution = this.getConstrainedResolution(this.maxResolution_);
     const minResolution = this.minResolution_;
     const max = Math.log(maxResolution / minResolution) / logPower;
     return (
