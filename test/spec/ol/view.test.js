@@ -1461,28 +1461,37 @@ describe('ol.View', function() {
     });
   });
 
-  describe('#getSizeFromViewport_()', function() {
+  describe('#getViewportSize_()', function() {
     let map, target;
     beforeEach(function() {
       target = document.createElement('div');
       target.style.width = '200px';
       target.style.height = '150px';
+      document.body.appendChild(target);
       map = new Map({
         target: target
       });
-      document.body.appendChild(target);
     });
     afterEach(function() {
       map.setTarget(null);
       document.body.removeChild(target);
     });
-    it('calculates the size correctly', function() {
-      let size = map.getView().getSizeFromViewport_();
+    it('correctly initializes the viewport size', function() {
+      const size = map.getView().getViewportSize_();
       expect(size).to.eql([200, 150]);
-      size = map.getView().getSizeFromViewport_(Math.PI / 2);
+    });
+    it('correctly updates the viewport size', function() {
+      target.style.width = '300px';
+      target.style.height = '200px';
+      map.updateSize();
+      const size = map.getView().getViewportSize_();
+      expect(size).to.eql([300, 200]);
+    });
+    it('calculates the size correctly', function() {
+      let size = map.getView().getViewportSize_(Math.PI / 2);
       expect(size[0]).to.roughlyEqual(150, 1e-9);
       expect(size[1]).to.roughlyEqual(200, 1e-9);
-      size = map.getView().getSizeFromViewport_(Math.PI);
+      size = map.getView().getViewportSize_(Math.PI);
       expect(size[0]).to.roughlyEqual(200, 1e-9);
       expect(size[1]).to.roughlyEqual(150, 1e-9);
     });
