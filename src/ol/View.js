@@ -976,17 +976,17 @@ class View extends BaseObject {
    * @return {function(number): number} Value for resolution function.
    */
   getValueForResolutionFunction(opt_power) {
-    const power = opt_power || 2;
+    const logPower = Math.log(opt_power || 2);
     const maxResolution = this.maxResolution_;
     const minResolution = this.minResolution_;
-    const max = Math.log(maxResolution / minResolution) / Math.log(power);
+    const max = Math.log(maxResolution / minResolution) / logPower;
     return (
       /**
        * @param {number} resolution Resolution.
        * @return {number} Value.
        */
       function(resolution) {
-        const value = (Math.log(maxResolution / resolution) / Math.log(power)) / max;
+        const value = (Math.log(maxResolution / resolution) / logPower) / max;
         return value;
       });
   }
