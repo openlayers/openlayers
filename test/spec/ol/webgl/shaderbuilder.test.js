@@ -30,10 +30,24 @@ varying float v_opacity;
 varying vec3 v_test;
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
-  vec2 size = vec2(6.0);
+  vec2 halfSize = vec2(6.0) * 0.5;
   vec2 offset = vec2(5.0, -7.0);
-  float offsetX = a_index == 0.0 || a_index == 3.0 ? offset.x - size.x / 2.0 : offset.x + size.x / 2.0;
-  float offsetY = a_index == 0.0 || a_index == 1.0 ? offset.y - size.y / 2.0 : offset.y + size.y / 2.0;
+  float angle = 0.0;
+  float offsetX;
+  float offsetY;
+  if (a_index == 0.0) {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  } else if (a_index == 1.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else if (a_index == 2.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  }
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
@@ -72,10 +86,24 @@ varying vec2 v_quadCoord;
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
-  vec2 size = vec2(6.0);
+  vec2 halfSize = vec2(6.0) * 0.5;
   vec2 offset = vec2(5.0, -7.0);
-  float offsetX = a_index == 0.0 || a_index == 3.0 ? offset.x - size.x / 2.0 : offset.x + size.x / 2.0;
-  float offsetY = a_index == 0.0 || a_index == 1.0 ? offset.y - size.y / 2.0 : offset.y + size.y / 2.0;
+  float angle = 0.0;
+  float offsetX;
+  float offsetY;
+  if (a_index == 0.0) {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  } else if (a_index == 1.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else if (a_index == 2.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  }
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
@@ -112,10 +140,24 @@ varying vec2 v_quadCoord;
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
-  vec2 size = vec2(6.0);
+  vec2 halfSize = vec2(6.0) * 0.5;
   vec2 offset = vec2(5.0, -7.0);
-  float offsetX = a_index == 0.0 || a_index == 3.0 ? offset.x - size.x / 2.0 : offset.x + size.x / 2.0;
-  float offsetY = a_index == 0.0 || a_index == 1.0 ? offset.y - size.y / 2.0 : offset.y + size.y / 2.0;
+  float angle = 0.0;
+  float offsetX;
+  float offsetY;
+  if (a_index == 0.0) {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  } else if (a_index == 1.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else if (a_index == 2.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  }
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
@@ -147,10 +189,24 @@ varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
-  vec2 size = vec2(1.0);
+  vec2 halfSize = vec2(1.0) * 0.5;
   vec2 offset = vec2(0.0);
-  float offsetX = a_index == 0.0 || a_index == 3.0 ? offset.x - size.x / 2.0 : offset.x + size.x / 2.0;
-  float offsetY = a_index == 0.0 || a_index == 1.0 ? offset.y - size.y / 2.0 : offset.y + size.y / 2.0;
+  float angle = 0.0;
+  float offsetX;
+  float offsetY;
+  if (a_index == 0.0) {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  } else if (a_index == 1.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else if (a_index == 2.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  }
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = vec4(0.0, 0.0, 1.0, 1.0);
@@ -161,6 +217,58 @@ void main(void) {
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
   v_hitColor = a_hitColor;
+}`);
+    });
+    it('generates a symbol vertex shader (with a rotation expression)', function() {
+      const builder = new ShaderBuilder();
+      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
+      builder.setRotationExpression('u_time * 0.2');
+
+      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_offsetScaleMatrix;
+uniform mat4 u_offsetRotateMatrix;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+
+attribute vec2 a_position;
+attribute float a_index;
+
+varying vec2 v_texCoord;
+varying vec2 v_quadCoord;
+
+void main(void) {
+  mat4 offsetMatrix = u_offsetScaleMatrix;
+  vec2 halfSize = vec2(6.0) * 0.5;
+  vec2 offset = vec2(5.0, -7.0);
+  float angle = u_time * 0.2;
+  float offsetX;
+  float offsetY;
+  if (a_index == 0.0) {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  } else if (a_index == 1.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else if (a_index == 2.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  }
+  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  vec4 texCoord = vec4(0.0, 0.0, 1.0, 1.0);
+  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
+  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  v_texCoord = vec2(u, v);
+  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
+  v_quadCoord = vec2(u, v);
+
 }`);
     });
   });

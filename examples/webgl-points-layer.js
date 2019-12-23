@@ -95,6 +95,35 @@ const predefinedStyles = {
       offset: [0, 0],
       opacity: 0.95
     }
+  },
+  'rotating-bars': {
+    symbol: {
+      symbolType: 'square',
+      rotation: ['*', [
+        'time'
+      ], 0.1],
+      size: ['array', 4, [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        20000, 4,
+        300000, 28]
+      ],
+      color: [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        20000, '#ffdc00',
+        300000, '#ff5b19'
+      ],
+      offset: ['array', 0, [
+        'interpolate',
+        ['linear'],
+        ['get', 'population'],
+        20000, 2,
+        300000, 14]
+      ]
+    }
   }
 };
 
@@ -167,3 +196,10 @@ function onSelectChange() {
 }
 onSelectChange();
 select.addEventListener('change', onSelectChange);
+
+// animate the map
+function animate() {
+  map.render();
+  window.requestAnimationFrame(animate);
+}
+animate();
