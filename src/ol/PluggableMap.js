@@ -1,7 +1,6 @@
 /**
  * @module ol/PluggableMap
  */
-import {getUid} from './util.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
@@ -1102,7 +1101,8 @@ class PluggableMap extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.viewport_.setAttribute('data-view', getUid(view));
+      this.updateViewportSize_();
+
       this.viewPropertyListenerKey_ = listen(
         view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
@@ -1359,6 +1359,27 @@ class PluggableMap extends BaseObject {
             parseFloat(computedStyle['paddingBottom']) -
             parseFloat(computedStyle['borderBottomWidth'])
       ]);
+    }
+
+    this.updateViewportSize_();
+  }
+
+  /**
+   * Recomputes the viewport size and save it on the view object (if any)
+   * @private
+   */
+  updateViewportSize_() {
+    const view = this.getView();
+    if (view) {
+      let size = undefined;
+      const computedStyle = getComputedStyle(this.viewport_);
+      if (computedStyle.width && computedStyle.height) {
+        size = [
+          parseInt(computedStyle.width, 10),
+          parseInt(computedStyle.height, 10)
+        ];
+      }
+      view.setViewportSize(size);
     }
   }
 }
