@@ -234,10 +234,10 @@ class Feature extends BaseObject {
    * @api
    * @fires module:ol/events/Event~BaseEvent#event:change
    */
-  setStyle(style,silent=false) {
+  setStyle(style, silent = false) {
     this.style_ = style;
     this.styleFunction_ = !style ? undefined : createStyleFunction(style);
-    if(!silent){
+    if (!silent) {
       this.changed();
     }
   }
