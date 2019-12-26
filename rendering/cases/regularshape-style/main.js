@@ -23,7 +23,7 @@ function createFeatures(stroke, fill, offSet = [0, 0]) {
       points: 4,
       radius: 10,
       angle: Math.PI / 4,
-      offset: [-15, 15]
+      displacement: [-15, 15]
     })
   }));
   vectorSource.addFeature(feature);

@@ -10,7 +10,7 @@ import {abstract} from '../util.js';
  * @property {boolean} rotateWithView
  * @property {number} rotation
  * @property {number} scale
- * @property {Array<number>} offset
+ * @property {Array<number>} displacement
  */
 
 
@@ -56,7 +56,7 @@ class ImageStyle {
      * @private
      * @type {Array<number>}
      */
-    this.offset_ = options.offset;
+    this.displacement_ = options.displacement;
 
   }
 
@@ -71,7 +71,7 @@ class ImageStyle {
       scale: this.getScale(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
-      offset: this.getOffset().slice()
+      displacement: this.getDisplacement().slice()
     });
   }
 
@@ -112,12 +112,12 @@ class ImageStyle {
   }
 
   /**
-   * Get the offset of the shape
-   * @return {Array<number>} Shape's center offset
+   * Get the displacement of the shape
+   * @return {Array<number>} Shape's center displacement
    * @api
    */
-  getOffset() {
-    return this.offset_;
+  getDisplacement() {
+    return this.displacement_;
   }
 
   /**
