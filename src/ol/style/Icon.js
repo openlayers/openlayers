@@ -33,7 +33,7 @@ import ImageStyle from './Image.js';
  * to provide the size of the image, with the `imgSize` option.
  * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
- * @property {Array<number>} [displacement=[0,0]] Displacement the icon from the center
+ * @property {Array<number>} [displacement=[0,0]] Displacement the icon
  * @property {import("./IconOrigin.js").default} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
  * @property {number} [opacity=1] Opacity of the icon.
