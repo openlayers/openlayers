@@ -135,12 +135,15 @@ export function render(width, height, pixelRatio,
     const srcWidth = getWidth(src.extent);
     const srcHeight = getHeight(src.extent);
 
-    stitchContext.drawImage(
-      src.image,
-      gutter, gutter,
-      src.image.width - 2 * gutter, src.image.height - 2 * gutter,
-      xPos * stitchScale, yPos * stitchScale,
-      srcWidth * stitchScale, srcHeight * stitchScale);
+    // This test should never fail -- but it does. Need to find a fix the upstream condition
+    if (src.image.width > 0 && src.image.height > 0) {
+      stitchContext.drawImage(
+        src.image,
+        gutter, gutter,
+        src.image.width - 2 * gutter, src.image.height - 2 * gutter,
+        xPos * stitchScale, yPos * stitchScale,
+        srcWidth * stitchScale, srcHeight * stitchScale);
+    }
   });
 
   const targetTopLeft = getTopLeft(targetExtent);
