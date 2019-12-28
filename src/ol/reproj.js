@@ -2,7 +2,7 @@
  * @module ol/reproj
  */
 import {createCanvasContext2D} from './dom.js';
-import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
+import {containsCoordinate, createEmpty, extend, forEachCorner, getCenter, getHeight, getTopLeft, getWidth} from './extent.js';
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
 
@@ -47,6 +47,35 @@ export function calculateSourceResolution(sourceProj, targetProj,
     if (isFinite(compensationFactor) && compensationFactor > 0) {
       sourceResolution /= compensationFactor;
     }
+  }
+
+  return sourceResolution;
+}
+
+
+/**
+ * Calculates ideal resolution to use from the source in order to achieve
+ * pixel mapping as close as possible to 1:1 during reprojection.
+ * The resolution is calculated regardless of what resolutions
+ * are actually available in the dataset (TileGrid, Image, ...).
+ *
+ * @param {import("./proj/Projection.js").default} sourceProj Source projection.
+ * @param {import("./proj/Projection.js").default} targetProj Target projection.
+ * @param {import("./extent.js").Extent} targetExtent Target extent
+ * @param {number} targetResolution Target resolution.
+ * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
+ */
+export function calculateSourceExtentResolution(sourceProj, targetProj,
+  targetExtent, targetResolution) {
+
+  const targetCenter = getCenter(targetExtent);
+  let sourceResolution = calculateSourceResolution(sourceProj, targetProj, targetCenter, targetResolution);
+
+  if (!isFinite(sourceResolution) || sourceResolution <= 0) {
+    forEachCorner(targetExtent, function(corner) {
+      sourceResolution = calculateSourceResolution(sourceProj, targetProj, corner, targetResolution);
+      return isFinite(sourceResolution) && sourceResolution > 0;
+    });
   }
 
   return sourceResolution;
