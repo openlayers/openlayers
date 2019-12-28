@@ -321,7 +321,7 @@ class Triangulation {
     }
 
     this.addTriangle_(a, c, d, aSrc, cSrc, dSrc);
-    this.addTriangle_(a, b, c, aSrc, bSrc, cSrc);
+    this.addTriangle_(a, c, b, aSrc, cSrc, bSrc);
   }
 
   /**

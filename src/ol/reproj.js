@@ -54,24 +54,6 @@ export function calculateSourceResolution(sourceProj, targetProj,
 
 
 /**
- * Enlarge the clipping triangle point by 1 pixel to ensure the edges overlap
- * in order to mask gaps caused by antialiasing.
- *
- * @param {number} centroidX Centroid of the triangle (x coordinate in pixels).
- * @param {number} centroidY Centroid of the triangle (y coordinate in pixels).
- * @param {number} x X coordinate of the point (in pixels).
- * @param {number} y Y coordinate of the point (in pixels).
- * @return {import("./coordinate.js").Coordinate} New point 1 px farther from the centroid.
- */
-function enlargeClipPoint(centroidX, centroidY, x, y) {
-  const dX = x - centroidX;
-  const dY = y - centroidY;
-  const distance = Math.sqrt(dX * dX + dY * dY);
-  return [Math.round(x + dX / distance), Math.round(y + dY / distance)];
-}
-
-
-/**
  * Renders the source data into new canvas based on the triangulation.
  *
  * @param {number} width Width of the canvas.
@@ -102,6 +84,8 @@ export function render(width, height, pixelRatio,
   }
 
   context.scale(pixelRatio, pixelRatio);
+
+  context.globalCompositeOperation = 'lighter';
 
   const sourceDataExtent = createEmpty();
   sources.forEach(function(src, i, arr) {
@@ -190,15 +174,10 @@ export function render(width, height, pixelRatio,
 
     context.save();
     context.beginPath();
-    const centroidX = (u0 + u1 + u2) / 3;
-    const centroidY = (v0 + v1 + v2) / 3;
-    const p0 = enlargeClipPoint(centroidX, centroidY, u0, v0);
-    const p1 = enlargeClipPoint(centroidX, centroidY, u1, v1);
-    const p2 = enlargeClipPoint(centroidX, centroidY, u2, v2);
 
-    context.moveTo(p1[0], p1[1]);
-    context.lineTo(p0[0], p0[1]);
-    context.lineTo(p2[0], p2[1]);
+    context.moveTo(u1, v1);
+    context.lineTo(u0, v0);
+    context.lineTo(u2, v2);
     context.clip();
 
     context.transform(
