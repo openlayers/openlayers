@@ -251,10 +251,10 @@ class Triangulation {
           isFinite(sourceQuadExtent[1]) &&
           isFinite(sourceQuadExtent[2]) &&
           isFinite(sourceQuadExtent[3])) {
-          if (!intersects(sourceQuadExtent, this.maxSourceExtent_)) {
-            // whole quad outside source projection extent -> ignore
-            return;
-          }
+        if (!intersects(sourceQuadExtent, this.maxSourceExtent_)) {
+          // whole quad outside source projection extent -> ignore
+          return;
+        }
       }
     }
 
