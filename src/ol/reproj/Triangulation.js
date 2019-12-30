@@ -271,10 +271,10 @@ class Triangulation {
           // It might be the case that only 1 of the points is infinite. In this case
           // we can draw a single triangle with the other three points
           isNotFinite =
-              (((!isFinite(aSrc[0]) || !isFinite(aSrc[1])) | 0) << 3) +
-              (((!isFinite(bSrc[0]) || !isFinite(bSrc[1])) | 0) << 2) +
-              (((!isFinite(cSrc[0]) || !isFinite(cSrc[1])) | 0) << 1) +
-               ((!isFinite(dSrc[0]) || !isFinite(dSrc[1])) | 0);
+              ((!isFinite(aSrc[0]) || !isFinite(aSrc[1])) ? 8 : 0) +
+              ((!isFinite(bSrc[0]) || !isFinite(bSrc[1])) ? 4 : 0) +
+              ((!isFinite(cSrc[0]) || !isFinite(cSrc[1])) ? 2 : 0) +
+              ((!isFinite(dSrc[0]) || !isFinite(dSrc[1])) ? 1 : 0);
           if (isNotFinite != 1 && isNotFinite != 2 && isNotFinite != 4 && isNotFinite != 8) {
             return;
           }
