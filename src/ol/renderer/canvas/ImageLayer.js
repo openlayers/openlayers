@@ -55,16 +55,20 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] && !isEmpty(renderedExtent)) {
-      let projection = viewState.projection;
-      if (!ENABLE_RASTER_REPROJECTION) {
-        const sourceProjection = imageSource.getProjection();
-        if (sourceProjection) {
-          projection = sourceProjection;
+      if (imageSource) {
+        let projection = viewState.projection;
+        if (!ENABLE_RASTER_REPROJECTION) {
+          const sourceProjection = imageSource.getProjection();
+          if (sourceProjection) {
+            projection = sourceProjection;
+          }
         }
-      }
-      const image = imageSource.getImage(renderedExtent, viewResolution, pixelRatio, projection);
-      if (image && this.loadImage(image)) {
-        this.image_ = image;
+        const image = imageSource.getImage(renderedExtent, viewResolution, pixelRatio, projection);
+        if (image && this.loadImage(image)) {
+          this.image_ = image;
+        }
+      } else {
+        this.image_ = null;
       }
     }
 
