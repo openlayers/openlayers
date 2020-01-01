@@ -230,8 +230,7 @@ class TileImage extends UrlTile {
     } else {
       const projKey = getUid(projection);
       if (!(projKey in this.tileCacheForProjection)) {
-        // Make the tile cache is big enough to avoid disposal of tiles that are still needed
-        this.tileCacheForProjection[projKey] = new TileCache(5 * this.tileCache.highWaterMark);
+        this.tileCacheForProjection[projKey] = new TileCache(this.tileCache.highWaterMark);
       }
       return this.tileCacheForProjection[projKey];
     }

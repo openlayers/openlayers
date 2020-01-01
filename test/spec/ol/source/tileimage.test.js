@@ -28,7 +28,7 @@ describe('ol.source.TileImage', function() {
     it('uses 5 times the cacheSize for reprojected tile caches', function() {
       const source = createSource(undefined, undefined, 42);
       const tileCache = source.getTileCacheForProjection(getProjection('EPSG:4326'));
-      expect(tileCache.highWaterMark).to.be(source.tileCache.highWaterMark * 5);
+      expect(tileCache.highWaterMark).to.be(source.tileCache.highWaterMark);
       expect(tileCache).to.not.equal(source.getTileCacheForProjection(source.getProjection()));
     });
   });
