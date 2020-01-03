@@ -32,8 +32,6 @@ describe('ol.TileCache', function() {
         '2/1/0',
         '2/0/0'
       ]);
-
-      expect(tiles[0].dispose.calledOnce).to.be(true);
     });
   });
 });
