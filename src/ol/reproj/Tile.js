@@ -204,16 +204,6 @@ class ReprojTile extends Tile {
   }
 
   /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    if (this.state == TileState.LOADING) {
-      this.unlistenSources_();
-    }
-    super.disposeInternal();
-  }
-
-  /**
    * Get the HTML Canvas element for this tile.
    * @return {HTMLCanvasElement} Canvas.
    */
