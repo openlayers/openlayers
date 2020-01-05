@@ -26,7 +26,7 @@ class VectorRenderTile extends Tile {
    * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
    * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
-   * to get an source tiles for this tile.
+   * to get source tiles for this tile.
    */
   constructor(tileCoord, state, urlTileCoord, getSourceTiles) {
 
@@ -75,7 +75,7 @@ class VectorRenderTile extends Tile {
     /**
      * @type {!function():Array<import("./VectorTile.js").default>}
      */
-    this.getSourceTiles = getSourceTiles.bind(this, this);
+    this.getSourceTiles = getSourceTiles.bind(undefined, this);
 
     /**
      * z of the source tiles of the last getSourceTiles call.
