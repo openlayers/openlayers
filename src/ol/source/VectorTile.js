@@ -13,6 +13,7 @@ import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js'
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
 import {equals} from '../array.js';
+import TileCache from '../TileCache.js';
 
 /**
  * @typedef {Object} Options
@@ -139,9 +140,9 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {Object<string, import("../VectorTile.js").default>}
+     * @type {TileCache}
      */
-    this.sourceTileByKey_ = {};
+    this.sourceTileCache = new TileCache(this.tileCache.highWaterMark);
 
     /**
      * @private
@@ -227,7 +228,7 @@ class VectorTile extends UrlTile {
    */
   clear() {
     this.tileCache.clear();
-    this.sourceTileByKey_ = {};
+    this.sourceTileCache.clear();
     this.sourceTilesByTileKey_ = {};
   }
 
@@ -269,8 +270,8 @@ class VectorTile extends UrlTile {
           const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           let sourceTile;
           if (tileUrl !== undefined) {
-            if (tileUrl in this.sourceTileByKey_) {
-              sourceTile = this.sourceTileByKey_[tileUrl];
+            if (this.sourceTileCache.containsKey(tileUrl)) {
+              sourceTile = this.sourceTileCache.get(tileUrl);
               const state = sourceTile.getState();
               if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
                 sourceTiles.push(sourceTile);
@@ -282,7 +283,7 @@ class VectorTile extends UrlTile {
               sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
               sourceTile.projection = projection;
               sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-              this.sourceTileByKey_[tileUrl] = sourceTile;
+              this.sourceTileCache.set(tileUrl, sourceTile);
               sourceTile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
               sourceTile.load();
             }
@@ -333,6 +334,7 @@ class VectorTile extends UrlTile {
         this.addSourceTiles(tile, sourceTiles);
       }
     }
+    this.sourceTileCache.expireCache({});
     return sourceTiles;
   }
 
@@ -342,28 +344,13 @@ class VectorTile extends UrlTile {
    */
   addSourceTiles(tile, sourceTiles) {
     this.sourceTilesByTileKey_[tile.getKey()] = sourceTiles;
-    for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-      sourceTiles[i].consumers++;
-    }
   }
 
   /**
    * @param {VectorRenderTile} tile Tile.
    */
   removeSourceTiles(tile) {
-    const tileKey = tile.getKey();
-    if (tileKey in this.sourceTilesByTileKey_) {
-      const sourceTiles = this.sourceTilesByTileKey_[tileKey];
-      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        const sourceTile = sourceTiles[i];
-        sourceTile.consumers--;
-        if (sourceTile.consumers === 0) {
-          sourceTile.dispose();
-          delete this.sourceTileByKey_[sourceTile.getKey()];
-        }
-      }
-    }
-    delete this.sourceTilesByTileKey_[tileKey];
+    delete this.sourceTilesByTileKey_[tile.getKey()];
   }
 
   /**

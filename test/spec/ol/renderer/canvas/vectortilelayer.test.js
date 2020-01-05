@@ -315,7 +315,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: createXYZ()
       });
-      source.sourceTileByKey_[sourceTile.getKey()] = sourceTile;
+      source.sourceTileCache.set('0/0/0.mvt', sourceTile);
       source.sourceTilesByTileKey_[sourceTile.getKey()] = [sourceTile];
       executorGroup = {};
       source.getTile = function() {
