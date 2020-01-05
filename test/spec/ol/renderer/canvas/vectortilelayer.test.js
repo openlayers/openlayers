@@ -316,10 +316,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileGrid: createXYZ()
       });
       source.sourceTileCache.set('0/0/0.mvt', sourceTile);
-      source.sourceTilesByTileKey_[sourceTile.getKey()] = [sourceTile];
       executorGroup = {};
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.sourceTiles = [sourceTile];
         tile.executorGroups[getUid(layer)] = [executorGroup];
         return tile;
       };

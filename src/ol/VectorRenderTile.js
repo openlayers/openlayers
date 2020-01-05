@@ -68,6 +68,11 @@ class VectorRenderTile extends Tile {
     this.replayState_ = {};
 
     /**
+     * @type {Array<import("./VectorTile.js").default>}
+     */
+    this.sourceTiles = null;
+
+    /**
      * @type {number}
      */
     this.wantedResolution;

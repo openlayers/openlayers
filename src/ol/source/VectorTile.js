@@ -146,12 +146,6 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {Object<string, Array<import("../VectorTile.js").default>>}
-     */
-    this.sourceTilesByTileKey_ = {};
-
-    /**
-     * @private
      * @type {boolean}
      */
     this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
@@ -229,7 +223,6 @@ class VectorTile extends UrlTile {
   clear() {
     this.tileCache.clear();
     this.sourceTileCache.clear();
-    this.sourceTilesByTileKey_ = {};
   }
 
   /**
@@ -254,7 +247,7 @@ class VectorTile extends UrlTile {
     const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
     const minZoom = sourceTileGrid.getMinZoom();
 
-    const previousSourceTiles = this.sourceTilesByTileKey_[tile.getKey()];
+    const previousSourceTiles = tile.sourceTiles;
     let sourceTiles, covered, loadedZ;
     if (previousSourceTiles && previousSourceTiles.length > 0 && previousSourceTiles[0].tileCoord[0] === sourceZ) {
       sourceTiles = previousSourceTiles;
@@ -330,27 +323,11 @@ class VectorTile extends UrlTile {
       if (tile.getState() < TileState.LOADED) {
         tile.setState(TileState.LOADED);
       } else if (!previousSourceTiles || !equals(sourceTiles, previousSourceTiles)) {
-        this.removeSourceTiles(tile);
-        this.addSourceTiles(tile, sourceTiles);
+        tile.sourceTiles = sourceTiles;
       }
     }
     this.sourceTileCache.expireCache({});
     return sourceTiles;
-  }
-
-  /**
-   * @param {VectorRenderTile} tile Tile.
-   * @param {Array<import("../VectorTile").default>} sourceTiles Source tiles.
-   */
-  addSourceTiles(tile, sourceTiles) {
-    this.sourceTilesByTileKey_[tile.getKey()] = sourceTiles;
-  }
-
-  /**
-   * @param {VectorRenderTile} tile Tile.
-   */
-  removeSourceTiles(tile) {
-    delete this.sourceTilesByTileKey_[tile.getKey()];
   }
 
   /**
