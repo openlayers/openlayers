@@ -407,7 +407,6 @@ class VectorTile extends UrlTile {
       tileCoord,
       empty ? TileState.EMPTY : TileState.IDLE,
       urlTileCoord,
-      this.tileGrid,
       this.getSourceTiles.bind(this, pixelRatio, projection));
 
     newTile.key = key;

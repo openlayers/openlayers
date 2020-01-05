@@ -255,11 +255,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
+      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0],
         function() {
           return sourceTile;
-        },
-        function() {});
+        });
       tile.transition_ = 0;
       tile.setState(TileState.LOADED);
       layer.getSource().getTile = function() {
