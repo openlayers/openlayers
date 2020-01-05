@@ -122,27 +122,3 @@ export function replaceChildren(node, children) {
     node.insertBefore(newChild, oldChild);
   }
 }
-
-let document_ = undefined;
-
-/**
- * Register a Document to use when creating nodes for XML serializations. Can be used
- * to inject a Document where there is no globally available implementation.
- *
- * @param {Document} document A Document.
- * @api
- */
-export function registerDocument(document) {
-  document_ = document;
-}
-
-/**
- * Get a document that should be used when creating nodes for XML serializations.
- * @return {Document} The document.
- */
-export function getDocument() {
-  if (document_ === undefined && typeof document !== 'undefined') {
-    document_ = document.implementation.createDocument('', '', null);
-  }
-  return document_;
-}

@@ -1,8 +1,7 @@
 /**
  * @module ol/format/xsd
  */
-import {getDocument} from '../dom.js';
-import {getAllTextContent} from '../xml.js';
+import {getAllTextContent, getDocument} from '../xml.js';
 import {padNumber} from '../string.js';
 
 
