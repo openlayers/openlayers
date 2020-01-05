@@ -4,7 +4,6 @@
 import {getUid} from './util.js';
 import Tile from './Tile.js';
 import {createCanvasContext2D} from './dom.js';
-import {unlistenByKey} from './events.js';
 
 
 /**
@@ -29,10 +28,8 @@ class VectorRenderTile extends Tile {
    * @param {import("./tilegrid/TileGrid.js").default} sourceTileGrid Tile grid of the source.
    * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
    * to get an source tiles for this tile.
-   * @param {function(VectorRenderTile):void} removeSourceTiles Function to remove this tile from its
-   * source tiles's consumer count.
    */
-  constructor(tileCoord, state, urlTileCoord, sourceTileGrid, getSourceTiles, removeSourceTiles) {
+  constructor(tileCoord, state, urlTileCoord, sourceTileGrid, getSourceTiles) {
 
     super(tileCoord, state, {transition: 0});
 
@@ -82,20 +79,10 @@ class VectorRenderTile extends Tile {
     this.getSourceTiles = getSourceTiles.bind(this, this);
 
     /**
-     * @type {!function(import("./VectorRenderTile.js").default):void}
-     */
-    this.removeSourceTiles_ = removeSourceTiles;
-
-    /**
      * @private
      * @type {import("./tilegrid/TileGrid.js").default}
      */
     this.sourceTileGrid_ = sourceTileGrid;
-
-    /**
-     * @type {Array<import("./events.js").EventsKey>}
-     */
-    this.sourceTileListenerKeys = [];
 
     /**
      * z of the source tiles of the last getSourceTiles call.
@@ -113,21 +100,6 @@ class VectorRenderTile extends Tile {
      * @type {import("./tilecoord.js").TileCoord}
      */
     this.wrappedTileCoord = urlTileCoord;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    this.sourceTileListenerKeys.forEach(unlistenByKey);
-    this.sourceTileListenerKeys.length = 0;
-    this.removeSourceTiles_(this);
-    for (const key in this.context_) {
-      const canvas = this.context_[key].canvas;
-      canvas.width = 0;
-      canvas.height = 0;
-    }
-    super.disposeInternal();
   }
 
   /**

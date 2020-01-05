@@ -12,8 +12,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
 import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
-import {equals, remove} from '../array.js';
-import {listen, unlistenByKey} from '../events.js';
+import {equals} from '../array.js';
 
 /**
  * @typedef {Object} Options
@@ -294,13 +293,12 @@ class VectorTile extends UrlTile {
           }
           if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
             tile.loadingSourceTiles++;
-            const key = listen(sourceTile, EventType.CHANGE, function() {
+            sourceTile.addEventListener(EventType.CHANGE, function listenChange() {
               const state = sourceTile.getState();
               const sourceTileKey = sourceTile.getKey();
               if (state === TileState.LOADED || state === TileState.ERROR) {
                 if (state === TileState.LOADED) {
-                  remove(tile.sourceTileListenerKeys, key);
-                  unlistenByKey(key);
+                  sourceTile.removeEventListener(EventType.CHANGE, listenChange);
                   tile.loadingSourceTiles--;
                   delete tile.errorSourceTileKeys[sourceTileKey];
                 } else if (state === TileState.ERROR) {
@@ -314,7 +312,6 @@ class VectorTile extends UrlTile {
                 }
               }
             });
-            tile.sourceTileListenerKeys.push(key);
           }
         }.bind(this));
         if (!covered) {
@@ -411,8 +408,7 @@ class VectorTile extends UrlTile {
       empty ? TileState.EMPTY : TileState.IDLE,
       urlTileCoord,
       this.tileGrid,
-      this.getSourceTiles.bind(this, pixelRatio, projection),
-      this.removeSourceTiles.bind(this));
+      this.getSourceTiles.bind(this, pixelRatio, projection));
 
     newTile.key = key;
     if (tile) {
