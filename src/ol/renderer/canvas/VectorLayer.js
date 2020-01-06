@@ -11,16 +11,6 @@ import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {toString as transformToString, makeScale, makeInverse, apply} from '../../transform.js';
 import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
-import VectorSource from '../../source/Vector.js';
-
-
-/**
- * @const
- * @type {VectorSource}
- * @private
- */
-const emptySource = new VectorSource();
-
 
 /**
  * @classdesc
@@ -338,7 +328,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   prepareFrame(frameState) {
     const vectorLayer = this.getLayer();
-    const vectorSource = vectorLayer.getSource() || emptySource;
+    const vectorSource = vectorLayer.getSource();
+    if (!vectorSource) {
+      return false;
+    }
 
     const animating = frameState.viewHints[ViewHint.ANIMATING];
     const interacting = frameState.viewHints[ViewHint.INTERACTING];
