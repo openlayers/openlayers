@@ -337,6 +337,9 @@ class Triangulation {
     }
 
     // Exactly zero or one of *Src is not finite
+    // The triangles must have the diagonal line as the first side
+    // This is to allow easy code in reproj.s to make it straight for broken
+    // browsers that can't handle diagonal clipping
     if ((isNotFinite & 0xb) == 0) {
       this.addTriangle_(a, c, d, aSrc, cSrc, dSrc);
     }

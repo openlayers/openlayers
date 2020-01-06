@@ -6,6 +6,68 @@ import {containsCoordinate, createEmpty, extend, forEachCorner, getCenter, getHe
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
 
+let brokenDiagonalRendering_;
+
+/**
+ * This draws a small triangle into a canvas by setting the triangle as the clip region
+ * and then drawing a (too large) rectangle
+ *
+ * @param {CanvasRenderingContext2D} ctx The context in which to draw the triangle
+ * @param {number} u1 The x-coordinate of the second point. The first point is 0,0.
+ * @param {number} v1 The y-coordinate of the second point.
+ * @param {number} u2 The x-coordinate of the third point.
+ * @param {number} v2 The y-coordinate of the third point.
+ */
+function drawTestTriangle(ctx, u1, v1, u2, v2) {
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(u1, v1);
+  ctx.lineTo(u2, v2);
+  ctx.closePath();
+  ctx.save();
+  ctx.clip();
+  ctx.fillRect(0, 0, Math.max(u1, u2) + 1, Math.max(v1, v2));
+  ctx.restore();
+}
+
+/**
+ * Given the data from getImageData, see if the right values appear at the provided offset.
+ * Returns true if either the color or transparency is off
+ *
+ * @param {Uint8ClampedArray} data The data returned from getImageData
+ * @param {number} offset The pixel offset from the start of data.
+ * @return {boolean} true if the diagonal rendering is broken
+ */
+function verifyBrokenDiagonalRendering(data, offset) {
+  // the values ought to be close to the rgba(210, 0, 0, 0.75)
+  return Math.abs(data[offset * 4] - 210) > 2 || Math.abs(data[offset * 4 + 3] - 0.75 * 255) > 2;
+}
+
+/**
+ * Determines if the current browser configuration can render triangular clip regions correctly.
+ * This value is cached so the function is only expensive the first time called.
+ * Firefox on Windows (as of now) does not if HWA is enabled. See https://bugzilla.mozilla.org/show_bug.cgi?id=1606976
+ * IE also doesn't. Chrome works, and everything seems to work on OSX and Android. This function caches the
+ * result. I suppose that it is conceivably possible that a browser might flip modes while the app is
+ * running, but lets hope not.
+ *
+ * @return {boolean} true if the Diagonal Rendering is broken.
+ */
+function isBrokenDiagonalRendering() {
+  if (brokenDiagonalRendering_ === undefined) {
+    const ctx = document.createElement('canvas').getContext('2d');
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = 'rgba(210, 0, 0, 0.75)';
+    drawTestTriangle(ctx, 4, 5, 4, 0);
+    drawTestTriangle(ctx, 4, 5, 0, 5);
+    const data = ctx.getImageData(0, 0, 3, 3).data;
+    brokenDiagonalRendering_ = verifyBrokenDiagonalRendering(data, 0) ||
+        verifyBrokenDiagonalRendering(data, 4) ||
+        verifyBrokenDiagonalRendering(data, 8);
+  }
+
+  return brokenDiagonalRendering_;
+}
 
 /**
  * Calculates ideal resolution to use from the source in order to achieve
@@ -207,9 +269,36 @@ export function render(width, height, pixelRatio,
     context.save();
     context.beginPath();
 
-    context.moveTo(u1, v1);
-    context.lineTo(u0, v0);
-    context.lineTo(u2, v2);
+    if (isBrokenDiagonalRendering()) {
+      // Make sure that everything is on pixel boundaries
+      const u0r = Math.round(u0);
+      const v0r = Math.round(v0);
+      const u1r = Math.round(u1);
+      const v1r = Math.round(v1);
+      const u2r = Math.round(u2);
+      const v2r = Math.round(v2);
+      // Make sure that all lines are horizontal or vertical
+      context.moveTo(u1r, v1r);
+      // This is the diagonal line. Do it in 4 steps
+      const steps = 4;
+      const ud = u0r - u1r;
+      const vd = v0r - v1r;
+      for (let step = 0; step < steps; step++) {
+        // Go horizontally
+        context.lineTo(u1r + Math.round((step + 1) * ud / steps), v1r + Math.round(step * vd / (steps - 1)));
+        // Go vertically
+        if (step != (steps - 1)) {
+          context.lineTo(u1r + Math.round((step + 1) * ud / steps), v1r + Math.round((step + 1) * vd / (steps - 1)));
+        }
+      }
+      // We are almost at u0r, v0r
+      context.lineTo(u2r, v2r);
+    } else {
+      context.moveTo(u1, v1);
+      context.lineTo(u0, v0);
+      context.lineTo(u2, v2);
+    }
+
     context.clip();
 
     context.transform(

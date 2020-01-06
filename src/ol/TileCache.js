@@ -24,7 +24,8 @@ class TileCache extends LRUCache {
       if (tile.getKey() in usedTiles) {
         break;
       } else {
-        this.pop().dispose();
+        // This lets the GC clean up the object
+        this.pop();
       }
     }
   }
