@@ -294,7 +294,9 @@ class Heatmap extends VectorLayer {
               gl_FragColor.rgb *= gl_FragColor.a;
             }`,
           uniforms: {
-            u_gradientTexture: this.gradient_
+            u_gradientTexture: function() {
+              return this.gradient_;
+            }.bind(this)
           }
         }
       ]
