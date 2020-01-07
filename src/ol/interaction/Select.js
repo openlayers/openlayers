@@ -169,6 +169,16 @@ class Select extends Interaction {
 
     /**
      * @private
+     */
+    this.boundAddFeature_ = this.addFeature_.bind(this);
+
+    /**
+     * @private
+     */
+    this.boundRemoveFeature_ = this.removeFeature_.bind(this);
+
+    /**
+     * @private
      * @type {import("../events/condition.js").Condition}
      */
     this.condition_ = options.condition ? options.condition : singleClick;
@@ -250,9 +260,8 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    const features = this.getFeatures();
-    features.addEventListener(CollectionEventType.ADD, this.addFeature_.bind(this));
-    features.addEventListener(CollectionEventType.REMOVE, this.removeFeature_.bind(this));
+    this.features_.addEventListener(CollectionEventType.ADD, this.boundAddFeature_);
+    this.features_.addEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
   }
 
   /**
@@ -322,6 +331,10 @@ class Select extends Interaction {
     super.setMap(map);
     if (map && this.style_) {
       this.features_.forEach(this.applySelectedStyle_.bind(this));
+    }
+    if (!map) {
+      this.features_.removeEventListener(CollectionEventType.ADD, this.boundAddFeature_);
+      this.features_.removeEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
     }
   }
 
