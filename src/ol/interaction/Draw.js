@@ -915,17 +915,16 @@ class Draw extends PointerInteraction {
 
     // Duplicate last coordinate for sketch drawing
     this.addToDrawing_(ending);
-    //this.addToDrawing_(coordinateExtension[coordinateExtension.length - 1]);
   }
 
   /**
-   * Extend an existing geometry by adding additional points. This only works
-   * on features with `LineString` geometries, where the interaction will
-   * extend lines by adding points to the end of the coordinates array.
+   * Initiate draw mode by starting from an existing geometry which will
+   * receive new additional points. This only works on features with
+   * `LineString` geometries, where the interaction will extend lines by adding
+   * points to the end of the coordinates array.
    * This will change the original feature, instead of drawing a copy.
    *
-   * Extend can be used without having triggered the startDrawing_ function.
-   * The function will dispatch a DRAWSTART event.
+   * The function will dispatch a `drawstart` event.
    *
    * @param {!Feature<LineString>} feature Feature to be extended.
    * @api
