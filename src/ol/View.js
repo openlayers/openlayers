@@ -1109,7 +1109,7 @@ class View extends BaseObject {
     } else {
       const userProjection = getUserProjection();
       if (userProjection) {
-        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry.clone().transform(userProjection, this.getProjection()));
+        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometryOrExtent.clone().transform(userProjection, this.getProjection()));
       } else {
         geometry = geometryOrExtent;
       }
