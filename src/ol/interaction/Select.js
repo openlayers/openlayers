@@ -333,8 +333,7 @@ class Select extends Interaction {
       if (this.style_) {
         this.features_.forEach(this.applySelectedStyle_.bind(this));
       }
-    }
-    if (!map) {
+    } else {
       this.features_.removeEventListener(CollectionEventType.ADD, this.boundAddFeature_);
       this.features_.removeEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
     }
