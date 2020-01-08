@@ -933,11 +933,13 @@ class PluggableMap extends BaseObject {
       return;
     }
     let target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
-    while (target) {
-      if (target.parentElement === this.overlayContainerStopEvent_) {
-        return;
+    if (!mapBrowserEvent.dragging) {
+      while (target && target !== this.viewport_) {
+        if (target.parentElement === this.overlayContainerStopEvent_) {
+          return;
+        }
+        target = target.parentElement;
       }
-      target = target.parentElement;
     }
     mapBrowserEvent.frameState = this.frameState_;
     const interactionsArray = this.getInteractions().getArray();
