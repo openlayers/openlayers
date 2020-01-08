@@ -259,9 +259,6 @@ class Select extends Interaction {
      * @type {Object<string, import("../layer/Layer.js").default>}
      */
     this.featureLayerAssociation_ = {};
-
-    this.features_.addEventListener(CollectionEventType.ADD, this.boundAddFeature_);
-    this.features_.addEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
   }
 
   /**
@@ -329,8 +326,13 @@ class Select extends Interaction {
       this.features_.forEach(this.restorePreviousStyle_.bind(this));
     }
     super.setMap(map);
-    if (map && this.style_) {
-      this.features_.forEach(this.applySelectedStyle_.bind(this));
+    if (map) {
+      this.features_.addEventListener(CollectionEventType.ADD, this.boundAddFeature_);
+      this.features_.addEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
+
+      if (this.style_) {
+        this.features_.forEach(this.applySelectedStyle_.bind(this));
+      }
     }
     if (!map) {
       this.features_.removeEventListener(CollectionEventType.ADD, this.boundAddFeature_);
