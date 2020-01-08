@@ -145,6 +145,12 @@ class Tile extends EventTarget {
   }
 
   /**
+   * Called by the tile cache when the tile is removed from the cache due to expiry
+   */
+  release() {
+  }
+
+  /**
    * @return {string} Key.
    */
   getKey() {

@@ -18,6 +18,10 @@ import {createCanvasContext2D} from './dom.js';
  * @property {number} renderedTileZ
  */
 
+/**
+ * @type {Array<HTMLCanvasElement>}
+ */
+const canvasPool = [];
 
 class VectorRenderTile extends Tile {
 
@@ -107,7 +111,7 @@ class VectorRenderTile extends Tile {
   getContext(layer) {
     const key = getUid(layer);
     if (!(key in this.context_)) {
-      this.context_[key] = createCanvasContext2D();
+      this.context_[key] = createCanvasContext2D(1, 1, canvasPool);
     }
     return this.context_[key];
   }
@@ -155,6 +159,16 @@ class VectorRenderTile extends Tile {
    */
   load() {
     this.getSourceTiles();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  release() {
+    for (const key in this.context_) {
+      canvasPool.push(this.context_[key].canvas);
+    }
+    super.release();
   }
 }
 

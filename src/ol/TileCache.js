@@ -15,7 +15,7 @@ class TileCache extends LRUCache {
       if (tile.getKey() in usedTiles) {
         break;
       } else {
-        this.pop();
+        this.pop().release();
       }
     }
   }
@@ -33,6 +33,7 @@ class TileCache extends LRUCache {
     this.forEach(function(tile) {
       if (tile.tileCoord[0] !== z) {
         this.remove(getKey(tile.tileCoord));
+        tile.release();
       }
     }.bind(this));
   }
