@@ -417,8 +417,8 @@ describe('ol.interaction.Select', function() {
       const style = new Style({});
       const features = new Collection();
 
-      firstInteraction = new Select({ style, features });
-      secondInteraction = new Select({ style, features });
+      firstInteraction = new Select({style, features});
+      secondInteraction = new Select({style, features});
     });
 
     afterEach(function() {
