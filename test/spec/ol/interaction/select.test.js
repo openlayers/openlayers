@@ -427,7 +427,7 @@ describe('ol.interaction.Select', function() {
     });
 
     // The base case
-    xdescribe('with a single interaction added', function() {
+    describe('with a single interaction added', function() {
       it('changes the selected feature once', function() {
         map.addInteraction(firstInteraction);
 
