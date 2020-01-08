@@ -408,7 +408,7 @@ describe('ol.interaction.Select', function() {
 
   });
 
-  describe('clear event listeners on interaction removal', function() {
+  xdescribe('clear event listeners on interaction removal', function() {
     let firstInteraction, secondInteraction, feature;
 
     beforeEach(function() {
