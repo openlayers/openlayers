@@ -408,7 +408,7 @@ describe('ol.interaction.Select', function() {
 
   });
 
-  xdescribe('clear event listeners on interaction removal', function() {
+  describe('clear event listeners on interaction removal', function() {
     let firstInteraction, secondInteraction, feature;
 
     beforeEach(function() {
@@ -441,7 +441,7 @@ describe('ol.interaction.Select', function() {
     });
 
     // The "difficult" case. To prevent regression
-    describe('with a replaced interaction', function() {
+    xdescribe('with a replaced interaction', function() {
       it('changes the selected feature once', function() {
         map.addInteraction(firstInteraction);
         map.removeInteraction(firstInteraction);
