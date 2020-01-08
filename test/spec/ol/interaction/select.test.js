@@ -427,7 +427,7 @@ describe('ol.interaction.Select', function() {
     });
 
     // The base case
-    describe('with a single interaction added', function() {
+    xdescribe('with a single interaction added', function() {
       it('changes the selected feature once', function() {
         map.addInteraction(firstInteraction);
 
@@ -441,7 +441,7 @@ describe('ol.interaction.Select', function() {
     });
 
     // The "difficult" case. To prevent regression
-    xdescribe('with a replaced interaction', function() {
+    describe('with a replaced interaction', function() {
       it('changes the selected feature once', function() {
         map.addInteraction(firstInteraction);
         map.removeInteraction(firstInteraction);
