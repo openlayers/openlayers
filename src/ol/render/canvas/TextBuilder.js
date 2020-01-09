@@ -460,7 +460,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeState.lineWidth +
         strokeState.lineJoin + strokeState.miterLimit + '[' + strokeState.lineDash.join() + ']' :
         '';
-      this.textKey_ = textState.font + textState.scale + (textState.textAlign || '?');
+      this.textKey_ = textState.font + textState.scale + (textState.textAlign || '?') + (textState.textBaseline || '?');
       this.fillKey_ = fillState ?
         (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + getUid(fillState.fillStyle))) :
         '';
