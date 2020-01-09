@@ -59,20 +59,6 @@ class ImageTile extends Tile {
   }
 
   /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    if (this.state == TileState.LOADING) {
-      this.unlistenImage_();
-      this.image_ = getBlankImage();
-    }
-    if (this.interimTile) {
-      this.interimTile.dispose();
-    }
-    super.disposeInternal();
-  }
-
-  /**
    * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    * @api

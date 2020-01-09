@@ -4,7 +4,6 @@
 import {getUid} from './util.js';
 import Tile from './Tile.js';
 import {createCanvasContext2D} from './dom.js';
-import {unlistenByKey} from './events.js';
 
 
 /**
@@ -19,6 +18,10 @@ import {unlistenByKey} from './events.js';
  * @property {number} renderedTileZ
  */
 
+/**
+ * @type {Array<HTMLCanvasElement>}
+ */
+const canvasPool = [];
 
 class VectorRenderTile extends Tile {
 
@@ -26,13 +29,10 @@ class VectorRenderTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
-   * @param {import("./tilegrid/TileGrid.js").default} sourceTileGrid Tile grid of the source.
    * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
-   * to get an source tiles for this tile.
-   * @param {function(VectorRenderTile):void} removeSourceTiles Function to remove this tile from its
-   * source tiles's consumer count.
+   * to get source tiles for this tile.
    */
-  constructor(tileCoord, state, urlTileCoord, sourceTileGrid, getSourceTiles, removeSourceTiles) {
+  constructor(tileCoord, state, urlTileCoord, getSourceTiles) {
 
     super(tileCoord, state, {transition: 0});
 
@@ -72,6 +72,11 @@ class VectorRenderTile extends Tile {
     this.replayState_ = {};
 
     /**
+     * @type {Array<import("./VectorTile.js").default>}
+     */
+    this.sourceTiles = null;
+
+    /**
      * @type {number}
      */
     this.wantedResolution;
@@ -79,23 +84,7 @@ class VectorRenderTile extends Tile {
     /**
      * @type {!function():Array<import("./VectorTile.js").default>}
      */
-    this.getSourceTiles = getSourceTiles.bind(this, this);
-
-    /**
-     * @type {!function(import("./VectorRenderTile.js").default):void}
-     */
-    this.removeSourceTiles_ = removeSourceTiles;
-
-    /**
-     * @private
-     * @type {import("./tilegrid/TileGrid.js").default}
-     */
-    this.sourceTileGrid_ = sourceTileGrid;
-
-    /**
-     * @type {Array<import("./events.js").EventsKey>}
-     */
-    this.sourceTileListenerKeys = [];
+    this.getSourceTiles = getSourceTiles.bind(undefined, this);
 
     /**
      * z of the source tiles of the last getSourceTiles call.
@@ -116,34 +105,13 @@ class VectorRenderTile extends Tile {
   }
 
   /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    this.sourceTileListenerKeys.forEach(unlistenByKey);
-    this.sourceTileListenerKeys.length = 0;
-    this.removeSourceTiles_(this);
-    for (const key in this.context_) {
-      const canvas = this.context_[key].canvas;
-      canvas.width = 0;
-      canvas.height = 0;
-    }
-    for (const key in this.executorGroups) {
-      const executorGroups = this.executorGroups[key];
-      for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
-        executorGroups[i].disposeInternal();
-      }
-    }
-    super.disposeInternal();
-  }
-
-  /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @return {CanvasRenderingContext2D} The rendering context.
    */
   getContext(layer) {
     const key = getUid(layer);
     if (!(key in this.context_)) {
-      this.context_[key] = createCanvasContext2D();
+      this.context_[key] = createCanvasContext2D(1, 1, canvasPool);
     }
     return this.context_[key];
   }
@@ -191,6 +159,16 @@ class VectorRenderTile extends Tile {
    */
   load() {
     this.getSourceTiles();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  release() {
+    for (const key in this.context_) {
+      canvasPool.push(this.context_[key].canvas);
+    }
+    super.release();
   }
 }
 

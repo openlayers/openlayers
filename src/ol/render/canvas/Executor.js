@@ -18,7 +18,6 @@ import {
 } from '../../transform.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
-import Disposable from '../../Disposable.js';
 import RBush from 'rbush/rbush.js';
 
 
@@ -52,7 +51,7 @@ const p3 = [];
 const p4 = [];
 
 
-class Executor extends Disposable {
+class Executor {
   /**
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
@@ -60,7 +59,6 @@ class Executor extends Disposable {
    * @param {SerializableInstructions} instructions The serializable instructions
    */
   constructor(resolution, pixelRatio, overlaps, instructions) {
-    super();
 
     /**
      * @protected
@@ -155,15 +153,6 @@ class Executor extends Disposable {
      */
     this.widths_ = {};
   }
-
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    labelCache.release(this);
-    super.disposeInternal();
-  }
-
 
   /**
    * @param {string} text Text.

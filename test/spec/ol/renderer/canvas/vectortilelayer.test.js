@@ -255,11 +255,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
+      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0],
         function() {
           return sourceTile;
-        },
-        function() {});
+        });
       tile.transition_ = 0;
       tile.setState(TileState.LOADED);
       layer.getSource().getTile = function() {
@@ -316,11 +315,11 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: createXYZ()
       });
-      source.sourceTileByKey_[sourceTile.getKey()] = sourceTile;
-      source.sourceTilesByTileKey_[sourceTile.getKey()] = [sourceTile];
+      source.sourceTileCache.set('0/0/0.mvt', sourceTile);
       executorGroup = {};
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.sourceTiles = [sourceTile];
         tile.executorGroups[getUid(layer)] = [executorGroup];
         return tile;
       };

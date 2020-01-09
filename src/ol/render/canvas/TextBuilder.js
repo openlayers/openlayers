@@ -131,8 +131,6 @@ class CanvasTextBuilder extends CanvasBuilder {
      * @type {string}
      */
     this.strokeKey_ = '';
-
-    labelCache.prune();
   }
 
   /**
@@ -140,6 +138,7 @@ class CanvasTextBuilder extends CanvasBuilder {
    */
   finish() {
     const instructions = super.finish();
+    labelCache.expireCache();
     instructions.textStates = this.textStates;
     instructions.fillStates = this.fillStates;
     instructions.strokeStates = this.strokeStates;

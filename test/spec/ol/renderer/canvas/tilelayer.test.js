@@ -78,15 +78,6 @@ describe('ol.renderer.canvas.TileLayer', function() {
       disposeMap(map);
     });
 
-    it('increases the cache size if necessary', function(done) {
-      const tileCache = layer.getSource().tileCache;
-      expect(tileCache.highWaterMark).to.be(1);
-      map.once('rendercomplete', function() {
-        expect(tileCache.highWaterMark).to.be(2);
-        done();
-      });
-    });
-
     it('respects the source\'s zDirection setting', function(done) {
       layer.getSource().zDirection = 1;
       map.getView().setZoom(5.8); // would lead to z6 tile request with the default zDirection

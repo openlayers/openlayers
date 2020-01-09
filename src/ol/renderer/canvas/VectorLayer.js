@@ -387,9 +387,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return true;
     }
 
-    if (this.replayGroup_) {
-      this.replayGroup_.dispose();
-    }
     this.replayGroup_ = null;
 
     this.dirty_ = false;

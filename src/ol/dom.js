@@ -7,10 +7,12 @@
  * Create an html canvas element and returns its 2d context.
  * @param {number=} opt_width Canvas width.
  * @param {number=} opt_height Canvas height.
+ * @param {Array<HTMLCanvasElement>=} opt_canvasPool Canvas pool to take existing canvas from.
  * @return {CanvasRenderingContext2D} The context.
  */
-export function createCanvasContext2D(opt_width, opt_height) {
-  const canvas = document.createElement('canvas');
+export function createCanvasContext2D(opt_width, opt_height, opt_canvasPool) {
+  const canvas = opt_canvasPool && opt_canvasPool.length ?
+    opt_canvasPool.shift() : document.createElement('canvas');
   if (opt_width) {
     canvas.width = opt_width;
   }

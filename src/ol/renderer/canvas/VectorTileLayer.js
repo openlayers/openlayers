@@ -117,8 +117,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     let render;
     const tileUid = getUid(tile);
     const state = tile.getState();
-    if (((state === TileState.LOADED && tile.hifi) ||
-        state === TileState.ERROR || state === TileState.ABORT) &&
+    if (((state === TileState.LOADED && tile.hifi) || state === TileState.ERROR) &&
         tileUid in this.tileListenerKeys_) {
       unlistenByKey(this.tileListenerKeys_[tileUid]);
       delete this.tileListenerKeys_[tileUid];
@@ -219,12 +218,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const sourceTiles = source.getSourceTiles(pixelRatio, projection, tile);
     const layerUid = getUid(layer);
-    const executorGroups = tile.executorGroups[layerUid];
-    if (executorGroups) {
-      for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
-        executorGroups[i].dispose();
-      }
-    }
     delete tile.hitDetectionImageData[layerUid];
     tile.executorGroups[layerUid] = [];
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
@@ -468,9 +461,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const clipZs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[i]);
-      if (tile.getState() == TileState.ABORT) {
-        continue;
-      }
       const tileCoord = tile.tileCoord;
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];

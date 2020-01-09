@@ -10,7 +10,6 @@ import {isEmpty} from '../../obj.js';
 import BuilderType from './BuilderType.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 import Executor from './Executor.js';
-import Disposable from '../../Disposable.js';
 
 /**
  * @const
@@ -26,7 +25,7 @@ const ORDER = [
 ];
 
 
-class ExecutorGroup extends Disposable {
+class ExecutorGroup {
   /**
    * @param {import("../../extent.js").Extent} maxExtent Max extent for clipping. When a
    * `maxExtent` was set on the Buillder for this executor group, the same `maxExtent`
@@ -40,7 +39,6 @@ class ExecutorGroup extends Disposable {
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
   constructor(maxExtent, resolution, pixelRatio, overlaps, allInstructions, opt_renderBuffer) {
-    super();
 
     /**
      * @private
@@ -128,24 +126,6 @@ class ExecutorGroup extends Disposable {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    for (const z in this.executorsByZIndex_) {
-      const executors = this.executorsByZIndex_[z];
-      for (const key in executors) {
-        executors[key].disposeInternal();
-      }
-    }
-    if (this.hitDetectionContext_) {
-      const canvas = this.hitDetectionContext_.canvas;
-      canvas.width = 0;
-      canvas.height = 0;
-    }
-
-    super.disposeInternal();
-  }
 
   /**
    * @param {Array<BuilderType>} executors Executors.
