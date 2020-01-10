@@ -932,7 +932,7 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    let target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
+    const target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
     if (!mapBrowserEvent.dragging) {
       if (this.overlayContainerStopEvent_.contains(target) || !this.viewport_.contains(target)) {
         // Abort if the event target is a child of the container that doesn't allow
