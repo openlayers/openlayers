@@ -131,8 +131,9 @@ class Rotate extends Control {
       // upon it
       return;
     }
-    if (view.getRotation() !== undefined) {
-      if (this.duration_ > 0) {
+    const rotation = view.getRotation();
+    if (rotation !== undefined) {
+      if (this.duration_ > 0 && rotation % (2 * Math.PI) !== 0) {
         view.animate({
           rotation: 0,
           duration: this.duration_,
