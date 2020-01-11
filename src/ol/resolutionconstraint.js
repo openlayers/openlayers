@@ -49,6 +49,9 @@ function getSmoothClampedResolution(resolution, maxResolution, minResolution) {
   let result = Math.min(resolution, maxResolution);
   const ratio = 50;
 
+  if (minResolution > maxResolution) {
+    minResolution = maxResolution;
+  }
   result *=
     Math.log(1 + ratio * Math.max(0, resolution / maxResolution - 1)) / ratio +
     1;
@@ -157,8 +160,10 @@ export function createSnapToPower(
               opt_showFullExtent
             )
           : maxResolution;
-        const minResolution =
-          opt_minResolution !== undefined ? opt_minResolution : 0;
+        const minResolution = Math.min(
+          opt_minResolution !== undefined ? opt_minResolution : 0,
+          maxResolution
+        );
 
         // during interacting or animating, allow intermediary values
         if (opt_isMoving) {
@@ -207,6 +212,9 @@ export function createMinMaxResolution(
   opt_maxExtent,
   opt_showFullExtent
 ) {
+  if (minResolution > maxResolution) {
+    minResolution = maxResolution;
+  }
   return (
     /**
      * @param {number|undefined} resolution Resolution.
