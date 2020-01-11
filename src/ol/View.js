@@ -1092,7 +1092,8 @@ class View extends BaseObject {
        * @return {number} Value.
        */
       function (resolution) {
-        const value = Math.log(maxResolution / resolution) / logPower / max;
+        const value =
+          max === 0 ? 0 : Math.log(maxResolution / resolution) / logPower / max;
         return value;
       }
     );
