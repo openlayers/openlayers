@@ -139,7 +139,7 @@ class UrlTile extends TileSource {
     } else if (uid in this.tileLoadingKeys_) {
       delete this.tileLoadingKeys_[uid];
       type = tileState == TileState.ERROR ? TileEventType.TILELOADERROR :
-        (tileState == TileState.LOADED || tileState == TileState.ABORT) ?
+        tileState == TileState.LOADED ?
           TileEventType.TILELOADEND : undefined;
     }
     if (type != undefined) {

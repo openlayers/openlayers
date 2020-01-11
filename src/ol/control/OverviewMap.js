@@ -304,6 +304,8 @@ class OverviewMap extends Control {
    */
   bindView_(view) {
     view.addEventListener(getChangeEventType(ViewProperty.ROTATION), this.boundHandleRotationChanged_);
+    // Sync once with the new view
+    this.handleRotationChanged_();
   }
 
   /**

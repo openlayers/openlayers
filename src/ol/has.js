@@ -44,3 +44,23 @@ export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
  * @type {boolean}
  */
 export const IMAGE_DECODE = typeof Image !== 'undefined' && Image.prototype.decode;
+
+/**
+ * @type {boolean}
+ */
+export const PASSIVE_EVENT_LISTENERS = (function() {
+  let passive = false;
+  try {
+    const options = Object.defineProperty({}, 'passive', {
+      get: function() {
+        passive = true;
+      }
+    });
+
+    window.addEventListener('_', null, options);
+    window.removeEventListener('_', null, options);
+  } catch (error) {
+    // passive not supported
+  }
+  return passive;
+})();

@@ -16,6 +16,8 @@ import {asArray, isStringColor} from '../color.js';
  *     Note: those will be taken from the attributes provided to the renderer
  *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
  *   * `['time']` returns the time in seconds since the creation of the layer
+ *   * `['zoom']` returns the current zoom level
+ *   * `['resolution']` returns the current resolution
  *
  * * Math operators:
  *   * `['*', value1, value2]` multiplies `value1` by `value2`

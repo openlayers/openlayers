@@ -7,13 +7,13 @@ import VectorRenderTile from '../VectorRenderTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
-import {getKeyZXY, getKey} from '../tilecoord.js';
+import {getKeyZXY, fromKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 import {buffer as bufferExtent, getIntersection, intersects} from '../extent.js';
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
-import {equals, remove} from '../array.js';
-import {listen, unlistenByKey} from '../events.js';
+import {equals} from '../array.js';
+import TileCache from '../TileCache.js';
 
 /**
  * @typedef {Object} Options
@@ -50,6 +50,17 @@ import {listen, unlistenByKey} from '../events.js';
  *       });
  *     });
  *   });
+ * }
+ * ```
+ * If you do not need extent, resolution and projection to get the features for a tile (e.g.
+ * for GeoJSON tiles), your `tileLoadFunction` does not need a `setLoader()` call. Only make sure
+ * to call `setFeatures()` on the tile:
+ * ```js
+ * const format = new GeoJSON({featureProjection: map.getView().getProjection()});
+ * async function tileLoadFunction(tile, url) {
+ *   const response = await fetch(url);
+ *   const data = await response.json();
+ *   tile.setFeatures(format.readFeatures(data));
  * }
  * ```
  * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
@@ -129,15 +140,9 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {Object<string, import("../VectorTile.js").default>}
+     * @type {TileCache}
      */
-    this.sourceTileByCoordKey_ = {};
-
-    /**
-     * @private
-     * @type {Object<string, Array<import("../VectorTile.js").default>>}
-     */
-    this.sourceTilesByTileKey_ = {};
+    this.sourceTileCache = new TileCache(this.tileCache.highWaterMark);
 
     /**
      * @private
@@ -160,6 +165,51 @@ class VectorTile extends UrlTile {
   }
 
   /**
+   * Get features whose bounding box intersects the provided extent. Only features for cached
+   * tiles for the last rendered zoom level are available in the source. So this method is only
+   * suitable for requesting tiles for extents that are currently rendered.
+   *
+   * Features are returned in random tile order and as they are included in the tiles. This means
+   * they can be clipped, duplicated across tiles, and simplified to the render resolution.
+   *
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @api
+   */
+  getFeaturesInExtent(extent) {
+    const features = [];
+    const tileCache = this.tileCache;
+    if (tileCache.getCount() === 0) {
+      return features;
+    }
+    const z = fromKey(tileCache.peekFirstKey())[0];
+    const tileGrid = this.tileGrid;
+    tileCache.forEach(function(tile) {
+      if (tile.tileCoord[0] !== z || tile.getState() !== TileState.LOADED) {
+        return;
+      }
+      const sourceTiles = tile.getSourceTiles();
+      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+        const sourceTile = sourceTiles[i];
+        const tileCoord = sourceTile.tileCoord;
+        if (intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
+          const tileFeatures = sourceTile.getFeatures();
+          if (tileFeatures) {
+            for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
+              const candidate = tileFeatures[j];
+              const geometry = candidate.getGeometry();
+              if (intersects(extent, geometry.getExtent())) {
+                features.push(candidate);
+              }
+            }
+          }
+        }
+      }
+    });
+    return features;
+  }
+
+  /**
    * @return {boolean} The source can have overlapping geometries.
    */
   getOverlaps() {
@@ -172,8 +222,7 @@ class VectorTile extends UrlTile {
    */
   clear() {
     this.tileCache.clear();
-    this.sourceTileByCoordKey_ = {};
-    this.sourceTilesByTileKey_ = {};
+    this.sourceTileCache.clear();
   }
 
   /**
@@ -198,7 +247,7 @@ class VectorTile extends UrlTile {
     const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
     const minZoom = sourceTileGrid.getMinZoom();
 
-    const previousSourceTiles = this.sourceTilesByTileKey_[tile.getKey()];
+    const previousSourceTiles = tile.sourceTiles;
     let sourceTiles, covered, loadedZ;
     if (previousSourceTiles && previousSourceTiles.length > 0 && previousSourceTiles[0].tileCoord[0] === sourceZ) {
       sourceTiles = previousSourceTiles;
@@ -211,41 +260,39 @@ class VectorTile extends UrlTile {
         --loadedZ;
         covered = true;
         sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
-          const coordKey = getKey(sourceTileCoord);
+          const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           let sourceTile;
-          if (coordKey in this.sourceTileByCoordKey_) {
-            sourceTile = this.sourceTileByCoordKey_[coordKey];
-            const state = sourceTile.getState();
-            if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
-              sourceTiles.push(sourceTile);
-              return;
-            }
-          } else if (loadedZ === sourceZ) {
-            const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-            if (tileUrl !== undefined) {
+          if (tileUrl !== undefined) {
+            if (this.sourceTileCache.containsKey(tileUrl)) {
+              sourceTile = this.sourceTileCache.get(tileUrl);
+              const state = sourceTile.getState();
+              if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
+                sourceTiles.push(sourceTile);
+                return;
+              }
+            } else if (loadedZ === sourceZ) {
               sourceTile = new this.tileClass(sourceTileCoord, TileState.IDLE, tileUrl,
                 this.format_, this.tileLoadFunction);
               sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
               sourceTile.projection = projection;
               sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-              this.sourceTileByCoordKey_[coordKey] = sourceTile;
+              this.sourceTileCache.set(tileUrl, sourceTile);
               sourceTile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
               sourceTile.load();
             }
           }
-          covered = false;
+          covered = covered && sourceTile && sourceTile.getState() === TileState.LOADED;
           if (!sourceTile) {
             return;
           }
           if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
             tile.loadingSourceTiles++;
-            const key = listen(sourceTile, EventType.CHANGE, function() {
+            sourceTile.addEventListener(EventType.CHANGE, function listenChange() {
               const state = sourceTile.getState();
               const sourceTileKey = sourceTile.getKey();
               if (state === TileState.LOADED || state === TileState.ERROR) {
                 if (state === TileState.LOADED) {
-                  remove(tile.sourceTileListenerKeys, key);
-                  unlistenByKey(key);
+                  sourceTile.removeEventListener(EventType.CHANGE, listenChange);
                   tile.loadingSourceTiles--;
                   delete tile.errorSourceTileKeys[sourceTileKey];
                 } else if (state === TileState.ERROR) {
@@ -259,7 +306,6 @@ class VectorTile extends UrlTile {
                 }
               }
             });
-            tile.sourceTileListenerKeys.push(key);
           }
         }.bind(this));
         if (!covered) {
@@ -277,41 +323,11 @@ class VectorTile extends UrlTile {
       if (tile.getState() < TileState.LOADED) {
         tile.setState(TileState.LOADED);
       } else if (!previousSourceTiles || !equals(sourceTiles, previousSourceTiles)) {
-        this.removeSourceTiles(tile);
-        this.addSourceTiles(tile, sourceTiles);
+        tile.sourceTiles = sourceTiles;
       }
     }
+    this.sourceTileCache.expireCache({});
     return sourceTiles;
-  }
-
-  /**
-   * @param {VectorRenderTile} tile Tile.
-   * @param {Array<import("../VectorTile").default>} sourceTiles Source tiles.
-   */
-  addSourceTiles(tile, sourceTiles) {
-    this.sourceTilesByTileKey_[tile.getKey()] = sourceTiles;
-    for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-      sourceTiles[i].consumers++;
-    }
-  }
-
-  /**
-   * @param {VectorRenderTile} tile Tile.
-   */
-  removeSourceTiles(tile) {
-    const tileKey = tile.getKey();
-    if (tileKey in this.sourceTilesByTileKey_) {
-      const sourceTiles = this.sourceTilesByTileKey_[tileKey];
-      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        const sourceTile = sourceTiles[i];
-        sourceTile.consumers--;
-        if (sourceTile.consumers === 0) {
-          sourceTile.dispose();
-          delete this.sourceTileByCoordKey_[getKey(sourceTile.tileCoord)];
-        }
-      }
-    }
-    delete this.sourceTilesByTileKey_[tileKey];
   }
 
   /**
@@ -355,9 +371,7 @@ class VectorTile extends UrlTile {
       tileCoord,
       empty ? TileState.EMPTY : TileState.IDLE,
       urlTileCoord,
-      this.tileGrid,
-      this.getSourceTiles.bind(this, pixelRatio, projection),
-      this.removeSourceTiles.bind(this));
+      this.getSourceTiles.bind(this, pixelRatio, projection));
 
     newTile.key = key;
     if (tile) {

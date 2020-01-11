@@ -9,7 +9,6 @@ import {getCenter} from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
-import {getKey} from '../../../../../src/ol/tilecoord.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {checkedFonts} from '../../../../../src/ol/render/canvas.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
@@ -121,6 +120,22 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(spy.callCount).to.be(0);
       spy.restore();
     });
+
+    it('does not render images for pure vector rendering', function() {
+      const testLayer = new VectorTileLayer({
+        renderMode: VectorTileRenderType.VECTOR,
+        source: source,
+        style: layerStyle
+      });
+      map.removeLayer(layer);
+      map.addLayer(testLayer);
+      const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
+        'renderTileImage_');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
 
     it('renders both replays and images for hybrid rendering', function() {
       const spy1 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
@@ -240,11 +255,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
+      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0],
         function() {
           return sourceTile;
-        },
-        function() {});
+        });
       tile.transition_ = 0;
       tile.setState(TileState.LOADED);
       layer.getSource().getTile = function() {
@@ -301,11 +315,11 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: createXYZ()
       });
-      source.sourceTileByCoordKey_[getKey(sourceTile.tileCoord)] = sourceTile;
-      source.sourceTilesByTileKey_[sourceTile.getKey()] = [sourceTile];
+      source.sourceTileCache.set('0/0/0.mvt', sourceTile);
       executorGroup = {};
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.sourceTiles = [sourceTile];
         tile.executorGroups[getUid(layer)] = [executorGroup];
         return tile;
       };

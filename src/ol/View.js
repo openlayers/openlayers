@@ -2,7 +2,6 @@
  * @module ol/View
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {getUid} from './util.js';
 import {VOID} from './functions.js';
 import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
@@ -296,6 +295,12 @@ class View extends BaseObject {
 
     /**
      * @private
+     * @type {import("./size.js").Size}
+     */
+    this.viewportSize_ = [100, 100];
+
+    /**
+     * @private
      * @type {import("./coordinate.js").Coordinate|undefined}
      */
     this.targetCenter_ = null;
@@ -311,6 +316,12 @@ class View extends BaseObject {
      * @type {number|undefined}
      */
     this.targetRotation_;
+
+    /**
+     * @private
+     * @type {import("./coordinate.js").Coordinate|undefined}
+     */
+    this.cancelAnchor_ = undefined;
 
     if (options.center) {
       options.center = fromUserCoordinate(options.center, this.projection_);
@@ -584,13 +595,19 @@ class View extends BaseObject {
    */
   cancelAnimations() {
     this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
+    let anchor;
     for (let i = 0, ii = this.animations_.length; i < ii; ++i) {
       const series = this.animations_[i];
       if (series[0].callback) {
         animationCallback(series[0].callback, false);
       }
+      anchor = anchor ||
+        series.filter(function(animation) {
+          return !animation.complete;
+        })[0].anchor;
     }
     this.animations_.length = 0;
+    this.cancelAnchor_ = anchor;
   }
 
   /**
@@ -637,7 +654,7 @@ class View extends BaseObject {
             animation.targetResolution :
             animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
           if (animation.anchor) {
-            const size = this.getSizeFromViewport_(this.getRotation());
+            const size = this.getViewportSize_(this.getRotation());
             const constrainedResolution = this.constraints_.resolution(resolution, 0, size, true);
             this.targetCenter_ = this.calculateCenterZoom(constrainedResolution, animation.anchor);
           }
@@ -710,26 +727,33 @@ class View extends BaseObject {
   }
 
   /**
+   * Returns the current viewport size.
    * @private
    * @param {number=} opt_rotation Take into account the rotation of the viewport when giving the size
    * @return {import("./size.js").Size} Viewport size or `[100, 100]` when no viewport is found.
    */
-  getSizeFromViewport_(opt_rotation) {
-    const size = [100, 100];
-    const selector = '.ol-viewport[data-view="' + getUid(this) + '"]';
-    const element = document.querySelector(selector);
-    if (element) {
-      const metrics = getComputedStyle(element);
-      size[0] = parseInt(metrics.width, 10);
-      size[1] = parseInt(metrics.height, 10);
-    }
+  getViewportSize_(opt_rotation) {
+    const size = this.viewportSize_;
     if (opt_rotation) {
       const w = size[0];
       const h = size[1];
-      size[0] = Math.abs(w * Math.cos(opt_rotation)) + Math.abs(h * Math.sin(opt_rotation));
-      size[1] = Math.abs(w * Math.sin(opt_rotation)) + Math.abs(h * Math.cos(opt_rotation));
+      return [
+        Math.abs(w * Math.cos(opt_rotation)) + Math.abs(h * Math.sin(opt_rotation)),
+        Math.abs(w * Math.sin(opt_rotation)) + Math.abs(h * Math.cos(opt_rotation))
+      ];
+    } else {
+      return size;
     }
-    return size;
+  }
+
+  /**
+   * Stores the viewport size on the view. The viewport size is not read every time from the DOM
+   * to avoid performance hit and layout reflow.
+   * This should be done on map size change.
+   * @param {import("./size.js").Size=} opt_size Viewport size; if undefined, [100, 100] is assumed
+   */
+  setViewportSize(opt_size) {
+    this.viewportSize_ = Array.isArray(opt_size) ? opt_size.slice() : [100, 100];
   }
 
   /**
@@ -780,8 +804,8 @@ class View extends BaseObject {
    * The size is the pixel dimensions of the box into which the calculated extent
    * should fit. In most cases you want to get the extent of the entire map,
    * that is `map.getSize()`.
-   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided, the size of the
-   * first map that uses this view will be used.
+   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided, the size
+   * of the map that uses this view will be used.
    * @return {import("./extent.js").Extent} Extent.
    * @api
    */
@@ -796,7 +820,7 @@ class View extends BaseObject {
    * @return {import("./extent.js").Extent} Extent.
    */
   calculateExtentInternal(opt_size) {
-    const size = opt_size || this.getSizeFromViewport_();
+    const size = opt_size || this.getViewportSize_();
     const center = /** @type {!import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
     assert(center, 1); // The view center is not defined
     const resolution = /** @type {!number} */ (this.getResolution());
@@ -919,7 +943,7 @@ class View extends BaseObject {
    *     the given size.
    */
   getResolutionForExtentInternal(extent, opt_size) {
-    const size = opt_size || this.getSizeFromViewport_();
+    const size = opt_size || this.getViewportSize_();
     const xResolution = getWidth(extent) / size[0];
     const yResolution = getHeight(extent) / size[1];
     return Math.max(xResolution, yResolution);
@@ -933,7 +957,7 @@ class View extends BaseObject {
    */
   getResolutionForValueFunction(opt_power) {
     const power = opt_power || 2;
-    const maxResolution = this.maxResolution_;
+    const maxResolution = this.getConstrainedResolution(this.maxResolution_);
     const minResolution = this.minResolution_;
     const max = Math.log(maxResolution / minResolution) / Math.log(power);
     return (
@@ -964,17 +988,17 @@ class View extends BaseObject {
    * @return {function(number): number} Value for resolution function.
    */
   getValueForResolutionFunction(opt_power) {
-    const power = opt_power || 2;
-    const maxResolution = this.maxResolution_;
+    const logPower = Math.log(opt_power || 2);
+    const maxResolution = this.getConstrainedResolution(this.maxResolution_);
     const minResolution = this.minResolution_;
-    const max = Math.log(maxResolution / minResolution) / Math.log(power);
+    const max = Math.log(maxResolution / minResolution) / logPower;
     return (
       /**
        * @param {number} resolution Resolution.
        * @return {number} Value.
        */
       function(resolution) {
-        const value = (Math.log(maxResolution / resolution) / Math.log(power)) / max;
+        const value = (Math.log(maxResolution / resolution) / logPower) / max;
         return value;
       });
   }
@@ -1067,7 +1091,7 @@ class View extends BaseObject {
    * @api
    */
   fit(geometryOrExtent, opt_options) {
-    const options = assign({size: this.getSizeFromViewport_()}, opt_options || {});
+    const options = assign({size: this.getViewportSize_()}, opt_options || {});
 
     /** @type {import("./geom/SimpleGeometry.js").default} */
     let geometry;
@@ -1085,7 +1109,7 @@ class View extends BaseObject {
     } else {
       const userProjection = getUserProjection();
       if (userProjection) {
-        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry.clone().transform(userProjection, this.getProjection()));
+        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometryOrExtent.clone().transform(userProjection, this.getProjection()));
       } else {
         geometry = geometryOrExtent;
       }
@@ -1102,7 +1126,7 @@ class View extends BaseObject {
     const options = opt_options || {};
     let size = options.size;
     if (!size) {
-      size = this.getSizeFromViewport_();
+      size = this.getViewportSize_();
     }
     const padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
     const nearest = options.nearest !== undefined ? options.nearest : false;
@@ -1249,10 +1273,10 @@ class View extends BaseObject {
    */
   adjustResolutionInternal(ratio, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
-    const size = this.getSizeFromViewport_(this.getRotation());
+    const size = this.getViewportSize_(this.getRotation());
     const newResolution = this.constraints_.resolution(this.targetResolution_ * ratio, 0, size, isMoving);
 
-    if (opt_anchor !== undefined) {
+    if (opt_anchor) {
       this.targetCenter_ = this.calculateCenterZoom(newResolution, opt_anchor);
     }
 
@@ -1292,7 +1316,7 @@ class View extends BaseObject {
   adjustRotationInternal(delta, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
     const newRotation = this.constraints_.rotation(this.targetRotation_ + delta, isMoving);
-    if (opt_anchor !== undefined) {
+    if (opt_anchor) {
       this.targetCenter_ = this.calculateCenterRotate(newRotation, opt_anchor);
     }
     this.targetRotation_ += delta;
@@ -1373,7 +1397,7 @@ class View extends BaseObject {
 
     // compute rotation
     const newRotation = this.constraints_.rotation(this.targetRotation_, isMoving);
-    const size = this.getSizeFromViewport_(newRotation);
+    const size = this.getViewportSize_(newRotation);
     const newResolution = this.constraints_.resolution(this.targetResolution_, 0, size, isMoving);
     const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size, isMoving);
 
@@ -1390,6 +1414,7 @@ class View extends BaseObject {
     if (this.getAnimating() && !opt_doNotCancelAnims) {
       this.cancelAnimations();
     }
+    this.cancelAnchor_ = undefined;
   }
 
   /**
@@ -1406,17 +1431,20 @@ class View extends BaseObject {
     const direction = opt_resolutionDirection || 0;
 
     const newRotation = this.constraints_.rotation(this.targetRotation_);
-    const size = this.getSizeFromViewport_(newRotation);
+    const size = this.getViewportSize_(newRotation);
     const newResolution = this.constraints_.resolution(this.targetResolution_, direction, size);
     const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size);
 
-    if (duration === 0) {
+    if (duration === 0 && !this.cancelAnchor_) {
       this.targetResolution_ = newResolution;
       this.targetRotation_ = newRotation;
       this.targetCenter_ = newCenter;
       this.applyTargetState_();
       return;
     }
+
+    const anchor = opt_anchor || (duration === 0 ? this.cancelAnchor_ : undefined);
+    this.cancelAnchor_ = undefined;
 
     if (this.getResolution() !== newResolution ||
       this.getRotation() !== newRotation ||
@@ -1433,7 +1461,7 @@ class View extends BaseObject {
         resolution: newResolution,
         duration: duration,
         easing: easeOut,
-        anchor: opt_anchor
+        anchor: anchor
       });
     }
   }
@@ -1484,7 +1512,7 @@ class View extends BaseObject {
    * @return {import("./coordinate.js").Coordinate|undefined} Valid center position.
    */
   getConstrainedCenter(targetCenter, opt_targetResolution) {
-    const size = this.getSizeFromViewport_(this.getRotation());
+    const size = this.getViewportSize_(this.getRotation());
     return this.constraints_.center(targetCenter, opt_targetResolution || this.getResolution(), size);
   }
 
@@ -1513,7 +1541,7 @@ class View extends BaseObject {
    */
   getConstrainedResolution(targetResolution, opt_direction) {
     const direction = opt_direction || 0;
-    const size = this.getSizeFromViewport_(this.getRotation());
+    const size = this.getViewportSize_(this.getRotation());
 
     return this.constraints_.resolution(targetResolution, direction, size);
   }

@@ -33,7 +33,8 @@ import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdet
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
     ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
-  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
+  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING],
+  'vector': []
 };
 
 
@@ -42,7 +43,8 @@ const IMAGE_REPLAYS = {
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
-  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT]
+  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
+  'vector': [ReplayType.POLYGON, ReplayType.CIRCLE, ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT]
 };
 
 
@@ -115,8 +117,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     let render;
     const tileUid = getUid(tile);
     const state = tile.getState();
-    if (((state === TileState.LOADED && tile.hifi) ||
-        state === TileState.ERROR || state === TileState.ABORT) &&
+    if (((state === TileState.LOADED && tile.hifi) || state === TileState.ERROR) &&
         tileUid in this.tileListenerKeys_) {
       unlistenByKey(this.tileListenerKeys_[tileUid]);
       delete this.tileListenerKeys_[tileUid];
@@ -137,11 +138,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   getTile(z, x, y, frameState) {
-    const tile = /** @type {import("../../VectorRenderTile.js").default} */ (super.getTile(z, x, y, frameState));
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
     const projection = viewState.projection;
+    const layer = this.getLayer();
+    const tile = layer.getSource().getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() < TileState.LOADED) {
       tile.wantedResolution = resolution;
       const tileUid = getUid(tile);
@@ -156,18 +158,19 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         tile.wantedResolution = resolution;
       }
       const render = this.prepareTile(tile, pixelRatio, projection, false);
-      if (render) {
+      if (render && layer.getRenderMode() !== VectorTileRenderType.VECTOR) {
         this.renderTileImage_(tile, frameState);
       }
     }
-    return tile;
+    return super.getTile(z, x, y, frameState);
   }
 
   /**
    * @inheritdoc
    */
   isDrawableTile(tile) {
-    return super.isDrawableTile(tile) && tile.hasContext(this.getLayer());
+    const layer = this.getLayer();
+    return super.isDrawableTile(tile) && layer.getRenderMode() === VectorTileRenderType.VECTOR || tile.hasContext(layer);
   }
 
   /**
@@ -215,13 +218,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const sourceTiles = source.getSourceTiles(pixelRatio, projection, tile);
     const layerUid = getUid(layer);
-    const executorGroups = tile.executorGroups[layerUid];
-    if (executorGroups) {
-      for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
-        executorGroups[i].dispose();
-      }
-    }
-    tile.hitDetectionImageData = null;
+    delete tile.hitDetectionImageData[layerUid];
     tile.executorGroups[layerUid] = [];
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
       const sourceTile = sourceTiles[t];
@@ -267,7 +264,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       const executorGroupInstructions = builderGroup.finish();
       // no need to clip when the render tile is covered by a single source tile
-      const replayExtent = layer.getDeclutter() && sourceTiles.length === 1 ?
+      const replayExtent = layer.getRenderMode() !== VectorTileRenderType.VECTOR && layer.getDeclutter() && sourceTiles.length === 1 ?
         null :
         sharedExtent;
       const renderingReplayGroup = new CanvasExecutorGroup(replayExtent, resolution,
@@ -341,6 +338,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getFeatures(pixel) {
     return new Promise(function(resolve, reject) {
       const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+      const layerUid = getUid(layer);
       const source = layer.getSource();
       const projection = this.renderedProjection;
       const projectionExtent = projection.getExtent();
@@ -364,7 +362,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           tile = undefined;
         }
       }
-      if (!tile) {
+      if (!tile || tile.loadingSourceTiles > 0) {
         resolve([]);
         return;
       }
@@ -377,7 +375,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const features = tile.getSourceTiles().reduce(function(accumulator, sourceTile) {
         return accumulator.concat(sourceTile.getFeatures());
       }, []);
-      if (!tile.hitDetectionImageData) {
+      let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
+      if (!hitDetectionImageData && !this.animatingOrInteracting_) {
         const tileSize = toSize(tileGrid.getTileSize(tileGrid.getZForResolution(resolution)));
         const size = [tileSize[0] / 2, tileSize[1] / 2];
         const rotation = this.renderedRotation_;
@@ -385,16 +384,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           this.getRenderTransform(tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
             resolution, 0, 0.5, size[0], size[1], 0)
         ];
-        requestAnimationFrame(function() {
-          tile.hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
-            features, layer.getStyleFunction(),
-            tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
-            tile.getReplayState(layer).renderedResolution, rotation);
-          resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
-        });
-      } else {
-        resolve(hitDetect(tilePixel, features, tile.hitDetectionImageData));
+        hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
+          features, layer.getStyleFunction(),
+          tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
+          tile.getReplayState(layer).renderedResolution, rotation);
+        tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
       }
+      resolve(hitDetect(tilePixel, features, hitDetectionImageData));
     }.bind(this));
   }
 
@@ -465,9 +461,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const clipZs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[i]);
-      if (tile.getState() == TileState.ABORT) {
-        continue;
-      }
       const tileCoord = tile.tileCoord;
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];

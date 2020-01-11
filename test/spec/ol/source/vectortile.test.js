@@ -11,6 +11,10 @@ import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
 import TileState from '../../../../src/ol/TileState.js';
+import {getCenter} from '../../../../src/ol/extent.js';
+import {unByKey} from '../../../../src/ol/Observable.js';
+import Feature from '../../../../src/ol/Feature.js';
+import {fromExtent} from '../../../../src/ol/geom/Polygon.js';
 
 describe('ol.source.VectorTile', function() {
 
@@ -293,6 +297,127 @@ describe('ol.source.VectorTile', function() {
 
     });
 
+  });
+
+  describe('interim tile handling', function() {
+
+    let map, source, target;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      const extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
+      source = new VectorTileSource({
+        format: new MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: target,
+        layers: [
+          new VectorTileLayer({
+            extent: extent,
+            source: source
+          })
+        ],
+        view: new View({
+          center: getCenter(extent),
+          zoom: 15
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('re-renders when source changes', function(done) {
+      map.once('rendercomplete', function() {
+        const key = map.on('rendercomplete', function() {
+          const tile = source.getTile(14, 8938, 5680, 1, map.getView().getProjection());
+          expect(tile.getKey()).to.be('spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680');
+          expect(tile.interimTile).to.be.a(VectorRenderTile);
+          expect(tile.interimTile.getKey()).to.be('spec/ol/data/14-8938-5680.vector.pbf/14,8938,5680');
+          const sourceTiles = source.getSourceTiles(1, map.getView().getProjection(), tile);
+          if (sourceTiles) {
+            expect(sourceTiles[0].getKey()).to.be('spec/ol/data/14-8938-5680.vector.pbf?new');
+            unByKey(key);
+            done();
+          }
+        });
+        source.setUrl('spec/ol/data/14-8938-5680.vector.pbf?new');
+      });
+    });
+
+  });
+
+  describe('getFeatuersInExtent', function() {
+
+    let map, source, target;
+
+    beforeEach(function() {
+      source = new VectorTileSource({
+        maxZoom: 15,
+        tileSize: 256,
+        url: '{z}/{x}/{y}',
+        tileLoadFunction: function(tile) {
+          const extent = source.getTileGrid().getTileCoordExtent(tile.tileCoord);
+          const feature = new Feature(fromExtent(extent));
+          feature.set('z', tile.tileCoord[0]);
+          tile.setFeatures([feature]);
+        }
+      });
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [
+          new VectorTileLayer({
+            source: source
+          })
+        ],
+        view: new View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('returns an empty array when no tiles are in the cache', function() {
+      source.tileCache.clear();
+      const extent = map.getView().calculateExtent(map.getSize());
+      expect(source.getFeaturesInExtent(extent).length).to.be(0);
+    });
+
+    it('returns features in extent for the last rendered z', function(done) {
+      map.getView().setZoom(15);
+      map.once('rendercomplete', function() {
+        const extent = map.getView().calculateExtent(map.getSize());
+        const features = source.getFeaturesInExtent(extent);
+        expect(features.length).to.be(4);
+        expect(features[0].get('z')).to.be(15);
+        map.getView().setZoom(0);
+        map.once('rendercomplete', function() {
+          const extent = map.getView().calculateExtent(map.getSize());
+          const features = source.getFeaturesInExtent(extent);
+          expect(features.length).to.be(1);
+          expect(features[0].get('z')).to.be(0);
+          done();
+        });
+      });
+    });
   });
 
 });

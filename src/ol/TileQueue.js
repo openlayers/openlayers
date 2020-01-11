@@ -84,8 +84,7 @@ class TileQueue extends PriorityQueue {
   handleTileChange(event) {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);
     const state = tile.getState();
-    if (tile.hifi && state === TileState.LOADED || state === TileState.ERROR ||
-        state === TileState.EMPTY || state === TileState.ABORT) {
+    if (tile.hifi && state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
       tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
       const tileKey = tile.getKey();
       if (tileKey in this.tilesLoadingKeys_) {
@@ -102,26 +101,18 @@ class TileQueue extends PriorityQueue {
    */
   loadMoreTiles(maxTotalLoading, maxNewLoads) {
     let newLoads = 0;
-    let abortedTiles = false;
     let state, tile, tileKey;
     while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
            this.getCount() > 0) {
       tile = /** @type {import("./Tile.js").default} */ (this.dequeue()[0]);
       tileKey = tile.getKey();
       state = tile.getState();
-      if (state === TileState.ABORT) {
-        abortedTiles = true;
-      } else if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+      if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
         this.tilesLoadingKeys_[tileKey] = true;
         ++this.tilesLoading_;
         ++newLoads;
         tile.load();
       }
-    }
-    if (newLoads === 0 && abortedTiles) {
-      // Do not stop the render loop when all wanted tiles were aborted due to
-      // a small, saturated tile cache.
-      this.tileChangeCallback_();
     }
   }
 }

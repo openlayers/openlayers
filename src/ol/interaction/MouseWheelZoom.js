@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import {always} from '../events/condition.js';
+import {always, focus} from '../events/condition.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
@@ -136,11 +136,25 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
+   * @return {boolean} Condition passes.
+   */
+  conditionInternal_(mapBrowserEvent) {
+    let pass = true;
+    if (mapBrowserEvent.map.getTargetElement().hasAttribute('tabindex')) {
+      pass = focus(mapBrowserEvent);
+    }
+    return pass && this.condition_(mapBrowserEvent);
+  }
+
+
+  /**
+   * @private
    */
   endInteraction_() {
     this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
-    view.endInteraction(undefined, Math.sign(this.lastDelta_), this.lastAnchor_);
+    view.endInteraction(undefined, this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0, this.lastAnchor_);
   }
 
   /**
@@ -149,7 +163,7 @@ class MouseWheelZoom extends Interaction {
    * @override
    */
   handleEvent(mapBrowserEvent) {
-    if (!this.condition_(mapBrowserEvent)) {
+    if (!this.conditionInternal_(mapBrowserEvent)) {
       return true;
     }
     const type = mapBrowserEvent.type;

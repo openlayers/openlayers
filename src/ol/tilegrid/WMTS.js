@@ -15,12 +15,12 @@ import TileGrid from './TileGrid.js';
  * top-left corner of the extent.
  * @property {import("../coordinate.js").Coordinate} [origin] The tile grid origin, i.e.
  * where the `x` and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left
- * to right and upwards. If not specified, `extent` or `origins` must be provided.
+ * to right and downwards. If not specified, `extent` or `origins` must be provided.
  * @property {Array<import("../coordinate.js").Coordinate>} [origins] Tile grid origins,
  * i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If
  * given, the array length should match the length of the `resolutions` array, i.e.
  * each resolution can have a different origin. Tile coordinates increase left to
- * right and upwards. If not specified, `extent` or `origin` must be provided.
+ * right and downwards. If not specified, `extent` or `origin` must be provided.
  * @property {!Array<number>} resolutions Resolutions. The array index of each
  * resolution needs to match the zoom level. This means that even if a `minZoom`
  * is configured, the resolutions array will have a length of `maxZoom + 1`
@@ -29,19 +29,14 @@ import TileGrid from './TileGrid.js';
  * @property {Array<import("../size.js").Size>} [sizes] Number of tile rows and columns
  * of the grid for each zoom level. The values here are the `TileMatrixWidth` and
  * `TileMatrixHeight` advertised in the GetCapabilities response of the WMTS, and
- * define the grid's extent together with the `origin`.
- * An `extent` can be configured in addition, and will further limit the extent for
+ * define each zoom level's extent together with the `origin` or `origins`.
+ * A grid `extent` can be configured in addition, and will further limit the extent for
  * which tile requests are made by sources. If the bottom-left corner of
- * the `extent` is used as `origin` or `origins`, then the `y` value must be
+ * an extent is used as `origin` or `origins`, then the `y` value must be
  * negative because OpenLayers tile coordinates use the top left as the origin.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. The length of
  * this array needs to match the length of the `resolutions` array.
- * @property {Array<number>} [widths] Number of tile columns that cover the grid's
- * extent for each zoom level. Only required when used with a source that has `wrapX`
- * set to `true`, and only when the grid's origin differs from the one of the
- * projection's extent. The array length has to match the length of the `resolutions`
- * array, i.e. each resolution will have a matching entry here.
  */
 
 

@@ -3,7 +3,7 @@
  */
 // FIXME draw drag box
 import Event from '../events/Event.js';
-import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
+import {mouseActionButton} from '../events/condition.js';
 import {VOID} from '../functions.js';
 import PointerInteraction from './Pointer.js';
 import RenderBox from '../render/Box.js';
@@ -22,7 +22,7 @@ import RenderBox from '../render/Box.js';
  * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
  * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * Default is {@link ol/events/condition~always}.
+ * Default is {@link ol/events/condition~mouseActionButton}.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
  * `boxEndCondition` function.
  * @property {EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
@@ -104,8 +104,6 @@ class DragBoxEvent extends Event {
  * (see {@link module:ol/interaction/DragZoom~DragZoom} and
  * {@link module:ol/interaction/DragRotateAndZoom}).
  *
- * This interaction is only supported for mouse devices.
- *
  * @fires DragBoxEvent
  * @api
  */
@@ -148,7 +146,7 @@ class DragBox extends PointerInteraction {
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : always;
+    this.condition_ = options.condition ? options.condition : mouseActionButton;
 
     /**
      * @private
@@ -186,10 +184,6 @@ class DragBox extends PointerInteraction {
    * @inheritDoc
    */
   handleDragEvent(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return;
-    }
-
     this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
     this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
@@ -200,10 +194,6 @@ class DragBox extends PointerInteraction {
    * @inheritDoc
    */
   handleUpEvent(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return true;
-    }
-
     this.box_.setMap(null);
 
     if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
@@ -218,12 +208,7 @@ class DragBox extends PointerInteraction {
    * @inheritDoc
    */
   handleDownEvent(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return false;
-    }
-
-    if (mouseActionButton(mapBrowserEvent) &&
-        this.condition_(mapBrowserEvent)) {
+    if (this.condition_(mapBrowserEvent)) {
       this.startPixel_ = mapBrowserEvent.pixel;
       this.box_.setMap(mapBrowserEvent.map);
       this.box_.setPixels(this.startPixel_, this.startPixel_);

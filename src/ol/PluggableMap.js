@@ -1,7 +1,6 @@
 /**
  * @module ol/PluggableMap
  */
-import {getUid} from './util.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
@@ -22,7 +21,7 @@ import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import {clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
-import {DEVICE_PIXEL_RATIO, IMAGE_DECODE} from './has.js';
+import {DEVICE_PIXEL_RATIO, IMAGE_DECODE, PASSIVE_EVENT_LISTENERS} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
@@ -129,17 +128,6 @@ import {toUserCoordinate, fromUserCoordinate} from './proj.js';
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
  */
-
-
-/**
- * @param {HTMLElement} element Element.
- * @param {string} touchAction Value for `touch-action'.
- */
-function setTouchAction(element, touchAction) {
-  element.style.msTouchAction = touchAction;
-  element.style.touchAction = touchAction;
-  element.setAttribute('touch-action', touchAction);
-}
 
 
 /**
@@ -305,15 +293,10 @@ class PluggableMap extends BaseObject {
      */
     this.keyHandlerKeys_ = null;
 
-    /**
-     * @private
-     * @type {?Array<import("./events.js").EventsKey>}
-     */
-    this.focusHandlerKeys_ = null;
-
     const handleBrowserEvent = this.handleBrowserEvent.bind(this);
     this.viewport_.addEventListener(EventType.CONTEXTMENU, handleBrowserEvent, false);
-    this.viewport_.addEventListener(EventType.WHEEL, handleBrowserEvent, false);
+    this.viewport_.addEventListener(EventType.WHEEL, handleBrowserEvent,
+      PASSIVE_EVENT_LISTENERS ? {passive: false} : false);
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -949,12 +932,14 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    let target = mapBrowserEvent.originalEvent.target;
-    while (target instanceof HTMLElement) {
-      if (target.parentElement === this.overlayContainerStopEvent_) {
-        return;
+    let target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
+    if (!mapBrowserEvent.dragging) {
+      while (target && target !== this.viewport_) {
+        if (target.parentElement === this.overlayContainerStopEvent_) {
+          return;
+        }
+        target = target.parentElement;
       }
-      target = target.parentElement;
     }
     mapBrowserEvent.frameState = this.frameState_;
     const interactionsArray = this.getInteractions().getArray();
@@ -1043,12 +1028,6 @@ class PluggableMap extends BaseObject {
       targetElement = this.getTargetElement();
     }
 
-    if (this.focusHandlerKeys_) {
-      for (let i = 0, ii = this.focusHandlerKeys_.length; i < ii; ++i) {
-        unlistenByKey(this.focusHandlerKeys_[i]);
-      }
-      this.focusHandlerKeys_ = null;
-    }
     if (this.keyHandlerKeys_) {
       for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.keyHandlerKeys_[i]);
@@ -1077,15 +1056,6 @@ class PluggableMap extends BaseObject {
       if (!this.renderer_) {
         this.renderer_ = this.createRenderer();
       }
-      let hasFocus = true;
-      if (targetElement.hasAttribute('tabindex')) {
-        hasFocus = document.activeElement === targetElement;
-        this.focusHandlerKeys_ = [
-          listen(targetElement, EventType.FOCUS, setTouchAction.bind(this, this.viewport_, 'none')),
-          listen(targetElement, EventType.BLUR, setTouchAction.bind(this, this.viewport_, 'auto'))
-        ];
-      }
-      setTouchAction(this.viewport_, hasFocus ? 'none' : 'auto');
 
       const keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
@@ -1133,7 +1103,8 @@ class PluggableMap extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.viewport_.setAttribute('data-view', getUid(view));
+      this.updateViewportSize_();
+
       this.viewPropertyListenerKey_ = listen(
         view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
@@ -1390,6 +1361,27 @@ class PluggableMap extends BaseObject {
             parseFloat(computedStyle['paddingBottom']) -
             parseFloat(computedStyle['borderBottomWidth'])
       ]);
+    }
+
+    this.updateViewportSize_();
+  }
+
+  /**
+   * Recomputes the viewport size and save it on the view object (if any)
+   * @private
+   */
+  updateViewportSize_() {
+    const view = this.getView();
+    if (view) {
+      let size = undefined;
+      const computedStyle = getComputedStyle(this.viewport_);
+      if (computedStyle.width && computedStyle.height) {
+        size = [
+          parseInt(computedStyle.width, 10),
+          parseInt(computedStyle.height, 10)
+        ];
+      }
+      view.setViewportSize(size);
     }
   }
 }

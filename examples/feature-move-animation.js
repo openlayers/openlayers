@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import Polyline from '../src/ol/format/Polyline.js';
 import Point from '../src/ol/geom/Point.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from '../src/ol/style.js';
 import {getVectorContext} from '../src/ol/render.js';
@@ -121,6 +121,10 @@ const vectorLayer = new VectorLayer({
   }
 });
 
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
 const center = [-5639523.95, -3501274.52];
 const map = new Map({
   target: document.getElementById('map'),
@@ -132,9 +136,10 @@ const map = new Map({
   }),
   layers: [
     new TileLayer({
-      source: new BingMaps({
-        imagerySet: 'AerialWithLabelsOnDemand',
-        key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
+      source: new XYZ({
+        attributions: attributions,
+        url: 'https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=' + key,
+        tileSize: 512
       })
     }),
     vectorLayer

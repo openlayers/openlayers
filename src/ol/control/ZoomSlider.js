@@ -1,6 +1,8 @@
 /**
  * @module ol/control/ZoomSlider
  */
+
+import 'elm-pep';
 import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
@@ -9,7 +11,6 @@ import {stopPropagation} from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
-import '@openlayers/pepjs';
 
 
 /**
@@ -135,7 +136,6 @@ class ZoomSlider extends Control {
     thumbElement.setAttribute('type', 'button');
     thumbElement.className = className + '-thumb ' + CLASS_UNSELECTABLE;
     const containerElement = this.element;
-    containerElement.setAttribute('touch-action', 'none');
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
 

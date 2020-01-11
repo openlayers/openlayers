@@ -2,13 +2,14 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import '@openlayers/pepjs';
-import {DEVICE_PIXEL_RATIO} from './has.js';
+import 'elm-pep';
+import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import {listen, unlistenByKey} from './events.js';
 import EventTarget from './events/Target.js';
 import PointerEventType from './pointer/EventType.js';
+import EventType from './events/EventType.js';
 
 class MapBrowserEventHandler extends EventTarget {
 
@@ -85,6 +86,12 @@ class MapBrowserEventHandler extends EventTarget {
       this.handlePointerDown_, this);
 
     /**
+     * @type {PointerEvent}
+     * @private
+     */
+    this.originalPointerMoveEvent_;
+
+    /**
      * @type {?import("./events.js").EventsKey}
      * @private
      */
@@ -92,6 +99,13 @@ class MapBrowserEventHandler extends EventTarget {
       PointerEventType.POINTERMOVE,
       this.relayEvent_, this);
 
+    /**
+     * @private
+     */
+    this.boundHandleTouchMove_ = this.handleTouchMove_.bind(this);
+
+    this.element_.addEventListener(EventType.TOUCHMOVE, this.boundHandleTouchMove_,
+      PASSIVE_EVENT_LISTENERS ? {passive: false} : false);
   }
 
   /**
@@ -246,9 +260,24 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   relayEvent_(pointerEvent) {
+    this.originalPointerMoveEvent_ = pointerEvent;
     const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
     this.dispatchEvent(new MapBrowserPointerEvent(
       pointerEvent.type, this.map_, pointerEvent, dragging));
+  }
+
+  /**
+   * Flexible handling of a `touch-action: none` css equivalent: because calling
+   * `preventDefault()` on a `pointermove` event does not stop native page scrolling
+   * and zooming, we also listen for `touchmove` and call `preventDefault()` on it
+   * when an interaction (currently `DragPan` handles the event.
+   * @param {TouchEvent} event Event.
+   * @private
+   */
+  handleTouchMove_(event) {
+    if (this.originalPointerMoveEvent_.defaultPrevented) {
+      event.preventDefault();
+    }
   }
 
   /**
@@ -271,6 +300,8 @@ class MapBrowserEventHandler extends EventTarget {
       unlistenByKey(this.relayedListenerKey_);
       this.relayedListenerKey_ = null;
     }
+    this.element_.removeEventListener(EventType.TOUCHMOVE, this.boundHandleTouchMove_);
+
     if (this.pointerdownListenerKey_) {
       unlistenByKey(this.pointerdownListenerKey_);
       this.pointerdownListenerKey_ = null;

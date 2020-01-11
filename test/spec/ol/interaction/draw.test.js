@@ -17,6 +17,9 @@ import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import Event from '../../../../src/ol/events/Event.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import {clearUserProjection, setUserProjection, transform} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
+import proj4 from 'proj4';
 
 
 describe('ol.interaction.Draw', function() {
@@ -53,6 +56,7 @@ describe('ol.interaction.Draw', function() {
   afterEach(function() {
     map.dispose();
     document.body.removeChild(target);
+    clearUserProjection();
   });
 
   /**
@@ -909,7 +913,7 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
-    it('draws circle with clicks, finishing on second point', function() {
+    it('draws circle with clicks, finishing on second point along x axis', function() {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -926,6 +930,73 @@ describe('ol.interaction.Draw', function() {
       expect(geometry).to.be.a(Circle);
       expect(geometry.getCenter()).to.eql([10, -20]);
       expect(geometry.getRadius()).to.eql(20);
+    });
+
+    it('draws circle with clicks, finishing on second point along y axis', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 10, 40);
+      simulateEvent('pointerdown', 10, 40);
+      simulateEvent('pointerup', 10, 40);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Circle);
+      expect(geometry.getCenter()).to.eql([10, -20]);
+      expect(geometry.getRadius()).to.eql(20);
+    });
+
+    it('draws circle with clicks in a user projection, finishing on second point along x axis', function() {
+      const userProjection = 'EPSG:3857';
+      setUserProjection(userProjection);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Circle);
+      const viewProjection = map.getView().getProjection();
+      expect(geometry.getCenter()).to.eql(transform([10, -20], viewProjection, userProjection));
+      const radius = geometry.clone().transform(userProjection, viewProjection).getRadius();
+      expect(radius).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('draws circle with clicks in a user projection, finishing on second point along y axis', function() {
+      const userProjection = 'EPSG:3857';
+      setUserProjection(userProjection);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 10, 40);
+      simulateEvent('pointerdown', 10, 40);
+      simulateEvent('pointerup', 10, 40);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Circle);
+      const viewProjection = map.getView().getProjection();
+      expect(geometry.getCenter()).to.eql(transform([10, -20], viewProjection, userProjection));
+      const radius = geometry.clone().transform(userProjection, viewProjection).getRadius();
+      expect(radius).to.roughlyEqual(20, 1e-9);
     });
 
     it('supports freehand drawing for circles', function() {
@@ -1080,6 +1151,24 @@ describe('ol.interaction.Draw', function() {
       });
     });
 
+    describe('#setMap(null) when no drawing is in progress', function() {
+      beforeEach(function() {
+        map.addInteraction(interaction);
+        simulateEvent('pointermove', 10, 20);
+        expect(interaction.sketchFeature_).to.be(null);
+        expect(interaction.sketchPoint_).not.to.be(null);
+      });
+      afterEach(function() {
+        map.removeInteraction(interaction);
+      });
+      it('clears the sketch features', function() {
+        interaction.setMap(null);
+        expect(interaction.sketchFeature_).to.be(null);
+        expect(interaction.sketchPoint_).to.be(null);
+        expect(interaction.sketchLine_).to.be(null);
+      });
+    });
+
     describe('#setMap(map)', function() {
       describe('#setMap(map) when interaction is active', function() {
         it('sets the map into the feature overlay', function() {
@@ -1133,6 +1222,38 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('creates a regular polygon in Circle mode in a user projection', function() {
+      const userProjection = 'EPSG:3857';
+      setUserProjection(userProjection);
+
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: createRegularPolygon(4, Math.PI / 4)
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      const features = source.getFeatures();
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+      const coordinates = geometry.getCoordinates();
+      expect(coordinates[0].length).to.eql(5);
+      const viewProjection = map.getView().getProjection();
+      const coordinate = transform([20, 20], viewProjection, userProjection);
+      expect(coordinates[0][0][0]).to.roughlyEqual(coordinate[0], 1e-9);
+      expect(coordinates[0][0][1]).to.roughlyEqual(coordinate[1], 1e-9);
     });
 
     it('sketch start point always matches the mouse point', function() {
@@ -1208,6 +1329,44 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0]).to.have.length(5);
       expect(geometry.getArea()).to.equal(400);
       expect(geometry.getExtent()).to.eql([0, -20, 20, 0]);
+    });
+
+    it('creates a box-shaped polygon in Circle mode in a user projection', function() {
+      proj4.defs('ESRI:54009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
+      register(proj4);
+      const userProjection = 'ESRI:54009';
+      setUserProjection(userProjection);
+
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: createBox()
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      const features = source.getFeatures();
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+      const coordinates = geometry.getCoordinates();
+      expect(coordinates[0]).to.have.length(5);
+      const viewProjection = map.getView().getProjection();
+      const area = geometry.clone().transform(userProjection, viewProjection).getArea();
+      expect(area).to.roughlyEqual(400, 1e-9);
+      const extent = geometry.clone().transform(userProjection, viewProjection).getExtent();
+      expect(extent[0]).to.roughlyEqual(0, 1e-9);
+      expect(extent[1]).to.roughlyEqual(-20, 1e-9);
+      expect(extent[2]).to.roughlyEqual(20, 1e-9);
+      expect(extent[3]).to.roughlyEqual(0, 1e-9);
     });
   });
 

@@ -96,6 +96,16 @@ class PointerInteraction extends Interaction {
   }
 
   /**
+   * Returns the current number of pointers involved in the interaction,
+   * e.g. `2` when two fingers are used.
+   * @return {number} The number of pointers.
+   * @api
+   */
+  getPointerCount() {
+    return this.targetPointers.length;
+  }
+
+  /**
    * Handle pointer down events.
    * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
@@ -136,9 +146,6 @@ class PointerInteraction extends Interaction {
     } else {
       if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
         const handled = this.handleDownEvent(mapBrowserEvent);
-        if (handled) {
-          mapBrowserEvent.preventDefault();
-        }
         this.handlingDownUpSequence = handled;
         stopEvent = this.stopDown(handled);
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {

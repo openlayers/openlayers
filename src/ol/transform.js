@@ -8,6 +8,7 @@ import {assert} from './asserts.js';
  * An array representing an affine 2d transformation for use with
  * {@link module:ol/transform} functions. The array has 6 elements.
  * @typedef {!Array<number>} Transform
+ * @api
  */
 
 
@@ -208,6 +209,24 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
   transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
   transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
   return transform;
+}
+
+/**
+ * Creates a composite transform given an initial translation, scale, rotation, and
+ * final translation (in that order only, not commutative). The resulting transform
+ * string can be applied as `transform` porperty of an HTMLElement's style.
+ * @param {number} dx1 Initial translation x.
+ * @param {number} dy1 Initial translation y.
+ * @param {number} sx Scale factor x.
+ * @param {number} sy Scale factor y.
+ * @param {number} angle Rotation (in counter-clockwise radians).
+ * @param {number} dx2 Final translation x.
+ * @param {number} dy2 Final translation y.
+ * @return {string} The composite css transform.
+ * @api
+ */
+export function composeCssTransform(dx1, dy1, sx, sy, angle, dx2, dy2) {
+  return toString(compose(create(), dx1, dy1, sx, sy, angle, dx2, dy2));
 }
 
 

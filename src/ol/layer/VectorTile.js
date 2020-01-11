@@ -40,7 +40,9 @@ import {assign} from '../obj.js';
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
- *
+ *  * `'vector'`: Everything is rendered as vectors. Use this mode for improved performance on vector
+ *    tile layers with only a few rendered features (e.g. for highlighting a subset of features of
+ *    another layer with the same source).
  * @property {import("../source/VectorTile.js").default} [source] Source.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
@@ -92,8 +94,9 @@ class VectorTileLayer extends BaseVectorLayer {
     const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(renderMode == undefined ||
         renderMode == VectorTileRenderType.IMAGE ||
-        renderMode == VectorTileRenderType.HYBRID,
-    28); // `renderMode` must be `'image'` or `'hybrid'`
+        renderMode == VectorTileRenderType.HYBRID ||
+        renderMode == VectorTileRenderType.VECTOR,
+    28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
 
     /**
      * @private

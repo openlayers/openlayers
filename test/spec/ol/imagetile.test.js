@@ -83,21 +83,4 @@ describe('ol.ImageTile', function() {
 
   });
 
-  describe('dispose', function() {
-
-    it('sets image src to a blank image data uri', function() {
-      const tileCoord = [0, 0, 0];
-      const state = TileState.IDLE;
-      const src = 'spec/ol/data/osm-0-0-0.png';
-      const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
-      tile.load();
-      expect(tile.getState()).to.be(TileState.LOADING);
-      tile.dispose();
-      expect(tile.getState()).to.be(TileState.ABORT);
-      expect(tile.getImage().src).to.be(ImageTile.blankImageUrl);
-    });
-
-  });
-
 });

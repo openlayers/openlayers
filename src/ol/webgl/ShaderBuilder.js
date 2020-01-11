@@ -60,6 +60,12 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
+    this.rotationExpression = '0.0';
+
+    /**
+     * @type {string}
+     * @private
+     */
     this.offsetExpression = 'vec2(0.0)';
 
     /**
@@ -135,6 +141,18 @@ export class ShaderBuilder {
    */
   setSizeExpression(expression) {
     this.sizeExpression = expression;
+    return this;
+  }
+
+  /**
+   * Sets an expression to compute the rotation of the shape.
+   * This expression can use all the uniforms and attributes available
+   * in the vertex shader, and should evaluate to a `float` value in radians.
+   * @param {string} expression Size expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setRotationExpression(expression) {
+    this.rotationExpression = expression;
     return this;
   }
 
@@ -291,10 +309,24 @@ ${varyings.map(function(varying) {
   }).join('\n')}
 void main(void) {
   mat4 offsetMatrix = ${offsetMatrix};
-  vec2 size = ${this.sizeExpression};
+  vec2 halfSize = ${this.sizeExpression} * 0.5;
   vec2 offset = ${this.offsetExpression};
-  float offsetX = a_index == 0.0 || a_index == 3.0 ? offset.x - size.x / 2.0 : offset.x + size.x / 2.0;
-  float offsetY = a_index == 0.0 || a_index == 1.0 ? offset.y - size.y / 2.0 : offset.y + size.y / 2.0;
+  float angle = ${this.rotationExpression};
+  float offsetX;
+  float offsetY;
+  if (a_index == 0.0) {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  } else if (a_index == 1.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
+    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else if (a_index == 2.0) {
+    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+  } else {
+    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
+    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+  }
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   vec4 texCoord = ${this.texCoordExpression};
@@ -381,6 +413,7 @@ export function parseLiteralStyle(style) {
   const texCoord = symbStyle.textureCoord || [0, 0, 1, 1];
   const offset = symbStyle.offset || [0, 0];
   const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
+  const rotation = symbStyle.rotation !== undefined ? symbStyle.rotation : 0;
 
   /**
    * @type {import("../style/expressions.js").ParsingContext}
@@ -406,6 +439,7 @@ export function parseLiteralStyle(style) {
   };
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
   const parsedOpacity = expressionToGlsl(fragContext, opacity, ValueTypes.NUMBER);
+  const parsedRotation = expressionToGlsl(fragContext, rotation, ValueTypes.NUMBER);
 
   let opacityFilter = '1.0';
   const visibleSize = `vec2(${expressionToGlsl(fragContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER)}).x`;
@@ -427,6 +461,7 @@ export function parseLiteralStyle(style) {
 
   const builder = new ShaderBuilder()
     .setSizeExpression(`vec2(${parsedSize})`)
+    .setRotationExpression(parsedRotation)
     .setSymbolOffsetExpression(parsedOffset)
     .setTextureCoordinateExpression(parsedTexCoord)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)

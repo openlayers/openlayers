@@ -108,7 +108,14 @@
       <div class="row-fluid">
         <a class="codepen-button pull-right"><i class="fa fa-codepen"></i> Edit</a>
         <div class="span12">
-          <h4 id="title">{{ title }}</h4>
+          <h4 id="title">
+            {{ title }}
+          </h4>
+          <p class="tags">
+            {{#each tags}}
+              <a href="./index.html?q={{.}}" class="label label-primary">{{.}}</a>
+            {{/each}}
+          </p>
           {{{ contents }}}
         </div>
         <form method="POST" id="codepen-form" target="_blank" action="https://codesandbox.io/api/v1/sandboxes/define">

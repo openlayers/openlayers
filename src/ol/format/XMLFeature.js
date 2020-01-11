@@ -5,7 +5,7 @@ import {abstract} from '../util.js';
 import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
-import {isDocument, parse} from '../xml.js';
+import {isDocument, parse, getXMLSerializer} from '../xml.js';
 
 /**
  * @classdesc
@@ -23,7 +23,7 @@ class XMLFeature extends FeatureFormat {
      * @type {XMLSerializer}
      * @private
      */
-    this.xmlSerializer_ = new XMLSerializer();
+    this.xmlSerializer_ = getXMLSerializer();
   }
 
   /**
