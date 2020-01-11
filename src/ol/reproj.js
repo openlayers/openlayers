@@ -314,6 +314,10 @@ export function render(width, height, pixelRatio,
     context.scale(sourceResolution / pixelRatio,
       -sourceResolution / pixelRatio);
 
+    // This is rather inefficient as we draw the *entire* source canvas into the destination and
+    // rely on the clipping to eliminate nearly all the pixels. It seems smarter to only
+    // draw the relevant region of the source canvas. However, I'm having difficulty figuring
+    // out what the parameters ought to be.
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
   });
