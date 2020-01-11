@@ -176,6 +176,10 @@ export function render(width, height, pixelRatio,
 
   context.scale(pixelRatio, pixelRatio);
 
+  function pixelRound(value) {
+    return Math.round(value * pixelRatio) / pixelRatio;
+  }
+
   context.globalCompositeOperation = 'lighter';
 
   const sourceDataExtent = createEmpty();
@@ -271,12 +275,12 @@ export function render(width, height, pixelRatio,
 
     if (isBrokenDiagonalRendering()) {
       // Make sure that everything is on pixel boundaries
-      const u0r = Math.round(u0);
-      const v0r = Math.round(v0);
-      const u1r = Math.round(u1);
-      const v1r = Math.round(v1);
-      const u2r = Math.round(u2);
-      const v2r = Math.round(v2);
+      const u0r = pixelRound(u0);
+      const v0r = pixelRound(v0);
+      const u1r = pixelRound(u1);
+      const v1r = pixelRound(v1);
+      const u2r = pixelRound(u2);
+      const v2r = pixelRound(v2);
       // Make sure that all lines are horizontal or vertical
       context.moveTo(u1r, v1r);
       // This is the diagonal line. Do it in 4 steps
@@ -285,10 +289,10 @@ export function render(width, height, pixelRatio,
       const vd = v0r - v1r;
       for (let step = 0; step < steps; step++) {
         // Go horizontally
-        context.lineTo(u1r + Math.round((step + 1) * ud / steps), v1r + Math.round(step * vd / (steps - 1)));
+        context.lineTo(u1r + pixelRound((step + 1) * ud / steps), v1r + pixelRound(step * vd / (steps - 1)));
         // Go vertically
         if (step != (steps - 1)) {
-          context.lineTo(u1r + Math.round((step + 1) * ud / steps), v1r + Math.round((step + 1) * vd / (steps - 1)));
+          context.lineTo(u1r + pixelRound((step + 1) * ud / steps), v1r + pixelRound((step + 1) * vd / (steps - 1)));
         }
       }
       // We are almost at u0r, v0r
