@@ -934,7 +934,7 @@ class PluggableMap extends BaseObject {
     }
     const target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
     if (!mapBrowserEvent.dragging) {
-      if (this.overlayContainerStopEvent_.contains(target) || !this.viewport_.contains(target)) {
+      if (this.overlayContainerStopEvent_.contains(target) || !document.body.contains(target)) {
         // Abort if the event target is a child of the container that doesn't allow
         // event propagation or is no longer in the page. It's possible for the target to no longer
         // be in the page if it has been removed in an event listener, this might happen in a Control
