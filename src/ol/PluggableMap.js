@@ -253,7 +253,7 @@ class PluggableMap extends BaseObject {
      */
     this.overlayContainer_ = document.createElement('div');
     this.overlayContainer_.style.position = 'absolute';
-    this.overlayContainer_.style.zIndex = '0';
+    this.overlayContainer_.style.zIndex = 'auto';
     this.overlayContainer_.style.width = '100%';
     this.overlayContainer_.style.height = '100%';
     this.overlayContainer_.className = 'ol-overlaycontainer';
@@ -265,7 +265,7 @@ class PluggableMap extends BaseObject {
      */
     this.overlayContainerStopEvent_ = document.createElement('div');
     this.overlayContainerStopEvent_.style.position = 'absolute';
-    this.overlayContainerStopEvent_.style.zIndex = '0';
+    this.overlayContainerStopEvent_.style.zIndex = 'auto';
     this.overlayContainerStopEvent_.style.width = '100%';
     this.overlayContainerStopEvent_.style.height = '100%';
     this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
