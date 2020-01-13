@@ -2,7 +2,6 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import ExtentInteraction from '../../../../src/ol/interaction/Extent.js';
-import Event from '../../../../src/ol/events/Event.js';
 
 describe('ol.interaction.Extent', function() {
   let map, interaction;

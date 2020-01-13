@@ -15,7 +15,6 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Draw, {createRegularPolygon, createBox} from '../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import Event from '../../../../src/ol/events/Event.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import {clearUserProjection, setUserProjection, transform} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
