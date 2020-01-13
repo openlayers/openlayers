@@ -73,8 +73,9 @@ describe('ol.interaction.Draw', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new Event();
+    const event = {};
     event.type = type;
+    event.target = viewport.firstChild;
     event.clientX = position.left + x + width / 2;
     event.clientY = position.top + y + height / 2;
     event.shiftKey = shiftKey;

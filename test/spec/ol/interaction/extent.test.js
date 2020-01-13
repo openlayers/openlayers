@@ -50,8 +50,9 @@ describe('ol.interaction.Extent', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const pointerEvent = new Event();
+    const pointerEvent = {};
     pointerEvent.type = type;
+    pointerEvent.target = viewport.firstChild;
     pointerEvent.button = button;
     pointerEvent.clientX = position.left + x + width / 2;
     pointerEvent.clientY = position.top - y + height / 2;
