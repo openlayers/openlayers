@@ -201,8 +201,8 @@ class MVT extends FeatureFormat {
         for (let i = 0, ii = ends.length; i < ii; ++i) {
           const end = ends[i];
           if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
-            endss.push(ends.slice(prevEndIndex, i));
-            prevEndIndex = i;
+            endss.push(ends.slice(prevEndIndex, i + 1));
+            prevEndIndex = i + 1;
           }
           offset = end;
         }
