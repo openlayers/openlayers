@@ -68,7 +68,7 @@ const styles = {
         points: 4,
         radius: 5,
         angle: Math.PI / 4,
-        offset: [0, 10]
+        displacement: [0, 10]
       })
     }),
     new Style({
