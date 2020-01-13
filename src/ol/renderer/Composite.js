@@ -8,9 +8,9 @@ import RenderEventType from '../render/EventType.js';
 import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
 import {replaceChildren} from '../dom.js';
-import {labelCache} from '../render/canvas.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import {checkedFonts} from '../render/canvas.js';
+import ObjectEventType from '../ObjectEventType.js';
 
 
 /**
@@ -29,7 +29,7 @@ class CompositeMapRenderer extends MapRenderer {
     /**
      * @type {import("../events.js").EventsKey}
      */
-    this.labelCacheKey_ = listen(labelCache, EventType.CLEAR, map.redrawText.bind(map));
+    this.fontChangeListenerKey_ = listen(checkedFonts, ObjectEventType.PROPERTYCHANGE, map.redrawText.bind(map));
 
     /**
      * @private
@@ -73,7 +73,7 @@ class CompositeMapRenderer extends MapRenderer {
   }
 
   disposeInternal() {
-    unlistenByKey(this.labelCacheKey_);
+    unlistenByKey(this.fontChangeListenerKey_);
     this.element_.parentNode.removeChild(this.element_);
     super.disposeInternal();
   }
