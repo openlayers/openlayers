@@ -8,6 +8,22 @@ tags: "cluster, vector"
 ---
 <div id="map" class="map"></div>
 <form>
-  <label for="distance">cluster distance</label>
-  <input id="distance" type="range" min="0" max="100" step="1" value="40"/>
+  <div>
+    <label for="distance" cellspan>Cluster distance: </label>
+    <span id="distance-info" class="info"></span>
+    <span>px</span>
+    <input id="distance" type="range" min="0" max="200" step="1" value="40"/>
+  </div>
+  <div>
+    <label for="min-distance">Min distance:</label>
+    <span id="min-distance-info" class="info"></span>
+    <span>px</span>
+    <input id="min-distance" type="range" min="0" max="200" step="1" value="20"/>
+  </div>
+  <div>
+    <span>Clusters:</span>
+    <span id ="num-clusters" class="info"></span>
+    <span></span>
+    <span></span>
+  </div>
 </form>
