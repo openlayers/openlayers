@@ -2,7 +2,7 @@
  * @module ol/reproj
  */
 import {createCanvasContext2D} from './dom.js';
-import {containsCoordinate, createEmpty, extend, forEachCorner, getCenter, getHeight, getTopLeft, getWidth} from './extent.js';
+import {boundingExtent, containsCoordinate, createEmpty, extend, forEachCorner, getCenter, getHeight, getTopLeft, getWidth} from './extent.js';
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
 
@@ -314,11 +314,13 @@ export function render(width, height, pixelRatio,
     context.scale(sourceResolution / pixelRatio,
       -sourceResolution / pixelRatio);
 
-    // This is rather inefficient as we draw the *entire* source canvas into the destination and
-    // rely on the clipping to eliminate nearly all the pixels. It seems smarter to only
-    // draw the relevant region of the source canvas. However, I'm having difficulty figuring
-    // out what the parameters ought to be.
-    context.drawImage(stitchContext.canvas, 0, 0);
+    const sourceTriangleExtent = boundingExtent(source);
+    const topLeftX = Math.floor((sourceTriangleExtent[0] - sourceDataExtent[0]) * stitchScale);
+    const topLeftY = Math.floor((sourceDataExtent[3] - sourceTriangleExtent[3]) * stitchScale);
+    const width = Math.ceil((sourceTriangleExtent[2] - sourceTriangleExtent[0]) * stitchScale) + 2;
+    const height = Math.ceil((sourceTriangleExtent[3] - sourceTriangleExtent[1]) * stitchScale) + 2;
+
+    context.drawImage(stitchContext.canvas, topLeftX, topLeftY, width, height, topLeftX, topLeftY, width, height);
     context.restore();
   });
 
