@@ -160,7 +160,7 @@ class ReprojTile extends Tile {
      */
     this.triangulation_ = new Triangulation(
       sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
-      sourceResolution * errorThresholdInPixels);
+      sourceResolution * errorThresholdInPixels, targetResolution);
 
     if (this.triangulation_.getTriangles().length === 0) {
       // no valid triangles -> EMPTY

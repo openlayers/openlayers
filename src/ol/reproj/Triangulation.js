@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj/Triangulation
  */
-import {boundingExtent, createEmpty, extendCoordinate, getBottomLeft, getBottomRight,
+import {boundingExtent, createEmpty, extendCoordinate, getArea, getBottomLeft, getBottomRight,
   getTopLeft, getTopRight, getWidth, intersects} from '../extent.js';
 import {modulo} from '../math.js';
 import {getTransform} from '../proj.js';
@@ -49,8 +49,9 @@ class Triangulation {
    * @param {import("../extent.js").Extent} targetExtent Target extent to triangulate.
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
+   * @param {number} destinationResolution The (optional) resolution of the destination.
    */
-  constructor(sourceProj, targetProj, targetExtent, maxSourceExtent, errorThreshold) {
+  constructor(sourceProj, targetProj, targetExtent, maxSourceExtent, errorThreshold, destinationResolution) {
 
     /**
      * @type {import("../proj/Projection.js").default}
@@ -138,11 +139,15 @@ class Triangulation {
     const sourceBottomRight = this.transformInv_(destinationBottomRight);
     const sourceBottomLeft = this.transformInv_(destinationBottomLeft);
 
+    const maxSubdivision = MAX_SUBDIVISION + (destinationResolution ?
+      Math.max(0, Math.ceil(Math.log2(getArea(targetExtent) / (destinationResolution * destinationResolution * 256 * 256))))
+      : 0);
+
     this.addQuad_(
       destinationTopLeft, destinationTopRight,
       destinationBottomRight, destinationBottomLeft,
       sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
-      MAX_SUBDIVISION);
+      maxSubdivision);
 
     if (this.wrapsXInSource_) {
       let leftBound = Infinity;
