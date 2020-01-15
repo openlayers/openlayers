@@ -163,7 +163,7 @@ class GeoJSON extends JSONFeature {
       if (crs['type'] == 'name') {
         projection = getProjection(crs['properties']['name']);
       } else if (crs['type'] === 'EPSG') {
-        projection = getProjection("EPSG:" + crs['properties']['code']);
+        projection = getProjection('EPSG:' + crs['properties']['code']);
       } else {
         assert(false, 36); // Unknown SRS type
       }
