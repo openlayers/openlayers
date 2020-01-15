@@ -10,6 +10,7 @@ import RegularShape from './RegularShape.js';
  * @property {import("./Fill.js").default} [fill] Fill style.
  * @property {number} radius Circle radius.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {Array<number>} [displacement=[0,0]] displacement
  */
 
 
@@ -30,7 +31,8 @@ class CircleStyle extends RegularShape {
       points: Infinity,
       fill: options.fill,
       radius: options.radius,
-      stroke: options.stroke
+      stroke: options.stroke,
+      displacement: options.displacement !== undefined ? options.displacement : [0, 0]
     });
 
   }
@@ -45,7 +47,8 @@ class CircleStyle extends RegularShape {
     const style = new CircleStyle({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-      radius: this.getRadius()
+      radius: this.getRadius(),
+      displacement: this.getDisplacement().slice()
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());

@@ -97,22 +97,26 @@ describe('ol.style.Icon', function() {
         color: [1, 2, 3, 0.4],
         src: src,
         offset: [1, 2],
-        size: [10, 12]
+        size: [10, 12],
+        displacement: [5, 6]
       });
       const clone = original.clone();
       expect(original.getAnchor()).not.to.be(clone.getAnchor());
       expect(original.offset_).not.to.be(clone.offset_);
       expect(original.getColor()).not.to.be(clone.getColor());
       expect(original.getSize()).not.to.be(clone.getSize());
+      expect(original.getDisplacement()).not.to.be(clone.getDisplacement());
 
       clone.anchor_[0] = 0;
       clone.offset_[0] = 0;
       clone.color_[0] = 0;
       clone.size_[0] = 5;
+      clone.displacement_[0] = 10;
       expect(original.anchor_).not.to.eql(clone.anchor_);
       expect(original.offset_).not.to.eql(clone.offset_);
       expect(original.color_).not.to.eql(clone.color_);
       expect(original.size_).not.to.eql(clone.size_);
+      expect(original.displacement_).not.to.eql(clone.displacement_);
     });
   });
 
@@ -228,6 +232,18 @@ describe('ol.style.Icon', function() {
       });
       iconStyle.iconImage_.size_ = imageSize;
       expect(iconStyle.getOrigin()).to.eql([92, 20]);
+    });
+
+    it('uses a top right offset origin + displacement', function() {
+      const iconStyle = new Icon({
+        src: 'test.png',
+        size: size,
+        offset: offset,
+        offsetOrigin: 'top-right',
+        displacement: [20, 10]
+      });
+      iconStyle.iconImage_.size_ = imageSize;
+      expect(iconStyle.getOrigin()).to.eql([92 + 20, 20 + 10]);
     });
   });
 
