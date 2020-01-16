@@ -82,6 +82,24 @@ describe('ol.style.RegularShape', function() {
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
+    it('sets default displacement [0, 0]', function() {
+      const style = new RegularShape({
+        radius: 5
+      });
+      expect(style.getDisplacement()).to.an('array');
+      expect(style.getDisplacement()[0]).to.eql(0);
+      expect(style.getDisplacement()[1]).to.eql(0);
+    });
+
+    it('can use offset', function() {
+      const style = new RegularShape({
+        radius: 5,
+        displacement: [10, 20]
+      });
+      expect(style.getDisplacement()).to.an('array');
+      expect(style.getDisplacement()[0]).to.eql(10);
+      expect(style.getDisplacement()[1]).to.eql(20);
+    });
   });
 
   describe('#clone', function() {
@@ -108,7 +126,8 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         }),
         rotation: 2,
-        rotateWithView: true
+        rotateWithView: true,
+        displacement: [10, 20]
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
@@ -123,6 +142,8 @@ describe('ol.style.RegularShape', function() {
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
       expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getDisplacement()[0]).to.eql(clone.getDisplacement()[0]);
+      expect(original.getDisplacement()[1]).to.eql(clone.getDisplacement()[1]);
     });
 
     it('the clone does not reference the same objects as the original', function() {
@@ -132,11 +153,13 @@ describe('ol.style.RegularShape', function() {
         }),
         stroke: new Stroke({
           color: '#319FD3'
-        })
+        }),
+        displacement: [0, 5]
       });
       const clone = original.clone();
       expect(original.getFill()).to.not.be(clone.getFill());
       expect(original.getStroke()).to.not.be(clone.getStroke());
+      expect(original.getDisplacement()).to.not.be(clone.getDisplacement());
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');

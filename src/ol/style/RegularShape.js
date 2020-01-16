@@ -20,6 +20,7 @@ import ImageStyle from './Image.js';
  * @property {number} [radius1] Outer radius of a star.
  * @property {number} [radius2] Inner radius of a star.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
+ * @property {Array<number>} [displacement=[0,0]] Displacement of the shape
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
@@ -61,7 +62,8 @@ class RegularShape extends ImageStyle {
       opacity: 1,
       rotateWithView: rotateWithView,
       rotation: options.rotation !== undefined ? options.rotation : 0,
-      scale: 1
+      scale: 1,
+      displacement: options.displacement !== undefined ? options.displacement : [0, 0]
     });
 
     /**
@@ -160,7 +162,8 @@ class RegularShape extends ImageStyle {
       angle: this.getAngle(),
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
-      rotateWithView: this.getRotateWithView()
+      rotateWithView: this.getRotateWithView(),
+      displacement: this.getDisplacement().slice()
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());
@@ -353,12 +356,13 @@ class RegularShape extends ImageStyle {
     // canvas.width and height are rounded to the closest integer
     size = this.canvas_.width;
     const imageSize = size;
+    const displacement = this.getDisplacement();
 
     this.draw_(renderOptions, context, 0, 0);
 
     this.createHitDetectionCanvas_(renderOptions);
 
-    this.anchor_ = [size / 2, size / 2];
+    this.anchor_ = [size / 2 - displacement[0], size / 2 + displacement[1]];
     this.size_ = [size, size];
     this.imageSize_ = [imageSize, imageSize];
   }
