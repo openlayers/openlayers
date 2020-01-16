@@ -1,4 +1,3 @@
-import {clear} from '../../../../../src/ol/obj.js';
 import * as render from '../../../../../src/ol/render/canvas.js';
 
 
@@ -9,69 +8,70 @@ describe('ol.render.canvas', function() {
   font.rel = 'stylesheet';
   const head = document.getElementsByTagName('head')[0];
 
-  describe('ol.render.canvas.checkFont()', function() {
+  describe('ol.render.canvas.registerFont()', function() {
 
     beforeEach(function() {
-      clear(render.checkedFonts);
+      render.checkedFonts.values_ = {};
       render.measureTextHeight('12px sans-serif');
     });
 
     const retries = 100;
 
-    it('does not clear label cache and measurements for unavailable fonts', function(done) {
+    it('does not trigger redraw and clear measurements for unavailable fonts', function(done) {
       this.timeout(4000);
       const spy = sinon.spy();
-      render.labelCache.addEventListener('clear', spy);
+      render.checkedFonts.addEventListener('propertychange', spy);
       const interval = setInterval(function() {
-        if (render.checkedFonts['normal\nnormal\nfoo'] == retries && render.checkedFonts['normal\nnormal\nsans-serif'] == retries) {
+        if (render.checkedFonts.get('normal\nnormal\nfoo') == retries && render.checkedFonts.get('normal\nnormal\nsans-serif') == retries) {
           clearInterval(interval);
-          render.labelCache.removeEventListener('clear', spy);
+          render.checkedFonts.removeEventListener('propertychange', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
         }
       }, 32);
-      render.checkFont('12px foo,sans-serif');
+      render.registerFont('12px foo,sans-serif');
     });
 
-    it('does not clear label cache and measurements for available fonts', function(done) {
+    it('does not trigger redraw and clear measurements for available fonts', function(done) {
       const spy = sinon.spy();
-      render.labelCache.addEventListener('clear', spy);
+      render.checkedFonts.addEventListener('propertychange', spy);
       const interval = setInterval(function() {
-        if (render.checkedFonts['normal\nnormal\nsans-serif'] == retries) {
+        if (render.checkedFonts.get('normal\nnormal\nsans-serif') == retries) {
           clearInterval(interval);
-          render.labelCache.removeEventListener('clear', spy);
+          render.checkedFonts.removeEventListener('propertychange', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
         }
       }, 32);
-      render.checkFont('12px sans-serif');
+      render.registerFont('12px sans-serif');
     });
 
-    it('does not clear label cache and measurements for the \'monospace\' font', function(done) {
+    it('does not trigger redraw and clear measurements for the \'monospace\' font', function(done) {
       const spy = sinon.spy();
-      render.labelCache.addEventListener('clear', spy);
+      render.checkedFonts.addEventListener('propertychange', spy);
       const interval = setInterval(function() {
-        if (render.checkedFonts['normal\nnormal\nmonospace'] == retries) {
+        if (render.checkedFonts.get('normal\nnormal\nmonospace') == retries) {
           clearInterval(interval);
-          render.labelCache.removeEventListener('clear', spy);
+          render.checkedFonts.removeEventListener('propertychange', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
         }
       }, 32);
-      render.checkFont('12px monospace');
+      render.registerFont('12px monospace');
     });
 
-    it('clears label cache and measurements for fonts that become available', function(done) {
+    it('triggers redraw and clear measurements for fonts that become available', function(done) {
       head.appendChild(font);
-      render.labelCache.set('dummy', {});
-      render.labelCache.addEventListener('clear', function() {
+      render.checkedFonts.addEventListener('propertychange', function onPropertyChange(e) {
+        render.checkedFonts.removeEventListener('propertychange', onPropertyChange);
+        expect(e.key).to.be('normal\nnormal\nAbel');
         expect(render.textHeights).to.eql({});
         done();
       });
-      render.checkFont('12px Abel');
+      render.registerFont('12px Abel');
     });
 
   });

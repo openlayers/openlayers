@@ -5,7 +5,9 @@ import {getFontParameters} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import {create as createTransform} from '../transform.js';
-import LabelCache from './canvas/LabelCache.js';
+import {executeLabelInstructions} from './canvas/Executor.js';
+import BaseObject from '../Object.js';
+import EventTarget from '../events/Target.js';
 
 
 /**
@@ -164,21 +166,23 @@ export const defaultPadding = [0, 0, 0, 0];
  */
 export const defaultLineWidth = 1;
 
+/**
+ * @type {BaseObject}
+ */
+export const checkedFonts = new BaseObject();
 
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {LabelCache}
+ * Deprecated - there is no label cache any more.
+ * @type {?}
  * @api
+ * @deprecated
  */
-export const labelCache = new LabelCache();
-
-
-/**
- * @type {!Object<string, number>}
- */
-export const checkedFonts = {};
-
+export const labelCache = new EventTarget();
+labelCache.setSize = function() {
+  console.warn('labelCache is deprecated.'); //eslint-disable-line
+};
 
 /**
  * @type {CanvasRenderingContext2D}
@@ -200,9 +204,8 @@ export const textHeights = {};
  * Clears the label cache when a font becomes available.
  * @param {string} fontSpec CSS font spec.
  */
-export const checkFont = (function() {
+export const registerFont = (function() {
   const retries = 100;
-  const checked = checkedFonts;
   const size = '32px ';
   const referenceFonts = ['monospace', 'serif'];
   const len = referenceFonts.length;
@@ -235,19 +238,18 @@ export const checkFont = (function() {
 
   function check() {
     let done = true;
-    for (const font in checked) {
-      if (checked[font] < retries) {
+    const fonts = checkedFonts.getKeys();
+    for (let i = 0, ii = fonts.length; i < ii; ++i) {
+      const font = fonts[i];
+      if (checkedFonts.get(font) < retries) {
         if (isAvailable.apply(this, font.split('\n'))) {
-          checked[font] = retries;
           clear(textHeights);
           // Make sure that loaded fonts are picked up by Safari
           measureContext = null;
           measureFont = undefined;
-          if (labelCache.getCount()) {
-            labelCache.clear();
-          }
+          checkedFonts.set(font, retries);
         } else {
-          ++checked[font];
+          checkedFonts.set(font, checkedFonts.get(font) + 1, true);
           done = false;
         }
       }
@@ -267,10 +269,10 @@ export const checkFont = (function() {
     for (let i = 0, ii = families.length; i < ii; ++i) {
       const family = families[i];
       const key = font.style + '\n' + font.weight + '\n' + family;
-      if (!(key in checked)) {
-        checked[key] = retries;
+      if (checkedFonts.get(key) === undefined) {
+        checkedFonts.set(key, retries, true);
         if (!isAvailable(font.style, font.weight, family)) {
-          checked[key] = 0;
+          checkedFonts.set(key, 0, true);
           if (interval === undefined) {
             interval = setInterval(check, 32);
           }
@@ -388,7 +390,7 @@ export const resetTransform = createTransform();
  * @param {CanvasRenderingContext2D} context Context.
  * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
- * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
+ * @param {import("./canvas/Executor.js").Label|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} labelOrImage Label.
  * @param {number} originX Origin X.
  * @param {number} originY Origin Y.
  * @param {number} w Width.
@@ -397,8 +399,8 @@ export const resetTransform = createTransform();
  * @param {number} y Y.
  * @param {number} scale Scale.
  */
-export function drawImage(context,
-  transform, opacity, image, originX, originY, w, h, x, y, scale) {
+export function drawImageOrLabel(context,
+  transform, opacity, labelOrImage, originX, originY, w, h, x, y, scale) {
   let alpha;
   if (opacity != 1) {
     alpha = context.globalAlpha;
@@ -408,12 +410,21 @@ export function drawImage(context,
     context.setTransform.apply(context, transform);
   }
 
-  context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
+  const isLabel = !!(/** @type {*} */ (labelOrImage).contextInstructions);
+
+  if (isLabel) {
+    context.translate(x, y);
+    context.scale(scale, scale);
+    executeLabelInstructions(/** @type {import("./canvas/Executor.js").Label} */ (labelOrImage), context);
+  } else {
+    context.drawImage(/** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage), originX, originY, w, h, x, y, w * scale, h * scale);
+  }
 
   if (opacity != 1) {
     context.globalAlpha = alpha;
   }
-  if (transform) {
+
+  if (transform || isLabel) {
     context.setTransform.apply(context, resetTransform);
   }
 }

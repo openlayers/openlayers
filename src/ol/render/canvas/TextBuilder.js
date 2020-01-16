@@ -6,7 +6,7 @@ import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
-import {labelCache, defaultTextAlign, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {defaultTextAlign, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, registerFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import CanvasBuilder from './Builder.js';
 import TextPlacement from '../../style/TextPlacement.js';
@@ -138,7 +138,6 @@ class CanvasTextBuilder extends CanvasBuilder {
    */
   finish() {
     const instructions = super.finish();
-    labelCache.expireCache();
     instructions.textStates = this.textStates;
     instructions.fillStates = this.fillStates;
     instructions.strokeStates = this.strokeStates;
@@ -432,7 +431,7 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       textState = this.textState_;
       const font = textStyle.getFont() || defaultFont;
-      checkFont(font);
+      registerFont(font);
       const textScale = textStyle.getScale();
       textState.overflow = textStyle.getOverflow();
       textState.font = font;

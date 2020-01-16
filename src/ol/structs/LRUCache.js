@@ -3,8 +3,6 @@
  */
 
 import {assert} from '../asserts.js';
-import EventTarget from '../events/Target.js';
-import EventType from '../events/EventType.js';
 
 
 /**
@@ -25,14 +23,12 @@ import EventType from '../events/EventType.js';
  * @fires import("../events/Event.js").default
  * @template T
  */
-class LRUCache extends EventTarget {
+class LRUCache {
 
   /**
    * @param {number=} opt_highWaterMark High water mark.
    */
   constructor(opt_highWaterMark) {
-
-    super();
 
     /**
      * @type {number}
@@ -82,7 +78,6 @@ class LRUCache extends EventTarget {
     this.entries_ = {};
     this.oldest_ = null;
     this.newest_ = null;
-    this.dispatchEvent(EventType.CLEAR);
   }
 
 

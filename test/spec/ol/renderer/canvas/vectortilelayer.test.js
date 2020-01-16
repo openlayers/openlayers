@@ -1,4 +1,3 @@
-import {clear} from '../../../../../src/ol/obj.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
@@ -171,7 +170,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not re-render for unavailable fonts', function(done) {
       map.renderSync();
-      clear(checkedFonts);
+      checkedFonts.values_ = {};
       layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
       layer.changed();
       const revision = layer.getRevision();
@@ -183,7 +182,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not re-render for available fonts', function(done) {
       map.renderSync();
-      clear(checkedFonts);
+      checkedFonts.values_ = {};
       layerStyle[0].getText().setFont('12px sans-serif');
       layer.changed();
       const revision = layer.getRevision();
@@ -195,7 +194,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('re-renders for fonts that become available', function(done) {
       map.renderSync();
-      clear(checkedFonts);
+      checkedFonts.values_ = {};
       head.appendChild(font);
       layerStyle[0].getText().setFont('12px "Dancing Script",sans-serif');
       layer.changed();
