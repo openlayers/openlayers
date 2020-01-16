@@ -49,6 +49,8 @@ const LEADING_DIGITS = [1, 2, 5];
  * for best results. Only applies when `bar` is `true`.
  * @property {boolean} [text=false] Render the text scale above of the scalebar. Only applies
  * when `bar` is `true`.
+ * @property {number|undefined} [dpi=undefined] dpi of output device such as printer. Only applies
+ * when `bar` is `true`. If undefined the OGC default screen pixel size of 0.28mm will be assumed.
  */
 
 
@@ -146,6 +148,12 @@ class ScaleLine extends Control {
      */
     this.scaleBarText_ = options.text || false;
 
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.dpi_ = options.dpi || undefined;
+
   }
 
   /**
@@ -174,6 +182,24 @@ class ScaleLine extends Control {
    */
   setUnits(units) {
     this.set(UNITS_PROP, units);
+  }
+
+  /**
+   * Specify the dpi of output device such as printer.
+   * @param {number|undefined} dpi The dpi of output device.
+   * @api
+   */
+  setDpi(dpi) {
+    this.dpi_ = dpi;
+  }
+
+  /**
+   * Set the minimum width.
+   * @param {number|undefined} minWidth The ninimum width in pixels.
+   * @api
+   */
+  setMinWidth(minWidth) {
+    this.minWidth_ = minWidth !== undefined ? minWidth : 64;
   }
 
   /**
@@ -406,8 +432,12 @@ class ScaleLine extends Control {
    * @return {number} The appropriate scale.
    */
   getScaleForResolution() {
-    const resolution = this.getMap().getView().getResolution();
-    const dpi = 25.4 / 0.28;
+    const resolution = getPointResolution(
+      this.viewState_.projection,
+      this.viewState_.resolution,
+      this.viewState_.center
+    );
+    const dpi = this.dpi_ || (25.4 / 0.28);
     const mpu = this.viewState_.projection.getMetersPerUnit();
     const inchesPerMeter = 39.37;
     return parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi;
