@@ -84,6 +84,7 @@ describe('ol.interaction.Modify', function() {
     const position = viewport.getBoundingClientRect();
     const pointerEvent = new Event();
     pointerEvent.type = type;
+    pointerEvent.target = viewport.firstChild;
     pointerEvent.clientX = position.left + x + width / 2;
     pointerEvent.clientY = position.top + y + height / 2;
     pointerEvent.shiftKey = modifiers.shift || false;

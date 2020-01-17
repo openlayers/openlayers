@@ -15,7 +15,6 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Draw, {createRegularPolygon, createBox} from '../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import Event from '../../../../src/ol/events/Event.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import {clearUserProjection, setUserProjection, transform} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
@@ -73,8 +72,9 @@ describe('ol.interaction.Draw', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new Event();
+    const event = {};
     event.type = type;
+    event.target = viewport.firstChild;
     event.clientX = position.left + x + width / 2;
     event.clientY = position.top + y + height / 2;
     event.shiftKey = shiftKey;

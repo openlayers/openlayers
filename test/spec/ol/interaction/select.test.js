@@ -91,11 +91,13 @@ describe('ol.interaction.Select', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new PointerEvent(type, {
+    const event = {
+      type: type,
+      target: viewport.firstChild,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
-    });
+    };
     map.handleMapBrowserEvent(new MapBrowserPointerEvent(type, map, event));
   }
 

@@ -65,13 +65,15 @@ describe('ol.interaction.Translate', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new MapBrowserPointerEvent(type, map,
-      new PointerEvent(type, {
-        clientX: position.left + x + width / 2,
-        clientY: position.top + y + height / 2,
-        shiftKey: shiftKey,
-        preventDefault: function() {}
-      }));
+    const event = new MapBrowserPointerEvent(type, map, {
+      type: type,
+      target: viewport.firstChild,
+      pointerId: 0,
+      clientX: position.left + x + width / 2,
+      clientY: position.top + y + height / 2,
+      shiftKey: shiftKey,
+      preventDefault: function() {}
+    });
     map.handleMapBrowserEvent(event);
   }
 
