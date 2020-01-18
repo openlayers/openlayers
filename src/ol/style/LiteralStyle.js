@@ -2,6 +2,7 @@
  * Literal Style objects differ from standard styles in that they cannot
  * be functions and are made up of simple objects instead of classes.
  * @module ol/style/LiteralStyle
+ * @experimental
  */
 
 /**
@@ -15,6 +16,7 @@
  * @property {Object<string, number>} [variables] Style variables; each variable must hold a number.
  * Note: **this object is meant to be mutated**: changes to the values will immediately be visible on the rendered features
  * @property {LiteralSymbolStyle} [symbol] Symbol representation.
+ * @api
  */
 
 /**

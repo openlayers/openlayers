@@ -1,5 +1,6 @@
 /**
  * @module ol/layer/WebGLPoints
+ * @experimental
  */
 import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
@@ -65,6 +66,7 @@ import Layer from './Layer.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @fires import("../render/Event.js").RenderEvent
+ * @api
  */
 class WebGLPointsLayer extends Layer {
   /**

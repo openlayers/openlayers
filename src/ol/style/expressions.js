@@ -1,6 +1,7 @@
 /**
  * Operators and utilities used for style expressions
  * @module ol/style/expressions
+ * @experimental
  */
 
 import {asArray, isStringColor} from '../color.js';
@@ -71,6 +72,7 @@ import {asArray, isStringColor} from '../color.js';
  * * {@link module:ol/color~Color}
  *
  * @typedef {Array<*>|import("../color.js").Color|string|number|boolean} ExpressionValue
+ * @api
  */
 
 /**
