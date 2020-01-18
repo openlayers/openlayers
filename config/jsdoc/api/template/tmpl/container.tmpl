@@ -12,6 +12,18 @@
 <section class="content">
 
 <header>
+    <?js if (doc.experimental) { ?>
+        <div id="experimental-notice" class="alert alert-warning alert-dismissible" role="alert" style="display:block">
+            <button id="experimental-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            This <?js= doc.kind ?> is experimental and subject to change between releases.
+        </div>
+        <script>
+            document.getElementById('experimental-dismiss').addEventListener('click', function() {
+                document.getElementById('experimental-notice').style.display = 'none';
+            });
+        </script>
+    <?js } ?>
+
     <h2><?js if (doc.ancestors && doc.ancestors.length) { ?>
         <span class="ancestors"><?js= doc.ancestors.join('') ?></span><?js } ?><?js= doc.name ?>
     <?js if (doc.variation) { ?>

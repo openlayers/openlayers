@@ -20,7 +20,8 @@
     "config/jsdoc/api/plugins/inheritdoc",
     "config/jsdoc/api/plugins/events",
     "config/jsdoc/api/plugins/observable",
-    "config/jsdoc/api/plugins/api"
+    "config/jsdoc/api/plugins/api",
+    "config/jsdoc/api/plugins/experimental"
   ],
   "typescript": {
     "moduleRoot": "src"
