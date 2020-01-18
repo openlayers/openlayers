@@ -935,7 +935,6 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {Style|undefined} */
       let name = '';
       if (drawName) {
         const geometry = feature.getGeometry();
