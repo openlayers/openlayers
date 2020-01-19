@@ -2281,7 +2281,7 @@ describe('ol.format.KML', function() {
           expect(styleFunction).not.to.be(undefined);
           const style = styleFunction(f, 0);
           expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql('Joe's Test');
+          expect(style.getText().getText()).to.eql('Joe\'s Test');
         });
 
         it('can write an feature\'s icon style', function() {
