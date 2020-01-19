@@ -2238,7 +2238,7 @@ describe('ol.format.KML', function() {
             expect(style.getZIndex()).to.be(undefined);
           });
 
-        it('can create text style for named point placemarks', function() {
+        it('can create text style for named point placemarks (including html character codes)', function() {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2266,7 +2266,7 @@ describe('ol.format.KML', function() {
               '    </Pair>' +
               '  </StyleMap>' +
               '  <Placemark>' +
-              '    <name>Test</name>' +
+              '    <name>Joe&apos;s Test</name>' +
               '    <styleUrl>#msn_ylw-pushpin0</styleUrl>' +
               '    <Point>' +
               '      <coordinates>1,2</coordinates>' +
@@ -2281,7 +2281,7 @@ describe('ol.format.KML', function() {
           expect(styleFunction).not.to.be(undefined);
           const style = styleFunction(f, 0);
           expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
+          expect(style.getText().getText()).to.eql('Joe's Test');
         });
 
         it('can write an feature\'s icon style', function() {
