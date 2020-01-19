@@ -946,6 +946,12 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
         drawName = drawName && !!name;
+        // convert any html character codes
+        if (drawName && name.search(/&[^&]+;/) > -1) {
+          const text = document.createElement('textarea');
+          text.innerHTML = name;
+          name = text.value;
+        }
       }
 
       if (style) {
