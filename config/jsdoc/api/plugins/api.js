@@ -119,7 +119,6 @@ exports.handlers = {
       api.push(doclet);
     }
     if (doclet.kind == 'class') {
-      modules[doclet.longname.split(/[~\.]/).shift()] = true;
       if (!(doclet.longname in classes)) {
         classes[doclet.longname] = doclet;
       } else if ('augments' in doclet) {
