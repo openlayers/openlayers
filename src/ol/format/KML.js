@@ -379,7 +379,7 @@ function createStyleDefaults() {
 }
 
 /**
- * @type {HTMLElement}
+ * @type {Textarea}
  */
 let TEXTAREA;
 
