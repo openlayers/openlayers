@@ -378,6 +378,11 @@ function createStyleDefaults() {
 
 }
 
+/**
+ * @type {HTMLTextAreaElement}
+ */
+let TEXTAREA;
+
 
 /**
  * @typedef {Object} Options
@@ -911,9 +916,8 @@ function createNameStyleFunction(foundStyle, name) {
   textStyle.setOffsetY(textOffset[1]);
   textStyle.setTextAlign(textAlign);
 
-  const nameStyle = new Style({
-    text: textStyle
-  });
+  const nameStyle = foundStyle.clone();
+  nameStyle.setText(textStyle);
   return nameStyle;
 }
 
@@ -932,12 +936,10 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
     /**
      * @param {Feature} feature feature.
      * @param {number} resolution Resolution.
-     * @return {Array<Style>} Style.
+     * @return {Array<Style>|Style} Style.
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {Style|undefined} */
-      let nameStyle;
       let name = '';
       if (drawName) {
         const geometry = feature.getGeometry();
@@ -949,26 +951,31 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
         drawName = drawName && !!name;
+        // convert any html character codes
+        if (drawName && name.search(/&[^&]+;/) > -1) {
+          if (!TEXTAREA) {
+            TEXTAREA = document.createElement('textarea');
+          }
+          TEXTAREA.innerHTML = name;
+          name = TEXTAREA.value;
+        }
       }
 
       if (style) {
         if (drawName) {
-          nameStyle = createNameStyleFunction(style[0], name);
-          return style.concat(nameStyle);
+          return createNameStyleFunction(style[0], name);
         }
         return style;
       }
       if (styleUrl) {
         const foundStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
         if (drawName) {
-          nameStyle = createNameStyleFunction(foundStyle[0], name);
-          return foundStyle.concat(nameStyle);
+          return createNameStyleFunction(foundStyle[0], name);
         }
         return foundStyle;
       }
       if (drawName) {
-        nameStyle = createNameStyleFunction(defaultStyle[0], name);
-        return defaultStyle.concat(nameStyle);
+        return createNameStyleFunction(defaultStyle[0], name);
       }
       return defaultStyle;
     }

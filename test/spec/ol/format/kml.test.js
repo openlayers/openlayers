@@ -2238,7 +2238,7 @@ describe('ol.format.KML', function() {
             expect(style.getZIndex()).to.be(undefined);
           });
 
-        it('can create text style for named point placemarks', function() {
+        it('can create text style for named point placemarks (including html character codes)', function() {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2266,7 +2266,7 @@ describe('ol.format.KML', function() {
               '    </Pair>' +
               '  </StyleMap>' +
               '  <Placemark>' +
-              '    <name>Test</name>' +
+              '    <name>Joe&apos;s Test</name>' +
               '    <styleUrl>#msn_ylw-pushpin0</styleUrl>' +
               '    <Point>' +
               '      <coordinates>1,2</coordinates>' +
@@ -2279,61 +2279,9 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
-          const style = styleArray[1];
+          const style = styleFunction(f, 0);
           expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
-        });
-
-        it('can create text style for named point placemarks', function() {
-          const text =
-              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
-              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
-              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
-              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
-              '  <Style id="sh_ylw-pushpin">' +
-              '    <IconStyle>' +
-              '      <scale>0.3</scale>' +
-              '      <Icon>' +
-              '        <href>http://maps.google.com/mapfiles/kml/pushpin/' +
-              'ylw-pushpin.png</href>' +
-              '      </Icon>' +
-              '      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>' +
-              '    </IconStyle>' +
-              '  </Style>' +
-              '  <StyleMap id="msn_ylw-pushpin0">' +
-              '    <Pair>' +
-              '      <key>normal</key>' +
-              '      <styleUrl>#sn_ylw-pushpin</styleUrl>' +
-              '    </Pair>' +
-              '    <Pair>' +
-              '      <key>highlight</key>' +
-              '      <styleUrl>#sh_ylw-pushpin</styleUrl>' +
-              '    </Pair>' +
-              '  </StyleMap>' +
-              '  <Placemark>' +
-              '    <name>Test</name>' +
-              '    <styleUrl>#msn_ylw-pushpin0</styleUrl>' +
-              '    <Point>' +
-              '      <coordinates>1,2</coordinates>' +
-              '    </Point>' +
-              '  </Placemark>' +
-              '</kml>';
-          const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          const f = fs[0];
-          expect(f).to.be.an(Feature);
-          const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
-          const style = styleArray[1];
-          expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
+          expect(style.getText().getText()).to.eql('Joe\'s Test');
         });
 
         it('can write an feature\'s icon style', function() {
