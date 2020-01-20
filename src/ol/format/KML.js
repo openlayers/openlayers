@@ -378,6 +378,11 @@ function createStyleDefaults() {
 
 }
 
+/**
+ * @type {HTMLElement}
+ */
+let TEXTAREA;
+
 
 /**
  * @typedef {Object} Options
@@ -948,9 +953,11 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
         drawName = drawName && !!name;
         // convert any html character codes
         if (drawName && name.search(/&[^&]+;/) > -1) {
-          const text = document.createElement('textarea');
-          text.innerHTML = name;
-          name = text.value;
+          if (!TEXTAREA) {
+            TEXTAREA = document.createElement('textarea');
+          }
+          TEXTAREA.innerHTML = name;
+          name = TEXTAREA.value;
         }
       }
 
