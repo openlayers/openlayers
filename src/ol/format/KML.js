@@ -882,42 +882,41 @@ class KML extends XMLFeature {
  * @return {Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
-  let textStyle = null;
   const textOffset = [0, 0];
   let textAlign = 'start';
-  if (foundStyle.getImage()) {
-    let imageSize = foundStyle.getImage().getImageSize();
+  const imageStyle = foundStyle.getImage();
+  if (imageStyle) {
+    let imageSize = imageStyle.getImageSize();
     if (imageSize === null) {
       imageSize = DEFAULT_IMAGE_STYLE_SIZE;
     }
     if (imageSize.length == 2) {
-      const imageScale = foundStyle.getImage().getScale();
-      // Offset the label to be centered to the right of the icon, if there is
-      // one.
+      const imageScale = imageStyle.getScale();
+      // Offset the label to be centered to the right of the icon,
+      // if there is one.
       textOffset[0] = imageScale * imageSize[0] / 2;
       textOffset[1] = -imageScale * imageSize[1] / 2;
       textAlign = 'left';
     }
   }
-  if (foundStyle.getText() !== null) {
-    // clone the text style, customizing it with name, alignments and offset.
+  const nameStyle = foundStyle.clone();
+  let textStyle = nameStyle.getText();
+  if (textStyle) {
+    // customize the cloned text style with name, alignments and offset.
     // Note that kml does not support many text options that OpenLayers does (rotation, textBaseline).
-    const foundText = foundStyle.getText();
-    textStyle = foundText.clone();
-    textStyle.setFont(foundText.getFont() || DEFAULT_TEXT_STYLE.getFont());
-    textStyle.setScale(foundText.getScale() || DEFAULT_TEXT_STYLE.getScale());
-    textStyle.setFill(foundText.getFill() || DEFAULT_TEXT_STYLE.getFill());
-    textStyle.setStroke(foundText.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
+    textStyle.setFont(textStyle.getFont() || DEFAULT_TEXT_STYLE.getFont());
+    textStyle.setScale(textStyle.getScale() || DEFAULT_TEXT_STYLE.getScale());
+    textStyle.setFill(textStyle.getFill() || DEFAULT_TEXT_STYLE.getFill());
+    textStyle.setStroke(textStyle.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
   } else {
     textStyle = DEFAULT_TEXT_STYLE.clone();
+    nameStyle.setText(textStyle);
   }
   textStyle.setText(name);
   textStyle.setOffsetX(textOffset[0]);
   textStyle.setOffsetY(textOffset[1]);
   textStyle.setTextAlign(textAlign);
 
-  const nameStyle = foundStyle.clone();
-  nameStyle.setText(textStyle);
   return nameStyle;
 }
 
