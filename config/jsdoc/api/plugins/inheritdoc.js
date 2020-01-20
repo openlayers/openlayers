@@ -5,7 +5,7 @@
 
 exports.defineTags = function(dictionary) {
   dictionary.defineTag('inheritDoc', {
-    mustHaveValue: false,
+    mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
     onTagged: function(doclet, tag) {

@@ -4,7 +4,7 @@
  */
 exports.defineTags = function(dictionary) {
   dictionary.defineTag('api', {
-    mustHaveValue: false,
+    mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
     onTagged: function(doclet, tag) {
