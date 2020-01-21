@@ -90,7 +90,8 @@ export class CustomTile extends ImageTile {
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
- * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
+ * @property {number} [tilePixelRatio] The pixel ratio to display on screen. If on a retina screen then `tilePixelRatio` should be 2, else it should be 1.
+ * @property {number} [tilePixelRatioOriginal] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatioOriginal` should be set to `2`
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {string} [url] URL template or base URL of the Zoomify service.
@@ -147,6 +148,7 @@ class Zoomify extends TileImage {
     const tierSizeInTiles = [];
     const tileSize = options.tileSize || DEFAULT_TILE_SIZE;
     const tilePixelRatio = options.tilePixelRatio || 1;
+    const tilePixelRatioOriginal = options.tilePixelRatioOriginal || tilePixelRatio;
     let tileSizeForTierSizeCalculation = tileSize;
 
     switch (tierSizeCalculation) {
@@ -246,7 +248,7 @@ class Zoomify extends TileImage {
 
     const tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));
 
-    const ZoomifyTileClass = CustomTile.bind(null, tilePixelRatio, tileGrid);
+    const ZoomifyTileClass = CustomTile.bind(null, tilePixelRatioOriginal, tileGrid);
 
     super({
       attributions: options.attributions,
