@@ -4,8 +4,6 @@ import WKT from '../src/ol/format/WKT.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
-import {toJpeg} from 'html-to-image';
-
 const raster = new TileLayer({
   source: new OSM()
 });
@@ -44,14 +42,6 @@ const dims = {
 };
 
 
-// export options for html-to-image.
-// See: https://github.com/bubkoo/html-to-image#options
-const exportOptions = {
-  filter: function(element) {
-    return element.className.indexOf('ol-control') === -1;
-  }
-};
-
 const exportButton = document.getElementById('export-pdf');
 
 exportButton.addEventListener('click', function() {
@@ -68,18 +58,28 @@ exportButton.addEventListener('click', function() {
   const viewResolution = map.getView().getResolution();
 
   map.once('rendercomplete', function() {
-    exportOptions.width = width;
-    exportOptions.height = height;
-    toJpeg(map.getViewport(), exportOptions).then(function(dataUrl) {
-      const pdf = new jsPDF('landscape', undefined, format);
-      pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
-      pdf.save('map.pdf');
-      // Reset original map size
-      map.setSize(size);
-      map.getView().setResolution(viewResolution);
-      exportButton.disabled = false;
-      document.body.style.cursor = 'auto';
+    const mapCanvas = document.createElement('canvas');
+    mapCanvas.width = width;
+    mapCanvas.height = height;
+    const mapContext = mapCanvas.getContext('2d');
+    document.querySelectorAll('.ol-layer canvas').forEach(function(canvas) {
+      if (canvas.width > 0) {
+        const transform = canvas.style.transform;
+        // Get the transform parameters from the style's transform matrix
+        const matrix = transform.match(/^matrix\(([^\(]*)\)$/)[1].split(',').map(Number);
+        // Apply the transform to the export map context
+        CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
+        mapContext.drawImage(canvas, 0, 0);
+      }
     });
+    const pdf = new jsPDF('landscape', undefined, format);
+    pdf.addImage(mapCanvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dim[0], dim[1]);
+    pdf.save('map.pdf');
+    // Reset original map size
+    map.setSize(size);
+    map.getView().setResolution(viewResolution);
+    exportButton.disabled = false;
+    document.body.style.cursor = 'auto';
   });
 
   // Set print size
