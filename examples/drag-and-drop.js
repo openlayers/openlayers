@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {defaults as defaultInteractions, DragAndDrop} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {BingMaps, Vector as VectorSource} from '../src/ol/source.js';
+import {XYZ, Vector as VectorSource} from '../src/ol/source.js';
 
 const dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [
