@@ -38,17 +38,16 @@ control.addEventListener('change', function(event) {
     layer.setSource(new Zoomify({
       url: zoomifyUrl,
       size: [imgWidth, imgHeight],
-      crossOrigin: 'anonymous'
+      crossOrigin: 'anonymous',
+      zDirection: -1 // Ensure we get the most precise tile in any case
     }));
   } else if (value === 'zoomifyretina') {
     layer.setSource(new Zoomify({
-      tileSize: 256, // The tile size is 256px on the server, this is the default value
-      tilePixelRatio: 2, // We want to display this on a retina screen
-      tilePixelRatioOriginal: 1, // But the server serves 256px tiles, not 512px tiles that would be needed nominally.
-      zDirection: -1, //Ensure we get the most precise tile in any case
       url: zoomifyUrl,
       size: [imgWidth, imgHeight],
-      crossOrigin: 'anonymous'
+      crossOrigin: 'anonymous',
+      zDirection: -1, // Ensure we get the most precise tile in any case
+      tilePixelRatio: 2 // Display retina tiles
     }));
   }
 });
