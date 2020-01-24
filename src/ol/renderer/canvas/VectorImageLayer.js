@@ -105,6 +105,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
         declutterItems: [],
+        extent: renderedExtent,
         size: [width, height],
         viewState: /** @type {import("../../View.js").State} */ (assign({}, frameState.viewState, {
           rotation: 0
