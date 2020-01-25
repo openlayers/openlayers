@@ -8,15 +8,27 @@ const imgHeight = 3000;
 
 const zoomifyUrl = 'https://ol-zoomify.surge.sh/zoomify/';
 
-const layer = new TileLayer({
-  source: new Zoomify({
-    url: zoomifyUrl,
-    size: [imgWidth, imgHeight],
-    crossOrigin: 'anonymous'
-  })
+const source = new Zoomify({
+  url: zoomifyUrl,
+  size: [imgWidth, imgHeight],
+  crossOrigin: 'anonymous',
+  zDirection: -1 // Ensure we get a tile with the screen resolution or higher
+});
+const extent = source.getTileGrid().getExtent();
+
+const retinaPixelRatio = 2;
+const retinaSource = new Zoomify({
+  url: zoomifyUrl,
+  size: [imgWidth, imgHeight],
+  crossOrigin: 'anonymous',
+  zDirection: -1, // Ensure we get a tile with the screen resolution or higher
+  tilePixelRatio: retinaPixelRatio, // Display retina tiles
+  tileSize: 256 / retinaPixelRatio // from a higher zoom level
 });
 
-const extent = [0, -imgHeight, imgWidth, 0];
+const layer = new TileLayer({
+  source: source
+});
 
 const map = new Map({
   layers: [layer],
@@ -35,20 +47,9 @@ const control = document.getElementById('zoomifyProtocol');
 control.addEventListener('change', function(event) {
   const value = event.currentTarget.value;
   if (value === 'zoomify') {
-    layer.setSource(new Zoomify({
-      url: zoomifyUrl,
-      size: [imgWidth, imgHeight],
-      crossOrigin: 'anonymous',
-      zDirection: -1 // Ensure we get the most precise tile in any case
-    }));
+    layer.setSource(source);
   } else if (value === 'zoomifyretina') {
-    layer.setSource(new Zoomify({
-      url: zoomifyUrl,
-      size: [imgWidth, imgHeight],
-      crossOrigin: 'anonymous',
-      zDirection: -1, // Ensure we get the most precise tile in any case
-      tilePixelRatio: 2 // Display retina tiles
-    }));
+    layer.setSource(retinaSource);
   }
 });
 

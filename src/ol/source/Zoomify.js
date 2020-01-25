@@ -8,7 +8,6 @@ import TileState from '../TileState.js';
 import {expandUrl, createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
-import {getTopLeft} from '../extent.js';
 import {toSize} from '../size.js';
 import TileImage from './TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
@@ -26,7 +25,7 @@ const TierSizeCalculation = {
 export class CustomTile extends ImageTile {
 
   /**
-   * @param {import("../tilegrid/TileGrid.js").default} tileGrid TileGrid that the tile belongs to.
+   * @param {import("../size.js").Size} tileSize Full tile size.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
    * @param {string} src Image source URI.
@@ -34,7 +33,7 @@ export class CustomTile extends ImageTile {
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("../Tile.js").Options=} opt_options Tile options.
    */
-  constructor(tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+  constructor(tileSize, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
     super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
 
@@ -45,10 +44,9 @@ export class CustomTile extends ImageTile {
     this.zoomifyImage_ = null;
 
     /**
-     * @private
      * @type {import("../size.js").Size}
      */
-    this.tileSize_ = toSize(tileGrid.getTileSize(tileCoord[0]));
+    this.tileSize_ = tileSize;
 
   }
 
@@ -138,12 +136,12 @@ class Zoomify extends TileImage {
       options.tierSizeCalculation :
       TierSizeCalculation.DEFAULT;
 
+    const tilePixelRatio = options.tilePixelRatio || 1;
     const imageWidth = size[0];
     const imageHeight = size[1];
-    const extent = options.extent || [0, -size[1], size[0], 0];
     const tierSizeInTiles = [];
     const tileSize = options.tileSize || DEFAULT_TILE_SIZE;
-    let tileSizeForTierSizeCalculation = tileSize;
+    let tileSizeForTierSizeCalculation = tileSize * tilePixelRatio;
 
     switch (tierSizeCalculation) {
       case TierSizeCalculation.DEFAULT:
@@ -175,10 +173,10 @@ class Zoomify extends TileImage {
     tierSizeInTiles.push([1, 1]);
     tierSizeInTiles.reverse();
 
-    const resolutions = [1];
+    const resolutions = [tilePixelRatio];
     const tileCountUpToTier = [0];
     for (let i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
-      resolutions.push(1 << i);
+      resolutions.push(tilePixelRatio << i);
       tileCountUpToTier.push(
         tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
           tileCountUpToTier[i - 1]
@@ -188,8 +186,7 @@ class Zoomify extends TileImage {
 
     const tileGrid = new TileGrid({
       tileSize: tileSize,
-      extent: extent,
-      origin: getTopLeft(extent),
+      extent: options.extent || [0, -imageHeight, imageWidth, 0],
       resolutions: resolutions
     });
 
@@ -198,6 +195,8 @@ class Zoomify extends TileImage {
       url += '{TileGroup}/{z}-{x}-{y}.jpg';
     }
     const urls = expandUrl(url);
+
+    const tileWidth = tileSize * tilePixelRatio;
 
     /**
      * @param {string} template Template.
@@ -222,8 +221,6 @@ class Zoomify extends TileImage {
             const tileIndex =
                 tileCoordX +
                 tileCoordY * tierSizeInTiles[tileCoordZ][0];
-            const tileSize = tileGrid.getTileSize(tileCoordZ);
-            const tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize;
             const tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
             const localContext = {
               'z': tileCoordZ,
@@ -242,14 +239,14 @@ class Zoomify extends TileImage {
 
     const tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));
 
-    const ZoomifyTileClass = CustomTile.bind(null, tileGrid);
+    const ZoomifyTileClass = CustomTile.bind(null, toSize(tileSize * tilePixelRatio));
 
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       projection: options.projection,
-      tilePixelRatio: options.tilePixelRatio,
+      tilePixelRatio: tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileClass: ZoomifyTileClass,
       tileGrid: tileGrid,
