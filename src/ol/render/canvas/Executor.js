@@ -173,6 +173,12 @@ class Executor {
      * @type {Object<string, Object<string, number>>}
      */
     this.widths_ = {};
+
+    /**
+     * @private
+     * @type {Object<string, Label>}
+     */
+    this.labels_ = {};
   }
 
   /**
@@ -183,6 +189,10 @@ class Executor {
    * @return {Label} Label.
    */
   createLabel(text, textKey, fillKey, strokeKey) {
+    const key = text + textKey + fillKey + strokeKey;
+    if (this.labels_[key]) {
+      return this.labels_[key];
+    }
     const strokeState = strokeKey ? this.strokeStates[strokeKey] : null;
     const fillState = fillKey ? this.fillStates[fillKey] : null;
     const textState = this.textStates[textKey];
@@ -239,6 +249,7 @@ class Executor {
         contextInstructions.push('fillText', [lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight]);
       }
     }
+    this.labels_[key] = label;
     return label;
   }
 
