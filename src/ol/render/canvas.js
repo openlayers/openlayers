@@ -401,30 +401,21 @@ export const resetTransform = createTransform();
  */
 export function drawImageOrLabel(context,
   transform, opacity, labelOrImage, originX, originY, w, h, x, y, scale) {
-  let alpha;
-  if (opacity != 1) {
-    alpha = context.globalAlpha;
-    context.globalAlpha = alpha * opacity;
-  }
+  context.save();
+
   if (transform) {
     context.setTransform.apply(context, transform);
   }
 
-  const isLabel = !!(/** @type {*} */ (labelOrImage).contextInstructions);
-
-  if (isLabel) {
+  if ((/** @type {*} */ (labelOrImage).contextInstructions)) {
+    // label
     context.translate(x, y);
     context.scale(scale, scale);
     executeLabelInstructions(/** @type {import("./canvas/Executor.js").Label} */ (labelOrImage), context);
   } else {
+    // image
     context.drawImage(/** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage), originX, originY, w, h, x, y, w * scale, h * scale);
   }
 
-  if (opacity != 1) {
-    context.globalAlpha = alpha;
-  }
-
-  if (transform || isLabel) {
-    context.setTransform.apply(context, resetTransform);
-  }
+  context.restore();
 }
