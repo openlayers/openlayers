@@ -430,9 +430,9 @@ class Graticule extends VectorLayer {
   /**
    * Strategy function for loading features based on the view's extent and
    * resolution.
-   * @param {import("./extent.js").Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
-   * @return {Array<import("./extent.js").Extent>} Extents.
+   * @return {Array<import("../extent.js").Extent>} Extents.
    */
   strategyFunction(extent, resolution) {
     if (this.loadedExtent_ && !equals(this.loadedExtent_, extent)) {
