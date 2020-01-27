@@ -19,7 +19,6 @@ import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent
 import {clamp} from '../math.js';
 import Style from '../style/Style.js';
 import Feature from '../Feature.js';
-import {bbox} from '../loadingstrategy.js';
 import {meridian, parallel} from '../geom/flat/geodesic.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import Point from '../geom/Point.js';
@@ -391,7 +390,7 @@ class Graticule extends VectorLayer {
     this.setSource(
       new VectorSource({
         loader: this.loaderFunction.bind(this),
-        strategy: bbox,
+        strategy: this.strategyFunction.bind(this),
         features: new Collection(),
         overlaps: false,
         useSpatialIndex: false,
@@ -417,11 +416,30 @@ class Graticule extends VectorLayer {
     /**
      * @type {?import("../extent.js").Extent}
      */
+    this.loadedExtent_ = null;
+
+    /**
+     * @type {?import("../extent.js").Extent}
+     */
     this.renderedExtent_ = null;
 
     this.setRenderOrder(null);
 
-    this.tmpExtent_ = null;
+  }
+
+  /**
+   * Strategy function for loading features based on the view's extent and
+   * resolution.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @return {Array<import("../extent.js").Extent>} Extents.
+   */
+  strategyFunction(extent, resolution) {
+    if (this.loadedExtent_ && !equals(this.loadedExtent_, extent)) {
+      // we should not keep track of loaded extents
+      this.getSource().removeLoadedExtent(this.loadedExtent_);
+    }
+    return [extent];
   }
 
   /**
@@ -431,16 +449,12 @@ class Graticule extends VectorLayer {
    * @param {import("../proj/Projection.js").default} projection Projection
    */
   loaderFunction(extent, resolution, projection) {
+    this.loadedExtent_ = extent;
     const source = this.getSource();
 
     // only consider the intersection between our own extent & the requested one
     const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
-    const renderExtent = getIntersection(layerExtent, extent, this.tmpExtent_);
-
-    // we should not keep track of loaded extents
-    setTimeout(function() {
-      source.removeLoadedExtent(extent);
-    }, 0);
+    const renderExtent = getIntersection(layerExtent, extent);
 
     if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent)) {
       return;
