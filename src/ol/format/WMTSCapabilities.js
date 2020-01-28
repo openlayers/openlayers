@@ -75,7 +75,7 @@ class WMTSCapabilities extends XML {
    */
   readFromNode(node) {
     let version = node.getAttribute('version');
-    if(version) {
+    if (version) {
       version = version.trim();
     }
     let WMTSCapabilityObject = this.owsParser_.readFromNode(node);
