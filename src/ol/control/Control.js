@@ -79,9 +79,10 @@ class Control extends BaseObject {
     this.listenerKeys = [];
 
     /**
+     * @private
      * @type {function(import("../MapEvent.js").default): void}
      */
-    this.render = options.render ? options.render : VOID;
+    this.render_ = options.render ? options.render : VOID;
 
     if (options.target) {
       this.setTarget(options.target);
@@ -132,6 +133,16 @@ class Control extends BaseObject {
       }
       map.render();
     }
+  }
+
+  /**
+   * Update the projection. Rendering of the coordinates is done in
+   * `handleMouseMove` and `handleMouseUp`.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @api
+   */
+  render(mapEvent) {
+    this.render_.call(this, mapEvent);
   }
 
   /**
