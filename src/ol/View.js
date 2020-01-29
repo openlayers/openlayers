@@ -129,6 +129,8 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * @property {boolean} [smoothResolutionConstraint=true] If true, the resolution
  * min/max values will be applied smoothly, i. e. allow the view to exceed slightly
  * the given resolution or zoom bounds.
+ * @property {boolean} [largerResolutionConstraint=false] If true, the constrained
+ * resolution values will use the larger value to do so.
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
@@ -1611,6 +1613,9 @@ export function createResolutionConstraint(options) {
   const smooth =
       options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
 
+  const larger =
+      options.largerResolutionConstraint !== undefined ? options.largerResolutionConstraint : false;
+
   const projection = createProjection(options.projection, 'EPSG:3857');
   const projExtent = projection.getExtent();
   let constrainOnlyCenter = options.constrainOnlyCenter;
@@ -1628,10 +1633,10 @@ export function createResolutionConstraint(options) {
 
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToResolutions(resolutions, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, larger);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, larger);
     }
   } else {
     // calculate the default min and max resolution
@@ -1677,10 +1682,10 @@ export function createResolutionConstraint(options) {
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToPower(
         zoomFactor, maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, larger);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, larger);
     }
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
