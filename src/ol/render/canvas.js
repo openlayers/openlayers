@@ -4,7 +4,6 @@
 import {getFontParameters} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
-import {create as createTransform} from '../transform.js';
 import {executeLabelInstructions} from './canvas/Executor.js';
 import BaseObject from '../Object.js';
 import EventTarget from '../events/Target.js';
@@ -381,9 +380,6 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
     context.translate(-offsetX, -offsetY);
   }
 }
-
-
-export const resetTransform = createTransform();
 
 
 /**
