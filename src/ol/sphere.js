@@ -1,11 +1,4 @@
 /**
- * @license
- * Latitude/longitude spherical geodesy formulae taken from
- * http://www.movable-type.co.uk/scripts/latlong.html
- * Licensed under CC-BY-3.0.
- */
-
-/**
  * @module ol/sphere
  */
 import {toRadians, toDegrees} from './math.js';
