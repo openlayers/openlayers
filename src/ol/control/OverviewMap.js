@@ -603,7 +603,6 @@ class OverviewMap extends Control {
  * Update the overview map element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
  * @this {OverviewMap}
- * @api
  */
 export function render(mapEvent) {
   this.validateExtent_();
