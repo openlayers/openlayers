@@ -317,9 +317,6 @@ class TileSource extends Source {
     this.tileCache.clear();
   }
 
-  /**
-   * @inheritDoc
-   */
   refresh() {
     this.clear();
     super.refresh();

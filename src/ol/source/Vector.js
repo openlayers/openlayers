@@ -914,9 +914,6 @@ class VectorSource extends Source {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
   refresh() {
     this.clear(true);
     this.loadedExtentsRtree_.clear();
