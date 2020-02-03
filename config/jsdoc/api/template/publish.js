@@ -477,6 +477,7 @@ exports.publish = function(taffyData, opts, tutorials) {
   // index page displays information from package.json and lists files
   const files = find({kind: 'file'});
 
+  view.navigationHtml = helper.resolveLinks(view.partial('navigation.tmpl'));
   generate('Index',
     [{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}].concat(files),
     indexUrl);
