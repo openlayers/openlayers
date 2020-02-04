@@ -21,14 +21,10 @@ exports.defineTags = function(dictionary) {
  * from the documentation.
  */
 
-const api = [];
+const api = {};
 const classes = {};
 const types = {};
 const modules = {};
-
-function hasApiMembers(doclet) {
-  return doclet.longname.split('#')[0] == this.longname;
-}
 
 function includeAugments(doclet) {
   // Make sure that `observables` and `fires` are taken from an already processed `class` doclet.
@@ -116,7 +112,7 @@ exports.handlers = {
     const doclet = e.doclet;
     if (doclet.stability) {
       modules[doclet.longname.split(/[~\.]/).shift()] = true;
-      api.push(doclet);
+      api[doclet.longname.split('#')[0]] = true;
     }
     if (doclet.kind == 'class') {
       if (!(doclet.longname in classes)) {
@@ -159,7 +155,7 @@ exports.handlers = {
       if (doclet.isEnum || doclet.kind == 'typedef') {
         continue;
       }
-      if (doclet.kind == 'class' && api.some(hasApiMembers, doclet)) {
+      if (doclet.kind == 'class' && doclet.longname in api) {
         // Mark undocumented classes with documented members as unexported.
         // This is used in ../template/tmpl/container.tmpl to hide the
         // constructor from the docs.
