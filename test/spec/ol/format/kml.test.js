@@ -3500,7 +3500,7 @@ describe('ol.format.KML', function() {
 
         const style1 = styleArray[1];
         expect(style1).to.be.an(Style);
-        expect(style1.getGeometryFunction()(f)).to.be(f.getGeometry);
+        expect(style1.getGeometryFunction()(f)).to.be(f.getGeometry());
         expect(style1.getFill()).to.be(null);
         expect(style1.getImage()).to.be(null);
         const strokeStyle = style1.getStroke();
