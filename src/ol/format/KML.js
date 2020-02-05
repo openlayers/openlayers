@@ -2580,7 +2580,7 @@ function writeLineStyle(node, style, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
   const properties = {
     'color': style.getColor(),
-    'width': style.getWidth()
+    'width': Number(style.getWidth()) || 1
   };
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = LINE_STYLE_SEQUENCE[parentNode.namespaceURI];
