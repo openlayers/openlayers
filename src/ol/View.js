@@ -129,9 +129,14 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * @property {boolean} [smoothResolutionConstraint=true] If true, the resolution
  * min/max values will be applied smoothly, i. e. allow the view to exceed slightly
  * the given resolution or zoom bounds.
- * @property {boolean} [constrainOneAxis=false] If true, the extent constraint can
- * be exceeded along one but not both axes, allowing the whole extent to be visible
- * on the map.
+ * @property {boolean} [showFullExtent=false] Allow the view to be zoomed out to
+ * show the full configured extent. By default, when a view is configured with an
+ * extent, users will not be able to zoom out so the viewport exceeds the extent in
+ * either dimension. This means the full extent may not be visible if the viewport
+ * is taller or wider than the aspect ratio of the configured extent. If
+ * showFullExtent is true, the user will be able to zoom out so that the viewport
+ * exceeds the height or width of the configured extent, but not both, allowing the
+ * full extent to be shown.
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
@@ -1614,8 +1619,8 @@ export function createResolutionConstraint(options) {
   const smooth =
       options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
 
-  const oneAxis =
-      options.constrainOneAxis !== undefined ? options.constrainOneAxis : false;
+  const showFullExtent =
+      options.showFullExtent !== undefined ? options.showFullExtent : false;
 
   const projection = createProjection(options.projection, 'EPSG:3857');
   const projExtent = projection.getExtent();
@@ -1634,10 +1639,10 @@ export function createResolutionConstraint(options) {
 
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToResolutions(resolutions, smooth,
-        !constrainOnlyCenter && extent, oneAxis);
+        !constrainOnlyCenter && extent, showFullExtent);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent, oneAxis);
+        !constrainOnlyCenter && extent, showFullExtent);
     }
   } else {
     // calculate the default min and max resolution
@@ -1683,10 +1688,10 @@ export function createResolutionConstraint(options) {
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToPower(
         zoomFactor, maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent, oneAxis);
+        !constrainOnlyCenter && extent, showFullExtent);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent, oneAxis);
+        !constrainOnlyCenter && extent, showFullExtent);
     }
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,

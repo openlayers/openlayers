@@ -393,10 +393,10 @@ describe('ol.View', function() {
           expect(constraint(1, 0, size)).to.be(1);
         });
 
-        it('accepts extent and constrainOneAxis and uses the larger value', function() {
+        it('accepts extent and showFullExtent and uses the larger value', function() {
           const constraint = getConstraint({
             extent: [0, 0, 4000, 6000],
-            constrainOneAxis: true
+            showFullExtent: true
           });
 
           expect(constraint(1000, 0, size)).to.be(30);
