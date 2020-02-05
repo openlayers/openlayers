@@ -918,7 +918,11 @@ function createNameStyleFunction(foundStyle, name) {
 
   const nameStyle = new Style({
     image: imageStyle,
-    text: textStyle
+    text: textStyle,
+    // although nameStyle will be used only for Point geometries
+    // fill and stroke are included to assist writing of MultiGeometry styles
+    fill: foundStyle.getFill(),
+    stroke: foundStyle.getStroke()
   });
   return nameStyle;
 }
@@ -943,10 +947,20 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
     function(feature, resolution) {
       let drawName = showPointNames;
       let name = '';
+      let multiGeometryPoints = [];
       if (drawName) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          drawName = geometry.getType() === GeometryType.POINT;
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            multiGeometryPoints = geometry.getGeometriesArray().filter(function(geometry) {
+              const type = geometry.getType();
+              return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+            });
+            drawName = multiGeometryPoints.length > 0;
+          } else {
+            drawName = type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+          }
         }
       }
 
@@ -963,23 +977,31 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
         }
       }
 
+      let featureStyle = defaultStyle;
       if (style) {
-        if (drawName) {
-          return createNameStyleFunction(style[0], name);
-        }
-        return style;
-      }
-      if (styleUrl) {
-        const foundStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
-        if (drawName) {
-          return createNameStyleFunction(foundStyle[0], name);
-        }
-        return foundStyle;
+        featureStyle = style;
+      } else if (styleUrl) {
+        featureStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
       }
       if (drawName) {
-        return createNameStyleFunction(defaultStyle[0], name);
+        const nameStyle = createNameStyleFunction(featureStyle[0], name);
+        if (multiGeometryPoints.length > 0) {
+          // in multigeometries restrict the name style to points and create a
+          // style without image or text for geometries requiring fill or stroke
+          // including any polygon specific style if there is one
+          nameStyle.setGeometry(new GeometryCollection(multiGeometryPoints));
+          const baseStyle = new Style({
+            geometry: featureStyle[0].getGeometry(),
+            image: null,
+            fill: featureStyle[0].getFill(),
+            stroke: featureStyle[0].getStroke(),
+            text: null
+          });
+          return [nameStyle, baseStyle].concat(featureStyle.slice(1));
+        }
+        return nameStyle;
       }
-      return defaultStyle;
+      return featureStyle;
     }
   );
 }
