@@ -92,29 +92,23 @@ class MouseWheelZoom extends Interaction {
     this.startTime_ = undefined;
 
     /**
-     * @private
-     * @type {?}
-     */
-    this.timeoutId_;
-
-    /**
-     * Trackpad events separated by this delay will be considered separate
+     * Events separated by this delay will be considered separate
      * interactions.
      * @type {number}
      */
-    this.trackpadEventGap_ = 400;
+    this.eventGap_ = 400;
 
     /**
      * @type {?}
      */
-    this.trackpadTimeoutId_;
+    this.timeoutId_;
 
     /**
      * The number of delta values per zoom level
      * @private
      * @type {number}
      */
-    this.trackpadDeltaPerZoom_ = 300;
+    this.deltaPerZoom_ = 300;
 
   }
 
@@ -136,7 +130,7 @@ class MouseWheelZoom extends Interaction {
    * @private
    */
   endInteraction_() {
-    this.trackpadTimeoutId_ = undefined;
+    this.timeoutId_ = undefined;
     const view = this.getMap().getView();
     view.endInteraction(undefined, this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0, this.lastAnchor_);
   }
@@ -191,13 +185,13 @@ class MouseWheelZoom extends Interaction {
     }
 
     const view = map.getView();
-    if (this.trackpadTimeoutId_) {
-      clearTimeout(this.trackpadTimeoutId_);
+    if (this.timeoutId_) {
+      clearTimeout(this.timeoutId_);
     } else {
       view.beginInteraction();
     }
-    this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
-    view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
+    this.timeoutId_ = setTimeout(this.endInteraction_.bind(this), this.eventGap_);
+    view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
     this.startTime_ = now;
     return false;
   }
