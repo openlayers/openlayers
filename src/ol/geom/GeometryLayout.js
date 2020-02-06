@@ -7,6 +7,7 @@
  * or measure ('M') coordinate is available. Supported values are `'XY'`,
  * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
+ * @api
  */
 export default {
   XY: 'XY',
