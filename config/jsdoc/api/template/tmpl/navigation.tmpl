@@ -15,22 +15,24 @@ function getItemCssClass(type) {
 }
 
 const printList = v => { ?>
-                <li data-name="<?js= v.longname ?>"><?js
+                    <li data-name="<?js= v.longname ?>"><?js
 }
 const printListWithStability = v => {
     const cls = v.stability && v.stability !== 'stable' ? ' class="unstable"' : ''; ?>
-                <li data-name="<?js= v.longname ?>"<?js= cls ?>><?js
+                    <li data-name="<?js= v.longname ?>"<?js= cls ?>><?js
 }
 
 function listContent(item, title, listItemPrinter) {
     const type = title.toLowerCase();
     if (item[type] && item[type].length) { ?>
-            <ul class="<?js= type ?> itemMembers">
-                <span class="subtitle"><?js= title ?></span><?js
+            <div class="member-list">
+                <span class="subtitle"><?js= title ?></span>
+                <ul><?js
         item[type].forEach(function (v) {
             listItemPrinter(v); ?><?js= self.linkto(v.longname, toShortName(v.name)) ?><?js
-        }); ?>
-            </ul><?js
+         }); ?>
+                </ul>
+            </div><?js
     }
 }
 ?>
