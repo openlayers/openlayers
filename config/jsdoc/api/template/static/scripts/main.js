@@ -1,4 +1,8 @@
 $(function () {
+
+  // Allow user configuration?
+  const allowRegex = true;
+
   // Search Items
   $('#include_modules').change(function (e) {
     console.log('change');
@@ -8,6 +12,29 @@ $(function () {
 
     }
   });
+
+  const reNotCache = {};
+  function escapeRegexp(s, not) {
+    if (not) {
+      let re = reNotCache[not];
+      if (!re) {
+        const characters = '-\/\\^$*+?.()|[\]{}'.replace(new RegExp('[' + escapeRegexp(not) + ']', 'g'), '');
+        re = reNotCache[not] = new RegExp('[' + escapeRegexp(characters) + ']', 'g');
+      }
+      return s.replace(re, '\\$&');
+    }
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
+  function constructRegex(searchTerm, makeRe, allowRegex) {
+    try {
+      if (allowRegex) {
+        return makeRe(searchTerm);
+      }
+    } catch (e) {
+    }
+    return makeRe(escapeRegexp(searchTerm, '.'));
+  }
 
   var getSearchWeight = function (searchTerm, $matchedItem) {
     let weight = 0;
@@ -46,7 +73,9 @@ $(function () {
     var $el = $('.navigation');
 
     if (searchTerm.length > 1) {
-      var regexp = new RegExp(searchTerm, 'i');
+      const regexp = constructRegex(searchTerm, function (searchTerm) {
+        return new RegExp(searchTerm, 'i');
+      }, allowRegex);
       $el.find('li, .member-list').hide();
 
       $el.find('li').each(function (i, v) {
