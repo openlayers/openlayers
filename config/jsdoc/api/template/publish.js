@@ -189,9 +189,15 @@ function attachModuleSymbols(doclets, modules) {
 }
 
 function getPrettyName(longname) {
-  return longname
-    .split('~')[0]
-    .replace('module:', '');
+  const fullname = longname.replace('module:', '');
+  const parts = fullname.split(/[~\.]/);
+  if (parts.length > 1) {
+    const pathParts = parts[0].split('/');
+    if (parts[parts.length - 1] === pathParts[pathParts.length - 1]) {
+      return parts[0];
+    }
+  }
+  return fullname;
 }
 
 /**
