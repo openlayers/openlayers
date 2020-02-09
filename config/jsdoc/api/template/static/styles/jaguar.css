@@ -51,7 +51,8 @@ body {
   width: 0px;
   height: 0px;
 }
-.nameContainer .anchor.highlighted + h4 {
+/* Highlighting current anchor */
+.nameContainer .anchor:target + h4 {
   background-color: #faebcc;
 }
 a {
