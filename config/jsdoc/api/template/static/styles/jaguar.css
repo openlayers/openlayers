@@ -190,9 +190,51 @@ li {
   margin-top: 2px;
 }
 .navigation li.item .member-list {
-  display: none;
   padding-left: 8px;
 }
+
+/* search state */
+/* show all classes when search is empty */
+.navigation.search-empty li.item {
+  display: block;
+}
+/* hide all members by default when search is empty */
+.navigation.search-empty li.item .member-list {
+  display: none;
+}
+/* but show the members of the current pages module / class */
+.navigation.search-empty li.item.item-current .member-list {
+  display: block;
+}
+/* expand all members when one character is entered in the search field */
+.navigation.search-started li.item,
+.navigation.search-started .member-list,
+.navigation.search-started .member-list li {
+  display: block;
+}
+/* when more than one character is entered hide everything that is not a match */
+.navigation.searching li.item,
+.navigation.searching .member-list,
+.navigation.searching .member-list li {
+  display: none;
+}
+.navigation.searching li.item.match,
+.navigation.searching .member-list.match,
+.navigation.searching .member-list li.match {
+  display: block;
+}
+/* allow user to hide / show members */
+.navigation .item.toggle-manual-show .member-list,
+.navigation .item.toggle-manual-show li {
+  display: block!important;
+}
+.navigation .item.toggle-manual-hide .member-list,
+.navigation .item.toggle-manual-hide li,
+.navigation.searching .item.toggle-manual-show .member-list:not(.match),
+.navigation.searching .item.toggle-manual-show li:not(.match) {
+    display: none!important;
+}
+
 .main {
   padding: 20px 20px;
   margin-left: 250px;

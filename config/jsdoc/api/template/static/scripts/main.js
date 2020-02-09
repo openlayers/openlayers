@@ -3,7 +3,9 @@ $(function () {
 
   // Allow user configuration?
   const allowRegex = true;
-  const minInputForFullText = 1;
+  const minInputForSearch = 1;
+  const minInputForFullText = 2;
+  const expandAllOnInputWithoutSearch = true;
 
   function constructRegex(searchTerm, makeRe, allowRegex) {
     try {
@@ -28,12 +30,12 @@ $(function () {
     const re = constructRegex(searchTerm, makeRe, allowRegex);
     return function (matchedItem, beginOnly) {
       // We could get smarter on the weight here
-      const name = matchedItem.data('name');
+      const name = matchedItem.dataset.name;
       if (beginOnly) {
         return re.baseName.test(name) ? 10000 : 0;
       }
       // If everything else is equal, prefer shorter names, and prefer classes over modules
-      let weight = matchedItem.data('longname').length - name.length * 100;
+      let weight = matchedItem.dataset.longname.length - name.length * 100;
       if (name.match(re.begin)) {
         weight += 100000;
         if (re.baseName.test(name)) {
@@ -50,70 +52,162 @@ $(function () {
     }
   }
 
-  // sort function callback
-  var weightSorter = function (a, b) {
-    var aW = $(a).data('weight') || 0;
-    var bW = $(b).data('weight') || 0;
-    return bW - aW;
-  };
+  const search = (function () {
+    const $nav = $('.navigation');
+    const $navList = $nav.find('.list');
+    let $classItems;
+    let $members;
+    let stateClass = (function () {
+      $nav.removeClass('search-started searching');
+      $nav.addClass('search-empty');
+      return 'search-empty';
+    })();
+    let manualToggles = {};
 
-  // Show an item related a current documentation automatically
-  const longname = $('.page-title').data('filename')
-    .replace(/\.[a-z]+$/, '')
-    .replace('module-', 'module:')
-    .replace(/_/g, '/')
-    .replace(/-/g, '~');
-  var $currentItem = $('.navigation .item[data-longname="' + longname + '"]:eq(0)');
+    // Show an item related a current documentation automatically
+    const longname = $('.page-title').data('filename')
+      .replace(/\.[a-z]+$/, '')
+      .replace('module-', 'module:')
+      .replace(/_/g, '/')
+      .replace(/-/g, '~');
+    const $currentItem = $navList.find('.item[data-longname="' + longname + '"]:eq(0)');
+    $currentItem.prependTo($navList);
+    $currentItem.addClass('item-current');
+    return {
+      $nav: $nav,
+      $navList: $navList,
+      $currentItem: $currentItem,
+      lastSearchTerm: undefined,
+      lastState: {},
+      getClassList: function () {
+        return $classItems || ($classItems = $navList.find('li.item'));
+      },
+      getMembers: function () {
+        return $members || ($members = $navList.find('.item li'));
+      },
+      changeStateClass: function (newClass) {
+        if (newClass !== stateClass) {
+          const navNode = $nav.get(0);
+          navNode.classList.remove(stateClass);
+          navNode.classList.add(newClass);
+          stateClass = newClass;
+        }
+      },
+      manualToggle: function ($node, show) {
+        $node.toggleClass('toggle-manual-hide', !show);
+        $node.toggleClass('toggle-manual-show', show);
+        manualToggles[$node.data('longname')] = $node;
+      },
+      clearManualToggles: function() {
+        for (let clsName in manualToggles) {
+          manualToggles[clsName].removeClass('toggle-manual-show toggle-manual-hide');
+        }
+        manualToggles = {};
+      },
+    };
+  })();
 
-  if ($currentItem.length) {
-    $currentItem
-      .prependTo('.navigation .list')
-      .show()
-      .find('.member-list')
-      .show();
+  const dummy = {subItems: {}};
+  function clearOldMatches(lastState, searchState) {
+    for (let itemName in lastState) {
+      const lastItem = lastState[itemName];
+      const item = searchState[itemName];
+      if (!item) {
+        lastItem.item.classList.remove('match');
+      }
+      if (lastItem.subItems) {
+        clearOldMatches(lastItem.subItems, (item || dummy).subItems);
+      }
+    }
   }
 
   function doSearch(searchTerm) {
-    var $el = $('.navigation');
-
-    if (searchTerm.length > 1) {
-      searchTerm = searchTerm.toLowerCase();
-      const getSearchWeight = getWeightFunction(searchTerm, allowRegex);
-      const beginOnly = searchTerm.length < minInputForFullText;
-      const regexp = constructRegex(searchTerm, function (searchTerm) {
-        return new RegExp(searchTerm);
-      }, allowRegex);
-      $el.find('li, .member-list').hide();
-
-      $el.find('li').each(function (i, v) {
-        const $item = $(v);
-        const name = $item.data('name');
-
-        if (regexp.test(name)) {
-          const $classEntry = $item.closest('.item');
-          const $members = $item.closest('.member-list');
-
-          // Do the weight thing
-          const weight = getSearchWeight($classEntry, beginOnly);
-          $classEntry.data('weight', weight);
-
-          $item.show();
-          $members.show();
-          $classEntry.show();
-        }
-      });
-
-      $(".navigation ul.list li.item:visible")
-        .sort(weightSorter) // sort elements
-        .appendTo(".navigation ul.list"); // append again to the list
-
-    } else {
-      $currentItem.prependTo('.navigation .list');
-      $currentItem.find('.member-list, li').show();
-      $el.find('.item').show();
+    searchTerm = searchTerm.toLowerCase();
+    const lastSearchTerm = search.lastSearchTerm;
+    if (searchTerm === lastSearchTerm) {
+      return;
     }
 
-    $el.find('.list').scrollTop(0);
+    // Avoid layout reflow by scrolling to top first.
+    search.$navList.scrollTop(0);
+    search.lastSearchTerm = searchTerm;
+    search.clearManualToggles();
+
+    if (searchTerm.length < minInputForSearch) {
+      const state = searchTerm.length && expandAllOnInputWithoutSearch ? 'search-started' : 'search-empty';
+      search.changeStateClass(state);
+      if (lastSearchTerm !== undefined && lastSearchTerm.length >= minInputForSearch) {
+        // Restore the original, sorted order
+        search.$navList.append(search.getClassList());
+      }
+      if (state === 'search-empty') {
+        search.manualToggle(search.$currentItem, true);
+      }
+    } else {
+      search.changeStateClass('searching');
+      searchTerm = searchTerm.toLowerCase();
+      const beginOnly = searchTerm.length < minInputForFullText;
+      const getSearchWeight = getWeightFunction(searchTerm, allowRegex);
+      const re = constructRegex(searchTerm, function (searchTerm) {
+        return new RegExp((beginOnly ? '\\b' : '') + searchTerm);
+      }, allowRegex);
+      const navList = search.$navList.get(0);
+      const classes = [];
+      const searchState = {};
+      search.getMembers().each(function (i, li) {
+        const name = li.dataset.name;
+        if (re.test(name)) {
+          const itemMember = li.parentElement.parentElement;
+          const classEntry = itemMember.parentElement;
+          const className = classEntry.dataset.longname;
+          let cls = searchState[className];
+          if (!cls) {
+            cls = searchState[className] = {
+              item: classEntry,
+              // Do the weight thing
+              weight: getSearchWeight(classEntry, beginOnly) * 10000,
+              subItems: {}
+            };
+            classes.push(cls);
+            classEntry.classList.add('match');
+          }
+          cls.weight += getSearchWeight(li, true) + 1;
+          const memberType = itemMember.dataset.type;
+          let members = cls.subItems[memberType];
+          if (!members) {
+            members = cls.subItems[memberType] = {
+              item: itemMember,
+              subItems: {}
+            };
+            itemMember.classList.add('match');
+          }
+          members.subItems[name] = { item: li };
+          li.classList.add('match');
+        }
+      });
+      search.getClassList().each(function (i, classEntry) {
+        const className = classEntry.dataset.longname;
+        if (!(className in searchState) && re.test(classEntry.dataset.name)) {
+          const cls = searchState[className] = {
+            item: classEntry,
+            // Do the weight thing
+            weight: getSearchWeight(classEntry, beginOnly) * 10000,
+            subItems: {}
+          };
+          classes.push(cls);
+          classEntry.classList.add('match');
+        }
+      });
+      clearOldMatches(search.lastState, searchState);
+      search.lastState = searchState;
+
+      classes.sort(function (a, b) {
+        return a.weight - b.weight;
+      });
+      for (let i = classes.length - 1; i >= 0; --i) {
+        navList.appendChild(classes[i].item);
+      }
+    }
   }
 
   const searchInput = $('#search').get(0);
@@ -132,7 +226,11 @@ $(function () {
 
         const time = Date.now() - start
         brandNode.innerHTML = time + ' ms';
-        console.log(searchTerm + ':', time, 'ms');
+        const msg = [searchTerm + ':', time, 'ms'];
+        if (searchTerm.length >= minInputForSearch) {
+          msg.push(search.lastState);
+        }
+        console.log.apply(console, msg);
         start = undefined;
       }, 0);
     }
@@ -145,8 +243,14 @@ $(function () {
   }
 
   // Toggle when click an item element
-  $('.navigation').on('click', '.toggle', function (e) {
-    $(this).parent().parent().find('.member-list').toggle();
+  search.$nav.on('click', '.toggle', function (e) {
+    const clsItem = $(this).closest('.item');
+    let shown;
+    clsItem.find('.member-list').each(function (i, v) {
+      shown = $(v).is(':visible');
+      return !shown;
+    });
+    search.manualToggle(clsItem, !shown);
   });
 
   // Auto resizing on navigation

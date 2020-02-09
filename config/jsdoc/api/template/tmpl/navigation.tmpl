@@ -25,7 +25,7 @@ const printListWithStability = v => {
 function listContent(item, title, listItemPrinter) {
     const type = title.toLowerCase();
     if (item[type] && item[type].length) { ?>
-            <div class="member-list">
+            <div class="member-list" data-type="<?js= type ?>">
                 <span class="subtitle"><?js= title ?></span>
                 <ul><?js
         item[type].forEach(function (v) {
@@ -36,13 +36,13 @@ function listContent(item, title, listItemPrinter) {
     }
 }
 ?>
-<div class="navigation">
+<div class="navigation search-empty">
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentation">
     </div>
     <ul class="list"><?js
         this.nav.forEach(function (item) { ?>
-        <li class="item" data-longname="<?js= item.longname ?>" data-name="<?js= item.name.toLowerCase() ?>">
+        <li class="item" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
             <span class="title">
                 <span class="glyphicon <?js= getItemCssClass(item.type) ?> toggle"></span>
                 <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~]/g, '\u200b$&')) ?></span>
