@@ -29,7 +29,7 @@ $(function () {
   var getSearchWeight = function (searchTerm, $matchedItem) {
     let weight = 0;
     // We could get smarter on the weight here
-    if ($matchedItem.data('shortname') === searchTerm) {
+    if ($matchedItem.data('name') === searchTerm) {
       weight++;
     }
     return weight;
@@ -48,7 +48,7 @@ $(function () {
     .replace('module-', 'module:')
     .replace(/_/g, '/')
     .replace(/-/g, '~');
-  var $currentItem = $('.navigation .item[data-name*="' + longname.toLowerCase() + '"]:eq(0)');
+  var $currentItem = $('.navigation .item[data-longname="' + longname + '"]:eq(0)');
 
   if ($currentItem.length) {
     $currentItem
