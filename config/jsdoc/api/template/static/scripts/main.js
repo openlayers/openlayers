@@ -3,16 +3,6 @@ $(function () {
   // Allow user configuration?
   const allowRegex = true;
 
-  // Search Items
-  $('#include_modules').change(function (e) {
-    console.log('change');
-    if ($(this).is(':checked')) {
-
-    } else {
-
-    }
-  });
-
   const reNotCache = {};
   function escapeRegexp(s, not) {
     if (not) {
@@ -39,8 +29,7 @@ $(function () {
   var getSearchWeight = function (searchTerm, $matchedItem) {
     let weight = 0;
     // We could get smarter on the weight here
-    if ($matchedItem.data('shortname')
-      && $matchedItem.data('shortname').toLowerCase() === searchTerm.toLowerCase()) {
+    if ($matchedItem.data('shortname').toLowerCase() === searchTerm.toLowerCase()) {
       weight++;
     }
     return weight;
@@ -82,19 +71,17 @@ $(function () {
         const $item = $(v);
         const name = $item.data('name');
 
-        if (name && regexp.test(name)) {
+        if (regexp.test(name)) {
           const $classEntry = $item.closest('.item');
           const $members = $item.closest('.member-list');
 
           // Do the weight thing
-          $classEntry.removeData('weight');
-          $classEntry.show();
           const weight = getSearchWeight(searchTerm, $classEntry);
           $classEntry.data('weight', weight);
 
+          $item.show();
           $members.show();
           $classEntry.show();
-          $item.show();
         }
       });
 
