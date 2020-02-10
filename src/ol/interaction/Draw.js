@@ -769,7 +769,7 @@ class Draw extends PointerInteraction {
    */
   addToDrawing_(coordinate) {
     const geometry = this.sketchFeature_.getGeometry();
-    const projection = event.map.getView().getProjection();
+    const projection = this.getMap().getView().getProjection();
     let done;
     let coordinates;
     if (this.mode_ === Mode.LINE_STRING) {
