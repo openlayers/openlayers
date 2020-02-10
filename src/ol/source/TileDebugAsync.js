@@ -40,7 +40,7 @@ class LabeledTileAsync extends Tile {
     this.canvas_ = null;
 
 
-    setTimeout(function(){
+    setTimeout(function() {
 
       const tileSize = this.tileSize_;
       const context = createCanvasContext2D(tileSize[0], tileSize[1]);
@@ -58,12 +58,12 @@ class LabeledTileAsync extends Tile {
       context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
 
 
-      console.log("Done ", this.text_);
+      console.log('Done ', this.text_);
 
       this.canvas_ = context.canvas;
 
-//       this.state = TileState.LOADED;
-//       this.changed(); // Notifies the tile layer containing this tile that the tile has changed
+      //       this.state = TileState.LOADED;
+      //       this.changed(); // Notifies the tile layer containing this tile that the tile has changed
       this.setState(TileState.LOADED);
 
       return context.canvas;
@@ -77,7 +77,7 @@ class LabeledTileAsync extends Tile {
   * @return {HTMLCanvasElement} Image.
   */
   getImage() {
-      return this.canvas_;
+    return this.canvas_;
   }
 
   /**

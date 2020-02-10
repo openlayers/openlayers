@@ -11,18 +11,22 @@ import TileImage from './TileImage.js';
 import {getKeyZXY} from '../tilecoord.js';
 import EventType from '../events/EventType.js';
 import {listenOnce} from '../events.js';
+import {get as getProjection, transform, transformExtent} from '../proj.js';
+import {createEmpty} from '../extent.js';
+
 
 class GlTile extends Tile {
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("../size.js").Size} tileSize Tile size.
+   * @param {import("../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
    *
    * @param {gl} The GL context from the parent GlTiles source
    * @param {texFetches} An array of `Promise`s for each of the textures to be
    * fetched for this tile.
    * @param {textures} An array of already-instantiated `WebGLTexture`s
    */
-  constructor(tileCoord, tileSize, gl, texFetches = [], textures = []) {
+  constructor(tileCoord, tileSize, tileExtent, gl, texFetches = [], textures = []) {
 
     super(tileCoord, TileState.LOADING);
 
@@ -40,7 +44,6 @@ class GlTile extends Tile {
 
     this.gl = gl;
 
-
     Promise.all(texFetches).then(loadedTextures =>{
       console.log('textures for tile: ',tileCoord, loadedTextures);
 
@@ -53,7 +56,6 @@ class GlTile extends Tile {
         }
       }
 
-      // TODO: attach textures
       // TODO: copy-paste code from Leaflet.TileLayerGL's render() method
       // to update the per-tile attributes
 
@@ -174,17 +176,6 @@ class GlTiles extends XYZ {
 		gl.viewportHeight = 256; /// FIXME: fetch from tilegrid
 
 		this.loadGLProgram_();
-
-		// TODO: Init textures based on the `textureSources` constructor parameter
-// 		this._textures = [];
-// 		for (i = 0; i < this._tileLayers.length && i < 8; i++) {
-// 			this._textures[i] = gl.createTexture();
-// 			gl.uniform1i(gl.getUniformLocation(this._glProgram, "uTexture" + i), i);
-// 		}
-
-    /// for DEBUG only
-//     document.body.append(this._renderer);
-
   }
 
   /**
@@ -204,6 +195,11 @@ class GlTiles extends XYZ {
 //       } else {
 //         text = 'none';
 //       }
+
+
+      let tileExtent = this.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent_);
+      /// DEBUG console.log(tileCoord, tileExtent);
+
 
       const texFetches = [];
       for (const i in this.texSources) {
@@ -225,6 +221,7 @@ class GlTiles extends XYZ {
           });
         } else {
           // TODO: geotiff.js not implemented yet
+          // TODO: Make a geotiff request using tileExtent
           console.warn('GLTiles expected a TileImage source, got:', this.texSources[i]);
         }
       }
@@ -232,7 +229,7 @@ class GlTiles extends XYZ {
 
       // Instantiate tile, pass an array of texfetches for this particular tile,
       // and the instances of WebGLTexture (so they can be re-put into the texture units)
-      const tile = new GlTile(tileCoord, tileSize, this._gl, texFetches, this.textures_);
+      const tile = new GlTile(tileCoord, tileSize, this.projection_, this._gl, texFetches, this.textures_);
 
       // Listen to the tile when it has finished loading, mark the tile layer as
       // changed in order to trigger a redraw
@@ -469,6 +466,57 @@ function bindTextureImageData(gl, texture, index, imageData) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.generateMipmap(gl.TEXTURE_2D);
 }
+
+
+
+
+/**
+  * Helper function. Binds a TypedArray to a texture, given its index (0 to 7).
+  *
+  *
+  * https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.14.8
+  *
+  * @param {index} The 0-indexed texture index
+  * @param {arr} A TypedArray with 8-bit, 16-bit or 32-bit data
+  * @param {w} Width of the texture
+  * @param {h} Height of the texture
+  * @return undefined
+  */
+function bindTextureTypedArray(gl, texture, index, arr, w, h) {
+
+
+//   void texImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels) (OpenGL ES 2.0 §3.7.1, man page)
+//   void texImage2D(target, level, internalformat, width, height, border, format, type, pixels)
+//   void texImage2D(gl.TEXTURE_2D, 0, internalformat, width, height, border, format, type, pixels)
+
+  // The only possible `internalformat` is 8-bit: « If pixels is non-null, the type of pixels must match the type of the data to be read. If it is UNSIGNED_BYTE, a Uint8Array or Uint8ClampedArray must be supplied; if it is UNSIGNED_SHORT_5_6_5, UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If the types do not match, an INVALID_OPERATION error is generated.»
+
+
+  gl.activeTexture(gl.TEXTURE0 + index);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+
+  // For 8-bit data:
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, gl.LUMINANCE, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+
+  // For 16-bit data:
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT,2);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, gl.LUMINANCE_ALPHA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+
+  // For 32-bit data:
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+
+//   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.generateMipmap(gl.TEXTURE_2D);
+}
+
+
 
 
 
