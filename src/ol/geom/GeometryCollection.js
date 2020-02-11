@@ -127,6 +127,23 @@ class GeometryCollection extends Geometry {
   }
 
   /**
+   * @return {Array<Geometry>} Geometries.
+   */
+  getGeometriesArrayRecursive() {
+    /** @type {Array<Geometry>} */
+    let geometriesArray = [];
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      if (geometries[i].getType() === this.getType()) {
+        geometriesArray = geometriesArray.concat(/** @type {GeometryCollection} */ (geometries[i]).getGeometriesArrayRecursive());
+      } else {
+        geometriesArray.push(geometries[i]);
+      }
+    }
+    return geometriesArray;
+  }
+
+  /**
    * @inheritDoc
    */
   getSimplifiedGeometry(squaredTolerance) {
