@@ -1399,4 +1399,129 @@ describe('ol.interaction.Draw', function() {
     });
 
   });
+
+  describe('append coordinates when drawing a Polygon feature', function() {
+    let draw;
+    let coordinates;
+    let coordinates2;
+
+    beforeEach(function() {
+      draw = new Draw({
+        source: source,
+        type: 'Polygon'
+      });
+      map.addInteraction(draw);
+      coordinates = [[0, 0], [1, 1], [2, 0], [0, 3], [3, 2], [4, 4]];
+      coordinates2 = [[10, 10], [11, 11], [12, 10], [10, 13], [13, 12], [14, 14]];
+    });
+
+    function isClosed(polygon) {
+      const first = polygon.getFirstCoordinate();
+      const last = polygon.getLastCoordinate();
+      expect(first).to.eql(last);
+    }
+
+    it('draws polygon with clicks, adds coordinates to drawing, finishing on first point', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
+
+      // add coordinates
+      draw.appendCoordinates(coordinates);
+
+      // finish on first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[10, -20], [0, 0], [1, 1], [2, 0], [0, 3], [3, 2], [4, 4], [10, -20]]
+      ]);
+    });
+
+    it('adds coordinates to empty drawing', function() {
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+      draw.removeLastPoint();
+      draw.appendCoordinates(coordinates);
+      isClosed(draw.sketchFeature_.getGeometry());
+
+      // finish drawing
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[0, 0], [1, 1], [2, 0], [0, 3], [3, 2], [4, 4], [0, 0]]
+      ]);
+    });
+
+    it('keeps updating the sketch feature after appending coordinates', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
+
+      // add coordinates
+      draw.appendCoordinates(coordinates);
+
+      // add another point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      // sketchGeom should have a complete ring, with a double coordinate for cursor
+      const sketchGeom = draw.sketchFeature_.getGeometry();
+      expect(sketchGeom.getCoordinates()).to.eql([
+        [[10, -20], [0, 0], [1, 1], [2, 0], [0, 3], [3, 2], [4, 4], [30, -20], [30, -20], [10, -20]]
+      ]);
+    });
+
+    it('keeps updating the sketch feature after multiple appendiges', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
+
+      // add coordinates
+      draw.appendCoordinates(coordinates);
+
+      // another point
+      simulateEvent('pointermove', 100, 100);
+      simulateEvent('pointerdown', 100, 100);
+      simulateEvent('pointerup', 100, 100);
+
+      // add another array of coordinates
+      draw.appendCoordinates(coordinates2);
+
+      // finish on first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[10, -20], [0, 0], [1, 1], [2, 0], [0, 3], [3, 2], [4, 4], [100, -100], [10, 10], [11, 11], [12, 10], [10, 13], [13, 12], [14, 14], [10, -20]]
+      ]);
+    });
+  });
 });

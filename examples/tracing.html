@@ -1,0 +1,22 @@
+---
+layout: example.html
+title: Tracing around a polygon
+shortdesc: Example of setting up a draw interaction to easily snap to an existing feature.
+docs: >
+  This example showcases how the draw interaction API can be set up to make snapping along
+  an existing geometry easier while preserving topology, which is sometimes called "tracing".
+  When the user clicks on two different points on the Idaho state border,
+  the part of the border comprised between these two points is added to
+  the currently drawn feature.
+  This leverages the `appendCoordinates` method of the `ol/interaction/Draw` interaction.
+tags: "draw, trace, snap, vector, topology"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label>Geometry type &nbsp;</label>
+  <select id="type">
+    <option value="Polygon">Polygon</option>
+    <option value="LineString">LineString</option>
+    <option value="None">None</option>
+  </select>
+</form>

@@ -505,7 +505,7 @@ class Draw extends PointerInteraction {
     if (this.freehand_ &&
         event.type === MapBrowserEventType.POINTERDRAG &&
         this.sketchFeature_ !== null) {
-      this.addToDrawing_(event);
+      this.addToDrawing_(event.coordinate);
       pass = false;
     } else if (this.freehand_ &&
         event.type === MapBrowserEventType.POINTERDOWN) {
@@ -580,7 +580,7 @@ class Draw extends PointerInteraction {
           this.finishDrawing();
         }
       } else {
-        this.addToDrawing_(event);
+        this.addToDrawing_(event.coordinate);
       }
       pass = false;
     } else if (this.freehand_) {
@@ -764,13 +764,12 @@ class Draw extends PointerInteraction {
 
   /**
    * Add a new coordinate to the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {!PointCoordType} coordinate Coordinate
    * @private
    */
-  addToDrawing_(event) {
-    const coordinate = event.coordinate;
+  addToDrawing_(coordinate) {
     const geometry = this.sketchFeature_.getGeometry();
-    const projection = event.map.getView().getProjection();
+    const projection = this.getMap().getView().getProjection();
     let done;
     let coordinates;
     if (this.mode_ === Mode.LINE_STRING) {
@@ -903,9 +902,44 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Extend an existing geometry by adding additional points. This only works
-   * on features with `LineString` geometries, where the interaction will
-   * extend lines by adding points to the end of the coordinates array.
+   * Append coordinates to the end of the geometry that is currently being drawn.
+   * This can be used when drawing LineStrings or Polygons. Coordinates will
+   * either be appended to the current LineString or the outer ring of the current
+   * Polygon.
+   * @param {!LineCoordType} coordinates Linear coordinates to be appended into
+   * the coordinate array.
+   * @api
+   */
+  appendCoordinates(coordinates) {
+    const mode = this.mode_;
+    let sketchCoords = [];
+    if (mode === Mode.LINE_STRING) {
+      sketchCoords = /** @type {LineCoordType} */ this.sketchCoords_;
+    } else if (mode === Mode.POLYGON) {
+      sketchCoords = this.sketchCoords_ && this.sketchCoords_.length ? /** @type {PolyCoordType} */ (this.sketchCoords_)[0] : [];
+    }
+
+    // Remove last coordinate from sketch drawing (this coordinate follows cursor position)
+    const ending = sketchCoords.pop();
+
+    // Append coordinate list
+    for (let i = 0; i < coordinates.length; i++) {
+      this.addToDrawing_(coordinates[i]);
+    }
+
+    // Duplicate last coordinate for sketch drawing
+    this.addToDrawing_(ending);
+  }
+
+  /**
+   * Initiate draw mode by starting from an existing geometry which will
+   * receive new additional points. This only works on features with
+   * `LineString` geometries, where the interaction will extend lines by adding
+   * points to the end of the coordinates array.
+   * This will change the original feature, instead of drawing a copy.
+   *
+   * The function will dispatch a `drawstart` event.
+   *
    * @param {!Feature<LineString>} feature Feature to be extended.
    * @api
    */
