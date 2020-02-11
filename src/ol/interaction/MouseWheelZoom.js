@@ -96,7 +96,7 @@ class MouseWheelZoom extends Interaction {
      * interactions.
      * @type {number}
      */
-    this.eventGap_ = 400;
+    this.eventGap_ = 250;
 
     /**
      * @type {?}
