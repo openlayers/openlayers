@@ -11,7 +11,6 @@ import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Feature from '../src/ol/Feature.js';
 
-
 // math utilities
 
 // coordinates; will return the length of the [a, b] segment
@@ -36,7 +35,11 @@ function mod(a, b) {
 // outer ring between the start and end points
 // Note: this assumes the base feature is a single polygon
 function getPartialRingCoords(feature, startPoint, endPoint) {
-  const ringCoords = feature.getGeometry().getLinearRing().getCoordinates();
+  let polygon = feature.getGeometry();
+  if (polygon.getType() === 'MultiPolygon') {
+    polygon = polygon.getPolygon(0);
+  }
+  const ringCoords = polygon.getLinearRing().getCoordinates();
 
   let i, pointA, pointB, startSegmentIndex = -1;
   for (i = 0; i < ringCoords.length; i++) {
@@ -85,6 +88,7 @@ function getPartialRingCoords(feature, startPoint, endPoint) {
     }
   }
 
+  // keep the shortest path
   return ccwLength < cwLength ? ccwCoordinates : cwCoordinates;
 }
 
@@ -95,82 +99,15 @@ const raster = new TileLayer({
   source: new OSM()
 });
 
-// Idaho state GeoJSON
-const baseFeature = new GeoJSON().readFeature({
-  type: 'Feature',
-  geometry: {
-    type: 'Polygon',
-    coordinates: [[
-      [-111.08518023825431, 44.506142112334651],
-      [-111.049728402187043, 44.48816653348365],
-      [-111.050246928500059, 42.001596004902879],
-      [-114.034225025564496, 41.993120340230973],
-      [-117.028253570918153, 42.000021221285593],
-      [-117.013965290292987, 43.79706698163281],
-      [-116.926654421365328, 44.081212999602798],
-      [-117.00760854178904, 44.211414316643626],
-      [-117.194393242542148, 44.279130012187053],
-      [-117.192299932611846, 44.438938541544815],
-      [-117.051529640968823, 44.665957043251822],
-      [-116.836142772727712, 44.863848449598407],
-      [-116.693285572713776, 45.186647083345598],
-      [-116.558872029574673, 45.444357861691202],
-      [-116.457797807894295, 45.574530371714637],
-      [-116.511257230609658, 45.726407368951158],
-      [-116.678997292088653, 45.807361489374898],
-      [-116.91500358322115, 45.999984412318923],
-      [-116.906527918549244, 46.17777492208711],
-      [-116.998070218253446, 46.330170445636647],
-      [-117.026646779503764, 47.722925720821678],
-      [-117.031428744390425, 48.999307047312811],
-      [-116.04823243777011, 49.000369706176514],
-      [-115.967796843659372, 47.950481953519962],
-      [-115.704276650140244, 47.684842843832847],
-      [-115.70479517645326, 47.504930217116986],
-      [-115.519066733004436, 47.345118486979523],
-      [-115.288328925274485, 47.250397813023341],
-      [-115.121651522659207, 47.095368047772524],
-      [-114.843318120642479, 46.786319963659238],
-      [-114.585610543076569, 46.641337445917912],
-      [-114.284519597322202, 46.631805523941722],
-      [-114.394043877436815, 46.41008751343437],
-      [-114.491430800891379, 46.147079444668812],
-      [-114.407275900757696, 45.889912798873901],
-      [-114.523701061926985, 45.825369076023016],
-      [-114.513650613637765, 45.569236282074407],
-      [-114.335315971318892, 45.470274575002556],
-      [-114.137936689725905, 45.589337178652805],
-      [-114.035799809181796, 45.730101068736438],
-      [-113.914099763050558, 45.702587166349815],
-      [-113.794493026849608, 45.564998449738447],
-      [-113.680212388086019, 45.249075090808205],
-      [-113.502934003071431, 45.124225477442394],
-      [-113.439424132066847, 44.862792192294137],
-      [-113.378577309780937, 44.789769603991623],
-      [-113.174841279684017, 44.765430875077264],
-      [-113.052084976248494, 44.619910626344669],
-      [-112.874812992793338, 44.360084132610794],
-      [-112.690147208208202, 44.498729106526447],
-      [-112.362592215812043, 44.462221013154888],
-      [-112.336134570729712, 44.560638587676046],
-      [-111.771491423659086, 44.498216981772842],
-      [-111.542386013581194, 44.530487242808441],
-      [-111.400015332083171, 44.728922781705712],
-      [-111.291547309272815, 44.701402477759679],
-      [-111.194192393615367, 44.561157113989054],
-      [-111.08518023825431, 44.506142112334651]
-    ]]
-  }
-}, {
-  featureProjection: 'EPSG:3857'
+// features in this layer will be snapped to
+const baseVector = new VectorLayer({
+  source: new VectorSource({
+    format: new GeoJSON(),
+    url: 'https://ahocevar.com/geoserver/wfs?service=wfs&request=getfeature&typename=topp:states&cql_filter=STATE_NAME=\'Idaho\'&outputformat=application/json'
+  })
 });
 
 // this is were the drawn features go
-const baseVector = new VectorLayer({
-  source: new VectorSource({
-    features: [baseFeature]
-  })
-});
 const drawVector = new VectorLayer({
   source: new VectorSource(),
   style: new Style({
@@ -210,6 +147,7 @@ const map = new Map({
 });
 
 let drawInteraction, tracingFeature, startPoint, endPoint;
+let drawing = false;
 
 const getFeatureOptions = {
   hitTolerance: 10,
@@ -220,6 +158,10 @@ const getFeatureOptions = {
 
 // the click event is used to start/end tracing around a feature
 map.on('click', (event) => {
+  if (!drawing) {
+    return;
+  }
+
   let hit = false;
   map.forEachFeatureAtPixel(
     event.pixel,
@@ -256,7 +198,7 @@ map.on('click', (event) => {
 
 // the pointermove event is used to show a preview of the result of the tracing
 map.on('pointermove', (event) => {
-  if (tracingFeature) {
+  if (tracingFeature && drawing) {
     let coord = null;
     map.forEachFeatureAtPixel(
       event.pixel,
@@ -290,7 +232,12 @@ function addInteraction() {
       source: drawVector.getSource(),
       type: typeSelect.value
     });
+    drawInteraction.on('drawstart', () => {
+      drawing = true;
+    });
     drawInteraction.on('drawend', () => {
+      drawing = false;
+      previewLine.getGeometry().setCoordinates([]);
       tracingFeature = null;
     });
     map.addInteraction(drawInteraction);
