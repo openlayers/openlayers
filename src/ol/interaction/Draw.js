@@ -906,25 +906,25 @@ class Draw extends PointerInteraction {
    * This can be used when drawing LineStrings or Polygons. Coordinates will
    * either be appended to the current LineString or the outer ring of the current
    * Polygon.
-   * @param {!LineCoordType} coordinateExtension Linear coordinates to be appended into
+   * @param {!LineCoordType} coordinates Linear coordinates to be appended into
    * the coordinate array.
    * @api
    */
-  appendCoordinates(coordinateExtension) {
+  appendCoordinates(coordinates) {
     const mode = this.mode_;
-    let coordinates = [];
+    let sketchCoords = [];
     if (mode === Mode.LINE_STRING) {
-      coordinates = /** @type {LineCoordType} */ this.sketchCoords_;
+      sketchCoords = /** @type {LineCoordType} */ this.sketchCoords_;
     } else if (mode === Mode.POLYGON) {
-      coordinates = this.sketchCoords_ && this.sketchCoords_.length ? /** @type {PolyCoordType} */ (this.sketchCoords_)[0] : [];
+      sketchCoords = this.sketchCoords_ && this.sketchCoords_.length ? /** @type {PolyCoordType} */ (this.sketchCoords_)[0] : [];
     }
 
     // Remove last coordinate from sketch drawing (this coordinate follows cursor position)
-    const ending = coordinates.pop();
+    const ending = sketchCoords.pop();
 
     // Append coordinate list
-    for (let i = 0; i < coordinateExtension.length; i++) {
-      this.addToDrawing_(coordinateExtension[i]);
+    for (let i = 0; i < coordinates.length; i++) {
+      this.addToDrawing_(coordinates[i]);
     }
 
     // Duplicate last coordinate for sketch drawing
