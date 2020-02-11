@@ -3476,11 +3476,38 @@ describe('ol.format.KML', function() {
         expect(styleFunction).not.to.be(undefined);
         const styleArray = styleFunction(f, 0);
         expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(2);
+
         const style = styleArray[0];
         expect(style).to.be.an(Style);
+        const gc = style.getGeometryFunction()(f);
+        expect(gc).to.be.an(GeometryCollection);
+        const gs = gc.getGeometries();
+        expect(gs).to.be.an(Array);
+        expect(gs).to.have.length(1);
+        expect(gs[0]).to.be.an(Point);
+        expect(gs[0].getCoordinates()).to.eql(f.getGeometry().getGeometries()[0].getCoordinates());
         const imageStyle = style.getImage();
         expect(imageStyle).to.be.an(Icon);
+        expect(imageStyle.getScale()).to.eql(0.4);
         expect(imageStyle.getSrc()).to.eql('http://maps.google.com/mapfiles/kml/shapes/star.png');
+        const textStyle = style.getText();
+        expect(textStyle).to.be.an(Text);
+        const textFillStyle = textStyle.getFill();
+        expect(textFillStyle).to.be.an(Fill);
+        expect(textFillStyle.getColor()).to.eql([0xff, 0xff, 0x00, 0x99 / 255]);
+        expect(textStyle.getText()).to.eql(f.get('name'));
+
+        const style1 = styleArray[1];
+        expect(style1).to.be.an(Style);
+        expect(style1.getGeometryFunction()(f)).to.be(f.getGeometry());
+        expect(style1.getFill()).to.be(null);
+        expect(style1.getImage()).to.be(null);
+        const strokeStyle = style1.getStroke();
+        expect(strokeStyle).to.be.an(Stroke);
+        expect(strokeStyle.getColor()).to.eql([0xff, 0x00, 0xff, 0xff / 255]);
+        expect(strokeStyle.getWidth()).to.be(2);
+        expect(style1.getText()).to.be(null);
       });
 
     });
