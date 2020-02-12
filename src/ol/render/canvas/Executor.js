@@ -31,28 +31,6 @@ import RBush from 'rbush/rbush.js';
  */
 
 /**
- * @typedef Label
- * @property {number} width
- * @property {number} height
- * @property {Array<string|number>} contextInstructions
- */
-
-/**
- * @param {Label} label Label.
- * @param {CanvasRenderingContext2D} context Context.
- */
-export function executeLabelInstructions(label, context) {
-  const contextInstructions = label.contextInstructions;
-  for (let i = 0, ii = contextInstructions.length; i < ii; i += 2) {
-    if (Array.isArray(contextInstructions[i + 1])) {
-      CanvasRenderingContext2D.prototype[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
-    } else {
-      context[contextInstructions[i]] = contextInstructions[i + 1];
-    }
-  }
-}
-
-/**
  * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
@@ -176,7 +154,7 @@ class Executor {
 
     /**
      * @private
-     * @type {Object<string, Label>}
+     * @type {Object<string, import("../canvas.js").Label>}
      */
     this.labels_ = {};
   }
@@ -186,7 +164,7 @@ class Executor {
    * @param {string} textKey Text style key.
    * @param {string} fillKey Fill style key.
    * @param {string} strokeKey Stroke style key.
-   * @return {Label} Label.
+   * @return {import("../canvas.js").Label} Label.
    */
   createLabel(text, textKey, fillKey, strokeKey) {
     const key = text + textKey + fillKey + strokeKey;
@@ -209,7 +187,7 @@ class Executor {
     const height = lineHeight * numLines;
     const renderWidth = width + strokeWidth;
     const contextInstructions = [];
-    /** @type {Label} */
+    /** @type {import("../canvas.js").Label} */
     const label = {
       // make canvas 2 pixels wider to account for italic text width measurement errors
       width: Math.ceil((renderWidth + 2) * scale),
@@ -283,7 +261,7 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} x X.
    * @param {number} y Y.
-   * @param {Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
+   * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
    * @param {number} anchorX Anchor X.
    * @param {number} anchorY Anchor Y.
    * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
@@ -488,7 +466,7 @@ class Executor {
    * @param {string} textKey The key of the text state.
    * @param {string} strokeKey The key for the stroke state.
    * @param {string} fillKey The key for the fill state.
-   * @return {{label: Label, anchorX: number, anchorY: number}} The text image and its anchor.
+   * @return {{label: import("../canvas.js").Label, anchorX: number, anchorY: number}} The text image and its anchor.
    */
   drawLabelWithPointPlacement_(text, textKey, strokeKey, fillKey) {
     const textState = this.textStates[textKey];
