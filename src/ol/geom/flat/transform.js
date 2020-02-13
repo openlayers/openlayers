@@ -108,8 +108,8 @@ export function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, 
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {
-    dest[i++] = flatCoordinates[j] + deltaX;
-    dest[i++] = flatCoordinates[j + 1] + deltaY;
+    dest[i++] = flatCoordinates[j] + Number(deltaX);
+    dest[i++] = flatCoordinates[j + 1] + Number(deltaY);
     for (let k = j + 2; k < j + stride; ++k) {
       dest[i++] = flatCoordinates[k];
     }
