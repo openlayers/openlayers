@@ -15,11 +15,11 @@ function getItemCssClass(type) {
 }
 
 const printList = v => { ?>
-                    <li data-name="<?js= v.longname ?>"><?js
+                    <li data-name="<?js= v.longname.toLowerCase() ?>"><?js
 }
 const printListWithStability = v => {
     const cls = v.stability && v.stability !== 'stable' ? ' class="unstable"' : ''; ?>
-                    <li data-name="<?js= v.longname ?>"<?js= cls ?>><?js
+                    <li data-name="<?js= v.longname.toLowerCase() ?>"<?js= cls ?>><?js
 }
 
 function listContent(item, title, listItemPrinter) {
@@ -42,7 +42,7 @@ function listContent(item, title, listItemPrinter) {
     </div>
     <ul class="list"><?js
         this.nav.forEach(function (item) { ?>
-        <li class="item" data-name="<?js= item.longname ?>" data-shortname="<?js= item.name.toLowerCase() ?>">
+        <li class="item" data-name="<?js= item.longname.toLowerCase() ?>" data-shortname="<?js= item.name.toLowerCase() ?>">
             <span class="title">
                 <span class="glyphicon <?js= getItemCssClass(item.type) ?> toggle"></span>
                 <?js= self.linkto(item.longname, item.prettyname) ?>

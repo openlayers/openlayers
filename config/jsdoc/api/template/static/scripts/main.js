@@ -29,7 +29,7 @@ $(function () {
   var getSearchWeight = function (searchTerm, $matchedItem) {
     let weight = 0;
     // We could get smarter on the weight here
-    if ($matchedItem.data('shortname').toLowerCase() === searchTerm.toLowerCase()) {
+    if ($matchedItem.data('shortname') === searchTerm) {
       weight++;
     }
     return weight;
@@ -48,7 +48,7 @@ $(function () {
     .replace('module-', 'module:')
     .replace(/_/g, '/')
     .replace(/-/g, '~');
-  var $currentItem = $('.navigation .item[data-name*="' + longname + '"]:eq(0)');
+  var $currentItem = $('.navigation .item[data-name*="' + longname.toLowerCase() + '"]:eq(0)');
 
   if ($currentItem.length) {
     $currentItem
@@ -62,8 +62,9 @@ $(function () {
     var $el = $('.navigation');
 
     if (searchTerm.length > 1) {
+      searchTerm = searchTerm.toLowerCase();
       const regexp = constructRegex(searchTerm, function (searchTerm) {
-        return new RegExp(searchTerm, 'i');
+        return new RegExp(searchTerm);
       }, allowRegex);
       $el.find('li, .member-list').hide();
 
