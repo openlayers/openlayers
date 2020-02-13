@@ -2,19 +2,7 @@ $(function () {
 
   // Allow user configuration?
   const allowRegex = true;
-
-  const reNotCache = {};
-  function escapeRegexp(s, not) {
-    if (not) {
-      let re = reNotCache[not];
-      if (!re) {
-        const characters = '-\/\\^$*+?.()|[\]{}'.replace(new RegExp('[' + escapeRegexp(not) + ']', 'g'), '');
-        re = reNotCache[not] = new RegExp('[' + escapeRegexp(characters) + ']', 'g');
-      }
-      return s.replace(re, '\\$&');
-    }
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  }
+  const minInputForFullText = 1;
 
   function constructRegex(searchTerm, makeRe, allowRegex) {
     try {
@@ -23,17 +11,47 @@ $(function () {
       }
     } catch (e) {
     }
-    return makeRe(escapeRegexp(searchTerm, '.'));
+    // In case of invalid regexp fall back to non-regexp, but still allow . to match /
+    return makeRe(searchTerm.replace(/\./g, '/').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   }
 
-  var getSearchWeight = function (searchTerm, $matchedItem) {
-    let weight = 0;
-    // We could get smarter on the weight here
-    if ($matchedItem.data('name') === searchTerm) {
-      weight++;
+  function getWeightFunction(searchTerm, allowRegex) {
+    function makeRe(searchTerm) {
+      return {
+        begin: new RegExp('(?:[.~]|\\b)' + searchTerm, 'g'), // Also match . and ~ to demote double matches, in weight function
+        name: new RegExp('\\b' + searchTerm + '(?:[~.]|$)'), // Match until module end or name end
+        fullName: new RegExp('^' + searchTerm + '$')
+      }
     }
-    return weight;
-  };
+    const re = constructRegex(searchTerm, makeRe, allowRegex);
+    return function (matchedItem, beginOnly) {
+      // We could get smarter on the weight here
+      let weight = 0;
+      const name = matchedItem.data('name');
+      const match = name.match(re.begin);
+      if (match) {
+        // `ol/geom/Geometry` matches twice when searching 'geom', is weighted higher.
+        // but don't boost something like `ol/source/Vector~VectorSource` when searching for 'Vect'.
+        let matches = match.length;
+        if (matches > 1 && /[.~]/.test(match[matches - 1])) {
+          matches -= 1;
+        }
+        weight += matches * 10000;
+        if (!beginOnly) {
+          // Full match of the last part of the path is weighted even higher
+          // Complete match is weighted highest.
+          if (re.fullName.test(name)) {
+            weight += 10000000;
+          } else if (re.name.test(name)) {
+            weight += 1000000;
+          }
+        }
+        // If everything else is equal, prefer shorter names.
+        weight -= name.length;
+      }
+      return weight;
+    }
+  }
 
   // sort function callback
   var weightSorter = function (a, b) {
@@ -63,6 +81,8 @@ $(function () {
 
     if (searchTerm.length > 1) {
       searchTerm = searchTerm.toLowerCase();
+      const getSearchWeight = getWeightFunction(searchTerm, allowRegex);
+      const beginOnly = searchTerm.length < minInputForFullText;
       const regexp = constructRegex(searchTerm, function (searchTerm) {
         return new RegExp(searchTerm);
       }, allowRegex);
@@ -77,7 +97,7 @@ $(function () {
           const $members = $item.closest('.member-list');
 
           // Do the weight thing
-          const weight = getSearchWeight(searchTerm, $classEntry);
+          const weight = getSearchWeight($classEntry, beginOnly);
           $classEntry.data('weight', weight);
 
           $item.show();
