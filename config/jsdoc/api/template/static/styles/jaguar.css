@@ -183,7 +183,7 @@ li {
   padding-left: 8px;
   margin-top: 2px;
 }
-.navigation li.item .itemMembers {
+.navigation li.item .member-list {
   display: none;
   padding-left: 8px;
 }
