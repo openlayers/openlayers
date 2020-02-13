@@ -4,7 +4,6 @@
 import {getFontParameters} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
-import {executeLabelInstructions} from './canvas/Executor.js';
 import BaseObject from '../Object.js';
 import EventTarget from '../events/Target.js';
 
@@ -14,6 +13,12 @@ import EventTarget from '../events/Target.js';
  * @property {import("../colorlike.js").ColorLike} fillStyle
  */
 
+/**
+ * @typedef Label
+ * @property {number} width
+ * @property {number} height
+ * @property {Array<string|number>} contextInstructions
+ */
 
 /**
  * @typedef {Object} FillStrokeState
@@ -386,7 +391,7 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
- * @param {import("./canvas/Executor.js").Label|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} labelOrImage Label.
+ * @param {Label|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} labelOrImage Label.
  * @param {number} originX Origin X.
  * @param {number} originY Origin Y.
  * @param {number} w Width.
@@ -407,11 +412,26 @@ export function drawImageOrLabel(context,
     // label
     context.translate(x, y);
     context.scale(scale, scale);
-    executeLabelInstructions(/** @type {import("./canvas/Executor.js").Label} */ (labelOrImage), context);
+    executeLabelInstructions(/** @type {Label} */ (labelOrImage), context);
   } else {
     // image
     context.drawImage(/** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage), originX, originY, w, h, x, y, w * scale, h * scale);
   }
 
   context.restore();
+}
+
+/**
+ * @param {Label} label Label.
+ * @param {CanvasRenderingContext2D} context Context.
+ */
+function executeLabelInstructions(label, context) {
+  const contextInstructions = label.contextInstructions;
+  for (let i = 0, ii = contextInstructions.length; i < ii; i += 2) {
+    if (Array.isArray(contextInstructions[i + 1])) {
+      CanvasRenderingContext2D.prototype[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
+    } else {
+      context[contextInstructions[i]] = contextInstructions[i + 1];
+    }
+  }
 }
