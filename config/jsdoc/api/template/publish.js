@@ -274,9 +274,9 @@ function buildNav(members) {
         kind: 'event',
         memberof: v.longname
       });
-      // only add modules that have more to show than just classes
-      const numItems = classes.length - 1 + members.length + methods.length + typedefs.length + events.length;
-      if (!classes.length || (numItems > 0 && numItems !== classes.length)) {
+      // Only add modules that contain more than just classes with their
+      // associated Options typedef
+      if (typedefs.length > classes.length || members.length + methods.length > 0) {
         nav.push({
           type: 'module',
           longname: v.longname,
