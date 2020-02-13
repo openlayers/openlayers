@@ -42,8 +42,7 @@ $(function () {
       .show();
   }
 
-  // Search Items
-  $('#search').on('keyup', function (e) {
+  function doSearch() {
     var value = $(this).val();
     var $el = $('.navigation');
 
@@ -82,7 +81,22 @@ $(function () {
     }
 
     $el.find('.list').scrollTop(0);
-  });
+  }
+
+  const searchInput = $('#search').get(0);
+  // Skip searches when typing fast.
+  let key;
+  function queueSearch() {
+    if (!key) {
+      key = setTimeout(function () {
+        doSearch.call(searchInput);
+        key = undefined;
+      }, 0);
+    }
+  }
+
+  // Search Items
+  searchInput.addEventListener('input', queueSearch);
 
   // Toggle when click an item element
   $('.navigation').on('click', '.toggle', function (e) {
