@@ -18,7 +18,8 @@ feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 const vector = new VectorLayer({
   source: new VectorSource({
     features: [feature]
-  })
+  }),
+  opacity: 0.5
 });
 
 
@@ -62,8 +63,10 @@ exportButton.addEventListener('click', function() {
     mapCanvas.width = width;
     mapCanvas.height = height;
     const mapContext = mapCanvas.getContext('2d');
-    document.querySelectorAll('.ol-layer canvas').forEach(function(canvas) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ol-layer canvas'), function(canvas) {
       if (canvas.width > 0) {
+        const opacity = canvas.parentNode.style.opacity;
+        mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
         const transform = canvas.style.transform;
         // Get the transform parameters from the style's transform matrix
         const matrix = transform.match(/^matrix\(([^\(]*)\)$/)[1].split(',').map(Number);
