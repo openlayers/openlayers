@@ -215,16 +215,20 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
+      const da = sinon.spy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
+      listen(draw, 'drawabort', da);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       expect(ds.called).to.be(true);
       expect(de.called).to.be(true);
+      expect(da.called).to.be(false);
       simulateEvent('pointermove', 20, 20);
       expect(ds.callCount).to.be(1);
       expect(de.callCount).to.be(1);
+      expect(da.callCount).to.be(0);
     });
 
     it('triggers drawend event before inserting the feature', function() {
@@ -463,8 +467,10 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
+      const da = sinon.spy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
+      listen(draw, 'drawabort', da);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -485,6 +491,8 @@ describe('ol.interaction.Draw', function() {
       expect(ds.callCount).to.be(1);
       expect(de.called).to.be(true);
       expect(de.callCount).to.be(1);
+      expect(da.called).to.be(false);
+      expect(da.callCount).to.be(0);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function() {
@@ -781,8 +789,10 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
+      const da = sinon.spy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
+      listen(draw, 'drawabort', da);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -808,6 +818,8 @@ describe('ol.interaction.Draw', function() {
       expect(ds.callCount).to.be(1);
       expect(de.called).to.be(true);
       expect(de.callCount).to.be(1);
+      expect(da.called).to.be(false);
+      expect(da.callCount).to.be(0);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function() {
@@ -1020,8 +1032,10 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
+      const da = sinon.spy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
+      listen(draw, 'drawabort', da);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -1037,6 +1051,88 @@ describe('ol.interaction.Draw', function() {
       expect(ds.callCount).to.be(1);
       expect(de.called).to.be(true);
       expect(de.callCount).to.be(1);
+      expect(da.called).to.be(false);
+      expect(da.callCount).to.be(0);
+    });
+
+  });
+
+  describe('#abortDrawing()', function() {
+    let draw;
+
+    beforeEach(function() {
+      draw = new Draw({
+        source: source,
+        type: 'LineString'
+      });
+      map.addInteraction(draw);
+    });
+
+    it('aborts the current drawing', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      draw.abortDrawing();
+
+      expect(source.getFeatures()).to.have.length(0);
+      expect(draw.sketchFeature_).to.be(null);
+    });
+
+    it('triggers draw events', function() {
+      const ds = sinon.spy();
+      const de = sinon.spy();
+      const da = sinon.spy();
+      listen(draw, 'drawstart', ds);
+      listen(draw, 'drawend', de);
+      listen(draw, 'drawabort', da);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      draw.abortDrawing();
+
+      expect(ds.called).to.be(true);
+      expect(ds.callCount).to.be(1);
+      expect(de.called).to.be(false);
+      expect(de.callCount).to.be(0);
+      expect(da.called).to.be(true);
+      expect(da.callCount).to.be(1);
+
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      draw.removeLastPoint();
+      draw.removeLastPoint();
+      draw.removeLastPoint();
+
+      expect(ds.called).to.be(true);
+      expect(ds.callCount).to.be(2);
+      expect(de.called).to.be(false);
+      expect(de.callCount).to.be(0);
+      expect(da.called).to.be(true);
+      expect(da.callCount).to.be(2);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function() {

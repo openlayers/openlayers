@@ -143,7 +143,13 @@ const DrawEventType = {
    * @event DrawEvent#drawend
    * @api
    */
-  DRAWEND: 'drawend'
+  DRAWEND: 'drawend',
+  /**
+   * Triggered upon feature draw abortion
+   * @event DrawEvent#drawabort
+   * @api
+   */
+  DRAWABORT: 'drawabort'
 };
 
 
@@ -584,8 +590,7 @@ class Draw extends PointerInteraction {
       }
       pass = false;
     } else if (this.freehand_) {
-      this.finishCoordinate_ = null;
-      this.abortDrawing_();
+      this.abortDrawing();
     }
     if (!pass && this.stopClick_) {
       event.stopPropagation();
@@ -834,7 +839,7 @@ class Draw extends PointerInteraction {
     }
 
     if (coordinates.length === 0) {
-      this.finishCoordinate_ = null;
+      this.abortDrawing();
     }
 
     this.updateSketchFeatures_();
@@ -900,6 +905,18 @@ class Draw extends PointerInteraction {
     this.overlay_.getSource().clear(true);
     return sketchFeature;
   }
+
+  /**
+   * Stop drawing without adding the sketch feature to the target layer.
+   * @api
+   */
+  abortDrawing() {
+    const sketchFeature = this.abortDrawing_();
+    if (sketchFeature) {
+      this.dispatchEvent(new DrawEvent(DrawEventType.DRAWABORT, sketchFeature));
+    }
+  }
+
 
   /**
    * Append coordinates to the end of the geometry that is currently being drawn.
@@ -982,7 +999,7 @@ class Draw extends PointerInteraction {
     const map = this.getMap();
     const active = this.getActive();
     if (!map || !active) {
-      this.abortDrawing_();
+      this.abortDrawing();
     }
     this.overlay_.setMap(active ? map : null);
   }
