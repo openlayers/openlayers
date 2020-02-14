@@ -4,7 +4,17 @@
 import {always, focus} from '../events/condition.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
-import Interaction from './Interaction.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
+import {clamp} from '../math.js';
+
+
+/**
+ * @enum {string}
+ */
+export const Mode = {
+  TRACKPAD: 'trackpad',
+  WHEEL: 'wheel'
+};
 
 
 /**
@@ -92,23 +102,35 @@ class MouseWheelZoom extends Interaction {
     this.startTime_ = undefined;
 
     /**
-     * Events separated by this delay will be considered separate
+     * @private
+     * @type {?}
+     */
+    this.timeoutId_;
+
+    /**
+     * @private
+     * @type {Mode|undefined}
+     */
+    this.mode_ = undefined;
+
+    /**
+     * Trackpad events separated by this delay will be considered separate
      * interactions.
      * @type {number}
      */
-    this.eventGap_ = 400;
+    this.trackpadEventGap_ = 400;
 
     /**
      * @type {?}
      */
-    this.timeoutId_;
+    this.trackpadTimeoutId_;
 
     /**
      * The number of delta values per zoom level
      * @private
      * @type {number}
      */
-    this.deltaPerZoom_ = 300;
+    this.trackpadDeltaPerZoom_ = 300;
 
   }
 
@@ -130,7 +152,7 @@ class MouseWheelZoom extends Interaction {
    * @private
    */
   endInteraction_() {
-    this.timeoutId_ = undefined;
+    this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
     view.endInteraction(undefined, this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0, this.lastAnchor_);
   }
@@ -184,16 +206,51 @@ class MouseWheelZoom extends Interaction {
       this.startTime_ = now;
     }
 
-    const view = map.getView();
-    if (this.timeoutId_) {
-      clearTimeout(this.timeoutId_);
-    } else {
-      view.beginInteraction();
+    if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
+      this.mode_ = Math.abs(delta) < 4 ?
+        Mode.TRACKPAD :
+        Mode.WHEEL;
     }
-    this.timeoutId_ = setTimeout(this.endInteraction_.bind(this), this.eventGap_);
-    view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
-    this.startTime_ = now;
+
+    if (this.mode_ === Mode.TRACKPAD) {
+      const view = map.getView();
+      if (this.trackpadTimeoutId_) {
+        clearTimeout(this.trackpadTimeoutId_);
+      } else {
+        view.beginInteraction();
+      }
+      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
+      view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
+      this.startTime_ = now;
+      return false;
+    }
+
+    this.totalDelta_ += delta;
+
+    const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
+
+    clearTimeout(this.timeoutId_);
+    this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
+
     return false;
+  }
+
+  /**
+   * @private
+   * @param {import("../PluggableMap.js").default} map Map.
+   */
+  handleWheelZoom_(map) {
+    const view = map.getView();
+    if (view.getAnimating()) {
+      view.cancelAnimations();
+    }
+    const delta = clamp(this.totalDelta_, -this.maxDelta_, this.maxDelta_);
+    zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
+    this.mode_ = undefined;
+    this.totalDelta_ = 0;
+    this.lastAnchor_ = null;
+    this.startTime_ = undefined;
+    this.timeoutId_ = undefined;
   }
 
   /**
