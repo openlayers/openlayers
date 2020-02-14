@@ -204,7 +204,7 @@ class Executor {
       contextInstructions.push('lineCap', strokeState.lineCap);
       contextInstructions.push('lineJoin', strokeState.lineJoin);
       contextInstructions.push('miterLimit', strokeState.miterLimit);
-      if (CanvasRenderingContext2D.prototype.setLineDash && strokeState.lineDash.length) {
+      if (CanvasRenderingContext2D.prototype.setLineDash) {
         contextInstructions.push('setLineDash', [strokeState.lineDash]);
         contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
       }
