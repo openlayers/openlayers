@@ -202,10 +202,6 @@ li {
 .navigation.search-empty li.item .member-list {
   display: none;
 }
-/* but show the members of the current pages module / class */
-.navigation.search-empty li.item.item-current .member-list {
-  display: block;
-}
 /* expand all members when one character is entered in the search field */
 .navigation.search-started li.item,
 .navigation.search-started .member-list,
@@ -228,10 +224,8 @@ li {
 .navigation .item.toggle-manual-show li {
   display: block!important;
 }
-.navigation .item.toggle-manual-hide .member-list,
-.navigation .item.toggle-manual-hide li,
-.navigation.searching .item.toggle-manual-show .member-list:not(.match),
-.navigation.searching .item.toggle-manual-show li:not(.match) {
+.navigation:not(.searching) .item.toggle-manual-hide .member-list,
+.navigation:not(.searching) .item.toggle-manual-hide li {
     display: none!important;
 }
 

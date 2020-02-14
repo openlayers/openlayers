@@ -72,7 +72,7 @@ $(function () {
       .replace(/-/g, '~');
     const $currentItem = $navList.find('.item[data-longname="' + longname + '"]:eq(0)');
     $currentItem.prependTo($navList);
-    $currentItem.addClass('item-current');
+    $currentItem.addClass('item-current toggle-manual-show');
     return {
       $nav: $nav,
       $navList: $navList,
@@ -245,12 +245,18 @@ $(function () {
   // Toggle when click an item element
   search.$nav.on('click', '.toggle', function (e) {
     const clsItem = $(this).closest('.item');
-    let shown;
-    clsItem.find('.member-list').each(function (i, v) {
-      shown = $(v).is(':visible');
-      return !shown;
-    });
-    search.manualToggle(clsItem, !shown);
+    let show;
+    if (clsItem.hasClass('toggle-manual-show')) {
+      show = false;
+    } else if (clsItem.hasClass('toggle-manual-hide')) {
+      show = true;
+    } else {
+      clsItem.find('.member-list li').each(function (i, v) {
+        show = $(v).is(':hidden');
+        return !show;
+      });
+    }
+    search.manualToggle(clsItem, !!show);
   });
 
   // Auto resizing on navigation
