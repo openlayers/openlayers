@@ -130,7 +130,7 @@ class MouseWheelZoom extends Interaction {
      * @private
      * @type {number}
      */
-    this.trackpadDeltaPerZoom_ = 300;
+    this.deltaPerZoom_ = 300;
 
   }
 
@@ -220,7 +220,7 @@ class MouseWheelZoom extends Interaction {
         view.beginInteraction();
       }
       this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
-      view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
+      view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
       return false;
     }
@@ -244,8 +244,15 @@ class MouseWheelZoom extends Interaction {
     if (view.getAnimating()) {
       view.cancelAnimations();
     }
-    const delta = clamp(this.totalDelta_, -this.maxDelta_, this.maxDelta_);
-    zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
+    let delta = -clamp(this.totalDelta_, -this.maxDelta_ * this.deltaPerZoom_, this.maxDelta_ * this.deltaPerZoom_) / this.deltaPerZoom_;
+    const currentZoom = view.getZoom();
+    const newZoom = view.getConstrainedZoom(currentZoom + delta);
+    if (currentZoom === newZoom) {
+      // view has a zoom constraint, zoom by 1
+      delta = delta ? delta > 0 ? 1 : -1 : 0;
+    }
+    zoomByDelta(view, delta, this.lastAnchor_, this.duration_);
+
     this.mode_ = undefined;
     this.totalDelta_ = 0;
     this.lastAnchor_ = null;
