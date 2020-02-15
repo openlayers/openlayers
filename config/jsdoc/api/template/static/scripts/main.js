@@ -32,23 +32,20 @@ $(function () {
       if (beginOnly) {
         return re.baseName.test(name) ? 10000 : 0;
       }
-      let weight = 0;
+      // If everything else is equal, prefer shorter names, and prefer classes over modules
+      let weight = matchedItem.data('longname').length - name.length * 100;
       if (name.match(re.begin)) {
-        weight += 10000;
+        weight += 100000;
         if (re.baseName.test(name)) {
-          weight += 1000000;
+          weight += 10000000;
           if (re.fullName.test(name)) {
-            // Full match of the last part of the path is weighted even higher
-            weight += 10000000;
+            weight += 100000000;
             if (re.completeName.test(name)) {
-              // Complete match is weighted highest.
-              weight += 100000000;
+              weight += 1000000000;
             }
           }
         }
       }
-      // If everything else is equal, prefer shorter names.
-      weight -= name.length;
       return weight;
     }
   }
