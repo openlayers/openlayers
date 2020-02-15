@@ -140,6 +140,19 @@ li {
   margin-right: 3px;
   flex-shrink: 0;
 }
+.navigation .item .glyphicon:before {
+  display: inline-block;
+}
+.navigation .item.toggle-manual .glyphicon:before {
+  transition: transform .1s;
+}
+.navigation .item-class.toggle-manual-show .glyphicon:before {
+  /* With 90deg the icon slightly slides left at transition end */
+  transform: rotate(89.9deg);
+}
+.navigation .item-module.toggle-manual-show .glyphicon:before {
+  transform: rotate(45deg);
+}
 
 .navigation li.perfect-match {
   border: 5px solid orange;

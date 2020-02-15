@@ -53,8 +53,7 @@ $(function () {
   }
 
   const search = (function () {
-    const $nav = $('.navigation');
-    const $navList = $nav.find('.navigation-list');
+    const $navList = $('.navigation-list');
     const navListNode = $navList.get(0);
     let $classItems;
     let $members;
@@ -74,7 +73,6 @@ $(function () {
     const $currentItem = $navList.find('.item[data-longname="' + longname + '"]:eq(0)');
     $currentItem.prependTo($navList);
     return {
-      $nav: $nav,
       $navList: $navList,
       $currentItem: $currentItem,
       lastSearchTerm: undefined,
@@ -93,13 +91,14 @@ $(function () {
         }
       },
       manualToggle: function ($node, show) {
+        $node.addClass('toggle-manual');
         $node.toggleClass('toggle-manual-hide', !show);
         $node.toggleClass('toggle-manual-show', show);
         manualToggles[$node.data('longname')] = $node;
       },
       clearManualToggles: function() {
         for (let clsName in manualToggles) {
-          manualToggles[clsName].removeClass('toggle-manual-show toggle-manual-hide');
+          manualToggles[clsName].removeClass('toggle-manual toggle-manual-show toggle-manual-hide');
         }
         manualToggles = {};
       },
@@ -240,7 +239,10 @@ $(function () {
   doSearch(searchInput.value);
 
   // Toggle when click an item element
-  search.$nav.on('click', '.toggle', function (e) {
+  search.$navList.on('click', '.toggle', function (e) {
+    if (event.target.tagName.toLowerCase() === 'a') {
+      return;
+    }
     const clsItem = $(this).closest('.item');
     let show;
     if (clsItem.hasClass('toggle-manual-show')) {
