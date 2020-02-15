@@ -36,11 +36,11 @@ function listContent(item, title, listItemPrinter) {
     }
 }
 ?>
-<div class="navigation search-empty">
+<div class="navigation">
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentation">
     </div>
-    <ul class="list"><?js
+    <ul class="navigation-list search-empty"><?js
         this.nav.forEach(function (item) { ?>
         <li class="item" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
             <span class="title">

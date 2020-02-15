@@ -124,7 +124,7 @@ li {
   color: #fff;
   border-color: #555;
 }
-.navigation .list {
+.navigation .navigation-list {
   padding: 10px 15px 0 15px;
   position: relative;
   overflow: auto;
@@ -195,37 +195,33 @@ li {
 
 /* search state */
 /* show all classes when search is empty */
-.navigation.search-empty li.item {
+.navigation-list.search-empty .item {
   display: block;
 }
 /* hide all members by default when search is empty */
-.navigation.search-empty li.item .member-list {
+.navigation-list.search-empty .item .member-list {
   display: none;
 }
-/* expand all members when one character is entered in the search field */
-.navigation.search-started li.item,
-.navigation.search-started .member-list,
-.navigation.search-started .member-list li {
+/* expand all members when input in search field available but too short to search */
+.navigation-list.search-started li,
+.navigation-list.search-started .member-list {
   display: block;
 }
-/* when more than one character is entered hide everything that is not a match */
-.navigation.searching li.item,
-.navigation.searching .member-list,
-.navigation.searching .member-list li {
+/* when searching hide everything that is not a match */
+.navigation-list.searching li,
+.navigation-list.searching .member-list {
   display: none;
 }
-.navigation.searching li.item.match,
-.navigation.searching .member-list.match,
-.navigation.searching .member-list li.match {
+.navigation-list.searching .match {
   display: block;
 }
 /* allow user to hide / show members */
-.navigation .item.toggle-manual-show .member-list,
-.navigation .item.toggle-manual-show li {
+.navigation-list .item.toggle-manual-show li,
+.navigation-list .item.toggle-manual-show .member-list {
   display: block!important;
 }
-.navigation:not(.searching) .item.toggle-manual-hide .member-list,
-.navigation:not(.searching) .item.toggle-manual-hide li {
+.navigation-list:not(.searching) .item.toggle-manual-hide li,
+.navigation-list:not(.searching) .item.toggle-manual-hide .member-list {
     display: none!important;
 }
 

@@ -54,12 +54,13 @@ $(function () {
 
   const search = (function () {
     const $nav = $('.navigation');
-    const $navList = $nav.find('.list');
+    const $navList = $nav.find('.navigation-list');
+    const navListNode = $navList.get(0);
     let $classItems;
     let $members;
     let stateClass = (function () {
-      $nav.removeClass('search-started searching');
-      $nav.addClass('search-empty');
+      $navList.removeClass('search-started searching');
+      $navList.addClass('search-empty');
       return 'search-empty';
     })();
     let manualToggles = {};
@@ -72,7 +73,6 @@ $(function () {
       .replace(/-/g, '~');
     const $currentItem = $navList.find('.item[data-longname="' + longname + '"]:eq(0)');
     $currentItem.prependTo($navList);
-    $currentItem.addClass('item-current toggle-manual-show');
     return {
       $nav: $nav,
       $navList: $navList,
@@ -87,9 +87,8 @@ $(function () {
       },
       changeStateClass: function (newClass) {
         if (newClass !== stateClass) {
-          const navNode = $nav.get(0);
-          navNode.classList.remove(stateClass);
-          navNode.classList.add(newClass);
+          navListNode.classList.remove(stateClass);
+          navListNode.classList.add(newClass);
           stateClass = newClass;
         }
       },
@@ -238,9 +237,7 @@ $(function () {
 
   // Search Items
   searchInput.addEventListener('input', queueSearch);
-  if (searchInput.value) {
-    doSearch(searchInput.value);
-  }
+  doSearch(searchInput.value);
 
   // Toggle when click an item element
   search.$nav.on('click', '.toggle', function (e) {
@@ -264,7 +261,7 @@ $(function () {
     var height = $(window).height();
     var $el = $('.navigation');
 
-    $el.height(height).find('.list').height(height - 133);
+    $el.height(height).find('.navigation-list').height(height - 133);
   };
 
   $(window).on('resize', _onResize);
