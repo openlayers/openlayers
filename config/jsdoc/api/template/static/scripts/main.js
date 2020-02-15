@@ -12,7 +12,7 @@ $(function () {
     } catch (e) {
     }
     // In case of invalid regexp fall back to non-regexp, but still allow . to match /
-    return makeRe(searchTerm.replace(/\./g, '/').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    return makeRe(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\./g, '[./]'));
   }
 
   function getWeightFunction(searchTerm, allowRegex) {
