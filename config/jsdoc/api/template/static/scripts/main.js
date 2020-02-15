@@ -18,37 +18,36 @@ $(function () {
   function getWeightFunction(searchTerm, allowRegex) {
     function makeRe(searchTerm) {
       return {
-        begin: new RegExp('(?:[.~]|\\b)' + searchTerm, 'g'), // Also match . and ~ to demote double matches, in weight function
-        name: new RegExp('\\b' + searchTerm + '(?:[~.]|$)'), // Match until module end or name end
-        fullName: new RegExp('^' + searchTerm + '$')
+        begin: new RegExp('\\b' + searchTerm), // Begin matches word boundary
+        baseName: new RegExp('\\b' + searchTerm + '[^/]*$'), // Begin matches word boundary of class / module name
+        fullName: new RegExp('\\b' + searchTerm + '(?:[~.]|$)'), // Complete word(s) of class / module matches
+        completeName: new RegExp('^' + searchTerm + '$') // Match from start to finish
       }
     }
     const re = constructRegex(searchTerm, makeRe, allowRegex);
     return function (matchedItem, beginOnly) {
       // We could get smarter on the weight here
-      let weight = 0;
       const name = matchedItem.data('name');
-      const match = name.match(re.begin);
-      if (match) {
-        // `ol/geom/Geometry` matches twice when searching 'geom', is weighted higher.
-        // but don't boost something like `ol/source/Vector~VectorSource` when searching for 'Vect'.
-        let matches = match.length;
-        if (matches > 1 && /[.~]/.test(match[matches - 1])) {
-          matches -= 1;
-        }
-        weight += matches * 10000;
-        if (!beginOnly) {
-          // Full match of the last part of the path is weighted even higher
-          // Complete match is weighted highest.
+      if (beginOnly) {
+        return re.baseName.test(name) ? 10000 : 0;
+      }
+      let weight = 0;
+      if (name.match(re.begin)) {
+        weight += 10000;
+        if (re.baseName.test(name)) {
+          weight += 1000000;
           if (re.fullName.test(name)) {
+            // Full match of the last part of the path is weighted even higher
             weight += 10000000;
-          } else if (re.name.test(name)) {
-            weight += 1000000;
+            if (re.completeName.test(name)) {
+              // Complete match is weighted highest.
+              weight += 100000000;
+            }
           }
         }
-        // If everything else is equal, prefer shorter names.
-        weight -= name.length;
       }
+      // If everything else is equal, prefer shorter names.
+      weight -= name.length;
       return weight;
     }
   }
