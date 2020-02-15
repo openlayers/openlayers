@@ -70,11 +70,11 @@ $(function () {
       .replace('module-', 'module:')
       .replace(/_/g, '/')
       .replace(/-/g, '~');
-    const $currentItem = $navList.find('.item[data-longname="' + longname + '"]:eq(0)');
-    $currentItem.prependTo($navList);
+    const currentItem = navListNode.querySelector('.item[data-longname="' + longname + '"]');
+    $navList.prepend(currentItem);
     return {
       $navList: $navList,
-      $currentItem: $currentItem,
+      $currentItem: $(currentItem),
       lastSearchTerm: undefined,
       lastState: {},
       getClassList: function () {
