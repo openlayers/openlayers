@@ -1,4 +1,5 @@
 $(function () {
+  'use strict';
 
   // Allow user configuration?
   const allowRegex = true;
