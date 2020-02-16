@@ -26,6 +26,22 @@ $(function () {
     return bW - aW;
   };
 
+  // Show an item related a current documentation automatically
+  const longname = $('.page-title').data('filename')
+    .replace(/\.[a-z]+$/, '')
+    .replace('module-', 'module:')
+    .replace(/_/g, '/')
+    .replace(/-/g, '~');
+  var $currentItem = $('.navigation .item[data-name*="' + longname + '"]:eq(0)');
+
+  if ($currentItem.length) {
+    $currentItem
+      .prependTo('.navigation .list')
+      .show()
+      .find('.member-list')
+      .show();
+  }
+
   // Search Items
   $('#search').on('keyup', function (e) {
     var value = $(this).val();
@@ -60,7 +76,9 @@ $(function () {
         .appendTo(".navigation ul.list"); // append again to the list
 
     } else {
-      $el.find('.item, .member-list').show();
+      $currentItem.prependTo('.navigation .list');
+      $currentItem.find('.member-list, li').show();
+      $el.find('.item').show();
     }
 
     $el.find('.list').scrollTop(0);
@@ -70,23 +88,6 @@ $(function () {
   $('.navigation').on('click', '.toggle', function (e) {
     $(this).parent().parent().find('.member-list').toggle();
   });
-
-  // Show an item related a current documentation automatically
-  var filename = $('.page-title').data('filename')
-    .replace(/\.[a-z]+$/, '')
-    .replace('module-', 'module:')
-    .replace(/_/g, '/')
-    .replace(/-/g, '~');
-  var $currentItem = $('.navigation .item[data-name*="' + filename + '"]:eq(0)');
-
-  if ($currentItem.length) {
-    $currentItem
-      .remove()
-      .prependTo('.navigation .list')
-      .show()
-      .find('.member-list')
-      .show();
-  }
 
   // Auto resizing on navigation
   var _onResize = function () {
