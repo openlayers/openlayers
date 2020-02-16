@@ -212,8 +212,8 @@ class MouseWheelZoom extends Interaction {
         Mode.WHEEL;
     }
 
-    if (this.mode_ === Mode.TRACKPAD) {
-      const view = map.getView();
+    const view = map.getView();
+    if (this.mode_ === Mode.TRACKPAD && !view.getConstrainResolution()) {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
@@ -248,9 +248,7 @@ class MouseWheelZoom extends Interaction {
       view.cancelAnimations();
     }
     let delta = -clamp(this.totalDelta_, -this.maxDelta_ * this.deltaPerZoom_, this.maxDelta_ * this.deltaPerZoom_) / this.deltaPerZoom_;
-    const currentZoom = view.getZoom();
-    const newZoom = view.getConstrainedZoom(currentZoom + delta);
-    if (currentZoom === newZoom) {
+    if (view.getConstrainResolution()) {
       // view has a zoom constraint, zoom by 1
       delta = delta ? delta > 0 ? 1 : -1 : 0;
     }
