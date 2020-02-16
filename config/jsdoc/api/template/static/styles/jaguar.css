@@ -136,6 +136,11 @@ li {
   border-bottom: 1px solid #333;
 }
 
+.navigation .glyphicon {
+  margin-right: 3px;
+  flex-shrink: 0;
+}
+
 .navigation li.perfect-match {
   border: 5px solid orange;
 }
@@ -148,8 +153,8 @@ li {
 }
 .navigation li.item .title {
   cursor: pointer;
-  position: relative;
-  display: block;
+  display: -ms-flexbox;
+  display: flex;
   font-size: 0.85em;
 }
 .navigation li.item .title a {

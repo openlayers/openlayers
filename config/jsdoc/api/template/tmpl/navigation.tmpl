@@ -45,7 +45,7 @@ function listContent(item, title, listItemPrinter) {
         <li class="item" data-longname="<?js= item.longname ?>" data-name="<?js= item.name.toLowerCase() ?>">
             <span class="title">
                 <span class="glyphicon <?js= getItemCssClass(item.type) ?> toggle"></span>
-                <?js= self.linkto(item.longname, item.prettyname.replace(/[.~]/g, '\u200b$&')) ?>
+                <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~]/g, '\u200b$&')) ?></span>
             </span><?js
                 listContent(item, 'Members', printList);
                 listContent(item, 'Typedefs', printListWithStability);
