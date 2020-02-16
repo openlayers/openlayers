@@ -42,12 +42,11 @@ $(function () {
       .show();
   }
 
-  function doSearch() {
-    var value = $(this).val();
+  function doSearch(searchTerm) {
     var $el = $('.navigation');
 
-    if (value && value.length > 1) {
-      var regexp = new RegExp(value, 'i');
+    if (searchTerm.length > 1) {
+      var regexp = new RegExp(searchTerm, 'i');
       $el.find('li, .member-list').hide();
 
       $el.find('li').each(function (i, v) {
@@ -61,7 +60,7 @@ $(function () {
           // Do the weight thing
           $classEntry.removeData('weight');
           $classEntry.show();
-          const weight = getSearchWeight(value, $classEntry);
+          const weight = getSearchWeight(searchTerm, $classEntry);
           $classEntry.data('weight', weight);
 
           $members.show();
@@ -89,7 +88,7 @@ $(function () {
   function queueSearch() {
     if (!key) {
       key = setTimeout(function () {
-        doSearch.call(searchInput);
+        doSearch(searchInput.value);
         key = undefined;
       }, 0);
     }
