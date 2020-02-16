@@ -123,6 +123,9 @@ $(function () {
 
   // Search Items
   searchInput.addEventListener('input', queueSearch);
+  if (searchInput.value) {
+    doSearch(searchInput.value);
+  }
 
   // Toggle when click an item element
   $('.navigation').on('click', '.toggle', function (e) {
