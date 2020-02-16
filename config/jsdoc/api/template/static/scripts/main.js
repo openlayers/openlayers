@@ -85,11 +85,21 @@ $(function () {
   const searchInput = $('#search').get(0);
   // Skip searches when typing fast.
   let key;
+  let start;
+  const brandNode = document.querySelector('.brand');
   function queueSearch() {
     if (!key) {
+      start = Date.now();
       key = setTimeout(function () {
-        doSearch(searchInput.value);
         key = undefined;
+
+        const searchTerm = searchInput.value;
+        doSearch(searchTerm);
+
+        const time = Date.now() - start
+        brandNode.innerHTML = time + ' ms';
+        console.log(searchTerm + ':', time, 'ms');
+        start = undefined;
       }, 0);
     }
   }
