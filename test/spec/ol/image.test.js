@@ -40,7 +40,7 @@ describe('HTML Image loading', function() {
       expect(handleLoad.called).to.be(false);
       expect(handleError.called).to.be(true);
       done();
-    }, 200);
+    }, 500);
   });
 
   it('handles cancelation', function(done) {
