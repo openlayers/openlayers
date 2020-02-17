@@ -55,8 +55,8 @@ describe('ol.control.OverviewMap', function() {
         rotateWithView: true
       });
       map.addControl(control);
-      const ovView = control.ovmap_.getView();
-      expect(ovView.getRotation()).to.be(0);
+      const ovInitialView = control.ovmap_.getView();
+      expect(ovInitialView.getRotation()).to.be(0);
 
       const view = new View({
         center: [0, 0],
@@ -64,6 +64,7 @@ describe('ol.control.OverviewMap', function() {
         rotation: Math.PI / 2
       });
       map.setView(view);
+      const ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(Math.PI / 2);
 
       view.setRotation(Math.PI / 4);
@@ -74,7 +75,6 @@ describe('ol.control.OverviewMap', function() {
       const control = new OverviewMap({
         rotateWithView: true
       });
-      const ovView = control.ovmap_.getView();
 
       const view = new View({
         center: [0, 0],
@@ -83,6 +83,7 @@ describe('ol.control.OverviewMap', function() {
       });
       map.setView(view);
       map.addControl(control);
+      const ovView = control.ovmap_.getView();
 
       view.setRotation(Math.PI / 8);
       expect(ovView.getRotation()).to.be(Math.PI / 8);
@@ -91,6 +92,38 @@ describe('ol.control.OverviewMap', function() {
 
       view.setRotation(Math.PI / 4);
       expect(ovView.getRotation()).to.be(Math.PI / 8);
+    });
+
+    it('reflects projection change of main map', function() {
+      const control = new OverviewMap({
+        rotateWithView: true
+      });
+
+      map.addControl(control);
+      expect(control.ovmap_.getView().getProjection().getCode()).to.be('EPSG:3857');
+
+      map.setView(new View({
+        projection: 'EPSG:4326'
+      }));
+      expect(control.ovmap_.getView().getProjection().getCode()).to.be('EPSG:4326');
+    });
+
+    it('retains explicitly set view', function() {
+      const overviewMapView = new View();
+      const control = new OverviewMap({
+        rotateWithView: true,
+        view: overviewMapView
+      });
+
+      map.addControl(control);
+      expect(control.ovmap_.getView()).to.be(overviewMapView);
+      expect(control.ovmap_.getView().getProjection().getCode()).to.be('EPSG:3857');
+
+      map.setView(new View({
+        projection: 'EPSG:4326'
+      }));
+      expect(control.ovmap_.getView()).to.be(overviewMapView);
+      expect(control.ovmap_.getView().getProjection().getCode()).to.be('EPSG:3857');
     });
 
     it('set target to null', function() {
