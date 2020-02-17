@@ -97,7 +97,7 @@
     "typescript": "3.5.3",
     "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
-    "webpack": "4.41.5",
+    "webpack": "4.41.6",
     "webpack-cli": "^3.3.2",
     "webpack-dev-middleware": "^3.6.2",
     "webpack-dev-server": "^3.3.1",
