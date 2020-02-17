@@ -23,6 +23,10 @@ import Layer from './Layer.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * visible.
+ * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * be visible.
  * @property {import("../source/Vector.js").default} [source] Source.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
