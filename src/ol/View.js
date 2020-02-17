@@ -794,6 +794,13 @@ class View extends BaseObject {
   }
 
   /**
+   * @return {boolean} Resolution constraint is set
+   */
+  getConstrainResolution() {
+    return this.options_.constrainResolution;
+  }
+
+  /**
    * @param {Array<number>=} opt_hints Destination array.
    * @return {Array<number>} Hint.
    */
