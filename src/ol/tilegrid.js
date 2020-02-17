@@ -72,8 +72,9 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
 /**
  * @typedef {Object} XYZOptions
  * @property {import("./extent.js").Extent} [extent] Extent for the tile grid. The origin for an XYZ tile grid is the
- * top-left corner of the extent. The zero level of the grid is defined by the resolution at which one tile fits in the
- * provided extent. If not provided, the extent of the EPSG:3857 projection is used.
+ * top-left corner of the extent. If `maxResolution` is not provided the zero level of the grid is defined by the resolution
+ * at which one tile fits in the provided extent. If not provided, the extent of the EPSG:3857 projection is used.
+ * @property {number} [maxResolution] Resolution at level zero.
  * @property {number} [maxZoom] Maximum zoom. The default is `42`. This determines the number of levels
  * in the grid set. For example, a `maxZoom` of 21 means there are 22 levels in the grid set.
  * @property {number} [minZoom=0] Minimum zoom.
@@ -99,7 +100,8 @@ export function createXYZ(opt_options) {
     resolutions: resolutionsFromExtent(
       extent,
       xyzOptions.maxZoom,
-      xyzOptions.tileSize
+      xyzOptions.tileSize,
+      xyzOptions.maxResolution
     )
   };
   return new TileGrid(gridOptions);
@@ -113,9 +115,10 @@ export function createXYZ(opt_options) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|import("./size.js").Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
+ * @param {number=} opt_maxResolution Resolution at level zero.
  * @return {!Array<number>} Resolutions array.
  */
-function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
+function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize, opt_maxResolution) {
   const maxZoom = opt_maxZoom !== undefined ?
     opt_maxZoom : DEFAULT_MAX_ZOOM;
 
@@ -124,8 +127,8 @@ function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
 
   const tileSize = toSize(opt_tileSize !== undefined ?
     opt_tileSize : DEFAULT_TILE_SIZE);
-  const maxResolution = Math.max(
-    width / tileSize[0], height / tileSize[1]);
+  const maxResolution = opt_maxResolution > 0 ? opt_maxResolution :
+    Math.max(width / tileSize[0], height / tileSize[1]);
 
   const length = maxZoom + 1;
   const resolutions = new Array(length);
