@@ -64,6 +64,10 @@ const INTERVALS = [
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * visible.
+ * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * be visible.
  * @property {number} [maxLines=100] The maximum number of meridians and
  * parallels from the center of the map. The default value of 100 means that at
  * most 200 meridians and 200 parallels will be displayed. The default value is
