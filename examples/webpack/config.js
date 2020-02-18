@@ -22,7 +22,7 @@ module.exports = {
   stats: 'minimal',
   module: {
     rules: [{
-      test: /\.js$/,
+      test: /^((?!es2015-)[\s\S])*\.js$/,
       use: {
         loader: 'buble-loader'
       },
