@@ -60,7 +60,8 @@ class ControlledMap extends PluggableMap {
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
  * @property {import("../View.js").default} [view] Custom view for the overview map. If not provided,
- * a default view with an EPSG:3857 projection will be used.
+ * a default view with an EPSG:3857 projection will be used. The main map and the overviewmap must use
+ * the same projection, so a view must be provided when the default projection is not used.
  */
 
 
