@@ -100,4 +100,34 @@ describe('ol.render.canvas', function() {
     });
   });
 
+  describe('drawImageOrLabel', function() {
+    it('draws the image with correct parameters', function() {
+      const layerContext = {
+        save: sinon.spy(),
+        setTransform: sinon.spy(),
+        drawImage: sinon.spy(),
+        restore: sinon.spy(),
+        globalAlpha: 1
+      };
+      const transform = [1, 0, 0, 1, 0, 0];
+      const opacity = 0.5;
+      const image = {};
+      const x = 0;
+      const y = 0;
+      const w = 1;
+      const h = 1;
+      const scale = 1;
+
+      render.drawImageOrLabel(layerContext, transform.slice(), opacity, image,
+        x, y, w, h, x, y, scale);
+
+      expect(layerContext.save.callCount).to.be(1);
+      expect(layerContext.setTransform.callCount).to.be(1);
+      expect(layerContext.setTransform.firstCall.args).to.eql(transform);
+      expect(layerContext.drawImage.callCount).to.be(1);
+      expect(layerContext.globalAlpha).to.be(.5);
+      expect(layerContext.restore.callCount).to.be(1);
+    });
+  });
+
 });

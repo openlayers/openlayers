@@ -404,6 +404,9 @@ export function drawImageOrLabel(context,
   transform, opacity, labelOrImage, originX, originY, w, h, x, y, scale) {
   context.save();
 
+  if (opacity !== 1) {
+    context.globalAlpha *= opacity;
+  }
   if (transform) {
     context.setTransform.apply(context, transform);
   }
