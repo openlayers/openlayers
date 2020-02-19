@@ -891,8 +891,9 @@ class VectorSource extends Source {
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number=} opt_rotation Optional rotation.
    */
-  loadFeatures(extent, resolution, projection) {
+  loadFeatures(extent, resolution, projection, opt_rotation) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
     const extentsToLoad = this.strategy_(extent, resolution);
     this.loading = false;
@@ -907,7 +908,7 @@ class VectorSource extends Source {
           return containsExtent(object.extent, extentToLoad);
         });
       if (!alreadyLoaded) {
-        this.loader_.call(this, extentToLoad, resolution, projection);
+        this.loader_.call(this, extentToLoad, resolution, projection, opt_rotation);
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
         this.loading = this.loader_ !== VOID;
       }

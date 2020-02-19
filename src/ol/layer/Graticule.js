@@ -15,7 +15,7 @@ import {
   getTransform,
   transformExtent
 } from '../proj.js';
-import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent.js';
+import {getCenter, getHeight, getWidth, intersects, equals, getIntersection, isEmpty} from '../extent.js';
 import {clamp} from '../math.js';
 import Style from '../style/Style.js';
 import Feature from '../Feature.js';
@@ -419,8 +419,27 @@ class Graticule extends VectorLayer {
 
     /**
      * @type {?import("../extent.js").Extent}
+     * @private
      */
     this.loadedExtent_ = null;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.rotation_ = 0;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.rotationCenter_ = null;
+
+    /**
+     * @type {?import("../extent.js").Extent}
+     * @private
+     */
+    this.rotationExtent_ = null;
 
     /**
      * @type {?import("../extent.js").Extent}
@@ -451,8 +470,9 @@ class Graticule extends VectorLayer {
    * @param {import("../extent").Extent} extent Extent
    * @param {number} resolution Resolution
    * @param {import("../proj/Projection.js").default} projection Projection
+   * @param {number} rotation Rotation.
    */
-  loaderFunction(extent, resolution, projection) {
+  loaderFunction(extent, resolution, projection, rotation) {
     this.loadedExtent_ = extent;
     const source = this.getSource();
 
@@ -460,7 +480,8 @@ class Graticule extends VectorLayer {
     const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
     const renderExtent = getIntersection(layerExtent, extent);
 
-    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent)) {
+    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent) &&
+        rotation === this.rotation_) {
       return;
     }
     this.renderedExtent_ = renderExtent;
@@ -468,6 +489,21 @@ class Graticule extends VectorLayer {
     // bail out if nothing to render
     if (isEmpty(renderExtent)) {
       return;
+    }
+
+    this.rotation_ = rotation;
+    if (rotation) {
+      // to assist label placement calculate the extent of an unrotated viewport
+      this.rotationCenter_ = getCenter(extent);
+      const width = getWidth(extent);
+      const height = getHeight(extent);
+      const cr = Math.abs(Math.cos(rotation));
+      const sr = Math.abs(Math.sin(rotation));
+      const unrotatedWidth = (sr * height - cr * width) / (sr * sr - cr * cr);
+      const unrotatedHeight = (sr * width - cr * height) / (sr * sr - cr * cr);
+      this.rotationExtent_ = [
+        this.rotationCenter_[0] - unrotatedWidth / 2, this.rotationCenter_[1] - unrotatedHeight / 2,
+        this.rotationCenter_[0] + unrotatedWidth / 2, this.rotationCenter_[1] + unrotatedHeight / 2];
     }
 
     // update projection info
@@ -553,7 +589,15 @@ class Graticule extends VectorLayer {
     const lineString = this.getMeridian_(lon, minLat, maxLat, squaredTolerance, index);
     if (intersects(lineString.getExtent(), extent)) {
       if (this.meridiansLabels_) {
-        const textPoint = this.getMeridianPoint_(lineString, extent, index);
+        let textPoint;
+        if (!this.rotation_) {
+          textPoint = this.getMeridianPoint_(lineString, extent, index);
+        } else {
+          const clone = lineString.clone();
+          clone.rotate(-this.rotation_, this.rotationCenter_);
+          textPoint = this.getMeridianPoint_(clone, this.rotationExtent_, index);
+          textPoint.rotate(this.rotation_, this.rotationCenter_);
+        }
         this.meridiansLabels_[index] = {
           geom: textPoint,
           text: this.lonLabelFormatter_(lon)
@@ -578,7 +622,15 @@ class Graticule extends VectorLayer {
     const lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance, index);
     if (intersects(lineString.getExtent(), extent)) {
       if (this.parallelsLabels_) {
-        const textPoint = this.getParallelPoint_(lineString, extent, index);
+        let textPoint;
+        if (!this.rotation_) {
+          textPoint = this.getParallelPoint_(lineString, extent, index);
+        } else {
+          const clone = lineString.clone();
+          clone.rotate(-this.rotation_, this.rotationCenter_);
+          textPoint = this.getParallelPoint_(clone, this.rotationExtent_, index);
+          textPoint.rotate(this.rotation_, this.rotationCenter_);
+        }
         this.parallelsLabels_[index] = {
           geom: textPoint,
           text: this.latLabelFormatter_(lat)
@@ -745,12 +797,21 @@ class Graticule extends VectorLayer {
    */
   getMeridianPoint_(lineString, extent, index) {
     const flatCoordinates = lineString.getFlatCoordinates();
-    const clampedBottom = Math.max(extent[1], flatCoordinates[1]);
-    const clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
+    let bottom = 1;
+    let top = flatCoordinates.length - 1;
+    if (flatCoordinates[bottom] > flatCoordinates[top]) {
+      bottom = top;
+      top = 1;
+    }
+    const clampedBottom = Math.max(extent[1], flatCoordinates[bottom]);
+    const clampedTop = Math.min(extent[3], flatCoordinates[top]);
     const lat = clamp(
       extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
       clampedBottom, clampedTop);
-    const coordinate = [flatCoordinates[0], lat];
+    const coordinate0 = flatCoordinates[bottom - 1] +
+      (flatCoordinates[top - 1] - flatCoordinates[bottom - 1]) * (lat - flatCoordinates[bottom]) /
+      (flatCoordinates[top] - flatCoordinates[bottom]);
+    const coordinate = [coordinate0, lat];
     let point;
     if (index in this.meridiansLabels_) {
       point = this.meridiansLabels_[index].geom;
@@ -801,12 +862,21 @@ class Graticule extends VectorLayer {
    */
   getParallelPoint_(lineString, extent, index) {
     const flatCoordinates = lineString.getFlatCoordinates();
-    const clampedLeft = Math.max(extent[0], flatCoordinates[0]);
-    const clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
+    let left = 0;
+    let right = flatCoordinates.length - 2;
+    if (flatCoordinates[left] > flatCoordinates[right]) {
+      left = right;
+      right = 0;
+    }
+    const clampedLeft = Math.max(extent[0], flatCoordinates[left]);
+    const clampedRight = Math.min(extent[2], flatCoordinates[right]);
     const lon = clamp(
       extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
       clampedLeft, clampedRight);
-    const coordinate = [lon, flatCoordinates[1]];
+    const coordinate1 = flatCoordinates[left + 1] +
+      (flatCoordinates[right + 1] - flatCoordinates[left + 1]) * (lon - flatCoordinates[left]) /
+      (flatCoordinates[right] - flatCoordinates[left]);
+    const coordinate = [lon, coordinate1];
     let point;
     if (index in this.parallelsLabels_) {
       point = this.parallelsLabels_[index].geom;

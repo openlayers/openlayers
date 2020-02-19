@@ -349,6 +349,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const resolution = viewState.resolution;
+    const rotation = viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
@@ -398,10 +399,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const userProjection = getUserProjection();
     let userTransform;
     if (userProjection) {
-      vectorSource.loadFeatures(toUserExtent(extent, projection), resolution, userProjection);
+      vectorSource.loadFeatures(toUserExtent(extent, projection), resolution, userProjection, rotation);
       userTransform = getTransformFromProjections(userProjection, projection);
     } else {
-      vectorSource.loadFeatures(extent, resolution, projection);
+      vectorSource.loadFeatures(extent, resolution, projection, rotation);
     }
 
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
@@ -442,7 +443,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
-    this.renderedRotation_ = viewState.rotation;
+    this.renderedRotation_ = rotation;
     this.renderedCenter_ = center;
     this.renderedProjection_ = projection;
     this.replayGroup_ = executorGroup;

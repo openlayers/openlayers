@@ -16,15 +16,16 @@ let withCredentials = false;
  * load features.
  *
  * This function takes an {@link module:ol/extent~Extent} representing the area to be loaded,
- * a `{number}` representing the resolution (map units per pixel) and an
- * {@link module:ol/proj/Projection} for the projection  as
+ * a `{number}` representing the resolution (map units per pixel),
+ * an {@link module:ol/proj/Projection} for the projection and
+ * an optional `{number}` representing the rotation as
  * arguments. `this` within the function is bound to the
  * {@link module:ol/source/Vector} it's called from.
  *
  * The function is responsible for loading the features and adding them to the
  * source.
  * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default), import("./extent.js").Extent, number,
- *                    import("./proj/Projection.js").default): void} FeatureLoader
+ *                    import("./proj/Projection.js").default, number=): void} FeatureLoader
  * @api
  */
 
