@@ -61,7 +61,7 @@ const SelectEventType = {
  * @property {import("../style/Style.js").StyleLike} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
- * If set to `false` the selected feature's style will not change.
+ * If set to a falsey value, the selected feature's style will not change.
  * @property {import("../events/condition.js").Condition} [removeCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
@@ -373,7 +373,7 @@ class Select extends Interaction {
   restorePreviousStyle_(feature) {
     const key = getUid(feature);
     const selectInteractions = /** @type {Array<Select>} */ (this.getMap().getInteractions().getArray().filter(function(interaction) {
-      return interaction instanceof Select && interaction.getFeatures().getArray().indexOf(feature) !== -1;
+      return interaction instanceof Select && interaction.getStyle() && interaction.getFeatures().getArray().indexOf(feature) !== -1;
     }));
     if (selectInteractions.length > 0) {
       feature.setStyle(selectInteractions[selectInteractions.length - 1].getStyle());
