@@ -46,6 +46,7 @@ describe('ol.layer.Graticule', function() {
       const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
+      graticule.drawLabels_({frameState: {extent: extent, viewState: {rotation: 0}}});
       expect(graticule.meridiansLabels_.length).to.be(13);
       expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
       expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(0, 1e-9);
