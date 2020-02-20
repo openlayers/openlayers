@@ -582,7 +582,7 @@ class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {import("../render/Event.js").RenderEvent} event Render event.
+   * @param {import("../render/Event.js").default} event Render event.
    * @private
    */
   drawLabels_(event) {
