@@ -43,10 +43,7 @@ describe('ol.layer.Graticule', function() {
         25614353.926475704, 7827151.696402049];
       const projection = getProjection('EPSG:3857');
       const resolution = 39135.75848201024;
-      const squaredTolerance = resolution * resolution / 4.0;
-      graticule.updateProjectionInfo_(projection);
-      graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      graticule.renderedExtent_ = extent;
+      graticule.loaderFunction(extent, resolution, projection);
       const event = {
         context: document.createElement('canvas').getContext('2d'),
         inversePixelTransform: [1, 0, 0, 1, 0, 0],
