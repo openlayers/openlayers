@@ -59,7 +59,7 @@ function formatPercentage(percentage) {
 class IIIF extends TileImage {
 
   /**
-   * @param {Options} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
+   * @param {Options=} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
    * to parse Image API service information responses into constructor options.
    * @api
    */

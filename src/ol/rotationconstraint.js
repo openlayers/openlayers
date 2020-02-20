@@ -71,7 +71,7 @@ export function createSnapToZero(opt_tolerance) {
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {boolean} opt_isMoving True if an interaction or animation is in progress.
+     * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
     function(rotation, opt_isMoving) {
