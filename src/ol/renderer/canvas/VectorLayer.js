@@ -457,7 +457,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
-   * @param {import("../../proj.js").TransformFunction} opt_transform Transform from user to view projection.
+   * @param {import("../../proj.js").TransformFunction=} opt_transform Transform from user to view projection.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(feature, squaredTolerance, styles, builderGroup, opt_transform) {
