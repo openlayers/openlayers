@@ -611,7 +611,7 @@ class Graticule extends VectorLayer {
       for (index = 0, l = this.meridiansLabels_.length; index < l; ++index) {
         const lineString = this.meridians_[index];
         if (!rotation) {
-          textPoint = this.getMeridianPoint_(lineString, this.renderedExtent_, index);
+          textPoint = this.getMeridianPoint_(lineString, extent, index);
         } else {
           const clone = lineString.clone();
           clone.rotate(-rotation, rotationCenter);
@@ -628,7 +628,7 @@ class Graticule extends VectorLayer {
       for (index = 0, l = this.parallels_.length; index < l; ++index) {
         const lineString = this.parallels_[index];
         if (!rotation) {
-          textPoint = this.getParallelPoint_(lineString, this.renderedExtent_, index);
+          textPoint = this.getParallelPoint_(lineString, extent, index);
         } else {
           const clone = lineString.clone();
           clone.rotate(-rotation, rotationCenter);
