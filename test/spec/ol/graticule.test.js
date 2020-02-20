@@ -46,6 +46,7 @@ describe('ol.layer.Graticule', function() {
       const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
+      graticule.renderedExtent_ = extent;
       const event = {
         context: document.createElement('canvas').getContext('2d'),
         inversePixelTransform: [1, 0, 0, 1, 0, 0],
