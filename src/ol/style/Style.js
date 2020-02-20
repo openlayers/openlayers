@@ -16,7 +16,7 @@ import Stroke from './Stroke.js';
  * vector layer can be styled. If the function returns `undefined`, the
  * feature will not be rendered.
  *
- * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>)|undefined} StyleFunction
+ * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>|void)} StyleFunction
  */
 
 /**
