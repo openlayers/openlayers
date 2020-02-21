@@ -1,6 +1,8 @@
-const build = require('../../tasks/serialize-workers').build;
+/* eslint-disable import/no-commonjs */
 
-function loader() {
+const build = require('../../tasks/serialize-workers.cjs').build;
+
+module.exports = function loader() {
   const callback = this.async();
   const minify = this.mode === 'production';
 
@@ -12,6 +14,4 @@ function loader() {
       callback(null, chunk.code);
     })
     .catch(callback);
-}
-
-module.exports = loader;
+};

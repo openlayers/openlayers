@@ -1,18 +1,24 @@
 #! /usr/bin/env node
-const puppeteer = require('puppeteer');
-const webpack = require('webpack');
-const config = require('./webpack.config');
-const webpackMiddleware = require('webpack-dev-middleware');
-const express = require('express');
-const path = require('path');
-const png = require('pngjs');
-const fs = require('fs');
-const fse = require('fs-extra');
-const pixelmatch = require('pixelmatch');
-const yargs = require('yargs');
-const log = require('loglevelnext');
-const globby = require('globby');
-const serveStatic = require('serve-static');
+import config from './webpack.config.js';
+import esMain from 'es-main';
+import express from 'express';
+import fs from 'fs';
+import fse from 'fs-extra';
+import globby from 'globby';
+import log from 'loglevelnext';
+import path from 'path';
+import pixelmatch from 'pixelmatch';
+import png from 'pngjs';
+import puppeteer from 'puppeteer';
+import serveStatic from 'serve-static';
+import webpack from 'webpack';
+import webpackMiddleware from 'webpack-dev-middleware';
+import yargs from 'yargs';
+import {dirname} from 'path';
+import {fileURLToPath} from 'url';
+import {hideBin} from 'yargs/helpers';
+
+const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const compiler = webpack(Object.assign({mode: 'development'}, config));
 
@@ -20,11 +26,11 @@ function getHref(entry) {
   return path.dirname(entry).slice(1) + '/';
 }
 
-const staticHandler = serveStatic(__dirname);
+const staticHandler = serveStatic(baseDir);
 
-const defaultHandler = serveStatic(path.join(__dirname, 'default'));
+const defaultHandler = serveStatic(path.join(baseDir, 'default'));
 
-const srcHandler = serveStatic(path.join(__dirname, '..', '..', 'src'));
+const srcHandler = serveStatic(path.join(baseDir, '..', '..', 'src'));
 
 function indexHandler(req, res) {
   const items = [];
@@ -91,15 +97,15 @@ function serve(options) {
 }
 
 function getActualScreenshotPath(entry) {
-  return path.join(__dirname, path.dirname(entry), 'actual.png');
+  return path.join(baseDir, path.dirname(entry), 'actual.png');
 }
 
 function getExpectedScreenshotPath(entry) {
-  return path.join(__dirname, path.dirname(entry), 'expected.png');
+  return path.join(baseDir, path.dirname(entry), 'expected.png');
 }
 
 function getPassFilePath(entry) {
-  return path.join(__dirname, path.dirname(entry), 'pass');
+  return path.join(baseDir, path.dirname(entry), 'pass');
 }
 
 function parsePNG(filepath) {
@@ -284,7 +290,7 @@ async function getLatest(patterns) {
 
 async function getOutdated(entries, options) {
   const libTime = await getLatest(
-    path.join(__dirname, '..', 'src', 'ol', '**', '*')
+    path.join(baseDir, '..', 'src', 'ol', '**', '*')
   );
   options.log.debug('library time', libTime);
   const outdated = [];
@@ -298,7 +304,7 @@ async function getOutdated(entries, options) {
     }
 
     const caseTime = await getLatest(
-      path.join(__dirname, path.dirname(entry), '**', '*')
+      path.join(baseDir, path.dirname(entry), '**', '*')
     );
     options.log.debug('case time', entry, caseTime);
     if (passTime < caseTime) {
@@ -337,8 +343,8 @@ function sleep(ms) {
   });
 }
 
-if (require.main === module) {
-  const options = yargs
+if (esMain(import.meta)) {
+  const options = yargs(hideBin(process.argv))
     .option('fix', {
       describe: 'Accept all screenshots as accepted',
       type: 'boolean',

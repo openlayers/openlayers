@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs */
+
 const path = require('path');
 
 module.exports = function (karma) {
@@ -45,7 +47,7 @@ module.exports = function (karma) {
         pattern: path.resolve(__dirname, './test-extensions.js'),
       },
       {
-        pattern: path.resolve(__dirname, './index_test.js'),
+        pattern: 'spec/**/*.test.js',
         watched: false,
       },
       {
@@ -54,7 +56,6 @@ module.exports = function (karma) {
         watched: false,
       },
     ],
-    exclude: ['**/*.test.js'],
     proxies: {
       '/spec/': '/base/spec/',
     },
@@ -99,7 +100,7 @@ module.exports = function (karma) {
             use: {
               loader: path.join(
                 __dirname,
-                '../../examples/webpack/worker-loader.js'
+                '../../examples/webpack/worker-loader.cjs'
               ),
             },
             include: [path.join(__dirname, '../../src/ol/worker')],

@@ -15,21 +15,21 @@
     "test-rendering": "node test/rendering/test.js",
     "test-spec": "npm run karma -- --single-run --log-level error",
     "test": "npm run test-spec && npm run test-rendering -- --force",
-    "karma": "karma start test/browser/karma.config.js",
+    "karma": "karma start test/browser/karma.config.cjs",
     "start": "npm run serve-examples",
     "serve-examples": "webpack serve --config examples/webpack/config.js --mode development",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
-    "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package",
-    "build-index": "npm run build-package && node tasks/generate-index",
+    "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package.js",
+    "build-index": "npm run build-package && node tasks/generate-index.js",
     "build-legacy": "shx rm -rf build && npm run build-index && webpack --config config/webpack-config-legacy-build.js && cleancss --source-map src/ol/ol.css -o build/legacy/ol.css",
     "build-site": "npm run build-examples && npm run apidoc && mkdir -p build/site && cp site/index.html build/site && mv build/apidoc build/site/apidoc && mv build/examples build/site/examples",
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
-    "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build/ol/src && node tasks/serialize-workers && tsc --project config/tsconfig-build.json",
+    "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build/ol/src && node tasks/serialize-workers.cjs && tsc --project config/tsconfig-build.json",
     "typecheck": "tsc --pretty",
     "apidoc-debug": "shx rm -rf build/apidoc && node --inspect-brk=9229 ./node_modules/jsdoc/jsdoc.js -R config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc",
     "apidoc": "shx rm -rf build/apidoc && jsdoc -R config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
   },
-  "main": "index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git://github.com/openlayers/openlayers.git"
@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
+    "@babel/eslint-parser": "^7.13.14",
     "@babel/preset-env": "^7.4.4",
     "@openlayers/eslint-plugin": "^4.0.0",
     "@rollup/plugin-babel": "^5.3.0",
@@ -66,6 +67,7 @@
     "copy-webpack-plugin": "^8.0.0",
     "coverage-istanbul-loader": "^3.0.5",
     "coveralls": "3.1.0",
+    "es-main": "^1.0.2",
     "eslint": "^7.2.0",
     "eslint-config-openlayers": "^15.0.0",
     "expect.js": "0.3.1",
@@ -100,7 +102,7 @@
     "shx": "^0.3.2",
     "sinon": "^10.0.0",
     "terser-webpack-plugin": "^5.1.1",
-    "typescript": "^4.2.3",
+    "typescript": "^4.2.4",
     "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
@@ -113,10 +115,15 @@
   },
   "eslintConfig": {
     "extends": "openlayers",
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false
+    },
     "plugins": [
       "@openlayers"
     ],
     "rules": {
+      "import/no-commonjs": "error",
       "@openlayers/no-exclusive-tests": [
         "error",
         {

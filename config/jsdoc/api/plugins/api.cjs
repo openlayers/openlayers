@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs */
+
 /**
  * Define an @api tag
  * @param {Object} dictionary The tag dictionary.

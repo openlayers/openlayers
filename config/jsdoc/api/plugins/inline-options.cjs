@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs */
+
 /**
  * @fileoverview
  * Inlines option params from typedefs

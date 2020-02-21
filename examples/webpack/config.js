@@ -1,12 +1,15 @@
-const TerserPlugin = require('terser-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const ExampleBuilder = require('./example-builder');
-const fs = require('fs');
-const path = require('path');
+import CopyPlugin from 'copy-webpack-plugin';
+import ExampleBuilder from './example-builder.js';
+import TerserPlugin from 'terser-webpack-plugin';
+import fs from 'fs';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 
-const src = path.join(__dirname, '..');
+const baseDir = dirname(fileURLToPath(import.meta.url));
 
-module.exports = {
+const src = path.join(baseDir, '..');
+
+export default {
   context: src,
   target: ['web', 'es5'],
   entry: () => {
@@ -33,10 +36,10 @@ module.exports = {
           },
         },
         include: [
-          path.join(__dirname, '..', '..', 'src'),
-          path.join(__dirname, '..'),
+          path.join(baseDir, '..', '..', 'src'),
+          path.join(baseDir, '..'),
           path.join(
-            __dirname,
+            baseDir,
             '..',
             '..',
             'node_modules',
@@ -48,9 +51,9 @@ module.exports = {
       {
         test: /\.js$/,
         use: {
-          loader: path.join(__dirname, 'worker-loader.js'),
+          loader: path.join(baseDir, 'worker-loader.cjs'),
         },
-        include: [path.join(__dirname, '..', '..', 'src', 'ol', 'worker')],
+        include: [path.join(baseDir, '..', '..', 'src', 'ol', 'worker')],
       },
     ],
   },
@@ -77,7 +80,7 @@ module.exports = {
   },
   plugins: [
     new ExampleBuilder({
-      templates: path.join(__dirname, '..', 'templates'),
+      templates: path.join(baseDir, '..', 'templates'),
       common: 'common',
     }),
     new CopyPlugin({
@@ -93,7 +96,7 @@ module.exports = {
   devtool: 'source-map',
   output: {
     filename: '[name].js',
-    path: path.join(__dirname, '..', '..', 'build', 'examples'),
+    path: path.join(baseDir, '..', '..', 'build', 'examples'),
   },
   resolve: {
     fallback: {
@@ -101,7 +104,7 @@ module.exports = {
     },
     alias: {
       // allow imports from 'ol/module' instead of specifiying the source path
-      ol: path.join(__dirname, '..', '..', 'src', 'ol'),
+      ol: path.join(baseDir, '..', '..', 'src', 'ol'),
     },
   },
 };

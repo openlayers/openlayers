@@ -1,0 +1,4 @@
+{
+  "description": "JSDoc loads publish.js files with require(), so we need to configure everything under this path as a CommonJS module.",
+  "type": "commonjs"
+}
