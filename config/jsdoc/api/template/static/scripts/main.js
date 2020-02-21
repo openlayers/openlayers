@@ -210,25 +210,13 @@ $(function () {
   const searchInput = $('#search').get(0);
   // Skip searches when typing fast.
   let key;
-  let start;
-  const brandNode = document.querySelector('.brand');
   function queueSearch() {
     if (!key) {
-      start = Date.now();
       key = setTimeout(function () {
         key = undefined;
 
         const searchTerm = searchInput.value;
         doSearch(searchTerm);
-
-        const time = Date.now() - start
-        brandNode.innerHTML = time + ' ms';
-        const msg = [searchTerm + ':', time, 'ms'];
-        if (searchTerm.length >= minInputForSearch) {
-          msg.push(search.lastState);
-        }
-        console.log.apply(console, msg);
-        start = undefined;
       }, 0);
     }
   }
