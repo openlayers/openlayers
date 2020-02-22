@@ -17,8 +17,8 @@ register(proj4);
 // and a world extent. These are required for the Graticule.
 const sphereMollweideProjection = new Projection({
   code: 'ESRI:53009',
-  extent: [-9009954.605703328, -9009954.605703328,
-    9009954.605703328, 9009954.605703328],
+  extent: [-18019909.21177587, -9009954.605703328,
+    18019909.21177587, 9009954.605703328],
   worldExtent: [-179, -89.99, 179, 89.99]
 });
 
@@ -37,6 +37,6 @@ const map = new Map({
   view: new View({
     center: [0, 0],
     projection: sphereMollweideProjection,
-    zoom: 0
+    zoom: 1
   })
 });

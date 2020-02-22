@@ -144,7 +144,8 @@ const INTERVALS = [
 
 /**
  * @classdesc
- * Layer that renders a grid for a coordinate system.
+ * Layer that renders a grid for a coordinate system (currently only EPSG:4326 is supported).
+ * Note that the view projection must define both extent and worldExtent.
  *
  * @fires import("../render/Event.js").RenderEvent
  * @api
@@ -677,7 +678,7 @@ class Graticule extends VectorLayer {
       Math.min(extent[3], this.maxLatP_)
     ];
 
-    validExtent = transformExtent(validExtent, this.projection_, 'EPSG:4326');
+    validExtent = transformExtent(validExtent, this.projection_, 'EPSG:4326', 8);
     const maxLat = validExtent[3];
     const maxLon = validExtent[2];
     const minLat = validExtent[1];
@@ -896,7 +897,7 @@ class Graticule extends VectorLayer {
     const epsg4326Projection = getProjection('EPSG:4326');
 
     const worldExtent = projection.getWorldExtent();
-    const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection);
+    const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection, 8);
 
     this.maxLat_ = worldExtent[3];
     this.maxLon_ = worldExtent[2];
