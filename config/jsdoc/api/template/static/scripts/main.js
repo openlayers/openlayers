@@ -32,18 +32,18 @@ $(function () {
       // We could get smarter on the weight here
       const name = matchedItem.dataset.name;
       if (beginOnly) {
-        return re.baseName.test(name) ? 10000 : 0;
+        return re.baseName.test(name) ? 100 : 1;
       }
       // If everything else is equal, prefer shorter names, and prefer classes over modules
-      let weight = matchedItem.dataset.longname.length - name.length * 100;
+      let weight = 10000 + matchedItem.dataset.longname.length - name.length * 100;
       if (name.match(re.begin)) {
-        weight += 100000;
+        weight += 10000;
         if (re.baseName.test(name)) {
-          weight += 10000000;
+          weight += 10000;
           if (re.fullName.test(name)) {
-            weight += 100000000;
+            weight += 10000;
             if (re.completeName.test(name)) {
-              weight += 1000000000;
+              weight += 10000;
             }
           }
         }
@@ -152,6 +152,19 @@ $(function () {
       const navList = search.$navList.get(0);
       const classes = [];
       const searchState = {};
+      search.getClassList().each(function (i, classEntry) {
+        const className = classEntry.dataset.longname;
+        if (!(className in searchState) && re.test(classEntry.dataset.name)) {
+          const cls = searchState[className] = {
+            item: classEntry,
+            // Do the weight thing
+            weight: getSearchWeight(classEntry, beginOnly) * 100000,
+            subItems: {}
+          };
+          classes.push(cls);
+          classEntry.classList.add('match');
+        }
+      });
       search.getMembers().each(function (i, li) {
         const name = li.dataset.name;
         if (re.test(name)) {
@@ -162,14 +175,13 @@ $(function () {
           if (!cls) {
             cls = searchState[className] = {
               item: classEntry,
-              // Do the weight thing
-              weight: getSearchWeight(classEntry, beginOnly) * 10000,
+              weight: 0,
               subItems: {}
             };
             classes.push(cls);
             classEntry.classList.add('match');
           }
-          cls.weight += getSearchWeight(li, true) + 1;
+          cls.weight += getSearchWeight(li, true);
           const memberType = itemMember.dataset.type;
           let members = cls.subItems[memberType];
           if (!members) {
@@ -181,19 +193,6 @@ $(function () {
           }
           members.subItems[name] = { item: li };
           li.classList.add('match');
-        }
-      });
-      search.getClassList().each(function (i, classEntry) {
-        const className = classEntry.dataset.longname;
-        if (!(className in searchState) && re.test(classEntry.dataset.name)) {
-          const cls = searchState[className] = {
-            item: classEntry,
-            // Do the weight thing
-            weight: getSearchWeight(classEntry, beginOnly) * 10000,
-            subItems: {}
-          };
-          classes.push(cls);
-          classEntry.classList.add('match');
         }
       });
       clearOldMatches(search.lastState, searchState);
