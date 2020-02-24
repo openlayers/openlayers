@@ -12,10 +12,18 @@ import VectorSource from '../source/Vector.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
-  getTransform,
-  transformExtent
+  getTransform
 } from '../proj.js';
-import {getCenter, getHeight, getWidth, intersects, equals, getIntersection, isEmpty} from '../extent.js';
+import {
+  applyTransform,
+  equals,
+  getCenter,
+  getHeight,
+  getIntersection,
+  getWidth,
+  intersects,
+  isEmpty
+} from '../extent.js';
 import {clamp} from '../math.js';
 import Style from '../style/Style.js';
 import Feature from '../Feature.js';
@@ -665,24 +673,30 @@ class Graticule extends VectorLayer {
       return;
     }
 
-    const centerLonLat = this.toLonLatTransform_(center);
+    const validCenter = [
+      clamp(center[0], this.minLonP_, this.maxLonP_),
+      clamp(center[1], this.minLatP_, this.maxLatP_)
+    ];
+    
+    const centerLonLat = this.toLonLatTransform_(validCenter);
     let centerLon = centerLonLat[0];
     let centerLat = centerLonLat[1];
     const maxLines = this.maxLines_;
     let cnt, idx, lat, lon;
 
     let validExtent = [
-      Math.max(extent[0], this.minLonP_),
-      Math.max(extent[1], this.minLatP_),
-      Math.min(extent[2], this.maxLonP_),
-      Math.min(extent[3], this.maxLatP_)
+      clamp(extent[0], this.minLonP_, this.maxLonP_),
+      clamp(extent[1], this.minLatP_, this.maxLatP_),
+      clamp(extent[2], this.minLonP_, this.maxLonP_),
+      clamp(extent[3], this.minLatP_, this.maxLatP_)
     ];
 
-    validExtent = transformExtent(validExtent, this.projection_, 'EPSG:4326', 8);
-    const maxLat = validExtent[3];
-    const maxLon = validExtent[2];
-    const minLat = validExtent[1];
-    const minLon = validExtent[0];
+    validExtent = applyTransform(validExtent, this.toLonLatTransform_, undefined, 8);
+
+    const maxLat = Math.min(validExtent[3], this.maxLat_);
+    const maxLon = Math.min(validExtent[2], this.maxLon_);
+    const minLat = Math.max(validExtent[1], this.minLat_);
+    const minLon = Math.max(validExtent[0], this.minLon_);
 
     // Create meridians
 
@@ -897,21 +911,42 @@ class Graticule extends VectorLayer {
     const epsg4326Projection = getProjection('EPSG:4326');
 
     const worldExtent = projection.getWorldExtent();
-    const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection, 8);
 
     this.maxLat_ = worldExtent[3];
     this.maxLon_ = worldExtent[2];
     this.minLat_ = worldExtent[1];
     this.minLon_ = worldExtent[0];
 
+    const toLonLatTransform = getTransform(projection, epsg4326Projection);
+    if (this.minLon_ < this.maxLon_) {
+      this.toLonLatTransform_ = toLonLatTransform;
+    } else {
+      const split = this.minLon_ + this.maxLon_ / 2;
+      this.maxLon_ += 360;
+      this.toLonLatTransform_ = function(coordinates, opt_output, opt_dimension) {
+        const dimension = opt_dimension || 2;
+        const lonLatCoordinates = toLonLatTransform(coordinates, opt_output, dimension);
+        for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {
+          if (lonLatCoordinates[i] < split) {
+            lonLatCoordinates[i] += 360;
+          }
+        }
+        return lonLatCoordinates;
+      };
+    }
+
+    this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
+    const worldExtentP = applyTransform(
+      [this.minLon_, this.minLat_, this.maxLon_, this.maxLat_],
+      this.fromLonLatTransform_,
+      undefined,
+      8
+    );
+
     this.maxLatP_ = worldExtentP[3];
     this.maxLonP_ = worldExtentP[2];
     this.minLatP_ = worldExtentP[1];
     this.minLonP_ = worldExtentP[0];
-
-    this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
-
-    this.toLonLatTransform_ = getTransform(projection, epsg4326Projection);
 
     this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(projection.getExtent()));
 
