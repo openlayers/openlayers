@@ -677,7 +677,7 @@ class Graticule extends VectorLayer {
       clamp(center[0], this.minLonP_, this.maxLonP_),
       clamp(center[1], this.minLatP_, this.maxLatP_)
     ];
-    
+
     const centerLonLat = this.toLonLatTransform_(validCenter);
     let centerLon = centerLonLat[0];
     let centerLat = centerLonLat[1];
