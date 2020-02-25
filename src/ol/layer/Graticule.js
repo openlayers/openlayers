@@ -679,8 +679,8 @@ class Graticule extends VectorLayer {
     ];
 
     const centerLonLat = this.toLonLatTransform_(validCenter);
-    let centerLon = centerLonLat[0];
-    let centerLat = centerLonLat[1];
+    let centerLon = clamp(centerLonLat[0], this.minLon_, this.maxLon_);
+    let centerLat = clamp(centerLonLat[1], this.minLat_, this.maxLat_);
     const maxLines = this.maxLines_;
     let cnt, idx, lat, lon;
 
@@ -693,10 +693,10 @@ class Graticule extends VectorLayer {
 
     validExtent = applyTransform(validExtent, this.toLonLatTransform_, undefined, 8);
 
-    const maxLat = Math.min(validExtent[3], this.maxLat_);
-    const maxLon = Math.min(validExtent[2], this.maxLon_);
-    const minLat = Math.max(validExtent[1], this.minLat_);
-    const minLon = Math.max(validExtent[0], this.minLon_);
+    const maxLat = clamp(validExtent[3], centerLat, this.maxLat_);
+    const maxLon = clamp(validExtent[2], centerLon, this.maxLon_);
+    const minLat = clamp(validExtent[1], this.minLat_, centerLat);
+    const minLon = clamp(validExtent[0], this.minLon_, centerLon);
 
     // Create meridians
 
