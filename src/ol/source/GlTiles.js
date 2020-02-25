@@ -14,7 +14,6 @@ import {listenOnce} from '../events.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import {createEmpty} from '../extent.js';
 
-
 class GlTile extends Tile {
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
@@ -45,14 +44,18 @@ class GlTile extends Tile {
     this.gl = gl;
 
     Promise.all(texFetches).then(loadedTextures =>{
-      console.log('textures for tile: ',tileCoord, loadedTextures);
+//       console.log('textures for tile: ',tileCoord, loadedTextures);
 
       // Attach textures to the tile source's already-defined texture buffers
       for (let i in loadedTextures) {
         if (loadedTextures[i] instanceof HTMLImageElement) {
           bindTextureImageData(gl, textures[i], Number(i), loadedTextures[i]);
+        } else if (loadedTextures[i][0] && loadedTextures[i][0].BYTES_PER_ELEMENT){
+          // Assume this is the result from a geotiff call, get one of the channels
+          // in this case, always channel 0 (as per loadedTextures[i][ **0** ]
+          bindTextureTypedArray(gl, textures[i], Number(i), loadedTextures[i][0], loadedTextures[i].width, loadedTextures[i].height);
         } else {
-          console.warn("Could not attach texture", i, ": not an HTMLImageElement");
+          console.warn("Could not attach texture", i, ": not an HTMLImageElement or a GeoTiff slice");
         }
       }
 
@@ -197,8 +200,7 @@ class GlTiles extends XYZ {
 //       }
 
 
-      let tileExtent = this.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent_);
-      /// DEBUG console.log(tileCoord, tileExtent);
+
 
 
       const texFetches = [];
@@ -209,20 +211,60 @@ class GlTiles extends XYZ {
             const tile = this.texSources[i].getTile(z, x, y);
 
             listenOnce(tile.getImage(), EventType.LOAD, (ev)=>{
-              console.log('texture source tile loaded: ',ev);
-              res(ev.path[0]);
+//               console.log('texture source tile loaded: ',ev);
+              // For whatever reason, some browsers (e.g. Chromium) do not follow the
+              // DOM events standard and do not have the ev.target property. Fall back
+              // to ev.path[0] in that case.
+              res(ev.target || ev.path[0]);
             });
             listenOnce(tile.getImage(), EventType.ERROR, (ev)=>{
-              console.log('texture source errored: ',ev);
-              rej(ev.path[0]);
+//               console.log('texture source errored: ',ev);
+              rej(ev.target || ev.path[0]);
             });
 
             tile.load();
           });
+        } else if ('GeoTIFF' in window && this.texSources[i] instanceof GeoTIFF.GeoTIFF) {
+
+          const tiff = this.texSources[i];
+
+          // Get the projected coords for the tile
+          let tileExtent = this.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent_);
+//           console.log(tileCoord, tileExtent);
+
+          texFetches[i] = tiff.getImage().then(function(img){
+            			var w = img.getWidth();
+			var h = img.getHeight();
+			var samplesPerPixel = img.getSamplesPerPixel();
+			var bbox = img.getBoundingBox();
+
+			// Calculate the pixel coords to be fetched from the projected coords and the image size
+			var x1 = ((tileExtent[2] - bbox[0]) / (bbox[2] - bbox[0])) * w;
+			var x2 = ((tileExtent[0] - bbox[0]) / (bbox[2] - bbox[0])) * w;
+			var y1 = ((tileExtent[3] - bbox[1]) / (bbox[3] - bbox[1])) * h;
+			var y2 = ((tileExtent[1] - bbox[1]) / (bbox[3] - bbox[1])) * h;
+
+// 			console.log(w, h, bbox, samplesPerPixel, latlngbounds, ne, sw, x1, x2, y1, y2);
+// 			console.log("Tile", tileExtent, " pixels X ", x2, x1, "Y", y2, y1, " raster size", w, h);
+
+// 			var tileSize = this.getTileSize();
+
+// 			x2 = Math.floor(x2);
+// 			x1 = Math.ceil(x1);
+// 			y2 = Math.floor(y2);
+// 			y1 = Math.ceil(y1);
+
+			return tiff.readRasters({
+				window: [x2, h - y1, x1, h - y2] ,
+				width: 256, // tileSize.x,
+				height: 256, // tileSize.y,
+				// resampleMethod: 'nearest',
+// 				fillValue: -999 ,
+				fillValue: 0 ,
+			});
+          });
         } else {
-          // TODO: geotiff.js not implemented yet
-          // TODO: Make a geotiff request using tileExtent
-          console.warn('GLTiles expected a TileImage source, got:', this.texSources[i]);
+          console.warn('GLTiles expected a TileImage source or a GeoTIFF definition, got:', this.texSources[i]);
         }
       }
 
@@ -498,15 +540,17 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
 
   // For 8-bit data:
   gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, gl.LUMINANCE, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, w, h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, arr);
 
-  // For 16-bit data:
-  gl.pixelStorei(gl.UNPACK_ALIGNMENT,2);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, gl.LUMINANCE_ALPHA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+//   void gl.texImage2D(target, level, internalformat, width, height, border, format, type, ArrayBufferView? pixels);
 
-  // For 32-bit data:
-  gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+//   // For 16-bit data:
+//   gl.pixelStorei(gl.UNPACK_ALIGNMENT,2);
+//   gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, gl.LUMINANCE_ALPHA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
+//
+//   // For 32-bit data:
+//   gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
+//   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
 
 //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
