@@ -362,7 +362,7 @@ class Executor {
         null;
       if (declutterArgs) {
         if (fillStroke) {
-          declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
+          declutterArgs.push(fillInstruction, strokeInstruction, p1.slice(0), p2.slice(0), p3.slice(0), p4.slice(0));
         }
         declutterGroup.push(declutterArgs);
       }
