@@ -16,6 +16,7 @@ import {
 } from '../proj.js';
 import {
   applyTransform,
+  containsCoordinate,
   equals,
   getCenter,
   getHeight,
@@ -284,6 +285,30 @@ class Graticule extends VectorLayer {
      * @private
      */
     this.projectionCenterLonLat_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.blLonLatP_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.brLonLatP_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.tlLonLatP_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.trLonLatP_ = null;
 
     /**
      * @type {Array<GraticuleLabelDataType>}
@@ -679,19 +704,40 @@ class Graticule extends VectorLayer {
     ];
 
     const centerLonLat = this.toLonLatTransform_(validCenter);
+    if (isNaN(centerLonLat[1])) {
+      centerLonLat[1] = Math.abs(this.maxLat_) >= Math.abs(this.minLat_) ?
+        this.maxLat_ : this.minLat_;
+    }
     let centerLon = clamp(centerLonLat[0], this.minLon_, this.maxLon_);
     let centerLat = clamp(centerLonLat[1], this.minLat_, this.maxLat_);
     const maxLines = this.maxLines_;
     let cnt, idx, lat, lon;
 
-    let validExtent = [
+    const validExtentP = [
       clamp(extent[0], this.minLonP_, this.maxLonP_),
       clamp(extent[1], this.minLatP_, this.maxLatP_),
       clamp(extent[2], this.minLonP_, this.maxLonP_),
       clamp(extent[3], this.minLatP_, this.maxLatP_)
     ];
 
-    validExtent = applyTransform(validExtent, this.toLonLatTransform_, undefined, 8);
+    const validExtent = applyTransform(validExtentP, this.toLonLatTransform_, undefined, 8);
+
+    if (containsCoordinate(validExtentP, this.blLonLatP_)) {
+      validExtent[0] = this.minLon_;
+      validExtent[1] = this.minLat_;
+    }
+    if (containsCoordinate(validExtentP, this.brLonLatP_)) {
+      validExtent[2] = this.maxLon_;
+      validExtent[1] = this.minLat_;
+    }
+    if (containsCoordinate(validExtentP, this.tlLonLatP_)) {
+      validExtent[0] = this.minLon_;
+      validExtent[3] = this.maxLat_;
+    }
+    if (containsCoordinate(validExtentP, this.trLonLatP_)) {
+      validExtent[2] = this.maxLon_;
+      validExtent[3] = this.maxLat_;
+    }
 
     const maxLat = clamp(validExtent[3], centerLat, this.maxLat_);
     const maxLon = clamp(validExtent[2], centerLon, this.maxLon_);
@@ -767,11 +813,12 @@ class Graticule extends VectorLayer {
     /** @type {Array<number>} **/
     const p2 = [];
     for (let i = 0, ii = this.intervals_.length; i < ii; ++i) {
-      const delta = this.intervals_[i] / 2;
+      const delta = clamp(this.intervals_[i] / 2, 0, 90);
+      const clampedLat = clamp(centerLat, -90 + delta, 90 - delta);
       p1[0] = centerLon - delta;
-      p1[1] = centerLat - delta;
+      p1[1] = clampedLat - delta;
       p2[0] = centerLon + delta;
-      p2[1] = centerLat + delta;
+      p2[1] = clampedLat + delta;
       this.fromLonLatTransform_(p1, p1);
       this.fromLonLatTransform_(p2, p2);
       const dist = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
@@ -948,7 +995,16 @@ class Graticule extends VectorLayer {
     this.minLatP_ = worldExtentP[1];
     this.minLonP_ = worldExtentP[0];
 
+    this.blLonLatP_ = this.fromLonLatTransform_([this.minLon_, this.minLat_]);
+    this.brLonLatP_ = this.fromLonLatTransform_([this.maxLon_, this.minLat_]);
+    this.tlLonLatP_ = this.fromLonLatTransform_([this.minLon_, this.maxLat_]);
+    this.trLonLatP_ = this.fromLonLatTransform_([this.maxLon_, this.maxLat_]);
+
     this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(projection.getExtent()));
+    if (isNaN(this.projectionCenterLonLat_[1])) {
+      this.projectionCenterLonLat_[1] = Math.abs(this.maxLat_) >= Math.abs(this.minLat_) ?
+        this.maxLat_ : this.minLat_;
+    }
 
     this.projection_ = projection;
   }
