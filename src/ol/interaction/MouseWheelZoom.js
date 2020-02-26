@@ -222,7 +222,7 @@ class MouseWheelZoom extends Interaction {
         }
         view.beginInteraction();
       }
-      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.timeoutId_);
+      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.timeout_);
       view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
       return false;
