@@ -18,5 +18,5 @@ const map = new Map({
     zoom: 1,
   }),
   }
-)
+);
 

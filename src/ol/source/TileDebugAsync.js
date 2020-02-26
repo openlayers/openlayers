@@ -57,8 +57,7 @@ class LabeledTileAsync extends Tile {
       context.strokeText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
       context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
 
-
-      console.log('Done ', this.text_);
+      // console.log('Done ', this.text_);
 
       this.canvas_ = context.canvas;
 
