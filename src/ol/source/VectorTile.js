@@ -228,6 +228,15 @@ class VectorTile extends UrlTile {
   }
 
   /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {!Object<string, boolean>} usedTiles Used tiles.
+   */
+  expireCache(projection, usedTiles) {
+    super.expireCache(projection, usedTiles);
+    this.sourceTileCache.expireCache({});
+  }
+
+  /**
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @param {VectorRenderTile} tile Vector image tile.
@@ -328,7 +337,6 @@ class VectorTile extends UrlTile {
         tile.sourceTiles = sourceTiles;
       }
     }
-    this.sourceTileCache.expireCache({});
     return sourceTiles;
   }
 

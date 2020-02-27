@@ -90,7 +90,7 @@ const ProviderConfig = {
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
  * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.

@@ -50,7 +50,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
  * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
  * @property {string} [culture='en-us'] Culture code.
  * @property {string} key Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
