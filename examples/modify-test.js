@@ -140,7 +140,8 @@ const geojsonObject = {
 };
 
 const source = new VectorSource({
-  features: (new GeoJSON()).readFeatures(geojsonObject)
+  features: (new GeoJSON()).readFeatures(geojsonObject),
+  wrapX: false
 });
 
 const layer = new VectorLayer({
@@ -232,6 +233,7 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 1000000],
-    zoom: 2
+    zoom: 2,
+    multiWorld: true
   })
 });
