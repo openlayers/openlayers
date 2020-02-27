@@ -7,7 +7,7 @@ import {fromKey, getKey} from './tilecoord.js';
 class TileCache extends LRUCache {
 
   /**
-   * @param {!Object<string, import("./TileRange.js").default>} usedTiles Used tiles.
+   * @param {!Object<string, boolean>} usedTiles Used tiles.
    */
   expireCache(usedTiles) {
     while (this.canExpireCache()) {
