@@ -29,7 +29,7 @@ import VectorSource from './Vector.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {VectorSource} [source=null] Source.
+ * @property {VectorSource} [source] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -150,7 +150,7 @@ class Cluster extends VectorSource {
     }
     this.source = source;
     if (source) {
-      this.sourceListenKey_ = source.addEventListener(EventType.CHANGE, this.boundRefresh_);
+      source.addEventListener(EventType.CHANGE, this.boundRefresh_);
     }
     this.refresh();
   }
