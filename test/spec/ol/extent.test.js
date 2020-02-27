@@ -1,5 +1,6 @@
 import * as _ol_extent_ from '../../../src/ol/extent.js';
 import {getTransform} from '../../../src/ol/proj.js';
+import {register} from '../../../src/ol/proj/proj4.js';
 
 
 describe('ol.extent', function() {
@@ -781,6 +782,38 @@ describe('ol.extent', function() {
       expect(destinationExtent[2]).to.be(15);
       expect(destinationExtent[1]).to.be(-60);
       expect(destinationExtent[3]).to.be(30);
+    });
+
+    it('can use the stops option', function() {
+      proj4.defs('EPSG:32632', '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs');
+      register(proj4);
+      const transformFn = getTransform('EPSG:4326', 'EPSG:32632');
+      const sourceExtentN = [6, 0, 12, 84];
+      const destinationExtentN = _ol_extent_.applyTransform(
+        sourceExtentN, transformFn);
+      expect(destinationExtentN).not.to.be(undefined);
+      expect(destinationExtentN).not.to.be(null);
+      expect(destinationExtentN[0]).to.roughlyEqual(166021.44308053964, 1e-8);
+      expect(destinationExtentN[2]).to.roughlyEqual(0, 1e-8);
+      expect(destinationExtentN[1]).to.roughlyEqual(833978.5569194605, 1e-8);
+      expect(destinationExtentN[3]).to.roughlyEqual(9329005.182447437, 1e-8);
+      const sourceExtentNS = [6, -84, 12, 84];
+      const destinationExtentNS = _ol_extent_.applyTransform(
+        sourceExtentNS, transformFn);
+      expect(destinationExtentNS).not.to.be(undefined);
+      expect(destinationExtentNS).not.to.be(null);
+      expect(destinationExtentNS[0]).to.roughlyEqual(465005.34493886377, 1e-8);
+      expect(destinationExtentNS[2]).to.roughlyEqual(-destinationExtentN[3], 1e-8);
+      expect(destinationExtentNS[1]).to.roughlyEqual(534994.6550611362, 1e-8);
+      expect(destinationExtentNS[3]).to.roughlyEqual(destinationExtentN[3], 1e-8);
+      const destinationExtentNS2 = _ol_extent_.applyTransform(
+        sourceExtentNS, transformFn, undefined, 2);
+      expect(destinationExtentNS2).not.to.be(undefined);
+      expect(destinationExtentNS2).not.to.be(null);
+      expect(destinationExtentNS2[0]).to.roughlyEqual(destinationExtentN[0], 1e-8);
+      expect(destinationExtentNS2[2]).to.roughlyEqual(-destinationExtentN[3], 1e-8);
+      expect(destinationExtentNS2[1]).to.roughlyEqual(destinationExtentN[2], 1e-8);
+      expect(destinationExtentNS2[3]).to.roughlyEqual(destinationExtentN[3], 1e-8);
     });
 
   });
