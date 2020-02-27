@@ -141,7 +141,7 @@ class Cluster extends VectorSource {
 
   /**
    * Replace the wrapped source.
-   * @param {VectorSource|null} source The new source for this instance.
+   * @param {VectorSource} source The new source for this instance.
    * @api
    */
   setSource(source) {
