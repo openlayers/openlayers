@@ -188,14 +188,10 @@ function attachModuleSymbols(doclets, modules) {
   });
 }
 
-function getPrettyName(longname) {
-  const fullname = longname.replace('module:', '');
-  const parts = fullname.split(/[~\.]/);
-  if (parts.length > 1) {
-    const pathParts = parts[0].split('/');
-    if (parts[parts.length - 1] === pathParts[pathParts.length - 1]) {
-      return parts[0];
-    }
+function getPrettyName(doclet) {
+  const fullname = doclet.longname.replace('module:', '');
+  if (doclet.isDefaultExport) {
+    return fullname.split('~')[0];
   }
   return fullname;
 }
@@ -218,8 +214,8 @@ function buildNav(members) {
   // merge namespaces and classes, then sort
   const merged = members.modules.concat(members.classes);
   merged.sort(function(a, b) {
-    const prettyNameA = getPrettyName(a.longname).toLowerCase();
-    const prettyNameB = getPrettyName(b.longname).toLowerCase();
+    const prettyNameA = getPrettyName(a).toLowerCase();
+    const prettyNameB = getPrettyName(b).toLowerCase();
     if (prettyNameA > prettyNameB) {
       return 1;
     }
@@ -235,7 +231,7 @@ function buildNav(members) {
       nav.push({
         type: 'class',
         longname: v.longname,
-        prettyname: getPrettyName(v.longname),
+        prettyname: getPrettyName(v),
         name: v.name,
         module: find({
           kind: 'module',
@@ -286,7 +282,7 @@ function buildNav(members) {
         nav.push({
           type: 'module',
           longname: v.longname,
-          prettyname: getPrettyName(v.longname),
+          prettyname: getPrettyName(v),
           name: v.name,
           members: members,
           methods: methods,
