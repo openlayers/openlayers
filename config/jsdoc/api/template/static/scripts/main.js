@@ -71,10 +71,12 @@ $(function () {
       .replace(/_/g, '/')
       .replace(/-/g, '~');
     const currentItem = navListNode.querySelector('.item[data-longname="' + longname + '"]');
-    $navList.prepend(currentItem);
+    if (currentItem) {
+      $navList.prepend(currentItem);
+    }
     return {
       $navList: $navList,
-      $currentItem: $(currentItem),
+      $currentItem: currentItem ? $(currentItem) : undefined,
       lastSearchTerm: undefined,
       lastState: {},
       getClassList: function () {
@@ -138,7 +140,7 @@ $(function () {
         // Restore the original, sorted order
         search.$navList.append(search.getClassList());
       }
-      if (state === 'search-empty') {
+      if (state === 'search-empty' && search.$currentItem) {
         search.manualToggle(search.$currentItem, true);
       }
     } else {
