@@ -13,6 +13,8 @@ import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js
  * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition~noModifierKeys} and {@link module:ol/events/condition~primaryAction}.
+ * In addition, if there is a `tabindex` attribute on the map element,
+ * {@link module:ol/events/condition~focus} will also be applied.
  * @property {import("../Kinetic.js").default} [kinetic] Kinetic inertia to apply to the pan.
  */
 
