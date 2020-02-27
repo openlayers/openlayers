@@ -23,6 +23,8 @@ export const Mode = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~always}.
+ * In addition, if there is a `tabindex` attribute on the map element,
+ * {@link module:ol/events/condition~focus} will also be applied.
  * @property {number} [maxDelta=1] Maximum mouse wheel delta.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
