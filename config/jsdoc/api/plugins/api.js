@@ -106,6 +106,20 @@ function includeTypes(doclet) {
   }
 }
 
+const defaultExports = {};
+const path = require('path');
+const moduleRoot = path.join(process.cwd(), 'src');
+
+// Tag default exported Identifiers because their name should be the same as the module name.
+exports.astNodeVisitor = {
+  visitNode: function(node, e, parser, currentSourceName) {
+    if (node.type === 'Identifier' && node.parent.type === 'ExportDefaultDeclaration') {
+      const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
+      defaultExports['module:' + modulePath + '~' + node.name] = true;
+    }
+  }
+};
+
 exports.handlers = {
 
   newDoclet: function(e) {
@@ -168,6 +182,15 @@ exports.handlers = {
       if (doclet._documented) {
         delete doclet.undocumented;
       }
+    }
+  },
+
+  processingComplete(e) {
+    const byLongname = e.doclets.index.longname;
+    for (const name in defaultExports) {
+      byLongname[name].forEach(function(doclet) {
+        doclet.isDefaultExport = true;
+      });
     }
   }
 
