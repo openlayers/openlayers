@@ -609,10 +609,14 @@ class View extends BaseObject {
       if (series[0].callback) {
         animationCallback(series[0].callback, false);
       }
-      anchor = anchor ||
-        series.filter(function(animation) {
+      if (!anchor) {
+        const animations = series.filter(function(animation) {
           return !animation.complete;
-        })[0].anchor;
+        });
+        if (animations.length > 0) {
+          anchor = animations[0].anchor;
+        }
+      }
     }
     this.animations_.length = 0;
     this.cancelAnchor_ = anchor;
