@@ -1,7 +1,6 @@
 /**
  * @module ol/PluggableMap
  */
-import {getUid} from './util.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
@@ -933,12 +932,16 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    let target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
-    while (target) {
-      if (target.parentElement === this.overlayContainerStopEvent_) {
+    const target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
+    if (!mapBrowserEvent.dragging) {
+      if (this.overlayContainerStopEvent_.contains(target) || !(document.body.contains(target) || this.viewport_.getRootNode && this.viewport_.getRootNode().contains(target))) {
+        // Abort if the event target is a child of the container that doesn't allow
+        // event propagation or is no longer in the page. It's possible for the target to no longer
+        // be in the page if it has been removed in an event listener, this might happen in a Control
+        // that recreates it's content based on user interaction either manually or via a render
+        // in something like https://reactjs.org/
         return;
       }
-      target = target.parentElement;
     }
     mapBrowserEvent.frameState = this.frameState_;
     const interactionsArray = this.getInteractions().getArray();
@@ -1102,7 +1105,8 @@ class PluggableMap extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.viewport_.setAttribute('data-view', getUid(view));
+      this.updateViewportSize_();
+
       this.viewPropertyListenerKey_ = listen(
         view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
@@ -1359,6 +1363,27 @@ class PluggableMap extends BaseObject {
             parseFloat(computedStyle['paddingBottom']) -
             parseFloat(computedStyle['borderBottomWidth'])
       ]);
+    }
+
+    this.updateViewportSize_();
+  }
+
+  /**
+   * Recomputes the viewport size and save it on the view object (if any)
+   * @private
+   */
+  updateViewportSize_() {
+    const view = this.getView();
+    if (view) {
+      let size = undefined;
+      const computedStyle = getComputedStyle(this.viewport_);
+      if (computedStyle.width && computedStyle.height) {
+        size = [
+          parseInt(computedStyle.width, 10),
+          parseInt(computedStyle.height, 10)
+        ];
+      }
+      view.setViewportSize(size);
     }
   }
 }

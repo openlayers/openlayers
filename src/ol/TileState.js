@@ -14,6 +14,5 @@ export default {
    * @type {number}
    */
   ERROR: 3,
-  EMPTY: 4,
-  ABORT: 5
+  EMPTY: 4
 };

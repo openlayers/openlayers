@@ -2167,6 +2167,11 @@ describe('ol.format.KML', function() {
         });
 
         it('disables the stroke when outline is \'0\'', function() {
+          const lineString = new LineString([[1, 2], [3, 4]]);
+          const polygon = new Polygon([[[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]]]);
+          const lineStringFeature = new Feature(lineString);
+          const polygonFeature = new Feature(polygon);
+          const collectionFeature = new Feature(new GeometryCollection([lineString, polygon]));
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark>' +
@@ -2190,20 +2195,53 @@ describe('ol.format.KML', function() {
           expect(styleFunction).not.to.be(undefined);
           const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(1);
+          expect(styleArray).to.have.length(2);
+
           const style = styleArray[0];
           expect(style).to.be.an(Style);
+          expect(style.getGeometryFunction()(lineStringFeature)).to.be(lineString);
+          expect(style.getGeometryFunction()(polygonFeature)).to.be(undefined);
+          const gc = style.getGeometryFunction()(collectionFeature);
+          expect(gc).to.be.an(GeometryCollection);
+          const gs = gc.getGeometries();
+          expect(gs).to.be.an(Array);
+          expect(gs).to.have.length(1);
+          expect(gs[0]).to.be.an(LineString);
+          expect(gs[0].getCoordinates()).to.eql(lineString.getCoordinates());
           const fillStyle = style.getFill();
           expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(style.getImage()).to.be(getDefaultImageStyle());
-          expect(style.getStroke()).to.be(null);
+          const strokeStyle = style.getStroke();
+          expect(strokeStyle).to.be.an(Stroke);
+          expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+          expect(strokeStyle.getWidth()).to.be(9);
           expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
+
+          const style1 = styleArray[1];
+          expect(style1).to.be.an(Style);
+          expect(style1.getGeometryFunction()(lineStringFeature)).to.be(undefined);
+          expect(style1.getGeometryFunction()(polygonFeature)).to.be(polygon);
+          const gc1 = style1.getGeometryFunction()(collectionFeature);
+          expect(gc1).to.be.an(GeometryCollection);
+          const gs1 = gc1.getGeometries();
+          expect(gs1).to.be.an(Array);
+          expect(gs1).to.have.length(1);
+          expect(gs1[0]).to.be.an(Polygon);
+          expect(gs1[0].getCoordinates()).to.eql(polygon.getCoordinates());
+          expect(style1.getFill()).to.be(fillStyle);
+          expect(style1.getStroke()).to.be(null);
+          expect(style1.getZIndex()).to.be(undefined);
         });
 
         it('disables both fill and stroke when fill and outline are \'0\'',
           function() {
+            const lineString = new LineString([[1, 2], [3, 4]]);
+            const polygon = new Polygon([[[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]]]);
+            const lineStringFeature = new Feature(lineString);
+            const polygonFeature = new Feature(polygon);
+            const collectionFeature = new Feature(new GeometryCollection([lineString, polygon]));
             const text =
                   '<kml xmlns="http://earth.google.com/kml/2.2">' +
                   '  <Placemark>' +
@@ -2228,17 +2266,45 @@ describe('ol.format.KML', function() {
             expect(styleFunction).not.to.be(undefined);
             const styleArray = styleFunction(f, 0);
             expect(styleArray).to.be.an(Array);
-            expect(styleArray).to.have.length(1);
+            expect(styleArray).to.have.length(2);
+
             const style = styleArray[0];
             expect(style).to.be.an(Style);
+            expect(style.getGeometryFunction()(lineStringFeature)).to.be(lineString);
+            expect(style.getGeometryFunction()(polygonFeature)).to.be(undefined);
+            const gc = style.getGeometryFunction()(collectionFeature);
+            expect(gc).to.be.an(GeometryCollection);
+            const gs = gc.getGeometries();
+            expect(gs).to.be.an(Array);
+            expect(gs).to.have.length(1);
+            expect(gs[0]).to.be.an(LineString);
+            expect(gs[0].getCoordinates()).to.eql(lineString.getCoordinates());
             expect(style.getFill()).to.be(null);
             expect(style.getImage()).to.be(getDefaultImageStyle());
-            expect(style.getStroke()).to.be(null);
+            const strokeStyle = style.getStroke();
+            expect(strokeStyle).to.be.an(Stroke);
+            expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+            expect(strokeStyle.getWidth()).to.be(9);
             expect(style.getText()).to.be(getDefaultTextStyle());
             expect(style.getZIndex()).to.be(undefined);
+
+            const style1 = styleArray[1];
+            expect(style1).to.be.an(Style);
+            expect(style1.getGeometryFunction()(lineStringFeature)).to.be(undefined);
+            expect(style1.getGeometryFunction()(polygonFeature)).to.be(polygon);
+            const gc1 = style1.getGeometryFunction()(collectionFeature);
+            expect(gc1).to.be.an(GeometryCollection);
+            const gs1 = gc1.getGeometries();
+            expect(gs1).to.be.an(Array);
+            expect(gs1).to.have.length(1);
+            expect(gs1[0]).to.be.an(Polygon);
+            expect(gs1[0].getCoordinates()).to.eql(polygon.getCoordinates());
+            expect(style1.getFill()).to.be(null);
+            expect(style1.getStroke()).to.be(null);
+            expect(style1.getZIndex()).to.be(undefined);
           });
 
-        it('can create text style for named point placemarks', function() {
+        it('can create text style for named point placemarks (including html character codes)', function() {
           const text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
               ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2266,7 +2332,7 @@ describe('ol.format.KML', function() {
               '    </Pair>' +
               '  </StyleMap>' +
               '  <Placemark>' +
-              '    <name>Test</name>' +
+              '    <name>Joe&apos;s Test</name>' +
               '    <styleUrl>#msn_ylw-pushpin0</styleUrl>' +
               '    <Point>' +
               '      <coordinates>1,2</coordinates>' +
@@ -2279,61 +2345,9 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
-          const style = styleArray[1];
+          const style = styleFunction(f, 0);
           expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
-        });
-
-        it('can create text style for named point placemarks', function() {
-          const text =
-              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
-              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
-              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
-              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
-              '  <Style id="sh_ylw-pushpin">' +
-              '    <IconStyle>' +
-              '      <scale>0.3</scale>' +
-              '      <Icon>' +
-              '        <href>http://maps.google.com/mapfiles/kml/pushpin/' +
-              'ylw-pushpin.png</href>' +
-              '      </Icon>' +
-              '      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>' +
-              '    </IconStyle>' +
-              '  </Style>' +
-              '  <StyleMap id="msn_ylw-pushpin0">' +
-              '    <Pair>' +
-              '      <key>normal</key>' +
-              '      <styleUrl>#sn_ylw-pushpin</styleUrl>' +
-              '    </Pair>' +
-              '    <Pair>' +
-              '      <key>highlight</key>' +
-              '      <styleUrl>#sh_ylw-pushpin</styleUrl>' +
-              '    </Pair>' +
-              '  </StyleMap>' +
-              '  <Placemark>' +
-              '    <name>Test</name>' +
-              '    <styleUrl>#msn_ylw-pushpin0</styleUrl>' +
-              '    <Point>' +
-              '      <coordinates>1,2</coordinates>' +
-              '    </Point>' +
-              '  </Placemark>' +
-              '</kml>';
-          const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          const f = fs[0];
-          expect(f).to.be.an(Feature);
-          const styleFunction = f.getStyleFunction();
-          expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction(f, 0);
-          expect(styleArray).to.be.an(Array);
-          expect(styleArray).to.have.length(2);
-          const style = styleArray[1];
-          expect(style).to.be.an(Style);
-          expect(style.getText().getText()).to.eql(f.getProperties()['name']);
+          expect(style.getText().getText()).to.eql('Joe\'s Test');
         });
 
         it('can write an feature\'s icon style', function() {
@@ -3462,11 +3476,38 @@ describe('ol.format.KML', function() {
         expect(styleFunction).not.to.be(undefined);
         const styleArray = styleFunction(f, 0);
         expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(2);
+
         const style = styleArray[0];
         expect(style).to.be.an(Style);
+        const gc = style.getGeometryFunction()(f);
+        expect(gc).to.be.an(GeometryCollection);
+        const gs = gc.getGeometries();
+        expect(gs).to.be.an(Array);
+        expect(gs).to.have.length(1);
+        expect(gs[0]).to.be.an(Point);
+        expect(gs[0].getCoordinates()).to.eql(f.getGeometry().getGeometries()[0].getCoordinates());
         const imageStyle = style.getImage();
         expect(imageStyle).to.be.an(Icon);
+        expect(imageStyle.getScale()).to.eql(0.4);
         expect(imageStyle.getSrc()).to.eql('http://maps.google.com/mapfiles/kml/shapes/star.png');
+        const textStyle = style.getText();
+        expect(textStyle).to.be.an(Text);
+        const textFillStyle = textStyle.getFill();
+        expect(textFillStyle).to.be.an(Fill);
+        expect(textFillStyle.getColor()).to.eql([0xff, 0xff, 0x00, 0x99 / 255]);
+        expect(textStyle.getText()).to.eql(f.get('name'));
+
+        const style1 = styleArray[1];
+        expect(style1).to.be.an(Style);
+        expect(style1.getGeometryFunction()(f)).to.be(f.getGeometry());
+        expect(style1.getFill()).to.be(null);
+        expect(style1.getImage()).to.be(null);
+        const strokeStyle = style1.getStroke();
+        expect(strokeStyle).to.be.an(Stroke);
+        expect(strokeStyle.getColor()).to.eql([0xff, 0x00, 0xff, 0xff / 255]);
+        expect(strokeStyle.getWidth()).to.be(2);
+        expect(style1.getText()).to.be(null);
       });
 
     });

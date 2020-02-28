@@ -63,13 +63,19 @@ describe('ol.source.Tile', function() {
       const source = new TileSource({});
       expect(source.tileCache.highWaterMark).to.be(4 * Math.ceil(screen.availWidth / 256) * Math.ceil(screen.availHeight / 256));
     });
+    it('ignores a cache size that is too small', function() {
+      const source = new TileSource({
+        cacheSize: 1
+      });
+      expect(source.tileCache.highWaterMark).to.be(4 * Math.ceil(screen.availWidth / 256) * Math.ceil(screen.availHeight / 256));
+    });
     it('sets a custom cache size', function() {
       const projection = getProjection('EPSG:4326');
       const source = new TileSource({
         projection: projection,
-        cacheSize: 42
+        cacheSize: 442
       });
-      expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(42);
+      expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(442);
     });
   });
 

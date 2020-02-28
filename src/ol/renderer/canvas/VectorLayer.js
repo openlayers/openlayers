@@ -329,6 +329,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   prepareFrame(frameState) {
     const vectorLayer = this.getLayer();
     const vectorSource = vectorLayer.getSource();
+    if (!vectorSource) {
+      return false;
+    }
 
     const animating = frameState.viewHints[ViewHint.ANIMATING];
     const interacting = frameState.viewHints[ViewHint.INTERACTING];
@@ -384,9 +387,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return true;
     }
 
-    if (this.replayGroup_) {
-      this.replayGroup_.dispose();
-    }
     this.replayGroup_ = null;
 
     this.dirty_ = false;
@@ -457,7 +457,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
-   * @param {import("../../proj.js").TransformFunction} opt_transform Transform from user to view projection.
+   * @param {import("../../proj.js").TransformFunction=} opt_transform Transform from user to view projection.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(feature, squaredTolerance, styles, builderGroup, opt_transform) {

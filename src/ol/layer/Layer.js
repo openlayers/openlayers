@@ -9,6 +9,7 @@ import LayerProperty from './Property.js';
 import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
+import {assert} from '../asserts.js';
 
 /**
  * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
@@ -29,6 +30,10 @@ import SourceState from '../source/State.js';
  * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * visible.
+ * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {import("../source/Source.js").default} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer#setSource layer.setSource(source)} after
@@ -243,7 +248,13 @@ class Layer extends BaseLayer {
     if (map) {
       this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
         const renderEvent = /** @type {import("../render/Event.js").default} */ (evt);
-        renderEvent.frameState.layerStatesArray.push(this.getLayerState(false));
+        const layerStatesArray = renderEvent.frameState.layerStatesArray;
+        const layerState = this.getLayerState(false);
+        // A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.
+        assert(!layerStatesArray.some(function(arrayLayerState) {
+          return arrayLayerState.layer === layerState.layer;
+        }), 67);
+        layerStatesArray.push(layerState);
       }, this);
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();

@@ -26,7 +26,7 @@ export class CollectionEvent extends Event {
   /**
    * @param {CollectionEventType} type Type.
    * @param {*=} opt_element Element.
-   * @param {number} opt_index The index of the added or removed element.
+   * @param {number=} opt_index The index of the added or removed element.
    */
   constructor(type, opt_element, opt_index) {
     super(type);

@@ -4,7 +4,7 @@ import VectorTileSource from '../src/ol/source/VectorTile.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 import olms from 'ol-mapbox-style';
-import {defaultResolutions} from 'ol-mapbox-style/util.js';
+import {defaultResolutions} from 'ol-mapbox-style/dist/util.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 

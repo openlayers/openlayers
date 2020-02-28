@@ -7,7 +7,7 @@ import {createEmpty, createOrUpdate,
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import {drawImage, defaultPadding, defaultTextBaseline} from '../canvas.js';
+import {drawImageOrLabel, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {
@@ -16,9 +16,7 @@ import {
   apply as applyTransform,
   setFromArray as transformSetFromArray
 } from '../../transform.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
-import Disposable from '../../Disposable.js';
+import {defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import RBush from 'rbush/rbush.js';
 
 
@@ -52,7 +50,7 @@ const p3 = [];
 const p4 = [];
 
 
-class Executor extends Disposable {
+class Executor {
   /**
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
@@ -60,7 +58,6 @@ class Executor extends Disposable {
    * @param {SerializableInstructions} instructions The serializable instructions
    */
   constructor(resolution, pixelRatio, overlaps, instructions) {
-    super();
 
     /**
      * @protected
@@ -154,85 +151,84 @@ class Executor extends Disposable {
      * @type {Object<string, Object<string, number>>}
      */
     this.widths_ = {};
-  }
 
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    labelCache.release(this);
-    super.disposeInternal();
+    /**
+     * @private
+     * @type {Object<string, import("../canvas.js").Label>}
+     */
+    this.labels_ = {};
   }
-
 
   /**
    * @param {string} text Text.
    * @param {string} textKey Text style key.
    * @param {string} fillKey Fill style key.
    * @param {string} strokeKey Stroke style key.
-   * @return {HTMLCanvasElement} Image.
+   * @return {import("../canvas.js").Label} Label.
    */
-  getTextImage(text, textKey, fillKey, strokeKey) {
-    let label;
-    const key = strokeKey + textKey + text + fillKey + this.pixelRatio;
+  createLabel(text, textKey, fillKey, strokeKey) {
+    const key = text + textKey + fillKey + strokeKey;
+    if (this.labels_[key]) {
+      return this.labels_[key];
+    }
+    const strokeState = strokeKey ? this.strokeStates[strokeKey] : null;
+    const fillState = fillKey ? this.fillStates[fillKey] : null;
+    const textState = this.textStates[textKey];
+    const pixelRatio = this.pixelRatio;
+    const scale = textState.scale * pixelRatio;
+    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
-    if (!labelCache.containsKey(key)) {
-      const strokeState = strokeKey ? this.strokeStates[strokeKey] : null;
-      const fillState = fillKey ? this.fillStates[fillKey] : null;
-      const textState = this.textStates[textKey];
-      const pixelRatio = this.pixelRatio;
-      const scale = textState.scale * pixelRatio;
-      const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
-      const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
-
-      const lines = text.split('\n');
-      const numLines = lines.length;
-      const widths = [];
-      const width = measureTextWidths(textState.font, lines, widths);
-      const lineHeight = measureTextHeight(textState.font);
-      const height = lineHeight * numLines;
-      const renderWidth = width + strokeWidth;
-      const context = createCanvasContext2D(
-        // make canvas 2 pixels wider to account for italic text width measurement errors
-        Math.ceil((renderWidth + 2) * scale),
-        Math.ceil((height + strokeWidth) * scale));
-      label = context.canvas;
-      labelCache.set(key, label);
-      if (scale != 1) {
-        context.scale(scale, scale);
-      }
-      context.font = textState.font;
-      if (strokeKey) {
-        context.strokeStyle = strokeState.strokeStyle;
-        context.lineWidth = strokeWidth;
-        context.lineCap = strokeState.lineCap;
-        context.lineJoin = strokeState.lineJoin;
-        context.miterLimit = strokeState.miterLimit;
-        if (context.setLineDash && strokeState.lineDash.length) {
-          context.setLineDash(strokeState.lineDash);
-          context.lineDashOffset = strokeState.lineDashOffset;
-        }
-      }
-      if (fillKey) {
-        context.fillStyle = fillState.fillStyle;
-      }
-      context.textBaseline = 'middle';
-      context.textAlign = 'center';
-      const leftRight = (0.5 - align);
-      const x = align * renderWidth + leftRight * strokeWidth;
-      let i;
-      if (strokeKey) {
-        for (i = 0; i < numLines; ++i) {
-          context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
-        }
-      }
-      if (fillKey) {
-        for (i = 0; i < numLines; ++i) {
-          context.fillText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
-        }
+    const lines = text.split('\n');
+    const numLines = lines.length;
+    const widths = [];
+    const width = measureTextWidths(textState.font, lines, widths);
+    const lineHeight = measureTextHeight(textState.font);
+    const height = lineHeight * numLines;
+    const renderWidth = width + strokeWidth;
+    const contextInstructions = [];
+    /** @type {import("../canvas.js").Label} */
+    const label = {
+      // make canvas 2 pixels wider to account for italic text width measurement errors
+      width: Math.ceil((renderWidth + 2) * scale),
+      height: Math.ceil((height + strokeWidth) * scale),
+      contextInstructions: contextInstructions
+    };
+    if (scale != 1) {
+      contextInstructions.push('scale', [scale, scale]);
+    }
+    contextInstructions.push('font', textState.font);
+    if (strokeKey) {
+      contextInstructions.push('strokeStyle', strokeState.strokeStyle);
+      contextInstructions.push('lineWidth', strokeWidth);
+      contextInstructions.push('lineCap', strokeState.lineCap);
+      contextInstructions.push('lineJoin', strokeState.lineJoin);
+      contextInstructions.push('miterLimit', strokeState.miterLimit);
+      if (CanvasRenderingContext2D.prototype.setLineDash) {
+        contextInstructions.push('setLineDash', [strokeState.lineDash]);
+        contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
       }
     }
-    return labelCache.get(key, this);
+    if (fillKey) {
+      contextInstructions.push('fillStyle', fillState.fillStyle);
+    }
+    contextInstructions.push('textBaseline', 'middle');
+    contextInstructions.push('textAlign', 'center');
+    const leftRight = (0.5 - align);
+    const x = align * renderWidth + leftRight * strokeWidth;
+    let i;
+    if (strokeKey) {
+      for (i = 0; i < numLines; ++i) {
+        contextInstructions.push('strokeText', [lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight]);
+      }
+    }
+    if (fillKey) {
+      for (i = 0; i < numLines; ++i) {
+        contextInstructions.push('fillText', [lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight]);
+      }
+    }
+    this.labels_[key] = label;
+    return label;
   }
 
   /**
@@ -265,7 +261,7 @@ class Executor extends Disposable {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} x X.
    * @param {number} y Y.
-   * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
+   * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
    * @param {number} anchorX Anchor X.
    * @param {number} anchorY Anchor Y.
    * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
@@ -281,11 +277,11 @@ class Executor extends Disposable {
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
    */
-  replayImage_(
+  replayImageOrLabel_(
     context,
     x,
     y,
-    image,
+    imageOrLabel,
     anchorX,
     anchorY,
     declutterGroup,
@@ -307,8 +303,8 @@ class Executor extends Disposable {
     x -= anchorX;
     y -= anchorY;
 
-    const w = (width + originX > image.width) ? image.width - originX : width;
-    const h = (height + originY > image.height) ? image.height - originY : height;
+    const w = (width + originX > imageOrLabel.width) ? imageOrLabel.width - originX : width;
+    const h = (height + originY > imageOrLabel.height) ? imageOrLabel.height - originY : height;
     const boxW = padding[3] + w * scale + padding[1];
     const boxH = padding[0] + h * scale + padding[2];
     const boxX = x - padding[3];
@@ -362,11 +358,11 @@ class Executor extends Disposable {
       }
       extend(declutterGroup, tmpExtent);
       const declutterArgs = intersects ?
-        [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
+        [context, transform ? transform.slice(0) : null, opacity, imageOrLabel, originX, originY, w, h, x, y, scale] :
         null;
       if (declutterArgs) {
         if (fillStroke) {
-          declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
+          declutterArgs.push(fillInstruction, strokeInstruction, p1.slice(0), p2.slice(0), p3.slice(0), p4.slice(0));
         }
         declutterGroup.push(declutterArgs);
       }
@@ -376,7 +372,7 @@ class Executor extends Disposable {
           /** @type {Array<*>} */ (fillInstruction),
           /** @type {Array<*>} */ (strokeInstruction));
       }
-      drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
+      drawImageOrLabel(context, transform, opacity, imageOrLabel, originX, originY, w, h, x, y, scale);
     }
   }
 
@@ -451,7 +447,7 @@ class Executor extends Disposable {
                 declutterData[13], declutterData[14], declutterData[15], declutterData[16],
                 declutterData[11], declutterData[12]);
             }
-            drawImage.apply(undefined, declutterData);
+            drawImageOrLabel.apply(undefined, declutterData);
             if (currentAlpha !== opacity) {
               context.globalAlpha = currentAlpha;
             }
@@ -470,12 +466,12 @@ class Executor extends Disposable {
    * @param {string} textKey The key of the text state.
    * @param {string} strokeKey The key for the stroke state.
    * @param {string} fillKey The key for the fill state.
-   * @return {{label: HTMLCanvasElement, anchorX: number, anchorY: number}} The text image and its anchor.
+   * @return {{label: import("../canvas.js").Label, anchorX: number, anchorY: number}} The text image and its anchor.
    */
-  drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey) {
+  drawLabelWithPointPlacement_(text, textKey, strokeKey, fillKey) {
     const textState = this.textStates[textKey];
 
-    const label = this.getTextImage(text, textKey, fillKey, strokeKey);
+    const label = this.createLabel(text, textKey, fillKey, strokeKey);
 
     const strokeState = this.strokeStates[strokeKey];
     const pixelRatio = this.pixelRatio;
@@ -483,7 +479,7 @@ class Executor extends Disposable {
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
-    // Remove the 2 pixels we added in getTextImage() for the anchor
+    // Remove the 2 pixels we added in createLabel() for the anchor
     const width = label.width / pixelRatio - 2 * textState.scale;
     const anchorX = align * width + 2 * (0.5 - align) * strokeWidth;
     const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
@@ -648,7 +644,7 @@ class Executor extends Disposable {
             textKey = /** @type {string} */ (instruction[19]);
             strokeKey = /** @type {string} */ (instruction[20]);
             fillKey = /** @type {string} */ (instruction[21]);
-            const labelWithAnchor = this.drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey);
+            const labelWithAnchor = this.drawLabelWithPointPlacement_(text, textKey, strokeKey, fillKey);
             image = labelWithAnchor.label;
             instruction[3] = image;
             const textOffsetX = /** @type {number} */ (instruction[22]);
@@ -701,7 +697,7 @@ class Executor extends Disposable {
               }
               declutterGroup = declutterGroups[index];
             }
-            this.replayImage_(context,
+            this.replayImageOrLabel_(context,
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
               declutterGroup, height, opacity, originX, originY, rotation, scale,
               snapToPixel, width, padding,
@@ -758,10 +754,10 @@ class Executor extends Disposable {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = this.getTextImage(chars, textKey, '', strokeKey);
+                  label = this.createLabel(chars, textKey, '', strokeKey);
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                  this.replayImage_(context,
+                  this.replayImageOrLabel_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                     /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
@@ -772,10 +768,10 @@ class Executor extends Disposable {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = this.getTextImage(chars, textKey, fillKey, '');
+                  label = this.createLabel(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
-                  this.replayImage_(context,
+                  this.replayImageOrLabel_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                     /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,

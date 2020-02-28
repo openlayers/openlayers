@@ -13,16 +13,17 @@ const vectorSource = new VectorSource();
 function createFeatures(stroke, fill, offSet = [0, 0]) {
   let feature;
   feature = new Feature({
-    geometry: new Point([-15 + offSet[0], 15 + offSet[1]])
+    geometry: new Point([offSet[0], offSet[1]])
   });
-  // square
+  // square with offset
   feature.setStyle(new Style({
     image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,
       radius: 10,
-      angle: Math.PI / 4
+      angle: Math.PI / 4,
+      displacement: [-15, 15]
     })
   }));
   vectorSource.addFeature(feature);

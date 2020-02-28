@@ -378,6 +378,11 @@ function createStyleDefaults() {
 
 }
 
+/**
+ * @type {HTMLTextAreaElement}
+ */
+let TEXTAREA;
+
 
 /**
  * @typedef {Object} Options
@@ -877,32 +882,32 @@ class KML extends XMLFeature {
  * @return {Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
-  let textStyle = null;
   const textOffset = [0, 0];
   let textAlign = 'start';
-  if (foundStyle.getImage()) {
-    let imageSize = foundStyle.getImage().getImageSize();
+  const imageStyle = foundStyle.getImage();
+  if (imageStyle) {
+    let imageSize = imageStyle.getImageSize();
     if (imageSize === null) {
       imageSize = DEFAULT_IMAGE_STYLE_SIZE;
     }
     if (imageSize.length == 2) {
-      const imageScale = foundStyle.getImage().getScale();
-      // Offset the label to be centered to the right of the icon, if there is
-      // one.
+      const imageScale = imageStyle.getScale();
+      // Offset the label to be centered to the right of the icon,
+      // if there is one.
       textOffset[0] = imageScale * imageSize[0] / 2;
       textOffset[1] = -imageScale * imageSize[1] / 2;
       textAlign = 'left';
     }
   }
-  if (foundStyle.getText() !== null) {
+  let textStyle = foundStyle.getText();
+  if (textStyle) {
     // clone the text style, customizing it with name, alignments and offset.
     // Note that kml does not support many text options that OpenLayers does (rotation, textBaseline).
-    const foundText = foundStyle.getText();
-    textStyle = foundText.clone();
-    textStyle.setFont(foundText.getFont() || DEFAULT_TEXT_STYLE.getFont());
-    textStyle.setScale(foundText.getScale() || DEFAULT_TEXT_STYLE.getScale());
-    textStyle.setFill(foundText.getFill() || DEFAULT_TEXT_STYLE.getFill());
-    textStyle.setStroke(foundText.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
+    textStyle = textStyle.clone();
+    textStyle.setFont(textStyle.getFont() || DEFAULT_TEXT_STYLE.getFont());
+    textStyle.setScale(textStyle.getScale() || DEFAULT_TEXT_STYLE.getScale());
+    textStyle.setFill(textStyle.getFill() || DEFAULT_TEXT_STYLE.getFill());
+    textStyle.setStroke(textStyle.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
   } else {
     textStyle = DEFAULT_TEXT_STYLE.clone();
   }
@@ -912,7 +917,12 @@ function createNameStyleFunction(foundStyle, name) {
   textStyle.setTextAlign(textAlign);
 
   const nameStyle = new Style({
-    text: textStyle
+    image: imageStyle,
+    text: textStyle,
+    // although nameStyle will be used only for Point geometries
+    // fill and stroke are included to assist writing of MultiGeometry styles
+    fill: foundStyle.getFill(),
+    stroke: foundStyle.getStroke()
   });
   return nameStyle;
 }
@@ -932,45 +942,66 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
     /**
      * @param {Feature} feature feature.
      * @param {number} resolution Resolution.
-     * @return {Array<Style>} Style.
+     * @return {Array<Style>|Style} Style.
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {Style|undefined} */
-      let nameStyle;
       let name = '';
+      let multiGeometryPoints = [];
       if (drawName) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          drawName = geometry.getType() === GeometryType.POINT;
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            multiGeometryPoints = geometry.getGeometriesArray().filter(function(geometry) {
+              const type = geometry.getType();
+              return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+            });
+            drawName = multiGeometryPoints.length > 0;
+          } else {
+            drawName = type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+          }
         }
       }
 
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
         drawName = drawName && !!name;
+        // convert any html character codes
+        if (drawName && name.search(/&[^&]+;/) > -1) {
+          if (!TEXTAREA) {
+            TEXTAREA = document.createElement('textarea');
+          }
+          TEXTAREA.innerHTML = name;
+          name = TEXTAREA.value;
+        }
       }
 
+      let featureStyle = defaultStyle;
       if (style) {
-        if (drawName) {
-          nameStyle = createNameStyleFunction(style[0], name);
-          return style.concat(nameStyle);
-        }
-        return style;
-      }
-      if (styleUrl) {
-        const foundStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
-        if (drawName) {
-          nameStyle = createNameStyleFunction(foundStyle[0], name);
-          return foundStyle.concat(nameStyle);
-        }
-        return foundStyle;
+        featureStyle = style;
+      } else if (styleUrl) {
+        featureStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
       }
       if (drawName) {
-        nameStyle = createNameStyleFunction(defaultStyle[0], name);
-        return defaultStyle.concat(nameStyle);
+        const nameStyle = createNameStyleFunction(featureStyle[0], name);
+        if (multiGeometryPoints.length > 0) {
+          // in multigeometries restrict the name style to points and create a
+          // style without image or text for geometries requiring fill or stroke
+          // including any polygon specific style if there is one
+          nameStyle.setGeometry(new GeometryCollection(multiGeometryPoints));
+          const baseStyle = new Style({
+            geometry: featureStyle[0].getGeometry(),
+            image: null,
+            fill: featureStyle[0].getFill(),
+            stroke: featureStyle[0].getStroke(),
+            text: null
+          });
+          return [nameStyle, baseStyle].concat(featureStyle.slice(1));
+        }
+        return nameStyle;
       }
-      return defaultStyle;
+      return featureStyle;
     }
   );
 }
@@ -1759,13 +1790,57 @@ function readStyle(node, objectStack) {
   const textStyle = /** @type {Text} */
       ('textStyle' in styleObject ?
         styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {Stroke} */
+  const strokeStyle = /** @type {Stroke} */
       ('strokeStyle' in styleObject ?
         styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
       (styleObject['outline']);
   if (outline !== undefined && !outline) {
-    strokeStyle = null;
+    // if the polystyle specifies no outline two styles are needed,
+    // one for non-polygon geometries where linestrings require a stroke
+    // and one for polygons where there should be no stroke
+    return [
+      new Style({
+        geometry: function(feature) {
+          const geometry = feature.getGeometry();
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            return new GeometryCollection(
+              geometry.getGeometriesArray().filter(function(geometry) {
+                const type = geometry.getType();
+                return type !== GeometryType.POLYGON && type !== GeometryType.MULTI_POLYGON;
+              })
+            );
+          } else if (type !== GeometryType.POLYGON && type !== GeometryType.MULTI_POLYGON) {
+            return geometry;
+          }
+        },
+        fill: fillStyle,
+        image: imageStyle,
+        stroke: strokeStyle,
+        text: textStyle,
+        zIndex: undefined // FIXME
+      }),
+      new Style({
+        geometry: function(feature) {
+          const geometry = feature.getGeometry();
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            return new GeometryCollection(
+              geometry.getGeometriesArray().filter(function(geometry) {
+                const type = geometry.getType();
+                return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
+              })
+            );
+          } else if (type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON) {
+            return geometry;
+          }
+        },
+        fill: fillStyle,
+        stroke: null,
+        zIndex: undefined // FIXME
+      })
+    ];
   }
   return [new Style({
     fill: fillStyle,
@@ -2527,7 +2602,7 @@ function writeLineStyle(node, style, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
   const properties = {
     'color': style.getColor(),
-    'width': style.getWidth()
+    'width': Number(style.getWidth()) || 1
   };
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = LINE_STYLE_SEQUENCE[parentNode.namespaceURI];

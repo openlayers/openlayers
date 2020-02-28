@@ -6,6 +6,7 @@ import {get as getProjection} from '../../../../src/ol/proj.js';
 import Cluster from '../../../../src/ol/source/Cluster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import EventType from '../../../../src/ol/events/EventType.js';
 
 describe('ol.source.Cluster', function() {
 
@@ -76,3 +77,33 @@ describe('ol.source.Cluster', function() {
   });
 
 });
+
+describe('#setSource', function() {
+  it('removes the change listener from the old source', function() {
+    const source = new VectorSource();
+    const clusterSource = new Cluster({
+      source: source
+    });
+    expect(source.hasListener(EventType.CHANGE)).to.be(true);
+    clusterSource.setSource(null);
+    expect(source.hasListener(EventType.CHANGE)).to.be(false);
+  });
+
+  it('properly removes the previous features', function() {
+    const source = new Cluster({
+      source: new VectorSource({
+        features: [new Feature(new Point([0, 0]))]
+      })
+    });
+
+    const projection = getProjection('EPSG:3857');
+    const extent = [-1, -1, 1, 1];
+    source.loadFeatures(extent, 1, projection);
+
+    expect(source.features.length).to.be(1);
+    source.setSource(null);
+    expect(source.features.length).to.be(0);
+  });
+
+});
+

@@ -188,6 +188,12 @@ function attachModuleSymbols(doclets, modules) {
   });
 }
 
+function getPrettyName(longname) {
+  return longname
+    .split('~')[0]
+    .replace('module:', '');
+}
+
 /**
  * Create the navigation sidebar.
  * @param {object} members The members that will be used to create the sidebar.
@@ -206,10 +212,12 @@ function buildNav(members) {
   // merge namespaces and classes, then sort
   const merged = members.modules.concat(members.classes);
   merged.sort(function(a, b) {
-    if (a.longname > b.longname) {
+    const prettyNameA = getPrettyName(a.longname).toLowerCase();
+    const prettyNameB = getPrettyName(b.longname).toLowerCase();
+    if (prettyNameA > prettyNameB) {
       return 1;
     }
-    if (a.longname < b.longname) {
+    if (prettyNameA < prettyNameB) {
       return -1;
     }
     return 0;
@@ -221,9 +229,7 @@ function buildNav(members) {
       nav.push({
         type: 'class',
         longname: v.longname,
-        prettyname: v.longname
-          .split('~')[0]
-          .replace('module:', ''),
+        prettyname: getPrettyName(v.longname),
         name: v.name,
         module: find({
           kind: 'module',
@@ -268,14 +274,13 @@ function buildNav(members) {
         kind: 'event',
         memberof: v.longname
       });
-      // only add modules that have more to show than just a single class
-      if (classes.length !== 1 && (classes.length + members.length + methods.length + typedefs.length + events.length > 0)) {
+      // Only add modules that contain more than just classes with their
+      // associated Options typedef
+      if (typedefs.length > classes.length || members.length + methods.length > 0) {
         nav.push({
           type: 'module',
           longname: v.longname,
-          prettyname: v.longname
-            .split('~')[0]
-            .replace('module:', ''),
+          prettyname: getPrettyName(v.longname),
           name: v.name,
           members: members,
           methods: methods,
@@ -472,6 +477,7 @@ exports.publish = function(taffyData, opts, tutorials) {
   // index page displays information from package.json and lists files
   const files = find({kind: 'file'});
 
+  view.navigationHtml = helper.resolveLinks(view.partial('navigation.tmpl'));
   generate('Index',
     [{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}].concat(files),
     indexUrl);

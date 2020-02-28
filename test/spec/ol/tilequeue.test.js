@@ -89,20 +89,6 @@ describe('ol.TileQueue', function() {
 
     });
 
-    it('calls #tileChangeCallback_ when all wanted tiles are aborted', function() {
-      const tileChangeCallback = sinon.spy();
-      const queue = new TileQueue(noop, tileChangeCallback);
-      const numTiles = 20;
-      for (let i = 0; i < numTiles; ++i) {
-        const tile = createImageTile();
-        tile.state = TileState.ABORT;
-        queue.enqueue([tile]);
-      }
-      const maxLoading = numTiles / 2;
-      queue.loadMoreTiles(maxLoading, maxLoading);
-      expect(tileChangeCallback.callCount).to.be(1);
-    });
-
   });
 
   describe('heapify', function() {
@@ -144,7 +130,7 @@ describe('ol.TileQueue', function() {
   describe('tile change event', function() {
     const noop = function() {};
 
-    it('abort queued tiles', function() {
+    it('loaded tiles', function() {
       const tq = new TileQueue(noop, noop);
       const tile = createImageTile();
       expect(tile.hasListener('change')).to.be(false);
@@ -152,12 +138,11 @@ describe('ol.TileQueue', function() {
       tq.enqueue([tile]);
       expect(tile.hasListener('change')).to.be(true);
 
-      tile.dispose();
+      tile.setState(TileState.LOADED);
       expect(tile.hasListener('change')).to.be(false);
-      expect(tile.getState()).to.eql(5); // ABORT
     });
 
-    it('abort loading tiles', function() {
+    it('error tiles', function() {
       const tq = new TileQueue(noop, noop);
       const tile = createImageTile(noop);
 
@@ -166,10 +151,9 @@ describe('ol.TileQueue', function() {
       expect(tq.getTilesLoading()).to.eql(1);
       expect(tile.getState()).to.eql(1); // LOADING
 
-      tile.dispose();
+      tile.setState(TileState.ERROR);
       expect(tq.getTilesLoading()).to.eql(0);
       expect(tile.hasListener('change')).to.be(false);
-      expect(tile.getState()).to.eql(5); // ABORT
 
     });
 

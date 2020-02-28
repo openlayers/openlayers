@@ -6,7 +6,7 @@ import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
-import {labelCache, defaultTextAlign, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {defaultTextAlign, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, registerFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import CanvasBuilder from './Builder.js';
 import TextPlacement from '../../style/TextPlacement.js';
@@ -131,8 +131,6 @@ class CanvasTextBuilder extends CanvasBuilder {
      * @type {string}
      */
     this.strokeKey_ = '';
-
-    labelCache.prune();
   }
 
   /**
@@ -433,7 +431,7 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       textState = this.textState_;
       const font = textStyle.getFont() || defaultFont;
-      checkFont(font);
+      registerFont(font);
       const textScale = textStyle.getScale();
       textState.overflow = textStyle.getOverflow();
       textState.font = font;
@@ -461,7 +459,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeState.lineWidth +
         strokeState.lineJoin + strokeState.miterLimit + '[' + strokeState.lineDash.join() + ']' :
         '';
-      this.textKey_ = textState.font + textState.scale + (textState.textAlign || '?');
+      this.textKey_ = textState.font + textState.scale + (textState.textAlign || '?') + (textState.textBaseline || '?');
       this.fillKey_ = fillState ?
         (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + getUid(fillState.fillStyle))) :
         '';

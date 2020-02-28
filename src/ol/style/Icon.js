@@ -33,6 +33,7 @@ import ImageStyle from './Image.js';
  * to provide the size of the image, with the `imgSize` option.
  * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
+ * @property {Array<number>} [displacement=[0,0]] Displacement the icon
  * @property {import("./IconOrigin.js").default} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
  * @property {number} [opacity=1] Opacity of the icon.
@@ -84,6 +85,7 @@ class Icon extends ImageStyle {
       opacity: opacity,
       rotation: rotation,
       scale: scale,
+      displacement: options.displacement !== undefined ? options.displacement : [0, 0],
       rotateWithView: rotateWithView
     });
 
@@ -177,7 +179,6 @@ class Icon extends ImageStyle {
      * @type {Array<number>}
      */
     this.offset_ = options.offset !== undefined ? options.offset : [0, 0];
-
     /**
      * @private
      * @type {import("./IconOrigin.js").default}
@@ -336,6 +337,7 @@ class Icon extends ImageStyle {
       return this.origin_;
     }
     let offset = this.offset_;
+    const displacement = this.getDisplacement();
 
     if (this.offsetOrigin_ != IconOrigin.TOP_LEFT) {
       const size = this.getSize();
@@ -353,6 +355,8 @@ class Icon extends ImageStyle {
         offset[1] = iconImageSize[1] - size[1] - offset[1];
       }
     }
+    offset[0] += displacement[0];
+    offset[1] += displacement[1];
     this.origin_ = offset;
     return this.origin_;
   }

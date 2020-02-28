@@ -404,16 +404,17 @@ describe('ol.tilegrid.TileGrid', function() {
     it('respects configuration options', function() {
       const tileGrid = createXYZ({
         extent: [10, 20, 30, 40],
+        maxResolution: 10 / 128,
         minZoom: 1,
         maxZoom: 2,
         tileSize: 128
       });
       expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+      expect(tileGrid.getResolutions()).to.eql([10 / 128, 5 / 128, 2.5 / 128]);
       expect(tileGrid.getMinZoom()).to.equal(1);
       expect(tileGrid.getMaxZoom()).to.equal(2);
       expect(tileGrid.getTileSize()).to.equal(128);
     });
-
   });
 
   describe('getForProjection', function() {

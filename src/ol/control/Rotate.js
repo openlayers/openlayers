@@ -131,8 +131,9 @@ class Rotate extends Control {
       // upon it
       return;
     }
-    if (view.getRotation() !== undefined) {
-      if (this.duration_ > 0) {
+    const rotation = view.getRotation();
+    if (rotation !== undefined) {
+      if (this.duration_ > 0 && rotation % (2 * Math.PI) !== 0) {
         view.animate({
           rotation: 0,
           duration: this.duration_,
@@ -150,7 +151,6 @@ class Rotate extends Control {
  * Update the rotate control element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
  * @this {Rotate}
- * @api
  */
 export function render(mapEvent) {
   const frameState = mapEvent.frameState;

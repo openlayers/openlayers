@@ -362,7 +362,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
       projection, extent, z, tileLayer.getPreload());
-    this.updateCacheSize_(frameState, tileSource);
     this.scheduleExpireCache(frameState, tileSource);
 
     this.postRender(context, frameState);
@@ -472,27 +471,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       usedTiles[tileSourceKey] = {};
     }
     usedTiles[tileSourceKey][tile.getKey()] = true;
-  }
-
-  /**
-   * Check if the cache is big enough, and increase its size if necessary.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../source/Tile.js").default} tileSource Tile source.
-   * @private
-   */
-  updateCacheSize_(frameState, tileSource) {
-    const tileSourceKey = getUid(tileSource);
-    let size = 0;
-    if (tileSourceKey in frameState.usedTiles) {
-      size += Object.keys(frameState.usedTiles[tileSourceKey]).length;
-    }
-    if (tileSourceKey in frameState.wantedTiles) {
-      size += Object.keys(frameState.wantedTiles[tileSourceKey]).length;
-    }
-    const tileCache = tileSource.tileCache;
-    if (tileCache.highWaterMark < size) {
-      tileCache.highWaterMark = size;
-    }
   }
 
   /**

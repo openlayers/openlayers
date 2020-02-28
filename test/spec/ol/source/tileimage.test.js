@@ -26,9 +26,9 @@ describe('ol.source.TileImage', function() {
 
   describe('#getTileCacheForProjection', function() {
     it('uses the cacheSize for reprojected tile caches', function() {
-      const source = createSource(undefined, undefined, 42);
+      const source = createSource(undefined, undefined, 442);
       const tileCache = source.getTileCacheForProjection(getProjection('EPSG:4326'));
-      expect(tileCache.highWaterMark).to.be(42);
+      expect(tileCache.highWaterMark).to.be(442);
       expect(tileCache).to.not.equal(source.getTileCacheForProjection(source.getProjection()));
     });
   });
@@ -217,19 +217,6 @@ describe('ol.source.TileImage', function() {
       });
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
-    });
-
-    it('dispatches tileloadend events for aborted tiles', function() {
-      source.setTileLoadFunction(function() {});
-      const startSpy = sinon.spy();
-      source.on('tileloadstart', startSpy);
-      const endSpy = sinon.spy();
-      source.on('tileloadend', endSpy);
-      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      tile.load();
-      tile.dispose();
-      expect(startSpy.callCount).to.be(1);
-      expect(endSpy.callCount).to.be(1);
     });
   });
 

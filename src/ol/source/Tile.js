@@ -69,24 +69,21 @@ class TileSource extends Source {
      */
     this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
-    let cacheSize = options.cacheSize;
-    if (cacheSize === undefined) {
-      const tileSize = [256, 256];
-      const tileGrid = options.tileGrid;
-      if (tileGrid) {
-        toSize(tileGrid.getTileSize(tileGrid.getMinZoom()), tileSize);
-      }
-      const canUseScreen = typeof screen !== 'undefined';
-      const width = canUseScreen ? (screen.availWidth || screen.width) : 1920;
-      const height = canUseScreen ? (screen.availHeight || screen.height) : 1080;
-      cacheSize = 4 * Math.ceil(width / tileSize[0]) * Math.ceil(height / tileSize[1]);
+    const tileSize = [256, 256];
+    const tileGrid = options.tileGrid;
+    if (tileGrid) {
+      toSize(tileGrid.getTileSize(tileGrid.getMinZoom()), tileSize);
     }
+    const canUseScreen = typeof screen !== 'undefined';
+    const width = canUseScreen ? (screen.availWidth || screen.width) : 1920;
+    const height = canUseScreen ? (screen.availHeight || screen.height) : 1080;
+    const minCacheSize = 4 * Math.ceil(width / tileSize[0]) * Math.ceil(height / tileSize[1]);
 
     /**
      * @protected
      * @type {import("../TileCache.js").default}
      */
-    this.tileCache = new TileCache(cacheSize);
+    this.tileCache = new TileCache(Math.max(minCacheSize, options.cacheSize || 0));
 
     /**
      * @protected
@@ -125,7 +122,7 @@ class TileSource extends Source {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, import("../TileRange.js").default>} usedTiles Used tiles.
+   * @param {!Object<string, boolean>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
     const tileCache = this.getTileCacheForProjection(projection);
@@ -317,9 +314,6 @@ class TileSource extends Source {
     this.tileCache.clear();
   }
 
-  /**
-   * @inheritDoc
-   */
   refresh() {
     this.clear();
     super.refresh();

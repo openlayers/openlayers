@@ -24,15 +24,6 @@ import {extend} from './array.js';
 
 
 /**
- * This document should be used when creating nodes for XML serializations. This
- * document is also used by {@link module:ol/xml~createElementNS}
- * @const
- * @type {Document}
- */
-export const DOCUMENT = document.implementation.createDocument('', '', null);
-
-
-/**
  * @type {string}
  */
 export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instance';
@@ -44,7 +35,7 @@ export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instanc
  * @return {Element} Node.
  */
 export function createElementNS(namespaceURI, qualifiedName) {
-  return DOCUMENT.createElementNS(namespaceURI, qualifiedName);
+  return getDocument().createElementNS(namespaceURI, qualifiedName);
 }
 
 
@@ -493,4 +484,52 @@ export function pushSerializeAndPop(object, serializersNS, nodeFactory, values, 
   objectStack.push(object);
   serialize(serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
   return /** @type {O|undefined} */ (objectStack.pop());
+}
+
+let xmlSerializer_ = undefined;
+
+/**
+ * Register a XMLSerializer. Can be used  to inject a XMLSerializer
+ * where there is no globally available implementation.
+ *
+ * @param {XMLSerializer} xmlSerializer A XMLSerializer.
+ * @api
+ */
+export function registerXMLSerializer(xmlSerializer) {
+  xmlSerializer_ = xmlSerializer;
+}
+
+/**
+ * @return {XMLSerializer} The XMLSerializer.
+ */
+export function getXMLSerializer() {
+  if (xmlSerializer_ === undefined && typeof XMLSerializer !== 'undefined') {
+    xmlSerializer_ = new XMLSerializer();
+  }
+  return xmlSerializer_;
+}
+
+
+let document_ = undefined;
+
+/**
+ * Register a Document to use when creating nodes for XML serializations. Can be used
+ * to inject a Document where there is no globally available implementation.
+ *
+ * @param {Document} document A Document.
+ * @api
+ */
+export function registerDocument(document) {
+  document_ = document;
+}
+
+/**
+ * Get a document that should be used when creating nodes for XML serializations.
+ * @return {Document} The document.
+ */
+export function getDocument() {
+  if (document_ === undefined && typeof document !== 'undefined') {
+    document_ = document.implementation.createDocument('', '', null);
+  }
+  return document_;
 }

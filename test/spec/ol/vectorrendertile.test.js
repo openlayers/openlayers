@@ -1,9 +1,8 @@
 import TileState from '../../../src/ol/TileState.js';
 import {defaultLoadFunction} from '../../../src/ol/source/VectorTile.js';
 import VectorTileSource from '../../../src/ol/source/VectorTile.js';
-import {listen, listenOnce, unlistenByKey} from '../../../src/ol/events.js';
+import {listen, unlistenByKey} from '../../../src/ol/events.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
-import {createXYZ} from '../../../src/ol/tilegrid.js';
 import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 import EventType from '../../../src/ol/events/EventType.js';
 
@@ -92,54 +91,6 @@ describe('ol.VectorRenderTile', function() {
         expect(sourceTiles[0].tileCoord).to.eql([0, 16, 9]);
         done();
       }
-    });
-  });
-
-  it('#dispose() while loading', function() {
-    const source = new VectorTileSource({
-      format: new GeoJSON(),
-      url: 'spec/ol/data/point.json',
-      tileGrid: createXYZ()
-    });
-    source.getTileGridForProjection = function() {
-      return createXYZ({tileSize: 512});
-    };
-    const tile = source.getTile(0, 0, 0, 1, source.getProjection());
-
-    tile.load();
-    expect(tile.getState()).to.be(TileState.LOADING);
-    tile.dispose();
-    expect(source.sourceTilesByTileKey_[tile.getKey()]).to.be(undefined);
-    expect(tile.getState()).to.be(TileState.ABORT);
-  });
-
-  it('#dispose() when source tiles are loaded', function(done) {
-    const source = new VectorTileSource({
-      format: new GeoJSON(),
-      url: 'spec/ol/data/point.json?{z}/{x}/{y}',
-      tileGrid: createXYZ()
-    });
-    source.getTileGridForProjection = function() {
-      return createXYZ({tileSize: 512});
-    };
-    const tile = source.getTile(0, 0, 0, 1, source.getProjection());
-
-    tile.load();
-    listenOnce(tile, 'change', function() {
-      expect(tile.getState()).to.be(TileState.LOADED);
-      expect(tile.loadingSourceTiles).to.be(0);
-      const sourceTiles = source.getSourceTiles(1, source.getProjection(), tile);
-      expect(sourceTiles.length).to.be(4);
-      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        expect(sourceTiles[i].consumers).to.be(1);
-      }
-      tile.dispose();
-      expect(tile.getState()).to.be(TileState.ABORT);
-      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        expect(sourceTiles[i].consumers).to.be(0);
-        expect(sourceTiles[i].getState()).to.be(TileState.ABORT);
-      }
-      done();
     });
   });
 

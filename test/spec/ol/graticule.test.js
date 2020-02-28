@@ -43,9 +43,22 @@ describe('ol.layer.Graticule', function() {
         25614353.926475704, 7827151.696402049];
       const projection = getProjection('EPSG:3857');
       const resolution = 39135.75848201024;
-      const squaredTolerance = resolution * resolution / 4.0;
-      graticule.updateProjectionInfo_(projection);
-      graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
+      graticule.loaderFunction(extent, resolution, projection);
+      const event = {
+        context: document.createElement('canvas').getContext('2d'),
+        inversePixelTransform: [1, 0, 0, 1, 0, 0],
+        frameState: {
+          coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+          extent: extent,
+          pixelRatio: 1,
+          viewState: {
+            projection: projection,
+            resolution: resolution,
+            rotation: 0
+          }
+        }
+      };
+      graticule.drawLabels_(event);
       expect(graticule.meridiansLabels_.length).to.be(13);
       expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
       expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(0, 1e-9);

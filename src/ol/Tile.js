@@ -145,10 +145,9 @@ class Tile extends EventTarget {
   }
 
   /**
-   * @inheritDoc
+   * Called by the tile cache when the tile is removed from the cache due to expiry
    */
-  disposeInternal() {
-    this.setState(TileState.ABORT);
+  release() {
   }
 
   /**

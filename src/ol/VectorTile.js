@@ -19,11 +19,6 @@ class VectorTile extends Tile {
     super(tileCoord, state, opt_options);
 
     /**
-     * @type {number}
-     */
-    this.consumers = 0;
-
-    /**
      * Extent of this tile; set by the source.
      * @type {import("./extent.js").Extent}
      */

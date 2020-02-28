@@ -29,11 +29,11 @@ function executeInstructions(builder, expectedDrawTextImageCalls, expectedBuilde
   const transform = createTransform();
   const context = createContext();
   const executor = new Executor(0.02, 1, false, builder.finish());
-  sinon.spy(executor, 'drawTextImageWithPointPlacement_');
-  const replayImageStub = sinon.stub(executor, 'replayImage_');
+  sinon.spy(executor, 'drawLabelWithPointPlacement_');
+  const replayImageOrLabelStub = sinon.stub(executor, 'replayImageOrLabel_');
   executor.execute(context, transform);
-  expect(executor.drawTextImageWithPointPlacement_.callCount).to.be(expectedDrawTextImageCalls);
-  expect(replayImageStub.callCount).to.be(expectedBuilderImageCalls);
+  expect(executor.drawLabelWithPointPlacement_.callCount).to.be(expectedDrawTextImageCalls);
+  expect(replayImageOrLabelStub.callCount).to.be(expectedBuilderImageCalls);
 }
 
 describe('ol.render.canvas.TextBuilder', function() {

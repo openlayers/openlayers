@@ -33,7 +33,7 @@ $(function () {
 
     if (value && value.length > 1) {
       var regexp = new RegExp(value, 'i');
-      $el.find('li, .itemMembers').hide();
+      $el.find('li, .member-list').hide();
 
       $el.find('li').each(function (i, v) {
         const $item = $(v);
@@ -41,7 +41,7 @@ $(function () {
 
         if (name && regexp.test(name)) {
           const $classEntry = $item.closest('.item');
-          const $members = $item.closest('.itemMembers');
+          const $members = $item.closest('.member-list');
 
           // Do the weight thing
           $classEntry.removeData('weight');
@@ -60,7 +60,7 @@ $(function () {
         .appendTo(".navigation ul.list"); // append again to the list
 
     } else {
-      $el.find('.item, .itemMembers').show();
+      $el.find('.item, .member-list').show();
     }
 
     $el.find('.list').scrollTop(0);
@@ -68,7 +68,7 @@ $(function () {
 
   // Toggle when click an item element
   $('.navigation').on('click', '.toggle', function (e) {
-    $(this).parent().parent().find('.itemMembers').toggle();
+    $(this).parent().parent().find('.member-list').toggle();
   });
 
   // Show an item related a current documentation automatically
@@ -84,7 +84,7 @@ $(function () {
       .remove()
       .prependTo('.navigation .list')
       .show()
-      .find('.itemMembers')
+      .find('.member-list')
       .show();
   }
 
