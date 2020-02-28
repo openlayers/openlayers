@@ -115,7 +115,7 @@ exports.astNodeVisitor = {
   visitNode: function(node, e, parser, currentSourceName) {
     if (node.type === 'Identifier' && node.parent.type === 'ExportDefaultDeclaration') {
       const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
-      defaultExports['module:' + modulePath + '~' + node.name] = true;
+      defaultExports['module:' + modulePath.replace(/\\/g, '/') + '~' + node.name] = true;
     }
   }
 };
