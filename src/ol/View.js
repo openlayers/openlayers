@@ -610,11 +610,12 @@ class View extends BaseObject {
         animationCallback(series[0].callback, false);
       }
       if (!anchor) {
-        const animations = series.filter(function(animation) {
-          return !animation.complete;
-        });
-        if (animations.length > 0) {
-          anchor = animations[0].anchor;
+        for (let j = 0, jj = series.length; j < jj; ++j) {
+          const animation = series[j];
+          if (!animation.complete) {
+            anchor = animation.anchor;
+            break;
+          }
         }
       }
     }
