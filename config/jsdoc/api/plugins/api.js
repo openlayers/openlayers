@@ -120,6 +120,19 @@ exports.astNodeVisitor = {
   }
 };
 
+function sortOtherMembers(doclet) {
+  if (doclet.fires) {
+    doclet.fires.sort(function(a, b) {
+      return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
+    });
+  }
+  if (doclet.observables) {
+    doclet.observables.sort(function(a, b) {
+      return a.name < b.name ? -1 : 1;
+    });
+  }
+}
+
 exports.handlers = {
 
   newDoclet: function(e) {
@@ -149,16 +162,7 @@ exports.handlers = {
         if (doclet.kind == 'class') {
           includeAugments(doclet);
         }
-        if (doclet.fires) {
-          doclet.fires.sort(function(a, b) {
-            return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
-          });
-        }
-        if (doclet.observables) {
-          doclet.observables.sort(function(a, b) {
-            return a.name < b.name ? -1 : 1;
-          });
-        }
+        sortOtherMembers(doclet);
         // Always document namespaces and items with stability annotation
         continue;
       }
@@ -175,6 +179,7 @@ exports.handlers = {
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
+        sortOtherMembers(doclet);
       } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
