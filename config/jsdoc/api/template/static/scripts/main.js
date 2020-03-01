@@ -36,7 +36,7 @@ $(function () {
       }
       // If everything else is equal, prefer shorter names, and prefer classes over modules
       let weight = 10000 + matchedItem.dataset.longname.length - name.length * 100;
-      if (name.match(re.begin)) {
+      if (re.begin.test(name)) {
         weight += 10000;
         if (re.baseName.test(name)) {
           weight += 10000;
@@ -79,6 +79,7 @@ $(function () {
       $currentItem: currentItem ? $(currentItem) : undefined,
       lastSearchTerm: undefined,
       lastState: {},
+      lastClasses: undefined,
       getClassList: function () {
         return $classItems || ($classItems = $navList.find('li.item'));
       },
@@ -143,9 +144,9 @@ $(function () {
       if (state === 'search-empty' && search.$currentItem) {
         search.manualToggle(search.$currentItem, true);
       }
+      search.lastClasses = undefined;
     } else {
       search.changeStateClass('searching');
-      searchTerm = searchTerm.toLowerCase();
       const beginOnly = searchTerm.length < minInputForFullText;
       const getSearchWeight = getWeightFunction(searchTerm, allowRegex);
       const re = constructRegex(searchTerm, function (searchTerm) {
@@ -197,13 +198,14 @@ $(function () {
           li.classList.add('match');
         }
       });
+      classes.sort(function (a, b) {
+        return b.weight - a.weight;
+      });
       clearOldMatches(search.lastState, searchState);
       search.lastState = searchState;
+      search.lastClasses = classes;
 
-      classes.sort(function (a, b) {
-        return a.weight - b.weight;
-      });
-      for (let i = classes.length - 1; i >= 0; --i) {
+      for (let i = 0, ii = classes.length; i < ii; ++i) {
         navList.appendChild(classes[i].item);
       }
     }
@@ -217,15 +219,24 @@ $(function () {
       key = setTimeout(function () {
         key = undefined;
 
-        const searchTerm = searchInput.value;
-        doSearch(searchTerm);
+        doSearch(searchInput.value);
       }, 0);
     }
   }
 
   // Search Items
   searchInput.addEventListener('input', queueSearch);
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      doSearch(searchInput.value);
+      const first = search.lastClasses ? search.lastClasses[0].item : null;
+      if (first) {
+        window.location.href = first.querySelector('.title a').href;
+      }
+    }
+  });
   doSearch(searchInput.value);
+  searchInput.focus();
 
   // Toggle when click an item element
   search.$navList.on('click', '.toggle', function (e) {
