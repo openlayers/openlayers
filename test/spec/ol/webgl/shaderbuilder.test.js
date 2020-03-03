@@ -511,6 +511,20 @@ void main(void) {
       expect(result.uniforms).to.have.property('u_ratio');
     });
 
+    it('parses a style with a rotation expression using an attribute', function() {
+      const result = parseLiteralStyle({
+        symbol: {
+          symbolType: 'square',
+          size: 6,
+          rotation: ['get', 'heading']
+        }
+      });
+
+      expect(result.builder.attributes).to.eql(['float a_heading']);
+      expect(result.builder.varyings).to.eql([]);
+      expect(result.builder.rotationExpression).to.eql('a_heading');
+    });
+
     it('correctly adds string variables to the string literals mapping', function() {
       const result = parseLiteralStyle({
         variables: {
