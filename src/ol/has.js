@@ -37,7 +37,13 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api
  */
-export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+export const DEVICE_PIXEL_RATIO = (function() {
+  try {
+    return self.devicePixelRatio;
+  } catch (e) {
+    return window.devicePixelRatio || 1;
+  }
+})();
 
 /**
  * Image.prototype.decode() is supported.
