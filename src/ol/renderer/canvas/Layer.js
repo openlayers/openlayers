@@ -73,7 +73,7 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {HTMLCanvasElement}
      * @private
      */
-    this.createTransformStringCanvas_ = createCanvasContext2D(1, 1).canvas;
+    this.createTransformStringCanvas_ = 'document' in self ? createCanvasContext2D(1, 1).canvas : null;
 
   }
 
@@ -274,8 +274,12 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @return {string} CSS transform.
    */
   createTransformString(transform) {
-    this.createTransformStringCanvas_.style.transform = toString(transform);
-    return this.createTransformStringCanvas_.style.transform;
+    if (this.createTransformStringCanvas_) {
+      this.createTransformStringCanvas_.style.transform = toString(transform);
+      return this.createTransformStringCanvas_.style.transform;
+    } else {
+      return toString(transform);
+    }
   }
 
 }
