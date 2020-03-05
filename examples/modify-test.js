@@ -140,8 +140,7 @@ const geojsonObject = {
 };
 
 const source = new VectorSource({
-  features: (new GeoJSON()).readFeatures(geojsonObject),
-  wrapX: false
+  features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
 const layer = new VectorLayer({
