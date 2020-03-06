@@ -72,6 +72,8 @@ class GlTile extends Tile {
       context2d.drawImage(gl.canvas, 0, 0);
       this.canvas_ = context2d.canvas;
 
+      this.setState(TileState.LOADED);
+
       return context2d.canvas;
     });
   }
@@ -157,11 +159,11 @@ class GlTiles extends XYZ {
     /// to handle a dynamic tile size (knowing the maximum tile area, then rendering
     /// only in the needed area for the given zoom level), but that's left as a TODO.
 
-    if (!options.tileGrid.tileSize_) {
+    if (!this.tileGrid.tileSize_) {
       throw new Error('GlTiles can not work on a tileGrid with multiple tile sizes.');
     }
 
-    const tileSize = this.tileGrid.getTileSize();
+    const tileSize = toSize(this.tileGrid.getTileSize());
 
     // Init WebGL context. Mostly copy-pasted from Leaflet.TileLayerGL.
     this._renderer = document.createElement('canvas');
@@ -190,7 +192,7 @@ class GlTiles extends XYZ {
     if (this.tileCache.containsKey(tileCoordKey)) {
       return /** @type {!LabeledTile} */ (this.tileCache.get(tileCoordKey));
     } else {
-      const tileSize = toSize(this.tileGrid.getTileSize(z));
+      const tileSize = toSize(this.tileGrid.getTileSize());
       const tileCoord = [z, x, y];
 
       // Get the projected coords for the tile
@@ -240,11 +242,12 @@ class GlTiles extends XYZ {
 
             return tiff.readRasters({
               window: [x2, h - y1, x1, h - y2],
-              width: 256, // tileSize.x,
-              height: 256, // tileSize.y,
+              width: tileSize[0],
+              height: tileSize[1],
               // resampleMethod: 'nearest',
               samples: [0], /// FIXME: for now, read only the first channel
-              fillValue: -999
+              // fillValue: -999
+              fillValue: 0 /// TODO: allow customizing this
             });
           });
         } else {
@@ -275,28 +278,28 @@ class GlTiles extends XYZ {
     // Force using this vertex shader.
     // Just copy all attributes to predefined variants and set the vertex positions
     const vertexShaderCode =
-			'attribute vec2 aVertexCoords;  ' +
-			'attribute vec2 aTextureCoords;  ' +
-			'attribute vec2 aCRSCoords;  ' +
-			'attribute vec2 aLatLngCoords;  ' +
-			'varying vec2 vTextureCoords;  ' +
-			'varying vec2 vCRSCoords;  ' +
-			'varying vec2 vLatLngCoords;  ' +
-			'void main(void) {  ' +
-			'	gl_Position = vec4(aVertexCoords , 1.0, 1.0);  ' +
-			'	vTextureCoords = aTextureCoords;  ' +
-			'	vCRSCoords = aCRSCoords;  ' +
-			'	vLatLngCoords = aLatLngCoords;  ' +
-			'}';
+      'attribute vec2 aVertexCoords;  ' +
+      'attribute vec2 aTextureCoords;  ' +
+      'attribute vec2 aCRSCoords;  ' +
+      'attribute vec2 aLatLngCoords;  ' +
+      'varying vec2 vTextureCoords;  ' +
+      'varying vec2 vCRSCoords;  ' +
+      'varying vec2 vLatLngCoords;  ' +
+      'void main(void) {  ' +
+      '	gl_Position = vec4(aVertexCoords , 1.0, 1.0);  ' +
+      '	vTextureCoords = aTextureCoords;  ' +
+      '	vCRSCoords = aCRSCoords;  ' +
+      '	vLatLngCoords = aLatLngCoords;  ' +
+      '}';
 
     // Force using this bit for the fragment shader. All fragment shaders
     // will use the same predefined varyings.
     let fragmentShaderHeader =
-			'precision highp float;\n' +
-			'uniform float uNow;\n' +
-			'varying vec2 vTextureCoords;\n' +
-			'varying vec2 vCRSCoords;\n' +
-			'varying vec2 vLatLngCoords;\n';
+      'precision highp float;\n' +
+      'uniform float uNow;\n' +
+      'varying vec2 vTextureCoords;\n' +
+      'varying vec2 vCRSCoords;\n' +
+      'varying vec2 vLatLngCoords;\n';
 
     for (let i = 0; i < this.texSources.length && i < 8; i++) {
       fragmentShaderHeader += 'uniform sampler2D uTexture' + i + ';\n';
@@ -409,57 +412,79 @@ class GlTiles extends XYZ {
 
 
   // Looks at the size of the default values given for the uniforms.
-  // Returns a string valid for defining the uniforms in the shader header.
+  // Returns a string valid for defining the uniforms in the header of the
+  // fragment shader.
   getUniformSizes_() {
-    return '';
-    /// FIXME
-    // 		var defs = "";
-    // 		this._uniformSizes = {};
-    // 		for (var uniformName in this.options.uniforms) {
-    // 			var defaultValue = this.options.uniforms[uniformName];
-    // 			if (typeof defaultValue === "number") {
-    // 				this._uniformSizes[uniformName] = 0;
-    // 				defs += "uniform float " + uniformName + ";\n";
-    // 			} else if (typeof defaultValue === "array") {
-    // 				if (defaultValue.length > 4) {
-    // 					throw new Error("Max size for uniform value is 4 elements");
-    // 				}
-    // 				this._uniformSizes[uniformName] = defaultValue.length;
-    // 				if (defaultValue.length === 1) {
-    // 					defs += "uniform float " + uniformName + ";\n";
-    // 				} else {
-    // 					defs += "uniform vec" + defaultValue.length + " " + uniformName + ";\n";
-    // 				}
-    // 			} else {
-    // 				throw new Error(
-    // 					"Default value for uniforms must be either number or array of numbers"
-    // 				);
-    // 			}
-    // 		}
-    // 		return defs;
+    let defs = '';
+    this._uniformSizes = {};
+    for (const uniformName in this.uniforms) {
+      const defaultValue = this.uniforms[uniformName];
+      if (typeof defaultValue === 'number') {
+        this._uniformSizes[uniformName] = 0;
+        defs += 'uniform float ' + uniformName + ';\n';
+      } else if (defaultValue instanceof Array) {
+        if (defaultValue.length > 4) {
+          throw new Error('Max size for uniform value is 4 elements');
+        }
+        this._uniformSizes[uniformName] = defaultValue.length;
+        if (defaultValue.length === 1) {
+          defs += 'uniform float ' + uniformName + ';\n';
+        } else {
+          defs += 'uniform vec' + defaultValue.length + ' ' + uniformName + ';\n';
+        }
+      } else {
+        throw new Error(
+          'Default value for uniforms must be either number or array of numbers'
+        );
+      }
+    }
+    return defs;
   }
 
 
   // Inits the uNow uniform, and the user-provided uniforms, given the current GL program.
-  // Sets the _isReRenderable property if there are any set uniforms.
+  // TODO: Sets the _isReRenderable property if there are any set uniforms.
   initUniforms_() {
-    /// TODO
-    //     var gl = this._gl;
-    // 		this._uNowPosition = gl.getUniformLocation(program, "uNow");
-    // 		this._isReRenderable = false;
-    //
-    // 		if (this._uNowPosition) {
-    // 			gl.uniform1f(this._uNowPosition, performance.now());
-    // 			this._isReRenderable = true;
-    // 		}
-    //
-    // 		this._uniformLocations = {};
-    // 		for (var uniformName in this.options.uniforms) {
-    // 			this._uniformLocations[uniformName] = gl.getUniformLocation(program, uniformName);
-    // 			this.setUniform(uniformName, this.options.uniforms[uniformName]);
-    // 			this._isReRenderable = true;
-    // 		}
+    const gl = this._gl;
+    this._uNowPosition = gl.getUniformLocation(this._glProgram, 'uNow');
+    // this._isReRenderable = false;
+
+    if (this._uNowPosition) {
+      gl.uniform1f(this._uNowPosition, performance.now());
+      // this._isReRenderable = true;
+    }
+
+    this._uniformLocations = {};
+    for (const uniformName in this.uniforms) {
+      this._uniformLocations[uniformName] = gl.getUniformLocation(this._glProgram, uniformName);
+      this.setUniform(uniformName, this.uniforms[uniformName]);
+      // this._isReRenderable = true;
+    }
   }
+
+  // Sets the value(s) for a uniform.
+  setUniform(name, value) {
+    switch (this._uniformSizes[name]) {
+      case 0:
+        this._gl.uniform1f(this._uniformLocations[name], value);
+        break;
+      case 1:
+        this._gl.uniform1fv(this._uniformLocations[name], value);
+        break;
+      case 2:
+        this._gl.uniform2fv(this._uniformLocations[name], value);
+        break;
+      case 3:
+        this._gl.uniform3fv(this._uniformLocations[name], value);
+        break;
+      case 4:
+        this._gl.uniform4fv(this._uniformLocations[name], value);
+        break;
+      default:
+        throw new Error('Value for setUniform() must be a Number or an Array of up to 4 Numbers');
+    }
+  }
+
 }
 
 
