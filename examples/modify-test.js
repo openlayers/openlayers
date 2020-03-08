@@ -232,6 +232,7 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 1000000],
-    zoom: 2
+    zoom: 2,
+    multiWorld: true
   })
 });
