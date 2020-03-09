@@ -40,16 +40,43 @@ class GlTile extends Tile {
 
     this.gl = gl;
 
-    Promise.all(texFetches).then(loadedTextures =>{
+    this.texFetches_ = texFetches;
+    this.textures_ = textures;
+
+    this.render();
+
+  }
+
+  /**
+  * Get the image element for this tile.
+  * @return {HTMLCanvasElement} Image.
+  */
+  getImage() {
+    return this.canvas_;
+  }
+
+  /**
+  * @override
+  */
+  load() {}
+
+  // (re-)renders the tile
+  render() {
+    const gl = this.gl;
+
+    return Promise.all(this.texFetches_).then(loadedTextures =>{
+      if (this.state === TileState.LOADED) {
+        return;
+      }
 
       // Attach textures to the tile source's already-defined texture buffers
       for (const i in loadedTextures) {
         if (loadedTextures[i] instanceof HTMLImageElement) {
-          bindTextureImageData(gl, textures[i], Number(i), loadedTextures[i]);
+          bindTextureImageData(gl, this.textures_[i], Number(i), loadedTextures[i]);
         } else if (loadedTextures[i][0] && loadedTextures[i][0].BYTES_PER_ELEMENT) {
           // Assume this is the result from a geotiff call, get one of the channels
           // in this case, always channel 0 (as per loadedTextures[i][ **0** ]
-          bindTextureTypedArray(gl, textures[i], Number(i), loadedTextures[i][0], loadedTextures[i].width, loadedTextures[i].height);
+          bindTextureTypedArray(gl, this.textures_[i], Number(i), loadedTextures[i][0], loadedTextures[i].width, loadedTextures[i].height);
         } else {
           throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a GeoTiff slice');
         }
@@ -77,20 +104,6 @@ class GlTile extends Tile {
       return context2d.canvas;
     });
   }
-
-  /**
-  * Get the image element for this tile.
-  * @return {HTMLCanvasElement} Image.
-  */
-  getImage() {
-    return this.canvas_;
-  }
-
-  /**
-  * @override
-  */
-  load() {}
-
 }
 
 
@@ -483,8 +496,23 @@ class GlTiles extends XYZ {
       default:
         throw new Error('Value for setUniform() must be a Number or an Array of up to 4 Numbers');
     }
+    this.reRender();
   }
 
+  // Triggers a re-render of all tiles in this GlTiles source
+  reRender() {
+
+    this.tileCache.forEach((tile, key)=>{
+      // Not using tile.setState(), because rolling back the state of a tile
+      // would throw an exception.
+      tile.state = TileState.LOADING;
+      tile.changed();
+    });
+
+    this.tileCache.forEach((tile, key)=>{
+      tile.render();
+    });
+  }
 }
 
 
