@@ -14,7 +14,7 @@ import proj4 from 'proj4';
 const graticule = new Graticule({
   // the style to use for the lines, optional.
   strokeStyle: new Stroke({
-    color: "rgba(255,120,0,0.9)",
+    color: 'rgba(255,120,0,0.9)',
     width: 2,
     lineDash: [0.5, 4]
   }),
