@@ -35,6 +35,7 @@ describe('ol.View', function() {
         maxResolution: 1000,
         resolution: 1200
       });
+      view.setViewportSize();
       expect(view.getResolution()).to.eql(1000);
       expect(view.targetResolution_).to.eql(1000);
     });
@@ -45,6 +46,7 @@ describe('ol.View', function() {
         minResolution: 128,
         resolution: 50
       });
+      view.setViewportSize();
       expect(view.getResolution()).to.eql(128);
       expect(view.targetResolution_).to.eql(128);
     });
@@ -54,6 +56,7 @@ describe('ol.View', function() {
         resolutions: [1024, 512, 256, 128, 64, 32],
         resolution: 1200
       });
+      view.setViewportSize();
       expect(view.getResolution()).to.eql(1024);
       expect(view.targetResolution_).to.eql(1024);
 
@@ -61,6 +64,7 @@ describe('ol.View', function() {
         resolutions: [1024, 512, 256, 128, 64, 32],
         resolution: 10
       });
+      view.setViewportSize();
       expect(view.getResolution()).to.eql(32);
       expect(view.targetResolution_).to.eql(32);
     });
@@ -70,6 +74,7 @@ describe('ol.View', function() {
         minZoom: 3,
         zoom: 2
       });
+      view.setViewportSize();
       expect(view.getZoom()).to.eql(3);
       expect(view.targetResolution_).to.eql(view.getMaxResolution());
     });
@@ -79,6 +84,7 @@ describe('ol.View', function() {
         maxZoom: 4,
         zoom: 5
       });
+      view.setViewportSize();
       expect(view.getZoom()).to.eql(4);
       expect(view.targetResolution_).to.eql(view.getMaxResolution() / Math.pow(2, 4));
     });
@@ -89,6 +95,7 @@ describe('ol.View', function() {
         extent: [0, 0, 50, 50],
         resolution: 1
       });
+      view.setViewportSize();
       expect(view.getResolution()).to.eql(0.5);
       expect(view.targetResolution_).to.eql(0.5);
     });
