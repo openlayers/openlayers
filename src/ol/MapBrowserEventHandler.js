@@ -275,7 +275,9 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   handleTouchMove_(event) {
-    if (this.originalPointerMoveEvent_.defaultPrevented) {
+    // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
+    // may not be initialized yet when we get here on a platform without native pointer events.
+    if (this.originalPointerMoveEvent_ && this.originalPointerMoveEvent_.defaultPrevented) {
       event.preventDefault();
     }
   }
