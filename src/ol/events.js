@@ -13,15 +13,22 @@ import {clear} from './obj.js';
  * @api
  */
 
-
 /**
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *
- * @typedef {EventListener|function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
+ * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
  * @api
  */
 
+/**
+ * @typedef {Object} ListenerObject
+ * @property {ListenerFunction} handleEvent
+ */
+
+/**
+ * @typedef {ListenerFunction|ListenerObject} Listener
+ */
 
 /**
  * Registers an event listener on an event target. Inspired by
