@@ -275,7 +275,8 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   handleTouchMove_(event) {
-    // In some environments (such as iOS 12), this handler can get called once before the `originalPointerMoveEvent_` is initialized. This prevents crashes in those situations (but may not work correctly if `originalPointerMoveEvent_` lags behind the current event?).
+    // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
+    // may not be initialized yet when we get here on a platform without native pointer events.
     if (this.originalPointerMoveEvent_ && this.originalPointerMoveEvent_.defaultPrevented) {
       event.preventDefault();
     }
