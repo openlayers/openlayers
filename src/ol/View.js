@@ -405,7 +405,6 @@ class View extends BaseObject {
     } else if (options.zoom !== undefined) {
       this.setZoom(options.zoom);
     }
-    this.resolveConstraints(0);
 
     this.setProperties(properties);
 
@@ -767,6 +766,7 @@ class View extends BaseObject {
    */
   setViewportSize(opt_size) {
     this.viewportSize_ = Array.isArray(opt_size) ? opt_size.slice() : [100, 100];
+    this.resolveConstraints(0);
   }
 
   /**
