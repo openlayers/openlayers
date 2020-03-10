@@ -116,12 +116,6 @@ class Target extends Disposable {
           break;
         }
       }
-      for (let i = 0, ii = listeners.length; i < ii; ++i) {
-        if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
-          propagate = false;
-          break;
-        }
-      }
       --this.dispatching_[type];
       if (this.dispatching_[type] === 0) {
         let pendingRemovals = this.pendingRemovals_[type];
