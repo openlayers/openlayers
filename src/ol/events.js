@@ -18,7 +18,7 @@ import {clear} from './obj.js';
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *
- * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
+ * @typedef {EventListener|function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
  * @api
  */
 

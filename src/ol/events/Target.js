@@ -108,6 +108,17 @@ class Target extends Disposable {
       }
       ++this.dispatching_[type];
       for (let i = 0, ii = listeners.length; i < ii; ++i) {
+        if (listeners[i].handleEvent) {
+          propagate = listeners[i].handleEvent(evt);
+        } else {
+          propagate = listeners[i].call(this, evt);
+        }
+        if (propagate === false || evt.propagationStopped) {
+          propagate = false;
+          break;
+        }
+      }
+      for (let i = 0, ii = listeners.length; i < ii; ++i) {
         if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
           propagate = false;
           break;
