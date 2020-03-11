@@ -8,6 +8,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 import XYZ from './XYZ.js';
 import TileImage from './TileImage.js';
+import GlTiledTextureAbstract from './GlTiledTexture/GlTiledTextureAbstract.js';
 import {getKeyZXY} from '../tilecoord.js';
 import EventType from '../events/EventType.js';
 import {listenOnce} from '../events.js';
@@ -63,6 +64,7 @@ class GlTile extends Tile {
   // (re-)renders the tile
   render() {
     const gl = this.gl;
+    const tileSize = this.tileSize_;
 
     return Promise.all(this.texFetches_).then(loadedTextures =>{
       if (this.state === TileState.LOADED) {
@@ -73,10 +75,9 @@ class GlTile extends Tile {
       for (const i in loadedTextures) {
         if (loadedTextures[i] instanceof HTMLImageElement) {
           bindTextureImageData(gl, this.textures_[i], Number(i), loadedTextures[i]);
-        } else if (loadedTextures[i][0] && loadedTextures[i][0].BYTES_PER_ELEMENT) {
-          // Assume this is the result from a geotiff call, get one of the channels
-          // in this case, always channel 0 (as per loadedTextures[i][ **0** ]
-          bindTextureTypedArray(gl, this.textures_[i], Number(i), loadedTextures[i][0], loadedTextures[i].width, loadedTextures[i].height);
+        } else if (loadedTextures[i].BYTES_PER_ELEMENT) {
+          // This looks like a TypedArray, from GlTiledTexture
+          bindTextureTypedArray(gl, this.textures_[i], Number(i), loadedTextures[i], tileSize[0], tileSize[1]);
         } else {
           throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a GeoTiff slice');
         }
@@ -92,7 +93,6 @@ class GlTile extends Tile {
       // Trigger draw call. Magic happens here.
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-      const tileSize = this.tileSize_;
       const context2d = createCanvasContext2D(tileSize[0], tileSize[1]);
 
       /// Copy gl canvas over tile's canvas
@@ -119,12 +119,11 @@ class GlTile extends Tile {
  * nearest higher resolution will be used.
  *
  * @property {textureSources} An array of texture sources, each element being
- * either a `TileImage` source, or a GeoTIFF. (TODO: implement GeoTIFFs)
+ * either a `TileImage` source, or a `GlTiledTexture`.
  * @property {fragmentShader} A string representing the GLSL fragment shader
  * to be run. This must NOT include defining the variants, nor the texture uniforms,
  * nor user-defined uniforms.
  *
- * TODO:
  * @property {uniforms} A plain object containing a map of uniform names and their
  * initial values. Values must be a `Number` or an `Array` of up to four `Number`s.
  */
@@ -232,39 +231,12 @@ class GlTiles extends XYZ {
 
             tile.load();
           });
-        } else if ('GeoTIFF' in window && this.texSources[i] instanceof window.GeoTIFF.GeoTIFF) {
-
-          const tiff = this.texSources[i];
-
-          texFetches[i] = tiff.getImage().then(function(img) {
-            const w = img.getWidth();
-            const h = img.getHeight();
-            const bbox = img.getBoundingBox();
-
-            // TODO: Allow developers to specify which sample to fetch. Given WebGL1 and
-            // float32 channels, this shall allow *one* sample/channel per texture.
-            // TODO: perform a sanity check on the samples per pixel of this geotiff, and
-            // the requested sample.
-            // const samplesPerPixel = img.getSamplesPerPixel();
-
-            // Calculate the pixel coords to be fetched from the projected coords and the image size
-            const x1 = ((tileExtent[2] - bbox[0]) / (bbox[2] - bbox[0])) * w;
-            const x2 = ((tileExtent[0] - bbox[0]) / (bbox[2] - bbox[0])) * w;
-            const y1 = ((tileExtent[3] - bbox[1]) / (bbox[3] - bbox[1])) * h;
-            const y2 = ((tileExtent[1] - bbox[1]) / (bbox[3] - bbox[1])) * h;
-
-            return tiff.readRasters({
-              window: [x2, h - y1, x1, h - y2],
-              width: tileSize[0],
-              height: tileSize[1],
-              // resampleMethod: 'nearest',
-              samples: [0], /// FIXME: for now, read only the first channel
-              // fillValue: -999
-              fillValue: 0 /// TODO: allow customizing this
-            });
-          });
+        } else if (this.texSources[i] instanceof GlTiledTextureAbstract) {
+          // For GeoTIFFs (and the like), the specific class shall return a Promise
+          // to a TypedArray.
+          texFetches[i] = this.texSources[i].getTiledData(this.getTileGrid(),tileCoord,tileSize,tileExtent);
         } else {
-          throw new Error('GLTiles expected a TileImage source or a GeoTIFF definition, got:' + this.texSources[i]);
+          throw new Error('GLTiles expected a TileImage source or a GlTiledTexture (e.g. GeoTIFF), got:' + this.texSources[i]);
         }
       }
 

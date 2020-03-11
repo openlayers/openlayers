@@ -19,4 +19,3 @@ const map = new Map({
   }),
   }
 );
-
