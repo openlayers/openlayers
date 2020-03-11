@@ -11,6 +11,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 import TileImage from './TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
+import {getCenter} from '../extent.js';
 
 
 /**
@@ -88,7 +89,7 @@ export class CustomTile extends ImageTile {
  * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {string} [url] URL template or base URL of the Zoomify service.
+ * @property {string} url URL template or base URL of the Zoomify service.
  * A base URL is the fixed part
  * of the URL, excluding the tile group, z, x, and y folder structure, e.g.
  * `http://my.zoomify.info/IMAGE.TIF/`. A URL template must include
@@ -100,7 +101,7 @@ export class CustomTile extends ImageTile {
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
- * @property {import("../size.js").Size} [size] Size of the image.
+ * @property {import("../size.js").Size} size
  * @property {import("../extent.js").Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
  * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the
@@ -125,11 +126,11 @@ export class CustomTile extends ImageTile {
 class Zoomify extends TileImage {
 
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} opt_options Options.
    */
   constructor(opt_options) {
 
-    const options = opt_options || {};
+    const options = opt_options;
 
     const size = options.size;
     const tierSizeCalculation = options.tierSizeCalculation !== undefined ?
@@ -196,7 +197,7 @@ class Zoomify extends TileImage {
     }
     const urls = expandUrl(url);
 
-    const tileWidth = tileSize * tilePixelRatio;
+    let tileWidth = tileSize * tilePixelRatio;
 
     /**
      * @param {string} template Template.
@@ -258,6 +259,19 @@ class Zoomify extends TileImage {
      * @inheritDoc
      */
     this.zDirection = options.zDirection;
+
+    // Server retina tile detection (non-standard):
+    // Try loading the center tile for the highest resolution. If it is not
+    // available, we are dealing with retina tiles, and need to adjust the
+    // tile url calculation.
+    const tileUrl = tileGrid.getTileCoordForCoordAndResolution(getCenter(tileGrid.getExtent()), resolutions[resolutions.length - 1]);
+    const testTileUrl = tileUrlFunction(tileUrl, 1, null);
+    const image = new Image();
+    image.addEventListener('error', function() {
+      tileWidth = tileSize;
+      this.changed();
+    }.bind(this));
+    image.src = testTileUrl;
 
   }
 

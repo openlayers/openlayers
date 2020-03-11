@@ -45,7 +45,7 @@ describe('ol.source.Zoomify', function() {
 
   describe('constructor', function() {
 
-    it('requires config "size"', function() {
+    it('requires config "size" and "url"', function() {
       let source;
 
       // undefined config object
@@ -58,7 +58,7 @@ describe('ol.source.Zoomify', function() {
         source = new Zoomify({});
       }).to.throwException();
 
-      // not passing "size" in config object
+      // passing "url" in config object
       expect(function() {
         source = new Zoomify({
           url: 'some-url'
@@ -68,6 +68,14 @@ describe('ol.source.Zoomify', function() {
       // passing "size" in config object
       expect(function() {
         source = new Zoomify({
+          size: [47, 11]
+        });
+      }).to.throwException();
+
+      // passing "size" and "url" in config object
+      expect(function() {
+        source = new Zoomify({
+          url: '',
           size: [47, 11]
         });
       }).to.not.throwException();
@@ -88,6 +96,7 @@ describe('ol.source.Zoomify', function() {
     it('does not need "tierSizeCalculation" option', function() {
       expect(function() {
         new Zoomify({
+          url: '',
           size: [47, 11]
         });
       }).to.not.throwException();
@@ -96,6 +105,7 @@ describe('ol.source.Zoomify', function() {
     it('accepts "tierSizeCalculation" option "default"', function() {
       expect(function() {
         new Zoomify({
+          url: '',
           size: [47, 11],
           tierSizeCalculation: 'default'
         });
@@ -105,6 +115,7 @@ describe('ol.source.Zoomify', function() {
     it('accepts "tierSizeCalculation" option "truncated"', function() {
       expect(function() {
         new Zoomify({
+          url: '',
           size: [47, 11],
           tierSizeCalculation: 'truncated'
         });
@@ -115,6 +126,7 @@ describe('ol.source.Zoomify', function() {
       // passing unknown string will throw
       expect(function() {
         new Zoomify({
+          url: '',
           size: [47, 11],
           tierSizeCalculation: 'ace-of-spades'
         });
