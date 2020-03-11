@@ -106,6 +106,33 @@ function includeTypes(doclet) {
   }
 }
 
+const defaultExports = {};
+const path = require('path');
+const moduleRoot = path.join(process.cwd(), 'src');
+
+// Tag default exported Identifiers because their name should be the same as the module name.
+exports.astNodeVisitor = {
+  visitNode: function(node, e, parser, currentSourceName) {
+    if (node.type === 'Identifier' && node.parent.type === 'ExportDefaultDeclaration') {
+      const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
+      defaultExports['module:' + modulePath.replace(/\\/g, '/') + '~' + node.name] = true;
+    }
+  }
+};
+
+function sortOtherMembers(doclet) {
+  if (doclet.fires) {
+    doclet.fires.sort(function(a, b) {
+      return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
+    });
+  }
+  if (doclet.observables) {
+    doclet.observables.sort(function(a, b) {
+      return a.name < b.name ? -1 : 1;
+    });
+  }
+}
+
 exports.handlers = {
 
   newDoclet: function(e) {
@@ -135,16 +162,7 @@ exports.handlers = {
         if (doclet.kind == 'class') {
           includeAugments(doclet);
         }
-        if (doclet.fires) {
-          doclet.fires.sort(function(a, b) {
-            return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
-          });
-        }
-        if (doclet.observables) {
-          doclet.observables.sort(function(a, b) {
-            return a.name < b.name ? -1 : 1;
-          });
-        }
+        sortOtherMembers(doclet);
         // Always document namespaces and items with stability annotation
         continue;
       }
@@ -161,6 +179,7 @@ exports.handlers = {
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
+        sortOtherMembers(doclet);
       } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
@@ -168,6 +187,15 @@ exports.handlers = {
       if (doclet._documented) {
         delete doclet.undocumented;
       }
+    }
+  },
+
+  processingComplete(e) {
+    const byLongname = e.doclets.index.longname;
+    for (const name in defaultExports) {
+      byLongname[name].forEach(function(doclet) {
+        doclet.isDefaultExport = true;
+      });
     }
   }
 

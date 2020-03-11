@@ -110,7 +110,7 @@ import {fromUserCoordinate, getUserProjection} from '../proj.js';
  * geometry is the geometry that is returned when the function is called without
  * a second argument.
  * @typedef {function(!SketchCoordType, import("../geom/SimpleGeometry.js").default=,
- *     import("../proj/Projection.js").default):
+ *     import("../proj/Projection.js").default=):
  *     import("../geom/SimpleGeometry.js").default} GeometryFunction
  */
 

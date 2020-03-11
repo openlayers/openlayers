@@ -15,17 +15,17 @@ function getItemCssClass(type) {
 }
 
 const printList = v => { ?>
-                    <li data-name="<?js= v.longname ?>"><?js
+                    <li data-name="<?js= toShortName(v.name).toLowerCase() ?>"><?js
 }
 const printListWithStability = v => {
     const cls = v.stability && v.stability !== 'stable' ? ' class="unstable"' : ''; ?>
-                    <li data-name="<?js= v.longname ?>"<?js= cls ?>><?js
+                    <li data-name="<?js= toShortName(v.name).toLowerCase() ?>"<?js= cls ?>><?js
 }
 
 function listContent(item, title, listItemPrinter) {
     const type = title.toLowerCase();
     if (item[type] && item[type].length) { ?>
-            <div class="member-list">
+            <div class="member-list" data-type="<?js= type ?>">
                 <span class="subtitle"><?js= title ?></span>
                 <ul><?js
         item[type].forEach(function (v) {
@@ -40,12 +40,12 @@ function listContent(item, title, listItemPrinter) {
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentation">
     </div>
-    <ul class="list"><?js
+    <ul class="navigation-list search-empty"><?js
         this.nav.forEach(function (item) { ?>
-        <li class="item" data-name="<?js= item.longname ?>" data-shortname="<?js= item.name.toLowerCase() ?>">
-            <span class="title">
-                <span class="glyphicon <?js= getItemCssClass(item.type) ?> toggle"></span>
-                <?js= self.linkto(item.longname, item.prettyname) ?>
+        <li class="item item-<?js= item.type ?>" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
+            <span class="title toggle">
+                <span class="glyphicon <?js= getItemCssClass(item.type) ?>"></span>
+                <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~]/g, '\u200b$&')) ?></span>
             </span><?js
                 listContent(item, 'Members', printList);
                 listContent(item, 'Typedefs', printListWithStability);

@@ -778,18 +778,38 @@ export function intersectsSegment(extent, start, end) {
  * @param {import("./proj.js").TransformFunction} transformFn Transform function.
  * Called with `[minX, minY, maxX, maxY]` extent coordinates.
  * @param {Extent=} opt_extent Destination extent.
+ * @param {number=} opt_stops Number of stops per side used for the transform.
+ * By default only the corners are used.
  * @return {Extent} Extent.
  * @api
  */
-export function applyTransform(extent, transformFn, opt_extent) {
-  const coordinates = [
-    extent[0], extent[1],
-    extent[0], extent[3],
-    extent[2], extent[1],
-    extent[2], extent[3]
-  ];
+export function applyTransform(extent, transformFn, opt_extent, opt_stops) {
+  let coordinates = [];
+  if (opt_stops > 1) {
+    const width = extent[2] - extent[0];
+    const height = extent[3] - extent[1];
+    for (let i = 0; i < opt_stops; ++i) {
+      coordinates.push(
+        extent[0] + width * i / opt_stops, extent[1],
+        extent[2], extent[1] + height * i / opt_stops,
+        extent[2] - width * i / opt_stops, extent[3],
+        extent[0], extent[3] - height * i / opt_stops
+      );
+    }
+  } else {
+    coordinates = [
+      extent[0], extent[1],
+      extent[2], extent[1],
+      extent[2], extent[3],
+      extent[0], extent[3]
+    ];
+  }
   transformFn(coordinates, coordinates, 2);
-  const xs = [coordinates[0], coordinates[2], coordinates[4], coordinates[6]];
-  const ys = [coordinates[1], coordinates[3], coordinates[5], coordinates[7]];
+  const xs = [];
+  const ys = [];
+  for (let i = 0, l = coordinates.length; i < l; i += 2) {
+    xs.push(coordinates[i]);
+    ys.push(coordinates[i + 1]);
+  }
   return _boundingExtentXYs(xs, ys, opt_extent);
 }

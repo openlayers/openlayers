@@ -12,10 +12,19 @@ import VectorSource from '../source/Vector.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
-  getTransform,
-  transformExtent
+  getTransform
 } from '../proj.js';
-import {getCenter, getHeight, getWidth, intersects, equals, getIntersection, isEmpty} from '../extent.js';
+import {
+  applyTransform,
+  containsCoordinate,
+  equals,
+  getCenter,
+  getHeight,
+  getIntersection,
+  getWidth,
+  intersects,
+  isEmpty
+} from '../extent.js';
 import {clamp} from '../math.js';
 import Style from '../style/Style.js';
 import Feature from '../Feature.js';
@@ -144,7 +153,8 @@ const INTERVALS = [
 
 /**
  * @classdesc
- * Layer that renders a grid for a coordinate system.
+ * Layer that renders a grid for a coordinate system (currently only EPSG:4326 is supported).
+ * Note that the view projection must define both extent and worldExtent.
  *
  * @fires import("../render/Event.js").RenderEvent
  * @api
@@ -208,25 +218,25 @@ class Graticule extends VectorLayer {
      * @type {number}
      * @private
      */
-    this.maxLatP_ = Infinity;
+    this.maxX_ = Infinity;
 
     /**
      * @type {number}
      * @private
      */
-    this.maxLonP_ = Infinity;
+    this.maxY_ = Infinity;
 
     /**
      * @type {number}
      * @private
      */
-    this.minLatP_ = -Infinity;
+    this.minX_ = -Infinity;
 
     /**
      * @type {number}
      * @private
      */
-    this.minLonP_ = -Infinity;
+    this.minY_ = -Infinity;
 
     /**
      * @type {number}
@@ -275,6 +285,30 @@ class Graticule extends VectorLayer {
      * @private
      */
     this.projectionCenterLonLat_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.bottomLeft_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.bottomRight_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.topLeft_ = null;
+
+    /**
+     * @type {import("../coordinate.js").Coordinate}
+     * @private
+     */
+    this.topRight_ = null;
 
     /**
      * @type {Array<GraticuleLabelDataType>}
@@ -664,24 +698,67 @@ class Graticule extends VectorLayer {
       return;
     }
 
-    const centerLonLat = this.toLonLatTransform_(center);
-    let centerLon = centerLonLat[0];
-    let centerLat = centerLonLat[1];
+    // Constrain the center to fit into the extent available to the graticule
+
+    const validCenterP = [
+      clamp(center[0], this.minX_, this.maxX_),
+      clamp(center[1], this.minY_, this.maxY_)
+    ];
+
+    // Transform the center to lon lat
+    // Some projections may have a void area at the poles
+    // so replace any NaN latitudes with the min or max value closest to a pole
+
+    const centerLonLat = this.toLonLatTransform_(validCenterP);
+    if (isNaN(centerLonLat[1])) {
+      centerLonLat[1] = Math.abs(this.maxLat_) >= Math.abs(this.minLat_) ?
+        this.maxLat_ : this.minLat_;
+    }
+    let centerLon = clamp(centerLonLat[0], this.minLon_, this.maxLon_);
+    let centerLat = clamp(centerLonLat[1], this.minLat_, this.maxLat_);
     const maxLines = this.maxLines_;
     let cnt, idx, lat, lon;
 
-    let validExtent = [
-      Math.max(extent[0], this.minLonP_),
-      Math.max(extent[1], this.minLatP_),
-      Math.min(extent[2], this.maxLonP_),
-      Math.min(extent[3], this.maxLatP_)
+    // Limit the extent to fit into the extent available to the graticule
+
+    const validExtentP = [
+      clamp(extent[0], this.minX_, this.maxX_),
+      clamp(extent[1], this.minY_, this.maxY_),
+      clamp(extent[2], this.minX_, this.maxX_),
+      clamp(extent[3], this.minY_, this.maxY_)
     ];
 
-    validExtent = transformExtent(validExtent, this.projection_, 'EPSG:4326');
-    const maxLat = validExtent[3];
-    const maxLon = validExtent[2];
-    const minLat = validExtent[1];
-    const minLon = validExtent[0];
+    // Transform the extent to get the lon lat ranges for the edges of the extent
+
+    const validExtent = applyTransform(validExtentP, this.toLonLatTransform_, undefined, 8);
+
+    // Check if extremities of the world extent lie inside the extent
+    // (for example the pole in a polar projection)
+    // and extend the extent as appropriate
+
+    if (containsCoordinate(validExtentP, this.bottomLeft_)) {
+      validExtent[0] = this.minLon_;
+      validExtent[1] = this.minLat_;
+    }
+    if (containsCoordinate(validExtentP, this.bottomRight_)) {
+      validExtent[2] = this.maxLon_;
+      validExtent[1] = this.minLat_;
+    }
+    if (containsCoordinate(validExtentP, this.topLeft_)) {
+      validExtent[0] = this.minLon_;
+      validExtent[3] = this.maxLat_;
+    }
+    if (containsCoordinate(validExtentP, this.topRight_)) {
+      validExtent[2] = this.maxLon_;
+      validExtent[3] = this.maxLat_;
+    }
+
+    // The transformed center may also extend the lon lat ranges used for rendering
+
+    const maxLat = clamp(validExtent[3], centerLat, this.maxLat_);
+    const maxLon = clamp(validExtent[2], centerLon, this.maxLon_);
+    const minLat = clamp(validExtent[1], this.minLat_, centerLat);
+    const minLon = clamp(validExtent[0], this.minLon_, centerLon);
 
     // Create meridians
 
@@ -752,11 +829,13 @@ class Graticule extends VectorLayer {
     /** @type {Array<number>} **/
     const p2 = [];
     for (let i = 0, ii = this.intervals_.length; i < ii; ++i) {
-      const delta = this.intervals_[i] / 2;
+      const delta = clamp(this.intervals_[i] / 2, 0, 90);
+      // Don't attempt to transform latitudes beyond the poles!
+      const clampedLat = clamp(centerLat, -90 + delta, 90 - delta);
       p1[0] = centerLon - delta;
-      p1[1] = centerLat - delta;
+      p1[1] = clampedLat - delta;
       p2[0] = centerLon + delta;
-      p2[1] = centerLat + delta;
+      p2[1] = clampedLat + delta;
       this.fromLonLatTransform_(p1, p1);
       this.fromLonLatTransform_(p2, p2);
       const dist = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
@@ -896,23 +975,66 @@ class Graticule extends VectorLayer {
     const epsg4326Projection = getProjection('EPSG:4326');
 
     const worldExtent = projection.getWorldExtent();
-    const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection);
 
     this.maxLat_ = worldExtent[3];
     this.maxLon_ = worldExtent[2];
     this.minLat_ = worldExtent[1];
     this.minLon_ = worldExtent[0];
 
-    this.maxLatP_ = worldExtentP[3];
-    this.maxLonP_ = worldExtentP[2];
-    this.minLatP_ = worldExtentP[1];
-    this.minLonP_ = worldExtentP[0];
+    // If the world extent crosses the dateline define a custom transform to
+    // return longitudes which wrap the dateline
+
+    const toLonLatTransform = getTransform(projection, epsg4326Projection);
+    if (this.minLon_ < this.maxLon_) {
+      this.toLonLatTransform_ = toLonLatTransform;
+    } else {
+      const split = this.minLon_ + this.maxLon_ / 2;
+      this.maxLon_ += 360;
+      this.toLonLatTransform_ = function(coordinates, opt_output, opt_dimension) {
+        const dimension = opt_dimension || 2;
+        const lonLatCoordinates = toLonLatTransform(coordinates, opt_output, dimension);
+        for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {
+          if (lonLatCoordinates[i] < split) {
+            lonLatCoordinates[i] += 360;
+          }
+        }
+        return lonLatCoordinates;
+      };
+    }
+
+    // Transform the extent to get the limits of the view projection extent
+    // which should be available to the graticule
 
     this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
+    const worldExtentP = applyTransform(
+      [this.minLon_, this.minLat_, this.maxLon_, this.maxLat_],
+      this.fromLonLatTransform_,
+      undefined,
+      8
+    );
 
-    this.toLonLatTransform_ = getTransform(projection, epsg4326Projection);
+    this.minX_ = worldExtentP[0];
+    this.maxX_ = worldExtentP[2];
+    this.minY_ = worldExtentP[1];
+    this.maxY_ = worldExtentP[3];
+
+    // Determine the view projection coordinates of the extremities of the world extent
+    // as these may lie inside a view extent (for example the pole in a polar projection)
+
+    this.bottomLeft_ = this.fromLonLatTransform_([this.minLon_, this.minLat_]);
+    this.bottomRight_ = this.fromLonLatTransform_([this.maxLon_, this.minLat_]);
+    this.topLeft_ = this.fromLonLatTransform_([this.minLon_, this.maxLat_]);
+    this.topRight_ = this.fromLonLatTransform_([this.maxLon_, this.maxLat_]);
+
+    // Transform the projection center to lon lat
+    // Some projections may have a void area at the poles
+    // so replace any NaN latitudes with the min or max value closest to a pole
 
     this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(projection.getExtent()));
+    if (isNaN(this.projectionCenterLonLat_[1])) {
+      this.projectionCenterLonLat_[1] = Math.abs(this.maxLat_) >= Math.abs(this.minLat_) ?
+        this.maxLat_ : this.minLat_;
+    }
 
     this.projection_ = projection;
   }
