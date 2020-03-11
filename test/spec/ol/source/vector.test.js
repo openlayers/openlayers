@@ -114,6 +114,38 @@ describe('ol.source.Vector', function() {
         expect(vectorSource.hasFeature(feature)).to.be(false);
       });
 
+      it('returns false for non-added features with the same id', function() {
+        const a = new Feature();
+        a.setId('1');
+        const b = new Feature();
+        b.setId('1');
+        vectorSource.addFeature(a);
+        expect(vectorSource.hasFeature(b)).to.be(false);
+      });
+
+    });
+
+    describe('#hasFeatureId', function() {
+
+      it('returns true for added feature', function() {
+        const feature = new Feature();
+        feature.setId('1');
+        vectorSource.addFeature(feature);
+        expect(vectorSource.hasFeatureId('1')).to.be(true);
+      });
+
+      it('returns false for non-added feature id', function() {
+        expect(vectorSource.hasFeatureId('1')).to.be(false);
+      });
+
+      it('returns false for removed feature id', function() {
+        const feature = new Feature();
+        feature.setId('1');
+        vectorSource.addFeature(feature);
+        vectorSource.removeFeature(feature);
+        expect(vectorSource.hasFeatureId('1')).to.be(false);
+      });
+
     });
 
   });

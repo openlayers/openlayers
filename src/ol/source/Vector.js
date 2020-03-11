@@ -871,13 +871,21 @@ class VectorSource extends Source {
    * @api
    */
   hasFeature(feature) {
-    const id = feature.getId();
-    if (id !== undefined) {
-      return id in this.idIndex_;
-    } else {
-      return getUid(feature) in this.uidIndex_;
-    }
+    return getUid(feature) in this.uidIndex_;
   }
+
+
+  /**
+   * Returns true if a feature with the provided identifier is contained
+   * within the source
+   * @param {string|number} id Feature identifier.
+   * @return {boolean} Has feature.
+   * @api
+   */
+  hasFeatureId(id) {
+    return id.toString() in this.idIndex_;
+  }
+
 
   /**
    * @return {boolean} Is empty.
