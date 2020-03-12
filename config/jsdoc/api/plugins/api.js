@@ -113,9 +113,10 @@ const moduleRoot = path.join(process.cwd(), 'src');
 // Tag default exported Identifiers because their name should be the same as the module name.
 exports.astNodeVisitor = {
   visitNode: function(node, e, parser, currentSourceName) {
-    if (node.type === 'Identifier' && node.parent.type === 'ExportDefaultDeclaration') {
+    if (node.parent && node.parent.type === 'ExportDefaultDeclaration') {
       const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
-      defaultExports['module:' + modulePath.replace(/\\/g, '/') + '~' + node.name] = true;
+      const exportName = 'module:' + modulePath.replace(/\\/g, '/') + (node.name ? '~' + node.name : '');
+      defaultExports[exportName] = true;
     }
   }
 };
