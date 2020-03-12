@@ -378,7 +378,7 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * Pan the map so that the overlay is entirely visisbly in the current viewport
+   * Pan the map so that the overlay is entirely visisble in the current viewport
    * (if necessary) using the configured autoPan parameters
    * @protected
    */
@@ -390,7 +390,7 @@ class Overlay extends BaseObject {
    * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary).
    * @param {PanOptions|undefined} panOptions Animation options for the pan action
-   * @param {number|undefined} margin The margin (in pixels) between the overlay and the
+   * @param {number|undefined} [margin=20] The margin (in pixels) between the overlay and the
    * borders of the map when autopanning
    * @api
    */
