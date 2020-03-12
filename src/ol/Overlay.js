@@ -323,7 +323,7 @@ class Overlay extends BaseObject {
   handlePositionChanged() {
     this.updatePixelPosition();
     if (this.get(Property.POSITION) && this.autoPan) {
-      this.panIntoView();
+      this.performAutoPan();
     }
   }
 
@@ -378,11 +378,23 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * Pan the map so that the overlay is entirely visible in the current viewport
-   * (if necessary).
+   * Pan the map so that the overlay is entirely visisbly in the current viewport
+   * (if necessary) using the configured autoPan parameters
    * @protected
    */
-  panIntoView() {
+  performAutoPan() {
+    this.panIntoView(this.autoPanAnimation, this.autoPanMargin);
+  }
+
+  /**
+   * Pan the map so that the overlay is entirely visible in the current viewport
+   * (if necessary).
+   * @param {PanOptions|undefined} panOptions Animation options for the pan action
+   * @param {number|undefined} margin The margin (in pixels) between the overlay and the
+   * borders of the map when autopanning
+   * @api
+   */
+  panIntoView(panOptions, margin) {
     const map = this.getMap();
 
     if (!map || !map.getTargetElement()) {
@@ -393,7 +405,7 @@ class Overlay extends BaseObject {
     const element = this.getElement();
     const overlayRect = this.getRect(element, [outerWidth(element), outerHeight(element)]);
 
-    const margin = this.autoPanMargin;
+    const myMargin = (margin === undefined) ? 20 : margin;
     if (!containsExtent(mapRect, overlayRect)) {
       // the overlay is not completely inside the viewport, so pan the map
       const offsetLeft = overlayRect[0] - mapRect[0];
@@ -404,17 +416,17 @@ class Overlay extends BaseObject {
       const delta = [0, 0];
       if (offsetLeft < 0) {
         // move map to the left
-        delta[0] = offsetLeft - margin;
+        delta[0] = offsetLeft - myMargin;
       } else if (offsetRight < 0) {
         // move map to the right
-        delta[0] = Math.abs(offsetRight) + margin;
+        delta[0] = Math.abs(offsetRight) + myMargin;
       }
       if (offsetTop < 0) {
         // move map up
-        delta[1] = offsetTop - margin;
+        delta[1] = offsetTop - myMargin;
       } else if (offsetBottom < 0) {
         // move map down
-        delta[1] = Math.abs(offsetBottom) + margin;
+        delta[1] = Math.abs(offsetBottom) + myMargin;
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
@@ -425,10 +437,11 @@ class Overlay extends BaseObject {
           centerPx[1] + delta[1]
         ];
 
+        const myPanOptions = panOptions || {};
         map.getView().animateInternal({
           center: map.getCoordinateFromPixelInternal(newCenterPx),
-          duration: this.autoPanAnimation.duration,
-          easing: this.autoPanAnimation.easing
+          duration: myPanOptions.duration,
+          easing: myPanOptions.easing
         });
       }
     }
