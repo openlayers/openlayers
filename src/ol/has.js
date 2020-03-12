@@ -46,6 +46,20 @@ export const DEVICE_PIXEL_RATIO = (function() {
 })();
 
 /**
+ * The execution context is a window.
+ * @const
+ * @type {boolean}
+ */
+export const WINDOW = (function() {
+  try {
+    return 'document' in self;
+  } catch (e) {
+    // ancient browsers don't have `self`
+    return true;
+  }
+})();
+
+/**
  * Image.prototype.decode() is supported.
  * @type {boolean}
  */

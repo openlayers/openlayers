@@ -6,6 +6,8 @@ import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import BaseObject from '../Object.js';
 import EventTarget from '../events/Target.js';
+import {WINDOW} from '../has.js';
+import {toString} from '../transform.js';
 
 
 /**
@@ -436,5 +438,27 @@ function executeLabelInstructions(label, context) {
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];
     }
+  }
+}
+
+/**
+ * @type {HTMLCanvasElement}
+ * @private
+ */
+let createTransformStringCanvas = null;
+
+/**
+ * @param {import("../transform.js").Transform} transform Transform.
+ * @return {string} CSS transform.
+ */
+export function createTransformString(transform) {
+  if (WINDOW) {
+    if (!createTransformStringCanvas) {
+      createTransformStringCanvas = createCanvasContext2D(1, 1).canvas;
+    }
+    createTransformStringCanvas.style.transform = toString(transform);
+    return createTransformStringCanvas.style.transform;
+  } else {
+    return toString(transform);
   }
 }
