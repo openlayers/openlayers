@@ -157,6 +157,7 @@ exports.handlers = {
 
   parseComplete: function(e) {
     const doclets = e.doclets;
+    const byLongname = doclets.index.longname;
     for (let i = doclets.length - 1; i >= 0; --i) {
       const doclet = doclets[i];
       if (doclet.stability) {
@@ -181,7 +182,8 @@ exports.handlers = {
         doclet._hideConstructor = true;
         includeAugments(doclet);
         sortOtherMembers(doclet);
-      } else if (!doclet._hideConstructor) {
+      } else if (!doclet._hideConstructor
+          && !(doclet.longname in defaultExports && byLongname[doclet.longname].some(d => d.isEnum))) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
