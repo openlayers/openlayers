@@ -181,7 +181,7 @@ exports.handlers = {
         doclet._hideConstructor = true;
         includeAugments(doclet);
         sortOtherMembers(doclet);
-      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
+      } else if (!doclet._hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
