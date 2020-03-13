@@ -15,7 +15,7 @@ import Source from './Source.js';
 /**
  * @enum {string}
  */
-const ImageSourceEventType = {
+export const ImageSourceEventType = {
 
   /**
    * Triggered when an image starts loading.
