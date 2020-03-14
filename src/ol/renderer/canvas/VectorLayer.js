@@ -363,6 +363,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       vectorLayerRenderBuffer * resolution);
     const projectionExtent = viewState.projection.getExtent();
 
+    let loadExtent = extent.slice();
+
     if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
         !containsExtent(projectionExtent, frameState.extent)) {
       // For the replay group, we need an extent that intersects the real world
@@ -376,6 +378,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       extent[2] = projectionExtent[2] + gutter;
       const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
       center[0] -= (worldsAway * worldWidth);
+    }
+
+    if (typeof /** @type {?} */ (vectorLayer).getMeridians !== 'function') {
+      loadExtent = extent;
     }
 
     if (!this.dirty_ &&
@@ -398,10 +404,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const userProjection = getUserProjection();
     let userTransform;
     if (userProjection) {
-      vectorSource.loadFeatures(toUserExtent(extent, projection), resolution, userProjection);
+      vectorSource.loadFeatures(toUserExtent(loadExtent, projection), resolution, userProjection);
       userTransform = getTransformFromProjections(userProjection, projection);
     } else {
-      vectorSource.loadFeatures(extent, resolution, projection);
+      vectorSource.loadFeatures(loadExtent, resolution, projection);
     }
 
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
