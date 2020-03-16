@@ -2,6 +2,20 @@
 // http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6.json
 
 function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
+
+  let worker;
+  try {
+    worker = self.document ? null : self;
+    worker.addEventListener('message', message => {
+      if (message.data.type === 'imageLoaded') {
+        iconCache[message.data.iconName].setImage(new Icon({
+          img: message.data.image,
+          imgSize: [15, 15]
+        }));
+      }
+    });
+  } catch (e) {}
+  
   var fill = new Fill({color: ''});
   var stroke = new Stroke({color: '', width: 1});
   var polygon = new Style({fill: fill});
@@ -14,11 +28,19 @@ function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
   function getIcon(iconName) {
     var icon = iconCache[iconName];
     if (!icon) {
-      icon = new Style({image: new Icon({
-        src: 'https://unpkg.com/@mapbox/maki@4.0.0/icons/' + iconName + '-15.svg',
-        imgSize: [15, 15],
-        crossOrigin: 'anonymous'
-      })});
+      if (!worker) {
+        icon = new Style({image: new Icon({
+          src: 'https://unpkg.com/@mapbox/maki@4.0.0/icons/' + iconName + '-15.svg',
+          imgSize: [15, 15],
+          crossOrigin: 'anonymous'
+        })});
+      } else {
+        icon = new Style({});
+        worker.postMessage({
+          type: 'loadImage',
+          iconName: iconName
+        });
+      }
       iconCache[iconName] = icon;
     }
     return icon;
@@ -310,3 +332,7 @@ function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
     return styles;
   };
 }
+
+try {
+  module.exports = createMapboxStreetsV6Style;
+} catch (e) {}

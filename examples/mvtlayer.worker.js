@@ -4,6 +4,8 @@ import MVT from '../src/ol/format/MVT.js';
 import {Projection} from '../src/ol/proj.js';
 import TileQueue from '../src/ol/TileQueue.js';
 import {getTilePriority as tilePriorityFunction} from '../src/ol/TileQueue.js';
+import {Style, Fill, Stroke, Icon, Text} from '../src/ol/style.js';
+import createMapboxStreetsV6Style from './resources/mapbox-streets-v6-style.js';
 import {renderDeclutterItems} from '../src/ol/render.js';
 
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
@@ -33,6 +35,7 @@ function getTilePriority(tile, tileSourceKey, tileCenter, tileResolution) {
 
 const layer = new VectorTileLayer({
   declutter: true,
+  style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text),
   source: new VectorTileSource({
     format: new MVT(),
     url: 'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +

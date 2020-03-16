@@ -5,8 +5,38 @@ import Layer from '../src/ol/layer/Layer.js';
 import Worker from 'worker-loader!./mvtlayer.worker.js';
 import {compose, create} from '../src/ol/transform.js';
 import {createTransformString} from '../src/ol/render/canvas.js';
+import {getFontParameters} from '../src/ol/css.js';
 
 const mvtLayerWorker = new Worker();
+
+const loadingImages = {};
+mvtLayerWorker.addEventListener('message', event => {
+  if (event.data.type === 'getFontParameters') {
+    getFontParameters(event.data.font, font => {
+      mvtLayerWorker.postMessage({
+        type: 'getFontParameters',
+        font: font
+      });
+    });
+  } else if (event.data.type === 'loadImage') {
+    if (!(event.data.src in loadingImages)) {
+      const image = new Image();
+      image.crossOrigin = 'anonymous';
+      image.addEventListener('load', function() {
+        createImageBitmap(image, 0, 0, image.width, image.height).then(imageBitmap => {
+          delete loadingImages[event.data.iconName];
+          mvtLayerWorker.postMessage({
+            type: 'imageLoaded',
+            image: imageBitmap,
+            iconName: event.data.iconName
+          }, [imageBitmap]);
+        });
+      });
+      image.src = 'https://unpkg.com/@mapbox/maki@4.0.0/icons/' + event.data.iconName + '-15.svg';
+      loadingImages[event.data.iconName] = true;
+    }
+  }
+});
 
 function getCircularReplacer() {
   const seen = new WeakSet();
@@ -67,6 +97,7 @@ const map = new Map({
         mainThreadFrameState = frameState;
         updateContainerTransform();
         mvtLayerWorker.postMessage({
+          type: 'render',
           frameState: JSON.parse(JSON.stringify(frameState, getCircularReplacer()))
         });
         return container;
