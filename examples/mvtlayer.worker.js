@@ -4,6 +4,7 @@ import MVT from '../src/ol/format/MVT.js';
 import {Projection} from '../src/ol/proj.js';
 import TileQueue from '../src/ol/TileQueue.js';
 import {getTilePriority as tilePriorityFunction} from '../src/ol/TileQueue.js';
+import {renderDeclutterItems} from '../src/ol/render.js';
 
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
 
@@ -45,7 +46,7 @@ const tileQueue = new TileQueue(getTilePriority, function() {
 const maxTotalLoading = 8;
 const maxNewLoads = 2;
 
-
+let rendererTransform, rendererOpacity;
 renderer.useContainer = function(target, transform, opacity) {
   target.style = {};
   this.canvas = target;
@@ -53,21 +54,16 @@ renderer.useContainer = function(target, transform, opacity) {
   this.container = {
     firstElementChild: target
   };
-  layer.once('postrender', function() {
-    const imageData = canvas.transferToImageBitmap();
-    worker.postMessage({
-      type: 'rendered',
-      imageData: imageData,
-      transform: transform,
-      opacity: opacity,
-      frameState: JSON.parse(JSON.stringify(frameState, getCircularReplacer()))
-    }, [imageData]);
-  });
+  rendererTransform = transform;
+  rendererOpacity = opacity;
 };
 
 let rendering = false;
 
-worker.onmessage = function(event) {
+worker.addEventListener('message', function(event) {
+  if (event.data.type !== 'render') {
+    return;
+  }
   if (rendering) {
     // drop this frame
     worker.postMessage({type: 'request-render'});
@@ -79,12 +75,21 @@ worker.onmessage = function(event) {
   rendering = true;
   requestAnimationFrame(function() {
     renderer.renderFrame(frameState, canvas);
+    renderDeclutterItems(frameState, null);
     if (tileQueue.getTilesLoading() < maxTotalLoading) {
       tileQueue.reprioritize(); // FIXME only call if view has changed
       tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
     }
+    const imageData = canvas.transferToImageBitmap();
+    worker.postMessage({
+      type: 'rendered',
+      imageData: imageData,
+      transform: rendererTransform,
+      opacity: rendererOpacity,
+      frameState: JSON.parse(JSON.stringify(frameState, getCircularReplacer()))
+    }, [imageData]);
     rendering = false;
   });
-};
+});
 
 export let create;
