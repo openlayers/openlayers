@@ -266,8 +266,7 @@ export const registerFont = (function() {
     }
   }
 
-  return function(fontSpec) {
-    const font = getFontParameters(fontSpec);
+  function fontCallback(font) {
     if (!font) {
       return;
     }
@@ -284,6 +283,31 @@ export const registerFont = (function() {
           }
         }
       }
+    }
+  }
+
+  return function(fontSpec) {
+    if (WINDOW) {
+      getFontParameters(fontSpec, fontCallback);
+    } else {
+      /** @type {any} */
+      const worker = self;
+      worker.postMessage({
+        type: 'getFontParameters',
+        font: fontSpec
+      });
+      worker.addEventListener('message', function handler(event) {
+        if (event.data.type === 'getFontParameters') {
+          worker.removeEventListener('message', handler);
+          const font = event.data.font;
+          fontCallback(font);
+          if (!textHeights[fontSpec]) {
+            const metrics = measureText(fontSpec, 'Žg');
+            const lineHeight = isNaN(font.lineHeight) ? 1.2 : Number(font.lineHeight);
+            textHeights[fontSpec] = lineHeight * (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+          }
+        }
+      });
     }
   };
 })();
@@ -320,13 +344,12 @@ export const measureTextHeight = (function() {
   };
 })();
 
-
 /**
  * @param {string} font Font.
  * @param {string} text Text.
- * @return {number} Width.
+ * @return {TextMetrics} Text metrics.
  */
-export function measureTextWidth(font, text) {
+function measureText(font, text) {
   if (!measureContext) {
     measureContext = createCanvasContext2D(1, 1);
   }
@@ -334,7 +357,16 @@ export function measureTextWidth(font, text) {
     measureContext.font = font;
     measureFont = measureContext.font;
   }
-  return measureContext.measureText(text).width;
+  return measureContext.measureText(text);
+}
+
+/**
+ * @param {string} font Font.
+ * @param {string} text Text.
+ * @return {number} Width.
+ */
+export function measureTextWidth(font, text) {
+  return measureText(font, text).width;
 }
 
 
@@ -434,7 +466,7 @@ function executeLabelInstructions(label, context) {
   const contextInstructions = label.contextInstructions;
   for (let i = 0, ii = contextInstructions.length; i < ii; i += 2) {
     if (Array.isArray(contextInstructions[i + 1])) {
-      CanvasRenderingContext2D.prototype[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
+      context[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];
     }
