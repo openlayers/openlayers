@@ -11,14 +11,14 @@ const mvtLayerWorker = new Worker();
 
 const loadingImages = {};
 mvtLayerWorker.addEventListener('message', event => {
-  if (event.data.type === 'getFontParameters') {
+  if (event.data.action === 'getFontParameters') {
     getFontParameters(event.data.font, font => {
       mvtLayerWorker.postMessage({
-        type: 'getFontParameters',
+        action: 'getFontParameters',
         font: font
       });
     });
-  } else if (event.data.type === 'loadImage') {
+  } else if (event.data.action === 'loadImage') {
     if (!(event.data.src in loadingImages)) {
       const image = new Image();
       image.crossOrigin = 'anonymous';
@@ -26,7 +26,7 @@ mvtLayerWorker.addEventListener('message', event => {
         createImageBitmap(image, 0, 0, image.width, image.height).then(imageBitmap => {
           delete loadingImages[event.data.iconName];
           mvtLayerWorker.postMessage({
-            type: 'imageLoaded',
+            action: 'imageLoaded',
             image: imageBitmap,
             iconName: event.data.iconName
           }, [imageBitmap]);
@@ -77,34 +77,37 @@ function updateContainerTransform() {
 
 }
 
+function render(id, frameState) {
+  if (!container) {
+    container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    transformContainer = document.createElement('div');
+    transformContainer.style.position = 'absolute';
+    transformContainer.style.width = '100%';
+    transformContainer.style.height = '100%';
+    container.appendChild(transformContainer);
+    canvas = document.createElement('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.left = '0';
+    canvas.style.transformOrigin = 'top left';
+    transformContainer.appendChild(canvas);
+  }
+  mainThreadFrameState = frameState;
+  updateContainerTransform();
+  mvtLayerWorker.postMessage({
+    action: 'render',
+    id: id,
+    frameState: JSON.parse(JSON.stringify(frameState, getCircularReplacer()))
+  });
+  return container;
+}
+
 const map = new Map({
   layers: [
     new Layer({
-      render: function(frameState) {
-        if (!container) {
-          container = document.createElement('div');
-          container.style.position = 'absolute';
-          container.style.width = '100%';
-          container.style.height = '100%';
-          transformContainer = document.createElement('div');
-          transformContainer.style.position = 'absolute';
-          transformContainer.style.width = '100%';
-          transformContainer.style.height = '100%';
-          container.appendChild(transformContainer);
-          canvas = document.createElement('canvas');
-          canvas.style.position = 'absolute';
-          canvas.style.left = '0';
-          canvas.style.transformOrigin = 'top left';
-          transformContainer.appendChild(canvas);
-        }
-        mainThreadFrameState = frameState;
-        updateContainerTransform();
-        mvtLayerWorker.postMessage({
-          type: 'render',
-          frameState: JSON.parse(JSON.stringify(frameState, getCircularReplacer()))
-        });
-        return container;
-      }
+      render: render.bind(undefined, 'mapbox')
     })
   ],
   target: 'map',
@@ -114,9 +117,9 @@ const map = new Map({
   })
 });
 mvtLayerWorker.addEventListener('message', function(message) {
-  if (message.data.type === 'request-render') {
+  if (message.data.action === 'request-render') {
     map.render();
-  } else if (canvas && message.data.type === 'rendered') {
+  } else if (canvas && message.data.action === 'rendered') {
     transformContainer.style.transform = '';
     const imageData = message.data.imageData;
     canvas.width = imageData.width;

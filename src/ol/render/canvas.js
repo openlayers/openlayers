@@ -289,15 +289,15 @@ export const registerFont = (function() {
   return function(fontSpec) {
     if (WINDOW) {
       getFontParameters(fontSpec, fontCallback);
-    } else {
+    } else if (self.postMessage) {
       /** @type {any} */
       const worker = self;
       worker.postMessage({
-        type: 'getFontParameters',
+        action: 'getFontParameters',
         font: fontSpec
       });
       worker.addEventListener('message', function handler(event) {
-        if (event.data.type === 'getFontParameters') {
+        if (event.data.action === 'getFontParameters') {
           worker.removeEventListener('message', handler);
           const font = event.data.font;
           fontCallback(font);

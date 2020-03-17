@@ -44,7 +44,7 @@ const layer = new VectorTileLayer({
 });
 const renderer = layer.getRenderer();
 const tileQueue = new TileQueue(getTilePriority, function() {
-  worker.postMessage({type: 'request-render'});
+  worker.postMessage({action: 'request-render'});
 });
 const maxTotalLoading = 8;
 const maxNewLoads = 2;
@@ -64,12 +64,12 @@ renderer.useContainer = function(target, transform, opacity) {
 let rendering = false;
 
 worker.addEventListener('message', function(event) {
-  if (event.data.type !== 'render') {
+  if (event.data.action !== 'render') {
     return;
   }
   if (rendering) {
     // drop this frame
-    worker.postMessage({type: 'request-render'});
+    worker.postMessage({action: 'request-render'});
     return;
   }
   frameState = event.data.frameState;
@@ -85,7 +85,7 @@ worker.addEventListener('message', function(event) {
     }
     const imageData = canvas.transferToImageBitmap();
     worker.postMessage({
-      type: 'rendered',
+      action: 'rendered',
       imageData: imageData,
       transform: rendererTransform,
       opacity: rendererOpacity,
