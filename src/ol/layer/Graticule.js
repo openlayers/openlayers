@@ -729,7 +729,7 @@ class Graticule extends VectorLayer {
         center[0] -= (worldsAway * worldWidth);
         extent[0] -= (worldsAway * worldWidth);
         extent[2] -= (worldsAway * worldWidth);
-        wrapX = true;
+        wrapX = !containsExtent(projectionExtent, extent);
       }
     }
 
