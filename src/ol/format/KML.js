@@ -1253,7 +1253,7 @@ function iconStyleParser(node, objectStack) {
   let scale = /** @type {number|undefined} */
       (object['scale']);
 
-  const color = /** @type {[number]|undefined} */
+  const color = /** @type {Array<number>|undefined} */
       (object['color']);
 
   if (drawIcon) {
