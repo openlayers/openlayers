@@ -1171,6 +1171,7 @@ function readStyleMapValue(node, objectStack) {
 const ICON_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeObjectPropertySetter(readIcon),
+    'color': makeObjectPropertySetter(readColor),
     'heading': makeObjectPropertySetter(readDecimal),
     'hotSpot': makeObjectPropertySetter(readVec2),
     'scale': makeObjectPropertySetter(readScale)
@@ -1252,6 +1253,9 @@ function iconStyleParser(node, objectStack) {
   let scale = /** @type {number|undefined} */
       (object['scale']);
 
+  const color = /** @type {[number]|undefined} */
+      (object['color']);
+
   if (drawIcon) {
     if (src == DEFAULT_IMAGE_STYLE_SRC) {
       size = DEFAULT_IMAGE_STYLE_SIZE;
@@ -1271,7 +1275,8 @@ function iconStyleParser(node, objectStack) {
       rotation: rotation,
       scale: scale,
       size: size,
-      src: src
+      src: src,
+      color: color
     });
     styleObject['imageStyle'] = imageStyle;
   } else {
