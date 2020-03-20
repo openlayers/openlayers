@@ -85,15 +85,18 @@ class IconImage extends EventTarget {
 
   /**
    * @private
+   * @param {CanvasRenderingContext2D=} context A context with the image already drawn into.
    * @return {boolean} The image canvas is tainted.
    */
-  isTainted_() {
+  isTainted_(context) {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
-      this.tainted_ = false;
-      const context = createCanvasContext2D(1, 1);
-      try {
+      if (!context) {
+        context = createCanvasContext2D(1, 1);
         context.drawImage(this.image_, 0, 0);
+      }
+      try {
         context.getImageData(0, 0, 1, 1);
+        this.tainted_ = false;
       } catch (e) {
         this.tainted_ = true;
       }
@@ -203,7 +206,7 @@ class IconImage extends EventTarget {
    * @private
    */
   replaceColor_() {
-    if (!this.color_ || this.isTainted_()) {
+    if (!this.color_) {
       return;
     }
 
@@ -212,6 +215,23 @@ class IconImage extends EventTarget {
 
     const ctx = this.canvas_.getContext('2d');
     ctx.drawImage(this.image_, 0, 0);
+
+    if (this.isTainted_(ctx)) {
+      // Internet explorer 11 marks canvas as tainted if the drawn image is a svg.
+      // This makes the getImageData function throw a SecurityError.
+      // The same effect can be achieved with the globalCompositionOperation but
+      // Internet Explorer 11 does not properly support the multiply operation.
+      // So this is only used as a fallback. It is still better than having no icon
+      // at all.
+      const c = this.color_;
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+      ctx.fillRect(0, 0, this.image_.width, this.image_.height);
+
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(this.image_, 0, 0);
+      return;
+    }
 
     const imgData = ctx.getImageData(0, 0, this.image_.width, this.image_.height);
     const data = imgData.data;
