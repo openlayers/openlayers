@@ -6,7 +6,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import BaseObject from '../Object.js';
 import EventTarget from '../events/Target.js';
-import {WINDOW} from '../has.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {toString} from '../transform.js';
 
 
@@ -266,7 +266,8 @@ export const registerFont = (function() {
     }
   }
 
-  function fontCallback(font) {
+  return function(fontSpec) {
+    const font = getFontParameters(fontSpec);
     if (!font) {
       return;
     }
@@ -284,31 +285,6 @@ export const registerFont = (function() {
         }
       }
     }
-  }
-
-  return function(fontSpec) {
-    if (WINDOW) {
-      getFontParameters(fontSpec, fontCallback);
-    } else if (self.postMessage) {
-      /** @type {any} */
-      const worker = self;
-      worker.postMessage({
-        action: 'getFontParameters',
-        font: fontSpec
-      });
-      worker.addEventListener('message', function handler(event) {
-        if (event.data.action === 'getFontParameters') {
-          worker.removeEventListener('message', handler);
-          const font = event.data.font;
-          fontCallback(font);
-          if (!textHeights[fontSpec]) {
-            const metrics = measureText(fontSpec, 'Žg');
-            const lineHeight = isNaN(font.lineHeight) ? 1.2 : Number(font.lineHeight);
-            textHeights[fontSpec] = lineHeight * (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
-          }
-        }
-      });
-    }
   };
 })();
 
@@ -323,22 +299,29 @@ export const measureTextHeight = (function() {
    */
   let div;
   const heights = textHeights;
-  return function(font) {
-    let height = heights[font];
+  return function(fontSpec) {
+    let height = heights[fontSpec];
     if (height == undefined) {
-      if (!div) {
-        div = document.createElement('div');
-        div.innerHTML = 'M';
-        div.style.margin = '0 !important';
-        div.style.padding = '0 !important';
-        div.style.position = 'absolute !important';
-        div.style.left = '-99999px !important';
+      if (WORKER_OFFSCREEN_CANVAS) {
+        const font = getFontParameters(fontSpec);
+        const metrics = measureText(fontSpec, 'Žg');
+        const lineHeight = isNaN(Number(font.lineHeight)) ? 1.2 : Number(font.lineHeight);
+        textHeights[fontSpec] = lineHeight * (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+      } else {
+        if (!div) {
+          div = document.createElement('div');
+          div.innerHTML = 'M';
+          div.style.margin = '0 !important';
+          div.style.padding = '0 !important';
+          div.style.position = 'absolute !important';
+          div.style.left = '-99999px !important';
+        }
+        div.style.font = fontSpec;
+        document.body.appendChild(div);
+        height = div.offsetHeight;
+        heights[fontSpec] = height;
+        document.body.removeChild(div);
       }
-      div.style.font = font;
-      document.body.appendChild(div);
-      height = div.offsetHeight;
-      heights[font] = height;
-      document.body.removeChild(div);
     }
     return height;
   };
@@ -368,7 +351,6 @@ function measureText(font, text) {
 export function measureTextWidth(font, text) {
   return measureText(font, text).width;
 }
-
 
 /**
  * Measure text width using a cache.
@@ -484,13 +466,13 @@ let createTransformStringCanvas = null;
  * @return {string} CSS transform.
  */
 export function createTransformString(transform) {
-  if (WINDOW) {
+  if (WORKER_OFFSCREEN_CANVAS) {
+    return toString(transform);
+  } else {
     if (!createTransformStringCanvas) {
       createTransformStringCanvas = createCanvasContext2D(1, 1).canvas;
     }
     createTransformStringCanvas.style.transform = toString(transform);
     return createTransformStringCanvas.style.transform;
-  } else {
-    return toString(transform);
   }
 }

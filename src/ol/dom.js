@@ -1,3 +1,5 @@
+import {WORKER_OFFSCREEN_CANVAS} from './has.js';
+
 /**
  * @module ol/dom
  */
@@ -14,9 +16,9 @@
 export function createCanvasContext2D(opt_width, opt_height, opt_canvasPool) {
   const canvas = opt_canvasPool && opt_canvasPool.length ?
     opt_canvasPool.shift() :
-    'document' in self ?
-      document.createElement('canvas') :
-      new OffscreenCanvas(opt_width || 300, opt_height || 300);
+    WORKER_OFFSCREEN_CANVAS ?
+      new OffscreenCanvas(opt_width || 300, opt_height || 300) :
+      document.createElement('canvas');
   if (opt_width) {
     canvas.width = opt_width;
   }
