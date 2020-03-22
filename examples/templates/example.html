@@ -160,6 +160,14 @@
         <pre><legend>index.js</legend><code id="example-js-source" class="language-js">import 'ol/ol.css';
 {{ js.source }}</code></pre>
       </div>
+{{#if worker.source}}
+      <div class="row-fluid">
+        <div class="source-controls">
+          <a class="copy-button" id="copy-worker-button" data-clipboard-target="#example-worker-source"><i class="fa fa-clipboard"></i> Copy</a>
+        </div>
+        <pre><legend>worker.js</legend><code id="example-worker-source" class="language-js">{{ worker.source }}</code></pre>
+      </div>
+{{/if}}
       <div class="row-fluid">
         <div class="source-controls">
           <a class="copy-button" id="copy-pkg-button" data-clipboard-target="#example-pkg-source"><i class="fa fa-clipboard"></i> Copy</a>
@@ -167,7 +175,6 @@
         <pre><legend>package.json</legend><code id="example-pkg-source" class="language-js">{{ pkgJson }}</code></pre>
       </div>
     </div>
-
     <script src="./resources/common.js"></script>
     <script src="./resources/prism/prism.min.js"></script>
     {{{ js.tag }}}
