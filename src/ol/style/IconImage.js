@@ -217,10 +217,12 @@ class IconImage extends EventTarget {
     ctx.drawImage(this.image_, 0, 0);
 
     if (this.isTainted_(ctx)) {
-      // Internet explorer 11 marks canvas as tainted if the drawn image is a svg.
-      // This makes the getImageData function throw a SecurityError.
-      // The same effect can be achieved with the globalCompositionOperation but
-      // Internet Explorer 11 does not properly support the multiply operation.
+      // If reading from the canvas throws a SecurityError the same effect can be
+      // achieved with globalCompositeOperation.
+      // This could be used as the default, but it is not fully supported by all
+      // browsers. E. g. Internet Explorer 11 does not support the multiply
+      // operation and the resulting image shape will be completelly filled with
+      // the provided color.
       // So this is only used as a fallback. It is still better than having no icon
       // at all.
       const c = this.color_;
