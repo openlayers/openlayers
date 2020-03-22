@@ -1,11 +1,12 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer.js';
-//eslint-disable-next-line
-import Worker from 'worker-loader!./mvtlayer.worker.js';
+import Worker from 'worker-loader!./offscreen-canvas-tiles.worker.js'; //eslint-disable-line
 import {compose, create} from '../src/ol/transform.js';
 import {createTransformString} from '../src/ol/render/canvas.js';
 import {getFontParameters} from '../src/ol/css.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
+import {FullScreen} from '../src/ol/control.js';
 
 const mvtLayerWorker = new Worker();
 
@@ -14,7 +15,7 @@ mvtLayerWorker.addEventListener('message', event => {
   if (event.data.action === 'getFontParameters') {
     getFontParameters(event.data.font, font => {
       mvtLayerWorker.postMessage({
-        action: 'getFontParameters',
+        action: 'gotFontParameters',
         font: font
       });
     });
@@ -28,12 +29,12 @@ mvtLayerWorker.addEventListener('message', event => {
           mvtLayerWorker.postMessage({
             action: 'imageLoaded',
             image: imageBitmap,
-            iconName: event.data.iconName
+            src: event.data.src
           }, [imageBitmap]);
         });
       });
-      image.src = 'https://unpkg.com/@mapbox/maki@4.0.0/icons/' + event.data.iconName + '-15.svg';
-      loadingImages[event.data.iconName] = true;
+      image.src = event.data.src;
+      loadingImages[event.data.src] = true;
     }
   }
 });
@@ -112,10 +113,12 @@ const map = new Map({
   ],
   target: 'map',
   view: new View({
+    resolutions: createXYZ({tileSize: 512}).getResolutions89,
     center: [0, 0],
     zoom: 2
   })
 });
+map.addControl(new FullScreen());
 mvtLayerWorker.addEventListener('message', function(message) {
   if (message.data.action === 'request-render') {
     map.render();
@@ -125,7 +128,6 @@ mvtLayerWorker.addEventListener('message', function(message) {
     canvas.width = imageData.width;
     canvas.height = imageData.height;
     canvas.getContext('2d').drawImage(imageData, 0, 0);
-    canvas.style.opacity = message.data.opacity;
     canvas.style.transform = message.data.transform;
     workerFrameState = message.data.frameState;
     updateContainerTransform();
