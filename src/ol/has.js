@@ -37,7 +37,7 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api
  */
-export const DEVICE_PIXEL_RATIO = (typeof self !== 'undefined' ? self.devicePixelRatio : window.devicePixelRatio) || 1;
+export const DEVICE_PIXEL_RATIO = typeof devicePixelRatio !== 'undefined' ? devicePixelRatio : 1;
 
 /**
  * The execution context is a worker with OffscreenCanvas available.
