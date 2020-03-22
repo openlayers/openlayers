@@ -325,18 +325,22 @@ class Graticule extends VectorLayer {
     if (options.showLabels) {
 
       /**
-       * @type {null|function(number):string}
+       * @type {null|function(number,number):string}
        * @private
        */
       this.lonLabelFormatter_ = options.lonLabelFormatter == undefined ?
         degreesToStringHDMS.bind(this, 'EW') : options.lonLabelFormatter;
 
+      this.isNewLonLabelFormatter_ = options.lonLabelFormatter != undefined;
+
       /**
-       * @type {function(number):string}
+       * @type {function(number,number):string}
        * @private
        */
       this.latLabelFormatter_ = options.latLabelFormatter == undefined ?
         degreesToStringHDMS.bind(this, 'NS') : options.latLabelFormatter;
+
+      this.isNewLatLabelFormatter_ = options.latLabelFormatter != undefined;
 
       /**
        * Longitude label position in fractions (0..1) of view extent. 0 means
@@ -564,14 +568,16 @@ class Graticule extends VectorLayer {
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} index Index.
+   * @param {number} lat Latitude
    * @return {number} Index.
    * @private
    */
-  addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, index) {
+  addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, index, lat) {
     const lineString = this.getMeridian_(lon, minLat, maxLat, squaredTolerance, index);
     if (intersects(lineString.getExtent(), extent)) {
       if (this.meridiansLabels_) {
-        const text = this.lonLabelFormatter_(lon);
+        const latToUse = this.isNewLonLabelFormatter_ ? lat : undefined;
+        const text = this.lonLabelFormatter_(lon, latToUse);
         if (index in this.meridiansLabels_) {
           this.meridiansLabels_[index].text = text;
         } else {
@@ -593,14 +599,16 @@ class Graticule extends VectorLayer {
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} index Index.
+   * @param {number} lon Longitude.
    * @return {number} Index.
    * @private
    */
-  addParallel_(lat, minLon, maxLon, squaredTolerance, extent, index) {
+  addParallel_(lat, minLon, maxLon, squaredTolerance, extent, index, lon) {
     const lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance, index);
     if (intersects(lineString.getExtent(), extent)) {
       if (this.parallelsLabels_) {
-        const text = this.latLabelFormatter_(lat);
+        const lonToUse = this.isNewLatLabelFormatter_ ? lon : undefined;
+        const text = this.latLabelFormatter_(lat, lonToUse);
         if (index in this.parallelsLabels_) {
           this.parallelsLabels_[index].text = text;
         } else {
@@ -759,18 +767,20 @@ class Graticule extends VectorLayer {
     const maxLon = clamp(validExtent[2], centerLon, this.maxLon_);
     const minLat = clamp(validExtent[1], this.minLat_, centerLat);
     const minLon = clamp(validExtent[0], this.minLon_, centerLon);
+    centerLon = Math.floor(centerLon / interval) * interval;
+    centerLat = Math.floor(centerLat / interval) * interval;
 
     // Create meridians
 
-    centerLon = Math.floor(centerLon / interval) * interval;
     lon = clamp(centerLon, this.minLon_, this.maxLon_);
+    lat = clamp(centerLat, this.minLat_, this.maxLat_);
 
-    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0, lat);
 
     cnt = 0;
     while (lon != this.minLon_ && cnt++ < maxLines) {
       lon = Math.max(lon - interval, this.minLon_);
-      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx, lat);
     }
 
     lon = clamp(centerLon, this.minLon_, this.maxLon_);
@@ -778,7 +788,7 @@ class Graticule extends VectorLayer {
     cnt = 0;
     while (lon != this.maxLon_ && cnt++ < maxLines) {
       lon = Math.min(lon + interval, this.maxLon_);
-      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx, lat);
     }
 
     this.meridians_.length = idx;
@@ -788,15 +798,15 @@ class Graticule extends VectorLayer {
 
     // Create parallels
 
-    centerLat = Math.floor(centerLat / interval) * interval;
     lat = clamp(centerLat, this.minLat_, this.maxLat_);
+    lon = clamp(centerLon, this.minLon_, this.maxLon_);
 
-    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0, lon);
 
     cnt = 0;
     while (lat != this.minLat_ && cnt++ < maxLines) {
       lat = Math.max(lat - interval, this.minLat_);
-      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
+      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx, lon);
     }
 
     lat = clamp(centerLat, this.minLat_, this.maxLat_);
@@ -804,7 +814,7 @@ class Graticule extends VectorLayer {
     cnt = 0;
     while (lat != this.maxLat_ && cnt++ < maxLines) {
       lat = Math.min(lat + interval, this.maxLat_);
-      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
+      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx, lon);
     }
 
     this.parallels_.length = idx;
