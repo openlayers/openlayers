@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer.js';
-import Worker from 'worker-loader!./offscreen-canvas-tiles.worker.js'; //eslint-disable-line
+import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disable-line
 import {compose, create} from '../src/ol/transform.js';
 import {createTransformString} from '../src/ol/render/canvas.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
@@ -89,7 +89,7 @@ worker.addEventListener('message', message => {
         worker.postMessage({
           action: 'imageLoaded',
           image: imageBitmap,
-          src: event.data.src
+          src: message.data.src
         }, [imageBitmap]);
       });
     });
