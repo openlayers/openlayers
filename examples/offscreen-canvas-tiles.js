@@ -4,56 +4,16 @@ import Layer from '../src/ol/layer/Layer.js';
 import Worker from 'worker-loader!./offscreen-canvas-tiles.worker.js'; //eslint-disable-line
 import {compose, create} from '../src/ol/transform.js';
 import {createTransformString} from '../src/ol/render/canvas.js';
-import {getFontParameters} from '../src/ol/css.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 import {FullScreen} from '../src/ol/control.js';
+import stringify from 'json-stringify-safe';
 
-const mvtLayerWorker = new Worker();
-
-const loadingImages = {};
-mvtLayerWorker.addEventListener('message', event => {
-  if (event.data.action === 'getFontParameters') {
-    getFontParameters(event.data.font, font => {
-      mvtLayerWorker.postMessage({
-        action: 'gotFontParameters',
-        font: font
-      });
-    });
-  } else if (event.data.action === 'loadImage') {
-    if (!(event.data.src in loadingImages)) {
-      const image = new Image();
-      image.crossOrigin = 'anonymous';
-      image.addEventListener('load', function() {
-        createImageBitmap(image, 0, 0, image.width, image.height).then(imageBitmap => {
-          delete loadingImages[event.data.iconName];
-          mvtLayerWorker.postMessage({
-            action: 'imageLoaded',
-            image: imageBitmap,
-            src: event.data.src
-          }, [imageBitmap]);
-        });
-      });
-      image.src = event.data.src;
-      loadingImages[event.data.src] = true;
-    }
-  }
-});
-
-function getCircularReplacer() {
-  const seen = new WeakSet();
-  return function(key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (seen.has(value)) {
-        return '[circular]';
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-}
+const worker = new Worker();
 
 let container, transformContainer, canvas, workerFrameState, mainThreadFrameState;
 
+// Transform the container to account for the differnece between the (newer)
+// main thread frameState and the (older) worker frameState
 function updateContainerTransform() {
   if (workerFrameState) {
     const viewState = mainThreadFrameState.viewState;
@@ -65,6 +25,8 @@ function updateContainerTransform() {
     const renderedResolution = renderedViewState.resolution;
     const renderedRotation = renderedViewState.rotation;
     const transform = create();
+    // Skip the extra transform for rotated views, because it will not work
+    // correctly in that case
     if (!rotation) {
       compose(transform,
         (renderedCenter[0] - center[0]) / resolution,
@@ -75,40 +37,36 @@ function updateContainerTransform() {
     }
     transformContainer.style.transform = createTransformString(transform);
   }
-
-}
-
-function render(id, frameState) {
-  if (!container) {
-    container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.width = '100%';
-    container.style.height = '100%';
-    transformContainer = document.createElement('div');
-    transformContainer.style.position = 'absolute';
-    transformContainer.style.width = '100%';
-    transformContainer.style.height = '100%';
-    container.appendChild(transformContainer);
-    canvas = document.createElement('canvas');
-    canvas.style.position = 'absolute';
-    canvas.style.left = '0';
-    canvas.style.transformOrigin = 'top left';
-    transformContainer.appendChild(canvas);
-  }
-  mainThreadFrameState = frameState;
-  updateContainerTransform();
-  mvtLayerWorker.postMessage({
-    action: 'render',
-    id: id,
-    frameState: JSON.parse(JSON.stringify(frameState, getCircularReplacer()))
-  });
-  return container;
 }
 
 const map = new Map({
   layers: [
     new Layer({
-      render: render.bind(undefined, 'mapbox')
+      render: function(frameState) {
+        if (!container) {
+          container = document.createElement('div');
+          container.style.position = 'absolute';
+          container.style.width = '100%';
+          container.style.height = '100%';
+          transformContainer = document.createElement('div');
+          transformContainer.style.position = 'absolute';
+          transformContainer.style.width = '100%';
+          transformContainer.style.height = '100%';
+          container.appendChild(transformContainer);
+          canvas = document.createElement('canvas');
+          canvas.style.position = 'absolute';
+          canvas.style.left = '0';
+          canvas.style.transformOrigin = 'top left';
+          transformContainer.appendChild(canvas);
+        }
+        mainThreadFrameState = frameState;
+        updateContainerTransform();
+        worker.postMessage({
+          action: 'render',
+          frameState: JSON.parse(stringify(frameState))
+        });
+        return container;
+      }
     })
   ],
   target: 'map',
@@ -119,10 +77,28 @@ const map = new Map({
   })
 });
 map.addControl(new FullScreen());
-mvtLayerWorker.addEventListener('message', function(message) {
-  if (message.data.action === 'request-render') {
+
+// Worker messaging and actions
+worker.addEventListener('message', message => {
+  if (message.data.action === 'loadImage') {
+    // Image loader for ol-mapbox-style
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.addEventListener('load', function() {
+      createImageBitmap(image, 0, 0, image.width, image.height).then(imageBitmap => {
+        worker.postMessage({
+          action: 'imageLoaded',
+          image: imageBitmap,
+          src: event.data.src
+        }, [imageBitmap]);
+      });
+    });
+    image.src = event.data.src;
+  } else if (message.data.action === 'request-render') {
+    // Worker requested a new render frame
     map.render();
   } else if (canvas && message.data.action === 'rendered') {
+    // Worker provies a new render frame
     transformContainer.style.transform = '';
     const imageData = message.data.imageData;
     canvas.width = imageData.width;
