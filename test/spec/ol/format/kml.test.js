@@ -2394,7 +2394,8 @@ describe('ol.format.KML', function() {
               rotation: 45,
               scale: 0.5,
               size: [48, 48],
-              src: 'http://foo.png'
+              src: 'http://foo.png',
+              color: 'rgba(255,0,0,1)'
             })
           });
           const imageStyle = style.getImage();
@@ -2420,6 +2421,7 @@ describe('ol.format.KML', function() {
               '          <gx:w>48</gx:w>' +
               '          <gx:h>48</gx:h>' +
               '        </Icon>' +
+              '        <color>ff0000ff</color>' +
               '        <hotSpot x="12" y="12" xunits="pixels" ' +
               '                 yunits="pixels"/>' +
               '      </IconStyle>' +

@@ -2452,7 +2452,7 @@ function writeIcon(node, icon, objectStack) {
 // @ts-ignore
 const ICON_STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
-    'scale', 'heading', 'Icon', 'hotSpot'
+    'scale', 'heading', 'Icon', 'color', 'hotSpot'
   ]);
 
 
@@ -2464,6 +2464,7 @@ const ICON_STYLE_SEQUENCE = makeStructureNS(
 const ICON_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeChildAppender(writeIcon),
+    'color': makeChildAppender(writeColorTextNode),
     'heading': makeChildAppender(writeDecimalTextNode),
     'hotSpot': makeChildAppender(writeVec2),
     'scale': makeChildAppender(writeScaleTextNode)
@@ -2517,6 +2518,11 @@ function writeIconStyle(node, style, objectStack) {
   const rotation = style.getRotation();
   if (rotation !== 0) {
     properties['heading'] = rotation; // 0-360
+  }
+
+  const color = style.getColor();
+  if (color) {
+    properties['color'] = color;
   }
 
   const parentNode = objectStack[objectStack.length - 1].node;
