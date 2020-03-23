@@ -7,6 +7,7 @@ import {createTransformString} from '../src/ol/render/canvas.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 import {FullScreen} from '../src/ol/control.js';
 import stringify from 'json-stringify-safe';
+import Source from '../src/ol/source/Source.js';
 
 const worker = new Worker();
 
@@ -66,7 +67,13 @@ const map = new Map({
           frameState: JSON.parse(stringify(frameState))
         });
         return container;
-      }
+      },
+      source: new Source({
+        attributions: [
+          '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a>',
+          '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+        ]
+      })
     })
   ],
   target: 'map',
