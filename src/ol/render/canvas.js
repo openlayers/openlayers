@@ -6,6 +6,8 @@ import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import BaseObject from '../Object.js';
 import EventTarget from '../events/Target.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
+import {toString} from '../transform.js';
 
 
 /**
@@ -297,34 +299,40 @@ export const measureTextHeight = (function() {
    */
   let div;
   const heights = textHeights;
-  return function(font) {
-    let height = heights[font];
+  return function(fontSpec) {
+    let height = heights[fontSpec];
     if (height == undefined) {
-      if (!div) {
-        div = document.createElement('div');
-        div.innerHTML = 'M';
-        div.style.margin = '0 !important';
-        div.style.padding = '0 !important';
-        div.style.position = 'absolute !important';
-        div.style.left = '-99999px !important';
+      if (WORKER_OFFSCREEN_CANVAS) {
+        const font = getFontParameters(fontSpec);
+        const metrics = measureText(fontSpec, 'Žg');
+        const lineHeight = isNaN(Number(font.lineHeight)) ? 1.2 : Number(font.lineHeight);
+        textHeights[fontSpec] = lineHeight * (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+      } else {
+        if (!div) {
+          div = document.createElement('div');
+          div.innerHTML = 'M';
+          div.style.margin = '0 !important';
+          div.style.padding = '0 !important';
+          div.style.position = 'absolute !important';
+          div.style.left = '-99999px !important';
+        }
+        div.style.font = fontSpec;
+        document.body.appendChild(div);
+        height = div.offsetHeight;
+        heights[fontSpec] = height;
+        document.body.removeChild(div);
       }
-      div.style.font = font;
-      document.body.appendChild(div);
-      height = div.offsetHeight;
-      heights[font] = height;
-      document.body.removeChild(div);
     }
     return height;
   };
 })();
 
-
 /**
  * @param {string} font Font.
  * @param {string} text Text.
- * @return {number} Width.
+ * @return {TextMetrics} Text metrics.
  */
-export function measureTextWidth(font, text) {
+function measureText(font, text) {
   if (!measureContext) {
     measureContext = createCanvasContext2D(1, 1);
   }
@@ -332,9 +340,17 @@ export function measureTextWidth(font, text) {
     measureContext.font = font;
     measureFont = measureContext.font;
   }
-  return measureContext.measureText(text).width;
+  return measureContext.measureText(text);
 }
 
+/**
+ * @param {string} font Font.
+ * @param {string} text Text.
+ * @return {number} Width.
+ */
+export function measureTextWidth(font, text) {
+  return measureText(font, text).width;
+}
 
 /**
  * Measure text width using a cache.
@@ -432,9 +448,31 @@ function executeLabelInstructions(label, context) {
   const contextInstructions = label.contextInstructions;
   for (let i = 0, ii = contextInstructions.length; i < ii; i += 2) {
     if (Array.isArray(contextInstructions[i + 1])) {
-      CanvasRenderingContext2D.prototype[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
+      context[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];
     }
+  }
+}
+
+/**
+ * @type {HTMLCanvasElement}
+ * @private
+ */
+let createTransformStringCanvas = null;
+
+/**
+ * @param {import("../transform.js").Transform} transform Transform.
+ * @return {string} CSS transform.
+ */
+export function createTransformString(transform) {
+  if (WORKER_OFFSCREEN_CANVAS) {
+    return toString(transform);
+  } else {
+    if (!createTransformStringCanvas) {
+      createTransformStringCanvas = createCanvasContext2D(1, 1).canvas;
+    }
+    createTransformStringCanvas.style.transform = toString(transform);
+    return createTransformStringCanvas.style.transform;
   }
 }

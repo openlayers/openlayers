@@ -18,6 +18,7 @@ import {
 } from '../../transform.js';
 import {defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import RBush from 'rbush/rbush.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 
 
 /**
@@ -204,7 +205,9 @@ class Executor {
       contextInstructions.push('lineCap', strokeState.lineCap);
       contextInstructions.push('lineJoin', strokeState.lineJoin);
       contextInstructions.push('miterLimit', strokeState.miterLimit);
-      if (CanvasRenderingContext2D.prototype.setLineDash) {
+      // eslint-disable-next-line
+      const Context = WORKER_OFFSCREEN_CANVAS ? OffscreenCanvasRenderingContext2D : CanvasRenderingContext2D;
+      if (Context.prototype.setLineDash) {
         contextInstructions.push('setLineDash', [strokeState.lineDash]);
         contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
       }

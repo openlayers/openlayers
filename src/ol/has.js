@@ -37,7 +37,15 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api
  */
-export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+export const DEVICE_PIXEL_RATIO = typeof devicePixelRatio !== 'undefined' ? devicePixelRatio : 1;
+
+/**
+ * The execution context is a worker with OffscreenCanvas available.
+ * @const
+ * @type {boolean}
+ */
+export const WORKER_OFFSCREEN_CANVAS = typeof WorkerGlobalScope !== 'undefined' && typeof OffscreenCanvas !== 'undefined' &&
+  self instanceof WorkerGlobalScope; //eslint-disable-line
 
 /**
  * Image.prototype.decode() is supported.

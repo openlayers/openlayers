@@ -1,8 +1,11 @@
+import {WORKER_OFFSCREEN_CANVAS} from './has.js';
+
 /**
  * @module ol/dom
  */
 
 
+//FIXME Move this function to the canvas module
 /**
  * Create an html canvas element and returns its 2d context.
  * @param {number=} opt_width Canvas width.
@@ -12,14 +15,18 @@
  */
 export function createCanvasContext2D(opt_width, opt_height, opt_canvasPool) {
   const canvas = opt_canvasPool && opt_canvasPool.length ?
-    opt_canvasPool.shift() : document.createElement('canvas');
+    opt_canvasPool.shift() :
+    WORKER_OFFSCREEN_CANVAS ?
+      new OffscreenCanvas(opt_width || 300, opt_height || 300) :
+      document.createElement('canvas');
   if (opt_width) {
     canvas.width = opt_width;
   }
   if (opt_height) {
     canvas.height = opt_height;
   }
-  return canvas.getContext('2d');
+  //FIXME Allow OffscreenCanvasRenderingContext2D as return type
+  return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 }
 
 

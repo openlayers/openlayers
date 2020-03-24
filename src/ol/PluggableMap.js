@@ -12,7 +12,7 @@ import MapProperty from './MapProperty.js';
 import RenderEventType from './render/EventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
-import TileQueue from './TileQueue.js';
+import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
 import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
@@ -24,7 +24,6 @@ import {TRUE} from './functions.js';
 import {DEVICE_PIXEL_RATIO, IMAGE_DECODE, PASSIVE_EVENT_LISTENERS} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {hasArea} from './size.js';
-import {DROP} from './structs/PriorityQueue.js';
 import {create as createTransform, apply as applyTransform} from './transform.js';
 import {toUserCoordinate, fromUserCoordinate} from './proj.js';
 
@@ -891,26 +890,7 @@ class PluggableMap extends BaseObject {
    * @return {number} Tile priority.
    */
   getTilePriority(tile, tileSourceKey, tileCenter, tileResolution) {
-    // Filter out tiles at higher zoom levels than the current zoom level, or that
-    // are outside the visible extent.
-    const frameState = this.frameState_;
-    if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
-      return DROP;
-    }
-    if (!frameState.wantedTiles[tileSourceKey][tile.getKey()]) {
-      return DROP;
-    }
-    // Prioritize the highest zoom level tiles closest to the focus.
-    // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).
-    // Within a zoom level, tiles are prioritized by the distance in pixels between
-    // the center of the tile and the center of the viewport.  The factor of 65536
-    // means that the prioritization should behave as desired for tiles up to
-    // 65536 * Math.log(2) = 45426 pixels from the focus.
-    const center = frameState.viewState.center;
-    const deltaX = tileCenter[0] - center[0];
-    const deltaY = tileCenter[1] - center[1];
-    return 65536 * Math.log(tileResolution) +
-        Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+    return getTilePriority(this.frameState_, tile, tileSourceKey, tileCenter, tileResolution);
   }
 
   /**
