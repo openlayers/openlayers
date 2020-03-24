@@ -11,7 +11,7 @@ import Source from '../src/ol/source/Source.js';
 
 const worker = new Worker();
 
-let container, transformContainer, canvas, workerFrameState, mainThreadFrameState;
+let container, transformContainer, canvas, rendering, workerFrameState, mainThreadFrameState;
 
 // Transform the container to account for the differnece between the (newer)
 // main thread frameState and the (older) worker frameState
@@ -62,10 +62,15 @@ const map = new Map({
         }
         mainThreadFrameState = frameState;
         updateContainerTransform();
-        worker.postMessage({
-          action: 'render',
-          frameState: JSON.parse(stringify(frameState))
-        });
+        if (!rendering) {
+          rendering = true;
+          worker.postMessage({
+            action: 'render',
+            frameState: JSON.parse(stringify(frameState))
+          });
+        } else {
+          frameState.animate = true;
+        }
         return container;
       },
       source: new Source({
@@ -101,18 +106,20 @@ worker.addEventListener('message', message => {
       });
     });
     image.src = event.data.src;
-  } else if (message.data.action === 'request-render') {
+  } else if (message.data.action === 'requestRender') {
     // Worker requested a new render frame
     map.render();
   } else if (canvas && message.data.action === 'rendered') {
     // Worker provies a new render frame
-    transformContainer.style.transform = '';
-    const imageData = message.data.imageData;
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
-    canvas.getContext('2d').drawImage(imageData, 0, 0);
-    canvas.style.transform = message.data.transform;
-    workerFrameState = message.data.frameState;
-    updateContainerTransform();
+    requestAnimationFrame(function() {
+      const imageData = message.data.imageData;
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      canvas.getContext('2d').drawImage(imageData, 0, 0);
+      canvas.style.transform = message.data.transform;
+      workerFrameState = message.data.frameState;
+      updateContainerTransform();
+    });
+    rendering = false;
   }
 });

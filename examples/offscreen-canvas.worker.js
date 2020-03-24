@@ -14,6 +14,9 @@ const worker = self;
 
 let frameState, pixelRatio, rendererTransform;
 const canvas = new OffscreenCanvas(1, 1);
+// OffscreenCanvas does not have a style, so we mock it
+canvas.style = {};
+const context = canvas.getContext('2d');
 
 const sources = {
   landcover: new VectorTileSource({
@@ -77,18 +80,17 @@ function loadStyles() {
         });
         layer.getRenderer().useContainer = function(target, transform) {
           this.containerReused = this.getLayer() !== layers[0];
-          target.style = {};
-          this.canvas = target;
-          this.context = target.getContext('2d');
+          this.canvas = canvas;
+          this.context = context;
           this.container = {
-            firstElementChild: target
+            firstElementChild: canvas
           };
           rendererTransform = transform;
         };
         styleFunction(layer, styleJson, bucket.layers, undefined, spriteJson, spriteImageUrl, getFont);
         layers.push(layer);
       });
-      worker.postMessage({action: 'request-render'});
+      worker.postMessage({action: 'requestRender'});
     });
   });
 }
@@ -97,11 +99,10 @@ function loadStyles() {
 
 const tileQueue = new TileQueue(
   (tile, tileSourceKey, tileCenter, tileResolution) => tilePriorityFunction(frameState, tile, tileSourceKey, tileCenter, tileResolution),
-  () => worker.postMessage({action: 'request-render'}));
+  () => worker.postMessage({action: 'requestRender'}));
 
 const maxTotalLoading = 8;
 const maxNewLoads = 2;
-let rendering = false;
 
 worker.addEventListener('message', event => {
   if (event.data.action !== 'render') {
@@ -114,34 +115,22 @@ worker.addEventListener('message', event => {
   }
   frameState.tileQueue = tileQueue;
   frameState.viewState.projection.__proto__ = Projection.prototype;
-  if (rendering) {
-    return;
-  }
-  rendering = true;
-  requestAnimationFrame(() => {
-    let rendered = false;
-    layers.forEach(layer => {
-      if (inView(layer.getLayerState(), frameState.viewState)) {
-        rendered = true;
-        const renderer = layer.getRenderer();
-        renderer.renderFrame(frameState, canvas);
-      }
-    });
-    rendering = false;
-    if (!rendered) {
-      return;
+  layers.forEach(layer => {
+    if (inView(layer.getLayerState(), frameState.viewState)) {
+      const renderer = layer.getRenderer();
+      renderer.renderFrame(frameState, canvas);
     }
-    renderDeclutterItems(frameState, null);
-    if (tileQueue.getTilesLoading() < maxTotalLoading) {
-      tileQueue.reprioritize();
-      tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
-    }
-    const imageData = canvas.transferToImageBitmap();
-    worker.postMessage({
-      action: 'rendered',
-      imageData: imageData,
-      transform: rendererTransform,
-      frameState: JSON.parse(stringify(frameState))
-    }, [imageData]);
   });
+  renderDeclutterItems(frameState, null);
+  if (tileQueue.getTilesLoading() < maxTotalLoading) {
+    tileQueue.reprioritize();
+    tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
+  }
+  const imageData = canvas.transferToImageBitmap();
+  worker.postMessage({
+    action: 'rendered',
+    imageData: imageData,
+    transform: rendererTransform,
+    frameState: JSON.parse(stringify(frameState))
+  }, [imageData]);
 });
