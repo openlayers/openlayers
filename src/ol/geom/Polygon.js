@@ -112,7 +112,6 @@ class Polygon extends SimpleGeometry {
   /**
    * Make a complete copy of the geometry.
    * @return {!Polygon} Clone.
-   * @override
    * @api
    */
   clone() {
@@ -120,7 +119,11 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+   * @param {number} minSquaredDistance Minimum squared distance.
+   * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -137,7 +140,9 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
    */
   containsXY(x, y) {
     return linearRingsContainsXY(this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
@@ -163,7 +168,6 @@ class Polygon extends SimpleGeometry {
    *     By default, coordinate orientation will depend on how the geometry was
    *     constructed.
    * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
-   * @override
    * @api
    */
   getCoordinates(opt_right) {
@@ -281,7 +285,9 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {Polygon} Simplified Polygon.
+   * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
     const simplifiedFlatCoordinates = [];
@@ -294,7 +300,8 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {
@@ -302,7 +309,9 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Test if the geometry and the passed extent intersect.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
    */
   intersectsExtent(extent) {
@@ -314,7 +323,6 @@ class Polygon extends SimpleGeometry {
    * Set the coordinates of the polygon.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
    * @param {GeometryLayout=} opt_layout Layout.
-   * @override
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

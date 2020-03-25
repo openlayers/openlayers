@@ -27,7 +27,6 @@ class Point extends SimpleGeometry {
   /**
    * Make a complete copy of the geometry.
    * @return {!Point} Clone.
-   * @override
    * @api
    */
   clone() {
@@ -36,7 +35,11 @@ class Point extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+   * @param {number} minSquaredDistance Minimum squared distance.
+   * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     const flatCoordinates = this.flatCoordinates;
@@ -56,7 +59,6 @@ class Point extends SimpleGeometry {
   /**
    * Return the coordinate of the point.
    * @return {import("../coordinate.js").Coordinate} Coordinates.
-   * @override
    * @api
    */
   getCoordinates() {
@@ -64,14 +66,17 @@ class Point extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @protected
+   * @return {import("../extent.js").Extent} extent Extent.
    */
   computeExtent(extent) {
     return createOrUpdateFromCoordinate(this.flatCoordinates, extent);
   }
 
   /**
-   * @inheritDoc
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {
@@ -79,7 +84,9 @@ class Point extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Test if the geometry and the passed extent intersect.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
    */
   intersectsExtent(extent) {
@@ -87,7 +94,8 @@ class Point extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {!Array<*>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {
