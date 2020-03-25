@@ -144,7 +144,10 @@ class WMSGetFeatureInfo extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
     const options = {};

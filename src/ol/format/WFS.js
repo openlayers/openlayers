@@ -254,7 +254,10 @@ class WFS extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
     /** @type {import("../xml.js").NodeStackItem} */
@@ -513,19 +516,21 @@ class WFS extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Document} doc Document.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromDocument(doc) {
-    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readProjectionFromNode(n);
+        return this.readProjectionFromNode(/** @type {Element} */ (n));
       }
     }
     return null;
   }
 
   /**
-   * @inheritDoc
+   * @param {Element} node Node.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromNode(node) {
     if (node.firstElementChild &&

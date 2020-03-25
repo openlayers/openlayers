@@ -59,19 +59,21 @@ class WMTSCapabilities extends XML {
   }
 
   /**
-   * @inheritDoc
+   * @param {Document} doc Document.
+   * @return {Object} Object
    */
   readFromDocument(doc) {
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readFromNode(n);
+        return this.readFromNode(/** @type {Element} */ (n));
       }
     }
     return null;
   }
 
   /**
-   * @inheritDoc
+   * @param {Element} node Node.
+   * @return {Object} Object
    */
   readFromNode(node) {
     let version = node.getAttribute('version');

@@ -102,7 +102,10 @@ class EsriJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromObject(object, opt_options) {
     const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
@@ -123,7 +126,10 @@ class EsriJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {Array<Feature>} Features.
    */
   readFeaturesFromObject(object, opt_options) {
     const options = opt_options ? opt_options : {};
@@ -143,14 +149,19 @@ class EsriJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {EsriJSONGeometry} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometryFromObject(object, opt_options) {
-    return readGeometry(/** @type {EsriJSONGeometry} */(object), opt_options);
+    return readGeometry(object, opt_options);
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @protected
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromObject(object) {
     if (object['spatialReference'] && object['spatialReference']['wkid'] !== undefined) {
@@ -168,7 +179,6 @@ class EsriJSON extends JSONFeature {
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {EsriJSONGeometry} Object.
-   * @override
    * @api
    */
   writeGeometryObject(geometry, opt_options) {
@@ -181,7 +191,6 @@ class EsriJSON extends JSONFeature {
    * @param {import("../Feature.js").default} feature Feature.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} Object.
-   * @override
    * @api
    */
   writeFeatureObject(feature, opt_options) {
@@ -212,7 +221,6 @@ class EsriJSON extends JSONFeature {
    * @param {Array<import("../Feature.js").default>} features Features.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {EsriJSONFeatureSet} EsriJSON Object.
-   * @override
    * @api
    */
   writeFeaturesObject(features, opt_options) {

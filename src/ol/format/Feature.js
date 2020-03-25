@@ -81,7 +81,7 @@ class FeatureFormat {
 
   /**
    * Adds the data projection to the read options.
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions=} opt_options Options.
    * @return {ReadOptions|undefined} Options.
    * @protected
@@ -132,7 +132,7 @@ class FeatureFormat {
    * Read a single feature from a source.
    *
    * @abstract
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
    */
@@ -144,7 +144,7 @@ class FeatureFormat {
    * Read all features from a source.
    *
    * @abstract
-   * @param {Document|Node|ArrayBuffer|Object|string} source Source.
+   * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
@@ -156,7 +156,7 @@ class FeatureFormat {
    * Read a single geometry from a source.
    *
    * @abstract
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
@@ -168,7 +168,7 @@ class FeatureFormat {
    * Read the projection from a source.
    *
    * @abstract
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjection(source) {

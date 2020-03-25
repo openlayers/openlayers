@@ -58,13 +58,16 @@ class OSMXML extends XMLFeature {
     super();
 
     /**
-     * @inheritDoc
+     * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
     const options = this.getReadOptions(node, opt_options);

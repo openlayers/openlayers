@@ -642,7 +642,10 @@ class WKT extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromText(text, opt_options) {
     const geom = this.readGeometryFromText(text, opt_options);
@@ -655,7 +658,10 @@ class WKT extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {Array<Feature>} Features.
    */
   readFeaturesFromText(text, opt_options) {
     let geometries = [];
@@ -677,7 +683,10 @@ class WKT extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometryFromText(text, opt_options) {
     const geometry = this.parse_(text);
@@ -689,7 +698,10 @@ class WKT extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../Feature.js").default} feature Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @protected
+   * @return {string} Text.
    */
   writeFeatureText(feature, opt_options) {
     const geometry = feature.getGeometry();
@@ -700,7 +712,10 @@ class WKT extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @protected
+   * @return {string} Text.
    */
   writeFeaturesText(features, opt_options) {
     if (features.length == 1) {
@@ -715,7 +730,10 @@ class WKT extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @protected
+   * @return {string} Text.
    */
   writeGeometryText(geometry, opt_options) {
     return encode(transformGeometryWithOptions(geometry, true, opt_options));
