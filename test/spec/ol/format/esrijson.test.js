@@ -97,6 +97,7 @@ describe('ol.format.EsriJSON', function() {
   };
 
   const featureCollectionEsriJSON = {
+    objectIdFieldName: 'prop0',
     features: [pointEsriJSON, lineStringEsriJSON, polygonEsriJSON]
   };
 
@@ -230,6 +231,10 @@ describe('ol.format.EsriJSON', function() {
       expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[1].getGeometry()).to.be.an(LineString);
       expect(features[2].getGeometry()).to.be.an(Polygon);
+
+      expect(features[0].getId()).to.eql('value0');
+      expect(features[1].getId()).to.eql('value0');
+      expect(features[2].getId()).to.eql('value0');
     });
 
     it('can read and transform a point', function() {

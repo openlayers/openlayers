@@ -104,10 +104,11 @@ class EsriJSON extends JSONFeature {
   /**
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {string=} opt_idField Name of the field where to get the id from.
    * @protected
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromObject(object, opt_options) {
+  readFeatureFromObject(object, opt_options, opt_idField) {
     const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
     const geometry = readGeometry(esriJSONFeature.geometry, opt_options);
     const feature = new Feature();
@@ -115,12 +116,12 @@ class EsriJSON extends JSONFeature {
       feature.setGeometryName(this.geometryName_);
     }
     feature.setGeometry(geometry);
-    if (opt_options && opt_options.idField &&
-      esriJSONFeature.attributes[opt_options.idField]) {
-      feature.setId(/** @type {number} */(esriJSONFeature.attributes[opt_options.idField]));
-    }
     if (esriJSONFeature.attributes) {
       feature.setProperties(esriJSONFeature.attributes, true);
+      const id = esriJSONFeature.attributes[opt_idField];
+      if (id !== undefined) {
+        feature.setId(/** @type {number} */(id));
+      }
     }
     return feature;
   }
@@ -138,9 +139,8 @@ class EsriJSON extends JSONFeature {
       /** @type {Array<import("../Feature.js").default>} */
       const features = [];
       const esriJSONFeatures = esriJSONFeatureSet.features;
-      options.idField = object.objectIdFieldName;
       for (let i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
-        features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
+        features.push(this.readFeatureFromObject(esriJSONFeatures[i], options, object.objectIdFieldName));
       }
       return features;
     } else {
