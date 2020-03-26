@@ -131,7 +131,7 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @return {boolean} Can expire cache.
    */
   canExpireCache() {
     if (!ENABLE_RASTER_REPROJECTION) {
@@ -150,7 +150,8 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {!Object<string, boolean>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
     if (!ENABLE_RASTER_REPROJECTION) {
@@ -167,7 +168,8 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
     if (ENABLE_RASTER_REPROJECTION &&
@@ -186,7 +188,8 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {boolean} Opaque.
    */
   getOpaque(projection) {
     if (ENABLE_RASTER_REPROJECTION &&
@@ -198,7 +201,8 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
    */
   getTileGridForProjection(projection) {
     if (!ENABLE_RASTER_REPROJECTION) {
@@ -212,14 +216,13 @@ class TileImage extends UrlTile {
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = getTileGridForProjection(projection);
       }
-      return (
-        /** @type {!import("../tilegrid/TileGrid.js").default} */ (this.tileGridForProjection[projKey])
-      );
+      return this.tileGridForProjection[projKey];
     }
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../TileCache.js").default} Tile cache.
    */
   getTileCacheForProjection(projection) {
     if (!ENABLE_RASTER_REPROJECTION) {
@@ -265,10 +268,15 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {!import("../Tile.js").default} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const sourceProjection = /** @type {!import("../proj/Projection.js").default} */ (this.getProjection());
+    const sourceProjection = this.getProjection();
     if (!ENABLE_RASTER_REPROJECTION ||
         !sourceProjection || !projection || equivalent(sourceProjection, projection)) {
       return this.getTileInternal(z, x, y, pixelRatio, sourceProjection || projection);
@@ -278,7 +286,7 @@ class TileImage extends UrlTile {
       let tile;
       const tileCoordKey = getKey(tileCoord);
       if (cache.containsKey(tileCoordKey)) {
-        tile = /** @type {!import("../Tile.js").default} */ (cache.get(tileCoordKey));
+        tile = cache.get(tileCoordKey);
       }
       const key = this.getKey();
       if (tile && tile.key == key) {

@@ -286,7 +286,7 @@ class IIIF extends TileImage {
     });
 
     /**
-     * @inheritDoc
+     * @type {number}
      */
     this.zDirection = options.zDirection;
 

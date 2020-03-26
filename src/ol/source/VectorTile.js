@@ -341,14 +341,19 @@ class VectorTile extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {!VectorRenderTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
     const coordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
     let tile;
     if (this.tileCache.containsKey(coordKey)) {
-      tile = /** @type {!import("../Tile.js").default} */ (this.tileCache.get(coordKey));
+      tile = this.tileCache.get(coordKey);
       if (tile.key === key) {
         return tile;
       }
@@ -395,7 +400,8 @@ class VectorTile extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
    */
   getTileGridForProjection(projection) {
     const code = projection.getCode();
@@ -412,14 +418,19 @@ class VectorTile extends UrlTile {
   }
 
   /**
-   * @inheritDoc
+   * Get the tile pixel ratio for this source.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {number} Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
     return pixelRatio;
   }
 
   /**
-   * @inheritDoc
+   * @param {number} z Z.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../size.js").Size} Tile size.
    */
   getTilePixelSize(z, pixelRatio, projection) {
     const tileGrid = this.getTileGridForProjection(projection);

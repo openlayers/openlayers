@@ -260,7 +260,7 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @inheritDoc
+   * @return {number} Gutter.
    */
   getGutter() {
     return this.gutter_;
@@ -349,11 +349,12 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @inheritDoc
+   * Get the tile pixel ratio for this source.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {number} Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
-    return (!this.hidpi_ || this.serverType_ === undefined) ? 1 :
-    /** @type {number} */ (pixelRatio);
+    return (!this.hidpi_ || this.serverType_ === undefined) ? 1 : pixelRatio;
   }
 
   /**

@@ -170,10 +170,12 @@ class TileArcGISRest extends TileImage {
   }
 
   /**
-   * @inheritDoc
+   * Get the tile pixel ratio for this source.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {number} Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
-    return this.hidpi_ ? /** @type {number} */ (pixelRatio) : 1;
+    return this.hidpi_ ? pixelRatio : 1;
   }
 
   /**

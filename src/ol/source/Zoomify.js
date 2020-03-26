@@ -52,7 +52,8 @@ export class CustomTile extends ImageTile {
   }
 
   /**
-   * @inheritDoc
+   * Get the image element for this tile.
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    */
   getImage() {
     if (this.zoomifyImage_) {
@@ -256,7 +257,7 @@ class Zoomify extends TileImage {
     });
 
     /**
-     * @inheritDoc
+     * @type {number}
      */
     this.zDirection = options.zDirection;
 
