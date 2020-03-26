@@ -60,7 +60,8 @@ class PinchZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer drag events.
+   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let scaleDelta = 1.0;
@@ -99,7 +100,9 @@ class PinchZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
     if (this.targetPointers.length < 2) {
@@ -114,7 +117,9 @@ class PinchZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length >= 2) {
