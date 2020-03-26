@@ -141,7 +141,7 @@ describe('ol.layer.Vector', function() {
             }),
             new Feature({
               geometry: new Point([1000000, 0]),
-              name: 'feture2'
+              name: 'feature2'
             })
           ]
         })
