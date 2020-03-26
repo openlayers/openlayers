@@ -190,7 +190,8 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @inheritDoc
+   * @param {Array<import("./Layer.js").default>=} opt_array Array of layers (to be modified in place).
+   * @return {Array<import("./Layer.js").default>} Array of layers.
    */
   getLayersArray(opt_array) {
     const array = opt_array !== undefined ? opt_array : [];
@@ -201,7 +202,8 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @inheritDoc
+   * @param {Array<import("./Layer.js").State>=} opt_states Optional list of layer states (to be modified in place).
+   * @return {Array<import("./Layer.js").State>} List of layer states.
    */
   getLayerStatesArray(opt_states) {
     const states = opt_states !== undefined ? opt_states : [];
@@ -238,7 +240,7 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("../source/State.js").default} Source state.
    */
   getSourceState() {
     return SourceState.READY;
