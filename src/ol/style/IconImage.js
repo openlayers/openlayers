@@ -170,6 +170,7 @@ class IconImage extends EventTarget {
   }
 
   /**
+   * Get the size of the icon (in pixels).
    * @return {import("../size.js").Size} Image size.
    */
   getSize() {

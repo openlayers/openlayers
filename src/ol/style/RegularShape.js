@@ -171,7 +171,9 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * Get the anchor point in pixels. The anchor determines the center point for the
+   * symbolizer.
+   * @return {Array<number>} Anchor.
    * @api
    */
   getAnchor() {
@@ -197,14 +199,17 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {HTMLImageElement|HTMLCanvasElement} Image element.
    */
   getHitDetectionImage(pixelRatio) {
     return this.hitDetectionCanvas_;
   }
 
   /**
-   * @inheritDoc
+   * Get the image icon.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
    * @api
    */
   getImage(pixelRatio) {
@@ -212,28 +217,29 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("../size.js").Size} Image size.
    */
   getImageSize() {
     return this.imageSize_;
   }
 
   /**
-   * @inheritDoc
+   * @return {import("../size.js").Size} Size of the hit-detection image.
    */
   getHitDetectionImageSize() {
     return this.hitDetectionImageSize_;
   }
 
   /**
-   * @inheritDoc
+   * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {
     return ImageState.LOADED;
   }
 
   /**
-   * @inheritDoc
+   * Get the origin of the symbolizer.
+   * @return {Array<number>} Origin.
    * @api
    */
   getOrigin() {
@@ -268,7 +274,8 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * Get the size of the symbolizer (in pixels).
+   * @return {import("../size.js").Size} Size.
    * @api
    */
   getSize() {
@@ -285,17 +292,17 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * @param {function(import("../events/Event.js").default): void} listener Listener function.
    */
   listenImageChange(listener) {}
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    */
   load() {}
 
   /**
-   * @inheritDoc
+   * @param {function(import("../events/Event.js").default): void} listener Listener function.
    */
   unlistenImageChange(listener) {}
 

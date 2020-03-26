@@ -233,7 +233,6 @@ class ImageStyle {
   /**
    * @abstract
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
-   * @template T
    */
   listenImageChange(listener) {
     abstract();
@@ -250,7 +249,6 @@ class ImageStyle {
   /**
    * @abstract
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
-   * @template T
    */
   unlistenImageChange(listener) {
     abstract();
