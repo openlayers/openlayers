@@ -11,7 +11,7 @@ import Comparison from './Comparison.js';
 class IsLike extends Comparison {
   /**
    * [constructor description]
-   * @param {!string} propertyName Name of the context property to compare.
+   * @param {!(string|import("./Function.js"))} propertyName Name of the context property to compare.
    * @param {!string} pattern Text pattern.
    * @param {string=} opt_wildCard Pattern character which matches any sequence of
    *    zero or more string characters. Default is '*'.

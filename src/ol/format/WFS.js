@@ -1091,8 +1091,18 @@ function writeIsLikeFilter(node, filter, objectStack) {
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
-  writeOgcPropertyName(node, filter.propertyName);
-  writeOgcLiteral(node, '' + filter.pattern);
+  // TODO -- make this a safer check
+  if (typeof filter.propertyName === 'object') {
+    const child = createElementNS(OGCNS, 'Function');
+
+    child.setAttribute('name', filter.propertyName.name);
+    writeOgcLiteral(child, `${filter.propertyName.expression}`);
+    writeOgcPropertyName(child, filter.propertyName.propertyName);
+    node.appendChild(child);
+  } else {
+    writeOgcPropertyName(node, filter.propertyName);
+  }
+  writeOgcLiteral(node, `${filter.pattern}`);
 }
 
 /**

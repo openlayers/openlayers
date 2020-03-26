@@ -13,13 +13,13 @@ import Filter from './Filter.js';
 class Comparison extends Filter {
   /**
    * @param {!string} tagName The XML tag name for this filter.
-   * @param {!string} propertyName Name of the context property to compare.
+   * @param {!(string|import("./Function.js"))} propertyName Name of the context property to compare.
    */
   constructor(tagName, propertyName) {
     super(tagName);
 
     /**
-     * @type {!string}
+     * @type {!(string|import("./Function.js"))}
      */
     this.propertyName = propertyName;
   }
