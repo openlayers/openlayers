@@ -107,7 +107,8 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/Point.js").default|import("../Feature.js").default} pointGeometry Point geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawPoint(pointGeometry, feature) {
     if (!this.image_) {
@@ -136,7 +137,8 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/MultiPoint.js").default|import("../Feature.js").default} multiPointGeometry MultiPoint geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiPoint(multiPointGeometry, feature) {
     if (!this.image_) {
@@ -166,7 +168,7 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     this.reverseHitDetectionInstructions();
@@ -187,7 +189,8 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../style/Image.js").default} imageStyle Image style.
+   * @param {import("../canvas.js").DeclutterGroup} declutterGroups Declutter.
    */
   setImageStyle(imageStyle, declutterGroups) {
     const anchor = imageStyle.getAnchor();
@@ -197,7 +200,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const origin = imageStyle.getOrigin();
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
-    this.declutterGroups_ = /** @type {import("../canvas.js").DeclutterGroups} */ (declutterGroups);
+    this.declutterGroups_ = declutterGroups;
     this.hitDetectionImage_ = hitDetectionImage;
     this.image_ = image;
     this.height_ = size[1];

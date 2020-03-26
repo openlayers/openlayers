@@ -203,7 +203,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @inheritDoc.
+   * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {Function} renderer Renderer.
    */
   drawCustom(geometry, feature, renderer) {
     this.beginGeometry(geometry, feature);
@@ -213,10 +215,9 @@ class CanvasBuilder extends VectorContext {
     let flatCoordinates, builderEnd, builderEnds, builderEndss;
     let offset;
     if (type == GeometryType.MULTI_POLYGON) {
-      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry);
-      flatCoordinates = geometry.getOrientedFlatCoordinates();
+      flatCoordinates = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getOrientedFlatCoordinates();
       builderEndss = [];
-      const endss = geometry.getEndss();
+      const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
       offset = 0;
       for (let i = 0, ii = endss.length; i < ii; ++i) {
         const myEnds = [];
@@ -302,7 +303,8 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
+   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
     const state = this.state;

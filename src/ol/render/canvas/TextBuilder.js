@@ -134,7 +134,7 @@ class CanvasTextBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     const instructions = super.finish();
@@ -145,7 +145,8 @@ class CanvasTextBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/SimpleGeometry.js").default|import("../Feature.js").default} geometry Geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawText(geometry, feature) {
     const fillState = this.textFillState_;
@@ -173,11 +174,11 @@ class CanvasTextBuilder extends CanvasBuilder {
       if (geometryType == GeometryType.LINE_STRING) {
         ends = [flatCoordinates.length];
       } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
-        ends = geometry.getEnds();
+        ends = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getEnds();
       } else if (geometryType == GeometryType.POLYGON) {
-        ends = geometry.getEnds().slice(0, 1);
+        ends = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getEnds().slice(0, 1);
       } else if (geometryType == GeometryType.MULTI_POLYGON) {
-        const endss = geometry.getEndss();
+        const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
         ends = [];
         for (i = 0, ii = endss.length; i < ii; ++i) {
           ends.push(endss[i][0]);
@@ -217,7 +218,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
-          flatCoordinates = geometry.getFlatCoordinates();
+          flatCoordinates = /** @type {import("../../geom/MultiPoint.js").default} */ (geometry).getFlatCoordinates();
           end = flatCoordinates.length;
           break;
         case GeometryType.LINE_STRING:
@@ -379,14 +380,15 @@ class CanvasTextBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../style/Text.js").default} textStyle Text style.
+   * @param {import("../canvas.js").DeclutterGroups} declutterGroups Declutter.
    */
   setTextStyle(textStyle, declutterGroups) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
     } else {
-      this.declutterGroups_ = /** @type {import("../canvas.js").DeclutterGroups} */ (declutterGroups);
+      this.declutterGroups_ = declutterGroups;
 
       const textFillStyle = textStyle.getFill();
       if (!textFillStyle) {
