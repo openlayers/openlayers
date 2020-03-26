@@ -65,6 +65,10 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       const image = originalStyle.getImage();
       if (image) {
         const imgSize = image.getImageSize();
+        if (!imgSize) {
+          continue;
+        }
+
         const canvas = document.createElement('canvas');
         canvas.width = imgSize[0];
         canvas.height = imgSize[1];
