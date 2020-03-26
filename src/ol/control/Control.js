@@ -91,7 +91,7 @@ class Control extends BaseObject {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     removeNode(this.element);

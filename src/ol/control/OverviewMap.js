@@ -255,7 +255,10 @@ class OverviewMap extends Control {
   }
 
   /**
-   * @inheritDoc
+   * Remove the control from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {import("../PluggableMap.js").default} map Map.
    * @api
    */
   setMap(map) {
