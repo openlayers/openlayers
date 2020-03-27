@@ -158,17 +158,11 @@ class Overlay extends BaseObject {
 
     /**
      * @protected
-     * @type {{bottom_: string,
-     *         left_: string,
-     *         right_: string,
-     *         top_: string,
+     * @type {{transform_: string,
      *         visible: boolean}}
      */
     this.rendered = {
-      bottom_: '',
-      left_: '',
-      right_: '',
-      top_: '',
+      transform_: '',
       visible: true
     };
 
@@ -506,63 +500,34 @@ class Overlay extends BaseObject {
 
     this.setVisible(true);
 
-    let offsetX = offset[0];
-    let offsetY = offset[1];
+    const x = Math.round(pixel[0] + offset[0]) + 'px';
+    const y = Math.round(pixel[1] + offset[1]) + 'px';
+    let posX = '0%';
+    let posY = '0%';
     if (positioning == OverlayPositioning.BOTTOM_RIGHT ||
         positioning == OverlayPositioning.CENTER_RIGHT ||
         positioning == OverlayPositioning.TOP_RIGHT) {
-      if (this.rendered.left_ !== '') {
-        this.rendered.left_ = '';
-        style.left = '';
-      }
-      const right = Math.round(mapSize[0] - pixel[0] - offsetX) + 'px';
-      if (this.rendered.right_ != right) {
-        this.rendered.right_ = right;
-        style.right = right;
-      }
-    } else {
-      if (this.rendered.right_ !== '') {
-        this.rendered.right_ = '';
-        style.right = '';
-      }
-      if (positioning == OverlayPositioning.BOTTOM_CENTER ||
-          positioning == OverlayPositioning.CENTER_CENTER ||
-          positioning == OverlayPositioning.TOP_CENTER) {
-        offsetX -= this.element.offsetWidth / 2;
-      }
-      const left = Math.round(pixel[0] + offsetX) + 'px';
-      if (this.rendered.left_ != left) {
-        this.rendered.left_ = left;
-        style.left = left;
-      }
+      posX = '-100%';
+    } else if (positioning == OverlayPositioning.BOTTOM_CENTER ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.TOP_CENTER) {
+      posX = '-50%';
     }
     if (positioning == OverlayPositioning.BOTTOM_LEFT ||
         positioning == OverlayPositioning.BOTTOM_CENTER ||
         positioning == OverlayPositioning.BOTTOM_RIGHT) {
-      if (this.rendered.top_ !== '') {
-        this.rendered.top_ = '';
-        style.top = '';
-      }
-      const bottom = Math.round(mapSize[1] - pixel[1] - offsetY) + 'px';
-      if (this.rendered.bottom_ != bottom) {
-        this.rendered.bottom_ = bottom;
-        style.bottom = bottom;
-      }
-    } else {
-      if (this.rendered.bottom_ !== '') {
-        this.rendered.bottom_ = '';
-        style.bottom = '';
-      }
-      if (positioning == OverlayPositioning.CENTER_LEFT ||
-          positioning == OverlayPositioning.CENTER_CENTER ||
-          positioning == OverlayPositioning.CENTER_RIGHT) {
-        offsetY -= this.element.offsetHeight / 2;
-      }
-      const top = Math.round(pixel[1] + offsetY) + 'px';
-      if (this.rendered.top_ != top) {
-        this.rendered.top_ = 'top';
-        style.top = top;
-      }
+      posY = '-100%';
+    } else if (positioning == OverlayPositioning.CENTER_LEFT ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.CENTER_RIGHT) {
+      posY = '-50%';
+    }
+    const transform = `translate(${posX}, ${posY}) translate(${x}, ${y})`;
+    if (this.rendered.transform_ != transform) {
+      this.rendered.transform_ = transform;
+      style.transform = transform;
+      // @ts-ignore IE9
+      style.msTransform = transform;
     }
   }
 
