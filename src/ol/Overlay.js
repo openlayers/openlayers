@@ -526,7 +526,8 @@ class Overlay extends BaseObject {
     if (this.rendered.transform_ != transform) {
       this.rendered.transform_ = transform;
       style.transform = transform;
-      style.msTransform = transform; // IE9
+      // @ts-ignore IE9
+      style.msTransform = transform;
     }
   }
 
