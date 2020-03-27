@@ -5,15 +5,16 @@
 /**
  * Icon anchor units. One of 'fraction', 'pixels'.
  * @enum {string}
- * @api
  */
 export default {
   /**
    * Anchor is a fraction
+   * @api
    */
   FRACTION: 'fraction',
   /**
    * Anchor is in pixels
+   * @api
    */
   PIXELS: 'pixels'
 };
