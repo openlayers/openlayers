@@ -1992,6 +1992,37 @@ describe('ol.format.KML', function() {
           expect(style.getZIndex()).to.be(undefined);
         });
 
+        it('can read a feature\'s IconStyle and set color of image', () => {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2"' +
+            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '  <Placemark>' +
+            '    <Style>' +
+            '      <IconStyle>' +
+            '        <color>FF0000FF</color>' +
+            '        <Icon>' +
+            '          <href>http://foo.png</href>' +
+            '        </Icon>' +
+            '      </IconStyle>' +
+            '    </Style>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle.getColor()).to.eql([0xFF, 0, 0, 0xFF / 255]);
+        });
+
         it('can read a feature\'s LabelStyle', function() {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2363,7 +2394,8 @@ describe('ol.format.KML', function() {
               rotation: 45,
               scale: 0.5,
               size: [48, 48],
-              src: 'http://foo.png'
+              src: 'http://foo.png',
+              color: 'rgba(255,0,0,1)'
             })
           });
           const imageStyle = style.getImage();
@@ -2389,6 +2421,7 @@ describe('ol.format.KML', function() {
               '          <gx:w>48</gx:w>' +
               '          <gx:h>48</gx:h>' +
               '        </Icon>' +
+              '        <color>ff0000ff</color>' +
               '        <hotSpot x="12" y="12" xunits="pixels" ' +
               '                 yunits="pixels"/>' +
               '      </IconStyle>' +

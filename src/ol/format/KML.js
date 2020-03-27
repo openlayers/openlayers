@@ -1171,6 +1171,7 @@ function readStyleMapValue(node, objectStack) {
 const ICON_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeObjectPropertySetter(readIcon),
+    'color': makeObjectPropertySetter(readColor),
     'heading': makeObjectPropertySetter(readDecimal),
     'hotSpot': makeObjectPropertySetter(readVec2),
     'scale': makeObjectPropertySetter(readScale)
@@ -1252,6 +1253,9 @@ function iconStyleParser(node, objectStack) {
   let scale = /** @type {number|undefined} */
       (object['scale']);
 
+  const color = /** @type {Array<number>|undefined} */
+      (object['color']);
+
   if (drawIcon) {
     if (src == DEFAULT_IMAGE_STYLE_SRC) {
       size = DEFAULT_IMAGE_STYLE_SIZE;
@@ -1271,7 +1275,8 @@ function iconStyleParser(node, objectStack) {
       rotation: rotation,
       scale: scale,
       size: size,
-      src: src
+      src: src,
+      color: color
     });
     styleObject['imageStyle'] = imageStyle;
   } else {
@@ -2447,7 +2452,7 @@ function writeIcon(node, icon, objectStack) {
 // @ts-ignore
 const ICON_STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
-    'scale', 'heading', 'Icon', 'hotSpot'
+    'scale', 'heading', 'Icon', 'color', 'hotSpot'
   ]);
 
 
@@ -2459,6 +2464,7 @@ const ICON_STYLE_SEQUENCE = makeStructureNS(
 const ICON_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeChildAppender(writeIcon),
+    'color': makeChildAppender(writeColorTextNode),
     'heading': makeChildAppender(writeDecimalTextNode),
     'hotSpot': makeChildAppender(writeVec2),
     'scale': makeChildAppender(writeScaleTextNode)
@@ -2512,6 +2518,11 @@ function writeIconStyle(node, style, objectStack) {
   const rotation = style.getRotation();
   if (rotation !== 0) {
     properties['heading'] = rotation; // 0-360
+  }
+
+  const color = style.getColor();
+  if (color) {
+    properties['color'] = color;
   }
 
   const parentNode = objectStack[objectStack.length - 1].node;
