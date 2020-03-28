@@ -5,6 +5,7 @@
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
+import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 import {listenImage} from '../Image.js';
@@ -237,8 +238,7 @@ class IconImage extends EventTarget {
     // If the canvas is tainted in Internet Explorer this still produces
     // a solid color image with the shape of the icon.
     if (ctx.globalCompositeOperation === 'multiply' || this.isTainted_()) {
-      const c = this.color_;
-      ctx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+      ctx.fillStyle = asString(this.color_);
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.globalCompositeOperation = 'destination-in';
@@ -249,11 +249,13 @@ class IconImage extends EventTarget {
       const r = this.color_[0] / 255.0;
       const g = this.color_[1] / 255.0;
       const b = this.color_[2] / 255.0;
+      const a = this.color_[3];
 
       for (let i = 0, ii = data.length; i < ii; i += 4) {
         data[i] *= r;
         data[i + 1] *= g;
         data[i + 2] *= b;
+        data[i + 3] *= a;
       }
       ctx.putImageData(imgData, 0, 0);
     }
