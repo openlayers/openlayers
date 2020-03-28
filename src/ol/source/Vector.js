@@ -146,6 +146,10 @@ export class VectorSourceEvent extends Event {
  * @property {boolean} [wrapX=true] Wrap the world horizontally. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
  * resulting geometry coordinates will then exceed the world bounds.
+ * @property {boolean} [loadWrapX=true] Call the loader with one world width either side
+ * of the projection extent when the world is wrapped horizontally. This allows features
+ * to be loaded in a single request, but may be inefficient. If `false` only the viewport
+ * extent is used and the loader must determine the appropriate real world requests.
  */
 
 
@@ -190,7 +194,13 @@ class VectorSource extends Source {
      * @private
      * @type {boolean}
      */
-    this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
+    this.loadWrapX_ = options.loadWrapX === undefined ? true : options.loadWrapX;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.overlaps_ = options.overlaps === undefined ? true : options.overlaps;
 
     /**
      * @private
@@ -798,6 +808,14 @@ class VectorSource extends Source {
    */
   getFormat() {
     return this.format_;
+  }
+
+
+  /**
+   * @return {boolean} The loadWrapX option used to construct the source.
+   */
+  getLoadWrapX() {
+    return this.loadWrapX_;
   }
 
 
