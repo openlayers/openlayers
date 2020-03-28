@@ -375,8 +375,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const gutter = Math.max(getWidth(extent) / 2, worldWidth);
       extent[0] = projectionExtent[0] - gutter;
       extent[2] = projectionExtent[2] + gutter;
-      // Except for Graticule use this for loading features
-      if (typeof /** @type {?} */ (vectorLayer).getMeridians !== 'function') {
+      if (vectorSource.getLoadWrapX()) {
         loadExtent = extent;
       }
       const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
