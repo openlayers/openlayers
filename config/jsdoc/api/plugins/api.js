@@ -73,9 +73,6 @@ function includeAugments(doclet) {
           });
         }
         cls._hideConstructor = true;
-        if (!cls.undocumented) {
-          cls._documented = true;
-        }
       }
     }
   }
@@ -182,13 +179,14 @@ exports.handlers = {
         doclet._hideConstructor = true;
         includeAugments(doclet);
         sortOtherMembers(doclet);
-      } else if (!doclet._hideConstructor
-          && !(doclet.longname in defaultExports && byLongname[doclet.longname].some(d => d.isEnum))) {
+      } else if (!doclet._hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
-      if (doclet._documented) {
-        delete doclet.undocumented;
+      if (doclet.memberof && byLongname[doclet.memberof] &&
+          byLongname[doclet.memberof][0].isEnum &&
+          !byLongname[doclet.memberof][0].properties.some(p => p.stability)) {
+        byLongname[doclet.memberof][0].undocumented = true;
       }
     }
   },
