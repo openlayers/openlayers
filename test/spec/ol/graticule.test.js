@@ -1,6 +1,6 @@
 import Graticule from '../../../src/ol/layer/Graticule.js';
 import Map from '../../../src/ol/Map.js';
-import {get as getProjection} from '../../../src/ol/proj.js';
+import {fromLonLat, get as getProjection} from '../../../src/ol/proj.js';
 import Stroke from '../../../src/ol/style/Stroke.js';
 import Text from '../../../src/ol/style/Text.js';
 import Feature from '../../../src/ol/Feature.js';
@@ -31,7 +31,48 @@ describe('ol.layer.Graticule', function() {
       expect(graticule.parallelsLabels_).to.be(null);
     });
 
-    it('creates a graticule with labels', function() {
+    it('creates a graticule with normal world labels', function() {
+      const feature = new Feature();
+      graticule = new Graticule({
+        showLabels: true,
+        wrapX: false
+      });
+      new Map({
+        layers: [graticule]
+      });
+      const extent = [-25614353.926475704, -7827151.696402049,
+        25614353.926475704, 7827151.696402049];
+      const projection = getProjection('EPSG:3857');
+      const resolution = 39135.75848201024;
+      graticule.loaderFunction(extent, resolution, projection);
+      const event = {
+        context: document.createElement('canvas').getContext('2d'),
+        inversePixelTransform: [1, 0, 0, 1, 0, 0],
+        frameState: {
+          coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+          extent: extent,
+          pixelRatio: 1,
+          viewState: {
+            projection: projection,
+            resolution: resolution,
+            rotation: 0
+          }
+        }
+      };
+      graticule.drawLabels_(event);
+      expect(graticule.meridiansLabels_.length).to.be(13);
+      expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(0, 1e-9);
+      expect(graticule.parallelsLabels_.length).to.be(3);
+      expect(graticule.parallelsLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.parallelsLabels_[0].geom.getCoordinates()[1]).to.roughlyEqual(0, 1e-9);
+      feature.set('graticule_label', graticule.meridiansLabels_[0].text);
+      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0° 00′ 00″');
+      feature.set('graticule_label', graticule.parallelsLabels_[0].text);
+      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be('0° 00′ 00″');
+    });
+
+    it('creates a graticule with wrapped world labels', function() {
       const feature = new Feature();
       graticule = new Graticule({
         showLabels: true
@@ -61,7 +102,8 @@ describe('ol.layer.Graticule', function() {
       graticule.drawLabels_(event);
       expect(graticule.meridiansLabels_.length).to.be(13);
       expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
-      expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(0, 1e-9);
+      const coordinates = fromLonLat([360, 0]);
+      expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(coordinates[0], 1e-9);
       expect(graticule.parallelsLabels_.length).to.be(3);
       expect(graticule.parallelsLabels_[0].text).to.be('0° 00′ 00″');
       expect(graticule.parallelsLabels_[0].geom.getCoordinates()[1]).to.roughlyEqual(0, 1e-9);

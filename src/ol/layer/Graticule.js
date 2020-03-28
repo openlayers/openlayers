@@ -17,6 +17,7 @@ import {
 import {
   applyTransform,
   containsCoordinate,
+  containsExtent,
   equals,
   getCenter,
   getHeight,
@@ -622,9 +623,9 @@ class Graticule extends VectorLayer {
   drawLabels_(event) {
     const rotation = event.frameState.viewState.rotation;
     const extent = event.frameState.extent;
-    let rotationCenter, rotationExtent;
+    const rotationCenter = getCenter(extent);
+    let rotationExtent = extent;
     if (rotation) {
-      rotationCenter = getCenter(extent);
       const width = getWidth(extent);
       const height = getHeight(extent);
       const cr = Math.abs(Math.cos(rotation));
@@ -637,42 +638,60 @@ class Graticule extends VectorLayer {
       ];
     }
 
-    const vectorContext = getVectorContext(event);
-    let poolIndex = this.meridians_.length + this.parallels_.length;
-    let feature, index, l, textPoint;
-
-    if (this.meridiansLabels_) {
-      for (index = 0, l = this.meridiansLabels_.length; index < l; ++index) {
-        const lineString = this.meridians_[index];
-        if (!rotation) {
-          textPoint = this.getMeridianPoint_(lineString, extent, index);
-        } else {
-          const clone = lineString.clone();
-          clone.rotate(-rotation, rotationCenter);
-          textPoint = this.getMeridianPoint_(clone, rotationExtent, index);
-          textPoint.rotate(rotation, rotationCenter);
-        }
-        feature = this.featurePool_[poolIndex++];
-        feature.setGeometry(textPoint);
-        feature.set('graticule_label', this.meridiansLabels_[index].text);
-        vectorContext.drawFeature(feature, this.lonLabelStyle_(feature));
-      }
+    let startWorld = 0;
+    let endWorld = 0;
+    let labelsAtStart = this.latLabelPosition_ < 0.5;
+    const projectionExtent = this.projection_.getExtent();
+    const worldWidth = getWidth(projectionExtent);
+    if (this.getSource().getWrapX() && this.projection_.canWrapX() && !containsExtent(projectionExtent, extent)) {
+      startWorld = Math.floor((extent[0] - projectionExtent[0]) / worldWidth);
+      endWorld = Math.ceil((extent[2] - projectionExtent[2]) / worldWidth);
+      const inverted = Math.abs(rotation) > Math.PI / 2;
+      labelsAtStart = labelsAtStart !== inverted;
     }
-    if (this.parallelsLabels_) {
-      for (index = 0, l = this.parallels_.length; index < l; ++index) {
-        const lineString = this.parallels_[index];
-        if (!rotation) {
-          textPoint = this.getParallelPoint_(lineString, extent, index);
-        } else {
-          const clone = lineString.clone();
-          clone.rotate(-rotation, rotationCenter);
-          textPoint = this.getParallelPoint_(clone, rotationExtent, index);
-          textPoint.rotate(rotation, rotationCenter);
+    const vectorContext = getVectorContext(event);
+
+    for (let world = startWorld; world <= endWorld; ++world) {
+      let poolIndex = this.meridians_.length + this.parallels_.length;
+      let feature, index, l, textPoint;
+
+      if (this.meridiansLabels_) {
+        for (index = 0, l = this.meridiansLabels_.length; index < l; ++index) {
+          const lineString = this.meridians_[index];
+          if (!rotation && world === 0) {
+            textPoint = this.getMeridianPoint_(lineString, extent, index);
+          } else {
+            const clone = lineString.clone();
+            clone.translate(world * worldWidth, 0);
+            clone.rotate(-rotation, rotationCenter);
+            textPoint = this.getMeridianPoint_(clone, rotationExtent, index);
+            textPoint.rotate(rotation, rotationCenter);
+          }
+          feature = this.featurePool_[poolIndex++];
+          feature.setGeometry(textPoint);
+          feature.set('graticule_label', this.meridiansLabels_[index].text);
+          vectorContext.drawFeature(feature, this.lonLabelStyle_(feature));
         }
-        feature = this.featurePool_[poolIndex++];
-        feature.setGeometry(textPoint);
-        feature.set('graticule_label', this.parallelsLabels_[index].text);
-        vectorContext.drawFeature(feature, this.latLabelStyle_(feature));
+      }
+      if (this.parallelsLabels_) {
+        if (world === startWorld && labelsAtStart || world === endWorld && !labelsAtStart) {
+          for (index = 0, l = this.parallels_.length; index < l; ++index) {
+            const lineString = this.parallels_[index];
+            if (!rotation && world === 0) {
+              textPoint = this.getParallelPoint_(lineString, extent, index);
+            } else {
+              const clone = lineString.clone();
+              clone.translate(world * worldWidth, 0);
+              clone.rotate(-rotation, rotationCenter);
+              textPoint = this.getParallelPoint_(clone, rotationExtent, index);
+              textPoint.rotate(rotation, rotationCenter);
+            }
+            feature = this.featurePool_[poolIndex++];
+            feature.setGeometry(textPoint);
+            feature.set('graticule_label', this.parallelsLabels_[index].text);
+            vectorContext.drawFeature(feature, this.latLabelStyle_(feature));
+          }
+        }
       }
     }
   }
