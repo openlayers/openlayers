@@ -437,7 +437,8 @@ class Graticule extends VectorLayer {
         features: new Collection(),
         overlaps: false,
         useSpatialIndex: false,
-        wrapX: options.wrapX
+        wrapX: options.wrapX,
+        loadWrapX: false
       })
     );
 
