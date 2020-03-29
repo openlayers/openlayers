@@ -1,7 +1,7 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
-import {buffer as bufferExtent, getWidth} from '../../../../../src/ol/extent.js';
+import {buffer as bufferExtent, getWidth, getCenter} from '../../../../../src/ol/extent.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
@@ -243,7 +243,6 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       frameState = {
         viewHints: [],
         viewState: {
-          center: [0, 0],
           projection: projection,
           resolution: 1,
           rotation: 0
@@ -251,58 +250,72 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
     });
 
+    function setExtent(extent) {
+      frameState.extent = extent;
+      frameState.viewState.center = getCenter(extent);
+    }
+
     it('sets correct extent for small viewport near dateline', function() {
 
-      frameState.extent =
-          [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
+      setExtent([projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000]);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
-      expect(loadExtent).to.eql(renderer.replayGroup_.maxExtent_);
+      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
     });
 
     it('sets correct extent for viewport less than 1 world wide', function() {
 
-      frameState.extent =
-          [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
+      setExtent([projExtent[0] - 10000, -10000, projExtent[2] - 10000, 10000]);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
-      expect(loadExtent).to.eql(renderer.replayGroup_.maxExtent_);
+      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
     });
 
     it('sets correct extent for viewport more than 1 world wide', function() {
 
-      frameState.extent =
-          [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
+      setExtent([2 * projExtent[0] + 10000, -10000, 2 * projExtent[2] - 10000, 10000]);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
-      expect(loadExtent).to.eql(renderer.replayGroup_.maxExtent_);
+      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
     });
 
-    it('sets correct extent for viewport more than 2 worlds wide', function() {
+    it('sets correct extent for viewport more than 2 worlds wide, one world away', function() {
 
-      frameState.extent = [
-        projExtent[0] - 2 * worldWidth - 10000,
-        -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
-      ];
+      setExtent([projExtent[0] - 2 * worldWidth - 10000,
+        -10000, projExtent[0] + 2 * worldWidth + 10000, 10000
+      ]);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
       ], buffer));
-      expect(loadExtent).to.eql(renderer.replayGroup_.maxExtent_);
+      const normalizedExtent = [projExtent[0] - 2 * worldWidth + worldWidth - 10000, -10000, projExtent[0] + 2 * worldWidth + worldWidth + 10000, 10000];
+      expect(loadExtent).to.eql(bufferExtent(normalizedExtent, buffer));
+    });
+
+    it('sets correct extent for small viewport near dateline, one world away', function() {
+
+      setExtent([-worldWidth - 10000, -10000, -worldWidth + 10000, 10000]);
+      renderer.prepareFrame(frameState);
+      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+      const normalizedExtent = [-10000, -10000, 10000, 10000];
+      expect(loadExtent).to.eql(bufferExtent(normalizedExtent, buffer));
     });
 
     it('sets replayGroupChanged correctly', function() {
-      frameState.extent = [-10000, -10000, 10000, 10000];
+      setExtent([-10000, -10000, 10000, 10000]);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(true);
       renderer.prepareFrame(frameState);

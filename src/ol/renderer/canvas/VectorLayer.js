@@ -361,7 +361,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const center = viewState.center.slice();
     const extent = buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
-    let loadExtent = extent.slice();
+    const loadExtent = extent.slice();
     const projectionExtent = viewState.projection.getExtent();
 
     if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
@@ -375,11 +375,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const gutter = Math.max(getWidth(extent) / 2, worldWidth);
       extent[0] = projectionExtent[0] - gutter;
       extent[2] = projectionExtent[2] + gutter;
-      if (vectorSource.getLoadWrapX()) {
-        loadExtent = extent;
-      }
       const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
       center[0] -= (worldsAway * worldWidth);
+      loadExtent[0] -= (worldsAway * worldWidth);
+      loadExtent[2] -= (worldsAway * worldWidth);
     }
 
     if (!this.dirty_ &&
