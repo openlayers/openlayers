@@ -224,7 +224,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     let frameState, projExtent, renderer, worldWidth, buffer, loadExtent;
     const loader = function(extent) {
       loadExtent = extent;
-    }
+    };
 
     beforeEach(function() {
       const layer = new VectorLayer({
@@ -335,7 +335,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     let frameState, projExtent, renderer, worldWidth, buffer, loadExtent;
     const loader = function(extent) {
       loadExtent = extent;
-    }
+    };
 
     beforeEach(function() {
       const layer = new VectorLayer({
