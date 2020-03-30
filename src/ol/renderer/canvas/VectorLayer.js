@@ -363,7 +363,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const extent = buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
     const loadExtents = [extent.slice()];
-    const projectionExtent = viewState.projection.getExtent();
+    const projectionExtent = projection.getExtent();
 
     if (vectorSource.getWrapX() && projection.canWrapX() &&
         !containsExtent(projectionExtent, frameState.extent)) {
@@ -378,7 +378,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       extent[2] = projectionExtent[2] + gutter;
       wrapCoordinateX(center, projection);
       const loadExtent = wrapExtentX(loadExtents[0], projection);
-      wrapExtentX(loadExtent, projection);
       // If the extent crosses the date line, we load data for both edges of the worlds
       if (loadExtent[0] < projectionExtent[0] && loadExtent[2] < projectionExtent[2]) {
         loadExtents.push([loadExtent[0] + worldWidth, loadExtent[1], loadExtent[2] + worldWidth, loadExtent[3]]);
