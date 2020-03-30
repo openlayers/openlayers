@@ -328,9 +328,7 @@ class Overlay extends BaseObject {
    */
   handlePositionChanged() {
     this.updatePixelPosition();
-    if (this.get(Property.POSITION) && this.autoPan) {
-      this.performAutoPan();
-    }
+    this.performAutoPan();
   }
 
   /**
@@ -403,7 +401,7 @@ class Overlay extends BaseObject {
   panIntoView(panIntoViewOptions) {
     const map = this.getMap();
 
-    if (!map || !map.getTargetElement()) {
+    if (!map || !map.getTargetElement() || !this.get(Property.POSITION)) {
       return;
     }
 
