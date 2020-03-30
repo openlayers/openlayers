@@ -361,7 +361,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const center = viewState.center.slice();
     const extent = buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
-    const loadExtent = extent.slice();
+    const loadExtents = [extent.slice()];
     const projectionExtent = viewState.projection.getExtent();
 
     if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
@@ -377,8 +377,15 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       extent[2] = projectionExtent[2] + gutter;
       const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
       center[0] -= (worldsAway * worldWidth);
+      const loadExtent = loadExtents[0];
       loadExtent[0] -= (worldsAway * worldWidth);
       loadExtent[2] -= (worldsAway * worldWidth);
+      // If the extent crosses the date line, we load data for both edges of the worlds
+      if (loadExtent[0] < projectionExtent[0] && loadExtent[2] < projectionExtent[2]) {
+        loadExtents.push([loadExtent[0] + worldWidth, loadExtent[1], loadExtent[2] + worldWidth, loadExtent[3]]);
+      } else if (loadExtent[0] > projectionExtent[0] && loadExtent[2] > projectionExtent[2]) {
+        loadExtents.push([loadExtent[0] - worldWidth, loadExtent[1], loadExtent[2] - worldWidth, loadExtent[3]]);
+      }
     }
 
     if (!this.dirty_ &&
@@ -401,10 +408,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const userProjection = getUserProjection();
     let userTransform;
     if (userProjection) {
-      vectorSource.loadFeatures(toUserExtent(loadExtent, projection), resolution, userProjection);
+      for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
+        vectorSource.loadFeatures(toUserExtent(loadExtents[i], projection), resolution, userProjection);
+      }
       userTransform = getTransformFromProjections(userProjection, projection);
     } else {
-      vectorSource.loadFeatures(loadExtent, resolution, projection);
+      for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
+        vectorSource.loadFeatures(loadExtents[i], resolution, projection);
+      }
     }
 
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);

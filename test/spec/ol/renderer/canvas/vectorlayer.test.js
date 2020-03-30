@@ -221,10 +221,11 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   });
 
   describe('#prepareFrame and #compose', function() {
-    let frameState, projExtent, renderer, worldWidth, buffer, loadExtent;
-    const loader = function(extent) {
-      loadExtent = extent;
-    };
+    let frameState, projExtent, renderer, worldWidth, buffer, loadExtents;
+
+    function loader(extent) {
+      loadExtents.push(extent);
+    }
 
     beforeEach(function() {
       const layer = new VectorLayer({
@@ -239,7 +240,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       projExtent = projection.getExtent();
       worldWidth = getWidth(projExtent);
       buffer = layer.getRenderBuffer();
-      loadExtent = undefined;
+      loadExtents = [];
       frameState = {
         viewHints: [],
         viewState: {
@@ -263,7 +264,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
+      expect(loadExtents.length).to.be(2);
+      expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
+      const otherExtent = [projExtent[2] - 10000, -10000, projExtent[2] + 10000, 10000];
+      expect(loadExtents[1]).to.eql(bufferExtent(otherExtent, buffer));
     });
 
     it('sets correct extent for viewport less than 1 world wide', function() {
@@ -274,7 +278,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
+      expect(loadExtents.length).to.be(2);
+      expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
+      const otherExtent = [projExtent[0] - 10000 + worldWidth, -10000, projExtent[2] - 10000 + worldWidth, 10000];
+      expect(loadExtents[1]).to.eql(bufferExtent(otherExtent, buffer));
     });
 
     it('sets correct extent for viewport more than 1 world wide', function() {
@@ -285,7 +292,8 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
+      expect(loadExtents.length).to.be(1);
+      expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
     });
 
     it('sets correct extent for viewport more than 2 worlds wide, one world away', function() {
@@ -298,11 +306,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
       ], buffer));
+      expect(loadExtents.length).to.be(1);
       const normalizedExtent = [projExtent[0] - 2 * worldWidth + worldWidth - 10000, -10000, projExtent[0] + 2 * worldWidth + worldWidth + 10000, 10000];
-      expect(loadExtent).to.eql(bufferExtent(normalizedExtent, buffer));
+      expect(loadExtents[0]).to.eql(bufferExtent(normalizedExtent, buffer));
     });
 
-    it('sets correct extent for small viewport near dateline, one world away', function() {
+    it('sets correct extent for small viewport, one world away', function() {
 
       setExtent([-worldWidth - 10000, -10000, -worldWidth + 10000, 10000]);
       renderer.prepareFrame(frameState);
@@ -310,8 +319,9 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
+      expect(loadExtents.length).to.be(1);
       const normalizedExtent = [-10000, -10000, 10000, 10000];
-      expect(loadExtent).to.eql(bufferExtent(normalizedExtent, buffer));
+      expect(loadExtents[0]).to.eql(bufferExtent(normalizedExtent, buffer));
     });
 
     it('sets replayGroupChanged correctly', function() {
@@ -340,90 +350,6 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         renderer.renderFrame(frameState, null);
       }
       expect(rendered).to.be(true);
-    });
-
-  });
-
-  describe('#prepareFrame with a loadWrapX: false source', function() {
-    let frameState, projExtent, renderer, worldWidth, buffer, loadExtent;
-    const loader = function(extent) {
-      loadExtent = extent;
-    };
-
-    beforeEach(function() {
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          wrapX: true,
-          loadWrapX: false,
-          loader: loader,
-          strategy: bboxStrategy
-        })
-      });
-      renderer = new CanvasVectorLayerRenderer(layer);
-      const projection = getProjection('EPSG:3857');
-      projExtent = projection.getExtent();
-      worldWidth = getWidth(projExtent);
-      buffer = layer.getRenderBuffer();
-      loadExtent = undefined;
-      frameState = {
-        viewHints: [],
-        viewState: {
-          center: [0, 0],
-          projection: projection,
-          resolution: 1,
-          rotation: 0
-        }
-      };
-    });
-
-    it('loads correct extent for small viewport near dateline', function() {
-
-      frameState.extent =
-          [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
-      renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
-        projExtent[0] - worldWidth + buffer,
-        -10000, projExtent[2] + worldWidth - buffer, 10000
-      ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
-    });
-
-    it('loads correct extent for viewport less than 1 world wide', function() {
-
-      frameState.extent =
-          [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
-      renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
-        projExtent[0] - worldWidth + buffer,
-        -10000, projExtent[2] + worldWidth - buffer, 10000
-      ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
-    });
-
-    it('loads correct extent for viewport more than 1 world wide', function() {
-
-      frameState.extent =
-          [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
-      renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
-        projExtent[0] - worldWidth + buffer,
-        -10000, projExtent[2] + worldWidth - buffer, 10000
-      ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
-    });
-
-    it('loads correct extent for viewport more than 2 worlds wide', function() {
-
-      frameState.extent = [
-        projExtent[0] - 2 * worldWidth - 10000,
-        -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
-      ];
-      renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
-        projExtent[0] - 2 * worldWidth - 10000,
-        -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
-      ], buffer));
-      expect(loadExtent).to.eql(bufferExtent(frameState.extent, buffer));
     });
 
   });
