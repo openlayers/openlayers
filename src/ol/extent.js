@@ -813,3 +813,25 @@ export function applyTransform(extent, transformFn, opt_extent, opt_stops) {
   }
   return _boundingExtentXYs(xs, ys, opt_extent);
 }
+
+
+/**
+ * Modifies the provided extent in-place to be within the real world
+ * extent.
+ *
+ * @param {Extent} extent Extent.
+ * @param {import("./proj/Projection.js").default} projection Projection
+ * @return {Extent} The extent within the real world extent.
+ */
+export function wrapX(extent, projection) {
+  const projectionExtent = projection.getExtent();
+  const center = getCenter(extent);
+  if (projection.canWrapX() && (center[0] < projectionExtent[0] || center[0] > projectionExtent[2])) {
+    const worldWidth = getWidth(projectionExtent);
+    const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
+    const offset = (worldsAway * worldWidth);
+    extent[0] -= offset;
+    extent[2] -= offset;
+  }
+  return extent;
+}

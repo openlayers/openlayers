@@ -25,6 +25,7 @@ import {
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import {clear} from '../../obj.js';
 import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
+import {wrapX} from '../../coordinate.js';
 
 
 /**
@@ -353,9 +354,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           if (tile.getState() === TileState.LOADED && tile.hifi) {
             const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
             if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
-              const worldWidth = getWidth(projectionExtent);
-              const worldsAway = Math.floor((coordinate[0] - projectionExtent[0]) / worldWidth);
-              coordinate[0] -= (worldsAway * worldWidth);
+              wrapX(coordinate, projection);
             }
             break;
           }

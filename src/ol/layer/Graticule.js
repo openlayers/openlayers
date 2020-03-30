@@ -24,7 +24,9 @@ import {
   getIntersection,
   getWidth,
   intersects,
-  isEmpty
+  isEmpty,
+  buffer as bufferExtent,
+  wrapX
 } from '../extent.js';
 import {clamp} from '../math.js';
 import Style from '../style/Style.js';
@@ -481,19 +483,10 @@ class Graticule extends VectorLayer {
   strategyFunction(extent, resolution) {
     // extents may be passed in different worlds, to avoid endless loop we use only one
     const realExtent = extent.slice();
-    if (this.projection_) {
-      const center = getCenter(extent);
-      const projectionExtent = this.projection_.getExtent();
-      const worldWidth = getWidth(projectionExtent);
-      if (this.getSource().getWrapX() && this.projection_.canWrapX() && !containsExtent(projectionExtent, extent)) {
-        const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
-        realExtent[0] -= (worldsAway * worldWidth);
-        realExtent[2] -= (worldsAway * worldWidth);
-      }
-      realExtent[0] = Math.round(realExtent[0] * 1e6) / 1e6;
-      realExtent[2] = Math.round(realExtent[2] * 1e6) / 1e6;
+    if (this.projection_ && this.getSource().getWrapX()) {
+      wrapX(realExtent, this.projection_);
     }
-    if (this.loadedExtent_ && !equals(this.loadedExtent_, realExtent)) {
+    if (this.loadedExtent_ && !containsExtent(bufferExtent(this.loadedExtent_, resolution / 2), realExtent)) {
       // we should not keep track of loaded extents
       this.getSource().removeLoadedExtent(this.loadedExtent_);
     }

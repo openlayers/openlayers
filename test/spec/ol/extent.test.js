@@ -1,5 +1,5 @@
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import {getTransform} from '../../../src/ol/proj.js';
+import {getTransform, get} from '../../../src/ol/proj.js';
 import {register} from '../../../src/ol/proj/proj4.js';
 
 
@@ -814,6 +814,39 @@ describe('ol.extent', function() {
       expect(destinationExtentNS2[2]).to.roughlyEqual(destinationExtentN[2], 1e-8);
       expect(destinationExtentNS2[1]).to.roughlyEqual(-destinationExtentN[3], 1e-8);
       expect(destinationExtentNS2[3]).to.roughlyEqual(destinationExtentN[3], 1e-8);
+    });
+
+  });
+
+  describe('wrapX()', function() {
+    const projection = get('EPSG:4326');
+
+    it('leaves real world extent untouched', function() {
+      expect(_ol_extent_.wrapX([16, 48, 18, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves left world extent to real world', function() {
+      expect(_ol_extent_.wrapX([-344, 48, -342, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves right world extent to real world', function() {
+      expect(_ol_extent_.wrapX([376, 48, 378, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves far off left extent to real world', function() {
+      expect(_ol_extent_.wrapX([-1064, 48, -1062, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves far off right extent to real world', function() {
+      expect(_ol_extent_.wrapX([1096, 48, 1098, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('leaves -180 crossing extent with real world center untouched', function() {
+      expect(_ol_extent_.wrapX([-184, 48, 16, 49], projection)).to.eql([-184, 48, 16, 49]);
+    });
+
+    it('moves +180 crossing extent with off-world center to the real world', function() {
+      expect(_ol_extent_.wrapX([300, 48, 376, 49], projection)).to.eql([-60, 48, 16, 49]);
     });
 
   });

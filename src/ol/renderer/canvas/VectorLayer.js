@@ -3,7 +3,8 @@
  */
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
-import {buffer, createEmpty, containsExtent, getWidth, intersects as intersectsExtent} from '../../extent.js';
+import {buffer, createEmpty, containsExtent, getWidth, intersects as intersectsExtent, wrapX as wrapExtentX} from '../../extent.js';
+import {wrapX as wrapCoordinateX} from '../../coordinate.js';
 import {fromUserExtent, toUserExtent, getUserProjection, getTransformFromProjections} from '../../proj.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
@@ -364,7 +365,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const loadExtents = [extent.slice()];
     const projectionExtent = viewState.projection.getExtent();
 
-    if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
+    if (vectorSource.getWrapX() && projection.canWrapX() &&
         !containsExtent(projectionExtent, frameState.extent)) {
       // For the replay group, we need an extent that intersects the real world
       // (-180° to +180°). To support geometries in a coordinate range from -540°
@@ -375,11 +376,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const gutter = Math.max(getWidth(extent) / 2, worldWidth);
       extent[0] = projectionExtent[0] - gutter;
       extent[2] = projectionExtent[2] + gutter;
-      const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
-      center[0] -= (worldsAway * worldWidth);
-      const loadExtent = loadExtents[0];
-      loadExtent[0] -= (worldsAway * worldWidth);
-      loadExtent[2] -= (worldsAway * worldWidth);
+      wrapCoordinateX(center, projection);
+      const loadExtent = wrapExtentX(loadExtents[0], projection);
+      wrapExtentX(loadExtent, projection);
       // If the extent crosses the date line, we load data for both edges of the worlds
       if (loadExtent[0] < projectionExtent[0] && loadExtent[2] < projectionExtent[2]) {
         loadExtents.push([loadExtent[0] + worldWidth, loadExtent[1], loadExtent[2] + worldWidth, loadExtent[3]]);
