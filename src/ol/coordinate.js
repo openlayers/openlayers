@@ -415,7 +415,7 @@ export function toStringXY(coordinate, opt_fractionDigits) {
  */
 export function wrapX(coordinate, projection) {
   const projectionExtent = projection.getExtent();
-  if (projection.canWrapX() && (coordinate[0] < projectionExtent[0] || coordinate[0] > projectionExtent[2])) {
+  if (projection.canWrapX() && (coordinate[0] < projectionExtent[0] || coordinate[0] >= projectionExtent[2])) {
     const worldWidth = getWidth(projectionExtent);
     const worldsAway = Math.floor((coordinate[0] - projectionExtent[0]) / worldWidth);
     coordinate[0] -= (worldsAway * worldWidth);
