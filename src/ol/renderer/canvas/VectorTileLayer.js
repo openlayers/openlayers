@@ -6,7 +6,7 @@ import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {listen, unlistenByKey} from '../../events.js';
 import EventType from '../../events/EventType.js';
-import {buffer, containsCoordinate, equals, getIntersection, intersects, containsExtent, getWidth, getTopLeft} from '../../extent.js';
+import {buffer, containsCoordinate, equals, getIntersection, intersects, containsExtent, getTopLeft} from '../../extent.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ReplayType from '../../render/canvas/BuilderType.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
