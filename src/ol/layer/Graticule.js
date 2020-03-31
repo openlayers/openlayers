@@ -18,7 +18,7 @@ import {
   applyTransform,
   containsCoordinate,
   containsExtent,
-  equals,
+  approximatelyEquals,
   getCenter,
   getHeight,
   getIntersection,
@@ -481,17 +481,15 @@ class Graticule extends VectorLayer {
    */
   strategyFunction(extent, resolution) {
     // extents may be passed in different worlds, to avoid endless loop we use only one
-    const realExtent = extent.slice();
+    const realWorldExtent = extent.slice();
     if (this.projection_ && this.getSource().getWrapX()) {
-      wrapExtentX(realExtent, this.projection_);
+      wrapExtentX(realWorldExtent, this.projection_);
     }
-    realExtent[0] = Math.round(realExtent[0] * 1e8) / 1e8;
-    realExtent[2] = Math.round(realExtent[2] * 1e8) / 1e8;
-    if (this.loadedExtent_ && !equals(this.loadedExtent_, realExtent)) {
+    if (this.loadedExtent_ && !approximatelyEquals(this.loadedExtent_, realWorldExtent, resolution)) {
       // we should not keep track of loaded extents
       this.getSource().removeLoadedExtent(this.loadedExtent_);
     }
-    return [realExtent];
+    return [realWorldExtent];
   }
 
   /**
@@ -508,7 +506,7 @@ class Graticule extends VectorLayer {
     const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
     const renderExtent = getIntersection(layerExtent, extent);
 
-    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent)) {
+    if (this.renderedExtent_ && approximatelyEquals(this.renderedExtent_, renderExtent, resolution)) {
       return;
     }
     this.renderedExtent_ = renderExtent;

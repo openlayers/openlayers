@@ -851,4 +851,13 @@ describe('ol.extent', function() {
 
   });
 
+  describe('approximatelyEquals', function() {
+    it('returns true when within tolerance', function() {
+      expect(_ol_extent_.approximatelyEquals([16, 48, 17, 49], [16.09, 48, 17, 49], 0.1)).to.be(true);
+    });
+    it('returns false when not within tolerance', function() {
+      expect(_ol_extent_.approximatelyEquals([16, 48, 17, 49], [16.11, 48, 17, 49], 0.1)).to.be(false);
+    });
+  });
+
 });

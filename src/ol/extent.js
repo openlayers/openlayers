@@ -295,6 +295,18 @@ export function equals(extent1, extent2) {
       extent1[1] == extent2[1] && extent1[3] == extent2[3];
 }
 
+/**
+ * Determine if two extents are approximately equivalent.
+ * @param {Extent} extent1 Extent 1.
+ * @param {Extent} extent2 Extent 2.
+ * @param {number} tolerance Tolerance in extent coordinate units.
+ * @return {boolean} The two extents differ by less than the tolerance.
+ */
+export function approximatelyEquals(extent1, extent2, tolerance) {
+  return Math.abs(extent1[0] - extent2[0]) < tolerance && Math.abs(extent1[2] - extent2[2]) < tolerance &&
+  Math.abs(extent1[1] - extent2[1]) < tolerance && Math.abs(extent1[3] - extent2[3]) < tolerance;
+}
+
 
 /**
  * Modify an extent to include another extent.
