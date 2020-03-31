@@ -37,15 +37,21 @@ import {containsExtent} from './extent.js';
  * container as that of the controls (see the `stopEvent` option) you will
  * probably set `insertFirst` to `true` so the overlay is displayed below the
  * controls.
- * @property {boolean} [autoPan=false] If set to `true` the map is panned when
- * calling `setPosition`, so that the overlay is entirely visible in the current
- * viewport.
- * @property {PanOptions} [autoPanAnimation] The
- * animation options used to pan the overlay into view. This animation is only
- * used when `autoPan` is enabled. A `duration` and `easing` may be provided to
- * customize the animation.
+ * @property {PanIntoViewOptions|boolean} [autoPan=false] Pan the map when calling
+ * `setPosition`, so that the overlay is entirely visible in the current viewport?
+ * If `true` (deprecated), then `autoPanAnimation` and `autoPanMargin` will be
+ * used to determine the panning parameters; if an object is supplied then other
+ * parameters are ignored.
+ * @property {PanOptions} [autoPanAnimation] The animation options used to pan
+ * the overlay into view. This animation is only used when `autoPan` is enabled.
+ * A `duration` and `easing` may be provided to customize the animation.
+ * Deprecated and ignored if `autoPan` is supplied as an object.
  * @property {number} [autoPanMargin=20] The margin (in pixels) between the
- * overlay and the borders of the map when autopanning.
+ * overlay and the borders of the map when autopanning. Deprecated and ignored
+ * if `autoPan` is supplied as an object.
+ * @property {PanIntoViewOptions} [autoPanOptions] The options to use for the
+ * autoPan. This is only used when `autoPan` is enabled and has preference over
+ * the individual `autoPanMargin` and `autoPanOptions`.
  * @property {string} [className='ol-overlay-container ol-selectable'] CSS class
  * name.
  */
@@ -60,6 +66,12 @@ import {containsExtent} from './extent.js';
  * Default is {@link module:ol/easing~inAndOut}.
  */
 
+/**
+ * @typedef {Object} PanIntoViewOptions
+ * @property {PanOptions} [animation={}] The animation parameters for the pan
+ * @property {number} [margin=20] The margin (in pixels) between the
+ * overlay and the borders of the map when panning into view.
+ */
 
 /**
  * @enum {string}
@@ -137,24 +149,18 @@ class Overlay extends BaseObject {
       options.className : 'ol-overlay-container ' + CLASS_SELECTABLE;
     this.element.style.position = 'absolute';
 
+    let autoPan = options.autoPan;
+    if (autoPan && ('object' !== typeof autoPan)) {
+      autoPan = {
+        animation: options.autoPanAnimation,
+        margin: options.autoPanMargin
+      };
+    }
     /**
      * @protected
-     * @type {boolean}
+     * @type {PanIntoViewOptions|false}
      */
-    this.autoPan = options.autoPan !== undefined ? options.autoPan : false;
-
-    /**
-     * @protected
-     * @type {PanOptions}
-     */
-    this.autoPanAnimation = options.autoPanAnimation || /** @type {PanOptions} */ ({});
-
-    /**
-     * @protected
-     * @type {number}
-     */
-    this.autoPanMargin = options.autoPanMargin !== undefined ?
-      options.autoPanMargin : 20;
+    this.autoPan = /** @type {PanIntoViewOptions} */(autoPan) || false;
 
     /**
      * @protected
@@ -316,9 +322,7 @@ class Overlay extends BaseObject {
    */
   handlePositionChanged() {
     this.updatePixelPosition();
-    if (this.get(Property.POSITION) && this.autoPan) {
-      this.panIntoView();
-    }
+    this.performAutoPan();
   }
 
   /**
@@ -372,14 +376,26 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * Pan the map so that the overlay is entirely visible in the current viewport
-   * (if necessary).
+   * Pan the map so that the overlay is entirely visisble in the current viewport
+   * (if necessary) using the configured autoPan parameters
    * @protected
    */
-  panIntoView() {
+  performAutoPan() {
+    if (this.autoPan) {
+      this.panIntoView(this.autoPan);
+    }
+  }
+
+  /**
+   * Pan the map so that the overlay is entirely visible in the current viewport
+   * (if necessary).
+   * @param {PanIntoViewOptions|undefined} panIntoViewOptions Options for the pan action
+   * @api
+   */
+  panIntoView(panIntoViewOptions) {
     const map = this.getMap();
 
-    if (!map || !map.getTargetElement()) {
+    if (!map || !map.getTargetElement() || !this.get(Property.POSITION)) {
       return;
     }
 
@@ -387,7 +403,7 @@ class Overlay extends BaseObject {
     const element = this.getElement();
     const overlayRect = this.getRect(element, [outerWidth(element), outerHeight(element)]);
 
-    const margin = this.autoPanMargin;
+    const myMargin = (panIntoViewOptions.margin === undefined) ? 20 : panIntoViewOptions.margin;
     if (!containsExtent(mapRect, overlayRect)) {
       // the overlay is not completely inside the viewport, so pan the map
       const offsetLeft = overlayRect[0] - mapRect[0];
@@ -398,17 +414,17 @@ class Overlay extends BaseObject {
       const delta = [0, 0];
       if (offsetLeft < 0) {
         // move map to the left
-        delta[0] = offsetLeft - margin;
+        delta[0] = offsetLeft - myMargin;
       } else if (offsetRight < 0) {
         // move map to the right
-        delta[0] = Math.abs(offsetRight) + margin;
+        delta[0] = Math.abs(offsetRight) + myMargin;
       }
       if (offsetTop < 0) {
         // move map up
-        delta[1] = offsetTop - margin;
+        delta[1] = offsetTop - myMargin;
       } else if (offsetBottom < 0) {
         // move map down
-        delta[1] = Math.abs(offsetBottom) + margin;
+        delta[1] = Math.abs(offsetBottom) + myMargin;
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
@@ -419,10 +435,11 @@ class Overlay extends BaseObject {
           centerPx[1] + delta[1]
         ];
 
+        const panOptions = panIntoViewOptions.animation || {};
         map.getView().animateInternal({
           center: map.getCoordinateFromPixelInternal(newCenterPx),
-          duration: this.autoPanAnimation.duration,
-          easing: this.autoPanAnimation.easing
+          duration: panOptions.duration,
+          easing: panOptions.easing
         });
       }
     }
