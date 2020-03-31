@@ -918,11 +918,7 @@ function createNameStyleFunction(foundStyle, name) {
 
   const nameStyle = new Style({
     image: imageStyle,
-    text: textStyle,
-    // although nameStyle will be used only for Point geometries
-    // fill and stroke are included to assist writing of MultiGeometry styles
-    fill: foundStyle.getFill(),
-    stroke: foundStyle.getStroke()
+    text: textStyle
   });
   return nameStyle;
 }
@@ -953,7 +949,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
         if (geometry) {
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
-            multiGeometryPoints = geometry.getGeometriesArray().filter(function(geometry) {
+            multiGeometryPoints = geometry.getGeometriesArrayRecursive().filter(function(geometry) {
               const type = geometry.getType();
               return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
             });
@@ -1811,7 +1807,7 @@ function readStyle(node, objectStack) {
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
             return new GeometryCollection(
-              geometry.getGeometriesArray().filter(function(geometry) {
+              geometry.getGeometriesArrayRecursive().filter(function(geometry) {
                 const type = geometry.getType();
                 return type !== GeometryType.POLYGON && type !== GeometryType.MULTI_POLYGON;
               })
@@ -1832,7 +1828,7 @@ function readStyle(node, objectStack) {
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
             return new GeometryCollection(
-              geometry.getGeometriesArray().filter(function(geometry) {
+              geometry.getGeometriesArrayRecursive().filter(function(geometry) {
                 const type = geometry.getType();
                 return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
               })
@@ -2714,20 +2710,35 @@ function writeMultiGeometry(node, geometry, objectStack) {
   const context = {node: node};
   const type = geometry.getType();
   /** @type {Array<import("../geom/Geometry.js").default>} */
-  let geometries;
+  let geometries = [];
   /** @type {function(*, Array<*>, string=): (Node|undefined)} */
   let factory;
-  if (type == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = /** @type {GeometryCollection} */ (geometry).getGeometries();
+  if (type === GeometryType.GEOMETRY_COLLECTION) {
+    /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().forEach(function(geometry) {
+      const type = geometry.getType();
+      if (type === GeometryType.MULTI_POINT) {
+        geometries = geometries.concat(/** @type {MultiPoint} */ (geometry).getPoints());
+      } else if (type === GeometryType.MULTI_LINE_STRING) {
+        geometries = geometries.concat(/** @type {MultiLineString} */ (geometry).getLineStrings());
+      } else if (type === GeometryType.MULTI_POLYGON) {
+        geometries = geometries.concat(/** @type {MultiPolygon} */ (geometry).getPolygons());
+      } else if (type === GeometryType.POINT
+          || type === GeometryType.LINE_STRING
+          || type === GeometryType.POLYGON) {
+        geometries.push(geometry);
+      } else {
+        assert(false, 39); // Unknown geometry type
+      }
+    });
     factory = GEOMETRY_NODE_FACTORY;
-  } else if (type == GeometryType.MULTI_POINT) {
+  } else if (type === GeometryType.MULTI_POINT) {
     geometries = /** @type {MultiPoint} */ (geometry).getPoints();
     factory = POINT_NODE_FACTORY;
-  } else if (type == GeometryType.MULTI_LINE_STRING) {
+  } else if (type === GeometryType.MULTI_LINE_STRING) {
     geometries =
         (/** @type {MultiLineString} */ (geometry)).getLineStrings();
     factory = LINE_STRING_NODE_FACTORY;
-  } else if (type == GeometryType.MULTI_POLYGON) {
+  } else if (type === GeometryType.MULTI_POLYGON) {
     geometries =
         (/** @type {MultiPolygon} */ (geometry)).getPolygons();
     factory = POLYGON_NODE_FACTORY;
@@ -2842,13 +2853,61 @@ function writePlacemark(node, feature, objectStack) {
     // resolution-independent here
     const styles = styleFunction(feature, 0);
     if (styles) {
-      const style = Array.isArray(styles) ? styles[0] : styles;
-      if (this.writeStyles_) {
-        properties['Style'] = style;
+      const styleArray = Array.isArray(styles) ? styles : [styles];
+      let pointStyles = styleArray;
+      if (feature.getGeometry()) {
+        pointStyles = styleArray.filter(function(style) {
+          const geometry = style.getGeometryFunction()(feature);
+          if (geometry) {
+            const type = geometry.getType();
+            if (type === GeometryType.GEOMETRY_COLLECTION) {
+              return /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().filter(function(geometry) {
+                const type = geometry.getType();
+                return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+              }).length;
+            }
+            return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+          }
+        });
       }
-      const textStyle = style.getText();
-      if (textStyle) {
-        properties['name'] = textStyle.getText();
+      if (this.writeStyles_) {
+        let lineStyles = styleArray;
+        let polyStyles = styleArray;
+        if (feature.getGeometry()) {
+          lineStyles = styleArray.filter(function(style) {
+            const geometry = style.getGeometryFunction()(feature);
+            if (geometry) {
+              const type = geometry.getType();
+              if (type === GeometryType.GEOMETRY_COLLECTION) {
+                return /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().filter(function(geometry) {
+                  const type = geometry.getType();
+                  return type === GeometryType.LINE_STRING || type === GeometryType.MULTI_LINE_STRING;
+                }).length;
+              }
+              return type === GeometryType.LINE_STRING || type === GeometryType.MULTI_LINE_STRING;
+            }
+          });
+          polyStyles = styleArray.filter(function(style) {
+            const geometry = style.getGeometryFunction()(feature);
+            if (geometry) {
+              const type = geometry.getType();
+              if (type === GeometryType.GEOMETRY_COLLECTION) {
+                return /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().filter(function(geometry) {
+                  const type = geometry.getType();
+                  return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
+                }).length;
+              }
+              return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
+            }
+          });
+        }
+        properties['Style'] = {pointStyles: pointStyles, lineStyles: lineStyles, polyStyles: polyStyles};
+      }
+      if (pointStyles.length && properties['name'] === undefined) {
+        const textStyle = pointStyles[0].getText();
+        if (textStyle) {
+          properties['name'] = textStyle.getText();
+        }
       }
     }
   }
@@ -2926,6 +2985,17 @@ function writePrimitiveGeometry(node, geometry, objectStack) {
 
 /**
  * @const
+ * @type {Object<string, Array<string>>}
+ */
+// @ts-ignore
+const POLY_STYLE_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'color', 'fill', 'outline'
+  ]);
+
+
+/**
+ * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 // @ts-ignore
@@ -2983,27 +3053,31 @@ function writePolygon(node, polygon, objectStack) {
 // @ts-ignore
 const POLY_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'color': makeChildAppender(writeColorTextNode)
+    'color': makeChildAppender(writeColorTextNode),
+    'fill': makeChildAppender(writeBooleanTextNode),
+    'outline': makeChildAppender(writeBooleanTextNode)
   });
 
 
 /**
- * A factory for creating coordinates nodes.
- * @const
- * @type {function(*, Array<*>, string=): (Node|undefined)}
- */
-const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
-
-
-/**
  * @param {Node} node Node.
- * @param {Fill} style Style.
+ * @param {Style} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const fill = style.getFill();
+  const stroke = style.getStroke();
+  const properties = {
+    'color': fill ? fill.getColor() : undefined,
+    'fill': fill ? undefined : false,
+    'outline': stroke ? undefined : false
+  };
+  const parentNode = objectStack[objectStack.length - 1].node;
+  const orderedKeys = POLY_STYLE_SEQUENCE[parentNode.namespaceURI];
+  const values = makeSequence(properties, orderedKeys);
   pushSerializeAndPop(context, POLY_STYLE_SERIALIZERS,
-    COLOR_NODE_FACTORY, [style.getColor()], objectStack);
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 }
 
 
@@ -3045,27 +3119,34 @@ const STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Style} style Style.
+ * @param {Object<string, Array<Style>>} styles Styles.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeStyle(node, style, objectStack) {
+function writeStyle(node, styles, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
   const properties = {};
-  const fillStyle = style.getFill();
-  const strokeStyle = style.getStroke();
-  const imageStyle = style.getImage();
-  const textStyle = style.getText();
-  if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
-    properties['IconStyle'] = imageStyle;
+  if (styles.pointStyles.length) {
+    const textStyle = styles.pointStyles[0].getText();
+    if (textStyle) {
+      properties['LabelStyle'] = textStyle;
+    }
+    const imageStyle = styles.pointStyles[0].getImage();
+    if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
+      properties['IconStyle'] = imageStyle;
+    }
   }
-  if (textStyle) {
-    properties['LabelStyle'] = textStyle;
+  if (styles.lineStyles.length) {
+    const strokeStyle = styles.lineStyles[0].getStroke();
+    if (strokeStyle) {
+      properties['LineStyle'] = strokeStyle;
+    }
   }
-  if (strokeStyle) {
-    properties['LineStyle'] = strokeStyle;
-  }
-  if (fillStyle) {
-    properties['PolyStyle'] = fillStyle;
+  if (styles.polyStyles.length) {
+    const strokeStyle = styles.polyStyles[0].getStroke();
+    if (strokeStyle && !properties['LineStyle']) {
+      properties['LineStyle'] = strokeStyle;
+    }
+    properties['PolyStyle'] = styles.polyStyles[0];
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = STYLE_SEQUENCE[parentNode.namespaceURI];
