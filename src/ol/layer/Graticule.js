@@ -481,13 +481,18 @@ class Graticule extends VectorLayer {
    */
   strategyFunction(extent, resolution) {
     // extents may be passed in different worlds, to avoid endless loop we use only one
-    const realWorldExtent = extent.slice();
+    let realWorldExtent = extent.slice();
     if (this.projection_ && this.getSource().getWrapX()) {
       wrapExtentX(realWorldExtent, this.projection_);
     }
-    if (this.loadedExtent_ && !approximatelyEquals(this.loadedExtent_, realWorldExtent, resolution)) {
-      // we should not keep track of loaded extents
-      this.getSource().removeLoadedExtent(this.loadedExtent_);
+    if (this.loadedExtent_) {
+      if (approximatelyEquals(this.loadedExtent_, realWorldExtent, resolution)) {
+        // make sure result is exactly equal to previous extent
+        realWorldExtent = this.loadedExtent_.slice();
+      } else {
+        // we should not keep track of loaded extents
+        this.getSource().removeLoadedExtent(this.loadedExtent_);
+      }
     }
     return [realWorldExtent];
   }
