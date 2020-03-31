@@ -18,6 +18,7 @@ import {
   applyTransform,
   containsCoordinate,
   containsExtent,
+  equals,
   approximatelyEquals,
   getCenter,
   getHeight,
@@ -511,7 +512,7 @@ class Graticule extends VectorLayer {
     const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
     const renderExtent = getIntersection(layerExtent, extent);
 
-    if (this.renderedExtent_ && approximatelyEquals(this.renderedExtent_, renderExtent, resolution)) {
+    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent, resolution)) {
       return;
     }
     this.renderedExtent_ = renderExtent;
