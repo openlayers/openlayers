@@ -849,6 +849,12 @@ describe('ol.extent', function() {
       expect(_ol_extent_.wrapX([300, 48, 376, 49], projection)).to.eql([-60, 48, 16, 49]);
     });
 
+    it('produces the same real world extent for shifted extents with center at +/-180', function() {
+      expect(_ol_extent_.wrapX([360, -90, 720, 90], projection)).to.eql([-360, -90, 0, 90]);
+      expect(_ol_extent_.wrapX([0, -90, 360, 90], projection)).to.eql([-360, -90, 0, 90]);
+      expect(_ol_extent_.wrapX([-360, -90, 0, 90], projection)).to.eql([-360, -90, 0, 90]);
+    });
+
   });
 
   describe('approximatelyEquals', function() {

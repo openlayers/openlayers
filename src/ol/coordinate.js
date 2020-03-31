@@ -407,7 +407,8 @@ export function toStringXY(coordinate, opt_fractionDigits) {
 
 /**
  * Modifies the provided coordinate in-place to be within the real world
- * extent.
+ * extent. The lower projection extent boundary is inclusive, the upper one
+ * exclusive.
  *
  * @param {Coordinate} coordinate Coordinate.
  * @param {import("./proj/Projection.js").default} projection Projection
