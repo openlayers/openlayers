@@ -4,7 +4,7 @@ import OSMXML from '../src/ol/format/OSMXML.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {bbox as bboxStrategy} from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
