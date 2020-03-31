@@ -3,6 +3,7 @@
  */
 import {modulo} from './math.js';
 import {padNumber} from './string.js';
+import {getWidth} from './extent.js';
 
 
 /**
@@ -401,4 +402,24 @@ export function toStringHDMS(coordinate, opt_fractionDigits) {
  */
 export function toStringXY(coordinate, opt_fractionDigits) {
   return format(coordinate, '{x}, {y}', opt_fractionDigits);
+}
+
+
+/**
+ * Modifies the provided coordinate in-place to be within the real world
+ * extent. The lower projection extent boundary is inclusive, the upper one
+ * exclusive.
+ *
+ * @param {Coordinate} coordinate Coordinate.
+ * @param {import("./proj/Projection.js").default} projection Projection
+ * @return {Coordinate} The coordinate within the real world extent.
+ */
+export function wrapX(coordinate, projection) {
+  const projectionExtent = projection.getExtent();
+  if (projection.canWrapX() && (coordinate[0] < projectionExtent[0] || coordinate[0] >= projectionExtent[2])) {
+    const worldWidth = getWidth(projectionExtent);
+    const worldsAway = Math.floor((coordinate[0] - projectionExtent[0]) / worldWidth);
+    coordinate[0] -= (worldsAway * worldWidth);
+  }
+  return coordinate;
 }
