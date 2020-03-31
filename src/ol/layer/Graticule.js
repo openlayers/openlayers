@@ -512,7 +512,7 @@ class Graticule extends VectorLayer {
     const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
     const renderExtent = getIntersection(layerExtent, extent);
 
-    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent, resolution)) {
+    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent)) {
       return;
     }
     this.renderedExtent_ = renderExtent;
