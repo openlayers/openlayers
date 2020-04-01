@@ -300,6 +300,7 @@ class Overlay extends BaseObject {
       } else {
         container.appendChild(this.element);
       }
+      this.performAutoPan();
     }
   }
 
