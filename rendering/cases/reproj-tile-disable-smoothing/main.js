@@ -21,10 +21,6 @@ const layer = new TileLayer({
   source: source
 });
 
-layer.on('prerender', function(evt) {
-  evt.context.imageSmoothingEnabled = false;
-});
-
 new Map({
   pixelRatio: 1,
   target: 'map',
