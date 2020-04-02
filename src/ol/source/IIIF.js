@@ -9,6 +9,7 @@ import {Versions} from '../format/IIIFInfo.js';
 import {assert} from '../asserts.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import TileImage from './TileImage.js';
+import {toSize} from '../size.js';
 
 /**
  * @typedef {Object} Options
@@ -58,7 +59,7 @@ function formatPercentage(percentage) {
 class IIIF extends TileImage {
 
   /**
-   * @param {Options} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
+   * @param {Options=} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
    * to parse Image API service information responses into constructor options.
    * @api
    */
@@ -87,7 +88,7 @@ class IIIF extends TileImage {
     const extent = options.extent || [0, -height, width, 0];
 
     const supportsListedSizes = sizes != undefined && Array.isArray(sizes) && sizes.length > 0;
-    const supportsListedTiles = tileSize != undefined && (typeof tileSize === 'number' && Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0);
+    const supportsListedTiles = tileSize !== undefined && (typeof tileSize === 'number' && Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0);
     const supportsArbitraryTiling = supports != undefined && Array.isArray(supports) &&
       (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
       (supports.includes('sizeByWh') || supports.includes('sizeByH') ||
@@ -265,7 +266,9 @@ class IIIF extends TileImage {
       return baseUrl + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
     };
 
-    const IiifTileClass = CustomTile.bind(null, tilePixelRatio, tileGrid);
+    const IiifTileClass = CustomTile.bind(null, toSize(tileSize || 256).map(function(size) {
+      return size * tilePixelRatio;
+    }));
 
     super({
       attributions: options.attributions,

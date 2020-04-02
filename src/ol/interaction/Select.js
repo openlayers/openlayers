@@ -61,7 +61,7 @@ const SelectEventType = {
  * @property {import("../style/Style.js").StyleLike} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
- * If set to `false` the selected feature's style will not change.
+ * If set to a falsey value, the selected feature's style will not change.
  * @property {import("../events/condition.js").Condition} [removeCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
@@ -133,6 +133,12 @@ class SelectEvent extends Event {
 
 }
 
+/**
+ * Original feature styles to reset to when features are no longer selected.
+ * @type {Object.<number, import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
+ */
+const originalFeatureStyles = {};
+
 
 /**
  * @classdesc
@@ -160,6 +166,16 @@ class Select extends Interaction {
     });
 
     const options = opt_options ? opt_options : {};
+
+    /**
+     * @private
+     */
+    this.boundAddFeature_ = this.addFeature_.bind(this);
+
+    /**
+     * @private
+     */
+    this.boundRemoveFeature_ = this.removeFeature_.bind(this);
 
     /**
      * @private
@@ -210,14 +226,6 @@ class Select extends Interaction {
     this.style_ = options.style !== undefined ? options.style : getDefaultStyleFunction();
 
     /**
-     * An association between selected feature (key)
-     * and original style (value)
-     * @private
-     * @type {Object.<number, import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
-     */
-    this.featureStyleAssociation_ = {};
-
-    /**
      * @private
      * @type {import("../Collection.js").default}
      */
@@ -251,10 +259,6 @@ class Select extends Interaction {
      * @type {Object<string, import("../layer/Layer.js").default>}
      */
     this.featureLayerAssociation_ = {};
-
-    const features = this.getFeatures();
-    features.addEventListener(CollectionEventType.ADD, this.addFeature_.bind(this));
-    features.addEventListener(CollectionEventType.REMOVE, this.removeFeature_.bind(this));
   }
 
   /**
@@ -319,11 +323,19 @@ class Select extends Interaction {
   setMap(map) {
     const currentMap = this.getMap();
     if (currentMap && this.style_) {
-      this.features_.forEach(this.removeSelectedStyle_.bind(this));
+      this.features_.forEach(this.restorePreviousStyle_.bind(this));
     }
     super.setMap(map);
-    if (map && this.style_) {
-      this.features_.forEach(this.giveSelectedStyle_.bind(this));
+    if (map) {
+      this.features_.addEventListener(CollectionEventType.ADD, this.boundAddFeature_);
+      this.features_.addEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
+
+      if (this.style_) {
+        this.features_.forEach(this.applySelectedStyle_.bind(this));
+      }
+    } else {
+      this.features_.removeEventListener(CollectionEventType.ADD, this.boundAddFeature_);
+      this.features_.removeEventListener(CollectionEventType.REMOVE, this.boundRemoveFeature_);
     }
   }
 
@@ -334,7 +346,7 @@ class Select extends Interaction {
   addFeature_(evt) {
     const feature = evt.element;
     if (this.style_) {
-      this.giveSelectedStyle_(feature);
+      this.applySelectedStyle_(feature);
     }
   }
 
@@ -345,17 +357,26 @@ class Select extends Interaction {
   removeFeature_(evt) {
     const feature = evt.element;
     if (this.style_) {
-      this.removeSelectedStyle_(feature);
+      this.restorePreviousStyle_(feature);
     }
+  }
+
+  /**
+   * @return {import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null} Select style.
+   */
+  getStyle() {
+    return this.style_;
   }
 
   /**
    * @param {import("../Feature.js").default} feature Feature
    * @private
    */
-  giveSelectedStyle_(feature) {
+  applySelectedStyle_(feature) {
     const key = getUid(feature);
-    this.featureStyleAssociation_[key] = feature.getStyle();
+    if (!(key in originalFeatureStyles)) {
+      originalFeatureStyles[key] = feature.getStyle();
+    }
     feature.setStyle(this.style_);
   }
 
@@ -363,10 +384,17 @@ class Select extends Interaction {
    * @param {import("../Feature.js").default} feature Feature
    * @private
    */
-  removeSelectedStyle_(feature) {
+  restorePreviousStyle_(feature) {
     const key = getUid(feature);
-    feature.setStyle(this.featureStyleAssociation_[key]);
-    delete this.featureStyleAssociation_[key];
+    const selectInteractions = /** @type {Array<Select>} */ (this.getMap().getInteractions().getArray().filter(function(interaction) {
+      return interaction instanceof Select && interaction.getStyle() && interaction.getFeatures().getArray().indexOf(feature) !== -1;
+    }));
+    if (selectInteractions.length > 0) {
+      feature.setStyle(selectInteractions[selectInteractions.length - 1].getStyle());
+    } else {
+      feature.setStyle(originalFeatureStyles[key]);
+      delete originalFeatureStyles[key];
+    }
   }
 
   /**

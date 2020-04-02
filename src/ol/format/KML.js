@@ -378,6 +378,11 @@ function createStyleDefaults() {
 
 }
 
+/**
+ * @type {HTMLTextAreaElement}
+ */
+let TEXTAREA;
+
 
 /**
  * @typedef {Object} Options
@@ -877,32 +882,32 @@ class KML extends XMLFeature {
  * @return {Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
-  let textStyle = null;
   const textOffset = [0, 0];
   let textAlign = 'start';
-  if (foundStyle.getImage()) {
-    let imageSize = foundStyle.getImage().getImageSize();
+  const imageStyle = foundStyle.getImage();
+  if (imageStyle) {
+    let imageSize = imageStyle.getImageSize();
     if (imageSize === null) {
       imageSize = DEFAULT_IMAGE_STYLE_SIZE;
     }
     if (imageSize.length == 2) {
-      const imageScale = foundStyle.getImage().getScale();
-      // Offset the label to be centered to the right of the icon, if there is
-      // one.
+      const imageScale = imageStyle.getScale();
+      // Offset the label to be centered to the right of the icon,
+      // if there is one.
       textOffset[0] = imageScale * imageSize[0] / 2;
       textOffset[1] = -imageScale * imageSize[1] / 2;
       textAlign = 'left';
     }
   }
-  if (foundStyle.getText() !== null) {
+  let textStyle = foundStyle.getText();
+  if (textStyle) {
     // clone the text style, customizing it with name, alignments and offset.
     // Note that kml does not support many text options that OpenLayers does (rotation, textBaseline).
-    const foundText = foundStyle.getText();
-    textStyle = foundText.clone();
-    textStyle.setFont(foundText.getFont() || DEFAULT_TEXT_STYLE.getFont());
-    textStyle.setScale(foundText.getScale() || DEFAULT_TEXT_STYLE.getScale());
-    textStyle.setFill(foundText.getFill() || DEFAULT_TEXT_STYLE.getFill());
-    textStyle.setStroke(foundText.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
+    textStyle = textStyle.clone();
+    textStyle.setFont(textStyle.getFont() || DEFAULT_TEXT_STYLE.getFont());
+    textStyle.setScale(textStyle.getScale() || DEFAULT_TEXT_STYLE.getScale());
+    textStyle.setFill(textStyle.getFill() || DEFAULT_TEXT_STYLE.getFill());
+    textStyle.setStroke(textStyle.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
   } else {
     textStyle = DEFAULT_TEXT_STYLE.clone();
   }
@@ -912,6 +917,7 @@ function createNameStyleFunction(foundStyle, name) {
   textStyle.setTextAlign(textAlign);
 
   const nameStyle = new Style({
+    image: imageStyle,
     text: textStyle
   });
   return nameStyle;
@@ -932,45 +938,66 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
     /**
      * @param {Feature} feature feature.
      * @param {number} resolution Resolution.
-     * @return {Array<Style>} Style.
+     * @return {Array<Style>|Style} Style.
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {Style|undefined} */
-      let nameStyle;
       let name = '';
+      let multiGeometryPoints = [];
       if (drawName) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          drawName = geometry.getType() === GeometryType.POINT;
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            multiGeometryPoints = geometry.getGeometriesArrayRecursive().filter(function(geometry) {
+              const type = geometry.getType();
+              return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+            });
+            drawName = multiGeometryPoints.length > 0;
+          } else {
+            drawName = type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+          }
         }
       }
 
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
         drawName = drawName && !!name;
+        // convert any html character codes
+        if (drawName && name.search(/&[^&]+;/) > -1) {
+          if (!TEXTAREA) {
+            TEXTAREA = document.createElement('textarea');
+          }
+          TEXTAREA.innerHTML = name;
+          name = TEXTAREA.value;
+        }
       }
 
+      let featureStyle = defaultStyle;
       if (style) {
-        if (drawName) {
-          nameStyle = createNameStyleFunction(style[0], name);
-          return style.concat(nameStyle);
-        }
-        return style;
-      }
-      if (styleUrl) {
-        const foundStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
-        if (drawName) {
-          nameStyle = createNameStyleFunction(foundStyle[0], name);
-          return foundStyle.concat(nameStyle);
-        }
-        return foundStyle;
+        featureStyle = style;
+      } else if (styleUrl) {
+        featureStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
       }
       if (drawName) {
-        nameStyle = createNameStyleFunction(defaultStyle[0], name);
-        return defaultStyle.concat(nameStyle);
+        const nameStyle = createNameStyleFunction(featureStyle[0], name);
+        if (multiGeometryPoints.length > 0) {
+          // in multigeometries restrict the name style to points and create a
+          // style without image or text for geometries requiring fill or stroke
+          // including any polygon specific style if there is one
+          nameStyle.setGeometry(new GeometryCollection(multiGeometryPoints));
+          const baseStyle = new Style({
+            geometry: featureStyle[0].getGeometry(),
+            image: null,
+            fill: featureStyle[0].getFill(),
+            stroke: featureStyle[0].getStroke(),
+            text: null
+          });
+          return [nameStyle, baseStyle].concat(featureStyle.slice(1));
+        }
+        return nameStyle;
       }
-      return defaultStyle;
+      return featureStyle;
     }
   );
 }
@@ -1140,6 +1167,7 @@ function readStyleMapValue(node, objectStack) {
 const ICON_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeObjectPropertySetter(readIcon),
+    'color': makeObjectPropertySetter(readColor),
     'heading': makeObjectPropertySetter(readDecimal),
     'hotSpot': makeObjectPropertySetter(readVec2),
     'scale': makeObjectPropertySetter(readScale)
@@ -1221,6 +1249,9 @@ function iconStyleParser(node, objectStack) {
   let scale = /** @type {number|undefined} */
       (object['scale']);
 
+  const color = /** @type {Array<number>|undefined} */
+      (object['color']);
+
   if (drawIcon) {
     if (src == DEFAULT_IMAGE_STYLE_SRC) {
       size = DEFAULT_IMAGE_STYLE_SIZE;
@@ -1240,7 +1271,8 @@ function iconStyleParser(node, objectStack) {
       rotation: rotation,
       scale: scale,
       size: size,
-      src: src
+      src: src,
+      color: color
     });
     styleObject['imageStyle'] = imageStyle;
   } else {
@@ -1759,13 +1791,57 @@ function readStyle(node, objectStack) {
   const textStyle = /** @type {Text} */
       ('textStyle' in styleObject ?
         styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {Stroke} */
+  const strokeStyle = /** @type {Stroke} */
       ('strokeStyle' in styleObject ?
         styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
       (styleObject['outline']);
   if (outline !== undefined && !outline) {
-    strokeStyle = null;
+    // if the polystyle specifies no outline two styles are needed,
+    // one for non-polygon geometries where linestrings require a stroke
+    // and one for polygons where there should be no stroke
+    return [
+      new Style({
+        geometry: function(feature) {
+          const geometry = feature.getGeometry();
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            return new GeometryCollection(
+              geometry.getGeometriesArrayRecursive().filter(function(geometry) {
+                const type = geometry.getType();
+                return type !== GeometryType.POLYGON && type !== GeometryType.MULTI_POLYGON;
+              })
+            );
+          } else if (type !== GeometryType.POLYGON && type !== GeometryType.MULTI_POLYGON) {
+            return geometry;
+          }
+        },
+        fill: fillStyle,
+        image: imageStyle,
+        stroke: strokeStyle,
+        text: textStyle,
+        zIndex: undefined // FIXME
+      }),
+      new Style({
+        geometry: function(feature) {
+          const geometry = feature.getGeometry();
+          const type = geometry.getType();
+          if (type === GeometryType.GEOMETRY_COLLECTION) {
+            return new GeometryCollection(
+              geometry.getGeometriesArrayRecursive().filter(function(geometry) {
+                const type = geometry.getType();
+                return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
+              })
+            );
+          } else if (type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON) {
+            return geometry;
+          }
+        },
+        fill: fillStyle,
+        stroke: null,
+        zIndex: undefined // FIXME
+      })
+    ];
   }
   return [new Style({
     fill: fillStyle,
@@ -2372,7 +2448,7 @@ function writeIcon(node, icon, objectStack) {
 // @ts-ignore
 const ICON_STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
-    'scale', 'heading', 'Icon', 'hotSpot'
+    'scale', 'heading', 'Icon', 'color', 'hotSpot'
   ]);
 
 
@@ -2384,6 +2460,7 @@ const ICON_STYLE_SEQUENCE = makeStructureNS(
 const ICON_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeChildAppender(writeIcon),
+    'color': makeChildAppender(writeColorTextNode),
     'heading': makeChildAppender(writeDecimalTextNode),
     'hotSpot': makeChildAppender(writeVec2),
     'scale': makeChildAppender(writeScaleTextNode)
@@ -2437,6 +2514,11 @@ function writeIconStyle(node, style, objectStack) {
   const rotation = style.getRotation();
   if (rotation !== 0) {
     properties['heading'] = rotation; // 0-360
+  }
+
+  const color = style.getColor();
+  if (color) {
+    properties['color'] = color;
   }
 
   const parentNode = objectStack[objectStack.length - 1].node;
@@ -2527,7 +2609,7 @@ function writeLineStyle(node, style, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
   const properties = {
     'color': style.getColor(),
-    'width': style.getWidth()
+    'width': Number(style.getWidth()) || 1
   };
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = LINE_STYLE_SEQUENCE[parentNode.namespaceURI];
@@ -2628,20 +2710,35 @@ function writeMultiGeometry(node, geometry, objectStack) {
   const context = {node: node};
   const type = geometry.getType();
   /** @type {Array<import("../geom/Geometry.js").default>} */
-  let geometries;
+  let geometries = [];
   /** @type {function(*, Array<*>, string=): (Node|undefined)} */
   let factory;
-  if (type == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = /** @type {GeometryCollection} */ (geometry).getGeometries();
+  if (type === GeometryType.GEOMETRY_COLLECTION) {
+    /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().forEach(function(geometry) {
+      const type = geometry.getType();
+      if (type === GeometryType.MULTI_POINT) {
+        geometries = geometries.concat(/** @type {MultiPoint} */ (geometry).getPoints());
+      } else if (type === GeometryType.MULTI_LINE_STRING) {
+        geometries = geometries.concat(/** @type {MultiLineString} */ (geometry).getLineStrings());
+      } else if (type === GeometryType.MULTI_POLYGON) {
+        geometries = geometries.concat(/** @type {MultiPolygon} */ (geometry).getPolygons());
+      } else if (type === GeometryType.POINT
+          || type === GeometryType.LINE_STRING
+          || type === GeometryType.POLYGON) {
+        geometries.push(geometry);
+      } else {
+        assert(false, 39); // Unknown geometry type
+      }
+    });
     factory = GEOMETRY_NODE_FACTORY;
-  } else if (type == GeometryType.MULTI_POINT) {
+  } else if (type === GeometryType.MULTI_POINT) {
     geometries = /** @type {MultiPoint} */ (geometry).getPoints();
     factory = POINT_NODE_FACTORY;
-  } else if (type == GeometryType.MULTI_LINE_STRING) {
+  } else if (type === GeometryType.MULTI_LINE_STRING) {
     geometries =
         (/** @type {MultiLineString} */ (geometry)).getLineStrings();
     factory = LINE_STRING_NODE_FACTORY;
-  } else if (type == GeometryType.MULTI_POLYGON) {
+  } else if (type === GeometryType.MULTI_POLYGON) {
     geometries =
         (/** @type {MultiPolygon} */ (geometry)).getPolygons();
     factory = POLYGON_NODE_FACTORY;
@@ -2756,13 +2853,61 @@ function writePlacemark(node, feature, objectStack) {
     // resolution-independent here
     const styles = styleFunction(feature, 0);
     if (styles) {
-      const style = Array.isArray(styles) ? styles[0] : styles;
-      if (this.writeStyles_) {
-        properties['Style'] = style;
+      const styleArray = Array.isArray(styles) ? styles : [styles];
+      let pointStyles = styleArray;
+      if (feature.getGeometry()) {
+        pointStyles = styleArray.filter(function(style) {
+          const geometry = style.getGeometryFunction()(feature);
+          if (geometry) {
+            const type = geometry.getType();
+            if (type === GeometryType.GEOMETRY_COLLECTION) {
+              return /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().filter(function(geometry) {
+                const type = geometry.getType();
+                return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+              }).length;
+            }
+            return type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+          }
+        });
       }
-      const textStyle = style.getText();
-      if (textStyle) {
-        properties['name'] = textStyle.getText();
+      if (this.writeStyles_) {
+        let lineStyles = styleArray;
+        let polyStyles = styleArray;
+        if (feature.getGeometry()) {
+          lineStyles = styleArray.filter(function(style) {
+            const geometry = style.getGeometryFunction()(feature);
+            if (geometry) {
+              const type = geometry.getType();
+              if (type === GeometryType.GEOMETRY_COLLECTION) {
+                return /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().filter(function(geometry) {
+                  const type = geometry.getType();
+                  return type === GeometryType.LINE_STRING || type === GeometryType.MULTI_LINE_STRING;
+                }).length;
+              }
+              return type === GeometryType.LINE_STRING || type === GeometryType.MULTI_LINE_STRING;
+            }
+          });
+          polyStyles = styleArray.filter(function(style) {
+            const geometry = style.getGeometryFunction()(feature);
+            if (geometry) {
+              const type = geometry.getType();
+              if (type === GeometryType.GEOMETRY_COLLECTION) {
+                return /** @type {GeometryCollection} */ (geometry).getGeometriesArrayRecursive().filter(function(geometry) {
+                  const type = geometry.getType();
+                  return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
+                }).length;
+              }
+              return type === GeometryType.POLYGON || type === GeometryType.MULTI_POLYGON;
+            }
+          });
+        }
+        properties['Style'] = {pointStyles: pointStyles, lineStyles: lineStyles, polyStyles: polyStyles};
+      }
+      if (pointStyles.length && properties['name'] === undefined) {
+        const textStyle = pointStyles[0].getText();
+        if (textStyle) {
+          properties['name'] = textStyle.getText();
+        }
       }
     }
   }
@@ -2840,6 +2985,17 @@ function writePrimitiveGeometry(node, geometry, objectStack) {
 
 /**
  * @const
+ * @type {Object<string, Array<string>>}
+ */
+// @ts-ignore
+const POLY_STYLE_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'color', 'fill', 'outline'
+  ]);
+
+
+/**
+ * @const
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 // @ts-ignore
@@ -2897,27 +3053,31 @@ function writePolygon(node, polygon, objectStack) {
 // @ts-ignore
 const POLY_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'color': makeChildAppender(writeColorTextNode)
+    'color': makeChildAppender(writeColorTextNode),
+    'fill': makeChildAppender(writeBooleanTextNode),
+    'outline': makeChildAppender(writeBooleanTextNode)
   });
 
 
 /**
- * A factory for creating coordinates nodes.
- * @const
- * @type {function(*, Array<*>, string=): (Node|undefined)}
- */
-const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
-
-
-/**
  * @param {Node} node Node.
- * @param {Fill} style Style.
+ * @param {Style} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const fill = style.getFill();
+  const stroke = style.getStroke();
+  const properties = {
+    'color': fill ? fill.getColor() : undefined,
+    'fill': fill ? undefined : false,
+    'outline': stroke ? undefined : false
+  };
+  const parentNode = objectStack[objectStack.length - 1].node;
+  const orderedKeys = POLY_STYLE_SEQUENCE[parentNode.namespaceURI];
+  const values = makeSequence(properties, orderedKeys);
   pushSerializeAndPop(context, POLY_STYLE_SERIALIZERS,
-    COLOR_NODE_FACTORY, [style.getColor()], objectStack);
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 }
 
 
@@ -2959,27 +3119,34 @@ const STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Style} style Style.
+ * @param {Object<string, Array<Style>>} styles Styles.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeStyle(node, style, objectStack) {
+function writeStyle(node, styles, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
   const properties = {};
-  const fillStyle = style.getFill();
-  const strokeStyle = style.getStroke();
-  const imageStyle = style.getImage();
-  const textStyle = style.getText();
-  if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
-    properties['IconStyle'] = imageStyle;
+  if (styles.pointStyles.length) {
+    const textStyle = styles.pointStyles[0].getText();
+    if (textStyle) {
+      properties['LabelStyle'] = textStyle;
+    }
+    const imageStyle = styles.pointStyles[0].getImage();
+    if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
+      properties['IconStyle'] = imageStyle;
+    }
   }
-  if (textStyle) {
-    properties['LabelStyle'] = textStyle;
+  if (styles.lineStyles.length) {
+    const strokeStyle = styles.lineStyles[0].getStroke();
+    if (strokeStyle) {
+      properties['LineStyle'] = strokeStyle;
+    }
   }
-  if (strokeStyle) {
-    properties['LineStyle'] = strokeStyle;
-  }
-  if (fillStyle) {
-    properties['PolyStyle'] = fillStyle;
+  if (styles.polyStyles.length) {
+    const strokeStyle = styles.polyStyles[0].getStroke();
+    if (strokeStyle && !properties['LineStyle']) {
+      properties['LineStyle'] = strokeStyle;
+    }
+    properties['PolyStyle'] = styles.polyStyles[0];
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = STYLE_SEQUENCE[parentNode.namespaceURI];

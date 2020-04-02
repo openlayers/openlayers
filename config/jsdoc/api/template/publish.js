@@ -14,7 +14,6 @@ const path = require('jsdoc/lib/jsdoc/path');
 const taffy = require('taffydb').taffy;
 const handle = require('jsdoc/lib/jsdoc/util/error').handle;
 const helper = require('jsdoc/lib/jsdoc/util/templateHelper');
-const _ = require('underscore');
 const htmlsafe = helper.htmlsafe;
 const linkto = helper.linkto;
 const resolveAuthorLinks = helper.resolveAuthorLinks;
@@ -188,6 +187,14 @@ function attachModuleSymbols(doclets, modules) {
   });
 }
 
+function getPrettyName(doclet) {
+  const fullname = doclet.longname.replace('module:', '');
+  if (doclet.isDefaultExport) {
+    return fullname.split('~')[0];
+  }
+  return fullname;
+}
+
 /**
  * Create the navigation sidebar.
  * @param {object} members The members that will be used to create the sidebar.
@@ -203,27 +210,13 @@ function attachModuleSymbols(doclets, modules) {
  */
 function buildNav(members) {
   const nav = [];
-  // merge namespaces and classes, then sort
-  const merged = members.modules.concat(members.classes);
-  merged.sort(function(a, b) {
-    if (a.longname > b.longname) {
-      return 1;
-    }
-    if (a.longname < b.longname) {
-      return -1;
-    }
-    return 0;
-  });
-
-  _.each(merged, function(v) {
+  members.classes.forEach(function(v) {
     // exclude interfaces from sidebar
-    if (v.interface !== true && v.kind === 'class') {
+    if (v.interface !== true) {
       nav.push({
         type: 'class',
         longname: v.longname,
-        prettyname: v.longname
-          .split('~')[0]
-          .replace('module:', ''),
+        prettyname: getPrettyName(v),
         name: v.name,
         module: find({
           kind: 'module',
@@ -247,44 +240,56 @@ function buildNav(members) {
           memberof: v.longname
         })
       });
-    } else if (v.kind == 'module') {
-      const classes = find({
-        kind: 'class',
-        memberof: v.longname
-      });
-      const members = find({
-        kind: 'member',
-        memberof: v.longname
-      });
-      const methods = find({
-        kind: 'function',
-        memberof: v.longname
-      });
-      const typedefs = find({
-        kind: 'typedef',
-        memberof: v.longname
-      });
-      const events = find({
-        kind: 'event',
-        memberof: v.longname
-      });
-      // only add modules that have more to show than just a single class
-      if (classes.length !== 1 && (classes.length + members.length + methods.length + typedefs.length + events.length > 0)) {
-        nav.push({
-          type: 'module',
-          longname: v.longname,
-          prettyname: v.longname
-            .split('~')[0]
-            .replace('module:', ''),
-          name: v.name,
-          members: members,
-          methods: methods,
-          typedefs: typedefs,
-          fires: v.fires,
-          events: events
-        });
-      }
     }
+  });
+  members.modules.forEach(function(v) {
+    const classes = find({
+      kind: 'class',
+      memberof: v.longname
+    });
+    const members = find({
+      kind: 'member',
+      memberof: v.longname
+    });
+    const methods = find({
+      kind: 'function',
+      memberof: v.longname
+    });
+    const typedefs = find({
+      kind: 'typedef',
+      memberof: v.longname
+    });
+    const events = find({
+      kind: 'event',
+      memberof: v.longname
+    });
+    // Only add modules that contain more than just classes with their
+    // associated Options typedef
+    if (typedefs.length > classes.length || members.length + methods.length > 0) {
+      nav.push({
+        type: 'module',
+        longname: v.longname,
+        prettyname: getPrettyName(v),
+        name: v.name,
+        members: members,
+        methods: methods,
+        typedefs: typedefs,
+        fires: v.fires,
+        events: events
+      });
+    }
+  });
+
+  nav.sort(function(a, b) {
+    const prettyNameA = a.prettyname.toLowerCase();
+    const prettyNameB = b.prettyname.toLowerCase();
+    if (prettyNameA > prettyNameB) {
+      return 1;
+    }
+    if (prettyNameA < prettyNameB) {
+      return -1;
+    }
+    return 0;
   });
   return nav;
 }
@@ -472,6 +477,7 @@ exports.publish = function(taffyData, opts, tutorials) {
   // index page displays information from package.json and lists files
   const files = find({kind: 'file'});
 
+  view.navigationHtml = helper.resolveLinks(view.partial('navigation.tmpl'));
   generate('Index',
     [{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}].concat(files),
     indexUrl);

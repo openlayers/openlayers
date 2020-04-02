@@ -11,16 +11,21 @@ import {clamp} from './math.js';
  */
 
 /**
- * Returns a modified resolution taking into acocunt the viewport size and maximum
+ * Returns a modified resolution taking into account the viewport size and maximum
  * allowed extent.
  * @param {number} resolution Resolution
  * @param {import("./extent.js").Extent=} maxExtent Maximum allowed extent.
  * @param {import("./size.js").Size} viewportSize Viewport size.
+ * @param {boolean} showFullExtent Whether to show the full extent.
  * @return {number} Capped resolution.
  */
-function getViewportClampedResolution(resolution, maxExtent, viewportSize) {
+function getViewportClampedResolution(resolution, maxExtent, viewportSize, showFullExtent) {
   const xResolution = getWidth(maxExtent) / viewportSize[0];
   const yResolution = getHeight(maxExtent) / viewportSize[1];
+
+  if (showFullExtent) {
+    return Math.min(resolution, Math.max(xResolution, yResolution));
+  }
   return Math.min(resolution, Math.min(xResolution, yResolution));
 }
 
@@ -52,9 +57,10 @@ function getSmoothClampedResolution(resolution, maxResolution, minResolution) {
  * @param {Array<number>} resolutions Resolutions.
  * @param {boolean=} opt_smooth If true, the view will be able to slightly exceed resolution limits. Default: true.
  * @param {import("./extent.js").Extent=} opt_maxExtent Maximum allowed extent.
+ * @param {boolean=} opt_showFullExtent If true, allows us to show the full extent. Default: false.
  * @return {Type} Zoom function.
  */
-export function createSnapToResolutions(resolutions, opt_smooth, opt_maxExtent) {
+export function createSnapToResolutions(resolutions, opt_smooth, opt_maxExtent, opt_showFullExtent) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -68,7 +74,7 @@ export function createSnapToResolutions(resolutions, opt_smooth, opt_maxExtent) 
         const maxResolution = resolutions[0];
         const minResolution = resolutions[resolutions.length - 1];
         const cappedMaxRes = opt_maxExtent ?
-          getViewportClampedResolution(maxResolution, opt_maxExtent, size) :
+          getViewportClampedResolution(maxResolution, opt_maxExtent, size, opt_showFullExtent) :
           maxResolution;
 
         // during interacting or animating, allow intermediary values
@@ -100,9 +106,10 @@ export function createSnapToResolutions(resolutions, opt_smooth, opt_maxExtent) 
  * @param {number=} opt_minResolution Minimum resolution.
  * @param {boolean=} opt_smooth If true, the view will be able to slightly exceed resolution limits. Default: true.
  * @param {import("./extent.js").Extent=} opt_maxExtent Maximum allowed extent.
+ * @param {boolean=} opt_showFullExtent If true, allows us to show the full extent. Default: false.
  * @return {Type} Zoom function.
  */
-export function createSnapToPower(power, maxResolution, opt_minResolution, opt_smooth, opt_maxExtent) {
+export function createSnapToPower(power, maxResolution, opt_minResolution, opt_smooth, opt_maxExtent, opt_showFullExtent) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -114,7 +121,7 @@ export function createSnapToPower(power, maxResolution, opt_minResolution, opt_s
     function(resolution, direction, size, opt_isMoving) {
       if (resolution !== undefined) {
         const cappedMaxRes = opt_maxExtent ?
-          getViewportClampedResolution(maxResolution, opt_maxExtent, size) :
+          getViewportClampedResolution(maxResolution, opt_maxExtent, size, opt_showFullExtent) :
           maxResolution;
         const minResolution = opt_minResolution !== undefined ? opt_minResolution : 0;
 
@@ -148,9 +155,10 @@ export function createSnapToPower(power, maxResolution, opt_minResolution, opt_s
  * @param {number} minResolution Min resolution.
  * @param {boolean=} opt_smooth If true, the view will be able to slightly exceed resolution limits. Default: true.
  * @param {import("./extent.js").Extent=} opt_maxExtent Maximum allowed extent.
+ * @param {boolean=} opt_showFullExtent If true, allows us to show the full extent. Default: false.
  * @return {Type} Zoom function.
  */
-export function createMinMaxResolution(maxResolution, minResolution, opt_smooth, opt_maxExtent) {
+export function createMinMaxResolution(maxResolution, minResolution, opt_smooth, opt_maxExtent, opt_showFullExtent) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -162,7 +170,7 @@ export function createMinMaxResolution(maxResolution, minResolution, opt_smooth,
     function(resolution, direction, size, opt_isMoving) {
       if (resolution !== undefined) {
         const cappedMaxRes = opt_maxExtent ?
-          getViewportClampedResolution(maxResolution, opt_maxExtent, size) :
+          getViewportClampedResolution(maxResolution, opt_maxExtent, size, opt_showFullExtent) :
           maxResolution;
         const smooth = opt_smooth !== undefined ? opt_smooth : true;
 

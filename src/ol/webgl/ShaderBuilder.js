@@ -427,6 +427,7 @@ export function parseLiteralStyle(style) {
   const parsedSize = expressionToGlsl(vertContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER);
   const parsedOffset = expressionToGlsl(vertContext, offset, ValueTypes.NUMBER_ARRAY);
   const parsedTexCoord = expressionToGlsl(vertContext, texCoord, ValueTypes.NUMBER_ARRAY);
+  const parsedRotation = expressionToGlsl(vertContext, rotation, ValueTypes.NUMBER);
 
   /**
    * @type {import("../style/expressions.js").ParsingContext}
@@ -439,7 +440,6 @@ export function parseLiteralStyle(style) {
   };
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
   const parsedOpacity = expressionToGlsl(fragContext, opacity, ValueTypes.NUMBER);
-  const parsedRotation = expressionToGlsl(fragContext, rotation, ValueTypes.NUMBER);
 
   let opacityFilter = '1.0';
   const visibleSize = `vec2(${expressionToGlsl(fragContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER)}).x`;

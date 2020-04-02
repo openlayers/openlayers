@@ -51,7 +51,8 @@ body {
   width: 0px;
   height: 0px;
 }
-.nameContainer .anchor.highlighted + h4 {
+/* Highlighting current anchor */
+.nameContainer .anchor:target + h4 {
   background-color: #faebcc;
 }
 a {
@@ -123,7 +124,7 @@ li {
   color: #fff;
   border-color: #555;
 }
-.navigation .list {
+.navigation .navigation-list {
   padding: 10px 15px 0 15px;
   position: relative;
   overflow: auto;
@@ -133,6 +134,24 @@ li {
   margin-bottom: 8px;
   padding-bottom: 8px;
   border-bottom: 1px solid #333;
+}
+
+.navigation .glyphicon {
+  margin-right: 3px;
+  flex-shrink: 0;
+}
+.navigation .item .glyphicon:before {
+  display: inline-block;
+}
+.navigation .item.toggle-manual .glyphicon:before {
+  transition: transform .1s;
+}
+.navigation .item-class.toggle-manual-show .glyphicon:before {
+  /* With 90deg the icon slightly slides left at transition end */
+  transform: rotate(89.9deg);
+}
+.navigation .item-module.toggle-manual-show .glyphicon:before {
+  transform: rotate(45deg);
 }
 
 .navigation li.perfect-match {
@@ -147,8 +166,8 @@ li {
 }
 .navigation li.item .title {
   cursor: pointer;
-  position: relative;
-  display: block;
+  display: -ms-flexbox;
+  display: flex;
   font-size: 0.85em;
 }
 .navigation li.item .title a {
@@ -183,10 +202,42 @@ li {
   padding-left: 8px;
   margin-top: 2px;
 }
-.navigation li.item .itemMembers {
-  display: none;
+.navigation li.item .member-list {
   padding-left: 8px;
 }
+
+/* search state */
+/* show all classes when search is empty */
+.navigation-list.search-empty .item {
+  display: block;
+}
+/* hide all members by default when search is empty */
+.navigation-list.search-empty .item .member-list {
+  display: none;
+}
+/* expand all members when input in search field available but too short to search */
+.navigation-list.search-started li,
+.navigation-list.search-started .member-list {
+  display: block;
+}
+/* when searching hide everything that is not a match */
+.navigation-list.searching li,
+.navigation-list.searching .member-list {
+  display: none;
+}
+.navigation-list.searching .match {
+  display: block;
+}
+/* allow user to hide / show members */
+.navigation-list .item.toggle-manual-show li,
+.navigation-list .item.toggle-manual-show .member-list {
+  display: block!important;
+}
+.navigation-list:not(.searching) .item.toggle-manual-hide li,
+.navigation-list:not(.searching) .item.toggle-manual-hide .member-list {
+    display: none!important;
+}
+
 .main {
   padding: 20px 20px;
   margin-left: 250px;

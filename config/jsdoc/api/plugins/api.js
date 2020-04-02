@@ -4,7 +4,7 @@
  */
 exports.defineTags = function(dictionary) {
   dictionary.defineTag('api', {
-    mustHaveValue: false,
+    mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
     onTagged: function(doclet, tag) {
@@ -21,14 +21,10 @@ exports.defineTags = function(dictionary) {
  * from the documentation.
  */
 
-const api = [];
+const api = {};
 const classes = {};
 const types = {};
 const modules = {};
-
-function hasApiMembers(doclet) {
-  return doclet.longname.split('#')[0] == this.longname;
-}
 
 function includeAugments(doclet) {
   // Make sure that `observables` and `fires` are taken from an already processed `class` doclet.
@@ -77,9 +73,6 @@ function includeAugments(doclet) {
           });
         }
         cls._hideConstructor = true;
-        if (!cls.undocumented) {
-          cls._documented = true;
-        }
       }
     }
   }
@@ -110,16 +103,43 @@ function includeTypes(doclet) {
   }
 }
 
+const defaultExports = {};
+const path = require('path');
+const moduleRoot = path.join(process.cwd(), 'src');
+
+// Tag default exported Identifiers because their name should be the same as the module name.
+exports.astNodeVisitor = {
+  visitNode: function(node, e, parser, currentSourceName) {
+    if (node.parent && node.parent.type === 'ExportDefaultDeclaration') {
+      const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
+      const exportName = 'module:' + modulePath.replace(/\\/g, '/') + (node.name ? '~' + node.name : '');
+      defaultExports[exportName] = true;
+    }
+  }
+};
+
+function sortOtherMembers(doclet) {
+  if (doclet.fires) {
+    doclet.fires.sort(function(a, b) {
+      return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
+    });
+  }
+  if (doclet.observables) {
+    doclet.observables.sort(function(a, b) {
+      return a.name < b.name ? -1 : 1;
+    });
+  }
+}
+
 exports.handlers = {
 
   newDoclet: function(e) {
     const doclet = e.doclet;
     if (doclet.stability) {
       modules[doclet.longname.split(/[~\.]/).shift()] = true;
-      api.push(doclet);
+      api[doclet.longname.split('#')[0]] = true;
     }
     if (doclet.kind == 'class') {
-      modules[doclet.longname.split(/[~\.]/).shift()] = true;
       if (!(doclet.longname in classes)) {
         classes[doclet.longname] = doclet;
       } else if ('augments' in doclet) {
@@ -134,22 +154,14 @@ exports.handlers = {
 
   parseComplete: function(e) {
     const doclets = e.doclets;
+    const byLongname = doclets.index.longname;
     for (let i = doclets.length - 1; i >= 0; --i) {
       const doclet = doclets[i];
       if (doclet.stability) {
         if (doclet.kind == 'class') {
           includeAugments(doclet);
         }
-        if (doclet.fires) {
-          doclet.fires.sort(function(a, b) {
-            return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
-          });
-        }
-        if (doclet.observables) {
-          doclet.observables.sort(function(a, b) {
-            return a.name < b.name ? -1 : 1;
-          });
-        }
+        sortOtherMembers(doclet);
         // Always document namespaces and items with stability annotation
         continue;
       }
@@ -160,19 +172,31 @@ exports.handlers = {
       if (doclet.isEnum || doclet.kind == 'typedef') {
         continue;
       }
-      if (doclet.kind == 'class' && api.some(hasApiMembers, doclet)) {
+      if (doclet.kind == 'class' && doclet.longname in api) {
         // Mark undocumented classes with documented members as unexported.
         // This is used in ../template/tmpl/container.tmpl to hide the
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
-      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
+        sortOtherMembers(doclet);
+      } else if (!doclet._hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
-      if (doclet._documented) {
-        delete doclet.undocumented;
+      if (doclet.memberof && byLongname[doclet.memberof] &&
+          byLongname[doclet.memberof][0].isEnum &&
+          !byLongname[doclet.memberof][0].properties.some(p => p.stability)) {
+        byLongname[doclet.memberof][0].undocumented = true;
       }
+    }
+  },
+
+  processingComplete(e) {
+    const byLongname = e.doclets.index.longname;
+    for (const name in defaultExports) {
+      byLongname[name].forEach(function(doclet) {
+        doclet.isDefaultExport = true;
+      });
     }
   }
 

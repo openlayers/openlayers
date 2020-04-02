@@ -17,6 +17,7 @@ import {replaceNode} from '../dom.js';
 import {listen, listenOnce} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, equals as equalsExtent, getBottomRight, getTopLeft, scaleFromCenter} from '../extent.js';
+import View from '../View.js';
 
 
 /**
@@ -59,8 +60,8 @@ class ControlledMap extends PluggableMap {
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
- * @property {import("../View.js").default} [view] Custom view for the overview map. If not provided,
- * a default view with an EPSG:3857 projection will be used.
+ * @property {View} [view] Custom view for the overview map (should use same projection as main map). If not provided,
+ * a default view with the same projection as the main map will be used.
  */
 
 
@@ -166,6 +167,13 @@ class OverviewMap extends Control {
      */
     this.ovmapDiv_ = document.createElement('div');
     this.ovmapDiv_.className = 'ol-overviewmap-map';
+
+    /**
+     * Explicitly given view to be used instead of a view derived from the main map.
+     * @type {View}
+     * @private
+     */
+    this.view_ = options.view;
 
     /**
      * @type {ControlledMap}
@@ -303,6 +311,14 @@ class OverviewMap extends Control {
    * @private
    */
   bindView_(view) {
+    if (!this.view_) {
+      // Unless an explicit view definition was given, derive default from whatever main map uses.
+      const newView = new View({
+        projection: view.getProjection()
+      });
+      this.ovmap_.setView(newView);
+    }
+
     view.addEventListener(getChangeEventType(ViewProperty.ROTATION), this.boundHandleRotationChanged_);
     // Sync once with the new view
     this.handleRotationChanged_();
@@ -603,7 +619,6 @@ class OverviewMap extends Control {
  * Update the overview map element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
  * @this {OverviewMap}
- * @api
  */
 export function render(mapEvent) {
   this.validateExtent_();

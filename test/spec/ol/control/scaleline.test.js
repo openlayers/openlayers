@@ -70,14 +70,14 @@ describe('ol.control.ScaleLine', function() {
     describe('render', function() {
       it('defaults to `ol.control.ScaleLine.render`', function() {
         const ctrl = new ScaleLine();
-        expect(ctrl.render).to.be(render);
+        expect(ctrl.render_).to.be(render);
       });
       it('can be configured', function() {
         const myRender = function() {};
         const ctrl = new ScaleLine({
           render: myRender
         });
-        expect(ctrl.render).to.be(myRender);
+        expect(ctrl.render_).to.be(myRender);
       });
     });
 

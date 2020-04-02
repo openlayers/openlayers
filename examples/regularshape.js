@@ -59,18 +59,39 @@ const styles = {
       radius2: 0,
       angle: Math.PI / 4
     })
-  })
+  }),
+  'stacked': [
+    new Style({
+      image: new RegularShape({
+        fill: fill,
+        stroke: stroke,
+        points: 4,
+        radius: 5,
+        angle: Math.PI / 4,
+        displacement: [0, 10]
+      })
+    }),
+    new Style({
+      image: new RegularShape({
+        fill: fill,
+        stroke: stroke,
+        points: 4,
+        radius: 10,
+        angle: Math.PI / 4
+      })
+    })
+  ]
 };
 
 
-const styleKeys = ['x', 'cross', 'star', 'triangle', 'square'];
+const styleKeys = ['x', 'cross', 'star', 'triangle', 'square', 'stacked'];
 const count = 250;
 const features = new Array(count);
 const e = 4500000;
 for (let i = 0; i < count; ++i) {
   const coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
   features[i] = new Feature(new Point(coordinates));
-  features[i].setStyle(styles[styleKeys[Math.floor(Math.random() * 5)]]);
+  features[i].setStyle(styles[styleKeys[Math.floor(Math.random() * 6)]]);
 }
 
 const source = new VectorSource({

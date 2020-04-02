@@ -54,11 +54,13 @@ describe('ol.format.WMTSCapabilities', function() {
       expect(layer.Style[0].LegendURL[0].format).to.be.eql('image/png');
 
       expect(layer.TileMatrixSetLink).to.be.an('array');
-      expect(layer.TileMatrixSetLink).to.have.length(2);
+      expect(layer.TileMatrixSetLink).to.have.length(3);
       expect(layer.TileMatrixSetLink[0].TileMatrixSet).to.be
         .eql('BigWorldPixel');
       expect(layer.TileMatrixSetLink[1].TileMatrixSet).to.be
         .eql('google3857');
+      expect(layer.TileMatrixSetLink[2].TileMatrixSet).to.be
+        .eql('google3857subset');
 
       const wgs84Bbox = layer.WGS84BoundingBox;
       expect(wgs84Bbox).to.be.an('array');

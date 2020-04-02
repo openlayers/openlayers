@@ -23,6 +23,8 @@ export const Mode = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~always}.
+ * In addition, if there is a `tabindex` attribute on the map element,
+ * {@link module:ol/events/condition~focus} will also be applied.
  * @property {number} [maxDelta=1] Maximum mouse wheel delta.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
@@ -130,7 +132,7 @@ class MouseWheelZoom extends Interaction {
      * @private
      * @type {number}
      */
-    this.trackpadDeltaPerZoom_ = 300;
+    this.deltaPerZoom_ = 300;
 
   }
 
@@ -212,15 +214,18 @@ class MouseWheelZoom extends Interaction {
         Mode.WHEEL;
     }
 
-    if (this.mode_ === Mode.TRACKPAD) {
-      const view = map.getView();
+    const view = map.getView();
+    if (this.mode_ === Mode.TRACKPAD && !view.getConstrainResolution()) {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
+        if (view.getAnimating()) {
+          view.cancelAnimations();
+        }
         view.beginInteraction();
       }
-      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
-      view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
+      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.timeout_);
+      view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
       return false;
     }
@@ -244,8 +249,13 @@ class MouseWheelZoom extends Interaction {
     if (view.getAnimating()) {
       view.cancelAnimations();
     }
-    const delta = clamp(this.totalDelta_, -this.maxDelta_, this.maxDelta_);
-    zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
+    let delta = -clamp(this.totalDelta_, -this.maxDelta_ * this.deltaPerZoom_, this.maxDelta_ * this.deltaPerZoom_) / this.deltaPerZoom_;
+    if (view.getConstrainResolution()) {
+      // view has a zoom constraint, zoom by 1
+      delta = delta ? delta > 0 ? 1 : -1 : 0;
+    }
+    zoomByDelta(view, delta, this.lastAnchor_, this.duration_);
+
     this.mode_ = undefined;
     this.totalDelta_ = 0;
     this.lastAnchor_ = null;

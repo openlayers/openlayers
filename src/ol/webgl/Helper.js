@@ -558,6 +558,7 @@ class WebGLHelper extends Disposable {
       if (value instanceof HTMLCanvasElement || value instanceof HTMLImageElement || value instanceof ImageData) {
         // create a texture & put data
         if (!uniform.texture) {
+          uniform.prevValue = undefined;
           uniform.texture = gl.createTexture();
         }
         gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
@@ -567,7 +568,8 @@ class WebGLHelper extends Disposable {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
         const imageReady = !(value instanceof HTMLImageElement) || /** @type {HTMLImageElement} */(value).complete;
-        if (imageReady) {
+        if (imageReady && uniform.prevValue !== value) {
+          uniform.prevValue = value;
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
         }
 

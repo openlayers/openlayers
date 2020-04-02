@@ -129,6 +129,14 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * @property {boolean} [smoothResolutionConstraint=true] If true, the resolution
  * min/max values will be applied smoothly, i. e. allow the view to exceed slightly
  * the given resolution or zoom bounds.
+ * @property {boolean} [showFullExtent=false] Allow the view to be zoomed out to
+ * show the full configured extent. By default, when a view is configured with an
+ * extent, users will not be able to zoom out so the viewport exceeds the extent in
+ * either dimension. This means the full extent may not be visible if the viewport
+ * is taller or wider than the aspect ratio of the configured extent. If
+ * showFullExtent is true, the user will be able to zoom out so that the viewport
+ * exceeds the height or width of the configured extent, but not both, allowing the
+ * full extent to be shown.
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
@@ -397,7 +405,6 @@ class View extends BaseObject {
     } else if (options.zoom !== undefined) {
       this.setZoom(options.zoom);
     }
-    this.resolveConstraints(0);
 
     this.setProperties(properties);
 
@@ -601,10 +608,15 @@ class View extends BaseObject {
       if (series[0].callback) {
         animationCallback(series[0].callback, false);
       }
-      anchor = anchor ||
-        series.filter(function(animation) {
-          return !animation.complete;
-        })[0].anchor;
+      if (!anchor) {
+        for (let j = 0, jj = series.length; j < jj; ++j) {
+          const animation = series[j];
+          if (!animation.complete) {
+            anchor = animation.anchor;
+            break;
+          }
+        }
+      }
     }
     this.animations_.length = 0;
     this.cancelAnchor_ = anchor;
@@ -754,6 +766,7 @@ class View extends BaseObject {
    */
   setViewportSize(opt_size) {
     this.viewportSize_ = Array.isArray(opt_size) ? opt_size.slice() : [100, 100];
+    this.resolveConstraints(0);
   }
 
   /**
@@ -783,6 +796,13 @@ class View extends BaseObject {
    */
   getConstraints() {
     return this.constraints_;
+  }
+
+  /**
+   * @return {boolean} Resolution constraint is set
+   */
+  getConstrainResolution() {
+    return this.options_.constrainResolution;
   }
 
   /**
@@ -1611,6 +1631,9 @@ export function createResolutionConstraint(options) {
   const smooth =
       options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
 
+  const showFullExtent =
+      options.showFullExtent !== undefined ? options.showFullExtent : false;
+
   const projection = createProjection(options.projection, 'EPSG:3857');
   const projExtent = projection.getExtent();
   let constrainOnlyCenter = options.constrainOnlyCenter;
@@ -1628,10 +1651,10 @@ export function createResolutionConstraint(options) {
 
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToResolutions(resolutions, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, showFullExtent);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, showFullExtent);
     }
   } else {
     // calculate the default min and max resolution
@@ -1677,10 +1700,10 @@ export function createResolutionConstraint(options) {
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToPower(
         zoomFactor, maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, showFullExtent);
     } else {
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent);
+        !constrainOnlyCenter && extent, showFullExtent);
     }
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,

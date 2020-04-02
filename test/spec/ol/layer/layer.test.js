@@ -631,8 +631,7 @@ describe('ol.layer.Layer', function() {
           map: map
         });
         frameState = {
-          layerStatesArray: [],
-          layerStates: {}
+          layerStatesArray: []
         };
       });
 
@@ -651,6 +650,7 @@ describe('ol.layer.Layer', function() {
           layer.setZIndex(index);
           map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
           const layerState = frameState.layerStatesArray[0];
+          frameState.layerStatesArray.length = 0;
           expect(layerState.zIndex).to.be(index);
         });
       });

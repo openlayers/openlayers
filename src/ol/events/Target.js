@@ -56,7 +56,7 @@ class Target extends Disposable {
 
     /**
      * @private
-     * @type {!Object<string, Array<import("../events.js").ListenerFunction>>}
+     * @type {!Object<string, Array<import("../events.js").Listener>>}
      */
     this.listeners_ = {};
 
@@ -64,7 +64,7 @@ class Target extends Disposable {
 
   /**
    * @param {string} type Type.
-   * @param {import("../events.js").ListenerFunction} listener Listener.
+   * @param {import("../events.js").Listener} listener Listener.
    */
   addEventListener(type, listener) {
     if (!type || !listener) {
@@ -85,15 +85,13 @@ class Target extends Disposable {
    * of this type. The event parameter can either be a string or an
    * Object with a `type` property.
    *
-   * @param {{type: string,
-   *     target: (EventTargetLike|undefined),
-   *     propagationStopped: (boolean|undefined)}|
-   *     import("./Event.js").default|string} event Event object.
+   * @param {import("./Event.js").default|string} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
    * @api
    */
   dispatchEvent(event) {
+    /** @type {import("./Event.js").default|Event} */
     const evt = typeof event === 'string' ? new Event(event) : event;
     const type = evt.type;
     if (!evt.target) {
@@ -108,7 +106,12 @@ class Target extends Disposable {
       }
       ++this.dispatching_[type];
       for (let i = 0, ii = listeners.length; i < ii; ++i) {
-        if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
+        if ('handleEvent' in listeners[i]) {
+          propagate = /** @type {import("../events.js").ListenerObject} */ (listeners[i]).handleEvent(evt);
+        } else {
+          propagate = /** @type {import("../events.js").ListenerFunction} */ (listeners[i]).call(this, evt);
+        }
+        if (propagate === false || evt.propagationStopped) {
           propagate = false;
           break;
         }
@@ -138,7 +141,7 @@ class Target extends Disposable {
    * order that they will be called in.
    *
    * @param {string} type Type.
-   * @return {Array<import("../events.js").ListenerFunction>} Listeners.
+   * @return {Array<import("../events.js").Listener>} Listeners.
    */
   getListeners(type) {
     return this.listeners_[type];
@@ -157,7 +160,7 @@ class Target extends Disposable {
 
   /**
    * @param {string} type Type.
-   * @param {import("../events.js").ListenerFunction} listener Listener.
+   * @param {import("../events.js").Listener} listener Listener.
    */
   removeEventListener(type, listener) {
     const listeners = this.listeners_[type];

@@ -476,12 +476,14 @@ export function transform(coordinate, source, destination) {
  * @param {import("./extent.js").Extent} extent The extent to transform.
  * @param {ProjectionLike} source Source projection-like.
  * @param {ProjectionLike} destination Destination projection-like.
+ * @param {number=} opt_stops Number of stops per side used for the transform.
+ * By default only the corners are used.
  * @return {import("./extent.js").Extent} The transformed extent.
  * @api
  */
-export function transformExtent(extent, source, destination) {
+export function transformExtent(extent, source, destination, opt_stops) {
   const transformFunc = getTransform(source, destination);
-  return applyTransform(extent, transformFunc);
+  return applyTransform(extent, transformFunc, undefined, opt_stops);
 }
 
 

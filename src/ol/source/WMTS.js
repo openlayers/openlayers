@@ -4,9 +4,8 @@
 
 import {expandUrl, createFromTileUrlFunctions, nullTileUrlFunction} from '../tileurlfunction.js';
 import {find, findIndex, includes} from '../array.js';
-import {containsExtent} from '../extent.js';
 import {assign} from '../obj.js';
-import {get as getProjection, equivalent, transformExtent} from '../proj.js';
+import {get as getProjection, equivalent} from '../proj.js';
 import TileImage from './TileImage.js';
 import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
@@ -15,7 +14,7 @@ import {appendParams} from '../uri.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -377,22 +376,25 @@ export function optionsFromCapabilities(wmtsCap, config) {
     }
   }
 
-  const wgs84BoundingBox = l['WGS84BoundingBox'];
-  let extent, wrapX;
-  if (wgs84BoundingBox !== undefined) {
-    const wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
-    wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
-        wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
-    extent = transformExtent(
-      wgs84BoundingBox, 'EPSG:4326', projection);
-    const projectionExtent = projection.getExtent();
-    if (projectionExtent) {
-      // If possible, do a sanity check on the extent - it should never be
-      // bigger than the validity extent of the projection of a matrix set.
-      if (!containsExtent(projectionExtent, extent)) {
-        extent = undefined;
-      }
-    }
+  const wrapX = false;
+
+  const matrix0 = matrixSetObj.TileMatrix[0];
+  const resolution = matrix0.ScaleDenominator * 0.00028; // WMTS 1.0.0: standardized rendering pixel size
+  const origin = projection === getProjection('EPSG:4326')
+    ? [matrix0.TopLeftCorner[1], matrix0.TopLeftCorner[0]]
+    : matrix0.TopLeftCorner;
+  const tileSpanX = matrix0.TileWidth * resolution;
+  const tileSpanY = matrix0.TileHeight * resolution;
+
+  const extent = [
+    origin[0],
+    origin[1] - tileSpanY * matrix0.MatrixHeight,
+    origin[0] + tileSpanX * matrix0.MatrixWidth,
+    origin[1]
+  ];
+
+  if (projection.getExtent() === null) {
+    projection.setExtent(extent);
   }
 
   const tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj, extent, matrixLimits);

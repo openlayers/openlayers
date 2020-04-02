@@ -41,29 +41,17 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
  * Using [Browserify](https://github.com/openlayers/ol-browserify)
 
-## IntelliSense support and type checking for VS Code
+## Sponsors
 
-The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `jsconfig.json` config file in the project root:
-```js
-{
-  "compilerOptions": {
-    "checkJs": true,
-    // Point to the JSDoc typed sources when using modules from the ol package
-    "baseUrl": "./",
-    "paths": {
-      "ol": ["node_modules/ol/src"],
-      "ol/*": ["node_modules/ol/src/*"]
-    }
-  },
-  "include": [
-    "**/*.js",
-    "node_modules/ol/**/*.js"
-  ]
-}
-```
-Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
+OpenLayers appreciates contributions of all kinds.  We especially want to thank our fiscal sponsors who contribute to ongoing project maintenance.
 
-Note that the above only works when authoring in plain JavaScript. For similar configurations with a `tsconfig.json` in TypeScript projects, your mileage may vary.
+![Pozi logo](./sponsor-logos/pozi.png)
+
+> Pozi helps connect communities through spatial thinking.
+> We love Openlayers and it forms a core part of our platform.
+> https://pozi.com/ https://app.pozi.com/
+
+See our [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) page if you too are interested in becoming a regular sponsor.
 
 ## Supported Browsers
 

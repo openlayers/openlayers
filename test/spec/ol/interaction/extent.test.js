@@ -2,7 +2,6 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import ExtentInteraction from '../../../../src/ol/interaction/Extent.js';
-import Event from '../../../../src/ol/events/Event.js';
 
 describe('ol.interaction.Extent', function() {
   let map, interaction;
@@ -50,8 +49,9 @@ describe('ol.interaction.Extent', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const pointerEvent = new Event();
+    const pointerEvent = {};
     pointerEvent.type = type;
+    pointerEvent.target = viewport.firstChild;
     pointerEvent.button = button;
     pointerEvent.clientX = position.left + x + width / 2;
     pointerEvent.clientY = position.top - y + height / 2;

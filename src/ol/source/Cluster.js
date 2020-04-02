@@ -29,7 +29,7 @@ import VectorSource from './Vector.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {VectorSource} source Source.
+ * @property {VectorSource} [source] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -39,6 +39,10 @@ import VectorSource from './Vector.js';
  * Layer source to cluster vector data. Works out of the box with point
  * geometries. For other geometry types, or if not all geometries should be
  * considered for clustering, a custom `geometryFunction` can be defined.
+ *
+ * If the instance is disposed without also disposing the underlying
+ * source `setSource(null)` has to be called to remove the listener reference
+ * from the wrapped source.
  * @api
  */
 class Cluster extends VectorSource {
@@ -81,13 +85,17 @@ class Cluster extends VectorSource {
       return geometry;
     };
 
-    /**
-     * @type {VectorSource}
-     * @protected
-     */
-    this.source = options.source;
+    this.boundRefresh_ = this.refresh.bind(this);
 
-    this.source.addEventListener(EventType.CHANGE, this.refresh.bind(this));
+    this.setSource(options.source || null);
+  }
+
+  /**
+   * @override
+   */
+  clear(opt_fast) {
+    this.features.length = 0;
+    super.clear(opt_fast);
   }
 
   /**
@@ -132,7 +140,23 @@ class Cluster extends VectorSource {
   }
 
   /**
-   * handle the source changing
+   * Replace the wrapped source.
+   * @param {VectorSource} source The new source for this instance.
+   * @api
+   */
+  setSource(source) {
+    if (this.source) {
+      this.source.removeEventListener(EventType.CHANGE, this.boundRefresh_);
+    }
+    this.source = source;
+    if (source) {
+      source.addEventListener(EventType.CHANGE, this.boundRefresh_);
+    }
+    this.refresh();
+  }
+
+  /**
+   * Handle the source changing.
    * @override
    */
   refresh() {
@@ -145,10 +169,9 @@ class Cluster extends VectorSource {
    * @protected
    */
   cluster() {
-    if (this.resolution === undefined) {
+    if (this.resolution === undefined || !this.source) {
       return;
     }
-    this.features.length = 0;
     const extent = createEmpty();
     const mapDistance = this.distance * this.resolution;
     const features = this.source.getFeatures();

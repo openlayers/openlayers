@@ -295,6 +295,18 @@ export function equals(extent1, extent2) {
       extent1[1] == extent2[1] && extent1[3] == extent2[3];
 }
 
+/**
+ * Determine if two extents are approximately equivalent.
+ * @param {Extent} extent1 Extent 1.
+ * @param {Extent} extent2 Extent 2.
+ * @param {number} tolerance Tolerance in extent coordinate units.
+ * @return {boolean} The two extents differ by less than the tolerance.
+ */
+export function approximatelyEquals(extent1, extent2, tolerance) {
+  return Math.abs(extent1[0] - extent2[0]) < tolerance && Math.abs(extent1[2] - extent2[2]) < tolerance &&
+  Math.abs(extent1[1] - extent2[1]) < tolerance && Math.abs(extent1[3] - extent2[3]) < tolerance;
+}
+
 
 /**
  * Modify an extent to include another extent.
@@ -778,18 +790,60 @@ export function intersectsSegment(extent, start, end) {
  * @param {import("./proj.js").TransformFunction} transformFn Transform function.
  * Called with `[minX, minY, maxX, maxY]` extent coordinates.
  * @param {Extent=} opt_extent Destination extent.
+ * @param {number=} opt_stops Number of stops per side used for the transform.
+ * By default only the corners are used.
  * @return {Extent} Extent.
  * @api
  */
-export function applyTransform(extent, transformFn, opt_extent) {
-  const coordinates = [
-    extent[0], extent[1],
-    extent[0], extent[3],
-    extent[2], extent[1],
-    extent[2], extent[3]
-  ];
+export function applyTransform(extent, transformFn, opt_extent, opt_stops) {
+  let coordinates = [];
+  if (opt_stops > 1) {
+    const width = extent[2] - extent[0];
+    const height = extent[3] - extent[1];
+    for (let i = 0; i < opt_stops; ++i) {
+      coordinates.push(
+        extent[0] + width * i / opt_stops, extent[1],
+        extent[2], extent[1] + height * i / opt_stops,
+        extent[2] - width * i / opt_stops, extent[3],
+        extent[0], extent[3] - height * i / opt_stops
+      );
+    }
+  } else {
+    coordinates = [
+      extent[0], extent[1],
+      extent[2], extent[1],
+      extent[2], extent[3],
+      extent[0], extent[3]
+    ];
+  }
   transformFn(coordinates, coordinates, 2);
-  const xs = [coordinates[0], coordinates[2], coordinates[4], coordinates[6]];
-  const ys = [coordinates[1], coordinates[3], coordinates[5], coordinates[7]];
+  const xs = [];
+  const ys = [];
+  for (let i = 0, l = coordinates.length; i < l; i += 2) {
+    xs.push(coordinates[i]);
+    ys.push(coordinates[i + 1]);
+  }
   return _boundingExtentXYs(xs, ys, opt_extent);
+}
+
+
+/**
+ * Modifies the provided extent in-place to be within the real world
+ * extent.
+ *
+ * @param {Extent} extent Extent.
+ * @param {import("./proj/Projection.js").default} projection Projection
+ * @return {Extent} The extent within the real world extent.
+ */
+export function wrapX(extent, projection) {
+  const projectionExtent = projection.getExtent();
+  const center = getCenter(extent);
+  if (projection.canWrapX() && (center[0] < projectionExtent[0] || center[0] >= projectionExtent[2])) {
+    const worldWidth = getWidth(projectionExtent);
+    const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
+    const offset = (worldsAway * worldWidth);
+    extent[0] -= offset;
+    extent[2] -= offset;
+  }
+  return extent;
 }

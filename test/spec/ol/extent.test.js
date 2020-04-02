@@ -1,5 +1,6 @@
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import {getTransform} from '../../../src/ol/proj.js';
+import {getTransform, get} from '../../../src/ol/proj.js';
+import {register} from '../../../src/ol/proj/proj4.js';
 
 
 describe('ol.extent', function() {
@@ -783,6 +784,86 @@ describe('ol.extent', function() {
       expect(destinationExtent[3]).to.be(30);
     });
 
+    it('can use the stops option', function() {
+      proj4.defs('EPSG:32632', '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs');
+      register(proj4);
+      const transformFn = getTransform('EPSG:4326', 'EPSG:32632');
+      const sourceExtentN = [6, 0, 12, 84];
+      const destinationExtentN = _ol_extent_.applyTransform(
+        sourceExtentN, transformFn);
+      expect(destinationExtentN).not.to.be(undefined);
+      expect(destinationExtentN).not.to.be(null);
+      expect(destinationExtentN[0]).to.roughlyEqual(166021.44308053964, 1e-8);
+      expect(destinationExtentN[2]).to.roughlyEqual(833978.5569194605, 1e-8);
+      expect(destinationExtentN[1]).to.roughlyEqual(0, 1e-8);
+      expect(destinationExtentN[3]).to.roughlyEqual(9329005.182447437, 1e-8);
+      const sourceExtentNS = [6, -84, 12, 84];
+      const destinationExtentNS = _ol_extent_.applyTransform(
+        sourceExtentNS, transformFn);
+      expect(destinationExtentNS).not.to.be(undefined);
+      expect(destinationExtentNS).not.to.be(null);
+      expect(destinationExtentNS[0]).to.roughlyEqual(465005.34493886377, 1e-8);
+      expect(destinationExtentNS[2]).to.roughlyEqual(534994.6550611362, 1e-8);
+      expect(destinationExtentNS[1]).to.roughlyEqual(-destinationExtentN[3], 1e-8);
+      expect(destinationExtentNS[3]).to.roughlyEqual(destinationExtentN[3], 1e-8);
+      const destinationExtentNS2 = _ol_extent_.applyTransform(
+        sourceExtentNS, transformFn, undefined, 2);
+      expect(destinationExtentNS2).not.to.be(undefined);
+      expect(destinationExtentNS2).not.to.be(null);
+      expect(destinationExtentNS2[0]).to.roughlyEqual(destinationExtentN[0], 1e-8);
+      expect(destinationExtentNS2[2]).to.roughlyEqual(destinationExtentN[2], 1e-8);
+      expect(destinationExtentNS2[1]).to.roughlyEqual(-destinationExtentN[3], 1e-8);
+      expect(destinationExtentNS2[3]).to.roughlyEqual(destinationExtentN[3], 1e-8);
+    });
+
+  });
+
+  describe('wrapX()', function() {
+    const projection = get('EPSG:4326');
+
+    it('leaves real world extent untouched', function() {
+      expect(_ol_extent_.wrapX([16, 48, 18, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves left world extent to real world', function() {
+      expect(_ol_extent_.wrapX([-344, 48, -342, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves right world extent to real world', function() {
+      expect(_ol_extent_.wrapX([376, 48, 378, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves far off left extent to real world', function() {
+      expect(_ol_extent_.wrapX([-1064, 48, -1062, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('moves far off right extent to real world', function() {
+      expect(_ol_extent_.wrapX([1096, 48, 1098, 49], projection)).to.eql([16, 48, 18, 49]);
+    });
+
+    it('leaves -180 crossing extent with real world center untouched', function() {
+      expect(_ol_extent_.wrapX([-184, 48, 16, 49], projection)).to.eql([-184, 48, 16, 49]);
+    });
+
+    it('moves +180 crossing extent with off-world center to the real world', function() {
+      expect(_ol_extent_.wrapX([300, 48, 376, 49], projection)).to.eql([-60, 48, 16, 49]);
+    });
+
+    it('produces the same real world extent for shifted extents with center at +/-180', function() {
+      expect(_ol_extent_.wrapX([360, -90, 720, 90], projection)).to.eql([-360, -90, 0, 90]);
+      expect(_ol_extent_.wrapX([0, -90, 360, 90], projection)).to.eql([-360, -90, 0, 90]);
+      expect(_ol_extent_.wrapX([-360, -90, 0, 90], projection)).to.eql([-360, -90, 0, 90]);
+    });
+
+  });
+
+  describe('approximatelyEquals', function() {
+    it('returns true when within tolerance', function() {
+      expect(_ol_extent_.approximatelyEquals([16, 48, 17, 49], [16.09, 48, 17, 49], 0.1)).to.be(true);
+    });
+    it('returns false when not within tolerance', function() {
+      expect(_ol_extent_.approximatelyEquals([16, 48, 17, 49], [16.11, 48, 17, 49], 0.1)).to.be(false);
+    });
   });
 
 });

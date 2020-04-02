@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj/Triangulation
  */
-import {boundingExtent, createEmpty, extendCoordinate, getBottomLeft, getBottomRight,
+import {boundingExtent, createEmpty, extendCoordinate, getArea, getBottomLeft, getBottomRight,
   getTopLeft, getTopRight, getWidth, intersects} from '../extent.js';
 import {modulo} from '../math.js';
 import {getTransform} from '../proj.js';
@@ -49,8 +49,9 @@ class Triangulation {
    * @param {import("../extent.js").Extent} targetExtent Target extent to triangulate.
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
+   * @param {?number} opt_destinationResolution The (optional) resolution of the destination.
    */
-  constructor(sourceProj, targetProj, targetExtent, maxSourceExtent, errorThreshold) {
+  constructor(sourceProj, targetProj, targetExtent, maxSourceExtent, errorThreshold, opt_destinationResolution) {
 
     /**
      * @type {import("../proj/Projection.js").default}
@@ -138,11 +139,26 @@ class Triangulation {
     const sourceBottomRight = this.transformInv_(destinationBottomRight);
     const sourceBottomLeft = this.transformInv_(destinationBottomLeft);
 
+    /*
+     * The maxSubdivision controls how many splittings of the target area can
+     * be done. The idea here is to do a linear mapping of the target areas
+     * but the actual overal reprojection (can be) extremely non-linear. The
+     * default value of MAX_SUBDIVISION was chosen based on mapping a 256x256
+     * tile size. However this function is also called to remap canvas rendered
+     * layers which can be much larger. This calculation increases the maxSubdivision
+     * value by the right factor so that each 256x256 pixel area has
+     * MAX_SUBDIVISION divisions.
+     */
+    const maxSubdivision = MAX_SUBDIVISION + (opt_destinationResolution ?
+      Math.max(0, Math.ceil(Math.log2(getArea(targetExtent) /
+        (opt_destinationResolution * opt_destinationResolution * 256 * 256))))
+      : 0);
+
     this.addQuad_(
       destinationTopLeft, destinationTopRight,
       destinationBottomRight, destinationBottomLeft,
       sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
-      MAX_SUBDIVISION);
+      maxSubdivision);
 
     if (this.wrapsXInSource_) {
       let leftBound = Infinity;

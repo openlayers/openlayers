@@ -121,7 +121,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         const event = new MapBrowserEvent('wheel', map, {
           type: 'wheel',
           deltaMode: WheelEvent.DOM_DELTA_LINE,
-          deltaY: 3.714599609375,
+          deltaY: 20,
           target: map.getViewport(),
           preventDefault: Event.prototype.preventDefault
         });
@@ -140,7 +140,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
         const event = new MapBrowserEvent('wheel', map, {
           type: 'wheel',
-          deltaY: 120,
+          deltaY: 300,
           target: map.getViewport(),
           preventDefault: Event.prototype.preventDefault
         });

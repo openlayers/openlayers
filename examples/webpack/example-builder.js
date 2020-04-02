@@ -208,6 +208,10 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
       jsSource = jsSource.replace(new RegExp(entry.key, 'g'), entry.value);
     }
   }
+  // Remove worker loader import and modify `new Worker()` to add source
+  jsSource = jsSource.replace(/import Worker from 'worker-loader![^\n]*\n/g, '');
+  jsSource = jsSource.replace('new Worker()', 'new Worker(\'./worker.js\')');
+
   data.js = {
     tag: `<script src="${this.common}.js"></script><script src="${jsName}"></script>`,
     source: jsSource
@@ -218,9 +222,33 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
     data.js.tag = prelude + data.js.tag;
   }
 
+  // check for worker js
+  const workerName = `${name}.worker.js`;
+  const workerPath = path.join(dir, workerName);
+  let workerSource;
+  try {
+    workerSource = await readFile(workerPath, readOptions);
+  } catch (err) {
+    // pass
+  }
+  if (workerSource) {
+    // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
+    workerSource = workerSource.replace(/'\.\.\/src\//g, '\'');
+    workerSource = workerSource.replace(/\.js';/g, '\';');
+    if (data.cloak) {
+      for (const entry of data.cloak) {
+        workerSource = workerSource.replace(new RegExp(entry.key, 'g'), entry.value);
+      }
+    }
+    data.worker = {
+      source: workerSource
+    };
+    assets[workerName] = workerSource;
+  }
+
   data.pkgJson = JSON.stringify({
     name: name,
-    dependencies: getDependencies(jsSource),
+    dependencies: getDependencies(jsSource + workerSource ? `\n${workerSource}` : ''),
     devDependencies: {
       parcel: '1.11.0'
     },

@@ -33,7 +33,7 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
   const renderer = new CanvasImmediateRenderer(context, 0.5, extent, null, rotation);
   const featureCount = features.length;
   // Stretch hit detection index to use the whole available color range
-  const indexFactor = Math.ceil((256 * 256 * 256 - 1) / featureCount);
+  const indexFactor = Math.floor((256 * 256 * 256 - 1) / featureCount);
   const featuresByZIndex = {};
   for (let i = 1; i <= featureCount; ++i) {
     const feature = features[i - 1];
@@ -65,6 +65,10 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       const image = originalStyle.getImage();
       if (image) {
         const imgSize = image.getImageSize();
+        if (!imgSize) {
+          continue;
+        }
+
         const canvas = document.createElement('canvas');
         canvas.width = imgSize[0];
         canvas.height = imgSize[1];
@@ -121,6 +125,7 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       }
     }
   }
+  document.body.appendChild(context.canvas);
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
@@ -141,7 +146,7 @@ export function hitDetect(pixel, features, imageData) {
     const g = imageData.data[index + 1];
     const b = imageData.data[index + 2];
     const i = b + (256 * (g + (256 * r)));
-    const indexFactor = Math.ceil((256 * 256 * 256 - 1) / features.length);
+    const indexFactor = Math.floor((256 * 256 * 256 - 1) / features.length);
     if (i && i % indexFactor === 0) {
       resultFeatures.push(features[i / indexFactor - 1]);
     }

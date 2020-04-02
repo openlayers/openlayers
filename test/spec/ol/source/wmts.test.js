@@ -1,4 +1,5 @@
 import WMTSCapabilities from '../../../../src/ol/format/WMTSCapabilities.js';
+import {getBottomLeft, getTopRight} from '../../../../src/ol/extent.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
@@ -147,6 +148,32 @@ describe('ol.source.WMTS', function() {
 
       expect(options.matrixSet).to.be.eql('BigWorldPixel');
       expect(options.projection.getCode()).to.be.eql('urn:ogc:def:crs:OGC:1.3:CRS84');
+    });
+
+    it('uses extent of tile matrix instead of projection extent', function() {
+      const options = optionsFromCapabilities(capabilities,
+        {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857subset'});
+
+      // Since google3857subset defines subset of space defined by the google3857 matrix set:
+      // - top left corner: -10000000, 10000000
+      // - calculated grid extent: [-10000000, 9999694.25188686, -9999694.25188686, 10000000]
+      // then the tile grid extent is only a part of the full projection extent.
+
+      const gridExtent = options.tileGrid.getExtent();
+      const gridBottomLeft = getBottomLeft(gridExtent);
+      const gridTopRight = getTopRight(gridExtent);
+      expect(Math.round(gridBottomLeft[0])).to.be.eql(-10000000);
+      expect(Math.round(gridBottomLeft[1])).to.be.eql(9999847);
+      expect(Math.round(gridTopRight[0])).to.be.eql(-9999847);
+      expect(Math.round(gridTopRight[1])).to.be.eql(10000000);
+
+      const projExtent = options.projection.getExtent();
+      const projBottomLeft = getBottomLeft(projExtent);
+      const projTopRight = getTopRight(projExtent);
+      expect(Math.round(projBottomLeft[0])).to.be.eql(-20037508);
+      expect(Math.round(projBottomLeft[1])).to.be.eql(-20037508);
+      expect(Math.round(projTopRight[0])).to.be.eql(20037508);
+      expect(Math.round(projTopRight[1])).to.be.eql(20037508);
     });
 
     it('doesn\'t fail if the GetCap doesn\'t contains Constraint tags', function() {

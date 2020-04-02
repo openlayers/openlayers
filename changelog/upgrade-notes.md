@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### v6.3.0
+
+#### Vector source loading when extent crosses +/-180
+
+Previously, when an extent crossed the date line, vector source loaders were called with an extent with 540 degrees of longitude. Now, two loader calls with the visible extent on both sides of the projection extent are issued. This should not require any application code changes, but may affect custom loaders.
+
 ### v6.0.0
 
 #### Backwards incompatible changes
@@ -77,7 +83,7 @@ Generally, the responsibility of applying center/rotation/resolutions constraint
 
 ##### The view `extent` option now applies to the whole viewport
 
-Previously, this options only constrained the view *center*. This behaviour can still be obtained by specifying `constrainCenterOnly` in the view options.
+Previously, this options only constrained the view *center*. This behaviour can still be obtained by specifying `constrainOnlyCenter` in the view options.
 
 As a side effect, the view `rotate` method is gone and has been replaced with `adjustRotation` which takes a delta as input.
 

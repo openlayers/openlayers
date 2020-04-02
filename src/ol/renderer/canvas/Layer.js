@@ -7,7 +7,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform, toString} from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @abstract
@@ -68,12 +68,6 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {boolean}
      */
     this.containerReused = false;
-
-    /**
-     * @type {HTMLCanvasElement}
-     * @private
-     */
-    this.createTransformStringCanvas_ = createCanvasContext2D(1, 1).canvas;
 
   }
 
@@ -269,15 +263,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     return data;
   }
 
-  /**
-   * @param {import("../../transform.js").Transform} transform Transform.
-   * @return {string} CSS transform.
-   */
-  createTransformString(transform) {
-    this.createTransformStringCanvas_.style.transform = toString(transform);
-    return this.createTransformStringCanvas_.style.transform;
-  }
-
 }
 
 export default CanvasLayerRenderer;
+

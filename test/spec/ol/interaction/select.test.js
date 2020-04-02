@@ -9,6 +9,7 @@ import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import Select from '../../../../src/ol/interaction/Select.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 
 describe('ol.interaction.Select', function() {
@@ -91,11 +92,13 @@ describe('ol.interaction.Select', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new PointerEvent(type, {
+    const event = {
+      type: type,
+      target: viewport.firstChild,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
-    });
+    };
     map.handleMapBrowserEvent(new MapBrowserPointerEvent(type, map, event));
   }
 
@@ -403,5 +406,54 @@ describe('ol.interaction.Select', function() {
       });
     });
 
+  });
+
+  describe('clear event listeners on interaction removal', function() {
+    let firstInteraction, secondInteraction, feature;
+
+    beforeEach(function() {
+      feature = source.getFeatures()[3]; // top feature is selected
+
+      const style = new Style({});
+      const features = new Collection();
+
+      firstInteraction = new Select({style, features});
+      secondInteraction = new Select({style, features});
+    });
+
+    afterEach(function() {
+      map.removeInteraction(secondInteraction);
+      map.removeInteraction(firstInteraction);
+    });
+
+    // The base case
+    describe('with a single interaction added', function() {
+      it('changes the selected feature once', function() {
+        map.addInteraction(firstInteraction);
+
+        const listenerSpy = sinon.spy();
+        feature.on('change', listenerSpy);
+
+        simulateEvent('singleclick', 10, -20, false);
+
+        expect(listenerSpy.callCount).to.be(1);
+      });
+    });
+
+    // The "difficult" case. To prevent regression
+    describe('with a replaced interaction', function() {
+      it('changes the selected feature once', function() {
+        map.addInteraction(firstInteraction);
+        map.removeInteraction(firstInteraction);
+        map.addInteraction(secondInteraction);
+
+        const listenerSpy = sinon.spy();
+        feature.on('change', listenerSpy);
+
+        simulateEvent('singleclick', 10, -20, false);
+
+        expect(listenerSpy.callCount).to.be(1);
+      });
+    });
   });
 });

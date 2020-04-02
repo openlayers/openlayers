@@ -4,9 +4,13 @@
 
 /**
  * @typedef {Object} FontParameters
- * @property {Array<string>} families
  * @property {string} style
+ * @property {string} variant
  * @property {string} weight
+ * @property {string} size
+ * @property {string} lineHeight
+ * @property {string} family
+ * @property {Array<string>} families
  */
 
 
@@ -64,42 +68,52 @@ export const CLASS_CONTROL = 'ol-control';
  */
 export const CLASS_COLLAPSED = 'ol-collapsed';
 
+/**
+ * From http://stackoverflow.com/questions/10135697/regex-to-parse-any-css-font
+ * @type {RegExp}
+ */
+const fontRegEx = new RegExp([
+  '^\\s*(?=(?:(?:[-a-z]+\\s*){0,2}(italic|oblique))?)',
+  '(?=(?:(?:[-a-z]+\\s*){0,2}(small-caps))?)',
+  '(?=(?:(?:[-a-z]+\\s*){0,2}(bold(?:er)?|lighter|[1-9]00 ))?)',
+  '(?:(?:normal|\\1|\\2|\\3)\\s*){0,3}((?:xx?-)?',
+  '(?:small|large)|medium|smaller|larger|[\\.\\d]+(?:\\%|in|[cem]m|ex|p[ctx]))',
+  '(?:\\s*\\/\\s*(normal|[\\.\\d]+(?:\\%|in|[cem]m|ex|p[ctx])?))',
+  '?\\s*([-,\\"\\\'\\sa-z]+?)\\s*$'
+].join(''), 'i');
+const fontRegExMatchIndex = [
+  'style',
+  'variant',
+  'weight',
+  'size',
+  'lineHeight',
+  'family'
+];
 
 /**
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
- * @param {string} The CSS font property.
- * @return {FontParameters} The font families (or null if the input spec is invalid).
+ * @param {string} fontSpec The CSS font property.
+ * @return {FontParameters} The font parameters (or null if the input spec is invalid).
  */
-export const getFontParameters = (function() {
-  /**
-   * @type {CSSStyleDeclaration}
-   */
-  let style;
-  /**
-   * @type {Object<string, FontParameters>}
-   */
-  const cache = {};
-  return function(font) {
-    if (!style) {
-      style = document.createElement('div').style;
+export const getFontParameters = function(fontSpec) {
+  const match = fontSpec.match(fontRegEx);
+  if (!match) {
+    return null;
+  }
+  const style = /** @type {FontParameters} */ ({
+    lineHeight: 'normal',
+    size: '1.2em',
+    style: 'normal',
+    weight: 'normal',
+    variant: 'normal'
+  });
+  for (let i = 0, ii = fontRegExMatchIndex.length; i < ii; ++i) {
+    const value = match[i + 1];
+    if (value !== undefined) {
+      style[fontRegExMatchIndex[i]] = value;
     }
-    if (!(font in cache)) {
-      style.font = font;
-      const family = style.fontFamily;
-      const fontWeight = style.fontWeight;
-      const fontStyle = style.fontStyle;
-      style.font = '';
-      if (!family) {
-        return null;
-      }
-      const families = family.split(/,\s?/);
-      cache[font] = {
-        families: families,
-        weight: fontWeight,
-        style: fontStyle
-      };
-    }
-    return cache[font];
-  };
-})();
+  }
+  style.families = style.family.split(/,\s?/);
+  return style;
+};

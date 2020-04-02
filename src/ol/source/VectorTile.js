@@ -30,9 +30,10 @@ import TileCache from '../TileCache.js';
  * @property {import("./State.js").default} [state] Source state.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile}.
- * @property {number} [maxZoom=22] Optional max zoom level.
- * @property {number} [minZoom] Optional min zoom level.
- * @property {number|import("../size.js").Size} [tileSize=512] Optional tile size.
+ * @property {number} [maxZoom=22] Optional max zoom level. Not used if `tileGrid` is provided.
+ * @property {number} [minZoom] Optional min zoom level. Not used if `tileGrid` is provided.
+ * @property {number|import("../size.js").Size} [tileSize=512] Optional tile size. Not used if `tileGrid` is provided.
+ * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. Could look like this for pbf tiles:
@@ -105,6 +106,7 @@ class VectorTile extends UrlTile {
 
     const tileGrid = options.tileGrid || createXYZ({
       extent: extent,
+      maxResolution: options.maxResolution,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 22,
       minZoom: options.minZoom,
       tileSize: options.tileSize || 512
@@ -226,6 +228,15 @@ class VectorTile extends UrlTile {
   }
 
   /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {!Object<string, boolean>} usedTiles Used tiles.
+   */
+  expireCache(projection, usedTiles) {
+    super.expireCache(projection, usedTiles);
+    this.sourceTileCache.expireCache({});
+  }
+
+  /**
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @param {VectorRenderTile} tile Vector image tile.
@@ -326,7 +337,6 @@ class VectorTile extends UrlTile {
         tile.sourceTiles = sourceTiles;
       }
     }
-    this.sourceTileCache.expireCache({});
     return sourceTiles;
   }
 

@@ -6,6 +6,7 @@ import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
+import ImageStyle from '../../../../src/ol/style/Image.js';
 
 
 describe('ol.layer.Vector', function() {
@@ -132,19 +133,41 @@ describe('ol.layer.Vector', function() {
     let map, layer;
 
     beforeEach(function() {
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: new Point([-1000000, 0]),
+            name: 'feature1'
+          }),
+          new Feature({
+            geometry: new Point([1000000, 0]),
+            name: 'feature2'
+          })
+        ]
+      });
+
+      const feature = new Feature({
+        geometry: new Point([-1000000, 0]),
+        name: 'feature with no size'
+      });
+
+      const testImage = new ImageStyle({
+        opacity: 1,
+        displacement: []
+      });
+
+      testImage.getImageState = () => {};
+      testImage.listenImageChange = () => {};
+      testImage.getImageSize = () => {};
+
+      feature.setStyle([new Style({
+        image: testImage
+      })]);
+
+      source.addFeature(feature);
+
       layer = new VectorLayer({
-        source: new VectorSource({
-          features: [
-            new Feature({
-              geometry: new Point([-1000000, 0]),
-              name: 'feature1'
-            }),
-            new Feature({
-              geometry: new Point([1000000, 0]),
-              name: 'feture2'
-            })
-          ]
-        })
+        source
       });
       const container = document.createElement('div');
       container.style.width = '256px';
@@ -171,6 +194,7 @@ describe('ol.layer.Vector', function() {
       map.renderSync();
       const pixel = map.getPixelFromCoordinate([-1000000, 0]);
       layer.getFeatures(pixel).then(function(features) {
+        expect(features.length).to.equal(1);
         expect(features[0].get('name')).to.be('feature1');
         done();
       });
