@@ -24,6 +24,7 @@
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
     "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build/ol/src && node tasks/serialize-workers && npx --package typescript@3.8.1-rc tsc --project config/tsconfig-build.json",
     "typecheck": "tsc --pretty",
+    "apidoc-debug": "shx rm -rf build/apidoc && node --inspect-brk=9229 ./node_modules/jsdoc/jsdoc.js -R config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc",
     "apidoc": "shx rm -rf build/apidoc && jsdoc -R config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
   },
   "main": "index.js",
