@@ -178,6 +178,13 @@ class TileImage extends UrlTile {
   /**
    * @inheritDoc
    */
+  getContextOptions() {
+    return this.contextOptions_;
+  }
+
+  /**
+   * @inheritDoc
+   */
   getGutterForProjection(projection) {
     if (ENABLE_RASTER_REPROJECTION &&
         this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
