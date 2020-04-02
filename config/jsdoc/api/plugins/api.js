@@ -73,9 +73,6 @@ function includeAugments(doclet) {
           });
         }
         cls._hideConstructor = true;
-        if (!cls.undocumented) {
-          cls._documented = true;
-        }
       }
     }
   }
@@ -113,9 +110,10 @@ const moduleRoot = path.join(process.cwd(), 'src');
 // Tag default exported Identifiers because their name should be the same as the module name.
 exports.astNodeVisitor = {
   visitNode: function(node, e, parser, currentSourceName) {
-    if (node.type === 'Identifier' && node.parent.type === 'ExportDefaultDeclaration') {
+    if (node.parent && node.parent.type === 'ExportDefaultDeclaration') {
       const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
-      defaultExports['module:' + modulePath.replace(/\\/g, '/') + '~' + node.name] = true;
+      const exportName = 'module:' + modulePath.replace(/\\/g, '/') + (node.name ? '~' + node.name : '');
+      defaultExports[exportName] = true;
     }
   }
 };
@@ -156,6 +154,7 @@ exports.handlers = {
 
   parseComplete: function(e) {
     const doclets = e.doclets;
+    const byLongname = doclets.index.longname;
     for (let i = doclets.length - 1; i >= 0; --i) {
       const doclet = doclets[i];
       if (doclet.stability) {
@@ -180,12 +179,14 @@ exports.handlers = {
         doclet._hideConstructor = true;
         includeAugments(doclet);
         sortOtherMembers(doclet);
-      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
+      } else if (!doclet._hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
-      if (doclet._documented) {
-        delete doclet.undocumented;
+      if (doclet.memberof && byLongname[doclet.memberof] &&
+          byLongname[doclet.memberof][0].isEnum &&
+          !byLongname[doclet.memberof][0].properties.some(p => p.stability)) {
+        byLongname[doclet.memberof][0].undocumented = true;
       }
     }
   },

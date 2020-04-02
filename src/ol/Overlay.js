@@ -37,15 +37,21 @@ import {containsExtent} from './extent.js';
  * container as that of the controls (see the `stopEvent` option) you will
  * probably set `insertFirst` to `true` so the overlay is displayed below the
  * controls.
- * @property {boolean} [autoPan=false] If set to `true` the map is panned when
- * calling `setPosition`, so that the overlay is entirely visible in the current
- * viewport.
- * @property {PanOptions} [autoPanAnimation] The
- * animation options used to pan the overlay into view. This animation is only
- * used when `autoPan` is enabled. A `duration` and `easing` may be provided to
- * customize the animation.
+ * @property {PanIntoViewOptions|boolean} [autoPan=false] Pan the map when calling
+ * `setPosition`, so that the overlay is entirely visible in the current viewport?
+ * If `true` (deprecated), then `autoPanAnimation` and `autoPanMargin` will be
+ * used to determine the panning parameters; if an object is supplied then other
+ * parameters are ignored.
+ * @property {PanOptions} [autoPanAnimation] The animation options used to pan
+ * the overlay into view. This animation is only used when `autoPan` is enabled.
+ * A `duration` and `easing` may be provided to customize the animation.
+ * Deprecated and ignored if `autoPan` is supplied as an object.
  * @property {number} [autoPanMargin=20] The margin (in pixels) between the
- * overlay and the borders of the map when autopanning.
+ * overlay and the borders of the map when autopanning. Deprecated and ignored
+ * if `autoPan` is supplied as an object.
+ * @property {PanIntoViewOptions} [autoPanOptions] The options to use for the
+ * autoPan. This is only used when `autoPan` is enabled and has preference over
+ * the individual `autoPanMargin` and `autoPanOptions`.
  * @property {string} [className='ol-overlay-container ol-selectable'] CSS class
  * name.
  */
@@ -60,6 +66,12 @@ import {containsExtent} from './extent.js';
  * Default is {@link module:ol/easing~inAndOut}.
  */
 
+/**
+ * @typedef {Object} PanIntoViewOptions
+ * @property {PanOptions} [animation={}] The animation parameters for the pan
+ * @property {number} [margin=20] The margin (in pixels) between the
+ * overlay and the borders of the map when panning into view.
+ */
 
 /**
  * @enum {string}
@@ -137,38 +149,26 @@ class Overlay extends BaseObject {
       options.className : 'ol-overlay-container ' + CLASS_SELECTABLE;
     this.element.style.position = 'absolute';
 
+    let autoPan = options.autoPan;
+    if (autoPan && ('object' !== typeof autoPan)) {
+      autoPan = {
+        animation: options.autoPanAnimation,
+        margin: options.autoPanMargin
+      };
+    }
     /**
      * @protected
-     * @type {boolean}
+     * @type {PanIntoViewOptions|false}
      */
-    this.autoPan = options.autoPan !== undefined ? options.autoPan : false;
+    this.autoPan = /** @type {PanIntoViewOptions} */(autoPan) || false;
 
     /**
      * @protected
-     * @type {PanOptions}
-     */
-    this.autoPanAnimation = options.autoPanAnimation || /** @type {PanOptions} */ ({});
-
-    /**
-     * @protected
-     * @type {number}
-     */
-    this.autoPanMargin = options.autoPanMargin !== undefined ?
-      options.autoPanMargin : 20;
-
-    /**
-     * @protected
-     * @type {{bottom_: string,
-     *         left_: string,
-     *         right_: string,
-     *         top_: string,
+     * @type {{transform_: string,
      *         visible: boolean}}
      */
     this.rendered = {
-      bottom_: '',
-      left_: '',
-      right_: '',
-      top_: '',
+      transform_: '',
       visible: true
     };
 
@@ -300,6 +300,7 @@ class Overlay extends BaseObject {
       } else {
         container.appendChild(this.element);
       }
+      this.performAutoPan();
     }
   }
 
@@ -322,9 +323,7 @@ class Overlay extends BaseObject {
    */
   handlePositionChanged() {
     this.updatePixelPosition();
-    if (this.get(Property.POSITION) && this.autoPan) {
-      this.panIntoView();
-    }
+    this.performAutoPan();
   }
 
   /**
@@ -378,14 +377,26 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * Pan the map so that the overlay is entirely visible in the current viewport
-   * (if necessary).
+   * Pan the map so that the overlay is entirely visisble in the current viewport
+   * (if necessary) using the configured autoPan parameters
    * @protected
    */
-  panIntoView() {
+  performAutoPan() {
+    if (this.autoPan) {
+      this.panIntoView(this.autoPan);
+    }
+  }
+
+  /**
+   * Pan the map so that the overlay is entirely visible in the current viewport
+   * (if necessary).
+   * @param {PanIntoViewOptions|undefined} panIntoViewOptions Options for the pan action
+   * @api
+   */
+  panIntoView(panIntoViewOptions) {
     const map = this.getMap();
 
-    if (!map || !map.getTargetElement()) {
+    if (!map || !map.getTargetElement() || !this.get(Property.POSITION)) {
       return;
     }
 
@@ -393,7 +404,7 @@ class Overlay extends BaseObject {
     const element = this.getElement();
     const overlayRect = this.getRect(element, [outerWidth(element), outerHeight(element)]);
 
-    const margin = this.autoPanMargin;
+    const myMargin = (panIntoViewOptions.margin === undefined) ? 20 : panIntoViewOptions.margin;
     if (!containsExtent(mapRect, overlayRect)) {
       // the overlay is not completely inside the viewport, so pan the map
       const offsetLeft = overlayRect[0] - mapRect[0];
@@ -404,17 +415,17 @@ class Overlay extends BaseObject {
       const delta = [0, 0];
       if (offsetLeft < 0) {
         // move map to the left
-        delta[0] = offsetLeft - margin;
+        delta[0] = offsetLeft - myMargin;
       } else if (offsetRight < 0) {
         // move map to the right
-        delta[0] = Math.abs(offsetRight) + margin;
+        delta[0] = Math.abs(offsetRight) + myMargin;
       }
       if (offsetTop < 0) {
         // move map up
-        delta[1] = offsetTop - margin;
+        delta[1] = offsetTop - myMargin;
       } else if (offsetBottom < 0) {
         // move map down
-        delta[1] = Math.abs(offsetBottom) + margin;
+        delta[1] = Math.abs(offsetBottom) + myMargin;
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
@@ -425,10 +436,11 @@ class Overlay extends BaseObject {
           centerPx[1] + delta[1]
         ];
 
+        const panOptions = panIntoViewOptions.animation || {};
         map.getView().animateInternal({
           center: map.getCoordinateFromPixelInternal(newCenterPx),
-          duration: this.autoPanAnimation.duration,
-          easing: this.autoPanAnimation.easing
+          duration: panOptions.duration,
+          easing: panOptions.easing
         });
       }
     }
@@ -506,63 +518,34 @@ class Overlay extends BaseObject {
 
     this.setVisible(true);
 
-    let offsetX = offset[0];
-    let offsetY = offset[1];
+    const x = Math.round(pixel[0] + offset[0]) + 'px';
+    const y = Math.round(pixel[1] + offset[1]) + 'px';
+    let posX = '0%';
+    let posY = '0%';
     if (positioning == OverlayPositioning.BOTTOM_RIGHT ||
         positioning == OverlayPositioning.CENTER_RIGHT ||
         positioning == OverlayPositioning.TOP_RIGHT) {
-      if (this.rendered.left_ !== '') {
-        this.rendered.left_ = '';
-        style.left = '';
-      }
-      const right = Math.round(mapSize[0] - pixel[0] - offsetX) + 'px';
-      if (this.rendered.right_ != right) {
-        this.rendered.right_ = right;
-        style.right = right;
-      }
-    } else {
-      if (this.rendered.right_ !== '') {
-        this.rendered.right_ = '';
-        style.right = '';
-      }
-      if (positioning == OverlayPositioning.BOTTOM_CENTER ||
-          positioning == OverlayPositioning.CENTER_CENTER ||
-          positioning == OverlayPositioning.TOP_CENTER) {
-        offsetX -= this.element.offsetWidth / 2;
-      }
-      const left = Math.round(pixel[0] + offsetX) + 'px';
-      if (this.rendered.left_ != left) {
-        this.rendered.left_ = left;
-        style.left = left;
-      }
+      posX = '-100%';
+    } else if (positioning == OverlayPositioning.BOTTOM_CENTER ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.TOP_CENTER) {
+      posX = '-50%';
     }
     if (positioning == OverlayPositioning.BOTTOM_LEFT ||
         positioning == OverlayPositioning.BOTTOM_CENTER ||
         positioning == OverlayPositioning.BOTTOM_RIGHT) {
-      if (this.rendered.top_ !== '') {
-        this.rendered.top_ = '';
-        style.top = '';
-      }
-      const bottom = Math.round(mapSize[1] - pixel[1] - offsetY) + 'px';
-      if (this.rendered.bottom_ != bottom) {
-        this.rendered.bottom_ = bottom;
-        style.bottom = bottom;
-      }
-    } else {
-      if (this.rendered.bottom_ !== '') {
-        this.rendered.bottom_ = '';
-        style.bottom = '';
-      }
-      if (positioning == OverlayPositioning.CENTER_LEFT ||
-          positioning == OverlayPositioning.CENTER_CENTER ||
-          positioning == OverlayPositioning.CENTER_RIGHT) {
-        offsetY -= this.element.offsetHeight / 2;
-      }
-      const top = Math.round(pixel[1] + offsetY) + 'px';
-      if (this.rendered.top_ != top) {
-        this.rendered.top_ = 'top';
-        style.top = top;
-      }
+      posY = '-100%';
+    } else if (positioning == OverlayPositioning.CENTER_LEFT ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.CENTER_RIGHT) {
+      posY = '-50%';
+    }
+    const transform = `translate(${posX}, ${posY}) translate(${x}, ${y})`;
+    if (this.rendered.transform_ != transform) {
+      this.rendered.transform_ = transform;
+      style.transform = transform;
+      // @ts-ignore IE9
+      style.msTransform = transform;
     }
   }
 

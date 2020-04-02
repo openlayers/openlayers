@@ -6,7 +6,7 @@ import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {listen, unlistenByKey} from '../../events.js';
 import EventType from '../../events/EventType.js';
-import {buffer, containsCoordinate, equals, getIntersection, intersects, containsExtent, getWidth, getTopLeft} from '../../extent.js';
+import {buffer, containsCoordinate, equals, getIntersection, intersects, containsExtent, getTopLeft} from '../../extent.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ReplayType from '../../render/canvas/BuilderType.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
@@ -25,6 +25,7 @@ import {
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import {clear} from '../../obj.js';
 import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
+import {wrapX} from '../../coordinate.js';
 
 
 /**
@@ -353,9 +354,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           if (tile.getState() === TileState.LOADED && tile.hifi) {
             const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
             if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
-              const worldWidth = getWidth(projectionExtent);
-              const worldsAway = Math.floor((coordinate[0] - projectionExtent[0]) / worldWidth);
-              coordinate[0] -= (worldsAway * worldWidth);
+              wrapX(coordinate, projection);
             }
             break;
           }

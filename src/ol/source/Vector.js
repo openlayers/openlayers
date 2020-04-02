@@ -190,7 +190,7 @@ class VectorSource extends Source {
      * @private
      * @type {boolean}
      */
-    this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
+    this.overlaps_ = options.overlaps === undefined ? true : options.overlaps;
 
     /**
      * @private

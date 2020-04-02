@@ -92,6 +92,9 @@ access interface to some TileMatrixSets</ows:Abstract>
 			<TileMatrixSetLink>
 				<TileMatrixSet>google3857</TileMatrixSet>
 			</TileMatrixSetLink>
+      <TileMatrixSetLink>
+				<TileMatrixSet>google3857subset</TileMatrixSet>
+			</TileMatrixSetLink>
 			<ResourceURL format="image/png" resourceType="tile" template="http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png"/>
 			<ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo" template="http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
                         <Dimension>
@@ -372,6 +375,29 @@ access interface to some TileMatrixSets</ows:Abstract>
 				<MatrixHeight>7000</MatrixHeight>
 			</TileMatrix>
 		</TileMatrixSet>
-	</Contents>
+			<TileMatrixSet>
+			<!-- A custom tile matrix set based on google3857 with tiles at each level covering only part of projection space (extent) -->
+			<ows:Identifier>google3857subset</ows:Identifier>
+			<ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18:3:3857</ows:SupportedCRS>
+			<TileMatrix>
+				<ows:Identifier>18</ows:Identifier>
+				<ScaleDenominator>2132.72958385</ScaleDenominator>
+				<TopLeftCorner>-10000000 10000000</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>1</MatrixWidth>
+				<MatrixHeight>1</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>18</ows:Identifier>
+				<ScaleDenominator>1066.36479193</ScaleDenominator>
+				<TopLeftCorner>-10000000 10000000</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>2</MatrixWidth>
+				<MatrixHeight>2</MatrixHeight>
+			</TileMatrix>
+		</TileMatrixSet>
+  </Contents>
 	<ServiceMetadataURL xlink:href="http://www.maps.bob/wmts/1.0.0/WMTSCapabilities.xml"/>
 </Capabilities>

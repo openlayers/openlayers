@@ -1,5 +1,6 @@
-import {add as addCoordinate, scale as scaleCoordinate, rotate as rotateCoordinate, equals as coordinatesEqual, format as formatCoordinate, closestOnCircle, closestOnSegment, createStringXY, squaredDistanceToSegment, toStringXY, toStringHDMS} from '../../../src/ol/coordinate.js';
+import {add as addCoordinate, scale as scaleCoordinate, rotate as rotateCoordinate, equals as coordinatesEqual, format as formatCoordinate, closestOnCircle, closestOnSegment, createStringXY, squaredDistanceToSegment, toStringXY, toStringHDMS, wrapX} from '../../../src/ol/coordinate.js';
 import Circle from '../../../src/ol/geom/Circle.js';
+import {get} from '../../../src/ol/proj.js';
 
 
 describe('ol.coordinate', function() {
@@ -233,6 +234,31 @@ describe('ol.coordinate', function() {
       const expected = '7.85, 47.98';
       expect(got).to.be(expected);
     });
+  });
+
+  describe('wrapX()', function() {
+    const projection = get('EPSG:4326');
+
+    it('leaves real world coordinate untouched', function() {
+      expect(wrapX([16, 48], projection)).to.eql([16, 48]);
+    });
+
+    it('moves left world coordinate to real world', function() {
+      expect(wrapX([-344, 48], projection)).to.eql([16, 48]);
+    });
+
+    it('moves right world coordinate to real world', function() {
+      expect(wrapX([376, 48], projection)).to.eql([16, 48]);
+    });
+
+    it('moves far off left coordinate to real world', function() {
+      expect(wrapX([-1064, 48], projection)).to.eql([16, 48]);
+    });
+
+    it('moves far off right coordinate to real world', function() {
+      expect(wrapX([1096, 48], projection)).to.eql([16, 48]);
+    });
+
   });
 
 });

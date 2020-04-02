@@ -64,7 +64,7 @@ var self = this;
     <ul><?js fires.forEach(function(f) {
             var parts = f.split(/#?event:/);
             var type = parts.pop();
-            var eventClassName = parts[0];
+            var eventClass = self.find({longname: parts[0]})[0];
             parts = type.split(' ');
             type = parts.shift();
             var description = parts.length ? parts.join(' ') : '';
@@ -74,12 +74,9 @@ var self = this;
             }
         ?>
         <li class="<?js= (eventDoclet || data).stability !== 'stable' ? 'unstable' : '' ?>">
-            <code><?js= eventClassName ? self.linkto(f, type) : type ?></code>
-            <?js if (eventClassName) {
-              var eventClass = self.find({longname: eventClassName})[0];
-              if (eventClass) { ?>
-                (<?js= self.linkto(eventClass.longname) ?>)
-              <?js } ?>
+            <code><?js= eventClass ? self.linkto(f, type) : type ?></code>
+            <?js if (eventClass) { ?>
+              (<?js= self.linkto(eventClass.longname) ?>)
             <?js } ?>
             <?js= self.partial('stability.tmpl', eventDoclet || (data.stability ? data : {})) ?>
             <?js if (description) { ?> -

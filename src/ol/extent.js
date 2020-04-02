@@ -295,6 +295,18 @@ export function equals(extent1, extent2) {
       extent1[1] == extent2[1] && extent1[3] == extent2[3];
 }
 
+/**
+ * Determine if two extents are approximately equivalent.
+ * @param {Extent} extent1 Extent 1.
+ * @param {Extent} extent2 Extent 2.
+ * @param {number} tolerance Tolerance in extent coordinate units.
+ * @return {boolean} The two extents differ by less than the tolerance.
+ */
+export function approximatelyEquals(extent1, extent2, tolerance) {
+  return Math.abs(extent1[0] - extent2[0]) < tolerance && Math.abs(extent1[2] - extent2[2]) < tolerance &&
+  Math.abs(extent1[1] - extent2[1]) < tolerance && Math.abs(extent1[3] - extent2[3]) < tolerance;
+}
+
 
 /**
  * Modify an extent to include another extent.
@@ -812,4 +824,26 @@ export function applyTransform(extent, transformFn, opt_extent, opt_stops) {
     ys.push(coordinates[i + 1]);
   }
   return _boundingExtentXYs(xs, ys, opt_extent);
+}
+
+
+/**
+ * Modifies the provided extent in-place to be within the real world
+ * extent.
+ *
+ * @param {Extent} extent Extent.
+ * @param {import("./proj/Projection.js").default} projection Projection
+ * @return {Extent} The extent within the real world extent.
+ */
+export function wrapX(extent, projection) {
+  const projectionExtent = projection.getExtent();
+  const center = getCenter(extent);
+  if (projection.canWrapX() && (center[0] < projectionExtent[0] || center[0] >= projectionExtent[2])) {
+    const worldWidth = getWidth(projectionExtent);
+    const worldsAway = Math.floor((center[0] - projectionExtent[0]) / worldWidth);
+    const offset = (worldsAway * worldWidth);
+    extent[0] -= offset;
+    extent[2] -= offset;
+  }
+  return extent;
 }

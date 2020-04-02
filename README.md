@@ -41,6 +41,18 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
  * Using [Browserify](https://github.com/openlayers/ol-browserify)
 
+## Sponsors
+
+OpenLayers appreciates contributions of all kinds.  We especially want to thank our fiscal sponsors who contribute to ongoing project maintenance.
+
+![Pozi logo](./sponsor-logos/pozi.png)
+
+> Pozi helps connect communities through spatial thinking.
+> We love Openlayers and it forms a core part of our platform.
+> https://pozi.com/ https://app.pozi.com/
+
+See our [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) page if you too are interested in becoming a regular sponsor.
+
 ## Supported Browsers
 
 OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](http://polyfill.io) for `requestAnimationFrame` and `Element.prototype.classList` are required, and using the KML format requires a polyfill for `URL`.

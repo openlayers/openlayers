@@ -17,13 +17,16 @@ import {
 import {
   applyTransform,
   containsCoordinate,
+  containsExtent,
   equals,
+  approximatelyEquals,
   getCenter,
   getHeight,
   getIntersection,
   getWidth,
   intersects,
-  isEmpty
+  isEmpty,
+  wrapX as wrapExtentX
 } from '../extent.js';
 import {clamp} from '../math.js';
 import Style from '../style/Style.js';
@@ -478,11 +481,21 @@ class Graticule extends VectorLayer {
    * @return {Array<import("../extent.js").Extent>} Extents.
    */
   strategyFunction(extent, resolution) {
-    if (this.loadedExtent_ && !equals(this.loadedExtent_, extent)) {
-      // we should not keep track of loaded extents
-      this.getSource().removeLoadedExtent(this.loadedExtent_);
+    // extents may be passed in different worlds, to avoid endless loop we use only one
+    let realWorldExtent = extent.slice();
+    if (this.projection_ && this.getSource().getWrapX()) {
+      wrapExtentX(realWorldExtent, this.projection_);
     }
-    return [extent];
+    if (this.loadedExtent_) {
+      if (approximatelyEquals(this.loadedExtent_, realWorldExtent, resolution)) {
+        // make sure result is exactly equal to previous extent
+        realWorldExtent = this.loadedExtent_.slice();
+      } else {
+        // we should not keep track of loaded extents
+        this.getSource().removeLoadedExtent(this.loadedExtent_);
+      }
+    }
+    return [realWorldExtent];
   }
 
   /**
@@ -622,9 +635,9 @@ class Graticule extends VectorLayer {
   drawLabels_(event) {
     const rotation = event.frameState.viewState.rotation;
     const extent = event.frameState.extent;
-    let rotationCenter, rotationExtent;
+    const rotationCenter = getCenter(extent);
+    let rotationExtent = extent;
     if (rotation) {
-      rotationCenter = getCenter(extent);
       const width = getWidth(extent);
       const height = getHeight(extent);
       const cr = Math.abs(Math.cos(rotation));
@@ -637,42 +650,60 @@ class Graticule extends VectorLayer {
       ];
     }
 
-    const vectorContext = getVectorContext(event);
-    let poolIndex = this.meridians_.length + this.parallels_.length;
-    let feature, index, l, textPoint;
-
-    if (this.meridiansLabels_) {
-      for (index = 0, l = this.meridiansLabels_.length; index < l; ++index) {
-        const lineString = this.meridians_[index];
-        if (!rotation) {
-          textPoint = this.getMeridianPoint_(lineString, extent, index);
-        } else {
-          const clone = lineString.clone();
-          clone.rotate(-rotation, rotationCenter);
-          textPoint = this.getMeridianPoint_(clone, rotationExtent, index);
-          textPoint.rotate(rotation, rotationCenter);
-        }
-        feature = this.featurePool_[poolIndex++];
-        feature.setGeometry(textPoint);
-        feature.set('graticule_label', this.meridiansLabels_[index].text);
-        vectorContext.drawFeature(feature, this.lonLabelStyle_(feature));
-      }
+    let startWorld = 0;
+    let endWorld = 0;
+    let labelsAtStart = this.latLabelPosition_ < 0.5;
+    const projectionExtent = this.projection_.getExtent();
+    const worldWidth = getWidth(projectionExtent);
+    if (this.getSource().getWrapX() && this.projection_.canWrapX() && !containsExtent(projectionExtent, extent)) {
+      startWorld = Math.floor((extent[0] - projectionExtent[0]) / worldWidth);
+      endWorld = Math.ceil((extent[2] - projectionExtent[2]) / worldWidth);
+      const inverted = Math.abs(rotation) > Math.PI / 2;
+      labelsAtStart = labelsAtStart !== inverted;
     }
-    if (this.parallelsLabels_) {
-      for (index = 0, l = this.parallels_.length; index < l; ++index) {
-        const lineString = this.parallels_[index];
-        if (!rotation) {
-          textPoint = this.getParallelPoint_(lineString, extent, index);
-        } else {
-          const clone = lineString.clone();
-          clone.rotate(-rotation, rotationCenter);
-          textPoint = this.getParallelPoint_(clone, rotationExtent, index);
-          textPoint.rotate(rotation, rotationCenter);
+    const vectorContext = getVectorContext(event);
+
+    for (let world = startWorld; world <= endWorld; ++world) {
+      let poolIndex = this.meridians_.length + this.parallels_.length;
+      let feature, index, l, textPoint;
+
+      if (this.meridiansLabels_) {
+        for (index = 0, l = this.meridiansLabels_.length; index < l; ++index) {
+          const lineString = this.meridians_[index];
+          if (!rotation && world === 0) {
+            textPoint = this.getMeridianPoint_(lineString, extent, index);
+          } else {
+            const clone = lineString.clone();
+            clone.translate(world * worldWidth, 0);
+            clone.rotate(-rotation, rotationCenter);
+            textPoint = this.getMeridianPoint_(clone, rotationExtent, index);
+            textPoint.rotate(rotation, rotationCenter);
+          }
+          feature = this.featurePool_[poolIndex++];
+          feature.setGeometry(textPoint);
+          feature.set('graticule_label', this.meridiansLabels_[index].text);
+          vectorContext.drawFeature(feature, this.lonLabelStyle_(feature));
         }
-        feature = this.featurePool_[poolIndex++];
-        feature.setGeometry(textPoint);
-        feature.set('graticule_label', this.parallelsLabels_[index].text);
-        vectorContext.drawFeature(feature, this.latLabelStyle_(feature));
+      }
+      if (this.parallelsLabels_) {
+        if (world === startWorld && labelsAtStart || world === endWorld && !labelsAtStart) {
+          for (index = 0, l = this.parallels_.length; index < l; ++index) {
+            const lineString = this.parallels_[index];
+            if (!rotation && world === 0) {
+              textPoint = this.getParallelPoint_(lineString, extent, index);
+            } else {
+              const clone = lineString.clone();
+              clone.translate(world * worldWidth, 0);
+              clone.rotate(-rotation, rotationCenter);
+              textPoint = this.getParallelPoint_(clone, rotationExtent, index);
+              textPoint.rotate(rotation, rotationCenter);
+            }
+            feature = this.featurePool_[poolIndex++];
+            feature.setGeometry(textPoint);
+            feature.set('graticule_label', this.parallelsLabels_[index].text);
+            vectorContext.drawFeature(feature, this.latLabelStyle_(feature));
+          }
+        }
       }
     }
   }
@@ -698,6 +729,18 @@ class Graticule extends VectorLayer {
       return;
     }
 
+    let wrapX = false;
+    const projectionExtent = this.projection_.getExtent();
+    const worldWidth = getWidth(projectionExtent);
+    if (this.getSource().getWrapX() && this.projection_.canWrapX() && !containsExtent(projectionExtent, extent)) {
+      if (getWidth(extent) >= worldWidth) {
+        extent[0] = projectionExtent[0];
+        extent[2] = projectionExtent[2];
+      } else {
+        wrapX = true;
+      }
+    }
+
     // Constrain the center to fit into the extent available to the graticule
 
     const validCenterP = [
@@ -721,44 +764,56 @@ class Graticule extends VectorLayer {
 
     // Limit the extent to fit into the extent available to the graticule
 
-    const validExtentP = [
-      clamp(extent[0], this.minX_, this.maxX_),
-      clamp(extent[1], this.minY_, this.maxY_),
-      clamp(extent[2], this.minX_, this.maxX_),
-      clamp(extent[3], this.minY_, this.maxY_)
-    ];
+    let validExtentP = extent;
+    if (!wrapX) {
+      validExtentP = [
+        clamp(extent[0], this.minX_, this.maxX_),
+        clamp(extent[1], this.minY_, this.maxY_),
+        clamp(extent[2], this.minX_, this.maxX_),
+        clamp(extent[3], this.minY_, this.maxY_)
+      ];
+    }
 
     // Transform the extent to get the lon lat ranges for the edges of the extent
 
     const validExtent = applyTransform(validExtentP, this.toLonLatTransform_, undefined, 8);
 
-    // Check if extremities of the world extent lie inside the extent
-    // (for example the pole in a polar projection)
-    // and extend the extent as appropriate
+    let maxLat = validExtent[3];
+    let maxLon = validExtent[2];
+    let minLat = validExtent[1];
+    let minLon = validExtent[0];
 
-    if (containsCoordinate(validExtentP, this.bottomLeft_)) {
-      validExtent[0] = this.minLon_;
-      validExtent[1] = this.minLat_;
-    }
-    if (containsCoordinate(validExtentP, this.bottomRight_)) {
-      validExtent[2] = this.maxLon_;
-      validExtent[1] = this.minLat_;
-    }
-    if (containsCoordinate(validExtentP, this.topLeft_)) {
-      validExtent[0] = this.minLon_;
-      validExtent[3] = this.maxLat_;
-    }
-    if (containsCoordinate(validExtentP, this.topRight_)) {
-      validExtent[2] = this.maxLon_;
-      validExtent[3] = this.maxLat_;
-    }
+    if (!wrapX) {
 
-    // The transformed center may also extend the lon lat ranges used for rendering
+      // Check if extremities of the world extent lie inside the extent
+      // (for example the pole in a polar projection)
+      // and extend the extent as appropriate
 
-    const maxLat = clamp(validExtent[3], centerLat, this.maxLat_);
-    const maxLon = clamp(validExtent[2], centerLon, this.maxLon_);
-    const minLat = clamp(validExtent[1], this.minLat_, centerLat);
-    const minLon = clamp(validExtent[0], this.minLon_, centerLon);
+      if (containsCoordinate(validExtentP, this.bottomLeft_)) {
+        minLon = this.minLon_;
+        minLat = this.minLat_;
+      }
+      if (containsCoordinate(validExtentP, this.bottomRight_)) {
+        maxLon = this.maxLon_;
+        minLat = this.minLat_;
+      }
+      if (containsCoordinate(validExtentP, this.topLeft_)) {
+        minLon = this.minLon_;
+        maxLat = this.maxLat_;
+      }
+      if (containsCoordinate(validExtentP, this.topRight_)) {
+        maxLon = this.maxLon_;
+        maxLat = this.maxLat_;
+      }
+
+      // The transformed center may also extend the lon lat ranges used for rendering
+
+      maxLat = clamp(maxLat, centerLat, this.maxLat_);
+      maxLon = clamp(maxLon, centerLon, this.maxLon_);
+      minLat = clamp(minLat, this.minLat_, centerLat);
+      minLon = clamp(minLon, this.minLon_, centerLon);
+
+    }
 
     // Create meridians
 
@@ -768,17 +823,29 @@ class Graticule extends VectorLayer {
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
 
     cnt = 0;
-    while (lon != this.minLon_ && cnt++ < maxLines) {
-      lon = Math.max(lon - interval, this.minLon_);
-      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+    if (wrapX) {
+      while ((lon -= interval) >= minLon && cnt++ < maxLines) {
+        idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      }
+    } else {
+      while (lon != this.minLon_ && cnt++ < maxLines) {
+        lon = Math.max(lon - interval, this.minLon_);
+        idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      }
     }
 
     lon = clamp(centerLon, this.minLon_, this.maxLon_);
 
     cnt = 0;
-    while (lon != this.maxLon_ && cnt++ < maxLines) {
-      lon = Math.min(lon + interval, this.maxLon_);
-      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+    if (wrapX) {
+      while ((lon += interval) <= maxLon && cnt++ < maxLines) {
+        idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      }
+    } else {
+      while (lon != this.maxLon_ && cnt++ < maxLines) {
+        lon = Math.min(lon + interval, this.maxLon_);
+        idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      }
     }
 
     this.meridians_.length = idx;
