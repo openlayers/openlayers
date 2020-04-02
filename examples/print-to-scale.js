@@ -8,8 +8,6 @@ import {register} from '../src/ol/proj/proj4.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import proj4 from 'proj4';
 
-import {toJpeg} from 'html-to-image';
-
 
 proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -105,7 +103,7 @@ exportButton.addEventListener('click', function() {
   map.once('rendercomplete', function() {
     exportOptions.width = width;
     exportOptions.height = height;
-    toJpeg(map.getViewport(), exportOptions).then(function(dataUrl) {
+    domtoimage.toJpeg(map.getViewport(), exportOptions).then(function(dataUrl) {
       const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
       pdf.save('map.pdf');
