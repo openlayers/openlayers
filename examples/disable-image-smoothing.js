@@ -38,11 +38,6 @@ const enabledLayer = new TileLayer({
   })
 });
 
-disabledLayer.on('prerender', function(evt) {
-  evt.context.imageSmoothingEnabled = false;
-  evt.context.msImageSmoothingEnabled = false;
-});
-
 imagery.on('prerender', function(evt) {
   // use opaque background to conceal DEM while fully opaque imagery renders
   if (imagery.getOpacity() === 1) {
