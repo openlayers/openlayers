@@ -139,6 +139,16 @@ class Triangulation {
     const sourceBottomRight = this.transformInv_(destinationBottomRight);
     const sourceBottomLeft = this.transformInv_(destinationBottomLeft);
 
+    /*
+     * The maxSubdivision controls how many splittings of the target area can
+     * be done. The idea here is to do a linear mapping of the target areas
+     * but the actual overal reprojection (can be) extremely non-linear. The
+     * default value of MAX_SUBDIVISION was chosen based on mapping a 256x256
+     * tile size. However this function is also called to remap canvas rendered
+     * layers which can be much larger. This calculation increases the maxSubdivision
+     * value by the right factor so that each 256x256 pixel area has
+     * MAX_SUBDIVISION divisions.
+     */
     const maxSubdivision = MAX_SUBDIVISION + (opt_destinationResolution ?
       Math.max(0, Math.ceil(Math.log2(getArea(targetExtent) /
         (opt_destinationResolution * opt_destinationResolution * 256 * 256))))
