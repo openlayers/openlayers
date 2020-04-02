@@ -989,7 +989,7 @@ class PluggableMap extends BaseObject {
    * @private
    */
   handleSizeChanged_() {
-    if (this.getView()) {
+    if (this.getView() && !this.getView().getAnimating()) {
       this.getView().resolveConstraints(0);
     }
 
