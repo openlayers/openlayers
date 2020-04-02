@@ -13,7 +13,7 @@ const source = new XYZ({
   transition: 0,
   minZoom: 5,
   maxZoom: 5,
-  reprojectionContextOptions: {imageSmoothingEnabled: false},
+  imageSmoothing: false,
   url: '/data/tiles/osm/{z}/{x}/{y}.png'
 });
 

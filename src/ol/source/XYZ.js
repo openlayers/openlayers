@@ -13,12 +13,11 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
- * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
@@ -92,10 +91,10 @@ class XYZ extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       opaque: options.opaque,
       projection: projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      reprojectionContextOptions: options.reprojectionContextOptions,
       tileGrid: tileGrid,
       tileLoadFunction: options.tileLoadFunction,
       tilePixelRatio: options.tilePixelRatio,

@@ -55,11 +55,10 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * @property {string} [culture='en-us'] Culture code.
  * @property {string} key Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
  * @property {string} imagerySet Type of imagery.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
- * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -130,10 +129,10 @@ class BingMaps extends TileImage {
     super({
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
+      imageSmoothing: options.imageSmoothing,
       opaque: true,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      reprojectionContextOptions: options.reprojectionContextOptions,
       state: SourceState.LOADING,
       tileLoadFunction: options.tileLoadFunction,
       tilePixelRatio: hidpi ? 2 : 1,

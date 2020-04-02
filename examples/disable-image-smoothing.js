@@ -15,7 +15,7 @@ const disabledLayer = new TileLayer({
     url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
     maxZoom: 10,
     crossOrigin: '',
-    reprojectionContextOptions: {imageSmoothingEnabled: false, msImageSmoothingEnabled: false}
+    imageSmoothing: false
   })
 });
 

@@ -43,12 +43,11 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
  * Useful when the server does not support CORS..
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {object} [reprojectionContextOptions] Optional properties to set on the canvas context used
- * for reprojection. For example specify `{imageSmoothingEnabled: false}` to disable image smoothing.
  * @property {Config} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -80,9 +79,9 @@ class TileJSON extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      reprojectionContextOptions: options.reprojectionContextOptions,
       state: SourceState.LOADING,
       tileLoadFunction: options.tileLoadFunction,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
