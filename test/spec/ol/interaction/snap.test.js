@@ -6,7 +6,7 @@ import Circle from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Snap from '../../../../src/ol/interaction/Snap.js';
-import {useGeographic, clearUserProjection} from '../../../../src/ol/proj.js';
+import {useGeographic, clearUserProjection, setUserProjection, transform} from '../../../../src/ol/proj.js';
 import {overrideRAF} from '../../util.js';
 
 
@@ -55,6 +55,7 @@ describe('ol.interaction.Snap', function() {
     afterEach(function() {
       map.dispose();
       document.body.removeChild(target);
+      clearUserProjection();
     });
 
     it('can handle XYZ coordinates', function() {
@@ -127,6 +128,30 @@ describe('ol.interaction.Snap', function() {
 
       expect(event.coordinate[0]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
       expect(event.coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
+    });
+
+    it('snaps to circle in a user projection', function() {
+      const userProjection = 'EPSG:3857';
+      setUserProjection(userProjection);
+      const viewProjection = map.getView().getProjection();
+
+      const circle = new Feature(new Circle([0, 0], 10).transform(viewProjection, userProjection));
+      const snapInteraction = new Snap({
+        features: new Collection([circle]),
+        pixelTolerance: 5
+      });
+      snapInteraction.setMap(map);
+
+      const event = {
+        pixel: [5 + width / 2, height / 2 - 5],
+        coordinate: transform([5, 5], viewProjection, userProjection),
+        map: map
+      };
+      snapInteraction.handleEvent(event);
+
+      const coordinate = transform([Math.sin(Math.PI / 4) * 10, Math.sin(Math.PI / 4) * 10], viewProjection, userProjection);
+      expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
+      expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
     });
 
     it('handle feature without geometry', function() {

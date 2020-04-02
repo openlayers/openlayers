@@ -14,6 +14,7 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Event from '../../../../src/ol/events/Event.js';
 import {getValues} from '../../../../src/ol/obj.js';
+import {clearUserProjection, setUserProjection} from '../../../../src/ol/proj.js';
 
 
 describe('ol.interaction.Modify', function() {
@@ -66,6 +67,7 @@ describe('ol.interaction.Modify', function() {
   afterEach(function() {
     map.dispose();
     document.body.removeChild(target);
+    clearUserProjection();
   });
 
   /**
@@ -402,7 +404,7 @@ describe('ol.interaction.Modify', function() {
       expect(circleFeature.getGeometry().getRadius()).to.equal(20);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
-      // Increase radius
+      // Increase radius along x axis
       simulateEvent('pointermove', 25, -4, null, 0);
       simulateEvent('pointerdown', 25, -4, null, 0);
       simulateEvent('pointermove', 30, -5, null, 0);
@@ -411,6 +413,64 @@ describe('ol.interaction.Modify', function() {
 
       expect(circleFeature.getGeometry().getRadius()).to.equal(25);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+
+      // Increase radius along y axis
+      simulateEvent('pointermove', 4, -30, null, 0);
+      simulateEvent('pointerdown', 4, -30, null, 0);
+      simulateEvent('pointermove', 5, -35, null, 0);
+      simulateEvent('pointerdrag', 5, -35, null, 0);
+      simulateEvent('pointerup', 5, -35, null, 0);
+
+      expect(circleFeature.getGeometry().getRadius()).to.equal(30);
+      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+    });
+
+    it('changes the circle radius and center in a user projection', function() {
+      const userProjection = 'EPSG:3857';
+      setUserProjection(userProjection);
+      const viewProjection = map.getView().getProjection();
+
+      const circleFeature = new Feature(new Circle([10, 10], 20).transform(viewProjection, userProjection));
+      features.length = 0;
+      features.push(circleFeature);
+
+      const modify = new Modify({
+        features: new Collection(features)
+      });
+      map.addInteraction(modify);
+
+      // Change center
+      simulateEvent('pointermove', 10, -10, null, 0);
+      simulateEvent('pointerdown', 10, -10, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      const geometry1 = circleFeature.getGeometry().clone().transform(userProjection, viewProjection);
+      expect(geometry1.getRadius()).to.roughlyEqual(20, 1e-9);
+      expect(geometry1.getCenter()).to.eql([5, 5]);
+
+      // Increase radius along x axis
+      simulateEvent('pointermove', 25, -4, null, 0);
+      simulateEvent('pointerdown', 25, -4, null, 0);
+      simulateEvent('pointermove', 30, -5, null, 0);
+      simulateEvent('pointerdrag', 30, -5, null, 0);
+      simulateEvent('pointerup', 30, -5, null, 0);
+
+      const geometry2 = circleFeature.getGeometry().clone().transform(userProjection, viewProjection);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
+      expect(geometry2.getCenter()).to.eql([5, 5]);
+
+      // Increase radius along y axis
+      simulateEvent('pointermove', 4, -30, null, 0);
+      simulateEvent('pointerdown', 4, -30, null, 0);
+      simulateEvent('pointermove', 5, -35, null, 0);
+      simulateEvent('pointerdrag', 5, -35, null, 0);
+      simulateEvent('pointerup', 5, -35, null, 0);
+
+      const geometry3 = circleFeature.getGeometry().clone().transform(userProjection, viewProjection);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
+      expect(geometry3.getCenter()).to.eql([5, 5]);
     });
   });
 
@@ -766,7 +826,7 @@ describe('ol.interaction.Modify', function() {
       expect(circleFeature.getGeometry().getRadius()).to.equal(20);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
-      // Increase radius
+      // Increase radius along x axis
       simulateEvent('pointermove', 25, -4, null, 0);
       simulateEvent('pointerdown', 25, -4, null, 0);
       simulateEvent('pointermove', 30, -5, null, 0);
@@ -775,6 +835,70 @@ describe('ol.interaction.Modify', function() {
 
       expect(circleFeature.getGeometry().getRadius()).to.equal(25);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+
+      // Increase radius along y axis
+      simulateEvent('pointermove', 4, -30, null, 0);
+      simulateEvent('pointerdown', 4, -30, null, 0);
+      simulateEvent('pointermove', 5, -35, null, 0);
+      simulateEvent('pointerdrag', 5, -35, null, 0);
+      simulateEvent('pointerup', 5, -35, null, 0);
+
+      expect(circleFeature.getGeometry().getRadius()).to.equal(30);
+      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+    });
+
+    it('changes the circle radius and center in a user projection', function() {
+      const userProjection = 'EPSG:3857';
+      setUserProjection(userProjection);
+      const viewProjection = map.getView().getProjection();
+
+      const circleFeature = new Feature(new Circle([10, 10], 20).transform(viewProjection, userProjection));
+      features.length = 0;
+      features.push(circleFeature);
+
+      const modify = new Modify({
+        features: new Collection(features)
+      });
+      map.addInteraction(modify);
+
+      const snap = new Snap({
+        features: new Collection(features),
+        pixelTolerance: 1
+      });
+      map.addInteraction(snap);
+
+      // Change center
+      simulateEvent('pointermove', 10, -10, null, 0);
+      simulateEvent('pointerdown', 10, -10, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      const geometry1 = circleFeature.getGeometry().clone().transform(userProjection, viewProjection);
+      expect(geometry1.getRadius()).to.roughlyEqual(20, 1e-9);
+      expect(geometry1.getCenter()).to.eql([5, 5]);
+
+      // Increase radius along x axis
+      simulateEvent('pointermove', 25, -4, null, 0);
+      simulateEvent('pointerdown', 25, -4, null, 0);
+      simulateEvent('pointermove', 30, -5, null, 0);
+      simulateEvent('pointerdrag', 30, -5, null, 0);
+      simulateEvent('pointerup', 30, -5, null, 0);
+
+      const geometry2 = circleFeature.getGeometry().clone().transform(userProjection, viewProjection);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
+      expect(geometry2.getCenter()).to.eql([5, 5]);
+
+      // Increase radius along y axis
+      simulateEvent('pointermove', 4, -30, null, 0);
+      simulateEvent('pointerdown', 4, -30, null, 0);
+      simulateEvent('pointermove', 5, -35, null, 0);
+      simulateEvent('pointerdrag', 5, -35, null, 0);
+      simulateEvent('pointerup', 5, -35, null, 0);
+
+      const geometry3 = circleFeature.getGeometry().clone().transform(userProjection, viewProjection);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
+      expect(geometry3.getCenter()).to.eql([5, 5]);
     });
   });
 
