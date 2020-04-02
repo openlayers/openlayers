@@ -4,10 +4,8 @@ title: Disable Image Smoothing
 shortdesc: Example of disabling image smoothing
 docs: >
   Example of disabling image smoothing when using raster DEM (digital elevation model) data.
-  The <b>imageSmoothingEnabled</b> (or for Internet Explorer <b>msImageSmoothingEnabled</b>) canvas
-  context property is set to false at the layer's <b>prerender</b> event. Additionally for a
-  reprojected source those properties must also be also be specified for the canvas contexts used in
-  the reprojection via the source's <b>reprojectionContextOptions</b> option. Elevation data is
+  The <code>imageSmoothing: false</code> setting is used to disable canvas image smoothing during
+  reprojection and rendering. Elevation data is
   calculated from the pixel value returned by <b>forEachLayerAtPixel<b>. For comparison a second map
   with smoothing enabled returns inaccuate elevations which are very noticeable close to 3107 meters
   due to how elevation is calculated from the pixel value.
