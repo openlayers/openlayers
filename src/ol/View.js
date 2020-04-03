@@ -762,11 +762,14 @@ class View extends BaseObject {
    * Stores the viewport size on the view. The viewport size is not read every time from the DOM
    * to avoid performance hit and layout reflow.
    * This should be done on map size change.
+   * Note: the constraints are not resolved during an animation to avoid stopping it
    * @param {import("./size.js").Size=} opt_size Viewport size; if undefined, [100, 100] is assumed
    */
   setViewportSize(opt_size) {
     this.viewportSize_ = Array.isArray(opt_size) ? opt_size.slice() : [100, 100];
-    this.resolveConstraints(0);
+    if (!this.getAnimating()) {
+      this.resolveConstraints(0);
+    }
   }
 
   /**

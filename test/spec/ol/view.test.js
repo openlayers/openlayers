@@ -1090,6 +1090,54 @@ describe('ol.View', function() {
 
     });
 
+    it('completes even though Map#setSize is called', function(done) {
+
+      const view = new View({
+        center: [0, 0],
+        zoom: 0
+      });
+      const map = new Map({
+        view
+      });
+      map.setSize([110, 90]);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function() {
+        expect(view.getZoom()).to.be(1);
+        done();
+      });
+
+      setTimeout(function() {
+        map.setSize([100, 100]);
+      }, 10);
+
+    });
+
+    it('completes even though Map#updateSize is called', function(done) {
+
+      const view = new View({
+        center: [0, 0],
+        zoom: 0
+      });
+      const map = new Map({
+        view
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function() {
+        expect(view.getZoom()).to.be(1);
+        done();
+      });
+
+      setTimeout(function() {
+        map.updateSize();
+      }, 10);
+
+    });
   });
 
   describe('#cancelAnimations()', function() {
