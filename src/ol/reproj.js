@@ -5,6 +5,7 @@ import {createCanvasContext2D} from './dom.js';
 import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
+import {assign} from './obj.js';
 
 
 /**
@@ -88,14 +89,16 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.
+ * @param {object=} opt_contextOptions Properties to set on the canvas context.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(width, height, pixelRatio,
   sourceResolution, sourceExtent, targetResolution, targetExtent,
-  triangulation, sources, gutter, opt_renderEdges) {
+  triangulation, sources, gutter, opt_renderEdges, opt_contextOptions) {
 
   const context = createCanvasContext2D(Math.round(pixelRatio * width),
     Math.round(pixelRatio * height));
+  assign(context, opt_contextOptions);
 
   if (sources.length === 0) {
     return context.canvas;
@@ -113,6 +116,7 @@ export function render(width, height, pixelRatio,
   const stitchContext = createCanvasContext2D(
     Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
     Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
+  assign(stitchContext, opt_contextOptions);
 
   const stitchScale = pixelRatio / sourceResolution;
 

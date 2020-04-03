@@ -19,6 +19,7 @@ import {toSize} from '../size.js';
  * @property {null|string} [crossOrigin]
  * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]]
  * @property {string} [format='jpg'] Requested image format.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {string} [quality] Requested IIIF image quality. Default is 'native'
  * for version 1, 'default' for versions 2 and 3.
@@ -275,6 +276,7 @@ class IIIF extends TileImage {
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: options.state,

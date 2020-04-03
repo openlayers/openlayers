@@ -10,6 +10,7 @@ import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
 import UrlTile from './UrlTile.js';
+import {IMAGE_SMOOTHING_DISABLED} from './common.js';
 import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 
@@ -21,6 +22,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -125,6 +127,13 @@ class TileImage extends UrlTile {
 
     /**
      * @private
+     * @type {object|undefined}
+     */
+    this.contextOptions_ = options.imageSmoothing === false ?
+      IMAGE_SMOOTHING_DISABLED : undefined;
+
+    /**
+     * @private
      * @type {boolean}
      */
     this.renderReprojectionEdges_ = false;
@@ -164,6 +173,13 @@ class TileImage extends UrlTile {
       const tileCache = this.tileCacheForProjection[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getContextOptions() {
+    return this.contextOptions_;
   }
 
   /**
@@ -296,7 +312,7 @@ class TileImage extends UrlTile {
           function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
           }.bind(this), this.reprojectionErrorThreshold_,
-          this.renderReprojectionEdges_);
+          this.renderReprojectionEdges_, this.contextOptions_);
         newTile.key = key;
 
         if (tile) {

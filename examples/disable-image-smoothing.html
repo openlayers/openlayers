@@ -1,0 +1,45 @@
+---
+layout: example.html
+title: Disable Image Smoothing
+shortdesc: Example of disabling image smoothing
+docs: >
+  Example of disabling image smoothing when using raster DEM (digital elevation model) data.
+  The <code>imageSmoothing: false</code> setting is used to disable canvas image smoothing during
+  reprojection and rendering. Elevation data is
+  calculated from the pixel value returned by <b>forEachLayerAtPixel<b>. For comparison a second map
+  with smoothing enabled returns inaccuate elevations which are very noticeable close to 3107 meters
+  due to how elevation is calculated from the pixel value.
+tags: "disable image smoothing, xyz, maptiler, reprojection"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div class="wrapper">
+  <div class="half">
+    <h4>Smoothing Disabled</h4>
+    <div id="map1" class="map"></div>
+    <div>
+      <label>
+        Elevation
+        <span id="info1">0.0</span> meters
+      </label>
+    </div>
+    <div>
+      <label>
+        Imagery opacity
+        <input id="opacity" type="range" min="0" max="100" value="80" />
+        <span id="output"></span> %
+      </label>
+    </div>
+  </div>
+  <div class="half">
+    <h4>Uncorrected Comparison</h4>
+    <div id="map2" class="map"></div>
+    <div>
+      <label>
+        Elevation
+        <span id="info2">0.0</span> meters
+      </label>
+    </div>
+  </div>
+</div>

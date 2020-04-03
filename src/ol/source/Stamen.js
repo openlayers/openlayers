@@ -91,6 +91,7 @@ const ProviderConfig = {
 /**
  * @typedef {Object} Options
  * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.
@@ -134,6 +135,7 @@ class Stamen extends XYZ {
       attributions: ATTRIBUTIONS,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
+      imageSmoothing: options.imageSmoothing,
       maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
       minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
       opaque: layerConfig.opaque,

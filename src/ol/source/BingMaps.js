@@ -55,6 +55,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * @property {string} [culture='en-us'] Culture code.
  * @property {string} key Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
  * @property {string} imagerySet Type of imagery.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
@@ -128,6 +129,7 @@ class BingMaps extends TileImage {
     super({
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
+      imageSmoothing: options.imageSmoothing,
       opaque: true,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
