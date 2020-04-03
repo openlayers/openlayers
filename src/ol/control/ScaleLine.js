@@ -34,11 +34,18 @@ export const Units = {
  */
 const LEADING_DIGITS = [1, 2, 5];
 
+/**
+ * @const
+ * @type {number}
+ */
+const DEFAULT_DPI = 25.4 / 0.28;
+
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-scale-line'] CSS Class name.
- * @property {number} [minWidth=64] Minimum width in pixels.
+ * @property {number} [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
+ * adjusted to match the dpi used.
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -194,15 +201,6 @@ class ScaleLine extends Control {
   }
 
   /**
-   * Set the minimum width.
-   * @param {number|undefined} minWidth The ninimum width in pixels.
-   * @api
-   */
-  setMinWidth(minWidth) {
-    this.minWidth_ = minWidth !== undefined ? minWidth : 64;
-  }
-
-  /**
    * @private
    */
   updateElement_() {
@@ -225,7 +223,9 @@ class ScaleLine extends Control {
     let pointResolution =
         getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
 
-    let nominalCount = this.minWidth_ * pointResolution;
+    const minWidth = this.minWidth_ * (this.dpi_ || DEFAULT_DPI) / DEFAULT_DPI;
+
+    let nominalCount = minWidth * pointResolution;
     let suffix = '';
     if (units == Units.DEGREES) {
       const metersPerDegree = METERS_PER_UNIT[ProjUnits.DEGREES];
@@ -282,7 +282,7 @@ class ScaleLine extends Control {
     }
 
     let i = 3 * Math.floor(
-      Math.log(this.minWidth_ * pointResolution) / Math.log(10));
+      Math.log(minWidth * pointResolution) / Math.log(10));
     let count, width, decimalCount;
     while (true) {
       decimalCount = Math.floor(i / 3);
@@ -293,7 +293,7 @@ class ScaleLine extends Control {
         this.element.style.display = 'none';
         this.renderedVisible_ = false;
         return;
-      } else if (width >= this.minWidth_) {
+      } else if (width >= minWidth) {
         break;
       }
       ++i;
