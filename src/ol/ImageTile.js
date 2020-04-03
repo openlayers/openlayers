@@ -68,7 +68,7 @@ class ImageTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * @return {string} Key.
    */
   getKey() {
     return this.src_;
@@ -103,7 +103,7 @@ class ImageTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    * @api
    */
   load() {

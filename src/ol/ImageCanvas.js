@@ -76,7 +76,7 @@ class ImageCanvas extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    */
   load() {
     if (this.state == ImageState.IDLE) {

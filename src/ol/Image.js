@@ -78,7 +78,7 @@ class ImageWrapper extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    * @api
    */
   getImage() {

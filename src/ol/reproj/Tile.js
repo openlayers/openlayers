@@ -249,7 +249,7 @@ class ReprojTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    */
   load() {
     if (this.state == TileState.IDLE) {
