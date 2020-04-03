@@ -2,7 +2,7 @@
  * @module ol/reproj
  */
 import {createCanvasContext2D} from './dom.js';
-import {boundingExtent, containsCoordinate, createEmpty, extend, forEachCorner, getCenter, getHeight, getTopLeft, getWidth} from './extent.js';
+import {containsCoordinate, createEmpty, extend, forEachCorner, getCenter, getHeight, getTopLeft, getWidth} from './extent.js';
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
 
