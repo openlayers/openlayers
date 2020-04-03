@@ -437,7 +437,7 @@ class ScaleLine extends Control {
       this.viewState_.resolution,
       this.viewState_.center
     );
-    const dpi = this.dpi_ || (25.4 / 0.28);
+    const dpi = this.dpi_ || DEFAULT_DPI;
     const mpu = this.viewState_.projection.getMetersPerUnit();
     const inchesPerMeter = 39.37;
     return parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi;
