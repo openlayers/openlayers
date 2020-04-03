@@ -314,13 +314,7 @@ export function render(width, height, pixelRatio,
     context.scale(sourceResolution / pixelRatio,
       -sourceResolution / pixelRatio);
 
-    const sourceTriangleExtent = boundingExtent(source);
-    const topLeftX = Math.floor((sourceTriangleExtent[0] - sourceDataExtent[0]) * stitchScale);
-    const topLeftY = Math.floor((sourceDataExtent[3] - sourceTriangleExtent[3]) * stitchScale);
-    const width = Math.ceil((sourceTriangleExtent[2] - sourceTriangleExtent[0]) * stitchScale) + 2;
-    const height = Math.ceil((sourceTriangleExtent[3] - sourceTriangleExtent[1]) * stitchScale) + 2;
-
-    context.drawImage(stitchContext.canvas, topLeftX, topLeftY, width, height, topLeftX, topLeftY, width, height);
+    context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
   });
 
