@@ -295,7 +295,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     if (this.relayedListenerKey_) {

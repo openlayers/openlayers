@@ -24,7 +24,7 @@ The second line tells the Closure compiler the type of the argument.
 
 The third line (`@api`) marks the method as part of the api and thus exportable. Without such an api annotation, the method will not be documented in the generated API documentation. Symbols without an api annotation will also not be exportable.
 
-The `@api` annotation can be used in conjunction with the `@inheritDoc` annotation to export a symbol that is documented on a parent class (where the method may be abstract).  In general, `@api` annotations should never be used on abstract methods (only on their implementations).
+In general, `@api` annotations should never be used on abstract methods (only on their implementations).
 
 ### Events
 

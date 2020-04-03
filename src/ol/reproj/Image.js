@@ -112,7 +112,7 @@ class ReprojImage extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     if (this.state == ImageState.LOADING) {

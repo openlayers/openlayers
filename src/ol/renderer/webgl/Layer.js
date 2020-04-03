@@ -68,7 +68,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.helper.dispose();

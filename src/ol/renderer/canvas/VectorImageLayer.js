@@ -52,7 +52,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.vectorRenderer_.dispose();
