@@ -52,7 +52,7 @@ const map = new Map({
   })
 });
 
-const scaleLine = new ScaleLine({bar: true, text: true});
+const scaleLine = new ScaleLine({bar: true, text: true, minWidth: 125});
 map.addControl(scaleLine);
 
 
@@ -109,7 +109,6 @@ exportButton.addEventListener('click', function() {
       pdf.save('map.pdf');
       // Reset original map size
       scaleLine.setDpi();
-      scaleLine.setMinWidth();
       map.getTargetElement().style.width = '';
       map.getTargetElement().style.height = '';
       map.updateSize();
@@ -121,7 +120,6 @@ exportButton.addEventListener('click', function() {
 
   // Set print size
   scaleLine.setDpi(resolution);
-  scaleLine.setMinWidth(resolution * 4 / 2.54); // 4cm
   map.getTargetElement().style.width = width + 'px';
   map.getTargetElement().style.height = height + 'px';
   map.updateSize();
