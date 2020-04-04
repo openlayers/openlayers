@@ -34,11 +34,18 @@ export const Units = {
  */
 const LEADING_DIGITS = [1, 2, 5];
 
+/**
+ * @const
+ * @type {number}
+ */
+const DEFAULT_DPI = 25.4 / 0.28;
+
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-scale-line'] CSS Class name.
- * @property {number} [minWidth=64] Minimum width in pixels.
+ * @property {number} [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
+ * adjusted to match the dpi used.
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -49,6 +56,8 @@ const LEADING_DIGITS = [1, 2, 5];
  * for best results. Only applies when `bar` is `true`.
  * @property {boolean} [text=false] Render the text scale above of the scalebar. Only applies
  * when `bar` is `true`.
+ * @property {number|undefined} [dpi=undefined] dpi of output device such as printer. Only applies
+ * when `bar` is `true`. If undefined the OGC default screen pixel size of 0.28mm will be assumed.
  */
 
 
@@ -146,6 +155,12 @@ class ScaleLine extends Control {
      */
     this.scaleBarText_ = options.text || false;
 
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.dpi_ = options.dpi || undefined;
+
   }
 
   /**
@@ -177,6 +192,15 @@ class ScaleLine extends Control {
   }
 
   /**
+   * Specify the dpi of output device such as printer.
+   * @param {number|undefined} dpi The dpi of output device.
+   * @api
+   */
+  setDpi(dpi) {
+    this.dpi_ = dpi;
+  }
+
+  /**
    * @private
    */
   updateElement_() {
@@ -199,7 +223,9 @@ class ScaleLine extends Control {
     let pointResolution =
         getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
 
-    let nominalCount = this.minWidth_ * pointResolution;
+    const minWidth = this.minWidth_ * (this.dpi_ || DEFAULT_DPI) / DEFAULT_DPI;
+
+    let nominalCount = minWidth * pointResolution;
     let suffix = '';
     if (units == Units.DEGREES) {
       const metersPerDegree = METERS_PER_UNIT[ProjUnits.DEGREES];
@@ -256,7 +282,7 @@ class ScaleLine extends Control {
     }
 
     let i = 3 * Math.floor(
-      Math.log(this.minWidth_ * pointResolution) / Math.log(10));
+      Math.log(minWidth * pointResolution) / Math.log(10));
     let count, width, decimalCount;
     while (true) {
       decimalCount = Math.floor(i / 3);
@@ -267,7 +293,7 @@ class ScaleLine extends Control {
         this.element.style.display = 'none';
         this.renderedVisible_ = false;
         return;
-      } else if (width >= this.minWidth_) {
+      } else if (width >= minWidth) {
         break;
       }
       ++i;
@@ -406,8 +432,12 @@ class ScaleLine extends Control {
    * @return {number} The appropriate scale.
    */
   getScaleForResolution() {
-    const resolution = this.getMap().getView().getResolution();
-    const dpi = 25.4 / 0.28;
+    const resolution = getPointResolution(
+      this.viewState_.projection,
+      this.viewState_.resolution,
+      this.viewState_.center
+    );
+    const dpi = this.dpi_ || DEFAULT_DPI;
     const mpu = this.viewState_.projection.getMetersPerUnit();
     const inchesPerMeter = 39.37;
     return parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi;
