@@ -177,15 +177,15 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {number} Gutter.
+   * @return {Object|undefined} Context options.
    */
   getContextOptions() {
     return this.contextOptions_;
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
     if (ENABLE_RASTER_REPROJECTION &&
