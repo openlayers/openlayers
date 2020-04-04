@@ -19,6 +19,20 @@ describe('ol.reproj.Image', function() {
       });
   }
 
+  function createTranslucentImage(pixelRatio) {
+    return new ReprojImage(
+      getProjection('EPSG:3857'), getProjection('EPSG:4326'),
+      [-180, -85, 180, 85], 10, pixelRatio,
+      function(extent, resolution, pixelRatio) {
+        return new ImageWrapper(extent, resolution, pixelRatio,
+          'data:image/png;base64,' +
+              'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8depePQAIiwMjFXlnJQAAAABJRU5ErkJggg==', null,
+          function(image, src) {
+            image.getImage().src = src;
+          });
+      });
+  }
+
   it('changes state as expected', function(done) {
     const image = createImage(1);
     expect(image.getState()).to.be(0); // IDLE
@@ -55,4 +69,26 @@ describe('ol.reproj.Image', function() {
     });
     image.load();
   });
+
+  it('has uniform color', function(done) {
+    const image = createTranslucentImage(1);
+    listen(image, 'change', function() {
+      if (image.getState() == 2) { // LOADED
+        const canvas = image.getImage();
+        expect(canvas.width).to.be(36);
+        expect(canvas.height).to.be(17);
+        const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+
+        for (let i = 0; i < canvas.width * canvas.height * 4; i += 4) {
+          expect(pixels[i + 0]).to.be.within(pixels[0] - 2, pixels[0] + 2);
+          expect(pixels[i + 1]).to.be.within(pixels[1] - 2, pixels[1] + 2);
+          expect(pixels[i + 2]).to.be.within(pixels[2] - 2, pixels[2] + 2);
+          expect(pixels[i + 3]).to.be.within(pixels[3] - 2, pixels[3] + 2);
+        }
+        done();
+      }
+    });
+    image.load();
+  });
+
 });

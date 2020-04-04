@@ -7,9 +7,9 @@ import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
-import {getArea, getCenter, getIntersection} from '../extent.js';
+import {getArea, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
-import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
+import {calculateSourceExtentResolution, render as renderReprojected} from '../reproj.js';
 import Triangulation from './Triangulation.js';
 
 
@@ -148,9 +148,8 @@ class ReprojTile extends Tile {
     const targetResolution = targetTileGrid.getResolution(
       this.wrappedTileCoord_[0]);
 
-    const targetCenter = getCenter(limitedTargetExtent);
-    const sourceResolution = calculateSourceResolution(
-      sourceProj, targetProj, targetCenter, targetResolution);
+    const sourceResolution = calculateSourceExtentResolution(
+      sourceProj, targetProj, limitedTargetExtent, targetResolution);
 
     if (!isFinite(sourceResolution) || sourceResolution <= 0) {
       // invalid sourceResolution -> EMPTY
