@@ -168,6 +168,37 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
+   * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} lineStringGeometry LineString geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   */
+  drawLineString(lineStringGeometry, feature) {
+    if (!this.image_) {
+      return;
+    }
+    this.beginGeometry(lineStringGeometry, feature)
+    const flatCoordinates = lineStringGeometry.getFlatMidpoint()
+    let stride = lineStringGeometry.getStride()
+    let myBegin = this.coordinates.length
+    let myEnd = this.drawCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
+    this.instructions.push([
+      CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
+      //  Remaining arguments to DRAW_IMAGE are in alphabetical order
+      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
+      this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
+      this.scale_ * this.pixelRatio, this.width_
+    ])
+    this.hitDetectionInstructions.push([
+      CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
+      // Remaining arguments to DRAW_IMAGE are in alphabetical order
+      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
+      this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
+      this.scale_, this.width_
+    ])
+    this.endGeometry(feature)
+  }
+
+  /**
    * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
    */
   finish() {

@@ -196,6 +196,15 @@ function renderLineStringGeometry(builderGroup, geometry, style, feature) {
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
+  const imageStyle = style.getImage();
+  if (imageStyle) {
+    if (imageStyle.getImageState() != ImageState.LOADED) {
+      return;
+    }
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.IMAGE);
+    imageReplay.setImageStyle(imageStyle, builderGroup.addDeclutter(false));
+    imageReplay.drawLineString(geometry, feature)
+  }
 }
 
 
