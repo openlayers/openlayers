@@ -78,7 +78,7 @@ class ImageWrapper extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    * @api
    */
   getImage() {
@@ -114,7 +114,6 @@ class ImageWrapper extends ImageBase {
    * Load the image or retry if loading previously failed.
    * Loading is taken care of by the tile queue, and calling this method is
    * only needed for preloading or for reloading in case of an error.
-   * @override
    * @api
    */
   load() {

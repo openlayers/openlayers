@@ -155,14 +155,14 @@ class VectorRenderTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * Load the tile.
    */
   load() {
     this.getSourceTiles();
   }
 
   /**
-   * @inheritDoc
+   * Remove from the cache due to expiry
    */
   release() {
     for (const key in this.context_) {

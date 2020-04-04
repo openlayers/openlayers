@@ -19,7 +19,7 @@ class JSONFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./FormatType.js").default} Format.
    */
   getType() {
     return FormatType.JSON;
@@ -29,7 +29,7 @@ class JSONFeature extends FeatureFormat {
    * Read a feature.  Only works for a single feature. Use `readFeatures` to
    * read a feature collection.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
@@ -43,7 +43,7 @@ class JSONFeature extends FeatureFormat {
    * Read all features.  Works with both a single feature and a feature
    * collection.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
@@ -78,7 +78,7 @@ class JSONFeature extends FeatureFormat {
   /**
    * Read a geometry.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
@@ -102,7 +102,7 @@ class JSONFeature extends FeatureFormat {
   /**
    * Read the projection.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
@@ -189,7 +189,7 @@ class JSONFeature extends FeatureFormat {
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Element|Object|string} source Source.
  * @return {Object} Object.
  */
 function getObject(source) {

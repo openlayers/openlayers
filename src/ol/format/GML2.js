@@ -53,7 +53,7 @@ class GML2 extends GMLBase {
         makeArrayPusher(this.readFeaturesInternal);
 
     /**
-     * @inheritDoc
+     * @type {string}
      */
     this.schemaLocation = options.schemaLocation ?
       options.schemaLocation : schemaLocation;

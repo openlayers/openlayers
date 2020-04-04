@@ -22,7 +22,7 @@ class GML32 extends GML3 {
     super(options);
 
     /**
-     * @inheritDoc
+     * @type {string}
      */
     this.schemaLocation = options.schemaLocation ?
       options.schemaLocation : this.namespace + ' http://schemas.opengis.net/gml/3.2.1/gml.xsd';

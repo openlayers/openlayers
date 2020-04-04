@@ -34,7 +34,8 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} lineStringGeometry Line string geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawLineString(lineStringGeometry, feature) {
     const state = this.state;
@@ -58,7 +59,8 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} multiLineStringGeometry MultiLineString geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiLineString(multiLineStringGeometry, feature) {
     const state = this.state;
@@ -79,14 +81,14 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     const stride = multiLineStringGeometry.getStride();
     let offset = 0;
     for (let i = 0, ii = ends.length; i < ii; ++i) {
-      offset = this.drawFlatCoordinates_(flatCoordinates, offset, ends[i], stride);
+      offset = this.drawFlatCoordinates_(flatCoordinates, offset, /** @type {number} */ (ends[i]), stride);
     }
     this.hitDetectionInstructions.push(strokeInstruction);
     this.endGeometry(feature);
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     const state = this.state;
@@ -99,7 +101,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc.
+   * @param {import("../canvas.js").FillStrokeState} state State.
    */
   applyStroke(state) {
     if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {

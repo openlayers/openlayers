@@ -31,14 +31,16 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    */
   getImage() {
     return !this.image_ ? null : this.image_.getImage();
   }
 
   /**
-   * @inheritDoc
+   * Determine whether render should be called.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
@@ -77,7 +79,10 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Render the layer.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {HTMLElement} target Target that may be used to render content to.
+   * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState, target) {
     const image = this.image_;

@@ -93,7 +93,8 @@ class WebGLPointsLayer extends Layer {
   }
 
   /**
-   * @inheritDoc
+   * Create a renderer for this layer.
+   * @return {WebGLPointsLayerRenderer} A layer renderer.
    */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
@@ -109,8 +110,7 @@ class WebGLPointsLayer extends Layer {
   }
 
   /**
-   *
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.renderer_.dispose();

@@ -77,7 +77,7 @@ class IGC extends TextFeature {
     const options = opt_options ? opt_options : {};
 
     /**
-     * @inheritDoc
+     * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
 
@@ -89,7 +89,10 @@ class IGC extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromText(text, opt_options) {
     const altitudeMode = this.altitudeMode_;
@@ -164,7 +167,10 @@ class IGC extends TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {Array<Feature>} Features.
    */
   readFeaturesFromText(text, opt_options) {
     const feature = this.readFeatureFromText(text, opt_options);

@@ -86,7 +86,7 @@ class GML3 extends GMLBase {
       options.multiSurface : true;
 
     /**
-     * @inheritDoc
+     * @type {string}
      */
     this.schemaLocation = options.schemaLocation ?
       options.schemaLocation : schemaLocation;
@@ -866,7 +866,6 @@ class GML3 extends GMLBase {
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
-   * @override
    * @api
    */
   writeGeometryNode(geometry, opt_options) {
@@ -888,7 +887,6 @@ class GML3 extends GMLBase {
    * @param {Array<import("../Feature.js").default>} features Features.
    * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Element} Node.
-   * @override
    * @api
    */
   writeFeaturesNode(features, opt_options) {

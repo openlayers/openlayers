@@ -129,7 +129,7 @@ class Geolocation extends BaseObject {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.setTracking(false);

@@ -470,7 +470,10 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @protected
+   * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Geometry.
    */
   //@ts-ignore
   readGeometryFromNode(node, opt_options) {
@@ -480,7 +483,9 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
     const options = {
@@ -495,7 +500,8 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Element} node Node.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromNode(node) {
     return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));

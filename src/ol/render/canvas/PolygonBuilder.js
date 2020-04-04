@@ -62,7 +62,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/Circle.js").default} circleGeometry Circle geometry.
+   * @param {import("../../Feature.js").default} feature Feature.
    */
   drawCircle(circleGeometry, feature) {
     const state = this.state;
@@ -106,7 +107,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} polygonGeometry Polygon geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawPolygon(polygonGeometry, feature) {
     const state = this.state;
@@ -133,12 +135,13 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const ends = polygonGeometry.getEnds();
     const flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
     const stride = polygonGeometry.getStride();
-    this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
+    this.drawFlatCoordinatess_(flatCoordinates, 0, /** @type {Array<number>} */ (ends), stride);
     this.endGeometry(feature);
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiPolygon(multiPolygonGeometry, feature) {
     const state = this.state;
@@ -173,7 +176,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     this.reverseHitDetectionInstructions();

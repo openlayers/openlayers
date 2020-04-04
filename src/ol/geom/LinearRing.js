@@ -52,7 +52,6 @@ class LinearRing extends SimpleGeometry {
   /**
    * Make a complete copy of the geometry.
    * @return {!LinearRing} Clone.
-   * @override
    * @api
    */
   clone() {
@@ -60,7 +59,11 @@ class LinearRing extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+   * @param {number} minSquaredDistance Minimum squared distance.
+   * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -88,7 +91,6 @@ class LinearRing extends SimpleGeometry {
   /**
    * Return the coordinates of the linear ring.
    * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
-   * @override
    * @api
    */
   getCoordinates() {
@@ -97,7 +99,9 @@ class LinearRing extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {LinearRing} Simplified LinearRing.
+   * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
     const simplifiedFlatCoordinates = [];
@@ -108,7 +112,8 @@ class LinearRing extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {
@@ -116,7 +121,10 @@ class LinearRing extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Test if the geometry and the passed extent intersect.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {boolean} `true` if the geometry and the extent intersect.
+   * @api
    */
   intersectsExtent(extent) {
     return false;
@@ -126,7 +134,6 @@ class LinearRing extends SimpleGeometry {
    * Set the coordinates of the linear ring.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
    * @param {GeometryLayout=} opt_layout Layout.
-   * @override
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

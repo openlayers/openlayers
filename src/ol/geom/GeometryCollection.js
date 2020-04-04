@@ -61,7 +61,6 @@ class GeometryCollection extends Geometry {
   /**
    * Make a complete copy of the geometry.
    * @return {!GeometryCollection} Clone.
-   * @override
    * @api
    */
   clone() {
@@ -71,7 +70,11 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+   * @param {number} minSquaredDistance Minimum squared distance.
+   * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -86,7 +89,9 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
    */
   containsXY(x, y) {
     const geometries = this.geometries_;
@@ -99,7 +104,9 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @protected
+   * @return {import("../extent.js").Extent} extent Extent.
    */
   computeExtent(extent) {
     createOrUpdateEmpty(extent);
@@ -144,7 +151,9 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Create a simplified version of this geometry using the Douglas Peucker algorithm.
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {GeometryCollection} Simplified GeometryCollection.
    */
   getSimplifiedGeometry(squaredTolerance) {
     if (this.simplifiedGeometryRevision !== this.getRevision()) {
@@ -179,7 +188,8 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {
@@ -187,7 +197,9 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Test if the geometry and the passed extent intersect.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
    */
   intersectsExtent(extent) {
@@ -208,7 +220,10 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Rotate the geometry around a given coordinate. This modifies the geometry
+   * coordinates in place.
+   * @param {number} angle Rotation angle in radians.
+   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
   rotate(angle, anchor) {
@@ -220,7 +235,13 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Scale the geometry (with an optional origin).  This modifies the geometry
+   * coordinates in place.
+   * @abstract
+   * @param {number} sx The scaling factor in the x-direction.
+   * @param {number=} opt_sy The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
+   *     of the geometry extent).
    * @api
    */
   scale(sx, opt_sy, opt_anchor) {
@@ -255,7 +276,12 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * Called with a flat array of geometry coordinates.
    * @api
    */
   applyTransform(transformFn) {
@@ -267,7 +293,10 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Translate the geometry.  This modifies the geometry coordinates in place.  If
+   * instead you want a new geometry, first `clone()` this geometry.
+   * @param {number} deltaX Delta X.
+   * @param {number} deltaY Delta Y.
    * @api
    */
   translate(deltaX, deltaY) {
@@ -279,7 +308,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.unlistenGeometriesChange_();

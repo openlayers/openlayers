@@ -130,7 +130,7 @@ class Target extends Disposable {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     clear(this.listeners_);

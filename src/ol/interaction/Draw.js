@@ -465,7 +465,10 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Remove the interaction from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   setMap(map) {
     super.setMap(map);
@@ -483,7 +486,8 @@ class Draw extends PointerInteraction {
 
   /**
    * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually draw or finish the drawing.
-   * @override
+   * @param {import("../MapBrowserPointerEvent.js").default} event Map browser event.
+   * @return {boolean} `false` to stop event propagation.
    * @api
    */
   handleEvent(event) {
@@ -520,7 +524,7 @@ class Draw extends PointerInteraction {
       pass = event.type === MapBrowserEventType.POINTERMOVE;
       if (pass && this.freehand_) {
         pass = this.handlePointerMove_(event);
-      } else if (/** @type {MapBrowserPointerEvent} */ (event).pointerEvent.pointerType == 'mouse' ||
+      } else if (event.pointerEvent.pointerType == 'mouse' ||
           (event.type === MapBrowserEventType.POINTERDRAG && this.downTimeout_ === undefined)) {
         this.handlePointerMove_(event);
       }
@@ -532,7 +536,9 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(event) {
     this.shouldHandle_ = !this.freehand_;
@@ -559,7 +565,9 @@ class Draw extends PointerInteraction {
 
 
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(event) {
     let pass = true;

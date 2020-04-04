@@ -322,7 +322,7 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     if (this.state_) {

@@ -46,7 +46,7 @@ import {assert} from '../asserts.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./Base.js").default} layer
+ * @property {import("./Layer.js").default} layer
  * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
  * @property {SourceState} sourceState
  * @property {boolean} visible
@@ -138,7 +138,8 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @inheritDoc
+   * @param {Array<import("./Layer.js").default>=} opt_array Array of layers (to be modified in place).
+   * @return {Array<import("./Layer.js").default>} Array of layers.
    */
   getLayersArray(opt_array) {
     const array = opt_array ? opt_array : [];
@@ -147,7 +148,8 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @inheritDoc
+   * @param {Array<import("./Layer.js").State>=} opt_states Optional list of layer states (to be modified in place).
+   * @return {Array<import("./Layer.js").State>} List of layer states.
    */
   getLayerStatesArray(opt_states) {
     const states = opt_states ? opt_states : [];
@@ -166,8 +168,8 @@ class Layer extends BaseLayer {
   }
 
   /**
-    * @inheritDoc
-    */
+   * @return {import("../source/State.js").default} Source state.
+   */
   getSourceState() {
     const source = this.getSource();
     return !source ? SourceState.UNDEFINED : source.getState();
@@ -299,7 +301,7 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.setSource(null);

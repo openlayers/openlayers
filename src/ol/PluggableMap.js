@@ -498,7 +498,7 @@ class PluggableMap extends BaseObject {
 
   /**
    *
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.mapBrowserEventHandler_.dispose();

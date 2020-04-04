@@ -234,7 +234,7 @@ class MVT extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./FormatType.js").default} Format.
    */
   getType() {
     return FormatType.ARRAY_BUFFER;
@@ -277,7 +277,10 @@ class MVT extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * Read the projection from the source.
+   *
+   * @param {Document|Element|Object|string} source Source.
+   * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
   readProjection(source) {

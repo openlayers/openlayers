@@ -38,11 +38,10 @@ class CircleStyle extends RegularShape {
   }
 
   /**
-  * Clones the style.
-  * @return {CircleStyle} The cloned style.
-  * @override
-  * @api
-  */
+   * Clones the style.
+   * @return {CircleStyle} The cloned style.
+   * @api
+   */
   clone() {
     const style = new CircleStyle({
       fill: this.getFill() ? this.getFill().clone() : undefined,

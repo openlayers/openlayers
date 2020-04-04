@@ -27,7 +27,7 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./FormatType.js").default} Format.
    */
   getType() {
     return FormatType.XML;
@@ -36,7 +36,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * Read a single feature.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
@@ -50,7 +50,7 @@ class XMLFeature extends FeatureFormat {
     } else if (isDocument(source)) {
       return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
     } else {
-      return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
+      return this.readFeatureFromNode(/** @type {Element} */ (source), opt_options);
     }
   }
 
@@ -69,7 +69,7 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @return {import("../Feature.js").default} Feature.
    */
@@ -80,7 +80,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * Read all features from a feature collection.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
@@ -95,7 +95,7 @@ class XMLFeature extends FeatureFormat {
       return this.readFeaturesFromDocument(
         /** @type {Document} */ (source), opt_options);
     } else {
-      return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
+      return this.readFeaturesFromNode(/** @type {Element} */ (source), opt_options);
     }
   }
 
@@ -108,9 +108,9 @@ class XMLFeature extends FeatureFormat {
   readFeaturesFromDocument(doc, opt_options) {
     /** @type {Array<import("../Feature.js").default>} */
     const features = [];
-    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        extend(features, this.readFeaturesFromNode(n, opt_options));
+        extend(features, this.readFeaturesFromNode(/** @type {Element} */ (n), opt_options));
       }
     }
     return features;
@@ -118,7 +118,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
@@ -128,7 +128,11 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * Read a single geometry from a source.
+   *
+   * @param {Document|Element|Object|string} source Source.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometry(source, opt_options) {
     if (!source) {
@@ -140,7 +144,7 @@ class XMLFeature extends FeatureFormat {
       return this.readGeometryFromDocument(
         /** @type {Document} */ (source), opt_options);
     } else {
-      return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
+      return this.readGeometryFromNode(/** @type {Element} */ (source), opt_options);
     }
   }
 
@@ -155,7 +159,7 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
@@ -167,7 +171,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * Read the projection from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
@@ -180,7 +184,7 @@ class XMLFeature extends FeatureFormat {
     } else if (isDocument(source)) {
       return this.readProjectionFromDocument(/** @type {Document} */ (source));
     } else {
-      return this.readProjectionFromNode(/** @type {Node} */ (source));
+      return this.readProjectionFromNode(/** @type {Element} */ (source));
     }
   }
 
@@ -194,7 +198,7 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @protected
    * @return {import("../proj/Projection.js").default} Projection.
    */
@@ -203,7 +207,11 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * Encode a feature as string.
+   *
+   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @return {string} Encoded feature.
    */
   writeFeature(feature, opt_options) {
     const node = this.writeFeatureNode(feature, opt_options);
@@ -243,7 +251,11 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * Encode a geometry as string.
+   *
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @return {string} Encoded geometry.
    */
   writeGeometry(geometry, opt_options) {
     const node = this.writeGeometryNode(geometry, opt_options);

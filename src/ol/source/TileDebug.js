@@ -68,9 +68,6 @@ class LabeledTile extends Tile {
     }
   }
 
-  /**
-  * @override
-  */
   load() {}
 }
 
@@ -118,8 +115,11 @@ class TileDebug extends XYZ {
   }
 
   /**
-  * @inheritDoc
-  */
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @return {!LabeledTile} Tile.
+   */
   getTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {

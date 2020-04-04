@@ -185,7 +185,10 @@ class DragAndDrop extends Interaction {
   }
 
   /**
-   * @inheritDoc
+   * Activate or deactivate the interaction.
+   * @param {boolean} active Active.
+   * @observable
+   * @api
    */
   setActive(active) {
     if (!this.getActive() && active) {
@@ -198,7 +201,10 @@ class DragAndDrop extends Interaction {
   }
 
   /**
-   * @inheritDoc
+   * Remove the interaction from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   setMap(map) {
     this.unregisterListeners_();

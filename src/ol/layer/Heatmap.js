@@ -178,7 +178,8 @@ class Heatmap extends VectorLayer {
   }
 
   /**
-   * @inheritDoc
+   * Create a renderer for this layer.
+   * @return {WebGLPointsLayerRenderer} A layer renderer.
    */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {

@@ -212,7 +212,7 @@ class TileSource extends Source {
   }
 
   /**
-   * @inheritDoc
+   * @return {Array<number>} Resolutions.
    */
   getResolutions() {
     return this.tileGrid.getResolutions();

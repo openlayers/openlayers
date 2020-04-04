@@ -36,7 +36,6 @@ class Circle extends SimpleGeometry {
   /**
    * Make a complete copy of the geometry.
    * @return {!Circle} Clone.
-   * @override
    * @api
    */
   clone() {
@@ -44,7 +43,11 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+   * @param {number} minSquaredDistance Minimum squared distance.
+   * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     const flatCoordinates = this.flatCoordinates;
@@ -72,7 +75,9 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
    */
   containsXY(x, y) {
     const flatCoordinates = this.flatCoordinates;
@@ -91,7 +96,9 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @protected
+   * @return {import("../extent.js").Extent} extent Extent.
    */
   computeExtent(extent) {
     const flatCoordinates = this.flatCoordinates;
@@ -122,7 +129,8 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {
@@ -130,7 +138,9 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Test if the geometry and the passed extent intersect.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
    */
   intersectsExtent(extent) {
@@ -193,16 +203,10 @@ class Circle extends SimpleGeometry {
     this.changed();
   }
 
-  /**
-   * @inheritDoc
-   */
   getCoordinates() {
     return null;
   }
 
-  /**
-   * @inheritDoc
-   */
   setCoordinates(coordinates, opt_layout) {}
 
   /**
@@ -216,7 +220,10 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Rotate the geometry around a given coordinate. This modifies the geometry
+   * coordinates in place.
+   * @param {number} angle Rotation angle in radians.
+   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
   rotate(angle, anchor) {
@@ -227,7 +234,10 @@ class Circle extends SimpleGeometry {
   }
 
   /**
-   * @inheritDoc
+   * Translate the geometry.  This modifies the geometry coordinates in place.  If
+   * instead you want a new geometry, first `clone()` this geometry.
+   * @param {number} deltaX Delta X.
+   * @param {number} deltaY Delta Y.
    * @api
    */
   translate(deltaX, deltaY) {

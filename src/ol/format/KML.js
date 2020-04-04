@@ -427,7 +427,7 @@ class KML extends XMLFeature {
     }
 
     /**
-     * @inheritDoc
+     * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
 
@@ -598,7 +598,9 @@ class KML extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
     if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
@@ -614,7 +616,10 @@ class KML extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
     if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
@@ -847,7 +852,6 @@ class KML extends XMLFeature {
    * @param {Array<Feature>} features Features.
    * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
-   * @override
    * @api
    */
   writeFeaturesNode(features, opt_options) {

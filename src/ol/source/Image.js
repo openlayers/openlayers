@@ -120,7 +120,6 @@ class ImageSource extends Source {
 
   /**
    * @return {Array<number>} Resolutions.
-   * @override
    */
   getResolutions() {
     return this.resolutions_;

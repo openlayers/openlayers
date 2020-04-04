@@ -79,7 +79,8 @@ class CompositeMapRenderer extends MapRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Render.
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
     if (!frameState) {
@@ -133,7 +134,17 @@ class CompositeMapRenderer extends MapRenderer {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {function(import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   *     callback.
+   * @param {function(import("../layer/Layer.js").default): boolean} layerFilter Layer filter
+   *     function, only layers which are visible and for which this function
+   *     returns `true` will be tested for features.  By default, all visible
+   *     layers will be tested.
+   * @return {T|undefined} Callback result.
+   * @template T
    */
   forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
     const viewState = frameState.viewState;

@@ -35,9 +35,6 @@ class MockTile extends TileSource {
 }
 
 
-/**
- * @inheritDoc
- */
 MockTile.prototype.getTile = function(z, x, y) {
   const key = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(key)) {

@@ -225,7 +225,9 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * Get the anchor point in pixels. The anchor determines the center point for the
+   * symbolizer.
+   * @return {Array<number>} Anchor.
    * @api
    */
   getAnchor() {
@@ -293,7 +295,6 @@ class Icon extends ImageStyle {
    * Get the image icon.
    * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
-   * @override
    * @api
    */
   getImage(pixelRatio) {
@@ -301,35 +302,37 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @override
+   * @return {import("../size.js").Size} Image size.
    */
   getImageSize() {
     return this.iconImage_.getSize();
   }
 
   /**
-   * @override
+   * @return {import("../size.js").Size} Size of the hit-detection image.
    */
   getHitDetectionImageSize() {
     return this.getImageSize();
   }
 
   /**
-   * @override
+   * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {
     return this.iconImage_.getImageState();
   }
 
   /**
-   * @override
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {HTMLImageElement|HTMLCanvasElement} Image element.
    */
   getHitDetectionImage(pixelRatio) {
     return this.iconImage_.getHitDetectionImage(pixelRatio);
   }
 
   /**
-   * @inheritDoc
+   * Get the origin of the symbolizer.
+   * @return {Array<number>} Origin.
    * @api
    */
   getOrigin() {
@@ -371,7 +374,8 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @inheritDoc
+   * Get the size of the icon (in pixels).
+   * @return {import("../size.js").Size} Image size.
    * @api
    */
   getSize() {
@@ -379,7 +383,7 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @override
+   * @param {function(import("../events/Event.js").default): void} listener Listener function.
    */
   listenImageChange(listener) {
     this.iconImage_.addEventListener(EventType.CHANGE, listener);
@@ -390,7 +394,6 @@ class Icon extends ImageStyle {
    * When rendering a feature with an icon style, the vector renderer will
    * automatically call this method. However, you might want to call this
    * method yourself for preloading or other purposes.
-   * @override
    * @api
    */
   load() {
@@ -398,7 +401,7 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @override
+   * @param {function(import("../events/Event.js").default): void} listener Listener function.
    */
   unlistenImageChange(listener) {
     this.iconImage_.removeEventListener(EventType.CHANGE, listener);

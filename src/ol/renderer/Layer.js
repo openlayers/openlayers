@@ -23,7 +23,7 @@ class LayerRenderer extends Observable {
     this.boundHandleImageChange_ = this.handleImageChange_.bind(this);
 
     /**
-     * @private
+     * @protected
      * @type {LayerType}
      */
     this.layer_ = layer;
@@ -65,12 +65,14 @@ class LayerRenderer extends Observable {
    * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
    * @param {number} zoom Zoom level.
    * @param {import("../Tile.js").default} tile Tile.
+   * @return {boolean|void} If `false`, the tile will not be considered loaded.
    */
   loadedTileCallback(tiles, zoom, tile) {
     if (!tiles[zoom]) {
       tiles[zoom] = {};
     }
     tiles[zoom][tile.tileCoord.toString()] = tile;
+    return undefined;
   }
 
   /**

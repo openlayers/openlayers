@@ -78,7 +78,7 @@ class TopoJSON extends JSONFeature {
     this.layers_ = options.layers ? options.layers : null;
 
     /**
-     * @inheritDoc
+     * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection(
       options.dataProjection ?
@@ -87,7 +87,10 @@ class TopoJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {Array<Feature>} Features.
    */
   readFeaturesFromObject(object, opt_options) {
     if (object.type == 'Topology') {
@@ -128,7 +131,9 @@ class TopoJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @protected
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromObject(object) {
     return this.dataProjection;

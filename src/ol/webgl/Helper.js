@@ -402,7 +402,7 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.canvas_.removeEventListener(ContextEventType.LOST, this.boundHandleWebGLContextLost_);

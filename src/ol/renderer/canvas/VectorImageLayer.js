@@ -52,7 +52,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.vectorRenderer_.dispose();
@@ -60,7 +60,9 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Asynchronous layer level hit detection.
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @return {Promise<Array<import("../../Feature").default>>} Promise that resolves with an array of features.
    */
   getFeatures(pixel) {
     if (this.vectorRenderer_) {
@@ -76,14 +78,16 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Perform action necessary to get the layer rendered after new fonts have loaded
    */
   handleFontsChanged() {
     this.vectorRenderer_.handleFontsChanged();
   }
 
   /**
-   * @inheritDoc
+   * Determine whether render should be called.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
     const pixelRatio = frameState.pixelRatio;
@@ -145,17 +149,21 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
-   * @override
    */
   preRender() {}
 
   /**
-   * @override
    */
   postRender() {}
 
   /**
-   * @inheritDoc
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
+   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
+   * @return {T|void} Callback result.
+   * @template T
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
     if (this.vectorRenderer_) {

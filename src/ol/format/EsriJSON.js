@@ -102,9 +102,13 @@ class EsriJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {string=} opt_idField Name of the field where to get the id from.
+   * @protected
+   * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromObject(object, opt_options) {
+  readFeatureFromObject(object, opt_options, opt_idField) {
     const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
     const geometry = readGeometry(esriJSONFeature.geometry, opt_options);
     const feature = new Feature();
@@ -112,18 +116,21 @@ class EsriJSON extends JSONFeature {
       feature.setGeometryName(this.geometryName_);
     }
     feature.setGeometry(geometry);
-    if (opt_options && opt_options.idField &&
-      esriJSONFeature.attributes[opt_options.idField]) {
-      feature.setId(/** @type {number} */(esriJSONFeature.attributes[opt_options.idField]));
-    }
     if (esriJSONFeature.attributes) {
       feature.setProperties(esriJSONFeature.attributes, true);
+      const id = esriJSONFeature.attributes[opt_idField];
+      if (id !== undefined) {
+        feature.setId(/** @type {number} */(id));
+      }
     }
     return feature;
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {Array<Feature>} Features.
    */
   readFeaturesFromObject(object, opt_options) {
     const options = opt_options ? opt_options : {};
@@ -132,9 +139,8 @@ class EsriJSON extends JSONFeature {
       /** @type {Array<import("../Feature.js").default>} */
       const features = [];
       const esriJSONFeatures = esriJSONFeatureSet.features;
-      options.idField = object.objectIdFieldName;
       for (let i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
-        features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
+        features.push(this.readFeatureFromObject(esriJSONFeatures[i], options, object.objectIdFieldName));
       }
       return features;
     } else {
@@ -143,14 +149,19 @@ class EsriJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {EsriJSONGeometry} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometryFromObject(object, opt_options) {
-    return readGeometry(/** @type {EsriJSONGeometry} */(object), opt_options);
+    return readGeometry(object, opt_options);
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @protected
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromObject(object) {
     if (object['spatialReference'] && object['spatialReference']['wkid'] !== undefined) {
@@ -168,7 +179,6 @@ class EsriJSON extends JSONFeature {
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {EsriJSONGeometry} Object.
-   * @override
    * @api
    */
   writeGeometryObject(geometry, opt_options) {
@@ -181,7 +191,6 @@ class EsriJSON extends JSONFeature {
    * @param {import("../Feature.js").default} feature Feature.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} Object.
-   * @override
    * @api
    */
   writeFeatureObject(feature, opt_options) {
@@ -212,7 +221,6 @@ class EsriJSON extends JSONFeature {
    * @param {Array<import("../Feature.js").default>} features Features.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {EsriJSONFeatureSet} EsriJSON Object.
-   * @override
    * @api
    */
   writeFeaturesObject(features, opt_options) {

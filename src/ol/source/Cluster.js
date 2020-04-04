@@ -91,7 +91,9 @@ class Cluster extends VectorSource {
   }
 
   /**
-   * @override
+   * Remove all features from the source.
+   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @api
    */
   clear(opt_fast) {
     this.features.length = 0;
@@ -117,7 +119,9 @@ class Cluster extends VectorSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    */
   loadFeatures(extent, resolution, projection) {
     this.source.loadFeatures(extent, resolution, projection);
@@ -157,7 +161,6 @@ class Cluster extends VectorSource {
 
   /**
    * Handle the source changing.
-   * @override
    */
   refresh() {
     this.clear();

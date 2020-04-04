@@ -19,7 +19,7 @@ class TextFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./FormatType.js").default} Format.
    */
   getType() {
     return FormatType.TEXT;
@@ -28,7 +28,7 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the feature from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
@@ -51,7 +51,7 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the features from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
@@ -74,7 +74,7 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the geometry from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
@@ -97,7 +97,7 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the projection from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
@@ -186,7 +186,7 @@ class TextFeature extends FeatureFormat {
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Element|Object|string} source Source.
  * @return {string} Text.
  */
 function getText(source) {

@@ -112,7 +112,7 @@ class ReprojImage extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     if (this.state == ImageState.LOADING) {
@@ -122,7 +122,7 @@ class ReprojImage extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * @return {HTMLCanvasElement} Image.
    */
   getImage() {
     return this.canvas_;
@@ -156,7 +156,7 @@ class ReprojImage extends ImageBase {
   }
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    */
   load() {
     if (this.state == ImageState.IDLE) {

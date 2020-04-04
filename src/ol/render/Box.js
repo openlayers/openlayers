@@ -47,7 +47,7 @@ class RenderBox extends Disposable {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.setMap(null);
