@@ -9,7 +9,7 @@ import {listenImage} from './Image.js';
 class ImageTile extends Tile {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.

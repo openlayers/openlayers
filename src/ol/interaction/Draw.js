@@ -34,7 +34,7 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 
 /**
  * @typedef {Object} Options
- * @property {GeometryType} type Geometry type of
+ * @property {import("../geom/GeometryType.js").default} type Geometry type of
  * the geometries being drawn with this instance.
  * @property {number} [clickTolerance=6] The maximum distance in pixels between
  * "down" and "up" for a "up" event to be considered a "click" event and
@@ -244,10 +244,10 @@ class Draw extends PointerInteraction {
 
     /**
      * Geometry type.
-     * @type {GeometryType}
+     * @type {import("../geom/GeometryType.js").default}
      * @private
      */
-    this.type_ = /** @type {GeometryType} */ (options.type);
+    this.type_ = /** @type {import("../geom/GeometryType.js").default} */ (options.type);
 
     /**
      * Drawing mode (derived from geometry type.
@@ -1166,7 +1166,7 @@ export function createBox() {
 /**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
- * @param {GeometryType} type Geometry type.
+ * @param {import("../geom/GeometryType.js").default} type Geometry type.
  * @return {Mode} Drawing mode.
  */
 function getMode(type) {

@@ -370,7 +370,7 @@ class CanvasBuilder extends VectorContext {
     let begin = -1;
     for (i = 0; i < n; ++i) {
       instruction = hitDetectionInstructions[i];
-      type = /** @type {CanvasInstruction} */ (instruction[0]);
+      type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       if (type == CanvasInstruction.END_GEOMETRY) {
         begin = i;
       } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {

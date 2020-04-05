@@ -41,7 +41,7 @@ import {toSize} from '../size.js';
  * @property {number} [transition]
  * @property {string} [url] Base URL of the IIIF Image service.
  * This should be the same as the IIIF Image ID.
- * @property {Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
+ * @property {import("../format/IIIFInfo.js").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
  * @property {number} [zDirection=0] Indicate which resolution should be used
  * by a renderer if the view resolution does not match any resolution of the tile source.
  * If 0, the nearest resolution will be used. If 1, the nearest lower resolution

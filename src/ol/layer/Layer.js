@@ -46,7 +46,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {Object} State
  * @property {import("./Layer.js").default} layer
  * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
- * @property {SourceState} sourceState
+ * @property {import("../source/State.js").default} sourceState
  * @property {boolean} visible
  * @property {boolean} managed
  * @property {import("../extent.js").Extent} [extent]

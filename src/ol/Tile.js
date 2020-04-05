@@ -75,7 +75,7 @@ import {easeIn} from './easing.js';
 class Tile extends EventTarget {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @param {Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, opt_options) {
@@ -90,7 +90,7 @@ class Tile extends EventTarget {
 
     /**
      * @protected
-     * @type {TileState}
+     * @type {import("./TileState.js").default}
      */
     this.state = state;
 
@@ -227,7 +227,7 @@ class Tile extends EventTarget {
   }
 
   /**
-   * @return {TileState} State.
+   * @return {import("./TileState.js").default} State.
    */
   getState() {
     return this.state;
@@ -238,7 +238,7 @@ class Tile extends EventTarget {
    * it is important to set the state correctly to {@link module:ol/TileState~ERROR}
    * when the tile cannot be loaded. Otherwise the tile cannot be removed from
    * the tile queue and will block other requests.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @api
    */
   setState(state) {

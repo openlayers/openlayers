@@ -34,7 +34,7 @@ const tmpTransform = createTransform();
  */
 class RenderFeature {
   /**
-   * @param {GeometryType} type Geometry type.
+   * @param {import("../geom/GeometryType.js").default} type Geometry type.
    * @param {Array<number>} flatCoordinates Flat coordinates. These always need
    *     to be right-handed for polygons.
    * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -56,7 +56,7 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {GeometryType}
+     * @type {import("../geom/GeometryType.js").default}
      */
     this.type_ = type;
 
@@ -267,7 +267,7 @@ class RenderFeature {
 
   /**
    * Get the type of this feature's geometry.
-   * @return {GeometryType} Geometry type.
+   * @return {import("../geom/GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {

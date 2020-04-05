@@ -421,10 +421,10 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {GeometryType} The geometry type.
+ * @return {import("../geom/GeometryType.js").default} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {GeometryType} */
+  /** @type {import("../geom/GeometryType.js").default} */
   let geometryType;
   if (type === 1) {
     geometryType =

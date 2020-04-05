@@ -558,7 +558,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * @param {LayoutOptions} layoutOptions Layout options.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {Array<number>=} ends Ends.
- * @return {GeometryLayout} Layout.
+ * @return {import("../geom/GeometryLayout.js").default} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
   let layout = GeometryLayout.XY;

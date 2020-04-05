@@ -25,7 +25,7 @@ export class CustomTile extends ImageTile {
   /**
    * @param {import("../size.js").Size} tileSize Full tile size.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("../TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.

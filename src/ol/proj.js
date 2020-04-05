@@ -181,7 +181,7 @@ export function get(projectionLike) {
  * @param {ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {import("./coordinate.js").Coordinate} point Point to find adjusted resolution at.
- * @param {Units=} opt_units Units to get the point resolution in.
+ * @param {import("./proj/Units.js").default=} opt_units Units to get the point resolution in.
  * Default is the projection's units.
  * @return {number} Point resolution.
  * @api

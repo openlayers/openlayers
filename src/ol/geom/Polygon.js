@@ -35,7 +35,7 @@ class Polygon extends SimpleGeometry {
    *     an array of vertices' coordinates where the first coordinate and the last are
    *     equivalent. (For internal use, flat coordinates in combination with
    *     `opt_layout` and `opt_ends` are also accepted.)
-   * @param {GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @param {Array<number>=} opt_ends Ends (for internal use with flat coordinates).
    */
   constructor(coordinates, opt_layout, opt_ends) {
@@ -385,7 +385,7 @@ class Polygon extends SimpleGeometry {
   /**
    * Set the coordinates of the polygon.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-   * @param {GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {
