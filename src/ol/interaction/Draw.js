@@ -523,7 +523,11 @@ class Draw extends PointerInteraction {
     } else if (move) {
       pass = event.type === MapBrowserEventType.POINTERMOVE;
       if (pass && this.freehand_) {
-        pass = this.handlePointerMove_(event);
+        this.handlePointerMove_(event);
+        if (this.shouldHandle_) {
+          // Avoid page scrolling when freehand drawing on mobile
+          event.preventDefault();
+        }
       } else if (event.pointerEvent.pointerType == 'mouse' ||
           (event.type === MapBrowserEventType.POINTERDRAG && this.downTimeout_ === undefined)) {
         this.handlePointerMove_(event);
@@ -609,7 +613,6 @@ class Draw extends PointerInteraction {
   /**
    * Handle move events.
    * @param {import("../MapBrowserEvent.js").default} event A move event.
-   * @return {boolean} Pass the event to other interactions.
    * @private
    */
   handlePointerMove_(event) {
@@ -625,7 +628,7 @@ class Draw extends PointerInteraction {
         squaredDistance > this.squaredClickTolerance_ :
         squaredDistance <= this.squaredClickTolerance_;
       if (!this.shouldHandle_) {
-        return true;
+        return;
       }
     }
 
@@ -634,7 +637,6 @@ class Draw extends PointerInteraction {
     } else {
       this.createOrUpdateSketchPoint_(event);
     }
-    return true;
   }
 
   /**
