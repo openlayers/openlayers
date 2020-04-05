@@ -125,7 +125,6 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       }
     }
   }
-  document.body.appendChild(context.canvas);
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
