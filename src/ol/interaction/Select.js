@@ -96,6 +96,7 @@ const SelectEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
  * this type.
+ * @api
  */
 class SelectEvent extends Event {
   /**
