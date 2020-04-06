@@ -2,14 +2,18 @@
  * @module ol/source/WMTS
  */
 
-import {expandUrl, createFromTileUrlFunctions, nullTileUrlFunction} from '../tileurlfunction.js';
-import {find, findIndex, includes} from '../array.js';
-import {assign} from '../obj.js';
-import {get as getProjection, equivalent} from '../proj.js';
 import TileImage from './TileImage.js';
 import WMTSRequestEncoding from './WMTSRequestEncoding.js';
-import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {appendParams} from '../uri.js';
+import {assign} from '../obj.js';
+import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
+import {
+  createFromTileUrlFunctions,
+  expandUrl,
+  nullTileUrlFunction,
+} from '../tileurlfunction.js';
+import {equivalent, get as getProjection} from '../proj.js';
+import {find, findIndex, includes} from '../array.js';
 
 /**
  * @typedef {Object} Options
@@ -54,7 +58,6 @@ import {appendParams} from '../uri.js';
  * To disable the opacity transition, pass `transition: 0`.
  */
 
-
 /**
  * @classdesc
  * Layer source for tile data from WMTS servers.
@@ -65,12 +68,12 @@ class WMTS extends TileImage {
    * @param {Options} options WMTS options.
    */
   constructor(options) {
-
     // TODO: add support for TileMatrixLimits
 
-    const requestEncoding = options.requestEncoding !== undefined ?
-      /** @type {import("./WMTSRequestEncoding.js").default} */ (options.requestEncoding) :
-      WMTSRequestEncoding.KVP;
+    const requestEncoding =
+      options.requestEncoding !== undefined
+        ? /** @type {import("./WMTSRequestEncoding.js").default} */ (options.requestEncoding)
+        : WMTSRequestEncoding.KVP;
 
     // FIXME: should we create a default tileGrid?
     // we could issue a getCapabilities xhr to retrieve missing configuration
@@ -95,7 +98,7 @@ class WMTS extends TileImage {
       tileUrlFunction: nullTileUrlFunction,
       urls: urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : false,
-      transition: options.transition
+      transition: options.transition,
     });
 
     /**
@@ -114,7 +117,8 @@ class WMTS extends TileImage {
      * @private
      * @type {!Object}
      */
-    this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
+    this.dimensions_ =
+      options.dimensions !== undefined ? options.dimensions : {};
 
     /**
      * @private
@@ -146,9 +150,10 @@ class WMTS extends TileImage {
     this.setKey(this.getKeyForDimensions_());
 
     if (urls && urls.length > 0) {
-      this.tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this)));
+      this.tileUrlFunction = createFromTileUrlFunctions(
+        urls.map(createFromWMTSTemplate.bind(this))
+      );
     }
-
   }
 
   /**
@@ -159,7 +164,10 @@ class WMTS extends TileImage {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
+    this.setTileUrlFunction(
+      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))),
+      key
+    );
   }
 
   /**
@@ -173,7 +181,6 @@ class WMTS extends TileImage {
     return this.dimensions_;
   }
 
-
   /**
    * Return the image format of the WMTS source.
    * @return {string} Format.
@@ -182,7 +189,6 @@ class WMTS extends TileImage {
   getFormat() {
     return this.format_;
   }
-
 
   /**
    * Return the layer of the WMTS source.
@@ -193,7 +199,6 @@ class WMTS extends TileImage {
     return this.layer_;
   }
 
-
   /**
    * Return the matrix set of the WMTS source.
    * @return {string} MatrixSet.
@@ -202,7 +207,6 @@ class WMTS extends TileImage {
   getMatrixSet() {
     return this.matrixSet_;
   }
-
 
   /**
    * Return the request encoding, either "KVP" or "REST".
@@ -213,7 +217,6 @@ class WMTS extends TileImage {
     return this.requestEncoding_;
   }
 
-
   /**
    * Return the style of the WMTS source.
    * @return {string} Style.
@@ -223,7 +226,6 @@ class WMTS extends TileImage {
     return this.style_;
   }
 
-
   /**
    * Return the version of the WMTS source.
    * @return {string} Version.
@@ -232,7 +234,6 @@ class WMTS extends TileImage {
   getVersion() {
     return this.version_;
   }
-
 
   /**
    * @private
@@ -247,7 +248,6 @@ class WMTS extends TileImage {
     return res.join('/');
   }
 
-
   /**
    * Update the dimensions.
    * @param {Object} dimensions Dimensions.
@@ -257,7 +257,6 @@ class WMTS extends TileImage {
     assign(this.dimensions_, dimensions);
     this.setKey(this.getKeyForDimensions_());
   }
-
 }
 
 export default WMTS;
@@ -288,7 +287,7 @@ export default WMTS;
  */
 export function optionsFromCapabilities(wmtsCap, config) {
   const layers = wmtsCap['Contents']['Layer'];
-  const l = find(layers, function(elt, index, array) {
+  const l = find(layers, function (elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
   if (l === null) {
@@ -298,26 +297,26 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let idx;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
-      idx = findIndex(l['TileMatrixSetLink'],
-        function(elt, index, array) {
-          const tileMatrixSet = find(tileMatrixSets, function(el) {
-            return el['Identifier'] == elt['TileMatrixSet'];
-          });
-          const supportedCRS = tileMatrixSet['SupportedCRS'];
-          const proj1 = getProjection(supportedCRS.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
-                getProjection(supportedCRS);
-          const proj2 = getProjection(config['projection']);
-          if (proj1 && proj2) {
-            return equivalent(proj1, proj2);
-          } else {
-            return supportedCRS == config['projection'];
-          }
+      idx = findIndex(l['TileMatrixSetLink'], function (elt, index, array) {
+        const tileMatrixSet = find(tileMatrixSets, function (el) {
+          return el['Identifier'] == elt['TileMatrixSet'];
         });
+        const supportedCRS = tileMatrixSet['SupportedCRS'];
+        const proj1 =
+          getProjection(
+            supportedCRS.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')
+          ) || getProjection(supportedCRS);
+        const proj2 = getProjection(config['projection']);
+        if (proj1 && proj2) {
+          return equivalent(proj1, proj2);
+        } else {
+          return supportedCRS == config['projection'];
+        }
+      });
     } else {
-      idx = findIndex(l['TileMatrixSetLink'],
-        function(elt, index, array) {
-          return elt['TileMatrixSet'] == config['matrixSet'];
-        });
+      idx = findIndex(l['TileMatrixSetLink'], function (elt, index, array) {
+        return elt['TileMatrixSet'] == config['matrixSet'];
+      });
     }
   } else {
     idx = 0;
@@ -325,16 +324,18 @@ export function optionsFromCapabilities(wmtsCap, config) {
   if (idx < 0) {
     idx = 0;
   }
-  const matrixSet = /** @type {string} */
+  const matrixSet =
+    /** @type {string} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
-  const matrixLimits = /** @type {Array<Object>} */
+  const matrixLimits =
+    /** @type {Array<Object>} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   let format = /** @type {string} */ (l['Format'][0]);
   if ('format' in config) {
     format = config['format'];
   }
-  idx = findIndex(l['Style'], function(elt, index, array) {
+  idx = findIndex(l['Style'], function (elt, index, array) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {
@@ -348,7 +349,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
   const dimensions = {};
   if ('Dimension' in l) {
-    l['Dimension'].forEach(function(elt, index, array) {
+    l['Dimension'].forEach(function (elt, index, array) {
       const key = elt['Identifier'];
       let value = elt['Default'];
       if (value === undefined) {
@@ -359,15 +360,17 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   const matrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  const matrixSetObj = find(matrixSets, function(elt, index, array) {
+  const matrixSetObj = find(matrixSets, function (elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
 
   let projection;
   const code = matrixSetObj['SupportedCRS'];
   if (code) {
-    projection = getProjection(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
-        getProjection(code);
+    projection =
+      getProjection(
+        code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')
+      ) || getProjection(code);
   }
   if ('projection' in config) {
     const projConfig = getProjection(config['projection']);
@@ -382,9 +385,10 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
   const matrix0 = matrixSetObj.TileMatrix[0];
   const resolution = matrix0.ScaleDenominator * 0.00028; // WMTS 1.0.0: standardized rendering pixel size
-  const origin = projection === getProjection('EPSG:4326')
-    ? [matrix0.TopLeftCorner[1], matrix0.TopLeftCorner[0]]
-    : matrix0.TopLeftCorner;
+  const origin =
+    projection === getProjection('EPSG:4326')
+      ? [matrix0.TopLeftCorner[1], matrix0.TopLeftCorner[0]]
+      : matrix0.TopLeftCorner;
   const tileSpanX = matrix0.TileWidth * resolution;
   const tileSpanY = matrix0.TileHeight * resolution;
 
@@ -392,26 +396,33 @@ export function optionsFromCapabilities(wmtsCap, config) {
     origin[0],
     origin[1] - tileSpanY * matrix0.MatrixHeight,
     origin[0] + tileSpanX * matrix0.MatrixWidth,
-    origin[1]
+    origin[1],
   ];
 
   if (projection.getExtent() === null) {
     projection.setExtent(extent);
   }
 
-  const tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj, extent, matrixLimits);
+  const tileGrid = createFromCapabilitiesMatrixSet(
+    matrixSetObj,
+    extent,
+    matrixLimits
+  );
 
   /** @type {!Array<string>} */
   const urls = [];
   let requestEncoding = config['requestEncoding'];
   requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
 
-  if ('OperationsMetadata' in wmtsCap && 'GetTile' in wmtsCap['OperationsMetadata']) {
+  if (
+    'OperationsMetadata' in wmtsCap &&
+    'GetTile' in wmtsCap['OperationsMetadata']
+  ) {
     const gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
     for (let i = 0, ii = gets.length; i < ii; ++i) {
       if (gets[i]['Constraint']) {
-        const constraint = find(gets[i]['Constraint'], function(element) {
+        const constraint = find(gets[i]['Constraint'], function (element) {
           return element['name'] == 'GetEncoding';
         });
         const encodings = constraint['AllowedValues']['Value'];
@@ -435,7 +446,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
   if (urls.length === 0) {
     requestEncoding = WMTSRequestEncoding.REST;
-    l['ResourceURL'].forEach(function(element) {
+    l['ResourceURL'].forEach(function (element) {
       if (element['resourceType'] === 'tile') {
         format = element['format'];
         urls.push(/** @type {string} */ (element['template']));
@@ -454,7 +465,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     style: style,
     dimensions: dimensions,
     wrapX: wrapX,
-    crossOrigin: config['crossOrigin']
+    crossOrigin: config['crossOrigin'],
   };
 }
 
@@ -471,7 +482,7 @@ function createFromWMTSTemplate(template) {
   const context = {
     'layer': this.layer_,
     'style': this.style_,
-    'tilematrixset': this.matrixSet_
+    'tilematrixset': this.matrixSet_,
   };
 
   if (requestEncoding == WMTSRequestEncoding.KVP) {
@@ -479,7 +490,7 @@ function createFromWMTSTemplate(template) {
       'Service': 'WMTS',
       'Request': 'GetTile',
       'Version': this.version_,
-      'Format': this.format_
+      'Format': this.format_,
     });
   }
 
@@ -487,14 +498,15 @@ function createFromWMTSTemplate(template) {
   // order conforms to wmts spec guidance, and so that we can avoid to escape
   // special template params
 
-  template = (requestEncoding == WMTSRequestEncoding.KVP) ?
-    appendParams(template, context) :
-    template.replace(/\{(\w+?)\}/g, function(m, p) {
-      return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
-    });
+  template =
+    requestEncoding == WMTSRequestEncoding.KVP
+      ? appendParams(template, context)
+      : template.replace(/\{(\w+?)\}/g, function (m, p) {
+          return p.toLowerCase() in context ? context[p.toLowerCase()] : m;
+        });
 
-  const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (
-    this.tileGrid);
+  const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (this
+    .tileGrid);
   const dimensions = this.dimensions_;
 
   return (
@@ -504,21 +516,21 @@ function createFromWMTSTemplate(template) {
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {string|undefined} Tile URL.
      */
-    function(tileCoord, pixelRatio, projection) {
+    function (tileCoord, pixelRatio, projection) {
       if (!tileCoord) {
         return undefined;
       } else {
         const localContext = {
           'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
           'TileCol': tileCoord[1],
-          'TileRow': tileCoord[2]
+          'TileRow': tileCoord[2],
         };
         assign(localContext, dimensions);
         let url = template;
         if (requestEncoding == WMTSRequestEncoding.KVP) {
           url = appendParams(url, localContext);
         } else {
-          url = url.replace(/\{(\w+?)\}/g, function(m, p) {
+          url = url.replace(/\{(\w+?)\}/g, function (m, p) {
             return localContext[p];
           });
         }

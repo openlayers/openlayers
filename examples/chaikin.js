@@ -1,8 +1,8 @@
+import Draw from '../src/ol/interaction/Draw.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import Draw from '../src/ol/interaction/Draw.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 import smooth from 'chaikin-smooth';
 
@@ -21,17 +21,17 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM(),
-      opacity: 0.5
+      opacity: 0.5,
     }),
     new VectorLayer({
-      source: vectorSource
-    })
+      source: vectorSource,
+    }),
   ],
   target: 'map',
   view: new View({
-    center: [1078373.5950, 6871994.5910],
-    zoom: 5
-  })
+    center: [1078373.595, 6871994.591],
+    zoom: 5,
+  }),
 });
 
 const shallSmoothen = document.getElementById('shall-smoothen');
@@ -39,10 +39,10 @@ const numIterations = document.getElementById('iterations');
 
 const draw = new Draw({
   source: vectorSource,
-  type: 'LineString'
+  type: 'LineString',
 });
 map.addInteraction(draw);
-draw.on('drawend', function(event) {
+draw.on('drawend', function (event) {
   if (!shallSmoothen.checked) {
     return;
   }

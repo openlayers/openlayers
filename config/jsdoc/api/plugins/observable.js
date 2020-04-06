@@ -2,15 +2,14 @@ const classes = {};
 const observables = {};
 
 exports.handlers = {
-
-  newDoclet: function(e) {
+  newDoclet: function (e) {
     const doclet = e.doclet;
     if (doclet.kind == 'class' && !(doclet.longname in classes)) {
       classes[doclet.longname] = doclet;
     }
   },
 
-  parseComplete: function(e) {
+  parseComplete: function (e) {
     const doclets = e.doclets;
     let cls, doclet, event, i, ii, observable;
     for (i = 0, ii = doclets.length - 1; i < ii; ++i) {
@@ -26,8 +25,8 @@ exports.handlers = {
         }
         observable = observables[key];
         observable.name = name;
-        observable.readonly = typeof observable.readonly == 'boolean' ?
-          observable.readonly : true;
+        observable.readonly =
+          typeof observable.readonly == 'boolean' ? observable.readonly : true;
         if (doclet.name.indexOf('get') === 0) {
           observable.type = doclet.returns[0].type;
           observable.description = doclet.returns[0].description;
@@ -53,17 +52,16 @@ exports.handlers = {
         }
       }
     }
-  }
-
+  },
 };
 
-exports.defineTags = function(dictionary) {
+exports.defineTags = function (dictionary) {
   dictionary.defineTag('observable', {
     mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
-    onTagged: function(doclet, tag) {
+    onTagged: function (doclet, tag) {
       doclet.observable = '';
-    }
+    },
   });
 };

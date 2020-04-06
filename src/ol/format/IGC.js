@@ -2,11 +2,11 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import {transformGeometryWithOptions} from './Feature.js';
-import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
+import TextFeature from './TextFeature.js';
 import {get as getProjection} from '../proj.js';
+import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * IGC altitude/z. One of 'barometric', 'gps', 'none'.
@@ -15,16 +15,14 @@ import {get as getProjection} from '../proj.js';
 const IGCZ = {
   BAROMETRIC: 'barometric',
   GPS: 'gps',
-  NONE: 'none'
+  NONE: 'none',
 };
 
 /**
  * @const
  * @type {RegExp}
  */
-const B_RECORD_RE =
-    /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
-
+const B_RECORD_RE = /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
 /**
  * @const
@@ -32,13 +30,11 @@ const B_RECORD_RE =
  */
 const H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
 
-
 /**
  * @const
  * @type {RegExp}
  */
 const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
-
 
 /**
  * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
@@ -48,13 +44,11 @@ const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
  */
 const NEWLINE_RE = /\r\n|\r|\n/;
 
-
 /**
  * @typedef {Object} Options
  * @property {IGCZ|string} [altitudeMode='none'] Altitude mode. Possible
  * values are `'barometric'`, `'gps'`, and `'none'`.
  */
-
 
 /**
  * @classdesc
@@ -67,7 +61,6 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  * @api
  */
 class IGC extends TextFeature {
-
   /**
    * @param {Options=} opt_options Options.
    */
@@ -85,7 +78,9 @@ class IGC extends TextFeature {
      * @private
      * @type {IGCZ}
      */
-    this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : IGCZ.NONE;
+    this.altitudeMode_ = options.altitudeMode
+      ? options.altitudeMode
+      : IGCZ.NONE;
   }
 
   /**
@@ -159,9 +154,12 @@ class IGC extends TextFeature {
     if (flatCoordinates.length === 0) {
       return null;
     }
-    const layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
+    const layout =
+      altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
     const lineString = new LineString(flatCoordinates, layout);
-    const feature = new Feature(transformGeometryWithOptions(lineString, false, opt_options));
+    const feature = new Feature(
+      transformGeometryWithOptions(lineString, false, opt_options)
+    );
     feature.setProperties(properties, true);
     return feature;
   }
@@ -180,7 +178,6 @@ class IGC extends TextFeature {
       return [];
     }
   }
-
 }
 
 export default IGC;

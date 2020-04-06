@@ -1,26 +1,24 @@
-import {create} from '../../../../src/ol/worker/version.js';
 import {VERSION} from '../../../../src/ol/util.js';
+import {create} from '../../../../src/ol/worker/version.js';
 
-
-describe('ol/worker/version', function() {
-
+describe('ol/worker/version', function () {
   let worker;
-  beforeEach(function() {
+  beforeEach(function () {
     worker = create();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     if (worker) {
       worker.terminate();
     }
     worker = null;
   });
 
-  describe('messaging', function() {
-    it('responds with the version', function(done) {
+  describe('messaging', function () {
+    it('responds with the version', function (done) {
       worker.addEventListener('error', done);
 
-      worker.addEventListener('message', function(event) {
+      worker.addEventListener('message', function (event) {
         expect(event.data).to.equal('version: ' + VERSION);
         done();
       });
@@ -28,5 +26,4 @@ describe('ol/worker/version', function() {
       worker.postMessage('test message');
     });
   });
-
 });

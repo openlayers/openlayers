@@ -1,15 +1,15 @@
 /**
  * @module ol/interaction/PinchZoom
  */
+import PointerInteraction, {
+  centroid as centroidFromPointers,
+} from './Pointer.js';
 import {FALSE} from '../functions.js';
-import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
-
 
 /**
  * @typedef {Object} Options
  * @property {number} [duration=400] Animation duration in milliseconds.
  */
-
 
 /**
  * @classdesc
@@ -22,7 +22,6 @@ class PinchZoom extends PointerInteraction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
@@ -56,7 +55,6 @@ class PinchZoom extends PointerInteraction {
      * @type {number}
      */
     this.lastScaleDelta_ = 1;
-
   }
 
   /**
@@ -78,7 +76,6 @@ class PinchZoom extends PointerInteraction {
       scaleDelta = this.lastDistance_ / distance;
     }
     this.lastDistance_ = distance;
-
 
     const map = mapBrowserEvent.map;
     const view = map.getView();

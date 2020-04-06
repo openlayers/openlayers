@@ -1,9 +1,9 @@
 /**
  * @module ol/format/JSONFeature
  */
-import {abstract} from '../util.js';
 import FeatureFormat from './Feature.js';
 import FormatType from './FormatType.js';
+import {abstract} from '../util.js';
 
 /**
  * @classdesc
@@ -36,7 +36,9 @@ class JSONFeature extends FeatureFormat {
    */
   readFeature(source, opt_options) {
     return this.readFeatureFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+      getObject(source),
+      this.getReadOptions(source, opt_options)
+    );
   }
 
   /**
@@ -50,7 +52,9 @@ class JSONFeature extends FeatureFormat {
    */
   readFeatures(source, opt_options) {
     return this.readFeaturesFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+      getObject(source),
+      this.getReadOptions(source, opt_options)
+    );
   }
 
   /**
@@ -85,7 +89,9 @@ class JSONFeature extends FeatureFormat {
    */
   readGeometry(source, opt_options) {
     return this.readGeometryFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+      getObject(source),
+      this.getReadOptions(source, opt_options)
+    );
   }
 
   /**
@@ -187,7 +193,6 @@ class JSONFeature extends FeatureFormat {
   }
 }
 
-
 /**
  * @param {Document|Element|Object|string} source Source.
  * @return {Object} Object.
@@ -202,6 +207,5 @@ function getObject(source) {
     return null;
   }
 }
-
 
 export default JSONFeature;

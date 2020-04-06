@@ -1,17 +1,15 @@
 /**
  * @module ol/coordinate
  */
+import {getWidth} from './extent.js';
 import {modulo} from './math.js';
 import {padNumber} from './string.js';
-import {getWidth} from './extent.js';
-
 
 /**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
  * @typedef {Array<number>} Coordinate
  * @api
  */
-
 
 /**
  * A function that takes a {@link module:ol/coordinate~Coordinate} and
@@ -20,7 +18,6 @@ import {getWidth} from './extent.js';
  * @typedef {function((Coordinate|undefined)): string} CoordinateFormat
  * @api
  */
-
 
 /**
  * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
@@ -46,7 +43,6 @@ export function add(coordinate, delta) {
   return coordinate;
 }
 
-
 /**
  * Calculates the point closest to the passed coordinate on the passed circle.
  *
@@ -69,12 +65,11 @@ export function closestOnCircle(coordinate, circle) {
   }
   const d = Math.sqrt(dx * dx + dy * dy);
 
-  const x = x0 + r * dx / d;
-  const y = y0 + r * dy / d;
+  const x = x0 + (r * dx) / d;
+  const y = y0 + (r * dy) / d;
 
   return [x, y];
 }
-
 
 /**
  * Calculates the point closest to the passed coordinate on the passed segment.
@@ -99,8 +94,10 @@ export function closestOnSegment(coordinate, segment) {
   const y2 = end[1];
   const dx = x2 - x1;
   const dy = y2 - y1;
-  const along = (dx === 0 && dy === 0) ? 0 :
-    ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+  const along =
+    dx === 0 && dy === 0
+      ? 0
+      : (dx * (x0 - x1) + dy * (y0 - y1)) / (dx * dx + dy * dy || 0);
   let x, y;
   if (along <= 0) {
     x = x1;
@@ -114,7 +111,6 @@ export function closestOnSegment(coordinate, segment) {
   }
   return [x, y];
 }
-
 
 /**
  * Returns a {@link module:ol/coordinate~CoordinateFormat} function that can be
@@ -150,12 +146,11 @@ export function createStringXY(opt_fractionDigits) {
      * @param {Coordinate} coordinate Coordinate.
      * @return {string} String XY.
      */
-    function(coordinate) {
+    function (coordinate) {
       return toStringXY(coordinate, opt_fractionDigits);
     }
   );
 }
-
 
 /**
  * @param {string} hemispheres Hemispheres.
@@ -172,7 +167,7 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
 
   let deg = Math.floor(x / 3600);
   let min = Math.floor((x - deg * 3600) / 60);
-  let sec = x - (deg * 3600) - (min * 60);
+  let sec = x - deg * 3600 - min * 60;
   sec = Math.ceil(sec * precision) / precision;
 
   if (sec >= 60) {
@@ -185,11 +180,18 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
     deg += 1;
   }
 
-  return deg + '\u00b0 ' + padNumber(min, 2) + '\u2032 ' +
-    padNumber(sec, 2, dflPrecision) + '\u2033' +
-    (normalizedDegrees == 0 ? '' : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0));
+  return (
+    deg +
+    '\u00b0 ' +
+    padNumber(min, 2) +
+    '\u2032 ' +
+    padNumber(sec, 2, dflPrecision) +
+    '\u2033' +
+    (normalizedDegrees == 0
+      ? ''
+      : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0))
+  );
 }
-
 
 /**
  * Transforms the given {@link module:ol/coordinate~Coordinate} to a string
@@ -232,7 +234,6 @@ export function format(coordinate, template, opt_fractionDigits) {
   }
 }
 
-
 /**
  * @param {Coordinate} coordinate1 First coordinate.
  * @param {Coordinate} coordinate2 Second coordinate.
@@ -248,7 +249,6 @@ export function equals(coordinate1, coordinate2) {
   }
   return equals;
 }
-
 
 /**
  * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
@@ -278,7 +278,6 @@ export function rotate(coordinate, angle) {
   return coordinate;
 }
 
-
 /**
  * Scale `coordinate` by `scale`. `coordinate` is modified in place and returned
  * by the function.
@@ -302,7 +301,6 @@ export function scale(coordinate, scale) {
   return coordinate;
 }
 
-
 /**
  * @param {Coordinate} coord1 First coordinate.
  * @param {Coordinate} coord2 Second coordinate.
@@ -314,7 +312,6 @@ export function squaredDistance(coord1, coord2) {
   return dx * dx + dy * dy;
 }
 
-
 /**
  * @param {Coordinate} coord1 First coordinate.
  * @param {Coordinate} coord2 Second coordinate.
@@ -323,7 +320,6 @@ export function squaredDistance(coord1, coord2) {
 export function distance(coord1, coord2) {
   return Math.sqrt(squaredDistance(coord1, coord2));
 }
-
 
 /**
  * Calculate the squared distance from a coordinate to a line segment.
@@ -334,10 +330,8 @@ export function distance(coord1, coord2) {
  * @return {number} Squared distance from the point to the line segment.
  */
 export function squaredDistanceToSegment(coordinate, segment) {
-  return squaredDistance(coordinate,
-    closestOnSegment(coordinate, segment));
+  return squaredDistance(coordinate, closestOnSegment(coordinate, segment));
 }
-
 
 /**
  * Format a geographic coordinate with the hemisphere, degrees, minutes, and
@@ -367,13 +361,15 @@ export function squaredDistanceToSegment(coordinate, segment) {
  */
 export function toStringHDMS(coordinate, opt_fractionDigits) {
   if (coordinate) {
-    return degreesToStringHDMS('NS', coordinate[1], opt_fractionDigits) + ' ' +
-        degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits);
+    return (
+      degreesToStringHDMS('NS', coordinate[1], opt_fractionDigits) +
+      ' ' +
+      degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits)
+    );
   } else {
     return '';
   }
 }
-
 
 /**
  * Format a coordinate as a comma delimited string.
@@ -404,7 +400,6 @@ export function toStringXY(coordinate, opt_fractionDigits) {
   return format(coordinate, '{x}, {y}', opt_fractionDigits);
 }
 
-
 /**
  * Modifies the provided coordinate in-place to be within the real world
  * extent. The lower projection extent boundary is inclusive, the upper one
@@ -416,10 +411,16 @@ export function toStringXY(coordinate, opt_fractionDigits) {
  */
 export function wrapX(coordinate, projection) {
   const projectionExtent = projection.getExtent();
-  if (projection.canWrapX() && (coordinate[0] < projectionExtent[0] || coordinate[0] >= projectionExtent[2])) {
+  if (
+    projection.canWrapX() &&
+    (coordinate[0] < projectionExtent[0] ||
+      coordinate[0] >= projectionExtent[2])
+  ) {
     const worldWidth = getWidth(projectionExtent);
-    const worldsAway = Math.floor((coordinate[0] - projectionExtent[0]) / worldWidth);
-    coordinate[0] -= (worldsAway * worldWidth);
+    const worldsAway = Math.floor(
+      (coordinate[0] - projectionExtent[0]) / worldWidth
+    );
+    coordinate[0] -= worldsAway * worldWidth;
   }
   return coordinate;
 }

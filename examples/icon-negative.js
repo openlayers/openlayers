@@ -1,13 +1,12 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import Select from '../src/ol/interaction/Select.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
-
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 function createStyle(src, img) {
   return new Style({
@@ -16,8 +15,8 @@ function createStyle(src, img) {
       crossOrigin: 'anonymous',
       src: src,
       img: img,
-      imgSize: img ? [img.width, img.height] : undefined
-    })
+      imgSize: img ? [img.width, img.height] : undefined,
+    }),
   });
 }
 
@@ -27,25 +26,25 @@ iconFeature.set('style', createStyle('data/icon.png', undefined));
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new Stamen({layer: 'watercolor'})
+      source: new Stamen({layer: 'watercolor'}),
     }),
     new VectorLayer({
-      style: function(feature) {
+      style: function (feature) {
         return feature.get('style');
       },
-      source: new VectorSource({features: [iconFeature]})
-    })
+      source: new VectorSource({features: [iconFeature]}),
+    }),
   ],
   target: document.getElementById('map'),
   view: new View({
     center: [0, 0],
-    zoom: 3
-  })
+    zoom: 3,
+  }),
 });
 
 const selectStyle = {};
 const select = new Select({
-  style: function(feature) {
+  style: function (feature) {
     const image = feature.get('style').getImage().getImage();
     if (!selectStyle[image.src]) {
       const canvas = document.createElement('canvas');
@@ -62,11 +61,12 @@ const select = new Select({
       selectStyle[image.src] = createStyle(undefined, canvas);
     }
     return selectStyle[image.src];
-  }
+  },
 });
 map.addInteraction(select);
 
-map.on('pointermove', function(evt) {
-  map.getTargetElement().style.cursor =
-      map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+map.on('pointermove', function (evt) {
+  map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel)
+    ? 'pointer'
+    : '';
 });

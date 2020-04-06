@@ -1,18 +1,15 @@
 import {compareVersions, padNumber} from '../../../src/ol/string.js';
 
-
-describe('ol.string', function() {
-
-  describe('ol.string.padNumber', function() {
-
-    it('returns the correct padding without precision', function() {
+describe('ol.string', function () {
+  describe('ol.string.padNumber', function () {
+    it('returns the correct padding without precision', function () {
       expect(padNumber(6.5, 2)).to.be('06.5');
       expect(padNumber(6.5, 3)).to.be('006.5');
       expect(padNumber(1.25, 2)).to.be('01.25');
       expect(padNumber(5, 3)).to.be('005');
     });
 
-    it('returns the same string when padding is less than length', function() {
+    it('returns the same string when padding is less than length', function () {
       expect(padNumber(6.5, 0)).to.be('6.5');
       expect(padNumber(6.5, 1)).to.be('6.5');
       expect(padNumber(1.25, 0)).to.be('1.25');
@@ -20,7 +17,7 @@ describe('ol.string', function() {
       expect(padNumber(5, 1)).to.be('5');
     });
 
-    it('returns the correct string precision is given', function() {
+    it('returns the correct string precision is given', function () {
       expect(padNumber(6.5, 0, 2)).to.be('6.50');
       expect(padNumber(6.5, 1, 2)).to.be('6.50');
       expect(padNumber(6.5, 2, 2)).to.be('06.50');
@@ -32,16 +29,15 @@ describe('ol.string', function() {
       expect(padNumber(5, 2, 1)).to.be('05.0');
       expect(padNumber(5, 2, 0)).to.be('05');
     });
-
   });
 
-  describe('ol.string.compareVersions', function() {
-    it('should return the correct value for number input', function() {
+  describe('ol.string.compareVersions', function () {
+    it('should return the correct value for number input', function () {
       expect(compareVersions(1, 1)).to.be(0);
       expect(compareVersions(1.0, 1.1)).to.be.below(0);
       expect(compareVersions(2.0, 1.1)).to.be.above(0);
     });
-    it('should return the correct value for string input', function() {
+    it('should return the correct value for string input', function () {
       expect(compareVersions('1.0', '1.0')).to.be(0);
       expect(compareVersions('1.0.0.0', '1.0')).to.be(0);
       expect(compareVersions('1.000', '1.0')).to.be(0);

@@ -1,7 +1,7 @@
-import {Map, View} from '../../../src/ol/index.js';
-import MapBrowserEvent from '../../../src/ol/MapBrowserEvent.js';
 import Event from '../../../src/ol/events/Event.js';
-import {useGeographic, clearUserProjection} from '../../../src/ol/proj.js';
+import MapBrowserEvent from '../../../src/ol/MapBrowserEvent.js';
+import {Map, View} from '../../../src/ol/index.js';
+import {clearUserProjection, useGeographic} from '../../../src/ol/proj.js';
 
 function createMap() {
   const size = 256;
@@ -11,7 +11,7 @@ function createMap() {
     height: `${size}px`,
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
   });
   document.body.appendChild(target);
 
@@ -19,16 +19,14 @@ function createMap() {
     target: target,
     view: new View({
       center: [0, 0],
-      zoom: 0
-    })
+      zoom: 0,
+    }),
   });
   return {map, target, size};
 }
 
-
-describe('ol/MapBrowserEvent', function() {
-
-  describe('pixel', function() {
+describe('ol/MapBrowserEvent', function () {
+  describe('pixel', function () {
     let ref;
     beforeEach(() => {
       ref = createMap();
@@ -66,10 +64,9 @@ describe('ol/MapBrowserEvent', function() {
       mapEvent.pixel = pixel;
       expect(mapEvent.pixel).to.eql(pixel);
     });
-
   });
 
-  describe('coordinate', function() {
+  describe('coordinate', function () {
     let ref;
     beforeEach(() => {
       ref = createMap();
@@ -108,10 +105,9 @@ describe('ol/MapBrowserEvent', function() {
       mapEvent.coordinate = coordinate;
       expect(mapEvent.coordinate).to.eql(coordinate);
     });
-
   });
 
-  describe('coordinate - with useGeographic()', function() {
+  describe('coordinate - with useGeographic()', function () {
     let ref;
     beforeEach(() => {
       useGeographic();
@@ -138,6 +134,5 @@ describe('ol/MapBrowserEvent', function() {
       expect(coord[0]).to.be(-90);
       expect(coord[1]).to.roughlyEqual(66.5132, 1e-4);
     });
-
   });
 });

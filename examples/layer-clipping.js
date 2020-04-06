@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import View from '../src/ol/View.js';
 
 const osm = new TileLayer({
-  source: new OSM()
+  source: new OSM(),
 });
 
 const map = new Map({
@@ -12,16 +12,18 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
-osm.on('prerender', function(event) {
+osm.on('prerender', function (event) {
   const ctx = event.context;
 
   // calculate the pixel ratio and rotation of the canvas
   const matrix = event.inversePixelTransform;
-  const canvasPixelRatio = Math.sqrt(matrix[0] * matrix[0] + matrix[1] * matrix[1]);
+  const canvasPixelRatio = Math.sqrt(
+    matrix[0] * matrix[0] + matrix[1] * matrix[1]
+  );
   const canvasRotation = -Math.atan2(matrix[1], matrix[0]);
   ctx.save();
   // center the canvas and remove rotation to position clipping
@@ -47,7 +49,7 @@ osm.on('prerender', function(event) {
   ctx.translate(-ctx.canvas.width / 2, -ctx.canvas.height / 2);
 });
 
-osm.on('postrender', function(event) {
+osm.on('postrender', function (event) {
   const ctx = event.context;
   ctx.restore();
 });

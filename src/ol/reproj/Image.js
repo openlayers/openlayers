@@ -3,19 +3,20 @@
  */
 import {ERROR_THRESHOLD} from './common.js';
 
+import EventType from '../events/EventType.js';
 import ImageBase from '../ImageBase.js';
 import ImageState from '../ImageState.js';
-import {listen, unlistenByKey} from '../events.js';
-import EventType from '../events/EventType.js';
-import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
-import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
 import Triangulation from './Triangulation.js';
-
+import {
+  calculateSourceResolution,
+  render as renderReprojected,
+} from '../reproj.js';
+import {getCenter, getHeight, getIntersection, getWidth} from '../extent.js';
+import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {function(import("../extent.js").Extent, number, number) : import("../ImageBase.js").default} FunctionType
  */
-
 
 /**
  * @classdesc
@@ -32,25 +33,46 @@ class ReprojImage extends ImageBase {
    * @param {FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
    */
-  constructor(sourceProj, targetProj, targetExtent, targetResolution, pixelRatio, getImageFunction) {
+  constructor(
+    sourceProj,
+    targetProj,
+    targetExtent,
+    targetResolution,
+    pixelRatio,
+    getImageFunction
+  ) {
     const maxSourceExtent = sourceProj.getExtent();
     const maxTargetExtent = targetProj.getExtent();
 
-    const limitedTargetExtent = maxTargetExtent ?
-      getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+    const limitedTargetExtent = maxTargetExtent
+      ? getIntersection(targetExtent, maxTargetExtent)
+      : targetExtent;
 
     const targetCenter = getCenter(limitedTargetExtent);
     const sourceResolution = calculateSourceResolution(
-      sourceProj, targetProj, targetCenter, targetResolution);
+      sourceProj,
+      targetProj,
+      targetCenter,
+      targetResolution
+    );
 
     const errorThresholdInPixels = ERROR_THRESHOLD;
 
     const triangulation = new Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
-      sourceResolution * errorThresholdInPixels, targetResolution);
+      sourceProj,
+      targetProj,
+      limitedTargetExtent,
+      maxSourceExtent,
+      sourceResolution * errorThresholdInPixels,
+      targetResolution
+    );
 
     const sourceExtent = triangulation.calculateSourceExtent();
-    const sourceImage = getImageFunction(sourceExtent, sourceResolution, pixelRatio);
+    const sourceImage = getImageFunction(
+      sourceExtent,
+      sourceResolution,
+      pixelRatio
+    );
     const state = sourceImage ? ImageState.IDLE : ImageState.EMPTY;
     const sourcePixelRatio = sourceImage ? sourceImage.getPixelRatio() : 1;
 
@@ -144,12 +166,23 @@ class ReprojImage extends ImageBase {
       const width = getWidth(this.targetExtent_) / this.targetResolution_;
       const height = getHeight(this.targetExtent_) / this.targetResolution_;
 
-      this.canvas_ = renderReprojected(width, height, this.sourcePixelRatio_,
-        this.sourceImage_.getResolution(), this.maxSourceExtent_,
-        this.targetResolution_, this.targetExtent_, this.triangulation_, [{
-          extent: this.sourceImage_.getExtent(),
-          image: this.sourceImage_.getImage()
-        }], 0);
+      this.canvas_ = renderReprojected(
+        width,
+        height,
+        this.sourcePixelRatio_,
+        this.sourceImage_.getResolution(),
+        this.maxSourceExtent_,
+        this.targetResolution_,
+        this.targetExtent_,
+        this.triangulation_,
+        [
+          {
+            extent: this.sourceImage_.getExtent(),
+            image: this.sourceImage_.getImage(),
+          },
+        ],
+        0
+      );
     }
     this.state = sourceState;
     this.changed();
@@ -167,14 +200,21 @@ class ReprojImage extends ImageBase {
       if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
         this.reproject_();
       } else {
-        this.sourceListenerKey_ = listen(this.sourceImage_,
-          EventType.CHANGE, function(e) {
+        this.sourceListenerKey_ = listen(
+          this.sourceImage_,
+          EventType.CHANGE,
+          function (e) {
             const sourceState = this.sourceImage_.getState();
-            if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
+            if (
+              sourceState == ImageState.LOADED ||
+              sourceState == ImageState.ERROR
+            ) {
               this.unlistenSource_();
               this.reproject_();
             }
-          }, this);
+          },
+          this
+        );
         this.sourceImage_.load();
       }
     }
@@ -184,10 +224,11 @@ class ReprojImage extends ImageBase {
    * @private
    */
   unlistenSource_() {
-    unlistenByKey(/** @type {!import("../events.js").EventsKey} */ (this.sourceListenerKey_));
+    unlistenByKey(
+      /** @type {!import("../events.js").EventsKey} */ (this.sourceListenerKey_)
+    );
     this.sourceListenerKey_ = null;
   }
 }
-
 
 export default ReprojImage;

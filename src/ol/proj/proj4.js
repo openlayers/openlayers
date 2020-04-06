@@ -1,9 +1,14 @@
 /**
  * @module ol/proj/proj4
  */
-import {addCoordinateTransforms, addProjection, addEquivalentProjections, get} from '../proj.js';
-import {get as getTransform} from './transforms.js';
 import Projection from './Projection.js';
+import {
+  addCoordinateTransforms,
+  addEquivalentProjections,
+  addProjection,
+  get,
+} from '../proj.js';
+import {get as getTransform} from './transforms.js';
 
 /**
  * Make projections defined in proj4 (with `proj4.defs()`) available in
@@ -24,12 +29,14 @@ export function register(proj4) {
     const code = projCodes[i];
     if (!get(code)) {
       const def = proj4.defs(code);
-      addProjection(new Projection({
-        code: code,
-        axisOrientation: def.axis,
-        metersPerUnit: def.to_meter,
-        units: def.units
-      }));
+      addProjection(
+        new Projection({
+          code: code,
+          axisOrientation: def.axis,
+          metersPerUnit: def.to_meter,
+          units: def.units,
+        })
+      );
     }
   }
   for (i = 0; i < len; ++i) {
@@ -43,7 +50,12 @@ export function register(proj4) {
           addEquivalentProjections([proj1, proj2]);
         } else {
           const transform = proj4(code1, code2);
-          addCoordinateTransforms(proj1, proj2, transform.forward, transform.inverse);
+          addCoordinateTransforms(
+            proj1,
+            proj2,
+            transform.forward,
+            transform.inverse
+          );
         }
       }
     }

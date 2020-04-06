@@ -4,14 +4,13 @@
 
 import 'elm-pep';
 import Control from './Control.js';
+import EventType from '../events/EventType.js';
+import PointerEventType from '../pointer/EventType.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
+import {clamp} from '../math.js';
 import {easeOut} from '../easing.js';
 import {listen, unlistenByKey} from '../events.js';
 import {stopPropagation} from '../events/Event.js';
-import EventType from '../events/EventType.js';
-import {clamp} from '../math.js';
-import PointerEventType from '../pointer/EventType.js';
-
 
 /**
  * The enum for available directions.
@@ -20,9 +19,8 @@ import PointerEventType from '../pointer/EventType.js';
  */
 const Direction = {
   VERTICAL: 0,
-  HORIZONTAL: 1
+  HORIZONTAL: 1,
 };
-
 
 /**
  * @typedef {Object} Options
@@ -31,7 +29,6 @@ const Direction = {
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  */
-
 
 /**
  * @classdesc
@@ -44,23 +41,21 @@ const Direction = {
  * @api
  */
 class ZoomSlider extends Control {
-
   /**
    * @param {Options=} opt_options Zoom slider options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
       element: document.createElement('div'),
-      render: options.render || render
+      render: options.render || render,
     });
 
     /**
-      * @type {!Array.<import("../events.js").EventsKey>}
-      * @private
-      */
+     * @type {!Array.<import("../events.js").EventsKey>}
+     * @private
+     */
     this.dragListenerKeys_ = [];
 
     /**
@@ -131,19 +126,37 @@ class ZoomSlider extends Control {
      */
     this.duration_ = options.duration !== undefined ? options.duration : 200;
 
-    const className = options.className !== undefined ? options.className : 'ol-zoomslider';
+    const className =
+      options.className !== undefined ? options.className : 'ol-zoomslider';
     const thumbElement = document.createElement('button');
     thumbElement.setAttribute('type', 'button');
     thumbElement.className = className + '-thumb ' + CLASS_UNSELECTABLE;
     const containerElement = this.element;
-    containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+    containerElement.className =
+      className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
 
-    containerElement.addEventListener(PointerEventType.POINTERDOWN, this.handleDraggerStart_.bind(this), false);
-    containerElement.addEventListener(PointerEventType.POINTERMOVE, this.handleDraggerDrag_.bind(this), false);
-    containerElement.addEventListener(PointerEventType.POINTERUP, this.handleDraggerEnd_.bind(this), false);
+    containerElement.addEventListener(
+      PointerEventType.POINTERDOWN,
+      this.handleDraggerStart_.bind(this),
+      false
+    );
+    containerElement.addEventListener(
+      PointerEventType.POINTERMOVE,
+      this.handleDraggerDrag_.bind(this),
+      false
+    );
+    containerElement.addEventListener(
+      PointerEventType.POINTERUP,
+      this.handleDraggerEnd_.bind(this),
+      false
+    );
 
-    containerElement.addEventListener(EventType.CLICK, this.handleContainerClick_.bind(this), false);
+    containerElement.addEventListener(
+      EventType.CLICK,
+      this.handleContainerClick_.bind(this),
+      false
+    );
     thumbElement.addEventListener(EventType.CLICK, stopPropagation, false);
   }
 
@@ -171,17 +184,20 @@ class ZoomSlider extends Control {
   initSlider_() {
     const container = this.element;
     const containerSize = {
-      width: container.offsetWidth, height: container.offsetHeight
+      width: container.offsetWidth,
+      height: container.offsetHeight,
     };
 
     const thumb = /** @type {HTMLElement} */ (container.firstElementChild);
     const computedStyle = getComputedStyle(thumb);
-    const thumbWidth = thumb.offsetWidth +
-        parseFloat(computedStyle['marginRight']) +
-        parseFloat(computedStyle['marginLeft']);
-    const thumbHeight = thumb.offsetHeight +
-        parseFloat(computedStyle['marginTop']) +
-        parseFloat(computedStyle['marginBottom']);
+    const thumbWidth =
+      thumb.offsetWidth +
+      parseFloat(computedStyle['marginRight']) +
+      parseFloat(computedStyle['marginLeft']);
+    const thumbHeight =
+      thumb.offsetHeight +
+      parseFloat(computedStyle['marginTop']) +
+      parseFloat(computedStyle['marginBottom']);
     this.thumbSize_ = [thumbWidth, thumbHeight];
 
     if (containerSize.width > containerSize.height) {
@@ -203,7 +219,8 @@ class ZoomSlider extends Control {
 
     const relativePosition = this.getRelativePosition_(
       event.offsetX - this.thumbSize_[0] / 2,
-      event.offsetY - this.thumbSize_[1] / 2);
+      event.offsetY - this.thumbSize_[1] / 2
+    );
 
     const resolution = this.getResolutionForPosition_(relativePosition);
     const zoom = view.getConstrainedZoom(view.getZoomForResolution(resolution));
@@ -211,7 +228,7 @@ class ZoomSlider extends Control {
     view.animateInternal({
       zoom: zoom,
       duration: this.duration_,
-      easing: easeOut
+      easing: easeOut,
     });
   }
 
@@ -222,7 +239,8 @@ class ZoomSlider extends Control {
    */
   handleDraggerStart_(event) {
     if (!this.dragging_ && event.target === this.element.firstElementChild) {
-      const element = /** @type {HTMLElement} */ (this.element.firstElementChild);
+      const element = /** @type {HTMLElement} */ (this.element
+        .firstElementChild);
       this.getMap().getView().beginInteraction();
       this.startX_ = event.clientX - parseFloat(element.style.left);
       this.startY_ = event.clientY - parseFloat(element.style.top);
@@ -250,7 +268,9 @@ class ZoomSlider extends Control {
       const deltaX = event.clientX - this.startX_;
       const deltaY = event.clientY - this.startY_;
       const relativePosition = this.getRelativePosition_(deltaX, deltaY);
-      this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
+      this.currentResolution_ = this.getResolutionForPosition_(
+        relativePosition
+      );
       this.getMap().getView().setResolution(this.currentResolution_);
     }
   }
@@ -338,7 +358,6 @@ class ZoomSlider extends Control {
   }
 }
 
-
 /**
  * Update the zoomslider element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
@@ -355,6 +374,5 @@ export function render(mapEvent) {
   this.currentResolution_ = res;
   this.setThumbPosition_(res);
 }
-
 
 export default ZoomSlider;

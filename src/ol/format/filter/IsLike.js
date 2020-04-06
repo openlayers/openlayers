@@ -9,7 +9,6 @@ import Comparison from './Comparison.js';
  * @api
  */
 class IsLike extends Comparison {
-
   /**
    * [constructor description]
    * @param {!string} propertyName Name of the context property to compare.
@@ -22,7 +21,14 @@ class IsLike extends Comparison {
    *    the pattern characters. Default is '!'.
    * @param {boolean=} opt_matchCase Case-sensitive?
    */
-  constructor(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
+  constructor(
+    propertyName,
+    pattern,
+    opt_wildCard,
+    opt_singleChar,
+    opt_escapeChar,
+    opt_matchCase
+  ) {
     super('PropertyIsLike', propertyName);
 
     /**
@@ -33,23 +39,22 @@ class IsLike extends Comparison {
     /**
      * @type {!string}
      */
-    this.wildCard = (opt_wildCard !== undefined) ? opt_wildCard : '*';
+    this.wildCard = opt_wildCard !== undefined ? opt_wildCard : '*';
 
     /**
      * @type {!string}
      */
-    this.singleChar = (opt_singleChar !== undefined) ? opt_singleChar : '.';
+    this.singleChar = opt_singleChar !== undefined ? opt_singleChar : '.';
 
     /**
      * @type {!string}
      */
-    this.escapeChar = (opt_escapeChar !== undefined) ? opt_escapeChar : '!';
+    this.escapeChar = opt_escapeChar !== undefined ? opt_escapeChar : '!';
 
     /**
      * @type {boolean|undefined}
      */
     this.matchCase = opt_matchCase;
-
   }
 }
 

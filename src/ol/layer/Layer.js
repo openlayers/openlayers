@@ -1,20 +1,19 @@
 /**
  * @module ol/layer/Layer
  */
-import {listen, unlistenByKey} from '../events.js';
-import EventType from '../events/EventType.js';
-import {getChangeEventType} from '../Object.js';
 import BaseLayer from './Base.js';
+import EventType from '../events/EventType.js';
 import LayerProperty from './Property.js';
-import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
+import {assign} from '../obj.js';
+import {getChangeEventType} from '../Object.js';
+import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
  */
-
 
 /**
  * @typedef {Object} Options
@@ -42,7 +41,6 @@ import {assert} from '../asserts.js';
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
  */
-
 
 /**
  * @typedef {Object} State
@@ -92,7 +90,6 @@ class Layer extends BaseLayer {
    * @param {Options} options Layer options.
    */
   constructor(options) {
-
     const baseOptions = assign({}, options);
     delete baseOptions.source;
 
@@ -131,9 +128,14 @@ class Layer extends BaseLayer {
       this.setMap(options.map);
     }
 
-    this.addEventListener(getChangeEventType(LayerProperty.SOURCE), this.handleSourcePropertyChange_);
+    this.addEventListener(
+      getChangeEventType(LayerProperty.SOURCE),
+      this.handleSourcePropertyChange_
+    );
 
-    const source = options.source ? /** @type {SourceType} */ (options.source) : null;
+    const source = options.source
+      ? /** @type {SourceType} */ (options.source)
+      : null;
     this.setSource(source);
   }
 
@@ -192,8 +194,12 @@ class Layer extends BaseLayer {
     }
     const source = this.getSource();
     if (source) {
-      this.sourceChangeKey_ = listen(source,
-        EventType.CHANGE, this.handleSourceChange_, this);
+      this.sourceChangeKey_ = listen(
+        source,
+        EventType.CHANGE,
+        this.handleSourceChange_,
+        this
+      );
     }
     this.changed();
   }
@@ -248,16 +254,24 @@ class Layer extends BaseLayer {
       this.mapRenderKey_ = null;
     }
     if (map) {
-      this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
-        const renderEvent = /** @type {import("../render/Event.js").default} */ (evt);
-        const layerStatesArray = renderEvent.frameState.layerStatesArray;
-        const layerState = this.getLayerState(false);
-        // A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.
-        assert(!layerStatesArray.some(function(arrayLayerState) {
-          return arrayLayerState.layer === layerState.layer;
-        }), 67);
-        layerStatesArray.push(layerState);
-      }, this);
+      this.mapPrecomposeKey_ = listen(
+        map,
+        RenderEventType.PRECOMPOSE,
+        function (evt) {
+          const renderEvent = /** @type {import("../render/Event.js").default} */ (evt);
+          const layerStatesArray = renderEvent.frameState.layerStatesArray;
+          const layerState = this.getLayerState(false);
+          // A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.
+          assert(
+            !layerStatesArray.some(function (arrayLayerState) {
+              return arrayLayerState.layer === layerState.layer;
+            }),
+            67
+          );
+          layerStatesArray.push(layerState);
+        },
+        this
+      );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();
     }
@@ -309,7 +323,6 @@ class Layer extends BaseLayer {
   }
 }
 
-
 /**
  * Return `true` if the layer is visible and if the provided view state
  * has resolution and zoom levels that are in range of the layer's min/max.
@@ -322,7 +335,10 @@ export function inView(layerState, viewState) {
     return false;
   }
   const resolution = viewState.resolution;
-  if (resolution < layerState.minResolution || resolution >= layerState.maxResolution) {
+  if (
+    resolution < layerState.minResolution ||
+    resolution >= layerState.maxResolution
+  ) {
     return false;
   }
   const zoom = viewState.zoom;

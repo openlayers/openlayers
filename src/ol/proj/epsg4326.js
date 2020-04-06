@@ -4,7 +4,6 @@
 import Projection from './Projection.js';
 import Units from './Units.js';
 
-
 /**
  * Semi-major radius of the WGS84 ellipsoid.
  *
@@ -12,7 +11,6 @@ import Units from './Units.js';
  * @type {number}
  */
 export const RADIUS = 6378137;
-
 
 /**
  * Extent of the EPSG:4326 projection which is the whole world.
@@ -22,13 +20,11 @@ export const RADIUS = 6378137;
  */
 export const EXTENT = [-180, -90, 180, 90];
 
-
 /**
  * @const
  * @type {number}
  */
-export const METERS_PER_UNIT = Math.PI * RADIUS / 180;
-
+export const METERS_PER_UNIT = (Math.PI * RADIUS) / 180;
 
 /**
  * @classdesc
@@ -39,7 +35,6 @@ export const METERS_PER_UNIT = Math.PI * RADIUS / 180;
  * OpenLayers treats EPSG:4326 as a pseudo-projection, with x,y coordinates.
  */
 class EPSG4326Projection extends Projection {
-
   /**
    * @param {string} code Code.
    * @param {string=} opt_axisOrientation Axis orientation.
@@ -52,13 +47,10 @@ class EPSG4326Projection extends Projection {
       axisOrientation: opt_axisOrientation,
       global: true,
       metersPerUnit: METERS_PER_UNIT,
-      worldExtent: EXTENT
+      worldExtent: EXTENT,
     });
-
   }
-
 }
-
 
 /**
  * Projections equal to EPSG:4326.
@@ -74,5 +66,5 @@ export const PROJECTIONS = [
   new EPSG4326Projection('urn:ogc:def:crs:OGC:1.3:CRS84'),
   new EPSG4326Projection('urn:ogc:def:crs:OGC:2:84'),
   new EPSG4326Projection('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
-  new EPSG4326Projection('urn:x-ogc:def:crs:EPSG:4326', 'neu')
+  new EPSG4326Projection('urn:x-ogc:def:crs:EPSG:4326', 'neu'),
 ];

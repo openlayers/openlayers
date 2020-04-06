@@ -2,8 +2,8 @@
  * @module ol/layer/VectorImage
  */
 import BaseVectorLayer from './BaseVector.js';
-import {assign} from '../obj.js';
 import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
+import {assign} from '../obj.js';
 
 /**
  * @typedef {Object} Options
@@ -50,7 +50,6 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
  */
 
-
 /**
  * @classdesc
  * Vector data that is rendered client-side.
@@ -75,8 +74,8 @@ class VectorImageLayer extends BaseVectorLayer {
      * @type {number}
      * @private
      */
-    this.imageRatio_ = options.imageRatio !== undefined ? options.imageRatio : 1;
-
+    this.imageRatio_ =
+      options.imageRatio !== undefined ? options.imageRatio : 1;
   }
 
   /**
@@ -95,6 +94,5 @@ class VectorImageLayer extends BaseVectorLayer {
     return new CanvasVectorImageLayerRenderer(this);
   }
 }
-
 
 export default VectorImageLayer;

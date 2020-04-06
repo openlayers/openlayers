@@ -1,25 +1,38 @@
 /**
  * @module ol/render/canvas/Executor
  */
-import {equals} from '../../array.js';
-import {createEmpty, createOrUpdate,
-  createOrUpdateEmpty, extend, intersects} from '../../extent.js';
-import {lineStringLength} from '../../geom/flat/length.js';
-import {drawTextOnPath} from '../../geom/flat/textpath.js';
-import {transform2D} from '../../geom/flat/transform.js';
-import {drawImageOrLabel, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
-import {TEXT_ALIGN} from './TextBuilder.js';
-import {
-  create as createTransform,
-  compose as composeTransform,
-  apply as applyTransform,
-  setFromArray as transformSetFromArray
-} from '../../transform.js';
-import {defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import RBush from 'rbush/rbush.js';
+import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
-
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+  create as createTransform,
+  setFromArray as transformSetFromArray,
+} from '../../transform.js';
+import {
+  createEmpty,
+  createOrUpdate,
+  createOrUpdateEmpty,
+  extend,
+  intersects,
+} from '../../extent.js';
+import {
+  defaultPadding,
+  defaultTextBaseline,
+  drawImageOrLabel,
+} from '../canvas.js';
+import {
+  defaultTextAlign,
+  measureAndCacheTextWidth,
+  measureTextHeight,
+  measureTextWidths,
+} from '../canvas.js';
+import {drawTextOnPath} from '../../geom/flat/textpath.js';
+import {equals} from '../../array.js';
+import {lineStringLength} from '../../geom/flat/length.js';
+import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @typedef {Object} SerializableInstructions
@@ -50,7 +63,6 @@ const p3 = [];
 /** @type {import("../../coordinate.js").Coordinate} */
 const p4 = [];
 
-
 class Executor {
   /**
    * @param {number} resolution Resolution.
@@ -59,7 +71,6 @@ class Executor {
    * @param {SerializableInstructions} instructions The serializable instructions
    */
   constructor(resolution, pixelRatio, overlaps, instructions) {
-
     /**
      * @protected
      * @type {boolean}
@@ -178,7 +189,8 @@ class Executor {
     const pixelRatio = this.pixelRatio;
     const scale = textState.scale * pixelRatio;
     const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
-    const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
+    const strokeWidth =
+      strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     const lines = text.split('\n');
     const numLines = lines.length;
@@ -193,7 +205,7 @@ class Executor {
       // make canvas 2 pixels wider to account for italic text width measurement errors
       width: Math.ceil((renderWidth + 2) * scale),
       height: Math.ceil((height + strokeWidth) * scale),
-      contextInstructions: contextInstructions
+      contextInstructions: contextInstructions,
     };
     if (scale != 1) {
       contextInstructions.push('scale', [scale, scale]);
@@ -217,17 +229,25 @@ class Executor {
     }
     contextInstructions.push('textBaseline', 'middle');
     contextInstructions.push('textAlign', 'center');
-    const leftRight = (0.5 - align);
+    const leftRight = 0.5 - align;
     const x = align * renderWidth + leftRight * strokeWidth;
     let i;
     if (strokeKey) {
       for (i = 0; i < numLines; ++i) {
-        contextInstructions.push('strokeText', [lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight]);
+        contextInstructions.push('strokeText', [
+          lines[i],
+          x + leftRight * widths[i],
+          0.5 * (strokeWidth + lineHeight) + i * lineHeight,
+        ]);
       }
     }
     if (fillKey) {
       for (i = 0; i < numLines; ++i) {
-        contextInstructions.push('fillText', [lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight]);
+        contextInstructions.push('fillText', [
+          lines[i],
+          x + leftRight * widths[i],
+          0.5 * (strokeWidth + lineHeight) + i * lineHeight,
+        ]);
       }
     }
     this.labels_[key] = label;
@@ -243,7 +263,15 @@ class Executor {
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
    */
-  replayTextBackground_(context, p1, p2, p3, p4, fillInstruction, strokeInstruction) {
+  replayTextBackground_(
+    context,
+    p1,
+    p2,
+    p3,
+    p4,
+    fillInstruction,
+    strokeInstruction
+  ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
     context.lineTo.apply(context, p2);
@@ -255,7 +283,10 @@ class Executor {
       this.fill_(context);
     }
     if (strokeInstruction) {
-      this.setStrokeStyle_(context, /** @type {Array<*>} */ (strokeInstruction));
+      this.setStrokeStyle_(
+        context,
+        /** @type {Array<*>} */ (strokeInstruction)
+      );
       context.stroke();
     }
   }
@@ -306,8 +337,14 @@ class Executor {
     x -= anchorX;
     y -= anchorY;
 
-    const w = (width + originX > imageOrLabel.width) ? imageOrLabel.width - originX : width;
-    const h = (height + originY > imageOrLabel.height) ? imageOrLabel.height - originY : height;
+    const w =
+      width + originX > imageOrLabel.width
+        ? imageOrLabel.width - originX
+        : width;
+    const h =
+      height + originY > imageOrLabel.height
+        ? imageOrLabel.height - originY
+        : height;
     const boxW = padding[3] + w * scale + padding[1];
     const boxH = padding[0] + h * scale + padding[2];
     const boxX = x - padding[3];
@@ -328,7 +365,16 @@ class Executor {
     if (rotation !== 0) {
       const centerX = x + anchorX;
       const centerY = y + anchorY;
-      transform = composeTransform(tmpTransform, centerX, centerY, 1, 1, rotation, -centerX, -centerY);
+      transform = composeTransform(
+        tmpTransform,
+        centerX,
+        centerY,
+        1,
+        1,
+        rotation,
+        -centerX,
+        -centerY
+      );
 
       applyTransform(tmpTransform, p1);
       applyTransform(tmpTransform, p2);
@@ -345,10 +391,14 @@ class Executor {
       createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
     }
     const canvas = context.canvas;
-    const strokePadding = strokeInstruction ? (strokeInstruction[2] * scale / 2) : 0;
+    const strokePadding = strokeInstruction
+      ? (strokeInstruction[2] * scale) / 2
+      : 0;
     const intersects =
-        tmpExtent[0] - strokePadding <= canvas.width && tmpExtent[2] + strokePadding >= 0 &&
-        tmpExtent[1] - strokePadding <= canvas.height && tmpExtent[3] + strokePadding >= 0;
+      tmpExtent[0] - strokePadding <= canvas.width &&
+      tmpExtent[2] + strokePadding >= 0 &&
+      tmpExtent[1] - strokePadding <= canvas.height &&
+      tmpExtent[3] + strokePadding >= 0;
 
     if (snapToPixel) {
       x = Math.round(x);
@@ -360,22 +410,59 @@ class Executor {
         return;
       }
       extend(declutterGroup, tmpExtent);
-      const declutterArgs = intersects ?
-        [context, transform ? transform.slice(0) : null, opacity, imageOrLabel, originX, originY, w, h, x, y, scale] :
-        null;
+      const declutterArgs = intersects
+        ? [
+            context,
+            transform ? transform.slice(0) : null,
+            opacity,
+            imageOrLabel,
+            originX,
+            originY,
+            w,
+            h,
+            x,
+            y,
+            scale,
+          ]
+        : null;
       if (declutterArgs) {
         if (fillStroke) {
-          declutterArgs.push(fillInstruction, strokeInstruction, p1.slice(0), p2.slice(0), p3.slice(0), p4.slice(0));
+          declutterArgs.push(
+            fillInstruction,
+            strokeInstruction,
+            p1.slice(0),
+            p2.slice(0),
+            p3.slice(0),
+            p4.slice(0)
+          );
         }
         declutterGroup.push(declutterArgs);
       }
     } else if (intersects) {
       if (fillStroke) {
-        this.replayTextBackground_(context, p1, p2, p3, p4,
+        this.replayTextBackground_(
+          context,
+          p1,
+          p2,
+          p3,
+          p4,
           /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction));
+          /** @type {Array<*>} */ (strokeInstruction)
+        );
       }
-      drawImageOrLabel(context, transform, opacity, imageOrLabel, originX, originY, w, h, x, y, scale);
+      drawImageOrLabel(
+        context,
+        transform,
+        opacity,
+        imageOrLabel,
+        originX,
+        originY,
+        w,
+        h,
+        x,
+        y,
+        scale
+      );
     }
   }
 
@@ -431,7 +518,7 @@ class Executor {
           minY: /** @type {number} */ (declutterGroup[1]),
           maxX: /** @type {number} */ (declutterGroup[2]),
           maxY: /** @type {number} */ (declutterGroup[3]),
-          value: feature
+          value: feature,
         };
         if (!declutterTree) {
           declutterTree = new RBush(9);
@@ -446,9 +533,15 @@ class Executor {
               context.globalAlpha = opacity;
             }
             if (declutterData.length > 11) {
-              this.replayTextBackground_(declutterData[0],
-                declutterData[13], declutterData[14], declutterData[15], declutterData[16],
-                declutterData[11], declutterData[12]);
+              this.replayTextBackground_(
+                declutterData[0],
+                declutterData[13],
+                declutterData[14],
+                declutterData[15],
+                declutterData[16],
+                declutterData[11],
+                declutterData[12]
+              );
             }
             drawImageOrLabel.apply(undefined, declutterData);
             if (currentAlpha !== opacity) {
@@ -480,17 +573,20 @@ class Executor {
     const pixelRatio = this.pixelRatio;
     const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
-    const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
+    const strokeWidth =
+      strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     // Remove the 2 pixels we added in createLabel() for the anchor
     const width = label.width / pixelRatio - 2 * textState.scale;
     const anchorX = align * width + 2 * (0.5 - align) * strokeWidth;
-    const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
+    const anchorY =
+      (baseline * label.height) / pixelRatio +
+      2 * (0.5 - baseline) * strokeWidth;
 
     return {
       label: label,
       anchorX: anchorX,
-      anchorY: anchorY
+      anchorY: anchorY,
     };
   }
 
@@ -524,15 +620,30 @@ class Executor {
         this.pixelCoordinates_ = [];
       }
       pixelCoordinates = transform2D(
-        this.coordinates, 0, this.coordinates.length, 2,
-        transform, this.pixelCoordinates_);
+        this.coordinates,
+        0,
+        this.coordinates.length,
+        2,
+        transform,
+        this.pixelCoordinates_
+      );
       transformSetFromArray(this.renderedTransform_, transform);
     }
     let i = 0; // instruction index
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, declutterGroups, image, text, textKey;
+    let anchorX,
+      anchorY,
+      prevX,
+      prevY,
+      roundX,
+      roundY,
+      declutterGroup,
+      declutterGroups,
+      image,
+      text,
+      textKey;
     let strokeKey, fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
@@ -540,18 +651,20 @@ class Executor {
     let lastStrokeInstruction = null;
     const coordinateCache = this.coordinateCache_;
     const viewRotation = this.viewRotation_;
-    const viewRotationFromTransform = Math.round(Math.atan2(-transform[1], transform[0]) * 1e12) / 1e12;
+    const viewRotationFromTransform =
+      Math.round(Math.atan2(-transform[1], transform[0]) * 1e12) / 1e12;
 
     const state = /** @type {import("../../render.js").State} */ ({
       context: context,
       pixelRatio: this.pixelRatio,
       resolution: this.resolution,
-      rotation: viewRotation
+      rotation: viewRotation,
     });
 
     // When the batch size gets too big, performance decreases. 200 is a good
     // balance between batch size and number of fill/stroke instructions.
-    const batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
+    const batchSize =
+      this.instructions != instructions || this.overlaps ? 0 : 200;
     let /** @type {import("../../Feature.js").FeatureLike} */ feature;
     let x, y;
     while (i < ii) {
@@ -562,7 +675,10 @@ class Executor {
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
           if (!feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
-          } else if (opt_hitExtent !== undefined && !intersects(opt_hitExtent, instruction[3])) {
+          } else if (
+            opt_hitExtent !== undefined &&
+            !intersects(opt_hitExtent, instruction[3])
+          ) {
             i = /** @type {number} */ (instruction[2]) + 1;
           } else {
             ++i;
@@ -647,7 +763,12 @@ class Executor {
             textKey = /** @type {string} */ (instruction[19]);
             strokeKey = /** @type {string} */ (instruction[20]);
             fillKey = /** @type {string} */ (instruction[21]);
-            const labelWithAnchor = this.drawLabelWithPointPlacement_(text, textKey, strokeKey, fillKey);
+            const labelWithAnchor = this.drawLabelWithPointPlacement_(
+              text,
+              textKey,
+              strokeKey,
+              fillKey
+            );
             image = labelWithAnchor.label;
             instruction[3] = image;
             const textOffsetX = /** @type {number} */ (instruction[22]);
@@ -688,7 +809,10 @@ class Executor {
           let widthIndex = 0;
           let declutterGroupIndex = 0;
           for (; d < dd; d += 2) {
-            if (geometryWidths && geometryWidths[widthIndex++] < width / this.pixelRatio) {
+            if (
+              geometryWidths &&
+              geometryWidths[widthIndex++] < width / this.pixelRatio
+            ) {
               continue;
             }
             if (declutterGroups) {
@@ -700,18 +824,35 @@ class Executor {
               }
               declutterGroup = declutterGroups[index];
             }
-            this.replayImageOrLabel_(context,
-              pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
-              declutterGroup, height, opacity, originX, originY, rotation, scale,
-              snapToPixel, width, padding,
-              backgroundFill ? /** @type {Array<*>} */ (lastFillInstruction) : null,
-              backgroundStroke ? /** @type {Array<*>} */ (lastStrokeInstruction) : null);
+            this.replayImageOrLabel_(
+              context,
+              pixelCoordinates[d],
+              pixelCoordinates[d + 1],
+              image,
+              anchorX,
+              anchorY,
+              declutterGroup,
+              height,
+              opacity,
+              originX,
+              originY,
+              rotation,
+              scale,
+              snapToPixel,
+              width,
+              padding,
+              backgroundFill
+                ? /** @type {Array<*>} */ (lastFillInstruction)
+                : null,
+              backgroundStroke
+                ? /** @type {Array<*>} */ (lastStrokeInstruction)
+                : null
+            );
             if (declutterGroup) {
               if (declutterGroupIndex === Math.floor(declutterGroupIndex)) {
                 this.declutterItems.push(this, declutterGroup, feature);
               }
               declutterGroupIndex += 1 / declutterGroup[4];
-
             }
           }
           ++i;
@@ -745,12 +886,24 @@ class Executor {
           }
 
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
-          const textLength = textScale * measureAndCacheTextWidth(font, text, cachedWidths);
+          const textLength =
+            textScale * measureAndCacheTextWidth(font, text, cachedWidths);
           if (overflow || textLength <= pathLength) {
             const textAlign = this.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
-              pixelCoordinates, begin, end, 2, text, startM, maxAngle, textScale, measureAndCacheTextWidth, font, cachedWidths);
+              pixelCoordinates,
+              begin,
+              end,
+              2,
+              text,
+              startM,
+              maxAngle,
+              textScale,
+              measureAndCacheTextWidth,
+              font,
+              cachedWidths
+            );
             if (parts) {
               let c, cc, chars, label, part;
               if (strokeKey) {
@@ -759,12 +912,30 @@ class Executor {
                   chars = /** @type {string} */ (part[4]);
                   label = this.createLabel(chars, textKey, '', strokeKey);
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
-                  anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                  this.replayImageOrLabel_(context,
-                    /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
-                    anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
-                    defaultPadding, null, null);
+                  anchorY =
+                    baseline * label.height +
+                    (0.5 - baseline) * 2 * strokeWidth -
+                    offsetY;
+                  this.replayImageOrLabel_(
+                    context,
+                    /** @type {number} */ (part[0]),
+                    /** @type {number} */ (part[1]),
+                    label,
+                    anchorX,
+                    anchorY,
+                    declutterGroup,
+                    label.height,
+                    1,
+                    0,
+                    0,
+                    /** @type {number} */ (part[3]),
+                    pixelRatioScale,
+                    false,
+                    label.width,
+                    defaultPadding,
+                    null,
+                    null
+                  );
                 }
               }
               if (fillKey) {
@@ -774,11 +945,26 @@ class Executor {
                   label = this.createLabel(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
-                  this.replayImageOrLabel_(context,
-                    /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
-                    anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
-                    defaultPadding, null, null);
+                  this.replayImageOrLabel_(
+                    context,
+                    /** @type {number} */ (part[0]),
+                    /** @type {number} */ (part[1]),
+                    label,
+                    anchorX,
+                    anchorY,
+                    declutterGroup,
+                    label.height,
+                    1,
+                    0,
+                    0,
+                    /** @type {number} */ (part[3]),
+                    pixelRatioScale,
+                    false,
+                    label.width,
+                    defaultPadding,
+                    null,
+                    null
+                  );
                 }
               }
             }
@@ -884,7 +1070,14 @@ class Executor {
    */
   execute(context, transform, viewRotation, snapToPixel) {
     this.viewRotation_ = viewRotation;
-    this.execute_(context, transform, this.instructions, snapToPixel, undefined, undefined);
+    this.execute_(
+      context,
+      transform,
+      this.instructions,
+      snapToPixel,
+      undefined,
+      undefined
+    );
   }
 
   /**
@@ -906,10 +1099,15 @@ class Executor {
     opt_hitExtent
   ) {
     this.viewRotation_ = viewRotation;
-    return this.execute_(context, transform,
-      this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
+    return this.execute_(
+      context,
+      transform,
+      this.hitDetectionInstructions,
+      true,
+      opt_featureCallback,
+      opt_hitExtent
+    );
   }
 }
-
 
 export default Executor;

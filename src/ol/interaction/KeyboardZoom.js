@@ -2,9 +2,8 @@
  * @module ol/interaction/KeyboardZoom
  */
 import EventType from '../events/EventType.js';
-import {targetNotEditable} from '../events/condition.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
-
+import {targetNotEditable} from '../events/condition.js';
 
 /**
  * @typedef {Object} Options
@@ -15,7 +14,6 @@ import Interaction, {zoomByDelta} from './Interaction.js';
  * {@link module:ol/events/condition~targetNotEditable}.
  * @property {number} [delta=1] The zoom level delta on each key press.
  */
-
 
 /**
  * @classdesc
@@ -35,9 +33,8 @@ class KeyboardZoom extends Interaction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     super({
-      handleEvent: handleEvent
+      handleEvent: handleEvent,
     });
 
     const options = opt_options ? opt_options : {};
@@ -59,11 +56,8 @@ class KeyboardZoom extends Interaction {
      * @type {number}
      */
     this.duration_ = options.duration !== undefined ? options.duration : 100;
-
   }
-
 }
-
 
 /**
  * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
@@ -75,14 +69,18 @@ class KeyboardZoom extends Interaction {
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
-  if (mapBrowserEvent.type == EventType.KEYDOWN ||
-      mapBrowserEvent.type == EventType.KEYPRESS) {
+  if (
+    mapBrowserEvent.type == EventType.KEYDOWN ||
+    mapBrowserEvent.type == EventType.KEYPRESS
+  ) {
     const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
     const charCode = keyEvent.charCode;
-    if (this.condition_(mapBrowserEvent) &&
-        (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
+    if (
+      this.condition_(mapBrowserEvent) &&
+      (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))
+    ) {
       const map = mapBrowserEvent.map;
-      const delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
+      const delta = charCode == '+'.charCodeAt(0) ? this.delta_ : -this.delta_;
       const view = map.getView();
       zoomByDelta(view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();

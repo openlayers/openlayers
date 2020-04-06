@@ -6,5 +6,5 @@
  * @enum {string}
  */
 export default {
-  ACTIVE: 'active'
+  ACTIVE: 'active',
 };

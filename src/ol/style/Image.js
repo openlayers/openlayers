@@ -3,7 +3,6 @@
  */
 import {abstract} from '../util.js';
 
-
 /**
  * @typedef {Object} Options
  * @property {number} opacity
@@ -12,7 +11,6 @@ import {abstract} from '../util.js';
  * @property {number} scale
  * @property {Array<number>} displacement
  */
-
 
 /**
  * @classdesc
@@ -27,7 +25,6 @@ class ImageStyle {
    * @param {Options} options Options.
    */
   constructor(options) {
-
     /**
      * @private
      * @type {number}
@@ -57,7 +54,6 @@ class ImageStyle {
      * @type {Array<number>}
      */
     this.displacement_ = options.displacement;
-
   }
 
   /**
@@ -71,7 +67,7 @@ class ImageStyle {
       scale: this.getScale(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
-      displacement: this.getDisplacement().slice()
+      displacement: this.getDisplacement().slice(),
     });
   }
 

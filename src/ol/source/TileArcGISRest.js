@@ -2,13 +2,13 @@
  * @module ol/source/TileArcGISRest
  */
 
+import TileImage from './TileImage.js';
+import {appendParams} from '../uri.js';
+import {assign} from '../obj.js';
 import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
-import {assign} from '../obj.js';
-import {toSize, scale as scaleSize} from '../size.js';
-import TileImage from './TileImage.js';
+import {scale as scaleSize, toSize} from '../size.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
-import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
@@ -51,7 +51,6 @@ import {appendParams} from '../uri.js';
  * Service supports multiple urls for export requests.
  */
 
-
 /**
  * @classdesc
  * Layer source for tile data from ArcGIS Rest services. Map and Image
@@ -66,7 +65,6 @@ class TileArcGISRest extends TileImage {
    * @param {Options=} opt_options Tile ArcGIS Rest options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
@@ -82,7 +80,7 @@ class TileArcGISRest extends TileImage {
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      transition: options.transition
+      transition: options.transition,
     });
 
     /**
@@ -139,8 +137,14 @@ class TileArcGISRest extends TileImage {
    * @return {string|undefined} Request URL.
    * @private
    */
-  getRequestUrl_(tileCoord, tileSize, tileExtent, pixelRatio, projection, params) {
-
+  getRequestUrl_(
+    tileCoord,
+    tileSize,
+    tileExtent,
+    pixelRatio,
+    projection,
+    params
+  ) {
     const urls = this.urls;
     if (!urls) {
       return undefined;
@@ -199,7 +203,6 @@ class TileArcGISRest extends TileImage {
  * @this {TileArcGISRest}
  */
 function tileUrlFunction(tileCoord, pixelRatio, projection) {
-
   let tileGrid = this.getTileGrid();
   if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projection);
@@ -213,10 +216,8 @@ function tileUrlFunction(tileCoord, pixelRatio, projection) {
     pixelRatio = 1;
   }
 
-  const tileExtent = tileGrid.getTileCoordExtent(
-    tileCoord, this.tmpExtent_);
-  let tileSize = toSize(
-    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
   if (pixelRatio != 1) {
     tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
@@ -226,13 +227,18 @@ function tileUrlFunction(tileCoord, pixelRatio, projection) {
   const baseParams = {
     'F': 'image',
     'FORMAT': 'PNG32',
-    'TRANSPARENT': true
+    'TRANSPARENT': true,
   };
   assign(baseParams, this.params_);
 
-  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-    pixelRatio, projection, baseParams);
+  return this.getRequestUrl_(
+    tileCoord,
+    tileSize,
+    tileExtent,
+    pixelRatio,
+    projection,
+    baseParams
+  );
 }
-
 
 export default TileArcGISRest;

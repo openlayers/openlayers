@@ -7,7 +7,6 @@
  * Objects that need to clean up after themselves.
  */
 class Disposable {
-
   constructor() {
     /**
      * The object has already been disposed.

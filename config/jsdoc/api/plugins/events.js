@@ -1,8 +1,7 @@
 const events = {};
 
 exports.handlers = {
-
-  newDoclet: function(e) {
+  newDoclet: function (e) {
     const doclet = e.doclet;
     if (doclet.kind !== 'event') {
       return;
@@ -15,7 +14,7 @@ exports.handlers = {
     events[cls].push(doclet.longname);
   },
 
-  parseComplete: function(e) {
+  parseComplete: function (e) {
     const doclets = e.doclets;
     for (let i = 0, ii = doclets.length - 1; i < ii; ++i) {
       const doclet = doclets[i];
@@ -34,6 +33,5 @@ exports.handlers = {
         }
       }
     }
-  }
-
+  },
 };

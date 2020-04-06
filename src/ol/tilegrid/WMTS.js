@@ -2,10 +2,9 @@
  * @module ol/tilegrid/WMTS
  */
 
+import TileGrid from './TileGrid.js';
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
-import TileGrid from './TileGrid.js';
-
 
 /**
  * @typedef {Object} Options
@@ -39,7 +38,6 @@ import TileGrid from './TileGrid.js';
  * this array needs to match the length of the `resolutions` array.
  */
 
-
 /**
  * @classdesc
  * Set the grid pattern for sources accessing WMTS tiled-image servers.
@@ -57,7 +55,7 @@ class WMTSTileGrid extends TileGrid {
       resolutions: options.resolutions,
       tileSize: options.tileSize,
       tileSizes: options.tileSizes,
-      sizes: options.sizes
+      sizes: options.sizes,
     });
 
     /**
@@ -85,7 +83,6 @@ class WMTSTileGrid extends TileGrid {
   }
 }
 
-
 export default WMTSTileGrid;
 
 /**
@@ -100,8 +97,11 @@ export default WMTSTileGrid;
  * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
  */
-export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {
-
+export function createFromCapabilitiesMatrixSet(
+  matrixSet,
+  opt_extent,
+  opt_matrixLimits
+) {
   /** @type {!Array<number>} */
   const resolutions = [];
   /** @type {!Array<string>} */
@@ -124,30 +124,34 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
   const tileHeightPropName = 'TileHeight';
 
   const code = matrixSet[supportedCRSPropName];
-  const projection = getProjection(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
-      getProjection(code);
+  const projection =
+    getProjection(
+      code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')
+    ) || getProjection(code);
   const metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
   const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
-  matrixSet[matrixIdsPropName].sort(function(a, b) {
+  matrixSet[matrixIdsPropName].sort(function (a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
   });
 
-  matrixSet[matrixIdsPropName].forEach(function(elt) {
-
+  matrixSet[matrixIdsPropName].forEach(function (elt) {
     let matrixAvailable;
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = find(matrixLimits, function(elt_ml) {
+      matrixAvailable = find(matrixLimits, function (elt_ml) {
         if (elt[identifierPropName] == elt_ml[matrixIdsPropName]) {
           return true;
         }
         // Fallback for tileMatrix identifiers that don't get prefixed
         // by their tileMatrixSet identifiers.
         if (elt[identifierPropName].indexOf(':') === -1) {
-          return matrixSet[identifierPropName] + ':' + elt[identifierPropName] === elt_ml[matrixIdsPropName];
+          return (
+            matrixSet[identifierPropName] + ':' + elt[identifierPropName] ===
+            elt_ml[matrixIdsPropName]
+          );
         }
         return false;
       });
@@ -157,18 +161,22 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
 
     if (matrixAvailable) {
       matrixIds.push(elt[identifierPropName]);
-      const resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
+      const resolution =
+        (elt[scaleDenominatorPropName] * 0.28e-3) / metersPerUnit;
       const tileWidth = elt[tileWidthPropName];
       const tileHeight = elt[tileHeightPropName];
       if (switchOriginXY) {
-        origins.push([elt[topLeftCornerPropName][1],
-          elt[topLeftCornerPropName][0]]);
+        origins.push([
+          elt[topLeftCornerPropName][1],
+          elt[topLeftCornerPropName][0],
+        ]);
       } else {
         origins.push(elt[topLeftCornerPropName]);
       }
       resolutions.push(resolution);
-      tileSizes.push(tileWidth == tileHeight ?
-        tileWidth : [tileWidth, tileHeight]);
+      tileSizes.push(
+        tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight]
+      );
       sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
     }
   });
@@ -179,6 +187,6 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
     resolutions: resolutions,
     matrixIds: matrixIds,
     tileSizes: tileSizes,
-    sizes: sizes
+    sizes: sizes,
   });
 }

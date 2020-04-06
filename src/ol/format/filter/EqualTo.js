@@ -9,7 +9,6 @@ import ComparisonBinary from './ComparisonBinary.js';
  * @api
  */
 class EqualTo extends ComparisonBinary {
-
   /**
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!(string|number)} expression The value to compare.
@@ -18,7 +17,6 @@ class EqualTo extends ComparisonBinary {
   constructor(propertyName, expression, opt_matchCase) {
     super('PropertyIsEqualTo', propertyName, expression, opt_matchCase);
   }
-
 }
 
 export default EqualTo;

@@ -1,10 +1,8 @@
 import {getCircleArray} from '../../../../../src/ol/render/canvas/ExecutorGroup.js';
 
-
-describe('ol.render.canvas.ExecutorGroup', function() {
-
-  describe('#getCircleArray_', function() {
-    it('creates an array with a pixelated circle marked with true', function() {
+describe('ol.render.canvas.ExecutorGroup', function () {
+  describe('#getCircleArray_', function () {
+    it('creates an array with a pixelated circle marked with true', function () {
       const radius = 10;
       const minRadiusSq = Math.pow(radius - Math.SQRT2, 2);
       const maxRadiusSq = Math.pow(radius + Math.SQRT2, 2);
@@ -27,5 +25,4 @@ describe('ol.render.canvas.ExecutorGroup', function() {
       }
     });
   });
-
 });

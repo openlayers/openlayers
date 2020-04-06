@@ -8,7 +8,6 @@ import EventType from './events/EventType.js';
  * @enum {string}
  */
 export default {
-
   /**
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.
@@ -52,5 +51,5 @@ export default {
   POINTEROUT: 'pointerout',
   POINTERENTER: 'pointerenter',
   POINTERLEAVE: 'pointerleave',
-  POINTERCANCEL: 'pointercancel'
+  POINTERCANCEL: 'pointercancel',
 };

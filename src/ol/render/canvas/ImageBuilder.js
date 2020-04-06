@@ -1,8 +1,8 @@
 /**
  * @module ol/render/canvas/ImageBuilder
  */
-import CanvasInstruction from './Instruction.js';
 import CanvasBuilder from './Builder.js';
+import CanvasInstruction from './Instruction.js';
 
 class CanvasImageBuilder extends CanvasBuilder {
   /**
@@ -91,7 +91,6 @@ class CanvasImageBuilder extends CanvasBuilder {
      * @type {number|undefined}
      */
     this.width_ = undefined;
-
   }
 
   /**
@@ -103,7 +102,14 @@ class CanvasImageBuilder extends CanvasBuilder {
    * @return {number} My end.
    */
   drawCoordinates_(flatCoordinates, offset, end, stride) {
-    return this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
+    return this.appendFlatCoordinates(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      false,
+      false
+    );
   }
 
   /**
@@ -118,20 +124,47 @@ class CanvasImageBuilder extends CanvasBuilder {
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
-    const myEnd = this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
+    const myEnd = this.drawCoordinates_(
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride
+    );
     this.instructions.push([
-      CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
+      CanvasInstruction.DRAW_IMAGE,
+      myBegin,
+      myEnd,
+      this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
-      this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_ * this.pixelRatio, this.width_
+      this.anchorX_,
+      this.anchorY_,
+      this.declutterGroups_,
+      this.height_,
+      this.opacity_,
+      this.originX_,
+      this.originY_,
+      this.rotateWithView_,
+      this.rotation_,
+      this.scale_ * this.pixelRatio,
+      this.width_,
     ]);
     this.hitDetectionInstructions.push([
-      CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
+      CanvasInstruction.DRAW_IMAGE,
+      myBegin,
+      myEnd,
+      this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
-      this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_, this.width_
+      this.anchorX_,
+      this.anchorY_,
+      this.declutterGroups_,
+      this.height_,
+      this.opacity_,
+      this.originX_,
+      this.originY_,
+      this.rotateWithView_,
+      this.rotation_,
+      this.scale_,
+      this.width_,
     ]);
     this.endGeometry(feature);
   }
@@ -149,20 +182,46 @@ class CanvasImageBuilder extends CanvasBuilder {
     const stride = multiPointGeometry.getStride();
     const myBegin = this.coordinates.length;
     const myEnd = this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride
+    );
     this.instructions.push([
-      CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
+      CanvasInstruction.DRAW_IMAGE,
+      myBegin,
+      myEnd,
+      this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
-      this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_ * this.pixelRatio, this.width_
+      this.anchorX_,
+      this.anchorY_,
+      this.declutterGroups_,
+      this.height_,
+      this.opacity_,
+      this.originX_,
+      this.originY_,
+      this.rotateWithView_,
+      this.rotation_,
+      this.scale_ * this.pixelRatio,
+      this.width_,
     ]);
     this.hitDetectionInstructions.push([
-      CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
+      CanvasInstruction.DRAW_IMAGE,
+      myBegin,
+      myEnd,
+      this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_, this.anchorY_, this.declutterGroups_, this.height_, this.opacity_,
-      this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_, this.width_
+      this.anchorX_,
+      this.anchorY_,
+      this.declutterGroups_,
+      this.height_,
+      this.opacity_,
+      this.originX_,
+      this.originY_,
+      this.rotateWithView_,
+      this.rotation_,
+      this.scale_,
+      this.width_,
     ]);
     this.endGeometry(feature);
   }
@@ -213,6 +272,5 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.width_ = size[0];
   }
 }
-
 
 export default CanvasImageBuilder;

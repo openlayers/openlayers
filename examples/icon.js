@@ -1,19 +1,18 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
-import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
-
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 const iconFeature = new Feature({
   geometry: new Point([0, 0]),
   name: 'Null Island',
   population: 4000,
-  rainfall: 500
+  rainfall: 500,
 });
 
 const iconStyle = new Style({
@@ -21,25 +20,25 @@ const iconStyle = new Style({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    src: 'data/icon.png'
-  })
+    src: 'data/icon.png',
+  }),
 });
 
 iconFeature.setStyle(iconStyle);
 
 const vectorSource = new VectorSource({
-  features: [iconFeature]
+  features: [iconFeature],
 });
 
 const vectorLayer = new VectorLayer({
-  source: vectorSource
+  source: vectorSource,
 });
 
 const rasterLayer = new TileLayer({
   source: new TileJSON({
     url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json',
-    crossOrigin: ''
-  })
+    crossOrigin: '',
+  }),
 });
 
 const map = new Map({
@@ -47,8 +46,8 @@ const map = new Map({
   target: document.getElementById('map'),
   view: new View({
     center: [0, 0],
-    zoom: 3
-  })
+    zoom: 3,
+  }),
 });
 
 const element = document.getElementById('popup');
@@ -57,23 +56,22 @@ const popup = new Overlay({
   element: element,
   positioning: 'bottom-center',
   stopEvent: false,
-  offset: [0, -50]
+  offset: [0, -50],
 });
 map.addOverlay(popup);
 
 // display popup on click
-map.on('click', function(evt) {
-  const feature = map.forEachFeatureAtPixel(evt.pixel,
-    function(feature) {
-      return feature;
-    });
+map.on('click', function (evt) {
+  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+    return feature;
+  });
   if (feature) {
     const coordinates = feature.getGeometry().getCoordinates();
     popup.setPosition(coordinates);
     $(element).popover({
       placement: 'top',
       html: true,
-      content: feature.get('name')
+      content: feature.get('name'),
     });
     $(element).popover('show');
   } else {
@@ -82,7 +80,7 @@ map.on('click', function(evt) {
 });
 
 // change mouse cursor when over marker
-map.on('pointermove', function(e) {
+map.on('pointermove', function (e) {
   if (e.dragging) {
     $(element).popover('destroy');
     return;

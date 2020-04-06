@@ -14,7 +14,6 @@ const tmpArray4 = new Uint8Array(4);
  * @api
  */
 class WebGLRenderTarget {
-
   /**
    * @param {import("./Helper.js").default} helper WebGL helper; mandatory.
    * @param {Array<number>} [opt_size] Expected size of the render target texture; note: this can be changed later on.
@@ -106,7 +105,15 @@ class WebGLRenderTarget {
       const gl = this.helper_.getGL();
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer_);
-      gl.readPixels(0, 0, size[0], size[1], gl.RGBA, gl.UNSIGNED_BYTE, this.data_);
+      gl.readPixels(
+        0,
+        0,
+        size[0],
+        size[1],
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        this.data_
+      );
       this.dataCacheDirty_ = false;
     }
     return this.data_;
@@ -131,7 +138,8 @@ class WebGLRenderTarget {
     }
 
     this.readAll();
-    const index = Math.floor(x) + (this.size_[1] - Math.floor(y) - 1) * this.size_[0];
+    const index =
+      Math.floor(x) + (this.size_[1] - Math.floor(y) - 1) * this.size_[0];
     tmpArray4[0] = this.data_[index * 4];
     tmpArray4[1] = this.data_[index * 4 + 1];
     tmpArray4[2] = this.data_[index * 4 + 2];
@@ -164,7 +172,13 @@ class WebGLRenderTarget {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer_);
     gl.viewport(0, 0, size[0], size[1]);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture_, 0);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      this.texture_,
+      0
+    );
 
     this.data_ = new Uint8Array(size[0] * size[1] * 4);
   }

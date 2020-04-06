@@ -1,12 +1,12 @@
 /**
  * @module ol/geom/MultiPoint
  */
-import {extend} from '../array.js';
-import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import GeometryType from './GeometryType.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
+import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
+import {extend} from '../array.js';
 import {inflateCoordinates} from './flat/inflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
@@ -17,7 +17,6 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @api
  */
 class MultiPoint extends SimpleGeometry {
-
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
@@ -26,9 +25,15 @@ class MultiPoint extends SimpleGeometry {
   constructor(coordinates, opt_layout) {
     super();
     if (opt_layout && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
+      this.setFlatCoordinates(
+        opt_layout,
+        /** @type {Array<number>} */ (coordinates)
+      );
     } else {
-      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
+      this.setCoordinates(
+        /** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates),
+        opt_layout
+      );
     }
   }
 
@@ -52,7 +57,10 @@ class MultiPoint extends SimpleGeometry {
    * @api
    */
   clone() {
-    const multiPoint = new MultiPoint(this.flatCoordinates.slice(), this.layout);
+    const multiPoint = new MultiPoint(
+      this.flatCoordinates.slice(),
+      this.layout
+    );
     return multiPoint;
   }
 
@@ -71,7 +79,11 @@ class MultiPoint extends SimpleGeometry {
     const stride = this.stride;
     for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
       const squaredDistance = squaredDx(
-        x, y, flatCoordinates[i], flatCoordinates[i + 1]);
+        x,
+        y,
+        flatCoordinates[i],
+        flatCoordinates[i + 1]
+      );
       if (squaredDistance < minSquaredDistance) {
         minSquaredDistance = squaredDistance;
         for (let j = 0; j < stride; ++j) {
@@ -90,7 +102,11 @@ class MultiPoint extends SimpleGeometry {
    */
   getCoordinates() {
     return inflateCoordinates(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride
+    );
   }
 
   /**
@@ -100,12 +116,19 @@ class MultiPoint extends SimpleGeometry {
    * @api
    */
   getPoint(index) {
-    const n = !this.flatCoordinates ? 0 : this.flatCoordinates.length / this.stride;
+    const n = !this.flatCoordinates
+      ? 0
+      : this.flatCoordinates.length / this.stride;
     if (index < 0 || n <= index) {
       return null;
     }
-    return new Point(this.flatCoordinates.slice(
-      index * this.stride, (index + 1) * this.stride), this.layout);
+    return new Point(
+      this.flatCoordinates.slice(
+        index * this.stride,
+        (index + 1) * this.stride
+      ),
+      this.layout
+    );
   }
 
   /**
@@ -166,10 +189,13 @@ class MultiPoint extends SimpleGeometry {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = deflateCoordinates(
-      this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates,
+      0,
+      coordinates,
+      this.stride
+    );
     this.changed();
   }
 }
-
 
 export default MultiPoint;

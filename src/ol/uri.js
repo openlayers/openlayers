@@ -2,7 +2,6 @@
  * @module ol/uri
  */
 
-
 /**
  * Appends query parameters to a URI.
  *
@@ -14,7 +13,7 @@
 export function appendParams(uri, params) {
   const keyParams = [];
   // Skip any null or undefined parameter values
-  Object.keys(params).forEach(function(k) {
+  Object.keys(params).forEach(function (k) {
     if (params[k] !== null && params[k] !== undefined) {
       keyParams.push(k + '=' + encodeURIComponent(params[k]));
     }

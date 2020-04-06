@@ -3,11 +3,9 @@
  */
 import {toRadians} from './math.js';
 
-
 /**
  * @typedef {function((number|undefined), boolean=): (number|undefined)} Type
  */
-
 
 /**
  * @param {number|undefined} rotation Rotation.
@@ -21,7 +19,6 @@ export function disable(rotation) {
   }
 }
 
-
 /**
  * @param {number|undefined} rotation Rotation.
  * @return {number|undefined} Rotation.
@@ -34,20 +31,19 @@ export function none(rotation) {
   }
 }
 
-
 /**
  * @param {number} n N.
  * @return {Type} Rotation constraint.
  */
 export function createSnapToN(n) {
-  const theta = 2 * Math.PI / n;
+  const theta = (2 * Math.PI) / n;
   return (
     /**
      * @param {number|undefined} rotation Rotation.
      * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
-    function(rotation, opt_isMoving) {
+    function (rotation, opt_isMoving) {
       if (opt_isMoving) {
         return rotation;
       }
@@ -58,9 +54,9 @@ export function createSnapToN(n) {
       } else {
         return undefined;
       }
-    });
+    }
+  );
 }
-
 
 /**
  * @param {number=} opt_tolerance Tolerance.
@@ -74,7 +70,7 @@ export function createSnapToZero(opt_tolerance) {
      * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
-    function(rotation, opt_isMoving) {
+    function (rotation, opt_isMoving) {
       if (opt_isMoving) {
         return rotation;
       }
@@ -88,5 +84,6 @@ export function createSnapToZero(opt_tolerance) {
       } else {
         return undefined;
       }
-    });
+    }
+  );
 }

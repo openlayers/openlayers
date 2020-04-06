@@ -1,17 +1,16 @@
 /**
  * @module ol/render
  */
+import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 import {DEVICE_PIXEL_RATIO} from './has.js';
 import {
   apply as applyTransform,
   create as createTransform,
   multiply as multiplyTransform,
-  scale as scaleTransform
+  scale as scaleTransform,
 } from './transform.js';
-import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 import {getSquaredTolerance} from './renderer/vector.js';
-import {getUserProjection, getTransformFromProjections} from './proj.js';
-
+import {getTransformFromProjections, getUserProjection} from './proj.js';
 
 /**
  * @typedef {Object} State
@@ -24,7 +23,6 @@ import {getUserProjection, getTransformFromProjections} from './proj.js';
  * @property {number} rotation Rotation of the rendered layer in radians.
  */
 
-
 /**
  * A function to be used when sorting features before rendering.
  * It takes two instances of {@link module:ol/Feature} or
@@ -32,7 +30,6 @@ import {getUserProjection, getTransformFromProjections} from './proj.js';
  *
  * @typedef {function(import("./Feature.js").FeatureLike, import("./Feature.js").FeatureLike):number} OrderFunction
  */
-
 
 /**
  * @typedef {Object} ToContextOptions
@@ -43,7 +40,6 @@ import {getUserProjection, getTransformFromProjections} from './proj.js';
  * @property {number} [pixelRatio=window.devicePixelRatio] Pixel ratio (canvas
  * pixel to css pixel ratio) for the canvas.
  */
-
 
 /**
  * Binds a Canvas Immediate API to a canvas context, to allow drawing geometries
@@ -93,16 +89,31 @@ export function toContext(context, opt_options) {
  */
 export function getVectorContext(event) {
   const frameState = event.frameState;
-  const transform = multiplyTransform(event.inversePixelTransform.slice(), frameState.coordinateToPixelTransform);
-  const squaredTolerance = getSquaredTolerance(frameState.viewState.resolution, frameState.pixelRatio);
+  const transform = multiplyTransform(
+    event.inversePixelTransform.slice(),
+    frameState.coordinateToPixelTransform
+  );
+  const squaredTolerance = getSquaredTolerance(
+    frameState.viewState.resolution,
+    frameState.pixelRatio
+  );
   let userTransform;
   const userProjection = getUserProjection();
   if (userProjection) {
-    userTransform = getTransformFromProjections(userProjection, frameState.viewState.projection);
+    userTransform = getTransformFromProjections(
+      userProjection,
+      frameState.viewState.projection
+    );
   }
   return new CanvasImmediateRenderer(
-    event.context, frameState.pixelRatio, frameState.extent, transform,
-    frameState.viewState.rotation, squaredTolerance, userTransform);
+    event.context,
+    frameState.pixelRatio,
+    frameState.extent,
+    transform,
+    frameState.viewState.rotation,
+    squaredTolerance,
+    userTransform
+  );
 }
 
 /**
@@ -133,7 +144,12 @@ export function renderDeclutterItems(frameState, declutterTree) {
     const item = items[z];
     const zIndexItems = item.items;
     for (let i = 0, ii = zIndexItems.length; i < ii; i += 3) {
-      declutterTree = zIndexItems[i].renderDeclutter(zIndexItems[i + 1], zIndexItems[i + 2], item.opacity, declutterTree);
+      declutterTree = zIndexItems[i].renderDeclutter(
+        zIndexItems[i + 1],
+        zIndexItems[i + 2],
+        item.opacity,
+        declutterTree
+      );
     }
   }
   items.length = 0;

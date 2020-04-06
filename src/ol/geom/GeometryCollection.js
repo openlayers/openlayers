@@ -1,11 +1,16 @@
 /**
  * @module ol/geom/GeometryCollection
  */
-import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
-import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from './Geometry.js';
 import GeometryType from './GeometryType.js';
+import {
+  closestSquaredDistanceXY,
+  createOrUpdateEmpty,
+  extend,
+  getCenter,
+} from '../extent.js';
+import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @classdesc
@@ -14,12 +19,10 @@ import GeometryType from './GeometryType.js';
  * @api
  */
 class GeometryCollection extends Geometry {
-
   /**
    * @param {Array<Geometry>=} opt_geometries Geometries.
    */
   constructor(opt_geometries) {
-
     super();
 
     /**
@@ -52,9 +55,9 @@ class GeometryCollection extends Geometry {
       return;
     }
     for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
-      this.changeEventsKeys_.push(listen(
-        this.geometries_[i], EventType.CHANGE,
-        this.changed, this));
+      this.changeEventsKeys_.push(
+        listen(this.geometries_[i], EventType.CHANGE, this.changed, this)
+      );
     }
   }
 
@@ -83,7 +86,11 @@ class GeometryCollection extends Geometry {
     const geometries = this.geometries_;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       minSquaredDistance = geometries[i].closestPointXY(
-        x, y, closestPoint, minSquaredDistance);
+        x,
+        y,
+        closestPoint,
+        minSquaredDistance
+      );
     }
     return minSquaredDistance;
   }
@@ -142,7 +149,11 @@ class GeometryCollection extends Geometry {
     const geometries = this.geometries_;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       if (geometries[i].getType() === this.getType()) {
-        geometriesArray = geometriesArray.concat(/** @type {GeometryCollection} */ (geometries[i]).getGeometriesArrayRecursive());
+        geometriesArray = geometriesArray.concat(
+          /** @type {GeometryCollection} */ (geometries[
+            i
+          ]).getGeometriesArrayRecursive()
+        );
       } else {
         geometriesArray.push(geometries[i]);
       }
@@ -160,9 +171,11 @@ class GeometryCollection extends Geometry {
       this.simplifiedGeometryMaxMinSquaredTolerance = 0;
       this.simplifiedGeometryRevision = this.getRevision();
     }
-    if (squaredTolerance < 0 ||
-        (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-         squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)) {
+    if (
+      squaredTolerance < 0 ||
+      (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+        squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)
+    ) {
       return this;
     }
 
@@ -171,7 +184,9 @@ class GeometryCollection extends Geometry {
     let simplified = false;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       const geometry = geometries[i];
-      const simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
+      const simplifiedGeometry = geometry.getSimplifiedGeometry(
+        squaredTolerance
+      );
       simplifiedGeometries.push(simplifiedGeometry);
       if (simplifiedGeometry !== geometry) {
         simplified = true;
@@ -316,7 +331,6 @@ class GeometryCollection extends Geometry {
   }
 }
 
-
 /**
  * @param {Array<Geometry>} geometries Geometries.
  * @return {Array<Geometry>} Cloned geometries.
@@ -328,6 +342,5 @@ function cloneGeometries(geometries) {
   }
   return clonedGeometries;
 }
-
 
 export default GeometryCollection;

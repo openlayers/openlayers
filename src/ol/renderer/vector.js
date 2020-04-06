@@ -1,18 +1,16 @@
 /**
  * @module ol/renderer/vector
  */
-import {getUid} from '../util.js';
-import ImageState from '../ImageState.js';
-import GeometryType from '../geom/GeometryType.js';
 import BuilderType from '../render/canvas/BuilderType.js';
-
+import GeometryType from '../geom/GeometryType.js';
+import ImageState from '../ImageState.js';
+import {getUid} from '../util.js';
 
 /**
  * Tolerance for geometry simplification in device pixels.
  * @type {number}
  */
 const SIMPLIFY_TOLERANCE = 0.5;
-
 
 /**
  * @const
@@ -28,9 +26,8 @@ const GEOMETRY_RENDERERS = {
   'MultiLineString': renderMultiLineStringGeometry,
   'MultiPolygon': renderMultiPolygonGeometry,
   'GeometryCollection': renderGeometryCollectionGeometry,
-  'Circle': renderCircleGeometry
+  'Circle': renderCircleGeometry,
 };
-
 
 /**
  * @param {import("../Feature.js").FeatureLike} feature1 Feature 1.
@@ -40,7 +37,6 @@ const GEOMETRY_RENDERERS = {
 export function defaultOrder(feature1, feature2) {
   return parseInt(getUid(feature1), 10) - parseInt(getUid(feature2), 10);
 }
-
 
 /**
  * @param {number} resolution Resolution.
@@ -52,16 +48,14 @@ export function getSquaredTolerance(resolution, pixelRatio) {
   return tolerance * tolerance;
 }
 
-
 /**
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @return {number} Pixel tolerance.
  */
 export function getTolerance(resolution, pixelRatio) {
-  return SIMPLIFY_TOLERANCE * resolution / pixelRatio;
+  return (SIMPLIFY_TOLERANCE * resolution) / pixelRatio;
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
@@ -73,18 +67,23 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
-    const circleReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.CIRCLE);
+    const circleReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.CIRCLE
+    );
     circleReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     circleReplay.drawCircle(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
@@ -96,7 +95,14 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
  * @return {boolean} `true` if style is loading.
  * @template T
  */
-export function renderFeature(replayGroup, feature, style, squaredTolerance, listener, opt_transform) {
+export function renderFeature(
+  replayGroup,
+  feature,
+  style,
+  squaredTolerance,
+  listener,
+  opt_transform
+) {
   let loading = false;
   const imageStyle = style.getImage();
   if (imageStyle) {
@@ -112,11 +118,16 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
       loading = true;
     }
   }
-  renderFeatureInternal(replayGroup, feature, style, squaredTolerance, opt_transform);
+  renderFeatureInternal(
+    replayGroup,
+    feature,
+    style,
+    squaredTolerance,
+    opt_transform
+  );
 
   return loading;
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
@@ -125,12 +136,21 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
  * @param {number} squaredTolerance Squared tolerance.
  * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
  */
-function renderFeatureInternal(replayGroup, feature, style, squaredTolerance, opt_transform) {
+function renderFeatureInternal(
+  replayGroup,
+  feature,
+  style,
+  squaredTolerance,
+  opt_transform
+) {
   const geometry = style.getGeometryFunction()(feature);
   if (!geometry) {
     return;
   }
-  const simplifiedGeometry = geometry.simplifyTransformed(squaredTolerance, opt_transform);
+  const simplifiedGeometry = geometry.simplifyTransformed(
+    squaredTolerance,
+    opt_transform
+  );
   const renderer = style.getRenderer();
   if (renderer) {
     renderGeometry(replayGroup, simplifiedGeometry, style, feature);
@@ -139,7 +159,6 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance, op
     geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
@@ -156,9 +175,12 @@ function renderGeometry(replayGroup, geometry, style, feature) {
     return;
   }
   const replay = replayGroup.getBuilder(style.getZIndex(), BuilderType.DEFAULT);
-  replay.drawCustom(/** @type {import("../geom/SimpleGeometry.js").default} */ (geometry), feature, style.getRenderer());
+  replay.drawCustom(
+    /** @type {import("../geom/SimpleGeometry.js").default} */ (geometry),
+    feature,
+    style.getRenderer()
+  );
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
@@ -166,16 +188,19 @@ function renderGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
  */
-function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature) {
+function renderGeometryCollectionGeometry(
+  replayGroup,
+  geometry,
+  style,
+  feature
+) {
   const geometries = geometry.getGeometriesArray();
   let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    const geometryRenderer =
-        GEOMETRY_RENDERERS[geometries[i].getType()];
+    const geometryRenderer = GEOMETRY_RENDERERS[geometries[i].getType()];
     geometryRenderer(replayGroup, geometries[i], style, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
@@ -186,18 +211,23 @@ function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature)
 function renderLineStringGeometry(builderGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
-    const lineStringReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.LINE_STRING);
+    const lineStringReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.LINE_STRING
+    );
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
     lineStringReplay.drawLineString(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
@@ -208,18 +238,23 @@ function renderLineStringGeometry(builderGroup, geometry, style, feature) {
 function renderMultiLineStringGeometry(builderGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
-    const lineStringReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.LINE_STRING);
+    const lineStringReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.LINE_STRING
+    );
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
     lineStringReplay.drawMultiLineString(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
@@ -231,18 +266,23 @@ function renderMultiPolygonGeometry(builderGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (strokeStyle || fillStyle) {
-    const polygonReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.POLYGON);
+    const polygonReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.POLYGON
+    );
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawMultiPolygon(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
@@ -256,18 +296,23 @@ function renderPointGeometry(builderGroup, geometry, style, feature) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    const imageReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.IMAGE);
+    const imageReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.IMAGE
+    );
     imageReplay.setImageStyle(imageStyle, builderGroup.addDeclutter(false));
     imageReplay.drawPoint(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(!!imageStyle));
     textReplay.drawText(geometry, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
@@ -281,18 +326,23 @@ function renderMultiPointGeometry(builderGroup, geometry, style, feature) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    const imageReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.IMAGE);
+    const imageReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.IMAGE
+    );
     imageReplay.setImageStyle(imageStyle, builderGroup.addDeclutter(false));
     imageReplay.drawMultiPoint(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(!!imageStyle));
     textReplay.drawText(geometry, feature);
   }
 }
-
 
 /**
  * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
@@ -304,13 +354,19 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
-    const polygonReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.POLYGON);
+    const polygonReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.POLYGON
+    );
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawPolygon(geometry, feature);
   }
   const textStyle = style.getText();
   if (textStyle) {
-    const textReplay = builderGroup.getBuilder(style.getZIndex(), BuilderType.TEXT);
+    const textReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.TEXT
+    );
     textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }

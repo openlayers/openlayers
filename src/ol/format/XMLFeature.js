@@ -1,11 +1,11 @@
 /**
  * @module ol/format/XMLFeature
  */
-import {abstract} from '../util.js';
-import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
-import {isDocument, parse, getXMLSerializer} from '../xml.js';
+import {abstract} from '../util.js';
+import {extend} from '../array.js';
+import {getXMLSerializer, isDocument, parse} from '../xml.js';
 
 /**
  * @classdesc
@@ -48,9 +48,15 @@ class XMLFeature extends FeatureFormat {
       const doc = parse(source);
       return this.readFeatureFromDocument(doc, opt_options);
     } else if (isDocument(source)) {
-      return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
+      return this.readFeatureFromDocument(
+        /** @type {Document} */ (source),
+        opt_options
+      );
     } else {
-      return this.readFeatureFromNode(/** @type {Element} */ (source), opt_options);
+      return this.readFeatureFromNode(
+        /** @type {Element} */ (source),
+        opt_options
+      );
     }
   }
 
@@ -93,9 +99,14 @@ class XMLFeature extends FeatureFormat {
       return this.readFeaturesFromDocument(doc, opt_options);
     } else if (isDocument(source)) {
       return this.readFeaturesFromDocument(
-        /** @type {Document} */ (source), opt_options);
+        /** @type {Document} */ (source),
+        opt_options
+      );
     } else {
-      return this.readFeaturesFromNode(/** @type {Element} */ (source), opt_options);
+      return this.readFeaturesFromNode(
+        /** @type {Element} */ (source),
+        opt_options
+      );
     }
   }
 
@@ -110,7 +121,10 @@ class XMLFeature extends FeatureFormat {
     const features = [];
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        extend(features, this.readFeaturesFromNode(/** @type {Element} */ (n), opt_options));
+        extend(
+          features,
+          this.readFeaturesFromNode(/** @type {Element} */ (n), opt_options)
+        );
       }
     }
     return features;
@@ -142,9 +156,14 @@ class XMLFeature extends FeatureFormat {
       return this.readGeometryFromDocument(doc, opt_options);
     } else if (isDocument(source)) {
       return this.readGeometryFromDocument(
-        /** @type {Document} */ (source), opt_options);
+        /** @type {Document} */ (source),
+        opt_options
+      );
     } else {
-      return this.readGeometryFromNode(/** @type {Element} */ (source), opt_options);
+      return this.readGeometryFromNode(
+        /** @type {Element} */ (source),
+        opt_options
+      );
     }
   }
 
@@ -271,6 +290,5 @@ class XMLFeature extends FeatureFormat {
     return null; // not implemented
   }
 }
-
 
 export default XMLFeature;

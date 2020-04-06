@@ -1,25 +1,32 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
-import {createCanvasContext2D} from '../../dom.js';
+import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+  create as createTransform,
+} from '../../transform.js';
+import {createCanvasContext2D} from '../../dom.js';
+import {
+  getBottomLeft,
+  getBottomRight,
+  getTopLeft,
+  getTopRight,
+} from '../../extent.js';
 import {rotateAtOffset} from '../../render/canvas.js';
-import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @abstract
  * @template {import("../../layer/Layer.js").default} LayerType
  */
 class CanvasLayerRenderer extends LayerRenderer {
-
   /**
    * @param {LayerType} layer Layer.
    */
   constructor(layer) {
-
     super(layer);
 
     /**
@@ -68,7 +75,6 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {boolean}
      */
     this.containerReused = false;
-
   }
 
   /**
@@ -80,7 +86,11 @@ class CanvasLayerRenderer extends LayerRenderer {
   useContainer(target, transform, opacity) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
-    if (target && target.style.opacity === '' && target.className === layerClassName) {
+    if (
+      target &&
+      target.style.opacity === '' &&
+      target.className === layerClassName
+    ) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
         context = canvas.getContext('2d');
@@ -189,7 +199,12 @@ class CanvasLayerRenderer extends LayerRenderer {
   dispatchRenderEvent_(type, context, frameState) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const event = new RenderEvent(type, this.inversePixelTransform, frameState, context);
+      const event = new RenderEvent(
+        type,
+        this.inversePixelTransform,
+        frameState,
+        context
+      );
       layer.dispatchEvent(event);
     }
   }
@@ -224,14 +239,31 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    * @return {!import("../../transform.js").Transform} Transform.
    */
-  getRenderTransform(center, resolution, rotation, pixelRatio, width, height, offsetX) {
+  getRenderTransform(
+    center,
+    resolution,
+    rotation,
+    pixelRatio,
+    width,
+    height,
+    offsetX
+  ) {
     const dx1 = width / 2;
     const dy1 = height / 2;
     const sx = pixelRatio / resolution;
     const sy = -sx;
     const dx2 = -center[0] + offsetX;
     const dy2 = -center[1];
-    return composeTransform(this.tempTransform_, dx1, dy1, sx, sy, -rotation, dx2, dy2);
+    return composeTransform(
+      this.tempTransform_,
+      dx1,
+      dy1,
+      sx,
+      sy,
+      -rotation,
+      dx2,
+      dy2
+    );
   }
 
   /**
@@ -243,12 +275,20 @@ class CanvasLayerRenderer extends LayerRenderer {
    *    returned, and empty array will be returned.
    */
   getDataAtPixel(pixel, frameState, hitTolerance) {
-    const renderPixel = applyTransform(this.inversePixelTransform, pixel.slice());
+    const renderPixel = applyTransform(
+      this.inversePixelTransform,
+      pixel.slice()
+    );
     const context = this.context;
 
     let data;
     try {
-      data = context.getImageData(Math.round(renderPixel[0]), Math.round(renderPixel[1]), 1, 1).data;
+      data = context.getImageData(
+        Math.round(renderPixel[0]),
+        Math.round(renderPixel[1]),
+        1,
+        1
+      ).data;
     } catch (err) {
       if (err.name === 'SecurityError') {
         // tainted canvas, we assume there is data at the given pixel (although there might not be)
@@ -262,8 +302,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     }
     return data;
   }
-
 }
 
 export default CanvasLayerRenderer;
-

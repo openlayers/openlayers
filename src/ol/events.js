@@ -3,7 +3,6 @@
  */
 import {clear} from './obj.js';
 
-
 /**
  * Key to use with {@link module:ol/Observable~Observable#unByKey}.
  * @typedef {Object} EventsKey
@@ -51,7 +50,7 @@ export function listen(target, type, listener, opt_this, opt_once) {
   }
   if (opt_once) {
     const originalListener = listener;
-    listener = function() {
+    listener = function () {
       target.removeEventListener(type, listener);
       originalListener.apply(this, arguments);
     };
@@ -59,12 +58,11 @@ export function listen(target, type, listener, opt_this, opt_once) {
   const eventsKey = {
     target: target,
     type: type,
-    listener: listener
+    listener: listener,
   };
   target.addEventListener(type, listener);
   return eventsKey;
 }
-
 
 /**
  * Registers a one-off event listener on an event target. Inspired by
@@ -89,7 +87,6 @@ export function listen(target, type, listener, opt_this, opt_once) {
 export function listenOnce(target, type, listener, opt_this) {
   return listen(target, type, listener, opt_this, true);
 }
-
 
 /**
  * Unregisters event listeners on an event target. Inspired by

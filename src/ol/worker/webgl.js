@@ -4,14 +4,14 @@
  */
 import {
   WebGLWorkerMessageType,
-  writePointFeatureToBuffers
+  writePointFeatureToBuffers,
 } from '../renderer/webgl/Layer.js';
 import {assign} from '../obj.js';
 
 /** @type {any} */
 const worker = self;
 
-worker.onmessage = event => {
+worker.onmessage = (event) => {
   const received = event.data;
   if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
     // This is specific to point features (x, y, index)
@@ -24,7 +24,8 @@ worker.onmessage = event => {
 
     const elementsCount = renderInstructions.length / instructionsCount;
     const indicesCount = elementsCount * 6;
-    const verticesCount = elementsCount * 4 * (customAttrsCount + baseVertexAttrsCount);
+    const verticesCount =
+      elementsCount * 4 * (customAttrsCount + baseVertexAttrsCount);
     const indexBuffer = new Uint32Array(indicesCount);
     const vertexBuffer = new Float32Array(verticesCount);
 
@@ -36,17 +37,25 @@ worker.onmessage = event => {
         vertexBuffer,
         indexBuffer,
         customAttrsCount,
-        bufferPositions);
+        bufferPositions
+      );
     }
 
     /** @type {import('../renderer/webgl/Layer').WebGLWorkerGenerateBuffersMessage} */
-    const message = assign({
-      vertexBuffer: vertexBuffer.buffer,
-      indexBuffer: indexBuffer.buffer,
-      renderInstructions: renderInstructions.buffer
-    }, received);
+    const message = assign(
+      {
+        vertexBuffer: vertexBuffer.buffer,
+        indexBuffer: indexBuffer.buffer,
+        renderInstructions: renderInstructions.buffer,
+      },
+      received
+    );
 
-    worker.postMessage(message, [vertexBuffer.buffer, indexBuffer.buffer, renderInstructions.buffer]);
+    worker.postMessage(message, [
+      vertexBuffer.buffer,
+      indexBuffer.buffer,
+      renderInstructions.buffer,
+    ]);
   }
 };
 

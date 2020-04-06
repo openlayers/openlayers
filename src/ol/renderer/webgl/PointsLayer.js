@@ -1,26 +1,30 @@
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
+import BaseVector from '../../layer/BaseVector.js';
+import GeometryType from '../../geom/GeometryType.js';
+import VectorEventType from '../../source/VectorEventType.js';
+import ViewHint from '../../ViewHint.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import WebGLLayerRenderer, {
+  WebGLWorkerMessageType,
+  colorDecodeId,
+  colorEncodeId,
+} from './Layer.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
-import GeometryType from '../../geom/GeometryType.js';
-import WebGLLayerRenderer, {colorDecodeId, colorEncodeId, WebGLWorkerMessageType} from './Layer.js';
-import ViewHint from '../../ViewHint.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
 import {
   apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
-  multiply as multiplyTransform
+  multiply as multiplyTransform,
 } from '../../transform.js';
+import {assert} from '../../asserts.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {assert} from '../../asserts.js';
-import BaseVector from '../../layer/BaseVector.js';
 import {listen, unlistenByKey} from '../../events.js';
-import VectorEventType from '../../source/VectorEventType.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -117,7 +121,6 @@ import VectorEventType from '../../source/VectorEventType.js';
  * @api
  */
 class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
-
   /**
    * @param {import("../../layer/Layer.js").default} layer Layer.
    * @param {Options} options Options.
@@ -129,14 +132,17 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     super(layer, {
       uniforms: uniforms,
-      postProcesses: options.postProcesses
+      postProcesses: options.postProcesses,
     });
 
     this.sourceRevision_ = -1;
 
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
     this.hitVerticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
-    this.indicesBuffer_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW);
+    this.indicesBuffer_ = new WebGLArrayBuffer(
+      ELEMENT_ARRAY_BUFFER,
+      DYNAMIC_DRAW
+    );
 
     this.program_ = this.helper.getProgram(
       options.fragmentShader,
@@ -147,58 +153,70 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {boolean}
      * @private
      */
-    this.hitDetectionEnabled_ = options.hitFragmentShader && options.hitVertexShader ? true : false;
+    this.hitDetectionEnabled_ =
+      options.hitFragmentShader && options.hitVertexShader ? true : false;
 
-    this.hitProgram_ = this.hitDetectionEnabled_ && this.helper.getProgram(
-      options.hitFragmentShader,
-      options.hitVertexShader
-    );
+    this.hitProgram_ =
+      this.hitDetectionEnabled_ &&
+      this.helper.getProgram(
+        options.hitFragmentShader,
+        options.hitVertexShader
+      );
 
-    const customAttributes = options.attributes ?
-      options.attributes.map(function(attribute) {
-        return {
-          name: 'a_' + attribute.name,
-          size: 1,
-          type: AttributeType.FLOAT
-        };
-      }) : [];
+    const customAttributes = options.attributes
+      ? options.attributes.map(function (attribute) {
+          return {
+            name: 'a_' + attribute.name,
+            size: 1,
+            type: AttributeType.FLOAT,
+          };
+        })
+      : [];
 
     /**
      * A list of attributes used by the renderer. By default only the position and
      * index of the vertex (0 to 3) are required.
      * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
      */
-    this.attributes = [{
-      name: 'a_position',
-      size: 2,
-      type: AttributeType.FLOAT
-    }, {
-      name: 'a_index',
-      size: 1,
-      type: AttributeType.FLOAT
-    }].concat(customAttributes);
+    this.attributes = [
+      {
+        name: 'a_position',
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: 'a_index',
+        size: 1,
+        type: AttributeType.FLOAT,
+      },
+    ].concat(customAttributes);
 
     /**
      * A list of attributes used for hit detection.
      * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
      */
-    this.hitDetectionAttributes = [{
-      name: 'a_position',
-      size: 2,
-      type: AttributeType.FLOAT
-    }, {
-      name: 'a_index',
-      size: 1,
-      type: AttributeType.FLOAT
-    }, {
-      name: 'a_hitColor',
-      size: 4,
-      type: AttributeType.FLOAT
-    }, {
-      name: 'a_featureUid',
-      size: 1,
-      type: AttributeType.FLOAT
-    }].concat(customAttributes);
+    this.hitDetectionAttributes = [
+      {
+        name: 'a_position',
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: 'a_index',
+        size: 1,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: 'a_hitColor',
+        size: 4,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: 'a_featureUid',
+        size: 1,
+        type: AttributeType.FLOAT,
+      },
+    ].concat(customAttributes);
 
     this.customAttributes = options.attributes ? options.attributes : [];
 
@@ -243,34 +261,45 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {WebGLRenderTarget}
      * @private
      */
-    this.hitRenderTarget_ = this.hitDetectionEnabled_ && new WebGLRenderTarget(this.helper);
+    this.hitRenderTarget_ =
+      this.hitDetectionEnabled_ && new WebGLRenderTarget(this.helper);
 
     this.worker_ = createWebGLWorker();
-    this.worker_.addEventListener('message', function(event) {
-      const received = event.data;
-      if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
-        const projectionTransform = received.projectionTransform;
-        if (received.hitDetection) {
-          this.hitVerticesBuffer_.fromArrayBuffer(received.vertexBuffer);
-          this.helper.flushBufferData(this.hitVerticesBuffer_);
-        } else {
-          this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
-          this.helper.flushBufferData(this.verticesBuffer_);
-        }
-        this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
-        this.helper.flushBufferData(this.indicesBuffer_);
+    this.worker_.addEventListener(
+      'message',
+      function (event) {
+        const received = event.data;
+        if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
+          const projectionTransform = received.projectionTransform;
+          if (received.hitDetection) {
+            this.hitVerticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+            this.helper.flushBufferData(this.hitVerticesBuffer_);
+          } else {
+            this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+            this.helper.flushBufferData(this.verticesBuffer_);
+          }
+          this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
+          this.helper.flushBufferData(this.indicesBuffer_);
 
-        this.renderTransform_ = projectionTransform;
-        makeInverseTransform(this.invertRenderTransform_, this.renderTransform_);
-        if (received.hitDetection) {
-          this.hitRenderInstructions_ = new Float32Array(event.data.renderInstructions);
-        } else {
-          this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
-        }
+          this.renderTransform_ = projectionTransform;
+          makeInverseTransform(
+            this.invertRenderTransform_,
+            this.renderTransform_
+          );
+          if (received.hitDetection) {
+            this.hitRenderInstructions_ = new Float32Array(
+              event.data.renderInstructions
+            );
+          } else {
+            this.renderInstructions_ = new Float32Array(
+              event.data.renderInstructions
+            );
+          }
 
-        this.getLayer().changed();
-      }
-    }.bind(this));
+          this.getLayer().changed();
+        }
+      }.bind(this)
+    );
 
     /**
      * This object will be updated when the source changes. Key is uid.
@@ -288,19 +317,41 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const source = this.getLayer().getSource();
     this.sourceListenKeys_ = [
-      listen(source, VectorEventType.ADDFEATURE, this.handleSourceFeatureAdded_, this),
-      listen(source, VectorEventType.CHANGEFEATURE, this.handleSourceFeatureChanged_, this),
-      listen(source, VectorEventType.REMOVEFEATURE, this.handleSourceFeatureDelete_, this),
-      listen(source, VectorEventType.CLEAR, this.handleSourceFeatureClear_, this)
+      listen(
+        source,
+        VectorEventType.ADDFEATURE,
+        this.handleSourceFeatureAdded_,
+        this
+      ),
+      listen(
+        source,
+        VectorEventType.CHANGEFEATURE,
+        this.handleSourceFeatureChanged_,
+        this
+      ),
+      listen(
+        source,
+        VectorEventType.REMOVEFEATURE,
+        this.handleSourceFeatureDelete_,
+        this
+      ),
+      listen(
+        source,
+        VectorEventType.CLEAR,
+        this.handleSourceFeatureClear_,
+        this
+      ),
     ];
-    source.forEachFeature(function(feature) {
-      this.featureCache_[getUid(feature)] = {
-        feature: feature,
-        properties: feature.getProperties(),
-        geometry: feature.getGeometry()
-      };
-      this.featureCount_++;
-    }.bind(this));
+    source.forEachFeature(
+      function (feature) {
+        this.featureCache_[getUid(feature)] = {
+          feature: feature,
+          properties: feature.getProperties(),
+          geometry: feature.getGeometry(),
+        };
+        this.featureCount_++;
+      }.bind(this)
+    );
   }
 
   /**
@@ -312,7 +363,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.featureCache_[getUid(feature)] = {
       feature: feature,
       properties: feature.getProperties(),
-      geometry: feature.getGeometry()
+      geometry: feature.getGeometry(),
     };
     this.featureCount_++;
   }
@@ -326,7 +377,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.featureCache_[getUid(feature)] = {
       feature: feature,
       properties: feature.getProperties(),
-      geometry: feature.getGeometry()
+      geometry: feature.getGeometry(),
     };
   }
 
@@ -382,7 +433,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
     const viewState = frameState.viewState;
-    const viewNotMoving = !frameState.viewHints[ViewHint.ANIMATING] && !frameState.viewHints[ViewHint.INTERACTING];
+    const viewNotMoving =
+      !frameState.viewHints[ViewHint.ANIMATING] &&
+      !frameState.viewHints[ViewHint.INTERACTING];
     const extentChanged = !equals(this.previousExtent_, frameState.extent);
     const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
 
@@ -394,7 +447,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       const projection = viewState.projection;
       const resolution = viewState.resolution;
 
-      const renderBuffer = layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
+      const renderBuffer =
+        layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
       const extent = buffer(frameState.extent, renderBuffer * resolution);
       vectorSource.loadFeatures(extent, resolution, projection);
 
@@ -432,14 +486,24 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     // this can be done since we know that for normal render we only have x, y as base instructions,
     // and x, y, r, g, b, a and featureUid for hit render instructions
     // and we also know the amount of custom attributes to append to these
-    const totalInstructionsCount = (2 + this.customAttributes.length) * this.featureCount_;
-    if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
+    const totalInstructionsCount =
+      (2 + this.customAttributes.length) * this.featureCount_;
+    if (
+      !this.renderInstructions_ ||
+      this.renderInstructions_.length !== totalInstructionsCount
+    ) {
       this.renderInstructions_ = new Float32Array(totalInstructionsCount);
     }
     if (this.hitDetectionEnabled_) {
-      const totalHitInstructionsCount = (7 + this.customAttributes.length) * this.featureCount_;
-      if (!this.hitRenderInstructions_ || this.hitRenderInstructions_.length !== totalHitInstructionsCount) {
-        this.hitRenderInstructions_ = new Float32Array(totalHitInstructionsCount);
+      const totalHitInstructionsCount =
+        (7 + this.customAttributes.length) * this.featureCount_;
+      if (
+        !this.hitRenderInstructions_ ||
+        this.hitRenderInstructions_.length !== totalHitInstructionsCount
+      ) {
+        this.hitRenderInstructions_ = new Float32Array(
+          totalHitInstructionsCount
+        );
       }
     }
 
@@ -452,7 +516,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     let hitColor;
     for (const featureUid in this.featureCache_) {
       featureCache = this.featureCache_[featureUid];
-      geometry = /** @type {import("../../geom").Point} */(featureCache.geometry);
+      geometry = /** @type {import("../../geom").Point} */ (featureCache.geometry);
       if (!geometry || geometry.getType() !== GeometryType.POINT) {
         continue;
       }
@@ -481,7 +545,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       // pushing custom attributes
       let value;
       for (let j = 0; j < this.customAttributes.length; j++) {
-        value = this.customAttributes[j].callback(featureCache.feature, featureCache.properties);
+        value = this.customAttributes[j].callback(
+          featureCache.feature,
+          featureCache.properties
+        );
         this.renderInstructions_[renderIndex++] = value;
         if (this.hitDetectionEnabled_) {
           this.hitRenderInstructions_[hitIndex++] = value;
@@ -493,7 +560,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const message = {
       type: WebGLWorkerMessageType.GENERATE_BUFFERS,
       renderInstructions: this.renderInstructions_.buffer,
-      customAttributesCount: this.customAttributes.length
+      customAttributesCount: this.customAttributes.length,
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
@@ -505,11 +572,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       const hitMessage = {
         type: WebGLWorkerMessageType.GENERATE_BUFFERS,
         renderInstructions: this.hitRenderInstructions_.buffer,
-        customAttributesCount: 5 + this.customAttributes.length
+        customAttributesCount: 5 + this.customAttributes.length,
       };
       hitMessage['projectionTransform'] = projectionTransform;
       hitMessage['hitDetection'] = true;
-      this.worker_.postMessage(hitMessage, [this.hitRenderInstructions_.buffer]);
+      this.worker_.postMessage(hitMessage, [
+        this.hitRenderInstructions_.buffer,
+      ]);
       this.hitRenderInstructions_ = null;
     }
   }
@@ -523,21 +592,25 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    declutteredFeatures
+  ) {
     assert(this.hitDetectionEnabled_, 66);
     if (!this.hitRenderInstructions_) {
       return;
     }
 
-    const pixel = applyTransform(frameState.coordinateToPixelTransform, coordinate.slice());
+    const pixel = applyTransform(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice()
+    );
 
     const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
-    const color = [
-      data[0] / 255,
-      data[1] / 255,
-      data[2] / 255,
-      data[3] / 255
-    ];
+    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
     const index = colorDecodeId(color);
     const opacity = this.hitRenderInstructions_[index];
     const uid = Math.floor(opacity).toString();
@@ -561,11 +634,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.hitRenderTarget_.setSize([
       Math.floor(frameState.size[0] / 2),
-      Math.floor(frameState.size[1] / 2)
+      Math.floor(frameState.size[1] / 2),
     ]);
 
     this.helper.useProgram(this.hitProgram_);
-    this.helper.prepareDrawToRenderTarget(frameState, this.hitRenderTarget_, true);
+    this.helper.prepareDrawToRenderTarget(
+      frameState,
+      this.hitRenderTarget_,
+      true
+    );
 
     this.helper.bindBuffer(this.hitVerticesBuffer_);
     this.helper.bindBuffer(this.indicesBuffer_);
@@ -582,7 +659,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   disposeInternal() {
     this.worker_.terminate();
     this.layer_ = null;
-    this.sourceListenKeys_.forEach(function(key) {
+    this.sourceListenKeys_.forEach(function (key) {
       unlistenByKey(key);
     });
     this.sourceListenKeys_ = null;

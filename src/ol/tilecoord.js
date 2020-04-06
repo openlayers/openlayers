@@ -2,14 +2,12 @@
  * @module ol/tilecoord
  */
 
-
 /**
  * An array of three numbers representing the location of a tile in a tile
  * grid. The order is `z` (zoom level), `x` (column), and `y` (row).
  * @typedef {Array<number>} TileCoord
  * @api
  */
-
 
 /**
  * @param {number} z Z.
@@ -29,7 +27,6 @@ export function createOrUpdate(z, x, y, opt_tileCoord) {
   }
 }
 
-
 /**
  * @param {number} z Z.
  * @param {number} x X.
@@ -40,7 +37,6 @@ export function getKeyZXY(z, x, y) {
   return z + '/' + x + '/' + y;
 }
 
-
 /**
  * Get the key for a tile coord.
  * @param {TileCoord} tileCoord The tile coord.
@@ -49,7 +45,6 @@ export function getKeyZXY(z, x, y) {
 export function getKey(tileCoord) {
   return getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
 }
-
 
 /**
  * Get a tile coord given a key.
@@ -60,7 +55,6 @@ export function fromKey(key) {
   return key.split('/').map(Number);
 }
 
-
 /**
  * @param {TileCoord} tileCoord Tile coord.
  * @return {number} Hash.
@@ -68,7 +62,6 @@ export function fromKey(key) {
 export function hash(tileCoord) {
   return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
 }
-
 
 /**
  * @param {TileCoord} tileCoord Tile coordinate.

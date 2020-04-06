@@ -1,34 +1,34 @@
+import Event from '../../../../src/ol/events/Event.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
-import Event from '../../../../src/ol/events/Event.js';
 
-describe('ol.interaction.KeyboardPan', function() {
+describe('ol.interaction.KeyboardPan', function () {
   let map;
 
-  beforeEach(function() {
+  beforeEach(function () {
     map = new Map({
       target: createMapDiv(100, 100),
       view: new View({
         center: [0, 0],
         resolutions: [1],
-        zoom: 0
-      })
+        zoom: 0,
+      }),
     });
     map.renderSync();
   });
-  afterEach(function() {
+  afterEach(function () {
     disposeMap(map);
   });
 
-  describe('handleEvent()', function() {
-    it('pans on arrow keys', function() {
+  describe('handleEvent()', function () {
+    it('pans on arrow keys', function () {
       const view = map.getView();
       const spy = sinon.spy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
-        preventDefault: Event.prototype.preventDefault
+        preventDefault: Event.prototype.preventDefault,
       });
 
       event.originalEvent.keyCode = 40; // DOWN
@@ -54,5 +54,4 @@ describe('ol.interaction.KeyboardPan', function() {
       view.animateInternal.restore();
     });
   });
-
 });

@@ -11,7 +11,6 @@ import Filter from './Filter.js';
  * @api
  */
 class Bbox extends Filter {
-
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../../extent.js").Extent} extent Extent.
@@ -19,7 +18,6 @@ class Bbox extends Filter {
    * on geometries when this is not provided.
    */
   constructor(geometryName, extent, opt_srsName) {
-
     super('BBOX');
 
     /**
@@ -32,7 +30,9 @@ class Bbox extends Filter {
      */
     this.extent = extent;
     if (extent.length !== 4) {
-      throw new Error('Expected an extent with four values ([minX, minY, maxX, maxY])');
+      throw new Error(
+        'Expected an extent with four values ([minX, minY, maxX, maxY])'
+      );
     }
 
     /**
@@ -40,7 +40,6 @@ class Bbox extends Filter {
      */
     this.srsName = opt_srsName;
   }
-
 }
 
 export default Bbox;

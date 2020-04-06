@@ -2,7 +2,6 @@
  * @module ol/geom/flat/straightchunk
  */
 
-
 /**
  * @param {number} maxAngle Maximum acceptable angle delta between segments.
  * @param {Array<number>} flatCoordinates Flat coordinates.

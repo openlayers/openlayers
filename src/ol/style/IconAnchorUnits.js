@@ -16,5 +16,5 @@ export default {
    * Anchor is in pixels
    * @api
    */
-  PIXELS: 'pixels'
+  PIXELS: 'pixels',
 };

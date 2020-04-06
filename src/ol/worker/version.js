@@ -7,7 +7,7 @@ import {VERSION} from '../util.js';
 /** @type {any} */
 const worker = self;
 
-worker.onmessage = event => {
+worker.onmessage = (event) => {
   console.log('version worker received message:', event.data); // eslint-disable-line
   worker.postMessage(`version: ${VERSION}`);
 };

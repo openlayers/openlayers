@@ -2,13 +2,13 @@
  * @module ol/source/ImageStatic
  */
 
-import ImageWrapper from '../Image.js';
-import ImageState from '../ImageState.js';
-import {createCanvasContext2D} from '../dom.js';
 import EventType from '../events/EventType.js';
-import {intersects, getHeight, getWidth} from '../extent.js';
-import {get as getProjection} from '../proj.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import ImageState from '../ImageState.js';
+import ImageWrapper from '../Image.js';
+import {createCanvasContext2D} from '../dom.js';
+import {getHeight, getWidth, intersects} from '../extent.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
@@ -25,7 +25,6 @@ import ImageSource, {defaultImageLoadFunction} from './Image.js';
  * @property {string} url Image URL.
  */
 
-
 /**
  * @classdesc
  * A layer source for displaying a single, static image.
@@ -36,16 +35,17 @@ class Static extends ImageSource {
    * @param {Options} options ImageStatic options.
    */
   constructor(options) {
-    const crossOrigin = options.crossOrigin !== undefined ?
-      options.crossOrigin : null;
+    const crossOrigin =
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
     const /** @type {import("../Image.js").LoadFunction} */ imageLoadFunction =
-        options.imageLoadFunction !== undefined ?
-          options.imageLoadFunction : defaultImageLoadFunction;
+        options.imageLoadFunction !== undefined
+          ? options.imageLoadFunction
+          : defaultImageLoadFunction;
 
     super({
       attributions: options.attributions,
-      projection: getProjection(options.projection)
+      projection: getProjection(options.projection),
     });
 
     /**
@@ -64,7 +64,14 @@ class Static extends ImageSource {
      * @private
      * @type {import("../Image.js").default}
      */
-    this.image_ = new ImageWrapper(this.imageExtent_, undefined, 1, this.url_, crossOrigin, imageLoadFunction);
+    this.image_ = new ImageWrapper(
+      this.imageExtent_,
+      undefined,
+      1,
+      this.url_,
+      crossOrigin,
+      imageLoadFunction
+    );
 
     /**
      * @private
@@ -72,8 +79,10 @@ class Static extends ImageSource {
      */
     this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-    this.image_.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
-
+    this.image_.addEventListener(
+      EventType.CHANGE,
+      this.handleImageChange.bind(this)
+    );
   }
 
   /**
@@ -128,14 +137,22 @@ class Static extends ImageSource {
       if (targetWidth != imageWidth) {
         const context = createCanvasContext2D(targetWidth, imageHeight);
         const canvas = context.canvas;
-        context.drawImage(image, 0, 0, imageWidth, imageHeight,
-          0, 0, canvas.width, canvas.height);
+        context.drawImage(
+          image,
+          0,
+          0,
+          imageWidth,
+          imageHeight,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
         this.image_.setImage(canvas);
       }
     }
     super.handleImageChange(evt);
   }
 }
-
 
 export default Static;

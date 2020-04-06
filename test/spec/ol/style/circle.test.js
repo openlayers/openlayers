@@ -2,12 +2,9 @@ import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 
-
-describe('ol.style.Circle', function() {
-
-  describe('#constructor', function() {
-
-    it('creates a canvas (no fill-style)', function() {
+describe('ol.style.Circle', function () {
+  describe('#constructor', function () {
+    it('creates a canvas (no fill-style)', function () {
       const style = new CircleStyle({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
@@ -20,12 +17,12 @@ describe('ol.style.Circle', function() {
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
-    it('creates a canvas (transparent fill-style)', function() {
+    it('creates a canvas (transparent fill-style)', function () {
       const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
-          color: 'transparent'
-        })
+          color: 'transparent',
+        }),
       });
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
@@ -38,12 +35,12 @@ describe('ol.style.Circle', function() {
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
-    it('creates a canvas (non-transparent fill-style)', function() {
+    it('creates a canvas (non-transparent fill-style)', function () {
       const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
-          color: '#FFFF00'
-        })
+          color: '#FFFF00',
+        }),
       });
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
@@ -55,27 +52,25 @@ describe('ol.style.Circle', function() {
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
-
   });
 
-  describe('#clone', function() {
-
-    it('creates a new ol.style.Circle', function() {
+  describe('#clone', function () {
+    it('creates a new ol.style.Circle', function () {
       const original = new CircleStyle();
       const clone = original.clone();
       expect(clone).to.be.an(CircleStyle);
       expect(clone).to.not.be(original);
     });
 
-    it('copies all values', function() {
+    it('copies all values', function () {
       const original = new CircleStyle({
         fill: new Fill({
-          color: '#319FD3'
+          color: '#319FD3',
         }),
         stroke: new Stroke({
-          color: '#319FD3'
+          color: '#319FD3',
         }),
-        radius: 5
+        radius: 5,
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
@@ -84,17 +79,19 @@ describe('ol.style.Circle', function() {
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRadius()).to.eql(clone.getRadius());
       expect(original.getScale()).to.eql(clone.getScale());
-      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getStroke().getColor()).to.eql(
+        clone.getStroke().getColor()
+      );
     });
 
-    it('the clone does not reference the same objects as the original', function() {
+    it('the clone does not reference the same objects as the original', function () {
       const original = new CircleStyle({
         fill: new Fill({
-          color: '#319FD3'
+          color: '#319FD3',
         }),
         stroke: new Stroke({
-          color: '#319FD3'
-        })
+          color: '#319FD3',
+        }),
       });
       const clone = original.clone();
       expect(original.getFill()).to.not.be(clone.getFill());
@@ -102,24 +99,26 @@ describe('ol.style.Circle', function() {
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(clone.getFill().getColor());
-      expect(original.getStroke().getColor()).to.not.eql(clone.getStroke().getColor());
+      expect(original.getFill().getColor()).to.not.eql(
+        clone.getFill().getColor()
+      );
+      expect(original.getStroke().getColor()).to.not.eql(
+        clone.getStroke().getColor()
+      );
     });
-
   });
 
-  describe('#setRadius', function() {
-    it('changes the circle radius', function() {
+  describe('#setRadius', function () {
+    it('changes the circle radius', function () {
       const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
-          color: '#FFFF00'
-        })
+          color: '#FFFF00',
+        }),
       });
       expect(style.getRadius()).to.eql(10);
       style.setRadius(20);
       expect(style.getRadius()).to.eql(20);
     });
   });
-
 });

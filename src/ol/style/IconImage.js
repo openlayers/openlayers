@@ -2,13 +2,12 @@
  * @module ol/style/IconImage
  */
 
-import {createCanvasContext2D} from '../dom.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
+import {createCanvasContext2D} from '../dom.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 import {listenImage} from '../Image.js';
-
 
 class IconImage extends EventTarget {
   /**
@@ -20,7 +19,6 @@ class IconImage extends EventTarget {
    * @param {import("../color.js").Color} color Color.
    */
   constructor(image, src, size, crossOrigin, imageState, color) {
-
     super();
 
     /**
@@ -80,7 +78,6 @@ class IconImage extends EventTarget {
      * @type {boolean|undefined}
      */
     this.tainted_;
-
   }
 
   /**
@@ -236,7 +233,12 @@ class IconImage extends EventTarget {
       return;
     }
 
-    const imgData = ctx.getImageData(0, 0, this.image_.width, this.image_.height);
+    const imgData = ctx.getImageData(
+      0,
+      0,
+      this.image_.width,
+      this.image_.height
+    );
     const data = imgData.data;
     const r = this.color_[0] / 255.0;
     const g = this.color_[1] / 255.0;
@@ -263,7 +265,6 @@ class IconImage extends EventTarget {
   }
 }
 
-
 /**
  * @param {HTMLImageElement|HTMLCanvasElement} image Image.
  * @param {string} src Src.
@@ -281,6 +282,5 @@ export function get(image, src, size, crossOrigin, imageState, color) {
   }
   return iconImage;
 }
-
 
 export default IconImage;

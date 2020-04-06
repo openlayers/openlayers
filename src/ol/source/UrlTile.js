@@ -1,12 +1,16 @@
 /**
  * @module ol/source/UrlTile
  */
-import {getUid} from '../util.js';
-import TileState from '../TileState.js';
-import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
 import TileEventType from './TileEventType.js';
+import TileSource, {TileSourceEvent} from './Tile.js';
+import TileState from '../TileState.js';
+import {
+  createFromTemplates,
+  expandUrl,
+  nullTileUrlFunction,
+} from '../tileurlfunction.js';
 import {getKeyZXY} from '../tilecoord.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
@@ -28,7 +32,6 @@ import {getKeyZXY} from '../tilecoord.js';
  * @property {number} [zDirection=0]
  */
 
-
 /**
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
@@ -40,7 +43,6 @@ class UrlTile extends TileSource {
    * @param {Options} options Image tile options.
    */
   constructor(options) {
-
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
@@ -53,7 +55,7 @@ class UrlTile extends TileSource {
       transition: options.transition,
       key: options.key,
       attributionsCollapsible: options.attributionsCollapsible,
-      zDirection: options.zDirection
+      zDirection: options.zDirection,
     });
 
     /**
@@ -72,7 +74,9 @@ class UrlTile extends TileSource {
      * @protected
      * @type {import("../Tile.js").UrlFunction}
      */
-    this.tileUrlFunction = options.tileUrlFunction ? options.tileUrlFunction.bind(this) : nullTileUrlFunction;
+    this.tileUrlFunction = options.tileUrlFunction
+      ? options.tileUrlFunction.bind(this)
+      : nullTileUrlFunction;
 
     /**
      * @protected
@@ -91,7 +95,6 @@ class UrlTile extends TileSource {
      * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
-
   }
 
   /**
@@ -138,9 +141,12 @@ class UrlTile extends TileSource {
       type = TileEventType.TILELOADSTART;
     } else if (uid in this.tileLoadingKeys_) {
       delete this.tileLoadingKeys_[uid];
-      type = tileState == TileState.ERROR ? TileEventType.TILELOADERROR :
-        tileState == TileState.LOADED ?
-          TileEventType.TILELOADEND : undefined;
+      type =
+        tileState == TileState.ERROR
+          ? TileEventType.TILELOADERROR
+          : tileState == TileState.LOADED
+          ? TileEventType.TILELOADEND
+          : undefined;
     }
     if (type != undefined) {
       this.dispatchEvent(new TileSourceEvent(type, tile));
@@ -213,6 +219,5 @@ class UrlTile extends TileSource {
     }
   }
 }
-
 
 export default UrlTile;

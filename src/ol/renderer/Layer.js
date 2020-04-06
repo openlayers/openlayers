@@ -1,22 +1,20 @@
 /**
  * @module ol/renderer/Layer
  */
-import {abstract} from '../util.js';
+import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
-import EventType from '../events/EventType.js';
 import SourceState from '../source/State.js';
+import {abstract} from '../util.js';
 
 /**
  * @template {import("../layer/Layer.js").default} LayerType
  */
 class LayerRenderer extends Observable {
-
   /**
    * @param {LayerType} layer Layer.
    */
   constructor(layer) {
-
     super();
 
     /** @private */
@@ -27,7 +25,6 @@ class LayerRenderer extends Observable {
      * @type {LayerType}
      */
     this.layer_ = layer;
-
   }
 
   /**
@@ -92,11 +89,11 @@ class LayerRenderer extends Observable {
        * @return {boolean} The tile range is fully loaded.
        * @this {LayerRenderer}
        */
-      function(zoom, tileRange) {
+      function (zoom, tileRange) {
         const callback = this.loadedTileCallback.bind(this, tiles, zoom);
         return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-      }
-    ).bind(this);
+      }.bind(this)
+    );
   }
   /**
    * @abstract
@@ -108,7 +105,13 @@ class LayerRenderer extends Observable {
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {}
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    declutteredFeatures
+  ) {}
 
   /**
    * @abstract
@@ -176,7 +179,6 @@ class LayerRenderer extends Observable {
       layer.changed();
     }
   }
-
 }
 
 export default LayerRenderer;

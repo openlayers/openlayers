@@ -5,7 +5,6 @@
 import Event from '../events/Event.js';
 
 class RenderEvent extends Event {
-
   /**
    * @param {import("./EventType.js").default} type Type.
    * @param {import("../transform.js").Transform=} opt_inversePixelTransform Transform for
@@ -14,7 +13,6 @@ class RenderEvent extends Event {
    * @param {?CanvasRenderingContext2D=} opt_context Context.
    */
   constructor(type, opt_inversePixelTransform, opt_frameState, opt_context) {
-
     super(type);
 
     /**
@@ -39,9 +37,7 @@ class RenderEvent extends Event {
      * @api
      */
     this.context = opt_context;
-
   }
-
 }
 
 export default RenderEvent;

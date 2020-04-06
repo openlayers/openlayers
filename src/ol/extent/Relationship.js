@@ -12,5 +12,5 @@ export default {
   ABOVE: 2,
   RIGHT: 4,
   BELOW: 8,
-  LEFT: 16
+  LEFT: 16,
 };

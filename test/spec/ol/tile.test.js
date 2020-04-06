@@ -1,18 +1,17 @@
-import {getUid} from '../../../src/ol/util.js';
 import ImageTile from '../../../src/ol/ImageTile.js';
 import Tile from '../../../src/ol/Tile.js';
 import TileState from '../../../src/ol/TileState.js';
+import {getUid} from '../../../src/ol/util.js';
 
-
-describe('ol.Tile', function() {
-  describe('constructor', function() {
-    it('sets a default transition', function() {
+describe('ol.Tile', function () {
+  describe('constructor', function () {
+    it('sets a default transition', function () {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
       expect(tile.transition_).to.equal(250);
     });
 
-    it('allows the transition to be set', function() {
+    it('allows the transition to be set', function () {
       const coord = [0, 0, 0];
       const transition = 500;
       const tile = new Tile(coord, TileState.IDLE, {transition: transition});
@@ -20,8 +19,8 @@ describe('ol.Tile', function() {
     });
   });
 
-  describe('#getAlpha()', function() {
-    it('returns the alpha value for a tile in transition', function() {
+  describe('#getAlpha()', function () {
+    it('returns the alpha value for a tile in transition', function () {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
       const id = 'test';
@@ -42,8 +41,8 @@ describe('ol.Tile', function() {
     });
   });
 
-  describe('#inTransition()', function() {
-    it('determines if the tile is in transition', function() {
+  describe('#inTransition()', function () {
+    it('determines if the tile is in transition', function () {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
       const id = 'test';
@@ -54,14 +53,14 @@ describe('ol.Tile', function() {
     });
   });
 
-  describe('interimChain', function() {
+  describe('interimChain', function () {
     let head, renderTile;
-    beforeEach(function() {
+    beforeEach(function () {
       const tileCoord = [0, 0, 0];
       head = new ImageTile(tileCoord, TileState.IDLE);
       getUid(head);
 
-      const addToChain = function(tile, state) {
+      const addToChain = function (tile, state) {
         const next = new ImageTile(tileCoord, state);
         getUid(next);
         tile.interimTile = next;
@@ -76,11 +75,10 @@ describe('ol.Tile', function() {
       tail = addToChain(tail, TileState.LOADED);
       tail = addToChain(tail, TileState.LOADING);
       tail = addToChain(tail, TileState.LOADED);
-
     });
 
-    it('shrinks tile chain correctly', function(done) {
-      const chainLength = function(tile) {
+    it('shrinks tile chain correctly', function (done) {
+      const chainLength = function (tile) {
         let c = 0;
         while (tile) {
           ++c;
@@ -95,20 +93,20 @@ describe('ol.Tile', function() {
       done();
     });
 
-    it('gives the right tile to render', function(done) {
+    it('gives the right tile to render', function (done) {
       expect(head.getInterimTile()).to.be(renderTile);
       head.refreshInterimChain();
       expect(head.getInterimTile()).to.be(renderTile);
       done();
     });
 
-    it('discards everything after the render tile', function(done) {
+    it('discards everything after the render tile', function (done) {
       head.refreshInterimChain();
       expect(renderTile.interimTile).to.be(null);
       done();
     });
 
-    it('preserves order of tiles', function(done) {
+    it('preserves order of tiles', function (done) {
       head.refreshInterimChain();
       while (head.interimTile !== null) {
         //use property of ol.getUid returning increasing id's.
@@ -118,5 +116,4 @@ describe('ol.Tile', function() {
       done();
     });
   });
-
 });

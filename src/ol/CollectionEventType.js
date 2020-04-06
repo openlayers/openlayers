@@ -17,5 +17,5 @@ export default {
    * @event module:ol/Collection.CollectionEvent#remove
    * @api
    */
-  REMOVE: 'remove'
+  REMOVE: 'remove',
 };

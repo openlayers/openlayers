@@ -1,43 +1,62 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import {getUid} from '../../util.js';
-import TileState from '../../TileState.js';
-import ViewHint from '../../ViewHint.js';
-import {listen, unlistenByKey} from '../../events.js';
-import EventType from '../../events/EventType.js';
-import {buffer, containsCoordinate, equals, getIntersection, intersects, containsExtent, getTopLeft} from '../../extent.js';
-import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
-import ReplayType from '../../render/canvas/BuilderType.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
+import CanvasExecutorGroup, {
+  replayDeclutter,
+} from '../../render/canvas/ExecutorGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
-import {toSize} from '../../size.js';
-import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
+import EventType from '../../events/EventType.js';
+import ReplayType from '../../render/canvas/BuilderType.js';
+import TileState from '../../TileState.js';
+import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
+import ViewHint from '../../ViewHint.js';
 import {
   apply as applyTransform,
   create as createTransform,
+  multiply,
   reset as resetTransform,
+  scale,
   scale as scaleTransform,
   translate as translateTransform,
-  multiply,
-  scale
 } from '../../transform.js';
-import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
+import {
+  buffer,
+  containsCoordinate,
+  containsExtent,
+  equals,
+  getIntersection,
+  getTopLeft,
+  intersects,
+} from '../../extent.js';
 import {clear} from '../../obj.js';
-import {createHitDetectionImageData, hitDetect} from '../../render/canvas/hitdetect.js';
+import {
+  createHitDetectionImageData,
+  hitDetect,
+} from '../../render/canvas/hitdetect.js';
+import {
+  getSquaredTolerance as getSquaredRenderTolerance,
+  renderFeature,
+} from '../vector.js';
+import {getUid} from '../../util.js';
+import {listen, unlistenByKey} from '../../events.js';
+import {toSize} from '../../size.js';
 import {wrapX} from '../../coordinate.js';
-
 
 /**
  * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
  */
 const IMAGE_REPLAYS = {
-  'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
-    ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
+  'image': [
+    ReplayType.POLYGON,
+    ReplayType.CIRCLE,
+    ReplayType.LINE_STRING,
+    ReplayType.IMAGE,
+    ReplayType.TEXT,
+  ],
   'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING],
-  'vector': []
+  'vector': [],
 };
-
 
 /**
  * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
@@ -45,9 +64,15 @@ const IMAGE_REPLAYS = {
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
   'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
-  'vector': [ReplayType.POLYGON, ReplayType.CIRCLE, ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT]
+  'vector': [
+    ReplayType.POLYGON,
+    ReplayType.CIRCLE,
+    ReplayType.LINE_STRING,
+    ReplayType.IMAGE,
+    ReplayType.TEXT,
+    ReplayType.DEFAULT,
+  ],
 };
-
 
 /**
  * @classdesc
@@ -55,7 +80,6 @@ const VECTOR_REPLAYS = {
  * @api
  */
 class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
-
   /**
    * @param {import("../../layer/VectorTile.js").default} layer VectorTile layer.
    */
@@ -118,8 +142,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     let render;
     const tileUid = getUid(tile);
     const state = tile.getState();
-    if (((state === TileState.LOADED && tile.hifi) || state === TileState.ERROR) &&
-        tileUid in this.tileListenerKeys_) {
+    if (
+      ((state === TileState.LOADED && tile.hifi) ||
+        state === TileState.ERROR) &&
+      tileUid in this.tileListenerKeys_
+    ) {
       unlistenByKey(this.tileListenerKeys_[tileUid]);
       delete this.tileListenerKeys_[tileUid];
     }
@@ -153,12 +180,18 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       tile.wantedResolution = resolution;
       const tileUid = getUid(tile);
       if (!(tileUid in this.tileListenerKeys_)) {
-        const listenerKey = listen(tile, EventType.CHANGE, this.prepareTile.bind(this, tile, pixelRatio, projection, true));
+        const listenerKey = listen(
+          tile,
+          EventType.CHANGE,
+          this.prepareTile.bind(this, tile, pixelRatio, projection, true)
+        );
         this.tileListenerKeys_[tileUid] = listenerKey;
       }
     } else {
       const viewHints = frameState.viewHints;
-      const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+      const hifi = !(
+        viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
+      );
       if (hifi || !tile.wantedResolution) {
         tile.wantedResolution = resolution;
       }
@@ -176,7 +209,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   isDrawableTile(tile) {
     const layer = this.getLayer();
-    return super.isDrawableTile(tile) && layer.getRenderMode() === VectorTileRenderType.VECTOR || tile.hasContext(layer);
+    return (
+      (super.isDrawableTile(tile) &&
+        layer.getRenderMode() === VectorTileRenderType.VECTOR) ||
+      tile.hasContext(layer)
+    );
   }
 
   /**
@@ -213,9 +250,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const resolution = tile.wantedResolution;
     const builderState = tile.getReplayState(layer);
-    if (!builderState.dirty && builderState.renderedResolution === resolution &&
-        builderState.renderedRevision == revision &&
-        builderState.renderedRenderOrder == renderOrder && builderState.renderedZ === tile.sourceZ) {
+    if (
+      !builderState.dirty &&
+      builderState.renderedResolution === resolution &&
+      builderState.renderedRevision == revision &&
+      builderState.renderedRenderOrder == renderOrder &&
+      builderState.renderedZ === tile.sourceZ
+    ) {
       return;
     }
 
@@ -234,27 +275,48 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         continue;
       }
       const sourceTileCoord = sourceTile.tileCoord;
-      const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
+      const sourceTileExtent = sourceTileGrid.getTileCoordExtent(
+        sourceTileCoord
+      );
       const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
-      const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
-        buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
+      const bufferedExtent = equals(sourceTileExtent, sharedExtent)
+        ? null
+        : buffer(
+            sharedExtent,
+            layer.getRenderBuffer() * resolution,
+            this.tmpExtent
+          );
       builderState.dirty = false;
-      const builderGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
-        pixelRatio, layer.getDeclutter());
-      const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
+      const builderGroup = new CanvasBuilderGroup(
+        0,
+        sharedExtent,
+        resolution,
+        pixelRatio,
+        layer.getDeclutter()
+      );
+      const squaredTolerance = getSquaredRenderTolerance(
+        resolution,
+        pixelRatio
+      );
 
       /**
        * @param {import("../../Feature.js").FeatureLike} feature Feature.
        * @this {CanvasVectorTileLayerRenderer}
        */
-      const render = function(feature) {
+      const render = function (feature) {
         let styles;
-        const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
+        const styleFunction =
+          feature.getStyleFunction() || layer.getStyleFunction();
         if (styleFunction) {
           styles = styleFunction(feature, resolution);
         }
         if (styles) {
-          const dirty = this.renderFeature(feature, squaredTolerance, styles, builderGroup);
+          const dirty = this.renderFeature(
+            feature,
+            squaredTolerance,
+            styles,
+            builderGroup
+          );
           this.dirty_ = this.dirty_ || dirty;
           builderState.dirty = builderState.dirty || dirty;
         }
@@ -266,17 +328,29 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       for (let i = 0, ii = features.length; i < ii; ++i) {
         const feature = features[i];
-        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+        if (
+          !bufferedExtent ||
+          intersects(bufferedExtent, feature.getGeometry().getExtent())
+        ) {
           render.call(this, feature);
         }
       }
       const executorGroupInstructions = builderGroup.finish();
       // no need to clip when the render tile is covered by a single source tile
-      const replayExtent = layer.getRenderMode() !== VectorTileRenderType.VECTOR && layer.getDeclutter() && sourceTiles.length === 1 ?
-        null :
-        sharedExtent;
-      const renderingReplayGroup = new CanvasExecutorGroup(replayExtent, resolution,
-        pixelRatio, source.getOverlaps(), executorGroupInstructions, layer.getRenderBuffer());
+      const replayExtent =
+        layer.getRenderMode() !== VectorTileRenderType.VECTOR &&
+        layer.getDeclutter() &&
+        sourceTiles.length === 1
+          ? null
+          : sharedExtent;
+      const renderingReplayGroup = new CanvasExecutorGroup(
+        replayExtent,
+        resolution,
+        pixelRatio,
+        source.getOverlaps(),
+        executorGroupInstructions,
+        layer.getRenderBuffer()
+      );
       tile.executorGroups[layerUid].push(renderingReplayGroup);
     }
     builderState.renderedRevision = revision;
@@ -294,18 +368,27 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    declutteredFeatures
+  ) {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const layer = this.getLayer();
     const declutter = layer.getDeclutter();
     const source = layer.getSource();
-    const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
+    const tileGrid = source.getTileGridForProjection(
+      frameState.viewState.projection
+    );
     /** @type {!Object<string, boolean>} */
     const features = {};
 
-    const renderedTiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this.renderedTiles);
+    const renderedTiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this
+      .renderedTiles);
 
     let found;
     let i, ii;
@@ -324,23 +407,35 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroups = tile.executorGroups[getUid(layer)];
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
-        found = found || executorGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance,
-          /**
-           * @param {import("../../Feature.js").FeatureLike} feature Feature.
-           * @return {?} Callback result.
-           */
-          function(feature) {
-            if (tileContainsCoordinate || (declutteredFeatures && declutteredFeatures.indexOf(feature) !== -1)) {
-              let key = feature.getId();
-              if (key === undefined) {
-                key = getUid(feature);
+        found =
+          found ||
+          executorGroup.forEachFeatureAtCoordinate(
+            coordinate,
+            resolution,
+            rotation,
+            hitTolerance,
+            /**
+             * @param {import("../../Feature.js").FeatureLike} feature Feature.
+             * @return {?} Callback result.
+             */
+            function (feature) {
+              if (
+                tileContainsCoordinate ||
+                (declutteredFeatures &&
+                  declutteredFeatures.indexOf(feature) !== -1)
+              ) {
+                let key = feature.getId();
+                if (key === undefined) {
+                  key = getUid(feature);
+                }
+                if (!(key in features)) {
+                  features[key] = true;
+                  return callback(feature, layer);
+                }
               }
-              if (!(key in features)) {
-                features[key] = true;
-                return callback(feature, layer);
-              }
-            }
-          }, layer.getDeclutter() ? declutteredFeatures : null);
+            },
+            layer.getDeclutter() ? declutteredFeatures : null
+          );
       }
     }
     return found;
@@ -352,60 +447,90 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @return {Promise<Array<import("../../Feature").default>>} Promise that resolves with an array of features.
    */
   getFeatures(pixel) {
-    return new Promise(function(resolve, reject) {
-      const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
-      const layerUid = getUid(layer);
-      const source = layer.getSource();
-      const projection = this.renderedProjection;
-      const projectionExtent = projection.getExtent();
-      const resolution = this.renderedResolution;
-      const tileGrid = source.getTileGridForProjection(projection);
-      const coordinate = applyTransform(this.renderedPixelToCoordinateTransform_, pixel.slice());
-      const tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
-      let tile;
-      for (let i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
-        if (tileCoord.toString() === this.renderedTiles[i].tileCoord.toString()) {
-          tile = this.renderedTiles[i];
-          if (tile.getState() === TileState.LOADED && tile.hifi) {
-            const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
-            if (source.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
-              wrapX(coordinate, projection);
+    return new Promise(
+      function (resolve, reject) {
+        const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+        const layerUid = getUid(layer);
+        const source = layer.getSource();
+        const projection = this.renderedProjection;
+        const projectionExtent = projection.getExtent();
+        const resolution = this.renderedResolution;
+        const tileGrid = source.getTileGridForProjection(projection);
+        const coordinate = applyTransform(
+          this.renderedPixelToCoordinateTransform_,
+          pixel.slice()
+        );
+        const tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+          coordinate,
+          resolution
+        );
+        let tile;
+        for (let i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
+          if (
+            tileCoord.toString() === this.renderedTiles[i].tileCoord.toString()
+          ) {
+            tile = this.renderedTiles[i];
+            if (tile.getState() === TileState.LOADED && tile.hifi) {
+              const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
+              if (
+                source.getWrapX() &&
+                projection.canWrapX() &&
+                !containsExtent(projectionExtent, extent)
+              ) {
+                wrapX(coordinate, projection);
+              }
+              break;
             }
-            break;
+            tile = undefined;
           }
-          tile = undefined;
         }
-      }
-      if (!tile || tile.loadingSourceTiles > 0) {
-        resolve([]);
-        return;
-      }
-      const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-      const corner = getTopLeft(extent);
-      const tilePixel = [
-        (coordinate[0] - corner[0]) / resolution,
-        (corner[1] - coordinate[1]) / resolution
-      ];
-      const features = tile.getSourceTiles().reduce(function(accumulator, sourceTile) {
-        return accumulator.concat(sourceTile.getFeatures());
-      }, []);
-      let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
-      if (!hitDetectionImageData && !this.animatingOrInteracting_) {
-        const tileSize = toSize(tileGrid.getTileSize(tileGrid.getZForResolution(resolution)));
-        const size = [tileSize[0] / 2, tileSize[1] / 2];
-        const rotation = this.renderedRotation_;
-        const transforms = [
-          this.getRenderTransform(tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
-            resolution, 0, 0.5, size[0], size[1], 0)
+        if (!tile || tile.loadingSourceTiles > 0) {
+          resolve([]);
+          return;
+        }
+        const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+        const corner = getTopLeft(extent);
+        const tilePixel = [
+          (coordinate[0] - corner[0]) / resolution,
+          (corner[1] - coordinate[1]) / resolution,
         ];
-        hitDetectionImageData = createHitDetectionImageData(tileSize, transforms,
-          features, layer.getStyleFunction(),
-          tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
-          tile.getReplayState(layer).renderedResolution, rotation);
-        tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
-      }
-      resolve(hitDetect(tilePixel, features, hitDetectionImageData));
-    }.bind(this));
+        const features = tile
+          .getSourceTiles()
+          .reduce(function (accumulator, sourceTile) {
+            return accumulator.concat(sourceTile.getFeatures());
+          }, []);
+        let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
+        if (!hitDetectionImageData && !this.animatingOrInteracting_) {
+          const tileSize = toSize(
+            tileGrid.getTileSize(tileGrid.getZForResolution(resolution))
+          );
+          const size = [tileSize[0] / 2, tileSize[1] / 2];
+          const rotation = this.renderedRotation_;
+          const transforms = [
+            this.getRenderTransform(
+              tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
+              resolution,
+              0,
+              0.5,
+              size[0],
+              size[1],
+              0
+            ),
+          ];
+          hitDetectionImageData = createHitDetectionImageData(
+            tileSize,
+            transforms,
+            features,
+            layer.getStyleFunction(),
+            tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
+            tile.getReplayState(layer).renderedResolution,
+            rotation
+          );
+          tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
+        }
+        resolve(hitDetect(tilePixel, features, hitDetectionImageData));
+      }.bind(this)
+    );
   }
 
   /**
@@ -436,13 +561,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   renderFrame(frameState, target) {
     const viewHints = frameState.viewHints;
-    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+    const hifi = !(
+      viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
+    );
     this.renderQueuedTileImages_(hifi, frameState);
 
     super.renderFrame(frameState, target);
     this.renderedPixelToCoordinateTransform_ = frameState.pixelToCoordinateTransform.slice();
     this.renderedRotation_ = frameState.viewState.rotation;
-
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
@@ -473,17 +599,35 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const height = Math.round(size[1] * pixelRatio);
 
     const tiles = this.renderedTiles;
-    const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
+    const tileGrid = source.getTileGridForProjection(
+      frameState.viewState.projection
+    );
     const clips = [];
     const clipZs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
-      const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[i]);
+      const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[
+        i
+      ]);
       const tileCoord = tile.tileCoord;
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-      const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];
+      const worldOffset =
+        tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] -
+        tileExtent[0];
       const transform = multiply(
-        scale(this.inversePixelTransform.slice(), 1 / pixelRatio, 1 / pixelRatio),
-        this.getRenderTransform(center, resolution, rotation, pixelRatio, width, height, worldOffset)
+        scale(
+          this.inversePixelTransform.slice(),
+          1 / pixelRatio,
+          1 / pixelRatio
+        ),
+        this.getRenderTransform(
+          center,
+          resolution,
+          rotation,
+          pixelRatio,
+          width,
+          height,
+          worldOffset
+        )
       );
       const executorGroups = tile.executorGroups[getUid(layer)];
       let clipped = false;
@@ -519,7 +663,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             }
           }
         }
-        executorGroup.execute(context, transform, rotation, hifi, replayTypes, declutterReplays);
+        executorGroup.execute(
+          context,
+          transform,
+          rotation,
+          hifi,
+          replayTypes,
+          declutterReplays
+        );
         if (!declutterReplays && !clipped) {
           context.restore();
           clips.push(currentClip);
@@ -530,7 +681,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
     if (declutterReplays) {
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
-      replayDeclutter(declutterReplays, context, rotation, layerState.opacity, hifi, frameState.declutterItems);
+      replayDeclutter(
+        declutterReplays,
+        context,
+        rotation,
+        layerState.opacity,
+        hifi,
+        frameState.declutterItems
+      );
     }
 
     return this.container;
@@ -568,14 +726,23 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     let loading = false;
     if (Array.isArray(styles)) {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
-        loading = renderFeature(
-          executorGroup, feature, styles[i], squaredTolerance,
-          this.boundHandleStyleImageChange_) || loading;
+        loading =
+          renderFeature(
+            executorGroup,
+            feature,
+            styles[i],
+            squaredTolerance,
+            this.boundHandleStyleImageChange_
+          ) || loading;
       }
     } else {
       loading = renderFeature(
-        executorGroup, feature, styles, squaredTolerance,
-        this.boundHandleStyleImageChange_);
+        executorGroup,
+        feature,
+        styles,
+        squaredTolerance,
+        this.boundHandleStyleImageChange_
+      );
     }
     return loading;
   }
@@ -593,7 +760,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const revision = layer.getRevision();
     const sourceZ = tile.sourceZ;
     const resolution = tile.wantedResolution;
-    return replayState.renderedTileResolution !== resolution || replayState.renderedTileRevision !== revision || replayState.renderedTileZ !== sourceZ;
+    return (
+      replayState.renderedTileResolution !== resolution ||
+      replayState.renderedTileRevision !== revision ||
+      replayState.renderedTileZ !== sourceZ
+    );
   }
 
   /**
@@ -617,7 +788,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const projection = viewState.projection;
     const tileGrid = source.getTileGridForProjection(projection);
     const tileResolution = tileGrid.getResolution(tile.tileCoord[0]);
-    const renderPixelRatio = frameState.pixelRatio / tile.wantedResolution * tileResolution;
+    const renderPixelRatio =
+      (frameState.pixelRatio / tile.wantedResolution) * tileResolution;
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);
 
@@ -639,12 +811,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     translateTransform(transform, -tileExtent[0], -tileExtent[3]);
     for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
       const executorGroup = executorGroups[i];
-      executorGroup.execute(context, transform, 0, true, IMAGE_REPLAYS[layer.getRenderMode()]);
+      executorGroup.execute(
+        context,
+        transform,
+        0,
+        true,
+        IMAGE_REPLAYS[layer.getRenderMode()]
+      );
     }
     replayState.renderedTileResolution = tile.wantedResolution;
   }
-
 }
-
 
 export default CanvasVectorTileLayerRenderer;

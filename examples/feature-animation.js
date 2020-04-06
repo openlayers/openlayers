@@ -1,19 +1,19 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import {unByKey} from '../src/ol/Observable.js';
-import View from '../src/ol/View.js';
-import {easeOut} from '../src/ol/easing.js';
 import Point from '../src/ol/geom/Point.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import View from '../src/ol/View.js';
 import {Circle as CircleStyle, Stroke, Style} from '../src/ol/style.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {easeOut} from '../src/ol/easing.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import {getVectorContext} from '../src/ol/render.js';
+import {unByKey} from '../src/ol/Observable.js';
 
 const tileLayer = new TileLayer({
   source: new OSM({
-    wrapX: false
-  })
+    wrapX: false,
+  }),
 });
 
 const map = new Map({
@@ -22,15 +22,15 @@ const map = new Map({
   view: new View({
     center: [0, 0],
     zoom: 1,
-    multiWorld: true
-  })
+    multiWorld: true,
+  }),
 });
 
 const source = new VectorSource({
-  wrapX: false
+  wrapX: false,
 });
 const vector = new VectorLayer({
-  source: source
+  source: source,
 });
 map.addLayer(vector);
 
@@ -62,9 +62,9 @@ function flash(feature) {
         radius: radius,
         stroke: new Stroke({
           color: 'rgba(255, 0, 0, ' + opacity + ')',
-          width: 0.25 + opacity
-        })
-      })
+          width: 0.25 + opacity,
+        }),
+      }),
     });
 
     vectorContext.setStyle(style);
@@ -78,7 +78,7 @@ function flash(feature) {
   }
 }
 
-source.on('addfeature', function(e) {
+source.on('addfeature', function (e) {
   flash(e.feature);
 });
 

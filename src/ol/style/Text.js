@@ -4,7 +4,6 @@
 import Fill from './Fill.js';
 import TextPlacement from './TextPlacement.js';
 
-
 /**
  * The default fill color to use if no fill was set at construction time; a
  * blackish `#333`.
@@ -12,7 +11,6 @@ import TextPlacement from './TextPlacement.js';
  * @const {string}
  */
 const DEFAULT_FILL_COLOR = '#333';
-
 
 /**
  * @typedef {Object} Options
@@ -44,7 +42,6 @@ const DEFAULT_FILL_COLOR = '#333';
  * values in the array is `[top, right, bottom, left]`.
  */
 
-
 /**
  * @classdesc
  * Set text style for vector features.
@@ -55,7 +52,6 @@ class Text {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     /**
@@ -104,20 +100,24 @@ class Text {
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.fill_ = options.fill !== undefined ? options.fill :
-      new Fill({color: DEFAULT_FILL_COLOR});
+    this.fill_ =
+      options.fill !== undefined
+        ? options.fill
+        : new Fill({color: DEFAULT_FILL_COLOR});
 
     /**
      * @private
      * @type {number}
      */
-    this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
+    this.maxAngle_ =
+      options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
 
     /**
      * @private
      * @type {import("./TextPlacement.js").default|string}
      */
-    this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
+    this.placement_ =
+      options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
     /**
      * @private
@@ -147,13 +147,17 @@ class Text {
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
+    this.backgroundFill_ = options.backgroundFill
+      ? options.backgroundFill
+      : null;
 
     /**
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
+    this.backgroundStroke_ = options.backgroundStroke
+      ? options.backgroundStroke
+      : null;
 
     /**
      * @private
@@ -183,9 +187,13 @@ class Text {
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       offsetX: this.getOffsetX(),
       offsetY: this.getOffsetY(),
-      backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
-      backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined,
-      padding: this.getPadding()
+      backgroundFill: this.getBackgroundFill()
+        ? this.getBackgroundFill().clone()
+        : undefined,
+      backgroundStroke: this.getBackgroundStroke()
+        ? this.getBackgroundStroke().clone()
+        : undefined,
+      padding: this.getPadding(),
     });
   }
 

@@ -9,7 +9,6 @@ import ComparisonBinary from './ComparisonBinary.js';
  * @api
  */
 class NotEqualTo extends ComparisonBinary {
-
   /**
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!(string|number)} expression The value to compare.
@@ -18,7 +17,6 @@ class NotEqualTo extends ComparisonBinary {
   constructor(propertyName, expression, opt_matchCase) {
     super('PropertyIsNotEqualTo', propertyName, expression, opt_matchCase);
   }
-
 }
 
 export default NotEqualTo;

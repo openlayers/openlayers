@@ -1,18 +1,18 @@
 /**
  * @module ol/source/TileImage
  */
-import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-import {getUid} from '../util.js';
+import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
+import ReprojTile from '../reproj/Tile.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
-import EventType from '../events/EventType.js';
-import {equivalent, get as getProjection} from '../proj.js';
-import ReprojTile from '../reproj/Tile.js';
 import UrlTile from './UrlTile.js';
+import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {IMAGE_SMOOTHING_DISABLED} from './common.js';
+import {equivalent, get as getProjection} from '../proj.js';
 import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
@@ -59,7 +59,6 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * will be used. If -1, the nearest higher resolution will be used.
  */
 
-
 /**
  * @classdesc
  * Base class for sources providing images divided into a tile grid.
@@ -72,7 +71,6 @@ class TileImage extends UrlTile {
    * @param {!Options} options Image tile options.
    */
   constructor(options) {
-
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
@@ -80,8 +78,9 @@ class TileImage extends UrlTile {
       projection: options.projection,
       state: options.state,
       tileGrid: options.tileGrid,
-      tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : defaultTileLoadFunction,
+      tileLoadFunction: options.tileLoadFunction
+        ? options.tileLoadFunction
+        : defaultTileLoadFunction,
       tilePixelRatio: options.tilePixelRatio,
       tileUrlFunction: options.tileUrlFunction,
       url: options.url,
@@ -90,7 +89,7 @@ class TileImage extends UrlTile {
       transition: options.transition,
       key: options.key,
       attributionsCollapsible: options.attributionsCollapsible,
-      zDirection: options.zDirection
+      zDirection: options.zDirection,
     });
 
     /**
@@ -98,14 +97,14 @@ class TileImage extends UrlTile {
      * @type {?string}
      */
     this.crossOrigin =
-        options.crossOrigin !== undefined ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
     /**
      * @protected
      * @type {typeof ImageTile}
      */
-    this.tileClass = options.tileClass !== undefined ?
-      options.tileClass : ImageTile;
+    this.tileClass =
+      options.tileClass !== undefined ? options.tileClass : ImageTile;
 
     /**
      * @protected
@@ -129,8 +128,8 @@ class TileImage extends UrlTile {
      * @private
      * @type {object|undefined}
      */
-    this.contextOptions_ = options.imageSmoothing === false ?
-      IMAGE_SMOOTHING_DISABLED : undefined;
+    this.contextOptions_ =
+      options.imageSmoothing === false ? IMAGE_SMOOTHING_DISABLED : undefined;
 
     /**
      * @private
@@ -169,7 +168,9 @@ class TileImage extends UrlTile {
     }
     const usedTileCache = this.getTileCacheForProjection(projection);
 
-    this.tileCache.expireCache(this.tileCache == usedTileCache ? usedTiles : {});
+    this.tileCache.expireCache(
+      this.tileCache == usedTileCache ? usedTiles : {}
+    );
     for (const id in this.tileCacheForProjection) {
       const tileCache = this.tileCacheForProjection[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
@@ -188,8 +189,12 @@ class TileImage extends UrlTile {
    * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
-    if (ENABLE_RASTER_REPROJECTION &&
-        this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
+    if (
+      ENABLE_RASTER_REPROJECTION &&
+      this.getProjection() &&
+      projection &&
+      !equivalent(this.getProjection(), projection)
+    ) {
       return 0;
     } else {
       return this.getGutter();
@@ -208,8 +213,12 @@ class TileImage extends UrlTile {
    * @return {boolean} Opaque.
    */
   getOpaque(projection) {
-    if (ENABLE_RASTER_REPROJECTION &&
-        this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
+    if (
+      ENABLE_RASTER_REPROJECTION &&
+      this.getProjection() &&
+      projection &&
+      !equivalent(this.getProjection(), projection)
+    ) {
       return false;
     } else {
       return super.getOpaque(projection);
@@ -230,7 +239,9 @@ class TileImage extends UrlTile {
     } else {
       const projKey = getUid(projection);
       if (!(projKey in this.tileGridForProjection)) {
-        this.tileGridForProjection[projKey] = getTileGridForProjection(projection);
+        this.tileGridForProjection[projKey] = getTileGridForProjection(
+          projection
+        );
       }
       return this.tileGridForProjection[projKey];
     }
@@ -244,12 +255,15 @@ class TileImage extends UrlTile {
     if (!ENABLE_RASTER_REPROJECTION) {
       return super.getTileCacheForProjection(projection);
     }
-    const thisProj = this.getProjection(); if (!thisProj || equivalent(thisProj, projection)) {
+    const thisProj = this.getProjection();
+    if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
     } else {
       const projKey = getUid(projection);
       if (!(projKey in this.tileCacheForProjection)) {
-        this.tileCacheForProjection[projKey] = new TileCache(this.tileCache.highWaterMark);
+        this.tileCacheForProjection[projKey] = new TileCache(
+          this.tileCache.highWaterMark
+        );
       }
       return this.tileCacheForProjection[projKey];
     }
@@ -268,16 +282,20 @@ class TileImage extends UrlTile {
   createTile_(z, x, y, pixelRatio, projection, key) {
     const tileCoord = [z, x, y];
     const urlTileCoord = this.getTileCoordForTileUrlFunction(
-      tileCoord, projection);
-    const tileUrl = urlTileCoord ?
-      this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
+      tileCoord,
+      projection
+    );
+    const tileUrl = urlTileCoord
+      ? this.tileUrlFunction(urlTileCoord, pixelRatio, projection)
+      : undefined;
     const tile = new this.tileClass(
       tileCoord,
       tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction,
-      this.tileOptions);
+      this.tileOptions
+    );
     tile.key = key;
     tile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
     return tile;
@@ -293,9 +311,19 @@ class TileImage extends UrlTile {
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
-    if (!ENABLE_RASTER_REPROJECTION ||
-        !sourceProjection || !projection || equivalent(sourceProjection, projection)) {
-      return this.getTileInternal(z, x, y, pixelRatio, sourceProjection || projection);
+    if (
+      !ENABLE_RASTER_REPROJECTION ||
+      !sourceProjection ||
+      !projection ||
+      equivalent(sourceProjection, projection)
+    ) {
+      return this.getTileInternal(
+        z,
+        x,
+        y,
+        pixelRatio,
+        sourceProjection || projection
+      );
     } else {
       const cache = this.getTileCacheForProjection(projection);
       const tileCoord = [z, x, y];
@@ -310,17 +338,26 @@ class TileImage extends UrlTile {
       } else {
         const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
         const targetTileGrid = this.getTileGridForProjection(projection);
-        const wrappedTileCoord =
-            this.getTileCoordForTileUrlFunction(tileCoord, projection);
+        const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
+          tileCoord,
+          projection
+        );
         const newTile = new ReprojTile(
-          sourceProjection, sourceTileGrid,
-          projection, targetTileGrid,
-          tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
+          sourceProjection,
+          sourceTileGrid,
+          projection,
+          targetTileGrid,
+          tileCoord,
+          wrappedTileCoord,
+          this.getTilePixelRatio(pixelRatio),
           this.getGutter(),
-          function(z, x, y, pixelRatio) {
+          function (z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }.bind(this), this.reprojectionErrorThreshold_,
-          this.renderReprojectionEdges_, this.contextOptions_);
+          }.bind(this),
+          this.reprojectionErrorThreshold_,
+          this.renderReprojectionEdges_,
+          this.contextOptions_
+        );
         newTile.key = key;
 
         if (tile) {
@@ -380,8 +417,10 @@ class TileImage extends UrlTile {
    * @api
    */
   setRenderReprojectionEdges(render) {
-    if (!ENABLE_RASTER_REPROJECTION ||
-        this.renderReprojectionEdges_ == render) {
+    if (
+      !ENABLE_RASTER_REPROJECTION ||
+      this.renderReprojectionEdges_ == render
+    ) {
       return;
     }
     this.renderReprojectionEdges_ = render;
@@ -415,7 +454,6 @@ class TileImage extends UrlTile {
     }
   }
 }
-
 
 /**
  * @param {ImageTile} imageTile Image tile.

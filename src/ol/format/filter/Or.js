@@ -9,14 +9,12 @@ import LogicalNary from './LogicalNary.js';
  * @api
  */
 class Or extends LogicalNary {
-
   /**
    * @param {...import("./Filter.js").default} conditions Conditions.
    */
   constructor(conditions) {
     super('Or', Array.prototype.slice.call(arguments));
   }
-
 }
 
 export default Or;

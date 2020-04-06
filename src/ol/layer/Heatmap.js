@@ -1,13 +1,12 @@
 /**
  * @module ol/layer/Heatmap
  */
-import {getChangeEventType} from '../Object.js';
-import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from './Vector.js';
-import {clamp} from '../math.js';
-import {assign} from '../obj.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-
+import {assign} from '../obj.js';
+import {clamp} from '../math.js';
+import {createCanvasContext2D} from '../dom.js';
+import {getChangeEventType} from '../Object.js';
 
 /**
  * @typedef {Object} Options
@@ -38,7 +37,6 @@ import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
  * @property {import("../source/Vector.js").default} [source] Source.
  */
 
-
 /**
  * @enum {string}
  * @private
@@ -46,16 +44,14 @@ import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 const Property = {
   BLUR: 'blur',
   GRADIENT: 'gradient',
-  RADIUS: 'radius'
+  RADIUS: 'radius',
 };
-
 
 /**
  * @const
  * @type {Array<string>}
  */
 const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
-
 
 /**
  * @classdesc
@@ -88,7 +84,10 @@ class Heatmap extends VectorLayer {
      */
     this.gradient_ = null;
 
-    this.addEventListener(getChangeEventType(Property.GRADIENT), this.handleGradientChanged_);
+    this.addEventListener(
+      getChangeEventType(Property.GRADIENT),
+      this.handleGradientChanged_
+    );
 
     this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
 
@@ -98,7 +97,7 @@ class Heatmap extends VectorLayer {
 
     const weight = options.weight ? options.weight : 'weight';
     if (typeof weight === 'string') {
-      this.weightFunction_ = function(feature) {
+      this.weightFunction_ = function (feature) {
         return feature.get(weight);
       };
     } else {
@@ -186,11 +185,11 @@ class Heatmap extends VectorLayer {
       attributes: [
         {
           name: 'weight',
-          callback: function(feature) {
+          callback: function (feature) {
             const weight = this.weightFunction_(feature);
             return weight !== undefined ? clamp(weight, 0, 1) : 1;
-          }.bind(this)
-        }
+          }.bind(this),
+        },
       ],
       vertexShader: `
         precision mediump float;
@@ -275,12 +274,14 @@ class Heatmap extends VectorLayer {
           gl_FragColor = v_hitColor;
         }`,
       uniforms: {
-        u_size: function() {
+        u_size: function () {
           return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
         }.bind(this),
-        u_blurSlope: function() {
-          return this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR));
-        }.bind(this)
+        u_blurSlope: function () {
+          return (
+            this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR))
+          );
+        }.bind(this),
       },
       postProcesses: [
         {
@@ -299,16 +300,15 @@ class Heatmap extends VectorLayer {
               gl_FragColor.rgb *= gl_FragColor.a;
             }`,
           uniforms: {
-            u_gradientTexture: function() {
+            u_gradientTexture: function () {
               return this.gradient_;
-            }.bind(this)
-          }
-        }
-      ]
+            }.bind(this),
+          },
+        },
+      ],
     });
   }
 }
-
 
 /**
  * @param {Array<string>} colors A list of colored.
@@ -330,6 +330,5 @@ function createGradient(colors) {
 
   return context.canvas;
 }
-
 
 export default Heatmap;

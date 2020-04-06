@@ -1,22 +1,33 @@
 /**
  * @module ol/format/GML2
  */
-import {createOrUpdate} from '../extent.js';
-import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
 import GMLBase, {GMLNS} from './GMLBase.js';
-import {writeStringTextNode} from './xsd.js';
+import {
+  OBJECT_PROPERTY_NODE_FACTORY,
+  createElementNS,
+  getAllTextContent,
+  makeArrayPusher,
+  makeChildAppender,
+  makeReplacer,
+  makeSimpleNodeFactory,
+  pushParseAndPop,
+  pushSerializeAndPop,
+} from '../xml.js';
 import {assign} from '../obj.js';
+import {createOrUpdate} from '../extent.js';
 import {get as getProjection} from '../proj.js';
-import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
-  makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, pushParseAndPop, pushSerializeAndPop} from '../xml.js';
-
+import {
+  transformExtentWithOptions,
+  transformGeometryWithOptions,
+} from './Feature.js';
+import {writeStringTextNode} from './xsd.js';
 
 /**
  * @const
  * @type {string}
  */
-const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
-
+const schemaLocation =
+  GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 /**
  * @const
@@ -26,9 +37,8 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
   'MultiLineString': 'lineStringMember',
   'MultiCurve': 'curveMember',
   'MultiPolygon': 'polygonMember',
-  'MultiSurface': 'surfaceMember'
+  'MultiSurface': 'surfaceMember',
 };
-
 
 /**
  * @classdesc
@@ -38,26 +48,26 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  * @api
  */
 class GML2 extends GMLBase {
-
   /**
    * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
-    const options = /** @type {import("./GMLBase.js").Options} */
-        (opt_options ? opt_options : {});
+    const options =
+      /** @type {import("./GMLBase.js").Options} */
+      (opt_options ? opt_options : {});
 
     super(options);
 
-    this.FEATURE_COLLECTION_PARSERS[GMLNS][
-      'featureMember'] =
-        makeArrayPusher(this.readFeaturesInternal);
+    this.FEATURE_COLLECTION_PARSERS[GMLNS]['featureMember'] = makeArrayPusher(
+      this.readFeaturesInternal
+    );
 
     /**
      * @type {string}
      */
-    this.schemaLocation = options.schemaLocation ?
-      options.schemaLocation : schemaLocation;
-
+    this.schemaLocation = options.schemaLocation
+      ? options.schemaLocation
+      : schemaLocation;
   }
 
   /**
@@ -83,7 +93,7 @@ class GML2 extends GMLBase {
       const coords = coordsGroups[i].split(/,+/);
       const x = parseFloat(coords[0]);
       const y = parseFloat(coords[1]);
-      const z = (coords.length === 3) ? parseFloat(coords[2]) : 0;
+      const z = coords.length === 3 ? parseFloat(coords[2]) : 0;
       if (axisOrientation.substr(0, 2) === 'en') {
         flatCoordinates.push(x, y, z);
       } else {
@@ -101,11 +111,19 @@ class GML2 extends GMLBase {
    */
   readBox_(node, objectStack) {
     /** @type {Array<number>} */
-    const flatCoordinates = pushParseAndPop([null],
-      this.BOX_PARSERS_, node, objectStack, this);
-    return createOrUpdate(flatCoordinates[1][0],
-      flatCoordinates[1][1], flatCoordinates[1][3],
-      flatCoordinates[1][4]);
+    const flatCoordinates = pushParseAndPop(
+      [null],
+      this.BOX_PARSERS_,
+      node,
+      objectStack,
+      this
+    );
+    return createOrUpdate(
+      flatCoordinates[1][0],
+      flatCoordinates[1][1],
+      flatCoordinates[1][3],
+      flatCoordinates[1][4]
+    );
   }
 
   /**
@@ -115,11 +133,17 @@ class GML2 extends GMLBase {
    */
   innerBoundaryIsParser_(node, objectStack) {
     /** @type {Array<number>|undefined} */
-    const flatLinearRing = pushParseAndPop(undefined,
-      this.RING_PARSERS, node, objectStack, this);
+    const flatLinearRing = pushParseAndPop(
+      undefined,
+      this.RING_PARSERS,
+      node,
+      objectStack,
+      this
+    );
     if (flatLinearRing) {
-      const flatLinearRings = /** @type {Array<Array<number>>} */
-          (objectStack[objectStack.length - 1]);
+      const flatLinearRings =
+        /** @type {Array<Array<number>>} */
+        (objectStack[objectStack.length - 1]);
       flatLinearRings.push(flatLinearRing);
     }
   }
@@ -131,11 +155,17 @@ class GML2 extends GMLBase {
    */
   outerBoundaryIsParser_(node, objectStack) {
     /** @type {Array<number>|undefined} */
-    const flatLinearRing = pushParseAndPop(undefined,
-      this.RING_PARSERS, node, objectStack, this);
+    const flatLinearRing = pushParseAndPop(
+      undefined,
+      this.RING_PARSERS,
+      node,
+      objectStack,
+      this
+    );
     if (flatLinearRing) {
-      const flatLinearRings = /** @type {Array<Array<number>>} */
-          (objectStack[objectStack.length - 1]);
+      const flatLinearRings =
+        /** @type {Array<Array<number>>} */
+        (objectStack[objectStack.length - 1]);
       flatLinearRings[0] = flatLinearRing;
     }
   }
@@ -166,8 +196,7 @@ class GML2 extends GMLBase {
     } else {
       nodeName = 'Envelope';
     }
-    return createElementNS('http://www.opengis.net/gml',
-      nodeName);
+    return createElementNS('http://www.opengis.net/gml', nodeName);
   }
 
   /**
@@ -195,25 +224,36 @@ class GML2 extends GMLBase {
       if (value !== null) {
         keys.push(key);
         values.push(value);
-        if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
+        if (
+          key == geometryName ||
+          typeof (/** @type {?} */ (value).getSimplifiedGeometry) === 'function'
+        ) {
           if (!(key in context.serializers[featureNS])) {
             context.serializers[featureNS][key] = makeChildAppender(
-              this.writeGeometryElement, this);
+              this.writeGeometryElement,
+              this
+            );
           }
         } else {
           if (!(key in context.serializers[featureNS])) {
-            context.serializers[featureNS][key] = makeChildAppender(writeStringTextNode);
+            context.serializers[featureNS][key] = makeChildAppender(
+              writeStringTextNode
+            );
           }
         }
       }
     }
     const item = assign({}, context);
     item.node = node;
-    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
-      (item), context.serializers,
+    pushSerializeAndPop(
+      /** @type {import("../xml.js").NodeStackItem} */
+      (item),
+      context.serializers,
       makeSimpleNodeFactory(undefined, featureNS),
       values,
-      objectStack, keys);
+      objectStack,
+      keys
+    );
   }
 
   /**
@@ -228,16 +268,17 @@ class GML2 extends GMLBase {
     if (node.nodeName !== 'LineStringSegment' && srsName) {
       node.setAttribute('srsName', srsName);
     }
-    if (node.nodeName === 'LineString' ||
-        node.nodeName === 'LineStringSegment') {
+    if (
+      node.nodeName === 'LineString' ||
+      node.nodeName === 'LineStringSegment'
+    ) {
       const coordinates = this.createCoordinatesNode_(node.namespaceURI);
       node.appendChild(coordinates);
       this.writeCoordinates_(coordinates, geometry, objectStack);
     } else if (node.nodeName === 'Curve') {
       const segments = createElementNS(node.namespaceURI, 'segments');
       node.appendChild(segments);
-      this.writeCurveSegments_(segments,
-        geometry, objectStack);
+      this.writeCurveSegments_(segments, geometry, objectStack);
     }
   }
 
@@ -270,10 +311,15 @@ class GML2 extends GMLBase {
       node.setAttribute('srsName', srsName);
     }
     const lines = geometry.getLineStrings();
-    pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, curve: curve},
+    pushSerializeAndPop(
+      {node: node, hasZ: hasZ, srsName: srsName, curve: curve},
       this.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
-      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
-      objectStack, undefined, this);
+      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_,
+      lines,
+      objectStack,
+      undefined,
+      this
+    );
   }
 
   /**
@@ -282,19 +328,34 @@ class GML2 extends GMLBase {
    * @param {Array<*>} objectStack Node stack.
    */
   writeGeometryElement(node, geometry, objectStack) {
-    const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
+    const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[
+      objectStack.length - 1
+    ]);
     const item = assign({}, context);
     item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
-      value = transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
+      value = transformExtentWithOptions(
+        /** @type {import("../extent.js").Extent} */ (geometry),
+        context
+      );
     } else {
-      value = transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
+      value = transformGeometryWithOptions(
+        /** @type {import("../geom/Geometry.js").default} */ (geometry),
+        true,
+        context
+      );
     }
-    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
-      (item), this.GEOMETRY_SERIALIZERS_,
-      this.GEOMETRY_NODE_FACTORY_, [value],
-      objectStack, undefined, this);
+    pushSerializeAndPop(
+      /** @type {import("../xml.js").NodeStackItem} */
+      (item),
+      this.GEOMETRY_SERIALIZERS_,
+      this.GEOMETRY_NODE_FACTORY_,
+      [value],
+      objectStack,
+      undefined,
+      this
+    );
   }
 
   /**
@@ -363,12 +424,15 @@ class GML2 extends GMLBase {
         {node: node, hasZ: hasZ, srsName: srsName},
         this.RING_SERIALIZERS_,
         this.RING_NODE_FACTORY_,
-        rings, objectStack, undefined, this);
+        rings,
+        objectStack,
+        undefined,
+        this
+      );
     } else if (node.nodeName === 'Surface') {
       const patches = createElementNS(node.namespaceURI, 'patches');
       node.appendChild(patches);
-      this.writeSurfacePatches_(
-        patches, geometry, objectStack);
+      this.writeSurfacePatches_(patches, geometry, objectStack);
     }
   }
 
@@ -386,8 +450,10 @@ class GML2 extends GMLBase {
     if (exteriorWritten === undefined) {
       context['exteriorWritten'] = true;
     }
-    return createElementNS(parentNode.namespaceURI,
-      exteriorWritten !== undefined ? 'innerBoundaryIs' : 'outerBoundaryIs');
+    return createElementNS(
+      parentNode.namespaceURI,
+      exteriorWritten !== undefined ? 'innerBoundaryIs' : 'outerBoundaryIs'
+    );
   }
 
   /**
@@ -426,9 +492,10 @@ class GML2 extends GMLBase {
     if (opt_srsName) {
       axisOrientation = getProjection(opt_srsName).getAxisOrientation();
     }
-    let coords = ((axisOrientation.substr(0, 2) === 'en') ?
-      point[0] + ',' + point[1] :
-      point[1] + ',' + point[0]);
+    let coords =
+      axisOrientation.substr(0, 2) === 'en'
+        ? point[0] + ',' + point[1]
+        : point[1] + ',' + point[0];
     if (opt_hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;
@@ -472,10 +539,15 @@ class GML2 extends GMLBase {
       node.setAttribute('srsName', srsName);
     }
     const points = geometry.getPoints();
-    pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName},
+    pushSerializeAndPop(
+      {node: node, hasZ: hasZ, srsName: srsName},
       this.POINTMEMBER_SERIALIZERS_,
-      makeSimpleNodeFactory('pointMember'), points,
-      objectStack, undefined, this);
+      makeSimpleNodeFactory('pointMember'),
+      points,
+      objectStack,
+      undefined,
+      this
+    );
   }
 
   /**
@@ -522,10 +594,15 @@ class GML2 extends GMLBase {
       node.setAttribute('srsName', srsName);
     }
     const polygons = geometry.getPolygons();
-    pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, surface: surface},
+    pushSerializeAndPop(
+      {node: node, hasZ: hasZ, srsName: srsName, surface: surface},
       this.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
-      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
-      objectStack, undefined, this);
+      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_,
+      polygons,
+      objectStack,
+      undefined,
+      this
+    );
   }
 
   /**
@@ -535,8 +612,7 @@ class GML2 extends GMLBase {
    * @private
    */
   writeSurfaceOrPolygonMember_(node, polygon, objectStack) {
-    const child = this.GEOMETRY_NODE_FACTORY_(
-      polygon, objectStack);
+    const child = this.GEOMETRY_NODE_FACTORY_(polygon, objectStack);
     if (child) {
       node.appendChild(child);
       this.writeSurfaceOrPolygon_(child, polygon, objectStack);
@@ -557,11 +633,16 @@ class GML2 extends GMLBase {
     }
     const keys = ['lowerCorner', 'upperCorner'];
     const values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
-    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
-      ({node: node}), this.ENVELOPE_SERIALIZERS_,
+    pushSerializeAndPop(
+      /** @type {import("../xml.js").NodeStackItem} */
+      ({node: node}),
+      this.ENVELOPE_SERIALIZERS_,
       OBJECT_PROPERTY_NODE_FACTORY,
       values,
-      objectStack, keys, this);
+      objectStack,
+      keys,
+      this
+    );
   }
 
   /**
@@ -574,8 +655,10 @@ class GML2 extends GMLBase {
    */
   MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, opt_nodeName) {
     const parentNode = objectStack[objectStack.length - 1].node;
-    return createElementNS('http://www.opengis.net/gml',
-      MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
+    return createElementNS(
+      'http://www.opengis.net/gml',
+      MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]
+    );
   }
 }
 
@@ -586,8 +669,8 @@ class GML2 extends GMLBase {
  */
 GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
-    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_)
-  }
+    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_),
+  },
 };
 
 /**
@@ -598,8 +681,8 @@ GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
 GML2.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
     'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
-    'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
-  }
+    'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_,
+  },
 };
 
 /**
@@ -609,9 +692,8 @@ GML2.prototype.FLAT_LINEAR_RINGS_PARSERS = {
  */
 GML2.prototype.BOX_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'coordinates': makeArrayPusher(
-      GML2.prototype.readFlatCoordinates_)
-  }
+    'coordinates': makeArrayPusher(GML2.prototype.readFlatCoordinates_),
+  },
 };
 
 /**
@@ -622,19 +704,14 @@ GML2.prototype.BOX_PARSERS_ = {
 GML2.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
     'Point': makeReplacer(GMLBase.prototype.readPoint),
-    'MultiPoint': makeReplacer(
-      GMLBase.prototype.readMultiPoint),
-    'LineString': makeReplacer(
-      GMLBase.prototype.readLineString),
-    'MultiLineString': makeReplacer(
-      GMLBase.prototype.readMultiLineString),
-    'LinearRing': makeReplacer(
-      GMLBase.prototype.readLinearRing),
+    'MultiPoint': makeReplacer(GMLBase.prototype.readMultiPoint),
+    'LineString': makeReplacer(GMLBase.prototype.readLineString),
+    'MultiLineString': makeReplacer(GMLBase.prototype.readMultiLineString),
+    'LinearRing': makeReplacer(GMLBase.prototype.readLinearRing),
     'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
-    'MultiPolygon': makeReplacer(
-      GMLBase.prototype.readMultiPolygon),
-    'Box': makeReplacer(GML2.prototype.readBox_)
-  }
+    'MultiPolygon': makeReplacer(GMLBase.prototype.readMultiPolygon),
+    'Box': makeReplacer(GML2.prototype.readBox_),
+  },
 };
 
 /**
@@ -644,30 +721,27 @@ GML2.prototype.GEOMETRY_PARSERS = {
  */
 GML2.prototype.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'Curve': makeChildAppender(
-      GML2.prototype.writeCurveOrLineString_),
+    'Curve': makeChildAppender(GML2.prototype.writeCurveOrLineString_),
     'MultiCurve': makeChildAppender(
-      GML2.prototype.writeMultiCurveOrLineString_),
+      GML2.prototype.writeMultiCurveOrLineString_
+    ),
     'Point': makeChildAppender(GML2.prototype.writePoint_),
-    'MultiPoint': makeChildAppender(
-      GML2.prototype.writeMultiPoint_),
-    'LineString': makeChildAppender(
-      GML2.prototype.writeCurveOrLineString_),
+    'MultiPoint': makeChildAppender(GML2.prototype.writeMultiPoint_),
+    'LineString': makeChildAppender(GML2.prototype.writeCurveOrLineString_),
     'MultiLineString': makeChildAppender(
-      GML2.prototype.writeMultiCurveOrLineString_),
-    'LinearRing': makeChildAppender(
-      GML2.prototype.writeLinearRing_),
-    'Polygon': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygon_),
+      GML2.prototype.writeMultiCurveOrLineString_
+    ),
+    'LinearRing': makeChildAppender(GML2.prototype.writeLinearRing_),
+    'Polygon': makeChildAppender(GML2.prototype.writeSurfaceOrPolygon_),
     'MultiPolygon': makeChildAppender(
-      GML2.prototype.writeMultiSurfaceOrPolygon_),
-    'Surface': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygon_),
+      GML2.prototype.writeMultiSurfaceOrPolygon_
+    ),
+    'Surface': makeChildAppender(GML2.prototype.writeSurfaceOrPolygon_),
     'MultiSurface': makeChildAppender(
-      GML2.prototype.writeMultiSurfaceOrPolygon_),
-    'Envelope': makeChildAppender(
-      GML2.prototype.writeEnvelope)
-  }
+      GML2.prototype.writeMultiSurfaceOrPolygon_
+    ),
+    'Envelope': makeChildAppender(GML2.prototype.writeEnvelope),
+  },
 };
 
 /**
@@ -677,10 +751,12 @@ GML2.prototype.GEOMETRY_SERIALIZERS_ = {
 GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lineStringMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_),
+      GML2.prototype.writeLineStringOrCurveMember_
+    ),
     'curveMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_)
-  }
+      GML2.prototype.writeLineStringOrCurveMember_
+    ),
+  },
 };
 
 /**
@@ -690,8 +766,8 @@ GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 GML2.prototype.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'outerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_),
-    'innerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_)
-  }
+    'innerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_),
+  },
 };
 
 /**
@@ -700,9 +776,8 @@ GML2.prototype.RING_SERIALIZERS_ = {
  */
 GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'pointMember': makeChildAppender(
-      GML2.prototype.writePointMember_)
-  }
+    'pointMember': makeChildAppender(GML2.prototype.writePointMember_),
+  },
 };
 
 /**
@@ -713,10 +788,12 @@ GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
 GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygonMember_),
+      GML2.prototype.writeSurfaceOrPolygonMember_
+    ),
     'polygonMember': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygonMember_)
-  }
+      GML2.prototype.writeSurfaceOrPolygonMember_
+    ),
+  },
 };
 
 /**
@@ -726,8 +803,8 @@ GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 GML2.prototype.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lowerCorner': makeChildAppender(writeStringTextNode),
-    'upperCorner': makeChildAppender(writeStringTextNode)
-  }
+    'upperCorner': makeChildAppender(writeStringTextNode),
+  },
 };
 
 export default GML2;

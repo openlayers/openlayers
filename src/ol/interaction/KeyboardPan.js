@@ -1,12 +1,11 @@
 /**
  * @module ol/interaction/KeyboardPan
  */
-import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
+import Interaction, {pan} from './Interaction.js';
 import KeyCode from '../events/KeyCode.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
-import Interaction, {pan} from './Interaction.js';
-
+import {rotate as rotateCoordinate} from '../coordinate.js';
 
 /**
  * @typedef {Object} Options
@@ -19,7 +18,6 @@ import Interaction, {pan} from './Interaction.js';
  * @property {number} [pixelDelta=128] The amount of pixels to pan on each key
  * press.
  */
-
 
 /**
  * @classdesc
@@ -39,9 +37,8 @@ class KeyboardPan extends Interaction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     super({
-      handleEvent: handleEvent
+      handleEvent: handleEvent,
     });
 
     const options = opt_options || {};
@@ -51,17 +48,20 @@ class KeyboardPan extends Interaction {
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Browser event.
      * @return {boolean} Combined condition result.
      */
-    this.defaultCondition_ = function(mapBrowserEvent) {
-      return noModifierKeys(mapBrowserEvent) &&
-        targetNotEditable(mapBrowserEvent);
+    this.defaultCondition_ = function (mapBrowserEvent) {
+      return (
+        noModifierKeys(mapBrowserEvent) && targetNotEditable(mapBrowserEvent)
+      );
     };
 
     /**
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition !== undefined ?
-      options.condition : this.defaultCondition_;
+    this.condition_ =
+      options.condition !== undefined
+        ? options.condition
+        : this.defaultCondition_;
 
     /**
      * @private
@@ -73,13 +73,10 @@ class KeyboardPan extends Interaction {
      * @private
      * @type {number}
      */
-    this.pixelDelta_ = options.pixelDelta !== undefined ?
-      options.pixelDelta : 128;
-
+    this.pixelDelta_ =
+      options.pixelDelta !== undefined ? options.pixelDelta : 128;
   }
-
 }
-
 
 /**
  * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
@@ -94,15 +91,18 @@ function handleEvent(mapBrowserEvent) {
   if (mapBrowserEvent.type == EventType.KEYDOWN) {
     const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
     const keyCode = keyEvent.keyCode;
-    if (this.condition_(mapBrowserEvent) &&
-        (keyCode == KeyCode.DOWN ||
+    if (
+      this.condition_(mapBrowserEvent) &&
+      (keyCode == KeyCode.DOWN ||
         keyCode == KeyCode.LEFT ||
         keyCode == KeyCode.RIGHT ||
-        keyCode == KeyCode.UP)) {
+        keyCode == KeyCode.UP)
+    ) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
       const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
-      let deltaX = 0, deltaY = 0;
+      let deltaX = 0,
+        deltaY = 0;
       if (keyCode == KeyCode.DOWN) {
         deltaY = -mapUnitsDelta;
       } else if (keyCode == KeyCode.LEFT) {

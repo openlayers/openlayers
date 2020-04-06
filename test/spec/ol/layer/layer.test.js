@@ -1,57 +1,54 @@
-import Map from '../../../../src/ol/Map.js';
 import Layer, {inView} from '../../../../src/ol/layer/Layer.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
+import Map from '../../../../src/ol/Map.js';
 import RenderEvent from '../../../../src/ol/render/Event.js';
 import Source from '../../../../src/ol/source/Source.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 
-
-describe('ol.layer.Layer', function() {
-
-  describe('constructor (defaults)', function() {
-
+describe('ol.layer.Layer', function () {
+  describe('constructor (defaults)', function () {
     let layer;
 
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: getProjection('EPSG:4326')
-        })
+          projection: getProjection('EPSG:4326'),
+        }),
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layer.dispose();
     });
 
-    it('creates an instance', function() {
+    it('creates an instance', function () {
       expect(layer).to.be.a(Layer);
     });
 
-    it('provides default opacity', function() {
+    it('provides default opacity', function () {
       expect(layer.getOpacity()).to.be(1);
     });
 
-    it('provides default visibility', function() {
+    it('provides default visibility', function () {
       expect(layer.getVisible()).to.be(true);
     });
 
-    it('provides default max resolution', function() {
+    it('provides default max resolution', function () {
       expect(layer.getMaxResolution()).to.be(Infinity);
     });
 
-    it('provides default min resolution', function() {
+    it('provides default min resolution', function () {
       expect(layer.getMinResolution()).to.be(0);
     });
 
-    it('provides default min zoom', function() {
+    it('provides default min zoom', function () {
       expect(layer.getMinZoom()).to.be(-Infinity);
     });
 
-    it('provides default max zoom', function() {
+    it('provides default max zoom', function () {
       expect(layer.getMaxZoom()).to.be(Infinity);
     });
 
-    it('provides default layerState', function() {
+    it('provides default layerState', function () {
       expect(layer.getLayerState()).to.eql({
         layer: layer,
         opacity: 1,
@@ -63,18 +60,16 @@ describe('ol.layer.Layer', function() {
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
     });
-
   });
 
-  describe('constructor (options)', function() {
-
-    it('accepts options', function() {
+  describe('constructor (options)', function () {
+    it('accepts options', function () {
       const layer = new Layer({
         source: new Source({
-          projection: getProjection('EPSG:4326')
+          projection: getProjection('EPSG:4326'),
         }),
         opacity: 0.5,
         visible: false,
@@ -83,7 +78,7 @@ describe('ol.layer.Layer', function() {
         minResolution: 0.25,
         minZoom: 1,
         maxZoom: 10,
-        foo: 42
+        foo: 42,
       });
 
       expect(layer.getOpacity()).to.be(0.5);
@@ -104,224 +99,271 @@ describe('ol.layer.Layer', function() {
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: 1,
-        maxZoom: 10
+        maxZoom: 10,
       });
 
       layer.dispose();
     });
 
-    it('throws on non-numeric opacity', function() {
+    it('throws on non-numeric opacity', function () {
       function create() {
         new Layer({
           source: new Source({
-            projection: 'EPSG:4326'
+            projection: 'EPSG:4326',
           }),
-          opacity: 'foo'
+          opacity: 'foo',
         });
       }
 
       expect(create).to.throwException();
     });
 
-    it('accepts a custom render function', function() {
+    it('accepts a custom render function', function () {
       let called = false;
       const layer = new Layer({
-        render: function() {
+        render: function () {
           called = true;
-        }
+        },
       });
       layer.render();
       expect(called).to.eql(true);
     });
   });
 
-  describe('inView', function() {
+  describe('inView', function () {
     let layer;
 
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: getProjection('EPSG:4326')
-        })
+          projection: getProjection('EPSG:4326'),
+        }),
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layer.dispose();
     });
 
-    const cases = [{
-      when: 'layer is not visible',
-      visible: false,
-      view: {
-        resolution: 4, zoom: 4
+    const cases = [
+      {
+        when: 'layer is not visible',
+        visible: false,
+        view: {
+          resolution: 4,
+          zoom: 4,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'layer is not visible (with min/max zoom and resolution)',
-      visible: false,
-      minZoom: 2,
-      maxZoom: 6,
-      minResolution: 2,
-      maxResolution: 6,
-      view: {
-        resolution: 4, zoom: 4
+      {
+        when: 'layer is not visible (with min/max zoom and resolution)',
+        visible: false,
+        minZoom: 2,
+        maxZoom: 6,
+        minResolution: 2,
+        maxResolution: 6,
+        view: {
+          resolution: 4,
+          zoom: 4,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view zoom is less than minZoom',
-      minZoom: 2,
-      view: {
-        resolution: 1, zoom: 1
+      {
+        when: 'view zoom is less than minZoom',
+        minZoom: 2,
+        view: {
+          resolution: 1,
+          zoom: 1,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view zoom is less than minZoom (with maxZoom)',
-      minZoom: 2,
-      maxZoom: 4,
-      view: {
-        resolution: 1, zoom: 1
+      {
+        when: 'view zoom is less than minZoom (with maxZoom)',
+        minZoom: 2,
+        maxZoom: 4,
+        view: {
+          resolution: 1,
+          zoom: 1,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view zoom is equal to minZoom',
-      minZoom: 2,
-      view: {
-        resolution: 2, zoom: 2
+      {
+        when: 'view zoom is equal to minZoom',
+        minZoom: 2,
+        view: {
+          resolution: 2,
+          zoom: 2,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view zoom is equal to minZoom (with maxZoom)',
-      minZoom: 2,
-      maxZoom: 4,
-      view: {
-        resolution: 2, zoom: 2
+      {
+        when: 'view zoom is equal to minZoom (with maxZoom)',
+        minZoom: 2,
+        maxZoom: 4,
+        view: {
+          resolution: 2,
+          zoom: 2,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view zoom is greater than minZoom',
-      minZoom: 2,
-      view: {
-        resolution: 3, zoom: 3
+      {
+        when: 'view zoom is greater than minZoom',
+        minZoom: 2,
+        view: {
+          resolution: 3,
+          zoom: 3,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view zoom is greater than minZoom (with maxZoom)',
-      minZoom: 2,
-      maxZoom: 4,
-      view: {
-        resolution: 3, zoom: 3
+      {
+        when: 'view zoom is greater than minZoom (with maxZoom)',
+        minZoom: 2,
+        maxZoom: 4,
+        view: {
+          resolution: 3,
+          zoom: 3,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view zoom is equal to maxZoom',
-      maxZoom: 4,
-      view: {
-        resolution: 4, zoom: 4
+      {
+        when: 'view zoom is equal to maxZoom',
+        maxZoom: 4,
+        view: {
+          resolution: 4,
+          zoom: 4,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view zoom is equal to maxZoom (with minZoom)',
-      minZoom: 2,
-      maxZoom: 4,
-      view: {
-        resolution: 4, zoom: 4
+      {
+        when: 'view zoom is equal to maxZoom (with minZoom)',
+        minZoom: 2,
+        maxZoom: 4,
+        view: {
+          resolution: 4,
+          zoom: 4,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view zoom is greater than maxZoom',
-      maxZoom: 4,
-      view: {
-        resolution: 5, zoom: 5
+      {
+        when: 'view zoom is greater than maxZoom',
+        maxZoom: 4,
+        view: {
+          resolution: 5,
+          zoom: 5,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view zoom is greater than maxZoom (with minZoom)',
-      minZoom: 2,
-      maxZoom: 4,
-      view: {
-        resolution: 5, zoom: 5
+      {
+        when: 'view zoom is greater than maxZoom (with minZoom)',
+        minZoom: 2,
+        maxZoom: 4,
+        view: {
+          resolution: 5,
+          zoom: 5,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view resolution is less than minResolution',
-      minResolution: 2,
-      view: {
-        resolution: 1, zoom: 1
+      {
+        when: 'view resolution is less than minResolution',
+        minResolution: 2,
+        view: {
+          resolution: 1,
+          zoom: 1,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view resolution is less than minResolution (with maxResolution)',
-      minResolution: 2,
-      maxResolution: 4,
-      view: {
-        resolution: 1, zoom: 1
+      {
+        when: 'view resolution is less than minResolution (with maxResolution)',
+        minResolution: 2,
+        maxResolution: 4,
+        view: {
+          resolution: 1,
+          zoom: 1,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view resolution is equal to minResolution',
-      minResolution: 2,
-      view: {
-        resolution: 2, zoom: 2
+      {
+        when: 'view resolution is equal to minResolution',
+        minResolution: 2,
+        view: {
+          resolution: 2,
+          zoom: 2,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view resolution is equal to minResolution (with maxResolution)',
-      minResolution: 2,
-      maxResolution: 4,
-      view: {
-        resolution: 2, zoom: 2
+      {
+        when: 'view resolution is equal to minResolution (with maxResolution)',
+        minResolution: 2,
+        maxResolution: 4,
+        view: {
+          resolution: 2,
+          zoom: 2,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view resolution is greater than minResolution',
-      minResolution: 2,
-      view: {
-        resolution: 3, zoom: 3
+      {
+        when: 'view resolution is greater than minResolution',
+        minResolution: 2,
+        view: {
+          resolution: 3,
+          zoom: 3,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view resolution is greater than minResolution (with maxResolution)',
-      minResolution: 2,
-      maxResolution: 4,
-      view: {
-        resolution: 3, zoom: 3
+      {
+        when:
+          'view resolution is greater than minResolution (with maxResolution)',
+        minResolution: 2,
+        maxResolution: 4,
+        view: {
+          resolution: 3,
+          zoom: 3,
+        },
+        inView: true,
       },
-      inView: true
-    }, {
-      when: 'view resolution is equal to maxResolution',
-      maxResolution: 4,
-      view: {
-        resolution: 4, zoom: 4
+      {
+        when: 'view resolution is equal to maxResolution',
+        maxResolution: 4,
+        view: {
+          resolution: 4,
+          zoom: 4,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view resolution is equal to maxResolution (with minResolution)',
-      minResolution: 2,
-      maxResolution: 4,
-      view: {
-        resolution: 4, zoom: 4
+      {
+        when: 'view resolution is equal to maxResolution (with minResolution)',
+        minResolution: 2,
+        maxResolution: 4,
+        view: {
+          resolution: 4,
+          zoom: 4,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view resolution is greater than maxResolution',
-      maxResolution: 4,
-      view: {
-        resolution: 5, zoom: 5
+      {
+        when: 'view resolution is greater than maxResolution',
+        maxResolution: 4,
+        view: {
+          resolution: 5,
+          zoom: 5,
+        },
+        inView: false,
       },
-      inView: false
-    }, {
-      when: 'view resolution is greater than maxResolution (with minResolution)',
-      minResolution: 2,
-      maxResolution: 4,
-      view: {
-        resolution: 5, zoom: 5
+      {
+        when:
+          'view resolution is greater than maxResolution (with minResolution)',
+        minResolution: 2,
+        maxResolution: 4,
+        view: {
+          resolution: 5,
+          zoom: 5,
+        },
+        inView: false,
       },
-      inView: false
-    }];
+    ];
 
-    cases.forEach(function(c, i) {
-      it('returns ' + c.inView + ' when ' + c.when, function() {
+    cases.forEach(function (c, i) {
+      it('returns ' + c.inView + ' when ' + c.when, function () {
         if ('visible' in c) {
           layer.setVisible(c.visible);
         }
@@ -341,26 +383,24 @@ describe('ol.layer.Layer', function() {
         expect(inView(layerState, c.view)).to.be(c.inView);
       });
     });
-
   });
 
-  describe('#getLayerState', function() {
-
+  describe('#getLayerState', function () {
     let layer;
 
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: getProjection('EPSG:4326')
-        })
+          projection: getProjection('EPSG:4326'),
+        }),
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layer.dispose();
     });
 
-    it('returns a layerState from the properties values', function() {
+    it('returns a layerState from the properties values', function () {
       layer.setOpacity(1 / 3);
       layer.setVisible(false);
       layer.setMaxResolution(500);
@@ -377,11 +417,11 @@ describe('ol.layer.Layer', function() {
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
     });
 
-    it('returns a layerState with clamped values', function() {
+    it('returns a layerState with clamped values', function () {
       layer.setOpacity(-1.5);
       layer.setVisible(false);
       let state = layer.getLayerState();
@@ -394,25 +434,22 @@ describe('ol.layer.Layer', function() {
       expect(state.opacity).to.be(1);
       expect(state.visible).to.be(true);
     });
-
   });
 
-  describe('#getSource', function() {
-
-    it('gets the layer source', function() {
+  describe('#getSource', function () {
+    it('gets the layer source', function () {
       const source = new Source({projection: getProjection('EPSG:4326')});
       const layer = new Layer({source: source});
       expect(layer.getSource()).to.be(source);
     });
-
   });
 
-  describe('#set("source", source)', function() {
+  describe('#set("source", source)', function () {
     const projection = getProjection('EPSG:4326');
 
-    it('sets the layer source', function() {
+    it('sets the layer source', function () {
       const layer = new Layer({
-        source: new Source({projection: projection})
+        source: new Source({projection: projection}),
       });
 
       const source = new Source({projection: projection});
@@ -420,9 +457,9 @@ describe('ol.layer.Layer', function() {
       expect(layer.getSource()).to.be(source);
     });
 
-    it('calls changed', function() {
+    it('calls changed', function () {
       const layer = new Layer({
-        source: new Source({projection: projection})
+        source: new Source({projection: projection}),
       });
       sinon.spy(layer, 'changed');
 
@@ -431,7 +468,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.changed.calledOnce).to.be(true);
     });
 
-    it('sets up event listeners', function() {
+    it('sets up event listeners', function () {
       sinon.spy(Layer.prototype, 'handleSourceChange_');
 
       const first = new Source({projection: projection});
@@ -450,15 +487,14 @@ describe('ol.layer.Layer', function() {
       // remove spy
       Layer.prototype.handleSourceChange_.restore();
     });
-
   });
 
-  describe('#setSource()', function() {
+  describe('#setSource()', function () {
     const projection = getProjection('EPSG:4326');
 
-    it('sets the layer source', function() {
+    it('sets the layer source', function () {
       const layer = new Layer({
-        source: new Source({projection: projection})
+        source: new Source({projection: projection}),
       });
 
       const source = new Source({projection: projection});
@@ -466,9 +502,9 @@ describe('ol.layer.Layer', function() {
       expect(layer.getSource()).to.be(source);
     });
 
-    it('calls changed', function() {
+    it('calls changed', function () {
       const layer = new Layer({
-        source: new Source({projection: projection})
+        source: new Source({projection: projection}),
       });
       sinon.spy(layer, 'changed');
 
@@ -477,7 +513,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.changed.calledOnce).to.be(true);
     });
 
-    it('sets up event listeners', function() {
+    it('sets up event listeners', function () {
       sinon.spy(Layer.prototype, 'handleSourceChange_');
 
       const first = new Source({projection: projection});
@@ -496,64 +532,58 @@ describe('ol.layer.Layer', function() {
       // remove spy
       Layer.prototype.handleSourceChange_.restore();
     });
-
   });
 
-
-  describe('#setOpacity', function() {
-
+  describe('#setOpacity', function () {
     let layer;
 
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: getProjection('EPSG:4326')
-        })
+          projection: getProjection('EPSG:4326'),
+        }),
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layer.dispose();
     });
 
-    it('accepts a positive number', function() {
+    it('accepts a positive number', function () {
       layer.setOpacity(0.3);
       expect(layer.getOpacity()).to.be(0.3);
     });
 
-    it('throws on types other than number', function() {
+    it('throws on types other than number', function () {
       function set() {
         layer.setOpacity('foo');
       }
       expect(set).to.throwException();
     });
 
-    it('triggers a change event', function() {
+    it('triggers a change event', function () {
       const listener = sinon.spy();
       layer.on('propertychange', listener);
       layer.setOpacity(0.4);
       expect(listener.calledOnce).to.be(true);
     });
-
   });
 
-
-  describe('#setVisible', function() {
-
+  describe('#setVisible', function () {
     let layer;
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: getProjection('EPSG:4326')
-        })
+          projection: getProjection('EPSG:4326'),
+        }),
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layer.dispose();
     });
 
-    it('sets visible property', function() {
+    it('sets visible property', function () {
       layer.setVisible(false);
       expect(layer.getVisible()).to.be(false);
 
@@ -561,7 +591,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.getVisible()).to.be(true);
     });
 
-    it('fires a change event', function() {
+    it('fires a change event', function () {
       const listener = sinon.spy();
       layer.on('propertychange', listener);
 
@@ -571,43 +601,44 @@ describe('ol.layer.Layer', function() {
       layer.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
-
   });
 
-  describe('#setMap (unmanaged layer)', function() {
+  describe('#setMap (unmanaged layer)', function () {
     let map;
 
-    beforeEach(function() {
+    beforeEach(function () {
       map = new Map({});
     });
 
-    describe('with map in constructor options', function() {
-      it('renders the layer', function() {
+    describe('with map in constructor options', function () {
+      it('renders the layer', function () {
         const layer = new Layer({
-          map: map
+          map: map,
         });
         const frameState = {
-          layerStatesArray: []
+          layerStatesArray: [],
         };
-        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
+        map.dispatchEvent(
+          new RenderEvent('precompose', null, frameState, null)
+        );
         expect(frameState.layerStatesArray.length).to.be(1);
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.layer).to.equal(layer);
       });
     });
 
-    describe('setMap sequences', function() {
+    describe('setMap sequences', function () {
       let mapRenderSpy;
 
-      beforeEach(function() {
+      beforeEach(function () {
         mapRenderSpy = sinon.spy(map, 'render');
       });
 
-      afterEach(function() {
+      afterEach(function () {
         mapRenderSpy.restore();
       });
 
-      it('requests a render frame', function() {
+      it('requests a render frame', function () {
         const layer = new Layer({});
 
         layer.setMap(map);
@@ -619,44 +650,43 @@ describe('ol.layer.Layer', function() {
         layer.setMap(map);
         expect(mapRenderSpy.callCount).to.be(3);
       });
-
     });
 
-    describe('zIndex for unmanaged layers', function() {
-
+    describe('zIndex for unmanaged layers', function () {
       let frameState, layer;
 
-      beforeEach(function() {
+      beforeEach(function () {
         layer = new Layer({
-          map: map
+          map: map,
         });
         frameState = {
-          layerStatesArray: []
+          layerStatesArray: [],
         };
       });
 
-      afterEach(function() {
+      afterEach(function () {
         layer.setMap(null);
       });
 
-      it('has Infinity as zIndex when not configured otherwise', function() {
-        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
+      it('has Infinity as zIndex when not configured otherwise', function () {
+        map.dispatchEvent(
+          new RenderEvent('precompose', null, frameState, null)
+        );
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.zIndex).to.be(Infinity);
       });
 
-      it('respects the configured zIndex', function() {
-        [-5, 0, 42].forEach(index => {
+      it('respects the configured zIndex', function () {
+        [-5, 0, 42].forEach((index) => {
           layer.setZIndex(index);
-          map.dispatchEvent(new RenderEvent('precompose', null, frameState, null));
+          map.dispatchEvent(
+            new RenderEvent('precompose', null, frameState, null)
+          );
           const layerState = frameState.layerStatesArray[0];
           frameState.layerStatesArray.length = 0;
           expect(layerState.zIndex).to.be(index);
         });
       });
-
     });
-
   });
-
 });

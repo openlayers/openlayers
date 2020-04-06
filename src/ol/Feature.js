@@ -1,10 +1,10 @@
 /**
  * @module ol/Feature
  */
+import BaseObject, {getChangeEventType} from './Object.js';
+import EventType from './events/EventType.js';
 import {assert} from './asserts.js';
 import {listen, unlistenByKey} from './events.js';
-import EventType from './events/EventType.js';
-import BaseObject, {getChangeEventType} from './Object.js';
 
 /**
  * @typedef {typeof Feature|typeof import("./render/Feature.js").default} FeatureClass
@@ -67,7 +67,6 @@ class Feature extends BaseObject {
    *     associated with a `geometry` key.
    */
   constructor(opt_geometryOrProperties) {
-
     super();
 
     /**
@@ -101,10 +100,17 @@ class Feature extends BaseObject {
      */
     this.geometryChangeKey_ = null;
 
-    this.addEventListener(getChangeEventType(this.geometryName_), this.handleGeometryChanged_);
+    this.addEventListener(
+      getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_
+    );
 
     if (opt_geometryOrProperties) {
-      if (typeof /** @type {?} */ (opt_geometryOrProperties).getSimplifiedGeometry === 'function') {
+      if (
+        typeof (
+          /** @type {?} */ (opt_geometryOrProperties).getSimplifiedGeometry
+        ) === 'function'
+      ) {
         const geometry = /** @type {Geometry} */ (opt_geometryOrProperties);
         this.setGeometry(geometry);
       } else {
@@ -144,9 +150,7 @@ class Feature extends BaseObject {
    * @observable
    */
   getGeometry() {
-    return (
-      /** @type {Geometry|undefined} */ (this.get(this.geometryName_))
-    );
+    return /** @type {Geometry|undefined} */ (this.get(this.geometryName_));
   }
 
   /**
@@ -208,8 +212,12 @@ class Feature extends BaseObject {
     }
     const geometry = this.getGeometry();
     if (geometry) {
-      this.geometryChangeKey_ = listen(geometry,
-        EventType.CHANGE, this.handleGeometryChange_, this);
+      this.geometryChangeKey_ = listen(
+        geometry,
+        EventType.CHANGE,
+        this.handleGeometryChange_,
+        this
+      );
     }
     this.changed();
   }
@@ -261,13 +269,18 @@ class Feature extends BaseObject {
    * @api
    */
   setGeometryName(name) {
-    this.removeEventListener(getChangeEventType(this.geometryName_), this.handleGeometryChanged_);
+    this.removeEventListener(
+      getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_
+    );
     this.geometryName_ = name;
-    this.addEventListener(getChangeEventType(this.geometryName_), this.handleGeometryChanged_);
+    this.addEventListener(
+      getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_
+    );
     this.handleGeometryChanged_();
   }
 }
-
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
@@ -288,12 +301,11 @@ export function createStyleFunction(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(typeof /** @type {?} */ (obj).getZIndex === 'function',
-        41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
+      assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
       const style = /** @type {import("./style/Style.js").default} */ (obj);
       styles = [style];
     }
-    return function() {
+    return function () {
       return styles;
     };
   }

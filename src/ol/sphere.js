@@ -1,9 +1,8 @@
 /**
  * @module ol/sphere
  */
-import {toRadians, toDegrees} from './math.js';
 import GeometryType from './geom/GeometryType.js';
-
+import {toDegrees, toRadians} from './math.js';
 
 /**
  * Object literal with options for the {@link getLength} or {@link getArea}
@@ -17,14 +16,12 @@ import GeometryType from './geom/GeometryType.js';
  * for the WGS84 ellipsoid is used.
  */
 
-
 /**
  * The mean Earth radius (1/3 * (2a + b)) for the WGS84 ellipsoid.
  * https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
  * @type {number}
  */
 export const DEFAULT_RADIUS = 6371008.8;
-
 
 /**
  * Get the great circle distance (in meters) between two geographic coordinates.
@@ -41,12 +38,14 @@ export function getDistance(c1, c2, opt_radius) {
   const lat2 = toRadians(c2[1]);
   const deltaLatBy2 = (lat2 - lat1) / 2;
   const deltaLonBy2 = toRadians(c2[0] - c1[0]) / 2;
-  const a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
-      Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
-      Math.cos(lat1) * Math.cos(lat2);
+  const a =
+    Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
+    Math.sin(deltaLonBy2) *
+      Math.sin(deltaLonBy2) *
+      Math.cos(lat1) *
+      Math.cos(lat2);
   return 2 * radius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
-
 
 /**
  * Get the cumulative great circle length of linestring coordinates (geographic).
@@ -61,7 +60,6 @@ function getLengthInternal(coordinates, radius) {
   }
   return length;
 }
-
 
 /**
  * Get the spherical length of a geometry.  This length is the sum of the
@@ -128,7 +126,6 @@ export function getLength(geometry, opt_options) {
   return length;
 }
 
-
 /**
  * Returns the spherical area for a list of coordinates.
  *
@@ -151,15 +148,14 @@ function getAreaInternal(coordinates, radius) {
   for (let i = 0; i < len; i++) {
     const x2 = coordinates[i][0];
     const y2 = coordinates[i][1];
-    area += toRadians(x2 - x1) *
-        (2 + Math.sin(toRadians(y1)) +
-        Math.sin(toRadians(y2)));
+    area +=
+      toRadians(x2 - x1) *
+      (2 + Math.sin(toRadians(y1)) + Math.sin(toRadians(y2)));
     x1 = x2;
     y1 = y2;
   }
-  return area * radius * radius / 2.0;
+  return (area * radius * radius) / 2.0;
 }
-
 
 /**
  * Get the spherical area of a geometry.  This is the area (in meters) assuming
@@ -222,7 +218,6 @@ export function getArea(geometry, opt_options) {
   return area;
 }
 
-
 /**
  * Returns the coordinate at the given distance and bearing from `c1`.
  *
@@ -241,9 +236,13 @@ export function offset(c1, distance, bearing, opt_radius) {
   const dByR = distance / radius;
   const lat = Math.asin(
     Math.sin(lat1) * Math.cos(dByR) +
-      Math.cos(lat1) * Math.sin(dByR) * Math.cos(bearing));
-  const lon = lon1 + Math.atan2(
-    Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
-    Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
+      Math.cos(lat1) * Math.sin(dByR) * Math.cos(bearing)
+  );
+  const lon =
+    lon1 +
+    Math.atan2(
+      Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
+      Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat)
+    );
   return [toDegrees(lon), toDegrees(lat)];
 }

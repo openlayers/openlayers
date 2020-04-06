@@ -3,7 +3,6 @@
  */
 import Layer from './Layer.js';
 
-
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -30,7 +29,6 @@ import Layer from './Layer.js';
  * @property {import("../source/Image.js").default} [source] Source for this layer.
  */
 
-
 /**
  * @classdesc
  * Server-rendered images that are available for arbitrary extents and
@@ -43,7 +41,6 @@ import Layer from './Layer.js';
  * @api
  */
 class BaseImageLayer extends Layer {
-
   /**
    * @param {Options=} opt_options Layer options.
    */
@@ -51,7 +48,6 @@ class BaseImageLayer extends Layer {
     const options = opt_options ? opt_options : {};
     super(options);
   }
-
 }
 
 export default BaseImageLayer;

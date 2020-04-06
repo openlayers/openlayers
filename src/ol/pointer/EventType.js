@@ -14,5 +14,5 @@ export default {
   POINTEROUT: 'pointerout',
   POINTERENTER: 'pointerenter',
   POINTERLEAVE: 'pointerleave',
-  POINTERCANCEL: 'pointercancel'
+  POINTERCANCEL: 'pointercancel',
 };

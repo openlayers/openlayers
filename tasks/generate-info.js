@@ -20,7 +20,9 @@ function getBinaryPath(binaryName) {
   const jsdocResolved = require.resolve('jsdoc/jsdoc.js');
   const expectedPaths = [
     path.join(__dirname, '..', 'node_modules', '.bin', binaryName),
-    path.resolve(path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName))
+    path.resolve(
+      path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName)
+    ),
   ];
 
   for (let i = 0; i < expectedPaths.length; i++) {
@@ -30,14 +32,21 @@ function getBinaryPath(binaryName) {
     }
   }
 
-  throw Error('JsDoc binary was not found in any of the expected paths: ' + expectedPaths);
+  throw Error(
+    'JsDoc binary was not found in any of the expected paths: ' + expectedPaths
+  );
 }
 
 const jsdoc = getBinaryPath('jsdoc');
 
 const jsdocConfig = path.join(
-  __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
-
+  __dirname,
+  '..',
+  'config',
+  'jsdoc',
+  'info',
+  'conf.json'
+);
 
 /**
  * Generate a list of all .js paths in the source directory.
@@ -75,7 +84,6 @@ function getPaths() {
   });
 }
 
-
 /**
  * Parse the JSDoc output.
  * @param {string} output JSDoc output
@@ -102,7 +110,6 @@ function parseOutput(output) {
   return info;
 }
 
-
 /**
  * Spawn JSDoc.
  * @param {Array<string>} paths Paths to source files.
@@ -116,15 +123,15 @@ function spawnJSDoc(paths) {
     const cwd = path.join(__dirname, '..');
     const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
 
-    child.stdout.on('data', data => {
+    child.stdout.on('data', (data) => {
       output += String(data);
     });
 
-    child.stderr.on('data', data => {
+    child.stderr.on('data', (data) => {
       errors += String(data);
     });
 
-    child.on('exit', code => {
+    child.on('exit', (code) => {
       if (code) {
         reject(new Error(errors || 'JSDoc failed with no output'));
         return;
@@ -160,16 +167,16 @@ async function main() {
   return await spawnJSDoc(paths);
 }
 
-
 /**
  * If running this module directly, generate and write out the info.json file.
  */
 if (require.main === module) {
-  main().then(write).catch(err => {
-    process.stderr.write(`${err.message}\n`, () => process.exit(1));
-  });
+  main()
+    .then(write)
+    .catch((err) => {
+      process.stderr.write(`${err.message}\n`, () => process.exit(1));
+    });
 }
-
 
 /**
  * Export main function.

@@ -3,14 +3,12 @@
  */
 import {assert} from './asserts.js';
 
-
 /**
  * An array representing an affine 2d transformation for use with
  * {@link module:ol/transform} functions. The array has 6 elements.
  * @typedef {!Array<number>} Transform
  * @api
  */
-
 
 /**
  * Collection of affine 2d transformation functions. The functions work on an
@@ -24,13 +22,11 @@ import {assert} from './asserts.js';
  * ```
  */
 
-
 /**
  * @private
  * @type {Transform}
  */
 const tmp_ = new Array(6);
-
 
 /**
  * Create an identity transform.
@@ -40,7 +36,6 @@ export function create() {
   return [1, 0, 0, 1, 0, 0];
 }
 
-
 /**
  * Resets the given transform to an identity transform.
  * @param {!Transform} transform Transform.
@@ -49,7 +44,6 @@ export function create() {
 export function reset(transform) {
   return set(transform, 1, 0, 0, 1, 0, 0);
 }
-
 
 /**
  * Multiply the underlying matrices of two transforms and return the result in
@@ -103,7 +97,6 @@ export function set(transform, a, b, c, d, e, f) {
   return transform;
 }
 
-
 /**
  * Set transform on one matrix from another matrix.
  * @param {!Transform} transform1 Matrix to set transform to.
@@ -119,7 +112,6 @@ export function setFromArray(transform1, transform2) {
   transform1[5] = transform2[5];
   return transform1;
 }
-
 
 /**
  * Transforms the given coordinate with the given transform returning the
@@ -138,7 +130,6 @@ export function apply(transform, coordinate) {
   return coordinate;
 }
 
-
 /**
  * Applies rotation to the given transform.
  * @param {!Transform} transform Transform.
@@ -150,7 +141,6 @@ export function rotate(transform, angle) {
   const sin = Math.sin(angle);
   return multiply(transform, set(tmp_, cos, sin, -sin, cos, 0, 0));
 }
-
 
 /**
  * Applies scale to a given transform.
@@ -184,7 +174,6 @@ export function makeScale(target, x, y) {
 export function translate(transform, dx, dy) {
   return multiply(transform, set(tmp_, 1, 0, 0, 1, dx, dy));
 }
-
 
 /**
  * Creates a composite transform given an initial translation, scale, rotation, and
@@ -228,7 +217,6 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
 export function composeCssTransform(dx1, dy1, sx, sy, angle, dx2, dy2) {
   return toString(compose(create(), dx1, dy1, sx, sy, angle, dx2, dy2));
 }
-
 
 /**
  * Invert the given transform.

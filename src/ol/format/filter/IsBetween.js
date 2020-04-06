@@ -9,7 +9,6 @@ import Comparison from './Comparison.js';
  * @api
  */
 class IsBetween extends Comparison {
-
   /**
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!number} lowerBoundary The lower bound of the range.
@@ -27,7 +26,6 @@ class IsBetween extends Comparison {
      * @type {!number}
      */
     this.upperBoundary = upperBoundary;
-
   }
 }
 

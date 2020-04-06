@@ -1,30 +1,31 @@
-import Map from '../../../../src/ol/Map.js';
-import TileState from '../../../../src/ol/TileState.js';
-import View from '../../../../src/ol/View.js';
+import Feature from '../../../../src/ol/Feature.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
-import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
+import Map from '../../../../src/ol/Map.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
-import Static from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
+import Static from '../../../../src/ol/source/ImageStatic.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
+import TileState from '../../../../src/ol/TileState.js';
+import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import Feature from '../../../../src/ol/Feature.js';
-import Point from '../../../../src/ol/geom/Point.js';
-import {Style, Circle, Fill} from '../../../../src/ol/style.js';
+import View from '../../../../src/ol/View.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
+import {Circle, Fill, Style} from '../../../../src/ol/style.js';
 
-const red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
-    'BAAEAAAICRAEAOw==';
+const red =
+  'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
+  'BAAEAAAICRAEAOw==';
 
-const green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
-    'AABAAEAAAICRAEAOw==';
+const green =
+  'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
+  'AABAAEAAAICRAEAOw==';
 
-where('Uint8ClampedArray').describe('ol.source.Raster', function() {
-
+where('Uint8ClampedArray').describe('ol.source.Raster', function () {
   let map, target, redSource, greenSource, blueSource, raster;
 
-  beforeEach(function() {
+  beforeEach(function () {
     target = document.createElement('div');
 
     const style = target.style;
@@ -40,33 +41,33 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     redSource = new Static({
       url: red,
       imageExtent: extent,
-      attributions: ['red raster source']
+      attributions: ['red raster source'],
     });
 
     greenSource = new Static({
       url: green,
       imageExtent: extent,
-      attributions: ['green raster source']
+      attributions: ['green raster source'],
     });
 
     blueSource = new VectorImageLayer({
       source: new VectorSource({
-        features: [new Feature(new Point([0, 0]))]
+        features: [new Feature(new Point([0, 0]))],
       }),
       style: new Style({
         image: new Circle({
           radius: 3,
-          fill: new Fill({color: 'blue'})
-        })
-      })
+          fill: new Fill({color: 'blue'}),
+        }),
+      }),
     });
 
     raster = new RasterSource({
       threads: 0,
       sources: [redSource, greenSource, blueSource],
-      operation: function(inputs) {
+      operation: function (inputs) {
         return inputs[0];
-      }
+      },
     });
 
     map = new Map({
@@ -76,18 +77,18 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         projection: new Projection({
           code: 'image',
           units: 'pixels',
-          extent: extent
-        })
+          extent: extent,
+        }),
       }),
       layers: [
         new ImageLayer({
-          source: raster
-        })
-      ]
+          source: raster,
+        }),
+      ],
     });
   });
 
-  afterEach(function() {
+  afterEach(function () {
     if (map) {
       disposeMap(map);
     }
@@ -98,31 +99,29 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     blueSource.dispose();
   });
 
-  describe('constructor', function() {
-
-    it('returns a raster source', function() {
+  describe('constructor', function () {
+    it('returns a raster source', function () {
       const source = new RasterSource({
         threads: 0,
-        sources: [new TileSource({})]
+        sources: [new TileSource({})],
       });
       expect(source).to.be.a(Source);
       expect(source).to.be.a(RasterSource);
     });
 
-    it('defaults to "pixel" operation', function(done) {
-
+    it('defaults to "pixel" operation', function (done) {
       const log = [];
 
       const source = new RasterSource({
         threads: 0,
         sources: [redSource, greenSource, blueSource],
-        operation: function(inputs) {
+        operation: function (inputs) {
           log.push(inputs);
           return inputs[0];
-        }
+        },
       });
 
-      source.once('afteroperations', function() {
+      source.once('afteroperations', function () {
         expect(log.length).to.equal(4);
         const inputs = log[0];
         const pixel = inputs[0];
@@ -134,23 +133,22 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
 
-    it('allows operation type to be set to "image"', function(done) {
+    it('allows operation type to be set to "image"', function (done) {
       const log = [];
 
       const source = new RasterSource({
         operationType: 'image',
         threads: 0,
         sources: [redSource, greenSource, blueSource],
-        operation: function(inputs) {
+        operation: function (inputs) {
           log.push(inputs);
           return inputs[0];
-        }
+        },
       });
 
-      source.once('afteroperations', function() {
+      source.once('afteroperations', function () {
         expect(log.length).to.equal(1);
         const inputs = log[0];
         const imageData = inputs[0];
@@ -164,33 +162,31 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
-
   });
 
-  describe('config option `attributions`', function() {
-    it('handles empty attributions', function() {
+  describe('config option `attributions`', function () {
+    it('handles empty attributions', function () {
       const blue = new RasterSource({
         operationType: 'image',
         threads: 0,
         sources: [blueSource],
-        operation: function(inputs) {
+        operation: function (inputs) {
           return inputs[0];
-        }
+        },
       });
       const blueAttributions = blue.getAttributions();
       expect(blueAttributions()).to.be(null);
     });
 
-    it('shows single attributions', function() {
+    it('shows single attributions', function () {
       const red = new RasterSource({
         operationType: 'image',
         threads: 0,
         sources: [redSource],
-        operation: function(inputs) {
+        operation: function (inputs) {
           return inputs[0];
-        }
+        },
       });
       const redAttribtuions = red.getAttributions();
 
@@ -199,30 +195,30 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       expect(redAttribtuions()).to.eql(['red raster source']);
     });
 
-    it('concatinates multiple attributions', function() {
+    it('concatinates multiple attributions', function () {
       const redGreen = new RasterSource({
         operationType: 'image',
         threads: 0,
         sources: [redSource, greenSource],
-        operation: function(inputs) {
+        operation: function (inputs) {
           return inputs[0];
-        }
+        },
       });
       const redGreenAttributions = redGreen.getAttributions();
 
       expect(redGreenAttributions()).to.not.be(null);
       expect(typeof redGreenAttributions).to.be('function');
-      expect(redGreenAttributions()).to.eql(['red raster source', 'green raster source']);
+      expect(redGreenAttributions()).to.eql([
+        'red raster source',
+        'green raster source',
+      ]);
     });
-
   });
 
-  describe('#setOperation()', function() {
-
-    it('allows operation to be set', function(done) {
-
+  describe('#setOperation()', function () {
+    it('allows operation to be set', function (done) {
       let count = 0;
-      raster.setOperation(function(pixels) {
+      raster.setOperation(function (pixels) {
         ++count;
         const redPixel = pixels[0];
         const greenPixel = pixels[1];
@@ -237,46 +233,40 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       view.setCenter([0, 0]);
       view.setZoom(0);
 
-      raster.once('afteroperations', function(event) {
+      raster.once('afteroperations', function (event) {
         expect(count).to.equal(4);
         done();
       });
-
     });
 
-    it('updates and re-runs the operation', function(done) {
-
+    it('updates and re-runs the operation', function (done) {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
       let count = 0;
-      raster.on('afteroperations', function(event) {
+      raster.on('afteroperations', function (event) {
         ++count;
         if (count === 1) {
-          raster.setOperation(function(inputs) {
+          raster.setOperation(function (inputs) {
             return inputs[0];
           });
         } else {
           done();
         }
       });
-
     });
-
   });
 
-  describe('beforeoperations', function() {
-
-    it('gets called before operations are run', function(done) {
-
+  describe('beforeoperations', function () {
+    it('gets called before operations are run', function (done) {
       let count = 0;
-      raster.setOperation(function(inputs) {
+      raster.setOperation(function (inputs) {
         ++count;
         return inputs[0];
       });
 
-      raster.once('beforeoperations', function(event) {
+      raster.once('beforeoperations', function (event) {
         expect(count).to.equal(0);
         expect(!!event).to.be(true);
         expect(event.extent).to.be.an('array');
@@ -288,22 +278,19 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
 
-
-    it('allows data to be set for the operation', function(done) {
-
-      raster.setOperation(function(inputs, data) {
+    it('allows data to be set for the operation', function (done) {
+      raster.setOperation(function (inputs, data) {
         ++data.count;
         return inputs[0];
       });
 
-      raster.on('beforeoperations', function(event) {
+      raster.on('beforeoperations', function (event) {
         event.data.count = 0;
       });
 
-      raster.once('afteroperations', function(event) {
+      raster.once('afteroperations', function (event) {
         expect(event.data.count).to.equal(4);
         done();
       });
@@ -311,22 +298,18 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
-
   });
 
-  describe('afteroperations', function() {
-
-    it('gets called after operations are run', function(done) {
-
+  describe('afteroperations', function () {
+    it('gets called after operations are run', function (done) {
       let count = 0;
-      raster.setOperation(function(inputs) {
+      raster.setOperation(function (inputs) {
         ++count;
         return inputs[0];
       });
 
-      raster.once('afteroperations', function(event) {
+      raster.once('afteroperations', function (event) {
         expect(count).to.equal(4);
         expect(!!event).to.be(true);
         expect(event.extent).to.be.an('array');
@@ -338,17 +321,15 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
 
-    it('receives data set by the operation', function(done) {
-
-      raster.setOperation(function(inputs, data) {
+    it('receives data set by the operation', function (done) {
+      raster.setOperation(function (inputs, data) {
         data.message = 'hello world';
         return inputs[0];
       });
 
-      raster.once('afteroperations', function(event) {
+      raster.once('afteroperations', function (event) {
         expect(event.data.message).to.equal('hello world');
         done();
       });
@@ -356,57 +337,54 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
-
   });
 
-  describe('tile loading', function() {
+  describe('tile loading', function () {
     let map2;
-    afterEach(function() {
+    afterEach(function () {
       disposeMap(map2);
       map2 = null;
     });
 
-    it('is initiated on the underlying source', function(done) {
-
+    it('is initiated on the underlying source', function (done) {
       const source = new XYZ({
-        url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
+        url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
       });
 
       raster = new RasterSource({
         threads: 0,
         sources: [source],
-        operation: function(inputs) {
+        operation: function (inputs) {
           return inputs[0];
-        }
+        },
       });
 
       map2 = new Map({
         target: target,
         view: new View({
           center: [0, 0],
-          zoom: 0
+          zoom: 0,
         }),
         layers: [
           new ImageLayer({
-            source: raster
-          })
-        ]
+            source: raster,
+          }),
+        ],
       });
 
       const tileCache = source.tileCache;
 
       expect(tileCache.getCount()).to.equal(0);
 
-      map2.once('moveend', function() {
+      map2.once('moveend', function () {
         expect(tileCache.getCount()).to.equal(1);
         const state = tileCache.peekLast().getState();
-        expect(state === TileState.LOADING || state === TileState.LOADED).to.be(true);
+        expect(state === TileState.LOADING || state === TileState.LOADED).to.be(
+          true
+        );
         done();
       });
-
     });
   });
-
 });

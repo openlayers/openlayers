@@ -4,11 +4,11 @@
  * above layers.
  */
 
-import Map from '../../../src/ol/Map.js';
-import View from '../../../src/ol/View.js';
-import Layer from '../../../src/ol/layer/Layer.js';
 import Control from '../../../src/ol/control/Control.js';
+import Layer from '../../../src/ol/layer/Layer.js';
+import Map from '../../../src/ol/Map.js';
 import SourceState from '../../../src/ol/source/State.js';
+import View from '../../../src/ol/View.js';
 
 class Element extends Layer {
   constructor(options, style) {
@@ -50,33 +50,39 @@ style2.zIndex = '-1';
 new Map({
   target: 'map',
   layers: [
-    new Element({
-      zIndex: 200
-    }, {
-      background: 'red',
-      width: '50%',
-      height: '100%'
-    }),
-    new Element({
-      zIndex: -200
-    }, {
-      background: 'green',
-      width: '100%',
-      height: '50%'
-    })
+    new Element(
+      {
+        zIndex: 200,
+      },
+      {
+        background: 'red',
+        width: '50%',
+        height: '100%',
+      }
+    ),
+    new Element(
+      {
+        zIndex: -200,
+      },
+      {
+        background: 'green',
+        width: '100%',
+        height: '50%',
+      }
+    ),
   ],
   controls: [
     new Control({
-      element: element1
+      element: element1,
     }),
     new Control({
-      element: element2
-    })
+      element: element2,
+    }),
   ],
   view: new View({
     center: [0, 0],
-    zoom: 0
-  })
+    zoom: 0,
+  }),
 });
 
 render();

@@ -10,5 +10,5 @@ export default {
   UNDEFINED: 'undefined',
   LOADING: 'loading',
   READY: 'ready',
-  ERROR: 'error'
+  ERROR: 'error',
 };

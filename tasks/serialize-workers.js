@@ -15,7 +15,7 @@ async function build(input, {minify = true} = {}) {
           return null;
         }
         return code.replace('export let create;', '');
-      }
+      },
     },
     common(),
     resolve(),
@@ -26,11 +26,11 @@ async function build(input, {minify = true} = {}) {
           '@babel/preset-env',
           {
             'modules': false,
-            'targets': 'last 2 version, not dead'
-          }
-        ]
-      ]
-    })
+            'targets': 'last 2 version, not dead',
+          },
+        ],
+      ],
+    }),
   ];
 
   if (minify) {
@@ -48,7 +48,7 @@ async function build(input, {minify = true} = {}) {
           return new Worker(url);
         }
       `;
-    }
+    },
   });
 
   const bundle = await rollup.rollup({input, plugins});
@@ -67,7 +67,6 @@ async function build(input, {minify = true} = {}) {
 }
 
 exports.build = build;
-
 
 /**
  * Creates modules with inlined versions of the worker sources.  These modules
@@ -91,7 +90,7 @@ async function main() {
 }
 
 if (require.main === module) {
-  main().catch(err => {
+  main().catch((err) => {
     process.stderr.write(`${err.stack}\n`);
     process.exit(1);
   });

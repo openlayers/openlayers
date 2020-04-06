@@ -1,11 +1,10 @@
-import WebGLRenderTarget from '../../../../src/ol/webgl/RenderTarget.js';
 import WebGLHelper from '../../../../src/ol/webgl/Helper.js';
+import WebGLRenderTarget from '../../../../src/ol/webgl/RenderTarget.js';
 
-
-describe('ol.webgl.RenderTarget', function() {
+describe('ol.webgl.RenderTarget', function () {
   let helper, testImage_4x4;
 
-  beforeEach(function() {
+  beforeEach(function () {
     helper = new WebGLHelper();
 
     const canvas = document.createElement('canvas');
@@ -18,30 +17,27 @@ describe('ol.webgl.RenderTarget', function() {
     }
   });
 
-  describe('constructor', function() {
-
-    it('creates a target of size 1x1', function() {
+  describe('constructor', function () {
+    it('creates a target of size 1x1', function () {
       const rt = new WebGLRenderTarget(helper);
       expect(rt.getSize()).to.eql([1, 1]);
     });
 
-    it('creates a target of specified size', function() {
+    it('creates a target of specified size', function () {
       const rt = new WebGLRenderTarget(helper, [12, 34]);
       expect(rt.getSize()).to.eql([12, 34]);
     });
-
   });
 
-  describe('#setSize', function() {
-
-    it('updates the target size', function() {
+  describe('#setSize', function () {
+    it('updates the target size', function () {
       const rt = new WebGLRenderTarget(helper, [12, 34]);
       expect(rt.getSize()).to.eql([12, 34]);
       rt.setSize([45, 67]);
       expect(rt.getSize()).to.eql([45, 67]);
     });
 
-    it('does nothing if the size has not changed', function() {
+    it('does nothing if the size has not changed', function () {
       const rt = new WebGLRenderTarget(helper, [12, 34]);
       const spy = sinon.spy(rt, 'updateSize_');
       rt.setSize([12, 34]);
@@ -49,17 +45,15 @@ describe('ol.webgl.RenderTarget', function() {
       rt.setSize([12, 345]);
       expect(spy.called).to.be(true);
     });
-
   });
 
-  describe('#readAll', function() {
-
-    it('returns 1-pixel data with the default options', function() {
+  describe('#readAll', function () {
+    it('returns 1-pixel data with the default options', function () {
       const rt = new WebGLRenderTarget(helper);
       expect(rt.readAll().length).to.eql(4);
     });
 
-    it('returns the content of the texture', function() {
+    it('returns the content of the texture', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
       const data = rt.readAll();
@@ -75,7 +69,7 @@ describe('ol.webgl.RenderTarget', function() {
       expect(data.length).to.eql(4 * 4 * 4);
     });
 
-    it('does not call gl.readPixels again when #clearCachedData is not called', function() {
+    it('does not call gl.readPixels again when #clearCachedData is not called', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
       const spy = sinon.spy(rt.helper_.getGL(), 'readPixels');
@@ -87,12 +81,10 @@ describe('ol.webgl.RenderTarget', function() {
       rt.readAll();
       expect(spy.callCount).to.eql(2);
     });
-
   });
 
-  describe('#readPixel', function() {
-
-    it('returns the content of one pixel', function() {
+  describe('#readPixel', function () {
+    it('returns the content of one pixel', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
 
@@ -110,7 +102,7 @@ describe('ol.webgl.RenderTarget', function() {
       expect(data.length).to.eql(4);
     });
 
-    it('does not call gl.readPixels again when #clearCachedData is not called', function() {
+    it('does not call gl.readPixels again when #clearCachedData is not called', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
       const spy = sinon.spy(rt.helper_.getGL(), 'readPixels');
@@ -123,7 +115,7 @@ describe('ol.webgl.RenderTarget', function() {
       expect(spy.callCount).to.eql(2);
     });
 
-    it('returns an array filled with 0 if outside of range', function() {
+    it('returns an array filled with 0 if outside of range', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
 
@@ -142,7 +134,5 @@ describe('ol.webgl.RenderTarget', function() {
       data = rt.readPixel(2, 3);
       expect(data).not.to.eql([0, 0, 0, 0]);
     });
-
   });
-
 });

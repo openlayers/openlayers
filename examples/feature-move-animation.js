@@ -1,12 +1,18 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import Polyline from '../src/ol/format/Polyline.js';
 import Point from '../src/ol/geom/Point.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import XYZ from '../src/ol/source/XYZ.js';
+import Polyline from '../src/ol/format/Polyline.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from '../src/ol/style.js';
+import View from '../src/ol/View.js';
+import XYZ from '../src/ol/source/XYZ.js';
+import {
+  Circle as CircleStyle,
+  Fill,
+  Icon,
+  Stroke,
+  Style,
+} from '../src/ol/style.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {getVectorContext} from '../src/ol/render.js';
 
 // This long string is placed here due to jsFiddle limitations.
@@ -50,14 +56,16 @@ const polyline = [
   'ab@`CuOlC}YnAcV`@_^m@aeB}@yk@YuTuBg^uCkZiGk\\yGeY}Lu_@oOsZiTe[uWi[sl@',
   'mo@soAauAsrBgzBqgAglAyd@ig@asAcyAklA}qAwHkGi{@s~@goAmsAyDeEirB_{B}IsJ',
   'uEeFymAssAkdAmhAyTcVkFeEoKiH}l@kp@wg@sj@ku@ey@uh@kj@}EsFmG}Jk^_r@_f@m',
-  '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
+  '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL',
 ].join('');
 
-const route = /** @type {import("../src/ol/geom/LineString.js").default} */ (new Polyline({
-  factor: 1e6
-}).readGeometry(polyline, {
+const route = /** @type {import("../src/ol/geom/LineString.js").default} */ (new Polyline(
+  {
+    factor: 1e6,
+  }
+).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
-  featureProjection: 'EPSG:3857'
+  featureProjection: 'EPSG:3857',
 }));
 
 const routeCoords = route.getCoordinates();
@@ -65,42 +73,46 @@ const routeLength = routeCoords.length;
 
 const routeFeature = new Feature({
   type: 'route',
-  geometry: route
+  geometry: route,
 });
-const geoMarker = /** @type Feature<import("../src/ol/geom/Point").default> */(new Feature({
-  type: 'geoMarker',
-  geometry: new Point(routeCoords[0])
-}));
+const geoMarker = /** @type Feature<import("../src/ol/geom/Point").default> */ (new Feature(
+  {
+    type: 'geoMarker',
+    geometry: new Point(routeCoords[0]),
+  }
+));
 const startMarker = new Feature({
   type: 'icon',
-  geometry: new Point(routeCoords[0])
+  geometry: new Point(routeCoords[0]),
 });
 const endMarker = new Feature({
   type: 'icon',
-  geometry: new Point(routeCoords[routeLength - 1])
+  geometry: new Point(routeCoords[routeLength - 1]),
 });
 
 const styles = {
   'route': new Style({
     stroke: new Stroke({
-      width: 6, color: [237, 212, 0, 0.8]
-    })
+      width: 6,
+      color: [237, 212, 0, 0.8],
+    }),
   }),
   'icon': new Style({
     image: new Icon({
       anchor: [0.5, 1],
-      src: 'data/icon.png'
-    })
+      src: 'data/icon.png',
+    }),
   }),
   'geoMarker': new Style({
     image: new CircleStyle({
       radius: 7,
       fill: new Fill({color: 'black'}),
       stroke: new Stroke({
-        color: 'white', width: 2
-      })
-    })
-  })
+        color: 'white',
+        width: 2,
+      }),
+    }),
+  }),
 };
 
 let animating = false;
@@ -110,19 +122,20 @@ const startButton = document.getElementById('start-animation');
 
 const vectorLayer = new VectorLayer({
   source: new VectorSource({
-    features: [routeFeature, geoMarker, startMarker, endMarker]
+    features: [routeFeature, geoMarker, startMarker, endMarker],
   }),
-  style: function(feature) {
+  style: function (feature) {
     // hide geoMarker if animation is active
     if (animating && feature.get('type') === 'geoMarker') {
       return null;
     }
     return styles[feature.get('type')];
-  }
+  },
 });
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
-const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const center = [-5639523.95, -3501274.52];
@@ -132,21 +145,21 @@ const map = new Map({
     center: center,
     zoom: 10,
     minZoom: 2,
-    maxZoom: 19
+    maxZoom: 19,
   }),
   layers: [
     new TileLayer({
       source: new XYZ({
         attributions: attributions,
         url: 'https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=' + key,
-        tileSize: 512
-      })
+        tileSize: 512,
+      }),
     }),
-    vectorLayer
-  ]
+    vectorLayer,
+  ],
 });
 
-const moveFeature = function(event) {
+const moveFeature = function (event) {
   const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
 
@@ -154,7 +167,7 @@ const moveFeature = function(event) {
     const elapsedTime = frameState.time - now;
     // here the trick to increase speed is to jump some indexes
     // on lineString coordinates
-    const index = Math.round(speed * elapsedTime / 1000);
+    const index = Math.round((speed * elapsedTime) / 1000);
 
     if (index >= routeLength) {
       stopAnimation(true);
@@ -185,7 +198,6 @@ function startAnimation() {
     map.render();
   }
 }
-
 
 /**
  * @param {boolean} ended end of animation.

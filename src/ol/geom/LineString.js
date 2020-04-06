@@ -1,19 +1,19 @@
 /**
  * @module ol/geom/LineString
  */
-import {extend} from '../array.js';
-import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from './GeometryLayout.js';
 import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
+import {closestSquaredDistanceXY} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
+import {douglasPeucker} from './flat/simplify.js';
+import {extend} from '../array.js';
+import {forEach as forEachSegment} from './flat/segments.js';
 import {inflateCoordinates} from './flat/inflate.js';
 import {interpolatePoint, lineStringCoordinateAtM} from './flat/interpolate.js';
 import {intersectsLineString} from './flat/intersectsextent.js';
 import {lineStringLength} from './flat/length.js';
-import {forEach as forEachSegment} from './flat/segments.js';
-import {douglasPeucker} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -22,14 +22,12 @@ import {douglasPeucker} from './flat/simplify.js';
  * @api
  */
 class LineString extends SimpleGeometry {
-
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
    * @param {GeometryLayout=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
-
     super();
 
     /**
@@ -57,11 +55,16 @@ class LineString extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
+      this.setFlatCoordinates(
+        opt_layout,
+        /** @type {Array<number>} */ (coordinates)
+      );
     } else {
-      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
+      this.setCoordinates(
+        /** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates),
+        opt_layout
+      );
     }
-
   }
 
   /**
@@ -99,13 +102,29 @@ class LineString extends SimpleGeometry {
       return minSquaredDistance;
     }
     if (this.maxDeltaRevision_ != this.getRevision()) {
-      this.maxDelta_ = Math.sqrt(maxSquaredDelta(
-        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
+      this.maxDelta_ = Math.sqrt(
+        maxSquaredDelta(
+          this.flatCoordinates,
+          0,
+          this.flatCoordinates.length,
+          this.stride,
+          0
+        )
+      );
       this.maxDeltaRevision_ = this.getRevision();
     }
     return assignClosestPoint(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      this.maxDelta_,
+      false,
+      x,
+      y,
+      closestPoint,
+      minSquaredDistance
+    );
   }
 
   /**
@@ -120,7 +139,13 @@ class LineString extends SimpleGeometry {
    * @api
    */
   forEachSegment(callback) {
-    return forEachSegment(this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, callback);
+    return forEachSegment(
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      callback
+    );
   }
 
   /**
@@ -138,13 +163,21 @@ class LineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate) {
-    if (this.layout != GeometryLayout.XYM &&
-        this.layout != GeometryLayout.XYZM) {
+    if (
+      this.layout != GeometryLayout.XYM &&
+      this.layout != GeometryLayout.XYZM
+    ) {
       return null;
     }
     const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
-    return lineStringCoordinateAtM(this.flatCoordinates, 0,
-      this.flatCoordinates.length, this.stride, m, extrapolate);
+    return lineStringCoordinateAtM(
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      m,
+      extrapolate
+    );
   }
 
   /**
@@ -154,7 +187,11 @@ class LineString extends SimpleGeometry {
    */
   getCoordinates() {
     return inflateCoordinates(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride
+    );
   }
 
   /**
@@ -169,8 +206,13 @@ class LineString extends SimpleGeometry {
    */
   getCoordinateAt(fraction, opt_dest) {
     return interpolatePoint(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      fraction, opt_dest);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      fraction,
+      opt_dest
+    );
   }
 
   /**
@@ -180,7 +222,11 @@ class LineString extends SimpleGeometry {
    */
   getLength() {
     return lineStringLength(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride
+    );
   }
 
   /**
@@ -202,8 +248,14 @@ class LineString extends SimpleGeometry {
   getSimplifiedGeometryInternal(squaredTolerance) {
     const simplifiedFlatCoordinates = [];
     simplifiedFlatCoordinates.length = douglasPeucker(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      squaredTolerance, simplifiedFlatCoordinates, 0);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      squaredTolerance,
+      simplifiedFlatCoordinates,
+      0
+    );
     return new LineString(simplifiedFlatCoordinates, GeometryLayout.XY);
   }
 
@@ -224,8 +276,12 @@ class LineString extends SimpleGeometry {
    */
   intersectsExtent(extent) {
     return intersectsLineString(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      extent);
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      extent
+    );
   }
 
   /**
@@ -240,10 +296,13 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = deflateCoordinates(
-      this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates,
+      0,
+      coordinates,
+      this.stride
+    );
     this.changed();
   }
 }
-
 
 export default LineString;

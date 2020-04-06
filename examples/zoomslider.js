@@ -1,9 +1,8 @@
 import Map from '../src/ol/Map.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {ZoomSlider} from '../src/ol/control.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import OSM from '../src/ol/source/OSM.js';
-
 
 /**
  * Helper method for map-creation.
@@ -14,15 +13,15 @@ import OSM from '../src/ol/source/OSM.js';
 function createMap(divId) {
   const source = new OSM();
   const layer = new TileLayer({
-    source: source
+    source: source,
   });
   const map = new Map({
     layers: [layer],
     target: divId,
     view: new View({
       center: [0, 0],
-      zoom: 2
-    })
+      zoom: 2,
+    }),
   });
   const zoomslider = new ZoomSlider();
   map.addControl(zoomslider);

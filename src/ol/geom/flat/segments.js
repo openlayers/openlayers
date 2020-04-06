@@ -2,7 +2,6 @@
  * @module ol/geom/flat/segments
  */
 
-
 /**
  * This function calls `callback` for each segment of the flat coordinates
  * array. If the callback returns a truthy value the function returns that
@@ -20,7 +19,7 @@ export function forEach(flatCoordinates, offset, end, stride, callback) {
   const point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   const point2 = [];
   let ret;
-  for (; (offset + stride) < end; offset += stride) {
+  for (; offset + stride < end; offset += stride) {
     point2[0] = flatCoordinates[offset + stride];
     point2[1] = flatCoordinates[offset + stride + 1];
     ret = callback(point1, point2);

@@ -3,7 +3,11 @@
  * @module ol/webgl/ShaderBuilder
  */
 
-import {expressionToGlsl, getStringNumberEquivalent, ValueTypes} from '../style/expressions.js';
+import {
+  ValueTypes,
+  expressionToGlsl,
+  getStringNumberEquivalent,
+} from '../style/expressions.js';
 
 /**
  * @typedef {Object} VaryingDescription
@@ -127,7 +131,7 @@ export class ShaderBuilder {
     this.varyings.push({
       name: name,
       type: type,
-      expression: expression
+      expression: expression,
     });
     return this;
   }
@@ -271,9 +275,9 @@ export class ShaderBuilder {
    * @returns {string} The full shader as a string.
    */
   getSymbolVertexShader(forHitDetection) {
-    const offsetMatrix = this.rotateWithView ?
-      'u_offsetScaleMatrix * u_offsetRotateMatrix' :
-      'u_offsetScaleMatrix';
+    const offsetMatrix = this.rotateWithView
+      ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
+      : 'u_offsetScaleMatrix';
 
     let attributes = this.attributes;
     let varyings = this.varyings;
@@ -283,7 +287,7 @@ export class ShaderBuilder {
       varyings = varyings.concat({
         name: 'v_hitColor',
         type: 'vec4',
-        expression: 'a_hitColor'
+        expression: 'a_hitColor',
       });
     }
 
@@ -294,19 +298,25 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
-${this.uniforms.map(function(uniform) {
+${this.uniforms
+  .map(function (uniform) {
     return 'uniform ' + uniform + ';';
-  }).join('\n')}
+  })
+  .join('\n')}
 attribute vec2 a_position;
 attribute float a_index;
-${attributes.map(function(attribute) {
+${attributes
+  .map(function (attribute) {
     return 'attribute ' + attribute + ';';
-  }).join('\n')}
+  })
+  .join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-${varyings.map(function(varying) {
+${varyings
+  .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
-  }).join('\n')}
+  })
+  .join('\n')}
 void main(void) {
   mat4 offsetMatrix = ${offsetMatrix};
   vec2 halfSize = ${this.sizeExpression} * 0.5;
@@ -336,9 +346,11 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
-${varyings.map(function(varying) {
+${varyings
+  .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
-  }).join('\n')}
+  })
+  .join('\n')}
 }`;
   }
 
@@ -354,8 +366,9 @@ ${varyings.map(function(varying) {
    * @returns {string} The full shader as a string.
    */
   getSymbolFragmentShader(forHitDetection) {
-    const hitDetectionBypass = forHitDetection ?
-      '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;' : '';
+    const hitDetectionBypass = forHitDetection
+      ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
+      : '';
 
     let varyings = this.varyings;
 
@@ -363,7 +376,7 @@ ${varyings.map(function(varying) {
       varyings = varyings.concat({
         name: 'v_hitColor',
         type: 'vec4',
-        expression: 'a_hitColor'
+        expression: 'a_hitColor',
       });
     }
 
@@ -371,14 +384,18 @@ ${varyings.map(function(varying) {
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
-${this.uniforms.map(function(uniform) {
+${this.uniforms
+  .map(function (uniform) {
     return 'uniform ' + uniform + ';';
-  }).join('\n')}
+  })
+  .join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-${varyings.map(function(varying) {
+${varyings
+  .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
-  }).join('\n')}
+  })
+  .join('\n')}
 void main(void) {
   if (${this.discardExpression}) { discard; }
   gl_FragColor = ${this.colorExpression};
@@ -422,12 +439,28 @@ export function parseLiteralStyle(style) {
     inFragmentShader: false,
     variables: [],
     attributes: [],
-    stringLiteralsMap: {}
+    stringLiteralsMap: {},
   };
-  const parsedSize = expressionToGlsl(vertContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER);
-  const parsedOffset = expressionToGlsl(vertContext, offset, ValueTypes.NUMBER_ARRAY);
-  const parsedTexCoord = expressionToGlsl(vertContext, texCoord, ValueTypes.NUMBER_ARRAY);
-  const parsedRotation = expressionToGlsl(vertContext, rotation, ValueTypes.NUMBER);
+  const parsedSize = expressionToGlsl(
+    vertContext,
+    size,
+    ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
+  );
+  const parsedOffset = expressionToGlsl(
+    vertContext,
+    offset,
+    ValueTypes.NUMBER_ARRAY
+  );
+  const parsedTexCoord = expressionToGlsl(
+    vertContext,
+    texCoord,
+    ValueTypes.NUMBER_ARRAY
+  );
+  const parsedRotation = expressionToGlsl(
+    vertContext,
+    rotation,
+    ValueTypes.NUMBER
+  );
 
   /**
    * @type {import("../style/expressions.js").ParsingContext}
@@ -436,16 +469,26 @@ export function parseLiteralStyle(style) {
     inFragmentShader: true,
     variables: vertContext.variables,
     attributes: [],
-    stringLiteralsMap: vertContext.stringLiteralsMap
+    stringLiteralsMap: vertContext.stringLiteralsMap,
   };
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
-  const parsedOpacity = expressionToGlsl(fragContext, opacity, ValueTypes.NUMBER);
+  const parsedOpacity = expressionToGlsl(
+    fragContext,
+    opacity,
+    ValueTypes.NUMBER
+  );
 
   let opacityFilter = '1.0';
-  const visibleSize = `vec2(${expressionToGlsl(fragContext, size, ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER)}).x`;
+  const visibleSize = `vec2(${expressionToGlsl(
+    fragContext,
+    size,
+    ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
+  )}).x`;
   switch (symbStyle.symbolType) {
-    case 'square': break;
-    case 'image': break;
+    case 'square':
+      break;
+    case 'image':
+      break;
     // taken from https://thebookofshaders.com/07/
     case 'circle':
       opacityFilter = `(1.0-smoothstep(1.-4./${visibleSize},1.,dot(v_quadCoord-.5,v_quadCoord-.5)*4.))`;
@@ -456,7 +499,8 @@ export function parseLiteralStyle(style) {
       opacityFilter = `(1.0-smoothstep(.5-3./${visibleSize},.5,cos(floor(.5+${a}/2.094395102)*2.094395102-${a})*length(${st})))`;
       break;
 
-    default: throw new Error('Unexpected symbol type: ' + symbStyle.symbolType);
+    default:
+      throw new Error('Unexpected symbol type: ' + symbStyle.symbolType);
   }
 
   const builder = new ShaderBuilder()
@@ -466,10 +510,15 @@ export function parseLiteralStyle(style) {
     .setTextureCoordinateExpression(parsedTexCoord)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)
     .setColorExpression(
-      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`);
+      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`
+    );
 
   if (style.filter) {
-    const parsedFilter = expressionToGlsl(fragContext, style.filter, ValueTypes.BOOLEAN);
+    const parsedFilter = expressionToGlsl(
+      fragContext,
+      style.filter,
+      ValueTypes.BOOLEAN
+    );
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
 
@@ -477,11 +526,13 @@ export function parseLiteralStyle(style) {
   const uniforms = {};
 
   // define one uniform per variable
-  fragContext.variables.forEach(function(varName) {
+  fragContext.variables.forEach(function (varName) {
     builder.addUniform(`float u_${varName}`);
-    uniforms[`u_${varName}`] = function() {
+    uniforms[`u_${varName}`] = function () {
       if (!style.variables || style.variables[varName] === undefined) {
-        throw new Error(`The following variable is missing from the style: ${varName}`);
+        throw new Error(
+          `The following variable is missing from the style: ${varName}`
+        );
       }
       let value = style.variables[varName];
       if (typeof value === 'string') {
@@ -494,15 +545,17 @@ export function parseLiteralStyle(style) {
   if (symbStyle.symbolType === 'image' && symbStyle.src) {
     const texture = new Image();
     texture.src = symbStyle.src;
-    builder.addUniform('sampler2D u_texture')
-      .setColorExpression(builder.getColorExpression() +
-        ' * texture2D(u_texture, v_texCoord)');
+    builder
+      .addUniform('sampler2D u_texture')
+      .setColorExpression(
+        builder.getColorExpression() + ' * texture2D(u_texture, v_texCoord)'
+      );
     uniforms['u_texture'] = texture;
   }
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  fragContext.attributes.forEach(function(attrName) {
+  fragContext.attributes.forEach(function (attrName) {
     if (vertContext.attributes.indexOf(attrName) === -1) {
       vertContext.attributes.push(attrName);
     }
@@ -510,24 +563,24 @@ export function parseLiteralStyle(style) {
   });
 
   // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
-  vertContext.attributes.forEach(function(attrName) {
+  vertContext.attributes.forEach(function (attrName) {
     builder.addAttribute(`float a_${attrName}`);
   });
 
   return {
     builder: builder,
-    attributes: vertContext.attributes.map(function(attributeName) {
+    attributes: vertContext.attributes.map(function (attributeName) {
       return {
         name: attributeName,
-        callback: function(feature, props) {
+        callback: function (feature, props) {
           let value = props[attributeName];
           if (typeof value === 'string') {
             value = getStringNumberEquivalent(vertContext, value);
           }
           return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
-        }
+        },
       };
     }),
-    uniforms: uniforms
+    uniforms: uniforms,
   };
 }
