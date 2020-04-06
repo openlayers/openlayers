@@ -248,7 +248,7 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
 
   data.pkgJson = JSON.stringify({
     name: name,
-    dependencies: getDependencies(jsSource + workerSource ? `\n${workerSource}` : ''),
+    dependencies: getDependencies(jsSource + (workerSource ? `\n${workerSource}` : '')),
     devDependencies: {
       parcel: '1.11.0'
     },
