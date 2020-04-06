@@ -58,7 +58,7 @@ export const altShiftKeysOnly = function(mapBrowserEvent) {
  * @api
  */
 export const focus = function(event) {
-  return event.target.getTargetElement() === document.activeElement;
+  return event.target.getTargetElement().contains(document.activeElement);
 };
 
 
