@@ -233,18 +233,8 @@ $(function () {
       return;
     }
     const clsItem = $(this).closest('.item');
-    let show;
-    if (clsItem.hasClass('toggle-manual-show')) {
-      show = false;
-    } else if (clsItem.hasClass('toggle-manual-hide')) {
-      show = true;
-    } else {
-      clsItem.find('.member-list li').each(function (i, v) {
-        show = $(v).is(':hidden');
-        return !show;
-      });
-    }
-    search.manualToggle(clsItem, !!show);
+    const show = !clsItem.hasClass('toggle-manual-show');
+    search.manualToggle(clsItem, show);
   });
 
   // Auto resizing on navigation
