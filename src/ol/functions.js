@@ -47,7 +47,7 @@ export function memoizeOne(fn) {
 
   let lastThis;
 
-  return function() {
+  return function () {
     const nextArgs = Array.prototype.slice.call(arguments);
     if (!called || this !== lastThis || !arrayEquals(nextArgs, lastArgs)) {
       called = true;

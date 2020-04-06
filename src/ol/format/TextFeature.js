@@ -1,9 +1,9 @@
 /**
  * @module ol/format/TextFeature
  */
-import {abstract} from '../util.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
+import {abstract} from '../util.js';
 
 /**
  * @classdesc
@@ -34,7 +34,10 @@ class TextFeature extends FeatureFormat {
    * @api
    */
   readFeature(source, opt_options) {
-    return this.readFeatureFromText(getText(source), this.adaptOptions(opt_options));
+    return this.readFeatureFromText(
+      getText(source),
+      this.adaptOptions(opt_options)
+    );
   }
 
   /**
@@ -57,7 +60,10 @@ class TextFeature extends FeatureFormat {
    * @api
    */
   readFeatures(source, opt_options) {
-    return this.readFeaturesFromText(getText(source), this.adaptOptions(opt_options));
+    return this.readFeaturesFromText(
+      getText(source),
+      this.adaptOptions(opt_options)
+    );
   }
 
   /**
@@ -80,7 +86,10 @@ class TextFeature extends FeatureFormat {
    * @api
    */
   readGeometry(source, opt_options) {
-    return this.readGeometryFromText(getText(source), this.adaptOptions(opt_options));
+    return this.readGeometryFromText(
+      getText(source),
+      this.adaptOptions(opt_options)
+    );
   }
 
   /**
@@ -184,7 +193,6 @@ class TextFeature extends FeatureFormat {
   }
 }
 
-
 /**
  * @param {Document|Element|Object|string} source Source.
  * @return {string} Text.
@@ -196,6 +204,5 @@ function getText(source) {
     return '';
   }
 }
-
 
 export default TextFeature;

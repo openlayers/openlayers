@@ -11,7 +11,6 @@ import Comparison from './Comparison.js';
  * @abstract
  */
 class ComparisonBinary extends Comparison {
-
   /**
    * @param {!string} tagName The XML tag name for this filter.
    * @param {!string} propertyName Name of the context property to compare.
@@ -19,7 +18,6 @@ class ComparisonBinary extends Comparison {
    * @param {boolean=} opt_matchCase Case-sensitive?
    */
   constructor(tagName, propertyName, expression, opt_matchCase) {
-
     super(tagName, propertyName);
 
     /**
@@ -32,7 +30,6 @@ class ComparisonBinary extends Comparison {
      */
     this.matchCase = opt_matchCase;
   }
-
 }
 
 export default ComparisonBinary;

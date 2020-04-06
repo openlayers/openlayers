@@ -19,7 +19,6 @@ import NotEqualTo from './filter/NotEqualTo.js';
 import Or from './filter/Or.js';
 import Within from './filter/Within.js';
 
-
 /**
  * Create a logical `<And>` operator between two or more filter conditions.
  *
@@ -29,9 +28,8 @@ import Within from './filter/Within.js';
  */
 export function and(conditions) {
   const params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(And, params));
+  return new (Function.prototype.bind.apply(And, params))();
 }
-
 
 /**
  * Create a logical `<Or>` operator between two or more filter conditions.
@@ -42,9 +40,8 @@ export function and(conditions) {
  */
 export function or(conditions) {
   const params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(Or, params));
+  return new (Function.prototype.bind.apply(Or, params))();
 }
-
 
 /**
  * Represents a logical `<Not>` operator for a filter condition.
@@ -56,7 +53,6 @@ export function or(conditions) {
 export function not(condition) {
   return new Not(condition);
 }
-
 
 /**
  * Create a `<BBOX>` operator to test whether a geometry-valued property
@@ -118,7 +114,6 @@ export function within(geometryName, geometry, opt_srsName) {
   return new Within(geometryName, geometry, opt_srsName);
 }
 
-
 /**
  * Creates a `<PropertyIsEqualTo>` comparison operator.
  *
@@ -131,7 +126,6 @@ export function within(geometryName, geometry, opt_srsName) {
 export function equalTo(propertyName, expression, opt_matchCase) {
   return new EqualTo(propertyName, expression, opt_matchCase);
 }
-
 
 /**
  * Creates a `<PropertyIsNotEqualTo>` comparison operator.
@@ -146,7 +140,6 @@ export function notEqualTo(propertyName, expression, opt_matchCase) {
   return new NotEqualTo(propertyName, expression, opt_matchCase);
 }
 
-
 /**
  * Creates a `<PropertyIsLessThan>` comparison operator.
  *
@@ -158,7 +151,6 @@ export function notEqualTo(propertyName, expression, opt_matchCase) {
 export function lessThan(propertyName, expression) {
   return new LessThan(propertyName, expression);
 }
-
 
 /**
  * Creates a `<PropertyIsLessThanOrEqualTo>` comparison operator.
@@ -172,7 +164,6 @@ export function lessThanOrEqualTo(propertyName, expression) {
   return new LessThanOrEqualTo(propertyName, expression);
 }
 
-
 /**
  * Creates a `<PropertyIsGreaterThan>` comparison operator.
  *
@@ -184,7 +175,6 @@ export function lessThanOrEqualTo(propertyName, expression) {
 export function greaterThan(propertyName, expression) {
   return new GreaterThan(propertyName, expression);
 }
-
 
 /**
  * Creates a `<PropertyIsGreaterThanOrEqualTo>` comparison operator.
@@ -198,7 +188,6 @@ export function greaterThanOrEqualTo(propertyName, expression) {
   return new GreaterThanOrEqualTo(propertyName, expression);
 }
 
-
 /**
  * Creates a `<PropertyIsNull>` comparison operator to test whether a property value
  * is null.
@@ -210,7 +199,6 @@ export function greaterThanOrEqualTo(propertyName, expression) {
 export function isNull(propertyName) {
   return new IsNull(propertyName);
 }
-
 
 /**
  * Creates a `<PropertyIsBetween>` comparison operator to test whether an expression
@@ -225,7 +213,6 @@ export function isNull(propertyName) {
 export function between(propertyName, lowerBoundary, upperBoundary) {
   return new IsBetween(propertyName, lowerBoundary, upperBoundary);
 }
-
 
 /**
  * Represents a `<PropertyIsLike>` comparison operator that matches a string property
@@ -243,12 +230,23 @@ export function between(propertyName, lowerBoundary, upperBoundary) {
  * @returns {!IsLike} `<PropertyIsLike>` operator.
  * @api
  */
-export function like(propertyName, pattern,
-  opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  return new IsLike(propertyName, pattern,
-    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
+export function like(
+  propertyName,
+  pattern,
+  opt_wildCard,
+  opt_singleChar,
+  opt_escapeChar,
+  opt_matchCase
+) {
+  return new IsLike(
+    propertyName,
+    pattern,
+    opt_wildCard,
+    opt_singleChar,
+    opt_escapeChar,
+    opt_matchCase
+  );
 }
-
 
 /**
  * Create a `<During>` temporal operator.

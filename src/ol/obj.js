@@ -2,7 +2,6 @@
  * @module ol/obj
  */
 
-
 /**
  * Polyfill for Object.assign().  Assigns enumerable and own properties from
  * one or more source objects to a target object.
@@ -12,25 +11,27 @@
  * @param {...Object} var_sources The source object(s).
  * @return {!Object} The modified target object.
  */
-export const assign = (typeof Object.assign === 'function') ? Object.assign : function(target, var_sources) {
-  if (target === undefined || target === null) {
-    throw new TypeError('Cannot convert undefined or null to object');
-  }
-
-  const output = Object(target);
-  for (let i = 1, ii = arguments.length; i < ii; ++i) {
-    const source = arguments[i];
-    if (source !== undefined && source !== null) {
-      for (const key in source) {
-        if (source.hasOwnProperty(key)) {
-          output[key] = source[key];
+export const assign =
+  typeof Object.assign === 'function'
+    ? Object.assign
+    : function (target, var_sources) {
+        if (target === undefined || target === null) {
+          throw new TypeError('Cannot convert undefined or null to object');
         }
-      }
-    }
-  }
-  return output;
-};
 
+        const output = Object(target);
+        for (let i = 1, ii = arguments.length; i < ii; ++i) {
+          const source = arguments[i];
+          if (source !== undefined && source !== null) {
+            for (const key in source) {
+              if (source.hasOwnProperty(key)) {
+                output[key] = source[key];
+              }
+            }
+          }
+        }
+        return output;
+      };
 
 /**
  * Removes all properties from an object.
@@ -42,7 +43,6 @@ export function clear(object) {
   }
 }
 
-
 /**
  * Polyfill for Object.values().  Get an array of property values from an object.
  * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
@@ -51,14 +51,16 @@ export function clear(object) {
  * @return {!Array<V>} The property values.
  * @template K,V
  */
-export const getValues = (typeof Object.values === 'function') ? Object.values : function(object) {
-  const values = [];
-  for (const property in object) {
-    values.push(object[property]);
-  }
-  return values;
-};
-
+export const getValues =
+  typeof Object.values === 'function'
+    ? Object.values
+    : function (object) {
+        const values = [];
+        for (const property in object) {
+          values.push(object[property]);
+        }
+        return values;
+      };
 
 /**
  * Determine if an object has any properties.

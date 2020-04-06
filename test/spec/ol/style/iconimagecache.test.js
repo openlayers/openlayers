@@ -1,24 +1,24 @@
-import {VOID} from '../../../../src/ol/functions.js';
-import {listen} from '../../../../src/ol/events.js';
-import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
 import IconImage from '../../../../src/ol/style/IconImage.js';
+import {VOID} from '../../../../src/ol/functions.js';
+import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
+import {listen} from '../../../../src/ol/events.js';
 
-describe('ol.style.IconImageCache', function() {
+describe('ol.style.IconImageCache', function () {
   let originalMaxCacheSize;
 
-  beforeEach(function() {
+  beforeEach(function () {
     iconImageCache.clear();
     originalMaxCacheSize = iconImageCache.maxCacheSize;
     iconImageCache.maxCacheSize_ = 4;
   });
 
-  afterEach(function() {
+  afterEach(function () {
     iconImageCache.maxCacheSize_ = originalMaxCacheSize;
     iconImageCache.clear();
   });
 
-  describe('#expire', function() {
-    it('expires images when expected', function() {
+  describe('#expire', function () {
+    it('expires images when expected', function () {
       let i, src, iconImage;
 
       for (i = 0; i < 4; ++i) {
@@ -59,8 +59,8 @@ describe('ol.style.IconImageCache', function() {
     });
   });
 
-  describe('#setSize', function() {
-    it('sets max cache size and expires cache', function() {
+  describe('#setSize', function () {
+    it('sets max cache size and expires cache', function () {
       let i, src, iconImage;
 
       for (i = 0; i < 3; ++i) {

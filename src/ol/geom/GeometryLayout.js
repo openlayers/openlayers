@@ -12,5 +12,5 @@ export default {
   XY: 'XY',
   XYZ: 'XYZ',
   XYM: 'XYM',
-  XYZM: 'XYZM'
+  XYZM: 'XYZM',
 };

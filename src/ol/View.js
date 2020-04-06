@@ -1,29 +1,54 @@
 /**
  * @module ol/View
  */
-import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {VOID} from './functions.js';
-import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
-import {createSnapToResolutions, createSnapToPower} from './resolutionconstraint.js';
-import {createSnapToZero, createSnapToN, none as rotationNone, disable} from './rotationconstraint.js';
+import GeometryType from './geom/GeometryType.js';
+import Units from './proj/Units.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
-import {linearFindNearest} from './array.js';
+import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
+import {
+  METERS_PER_UNIT,
+  createProjection,
+  fromUserCoordinate,
+  fromUserExtent,
+  getUserProjection,
+  toUserCoordinate,
+  toUserExtent,
+} from './proj.js';
+import {VOID} from './functions.js';
+import {
+  add as addCoordinate,
+  equals as coordinatesEqual,
+  rotate as rotateCoordinate,
+} from './coordinate.js';
 import {assert} from './asserts.js';
-import {add as addCoordinate, rotate as rotateCoordinate, equals as coordinatesEqual} from './coordinate.js';
-import {inAndOut} from './easing.js';
-import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
-import GeometryType from './geom/GeometryType.js';
-import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
-import {clamp, modulo} from './math.js';
 import {assign} from './obj.js';
-import {createProjection, METERS_PER_UNIT, toUserCoordinate, toUserExtent, fromUserCoordinate, fromUserExtent, getUserProjection} from './proj.js';
-import Units from './proj/Units.js';
-import {equals} from './coordinate.js';
-import {easeOut} from './easing.js';
+import {none as centerNone, createExtent} from './centerconstraint.js';
+import {clamp, modulo} from './math.js';
 import {createMinMaxResolution} from './resolutionconstraint.js';
-
+import {
+  createSnapToN,
+  createSnapToZero,
+  disable,
+  none as rotationNone,
+} from './rotationconstraint.js';
+import {
+  createSnapToPower,
+  createSnapToResolutions,
+} from './resolutionconstraint.js';
+import {easeOut} from './easing.js';
+import {equals} from './coordinate.js';
+import {
+  getCenter,
+  getForViewAndSize,
+  getHeight,
+  getWidth,
+  isEmpty,
+} from './extent.js';
+import {inAndOut} from './easing.js';
+import {linearFindNearest} from './array.js';
+import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 
 /**
  * An animation configuration
@@ -43,14 +68,12 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * @property {function(boolean)} callback
  */
 
-
 /**
  * @typedef {Object} Constraints
  * @property {import("./centerconstraint.js").Type} center
  * @property {import("./resolutionconstraint.js").Type} resolution
  * @property {import("./rotationconstraint.js").Type} rotation
  */
-
 
 /**
  * @typedef {Object} FitOptions
@@ -76,7 +99,6 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * its final position. The callback will be called with `true` if the animation
  * series completed on its own or `false` if it was cancelled.
  */
-
 
 /**
  * @typedef {Object} ViewOptions
@@ -155,7 +177,6 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * corresponding resolution.
  */
 
-
 /**
  * @typedef {Object} AnimationOptions
  * @property {import("./coordinate.js").Coordinate} [center] The center of the view at the end of
@@ -176,7 +197,6 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * between 0 and 1 representing the progress toward the destination state.
  */
 
-
 /**
  * @typedef {Object} State
  * @property {import("./coordinate.js").Coordinate} center
@@ -186,13 +206,11 @@ import {createMinMaxResolution} from './resolutionconstraint.js';
  * @property {number} zoom
  */
 
-
 /**
  * Default min zoom level for the map view.
  * @type {number}
  */
 const DEFAULT_MIN_ZOOM = 0;
-
 
 /**
  * @classdesc
@@ -267,7 +285,6 @@ const DEFAULT_MIN_ZOOM = 0;
  * @api
  */
 class View extends BaseObject {
-
   /**
    * @param {ViewOptions=} opt_options View options.
    */
@@ -346,7 +363,6 @@ class View extends BaseObject {
    * @param {ViewOptions} options View options.
    */
   applyOptions_(options) {
-
     /**
      * @type {Object<string, *>}
      */
@@ -395,11 +411,13 @@ class View extends BaseObject {
     this.constraints_ = {
       center: centerConstraint,
       resolution: resolutionConstraint,
-      rotation: rotationConstraint
+      rotation: rotationConstraint,
     };
 
     this.setRotation(options.rotation !== undefined ? options.rotation : 0);
-    this.setCenterInternal(options.center !== undefined ? options.center : null);
+    this.setCenterInternal(
+      options.center !== undefined ? options.center : null
+    );
     if (options.resolution !== undefined) {
       this.setResolution(options.resolution);
     } else if (options.zoom !== undefined) {
@@ -408,13 +426,11 @@ class View extends BaseObject {
 
     this.setProperties(properties);
 
-
     /**
      * @private
      * @type {ViewOptions}
      */
     this.options_ = options;
-
   }
 
   /**
@@ -486,11 +502,17 @@ class View extends BaseObject {
       let options = arguments[i];
       if (options.center) {
         options = assign({}, options);
-        options.center = fromUserCoordinate(options.center, this.getProjection());
+        options.center = fromUserCoordinate(
+          options.center,
+          this.getProjection()
+        );
       }
       if (options.anchor) {
         options = assign({}, options);
-        options.anchor = fromUserCoordinate(options.anchor, this.getProjection());
+        options.anchor = fromUserCoordinate(
+          options.anchor,
+          this.getProjection()
+        );
       }
       args[i] = options;
     }
@@ -503,7 +525,10 @@ class View extends BaseObject {
   animateInternal(var_args) {
     let animationCount = arguments.length;
     let callback;
-    if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
+    if (
+      animationCount > 1 &&
+      typeof arguments[animationCount - 1] === 'function'
+    ) {
       callback = arguments[animationCount - 1];
       --animationCount;
     }
@@ -538,7 +563,7 @@ class View extends BaseObject {
         anchor: options.anchor,
         duration: options.duration !== undefined ? options.duration : 1000,
         easing: options.easing || inAndOut,
-        callback: callback
+        callback: callback,
       };
 
       if (options.center) {
@@ -559,7 +584,8 @@ class View extends BaseObject {
 
       if (options.rotation !== undefined) {
         animation.sourceRotation = rotation;
-        const delta = modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
+        const delta =
+          modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
         animation.targetRotation = rotation + delta;
         rotation = animation.targetRotation;
       }
@@ -644,7 +670,8 @@ class View extends BaseObject {
           continue;
         }
         const elapsed = now - animation.start;
-        let fraction = animation.duration > 0 ? elapsed / animation.duration : 1;
+        let fraction =
+          animation.duration > 0 ? elapsed / animation.duration : 1;
         if (fraction >= 1) {
           animation.complete = true;
           fraction = 1;
@@ -662,24 +689,48 @@ class View extends BaseObject {
           this.targetCenter_ = [x, y];
         }
         if (animation.sourceResolution && animation.targetResolution) {
-          const resolution = progress === 1 ?
-            animation.targetResolution :
-            animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
+          const resolution =
+            progress === 1
+              ? animation.targetResolution
+              : animation.sourceResolution +
+                progress *
+                  (animation.targetResolution - animation.sourceResolution);
           if (animation.anchor) {
             const size = this.getViewportSize_(this.getRotation());
-            const constrainedResolution = this.constraints_.resolution(resolution, 0, size, true);
-            this.targetCenter_ = this.calculateCenterZoom(constrainedResolution, animation.anchor);
+            const constrainedResolution = this.constraints_.resolution(
+              resolution,
+              0,
+              size,
+              true
+            );
+            this.targetCenter_ = this.calculateCenterZoom(
+              constrainedResolution,
+              animation.anchor
+            );
           }
           this.targetResolution_ = resolution;
           this.applyTargetState_(true);
         }
-        if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
-          const rotation = progress === 1 ?
-            modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
-            animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
+        if (
+          animation.sourceRotation !== undefined &&
+          animation.targetRotation !== undefined
+        ) {
+          const rotation =
+            progress === 1
+              ? modulo(animation.targetRotation + Math.PI, 2 * Math.PI) -
+                Math.PI
+              : animation.sourceRotation +
+                progress *
+                  (animation.targetRotation - animation.sourceRotation);
           if (animation.anchor) {
-            const constrainedRotation = this.constraints_.rotation(rotation, true);
-            this.targetCenter_ = this.calculateCenterRotate(constrainedRotation, animation.anchor);
+            const constrainedRotation = this.constraints_.rotation(
+              rotation,
+              true
+            );
+            this.targetCenter_ = this.calculateCenterRotate(
+              constrainedRotation,
+              animation.anchor
+            );
           }
           this.targetRotation_ = rotation;
         }
@@ -701,7 +752,9 @@ class View extends BaseObject {
     // prune completed series
     this.animations_ = this.animations_.filter(Boolean);
     if (more && this.updateAnimationKey_ === undefined) {
-      this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_.bind(this));
+      this.updateAnimationKey_ = requestAnimationFrame(
+        this.updateAnimations_.bind(this)
+      );
     }
   }
 
@@ -731,8 +784,12 @@ class View extends BaseObject {
     const currentCenter = this.getCenterInternal();
     const currentResolution = this.getResolution();
     if (currentCenter !== undefined && currentResolution !== undefined) {
-      const x = anchor[0] - resolution * (anchor[0] - currentCenter[0]) / currentResolution;
-      const y = anchor[1] - resolution * (anchor[1] - currentCenter[1]) / currentResolution;
+      const x =
+        anchor[0] -
+        (resolution * (anchor[0] - currentCenter[0])) / currentResolution;
+      const y =
+        anchor[1] -
+        (resolution * (anchor[1] - currentCenter[1])) / currentResolution;
       center = [x, y];
     }
     return center;
@@ -750,8 +807,10 @@ class View extends BaseObject {
       const w = size[0];
       const h = size[1];
       return [
-        Math.abs(w * Math.cos(opt_rotation)) + Math.abs(h * Math.sin(opt_rotation)),
-        Math.abs(w * Math.sin(opt_rotation)) + Math.abs(h * Math.cos(opt_rotation))
+        Math.abs(w * Math.cos(opt_rotation)) +
+          Math.abs(h * Math.sin(opt_rotation)),
+        Math.abs(w * Math.sin(opt_rotation)) +
+          Math.abs(h * Math.cos(opt_rotation)),
       ];
     } else {
       return size;
@@ -766,7 +825,9 @@ class View extends BaseObject {
    * @param {import("./size.js").Size=} opt_size Viewport size; if undefined, [100, 100] is assumed
    */
   setViewportSize(opt_size) {
-    this.viewportSize_ = Array.isArray(opt_size) ? opt_size.slice() : [100, 100];
+    this.viewportSize_ = Array.isArray(opt_size)
+      ? opt_size.slice()
+      : [100, 100];
     if (!this.getAnimating()) {
       this.resolveConstraints(0);
     }
@@ -791,7 +852,9 @@ class View extends BaseObject {
    * @return {import("./coordinate.js").Coordinate|undefined} The center of the view.
    */
   getCenterInternal() {
-    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(ViewProperty.CENTER));
+    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(
+      ViewProperty.CENTER
+    ));
   }
 
   /**
@@ -878,7 +941,9 @@ class View extends BaseObject {
    * @api
    */
   getMaxZoom() {
-    return /** @type {number} */ (this.getZoomForResolution(this.minResolution_));
+    return /** @type {number} */ (this.getZoomForResolution(
+      this.minResolution_
+    ));
   }
 
   /**
@@ -896,7 +961,9 @@ class View extends BaseObject {
    * @api
    */
   getMinZoom() {
-    return /** @type {number} */ (this.getZoomForResolution(this.maxResolution_));
+    return /** @type {number} */ (this.getZoomForResolution(
+      this.maxResolution_
+    ));
   }
 
   /**
@@ -955,7 +1022,10 @@ class View extends BaseObject {
    * @api
    */
   getResolutionForExtent(extent, opt_size) {
-    return this.getResolutionForExtentInternal(fromUserExtent(extent, this.getProjection()), opt_size);
+    return this.getResolutionForExtentInternal(
+      fromUserExtent(extent, this.getProjection()),
+      opt_size
+    );
   }
 
   /**
@@ -988,10 +1058,11 @@ class View extends BaseObject {
        * @param {number} value Value.
        * @return {number} Resolution.
        */
-      function(value) {
+      function (value) {
         const resolution = maxResolution / Math.pow(power, value * max);
         return resolution;
-      });
+      }
+    );
   }
 
   /**
@@ -1020,10 +1091,11 @@ class View extends BaseObject {
        * @param {number} resolution Resolution.
        * @return {number} Value.
        */
-      function(resolution) {
-        const value = (Math.log(maxResolution / resolution) / logPower) / max;
+      function (resolution) {
+        const value = Math.log(maxResolution / resolution) / logPower / max;
         return value;
-      });
+      }
+    );
   }
 
   /**
@@ -1039,7 +1111,7 @@ class View extends BaseObject {
       projection: projection !== undefined ? projection : null,
       resolution: resolution,
       rotation: rotation,
-      zoom: this.getZoom()
+      zoom: this.getZoom(),
     };
   }
 
@@ -1095,11 +1167,21 @@ class View extends BaseObject {
       if (this.resolutions_.length <= 1) {
         return 0;
       }
-      const baseLevel = clamp(Math.floor(zoom), 0, this.resolutions_.length - 2);
-      const zoomFactor = this.resolutions_[baseLevel] / this.resolutions_[baseLevel + 1];
-      return this.resolutions_[baseLevel] / Math.pow(zoomFactor, clamp(zoom - baseLevel, 0, 1));
+      const baseLevel = clamp(
+        Math.floor(zoom),
+        0,
+        this.resolutions_.length - 2
+      );
+      const zoomFactor =
+        this.resolutions_[baseLevel] / this.resolutions_[baseLevel + 1];
+      return (
+        this.resolutions_[baseLevel] /
+        Math.pow(zoomFactor, clamp(zoom - baseLevel, 0, 1))
+      );
     } else {
-      return this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_);
+      return (
+        this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_)
+      );
     }
   }
 
@@ -1118,21 +1200,29 @@ class View extends BaseObject {
 
     /** @type {import("./geom/SimpleGeometry.js").default} */
     let geometry;
-    assert(Array.isArray(geometryOrExtent) || typeof /** @type {?} */ (geometryOrExtent).getSimplifiedGeometry === 'function',
-      24); // Invalid extent or geometry provided as `geometry`
+    assert(
+      Array.isArray(geometryOrExtent) ||
+        typeof (/** @type {?} */ (geometryOrExtent).getSimplifiedGeometry) ===
+          'function',
+      24
+    ); // Invalid extent or geometry provided as `geometry`
     if (Array.isArray(geometryOrExtent)) {
-      assert(!isEmpty(geometryOrExtent),
-        25); // Cannot fit empty extent provided as `geometry`
+      assert(!isEmpty(geometryOrExtent), 25); // Cannot fit empty extent provided as `geometry`
       const extent = fromUserExtent(geometryOrExtent, this.getProjection());
       geometry = polygonFromExtent(extent);
     } else if (geometryOrExtent.getType() === GeometryType.CIRCLE) {
-      const extent = fromUserExtent(geometryOrExtent.getExtent(), this.getProjection());
+      const extent = fromUserExtent(
+        geometryOrExtent.getExtent(),
+        this.getProjection()
+      );
       geometry = polygonFromExtent(extent);
       geometry.rotate(this.getRotation(), getCenter(extent));
     } else {
       const userProjection = getUserProjection();
       if (userProjection) {
-        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometryOrExtent.clone().transform(userProjection, this.getProjection()));
+        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometryOrExtent
+          .clone()
+          .transform(userProjection, this.getProjection()));
       } else {
         geometry = geometryOrExtent;
       }
@@ -1151,7 +1241,8 @@ class View extends BaseObject {
     if (!size) {
       size = this.getViewportSize_();
     }
-    const padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
+    const padding =
+      options.padding !== undefined ? options.padding : [0, 0, 0, 0];
     const nearest = options.nearest !== undefined ? options.nearest : false;
     let minResolution;
     if (options.minResolution !== undefined) {
@@ -1184,29 +1275,34 @@ class View extends BaseObject {
     // calculate resolution
     let resolution = this.getResolutionForExtentInternal(
       [minRotX, minRotY, maxRotX, maxRotY],
-      [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]);
-    resolution = isNaN(resolution) ? minResolution :
-      Math.max(resolution, minResolution);
+      [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]
+    );
+    resolution = isNaN(resolution)
+      ? minResolution
+      : Math.max(resolution, minResolution);
     resolution = this.getConstrainedResolution(resolution, nearest ? 0 : 1);
 
     // calculate center
     sinAngle = -sinAngle; // go back to original rotation
     let centerRotX = (minRotX + maxRotX) / 2;
     let centerRotY = (minRotY + maxRotY) / 2;
-    centerRotX += (padding[1] - padding[3]) / 2 * resolution;
-    centerRotY += (padding[0] - padding[2]) / 2 * resolution;
+    centerRotX += ((padding[1] - padding[3]) / 2) * resolution;
+    centerRotY += ((padding[0] - padding[2]) / 2) * resolution;
     const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
     const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
     const center = [centerX, centerY];
     const callback = options.callback ? options.callback : VOID;
 
     if (options.duration !== undefined) {
-      this.animateInternal({
-        resolution: resolution,
-        center: this.getConstrainedCenter(center, resolution),
-        duration: options.duration,
-        easing: options.easing
-      }, callback);
+      this.animateInternal(
+        {
+          resolution: resolution,
+          center: this.getConstrainedCenter(center, resolution),
+          duration: options.duration,
+          easing: options.easing,
+        },
+        callback
+      );
     } else {
       this.targetResolution_ = resolution;
       this.targetCenter_ = center;
@@ -1223,7 +1319,11 @@ class View extends BaseObject {
    * @api
    */
   centerOn(coordinate, size, position) {
-    this.centerOnInternal(fromUserCoordinate(coordinate, this.getProjection()), size, position);
+    this.centerOnInternal(
+      fromUserCoordinate(coordinate, this.getProjection()),
+      size,
+      position
+    );
   }
 
   /**
@@ -1264,7 +1364,10 @@ class View extends BaseObject {
    */
   adjustCenter(deltaCoordinates) {
     const center = toUserCoordinate(this.targetCenter_, this.getProjection());
-    this.setCenter([center[0] + deltaCoordinates[0], center[1] + deltaCoordinates[1]]);
+    this.setCenter([
+      center[0] + deltaCoordinates[0],
+      center[1] + deltaCoordinates[1],
+    ]);
   }
 
   /**
@@ -1273,7 +1376,10 @@ class View extends BaseObject {
    */
   adjustCenterInternal(deltaCoordinates) {
     const center = this.targetCenter_;
-    this.setCenterInternal([center[0] + deltaCoordinates[0], center[1] + deltaCoordinates[1]]);
+    this.setCenterInternal([
+      center[0] + deltaCoordinates[0],
+      center[1] + deltaCoordinates[1],
+    ]);
   }
 
   /**
@@ -1284,7 +1390,8 @@ class View extends BaseObject {
    * @api
    */
   adjustResolution(ratio, opt_anchor) {
-    const anchor = opt_anchor && fromUserCoordinate(opt_anchor, this.getProjection());
+    const anchor =
+      opt_anchor && fromUserCoordinate(opt_anchor, this.getProjection());
     this.adjustResolutionInternal(ratio, anchor);
   }
 
@@ -1297,7 +1404,12 @@ class View extends BaseObject {
   adjustResolutionInternal(ratio, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
     const size = this.getViewportSize_(this.getRotation());
-    const newResolution = this.constraints_.resolution(this.targetResolution_ * ratio, 0, size, isMoving);
+    const newResolution = this.constraints_.resolution(
+      this.targetResolution_ * ratio,
+      0,
+      size,
+      isMoving
+    );
 
     if (opt_anchor) {
       this.targetCenter_ = this.calculateCenterZoom(newResolution, opt_anchor);
@@ -1338,7 +1450,10 @@ class View extends BaseObject {
    */
   adjustRotationInternal(delta, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
-    const newRotation = this.constraints_.rotation(this.targetRotation_ + delta, isMoving);
+    const newRotation = this.constraints_.rotation(
+      this.targetRotation_ + delta,
+      isMoving
+    );
     if (opt_anchor) {
       this.targetCenter_ = this.calculateCenterRotate(newRotation, opt_anchor);
     }
@@ -1416,13 +1531,27 @@ class View extends BaseObject {
    * @private
    */
   applyTargetState_(opt_doNotCancelAnims, opt_forceMoving) {
-    const isMoving = this.getAnimating() || this.getInteracting() || opt_forceMoving;
+    const isMoving =
+      this.getAnimating() || this.getInteracting() || opt_forceMoving;
 
     // compute rotation
-    const newRotation = this.constraints_.rotation(this.targetRotation_, isMoving);
+    const newRotation = this.constraints_.rotation(
+      this.targetRotation_,
+      isMoving
+    );
     const size = this.getViewportSize_(newRotation);
-    const newResolution = this.constraints_.resolution(this.targetResolution_, 0, size, isMoving);
-    const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size, isMoving);
+    const newResolution = this.constraints_.resolution(
+      this.targetResolution_,
+      0,
+      size,
+      isMoving
+    );
+    const newCenter = this.constraints_.center(
+      this.targetCenter_,
+      newResolution,
+      size,
+      isMoving
+    );
 
     if (this.get(ViewProperty.ROTATION) !== newRotation) {
       this.set(ViewProperty.ROTATION, newRotation);
@@ -1430,7 +1559,10 @@ class View extends BaseObject {
     if (this.get(ViewProperty.RESOLUTION) !== newResolution) {
       this.set(ViewProperty.RESOLUTION, newResolution);
     }
-    if (!this.get(ViewProperty.CENTER) || !equals(this.get(ViewProperty.CENTER), newCenter)) {
+    if (
+      !this.get(ViewProperty.CENTER) ||
+      !equals(this.get(ViewProperty.CENTER), newCenter)
+    ) {
       this.set(ViewProperty.CENTER, newCenter);
     }
 
@@ -1455,8 +1587,16 @@ class View extends BaseObject {
 
     const newRotation = this.constraints_.rotation(this.targetRotation_);
     const size = this.getViewportSize_(newRotation);
-    const newResolution = this.constraints_.resolution(this.targetResolution_, direction, size);
-    const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size);
+    const newResolution = this.constraints_.resolution(
+      this.targetResolution_,
+      direction,
+      size
+    );
+    const newCenter = this.constraints_.center(
+      this.targetCenter_,
+      newResolution,
+      size
+    );
 
     if (duration === 0 && !this.cancelAnchor_) {
       this.targetResolution_ = newResolution;
@@ -1466,14 +1606,16 @@ class View extends BaseObject {
       return;
     }
 
-    const anchor = opt_anchor || (duration === 0 ? this.cancelAnchor_ : undefined);
+    const anchor =
+      opt_anchor || (duration === 0 ? this.cancelAnchor_ : undefined);
     this.cancelAnchor_ = undefined;
 
-    if (this.getResolution() !== newResolution ||
+    if (
+      this.getResolution() !== newResolution ||
       this.getRotation() !== newRotation ||
       !this.getCenterInternal() ||
-      !equals(this.getCenterInternal(), newCenter)) {
-
+      !equals(this.getCenterInternal(), newCenter)
+    ) {
       if (this.getAnimating()) {
         this.cancelAnimations();
       }
@@ -1484,7 +1626,7 @@ class View extends BaseObject {
         resolution: newResolution,
         duration: duration,
         easing: easeOut,
-        anchor: anchor
+        anchor: anchor,
       });
     }
   }
@@ -1510,7 +1652,8 @@ class View extends BaseObject {
    * @api
    */
   endInteraction(opt_duration, opt_resolutionDirection, opt_anchor) {
-    const anchor = opt_anchor && fromUserCoordinate(opt_anchor, this.getProjection());
+    const anchor =
+      opt_anchor && fromUserCoordinate(opt_anchor, this.getProjection());
     this.endInteractionInternal(opt_duration, opt_resolutionDirection, anchor);
   }
 
@@ -1536,7 +1679,11 @@ class View extends BaseObject {
    */
   getConstrainedCenter(targetCenter, opt_targetResolution) {
     const size = this.getViewportSize_(this.getRotation());
-    return this.constraints_.center(targetCenter, opt_targetResolution || this.getResolution(), size);
+    return this.constraints_.center(
+      targetCenter,
+      opt_targetResolution || this.getResolution(),
+      size
+    );
   }
 
   /**
@@ -1550,7 +1697,9 @@ class View extends BaseObject {
    */
   getConstrainedZoom(targetZoom, opt_direction) {
     const targetRes = this.getResolutionForZoom(targetZoom);
-    return this.getZoomForResolution(this.getConstrainedResolution(targetRes, opt_direction));
+    return this.getZoomForResolution(
+      this.getConstrainedResolution(targetRes, opt_direction)
+    );
   }
 
   /**
@@ -1570,17 +1719,15 @@ class View extends BaseObject {
   }
 }
 
-
 /**
  * @param {Function} callback Callback.
  * @param {*} returnValue Return value.
  */
 function animationCallback(callback, returnValue) {
-  setTimeout(function() {
+  setTimeout(function () {
     callback(returnValue);
   }, 0);
 }
-
 
 /**
  * @param {ViewOptions} options View options.
@@ -1588,7 +1735,10 @@ function animationCallback(callback, returnValue) {
  */
 export function createCenterConstraint(options) {
   if (options.extent !== undefined) {
-    const smooth = options.smoothExtentConstraint !== undefined ? options.smoothExtentConstraint : true;
+    const smooth =
+      options.smoothExtentConstraint !== undefined
+        ? options.smoothExtentConstraint
+        : true;
     return createExtent(options.extent, options.constrainOnlyCenter, smooth);
   }
 
@@ -1602,7 +1752,6 @@ export function createCenterConstraint(options) {
 
   return centerNone;
 }
-
 
 /**
  * @param {ViewOptions} options View options.
@@ -1619,23 +1768,25 @@ export function createResolutionConstraint(options) {
   const defaultMaxZoom = 28;
   const defaultZoomFactor = 2;
 
-  let minZoom = options.minZoom !== undefined ?
-    options.minZoom : DEFAULT_MIN_ZOOM;
+  let minZoom =
+    options.minZoom !== undefined ? options.minZoom : DEFAULT_MIN_ZOOM;
 
-  let maxZoom = options.maxZoom !== undefined ?
-    options.maxZoom : defaultMaxZoom;
+  let maxZoom =
+    options.maxZoom !== undefined ? options.maxZoom : defaultMaxZoom;
 
-  const zoomFactor = options.zoomFactor !== undefined ?
-    options.zoomFactor : defaultZoomFactor;
+  const zoomFactor =
+    options.zoomFactor !== undefined ? options.zoomFactor : defaultZoomFactor;
 
-  const multiWorld = options.multiWorld !== undefined ?
-    options.multiWorld : false;
+  const multiWorld =
+    options.multiWorld !== undefined ? options.multiWorld : false;
 
   const smooth =
-      options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
+    options.smoothResolutionConstraint !== undefined
+      ? options.smoothResolutionConstraint
+      : true;
 
   const showFullExtent =
-      options.showFullExtent !== undefined ? options.showFullExtent : false;
+    options.showFullExtent !== undefined ? options.showFullExtent : false;
 
   const projection = createProjection(options.projection, 'EPSG:3857');
   const projExtent = projection.getExtent();
@@ -1649,29 +1800,40 @@ export function createResolutionConstraint(options) {
   if (options.resolutions !== undefined) {
     const resolutions = options.resolutions;
     maxResolution = resolutions[minZoom];
-    minResolution = resolutions[maxZoom] !== undefined ?
-      resolutions[maxZoom] : resolutions[resolutions.length - 1];
+    minResolution =
+      resolutions[maxZoom] !== undefined
+        ? resolutions[maxZoom]
+        : resolutions[resolutions.length - 1];
 
     if (options.constrainResolution) {
-      resolutionConstraint = createSnapToResolutions(resolutions, smooth,
-        !constrainOnlyCenter && extent, showFullExtent);
+      resolutionConstraint = createSnapToResolutions(
+        resolutions,
+        smooth,
+        !constrainOnlyCenter && extent,
+        showFullExtent
+      );
     } else {
-      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent, showFullExtent);
+      resolutionConstraint = createMinMaxResolution(
+        maxResolution,
+        minResolution,
+        smooth,
+        !constrainOnlyCenter && extent,
+        showFullExtent
+      );
     }
   } else {
     // calculate the default min and max resolution
-    const size = !projExtent ?
-      // use an extent that can fit the whole world if need be
-      360 * METERS_PER_UNIT[Units.DEGREES] /
-            projection.getMetersPerUnit() :
-      Math.max(getWidth(projExtent), getHeight(projExtent));
+    const size = !projExtent
+      ? // use an extent that can fit the whole world if need be
+        (360 * METERS_PER_UNIT[Units.DEGREES]) / projection.getMetersPerUnit()
+      : Math.max(getWidth(projExtent), getHeight(projExtent));
 
-    const defaultMaxResolution = size / DEFAULT_TILE_SIZE / Math.pow(
-      defaultZoomFactor, DEFAULT_MIN_ZOOM);
+    const defaultMaxResolution =
+      size / DEFAULT_TILE_SIZE / Math.pow(defaultZoomFactor, DEFAULT_MIN_ZOOM);
 
-    const defaultMinResolution = defaultMaxResolution / Math.pow(
-      defaultZoomFactor, defaultMaxZoom - DEFAULT_MIN_ZOOM);
+    const defaultMinResolution =
+      defaultMaxResolution /
+      Math.pow(defaultZoomFactor, defaultMaxZoom - DEFAULT_MIN_ZOOM);
 
     // user provided maxResolution takes precedence
     maxResolution = options.maxResolution;
@@ -1696,31 +1858,48 @@ export function createResolutionConstraint(options) {
     }
 
     // given discrete zoom levels, minResolution may be different than provided
-    maxZoom = minZoom + Math.floor(
-      Math.log(maxResolution / minResolution) / Math.log(zoomFactor));
+    maxZoom =
+      minZoom +
+      Math.floor(
+        Math.log(maxResolution / minResolution) / Math.log(zoomFactor)
+      );
     minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
 
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToPower(
-        zoomFactor, maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent, showFullExtent);
+        zoomFactor,
+        maxResolution,
+        minResolution,
+        smooth,
+        !constrainOnlyCenter && extent,
+        showFullExtent
+      );
     } else {
-      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !constrainOnlyCenter && extent, showFullExtent);
+      resolutionConstraint = createMinMaxResolution(
+        maxResolution,
+        minResolution,
+        smooth,
+        !constrainOnlyCenter && extent,
+        showFullExtent
+      );
     }
   }
-  return {constraint: resolutionConstraint, maxResolution: maxResolution,
-    minResolution: minResolution, minZoom: minZoom, zoomFactor: zoomFactor};
+  return {
+    constraint: resolutionConstraint,
+    maxResolution: maxResolution,
+    minResolution: minResolution,
+    minZoom: minZoom,
+    zoomFactor: zoomFactor,
+  };
 }
-
 
 /**
  * @param {ViewOptions} options View options.
  * @return {import("./rotationconstraint.js").Type} Rotation constraint.
  */
 export function createRotationConstraint(options) {
-  const enableRotation = options.enableRotation !== undefined ?
-    options.enableRotation : true;
+  const enableRotation =
+    options.enableRotation !== undefined ? options.enableRotation : true;
   if (enableRotation) {
     const constrainRotation = options.constrainRotation;
     if (constrainRotation === undefined || constrainRotation === true) {
@@ -1736,7 +1915,6 @@ export function createRotationConstraint(options) {
     return disable;
   }
 }
-
 
 /**
  * Determine if an animation involves no view change.

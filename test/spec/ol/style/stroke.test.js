@@ -1,17 +1,15 @@
 import Stroke from '../../../../src/ol/style/Stroke.js';
 
-describe('ol.style.Stroke', function() {
-
-  describe('#clone', function() {
-
-    it('creates a new ol.style.Stroke', function() {
+describe('ol.style.Stroke', function () {
+  describe('#clone', function () {
+    it('creates a new ol.style.Stroke', function () {
       const original = new Stroke();
       const clone = original.clone();
       expect(clone).to.be.an(Stroke);
       expect(clone).to.not.be(original);
     });
 
-    it('copies all values', function() {
+    it('copies all values', function () {
       const original = new Stroke({
         color: '#319FD3',
         lineCap: 'square',
@@ -19,7 +17,7 @@ describe('ol.style.Stroke', function() {
         lineDash: [1, 2, 3],
         lineDashOffset: 2,
         miterLimit: 20,
-        width: 5
+        width: 5,
       });
       const clone = original.clone();
       expect(original.getColor()).to.eql(clone.getColor());
@@ -31,10 +29,10 @@ describe('ol.style.Stroke', function() {
       expect(original.getWidth()).to.eql(clone.getWidth());
     });
 
-    it('the clone does not reference the same objects as the original', function() {
+    it('the clone does not reference the same objects as the original', function () {
       const original = new Stroke({
         color: [1, 2, 3, 0.4],
-        lineDash: [1, 2, 3]
+        lineDash: [1, 2, 3],
       });
       const clone = original.clone();
       expect(original.getColor()).to.not.be(clone.getColor());
@@ -46,5 +44,4 @@ describe('ol.style.Stroke', function() {
       expect(original.getLineDash()).to.not.eql(clone.getLineDash());
     });
   });
-
 });

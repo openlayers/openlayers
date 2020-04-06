@@ -8,6 +8,6 @@ module.exports = {
     filename: 'ol.js',
     library: 'ol',
     libraryTarget: 'umd',
-    libraryExport: 'default'
-  }
+    libraryExport: 'default',
+  },
 };

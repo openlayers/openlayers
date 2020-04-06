@@ -3,7 +3,6 @@
  */
 import {toString} from './color.js';
 
-
 /**
  * A type accepted by CanvasRenderingContext2D.fillStyle
  * or CanvasRenderingContext2D.strokeStyle.
@@ -15,7 +14,6 @@ import {toString} from './color.js';
  * @typedef {string|CanvasPattern|CanvasGradient} ColorLike
  * @api
  */
-
 
 /**
  * @param {import("./color.js").Color|ColorLike} color Color.

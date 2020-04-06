@@ -50,7 +50,6 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * will be used. If -1, the nearest higher resolution will be used.
  */
 
-
 /**
  * @classdesc
  * Layer source for tile data with URLs in a set XYZ format that are
@@ -75,17 +74,19 @@ class XYZ extends TileImage {
    */
   constructor(opt_options) {
     const options = opt_options || {};
-    const projection = options.projection !== undefined ?
-      options.projection : 'EPSG:3857';
+    const projection =
+      options.projection !== undefined ? options.projection : 'EPSG:3857';
 
-    const tileGrid = options.tileGrid !== undefined ? options.tileGrid :
-      createXYZ({
-        extent: extentFromProjection(projection),
-        maxResolution: options.maxResolution,
-        maxZoom: options.maxZoom,
-        minZoom: options.minZoom,
-        tileSize: options.tileSize
-      });
+    const tileGrid =
+      options.tileGrid !== undefined
+        ? options.tileGrid
+        : createXYZ({
+            extent: extentFromProjection(projection),
+            maxResolution: options.maxResolution,
+            maxZoom: options.maxZoom,
+            minZoom: options.minZoom,
+            tileSize: options.tileSize,
+          });
 
     super({
       attributions: options.attributions,
@@ -104,11 +105,9 @@ class XYZ extends TileImage {
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition,
       attributionsCollapsible: options.attributionsCollapsible,
-      zDirection: options.zDirection
+      zDirection: options.zDirection,
     });
-
   }
-
 }
 
 export default XYZ;

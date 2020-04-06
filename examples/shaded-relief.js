@@ -3,7 +3,6 @@ import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {OSM, Raster, XYZ} from '../src/ol/source.js';
 
-
 /**
  * Generates a shaded relief image given elevation data.  Uses a 3x3
  * neighborhood for determining slope and aspect.
@@ -23,12 +22,25 @@ function shade(inputs, data) {
   const pixel = [0, 0, 0, 0];
   const twoPi = 2 * Math.PI;
   const halfPi = Math.PI / 2;
-  const sunEl = Math.PI * data.sunEl / 180;
-  const sunAz = Math.PI * data.sunAz / 180;
+  const sunEl = (Math.PI * data.sunEl) / 180;
+  const sunAz = (Math.PI * data.sunAz) / 180;
   const cosSunEl = Math.cos(sunEl);
   const sinSunEl = Math.sin(sunEl);
-  let pixelX, pixelY, x0, x1, y0, y1, offset,
-      z0, z1, dzdx, dzdy, slope, aspect, cosIncidence, scaled;
+  let pixelX,
+    pixelY,
+    x0,
+    x1,
+    y0,
+    y1,
+    offset,
+    z0,
+    z1,
+    dzdx,
+    dzdy,
+    slope,
+    aspect,
+    cosIncidence,
+    scaled;
   for (pixelY = 0; pixelY <= maxY; ++pixelY) {
     y0 = pixelY === 0 ? 0 : pixelY - 1;
     y1 = pixelY === maxY ? maxY : pixelY + 1;
@@ -83,8 +95,9 @@ function shade(inputs, data) {
         aspect = halfPi - aspect;
       }
 
-      cosIncidence = sinSunEl * Math.cos(slope) +
-          cosSunEl * Math.sin(slope) * Math.cos(sunAz - aspect);
+      cosIncidence =
+        sinSunEl * Math.cos(slope) +
+        cosSunEl * Math.sin(slope) * Math.cos(sunAz - aspect);
 
       offset = (pixelY * width + pixelX) * 4;
       scaled = 255 * cosIncidence;
@@ -100,41 +113,41 @@ function shade(inputs, data) {
 
 const elevation = new XYZ({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
-  crossOrigin: 'anonymous'
+  crossOrigin: 'anonymous',
 });
 
 const raster = new Raster({
   sources: [elevation],
   operationType: 'image',
-  operation: shade
+  operation: shade,
 });
 
 const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new OSM()
+      source: new OSM(),
     }),
     new ImageLayer({
       opacity: 0.3,
-      source: raster
-    })
+      source: raster,
+    }),
   ],
   view: new View({
     extent: [-13675026, 4439648, -13580856, 4580292],
     center: [-13615645, 4497969],
     minZoom: 10,
     maxZoom: 16,
-    zoom: 13
-  })
+    zoom: 13,
+  }),
 });
 
 const controlIds = ['vert', 'sunEl', 'sunAz'];
 const controls = {};
-controlIds.forEach(function(id) {
+controlIds.forEach(function (id) {
   const control = document.getElementById(id);
   const output = document.getElementById(id + 'Out');
-  control.addEventListener('input', function() {
+  control.addEventListener('input', function () {
     output.innerText = control.value;
     raster.changed();
   });
@@ -142,7 +155,7 @@ controlIds.forEach(function(id) {
   controls[id] = control;
 });
 
-raster.on('beforeoperations', function(event) {
+raster.on('beforeoperations', function (event) {
   // the event.data object will be passed to operations
   const data = event.data;
   data.resolution = event.resolution;

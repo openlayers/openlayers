@@ -3,13 +3,11 @@
  */
 import {isEmpty} from '../obj.js';
 
-
 /**
  * @private
  * @type {!Object<string, Object<string, import("../proj.js").TransformFunction>>}
  */
 let transforms = {};
-
 
 /**
  * Clear the transform cache.
@@ -17,7 +15,6 @@ let transforms = {};
 export function clear() {
   transforms = {};
 }
-
 
 /**
  * Registers a conversion function to convert coordinates from the source
@@ -35,7 +32,6 @@ export function add(source, destination, transformFn) {
   }
   transforms[sourceCode][destinationCode] = transformFn;
 }
-
 
 /**
  * Unregisters the conversion function to convert coordinates from the source
@@ -56,7 +52,6 @@ export function remove(source, destination) {
   }
   return transform;
 }
-
 
 /**
  * Get a transform given a source code and a destination code.

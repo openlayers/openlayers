@@ -1,11 +1,10 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
 import {Fill, RegularShape, Stroke, Style} from '../src/ol/style.js';
-
 
 const stroke = new Stroke({color: 'black', width: 2});
 const fill = new Fill({color: 'red'});
@@ -17,8 +16,8 @@ const styles = {
       stroke: stroke,
       points: 4,
       radius: 10,
-      angle: Math.PI / 4
-    })
+      angle: Math.PI / 4,
+    }),
   }),
   'triangle': new Style({
     image: new RegularShape({
@@ -27,8 +26,8 @@ const styles = {
       points: 3,
       radius: 10,
       rotation: Math.PI / 4,
-      angle: 0
-    })
+      angle: 0,
+    }),
   }),
   'star': new Style({
     image: new RegularShape({
@@ -37,8 +36,8 @@ const styles = {
       points: 5,
       radius: 10,
       radius2: 4,
-      angle: 0
-    })
+      angle: 0,
+    }),
   }),
   'cross': new Style({
     image: new RegularShape({
@@ -47,8 +46,8 @@ const styles = {
       points: 4,
       radius: 10,
       radius2: 0,
-      angle: 0
-    })
+      angle: 0,
+    }),
   }),
   'x': new Style({
     image: new RegularShape({
@@ -57,8 +56,8 @@ const styles = {
       points: 4,
       radius: 10,
       radius2: 0,
-      angle: Math.PI / 4
-    })
+      angle: Math.PI / 4,
+    }),
   }),
   'stacked': [
     new Style({
@@ -68,8 +67,8 @@ const styles = {
         points: 4,
         radius: 5,
         angle: Math.PI / 4,
-        displacement: [0, 10]
-      })
+        displacement: [0, 10],
+      }),
     }),
     new Style({
       image: new RegularShape({
@@ -77,12 +76,11 @@ const styles = {
         stroke: stroke,
         points: 4,
         radius: 10,
-        angle: Math.PI / 4
-      })
-    })
-  ]
+        angle: Math.PI / 4,
+      }),
+    }),
+  ],
 };
-
 
 const styleKeys = ['x', 'cross', 'star', 'triangle', 'square', 'stacked'];
 const count = 250;
@@ -95,20 +93,18 @@ for (let i = 0; i < count; ++i) {
 }
 
 const source = new VectorSource({
-  features: features
+  features: features,
 });
 
 const vectorLayer = new VectorLayer({
-  source: source
+  source: source,
 });
 
 const map = new Map({
-  layers: [
-    vectorLayer
-  ],
+  layers: [vectorLayer],
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });

@@ -2,10 +2,9 @@
  * @module ol/control/Rotate
  */
 import Control from './Control.js';
+import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
-import EventType from '../events/EventType.js';
-
 
 /**
  * @typedef {Object} Options
@@ -23,7 +22,6 @@ import EventType from '../events/EventType.js';
  * rendered outside of the map's viewport.
  */
 
-
 /**
  * @classdesc
  * A button control to reset rotation to 0.
@@ -33,21 +31,20 @@ import EventType from '../events/EventType.js';
  * @api
  */
 class Rotate extends Control {
-
   /**
    * @param {Options=} opt_options Rotate options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
       element: document.createElement('div'),
       render: options.render || render,
-      target: options.target
+      target: options.target,
     });
 
-    const className = options.className !== undefined ? options.className : 'ol-rotate';
+    const className =
+      options.className !== undefined ? options.className : 'ol-rotate';
 
     const label = options.label !== undefined ? options.label : '\u21E7';
 
@@ -74,9 +71,14 @@ class Rotate extends Control {
     button.title = tipLabel;
     button.appendChild(this.label_);
 
-    button.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
+    button.addEventListener(
+      EventType.CLICK,
+      this.handleClick_.bind(this),
+      false
+    );
 
-    const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+    const cssClasses =
+      className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     const element = this.element;
     element.className = cssClasses;
     element.appendChild(button);
@@ -104,7 +106,6 @@ class Rotate extends Control {
     if (this.autoHide_) {
       this.element.classList.add(CLASS_HIDDEN);
     }
-
   }
 
   /**
@@ -137,7 +138,7 @@ class Rotate extends Control {
         view.animate({
           rotation: 0,
           duration: this.duration_,
-          easing: easeOut
+          easing: easeOut,
         });
       } else {
         view.setRotation(0);
@@ -145,7 +146,6 @@ class Rotate extends Control {
     }
   }
 }
-
 
 /**
  * Update the rotate control element.

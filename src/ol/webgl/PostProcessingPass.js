@@ -97,7 +97,6 @@ const DEFAULT_FRAGMENT_SHADER = `
  * @api
  */
 class WebGLPostProcessingPass {
-
   /**
    * @param {Options} options Options.
    */
@@ -115,10 +114,16 @@ class WebGLPostProcessingPass {
     // compile the program for the frame buffer
     // TODO: make compilation errors show up
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, options.vertexShader || DEFAULT_VERTEX_SHADER);
+    gl.shaderSource(
+      vertexShader,
+      options.vertexShader || DEFAULT_VERTEX_SHADER
+    );
     gl.compileShader(vertexShader);
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, options.fragmentShader || DEFAULT_FRAGMENT_SHADER);
+    gl.shaderSource(
+      fragmentShader,
+      options.fragmentShader || DEFAULT_FRAGMENT_SHADER
+    );
     gl.compileShader(fragmentShader);
     this.renderTargetProgram_ = gl.createProgram();
     gl.attachShader(this.renderTargetProgram_, vertexShader);
@@ -127,20 +132,26 @@ class WebGLPostProcessingPass {
 
     // bind the vertices buffer for the frame buffer
     this.renderTargetVerticesBuffer_ = gl.createBuffer();
-    const verticesArray = [
-      -1, -1,
-      1, -1,
-      -1, 1,
-      1, -1,
-      1, 1,
-      -1, 1
-    ];
+    const verticesArray = [-1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, 1];
     gl.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticesArray), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array(verticesArray),
+      gl.STATIC_DRAW
+    );
 
-    this.renderTargetAttribLocation_ = gl.getAttribLocation(this.renderTargetProgram_, 'a_position');
-    this.renderTargetUniformLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_screenSize');
-    this.renderTargetTextureLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_image');
+    this.renderTargetAttribLocation_ = gl.getAttribLocation(
+      this.renderTargetProgram_,
+      'a_position'
+    );
+    this.renderTargetUniformLocation_ = gl.getUniformLocation(
+      this.renderTargetProgram_,
+      'u_screenSize'
+    );
+    this.renderTargetTextureLocation_ = gl.getUniformLocation(
+      this.renderTargetProgram_,
+      'u_image'
+    );
 
     /**
      * Holds info about custom uniforms used in the post processing pass
@@ -148,12 +159,15 @@ class WebGLPostProcessingPass {
      * @private
      */
     this.uniforms_ = [];
-    options.uniforms && Object.keys(options.uniforms).forEach(function(name) {
-      this.uniforms_.push({
-        value: options.uniforms[name],
-        location: gl.getUniformLocation(this.renderTargetProgram_, name)
-      });
-    }.bind(this));
+    options.uniforms &&
+      Object.keys(options.uniforms).forEach(
+        function (name) {
+          this.uniforms_.push({
+            value: options.uniforms[name],
+            location: gl.getUniformLocation(this.renderTargetProgram_, name),
+          });
+        }.bind(this)
+      );
   }
 
   /**
@@ -176,7 +190,7 @@ class WebGLPostProcessingPass {
     const gl = this.getGL();
     const textureSize = [
       gl.drawingBufferWidth * this.scaleRatio_,
-      gl.drawingBufferHeight * this.scaleRatio_
+      gl.drawingBufferHeight * this.scaleRatio_,
     ];
 
     // rendering goes to my buffer
@@ -184,8 +198,11 @@ class WebGLPostProcessingPass {
     gl.viewport(0, 0, textureSize[0], textureSize[1]);
 
     // if size has changed: adjust canvas & render target texture
-    if (!this.renderTargetTextureSize_ ||
-      this.renderTargetTextureSize_[0] !== textureSize[0] || this.renderTargetTextureSize_[1] !== textureSize[1]) {
+    if (
+      !this.renderTargetTextureSize_ ||
+      this.renderTargetTextureSize_[0] !== textureSize[0] ||
+      this.renderTargetTextureSize_[1] !== textureSize[1]
+    ) {
       this.renderTargetTextureSize_ = textureSize;
 
       // create a new texture
@@ -196,16 +213,30 @@ class WebGLPostProcessingPass {
       const type = gl.UNSIGNED_BYTE;
       const data = null;
       gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
-      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
-        textureSize[0], textureSize[1],
-        border, format, type, data);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        level,
+        internalFormat,
+        textureSize[0],
+        textureSize[1],
+        border,
+        format,
+        type,
+        data
+      );
 
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
       // bind the texture to the framebuffer
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.renderTargetTexture_, 0);
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D,
+        this.renderTargetTexture_,
+        0
+      );
     }
   }
 
@@ -219,7 +250,10 @@ class WebGLPostProcessingPass {
     const gl = this.getGL();
     const size = frameState.size;
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, nextPass ? nextPass.getFrameBuffer() : null);
+    gl.bindFramebuffer(
+      gl.FRAMEBUFFER,
+      nextPass ? nextPass.getFrameBuffer() : null
+    );
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
 
@@ -234,7 +268,14 @@ class WebGLPostProcessingPass {
 
     gl.useProgram(this.renderTargetProgram_);
     gl.enableVertexAttribArray(this.renderTargetAttribLocation_);
-    gl.vertexAttribPointer(this.renderTargetAttribLocation_, 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(
+      this.renderTargetAttribLocation_,
+      2,
+      gl.FLOAT,
+      false,
+      0,
+      0
+    );
     gl.uniform2f(this.renderTargetUniformLocation_, size[0], size[1]);
     gl.uniform1i(this.renderTargetTextureLocation_, 0);
 
@@ -261,8 +302,11 @@ class WebGLPostProcessingPass {
 
     let value;
     let textureSlot = 1;
-    this.uniforms_.forEach(function(uniform) {
-      value = typeof uniform.value === 'function' ? uniform.value(frameState) : uniform.value;
+    this.uniforms_.forEach(function (uniform) {
+      value =
+        typeof uniform.value === 'function'
+          ? uniform.value(frameState)
+          : uniform.value;
 
       // apply value based on type
       if (value instanceof HTMLCanvasElement || value instanceof ImageData) {
@@ -277,15 +321,30 @@ class WebGLPostProcessingPass {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
         if (value instanceof ImageData) {
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, value.width, value.height, 0,
-            gl.UNSIGNED_BYTE, new Uint8Array(value.data));
+          gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            gl.RGBA,
+            value.width,
+            value.height,
+            0,
+            gl.UNSIGNED_BYTE,
+            new Uint8Array(value.data)
+          );
         } else {
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
+          gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            value
+          );
         }
 
         // fill texture slots
         gl.uniform1i(uniform.location, textureSlot++);
-
       } else if (Array.isArray(value)) {
         switch (value.length) {
           case 2:
@@ -295,9 +354,16 @@ class WebGLPostProcessingPass {
             gl.uniform3f(uniform.location, value[0], value[1], value[2]);
             return;
           case 4:
-            gl.uniform4f(uniform.location, value[0], value[1], value[2], value[3]);
+            gl.uniform4f(
+              uniform.location,
+              value[0],
+              value[1],
+              value[2],
+              value[3]
+            );
             return;
-          default: return;
+          default:
+            return;
         }
       } else if (typeof value === 'number') {
         gl.uniform1f(uniform.location, value);

@@ -1,14 +1,13 @@
 /**
  * @module ol/Overlay
  */
-import MapEventType from './MapEventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
+import MapEventType from './MapEventType.js';
 import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
-import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
-import {listen, unlistenByKey} from './events.js';
 import {containsExtent} from './extent.js';
-
+import {listen, unlistenByKey} from './events.js';
+import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
 
 /**
  * @typedef {Object} Options
@@ -56,7 +55,6 @@ import {containsExtent} from './extent.js';
  * name.
  */
 
-
 /**
  * @typedef {Object} PanOptions
  * @property {number} [duration=1000] The duration of the animation in
@@ -82,9 +80,8 @@ const Property = {
   MAP: 'map',
   OFFSET: 'offset',
   POSITION: 'position',
-  POSITIONING: 'positioning'
+  POSITIONING: 'positioning',
 };
-
 
 /**
  * @classdesc
@@ -107,12 +104,10 @@ const Property = {
  * @api
  */
 class Overlay extends BaseObject {
-
   /**
    * @param {Options} options Overlay options.
    */
   constructor(options) {
-
     super();
 
     /**
@@ -131,8 +126,8 @@ class Overlay extends BaseObject {
      * @protected
      * @type {boolean}
      */
-    this.insertFirst = options.insertFirst !== undefined ?
-      options.insertFirst : true;
+    this.insertFirst =
+      options.insertFirst !== undefined ? options.insertFirst : true;
 
     /**
      * @protected
@@ -145,22 +140,24 @@ class Overlay extends BaseObject {
      * @type {HTMLElement}
      */
     this.element = document.createElement('div');
-    this.element.className = options.className !== undefined ?
-      options.className : 'ol-overlay-container ' + CLASS_SELECTABLE;
+    this.element.className =
+      options.className !== undefined
+        ? options.className
+        : 'ol-overlay-container ' + CLASS_SELECTABLE;
     this.element.style.position = 'absolute';
 
     let autoPan = options.autoPan;
-    if (autoPan && ('object' !== typeof autoPan)) {
+    if (autoPan && 'object' !== typeof autoPan) {
       autoPan = {
         animation: options.autoPanAnimation,
-        margin: options.autoPanMargin
+        margin: options.autoPanMargin,
       };
     }
     /**
      * @protected
      * @type {PanIntoViewOptions|false}
      */
-    this.autoPan = /** @type {PanIntoViewOptions} */(autoPan) || false;
+    this.autoPan = /** @type {PanIntoViewOptions} */ (autoPan) || false;
 
     /**
      * @protected
@@ -169,7 +166,7 @@ class Overlay extends BaseObject {
      */
     this.rendered = {
       transform_: '',
-      visible: true
+      visible: true,
     };
 
     /**
@@ -178,11 +175,26 @@ class Overlay extends BaseObject {
      */
     this.mapPostrenderListenerKey = null;
 
-    this.addEventListener(getChangeEventType(Property.ELEMENT), this.handleElementChanged);
-    this.addEventListener(getChangeEventType(Property.MAP), this.handleMapChanged);
-    this.addEventListener(getChangeEventType(Property.OFFSET), this.handleOffsetChanged);
-    this.addEventListener(getChangeEventType(Property.POSITION), this.handlePositionChanged);
-    this.addEventListener(getChangeEventType(Property.POSITIONING), this.handlePositioningChanged);
+    this.addEventListener(
+      getChangeEventType(Property.ELEMENT),
+      this.handleElementChanged
+    );
+    this.addEventListener(
+      getChangeEventType(Property.MAP),
+      this.handleMapChanged
+    );
+    this.addEventListener(
+      getChangeEventType(Property.OFFSET),
+      this.handleOffsetChanged
+    );
+    this.addEventListener(
+      getChangeEventType(Property.POSITION),
+      this.handlePositionChanged
+    );
+    this.addEventListener(
+      getChangeEventType(Property.POSITIONING),
+      this.handlePositioningChanged
+    );
 
     if (options.element !== undefined) {
       this.setElement(options.element);
@@ -190,14 +202,15 @@ class Overlay extends BaseObject {
 
     this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
-    this.setPositioning(options.positioning !== undefined ?
-      /** @type {OverlayPositioning} */ (options.positioning) :
-      OverlayPositioning.TOP_LEFT);
+    this.setPositioning(
+      options.positioning !== undefined
+        ? /** @type {OverlayPositioning} */ (options.positioning)
+        : OverlayPositioning.TOP_LEFT
+    );
 
     if (options.position !== undefined) {
       this.setPosition(options.position);
     }
-
   }
 
   /**
@@ -227,9 +240,9 @@ class Overlay extends BaseObject {
    * @api
    */
   getMap() {
-    return (
-      /** @type {import("./PluggableMap.js").default|undefined} */ (this.get(Property.MAP))
-    );
+    return /** @type {import("./PluggableMap.js").default|undefined} */ (this.get(
+      Property.MAP
+    ));
   }
 
   /**
@@ -250,9 +263,9 @@ class Overlay extends BaseObject {
    * @api
    */
   getPosition() {
-    return (
-      /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(Property.POSITION))
-    );
+    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(
+      Property.POSITION
+    ));
   }
 
   /**
@@ -263,9 +276,7 @@ class Overlay extends BaseObject {
    * @api
    */
   getPositioning() {
-    return (
-      /** @type {OverlayPositioning} */ (this.get(Property.POSITIONING))
-    );
+    return /** @type {OverlayPositioning} */ (this.get(Property.POSITIONING));
   }
 
   /**
@@ -290,11 +301,16 @@ class Overlay extends BaseObject {
     }
     const map = this.getMap();
     if (map) {
-      this.mapPostrenderListenerKey = listen(map,
-        MapEventType.POSTRENDER, this.render, this);
+      this.mapPostrenderListenerKey = listen(
+        map,
+        MapEventType.POSTRENDER,
+        this.render,
+        this
+      );
       this.updatePixelPosition();
-      const container = this.stopEvent ?
-        map.getOverlayContainerStopEvent() : map.getOverlayContainer();
+      const container = this.stopEvent
+        ? map.getOverlayContainerStopEvent()
+        : map.getOverlayContainer();
       if (this.insertFirst) {
         container.insertBefore(this.element, container.childNodes[0] || null);
       } else {
@@ -402,9 +418,13 @@ class Overlay extends BaseObject {
 
     const mapRect = this.getRect(map.getTargetElement(), map.getSize());
     const element = this.getElement();
-    const overlayRect = this.getRect(element, [outerWidth(element), outerHeight(element)]);
+    const overlayRect = this.getRect(element, [
+      outerWidth(element),
+      outerHeight(element),
+    ]);
 
-    const myMargin = (panIntoViewOptions.margin === undefined) ? 20 : panIntoViewOptions.margin;
+    const myMargin =
+      panIntoViewOptions.margin === undefined ? 20 : panIntoViewOptions.margin;
     if (!containsExtent(mapRect, overlayRect)) {
       // the overlay is not completely inside the viewport, so pan the map
       const offsetLeft = overlayRect[0] - mapRect[0];
@@ -429,18 +449,17 @@ class Overlay extends BaseObject {
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
-        const center = /** @type {import("./coordinate.js").Coordinate} */ (map.getView().getCenterInternal());
+        const center = /** @type {import("./coordinate.js").Coordinate} */ (map
+          .getView()
+          .getCenterInternal());
         const centerPx = map.getPixelFromCoordinateInternal(center);
-        const newCenterPx = [
-          centerPx[0] + delta[0],
-          centerPx[1] + delta[1]
-        ];
+        const newCenterPx = [centerPx[0] + delta[0], centerPx[1] + delta[1]];
 
         const panOptions = panIntoViewOptions.animation || {};
         map.getView().animateInternal({
           center: map.getCoordinateFromPixelInternal(newCenterPx),
           duration: panOptions.duration,
-          easing: panOptions.easing
+          easing: panOptions.easing,
         });
       }
     }
@@ -457,12 +476,7 @@ class Overlay extends BaseObject {
     const box = element.getBoundingClientRect();
     const offsetX = box.left + window.pageXOffset;
     const offsetY = box.top + window.pageYOffset;
-    return [
-      offsetX,
-      offsetY,
-      offsetX + size[0],
-      offsetY + size[1]
-    ];
+    return [offsetX, offsetY, offsetX + size[0], offsetY + size[1]];
   }
 
   /**
@@ -522,22 +536,30 @@ class Overlay extends BaseObject {
     const y = Math.round(pixel[1] + offset[1]) + 'px';
     let posX = '0%';
     let posY = '0%';
-    if (positioning == OverlayPositioning.BOTTOM_RIGHT ||
-        positioning == OverlayPositioning.CENTER_RIGHT ||
-        positioning == OverlayPositioning.TOP_RIGHT) {
+    if (
+      positioning == OverlayPositioning.BOTTOM_RIGHT ||
+      positioning == OverlayPositioning.CENTER_RIGHT ||
+      positioning == OverlayPositioning.TOP_RIGHT
+    ) {
       posX = '-100%';
-    } else if (positioning == OverlayPositioning.BOTTOM_CENTER ||
-        positioning == OverlayPositioning.CENTER_CENTER ||
-        positioning == OverlayPositioning.TOP_CENTER) {
+    } else if (
+      positioning == OverlayPositioning.BOTTOM_CENTER ||
+      positioning == OverlayPositioning.CENTER_CENTER ||
+      positioning == OverlayPositioning.TOP_CENTER
+    ) {
       posX = '-50%';
     }
-    if (positioning == OverlayPositioning.BOTTOM_LEFT ||
-        positioning == OverlayPositioning.BOTTOM_CENTER ||
-        positioning == OverlayPositioning.BOTTOM_RIGHT) {
+    if (
+      positioning == OverlayPositioning.BOTTOM_LEFT ||
+      positioning == OverlayPositioning.BOTTOM_CENTER ||
+      positioning == OverlayPositioning.BOTTOM_RIGHT
+    ) {
       posY = '-100%';
-    } else if (positioning == OverlayPositioning.CENTER_LEFT ||
-        positioning == OverlayPositioning.CENTER_CENTER ||
-        positioning == OverlayPositioning.CENTER_RIGHT) {
+    } else if (
+      positioning == OverlayPositioning.CENTER_LEFT ||
+      positioning == OverlayPositioning.CENTER_CENTER ||
+      positioning == OverlayPositioning.CENTER_RIGHT
+    ) {
       posY = '-50%';
     }
     const transform = `translate(${posX}, ${posY}) translate(${x}, ${y})`;
@@ -557,6 +579,5 @@ class Overlay extends BaseObject {
     return this.options;
   }
 }
-
 
 export default Overlay;

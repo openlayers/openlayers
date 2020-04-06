@@ -6,7 +6,6 @@
  * @enum {string}
  */
 export default {
-
   /**
    * Triggered before a layer is rendered.
    * @event module:ol/render/Event~RenderEvent#prerender
@@ -44,6 +43,5 @@ export default {
    * @event module:ol/render/Event~RenderEvent#rendercomplete
    * @api
    */
-  RENDERCOMPLETE: 'rendercomplete'
-
+  RENDERCOMPLETE: 'rendercomplete',
 };

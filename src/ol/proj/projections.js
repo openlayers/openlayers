@@ -2,12 +2,10 @@
  * @module ol/proj/projections
  */
 
-
 /**
  * @type {Object<string, import("./Projection.js").default>}
  */
 let cache = {};
-
 
 /**
  * Clear the projections cache.
@@ -15,7 +13,6 @@ let cache = {};
 export function clear() {
   cache = {};
 }
-
 
 /**
  * Get a cached projection by code.
@@ -25,7 +22,6 @@ export function clear() {
 export function get(code) {
   return cache[code] || null;
 }
-
 
 /**
  * Add a projection to the cache.

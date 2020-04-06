@@ -1,16 +1,15 @@
 /**
  * @module ol/style/Icon
  */
-import {getUid} from '../util.js';
-import ImageState from '../ImageState.js';
-import {assert} from '../asserts.js';
-import {asArray} from '../color.js';
 import EventType from '../events/EventType.js';
 import IconAnchorUnits from './IconAnchorUnits.js';
-import {get as getIconImage} from './IconImage.js';
 import IconOrigin from './IconOrigin.js';
+import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
-
+import {asArray} from '../color.js';
+import {assert} from '../asserts.js';
+import {get as getIconImage} from './IconImage.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
@@ -47,7 +46,6 @@ import ImageStyle from './Image.js';
  * @property {string} [src] Image source URI.
  */
 
-
 /**
  * @classdesc
  * Set icon style for vector features.
@@ -78,15 +76,16 @@ class Icon extends ImageStyle {
     /**
      * @type {boolean}
      */
-    const rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
+    const rotateWithView =
+      options.rotateWithView !== undefined ? options.rotateWithView : false;
 
     super({
       opacity: opacity,
       rotation: rotation,
       scale: scale,
-      displacement: options.displacement !== undefined ? options.displacement : [0, 0],
-      rotateWithView: rotateWithView
+      displacement:
+        options.displacement !== undefined ? options.displacement : [0, 0],
+      rotateWithView: rotateWithView,
     });
 
     /**
@@ -105,29 +104,35 @@ class Icon extends ImageStyle {
      * @private
      * @type {import("./IconOrigin.js").default}
      */
-    this.anchorOrigin_ = options.anchorOrigin !== undefined ?
-      options.anchorOrigin : IconOrigin.TOP_LEFT;
+    this.anchorOrigin_ =
+      options.anchorOrigin !== undefined
+        ? options.anchorOrigin
+        : IconOrigin.TOP_LEFT;
 
     /**
      * @private
      * @type {import("./IconAnchorUnits.js").default}
      */
-    this.anchorXUnits_ = options.anchorXUnits !== undefined ?
-      options.anchorXUnits : IconAnchorUnits.FRACTION;
+    this.anchorXUnits_ =
+      options.anchorXUnits !== undefined
+        ? options.anchorXUnits
+        : IconAnchorUnits.FRACTION;
 
     /**
      * @private
      * @type {import("./IconAnchorUnits.js").default}
      */
-    this.anchorYUnits_ = options.anchorYUnits !== undefined ?
-      options.anchorYUnits : IconAnchorUnits.FRACTION;
+    this.anchorYUnits_ =
+      options.anchorYUnits !== undefined
+        ? options.anchorYUnits
+        : IconAnchorUnits.FRACTION;
 
     /**
      * @private
      * @type {?string}
      */
     this.crossOrigin_ =
-        options.crossOrigin !== undefined ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
     /**
      * @type {HTMLImageElement|HTMLCanvasElement}
@@ -144,22 +149,19 @@ class Icon extends ImageStyle {
      */
     let src = options.src;
 
-    assert(!(src !== undefined && image),
-      4); // `image` and `src` cannot be provided at the same time
-    assert(!image || (image && imgSize),
-      5); // `imgSize` must be set when `image` is provided
+    assert(!(src !== undefined && image), 4); // `image` and `src` cannot be provided at the same time
+    assert(!image || (image && imgSize), 5); // `imgSize` must be set when `image` is provided
 
     if ((src === undefined || src.length === 0) && image) {
       src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
     }
-    assert(src !== undefined && src.length > 0,
-      6); // A defined and non-empty `src` or `image` must be provided
+    assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
 
     /**
      * @type {import("../ImageState.js").default}
      */
-    const imageState = options.src !== undefined ?
-      ImageState.IDLE : ImageState.LOADED;
+    const imageState =
+      options.src !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
     /**
      * @private
@@ -172,7 +174,13 @@ class Icon extends ImageStyle {
      * @type {import("./IconImage.js").default}
      */
     this.iconImage_ = getIconImage(
-      image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
+      image,
+      /** @type {string} */ (src),
+      imgSize,
+      this.crossOrigin_,
+      imageState,
+      this.color_
+    );
 
     /**
      * @private
@@ -183,8 +191,10 @@ class Icon extends ImageStyle {
      * @private
      * @type {import("./IconOrigin.js").default}
      */
-    this.offsetOrigin_ = options.offsetOrigin !== undefined ?
-      options.offsetOrigin : IconOrigin.TOP_LEFT;
+    this.offsetOrigin_ =
+      options.offsetOrigin !== undefined
+        ? options.offsetOrigin
+        : IconOrigin.TOP_LEFT;
 
     /**
      * @private
@@ -197,7 +207,6 @@ class Icon extends ImageStyle {
      * @type {import("../size.js").Size}
      */
     this.size_ = options.size !== undefined ? options.size : null;
-
   }
 
   /**
@@ -212,7 +221,10 @@ class Icon extends ImageStyle {
       anchorXUnits: this.anchorXUnits_,
       anchorYUnits: this.anchorYUnits_,
       crossOrigin: this.crossOrigin_,
-      color: (this.color_ && this.color_.slice) ? this.color_.slice() : this.color_ || undefined,
+      color:
+        this.color_ && this.color_.slice
+          ? this.color_.slice()
+          : this.color_ || undefined,
       src: this.getSrc(),
       offset: this.offset_.slice(),
       offsetOrigin: this.offsetOrigin_,
@@ -220,7 +232,7 @@ class Icon extends ImageStyle {
       opacity: this.getOpacity(),
       scale: this.getScale(),
       rotation: this.getRotation(),
-      rotateWithView: this.getRotateWithView()
+      rotateWithView: this.getRotateWithView(),
     });
   }
 
@@ -236,8 +248,10 @@ class Icon extends ImageStyle {
     }
     let anchor = this.anchor_;
     const size = this.getSize();
-    if (this.anchorXUnits_ == IconAnchorUnits.FRACTION ||
-        this.anchorYUnits_ == IconAnchorUnits.FRACTION) {
+    if (
+      this.anchorXUnits_ == IconAnchorUnits.FRACTION ||
+      this.anchorYUnits_ == IconAnchorUnits.FRACTION
+    ) {
       if (!size) {
         return null;
       }
@@ -257,12 +271,16 @@ class Icon extends ImageStyle {
       if (anchor === this.anchor_) {
         anchor = this.anchor_.slice();
       }
-      if (this.anchorOrigin_ == IconOrigin.TOP_RIGHT ||
-          this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT) {
+      if (
+        this.anchorOrigin_ == IconOrigin.TOP_RIGHT ||
+        this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT
+      ) {
         anchor[0] = -anchor[0] + size[0];
       }
-      if (this.anchorOrigin_ == IconOrigin.BOTTOM_LEFT ||
-          this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT) {
+      if (
+        this.anchorOrigin_ == IconOrigin.BOTTOM_LEFT ||
+        this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT
+      ) {
         anchor[1] = -anchor[1] + size[1];
       }
     }
@@ -349,12 +367,16 @@ class Icon extends ImageStyle {
         return null;
       }
       offset = offset.slice();
-      if (this.offsetOrigin_ == IconOrigin.TOP_RIGHT ||
-          this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT) {
+      if (
+        this.offsetOrigin_ == IconOrigin.TOP_RIGHT ||
+        this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT
+      ) {
         offset[0] = iconImageSize[0] - size[0] - offset[0];
       }
-      if (this.offsetOrigin_ == IconOrigin.BOTTOM_LEFT ||
-          this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT) {
+      if (
+        this.offsetOrigin_ == IconOrigin.BOTTOM_LEFT ||
+        this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT
+      ) {
         offset[1] = iconImageSize[1] - size[1] - offset[1];
       }
     }
@@ -407,6 +429,5 @@ class Icon extends ImageStyle {
     this.iconImage_.removeEventListener(EventType.CHANGE, listener);
   }
 }
-
 
 export default Icon;

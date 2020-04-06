@@ -9,7 +9,6 @@
  * @api
  */
 class Kinetic {
-
   /**
    * @param {number} decay Rate of decay (must be negative).
    * @param {number} minVelocity Minimum velocity (pixels/millisecond).
@@ -17,7 +16,6 @@ class Kinetic {
    *     initial values (milliseconds).
    */
   constructor(decay, minVelocity, delay) {
-
     /**
      * @private
      * @type {number}

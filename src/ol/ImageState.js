@@ -10,5 +10,5 @@ export default {
   LOADING: 1,
   LOADED: 2,
   ERROR: 3,
-  EMPTY: 4
+  EMPTY: 4,
 };

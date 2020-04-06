@@ -33,5 +33,5 @@ export default {
    * @event module:ol/source/Vector.VectorSourceEvent#removefeature
    * @api
    */
-  REMOVEFEATURE: 'removefeature'
+  REMOVEFEATURE: 'removefeature',
 };

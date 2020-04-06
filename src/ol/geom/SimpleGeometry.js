@@ -1,11 +1,11 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
-import {abstract} from '../util.js';
-import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from './Geometry.js';
 import GeometryLayout from './GeometryLayout.js';
-import {rotate, scale, translate, transform2D} from './flat/transform.js';
+import {abstract} from '../util.js';
+import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
+import {rotate, scale, transform2D, translate} from './flat/transform.js';
 
 /**
  * @classdesc
@@ -17,7 +17,6 @@ import {rotate, scale, translate, transform2D} from './flat/transform.js';
  */
 class SimpleGeometry extends Geometry {
   constructor() {
-
     super();
 
     /**
@@ -37,7 +36,6 @@ class SimpleGeometry extends Geometry {
      * @type {Array<number>}
      */
     this.flatCoordinates = null;
-
   }
 
   /**
@@ -46,8 +44,13 @@ class SimpleGeometry extends Geometry {
    * @return {import("../extent.js").Extent} extent Extent.
    */
   computeExtent(extent) {
-    return createOrUpdateFromFlatCoordinates(this.flatCoordinates,
-      0, this.flatCoordinates.length, this.stride, extent);
+    return createOrUpdateFromFlatCoordinates(
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      extent
+    );
   }
 
   /**
@@ -80,7 +83,9 @@ class SimpleGeometry extends Geometry {
    * @api
    */
   getLastCoordinate() {
-    return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
+    return this.flatCoordinates.slice(
+      this.flatCoordinates.length - this.stride
+    );
   }
 
   /**
@@ -104,14 +109,17 @@ class SimpleGeometry extends Geometry {
     }
     // If squaredTolerance is negative or if we know that simplification will not
     // have any effect then just return this.
-    if (squaredTolerance < 0 ||
-        (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-         squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)) {
+    if (
+      squaredTolerance < 0 ||
+      (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+        squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)
+    ) {
       return this;
     }
 
-    const simplifiedGeometry =
-        this.getSimplifiedGeometryInternal(squaredTolerance);
+    const simplifiedGeometry = this.getSimplifiedGeometryInternal(
+      squaredTolerance
+    );
     const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
     if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
       return simplifiedGeometry;
@@ -218,8 +226,14 @@ class SimpleGeometry extends Geometry {
     if (flatCoordinates) {
       const stride = this.getStride();
       rotate(
-        flatCoordinates, 0, flatCoordinates.length,
-        stride, angle, anchor, flatCoordinates);
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        stride,
+        angle,
+        anchor,
+        flatCoordinates
+      );
       this.changed();
     }
   }
@@ -227,7 +241,7 @@ class SimpleGeometry extends Geometry {
   /**
    * Scale the geometry (with an optional origin).  This modifies the geometry
    * coordinates in place.
-    * @param {number} sx The scaling factor in the x-direction.
+   * @param {number} sx The scaling factor in the x-direction.
    * @param {number=} opt_sy The scaling factor in the y-direction (defaults to sx).
    * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
    *     of the geometry extent).
@@ -246,8 +260,15 @@ class SimpleGeometry extends Geometry {
     if (flatCoordinates) {
       const stride = this.getStride();
       scale(
-        flatCoordinates, 0, flatCoordinates.length,
-        stride, sx, sy, anchor, flatCoordinates);
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        stride,
+        sx,
+        sy,
+        anchor,
+        flatCoordinates
+      );
       this.changed();
     }
   }
@@ -264,13 +285,18 @@ class SimpleGeometry extends Geometry {
     if (flatCoordinates) {
       const stride = this.getStride();
       translate(
-        flatCoordinates, 0, flatCoordinates.length, stride,
-        deltaX, deltaY, flatCoordinates);
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        stride,
+        deltaX,
+        deltaY,
+        flatCoordinates
+      );
       this.changed();
     }
   }
 }
-
 
 /**
  * @param {number} stride Stride.
@@ -285,11 +311,8 @@ function getLayoutForStride(stride) {
   } else if (stride == 4) {
     layout = GeometryLayout.XYZM;
   }
-  return (
-    /** @type {GeometryLayout} */ (layout)
-  );
+  return /** @type {GeometryLayout} */ (layout);
 }
-
 
 /**
  * @param {GeometryLayout} layout Layout.
@@ -307,7 +330,6 @@ export function getStrideForLayout(layout) {
   return /** @type {number} */ (stride);
 }
 
-
 /**
  * @param {SimpleGeometry} simpleGeometry Simple geometry.
  * @param {import("../transform.js").Transform} transform Transform.
@@ -321,8 +343,13 @@ export function transformGeom2D(simpleGeometry, transform, opt_dest) {
   } else {
     const stride = simpleGeometry.getStride();
     return transform2D(
-      flatCoordinates, 0, flatCoordinates.length, stride,
-      transform, opt_dest);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+      transform,
+      opt_dest
+    );
   }
 }
 

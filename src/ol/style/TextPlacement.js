@@ -11,5 +11,5 @@
  */
 export default {
   POINT: 'point',
-  LINE: 'line'
+  LINE: 'line',
 };

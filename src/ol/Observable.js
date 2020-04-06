@@ -1,9 +1,9 @@
 /**
  * @module ol/Observable
  */
-import {listen, unlistenByKey, listenOnce} from './events.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import {listen, listenOnce, unlistenByKey} from './events.js';
 
 /**
  * @classdesc
@@ -18,7 +18,6 @@ import EventType from './events/EventType.js';
  */
 class Observable extends EventTarget {
   constructor() {
-
     super();
 
     /**
@@ -26,7 +25,6 @@ class Observable extends EventTarget {
      * @type {number}
      */
     this.revision_ = 0;
-
   }
 
   /**
@@ -109,7 +107,6 @@ class Observable extends EventTarget {
   }
 }
 
-
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.
  * @param {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} key The key returned by `on()`
@@ -125,6 +122,5 @@ export function unByKey(key) {
     unlistenByKey(/** @type {import("./events.js").EventsKey} */ (key));
   }
 }
-
 
 export default Observable;

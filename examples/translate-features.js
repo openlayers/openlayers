@@ -1,27 +1,30 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {defaults as defaultInteractions, Select, Translate} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-
+import View from '../src/ol/View.js';
+import {
+  Select,
+  Translate,
+  defaults as defaultInteractions,
+} from '../src/ol/interaction.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 const raster = new TileLayer({
-  source: new OSM()
+  source: new OSM(),
 });
 
 const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/countries.geojson',
-    format: new GeoJSON()
-  })
+    format: new GeoJSON(),
+  }),
 });
 
 const select = new Select();
 
 const translate = new Translate({
-  features: select.getFeatures()
+  features: select.getFeatures(),
 });
 
 const map = new Map({
@@ -30,6 +33,6 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });

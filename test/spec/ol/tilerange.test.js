@@ -1,15 +1,13 @@
 import TileRange from '../../../src/ol/TileRange.js';
 
-
-describe('ol.TileRange', function() {
-
-  describe('constructor', function() {
-    it('creates a range', function() {
+describe('ol.TileRange', function () {
+  describe('constructor', function () {
+    it('creates a range', function () {
       const range = new TileRange(1, 3, 2, 4);
       expect(range).to.be.a(TileRange);
     });
 
-    it('can represent a range of one tile', function() {
+    it('can represent a range of one tile', function () {
       const range = new TileRange(2, 2, 3, 3);
       expect(range).to.be.a(TileRange);
       expect(range.getHeight()).to.be(1);
@@ -17,8 +15,8 @@ describe('ol.TileRange', function() {
     });
   });
 
-  describe('contains', function() {
-    it('returns the expected value', function() {
+  describe('contains', function () {
+    it('returns the expected value', function () {
       const tileRange = new TileRange(1, 3, 1, 3);
       expect(tileRange.contains([0, 0, 0])).to.not.be();
       expect(tileRange.contains([0, 0, 1])).to.not.be();
@@ -48,8 +46,8 @@ describe('ol.TileRange', function() {
     });
   });
 
-  describe('equals', function() {
-    it('determines equivalence of two ranges', function() {
+  describe('equals', function () {
+    it('determines equivalence of two ranges', function () {
       const one = new TileRange(0, 2, 1, 4);
       const same = new TileRange(0, 2, 1, 4);
       const diff1 = new TileRange(0, 2, 1, 5);
@@ -64,8 +62,8 @@ describe('ol.TileRange', function() {
     });
   });
 
-  describe('extent', function() {
-    it('modifies range so it includes another', function() {
+  describe('extent', function () {
+    it('modifies range so it includes another', function () {
       const one = new TileRange(0, 2, 1, 4);
       const other = new TileRange(-1, -3, 10, 12);
       one.extend(other);
@@ -74,20 +72,19 @@ describe('ol.TileRange', function() {
       expect(one.maxX).to.be(2);
       expect(one.minY).to.be(1);
       expect(one.maxY).to.be(12);
-
     });
   });
 
-  describe('getSize', function() {
-    it('returns the expected size', function() {
+  describe('getSize', function () {
+    it('returns the expected size', function () {
       const tileRange = new TileRange(0, 2, 1, 4);
       const size = tileRange.getSize();
       expect(size).to.eql([3, 4]);
     });
   });
 
-  describe('intersects', function() {
-    it('determines if two ranges overlap', function() {
+  describe('intersects', function () {
+    it('determines if two ranges overlap', function () {
       const one = new TileRange(0, 2, 1, 4);
       const overlapsRight = new TileRange(2, 4, 1, 4);
       const overlapsLeft = new TileRange(-3, 0, 1, 4);
@@ -108,5 +105,4 @@ describe('ol.TileRange', function() {
       expect(one.intersects(below)).to.be(false);
     });
   });
-
 });

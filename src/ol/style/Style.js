@@ -2,12 +2,11 @@
  * @module ol/style/Style
  */
 
-import {assert} from '../asserts.js';
-import GeometryType from '../geom/GeometryType.js';
 import CircleStyle from './Circle.js';
 import Fill from './Fill.js';
+import GeometryType from '../geom/GeometryType.js';
 import Stroke from './Stroke.js';
-
+import {assert} from '../asserts.js';
 
 /**
  * A function that takes an {@link module:ol/Feature} and a `{number}`
@@ -32,7 +31,6 @@ import Stroke from './Stroke.js';
  *     (import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined)} GeometryFunction
  */
 
-
 /**
  * Custom renderer function. Takes two arguments:
  *
@@ -42,7 +40,6 @@ import Stroke from './Stroke.js';
  * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>),import("../render.js").State): void}
  * RenderFunction
  */
-
 
 /**
  * @typedef {Object} Options
@@ -153,7 +150,6 @@ class Style {
    * @param {Options=} opt_options Style options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     /**
@@ -179,9 +175,9 @@ class Style {
     this.fill_ = options.fill !== undefined ? options.fill : null;
 
     /**
-       * @private
-       * @type {import("./Image.js").default}
-       */
+     * @private
+     * @type {import("./Image.js").default}
+     */
     this.image_ = options.image !== undefined ? options.image : null;
 
     /**
@@ -207,7 +203,6 @@ class Style {
      * @type {number|undefined}
      */
     this.zIndex_ = options.zIndex;
-
   }
 
   /**
@@ -226,7 +221,7 @@ class Style {
       image: this.getImage() ? this.getImage().clone() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       text: this.getText() ? this.getText().clone() : undefined,
-      zIndex: this.getZIndex()
+      zIndex: this.getZIndex(),
     });
   }
 
@@ -364,18 +359,16 @@ class Style {
     if (typeof geometry === 'function') {
       this.geometryFunction_ = geometry;
     } else if (typeof geometry === 'string') {
-      this.geometryFunction_ = function(feature) {
-        return (
-          /** @type {import("../geom/Geometry.js").default} */ (feature.get(geometry))
-        );
+      this.geometryFunction_ = function (feature) {
+        return /** @type {import("../geom/Geometry.js").default} */ (feature.get(
+          geometry
+        ));
       };
     } else if (!geometry) {
       this.geometryFunction_ = defaultGeometryFunction;
     } else if (geometry !== undefined) {
-      this.geometryFunction_ = function() {
-        return (
-          /** @type {import("../geom/Geometry.js").default} */ (geometry)
-        );
+      this.geometryFunction_ = function () {
+        return /** @type {import("../geom/Geometry.js").default} */ (geometry);
       };
     }
     this.geometry_ = geometry;
@@ -391,7 +384,6 @@ class Style {
     this.zIndex_ = zIndex;
   }
 }
-
 
 /**
  * Convert the provided object into a style function.  Functions passed through
@@ -414,24 +406,21 @@ export function toFunction(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(typeof /** @type {?} */ (obj).getZIndex === 'function',
-        41); // Expected an `Style` or an array of `Style`
+      assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `Style` or an array of `Style`
       const style = /** @type {Style} */ (obj);
       styles = [style];
     }
-    styleFunction = function() {
+    styleFunction = function () {
       return styles;
     };
   }
   return styleFunction;
 }
 
-
 /**
  * @type {Array<Style>}
  */
 let defaultStyles = null;
-
 
 /**
  * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -446,27 +435,26 @@ export function createDefaultStyle(feature, resolution) {
   // in such browsers.)
   if (!defaultStyles) {
     const fill = new Fill({
-      color: 'rgba(255,255,255,0.4)'
+      color: 'rgba(255,255,255,0.4)',
     });
     const stroke = new Stroke({
       color: '#3399CC',
-      width: 1.25
+      width: 1.25,
     });
     defaultStyles = [
       new Style({
         image: new CircleStyle({
           fill: fill,
           stroke: stroke,
-          radius: 5
+          radius: 5,
         }),
         fill: fill,
-        stroke: stroke
-      })
+        stroke: stroke,
+      }),
     ];
   }
   return defaultStyles;
 }
-
 
 /**
  * Default styles for editing features.
@@ -481,63 +469,55 @@ export function createEditingStyle() {
   styles[GeometryType.POLYGON] = [
     new Style({
       fill: new Fill({
-        color: [255, 255, 255, 0.5]
-      })
-    })
+        color: [255, 255, 255, 0.5],
+      }),
+    }),
   ];
-  styles[GeometryType.MULTI_POLYGON] =
-      styles[GeometryType.POLYGON];
+  styles[GeometryType.MULTI_POLYGON] = styles[GeometryType.POLYGON];
 
   styles[GeometryType.LINE_STRING] = [
     new Style({
       stroke: new Stroke({
         color: white,
-        width: width + 2
-      })
+        width: width + 2,
+      }),
     }),
     new Style({
       stroke: new Stroke({
         color: blue,
-        width: width
-      })
-    })
+        width: width,
+      }),
+    }),
   ];
-  styles[GeometryType.MULTI_LINE_STRING] =
-      styles[GeometryType.LINE_STRING];
+  styles[GeometryType.MULTI_LINE_STRING] = styles[GeometryType.LINE_STRING];
 
-  styles[GeometryType.CIRCLE] =
-      styles[GeometryType.POLYGON].concat(
-        styles[GeometryType.LINE_STRING]
-      );
-
+  styles[GeometryType.CIRCLE] = styles[GeometryType.POLYGON].concat(
+    styles[GeometryType.LINE_STRING]
+  );
 
   styles[GeometryType.POINT] = [
     new Style({
       image: new CircleStyle({
         radius: width * 2,
         fill: new Fill({
-          color: blue
+          color: blue,
         }),
         stroke: new Stroke({
           color: white,
-          width: width / 2
-        })
+          width: width / 2,
+        }),
       }),
-      zIndex: Infinity
-    })
+      zIndex: Infinity,
+    }),
   ];
-  styles[GeometryType.MULTI_POINT] =
-      styles[GeometryType.POINT];
+  styles[GeometryType.MULTI_POINT] = styles[GeometryType.POINT];
 
-  styles[GeometryType.GEOMETRY_COLLECTION] =
-      styles[GeometryType.POLYGON].concat(
-        styles[GeometryType.LINE_STRING],
-        styles[GeometryType.POINT]
-      );
+  styles[GeometryType.GEOMETRY_COLLECTION] = styles[
+    GeometryType.POLYGON
+  ].concat(styles[GeometryType.LINE_STRING], styles[GeometryType.POINT]);
 
   return styles;
 }
-
 
 /**
  * Function that is called with a feature and returns its default geometry.

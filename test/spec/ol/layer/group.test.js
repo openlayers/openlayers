@@ -1,39 +1,36 @@
-import {getUid} from '../../../../src/ol/util.js';
 import Collection from '../../../../src/ol/Collection.js';
-import {getIntersection} from '../../../../src/ol/extent.js';
-import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
-import {assign} from '../../../../src/ol/obj.js';
+import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Source from '../../../../src/ol/source/Source.js';
+import {assign} from '../../../../src/ol/obj.js';
+import {getIntersection} from '../../../../src/ol/extent.js';
+import {getUid} from '../../../../src/ol/util.js';
 
-
-describe('ol.layer.Group', function() {
-
-  describe('constructor (defaults)', function() {
-
+describe('ol.layer.Group', function () {
+  describe('constructor (defaults)', function () {
     let layerGroup;
 
-    beforeEach(function() {
+    beforeEach(function () {
       layerGroup = new LayerGroup();
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layerGroup.dispose();
     });
 
-    it('creates an instance', function() {
+    it('creates an instance', function () {
       expect(layerGroup).to.be.a(LayerGroup);
     });
 
-    it('provides default opacity', function() {
+    it('provides default opacity', function () {
       expect(layerGroup.getOpacity()).to.be(1);
     });
 
-    it('provides default visibility', function() {
+    it('provides default visibility', function () {
       expect(layerGroup.getVisible()).to.be(true);
     });
 
-    it('provides default layerState', function() {
+    it('provides default layerState', function () {
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
         opacity: 1,
@@ -45,45 +42,43 @@ describe('ol.layer.Group', function() {
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
     });
 
-    it('provides default empty layers collection', function() {
+    it('provides default empty layers collection', function () {
       expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(0);
     });
-
   });
 
-  describe('generic change event', function() {
-
+  describe('generic change event', function () {
     let layer, group, listener;
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
-        })
+          projection: 'EPSG:4326',
+        }),
       });
       group = new LayerGroup({
-        layers: [layer]
+        layers: [layer],
       });
       listener = sinon.spy();
     });
 
-    afterEach(function() {
+    afterEach(function () {
       group.dispose();
       layer.dispose();
     });
 
-    it('is dispatched by the group when layer opacity changes', function() {
+    it('is dispatched by the group when layer opacity changes', function () {
       group.on('change', listener);
 
       layer.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
-    it('is dispatched by the group when layer visibility changes', function() {
+    it('is dispatched by the group when layer visibility changes', function () {
       group.on('change', listener);
 
       layer.setVisible(false);
@@ -92,37 +87,35 @@ describe('ol.layer.Group', function() {
       layer.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
-
   });
 
-  describe('property change event', function() {
-
+  describe('property change event', function () {
     let layer, group, listener;
-    beforeEach(function() {
+    beforeEach(function () {
       layer = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
-        })
+          projection: 'EPSG:4326',
+        }),
       });
       group = new LayerGroup({
-        layers: [layer]
+        layers: [layer],
       });
       listener = sinon.spy();
     });
 
-    afterEach(function() {
+    afterEach(function () {
       group.dispose();
       layer.dispose();
     });
 
-    it('is dispatched by the group when group opacity changes', function() {
+    it('is dispatched by the group when group opacity changes', function () {
       group.on('propertychange', listener);
 
       group.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
-    it('is dispatched by the group when group visibility changes', function() {
+    it('is dispatched by the group when group visibility changes', function () {
       group.on('propertychange', listener);
 
       group.setVisible(false);
@@ -131,16 +124,14 @@ describe('ol.layer.Group', function() {
       group.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
-
   });
 
-  describe('constructor (options)', function() {
-
-    it('accepts options', function() {
+  describe('constructor (options)', function () {
+    it('accepts options', function () {
       const layer = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
-        })
+          projection: 'EPSG:4326',
+        }),
       });
       const layerGroup = new LayerGroup({
         layers: [layer],
@@ -150,7 +141,7 @@ describe('ol.layer.Group', function() {
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: 1,
-        maxZoom: 10
+        maxZoom: 10,
       });
 
       expect(layerGroup.getOpacity()).to.be(0.5);
@@ -170,7 +161,7 @@ describe('ol.layer.Group', function() {
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: 1,
-        maxZoom: 10
+        maxZoom: 10,
       });
       expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
@@ -180,11 +171,11 @@ describe('ol.layer.Group', function() {
       layerGroup.dispose();
     });
 
-    it('accepts an extent option', function() {
+    it('accepts an extent option', function () {
       const layer = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
-        })
+          projection: 'EPSG:4326',
+        }),
       });
 
       const groupExtent = [-10, -5, 10, 5];
@@ -194,7 +185,7 @@ describe('ol.layer.Group', function() {
         visible: false,
         extent: groupExtent,
         maxResolution: 500,
-        minResolution: 0.25
+        minResolution: 0.25,
       });
 
       expect(layerGroup.getOpacity()).to.be(0.5);
@@ -213,7 +204,7 @@ describe('ol.layer.Group', function() {
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
       expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
@@ -224,19 +215,18 @@ describe('ol.layer.Group', function() {
     });
   });
 
-  describe('#getLayerState', function() {
-
+  describe('#getLayerState', function () {
     let layerGroup;
 
-    beforeEach(function() {
+    beforeEach(function () {
       layerGroup = new LayerGroup();
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layerGroup.dispose();
     });
 
-    it('returns a layerState from the properties values', function() {
+    it('returns a layerState from the properties values', function () {
       layerGroup.setOpacity(0.3);
       layerGroup.setVisible(false);
       layerGroup.setZIndex(10);
@@ -257,11 +247,11 @@ describe('ol.layer.Group', function() {
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: 5,
-        maxZoom: 10
+        maxZoom: 10,
       });
     });
 
-    it('returns a layerState with clamped values', function() {
+    it('returns a layerState with clamped values', function () {
       layerGroup.setOpacity(-1.5);
       layerGroup.setVisible(false);
       expect(layerGroup.getLayerState()).to.eql({
@@ -275,7 +265,7 @@ describe('ol.layer.Group', function() {
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
 
       layerGroup.setOpacity(3);
@@ -291,18 +281,16 @@ describe('ol.layer.Group', function() {
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
     });
-
   });
 
-  describe('layers events', function() {
-
-    it('listen / unlisten for layers added to the collection', function() {
+  describe('layers events', function () {
+    it('listen / unlisten for layers added to the collection', function () {
       const layers = new Collection();
       const layerGroup = new LayerGroup({
-        layers: layers
+        layers: layers,
       });
       expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(0);
       const layer = new Layer({});
@@ -320,16 +308,14 @@ describe('ol.layer.Group', function() {
       expect(listeners[0].listener).to.be(undefined);
       expect(listeners[1].listener).to.be(undefined);
     });
-
   });
 
-  describe('#setLayers', function() {
-
-    it('sets layers property', function() {
+  describe('#setLayers', function () {
+    it('sets layers property', function () {
       const layer = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
-        })
+          projection: 'EPSG:4326',
+        }),
       });
       const layers = new Collection([layer]);
       const layerGroup = new LayerGroup();
@@ -341,43 +327,40 @@ describe('ol.layer.Group', function() {
       layer.dispose();
       layers.dispose();
     });
-
   });
 
-
-  describe('#getLayerStatesArray', function() {
-
+  describe('#getLayerStatesArray', function () {
     let layer1, layer2, layer3;
-    beforeEach(function() {
+    beforeEach(function () {
       layer1 = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
-        })
+          projection: 'EPSG:4326',
+        }),
       });
       layer2 = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
+          projection: 'EPSG:4326',
         }),
         opacity: 0.5,
         visible: false,
         maxResolution: 500,
-        minResolution: 0.25
+        minResolution: 0.25,
       });
       layer3 = new Layer({
         source: new Source({
-          projection: 'EPSG:4326'
+          projection: 'EPSG:4326',
         }),
-        extent: [-5, -2, 5, 2]
+        extent: [-5, -2, 5, 2],
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       layer1.dispose();
       layer2.dispose();
       layer3.dispose();
     });
 
-    it('returns an empty array if no layer', function() {
+    it('returns an empty array if no layer', function () {
       const layerGroup = new LayerGroup();
 
       const layerStatesArray = layerGroup.getLayerStatesArray();
@@ -387,9 +370,9 @@ describe('ol.layer.Group', function() {
       layerGroup.dispose();
     });
 
-    it('does not transform layerStates by default', function() {
+    it('does not transform layerStates by default', function () {
       const layerGroup = new LayerGroup({
-        layers: [layer1, layer2]
+        layers: [layer1, layer2],
       });
 
       const layerStatesArray = layerGroup.getLayerStatesArray();
@@ -409,36 +392,37 @@ describe('ol.layer.Group', function() {
       layerGroup.dispose();
     });
 
-    it('uses the layer group extent if layer has no extent', function() {
+    it('uses the layer group extent if layer has no extent', function () {
       const groupExtent = [-10, -5, 10, 5];
       const layerGroup = new LayerGroup({
         extent: groupExtent,
-        layers: [layer1]
+        layers: [layer1],
       });
       const layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(groupExtent);
       layerGroup.dispose();
     });
 
-    it('uses the intersection of group and child extent', function() {
+    it('uses the intersection of group and child extent', function () {
       const groupExtent = [-10, -5, 10, 5];
       const layerGroup = new LayerGroup({
         extent: groupExtent,
-        layers: [layer3]
+        layers: [layer3],
       });
       const layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(
-        getIntersection(layer3.getExtent(), groupExtent));
+        getIntersection(layer3.getExtent(), groupExtent)
+      );
       layerGroup.dispose();
     });
 
-    it('transforms layerStates correctly', function() {
+    it('transforms layerStates correctly', function () {
       const layerGroup = new LayerGroup({
         layers: [layer1, layer2],
         opacity: 0.5,
         visible: false,
         maxResolution: 150,
-        minResolution: 0.2
+        minResolution: 0.2,
       });
 
       const layerStatesArray = layerGroup.getLayerStatesArray();
@@ -465,56 +449,54 @@ describe('ol.layer.Group', function() {
         maxResolution: 150,
         minResolution: 0.25,
         minZoom: -Infinity,
-        maxZoom: Infinity
+        maxZoom: Infinity,
       });
 
       layerGroup.dispose();
     });
 
-    it('returns max minZoom', function() {
+    it('returns max minZoom', function () {
       const group = new LayerGroup({
         minZoom: 5,
         layers: [
           new Layer({
             source: new Source({
-              projection: 'EPSG:4326'
-            })
+              projection: 'EPSG:4326',
+            }),
           }),
           new Layer({
             source: new Source({
-              projection: 'EPSG:4326'
+              projection: 'EPSG:4326',
             }),
-            minZoom: 10
-          })
-        ]
+            minZoom: 10,
+          }),
+        ],
       });
 
       expect(group.getLayerStatesArray()[0].minZoom).to.be(5);
       expect(group.getLayerStatesArray()[1].minZoom).to.be(10);
     });
 
-    it('returns min maxZoom of layers', function() {
+    it('returns min maxZoom of layers', function () {
       const group = new LayerGroup({
         maxZoom: 5,
         layers: [
           new Layer({
             source: new Source({
-              projection: 'EPSG:4326'
-            })
+              projection: 'EPSG:4326',
+            }),
           }),
           new Layer({
             source: new Source({
-              projection: 'EPSG:4326'
+              projection: 'EPSG:4326',
             }),
-            maxZoom: 2
-          })
-        ]
+            maxZoom: 2,
+          }),
+        ],
       });
 
       expect(group.getLayerStatesArray()[0].maxZoom).to.be(5);
       expect(group.getLayerStatesArray()[1].maxZoom).to.be(2);
     });
-
   });
-
 });

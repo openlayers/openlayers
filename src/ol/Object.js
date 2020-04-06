@@ -1,19 +1,17 @@
 /**
  * @module ol/Object
  */
-import {getUid} from './util.js';
+import Event from './events/Event.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
-import Event from './events/Event.js';
 import {assign} from './obj.js';
-
+import {getUid} from './util.js';
 
 /**
  * @classdesc
  * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of this type.
  */
 export class ObjectEvent extends Event {
-
   /**
    * @param {string} type The event type.
    * @param {string} key The property name.
@@ -36,11 +34,8 @@ export class ObjectEvent extends Event {
      * @api
      */
     this.oldValue = oldValue;
-
   }
-
 }
-
 
 /**
  * @classdesc
@@ -86,7 +81,6 @@ export class ObjectEvent extends Event {
  * @api
  */
 class BaseObject extends Observable {
-
   /**
    * @param {Object<string, *>=} opt_values An object with key-value pairs.
    */
@@ -203,22 +197,19 @@ class BaseObject extends Observable {
   }
 }
 
-
 /**
  * @type {Object<string, string>}
  */
 const changeEventTypeCache = {};
-
 
 /**
  * @param {string} key Key name.
  * @return {string} Change name.
  */
 export function getChangeEventType(key) {
-  return changeEventTypeCache.hasOwnProperty(key) ?
-    changeEventTypeCache[key] :
-    (changeEventTypeCache[key] = 'change:' + key);
+  return changeEventTypeCache.hasOwnProperty(key)
+    ? changeEventTypeCache[key]
+    : (changeEventTypeCache[key] = 'change:' + key);
 }
-
 
 export default BaseObject;

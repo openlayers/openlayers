@@ -4,7 +4,6 @@
 
 import {assert} from '../asserts.js';
 
-
 /**
  * @typedef {Object} Entry
  * @property {string} key_
@@ -12,7 +11,6 @@ import {assert} from '../asserts.js';
  * @property {Object} older
  * @property {*} value_
  */
-
 
 /**
  * @classdesc
@@ -24,16 +22,15 @@ import {assert} from '../asserts.js';
  * @template T
  */
 class LRUCache {
-
   /**
    * @param {number=} opt_highWaterMark High water mark.
    */
   constructor(opt_highWaterMark) {
-
     /**
      * @type {number}
      */
-    this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+    this.highWaterMark =
+      opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
 
     /**
      * @private
@@ -58,9 +55,7 @@ class LRUCache {
      * @type {?Entry}
      */
     this.newest_ = null;
-
   }
-
 
   /**
    * @return {boolean} Can expire cache.
@@ -68,7 +63,6 @@ class LRUCache {
   canExpireCache() {
     return this.getCount() > this.highWaterMark;
   }
-
 
   /**
    * FIXME empty description for jsdoc
@@ -80,7 +74,6 @@ class LRUCache {
     this.newest_ = null;
   }
 
-
   /**
    * @param {string} key Key.
    * @return {boolean} Contains key.
@@ -88,7 +81,6 @@ class LRUCache {
   containsKey(key) {
     return this.entries_.hasOwnProperty(key);
   }
-
 
   /**
    * @param {function(T, string, LRUCache<T>): ?} f The function
@@ -104,7 +96,6 @@ class LRUCache {
     }
   }
 
-
   /**
    * @param {string} key Key.
    * @param {*=} opt_options Options (reserverd for subclasses).
@@ -112,8 +103,7 @@ class LRUCache {
    */
   get(key, opt_options) {
     const entry = this.entries_[key];
-    assert(entry !== undefined,
-      15); // Tried to get a value for a key that does not exist in the cache
+    assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
     if (entry === this.newest_) {
       return entry.value_;
     } else if (entry === this.oldest_) {
@@ -129,7 +119,6 @@ class LRUCache {
     this.newest_ = entry;
     return entry.value_;
   }
-
 
   /**
    * Remove an entry from the cache.
@@ -158,14 +147,12 @@ class LRUCache {
     return entry.value_;
   }
 
-
   /**
    * @return {number} Count.
    */
   getCount() {
     return this.count_;
   }
-
 
   /**
    * @return {Array<string>} Keys.
@@ -180,7 +167,6 @@ class LRUCache {
     return keys;
   }
 
-
   /**
    * @return {Array<T>} Values.
    */
@@ -194,14 +180,12 @@ class LRUCache {
     return values;
   }
 
-
   /**
    * @return {T} Last value.
    */
   peekLast() {
     return this.oldest_.value_;
   }
-
 
   /**
    * @return {string} Last key.
@@ -210,7 +194,6 @@ class LRUCache {
     return this.oldest_.key_;
   }
 
-
   /**
    * Get the key of the newest item in the cache.  Throws if the cache is empty.
    * @return {string} The newest key.
@@ -218,7 +201,6 @@ class LRUCache {
   peekFirstKey() {
     return this.newest_.key_;
   }
-
 
   /**
    * @return {T} value Value.
@@ -237,7 +219,6 @@ class LRUCache {
     return entry.value_;
   }
 
-
   /**
    * @param {string} key Key.
    * @param {T} value Value.
@@ -247,19 +228,17 @@ class LRUCache {
     this.entries_[key].value_ = value;
   }
 
-
   /**
    * @param {string} key Key.
    * @param {T} value Value.
    */
   set(key, value) {
-    assert(!(key in this.entries_),
-      16); // Tried to set a value for a key that is used already
+    assert(!(key in this.entries_), 16); // Tried to set a value for a key that is used already
     const entry = {
       key_: key,
       newer: null,
       older: this.newest_,
-      value_: value
+      value_: value,
     };
     if (!this.newest_) {
       this.oldest_ = entry;
@@ -271,7 +250,6 @@ class LRUCache {
     ++this.count_;
   }
 
-
   /**
    * Set a maximum number of entries for the cache.
    * @param {number} size Cache size.
@@ -280,7 +258,6 @@ class LRUCache {
   setSize(size) {
     this.highWaterMark = size;
   }
-
 }
 
 export default LRUCache;

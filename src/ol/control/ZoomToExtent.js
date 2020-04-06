@@ -1,11 +1,10 @@
 /**
  * @module ol/control/ZoomToExtent
  */
-import EventType from '../events/EventType.js';
-import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import Control from './Control.js';
+import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
-
+import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 
 /**
  * @typedef {Object} Options
@@ -19,7 +18,6 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * extent of the view projection is used.
  */
 
-
 /**
  * @classdesc
  * A button control which, when pressed, changes the map view to a specific
@@ -28,7 +26,6 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * @api
  */
 class ZoomToExtent extends Control {
-
   /**
    * @param {Options=} opt_options Options.
    */
@@ -37,7 +34,7 @@ class ZoomToExtent extends Control {
 
     super({
       element: document.createElement('div'),
-      target: options.target
+      target: options.target,
     });
 
     /**
@@ -46,10 +43,12 @@ class ZoomToExtent extends Control {
      */
     this.extent = options.extent ? options.extent : null;
 
-    const className = options.className !== undefined ? options.className : 'ol-zoom-extent';
+    const className =
+      options.className !== undefined ? options.className : 'ol-zoom-extent';
 
     const label = options.label !== undefined ? options.label : 'E';
-    const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Fit to extent';
+    const tipLabel =
+      options.tipLabel !== undefined ? options.tipLabel : 'Fit to extent';
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.title = tipLabel;
@@ -57,9 +56,14 @@ class ZoomToExtent extends Control {
       typeof label === 'string' ? document.createTextNode(label) : label
     );
 
-    button.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
+    button.addEventListener(
+      EventType.CLICK,
+      this.handleClick_.bind(this),
+      false
+    );
 
-    const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+    const cssClasses =
+      className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     const element = this.element;
     element.className = cssClasses;
     element.appendChild(button);
@@ -80,7 +84,9 @@ class ZoomToExtent extends Control {
   handleZoomToExtent() {
     const map = this.getMap();
     const view = map.getView();
-    const extent = !this.extent ? view.getProjection().getExtent() : this.extent;
+    const extent = !this.extent
+      ? view.getProjection().getExtent()
+      : this.extent;
     view.fitInternal(polygonFromExtent(extent));
   }
 }

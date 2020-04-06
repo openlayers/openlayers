@@ -1,9 +1,8 @@
 /**
  * @module ol/geom/flat/geodesic
  */
-import {squaredSegmentDistance, toRadians, toDegrees} from '../../math.js';
 import {get as getProjection, getTransform} from '../../proj.js';
-
+import {squaredSegmentDistance, toDegrees, toRadians} from '../../math.js';
 
 /**
  * @param {function(number): import("../../coordinate.js").Coordinate} interpolate Interpolate function.
@@ -57,8 +56,10 @@ function line(interpolate, transform, squaredTolerance) {
     fracM = (fracA + fracB) / 2;
     geoM = interpolate(fracM);
     m = transform(geoM);
-    if (squaredSegmentDistance(m[0], m[1], a[0], a[1],
-      b[0], b[1]) < squaredTolerance) {
+    if (
+      squaredSegmentDistance(m[0], m[1], a[0], a[1], b[0], b[1]) <
+      squaredTolerance
+    ) {
       // If the m point is sufficiently close to the straight line, then we
       // discard it.  Just use the b coordinate and move on to the next line
       // segment.
@@ -77,7 +78,6 @@ function line(interpolate, transform, squaredTolerance) {
   return flatCoordinates;
 }
 
-
 /**
  * Generate a great-circle arcs between two lat/lon points.
  * @param {number} lon1 Longitude 1 in degrees.
@@ -88,7 +88,14 @@ function line(interpolate, transform, squaredTolerance) {
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array<number>} Flat coordinates.
  */
-export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolerance) {
+export function greatCircleArc(
+  lon1,
+  lat1,
+  lon2,
+  lat2,
+  projection,
+  squaredTolerance
+) {
   const geoProjection = getProjection('EPSG:4326');
 
   const cosLat1 = Math.cos(toRadians(lat1));
@@ -104,7 +111,7 @@ export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolera
      * @param {number} frac Fraction.
      * @return {import("../../coordinate.js").Coordinate} Coordinate.
      */
-    function(frac) {
+    function (frac) {
       if (1 <= d) {
         return [lon2, lat2];
       }
@@ -115,13 +122,18 @@ export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolera
       const x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
       const theta = Math.atan2(y, x);
       const lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-      const lon = toRadians(lon1) +
-            Math.atan2(Math.sin(theta) * sinD * cosLat1,
-              cosD - sinLat1 * Math.sin(lat));
+      const lon =
+        toRadians(lon1) +
+        Math.atan2(
+          Math.sin(theta) * sinD * cosLat1,
+          cosD - sinLat1 * Math.sin(lat)
+        );
       return [toDegrees(lon), toDegrees(lat)];
-    }, getTransform(geoProjection, projection), squaredTolerance);
+    },
+    getTransform(geoProjection, projection),
+    squaredTolerance
+  );
 }
-
 
 /**
  * Generate a meridian (line at constant longitude).
@@ -139,12 +151,13 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
      * @param {number} frac Fraction.
      * @return {import("../../coordinate.js").Coordinate} Coordinate.
      */
-    function(frac) {
-      return [lon, lat1 + ((lat2 - lat1) * frac)];
+    function (frac) {
+      return [lon, lat1 + (lat2 - lat1) * frac];
     },
-    getTransform(epsg4326Projection, projection), squaredTolerance);
+    getTransform(epsg4326Projection, projection),
+    squaredTolerance
+  );
 }
-
 
 /**
  * Generate a parallel (line at constant latitude).
@@ -162,8 +175,10 @@ export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
      * @param {number} frac Fraction.
      * @return {import("../../coordinate.js").Coordinate} Coordinate.
      */
-    function(frac) {
-      return [lon1 + ((lon2 - lon1) * frac), lat];
+    function (frac) {
+      return [lon1 + (lon2 - lon1) * frac, lat];
     },
-    getTransform(epsg4326Projection, projection), squaredTolerance);
+    getTransform(epsg4326Projection, projection),
+    squaredTolerance
+  );
 }

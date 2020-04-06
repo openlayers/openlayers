@@ -3,8 +3,6 @@
  */
 //FIXME Implement projection handling
 
-import {assert} from '../asserts.js';
-import PBF from 'pbf';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import FormatType from './FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -13,14 +11,15 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
+import PBF from 'pbf';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import {linearRingIsClockwise} from '../geom/flat/orient.js';
 import Projection from '../proj/Projection.js';
-import Units from '../proj/Units.js';
 import RenderFeature from '../render/Feature.js';
+import Units from '../proj/Units.js';
+import {assert} from '../asserts.js';
 import {get} from '../proj.js';
-
+import {linearRingIsClockwise} from '../geom/flat/orient.js';
 
 /**
  * @typedef {Object} Options
@@ -35,7 +34,6 @@ import {get} from '../proj.js';
  * layers.
  */
 
-
 /**
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
@@ -44,7 +42,6 @@ import {get} from '../proj.js';
  * @api
  */
 class MVT extends FeatureFormat {
-
   /**
    * @param {Options=} opt_options Options.
    */
@@ -58,14 +55,16 @@ class MVT extends FeatureFormat {
      */
     this.dataProjection = new Projection({
       code: '',
-      units: Units.TILE_PIXELS
+      units: Units.TILE_PIXELS,
     });
 
     /**
      * @private
      * @type {import("../Feature.js").FeatureClass}
      */
-    this.featureClass_ = options.featureClass ? options.featureClass : RenderFeature;
+    this.featureClass_ = options.featureClass
+      ? options.featureClass
+      : RenderFeature;
 
     /**
      * @private
@@ -90,7 +89,6 @@ class MVT extends FeatureFormat {
      * @type {string}
      */
     this.idProperty_ = options.idProperty;
-
   }
 
   /**
@@ -126,7 +124,8 @@ class MVT extends FeatureFormat {
         x += pbf.readSVarint();
         y += pbf.readSVarint();
 
-        if (cmd === 1) { // moveTo
+        if (cmd === 1) {
+          // moveTo
           if (coordsLen > currentEnd) {
             ends.push(coordsLen);
             currentEnd = coordsLen;
@@ -135,16 +134,15 @@ class MVT extends FeatureFormat {
 
         flatCoordinates.push(x, y);
         coordsLen += 2;
-
       } else if (cmd === 7) {
-
         if (coordsLen > currentEnd) {
           // close polygon
           flatCoordinates.push(
-            flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
+            flatCoordinates[currentEnd],
+            flatCoordinates[currentEnd + 1]
+          );
           coordsLen += 2;
         }
-
       } else {
         assert(false, 59); // Invalid command found in the PBF
       }
@@ -154,7 +152,6 @@ class MVT extends FeatureFormat {
       ends.push(coordsLen);
       currentEnd = coordsLen;
     }
-
   }
 
   /**
@@ -190,7 +187,13 @@ class MVT extends FeatureFormat {
     const geometryType = getGeometryType(type, ends.length);
 
     if (this.featureClass_ === RenderFeature) {
-      feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
+      feature = new this.featureClass_(
+        geometryType,
+        flatCoordinates,
+        ends,
+        values,
+        id
+      );
       feature.transform(options.dataProjection, options.featureProjection);
     } else {
       let geom;
@@ -212,14 +215,21 @@ class MVT extends FeatureFormat {
           geom = new Polygon(flatCoordinates, GeometryLayout.XY, ends);
         }
       } else {
-        geom = geometryType === GeometryType.POINT ? new Point(flatCoordinates, GeometryLayout.XY) :
-          geometryType === GeometryType.LINE_STRING ? new LineString(flatCoordinates, GeometryLayout.XY) :
-            geometryType === GeometryType.POLYGON ? new Polygon(flatCoordinates, GeometryLayout.XY, ends) :
-              geometryType === GeometryType.MULTI_POINT ? new MultiPoint(flatCoordinates, GeometryLayout.XY) :
-                geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
-                  null;
+        geom =
+          geometryType === GeometryType.POINT
+            ? new Point(flatCoordinates, GeometryLayout.XY)
+            : geometryType === GeometryType.LINE_STRING
+            ? new LineString(flatCoordinates, GeometryLayout.XY)
+            : geometryType === GeometryType.POLYGON
+            ? new Polygon(flatCoordinates, GeometryLayout.XY, ends)
+            : geometryType === GeometryType.MULTI_POINT
+            ? new MultiPoint(flatCoordinates, GeometryLayout.XY)
+            : geometryType === GeometryType.MULTI_LINE_STRING
+            ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends)
+            : null;
       }
-      const ctor = /** @type {typeof import("../Feature.js").default} */ (this.featureClass_);
+      const ctor = /** @type {typeof import("../Feature.js").default} */ (this
+        .featureClass_);
       feature = new ctor();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
@@ -250,7 +260,9 @@ class MVT extends FeatureFormat {
    */
   readFeatures(source, opt_options) {
     const layers = this.layers_;
-    const options = /** @type {import("./Feature.js").ReadOptions} */ (this.adaptOptions(opt_options));
+    const options = /** @type {import("./Feature.js").ReadOptions} */ (this.adaptOptions(
+      opt_options
+    ));
     const dataProjection = get(options.dataProjection);
     dataProjection.setWorldExtent(options.extent);
     options.dataProjection = dataProjection;
@@ -295,9 +307,7 @@ class MVT extends FeatureFormat {
   setLayers(layers) {
     this.layers_ = layers;
   }
-
 }
-
 
 /**
  * Reader callback for parsing layers.
@@ -310,7 +320,7 @@ function layersPBFReader(tag, layers, pbf) {
     const layer = {
       keys: [],
       values: [],
-      features: []
+      features: [],
     };
     const end = pbf.readVarint() + pbf.pos;
     pbf.readFields(layerPBFReader, layer, end);
@@ -343,13 +353,22 @@ function layerPBFReader(tag, layer, pbf) {
     const end = pbf.readVarint() + pbf.pos;
     while (pbf.pos < end) {
       tag = pbf.readVarint() >> 3;
-      value = tag === 1 ? pbf.readString() :
-        tag === 2 ? pbf.readFloat() :
-          tag === 3 ? pbf.readDouble() :
-            tag === 4 ? pbf.readVarint64() :
-              tag === 5 ? pbf.readVarint() :
-                tag === 6 ? pbf.readSVarint() :
-                  tag === 7 ? pbf.readBoolean() : null;
+      value =
+        tag === 1
+          ? pbf.readString()
+          : tag === 2
+          ? pbf.readFloat()
+          : tag === 3
+          ? pbf.readDouble()
+          : tag === 4
+          ? pbf.readVarint64()
+          : tag === 5
+          ? pbf.readVarint()
+          : tag === 6
+          ? pbf.readSVarint()
+          : tag === 7
+          ? pbf.readBoolean()
+          : null;
     }
     layer.values.push(value);
   }
@@ -378,7 +397,6 @@ function featurePBFReader(tag, feature, pbf) {
   }
 }
 
-
 /**
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
  * @param {PBF} pbf PBF.
@@ -393,12 +411,11 @@ function readRawFeature(pbf, layer, i) {
   const feature = {
     layer: layer,
     type: 0,
-    properties: {}
+    properties: {},
   };
   pbf.readFields(featurePBFReader, feature, end);
   return feature;
 }
-
 
 /**
  * @param {number} type The raw feature's geometry type
@@ -410,12 +427,11 @@ function getGeometryType(type, numEnds) {
   /** @type {GeometryType} */
   let geometryType;
   if (type === 1) {
-    geometryType = numEnds === 1 ?
-      GeometryType.POINT : GeometryType.MULTI_POINT;
+    geometryType =
+      numEnds === 1 ? GeometryType.POINT : GeometryType.MULTI_POINT;
   } else if (type === 2) {
-    geometryType = numEnds === 1 ?
-      GeometryType.LINE_STRING :
-      GeometryType.MULTI_LINE_STRING;
+    geometryType =
+      numEnds === 1 ? GeometryType.LINE_STRING : GeometryType.MULTI_LINE_STRING;
   } else if (type === 3) {
     geometryType = GeometryType.POLYGON;
     // MultiPolygon not relevant for rendering - winding order determines

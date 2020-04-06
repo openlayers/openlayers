@@ -1,11 +1,10 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
 import {Fill, RegularShape, Stroke, Style} from '../src/ol/style.js';
-
 
 const stroke = new Stroke({color: 'black', width: 1});
 
@@ -16,8 +15,8 @@ const styles = {
       stroke: stroke,
       points: 4,
       radius: 80,
-      angle: Math.PI / 4
-    })
+      angle: Math.PI / 4,
+    }),
   }),
   'triangle': new Style({
     image: new RegularShape({
@@ -26,8 +25,8 @@ const styles = {
       points: 3,
       radius: 80,
       rotation: Math.PI / 4,
-      angle: 0
-    })
+      angle: 0,
+    }),
   }),
   'star': new Style({
     image: new RegularShape({
@@ -36,22 +35,21 @@ const styles = {
       points: 5,
       radius: 80,
       radius2: 4,
-      angle: 0
-    })
-  })
+      angle: 0,
+    }),
+  }),
 };
-
 
 function createLayer(coordinates, style, zIndex) {
   const feature = new Feature(new Point(coordinates));
   feature.setStyle(style);
 
   const source = new VectorSource({
-    features: [feature]
+    features: [feature],
   });
 
   const vectorLayer = new VectorLayer({
-    source: source
+    source: source,
   });
   vectorLayer.setZIndex(zIndex);
 
@@ -71,16 +69,15 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 18
-  })
+    zoom: 18,
+  }),
 });
 
 layer0.setMap(map);
 
-
 function bindInputs(id, layer) {
   const idxInput = document.getElementById('idx' + id);
-  idxInput.onchange = function() {
+  idxInput.onchange = function () {
     layer.setZIndex(parseInt(this.value, 10) || 0);
   };
   idxInput.value = String(layer.getZIndex());

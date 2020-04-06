@@ -1,8 +1,6 @@
 import LRUCache from '../../../../src/ol/structs/LRUCache.js';
 
-
-describe('ol.structs.LRUCache', function() {
-
+describe('ol.structs.LRUCache', function () {
   let lruCache;
 
   function fillLRUCache(lruCache) {
@@ -12,36 +10,36 @@ describe('ol.structs.LRUCache', function() {
     lruCache.set('d', 3);
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     lruCache = new LRUCache();
   });
 
-  describe('empty cache', function() {
-    it('has size zero', function() {
+  describe('empty cache', function () {
+    it('has size zero', function () {
       expect(lruCache.getCount()).to.eql(0);
     });
-    it('has no keys', function() {
+    it('has no keys', function () {
       expect(lruCache.getKeys()).to.eql([]);
     });
-    it('has no values', function() {
+    it('has no values', function () {
       expect(lruCache.getValues()).to.eql([]);
     });
   });
 
-  describe('populating', function() {
-    it('returns the correct size', function() {
+  describe('populating', function () {
+    it('returns the correct size', function () {
       fillLRUCache(lruCache);
       expect(lruCache.getCount()).to.eql(4);
     });
-    it('contains the correct keys in the correct order', function() {
+    it('contains the correct keys in the correct order', function () {
       fillLRUCache(lruCache);
       expect(lruCache.getKeys()).to.eql(['d', 'c', 'b', 'a']);
     });
-    it('contains the correct values in the correct order', function() {
+    it('contains the correct values in the correct order', function () {
       fillLRUCache(lruCache);
       expect(lruCache.getValues()).to.eql([3, 2, 1, 0]);
     });
-    it('reports which keys are contained', function() {
+    it('reports which keys are contained', function () {
       fillLRUCache(lruCache);
       expect(lruCache.containsKey('a')).to.be.ok();
       expect(lruCache.containsKey('b')).to.be.ok();
@@ -51,8 +49,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('getting the oldest key', function() {
-    it('moves the key to newest position', function() {
+  describe('getting the oldest key', function () {
+    it('moves the key to newest position', function () {
       fillLRUCache(lruCache);
       lruCache.get('a');
       expect(lruCache.getCount()).to.eql(4);
@@ -61,8 +59,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('getting a key in the middle', function() {
-    it('moves the key to newest position', function() {
+  describe('getting a key in the middle', function () {
+    it('moves the key to newest position', function () {
       fillLRUCache(lruCache);
       lruCache.get('b');
       expect(lruCache.getCount()).to.eql(4);
@@ -71,8 +69,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('getting the newest key', function() {
-    it('maintains the key to newest position', function() {
+  describe('getting the newest key', function () {
+    it('maintains the key to newest position', function () {
       fillLRUCache(lruCache);
       lruCache.get('d');
       expect(lruCache.getCount()).to.eql(4);
@@ -81,8 +79,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('replacing value of a key', function() {
-    it('moves the key to newest position', function() {
+  describe('replacing value of a key', function () {
+    it('moves the key to newest position', function () {
       fillLRUCache(lruCache);
       lruCache.replace('b', 4);
       expect(lruCache.getCount()).to.eql(4);
@@ -91,8 +89,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('setting a new value', function() {
-    it('adds it as the newest value', function() {
+  describe('setting a new value', function () {
+    it('adds it as the newest value', function () {
       fillLRUCache(lruCache);
       lruCache.set('e', 4);
       expect(lruCache.getKeys()).to.eql(['e', 'd', 'c', 'b', 'a']);
@@ -100,40 +98,40 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('setting an existing value', function() {
-    it('raises an exception', function() {
+  describe('setting an existing value', function () {
+    it('raises an exception', function () {
       fillLRUCache(lruCache);
-      expect(function() {
+      expect(function () {
         lruCache.set('a', 0);
       }).to.throwException();
     });
   });
 
-  describe('disallowed keys', function() {
-    it('setting raises an exception', function() {
-      expect(function() {
+  describe('disallowed keys', function () {
+    it('setting raises an exception', function () {
+      expect(function () {
         lruCache.set('constructor', 0);
       }).to.throwException();
-      expect(function() {
+      expect(function () {
         lruCache.set('hasOwnProperty', 0);
       }).to.throwException();
-      expect(function() {
+      expect(function () {
         lruCache.set('isPrototypeOf', 0);
       }).to.throwException();
-      expect(function() {
+      expect(function () {
         lruCache.set('propertyIsEnumerable', 0);
       }).to.throwException();
-      expect(function() {
+      expect(function () {
         lruCache.set('toLocaleString', 0);
       }).to.throwException();
-      expect(function() {
+      expect(function () {
         lruCache.set('toString', 0);
       }).to.throwException();
-      expect(function() {
+      expect(function () {
         lruCache.set('valueOf', 0);
       }).to.throwException();
     });
-    it('getting returns false', function() {
+    it('getting returns false', function () {
       expect(lruCache.containsKey('constructor')).to.not.be();
       expect(lruCache.containsKey('hasOwnProperty')).to.not.be();
       expect(lruCache.containsKey('isPrototypeOf')).to.not.be();
@@ -144,8 +142,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('popping a value', function() {
-    it('returns the least-recent-used value', function() {
+  describe('popping a value', function () {
+    it('returns the least-recent-used value', function () {
       fillLRUCache(lruCache);
       expect(lruCache.pop()).to.eql(0);
       expect(lruCache.getCount()).to.eql(3);
@@ -162,8 +160,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('#peekFirstKey()', function() {
-    it('returns the newest key in the cache', function() {
+  describe('#peekFirstKey()', function () {
+    it('returns the newest key in the cache', function () {
       const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
@@ -172,46 +170,46 @@ describe('ol.structs.LRUCache', function() {
       expect(cache.peekFirstKey()).to.eql('newest');
     });
 
-    it('works if the cache has one item', function() {
+    it('works if the cache has one item', function () {
       const cache = new LRUCache();
       cache.set('key', 'value');
       expect(cache.peekFirstKey()).to.eql('key');
     });
 
-    it('throws if the cache is empty', function() {
+    it('throws if the cache is empty', function () {
       const cache = new LRUCache();
-      expect(function() {
+      expect(function () {
         cache.peekFirstKey();
       }).to.throwException();
     });
   });
 
-  describe('peeking at the last value', function() {
-    it('returns the last key', function() {
+  describe('peeking at the last value', function () {
+    it('returns the last key', function () {
       fillLRUCache(lruCache);
       expect(lruCache.peekLast()).to.eql(0);
     });
-    it('throws an exception when the cache is empty', function() {
-      expect(function() {
+    it('throws an exception when the cache is empty', function () {
+      expect(function () {
         lruCache.peekLast();
       }).to.throwException();
     });
   });
 
-  describe('peeking at the last key', function() {
-    it('returns the last key', function() {
+  describe('peeking at the last key', function () {
+    it('returns the last key', function () {
       fillLRUCache(lruCache);
       expect(lruCache.peekLastKey()).to.eql('a');
     });
-    it('throws an exception when the cache is empty', function() {
-      expect(function() {
+    it('throws an exception when the cache is empty', function () {
+      expect(function () {
         lruCache.peekLastKey();
       }).to.throwException();
     });
   });
 
-  describe('#remove()', function() {
-    it('removes an item from the cache', function() {
+  describe('#remove()', function () {
+    it('removes an item from the cache', function () {
       const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
@@ -223,7 +221,7 @@ describe('ol.structs.LRUCache', function() {
       expect(cache.getValues()).to.eql(['newest', 'newish', 'oldest']);
     });
 
-    it('works when removing the oldest item', function() {
+    it('works when removing the oldest item', function () {
       const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
@@ -236,7 +234,7 @@ describe('ol.structs.LRUCache', function() {
       expect(cache.getValues()).to.eql(['newest', 'newish', 'oldish']);
     });
 
-    it('works when removing the newest item', function() {
+    it('works when removing the newest item', function () {
       const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
@@ -249,7 +247,7 @@ describe('ol.structs.LRUCache', function() {
       expect(cache.getValues()).to.eql(['newish', 'oldish', 'oldest']);
     });
 
-    it('returns the removed item', function() {
+    it('returns the removed item', function () {
       const cache = new LRUCache();
       const item = {};
       cache.set('key', item);
@@ -258,20 +256,20 @@ describe('ol.structs.LRUCache', function() {
       expect(returned).to.be(item);
     });
 
-    it('throws if the key does not exist', function() {
+    it('throws if the key does not exist', function () {
       const cache = new LRUCache();
       cache.set('foo', 'foo');
       cache.set('bar', 'bar');
 
-      const call = function() {
+      const call = function () {
         cache.remove('bam');
       };
       expect(call).to.throwException();
     });
   });
 
-  describe('clearing the cache', function() {
-    it('clears the cache', function() {
+  describe('clearing the cache', function () {
+    it('clears the cache', function () {
       fillLRUCache(lruCache);
       lruCache.clear();
       expect(lruCache.getCount()).to.eql(0);
@@ -280,8 +278,8 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('setting the cache size', function() {
-    it('sets the cache size', function() {
+  describe('setting the cache size', function () {
+    it('sets the cache size', function () {
       lruCache.setSize(2);
       expect(lruCache.highWaterMark).to.be(2);
       fillLRUCache(lruCache);
@@ -291,5 +289,4 @@ describe('ol.structs.LRUCache', function() {
       expect(lruCache.getKeys().length).to.be(2);
     });
   });
-
 });

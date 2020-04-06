@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Map from '../src/ol/Map.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const styles = [
@@ -17,25 +17,25 @@ const styles = [
   new Style({
     stroke: new Stroke({
       color: 'blue',
-      width: 3
+      width: 3,
     }),
     fill: new Fill({
-      color: 'rgba(0, 0, 255, 0.1)'
-    })
+      color: 'rgba(0, 0, 255, 0.1)',
+    }),
   }),
   new Style({
     image: new CircleStyle({
       radius: 5,
       fill: new Fill({
-        color: 'orange'
-      })
+        color: 'orange',
+      }),
     }),
-    geometry: function(feature) {
+    geometry: function (feature) {
       // return the coordinates of the first ring of the polygon
       const coordinates = feature.getGeometry().getCoordinates()[0];
       return new MultiPoint(coordinates);
-    }
-  })
+    },
+  }),
 ];
 
 const geojsonObject = {
@@ -43,47 +43,79 @@ const geojsonObject = {
   'crs': {
     'type': 'name',
     'properties': {
-      'name': 'EPSG:3857'
-    }
+      'name': 'EPSG:3857',
+    },
   },
-  'features': [{
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Polygon',
-      'coordinates': [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6],
-        [-3e6, 6e6], [-5e6, 6e6]]]
-    }
-  }, {
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Polygon',
-      'coordinates': [[[-2e6, 6e6], [-2e6, 8e6], [0, 8e6],
-        [0, 6e6], [-2e6, 6e6]]]
-    }
-  }, {
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Polygon',
-      'coordinates': [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6],
-        [3e6, 6e6], [1e6, 6e6]]]
-    }
-  }, {
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Polygon',
-      'coordinates': [[[-2e6, -1e6], [-1e6, 1e6],
-        [0, -1e6], [-2e6, -1e6]]]
-    }
-  }]
+  'features': [
+    {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [
+          [
+            [-5e6, 6e6],
+            [-5e6, 8e6],
+            [-3e6, 8e6],
+            [-3e6, 6e6],
+            [-5e6, 6e6],
+          ],
+        ],
+      },
+    },
+    {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [
+          [
+            [-2e6, 6e6],
+            [-2e6, 8e6],
+            [0, 8e6],
+            [0, 6e6],
+            [-2e6, 6e6],
+          ],
+        ],
+      },
+    },
+    {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [
+          [
+            [1e6, 6e6],
+            [1e6, 8e6],
+            [3e6, 8e6],
+            [3e6, 6e6],
+            [1e6, 6e6],
+          ],
+        ],
+      },
+    },
+    {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [
+          [
+            [-2e6, -1e6],
+            [-1e6, 1e6],
+            [0, -1e6],
+            [-2e6, -1e6],
+          ],
+        ],
+      },
+    },
+  ],
 };
 
 const source = new VectorSource({
-  features: (new GeoJSON()).readFeatures(geojsonObject)
+  features: new GeoJSON().readFeatures(geojsonObject),
 });
 
 const layer = new VectorLayer({
   source: source,
-  style: styles
+  style: styles,
 });
 
 const map = new Map({
@@ -91,6 +123,6 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 3000000],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });

@@ -2,7 +2,6 @@
  * @module ol/geom/flat/reverse
  */
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.

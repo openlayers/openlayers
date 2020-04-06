@@ -2,15 +2,15 @@
  * @module ol/source/Cluster
  */
 
-import {getUid} from '../util.js';
-import {assert} from '../asserts.js';
+import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import GeometryType from '../geom/GeometryType.js';
-import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';
-import EventType from '../events/EventType.js';
-import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
 import VectorSource from './Vector.js';
+import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
+import {assert} from '../asserts.js';
+import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
@@ -33,7 +33,6 @@ import VectorSource from './Vector.js';
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
-
 /**
  * @classdesc
  * Layer source to cluster vector data. Works out of the box with point
@@ -52,7 +51,7 @@ class Cluster extends VectorSource {
   constructor(options) {
     super({
       attributions: options.attributions,
-      wrapX: options.wrapX
+      wrapX: options.wrapX,
     });
 
     /**
@@ -78,12 +77,13 @@ class Cluster extends VectorSource {
      * @return {Point} Cluster calculation point.
      * @protected
      */
-    this.geometryFunction = options.geometryFunction || function(feature) {
-      const geometry = feature.getGeometry();
-      assert(geometry.getType() == GeometryType.POINT,
-        10); // The default `geometryFunction` can only handle `Point` geometries
-      return geometry;
-    };
+    this.geometryFunction =
+      options.geometryFunction ||
+      function (feature) {
+        const geometry = feature.getGeometry();
+        assert(geometry.getType() == GeometryType.POINT, 10); // The default `geometryFunction` can only handle `Point` geometries
+        return geometry;
+      };
 
     this.boundRefresh_ = this.refresh.bind(this);
 
@@ -194,7 +194,7 @@ class Cluster extends VectorSource {
           buffer(extent, mapDistance, extent);
 
           let neighbors = this.source.getFeaturesInExtent(extent);
-          neighbors = neighbors.filter(function(neighbor) {
+          neighbors = neighbors.filter(function (neighbor) {
             const uid = getUid(neighbor);
             if (!(uid in clustered)) {
               clustered[uid] = true;
@@ -231,6 +231,5 @@ class Cluster extends VectorSource {
     return cluster;
   }
 }
-
 
 export default Cluster;

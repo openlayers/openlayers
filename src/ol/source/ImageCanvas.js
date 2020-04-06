@@ -3,9 +3,13 @@
  */
 
 import ImageCanvas from '../ImageCanvas.js';
-import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import ImageSource from './Image.js';
-
+import {
+  containsExtent,
+  getHeight,
+  getWidth,
+  scaleFromCenter,
+} from '../extent.js';
 
 /**
  * A function returning the canvas element (`{HTMLCanvasElement}`)
@@ -19,7 +23,6 @@ import ImageSource from './Image.js';
  * @typedef {function(this:import("../ImageCanvas.js").default, import("../extent.js").Extent, number,
  *     number, import("../size.js").Size, import("../proj/Projection.js").default): HTMLCanvasElement} FunctionType
  */
-
 
 /**
  * @typedef {Object} Options
@@ -41,7 +44,6 @@ import ImageSource from './Image.js';
  * @property {import("./State.js").default} [state] Source state.
  */
 
-
 /**
  * @classdesc
  * Base class for image sources where a canvas element is the image.
@@ -52,41 +54,38 @@ class ImageCanvasSource extends ImageSource {
    * @param {Options=} opt_options ImageCanvas options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
       attributions: options.attributions,
       projection: options.projection,
       resolutions: options.resolutions,
-      state: options.state
+      state: options.state,
     });
 
     /**
-    * @private
-    * @type {FunctionType}
-    */
+     * @private
+     * @type {FunctionType}
+     */
     this.canvasFunction_ = options.canvasFunction;
 
     /**
-    * @private
-    * @type {import("../ImageCanvas.js").default}
-    */
+     * @private
+     * @type {import("../ImageCanvas.js").default}
+     */
     this.canvas_ = null;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.renderedRevision_ = 0;
 
     /**
-    * @private
-    * @type {number}
-    */
-    this.ratio_ = options.ratio !== undefined ?
-      options.ratio : 1.5;
-
+     * @private
+     * @type {number}
+     */
+    this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
   }
 
   /**
@@ -100,11 +99,13 @@ class ImageCanvasSource extends ImageSource {
     resolution = this.findNearestResolution(resolution);
 
     let canvas = this.canvas_;
-    if (canvas &&
-       this.renderedRevision_ == this.getRevision() &&
-       canvas.getResolution() == resolution &&
-       canvas.getPixelRatio() == pixelRatio &&
-       containsExtent(canvas.getExtent(), extent)) {
+    if (
+      canvas &&
+      this.renderedRevision_ == this.getRevision() &&
+      canvas.getResolution() == resolution &&
+      canvas.getPixelRatio() == pixelRatio &&
+      containsExtent(canvas.getExtent(), extent)
+    ) {
       return canvas;
     }
 
@@ -115,7 +116,13 @@ class ImageCanvasSource extends ImageSource {
     const size = [width * pixelRatio, height * pixelRatio];
 
     const canvasElement = this.canvasFunction_.call(
-      this, extent, resolution, pixelRatio, size, projection);
+      this,
+      extent,
+      resolution,
+      pixelRatio,
+      size,
+      projection
+    );
     if (canvasElement) {
       canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
     }
@@ -125,6 +132,5 @@ class ImageCanvasSource extends ImageSource {
     return canvas;
   }
 }
-
 
 export default ImageCanvasSource;

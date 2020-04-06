@@ -3,12 +3,16 @@
  */
 
 import 'elm-pep';
-import {listen} from '../events.js';
+import Control from './Control.js';
 import EventType from '../pointer/EventType.js';
 import {getChangeEventType} from '../Object.js';
-import Control from './Control.js';
-import {getTransformFromProjections, identityTransform, get as getProjection, getUserProjection} from '../proj.js';
-
+import {
+  get as getProjection,
+  getTransformFromProjections,
+  getUserProjection,
+  identityTransform,
+} from '../proj.js';
+import {listen} from '../events.js';
 
 /**
  * @type {string}
@@ -19,7 +23,6 @@ const PROJECTION = 'projection';
  * @type {string}
  */
 const COORDINATE_FORMAT = 'coordinateFormat';
-
 
 /**
  * @typedef {Object} Options
@@ -38,7 +41,6 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * string `''`).
  */
 
-
 /**
  * @classdesc
  * A control to show the 2D coordinates of the mouse cursor. By default, these
@@ -52,24 +54,26 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @api
  */
 class MousePosition extends Control {
-
   /**
    * @param {Options=} opt_options Mouse position options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     const element = document.createElement('div');
-    element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
+    element.className =
+      options.className !== undefined ? options.className : 'ol-mouse-position';
 
     super({
       element: element,
       render: options.render || render,
-      target: options.target
+      target: options.target,
     });
 
-    this.addEventListener(getChangeEventType(PROJECTION), this.handleProjectionChanged_);
+    this.addEventListener(
+      getChangeEventType(PROJECTION),
+      this.handleProjectionChanged_
+    );
 
     if (options.coordinateFormat) {
       this.setCoordinateFormat(options.coordinateFormat);
@@ -82,7 +86,8 @@ class MousePosition extends Control {
      * @private
      * @type {string}
      */
-    this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '&#160;';
+    this.undefinedHTML_ =
+      options.undefinedHTML !== undefined ? options.undefinedHTML : '&#160;';
 
     /**
      * @private
@@ -107,7 +112,6 @@ class MousePosition extends Control {
      * @type {?import("../proj.js").TransformFunction}
      */
     this.transform_ = null;
-
   }
 
   /**
@@ -126,9 +130,9 @@ class MousePosition extends Control {
    * @api
    */
   getCoordinateFormat() {
-    return (
-      /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
-    );
+    return /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (this.get(
+      COORDINATE_FORMAT
+    ));
   }
 
   /**
@@ -139,9 +143,9 @@ class MousePosition extends Control {
    * @api
    */
   getProjection() {
-    return (
-      /** @type {import("../proj/Projection.js").default|undefined} */ (this.get(PROJECTION))
-    );
+    return /** @type {import("../proj/Projection.js").default|undefined} */ (this.get(
+      PROJECTION
+    ));
   }
 
   /**
@@ -216,7 +220,9 @@ class MousePosition extends Control {
         const projection = this.getProjection();
         if (projection) {
           this.transform_ = getTransformFromProjections(
-            this.mapProjection_, projection);
+            this.mapProjection_,
+            projection
+          );
         } else {
           this.transform_ = identityTransform;
         }
@@ -227,7 +233,9 @@ class MousePosition extends Control {
         const userProjection = getUserProjection();
         if (userProjection) {
           this.transform_ = getTransformFromProjections(
-            this.mapProjection_, userProjection);
+            this.mapProjection_,
+            userProjection
+          );
         }
         this.transform_(coordinate, coordinate);
         const coordinateFormat = this.getCoordinateFormat();
@@ -244,7 +252,6 @@ class MousePosition extends Control {
     }
   }
 }
-
 
 /**
  * Update the projection. Rendering of the coordinates is done in
@@ -263,6 +270,5 @@ export function render(mapEvent) {
     }
   }
 }
-
 
 export default MousePosition;

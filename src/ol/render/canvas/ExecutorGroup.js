@@ -2,14 +2,17 @@
  * @module ol/render/canvas/ExecutorGroup
  */
 
-import {numberSafeCompareFunction} from '../../array.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
-import {transform2D} from '../../geom/flat/transform.js';
-import {isEmpty} from '../../obj.js';
 import BuilderType from './BuilderType.js';
-import {create as createTransform, compose as composeTransform} from '../../transform.js';
 import Executor from './Executor.js';
+import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../../transform.js';
+import {createCanvasContext2D} from '../../dom.js';
+import {isEmpty} from '../../obj.js';
+import {numberSafeCompareFunction} from '../../array.js';
+import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @const
@@ -21,9 +24,8 @@ const ORDER = [
   BuilderType.LINE_STRING,
   BuilderType.IMAGE,
   BuilderType.TEXT,
-  BuilderType.DEFAULT
+  BuilderType.DEFAULT,
 ];
-
 
 class ExecutorGroup {
   /**
@@ -38,8 +40,14 @@ class ExecutorGroup {
    * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
-  constructor(maxExtent, resolution, pixelRatio, overlaps, allInstructions, opt_renderBuffer) {
-
+  constructor(
+    maxExtent,
+    resolution,
+    pixelRatio,
+    overlaps,
+    allInstructions,
+    opt_renderBuffer
+  ) {
     /**
      * @private
      * @type {import("../../extent.js").Extent}
@@ -121,11 +129,14 @@ class ExecutorGroup {
       for (const builderType in instructionByZindex) {
         const instructions = instructionByZindex[builderType];
         executors[builderType] = new Executor(
-          this.resolution_, this.pixelRatio_, this.overlaps_, instructions);
+          this.resolution_,
+          this.pixelRatio_,
+          this.overlaps_,
+          instructions
+        );
       }
     }
   }
-
 
   /**
    * @param {Array<BuilderType>} executors Executors.
@@ -142,7 +153,6 @@ class ExecutorGroup {
     }
     return false;
   }
-
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
@@ -162,21 +172,31 @@ class ExecutorGroup {
     callback,
     declutteredFeatures
   ) {
-
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
-    const transform = composeTransform(this.hitDetectionTransform_,
-      hitTolerance + 0.5, hitTolerance + 0.5,
-      1 / resolution, -1 / resolution,
+    const transform = composeTransform(
+      this.hitDetectionTransform_,
+      hitTolerance + 0.5,
+      hitTolerance + 0.5,
+      1 / resolution,
+      -1 / resolution,
       -rotation,
-      -coordinate[0], -coordinate[1]);
+      -coordinate[0],
+      -coordinate[1]
+    );
 
     if (!this.hitDetectionContext_) {
-      this.hitDetectionContext_ = createCanvasContext2D(contextSize, contextSize);
+      this.hitDetectionContext_ = createCanvasContext2D(
+        contextSize,
+        contextSize
+      );
     }
     const context = this.hitDetectionContext_;
 
-    if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
+    if (
+      context.canvas.width !== contextSize ||
+      context.canvas.height !== contextSize
+    ) {
       context.canvas.width = contextSize;
       context.canvas.height = contextSize;
     } else {
@@ -190,7 +210,11 @@ class ExecutorGroup {
     if (this.renderBuffer_ !== undefined) {
       hitExtent = createEmpty();
       extendCoordinate(hitExtent, coordinate);
-      buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
+      buffer(
+        hitExtent,
+        resolution * (this.renderBuffer_ + hitTolerance),
+        hitExtent
+      );
     }
 
     const mask = getCircleArray(hitTolerance);
@@ -202,14 +226,21 @@ class ExecutorGroup {
      * @return {?} Callback result.
      */
     function featureCallback(feature) {
-      const imageData = context.getImageData(0, 0, contextSize, contextSize).data;
+      const imageData = context.getImageData(0, 0, contextSize, contextSize)
+        .data;
       for (let i = 0; i < contextSize; i++) {
         for (let j = 0; j < contextSize; j++) {
           if (mask[i][j]) {
             if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
               let result;
-              if (!(declutteredFeatures && (builderType == BuilderType.IMAGE || builderType == BuilderType.TEXT)) ||
-                  declutteredFeatures.indexOf(feature) !== -1) {
+              if (
+                !(
+                  declutteredFeatures &&
+                  (builderType == BuilderType.IMAGE ||
+                    builderType == BuilderType.TEXT)
+                ) ||
+                declutteredFeatures.indexOf(feature) !== -1
+              ) {
                 result = callback(feature);
               }
               if (result) {
@@ -236,7 +267,13 @@ class ExecutorGroup {
         builderType = ORDER[j];
         executor = executors[builderType];
         if (executor !== undefined) {
-          result = executor.executeHitDetection(context, transform, rotation, featureCallback, hitExtent);
+          result = executor.executeHitDetection(
+            context,
+            transform,
+            rotation,
+            featureCallback,
+            hitExtent
+          );
           if (result) {
             return result;
           }
@@ -260,8 +297,7 @@ class ExecutorGroup {
     const maxX = maxExtent[2];
     const maxY = maxExtent[3];
     const flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
-    transform2D(
-      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
+    transform2D(flatClipCoords, 0, 8, 2, transform, flatClipCoords);
     return flatClipCoords;
   }
 
@@ -281,8 +317,14 @@ class ExecutorGroup {
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
-  execute(context, transform, viewRotation, snapToPixel, opt_builderTypes, opt_declutterReplays) {
-
+  execute(
+    context,
+    transform,
+    viewRotation,
+    snapToPixel,
+    opt_builderTypes,
+    opt_declutterReplays
+  ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
@@ -303,8 +345,11 @@ class ExecutorGroup {
         const builderType = builderTypes[j];
         replay = replays[builderType];
         if (replay !== undefined) {
-          if (opt_declutterReplays &&
-              (builderType == BuilderType.IMAGE || builderType == BuilderType.TEXT)) {
+          if (
+            opt_declutterReplays &&
+            (builderType == BuilderType.IMAGE ||
+              builderType == BuilderType.TEXT)
+          ) {
             const declutter = opt_declutterReplays[zIndexKey];
             if (!declutter) {
               opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
@@ -324,16 +369,14 @@ class ExecutorGroup {
   }
 }
 
-
 /**
  * This cache is used for storing calculated pixel circles for increasing performance.
  * It is a static property to allow each Replaygroup to access it.
  * @type {Object<number, Array<Array<(boolean|undefined)>>>}
  */
 const circleArrayCache = {
-  0: [[true]]
+  0: [[true]],
 };
-
 
 /**
  * This method fills a row in the array from the given coordinate to the
@@ -355,7 +398,6 @@ function fillCircleArrayRowToMiddle(array, x, y) {
     }
   }
 }
-
 
 /**
  * This methods creates a circle inside a fitting array. Points inside the
@@ -402,7 +444,6 @@ export function getCircleArray(radius) {
   return arr;
 }
 
-
 /**
  * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
  * @param {CanvasRenderingContext2D} context Context.
@@ -411,18 +452,27 @@ export function getCircleArray(radius) {
  * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
  * @param {Array<import("../../PluggableMap.js").DeclutterItems>} declutterItems Declutter items.
  */
-export function replayDeclutter(declutterReplays, context, rotation, opacity, snapToPixel, declutterItems) {
-  const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
+export function replayDeclutter(
+  declutterReplays,
+  context,
+  rotation,
+  opacity,
+  snapToPixel,
+  declutterItems
+) {
+  const zs = Object.keys(declutterReplays)
+    .map(Number)
+    .sort(numberSafeCompareFunction);
   for (let z = 0, zz = zs.length; z < zz; ++z) {
     const executorData = declutterReplays[zs[z].toString()];
     let currentExecutor;
-    for (let i = 0, ii = executorData.length; i < ii;) {
+    for (let i = 0, ii = executorData.length; i < ii; ) {
       const executor = executorData[i++];
       if (executor !== currentExecutor) {
         currentExecutor = executor;
         declutterItems.push({
           items: executor.declutterItems,
-          opacity: opacity
+          opacity: opacity,
         });
       }
       const transform = executorData[i++];
@@ -430,6 +480,5 @@ export function replayDeclutter(declutterReplays, context, rotation, opacity, sn
     }
   }
 }
-
 
 export default ExecutorGroup;

@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
+import RasterSource from '../src/ol/source/Raster.js';
 import View from '../src/ol/View.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import XYZ from '../src/ol/source/XYZ.js';
-import RasterSource from '../src/ol/source/Raster.js';
 
 function growRegion(inputs, data) {
   const image = inputs[0];
@@ -43,8 +43,11 @@ function growRegion(inputs, data) {
           if (ca === 0) {
             continue;
           }
-          if (Math.abs(seedR - cr) < delta && Math.abs(seedG - cg) < delta &&
-              Math.abs(seedB - cb) < delta) {
+          if (
+            Math.abs(seedR - cr) < delta &&
+            Math.abs(seedG - cg) < delta &&
+            Math.abs(seedB - cb) < delta
+          ) {
             outputData[ci] = 255;
             outputData[ci + 1] = 0;
             outputData[ci + 2] = 0;
@@ -68,12 +71,13 @@ function next4Edges(edge) {
     [x + 1, y],
     [x - 1, y],
     [x, y + 1],
-    [x, y - 1]
+    [x, y - 1],
   ];
 }
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
-const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const imagery = new TileLayer({
@@ -81,8 +85,8 @@ const imagery = new TileLayer({
     attributions: attributions,
     url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
     maxZoom: 20,
-    crossOrigin: ''
-  })
+    crossOrigin: '',
+  }),
 });
 
 const raster = new RasterSource({
@@ -92,13 +96,13 @@ const raster = new RasterSource({
   // Functions in the `lib` object will be available to the operation run in
   // the web worker.
   lib: {
-    next4Edges: next4Edges
-  }
+    next4Edges: next4Edges,
+  },
 });
 
 const rasterImage = new ImageLayer({
   opacity: 0.7,
-  source: raster
+  source: raster,
 });
 
 const map = new Map({
@@ -106,20 +110,20 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: fromLonLat([-119.07, 47.65]),
-    zoom: 11
-  })
+    zoom: 11,
+  }),
 });
 
 let coordinate;
 
-map.on('click', function(event) {
+map.on('click', function (event) {
   coordinate = event.coordinate;
   raster.changed();
 });
 
 const thresholdControl = document.getElementById('threshold');
 
-raster.on('beforeoperations', function(event) {
+raster.on('beforeoperations', function (event) {
   // the event.data object will be passed to operations
   const data = event.data;
   data.delta = thresholdControl.value;
@@ -133,7 +137,7 @@ function updateControlValue() {
 }
 updateControlValue();
 
-thresholdControl.addEventListener('input', function() {
+thresholdControl.addEventListener('input', function () {
   updateControlValue();
   raster.changed();
 });

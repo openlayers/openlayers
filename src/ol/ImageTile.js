@@ -6,9 +6,7 @@ import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import {listenImage} from './Image.js';
 
-
 class ImageTile extends Tile {
-
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
@@ -17,8 +15,14 @@ class ImageTile extends Tile {
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options=} opt_options Tile options.
    */
-  constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
-
+  constructor(
+    tileCoord,
+    state,
+    src,
+    crossOrigin,
+    tileLoadFunction,
+    opt_options
+  ) {
     super(tileCoord, state, opt_options);
 
     /**
@@ -55,7 +59,6 @@ class ImageTile extends Tile {
      * @type {import("./Tile.js").LoadFunction}
      */
     this.tileLoadFunction_ = tileLoadFunction;
-
   }
 
   /**
@@ -138,7 +141,6 @@ class ImageTile extends Tile {
     }
   }
 }
-
 
 /**
  * Get a 1-pixel blank image.

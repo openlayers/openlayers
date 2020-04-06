@@ -1,7 +1,7 @@
 import Map from '../../../src/ol/Map.js';
+import TileLayer from '../../../src/ol/layer/Tile.js';
 import View from '../../../src/ol/View.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
-import TileLayer from '../../../src/ol/layer/Tile.js';
 import {createXYZ} from '../../../src/ol/tilegrid.js';
 
 const tileGrid = createXYZ();
@@ -13,11 +13,11 @@ const source = new XYZ({
   minZoom: 5,
   maxZoom: 5,
   imageSmoothing: false,
-  url: '/data/tiles/osm/{z}/{x}/{y}.png'
+  url: '/data/tiles/osm/{z}/{x}/{y}.png',
 });
 
 const layer = new TileLayer({
-  source: source
+  source: source,
 });
 
 new Map({
@@ -26,8 +26,8 @@ new Map({
   layers: [layer],
   view: new View({
     center: center,
-    zoom: 10
-  })
+    zoom: 10,
+  }),
 });
 
 render();

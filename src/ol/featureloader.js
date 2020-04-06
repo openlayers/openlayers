@@ -1,8 +1,8 @@
 /**
  * @module ol/featureloader
  */
-import {VOID} from './functions.js';
 import FormatType from './format/FormatType.js';
+import {VOID} from './functions.js';
 
 /**
  *
@@ -28,7 +28,6 @@ let withCredentials = false;
  * @api
  */
 
-
 /**
  * {@link module:ol/source/Vector} sources use a function of this type to
  * get the url to load features from.
@@ -40,7 +39,6 @@ let withCredentials = false;
  * @typedef {function(import("./extent.js").Extent, number, import("./proj/Projection.js").default): string} FeatureUrlFunction
  * @api
  */
-
 
 /**
  * @param {string|FeatureUrlFunction} url Feature URL service.
@@ -61,11 +59,13 @@ export function loadFeaturesXhr(url, format, success, failure) {
      * @param {import("./proj/Projection.js").default} projection Projection.
      * @this {import("./source/Vector").default|import("./VectorTile.js").default}
      */
-    function(extent, resolution, projection) {
+    function (extent, resolution, projection) {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET',
+      xhr.open(
+        'GET',
         typeof url === 'function' ? url(extent, resolution, projection) : url,
-        true);
+        true
+      );
       if (format.getType() == FormatType.ARRAY_BUFFER) {
         xhr.responseType = 'arraybuffer';
       }
@@ -74,9 +74,9 @@ export function loadFeaturesXhr(url, format, success, failure) {
        * @param {Event} event Event.
        * @private
        */
-      xhr.onload = function(event) {
+      xhr.onload = function (event) {
         // status will be 0 for file:// urls
-        if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+        if (!xhr.status || (xhr.status >= 200 && xhr.status < 300)) {
           const type = format.getType();
           /** @type {Document|Node|Object|string|undefined} */
           let source;
@@ -85,17 +85,23 @@ export function loadFeaturesXhr(url, format, success, failure) {
           } else if (type == FormatType.XML) {
             source = xhr.responseXML;
             if (!source) {
-              source = new DOMParser().parseFromString(xhr.responseText, 'application/xml');
+              source = new DOMParser().parseFromString(
+                xhr.responseText,
+                'application/xml'
+              );
             }
           } else if (type == FormatType.ARRAY_BUFFER) {
             source = /** @type {ArrayBuffer} */ (xhr.response);
           }
           if (source) {
-            success.call(this, format.readFeatures(source, {
-              extent: extent,
-              featureProjection: projection
-            }),
-            format.readProjection(source));
+            success.call(
+              this,
+              format.readFeatures(source, {
+                extent: extent,
+                featureProjection: projection,
+              }),
+              format.readProjection(source)
+            );
           } else {
             failure.call(this);
           }
@@ -106,14 +112,13 @@ export function loadFeaturesXhr(url, format, success, failure) {
       /**
        * @private
        */
-      xhr.onerror = function() {
+      xhr.onerror = function () {
         failure.call(this);
       }.bind(this);
       xhr.send();
     }
   );
 }
-
 
 /**
  * Create an XHR feature loader for a `url` and `format`. The feature loader
@@ -125,19 +130,25 @@ export function loadFeaturesXhr(url, format, success, failure) {
  * @api
  */
 export function xhr(url, format) {
-  return loadFeaturesXhr(url, format,
+  return loadFeaturesXhr(
+    url,
+    format,
     /**
      * @param {Array<import("./Feature.js").default>} features The loaded features.
      * @param {import("./proj/Projection.js").default} dataProjection Data
      * projection.
      * @this {import("./source/Vector").default|import("./VectorTile.js").default}
      */
-    function(features, dataProjection) {
+    function (features, dataProjection) {
       const sourceOrTile = /** @type {?} */ (this);
       if (typeof sourceOrTile.addFeatures === 'function') {
-        /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(features);
+        /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(
+          features
+        );
       }
-    }, /* FIXME handle error */ VOID);
+    },
+    /* FIXME handle error */ VOID
+  );
 }
 
 /**

@@ -1,20 +1,24 @@
 /**
  * @module ol/interaction/Extent
  */
-import Feature from '../Feature.js';
-import MapBrowserEventType from '../MapBrowserEventType.js';
-import {squaredDistanceToSegment, closestOnSegment, distance as coordinateDistance, squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 import Event from '../events/Event.js';
-import {boundingExtent, getArea} from '../extent.js';
+import Feature from '../Feature.js';
 import GeometryType from '../geom/GeometryType.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
 import Point from '../geom/Point.js';
-import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import PointerInteraction from './Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
+import {boundingExtent, getArea} from '../extent.js';
+import {
+  closestOnSegment,
+  distance as coordinateDistance,
+  squaredDistance as squaredCoordinateDistance,
+  squaredDistanceToSegment,
+} from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
+import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import {toUserExtent} from '../proj.js';
-
 
 /**
  * @typedef {Object} Options
@@ -32,7 +36,6 @@ import {toUserExtent} from '../proj.js';
  * in the X direction? Only affects visuals, not functionality.
  */
 
-
 /**
  * @enum {string}
  */
@@ -42,9 +45,8 @@ const ExtentEventType = {
    * @event ExtentEvent#extentchanged
    * @api
    */
-  EXTENTCHANGED: 'extentchanged'
+  EXTENTCHANGED: 'extentchanged',
 };
-
 
 /**
  * @classdesc
@@ -52,7 +54,6 @@ const ExtentEventType = {
  * instances of this type.
  */
 class ExtentEvent extends Event {
-
   /**
    * @param {import("../extent.js").Extent} extent the new extent
    */
@@ -66,9 +67,7 @@ class ExtentEvent extends Event {
      */
     this.extent = extent;
   }
-
 }
-
 
 /**
  * @classdesc
@@ -84,7 +83,6 @@ class Extent extends PointerInteraction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
@@ -108,8 +106,8 @@ class Extent extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.pixelTolerance_ = options.pixelTolerance !== undefined ?
-      options.pixelTolerance : 10;
+    this.pixelTolerance_ =
+      options.pixelTolerance !== undefined ? options.pixelTolerance : 10;
 
     /**
      * Is the pointer snapped to an extent vertex
@@ -144,11 +142,13 @@ class Extent extends PointerInteraction {
     this.extentOverlay_ = new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
-        wrapX: !!opt_options.wrapX
+        wrapX: !!opt_options.wrapX,
       }),
-      style: opt_options.boxStyle ? opt_options.boxStyle : getDefaultExtentStyleFunction(),
+      style: opt_options.boxStyle
+        ? opt_options.boxStyle
+        : getDefaultExtentStyleFunction(),
       updateWhileAnimating: true,
-      updateWhileInteracting: true
+      updateWhileInteracting: true,
     });
 
     /**
@@ -159,11 +159,13 @@ class Extent extends PointerInteraction {
     this.vertexOverlay_ = new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
-        wrapX: !!opt_options.wrapX
+        wrapX: !!opt_options.wrapX,
       }),
-      style: opt_options.pointerStyle ? opt_options.pointerStyle : getDefaultPointerStyleFunction(),
+      style: opt_options.pointerStyle
+        ? opt_options.pointerStyle
+        : getDefaultPointerStyleFunction(),
       updateWhileAnimating: true,
-      updateWhileInteracting: true
+      updateWhileInteracting: true,
     });
 
     if (opt_options.extent) {
@@ -179,9 +181,11 @@ class Extent extends PointerInteraction {
    */
   snapToVertex_(pixel, map) {
     const pixelCoordinate = map.getCoordinateFromPixelInternal(pixel);
-    const sortByDistance = function(a, b) {
-      return squaredDistanceToSegment(pixelCoordinate, a) -
-          squaredDistanceToSegment(pixelCoordinate, b);
+    const sortByDistance = function (a, b) {
+      return (
+        squaredDistanceToSegment(pixelCoordinate, a) -
+        squaredDistanceToSegment(pixelCoordinate, b)
+      );
     };
     const extent = this.getExtentInternal();
     if (extent) {
@@ -190,8 +194,7 @@ class Extent extends PointerInteraction {
       segments.sort(sortByDistance);
       const closestSegment = segments[0];
 
-      let vertex = (closestOnSegment(pixelCoordinate,
-        closestSegment));
+      let vertex = closestOnSegment(pixelCoordinate, closestSegment);
       const vertexPixel = map.getPixelFromCoordinateInternal(vertex);
 
       //if the distance is within tolerance, snap to the segment
@@ -204,8 +207,8 @@ class Extent extends PointerInteraction {
         const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
         this.snappedToVertex_ = dist <= this.pixelTolerance_;
         if (this.snappedToVertex_) {
-          vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
+          vertex =
+            squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
         }
         return vertex;
       }
@@ -281,7 +284,10 @@ class Extent extends PointerInteraction {
       return true;
     }
     //display pointer (if not dragging)
-    if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
+    if (
+      mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE &&
+      !this.handlingDownUpSequence
+    ) {
       this.handlePointerMove_(mapBrowserEvent);
     }
     //call pointer to determine up/down/drag
@@ -303,7 +309,7 @@ class Extent extends PointerInteraction {
     let vertex = this.snapToVertex_(pixel, map);
 
     //find the extent corner opposite the passed corner
-    const getOpposingPoint = function(point) {
+    const getOpposingPoint = function (point) {
       let x_ = null;
       let y_ = null;
       if (point[0] == extent[0]) {
@@ -322,13 +328,15 @@ class Extent extends PointerInteraction {
       return null;
     };
     if (vertex && extent) {
-      const x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
-      const y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
+      const x =
+        vertex[0] == extent[0] || vertex[0] == extent[2] ? vertex[0] : null;
+      const y =
+        vertex[1] == extent[1] || vertex[1] == extent[3] ? vertex[1] : null;
 
       //snap to point
       if (x !== null && y !== null) {
         this.pointerHandler_ = getPointHandler(getOpposingPoint(vertex));
-      //snap to edge
+        //snap to edge
       } else if (x !== null) {
         this.pointerHandler_ = getEdgeHandler(
           getOpposingPoint([x, extent[1]]),
@@ -340,7 +348,7 @@ class Extent extends PointerInteraction {
           getOpposingPoint([extent[2], y])
         );
       }
-    //no snap - new bbox
+      //no snap - new bbox
     } else {
       vertex = map.getCoordinateFromPixelInternal(pixel);
       this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
@@ -395,7 +403,10 @@ class Extent extends PointerInteraction {
    * @api
    */
   getExtent() {
-    return toUserExtent(this.getExtentInternal(), this.getMap().getView().getProjection());
+    return toUserExtent(
+      this.getExtentInternal(),
+      this.getMap().getView().getProjection()
+    );
   }
 
   /**
@@ -429,7 +440,7 @@ class Extent extends PointerInteraction {
  */
 function getDefaultExtentStyleFunction() {
   const style = createEditingStyle();
-  return function(feature, resolution) {
+  return function (feature, resolution) {
     return style[GeometryType.POLYGON];
   };
 }
@@ -441,7 +452,7 @@ function getDefaultExtentStyleFunction() {
  */
 function getDefaultPointerStyleFunction() {
   const style = createEditingStyle();
-  return function(feature, resolution) {
+  return function (feature, resolution) {
     return style[GeometryType.POINT];
   };
 }
@@ -451,7 +462,7 @@ function getDefaultPointerStyleFunction() {
  * @returns {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent} event handler
  */
 function getPointHandler(fixedPoint) {
-  return function(point) {
+  return function (point) {
     return boundingExtent([fixedPoint, point]);
   };
 }
@@ -463,11 +474,11 @@ function getPointHandler(fixedPoint) {
  */
 function getEdgeHandler(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
-    return function(point) {
+    return function (point) {
       return boundingExtent([fixedP1, [point[0], fixedP2[1]]]);
     };
   } else if (fixedP1[1] == fixedP2[1]) {
-    return function(point) {
+    return function (point) {
       return boundingExtent([fixedP1, [fixedP2[0], point[1]]]);
     };
   } else {
@@ -481,12 +492,23 @@ function getEdgeHandler(fixedP1, fixedP2) {
  */
 function getSegments(extent) {
   return [
-    [[extent[0], extent[1]], [extent[0], extent[3]]],
-    [[extent[0], extent[3]], [extent[2], extent[3]]],
-    [[extent[2], extent[3]], [extent[2], extent[1]]],
-    [[extent[2], extent[1]], [extent[0], extent[1]]]
+    [
+      [extent[0], extent[1]],
+      [extent[0], extent[3]],
+    ],
+    [
+      [extent[0], extent[3]],
+      [extent[2], extent[3]],
+    ],
+    [
+      [extent[2], extent[3]],
+      [extent[2], extent[1]],
+    ],
+    [
+      [extent[2], extent[1]],
+      [extent[0], extent[1]],
+    ],
   ];
 }
-
 
 export default Extent;

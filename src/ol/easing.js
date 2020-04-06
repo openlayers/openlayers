@@ -2,7 +2,6 @@
  * @module ol/easing
  */
 
-
 /**
  * Start slow and speed up.
  * @param {number} t Input between 0 and 1.
@@ -12,7 +11,6 @@
 export function easeIn(t) {
   return Math.pow(t, 3);
 }
-
 
 /**
  * Start fast and slow down.
@@ -24,7 +22,6 @@ export function easeOut(t) {
   return 1 - easeIn(1 - t);
 }
 
-
 /**
  * Start slow, speed up, and then slow down again.
  * @param {number} t Input between 0 and 1.
@@ -35,7 +32,6 @@ export function inAndOut(t) {
   return 3 * t * t - 2 * t * t * t;
 }
 
-
 /**
  * Maintain a constant speed over time.
  * @param {number} t Input between 0 and 1.
@@ -45,7 +41,6 @@ export function inAndOut(t) {
 export function linear(t) {
   return t;
 }
-
 
 /**
  * Start slow, speed up, and at the very end slow down again.  This has the

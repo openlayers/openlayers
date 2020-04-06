@@ -1,29 +1,34 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Stroke, Style} from '../src/ol/style.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 const raster = new TileLayer({
-  source: new OSM()
+  source: new OSM(),
 });
 
 const style = new Style({
   stroke: new Stroke({
     color: 'black',
-    width: 1
-  })
+    width: 1,
+  }),
 });
 
-const feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
+const feature = new Feature(
+  new LineString([
+    [-4000000, 0],
+    [4000000, 0],
+  ])
+);
 
 const vector = new VectorLayer({
   source: new VectorSource({
-    features: [feature]
+    features: [feature],
   }),
-  style: style
+  style: style,
 });
 
 const map = new Map({
@@ -31,21 +36,25 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 let hitTolerance;
 
 const statusElement = document.getElementById('status');
 
-map.on('singleclick', function(e) {
+map.on('singleclick', function (e) {
   let hit = false;
-  map.forEachFeatureAtPixel(e.pixel, function() {
-    hit = true;
-  }, {
-    hitTolerance: hitTolerance
-  });
+  map.forEachFeatureAtPixel(
+    e.pixel,
+    function () {
+      hit = true;
+    },
+    {
+      hitTolerance: hitTolerance,
+    }
+  );
   if (hit) {
     style.getStroke().setColor('green');
     statusElement.innerHTML = '&nbsp;A feature got hit!';
@@ -59,7 +68,7 @@ map.on('singleclick', function(e) {
 const selectHitToleranceElement = document.getElementById('hitTolerance');
 const circleCanvas = document.getElementById('circle');
 
-const changeHitTolerance = function() {
+const changeHitTolerance = function () {
   hitTolerance = parseInt(selectHitToleranceElement.value, 10);
 
   const size = 2 * hitTolerance + 2;
@@ -68,7 +77,13 @@ const changeHitTolerance = function() {
   const ctx = circleCanvas.getContext('2d');
   ctx.clearRect(0, 0, size, size);
   ctx.beginPath();
-  ctx.arc(hitTolerance + 1, hitTolerance + 1, hitTolerance + 0.5, 0, 2 * Math.PI);
+  ctx.arc(
+    hitTolerance + 1,
+    hitTolerance + 1,
+    hitTolerance + 0.5,
+    0,
+    2 * Math.PI
+  );
   ctx.fill();
   ctx.stroke();
 };

@@ -5,7 +5,6 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 
 class VectorTile extends Tile {
-
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
@@ -15,7 +14,6 @@ class VectorTile extends Tile {
    * @param {import("./Tile.js").Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, src, format, tileLoadFunction, opt_options) {
-
     super(tileCoord, state, opt_options);
 
     /**
@@ -65,7 +63,6 @@ class VectorTile extends Tile {
      * @type {string}
      */
     this.url_ = src;
-
   }
 
   /**

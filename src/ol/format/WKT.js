@@ -2,18 +2,17 @@
  * @module ol/format/WKT
  */
 import Feature from '../Feature.js';
-import {transformGeometryWithOptions} from './Feature.js';
-import TextFeature from './TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryType from '../geom/GeometryType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
+import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-
+import TextFeature from './TextFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * Geometry constructors
@@ -25,9 +24,8 @@ const GeometryConstructor = {
   'POLYGON': Polygon,
   'MULTIPOINT': MultiPoint,
   'MULTILINESTRING': MultiLineString,
-  'MULTIPOLYGON': MultiPolygon
+  'MULTIPOLYGON': MultiPolygon,
 };
-
 
 /**
  * @typedef {Object} Options
@@ -48,13 +46,11 @@ const GeometryConstructor = {
  */
 const EMPTY = 'EMPTY';
 
-
 /**
  * @const
  * @type {string}
  */
 const Z = 'Z';
-
 
 /**
  * @const
@@ -62,13 +58,11 @@ const Z = 'Z';
  */
 const M = 'M';
 
-
 /**
  * @const
  * @type {string}
  */
 const ZM = 'ZM';
-
 
 /**
  * @const
@@ -80,7 +74,7 @@ const TokenType = {
   RIGHT_PAREN: 3,
   NUMBER: 4,
   COMMA: 5,
-  EOF: 6
+  EOF: 6,
 };
 
 /**
@@ -92,17 +86,14 @@ for (const type in GeometryType) {
   WKTGeometryType[type] = GeometryType[type].toUpperCase();
 }
 
-
 /**
  * Class to tokenize a WKT string.
  */
 class Lexer {
-
   /**
    * @param {string} wkt WKT string.
    */
   constructor(wkt) {
-
     /**
      * @type {string}
      */
@@ -121,7 +112,7 @@ class Lexer {
    * @private
    */
   isAlpha_(c) {
-    return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
   }
 
   /**
@@ -133,7 +124,7 @@ class Lexer {
    */
   isNumeric_(c, opt_decimal) {
     const decimal = opt_decimal !== undefined ? opt_decimal : false;
-    return c >= '0' && c <= '9' || c == '.' && !decimal;
+    return (c >= '0' && c <= '9') || (c == '.' && !decimal);
   }
 
   /**
@@ -205,12 +196,12 @@ class Lexer {
       c = this.nextChar_();
     } while (
       this.isNumeric_(c, decimal) ||
-        // if we haven't detected a scientific number before, 'e' or 'E'
-        // hint that we should continue to read
-        !scientificNotation && (c == 'e' || c == 'E') ||
-        // once we know that we have a scientific number, both '-' and '+'
-        // are allowed
-        scientificNotation && (c == '-' || c == '+')
+      // if we haven't detected a scientific number before, 'e' or 'E'
+      // hint that we should continue to read
+      (!scientificNotation && (c == 'e' || c == 'E')) ||
+      // once we know that we have a scientific number, both '-' and '+'
+      // are allowed
+      (scientificNotation && (c == '-' || c == '+'))
     );
     return parseFloat(this.wkt.substring(index, this.index_--));
   }
@@ -233,12 +224,10 @@ class Lexer {
  * Class to parse the tokens from the WKT string.
  */
 class Parser {
-
   /**
    * @param {Lexer} lexer The lexer.
    */
   constructor(lexer) {
-
     /**
      * @type {Lexer}
      * @private
@@ -518,8 +507,8 @@ class Parser {
    * @private
    */
   isEmptyGeometry_() {
-    const isEmpty = this.isTokenType(TokenType.TEXT) &&
-        this.token_.value == EMPTY;
+    const isEmpty =
+      this.isTokenType(TokenType.TEXT) && this.token_.value == EMPTY;
     if (isEmpty) {
       this.consume_();
     }
@@ -532,8 +521,15 @@ class Parser {
    * @private
    */
   formatErrorMessage_() {
-    return 'Unexpected `' + this.token_.value + '` at position ' +
-        this.token_.position + ' in `' + this.lexer_.wkt + '`';
+    return (
+      'Unexpected `' +
+      this.token_.value +
+      '` at position ' +
+      this.token_.position +
+      ' in `' +
+      this.lexer_.wkt +
+      '`'
+    );
   }
 
   /**
@@ -599,7 +595,6 @@ class Parser {
   }
 }
 
-
 /**
  * @classdesc
  * Geometry format for reading and writing data in the `WellKnownText` (WKT)
@@ -608,7 +603,6 @@ class Parser {
  * @api
  */
 class WKT extends TextFeature {
-
   /**
    * @param {Options=} opt_options Options.
    */
@@ -617,15 +611,13 @@ class WKT extends TextFeature {
 
     const options = opt_options ? opt_options : {};
 
-
     /**
      * Split GeometryCollection into multiple features.
      * @type {boolean}
      * @private
      */
-    this.splitCollection_ = options.splitCollection !== undefined ?
-      options.splitCollection : false;
-
+    this.splitCollection_ =
+      options.splitCollection !== undefined ? options.splitCollection : false;
   }
 
   /**
@@ -666,10 +658,11 @@ class WKT extends TextFeature {
   readFeaturesFromText(text, opt_options) {
     let geometries = [];
     const geometry = this.readGeometryFromText(text, opt_options);
-    if (this.splitCollection_ &&
-        geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-      geometries = (/** @type {GeometryCollection} */ (geometry))
-        .getGeometriesArray();
+    if (
+      this.splitCollection_ &&
+      geometry.getType() == GeometryType.GEOMETRY_COLLECTION
+    ) {
+      geometries = /** @type {GeometryCollection} */ (geometry).getGeometriesArray();
     } else {
       geometries = [geometry];
     }
@@ -740,7 +733,6 @@ class WKT extends TextFeature {
   }
 }
 
-
 /**
  * @param {Point} geom Point geometry.
  * @return {string} Coordinates part of Point as WKT.
@@ -752,7 +744,6 @@ function encodePointGeometry(geom) {
   }
   return coordinates.join(' ');
 }
-
 
 /**
  * @param {MultiPoint} geom MultiPoint geometry.
@@ -767,7 +758,6 @@ function encodeMultiPointGeometry(geom) {
   return array.join(',');
 }
 
-
 /**
  * @param {GeometryCollection} geom GeometryCollection geometry.
  * @return {string} Coordinates part of GeometryCollection as WKT.
@@ -780,7 +770,6 @@ function encodeGeometryCollectionGeometry(geom) {
   }
   return array.join(',');
 }
-
 
 /**
  * @param {LineString|import("../geom/LinearRing.js").default} geom LineString geometry.
@@ -795,7 +784,6 @@ function encodeLineStringGeometry(geom) {
   return array.join(',');
 }
 
-
 /**
  * @param {MultiLineString} geom MultiLineString geometry.
  * @return {string} Coordinates part of MultiLineString as WKT.
@@ -809,7 +797,6 @@ function encodeMultiLineStringGeometry(geom) {
   return array.join(',');
 }
 
-
 /**
  * @param {Polygon} geom Polygon geometry.
  * @return {string} Coordinates part of Polygon as WKT.
@@ -822,7 +809,6 @@ function encodePolygonGeometry(geom) {
   }
   return array.join(',');
 }
-
 
 /**
  * @param {MultiPolygon} geom MultiPolygon geometry.
@@ -853,7 +839,6 @@ function encodeGeometryLayout(geom) {
   return dimInfo;
 }
 
-
 /**
  * @const
  * @type {Object<string, function(import("../geom/Geometry.js").default): string>}
@@ -865,9 +850,8 @@ const GeometryEncoder = {
   'MultiPoint': encodeMultiPointGeometry,
   'MultiLineString': encodeMultiLineStringGeometry,
   'MultiPolygon': encodeMultiPolygonGeometry,
-  'GeometryCollection': encodeGeometryCollectionGeometry
+  'GeometryCollection': encodeGeometryCollectionGeometry,
 };
-
 
 /**
  * Encode a geometry as WKT.
@@ -879,8 +863,10 @@ function encode(geom) {
   const geometryEncoder = GeometryEncoder[type];
   const enc = geometryEncoder(geom);
   type = type.toUpperCase();
-  if (typeof /** @type {?} */ (geom).getFlatCoordinates === 'function') {
-    const dimInfo = encodeGeometryLayout(/** @type {import("../geom/SimpleGeometry.js").default} */ (geom));
+  if (typeof (/** @type {?} */ (geom).getFlatCoordinates) === 'function') {
+    const dimInfo = encodeGeometryLayout(
+      /** @type {import("../geom/SimpleGeometry.js").default} */ (geom)
+    );
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
     }
@@ -890,6 +876,5 @@ function encode(geom) {
   }
   return type + '(' + enc + ')';
 }
-
 
 export default WKT;

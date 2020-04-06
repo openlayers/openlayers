@@ -9,5 +9,5 @@ export default {
   ARRAY_BUFFER: 'arraybuffer',
   JSON: 'json',
   TEXT: 'text',
-  XML: 'xml'
+  XML: 'xml',
 };

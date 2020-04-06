@@ -1,10 +1,9 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import View from '../src/ol/View.js';
 
 class OLComponent extends HTMLElement {
-
   constructor() {
     super();
     this.shadow = this.attachShadow({mode: 'open'});
@@ -28,15 +27,14 @@ class OLComponent extends HTMLElement {
       target: div,
       layers: [
         new TileLayer({
-          source: new OSM()
-        })
+          source: new OSM(),
+        }),
       ],
       view: new View({
         center: [0, 0],
-        zoom: 2
-      })
+        zoom: 2,
+      }),
     });
-
   }
 }
 

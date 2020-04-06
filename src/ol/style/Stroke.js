@@ -2,7 +2,6 @@
  * @module ol/style/Stroke
  */
 
-
 /**
  * @typedef {Object} Options
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
@@ -18,7 +17,6 @@
  * @property {number} [width] Width.
  */
 
-
 /**
  * @classdesc
  * Set stroke style for vector features.
@@ -32,7 +30,6 @@ class Stroke {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     /**
@@ -92,7 +89,7 @@ class Stroke {
       lineDashOffset: this.getLineDashOffset(),
       lineJoin: this.getLineJoin(),
       miterLimit: this.getMiterLimit(),
-      width: this.getWidth()
+      width: this.getWidth(),
     });
   }
 
@@ -234,7 +231,6 @@ class Stroke {
   setWidth(width) {
     this.width_ = width;
   }
-
 }
 
 export default Stroke;

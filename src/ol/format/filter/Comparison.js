@@ -11,13 +11,11 @@ import Filter from './Filter.js';
  * @abstract
  */
 class Comparison extends Filter {
-
   /**
    * @param {!string} tagName The XML tag name for this filter.
    * @param {!string} propertyName Name of the context property to compare.
    */
   constructor(tagName, propertyName) {
-
     super(tagName);
 
     /**
@@ -25,7 +23,6 @@ class Comparison extends Filter {
      */
     this.propertyName = propertyName;
   }
-
 }
 
 export default Comparison;

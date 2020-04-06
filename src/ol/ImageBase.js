@@ -1,15 +1,14 @@
 /**
  * @module ol/ImageBase
  */
-import {abstract} from './util.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import {abstract} from './util.js';
 
 /**
  * @abstract
  */
 class ImageBase extends EventTarget {
-
   /**
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number|undefined} resolution Resolution.
@@ -17,7 +16,6 @@ class ImageBase extends EventTarget {
    * @param {import("./ImageState.js").default} state State.
    */
   constructor(extent, resolution, pixelRatio, state) {
-
     super();
 
     /**
@@ -43,7 +41,6 @@ class ImageBase extends EventTarget {
      * @type {import("./ImageState.js").default}
      */
     this.state = state;
-
   }
 
   /**
@@ -97,6 +94,5 @@ class ImageBase extends EventTarget {
     abstract();
   }
 }
-
 
 export default ImageBase;

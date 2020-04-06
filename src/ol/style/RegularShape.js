@@ -2,13 +2,19 @@
  * @module ol/style/RegularShape
  */
 
+import ImageState from '../ImageState.js';
+import ImageStyle from './Image.js';
 import {asArray} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
-import ImageState from '../ImageState.js';
-import {defaultStrokeStyle, defaultFillStyle, defaultLineCap, defaultLineWidth, defaultLineJoin, defaultMiterLimit} from '../render/canvas.js';
-import ImageStyle from './Image.js';
-
+import {
+  defaultFillStyle,
+  defaultLineCap,
+  defaultLineJoin,
+  defaultLineWidth,
+  defaultMiterLimit,
+  defaultStrokeStyle,
+} from '../render/canvas.js';
 
 /**
  * Specify radius for regular polygons, or radius1 and radius2 for stars.
@@ -26,7 +32,6 @@ import ImageStyle from './Image.js';
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  */
 
-
 /**
  * @typedef {Object} RenderOptions
  * @property {import("../colorlike.js").ColorLike} [strokeStyle]
@@ -38,7 +43,6 @@ import ImageStyle from './Image.js';
  * @property {CanvasLineJoin} lineJoin
  * @property {number} miterLimit
  */
-
 
 /**
  * @classdesc
@@ -55,15 +59,16 @@ class RegularShape extends ImageStyle {
     /**
      * @type {boolean}
      */
-    const rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
+    const rotateWithView =
+      options.rotateWithView !== undefined ? options.rotateWithView : false;
 
     super({
       opacity: 1,
       rotateWithView: rotateWithView,
       rotation: options.rotation !== undefined ? options.rotation : 0,
       scale: 1,
-      displacement: options.displacement !== undefined ? options.displacement : [0, 0]
+      displacement:
+        options.displacement !== undefined ? options.displacement : [0, 0],
     });
 
     /**
@@ -100,7 +105,8 @@ class RegularShape extends ImageStyle {
      * @protected
      * @type {number}
      */
-    this.radius_ = options.radius !== undefined ? options.radius : options.radius1;
+    this.radius_ =
+      options.radius !== undefined ? options.radius : options.radius1;
 
     /**
      * @private
@@ -145,7 +151,6 @@ class RegularShape extends ImageStyle {
     this.hitDetectionImageSize_ = null;
 
     this.render();
-
   }
 
   /**
@@ -163,7 +168,7 @@ class RegularShape extends ImageStyle {
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
-      displacement: this.getDisplacement().slice()
+      displacement: this.getDisplacement().slice(),
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());
@@ -354,7 +359,7 @@ class RegularShape extends ImageStyle {
       lineDash: lineDash,
       lineDashOffset: lineDashOffset,
       lineJoin: lineJoin,
-      miterLimit: miterLimit
+      miterLimit: miterLimit,
     };
 
     const context = createCanvasContext2D(size, size);
@@ -394,22 +399,28 @@ class RegularShape extends ImageStyle {
     let points = this.points_;
     if (points === Infinity) {
       context.arc(
-        renderOptions.size / 2, renderOptions.size / 2,
-        this.radius_, 0, 2 * Math.PI, true);
+        renderOptions.size / 2,
+        renderOptions.size / 2,
+        this.radius_,
+        0,
+        2 * Math.PI,
+        true
+      );
     } else {
-      const radius2 = (this.radius2_ !== undefined) ? this.radius2_
-        : this.radius_;
+      const radius2 =
+        this.radius2_ !== undefined ? this.radius2_ : this.radius_;
       if (radius2 !== this.radius_) {
         points = 2 * points;
       }
       for (i = 0; i <= points; i++) {
-        angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+        angle0 = (i * 2 * Math.PI) / points - Math.PI / 2 + this.angle_;
         radiusC = i % 2 === 0 ? this.radius_ : radius2;
-        context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0));
+        context.lineTo(
+          renderOptions.size / 2 + radiusC * Math.cos(angle0),
+          renderOptions.size / 2 + radiusC * Math.sin(angle0)
+        );
       }
     }
-
 
     if (this.fill_) {
       let color = this.fill_.getColor();
@@ -455,16 +466,17 @@ class RegularShape extends ImageStyle {
         opacity = color.length === 4 ? color[3] : 1;
       }
       if (opacity === 0) {
-
         // if a transparent fill style is set, create an extra hit-detection image
         // with a default fill style
-        const context = createCanvasContext2D(renderOptions.size, renderOptions.size);
+        const context = createCanvasContext2D(
+          renderOptions.size,
+          renderOptions.size
+        );
         this.hitDetectionCanvas_ = context.canvas;
 
         this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
       }
     }
-
   }
 
   /**
@@ -486,20 +498,27 @@ class RegularShape extends ImageStyle {
     let points = this.points_;
     if (points === Infinity) {
       context.arc(
-        renderOptions.size / 2, renderOptions.size / 2,
-        this.radius_, 0, 2 * Math.PI, true);
+        renderOptions.size / 2,
+        renderOptions.size / 2,
+        this.radius_,
+        0,
+        2 * Math.PI,
+        true
+      );
     } else {
-      const radius2 = (this.radius2_ !== undefined) ? this.radius2_
-        : this.radius_;
+      const radius2 =
+        this.radius2_ !== undefined ? this.radius2_ : this.radius_;
       if (radius2 !== this.radius_) {
         points = 2 * points;
       }
       let i, radiusC, angle0;
       for (i = 0; i <= points; i++) {
-        angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+        angle0 = (i * 2 * Math.PI) / points - Math.PI / 2 + this.angle_;
         radiusC = i % 2 === 0 ? this.radius_ : radius2;
-        context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0));
+        context.lineTo(
+          renderOptions.size / 2 + radiusC * Math.cos(angle0),
+          renderOptions.size / 2 + radiusC * Math.sin(angle0)
+        );
       }
     }
 
@@ -516,8 +535,6 @@ class RegularShape extends ImageStyle {
     }
     context.closePath();
   }
-
 }
-
 
 export default RegularShape;

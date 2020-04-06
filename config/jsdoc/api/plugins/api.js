@@ -2,18 +2,17 @@
  * Define an @api tag
  * @param {Object} dictionary The tag dictionary.
  */
-exports.defineTags = function(dictionary) {
+exports.defineTags = function (dictionary) {
   dictionary.defineTag('api', {
     mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
-    onTagged: function(doclet, tag) {
+    onTagged: function (doclet, tag) {
       includeTypes(doclet);
       doclet.stability = 'stable';
-    }
+    },
   });
 };
-
 
 /*
  * Based on @api annotations, and assuming that items with no @api annotation
@@ -56,7 +55,7 @@ function includeAugments(doclet) {
           if (!doclet.fires) {
             doclet.fires = [];
           }
-          cls.fires.forEach(function(f) {
+          cls.fires.forEach(function (f) {
             if (doclet.fires.indexOf(f) == -1) {
               doclet.fires.push(f);
             }
@@ -66,7 +65,7 @@ function includeAugments(doclet) {
           if (!doclet.observables) {
             doclet.observables = [];
           }
-          cls.observables.forEach(function(f) {
+          cls.observables.forEach(function (f) {
             if (doclet.observables.indexOf(f) == -1) {
               doclet.observables.push(f);
             }
@@ -79,7 +78,7 @@ function includeAugments(doclet) {
 }
 
 function extractTypes(item) {
-  item.type.names.forEach(function(type) {
+  item.type.names.forEach(function (type) {
     const match = type.match(/^(.*<)?([^>]*)>?$/);
     if (match) {
       modules[match[2]] = true;
@@ -109,31 +108,35 @@ const moduleRoot = path.join(process.cwd(), 'src');
 
 // Tag default exported Identifiers because their name should be the same as the module name.
 exports.astNodeVisitor = {
-  visitNode: function(node, e, parser, currentSourceName) {
+  visitNode: function (node, e, parser, currentSourceName) {
     if (node.parent && node.parent.type === 'ExportDefaultDeclaration') {
-      const modulePath = path.relative(moduleRoot, currentSourceName).replace(/\.js$/, '');
-      const exportName = 'module:' + modulePath.replace(/\\/g, '/') + (node.name ? '~' + node.name : '');
+      const modulePath = path
+        .relative(moduleRoot, currentSourceName)
+        .replace(/\.js$/, '');
+      const exportName =
+        'module:' +
+        modulePath.replace(/\\/g, '/') +
+        (node.name ? '~' + node.name : '');
       defaultExports[exportName] = true;
     }
-  }
+  },
 };
 
 function sortOtherMembers(doclet) {
   if (doclet.fires) {
-    doclet.fires.sort(function(a, b) {
+    doclet.fires.sort(function (a, b) {
       return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
     });
   }
   if (doclet.observables) {
-    doclet.observables.sort(function(a, b) {
+    doclet.observables.sort(function (a, b) {
       return a.name < b.name ? -1 : 1;
     });
   }
 }
 
 exports.handlers = {
-
-  newDoclet: function(e) {
+  newDoclet: function (e) {
     const doclet = e.doclet;
     if (doclet.stability) {
       modules[doclet.longname.split(/[~\.]/).shift()] = true;
@@ -152,7 +155,7 @@ exports.handlers = {
     }
   },
 
-  parseComplete: function(e) {
+  parseComplete: function (e) {
     const doclets = e.doclets;
     const byLongname = doclets.index.longname;
     for (let i = doclets.length - 1; i >= 0; --i) {
@@ -183,9 +186,12 @@ exports.handlers = {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
-      if (doclet.memberof && byLongname[doclet.memberof] &&
-          byLongname[doclet.memberof][0].isEnum &&
-          !byLongname[doclet.memberof][0].properties.some(p => p.stability)) {
+      if (
+        doclet.memberof &&
+        byLongname[doclet.memberof] &&
+        byLongname[doclet.memberof][0].isEnum &&
+        !byLongname[doclet.memberof][0].properties.some((p) => p.stability)
+      ) {
         byLongname[doclet.memberof][0].undocumented = true;
       }
     }
@@ -194,10 +200,9 @@ exports.handlers = {
   processingComplete(e) {
     const byLongname = e.doclets.index.longname;
     for (const name in defaultExports) {
-      byLongname[name].forEach(function(doclet) {
+      byLongname[name].forEach(function (doclet) {
         doclet.isDefaultExport = true;
       });
     }
-  }
-
+  },
 };

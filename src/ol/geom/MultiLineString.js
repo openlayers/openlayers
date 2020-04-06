@@ -1,18 +1,21 @@
 /**
  * @module ol/geom/MultiLineString
  */
-import {extend} from '../array.js';
-import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from './GeometryLayout.js';
 import GeometryType from './GeometryType.js';
 import LineString from './LineString.js';
 import SimpleGeometry from './SimpleGeometry.js';
-import {assignClosestArrayPoint, arrayMaxSquaredDelta} from './flat/closest.js';
+import {arrayMaxSquaredDelta, assignClosestArrayPoint} from './flat/closest.js';
+import {closestSquaredDistanceXY} from '../extent.js';
 import {deflateCoordinatesArray} from './flat/deflate.js';
-import {inflateCoordinatesArray} from './flat/inflate.js';
-import {interpolatePoint, lineStringsCoordinateAtM} from './flat/interpolate.js';
-import {intersectsLineStringArray} from './flat/intersectsextent.js';
 import {douglasPeuckerArray} from './flat/simplify.js';
+import {extend} from '../array.js';
+import {inflateCoordinatesArray} from './flat/inflate.js';
+import {
+  interpolatePoint,
+  lineStringsCoordinateAtM,
+} from './flat/interpolate.js';
+import {intersectsLineStringArray} from './flat/intersectsextent.js';
 
 /**
  * @classdesc
@@ -21,7 +24,6 @@ import {douglasPeuckerArray} from './flat/simplify.js';
  * @api
  */
 class MultiLineString extends SimpleGeometry {
-
   /**
    * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
@@ -30,7 +32,6 @@ class MultiLineString extends SimpleGeometry {
    * @param {Array<number>=} opt_ends Flat coordinate ends for internal use.
    */
   constructor(coordinates, opt_layout, opt_ends) {
-
     super();
 
     /**
@@ -52,9 +53,15 @@ class MultiLineString extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (Array.isArray(coordinates[0])) {
-      this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
+      this.setCoordinates(
+        /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates),
+        opt_layout
+      );
     } else if (opt_layout !== undefined && opt_ends) {
-      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
+      this.setFlatCoordinates(
+        opt_layout,
+        /** @type {Array<number>} */ (coordinates)
+      );
       this.ends_ = opt_ends;
     } else {
       let layout = this.getLayout();
@@ -72,7 +79,6 @@ class MultiLineString extends SimpleGeometry {
       this.setFlatCoordinates(layout, flatCoordinates);
       this.ends_ = ends;
     }
-
   }
 
   /**
@@ -96,7 +102,11 @@ class MultiLineString extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new MultiLineString(this.flatCoordinates.slice(), this.layout, this.ends_.slice());
+    return new MultiLineString(
+      this.flatCoordinates.slice(),
+      this.layout,
+      this.ends_.slice()
+    );
   }
 
   /**
@@ -111,13 +121,29 @@ class MultiLineString extends SimpleGeometry {
       return minSquaredDistance;
     }
     if (this.maxDeltaRevision_ != this.getRevision()) {
-      this.maxDelta_ = Math.sqrt(arrayMaxSquaredDelta(
-        this.flatCoordinates, 0, this.ends_, this.stride, 0));
+      this.maxDelta_ = Math.sqrt(
+        arrayMaxSquaredDelta(
+          this.flatCoordinates,
+          0,
+          this.ends_,
+          this.stride,
+          0
+        )
+      );
       this.maxDeltaRevision_ = this.getRevision();
     }
     return assignClosestArrayPoint(
-      this.flatCoordinates, 0, this.ends_, this.stride,
-      this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+      this.flatCoordinates,
+      0,
+      this.ends_,
+      this.stride,
+      this.maxDelta_,
+      false,
+      x,
+      y,
+      closestPoint,
+      minSquaredDistance
+    );
   }
 
   /**
@@ -143,15 +169,24 @@ class MultiLineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate, opt_interpolate) {
-    if ((this.layout != GeometryLayout.XYM &&
-         this.layout != GeometryLayout.XYZM) ||
-        this.flatCoordinates.length === 0) {
+    if (
+      (this.layout != GeometryLayout.XYM &&
+        this.layout != GeometryLayout.XYZM) ||
+      this.flatCoordinates.length === 0
+    ) {
       return null;
     }
     const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
     const interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
-    return lineStringsCoordinateAtM(this.flatCoordinates, 0,
-      this.ends_, this.stride, m, extrapolate, interpolate);
+    return lineStringsCoordinateAtM(
+      this.flatCoordinates,
+      0,
+      this.ends_,
+      this.stride,
+      m,
+      extrapolate,
+      interpolate
+    );
   }
 
   /**
@@ -161,7 +196,11 @@ class MultiLineString extends SimpleGeometry {
    */
   getCoordinates() {
     return inflateCoordinatesArray(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+      this.flatCoordinates,
+      0,
+      this.ends_,
+      this.stride
+    );
   }
 
   /**
@@ -181,8 +220,13 @@ class MultiLineString extends SimpleGeometry {
     if (index < 0 || this.ends_.length <= index) {
       return null;
     }
-    return new LineString(this.flatCoordinates.slice(
-      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]), this.layout);
+    return new LineString(
+      this.flatCoordinates.slice(
+        index === 0 ? 0 : this.ends_[index - 1],
+        this.ends_[index]
+      ),
+      this.layout
+    );
   }
 
   /**
@@ -199,7 +243,10 @@ class MultiLineString extends SimpleGeometry {
     let offset = 0;
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
-      const lineString = new LineString(flatCoordinates.slice(offset, end), layout);
+      const lineString = new LineString(
+        flatCoordinates.slice(offset, end),
+        layout
+      );
       lineStrings.push(lineString);
       offset = end;
     }
@@ -218,7 +265,12 @@ class MultiLineString extends SimpleGeometry {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
       const midpoint = interpolatePoint(
-        flatCoordinates, offset, end, stride, 0.5);
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        0.5
+      );
       extend(midpoints, midpoint);
       offset = end;
     }
@@ -234,9 +286,20 @@ class MultiLineString extends SimpleGeometry {
     const simplifiedFlatCoordinates = [];
     const simplifiedEnds = [];
     simplifiedFlatCoordinates.length = douglasPeuckerArray(
-      this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
-      simplifiedFlatCoordinates, 0, simplifiedEnds);
-    return new MultiLineString(simplifiedFlatCoordinates, GeometryLayout.XY, simplifiedEnds);
+      this.flatCoordinates,
+      0,
+      this.ends_,
+      this.stride,
+      squaredTolerance,
+      simplifiedFlatCoordinates,
+      0,
+      simplifiedEnds
+    );
+    return new MultiLineString(
+      simplifiedFlatCoordinates,
+      GeometryLayout.XY,
+      simplifiedEnds
+    );
   }
 
   /**
@@ -256,7 +319,12 @@ class MultiLineString extends SimpleGeometry {
    */
   intersectsExtent(extent) {
     return intersectsLineStringArray(
-      this.flatCoordinates, 0, this.ends_, this.stride, extent);
+      this.flatCoordinates,
+      0,
+      this.ends_,
+      this.stride,
+      extent
+    );
   }
 
   /**
@@ -271,11 +339,15 @@ class MultiLineString extends SimpleGeometry {
       this.flatCoordinates = [];
     }
     const ends = deflateCoordinatesArray(
-      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+      this.flatCoordinates,
+      0,
+      coordinates,
+      this.stride,
+      this.ends_
+    );
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();
   }
 }
-
 
 export default MultiLineString;

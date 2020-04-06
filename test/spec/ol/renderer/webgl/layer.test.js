@@ -1,41 +1,37 @@
+import Layer from '../../../../../src/ol/layer/Layer.js';
 import WebGLLayerRenderer, {
   colorDecodeId,
   colorEncodeId,
   getBlankImageData,
-  writePointFeatureToBuffers
+  writePointFeatureToBuffers,
 } from '../../../../../src/ol/renderer/webgl/Layer.js';
-import Layer from '../../../../../src/ol/layer/Layer.js';
 
-
-describe('ol.renderer.webgl.Layer', function() {
-
-  describe('constructor', function() {
-
+describe('ol.renderer.webgl.Layer', function () {
+  describe('constructor', function () {
     let target;
 
-    beforeEach(function() {
+    beforeEach(function () {
       target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       document.body.removeChild(target);
     });
 
-    it('creates a new instance', function() {
+    it('creates a new instance', function () {
       const layer = new Layer({});
       const renderer = new WebGLLayerRenderer(layer);
       expect(renderer).to.be.a(WebGLLayerRenderer);
     });
-
   });
 
-  describe('writePointFeatureToBuffers', function() {
+  describe('writePointFeatureToBuffers', function () {
     let vertexBuffer, indexBuffer, instructions;
 
-    beforeEach(function() {
+    beforeEach(function () {
       vertexBuffer = new Float32Array(100);
       indexBuffer = new Uint32Array(100);
       instructions = new Float32Array(100);
@@ -43,9 +39,15 @@ describe('ol.renderer.webgl.Layer', function() {
       instructions.set([0, 0, 0, 0, 10, 11]);
     });
 
-    it('writes correctly to the buffers (without custom attributes)', function() {
+    it('writes correctly to the buffers (without custom attributes)', function () {
       const stride = 3;
-      const positions = writePointFeatureToBuffers(instructions, 4, vertexBuffer, indexBuffer, 0);
+      const positions = writePointFeatureToBuffers(
+        instructions,
+        4,
+        vertexBuffer,
+        indexBuffer,
+        0
+      );
 
       expect(vertexBuffer[0]).to.eql(10);
       expect(vertexBuffer[1]).to.eql(11);
@@ -74,10 +76,16 @@ describe('ol.renderer.webgl.Layer', function() {
       expect(positions.vertexPosition).to.eql(stride * 4);
     });
 
-    it('writes correctly to the buffers (with 2 custom attributes)', function() {
+    it('writes correctly to the buffers (with 2 custom attributes)', function () {
       instructions.set([0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13]);
       const stride = 5;
-      const positions = writePointFeatureToBuffers(instructions, 8, vertexBuffer, indexBuffer, 2);
+      const positions = writePointFeatureToBuffers(
+        instructions,
+        8,
+        vertexBuffer,
+        indexBuffer,
+        2
+      );
 
       expect(vertexBuffer[0]).to.eql(10);
       expect(vertexBuffer[1]).to.eql(11);
@@ -114,12 +122,32 @@ describe('ol.renderer.webgl.Layer', function() {
       expect(positions.vertexPosition).to.eql(stride * 4);
     });
 
-    it('correctly chains buffer writes', function() {
+    it('correctly chains buffer writes', function () {
       instructions.set([10, 11, 20, 21, 30, 31]);
       const stride = 3;
-      let positions = writePointFeatureToBuffers(instructions, 0, vertexBuffer, indexBuffer, 0);
-      positions = writePointFeatureToBuffers(instructions, 2, vertexBuffer, indexBuffer, 0, positions);
-      positions = writePointFeatureToBuffers(instructions, 4, vertexBuffer, indexBuffer, 0, positions);
+      let positions = writePointFeatureToBuffers(
+        instructions,
+        0,
+        vertexBuffer,
+        indexBuffer,
+        0
+      );
+      positions = writePointFeatureToBuffers(
+        instructions,
+        2,
+        vertexBuffer,
+        indexBuffer,
+        0,
+        positions
+      );
+      positions = writePointFeatureToBuffers(
+        instructions,
+        4,
+        vertexBuffer,
+        indexBuffer,
+        0,
+        positions
+      );
 
       expect(vertexBuffer[0]).to.eql(10);
       expect(vertexBuffer[1]).to.eql(11);
@@ -150,11 +178,10 @@ describe('ol.renderer.webgl.Layer', function() {
       expect(positions.indexPosition).to.eql(6 * 3);
       expect(positions.vertexPosition).to.eql(stride * 4 * 3);
     });
-
   });
 
-  describe('getBlankImageData', function() {
-    it('creates a 1x1 white texture', function() {
+  describe('getBlankImageData', function () {
+    it('creates a 1x1 white texture', function () {
       const texture = getBlankImageData();
       expect(texture.height).to.eql(1);
       expect(texture.width).to.eql(1);
@@ -165,8 +192,8 @@ describe('ol.renderer.webgl.Layer', function() {
     });
   });
 
-  describe('colorEncodeId and colorDecodeId', function() {
-    it('correctly encodes and decodes ids', function() {
+  describe('colorEncodeId and colorDecodeId', function () {
+    it('correctly encodes and decodes ids', function () {
       expect(colorDecodeId(colorEncodeId(0))).to.eql(0);
       expect(colorDecodeId(colorEncodeId(1))).to.eql(1);
       expect(colorDecodeId(colorEncodeId(123))).to.eql(123);
@@ -176,24 +203,27 @@ describe('ol.renderer.webgl.Layer', function() {
       expect(colorDecodeId(colorEncodeId(1234567890))).to.eql(1234567890);
     });
 
-    it('correctly reuses array', function() {
+    it('correctly reuses array', function () {
       const arr = [];
       expect(colorEncodeId(123, arr)).to.be(arr);
     });
 
-    it('is compatible with Uint8Array storage', function() {
+    it('is compatible with Uint8Array storage', function () {
       const encoded = colorEncodeId(91612);
-      const typed = Uint8Array.of(encoded[0] * 255, encoded[1] * 255,
-        encoded[2] * 255, encoded[3] * 255);
+      const typed = Uint8Array.of(
+        encoded[0] * 255,
+        encoded[1] * 255,
+        encoded[2] * 255,
+        encoded[3] * 255
+      );
       const arr = [
         typed[0] / 255,
         typed[1] / 255,
         typed[2] / 255,
-        typed[3] / 255
+        typed[3] / 255,
       ];
       const decoded = colorDecodeId(arr);
       expect(decoded).to.eql(91612);
     });
   });
-
 });

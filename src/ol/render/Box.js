@@ -43,7 +43,6 @@ class RenderBox extends Disposable {
      * @type {import("../pixel.js").Pixel}
      */
     this.endPixel_ = null;
-
   }
 
   /**
@@ -106,9 +105,12 @@ class RenderBox extends Disposable {
       startPixel,
       [startPixel[0], endPixel[1]],
       endPixel,
-      [endPixel[0], startPixel[1]]
+      [endPixel[0], startPixel[1]],
     ];
-    const coordinates = pixels.map(this.map_.getCoordinateFromPixelInternal, this.map_);
+    const coordinates = pixels.map(
+      this.map_.getCoordinateFromPixelInternal,
+      this.map_
+    );
     // close the polygon
     coordinates[4] = coordinates[0].slice();
     if (!this.geometry_) {
@@ -125,6 +127,5 @@ class RenderBox extends Disposable {
     return this.geometry_;
   }
 }
-
 
 export default RenderBox;

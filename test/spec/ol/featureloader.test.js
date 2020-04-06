@@ -1,51 +1,49 @@
-import {xhr} from '../../../src/ol/featureloader.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
+import {xhr} from '../../../src/ol/featureloader.js';
 
-
-describe('ol.featureloader', function() {
-
-  describe('ol.featureloader.xhr', function() {
+describe('ol.featureloader', function () {
+  describe('ol.featureloader.xhr', function () {
     let loader;
     let source;
     let url;
     let format;
 
-    beforeEach(function() {
+    beforeEach(function () {
       url = 'spec/ol/data/point.json';
       format = new GeoJSON();
 
       source = new VectorSource();
     });
 
-    it('adds features to the source', function(done) {
+    it('adds features to the source', function (done) {
       loader = xhr(url, format);
-      source.on('addfeature', function(e) {
+      source.on('addfeature', function (e) {
         expect(source.getFeatures().length).to.be.greaterThan(0);
         done();
       });
       loader.call(source, [], 1, 'EPSG:3857');
     });
 
-    describe('when called with urlFunction', function() {
-      it('adds features to the source', function(done) {
-        url = function(extent, resolution, projection) {
+    describe('when called with urlFunction', function () {
+      it('adds features to the source', function (done) {
+        url = function (extent, resolution, projection) {
           return 'spec/ol/data/point.json';
         };
         loader = xhr(url, format);
 
-        source.on('addfeature', function(e) {
+        source.on('addfeature', function (e) {
           expect(source.getFeatures().length).to.be.greaterThan(0);
           done();
         });
         loader.call(source, [], 1, 'EPSG:3857');
       });
 
-      it('sends the correct arguments to the urlFunction', function(done) {
+      it('sends the correct arguments to the urlFunction', function (done) {
         const extent = [];
         const resolution = 1;
         const projection = 'EPSG:3857';
-        url = function(extent_, resolution_, projection_) {
+        url = function (extent_, resolution_, projection_) {
           expect(extent_).to.eql(extent);
           expect(resolution_).to.eql(resolution);
           expect(projection_).to.eql(projection);
@@ -56,7 +54,5 @@ describe('ol.featureloader', function() {
         loader.call(source, [], 1, 'EPSG:3857');
       });
     });
-
   });
-
 });

@@ -3,7 +3,6 @@
  */
 import {lerp} from '../../math.js';
 
-
 /**
  * @param {Array<number>} flatCoordinates Path to put text on.
  * @param {number} offset Start offset of the `flatCoordinates`.
@@ -20,7 +19,18 @@ import {lerp} from '../../math.js';
  * exceeded). Entries of the array are x, y, anchorX, angle, chunk.
  */
 export function drawTextOnPath(
-  flatCoordinates, offset, end, stride, text, startM, maxAngle, scale, measureAndCacheTextWidth, font, cache) {
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  text,
+  startM,
+  maxAngle,
+  scale,
+  measureAndCacheTextWidth,
+  font,
+  cache
+) {
   const result = [];
 
   // Keep text upright
@@ -60,7 +70,8 @@ export function drawTextOnPath(
     if (previousAngle !== undefined) {
       let delta = angle - previousAngle;
       angleChanged = angleChanged || delta !== 0;
-      delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
+      delta +=
+        delta > Math.PI ? -2 * Math.PI : delta < -Math.PI ? 2 * Math.PI : 0;
       if (Math.abs(delta) > maxAngle) {
         return null;
       }
@@ -72,5 +83,7 @@ export function drawTextOnPath(
     result[index] = [x, y, charLength / 2, angle, char];
     startM += charLength;
   }
-  return angleChanged ? result : [[result[0][0], result[0][1], result[0][2], result[0][3], text]];
+  return angleChanged
+    ? result
+    : [[result[0][0], result[0][1], result[0][2], result[0][3], text]];
 }

@@ -2,13 +2,11 @@
  * @module ol/size
  */
 
-
 /**
  * An array of numbers representing a size: `[width, height]`.
  * @typedef {Array<number>} Size
  * @api
  */
-
 
 /**
  * Returns a buffered size.
@@ -26,7 +24,6 @@ export function buffer(size, num, opt_size) {
   return opt_size;
 }
 
-
 /**
  * Determines if a size has a positive area.
  * @param {Size} size The size to test.
@@ -35,7 +32,6 @@ export function buffer(size, num, opt_size) {
 export function hasArea(size) {
   return size[0] > 0 && size[1] > 0;
 }
-
 
 /**
  * Returns a size scaled by a ratio. The result will be an array of integers.
@@ -52,7 +48,6 @@ export function scale(size, ratio, opt_size) {
   opt_size[1] = (size[1] * ratio + 0.5) | 0;
   return opt_size;
 }
-
 
 /**
  * Returns an `Size` array for the passed in number (meaning: square) or

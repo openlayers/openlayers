@@ -1,9 +1,12 @@
-import {Map, View, Feature} from '../../../src/ol/index.js';
+import {Circle, Fill, Style} from '../../../src/ol/style.js';
+import {Feature, Map, View} from '../../../src/ol/index.js';
 import {Point} from '../../../src/ol/geom.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../../../src/ol/layer.js';
+import {
+  Tile as TileLayer,
+  Vector as VectorLayer,
+} from '../../../src/ol/layer.js';
+import {Vector as VectorSource, XYZ} from '../../../src/ol/source.js';
 import {useGeographic} from '../../../src/ol/proj.js';
-import {XYZ, Vector as VectorSource} from '../../../src/ol/source.js';
-import {Style, Circle, Fill} from '../../../src/ol/style.js';
 
 useGeographic();
 
@@ -16,28 +19,26 @@ new Map({
     new TileLayer({
       source: new XYZ({
         url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
-        transition: 0
-      })
+        transition: 0,
+      }),
     }),
     new VectorLayer({
       source: new VectorSource({
-        features: [
-          new Feature(point)
-        ]
+        features: [new Feature(point)],
       }),
       style: new Style({
         image: new Circle({
           radius: 5,
-          fill: new Fill({color: 'red'})
-        })
-      })
-    })
+          fill: new Fill({color: 'red'}),
+        }),
+      }),
+    }),
   ],
   target: 'map',
   view: new View({
     center: center,
-    zoom: 3
-  })
+    zoom: 3,
+  }),
 });
 
 render();

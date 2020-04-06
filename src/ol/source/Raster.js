@@ -1,22 +1,21 @@
 /**
  * @module ol/source/Raster
  */
-import ImageCanvas from '../ImageCanvas.js';
-import TileQueue from '../TileQueue.js';
-import {createCanvasContext2D} from '../dom.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {Processor} from 'pixelworks/lib/index.js';
-import {equals, getCenter, getHeight, getWidth} from '../extent.js';
+import ImageCanvas from '../ImageCanvas.js';
 import ImageLayer from '../layer/Image.js';
-import TileLayer from '../layer/Tile.js';
-import {assign} from '../obj.js';
-import {create as createTransform} from '../transform.js';
 import ImageSource from './Image.js';
-import TileSource from './Tile.js';
-import SourceState from './State.js';
 import Source from './Source.js';
-
+import SourceState from './State.js';
+import TileLayer from '../layer/Tile.js';
+import TileQueue from '../TileQueue.js';
+import TileSource from './Tile.js';
+import {Processor} from 'pixelworks/lib/index.js';
+import {assign} from '../obj.js';
+import {createCanvasContext2D} from '../dom.js';
+import {create as createTransform} from '../transform.js';
+import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 
 /**
  * A function that takes an array of input data, performs some operation, and
@@ -36,7 +35,6 @@ import Source from './Source.js';
  *     (Array<number>|ImageData)} Operation
  */
 
-
 /**
  * @enum {string}
  */
@@ -53,9 +51,8 @@ const RasterEventType = {
    * @event module:ol/source/Raster.RasterSourceEvent#afteroperations
    * @api
    */
-  AFTEROPERATIONS: 'afteroperations'
+  AFTEROPERATIONS: 'afteroperations',
 };
-
 
 /**
  * Raster operation type. Supported values are `'pixel'` and `'image'`.
@@ -63,9 +60,8 @@ const RasterEventType = {
  */
 const RasterOperationType = {
   PIXEL: 'pixel',
-  IMAGE: 'image'
+  IMAGE: 'image',
 };
-
 
 /**
  * @classdesc
@@ -102,9 +98,7 @@ export class RasterSourceEvent extends Event {
      * @api
      */
     this.data = data;
-
   }
-
 }
 
 /**
@@ -127,7 +121,6 @@ export class RasterSourceEvent extends Event {
  * be called with an array of ImageData objects from input sources.
  */
 
-
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an
@@ -143,7 +136,7 @@ class RasterSource extends ImageSource {
    */
   constructor(options) {
     super({
-      projection: null
+      projection: null,
     });
 
     /**
@@ -156,8 +149,10 @@ class RasterSource extends ImageSource {
      * @private
      * @type {RasterOperationType}
      */
-    this.operationType_ = options.operationType !== undefined ?
-      options.operationType : RasterOperationType.PIXEL;
+    this.operationType_ =
+      options.operationType !== undefined
+        ? options.operationType
+        : RasterOperationType.PIXEL;
 
     /**
      * @private
@@ -180,7 +175,7 @@ class RasterSource extends ImageSource {
      * @private
      * @type {import("../TileQueue.js").default}
      */
-    this.tileQueue_ = new TileQueue(function() {
+    this.tileQueue_ = new TileQueue(function () {
       return 1;
     }, this.changed.bind(this));
 
@@ -223,18 +218,25 @@ class RasterSource extends ImageSource {
       time: Date.now(),
       usedTiles: {},
       viewState: /** @type {import("../View.js").State} */ ({
-        rotation: 0
+        rotation: 0,
       }),
       viewHints: [],
       wantedTiles: {},
-      declutterItems: []
+      declutterItems: [],
     };
 
-    this.setAttributions(function(frameState) {
+    this.setAttributions(function (frameState) {
       const attributions = [];
-      for (let index = 0, iMax = options.sources.length; index < iMax; ++index) {
+      for (
+        let index = 0, iMax = options.sources.length;
+        index < iMax;
+        ++index
+      ) {
         const sourceOrLayer = options.sources[index];
-        const source = sourceOrLayer instanceof Source ? sourceOrLayer : sourceOrLayer.getSource();
+        const source =
+          sourceOrLayer instanceof Source
+            ? sourceOrLayer
+            : sourceOrLayer.getSource();
         const attributionGetter = source.getAttributions();
         if (typeof attributionGetter === 'function') {
           const sourceAttribution = attributionGetter(frameState);
@@ -247,7 +249,6 @@ class RasterSource extends ImageSource {
     if (options.operation !== undefined) {
       this.setOperation(options.operation, options.lib);
     }
-
   }
 
   /**
@@ -263,7 +264,7 @@ class RasterSource extends ImageSource {
       imageOps: this.operationType_ === RasterOperationType.IMAGE,
       queue: 1,
       lib: opt_lib,
-      threads: this.threads_
+      threads: this.threads_,
     });
     this.changed();
   }
@@ -277,10 +278,15 @@ class RasterSource extends ImageSource {
    * @private
    */
   updateFrameState_(extent, resolution, projection) {
+    const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (assign(
+      {},
+      this.frameState_
+    ));
 
-    const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (assign({}, this.frameState_));
-
-    frameState.viewState = /** @type {import("../View.js").State} */ (assign({}, frameState.viewState));
+    frameState.viewState = /** @type {import("../View.js").State} */ (assign(
+      {},
+      frameState.viewState
+    ));
 
     const center = getCenter(extent);
 
@@ -333,12 +339,18 @@ class RasterSource extends ImageSource {
     if (this.renderedImageCanvas_) {
       const renderedResolution = this.renderedImageCanvas_.getResolution();
       const renderedExtent = this.renderedImageCanvas_.getExtent();
-      if (resolution !== renderedResolution || !equals(extent, renderedExtent)) {
+      if (
+        resolution !== renderedResolution ||
+        !equals(extent, renderedExtent)
+      ) {
         this.renderedImageCanvas_ = null;
       }
     }
 
-    if (!this.renderedImageCanvas_ || this.getRevision() !== this.renderedRevision_) {
+    if (
+      !this.renderedImageCanvas_ ||
+      this.getRevision() !== this.renderedRevision_
+    ) {
       this.processSources_();
     }
 
@@ -370,8 +382,14 @@ class RasterSource extends ImageSource {
     }
 
     const data = {};
-    this.dispatchEvent(new RasterSourceEvent(RasterEventType.BEFOREOPERATIONS, frameState, data));
-    this.worker_.process(imageDatas, data, this.onWorkerComplete_.bind(this, frameState));
+    this.dispatchEvent(
+      new RasterSourceEvent(RasterEventType.BEFOREOPERATIONS, frameState, data)
+    );
+    this.worker_.process(
+      imageDatas,
+      data,
+      this.onWorkerComplete_.bind(this, frameState)
+    );
   }
 
   /**
@@ -390,8 +408,10 @@ class RasterSource extends ImageSource {
     // do nothing if extent or resolution changed
     const extent = frameState.extent;
     const resolution = frameState.viewState.resolution;
-    if (resolution !== this.requestedFrameState_.viewState.resolution ||
-        !equals(extent, this.requestedFrameState_.extent)) {
+    if (
+      resolution !== this.requestedFrameState_.viewState.resolution ||
+      !equals(extent, this.requestedFrameState_.extent)
+    ) {
       return;
     }
 
@@ -402,14 +422,21 @@ class RasterSource extends ImageSource {
       const width = Math.round(getWidth(extent) / resolution);
       const height = Math.round(getHeight(extent) / resolution);
       context = createCanvasContext2D(width, height);
-      this.renderedImageCanvas_ = new ImageCanvas(extent, resolution, 1, context.canvas);
+      this.renderedImageCanvas_ = new ImageCanvas(
+        extent,
+        resolution,
+        1,
+        context.canvas
+      );
     }
     context.putImageData(output, 0, 0);
 
     this.changed();
     this.renderedRevision_ = this.getRevision();
 
-    this.dispatchEvent(new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data));
+    this.dispatchEvent(
+      new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
+    );
   }
 
   /**
@@ -420,14 +447,12 @@ class RasterSource extends ImageSource {
   }
 }
 
-
 /**
  * A reusable canvas context.
  * @type {CanvasRenderingContext2D}
  * @private
  */
 let sharedContext = null;
-
 
 /**
  * Get image data from a layer.
@@ -473,18 +498,16 @@ function getImageData(layer, frameState) {
   return sharedContext.getImageData(0, 0, width, height);
 }
 
-
 /**
  * Get a list of layer states from a list of layers.
  * @param {Array<import("../layer/Layer.js").default>} layers Layers.
  * @return {Array<import("../layer/Layer.js").State>} The layer states.
  */
 function getLayerStatesArray(layers) {
-  return layers.map(function(layer) {
+  return layers.map(function (layer) {
     return layer.getLayerState();
   });
 }
-
 
 /**
  * Create layers for all sources.
@@ -499,7 +522,6 @@ function createLayers(sources) {
   }
   return layers;
 }
-
 
 /**
  * Create a layer for the provided source.
@@ -520,6 +542,5 @@ function createLayer(layerOrSource) {
   }
   return layer;
 }
-
 
 export default RasterSource;

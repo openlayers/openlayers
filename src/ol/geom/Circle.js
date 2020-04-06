@@ -1,12 +1,11 @@
 /**
  * @module ol/geom/Circle
  */
-import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
+import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
 import {rotate, translate} from './flat/transform.js';
-
 
 /**
  * @classdesc
@@ -15,7 +14,6 @@ import {rotate, translate} from './flat/transform.js';
  * @api
  */
 class Circle extends SimpleGeometry {
-
   /**
    * @param {!import("../coordinate.js").Coordinate} center Center.
    *     For internal use, flat coordinates in combination with `opt_layout` and no
@@ -104,9 +102,12 @@ class Circle extends SimpleGeometry {
     const flatCoordinates = this.flatCoordinates;
     const radius = flatCoordinates[this.stride] - flatCoordinates[0];
     return createOrUpdate(
-      flatCoordinates[0] - radius, flatCoordinates[1] - radius,
-      flatCoordinates[0] + radius, flatCoordinates[1] + radius,
-      extent);
+      flatCoordinates[0] - radius,
+      flatCoordinates[1] - radius,
+      flatCoordinates[0] + radius,
+      flatCoordinates[1] + radius,
+      extent
+    );
   }
 
   /**
@@ -158,7 +159,6 @@ class Circle extends SimpleGeometry {
       return forEachCorner(extent, this.intersectsCoordinate.bind(this));
     }
     return false;
-
   }
 
   /**
@@ -193,8 +193,7 @@ class Circle extends SimpleGeometry {
     }
     /** @type {Array<number>} */
     const flatCoordinates = this.flatCoordinates;
-    let offset = deflateCoordinate(
-      flatCoordinates, 0, center, this.stride);
+    let offset = deflateCoordinate(flatCoordinates, 0, center, this.stride);
     flatCoordinates[offset++] = flatCoordinates[0] + radius;
     for (let i = 1, ii = this.stride; i < ii; ++i) {
       flatCoordinates[offset++] = flatCoordinates[i];
@@ -229,7 +228,9 @@ class Circle extends SimpleGeometry {
   rotate(angle, anchor) {
     const center = this.getCenter();
     const stride = this.getStride();
-    this.setCenter(rotate(center, 0, center.length, stride, angle, anchor, center));
+    this.setCenter(
+      rotate(center, 0, center.length, stride, angle, anchor, center)
+    );
     this.changed();
   }
 
@@ -243,12 +244,12 @@ class Circle extends SimpleGeometry {
   translate(deltaX, deltaY) {
     const center = this.getCenter();
     const stride = this.getStride();
-    this.setCenter(translate(center, 0, center.length, stride, deltaX, deltaY, center));
+    this.setCenter(
+      translate(center, 0, center.length, stride, deltaX, deltaY, center)
+    );
     this.changed();
   }
-
 }
-
 
 /**
  * Transform each coordinate of the circle from one coordinate reference system

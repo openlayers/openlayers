@@ -4,7 +4,6 @@
 import {binarySearch} from '../../array.js';
 import {lerp} from '../../math.js';
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -14,7 +13,14 @@ import {lerp} from '../../math.js';
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Destination.
  */
-export function interpolatePoint(flatCoordinates, offset, end, stride, fraction, opt_dest) {
+export function interpolatePoint(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  fraction,
+  opt_dest
+) {
   let pointX = NaN;
   let pointY = NaN;
   const n = (end - offset) / stride;
@@ -22,10 +28,12 @@ export function interpolatePoint(flatCoordinates, offset, end, stride, fraction,
     pointX = flatCoordinates[offset];
     pointY = flatCoordinates[offset + 1];
   } else if (n == 2) {
-    pointX = (1 - fraction) * flatCoordinates[offset] +
-        fraction * flatCoordinates[offset + stride];
-    pointY = (1 - fraction) * flatCoordinates[offset + 1] +
-        fraction * flatCoordinates[offset + stride + 1];
+    pointX =
+      (1 - fraction) * flatCoordinates[offset] +
+      fraction * flatCoordinates[offset + stride];
+    pointY =
+      (1 - fraction) * flatCoordinates[offset + 1] +
+      fraction * flatCoordinates[offset + stride + 1];
   } else if (n !== 0) {
     let x1 = flatCoordinates[offset];
     let y1 = flatCoordinates[offset + 1];
@@ -42,13 +50,12 @@ export function interpolatePoint(flatCoordinates, offset, end, stride, fraction,
     const target = fraction * length;
     const index = binarySearch(cumulativeLengths, target);
     if (index < 0) {
-      const t = (target - cumulativeLengths[-index - 2]) /
-          (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
+      const t =
+        (target - cumulativeLengths[-index - 2]) /
+        (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       const o = offset + (-index - 2) * stride;
-      pointX = lerp(
-        flatCoordinates[o], flatCoordinates[o + stride], t);
-      pointY = lerp(
-        flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
+      pointX = lerp(flatCoordinates[o], flatCoordinates[o + stride], t);
+      pointY = lerp(flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
     } else {
       pointX = flatCoordinates[offset + index * stride];
       pointY = flatCoordinates[offset + index * stride + 1];
@@ -63,7 +70,6 @@ export function interpolatePoint(flatCoordinates, offset, end, stride, fraction,
   }
 }
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -73,7 +79,14 @@ export function interpolatePoint(flatCoordinates, offset, end, stride, fraction,
  * @param {boolean} extrapolate Extrapolate.
  * @return {import("../../coordinate.js").Coordinate} Coordinate.
  */
-export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m, extrapolate) {
+export function lineStringCoordinateAtM(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  m,
+  extrapolate
+) {
   if (end == offset) {
     return null;
   }
@@ -117,13 +130,17 @@ export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m,
   const t = (m - m0) / (m1 - m0);
   coordinate = [];
   for (let i = 0; i < stride - 1; ++i) {
-    coordinate.push(lerp(flatCoordinates[(lo - 1) * stride + i],
-      flatCoordinates[lo * stride + i], t));
+    coordinate.push(
+      lerp(
+        flatCoordinates[(lo - 1) * stride + i],
+        flatCoordinates[lo * stride + i],
+        t
+      )
+    );
   }
   coordinate.push(m);
   return coordinate;
 }
-
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -136,10 +153,23 @@ export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m,
  * @return {import("../../coordinate.js").Coordinate} Coordinate.
  */
 export function lineStringsCoordinateAtM(
-  flatCoordinates, offset, ends, stride, m, extrapolate, interpolate) {
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  m,
+  extrapolate,
+  interpolate
+) {
   if (interpolate) {
     return lineStringCoordinateAtM(
-      flatCoordinates, offset, ends[ends.length - 1], stride, m, extrapolate);
+      flatCoordinates,
+      offset,
+      ends[ends.length - 1],
+      stride,
+      m,
+      extrapolate
+    );
   }
   let coordinate;
   if (m < flatCoordinates[stride - 1]) {
@@ -169,7 +199,13 @@ export function lineStringsCoordinateAtM(
       return null;
     } else if (m <= flatCoordinates[end - 1]) {
       return lineStringCoordinateAtM(
-        flatCoordinates, offset, end, stride, m, false);
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        m,
+        false
+      );
     }
     offset = end;
   }

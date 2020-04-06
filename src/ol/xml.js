@@ -3,7 +3,6 @@
  */
 import {extend} from './array.js';
 
-
 /**
  * When using {@link module:ol/xml~makeChildAppender} or
  * {@link module:ol/xml~makeSimpleNodeFactory}, the top `objectStack` item needs
@@ -12,22 +11,19 @@ import {extend} from './array.js';
  * @property {Node} node
  */
 
-
 /**
  * @typedef {function(Element, Array<*>): void} Parser
  */
-
 
 /**
  * @typedef {function(Element, *, Array<*>): void} Serializer
  */
 
-
 /**
  * @type {string}
  */
-export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instance';
-
+export const XML_SCHEMA_INSTANCE_URI =
+  'http://www.w3.org/2001/XMLSchema-instance';
 
 /**
  * @param {string} namespaceURI Namespace URI.
@@ -37,7 +33,6 @@ export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instanc
 export function createElementNS(namespaceURI, qualifiedName) {
   return getDocument().createElementNS(namespaceURI, qualifiedName);
 }
-
 
 /**
  * Recursively grab all text content of child nodes into a single string.
@@ -51,7 +46,6 @@ export function getAllTextContent(node, normalizeWhitespace) {
   return getAllTextContent_(node, normalizeWhitespace, []).join('');
 }
 
-
 /**
  * Recursively grab all text content of child nodes into a single string.
  * @param {Node} node Node.
@@ -62,8 +56,10 @@ export function getAllTextContent(node, normalizeWhitespace) {
  * @return {Array<string>} Accumulator.
  */
 export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
-  if (node.nodeType == Node.CDATA_SECTION_NODE ||
-      node.nodeType == Node.TEXT_NODE) {
+  if (
+    node.nodeType == Node.CDATA_SECTION_NODE ||
+    node.nodeType == Node.TEXT_NODE
+  ) {
     if (normalizeWhitespace) {
       accumulator.push(String(node.nodeValue).replace(/(\r\n|\r|\n)/g, ''));
     } else {
@@ -78,7 +74,6 @@ export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
   return accumulator;
 }
 
-
 /**
  * @param {Object} object Object.
  * @return {boolean} Is a document.
@@ -86,7 +81,6 @@ export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
 export function isDocument(object) {
   return 'documentElement' in object;
 }
-
 
 /**
  * @param {Element} node Node.
@@ -98,7 +92,6 @@ export function getAttributeNS(node, namespaceURI, name) {
   return node.getAttributeNS(namespaceURI, name) || '';
 }
 
-
 /**
  * Parse an XML string to an XML Document.
  * @param {string} xml XML.
@@ -108,7 +101,6 @@ export function getAttributeNS(node, namespaceURI, name) {
 export function parse(xml) {
   return new DOMParser().parseFromString(xml, 'application/xml');
 }
-
 
 /**
  * Make an array extender function for extending the array at the top of the
@@ -124,16 +116,21 @@ export function makeArrayExtender(valueReader, opt_this) {
      * @param {Node} node Node.
      * @param {Array<*>} objectStack Object stack.
      */
-    function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
+    function (node, objectStack) {
+      const value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
       if (value !== undefined) {
-        const array = /** @type {Array<*>} */ (objectStack[objectStack.length - 1]);
+        const array = /** @type {Array<*>} */ (objectStack[
+          objectStack.length - 1
+        ]);
         extend(array, value);
       }
     }
   );
 }
-
 
 /**
  * Make an array pusher function for pushing to the array at the top of the
@@ -149,15 +146,21 @@ export function makeArrayPusher(valueReader, opt_this) {
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
      */
-    function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
+    function (node, objectStack) {
+      const value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
       if (value !== undefined) {
-        const array = /** @type {Array<*>} */ (objectStack[objectStack.length - 1]);
+        const array = /** @type {Array<*>} */ (objectStack[
+          objectStack.length - 1
+        ]);
         array.push(value);
       }
-    });
+    }
+  );
 }
-
 
 /**
  * Make an object stack replacer function for replacing the object at the
@@ -173,14 +176,18 @@ export function makeReplacer(valueReader, opt_this) {
      * @param {Node} node Node.
      * @param {Array<*>} objectStack Object stack.
      */
-    function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
+    function (node, objectStack) {
+      const value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
       if (value !== undefined) {
         objectStack[objectStack.length - 1] = value;
       }
-    });
+    }
+  );
 }
-
 
 /**
  * Make an object property pusher function for adding a property to the
@@ -197,11 +204,18 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
      */
-    function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
+    function (node, objectStack) {
+      const value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
       if (value !== undefined) {
-        const object = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
-        const property = opt_property !== undefined ? opt_property : node.localName;
+        const object = /** @type {!Object} */ (objectStack[
+          objectStack.length - 1
+        ]);
+        const property =
+          opt_property !== undefined ? opt_property : node.localName;
         let array;
         if (property in object) {
           array = object[property];
@@ -211,9 +225,9 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
         }
         array.push(value);
       }
-    });
+    }
+  );
 }
-
 
 /**
  * Make an object property setter function.
@@ -229,16 +243,23 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
      */
-    function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
+    function (node, objectStack) {
+      const value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
       if (value !== undefined) {
-        const object = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
-        const property = opt_property !== undefined ? opt_property : node.localName;
+        const object = /** @type {!Object} */ (objectStack[
+          objectStack.length - 1
+        ]);
+        const property =
+          opt_property !== undefined ? opt_property : node.localName;
         object[property] = value;
       }
-    });
+    }
+  );
 }
-
 
 /**
  * Create a serializer that appends nodes written by its `nodeWriter` to its
@@ -250,14 +271,20 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
  * @template T, V
  */
 export function makeChildAppender(nodeWriter, opt_this) {
-  return function(node, value, objectStack) {
-    nodeWriter.call(opt_this !== undefined ? opt_this : this, node, value, objectStack);
-    const parent = /** @type {NodeStackItem} */ (objectStack[objectStack.length - 1]);
+  return function (node, value, objectStack) {
+    nodeWriter.call(
+      opt_this !== undefined ? opt_this : this,
+      node,
+      value,
+      objectStack
+    );
+    const parent = /** @type {NodeStackItem} */ (objectStack[
+      objectStack.length - 1
+    ]);
     const parentNode = parent.node;
     parentNode.appendChild(node);
   };
 }
-
 
 /**
  * Create a serializer that calls the provided `nodeWriter` from
@@ -273,7 +300,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
  */
 export function makeArraySerializer(nodeWriter, opt_this) {
   let serializersNS, nodeFactory;
-  return function(node, value, objectStack) {
+  return function (node, value, objectStack) {
     if (serializersNS === undefined) {
       serializersNS = {};
       const serializers = {};
@@ -284,7 +311,6 @@ export function makeArraySerializer(nodeWriter, opt_this) {
     serialize(serializersNS, nodeFactory, value, objectStack);
   };
 }
-
 
 /**
  * Create a node factory which can use the `opt_keys` passed to
@@ -308,20 +334,22 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
      * @param {string=} opt_nodeName Node name.
      * @return {Node} Node.
      */
-    function(value, objectStack, opt_nodeName) {
-      const context = /** @type {NodeStackItem} */ (objectStack[objectStack.length - 1]);
+    function (value, objectStack, opt_nodeName) {
+      const context = /** @type {NodeStackItem} */ (objectStack[
+        objectStack.length - 1
+      ]);
       const node = context.node;
       let nodeName = fixedNodeName;
       if (nodeName === undefined) {
         nodeName = opt_nodeName;
       }
 
-      const namespaceURI = opt_namespaceURI !== undefined ? opt_namespaceURI : node.namespaceURI;
+      const namespaceURI =
+        opt_namespaceURI !== undefined ? opt_namespaceURI : node.namespaceURI;
       return createElementNS(namespaceURI, /** @type {string} */ (nodeName));
     }
   );
 }
-
 
 /**
  * A node factory that creates a node using the parent's `namespaceURI` and the
@@ -331,7 +359,6 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
  * @type {function(*, Array<*>, string=): (Node|undefined)}
  */
 export const OBJECT_PROPERTY_NODE_FACTORY = makeSimpleNodeFactory();
-
 
 /**
  * Create an array of `values` to be used with {@link module:ol/xml~serialize} or
@@ -352,7 +379,6 @@ export function makeSequence(object, orderedKeys) {
   }
   return sequence;
 }
-
 
 /**
  * Create a namespaced structure, using the same values for each namespace.
@@ -376,7 +402,6 @@ export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
   return structureNS;
 }
 
-
 /**
  * Parse a node using the parsers and object stack.
  * @param {Object<string, Object<string, Parser>>} parsersNS
@@ -398,7 +423,6 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
   }
 }
 
-
 /**
  * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
@@ -410,12 +434,17 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
  * @return {T} Object.
  * @template T
  */
-export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) {
+export function pushParseAndPop(
+  object,
+  parsersNS,
+  node,
+  objectStack,
+  opt_this
+) {
   objectStack.push(object);
   parseNode(parsersNS, node, objectStack, opt_this);
   return /** @type {T} */ (objectStack.pop());
 }
-
 
 /**
  * Walk through an array of `values` and call a serializer for each value.
@@ -440,22 +469,35 @@ export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) 
  * @template T
  */
 export function serialize(
-  serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+  serializersNS,
+  nodeFactory,
+  values,
+  objectStack,
+  opt_keys,
+  opt_this
+) {
   const length = (opt_keys !== undefined ? opt_keys : values).length;
   let value, node;
   for (let i = 0; i < length; ++i) {
     value = values[i];
     if (value !== undefined) {
-      node = nodeFactory.call(opt_this !== undefined ? opt_this : this, value, objectStack,
-        opt_keys !== undefined ? opt_keys[i] : undefined);
+      node = nodeFactory.call(
+        opt_this !== undefined ? opt_this : this,
+        value,
+        objectStack,
+        opt_keys !== undefined ? opt_keys[i] : undefined
+      );
       if (node !== undefined) {
-        serializersNS[node.namespaceURI][node.localName]
-          .call(opt_this, node, value, objectStack);
+        serializersNS[node.namespaceURI][node.localName].call(
+          opt_this,
+          node,
+          value,
+          objectStack
+        );
       }
     }
   }
 }
-
 
 /**
  * @param {O} object Object.
@@ -480,9 +522,24 @@ export function serialize(
  * @return {O|undefined} Object.
  * @template O, T
  */
-export function pushSerializeAndPop(object, serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+export function pushSerializeAndPop(
+  object,
+  serializersNS,
+  nodeFactory,
+  values,
+  objectStack,
+  opt_keys,
+  opt_this
+) {
   objectStack.push(object);
-  serialize(serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
+  serialize(
+    serializersNS,
+    nodeFactory,
+    values,
+    objectStack,
+    opt_keys,
+    opt_this
+  );
   return /** @type {O|undefined} */ (objectStack.pop());
 }
 
@@ -508,7 +565,6 @@ export function getXMLSerializer() {
   }
   return xmlSerializer_;
 }
-
 
 let document_ = undefined;
 

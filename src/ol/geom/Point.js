@@ -1,9 +1,9 @@
 /**
  * @module ol/geom/Point
  */
-import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
 import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
+import {containsXY, createOrUpdateFromCoordinate} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
@@ -14,7 +14,6 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @api
  */
 class Point extends SimpleGeometry {
-
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
    * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
@@ -43,7 +42,12 @@ class Point extends SimpleGeometry {
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     const flatCoordinates = this.flatCoordinates;
-    const squaredDistance = squaredDx(x, y, flatCoordinates[0], flatCoordinates[1]);
+    const squaredDistance = squaredDx(
+      x,
+      y,
+      flatCoordinates[0],
+      flatCoordinates[1]
+    );
     if (squaredDistance < minSquaredDistance) {
       const stride = this.stride;
       for (let i = 0; i < stride; ++i) {
@@ -104,10 +108,13 @@ class Point extends SimpleGeometry {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = deflateCoordinate(
-      this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates,
+      0,
+      coordinates,
+      this.stride
+    );
     this.changed();
   }
 }
-
 
 export default Point;

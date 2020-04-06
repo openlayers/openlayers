@@ -1,12 +1,11 @@
 /**
  * @module ol/control/Control
  */
-import {VOID} from '../functions.js';
-import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';
-import {removeNode} from '../dom.js';
+import MapEventType from '../MapEventType.js';
+import {VOID} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
-
+import {removeNode} from '../dom.js';
 
 /**
  * @typedef {Object} Options
@@ -19,7 +18,6 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {HTMLElement|string} [target] Specify a target if you want
  * the control to be rendered outside of the map's viewport.
  */
-
 
 /**
  * @classdesc
@@ -46,12 +44,10 @@ import {listen, unlistenByKey} from '../events.js';
  * @api
  */
 class Control extends BaseObject {
-
   /**
    * @param {Options} options Control options.
    */
   constructor(options) {
-
     super();
 
     /**
@@ -87,7 +83,6 @@ class Control extends BaseObject {
     if (options.target) {
       this.setTarget(options.target);
     }
-
   }
 
   /**
@@ -124,12 +119,14 @@ class Control extends BaseObject {
     this.listenerKeys.length = 0;
     this.map_ = map;
     if (this.map_) {
-      const target = this.target_ ?
-        this.target_ : map.getOverlayContainerStopEvent();
+      const target = this.target_
+        ? this.target_
+        : map.getOverlayContainerStopEvent();
       target.appendChild(this.element);
       if (this.render !== VOID) {
-        this.listenerKeys.push(listen(map,
-          MapEventType.POSTRENDER, this.render, this));
+        this.listenerKeys.push(
+          listen(map, MapEventType.POSTRENDER, this.render, this)
+        );
       }
       map.render();
     }
@@ -155,11 +152,9 @@ class Control extends BaseObject {
    * @api
    */
   setTarget(target) {
-    this.target_ = typeof target === 'string' ?
-      document.getElementById(target) :
-      target;
+    this.target_ =
+      typeof target === 'string' ? document.getElementById(target) : target;
   }
 }
-
 
 export default Control;

@@ -26,5 +26,5 @@ export default {
    * Origin is at top right
    * @api
    */
-  TOP_RIGHT: 'top-right'
+  TOP_RIGHT: 'top-right',
 };

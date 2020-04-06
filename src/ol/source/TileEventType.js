@@ -6,7 +6,6 @@
  * @enum {string}
  */
 export default {
-
   /**
    * Triggered when a tile starts loading.
    * @event module:ol/source/Tile.TileSourceEvent#tileloadstart
@@ -27,6 +26,5 @@ export default {
    * @event module:ol/source/Tile.TileSourceEvent#tileloaderror
    * @api
    */
-  TILELOADERROR: 'tileloaderror'
-
+  TILELOADERROR: 'tileloaderror',
 };

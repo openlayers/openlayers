@@ -1,20 +1,22 @@
 /**
  * @module ol/geom/Geometry
  */
-import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
-import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import {transform2D} from './flat/transform.js';
-import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
-import {create as createTransform, compose as composeTransform} from '../transform.js';
+import {abstract} from '../util.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../transform.js';
+import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
+import {get as getProjection, getTransform} from '../proj.js';
 import {memoizeOne} from '../functions.js';
+import {transform2D} from './flat/transform.js';
 
 /**
  * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
-
 
 /**
  * @classdesc
@@ -30,7 +32,6 @@ const tmpTransform = createTransform();
  */
 class Geometry extends BaseObject {
   constructor() {
-
     super();
 
     /**
@@ -65,7 +66,11 @@ class Geometry extends BaseObject {
      * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
      * @return {Geometry} Simplified geometry.
      */
-    this.simplifyTransformedInternal = memoizeOne(function(revision, squaredTolerance, opt_transform) {
+    this.simplifyTransformedInternal = memoizeOne(function (
+      revision,
+      squaredTolerance,
+      opt_transform
+    ) {
       if (!opt_transform) {
         return this.getSimplifiedGeometry(squaredTolerance);
       }
@@ -73,7 +78,6 @@ class Geometry extends BaseObject {
       clone.applyTransform(opt_transform);
       return clone.getSimplifiedGeometry(squaredTolerance);
     });
-
   }
 
   /**
@@ -84,7 +88,11 @@ class Geometry extends BaseObject {
    * @return {Geometry} Simplified geometry.
    */
   simplifyTransformed(squaredTolerance, opt_transform) {
-    return this.simplifyTransformedInternal(this.getRevision(), squaredTolerance, opt_transform);
+    return this.simplifyTransformedInternal(
+      this.getRevision(),
+      squaredTolerance,
+      opt_transform
+    );
   }
 
   /**
@@ -280,25 +288,40 @@ class Geometry extends BaseObject {
   transform(source, destination) {
     /** @type {import("../proj/Projection.js").default} */
     const sourceProj = getProjection(source);
-    const transformFn = sourceProj.getUnits() == Units.TILE_PIXELS ?
-      function(inCoordinates, outCoordinates, stride) {
-        const pixelExtent = sourceProj.getExtent();
-        const projectedExtent = sourceProj.getWorldExtent();
-        const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-        composeTransform(tmpTransform,
-          projectedExtent[0], projectedExtent[3],
-          scale, -scale, 0,
-          0, 0);
-        transform2D(inCoordinates, 0, inCoordinates.length, stride,
-          tmpTransform, outCoordinates);
-        return getTransform(sourceProj, destination)(inCoordinates, outCoordinates, stride);
-      } :
-      getTransform(sourceProj, destination);
+    const transformFn =
+      sourceProj.getUnits() == Units.TILE_PIXELS
+        ? function (inCoordinates, outCoordinates, stride) {
+            const pixelExtent = sourceProj.getExtent();
+            const projectedExtent = sourceProj.getWorldExtent();
+            const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
+            composeTransform(
+              tmpTransform,
+              projectedExtent[0],
+              projectedExtent[3],
+              scale,
+              -scale,
+              0,
+              0,
+              0
+            );
+            transform2D(
+              inCoordinates,
+              0,
+              inCoordinates.length,
+              stride,
+              tmpTransform,
+              outCoordinates
+            );
+            return getTransform(sourceProj, destination)(
+              inCoordinates,
+              outCoordinates,
+              stride
+            );
+          }
+        : getTransform(sourceProj, destination);
     this.applyTransform(transformFn);
     return this;
   }
-
 }
-
 
 export default Geometry;

@@ -17,5 +17,5 @@ export default {
   MULTI_LINE_STRING: 'MultiLineString',
   MULTI_POLYGON: 'MultiPolygon',
   GEOMETRY_COLLECTION: 'GeometryCollection',
-  CIRCLE: 'Circle'
+  CIRCLE: 'Circle',
 };

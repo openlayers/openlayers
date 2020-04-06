@@ -10,7 +10,6 @@ import Spatial from './Spatial.js';
  * @api
  */
 class Within extends Spatial {
-
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../../geom/Geometry.js").default} geometry Geometry.
@@ -20,7 +19,6 @@ class Within extends Spatial {
   constructor(geometryName, geometry, opt_srsName) {
     super('Within', geometryName, geometry, opt_srsName);
   }
-
 }
 
 export default Within;

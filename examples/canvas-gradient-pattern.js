@@ -1,11 +1,11 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
+import Map from '../src/ol/Map.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
+import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
+import {fromLonLat} from '../src/ol/proj.js';
 
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
@@ -15,7 +15,7 @@ const context = canvas.getContext('2d');
 const pixelRatio = DEVICE_PIXEL_RATIO;
 
 // Generate a rainbow gradient
-const gradient = (function() {
+const gradient = (function () {
   const grad = context.createLinearGradient(0, 0, 512 * pixelRatio, 0);
   grad.addColorStop(0, 'red');
   grad.addColorStop(1 / 6, 'orange');
@@ -28,7 +28,7 @@ const gradient = (function() {
 })();
 
 // Generate a canvasPattern with two circles on white background
-const pattern = (function() {
+const pattern = (function () {
   canvas.width = 8 * pixelRatio;
   canvas.height = 8 * pixelRatio;
   // white background
@@ -45,7 +45,7 @@ const pattern = (function() {
   context.arc(4 * pixelRatio, 4 * pixelRatio, 1.5 * pixelRatio, 0, 2 * Math.PI);
   context.fill();
   return context.createPattern(canvas, 'repeat');
-}());
+})();
 
 // Generate style for gradient or pattern fill
 const fill = new Fill();
@@ -53,8 +53,8 @@ const style = new Style({
   fill: fill,
   stroke: new Stroke({
     color: '#333',
-    width: 2
-  })
+    width: 2,
+  }),
 });
 
 /**
@@ -64,7 +64,7 @@ const style = new Style({
  * @param {import("../src/ol/Feature.js").default} feature The feature to style.
  * @return {Style} The style to use for the feature.
  */
-const getStackedStyle = function(feature) {
+const getStackedStyle = function (feature) {
   const id = feature.getId();
   fill.setColor(id > 'J' ? gradient : pattern);
   return style;
@@ -74,19 +74,17 @@ const getStackedStyle = function(feature) {
 const vectorLayer = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/countries.geojson',
-    format: new GeoJSON()
+    format: new GeoJSON(),
   }),
-  style: getStackedStyle
+  style: getStackedStyle,
 });
 
 // … finally create a map with that layer.
 const map = new Map({
-  layers: [
-    vectorLayer
-  ],
+  layers: [vectorLayer],
   target: 'map',
   view: new View({
     center: fromLonLat([16, 48]),
-    zoom: 3
-  })
+    zoom: 3,
+  }),
 });

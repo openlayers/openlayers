@@ -9,7 +9,6 @@ import Comparison from './Comparison.js';
  * @api
  */
 class During extends Comparison {
-
   /**
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!string} begin The begin date in ISO-8601 format.
@@ -28,7 +27,6 @@ class During extends Comparison {
      */
     this.end = end;
   }
-
 }
 
 export default During;

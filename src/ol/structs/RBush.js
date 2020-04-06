@@ -1,9 +1,9 @@
 /**
  * @module ol/structs/RBush
  */
-import {getUid} from '../util.js';
 import RBush_ from 'rbush/rbush.js';
 import {createOrUpdate, equals} from '../extent.js';
+import {getUid} from '../util.js';
 import {isEmpty} from '../obj.js';
 
 /**
@@ -27,7 +27,6 @@ class RBush {
    * @param {number=} opt_maxEntries Max entries.
    */
   constructor(opt_maxEntries) {
-
     /**
      * @private
      */
@@ -40,7 +39,6 @@ class RBush {
      * @type {Object<string, Entry>}
      */
     this.items_ = {};
-
   }
 
   /**
@@ -55,13 +53,12 @@ class RBush {
       minY: extent[1],
       maxX: extent[2],
       maxY: extent[3],
-      value: value
+      value: value,
     };
 
     this.rbush_.insert(item);
     this.items_[getUid(value)] = item;
   }
-
 
   /**
    * Bulk-insert values into the RBush.
@@ -80,14 +77,13 @@ class RBush {
         minY: extent[1],
         maxX: extent[2],
         maxY: extent[3],
-        value: value
+        value: value,
       };
       items[i] = item;
       this.items_[getUid(value)] = item;
     }
     this.rbush_.load(items);
   }
-
 
   /**
    * Remove a value from the RBush.
@@ -104,7 +100,6 @@ class RBush {
     return this.rbush_.remove(item) !== null;
   }
 
-
   /**
    * Update the extent of a value in the RBush.
    * @param {import("../extent.js").Extent} extent Extent.
@@ -119,18 +114,16 @@ class RBush {
     }
   }
 
-
   /**
    * Return all values in the RBush.
    * @return {Array<T>} All.
    */
   getAll() {
     const items = this.rbush_.all();
-    return items.map(function(item) {
+    return items.map(function (item) {
       return item.value;
     });
   }
-
 
   /**
    * Return all values in the given extent.
@@ -143,14 +136,13 @@ class RBush {
       minX: extent[0],
       minY: extent[1],
       maxX: extent[2],
-      maxY: extent[3]
+      maxY: extent[3],
     };
     const items = this.rbush_.search(bbox);
-    return items.map(function(item) {
+    return items.map(function (item) {
       return item.value;
     });
   }
-
 
   /**
    * Calls a callback function with each value in the tree.
@@ -163,7 +155,6 @@ class RBush {
     return this.forEach_(this.getAll(), callback);
   }
 
-
   /**
    * Calls a callback function with each value in the provided extent.
    * @param {import("../extent.js").Extent} extent Extent.
@@ -173,7 +164,6 @@ class RBush {
   forEachInExtent(extent, callback) {
     return this.forEach_(this.getInExtent(extent), callback);
   }
-
 
   /**
    * @param {Array<T>} values Values.
@@ -192,14 +182,12 @@ class RBush {
     return result;
   }
 
-
   /**
    * @return {boolean} Is empty.
    */
   isEmpty() {
     return isEmpty(this.items_);
   }
-
 
   /**
    * Remove all values from the RBush.
@@ -209,16 +197,20 @@ class RBush {
     this.items_ = {};
   }
 
-
   /**
    * @param {import("../extent.js").Extent=} opt_extent Extent.
    * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {
     const data = this.rbush_.toJSON();
-    return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
+    return createOrUpdate(
+      data.minX,
+      data.minY,
+      data.maxX,
+      data.maxY,
+      opt_extent
+    );
   }
-
 
   /**
    * @param {RBush} rbush R-Tree.
@@ -229,8 +221,6 @@ class RBush {
       this.items_[i] = rbush.items_[i];
     }
   }
-
 }
-
 
 export default RBush;

@@ -1,11 +1,14 @@
 /**
  * @module ol/format/Feature
  */
-import {assign} from '../obj.js';
-import {abstract} from '../util.js';
-import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 import Units from '../proj/Units.js';
-
+import {abstract} from '../util.js';
+import {assign} from '../obj.js';
+import {
+  equivalent as equivalentProjection,
+  get as getProjection,
+  transformExtent,
+} from '../proj.js';
 
 /**
  * @typedef {Object} ReadOptions
@@ -22,7 +25,6 @@ import Units from '../proj/Units.js';
  * created by the format reader. If not provided, features will be returned in the
  * `dataProjection`.
  */
-
 
 /**
  * @typedef {Object} WriteOptions
@@ -49,7 +51,6 @@ import Units from '../proj/Units.js';
  * Default is no rounding.
  */
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -64,7 +65,6 @@ import Units from '../proj/Units.js';
  */
 class FeatureFormat {
   constructor() {
-
     /**
      * @protected
      * @type {import("../proj/Projection.js").default}
@@ -76,7 +76,6 @@ class FeatureFormat {
      * @type {import("../proj/Projection.js").default}
      */
     this.defaultFeatureProjection = null;
-
   }
 
   /**
@@ -89,16 +88,20 @@ class FeatureFormat {
   getReadOptions(source, opt_options) {
     let options;
     if (opt_options) {
-      let dataProjection = opt_options.dataProjection ?
-        getProjection(opt_options.dataProjection) : this.readProjection(source);
-      if (opt_options.extent &&
-          dataProjection && dataProjection.getUnits() === Units.TILE_PIXELS) {
+      let dataProjection = opt_options.dataProjection
+        ? getProjection(opt_options.dataProjection)
+        : this.readProjection(source);
+      if (
+        opt_options.extent &&
+        dataProjection &&
+        dataProjection.getUnits() === Units.TILE_PIXELS
+      ) {
         dataProjection = getProjection(dataProjection);
         dataProjection.setWorldExtent(opt_options.extent);
       }
       options = {
         dataProjection: dataProjection,
-        featureProjection: opt_options.featureProjection
+        featureProjection: opt_options.featureProjection,
       };
     }
     return this.adaptOptions(options);
@@ -114,10 +117,13 @@ class FeatureFormat {
    *     Updated options.
    */
   adaptOptions(options) {
-    return assign({
-      dataProjection: this.dataProjection,
-      featureProjection: this.defaultFeatureProjection
-    }, options);
+    return assign(
+      {
+        dataProjection: this.dataProjection,
+        featureProjection: this.defaultFeatureProjection,
+      },
+      options
+    );
   }
 
   /**
@@ -221,25 +227,41 @@ export default FeatureFormat;
  * @return {import("../geom/Geometry.js").default} Transformed geometry.
  */
 export function transformGeometryWithOptions(geometry, write, opt_options) {
-  const featureProjection = opt_options ? getProjection(opt_options.featureProjection) : null;
-  const dataProjection = opt_options ? getProjection(opt_options.dataProjection) : null;
+  const featureProjection = opt_options
+    ? getProjection(opt_options.featureProjection)
+    : null;
+  const dataProjection = opt_options
+    ? getProjection(opt_options.dataProjection)
+    : null;
 
   let transformed;
-  if (featureProjection && dataProjection && !equivalentProjection(featureProjection, dataProjection)) {
+  if (
+    featureProjection &&
+    dataProjection &&
+    !equivalentProjection(featureProjection, dataProjection)
+  ) {
     transformed = (write ? geometry.clone() : geometry).transform(
       write ? featureProjection : dataProjection,
-      write ? dataProjection : featureProjection);
+      write ? dataProjection : featureProjection
+    );
   } else {
     transformed = geometry;
   }
-  if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined) {
-    const power = Math.pow(10, /** @type {WriteOptions} */ (opt_options).decimals);
+  if (
+    write &&
+    opt_options &&
+    /** @type {WriteOptions} */ (opt_options).decimals !== undefined
+  ) {
+    const power = Math.pow(
+      10,
+      /** @type {WriteOptions} */ (opt_options).decimals
+    );
     // if decimals option on write, round each coordinate appropriately
     /**
      * @param {Array<number>} coordinates Coordinates.
      * @return {Array<number>} Transformed coordinates.
      */
-    const transform = function(coordinates) {
+    const transform = function (coordinates) {
       for (let i = 0, ii = coordinates.length; i < ii; ++i) {
         coordinates[i] = Math.round(coordinates[i] * power) / power;
       }
@@ -253,17 +275,24 @@ export function transformGeometryWithOptions(geometry, write, opt_options) {
   return transformed;
 }
 
-
 /**
  * @param {import("../extent.js").Extent} extent Extent.
  * @param {ReadOptions=} opt_options Read options.
  * @return {import("../extent.js").Extent} Transformed extent.
  */
 export function transformExtentWithOptions(extent, opt_options) {
-  const featureProjection = opt_options ? getProjection(opt_options.featureProjection) : null;
-  const dataProjection = opt_options ? getProjection(opt_options.dataProjection) : null;
+  const featureProjection = opt_options
+    ? getProjection(opt_options.featureProjection)
+    : null;
+  const dataProjection = opt_options
+    ? getProjection(opt_options.dataProjection)
+    : null;
 
-  if (featureProjection && dataProjection && !equivalentProjection(featureProjection, dataProjection)) {
+  if (
+    featureProjection &&
+    dataProjection &&
+    !equivalentProjection(featureProjection, dataProjection)
+  ) {
     return transformExtent(extent, dataProjection, featureProjection);
   } else {
     return extent;

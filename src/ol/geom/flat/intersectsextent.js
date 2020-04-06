@@ -1,10 +1,15 @@
 /**
  * @module ol/geom/flat/intersectsextent
  */
-import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
-import {linearRingContainsXY, linearRingContainsExtent} from './contains.js';
+import {
+  containsExtent,
+  createEmpty,
+  extendFlatCoordinates,
+  intersects,
+  intersectsSegment,
+} from '../../extent.js';
 import {forEach as forEachSegment} from './segments.js';
-
+import {linearRingContainsExtent, linearRingContainsXY} from './contains.js';
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -14,35 +19,48 @@ import {forEach as forEachSegment} from './segments.js';
  * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-export function intersectsLineString(flatCoordinates, offset, end, stride, extent) {
+export function intersectsLineString(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  extent
+) {
   const coordinatesExtent = extendFlatCoordinates(
-    createEmpty(), flatCoordinates, offset, end, stride);
+    createEmpty(),
+    flatCoordinates,
+    offset,
+    end,
+    stride
+  );
   if (!intersects(extent, coordinatesExtent)) {
     return false;
   }
   if (containsExtent(extent, coordinatesExtent)) {
     return true;
   }
-  if (coordinatesExtent[0] >= extent[0] &&
-      coordinatesExtent[2] <= extent[2]) {
+  if (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) {
     return true;
   }
-  if (coordinatesExtent[1] >= extent[1] &&
-      coordinatesExtent[3] <= extent[3]) {
+  if (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3]) {
     return true;
   }
-  return forEachSegment(flatCoordinates, offset, end, stride,
+  return forEachSegment(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
     /**
      * @param {import("../../coordinate.js").Coordinate} point1 Start point.
      * @param {import("../../coordinate.js").Coordinate} point2 End point.
      * @return {boolean} `true` if the segment and the extent intersect,
      *     `false` otherwise.
      */
-    function(point1, point2) {
+    function (point1, point2) {
       return intersectsSegment(extent, point1, point2);
-    });
+    }
+  );
 }
-
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -52,10 +70,17 @@ export function intersectsLineString(flatCoordinates, offset, end, stride, exten
  * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-export function intersectsLineStringArray(flatCoordinates, offset, ends, stride, extent) {
+export function intersectsLineStringArray(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  extent
+) {
   for (let i = 0, ii = ends.length; i < ii; ++i) {
-    if (intersectsLineString(
-      flatCoordinates, offset, ends[i], stride, extent)) {
+    if (
+      intersectsLineString(flatCoordinates, offset, ends[i], stride, extent)
+    ) {
       return true;
     }
     offset = ends[i];
@@ -63,7 +88,6 @@ export function intersectsLineStringArray(flatCoordinates, offset, ends, stride,
   return false;
 }
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -72,26 +96,66 @@ export function intersectsLineStringArray(flatCoordinates, offset, ends, stride,
  * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-export function intersectsLinearRing(flatCoordinates, offset, end, stride, extent) {
-  if (intersectsLineString(
-    flatCoordinates, offset, end, stride, extent)) {
+export function intersectsLinearRing(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  extent
+) {
+  if (intersectsLineString(flatCoordinates, offset, end, stride, extent)) {
     return true;
   }
-  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[0], extent[1])) {
+  if (
+    linearRingContainsXY(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      extent[0],
+      extent[1]
+    )
+  ) {
     return true;
   }
-  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[0], extent[3])) {
+  if (
+    linearRingContainsXY(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      extent[0],
+      extent[3]
+    )
+  ) {
     return true;
   }
-  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[2], extent[1])) {
+  if (
+    linearRingContainsXY(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      extent[2],
+      extent[1]
+    )
+  ) {
     return true;
   }
-  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[2], extent[3])) {
+  if (
+    linearRingContainsXY(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      extent[2],
+      extent[3]
+    )
+  ) {
     return true;
   }
   return false;
 }
-
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -101,24 +165,44 @@ export function intersectsLinearRing(flatCoordinates, offset, end, stride, exten
  * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride, extent) {
-  if (!intersectsLinearRing(
-    flatCoordinates, offset, ends[0], stride, extent)) {
+export function intersectsLinearRingArray(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  extent
+) {
+  if (!intersectsLinearRing(flatCoordinates, offset, ends[0], stride, extent)) {
     return false;
   }
   if (ends.length === 1) {
     return true;
   }
   for (let i = 1, ii = ends.length; i < ii; ++i) {
-    if (linearRingContainsExtent(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
-      if (!intersectsLineString(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
+    if (
+      linearRingContainsExtent(
+        flatCoordinates,
+        ends[i - 1],
+        ends[i],
+        stride,
+        extent
+      )
+    ) {
+      if (
+        !intersectsLineString(
+          flatCoordinates,
+          ends[i - 1],
+          ends[i],
+          stride,
+          extent
+        )
+      ) {
         return false;
       }
     }
   }
   return true;
 }
-
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -128,11 +212,18 @@ export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride,
  * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-export function intersectsLinearRingMultiArray(flatCoordinates, offset, endss, stride, extent) {
+export function intersectsLinearRingMultiArray(
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  extent
+) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
-    if (intersectsLinearRingArray(
-      flatCoordinates, offset, ends, stride, extent)) {
+    if (
+      intersectsLinearRingArray(flatCoordinates, offset, ends, stride, extent)
+    ) {
       return true;
     }
     offset = ends[ends.length - 1];

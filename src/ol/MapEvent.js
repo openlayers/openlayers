@@ -9,14 +9,12 @@ import Event from './events/Event.js';
  * See {@link module:ol/PluggableMap~PluggableMap} for which events trigger a map event.
  */
 class MapEvent extends Event {
-
   /**
    * @param {string} type Event type.
    * @param {import("./PluggableMap.js").default} map Map.
    * @param {?import("./PluggableMap.js").FrameState=} opt_frameState Frame state.
    */
   constructor(type, map, opt_frameState) {
-
     super(type);
 
     /**
@@ -32,9 +30,7 @@ class MapEvent extends Event {
      * @api
      */
     this.frameState = opt_frameState !== undefined ? opt_frameState : null;
-
   }
-
 }
 
 export default MapEvent;

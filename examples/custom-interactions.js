@@ -1,12 +1,14 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {defaults as defaultInteractions, Pointer as PointerInteraction} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
 import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
-
+import {LineString, Point, Polygon} from '../src/ol/geom.js';
+import {
+  Pointer as PointerInteraction,
+  defaults as defaultInteractions,
+} from '../src/ol/interaction.js';
+import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 class Drag extends PointerInteraction {
   constructor() {
@@ -14,7 +16,7 @@ class Drag extends PointerInteraction {
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
       handleMoveEvent: handleMoveEvent,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
     });
 
     /**
@@ -43,7 +45,6 @@ class Drag extends PointerInteraction {
   }
 }
 
-
 /**
  * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
@@ -51,10 +52,9 @@ class Drag extends PointerInteraction {
 function handleDownEvent(evt) {
   const map = evt.map;
 
-  const feature = map.forEachFeatureAtPixel(evt.pixel,
-    function(feature) {
-      return feature;
-    });
+  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+    return feature;
+  });
 
   if (feature) {
     this.coordinate_ = evt.coordinate;
@@ -63,7 +63,6 @@ function handleDownEvent(evt) {
 
   return !!feature;
 }
-
 
 /**
  * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
@@ -79,17 +78,15 @@ function handleDragEvent(evt) {
   this.coordinate_[1] = evt.coordinate[1];
 }
 
-
 /**
  * @param {import("../src/ol/MapBrowserEvent.js").default} evt Event.
  */
 function handleMoveEvent(evt) {
   if (this.cursor_) {
     const map = evt.map;
-    const feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature) {
-        return feature;
-      });
+    const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+      return feature;
+    });
     const element = evt.map.getTargetElement();
     if (feature) {
       if (element.style.cursor != this.cursor_) {
@@ -103,7 +100,6 @@ function handleMoveEvent(evt) {
   }
 }
 
-
 /**
  * @return {boolean} `false` to stop the drag sequence.
  */
@@ -113,29 +109,43 @@ function handleUpEvent() {
   return false;
 }
 
-
 const pointFeature = new Feature(new Point([0, 0]));
 
 const lineFeature = new Feature(
-  new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
+  new LineString([
+    [-1e7, 1e6],
+    [-1e6, 3e6],
+  ])
+);
 
 const polygonFeature = new Feature(
-  new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
-    [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
+  new Polygon([
+    [
+      [-3e6, -1e6],
+      [-3e6, 1e6],
+      [-1e6, 1e6],
+      [-1e6, -1e6],
+      [-3e6, -1e6],
+    ],
+  ])
+);
 
-const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+const key =
+  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
 
 const map = new Map({
   interactions: defaultInteractions().extend([new Drag()]),
   layers: [
     new TileLayer({
       source: new TileJSON({
-        url: 'https://a.tiles.mapbox.com/v4/aj.1x1-degrees.json?access_token=' + key
-      })
+        url:
+          'https://a.tiles.mapbox.com/v4/aj.1x1-degrees.json?access_token=' +
+          key,
+      }),
     }),
     new VectorLayer({
       source: new VectorSource({
-        features: [pointFeature, lineFeature, polygonFeature]
+        features: [pointFeature, lineFeature, polygonFeature],
       }),
       style: new Style({
         image: new Icon({
@@ -143,21 +153,21 @@ const map = new Map({
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
-          src: 'data/icon.png'
+          src: 'data/icon.png',
         }),
         stroke: new Stroke({
           width: 3,
-          color: [255, 0, 0, 1]
+          color: [255, 0, 0, 1],
         }),
         fill: new Fill({
-          color: [0, 0, 255, 0.6]
-        })
-      })
-    })
+          color: [0, 0, 255, 0.6],
+        }),
+      }),
+    }),
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });

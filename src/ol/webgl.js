@@ -2,7 +2,6 @@
  * @module ol/webgl
  */
 
-
 /**
  * Constants taken from goog.webgl
  */
@@ -17,7 +16,6 @@
  */
 export const ARRAY_BUFFER = 0x8892;
 
-
 /**
  * Used by {@link module:ol/webgl/Helper~WebGLHelper} for buffers containing indices data.
  * Index buffers are essentially lists of references to vertices defined in a vertex buffer
@@ -28,6 +26,13 @@ export const ARRAY_BUFFER = 0x8892;
  */
 export const ELEMENT_ARRAY_BUFFER = 0x8893;
 
+/**
+ * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
+ * @const
+ * @type {number}
+ * @api
+ */
+export const STREAM_DRAW = 0x88e0;
 
 /**
  * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
@@ -35,17 +40,7 @@ export const ELEMENT_ARRAY_BUFFER = 0x8893;
  * @type {number}
  * @api
  */
-export const STREAM_DRAW = 0x88E0;
-
-
-/**
- * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
- * @const
- * @type {number}
- * @api
- */
-export const STATIC_DRAW = 0x88E4;
-
+export const STATIC_DRAW = 0x88e4;
 
 /**
  * Used by {link module:ol/webgl/Buffer~WebGLArrayBuffer}.
@@ -53,8 +48,7 @@ export const STATIC_DRAW = 0x88E4;
  * @type {number}
  * @api
  */
-export const DYNAMIC_DRAW = 0x88E8;
-
+export const DYNAMIC_DRAW = 0x88e8;
 
 /**
  * @const
@@ -62,20 +56,17 @@ export const DYNAMIC_DRAW = 0x88E8;
  */
 export const UNSIGNED_BYTE = 0x1401;
 
-
 /**
  * @const
  * @type {number}
  */
 export const UNSIGNED_SHORT = 0x1403;
 
-
 /**
  * @const
  * @type {number}
  */
 export const UNSIGNED_INT = 0x1405;
-
 
 /**
  * @const
@@ -86,18 +77,11 @@ export const FLOAT = 0x1406;
 /** end of goog.webgl constants
  */
 
-
 /**
  * @const
  * @type {Array<string>}
  */
-const CONTEXT_IDS = [
-  'experimental-webgl',
-  'webgl',
-  'webkit-3d',
-  'moz-webgl'
-];
-
+const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
 
 /**
  * @param {HTMLCanvasElement} canvas Canvas.

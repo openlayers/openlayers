@@ -2,19 +2,17 @@
  * @module ol/Collection
  */
 import AssertionError from './AssertionError.js';
-import CollectionEventType from './CollectionEventType.js';
 import BaseObject from './Object.js';
+import CollectionEventType from './CollectionEventType.js';
 import Event from './events/Event.js';
-
 
 /**
  * @enum {string}
  * @private
  */
 const Property = {
-  LENGTH: 'length'
+  LENGTH: 'length',
 };
-
 
 /**
  * @classdesc
@@ -22,7 +20,6 @@ const Property = {
  * type.
  */
 export class CollectionEvent extends Event {
-
   /**
    * @param {CollectionEventType} type Type.
    * @param {*=} opt_element Element.
@@ -45,9 +42,7 @@ export class CollectionEvent extends Event {
      */
     this.index = opt_index;
   }
-
 }
-
 
 /**
  * @typedef {Object} Options
@@ -69,13 +64,11 @@ export class CollectionEvent extends Event {
  * @api
  */
 class Collection extends BaseObject {
-
   /**
    * @param {Array<T>=} opt_array Array.
    * @param {Options=} opt_options Collection options.
    */
   constructor(opt_array, opt_options) {
-
     super();
 
     const options = opt_options || {};
@@ -99,7 +92,6 @@ class Collection extends BaseObject {
     }
 
     this.updateLength_();
-
   }
 
   /**
@@ -185,7 +177,8 @@ class Collection extends BaseObject {
     this.array_.splice(index, 0, elem);
     this.updateLength_();
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.ADD, elem, index));
+      new CollectionEvent(CollectionEventType.ADD, elem, index)
+    );
   }
 
   /**
@@ -240,7 +233,9 @@ class Collection extends BaseObject {
     const prev = this.array_[index];
     this.array_.splice(index, 1);
     this.updateLength_();
-    this.dispatchEvent(new CollectionEvent(CollectionEventType.REMOVE, prev, index));
+    this.dispatchEvent(
+      new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+    );
     return prev;
   }
 
@@ -259,9 +254,11 @@ class Collection extends BaseObject {
       const prev = this.array_[index];
       this.array_[index] = elem;
       this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.REMOVE, prev, index));
+        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      );
       this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.ADD, elem, index));
+        new CollectionEvent(CollectionEventType.ADD, elem, index)
+      );
     } else {
       for (let j = n; j < index; ++j) {
         this.insertAt(j, undefined);
@@ -290,6 +287,5 @@ class Collection extends BaseObject {
     }
   }
 }
-
 
 export default Collection;

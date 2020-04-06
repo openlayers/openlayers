@@ -1,12 +1,11 @@
 import WebGLHelper, {DefaultUniform} from '../../../../src/ol/webgl/Helper.js';
+import {FLOAT} from '../../../../src/ol/webgl.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
   scale as scaleTransform,
-  translate as translateTransform
+  translate as translateTransform,
 } from '../../../../src/ol/transform.js';
-import {FLOAT} from '../../../../src/ol/webgl.js';
-
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -47,43 +46,42 @@ const FRAGMENT_SHADER = `
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   }`;
 
-describe('ol.webgl.WebGLHelper', function() {
-
-  describe('constructor', function() {
-
-    describe('without an argument', function() {
-
+describe('ol.webgl.WebGLHelper', function () {
+  describe('constructor', function () {
+    describe('without an argument', function () {
       let h;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper();
       });
 
-      it('initialized WebGL context & canvas', function() {
+      it('initialized WebGL context & canvas', function () {
         expect(h.getGL() instanceof WebGLRenderingContext).to.eql(true);
         expect(h.getCanvas() instanceof HTMLCanvasElement).to.eql(true);
       });
 
-      it('has a default rendering pass', function() {
+      it('has a default rendering pass', function () {
         expect(h.postProcessPasses_.length).to.eql(1);
       });
     });
 
-    describe('with post process passes', function() {
-
+    describe('with post process passes', function () {
       let h;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper({
-          postProcesses: [{
-            scaleRatio: 0.5
-          }, {
-            uniforms: {
-              u_test: 4
-            }
-          }]
+          postProcesses: [
+            {
+              scaleRatio: 0.5,
+            },
+            {
+              uniforms: {
+                u_test: 4,
+              },
+            },
+          ],
         });
       });
 
-      it('has instantiated post-processing passes', function() {
+      it('has instantiated post-processing passes', function () {
         expect(h.postProcessPasses_.length).to.eql(2);
         expect(h.postProcessPasses_[0].scaleRatio_).to.eql(0.5);
         expect(h.postProcessPasses_[0].uniforms_.length).to.eql(0);
@@ -91,24 +89,20 @@ describe('ol.webgl.WebGLHelper', function() {
         expect(h.postProcessPasses_[1].uniforms_.length).to.eql(1);
         expect(h.postProcessPasses_[1].uniforms_[0].value).to.eql(4);
       });
-
     });
-
   });
 
-  describe('operations', function() {
-
-    describe('prepare draw', function() {
-
+  describe('operations', function () {
+    describe('prepare draw', function () {
       let h;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper({
           uniforms: {
             u_test1: 42,
             u_test2: [1, 3],
             u_test3: document.createElement('canvas'),
-            u_test4: createTransform()
-          }
+            u_test4: createTransform(),
+          },
         });
         h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
         h.prepareDraw({
@@ -117,23 +111,27 @@ describe('ol.webgl.WebGLHelper', function() {
           viewState: {
             rotation: 10,
             resolution: 10,
-            center: [0, 0]
-          }
+            center: [0, 0],
+          },
         });
       });
 
-      it('has resized the canvas', function() {
+      it('has resized the canvas', function () {
         expect(h.getCanvas().width).to.eql(100);
         expect(h.getCanvas().height).to.eql(160);
       });
 
-      it('has processed default uniforms', function() {
-        expect(h.uniformLocations_[DefaultUniform.OFFSET_ROTATION_MATRIX]).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]).not.to.eql(undefined);
+      it('has processed default uniforms', function () {
+        expect(
+          h.uniformLocations_[DefaultUniform.OFFSET_ROTATION_MATRIX]
+        ).not.to.eql(undefined);
+        expect(
+          h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]
+        ).not.to.eql(undefined);
         expect(h.uniformLocations_[DefaultUniform.TIME]).not.to.eql(undefined);
       });
 
-      it('has processed uniforms', function() {
+      it('has processed uniforms', function () {
         expect(h.uniforms_.length).to.eql(4);
         expect(h.uniforms_[0].name).to.eql('u_test1');
         expect(h.uniforms_[1].name).to.eql('u_test2');
@@ -147,64 +145,64 @@ describe('ol.webgl.WebGLHelper', function() {
       });
     });
 
-    describe('valid shader compiling', function() {
+    describe('valid shader compiling', function () {
       let h;
       let p;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper();
 
         p = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
         h.useProgram(p);
       });
 
-      it('has saved the program', function() {
+      it('has saved the program', function () {
         expect(h.currentProgram_).to.eql(p);
       });
 
-      it('has no shader compilation error', function() {
+      it('has no shader compilation error', function () {
         expect(h.shaderCompileErrors_).to.eql(null);
       });
 
-      it('can find the uniform location', function() {
+      it('can find the uniform location', function () {
         expect(h.getUniformLocation('u_test')).to.not.eql(null);
       });
 
-      it('can find the attribute location', function() {
+      it('can find the attribute location', function () {
         expect(h.getAttributeLocation('a_test')).to.not.eql(-1);
       });
 
-      it('cannot find an unknown attribute location', function() {
+      it('cannot find an unknown attribute location', function () {
         expect(h.getAttributeLocation('a_test_missing')).to.eql(-1);
       });
     });
 
-    describe('invalid shader compiling', function() {
+    describe('invalid shader compiling', function () {
       let h;
       let p;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper();
 
         p = h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER);
         h.useProgram(p);
       });
 
-      it('has saved the program', function() {
+      it('has saved the program', function () {
         expect(h.currentProgram_).to.eql(p);
       });
 
-      it('has shader compilation errors', function() {
+      it('has shader compilation errors', function () {
         expect(h.shaderCompileErrors_).to.not.eql(null);
       });
 
-      it('cannot find the uniform location', function() {
+      it('cannot find the uniform location', function () {
         expect(h.getUniformLocation('u_test')).to.eql(null);
       });
     });
 
-    describe('#makeProjectionTransform', function() {
+    describe('#makeProjectionTransform', function () {
       let h;
       let frameState;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper();
 
         frameState = {
@@ -212,33 +210,39 @@ describe('ol.webgl.WebGLHelper', function() {
           viewState: {
             rotation: 0.4,
             resolution: 2,
-            center: [10, 20]
-          }
+            center: [10, 20],
+          },
         };
       });
 
-      it('gives out the correct transform', function() {
+      it('gives out the correct transform', function () {
         const scaleX = 2 / frameState.size[0] / frameState.viewState.resolution;
         const scaleY = 2 / frameState.size[1] / frameState.viewState.resolution;
         const given = createTransform();
         const expected = createTransform();
         scaleTransform(expected, scaleX, scaleY);
         rotateTransform(expected, -frameState.viewState.rotation);
-        translateTransform(expected, -frameState.viewState.center[0], -frameState.viewState.center[1]);
+        translateTransform(
+          expected,
+          -frameState.viewState.center[0],
+          -frameState.viewState.center[1]
+        );
 
         h.makeProjectionTransform(frameState, given);
 
-        expect(given.map(val => val.toFixed(15))).to.eql(expected.map(val => val.toFixed(15)));
+        expect(given.map((val) => val.toFixed(15))).to.eql(
+          expected.map((val) => val.toFixed(15))
+        );
       });
     });
 
-    describe('#createTexture', function() {
+    describe('#createTexture', function () {
       let h;
-      beforeEach(function() {
+      beforeEach(function () {
         h = new WebGLHelper();
       });
 
-      it('creates an empty texture from scratch', function() {
+      it('creates an empty texture from scratch', function () {
         const width = 4;
         const height = 4;
         const t = h.createTexture([width, height]);
@@ -246,7 +250,13 @@ describe('ol.webgl.WebGLHelper', function() {
 
         const fb = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          t,
+          0
+        );
         const data = new Uint8Array(width * height * 4);
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.deleteFramebuffer(fb);
@@ -261,7 +271,7 @@ describe('ol.webgl.WebGLHelper', function() {
         expect(data[7]).to.eql(0);
       });
 
-      it('creates a texture from image data', function() {
+      it('creates a texture from image data', function () {
         const width = 4;
         const height = 4;
         const canvas = document.createElement('canvas');
@@ -277,7 +287,13 @@ describe('ol.webgl.WebGLHelper', function() {
 
         const fb = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          t,
+          0
+        );
         const data = new Uint8Array(width * height * 4);
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.deleteFramebuffer(fb);
@@ -292,7 +308,7 @@ describe('ol.webgl.WebGLHelper', function() {
         expect(data[7]).to.eql(250);
       });
 
-      it('reuses a given texture', function() {
+      it('reuses a given texture', function () {
         const width = 4;
         const height = 4;
         const gl = h.getGL();
@@ -303,26 +319,29 @@ describe('ol.webgl.WebGLHelper', function() {
     });
   });
 
-  describe('#enableAttributes', function() {
+  describe('#enableAttributes', function () {
     let baseAttrs, h;
 
-    beforeEach(function() {
+    beforeEach(function () {
       h = new WebGLHelper();
       baseAttrs = [
         {
           name: 'attr1',
-          size: 3
+          size: 3,
         },
         {
           name: 'attr2',
-          size: 2
+          size: 2,
         },
         {
           name: 'attr3',
-          size: 1
-        }
+          size: 1,
+        },
       ];
-      h.useProgram(h.getProgram(FRAGMENT_SHADER, `
+      h.useProgram(
+        h.getProgram(
+          FRAGMENT_SHADER,
+          `
         precision mediump float;
 
         uniform mat4 u_projectionMatrix;
@@ -336,10 +355,12 @@ describe('ol.webgl.WebGLHelper', function() {
 
         void main(void) {
           gl_Position = vec4(u_test, a_test, 0.0, 1.0);
-        }`));
+        }`
+        )
+      );
     });
 
-    it('enables attributes based on the given array (FLOAT)', function() {
+    it('enables attributes based on the given array (FLOAT)', function () {
       const spy = sinon.spy(h, 'enableAttributeArray_');
       h.enableAttributes(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;

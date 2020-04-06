@@ -6,7 +6,6 @@
  * @enum {string}
  */
 export default {
-
   /**
    * Triggered after a map frame is rendered.
    * @event module:ol/MapEvent~MapEvent#postrender
@@ -26,6 +25,5 @@ export default {
    * @event module:ol/MapEvent~MapEvent#moveend
    * @api
    */
-  MOVEEND: 'moveend'
-
+  MOVEEND: 'moveend',
 };

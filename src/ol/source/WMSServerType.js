@@ -28,5 +28,5 @@ export default {
    * HiDPI support for [QGIS](https://qgis.org/)
    * @api
    */
-  QGIS: 'qgis'
+  QGIS: 'qgis',
 };

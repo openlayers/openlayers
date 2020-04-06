@@ -7,5 +7,5 @@
  */
 export default {
   ANIMATING: 0,
-  INTERACTING: 1
+  INTERACTING: 1,
 };

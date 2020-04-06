@@ -2,9 +2,8 @@
  * @module ol/source/Stamen
  */
 
-import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
 import XYZ from './XYZ.js';
-
+import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
 
 /**
  * @const
@@ -12,11 +11,10 @@ import XYZ from './XYZ.js';
  */
 const ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/" target="_blank">Stamen Design</a>, ' +
-        'under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY' +
-        ' 3.0</a>.',
-  OSM_ATTRIBUTION
+    'under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY' +
+    ' 3.0</a>.',
+  OSM_ATTRIBUTION,
 ];
-
 
 /**
  * @type {Object<string, {extension: string, opaque: boolean}>}
@@ -24,50 +22,49 @@ const ATTRIBUTIONS = [
 const LayerConfig = {
   'terrain': {
     extension: 'jpg',
-    opaque: true
+    opaque: true,
   },
   'terrain-background': {
     extension: 'jpg',
-    opaque: true
+    opaque: true,
   },
   'terrain-labels': {
     extension: 'png',
-    opaque: false
+    opaque: false,
   },
   'terrain-lines': {
     extension: 'png',
-    opaque: false
+    opaque: false,
   },
   'toner-background': {
     extension: 'png',
-    opaque: true
+    opaque: true,
   },
   'toner': {
     extension: 'png',
-    opaque: true
+    opaque: true,
   },
   'toner-hybrid': {
     extension: 'png',
-    opaque: false
+    opaque: false,
   },
   'toner-labels': {
     extension: 'png',
-    opaque: false
+    opaque: false,
   },
   'toner-lines': {
     extension: 'png',
-    opaque: false
+    opaque: false,
   },
   'toner-lite': {
     extension: 'png',
-    opaque: true
+    opaque: true,
   },
   'watercolor': {
     extension: 'jpg',
-    opaque: true
-  }
+    opaque: true,
+  },
 };
-
 
 /**
  * @type {Object<string, {minZoom: number, maxZoom: number}>}
@@ -75,18 +72,17 @@ const LayerConfig = {
 const ProviderConfig = {
   'terrain': {
     minZoom: 0,
-    maxZoom: 18
+    maxZoom: 18,
   },
   'toner': {
     minZoom: 0,
-    maxZoom: 20
+    maxZoom: 20,
   },
   'watercolor': {
     minZoom: 0,
-    maxZoom: 18
-  }
+    maxZoom: 18,
+  },
 };
-
 
 /**
  * @typedef {Object} Options
@@ -110,7 +106,6 @@ const ProviderConfig = {
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
-
 /**
  * @classdesc
  * Layer source for the Stamen tile server.
@@ -127,27 +122,31 @@ class Stamen extends XYZ {
 
     const layerConfig = LayerConfig[options.layer];
 
-    const url = options.url !== undefined ? options.url :
-      'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
-        '/{z}/{x}/{y}.' + layerConfig.extension;
+    const url =
+      options.url !== undefined
+        ? options.url
+        : 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' +
+          options.layer +
+          '/{z}/{x}/{y}.' +
+          layerConfig.extension;
 
     super({
       attributions: ATTRIBUTIONS,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       imageSmoothing: options.imageSmoothing,
-      maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
-      minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
+      maxZoom:
+        options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
+      minZoom:
+        options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
       opaque: layerConfig.opaque,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       transition: options.transition,
       url: url,
-      wrapX: options.wrapX
+      wrapX: options.wrapX,
     });
-
   }
-
 }
 
 export default Stamen;

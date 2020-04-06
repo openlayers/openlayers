@@ -9,14 +9,17 @@ import {VERSION} from './util.js';
  * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error.
  */
 class AssertionError extends Error {
-
   /**
    * @param {number} code Error code.
    */
   constructor(code) {
     const path = VERSION === 'latest' ? VERSION : 'v' + VERSION.split('-')[0];
-    const message = 'Assertion failed. See https://openlayers.org/en/' + path +
-    '/doc/errors/#' + code + ' for details.';
+    const message =
+      'Assertion failed. See https://openlayers.org/en/' +
+      path +
+      '/doc/errors/#' +
+      code +
+      ' for details.';
 
     super(message);
 
@@ -38,7 +41,6 @@ class AssertionError extends Error {
     // Re-assign message, see https://github.com/Rich-Harris/buble/issues/40
     this.message = message;
   }
-
 }
 
 export default AssertionError;

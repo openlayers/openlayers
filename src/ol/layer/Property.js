@@ -14,5 +14,5 @@ export default {
   MIN_RESOLUTION: 'minResolution',
   MAX_ZOOM: 'maxZoom',
   MIN_ZOOM: 'minZoom',
-  SOURCE: 'source'
+  SOURCE: 'source',
 };

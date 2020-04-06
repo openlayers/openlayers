@@ -1,46 +1,46 @@
-import {Map, View} from '../src/ol/index.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {Modify, Select, Draw, Snap} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
+import {Map, View} from '../src/ol/index.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {useGeographic} from '../src/ol/proj.js';
 
 useGeographic();
 
 const source = new VectorSource({
   url: 'data/geojson/countries.geojson',
-  format: new GeoJSON()
+  format: new GeoJSON(),
 });
 
 const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new OSM()
+      source: new OSM(),
     }),
     new VectorLayer({
-      source: source
-    })
+      source: source,
+    }),
   ],
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 const select = new Select();
 
 const modify = new Modify({
-  features: select.getFeatures()
+  features: select.getFeatures(),
 });
 
 const draw = new Draw({
   type: 'Polygon',
-  source: source
+  source: source,
 });
 
 const snap = new Snap({
-  source: source
+  source: source,
 });
 
 function removeInteractions() {
