@@ -30,7 +30,23 @@ const Property = {
 
 /**
  * @classdesc
- * Events emitted on Geolocation error.
+ * Event emitted by {@link module:ol/Geolocation~Geolocation} error.
+ *
+ * This is an ECMA-262 Error, extended with a `code` and `message` properties.
+ * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error.
+ *
+ * Example:
+ *
+ *     var geolocation = new Geolocation({
+ *       // take the projection to use from the map's view
+ *       projection: view.getProjection()
+ *     });
+ *     // listen to error
+ *     geolocation.on('error', function(evt) {
+ *       window.console.log(evt.message);
+ *     });
+ *
+ * @api
  */
 class GeolocationError extends BaseEvent {
   /**
@@ -40,12 +56,19 @@ class GeolocationError extends BaseEvent {
     super(EventType.ERROR);
 
     /**
+     * The error code. The meaning of the code can be found on
+     * https://openlayers.org/en/latest/doc/errors/ (replace `latest` with
+     * the version found in the OpenLayers script's header comment if a version
+     * other than the latest is used).
      * @type {number}
+     * @api
      */
     this.code = error.code;
 
     /**
+     * The error message.
      * @type {string}
+     * @api
      */
     this.message = error.message;
   }
@@ -81,7 +104,7 @@ class GeolocationError extends BaseEvent {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
- * @fires module:ol/events/Event~BaseEvent#event:error
+ * @fires GeolocationError
  * @api
  */
 class Geolocation extends BaseObject {
