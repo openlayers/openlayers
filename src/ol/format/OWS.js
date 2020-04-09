@@ -34,19 +34,6 @@ class OWS extends XML {
   }
 
   /**
-   * @param {Document} doc Document.
-   * @return {Object} Object
-   */
-  readFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
-      if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readFromNode(/** @type {Element} */ (n));
-      }
-    }
-    return null;
-  }
-
-  /**
    * @param {Element} node Node.
    * @return {Object} Object
    */
