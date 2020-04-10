@@ -32,8 +32,8 @@ const Property = {
  * @classdesc
  * Event emitted by {@link module:ol/Geolocation~Geolocation} error.
  *
- * This is an ECMA-262 Error, extended with a `code` and `message` properties.
- * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error.
+ * This is an error occurring when using the geolocating device.
+ * See https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError.
  *
  * Example:
  *
@@ -57,16 +57,15 @@ class GeolocationError extends BaseEvent {
 
     /**
      * The error code. The meaning of the code can be found on
-     * https://openlayers.org/en/latest/doc/errors/ (replace `latest` with
-     * the version found in the OpenLayers script's header comment if a version
-     * other than the latest is used).
+     * https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError/code
+     *
      * @type {number}
      * @api
      */
     this.code = error.code;
 
     /**
-     * The error message.
+     * The message describe the details of the error.
      * @type {string}
      * @api
      */
