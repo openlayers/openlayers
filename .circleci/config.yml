@@ -28,6 +28,9 @@ jobs:
           command: npm test
 
       - store_artifacts:
+          path: /home/circleci/.npm/_logs
+
+      - store_artifacts:
           path: coverage/
           destination: coverage
 
