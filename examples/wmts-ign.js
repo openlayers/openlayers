@@ -42,9 +42,9 @@ const ign_source = new WMTS({
   tileGrid: tileGrid,
   style: 'normal',
   attributions:
-    '<a href="http://www.geoportail.fr/" target="_blank">' +
-    '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
-    'theme/geoportal/img/logo_gp.gif"></a>',
+    '<a href="http://www.ign.fr" target="_blank">' +
+    '<img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" title="Institut national de l\'' +
+    'information géographique et forestière" alt="IGN"></a>',
 });
 
 const ign = new TileLayer({
