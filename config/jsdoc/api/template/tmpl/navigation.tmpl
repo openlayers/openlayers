@@ -14,13 +14,27 @@ function getItemCssClass(type) {
     return '';
 }
 
-const printList = v => { ?>
-                    <li data-name="<?js= toShortName(v.name).toLowerCase() ?>"><?js
-}
-const printListWithStability = v => {
-    const cls = v.stability && v.stability !== 'stable' ? ' class="unstable"' : ''; ?>
-                    <li data-name="<?js= toShortName(v.name).toLowerCase() ?>"<?js= cls ?>><?js
-}
+const printListItem = (member) => {
+    const shortName = toShortName(member.name); ?>
+                    <li data-name="<?js= shortName.toLowerCase() ?>"><?js= self.linkto(member.longname, shortName) ?><?js
+};
+const printListItemWithStability = (member) => {
+    const shortName = toShortName(member.name);
+    const cls = member.stability && member.stability !== 'stable' ? ' class="unstable"' : ''; ?>
+                    <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= self.linkto(member.longname, shortName) ?><?js
+};
+const printFiresListItem = (eventName) => {
+    const ancestor = self.find({longname: eventName})[0] ||
+        {longname: eventName, name: eventName.split(/#?event:/)[1]};
+    const eventEnum = ancestor.longname.split(/#?event:/)[0];
+    if (self.find({longname: eventEnum})[0]) {
+        printListItemWithStability(ancestor);
+    } else {
+        const cls = ancestor.stability && ancestor.stability !== 'stable' ? ' class="unstable"' : '';
+        const shortName = toShortName(ancestor.name); ?>
+                    <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= shortName ?><?js
+    }
+};
 
 function listContent(item, title, listItemPrinter) {
     const type = title.toLowerCase();
@@ -29,7 +43,7 @@ function listContent(item, title, listItemPrinter) {
                 <span class="subtitle"><?js= title ?></span>
                 <ul><?js
         item[type].forEach(function (v) {
-            listItemPrinter(v); ?><?js= self.linkto(v.longname, toShortName(v.name)) ?><?js
+            listItemPrinter(v);
          }); ?>
                 </ul>
             </div><?js
@@ -47,13 +61,10 @@ function listContent(item, title, listItemPrinter) {
                 <span class="glyphicon <?js= getItemCssClass(item.type) ?>"></span>
                 <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~]/g, '\u200b$&')) ?></span>
             </span><?js
-                listContent(item, 'Members', printList);
-                listContent(item, 'Typedefs', printListWithStability);
-                listContent(item, 'Methods', printListWithStability);
-                if (item.fires) {
-                    const fires = item.fires.map(v => self.find({longname: v})[0] || {longname: v, name: v.split(/#?event:/)[1]});
-                    listContent({fires: fires}, 'Fires', printListWithStability)
-                }
+                listContent(item, 'Members', printListItem);
+                listContent(item, 'Typedefs', printListItemWithStability);
+                listContent(item, 'Methods', printListItemWithStability);
+                listContent(item, 'Fires', printFiresListItem);
         }); ?>
     </ul>
 </div>
