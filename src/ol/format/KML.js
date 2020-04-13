@@ -439,7 +439,6 @@ class KML extends XMLFeature {
       options.extractStyles !== undefined ? options.extractStyles : true;
 
     /**
-     * @private
      * @type {boolean}
      */
     this.writeStyles_ =
@@ -459,7 +458,6 @@ class KML extends XMLFeature {
       options.showPointNames !== undefined ? options.showPointNames : true;
 
     /**
-     * @private
      * @type {null|string}
      */
     this.crossOrigin_ =
