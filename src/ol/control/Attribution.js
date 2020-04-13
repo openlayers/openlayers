@@ -49,7 +49,7 @@ class Attribution extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
+      render: options.render,
       target: options.target,
     });
 
@@ -328,15 +328,15 @@ class Attribution extends Control {
   getCollapsed() {
     return this.collapsed_;
   }
-}
 
-/**
- * Update the attribution element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {Attribution}
- */
-export function render(mapEvent) {
-  this.updateElement_(mapEvent.frameState);
+  /**
+   * Update the attribution element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    this.updateElement_(mapEvent.frameState);
+  }
 }
 
 export default Attribution;

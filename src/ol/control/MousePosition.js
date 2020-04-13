@@ -66,7 +66,7 @@ class MousePosition extends Control {
 
     super({
       element: element,
-      render: options.render || render,
+      render: options.render,
       target: options.target,
     });
 
@@ -251,22 +251,22 @@ class MousePosition extends Control {
       this.renderedHTML_ = html;
     }
   }
-}
 
-/**
- * Update the projection. Rendering of the coordinates is done in
- * `handleMouseMove` and `handleMouseUp`.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {MousePosition}
- */
-export function render(mapEvent) {
-  const frameState = mapEvent.frameState;
-  if (!frameState) {
-    this.mapProjection_ = null;
-  } else {
-    if (this.mapProjection_ != frameState.viewState.projection) {
-      this.mapProjection_ = frameState.viewState.projection;
-      this.transform_ = null;
+  /**
+   * Update the projection. Rendering of the coordinates is done in
+   * `handleMouseMove` and `handleMouseUp`.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    const frameState = mapEvent.frameState;
+    if (!frameState) {
+      this.mapProjection_ = null;
+    } else {
+      if (this.mapProjection_ != frameState.viewState.projection) {
+        this.mapProjection_ = frameState.viewState.projection;
+        this.transform_ = null;
+      }
     }
   }
 }

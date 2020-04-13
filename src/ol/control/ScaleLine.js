@@ -87,7 +87,7 @@ class ScaleLine extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
+      render: options.render,
       target: options.target,
     });
 
@@ -471,21 +471,21 @@ class ScaleLine extends Control {
     const inchesPerMeter = 39.37;
     return parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi;
   }
-}
 
-/**
- * Update the scale line element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {ScaleLine}
- */
-export function render(mapEvent) {
-  const frameState = mapEvent.frameState;
-  if (!frameState) {
-    this.viewState_ = null;
-  } else {
-    this.viewState_ = frameState.viewState;
+  /**
+   * Update the scale line element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    const frameState = mapEvent.frameState;
+    if (!frameState) {
+      this.viewState_ = null;
+    } else {
+      this.viewState_ = frameState.viewState;
+    }
+    this.updateElement_();
   }
-  this.updateElement_();
 }
 
 export default ScaleLine;
