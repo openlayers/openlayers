@@ -47,7 +47,7 @@ import {assert} from '../asserts.js';
  * Enum representing the major IIIF Image API versions
  * @enum {string}
  */
-const Versions = {
+export const Versions = {
   VERSION1: 'version1',
   VERSION2: 'version2',
   VERSION3: 'version3',
@@ -485,4 +485,3 @@ class IIIFInfo {
 }
 
 export default IIIFInfo;
-export {Versions};
