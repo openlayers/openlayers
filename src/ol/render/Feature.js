@@ -305,14 +305,14 @@ class RenderFeature {
       this.flatCoordinates_
     );
   }
+  /**
+   * @return {Array<number>|Array<Array<number>>} Ends or endss.
+   */
+  getEnds() {
+    return this.ends_;
+  }
 }
 
-/**
- * @return {Array<number>|Array<Array<number>>} Ends or endss.
- */
-RenderFeature.prototype.getEnds = function () {
-  return this.ends_;
-};
 RenderFeature.prototype.getEndss = RenderFeature.prototype.getEnds;
 
 /**
