@@ -103,10 +103,12 @@ describe('ol.reproj.Image', function () {
           .getImageData(0, 0, canvas.width, canvas.height).data;
 
         for (let i = 0; i < canvas.width * canvas.height * 4; i += 4) {
-          expect(pixels[i + 0]).to.be.within(pixels[0] - 2, pixels[0] + 2);
-          expect(pixels[i + 1]).to.be.within(pixels[1] - 2, pixels[1] + 2);
-          expect(pixels[i + 2]).to.be.within(pixels[2] - 2, pixels[2] + 2);
-          expect(pixels[i + 3]).to.be.within(pixels[3] - 2, pixels[3] + 2);
+          expect(
+            Math.abs(pixels[i + 0] - pixels[0]) +
+              Math.abs(pixels[i + 1] - pixels[1]) +
+              Math.abs(pixels[i + 2] - pixels[2]) +
+              Math.abs(pixels[i + 3] - pixels[3])
+          ).to.be.lessThan(5);
         }
         done();
       }
