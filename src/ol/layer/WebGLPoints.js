@@ -113,7 +113,7 @@ class WebGLPointsLayer extends Layer {
    * Clean up.
    */
   disposeInternal() {
-    this.renderer_.dispose();
+    this.getRenderer().disposeInternal();
     super.disposeInternal();
   }
 }
