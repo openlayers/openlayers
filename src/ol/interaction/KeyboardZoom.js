@@ -33,9 +33,7 @@ class KeyboardZoom extends Interaction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-    super({
-      handleEvent: handleEvent,
-    });
+    super();
 
     const options = opt_options ? opt_options : {};
 
@@ -57,37 +55,38 @@ class KeyboardZoom extends Interaction {
      */
     this.duration_ = options.duration !== undefined ? options.duration : 100;
   }
-}
 
-/**
- * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
- * `KeyEvent`, and decides whether to zoom in or out (depending on whether the
- * key pressed was '+' or '-').
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {KeyboardZoom}
- */
-function handleEvent(mapBrowserEvent) {
-  let stopEvent = false;
-  if (
-    mapBrowserEvent.type == EventType.KEYDOWN ||
-    mapBrowserEvent.type == EventType.KEYPRESS
-  ) {
-    const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
-    const charCode = keyEvent.charCode;
+  /**
+   * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
+   * `KeyEvent`, and decides whether to zoom in or out (depending on whether the
+   * key pressed was '+' or '-').
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @return {boolean} `false` to stop event propagation.
+   * @this {KeyboardZoom}
+   */
+  handleEvent(mapBrowserEvent) {
+    let stopEvent = false;
     if (
-      this.condition_(mapBrowserEvent) &&
-      (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))
+      mapBrowserEvent.type == EventType.KEYDOWN ||
+      mapBrowserEvent.type == EventType.KEYPRESS
     ) {
-      const map = mapBrowserEvent.map;
-      const delta = charCode == '+'.charCodeAt(0) ? this.delta_ : -this.delta_;
-      const view = map.getView();
-      zoomByDelta(view, delta, undefined, this.duration_);
-      mapBrowserEvent.preventDefault();
-      stopEvent = true;
+      const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
+      const charCode = keyEvent.charCode;
+      if (
+        this.condition_(mapBrowserEvent) &&
+        (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))
+      ) {
+        const map = mapBrowserEvent.map;
+        const delta =
+          charCode == '+'.charCodeAt(0) ? this.delta_ : -this.delta_;
+        const view = map.getView();
+        zoomByDelta(view, delta, undefined, this.duration_);
+        mapBrowserEvent.preventDefault();
+        stopEvent = true;
+      }
     }
+    return !stopEvent;
   }
-  return !stopEvent;
 }
 
 export default KeyboardZoom;

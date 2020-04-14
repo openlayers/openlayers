@@ -37,9 +37,7 @@ class KeyboardPan extends Interaction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-    super({
-      handleEvent: handleEvent,
-    });
+    super();
 
     const options = opt_options || {};
 
@@ -76,50 +74,50 @@ class KeyboardPan extends Interaction {
     this.pixelDelta_ =
       options.pixelDelta !== undefined ? options.pixelDelta : 128;
   }
-}
 
-/**
- * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
- * `KeyEvent`, and decides the direction to pan to (if an arrow key was
- * pressed).
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {KeyboardPan}
- */
-function handleEvent(mapBrowserEvent) {
-  let stopEvent = false;
-  if (mapBrowserEvent.type == EventType.KEYDOWN) {
-    const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
-    const keyCode = keyEvent.keyCode;
-    if (
-      this.condition_(mapBrowserEvent) &&
-      (keyCode == KeyCode.DOWN ||
-        keyCode == KeyCode.LEFT ||
-        keyCode == KeyCode.RIGHT ||
-        keyCode == KeyCode.UP)
-    ) {
-      const map = mapBrowserEvent.map;
-      const view = map.getView();
-      const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
-      let deltaX = 0,
-        deltaY = 0;
-      if (keyCode == KeyCode.DOWN) {
-        deltaY = -mapUnitsDelta;
-      } else if (keyCode == KeyCode.LEFT) {
-        deltaX = -mapUnitsDelta;
-      } else if (keyCode == KeyCode.RIGHT) {
-        deltaX = mapUnitsDelta;
-      } else {
-        deltaY = mapUnitsDelta;
+  /**
+   * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
+   * `KeyEvent`, and decides the direction to pan to (if an arrow key was
+   * pressed).
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @return {boolean} `false` to stop event propagation.
+   * @this {KeyboardPan}
+   */
+  handleEvent(mapBrowserEvent) {
+    let stopEvent = false;
+    if (mapBrowserEvent.type == EventType.KEYDOWN) {
+      const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
+      const keyCode = keyEvent.keyCode;
+      if (
+        this.condition_(mapBrowserEvent) &&
+        (keyCode == KeyCode.DOWN ||
+          keyCode == KeyCode.LEFT ||
+          keyCode == KeyCode.RIGHT ||
+          keyCode == KeyCode.UP)
+      ) {
+        const map = mapBrowserEvent.map;
+        const view = map.getView();
+        const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
+        let deltaX = 0,
+          deltaY = 0;
+        if (keyCode == KeyCode.DOWN) {
+          deltaY = -mapUnitsDelta;
+        } else if (keyCode == KeyCode.LEFT) {
+          deltaX = -mapUnitsDelta;
+        } else if (keyCode == KeyCode.RIGHT) {
+          deltaX = mapUnitsDelta;
+        } else {
+          deltaY = mapUnitsDelta;
+        }
+        const delta = [deltaX, deltaY];
+        rotateCoordinate(delta, view.getRotation());
+        pan(view, delta, this.duration_);
+        mapBrowserEvent.preventDefault();
+        stopEvent = true;
       }
-      const delta = [deltaX, deltaY];
-      rotateCoordinate(delta, view.getRotation());
-      pan(view, delta, this.duration_);
-      mapBrowserEvent.preventDefault();
-      stopEvent = true;
     }
+    return !stopEvent;
   }
-  return !stopEvent;
 }
 
 export default KeyboardPan;

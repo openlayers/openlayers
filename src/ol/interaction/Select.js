@@ -153,9 +153,7 @@ class Select extends Interaction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-    super({
-      handleEvent: handleEvent,
-    });
+    super();
 
     const options = opt_options ? opt_options : {};
 
@@ -420,110 +418,110 @@ class Select extends Interaction {
   removeFeatureLayerAssociation_(feature) {
     delete this.featureLayerAssociation_[getUid(feature)];
   }
-}
 
-/**
- * Handles the {@link module:ol/MapBrowserEvent map browser event} and may change the
- * selected state of features.
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {Select}
- */
-function handleEvent(mapBrowserEvent) {
-  if (!this.condition_(mapBrowserEvent)) {
-    return true;
-  }
-  const add = this.addCondition_(mapBrowserEvent);
-  const remove = this.removeCondition_(mapBrowserEvent);
-  const toggle = this.toggleCondition_(mapBrowserEvent);
-  const set = !add && !remove && !toggle;
-  const map = mapBrowserEvent.map;
-  const features = this.getFeatures();
-  const deselected = [];
-  const selected = [];
-  if (set) {
-    // Replace the currently selected feature(s) with the feature(s) at the
-    // pixel, or clear the selected feature(s) if there is no feature at
-    // the pixel.
-    clear(this.featureLayerAssociation_);
-    map.forEachFeatureAtPixel(
-      mapBrowserEvent.pixel,
-      /**
-       * @param {import("../Feature.js").FeatureLike} feature Feature.
-       * @param {import("../layer/Layer.js").default} layer Layer.
-       * @return {boolean|undefined} Continue to iterate over the features.
-       */
-      function (feature, layer) {
-        if (this.filter_(feature, layer)) {
-          selected.push(feature);
-          this.addFeatureLayerAssociation_(feature, layer);
-          return !this.multi_;
-        }
-      }.bind(this),
-      {
-        layerFilter: this.layerFilter_,
-        hitTolerance: this.hitTolerance_,
-      }
-    );
-    for (let i = features.getLength() - 1; i >= 0; --i) {
-      const feature = features.item(i);
-      const index = selected.indexOf(feature);
-      if (index > -1) {
-        // feature is already selected
-        selected.splice(index, 1);
-      } else {
-        features.remove(feature);
-        deselected.push(feature);
-      }
+  /**
+   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may change the
+   * selected state of features.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @return {boolean} `false` to stop event propagation.
+   * @this {Select}
+   */
+  handleEvent(mapBrowserEvent) {
+    if (!this.condition_(mapBrowserEvent)) {
+      return true;
     }
-    if (selected.length !== 0) {
-      features.extend(selected);
-    }
-  } else {
-    // Modify the currently selected feature(s).
-    map.forEachFeatureAtPixel(
-      mapBrowserEvent.pixel,
-      /**
-       * @param {import("../Feature.js").FeatureLike} feature Feature.
-       * @param {import("../layer/Layer.js").default} layer Layer.
-       * @return {boolean|undefined} Continue to iterate over the features.
-       */
-      function (feature, layer) {
-        if (this.filter_(feature, layer)) {
-          if ((add || toggle) && !includes(features.getArray(), feature)) {
+    const add = this.addCondition_(mapBrowserEvent);
+    const remove = this.removeCondition_(mapBrowserEvent);
+    const toggle = this.toggleCondition_(mapBrowserEvent);
+    const set = !add && !remove && !toggle;
+    const map = mapBrowserEvent.map;
+    const features = this.getFeatures();
+    const deselected = [];
+    const selected = [];
+    if (set) {
+      // Replace the currently selected feature(s) with the feature(s) at the
+      // pixel, or clear the selected feature(s) if there is no feature at
+      // the pixel.
+      clear(this.featureLayerAssociation_);
+      map.forEachFeatureAtPixel(
+        mapBrowserEvent.pixel,
+        /**
+         * @param {import("../Feature.js").FeatureLike} feature Feature.
+         * @param {import("../layer/Layer.js").default} layer Layer.
+         * @return {boolean|undefined} Continue to iterate over the features.
+         */
+        function (feature, layer) {
+          if (this.filter_(feature, layer)) {
             selected.push(feature);
             this.addFeatureLayerAssociation_(feature, layer);
-          } else if (
-            (remove || toggle) &&
-            includes(features.getArray(), feature)
-          ) {
-            deselected.push(feature);
-            this.removeFeatureLayerAssociation_(feature);
+            return !this.multi_;
           }
-          return !this.multi_;
+        }.bind(this),
+        {
+          layerFilter: this.layerFilter_,
+          hitTolerance: this.hitTolerance_,
         }
-      }.bind(this),
-      {
-        layerFilter: this.layerFilter_,
-        hitTolerance: this.hitTolerance_,
+      );
+      for (let i = features.getLength() - 1; i >= 0; --i) {
+        const feature = features.item(i);
+        const index = selected.indexOf(feature);
+        if (index > -1) {
+          // feature is already selected
+          selected.splice(index, 1);
+        } else {
+          features.remove(feature);
+          deselected.push(feature);
+        }
       }
-    );
-    for (let j = deselected.length - 1; j >= 0; --j) {
-      features.remove(deselected[j]);
+      if (selected.length !== 0) {
+        features.extend(selected);
+      }
+    } else {
+      // Modify the currently selected feature(s).
+      map.forEachFeatureAtPixel(
+        mapBrowserEvent.pixel,
+        /**
+         * @param {import("../Feature.js").FeatureLike} feature Feature.
+         * @param {import("../layer/Layer.js").default} layer Layer.
+         * @return {boolean|undefined} Continue to iterate over the features.
+         */
+        function (feature, layer) {
+          if (this.filter_(feature, layer)) {
+            if ((add || toggle) && !includes(features.getArray(), feature)) {
+              selected.push(feature);
+              this.addFeatureLayerAssociation_(feature, layer);
+            } else if (
+              (remove || toggle) &&
+              includes(features.getArray(), feature)
+            ) {
+              deselected.push(feature);
+              this.removeFeatureLayerAssociation_(feature);
+            }
+            return !this.multi_;
+          }
+        }.bind(this),
+        {
+          layerFilter: this.layerFilter_,
+          hitTolerance: this.hitTolerance_,
+        }
+      );
+      for (let j = deselected.length - 1; j >= 0; --j) {
+        features.remove(deselected[j]);
+      }
+      features.extend(selected);
     }
-    features.extend(selected);
+    if (selected.length > 0 || deselected.length > 0) {
+      this.dispatchEvent(
+        new SelectEvent(
+          SelectEventType.SELECT,
+          selected,
+          deselected,
+          mapBrowserEvent
+        )
+      );
+    }
+    return true;
   }
-  if (selected.length > 0 || deselected.length > 0) {
-    this.dispatchEvent(
-      new SelectEvent(
-        SelectEventType.SELECT,
-        selected,
-        deselected,
-        mapBrowserEvent
-      )
-    );
-  }
-  return true;
 }
 
 /**
