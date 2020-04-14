@@ -88,7 +88,6 @@ class VectorImageLayer extends BaseVectorLayer {
   /**
    * Create a renderer for this layer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
-   * @protected
    */
   createRenderer() {
     return new CanvasVectorImageLayerRenderer(this);
