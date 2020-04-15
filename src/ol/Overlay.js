@@ -276,7 +276,9 @@ class Overlay extends BaseObject {
    * @api
    */
   getPositioning() {
-    return /** @type {import("./OverlayPositioning.js").default} */ (this.get(Property.POSITIONING));
+    return /** @type {import("./OverlayPositioning.js").default} */ (this.get(
+      Property.POSITIONING
+    ));
   }
 
   /**
