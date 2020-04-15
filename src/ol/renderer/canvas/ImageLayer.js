@@ -163,7 +163,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const img = image.getImage();
 
     const transform = composeTransform(
-      this.tempTransform_,
+      this.tempTransform,
       width / 2,
       height / 2,
       scale,

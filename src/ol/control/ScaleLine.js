@@ -47,7 +47,7 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {Units|string} [units='metric'] Units.
+ * @property {import("./ScaleLine.js").Units|string} [units='metric'] Units.
  * @property {boolean} [bar=false] Render scalebars instead of a line.
  * @property {number} [steps=4] Number of steps the scalebar should use. Use even numbers
  * for best results. Only applies when `bar` is `true`.
@@ -87,7 +87,7 @@ class ScaleLine extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
+      render: options.render,
       target: options.target,
     });
 
@@ -165,7 +165,7 @@ class ScaleLine extends Control {
 
   /**
    * Return the units to use in the scale line.
-   * @return {Units} The units
+   * @return {import("./ScaleLine.js").Units} The units
    * to use in the scale line.
    * @observable
    * @api
@@ -183,7 +183,7 @@ class ScaleLine extends Control {
 
   /**
    * Set the units to use in the scale line.
-   * @param {Units} units The units to use in the scale line.
+   * @param {import("./ScaleLine.js").Units} units The units to use in the scale line.
    * @observable
    * @api
    */
@@ -471,21 +471,21 @@ class ScaleLine extends Control {
     const inchesPerMeter = 39.37;
     return parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi;
   }
-}
 
-/**
- * Update the scale line element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {ScaleLine}
- */
-export function render(mapEvent) {
-  const frameState = mapEvent.frameState;
-  if (!frameState) {
-    this.viewState_ = null;
-  } else {
-    this.viewState_ = frameState.viewState;
+  /**
+   * Update the scale line element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    const frameState = mapEvent.frameState;
+    if (!frameState) {
+      this.viewState_ = null;
+    } else {
+      this.viewState_ = frameState.viewState;
+    }
+    this.updateElement_();
   }
-  this.updateElement_();
 }
 
 export default ScaleLine;

@@ -1481,7 +1481,7 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {ViewHint} hint Hint.
+   * @param {import("./ViewHint.js").default} hint Hint.
    * @param {number} delta Delta.
    * @return {number} New value.
    */

@@ -55,7 +55,7 @@ class Polyline extends TextFeature {
 
     /**
      * @private
-     * @type {GeometryLayout}
+     * @type {import("../geom/GeometryLayout").default}
      */
     this.geometryLayout_ = options.geometryLayout
       ? options.geometryLayout

@@ -57,10 +57,10 @@ import {transformGeometryWithOptions} from './Feature.js';
 /**
  * @typedef {Object} Vec2
  * @property {number} x
- * @property {IconAnchorUnits} xunits
+ * @property {import("../style/IconAnchorUnits").default} xunits
  * @property {number} y
- * @property {IconAnchorUnits} yunits
- * @property {IconOrigin} origin
+ * @property {import("../style/IconAnchorUnits").default} yunits
+ * @property {import("../style/IconOrigin.js").default} origin
  */
 
 /**
@@ -96,7 +96,7 @@ const SCHEMA_LOCATION =
   'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 /**
- * @type {Object<string, IconAnchorUnits>}
+ * @type {Object<string, import("../style/IconAnchorUnits").default>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
   'fraction': IconAnchorUnits.FRACTION,
@@ -212,12 +212,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {IconAnchorUnits}
+ * @type {import("../style/IconAnchorUnits").default}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {IconAnchorUnits}
+ * @type {import("../style/IconAnchorUnits").default}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -439,7 +439,6 @@ class KML extends XMLFeature {
       options.extractStyles !== undefined ? options.extractStyles : true;
 
     /**
-     * @private
      * @type {boolean}
      */
     this.writeStyles_ =
@@ -459,7 +458,6 @@ class KML extends XMLFeature {
       options.showPointNames !== undefined ? options.showPointNames : true;
 
     /**
-     * @private
      * @type {null|string}
      */
     this.crossOrigin_ =

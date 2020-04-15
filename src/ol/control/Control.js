@@ -74,11 +74,9 @@ class Control extends BaseObject {
      */
     this.listenerKeys = [];
 
-    /**
-     * @private
-     * @type {function(import("../MapEvent.js").default): void}
-     */
-    this.render_ = options.render ? options.render : VOID;
+    if (options.render) {
+      this.render = options.render;
+    }
 
     if (options.target) {
       this.setTarget(options.target);
@@ -133,14 +131,11 @@ class Control extends BaseObject {
   }
 
   /**
-   * Update the projection. Rendering of the coordinates is done in
-   * `handleMouseMove` and `handleMouseUp`.
+   * Renders the control.
    * @param {import("../MapEvent.js").default} mapEvent Map event.
    * @api
    */
-  render(mapEvent) {
-    this.render_.call(this, mapEvent);
-  }
+  render(mapEvent) {}
 
   /**
    * This function is used to set a target element for the control. It has no

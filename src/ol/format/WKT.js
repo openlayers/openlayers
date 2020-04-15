@@ -16,7 +16,7 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * Geometry constructors
- * @enum {function (new:import("../geom/Geometry.js").default, Array, GeometryLayout)}
+ * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/GeometryLayout.js").default)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -241,7 +241,7 @@ class Parser {
     this.token_;
 
     /**
-     * @type {GeometryLayout}
+     * @type {import("../geom/GeometryLayout.js").default}
      * @private
      */
     this.layout_ = GeometryLayout.XY;
@@ -290,7 +290,7 @@ class Parser {
 
   /**
    * Try to parse the dimensional info.
-   * @return {GeometryLayout} The layout.
+   * @return {import("../geom/GeometryLayout.js").default} The layout.
    * @private
    */
   parseGeometryLayout_() {

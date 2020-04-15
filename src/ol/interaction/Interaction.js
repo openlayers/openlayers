@@ -31,13 +31,13 @@ import {easeOut, linear} from '../easing.js';
  */
 class Interaction extends BaseObject {
   /**
-   * @param {InteractionOptions} options Options.
+   * @param {InteractionOptions=} opt_options Options.
    */
-  constructor(options) {
+  constructor(opt_options) {
     super();
 
-    if (options.handleEvent) {
-      this.handleEvent = options.handleEvent;
+    if (opt_options && opt_options.handleEvent) {
+      this.handleEvent = opt_options.handleEvent;
     }
 
     /**

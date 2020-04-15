@@ -81,7 +81,7 @@ class OverviewMap extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
+      render: options.render,
       target: options.target,
     });
 
@@ -644,16 +644,16 @@ class OverviewMap extends Control {
   getOverviewMap() {
     return this.ovmap_;
   }
-}
 
-/**
- * Update the overview map element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {OverviewMap}
- */
-export function render(mapEvent) {
-  this.validateExtent_();
-  this.updateBox_();
+  /**
+   * Update the overview map element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    this.validateExtent_();
+    this.updateBox_();
+  }
 }
 
 export default OverviewMap;

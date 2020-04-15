@@ -39,7 +39,7 @@ class Rotate extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
+      render: options.render,
       target: options.target,
     });
 
@@ -145,32 +145,32 @@ class Rotate extends Control {
       }
     }
   }
-}
 
-/**
- * Update the rotate control element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {Rotate}
- */
-export function render(mapEvent) {
-  const frameState = mapEvent.frameState;
-  if (!frameState) {
-    return;
-  }
-  const rotation = frameState.viewState.rotation;
-  if (rotation != this.rotation_) {
-    const transform = 'rotate(' + rotation + 'rad)';
-    if (this.autoHide_) {
-      const contains = this.element.classList.contains(CLASS_HIDDEN);
-      if (!contains && rotation === 0) {
-        this.element.classList.add(CLASS_HIDDEN);
-      } else if (contains && rotation !== 0) {
-        this.element.classList.remove(CLASS_HIDDEN);
-      }
+  /**
+   * Update the rotate control element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    const frameState = mapEvent.frameState;
+    if (!frameState) {
+      return;
     }
-    this.label_.style.transform = transform;
+    const rotation = frameState.viewState.rotation;
+    if (rotation != this.rotation_) {
+      const transform = 'rotate(' + rotation + 'rad)';
+      if (this.autoHide_) {
+        const contains = this.element.classList.contains(CLASS_HIDDEN);
+        if (!contains && rotation === 0) {
+          this.element.classList.add(CLASS_HIDDEN);
+        } else if (contains && rotation !== 0) {
+          this.element.classList.remove(CLASS_HIDDEN);
+        }
+      }
+      this.label_.style.transform = transform;
+    }
+    this.rotation_ = rotation;
   }
-  this.rotation_ = rotation;
 }
 
 export default Rotate;

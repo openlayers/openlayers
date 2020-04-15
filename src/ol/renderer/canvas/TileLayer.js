@@ -290,7 +290,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     // set scale transform for calculating tile positions on the canvas
     composeTransform(
-      this.tempTransform_,
+      this.tempTransform,
       width / 2,
       height / 2,
       canvasScale,
@@ -346,7 +346,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         currentZ
       );
       const originTileExtent = tileGrid.getTileCoordExtent(originTileCoord);
-      const origin = applyTransform(this.tempTransform_, [
+      const origin = applyTransform(this.tempTransform, [
         (tilePixelRatio * (originTileExtent[0] - canvasExtent[0])) /
           tileResolution,
         (tilePixelRatio * (canvasExtent[3] - originTileExtent[3])) /

@@ -28,7 +28,7 @@ class MultiLineString extends SimpleGeometry {
    * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
    *     combination with `opt_layout` and `opt_ends` are also accepted.)
-   * @param {GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @param {Array<number>=} opt_ends Flat coordinate ends for internal use.
    */
   constructor(coordinates, opt_layout, opt_ends) {

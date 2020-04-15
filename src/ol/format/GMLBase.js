@@ -347,10 +347,7 @@ class GMLBase extends XMLFeature {
    * @return {Point|undefined} Point.
    */
   readPoint(node, objectStack) {
-    const flatCoordinates = this.readFlatCoordinatesFromNode_(
-      node,
-      objectStack
-    );
+    const flatCoordinates = this.readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
       return new Point(flatCoordinates, GeometryLayout.XYZ);
     }
@@ -365,7 +362,7 @@ class GMLBase extends XMLFeature {
     /** @type {Array<Array<number>>} */
     const coordinates = pushParseAndPop(
       [],
-      this.MULTIPOINT_PARSERS_,
+      this.MULTIPOINT_PARSERS,
       node,
       objectStack,
       this
@@ -386,7 +383,7 @@ class GMLBase extends XMLFeature {
     /** @type {Array<LineString>} */
     const lineStrings = pushParseAndPop(
       [],
-      this.MULTILINESTRING_PARSERS_,
+      this.MULTILINESTRING_PARSERS,
       node,
       objectStack,
       this
@@ -405,7 +402,7 @@ class GMLBase extends XMLFeature {
     /** @type {Array<Polygon>} */
     const polygons = pushParseAndPop(
       [],
-      this.MULTIPOLYGON_PARSERS_,
+      this.MULTIPOLYGON_PARSERS,
       node,
       objectStack,
       this
@@ -418,28 +415,25 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @private
    */
-  pointMemberParser_(node, objectStack) {
-    parseNode(this.POINTMEMBER_PARSERS_, node, objectStack, this);
+  pointMemberParser(node, objectStack) {
+    parseNode(this.POINTMEMBER_PARSERS, node, objectStack, this);
   }
 
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @private
    */
-  lineStringMemberParser_(node, objectStack) {
-    parseNode(this.LINESTRINGMEMBER_PARSERS_, node, objectStack, this);
+  lineStringMemberParser(node, objectStack) {
+    parseNode(this.LINESTRINGMEMBER_PARSERS, node, objectStack, this);
   }
 
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @private
    */
-  polygonMemberParser_(node, objectStack) {
-    parseNode(this.POLYGONMEMBER_PARSERS_, node, objectStack, this);
+  polygonMemberParser(node, objectStack) {
+    parseNode(this.POLYGONMEMBER_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -448,10 +442,7 @@ class GMLBase extends XMLFeature {
    * @return {LineString|undefined} LineString.
    */
   readLineString(node, objectStack) {
-    const flatCoordinates = this.readFlatCoordinatesFromNode_(
-      node,
-      objectStack
-    );
+    const flatCoordinates = this.readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
       const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
       return lineString;
@@ -463,10 +454,9 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @private
    * @return {Array<number>|undefined} LinearRing flat coordinates.
    */
-  readFlatLinearRing_(node, objectStack) {
+  readFlatLinearRing(node, objectStack) {
     const ring = pushParseAndPop(
       null,
       this.GEOMETRY_FLAT_COORDINATES_PARSERS,
@@ -487,10 +477,7 @@ class GMLBase extends XMLFeature {
    * @return {LinearRing|undefined} LinearRing.
    */
   readLinearRing(node, objectStack) {
-    const flatCoordinates = this.readFlatCoordinatesFromNode_(
-      node,
-      objectStack
-    );
+    const flatCoordinates = this.readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
       return new LinearRing(flatCoordinates, GeometryLayout.XYZ);
     }
@@ -527,10 +514,9 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @private
    * @return {Array<number>} Flat coordinates.
    */
-  readFlatCoordinatesFromNode_(node, objectStack) {
+  readFlatCoordinatesFromNode(node, objectStack) {
     return pushParseAndPop(
       null,
       this.GEOMETRY_FLAT_COORDINATES_PARSERS,
@@ -589,7 +575,6 @@ GMLBase.prototype.namespace = GMLNS;
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @protected
  */
 GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {},
@@ -598,7 +583,6 @@ GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @protected
  */
 GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {},
@@ -607,7 +591,6 @@ GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @protected
  */
 GMLBase.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {},
@@ -616,27 +599,25 @@ GMLBase.prototype.GEOMETRY_PARSERS = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
  */
-GMLBase.prototype.MULTIPOINT_PARSERS_ = {
+GMLBase.prototype.MULTIPOINT_PARSERS = {
   'http://www.opengis.net/gml': {
-    'pointMember': makeArrayPusher(GMLBase.prototype.pointMemberParser_),
-    'pointMembers': makeArrayPusher(GMLBase.prototype.pointMemberParser_),
+    'pointMember': makeArrayPusher(GMLBase.prototype.pointMemberParser),
+    'pointMembers': makeArrayPusher(GMLBase.prototype.pointMemberParser),
   },
 };
 
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
  */
-GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
+GMLBase.prototype.MULTILINESTRING_PARSERS = {
   'http://www.opengis.net/gml': {
     'lineStringMember': makeArrayPusher(
-      GMLBase.prototype.lineStringMemberParser_
+      GMLBase.prototype.lineStringMemberParser
     ),
     'lineStringMembers': makeArrayPusher(
-      GMLBase.prototype.lineStringMemberParser_
+      GMLBase.prototype.lineStringMemberParser
     ),
   },
 };
@@ -644,32 +625,29 @@ GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
  */
-GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
+GMLBase.prototype.MULTIPOLYGON_PARSERS = {
   'http://www.opengis.net/gml': {
-    'polygonMember': makeArrayPusher(GMLBase.prototype.polygonMemberParser_),
-    'polygonMembers': makeArrayPusher(GMLBase.prototype.polygonMemberParser_),
+    'polygonMember': makeArrayPusher(GMLBase.prototype.polygonMemberParser),
+    'polygonMembers': makeArrayPusher(GMLBase.prototype.polygonMemberParser),
   },
 };
 
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
  */
-GMLBase.prototype.POINTMEMBER_PARSERS_ = {
+GMLBase.prototype.POINTMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
-    'Point': makeArrayPusher(GMLBase.prototype.readFlatCoordinatesFromNode_),
+    'Point': makeArrayPusher(GMLBase.prototype.readFlatCoordinatesFromNode),
   },
 };
 
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
  */
-GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
+GMLBase.prototype.LINESTRINGMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
     'LineString': makeArrayPusher(GMLBase.prototype.readLineString),
   },
@@ -678,9 +656,8 @@ GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
  */
-GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
+GMLBase.prototype.POLYGONMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
     'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon),
   },
@@ -689,11 +666,10 @@ GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @protected
  */
 GMLBase.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml': {
-    'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing_),
+    'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing),
   },
 };
 

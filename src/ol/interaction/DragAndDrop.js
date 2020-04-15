@@ -172,10 +172,10 @@ class DragAndDrop extends Interaction {
     if (map) {
       const dropArea = this.target ? this.target : map.getViewport();
       this.dropListenKeys_ = [
-        listen(dropArea, EventType.DROP, handleDrop, this),
-        listen(dropArea, EventType.DRAGENTER, handleStop, this),
-        listen(dropArea, EventType.DRAGOVER, handleStop, this),
-        listen(dropArea, EventType.DROP, handleStop, this),
+        listen(dropArea, EventType.DROP, this.handleDrop, this),
+        listen(dropArea, EventType.DRAGENTER, this.handleStop, this),
+        listen(dropArea, EventType.DRAGOVER, this.handleStop, this),
+        listen(dropArea, EventType.DROP, this.handleStop, this),
       ];
     }
   }
@@ -234,32 +234,31 @@ class DragAndDrop extends Interaction {
       this.dropListenKeys_ = null;
     }
   }
-}
 
-/**
- * @param {DragEvent} event Event.
- * @this {DragAndDrop}
- */
-function handleDrop(event) {
-  const files = event.dataTransfer.files;
-  for (let i = 0, ii = files.length; i < ii; ++i) {
-    const file = files.item(i);
-    const reader = new FileReader();
-    reader.addEventListener(
-      EventType.LOAD,
-      this.handleResult_.bind(this, file)
-    );
-    reader.readAsText(file);
+  /**
+   * @param {DragEvent} event Event.
+   */
+  handleDrop(event) {
+    const files = event.dataTransfer.files;
+    for (let i = 0, ii = files.length; i < ii; ++i) {
+      const file = files.item(i);
+      const reader = new FileReader();
+      reader.addEventListener(
+        EventType.LOAD,
+        this.handleResult_.bind(this, file)
+      );
+      reader.readAsText(file);
+    }
   }
-}
 
-/**
- * @param {DragEvent} event Event.
- */
-function handleStop(event) {
-  event.stopPropagation();
-  event.preventDefault();
-  event.dataTransfer.dropEffect = 'copy';
+  /**
+   * @param {DragEvent} event Event.
+   */
+  handleStop(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  }
 }
 
 export default DragAndDrop;

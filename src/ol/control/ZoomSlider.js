@@ -49,7 +49,7 @@ class ZoomSlider extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
+      render: options.render,
     });
 
     /**
@@ -356,23 +356,23 @@ class ZoomSlider extends Control {
     const fn = this.getMap().getView().getValueForResolutionFunction();
     return clamp(1 - fn(res), 0, 1);
   }
-}
 
-/**
- * Update the zoomslider element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {ZoomSlider}
- */
-export function render(mapEvent) {
-  if (!mapEvent.frameState) {
-    return;
+  /**
+   * Update the zoomslider element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    if (!mapEvent.frameState) {
+      return;
+    }
+    if (!this.sliderInitialized_) {
+      this.initSlider_();
+    }
+    const res = mapEvent.frameState.viewState.resolution;
+    this.currentResolution_ = res;
+    this.setThumbPosition_(res);
   }
-  if (!this.sliderInitialized_) {
-    this.initSlider_();
-  }
-  const res = mapEvent.frameState.viewState.resolution;
-  this.currentResolution_ = res;
-  this.setThumbPosition_(res);
 }
 
 export default ZoomSlider;

@@ -44,10 +44,10 @@ class CanvasLayerRenderer extends LayerRenderer {
     /**
      * A temporary transform.  The values in this transform should only be used in a
      * function that sets the values.
-     * @private
+     * @protected
      * @type {import("../../transform.js").Transform}
      */
-    this.tempTransform_ = createTransform();
+    this.tempTransform = createTransform();
 
     /**
      * The transform for rendered pixels to viewport CSS pixels.  This transform must
@@ -66,7 +66,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.inversePixelTransform = createTransform();
 
     /**
-     * @protected
      * @type {CanvasRenderingContext2D}
      */
     this.context = null;
@@ -255,7 +254,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     const dx2 = -center[0] + offsetX;
     const dy2 = -center[1];
     return composeTransform(
-      this.tempTransform_,
+      this.tempTransform,
       dx1,
       dy1,
       sx,

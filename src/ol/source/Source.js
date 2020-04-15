@@ -29,7 +29,7 @@ import {get as getProjection} from '../proj.js';
  * @property {AttributionLike} [attributions]
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {SourceState} [state='ready']
+ * @property {import("./State.js").default} [state='ready']
  * @property {boolean} [wrapX=false]
  */
 
@@ -80,7 +80,7 @@ class Source extends BaseObject {
 
     /**
      * @private
-     * @type {SourceState}
+     * @type {import("./State.js").default}
      */
     this.state_ =
       options.state !== undefined ? options.state : SourceState.READY;
@@ -126,7 +126,7 @@ class Source extends BaseObject {
 
   /**
    * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-   * @return {SourceState} State.
+   * @return {import("./State.js").default} State.
    * @api
    */
   getState() {
@@ -162,7 +162,7 @@ class Source extends BaseObject {
 
   /**
    * Set the state of the source.
-   * @param {SourceState} state State.
+   * @param {import("./State.js").default} state State.
    * @protected
    */
   setState(state) {

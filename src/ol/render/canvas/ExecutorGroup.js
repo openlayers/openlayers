@@ -16,7 +16,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @const
- * @type {Array<BuilderType>}
+ * @type {Array<import("./BuilderType.js").default>}
  */
 const ORDER = [
   BuilderType.POLYGON,
@@ -36,7 +36,7 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
-   * @param {!Object<string, !Object<BuilderType, import("./Builder.js").SerializableInstructions>>} allInstructions
+   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("./Builder.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
@@ -80,7 +80,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<BuilderType, import("./Executor").default>>}
+     * @type {!Object<string, !Object<import("./BuilderType.js").default, import("./Executor").default>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -116,7 +116,7 @@ class ExecutorGroup {
   /**
    * Create executors and populate them using the provided instructions.
    * @private
-   * @param {!Object<string, !Object<BuilderType, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   createExecutors_(allInstructions) {
     for (const zIndex in allInstructions) {
@@ -139,7 +139,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {Array<BuilderType>} executors Executors.
+   * @param {Array<import("./BuilderType.js").default>} executors Executors.
    * @return {boolean} Has executors of the provided types.
    */
   hasExecutors(executors) {
@@ -313,7 +313,7 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<BuilderType>=} opt_builderTypes Ordered replay types to replay.
+   * @param {Array<import("./BuilderType.js").default>=} opt_builderTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */

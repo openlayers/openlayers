@@ -5,7 +5,6 @@
 import Event from '../events/Event.js';
 import PointerInteraction from './Pointer.js';
 import RenderBox from '../render/Box.js';
-import {VOID} from '../functions.js';
 import {mouseActionButton} from '../events/condition.js';
 
 /**
@@ -120,12 +119,9 @@ class DragBox extends PointerInteraction {
      */
     this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
 
-    /**
-     * Function to execute just before `onboxend` is fired
-     * @type {function(this:DragBox, import("../MapBrowserEvent.js").default): void}
-     * @private
-     */
-    this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : VOID;
+    if (options.onBoxEnd) {
+      this.onBoxEnd = options.onBoxEnd;
+    }
 
     /**
      * @type {import("../pixel.js").Pixel}
@@ -203,7 +199,7 @@ class DragBox extends PointerInteraction {
         mapBrowserEvent.pixel
       )
     ) {
-      this.onBoxEnd_(mapBrowserEvent);
+      this.onBoxEnd(mapBrowserEvent);
       this.dispatchEvent(
         new DragBoxEvent(
           DragBoxEventType.BOXEND,
@@ -237,6 +233,12 @@ class DragBox extends PointerInteraction {
       return false;
     }
   }
+
+  /**
+   * Function to execute just before `onboxend` is fired
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   */
+  onBoxEnd(event) {}
 }
 
 export default DragBox;

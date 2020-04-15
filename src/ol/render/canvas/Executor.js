@@ -669,7 +669,7 @@ class Executor {
     let x, y;
     while (i < ii) {
       const instruction = instructions[i];
-      const type = /** @type {CanvasInstruction} */ (instruction[0]);
+      const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);

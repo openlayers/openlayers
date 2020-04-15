@@ -104,7 +104,7 @@ class VectorTileLayer extends BaseVectorLayer {
 
     /**
      * @private
-     * @type {VectorTileRenderType}
+     * @type {import("./VectorTileRenderType.js").default}
      */
     this.renderMode_ = renderMode;
 
@@ -144,7 +144,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * @return {VectorTileRenderType} The render mode.
+   * @return {import("./VectorTileRenderType.js").default} The render mode.
    */
   getRenderMode() {
     return this.renderMode_;
