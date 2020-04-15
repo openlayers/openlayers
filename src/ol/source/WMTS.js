@@ -7,11 +7,7 @@ import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {appendParams} from '../uri.js';
 import {assign} from '../obj.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
-import {
-  createFromTileUrlFunctions,
-  expandUrl,
-  nullTileUrlFunction,
-} from '../tileurlfunction.js';
+import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import {find, findIndex, includes} from '../array.js';
 
@@ -95,7 +91,6 @@ class WMTS extends TileImage {
       tileGrid: tileGrid,
       tileLoadFunction: options.tileLoadFunction,
       tilePixelRatio: options.tilePixelRatio,
-      tileUrlFunction: nullTileUrlFunction,
       urls: urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : false,
       transition: options.transition,
@@ -151,7 +146,7 @@ class WMTS extends TileImage {
 
     if (urls && urls.length > 0) {
       this.tileUrlFunction = createFromTileUrlFunctions(
-        urls.map(createFromWMTSTemplate.bind(this))
+        urls.map(this.createFromWMTSTemplate.bind(this))
       );
     }
   }
@@ -165,7 +160,9 @@ class WMTS extends TileImage {
     this.urls = urls;
     const key = urls.join('\n');
     this.setTileUrlFunction(
-      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))),
+      createFromTileUrlFunctions(
+        urls.map(this.createFromWMTSTemplate.bind(this))
+      ),
       key
     );
   }
@@ -256,6 +253,76 @@ class WMTS extends TileImage {
   updateDimensions(dimensions) {
     assign(this.dimensions_, dimensions);
     this.setKey(this.getKeyForDimensions_());
+  }
+
+  /**
+   * @param {string} template Template.
+   * @return {import("../Tile.js").UrlFunction} Tile URL function.
+   */
+  createFromWMTSTemplate(template) {
+    const requestEncoding = this.requestEncoding_;
+
+    // context property names are lower case to allow for a case insensitive
+    // replacement as some services use different naming conventions
+    const context = {
+      'layer': this.layer_,
+      'style': this.style_,
+      'tilematrixset': this.matrixSet_,
+    };
+
+    if (requestEncoding == WMTSRequestEncoding.KVP) {
+      assign(context, {
+        'Service': 'WMTS',
+        'Request': 'GetTile',
+        'Version': this.version_,
+        'Format': this.format_,
+      });
+    }
+
+    // TODO: we may want to create our own appendParams function so that params
+    // order conforms to wmts spec guidance, and so that we can avoid to escape
+    // special template params
+
+    template =
+      requestEncoding == WMTSRequestEncoding.KVP
+        ? appendParams(template, context)
+        : template.replace(/\{(\w+?)\}/g, function (m, p) {
+            return p.toLowerCase() in context ? context[p.toLowerCase()] : m;
+          });
+
+    const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (this
+      .tileGrid);
+    const dimensions = this.dimensions_;
+
+    return (
+      /**
+       * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+       * @param {number} pixelRatio Pixel ratio.
+       * @param {import("../proj/Projection.js").default} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function (tileCoord, pixelRatio, projection) {
+        if (!tileCoord) {
+          return undefined;
+        } else {
+          const localContext = {
+            'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
+            'TileCol': tileCoord[1],
+            'TileRow': tileCoord[2],
+          };
+          assign(localContext, dimensions);
+          let url = template;
+          if (requestEncoding == WMTSRequestEncoding.KVP) {
+            url = appendParams(url, localContext);
+          } else {
+            url = url.replace(/\{(\w+?)\}/g, function (m, p) {
+              return localContext[p];
+            });
+          }
+          return url;
+        }
+      }
+    );
   }
 }
 
@@ -467,75 +534,4 @@ export function optionsFromCapabilities(wmtsCap, config) {
     wrapX: wrapX,
     crossOrigin: config['crossOrigin'],
   };
-}
-
-/**
- * @param {string} template Template.
- * @return {import("../Tile.js").UrlFunction} Tile URL function.
- * @this {WMTS}
- */
-function createFromWMTSTemplate(template) {
-  const requestEncoding = this.requestEncoding_;
-
-  // context property names are lower case to allow for a case insensitive
-  // replacement as some services use different naming conventions
-  const context = {
-    'layer': this.layer_,
-    'style': this.style_,
-    'tilematrixset': this.matrixSet_,
-  };
-
-  if (requestEncoding == WMTSRequestEncoding.KVP) {
-    assign(context, {
-      'Service': 'WMTS',
-      'Request': 'GetTile',
-      'Version': this.version_,
-      'Format': this.format_,
-    });
-  }
-
-  // TODO: we may want to create our own appendParams function so that params
-  // order conforms to wmts spec guidance, and so that we can avoid to escape
-  // special template params
-
-  template =
-    requestEncoding == WMTSRequestEncoding.KVP
-      ? appendParams(template, context)
-      : template.replace(/\{(\w+?)\}/g, function (m, p) {
-          return p.toLowerCase() in context ? context[p.toLowerCase()] : m;
-        });
-
-  const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (this
-    .tileGrid);
-  const dimensions = this.dimensions_;
-
-  return (
-    /**
-     * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-     * @param {number} pixelRatio Pixel ratio.
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {string|undefined} Tile URL.
-     */
-    function (tileCoord, pixelRatio, projection) {
-      if (!tileCoord) {
-        return undefined;
-      } else {
-        const localContext = {
-          'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
-          'TileCol': tileCoord[1],
-          'TileRow': tileCoord[2],
-        };
-        assign(localContext, dimensions);
-        let url = template;
-        if (requestEncoding == WMTSRequestEncoding.KVP) {
-          url = appendParams(url, localContext);
-        } else {
-          url = url.replace(/\{(\w+?)\}/g, function (m, p) {
-            return localContext[p];
-          });
-        }
-        return url;
-      }
-    }
-  );
 }

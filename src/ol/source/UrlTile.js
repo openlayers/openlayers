@@ -4,11 +4,7 @@
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {
-  createFromTemplates,
-  expandUrl,
-  nullTileUrlFunction,
-} from '../tileurlfunction.js';
+import {createFromTemplates, expandUrl} from '../tileurlfunction.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 
@@ -62,7 +58,8 @@ class UrlTile extends TileSource {
      * @private
      * @type {boolean}
      */
-    this.generateTileUrlFunction_ = !options.tileUrlFunction;
+    this.generateTileUrlFunction_ =
+      this.tileUrlFunction === UrlTile.prototype.tileUrlFunction;
 
     /**
      * @protected
@@ -70,13 +67,9 @@ class UrlTile extends TileSource {
      */
     this.tileLoadFunction = options.tileLoadFunction;
 
-    /**
-     * @protected
-     * @type {import("../Tile.js").UrlFunction}
-     */
-    this.tileUrlFunction = options.tileUrlFunction
-      ? options.tileUrlFunction.bind(this)
-      : nullTileUrlFunction;
+    if (options.tileUrlFunction) {
+      this.tileUrlFunction = options.tileUrlFunction.bind(this);
+    }
 
     /**
      * @protected
@@ -204,6 +197,16 @@ class UrlTile extends TileSource {
     } else {
       this.setKey(key);
     }
+  }
+
+  /**
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {string|undefined} Tile URL.
+   */
+  tileUrlFunction(tileCoord, pixelRatio, projection) {
+    return undefined;
   }
 
   /**
