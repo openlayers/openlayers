@@ -55,7 +55,9 @@ See our [Open Collective](https://opencollective.com/openlayers/contribute/spons
 
 ## IntelliSense support and type checking for VS Code
 
-The ol package contains a src/ folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `jsconfig.json` config file in the project root:
+The ol package contains a src/ folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a [`jsconfig.json`](https://gist.github.com/ahocevar/9a7253cb4712e8bf38d75d8ac898e36c#file-jsconfig-json) (when authoring in JavaScript) or [`tsconfig.json`](https://gist.github.com/ahocevar/ad7b52a2fa0f6c5495193cd695ab3780#file-tsconfig-json) (when authoring in TypeScript) config file in the project root:
+
+<details><summary>jsconfig.json</summary>
 
 ```json
 {
@@ -70,13 +72,39 @@ The ol package contains a src/ folder with JSDoc annotated sources. TypeScript c
   "include": [
     "**/*.js",
     "node_modules/ol/**/*.js"
-  ]
+  ],
+  "typeAcquisition": {
+    "exclude": ["ol"]
+  }
 }
 ```
 
-Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
+</details>
+<details><summary>tsconfig.json</summary>
 
-Note that the above only works when authoring in plain JavaScript. For similar configurations with a `tsconfig.json` in TypeScript projects, your mileage may vary. You may want to use a [third-party types package](https://github.com/hanreev/types-ol) in this case.
+```json
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "./",
+    "paths": {
+      "ol": ["node_modules/ol/src"],
+      "ol/*": ["node_modules/ol/src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "node_modules/ol/**/*"
+  ],
+  "typeAcquisition": {
+    "exclude": ["ol"]
+  }
+}
+```
+
+</details>
+
+TypeScript users may want to use a [third-party types package](https://github.com/hanreev/types-ol) instead.
 
 ## Supported Browsers
 
