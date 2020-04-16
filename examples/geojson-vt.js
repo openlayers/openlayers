@@ -82,6 +82,16 @@ fetch(url)
         }),
       }),
       tileUrlFunction: function (tileCoord) {
+        // Use the tile coordinate as a pseudo URL for caching purposes
+        return JSON.stringify(tileCoord);
+      },
+    });
+    // For tile loading obtain the GeoJSON for the tile coordinate
+    // before calling the default tileLoadFunction
+    const defaultTileLoadFunction = vectorSource.getTileLoadFunction();
+    vectorSource.setTileLoadFunction(
+      function (tile, url) {
+        const tileCoord = JSON.parse(url);
         const data = tileIndex.getTile(
           tileCoord[0],
           tileCoord[1],
@@ -94,9 +104,12 @@ fetch(url)
           },
           replacer
         );
-        return 'data:application/json;charset=UTF-8,' + geojson;
-      },
-    });
+        defaultTileLoadFunction(
+          tile,
+          'data:application/json;charset=UTF-8,' + geojson
+        );
+      }
+    );
     const vectorLayer = new VectorTileLayer({
       source: vectorSource,
     });
