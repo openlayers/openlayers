@@ -91,7 +91,7 @@ fetch(url)
     const defaultTileLoadFunction = vectorSource.getTileLoadFunction();
     vectorSource.setTileLoadFunction(function (tile, url) {
       const tileCoord = JSON.parse(url);
-      const·data·=·tileIndex.getTile(tileCoord[0],·tileCoord[1],·tileCoord[2]);
+      const data = tileIndex.getTile(tileCoord[0], tileCoord[1], tileCoord[2]);
       const geojson = JSON.stringify(
         {
           type: 'FeatureCollection',
