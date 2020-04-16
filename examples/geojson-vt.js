@@ -89,27 +89,21 @@ fetch(url)
     // For tile loading obtain the GeoJSON for the tile coordinate
     // before calling the default tileLoadFunction
     const defaultTileLoadFunction = vectorSource.getTileLoadFunction();
-    vectorSource.setTileLoadFunction(
-      function (tile, url) {
-        const tileCoord = JSON.parse(url);
-        const data = tileIndex.getTile(
-          tileCoord[0],
-          tileCoord[1],
-          tileCoord[2]
-        );
-        const geojson = JSON.stringify(
-          {
-            type: 'FeatureCollection',
-            features: data ? data.features : [],
-          },
-          replacer
-        );
-        defaultTileLoadFunction(
-          tile,
-          'data:application/json;charset=UTF-8,' + geojson
-        );
-      }
-    );
+    vectorSource.setTileLoadFunction(function (tile, url) {
+      const tileCoord = JSON.parse(url);
+      const·data·=·tileIndex.getTile(tileCoord[0],·tileCoord[1],·tileCoord[2]);
+      const geojson = JSON.stringify(
+        {
+          type: 'FeatureCollection',
+          features: data ? data.features : [],
+        },
+        replacer
+      );
+      defaultTileLoadFunction(
+        tile,
+        'data:application/json;charset=UTF-8,' + geojson
+      );
+    });
     const vectorLayer = new VectorTileLayer({
       source: vectorSource,
     });
