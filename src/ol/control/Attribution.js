@@ -48,10 +48,10 @@ class Attribution extends Control {
     const options = opt_options ? opt_options : {};
 
     super({
-      element: document.createElement('div'),
       render: options.render,
       target: options.target,
     });
+    this.createElement();
 
     /**
      * @private
