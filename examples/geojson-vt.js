@@ -72,16 +72,21 @@ fetch(url)
       extent: 4096,
       debug: 1,
     });
-    const vectorSource = new VectorTileSource({
-      format: new GeoJSON({
-        // Data returned from geojson-vt is in tile pixel units
-        dataProjection: new Projection({
-          code: 'TILE_PIXELS',
-          units: 'tile-pixels',
-          extent: [0, 0, 4096, 4096],
-        }),
+    const format = new GeoJSON({
+      // Data returned from geojson-vt is in tile pixel units
+      dataProjection: new Projection({
+        code: 'TILE_PIXELS',
+        units: 'tile-pixels',
+        extent: [0, 0, 4096, 4096],
       }),
+    });
+    const vectorSource = new VectorTileSource({
       tileUrlFunction: function (tileCoord) {
+        // Use the tile coordinate as a pseudo URL for caching purposes
+        return JSON.stringify(tileCoord);
+      },
+      tileLoadFunction: function (tile, url) {
+        const tileCoord = JSON.parse(url);
         const data = tileIndex.getTile(
           tileCoord[0],
           tileCoord[1],
@@ -94,7 +99,11 @@ fetch(url)
           },
           replacer
         );
-        return 'data:application/json;charset=UTF-8,' + geojson;
+        const features = format.readFeatures(geojson, {
+          extent: vectorSource.getTileGrid().getTileCoordExtent(tileCoord),
+          featureProjection: map.getView().getProjection(),
+        });
+        tile.setFeatures(features);
       },
     });
     const vectorLayer = new VectorTileLayer({
