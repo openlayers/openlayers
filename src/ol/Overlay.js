@@ -145,6 +145,7 @@ class Overlay extends BaseObject {
         ? options.className
         : 'ol-overlay-container ' + CLASS_SELECTABLE;
     this.element.style.position = 'absolute';
+    this.element.style.pointerEvents = 'auto';
 
     let autoPan = options.autoPan;
     if (autoPan && 'object' !== typeof autoPan) {

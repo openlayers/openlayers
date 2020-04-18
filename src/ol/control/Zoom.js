@@ -37,9 +37,9 @@ class Zoom extends Control {
     const options = opt_options ? opt_options : {};
 
     super({
-      element: document.createElement('div'),
       target: options.target,
     });
+    this.createElement();
 
     const className =
       options.className !== undefined ? options.className : 'ol-zoom';

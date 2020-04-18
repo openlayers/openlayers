@@ -84,6 +84,17 @@ class Control extends BaseObject {
   }
 
   /**
+   * Creates the element for this control and sets it on the instance.
+   * @return {HTMLDivElement} Element for this control.
+   */
+  createElement() {
+    const element = document.createElement('div');
+    element.style.pointerEvents = 'auto';
+    this.element = element;
+    return element;
+  }
+
+  /**
    * Clean up.
    */
   disposeInternal() {

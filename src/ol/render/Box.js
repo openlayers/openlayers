@@ -24,6 +24,7 @@ class RenderBox extends Disposable {
      */
     this.element_ = document.createElement('div');
     this.element_.style.position = 'absolute';
+    this.element_.style.pointerEvents = 'auto';
     this.element_.className = 'ol-box ' + className;
 
     /**

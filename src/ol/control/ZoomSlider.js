@@ -48,9 +48,9 @@ class ZoomSlider extends Control {
     const options = opt_options ? opt_options : {};
 
     super({
-      element: document.createElement('div'),
       render: options.render,
     });
+    this.createElement();
 
     /**
      * @type {!Array.<import("../events.js").EventsKey>}
