@@ -262,8 +262,7 @@ class Translate extends PointerInteraction {
       });
 
       this.lastCoordinate_ = newCoordinate;
-      // Prevent page scrolling during drag
-      event.preventDefault();
+
       this.dispatchEvent(
         new TranslateEvent(
           TranslateEventType.TRANSLATING,
