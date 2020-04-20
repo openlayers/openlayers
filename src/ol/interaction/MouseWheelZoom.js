@@ -229,8 +229,7 @@ class MouseWheelZoom extends Interaction {
     if (
       this.mode_ === Mode.TRACKPAD &&
       !(view.getConstrainResolution() || this.constrainResolution_)
-     )
-    {
+    ) {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
