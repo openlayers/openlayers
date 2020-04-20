@@ -91,7 +91,10 @@ class MouseWheelZoom extends Interaction {
      * @private
      * @type {boolean}
      */
-    this.constrainResolution_ = options.constrainResolution !== undefined ? options.constrainResolution : false;
+    this.constrainResolution_ =
+      options.constrainResolution !== undefined
+        ? options.constrainResolution
+        : false;
     
     /**
      * @private
@@ -224,7 +227,7 @@ class MouseWheelZoom extends Interaction {
 
     const view = map.getView();
     if (this.mode_ === Mode.TRACKPAD &&
-        !(view.getConstrainResolution() || this.constrainResolution_)) {
+      !(view.getConstrainResolution() || this.constrainResolution_)) {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
