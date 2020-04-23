@@ -71,9 +71,9 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {applyTransform} from './extent.js';
+import {applyTransform, getCenter} from './extent.js';
+import {clamp, modulo} from './math.js';
 import {getDistance} from './sphere.js';
-import {modulo} from './math.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection}, SRS identifier
@@ -461,13 +461,89 @@ export function getTransformFromProjections(
  *
  * @param {ProjectionLike} source Source.
  * @param {ProjectionLike} destination Destination.
+ * @param {boolean=} opt_wrapX Return a function which wraps the world
+ * horizontally for global projections if the function found does not.
+ * Default is true.
  * @return {TransformFunction} Transform function.
  * @api
  */
-export function getTransform(source, destination) {
+export function getTransform(source, destination, opt_wrapX) {
   const sourceProjection = get(source);
   const destinationProjection = get(destination);
-  return getTransformFromProjections(sourceProjection, destinationProjection);
+  const transformFunc = getTransformFromProjections(
+    sourceProjection,
+    destinationProjection
+  );
+  if (
+    transformFunc === identityTransform ||
+    transformFunc === cloneTransform ||
+    transformFunc === fromEPSG4326 ||
+    transformFunc === toEPSG4326 ||
+    !sourceProjection.canWrapX()
+  ) {
+    return transformFunc;
+  }
+
+  const sourceExtent = sourceProjection.getExtent();
+  const sourceLeft = sourceExtent[0];
+  const sourceBottom = sourceExtent[1];
+  const sourceRight = sourceExtent[2];
+  const sourceTop = sourceExtent[3];
+  const sourceWidth = sourceRight - sourceLeft;
+  let destinationLeft, destinationRight, destinationWidth, offset;
+  if (opt_wrapX !== false && destinationProjection.canWrapX()) {
+    const destinationExtent = destinationProjection.getExtent();
+    destinationLeft = destinationExtent[0];
+    destinationRight = destinationExtent[2];
+    destinationWidth = destinationRight - destinationLeft;
+    // Allow for proj4 rounding and projections with offset worlds.
+    offset =
+      destinationWidth * 1e-15 +
+      transformFunc(getCenter(sourceExtent), undefined, 2)[0] -
+      getCenter(destinationExtent)[0];
+  }
+
+  return function (input, opt_output, opt_dimension) {
+    const length = input.length;
+    const dimension = opt_dimension !== undefined ? opt_dimension : 2;
+    const output = opt_output !== undefined ? opt_output : new Array(length);
+    const worldsAway = new Array(length);
+    const coordinates = input.slice();
+    for (let i = 0; i < length; i += dimension) {
+      if (coordinates[i] < sourceLeft || coordinates[i] >= sourceRight) {
+        worldsAway[i] = Math.floor((coordinates[i] - sourceLeft) / sourceWidth);
+        coordinates[i] -= worldsAway[i] * sourceWidth;
+      }
+      // Ensure coordinates are not so close to the projection's edges that proj4
+      // might treat them as being in either world. A tolerance of 5e-10 (less than
+      // one meter across the world) is used as 1e-10 is known to be too small.
+      const tolerance = sourceWidth * 5e-10;
+      coordinates[i] = clamp(
+        coordinates[i],
+        sourceLeft + tolerance,
+        sourceRight - tolerance
+      );
+      coordinates[i + 1] = clamp(coordinates[i + 1], sourceBottom, sourceTop);
+    }
+    transformFunc(coordinates, output, dimension);
+    if (destinationWidth) {
+      for (let i = 0; i < length; i += dimension) {
+        if (
+          output[i] - offset < destinationLeft ||
+          output[i] - offset >= destinationRight
+        ) {
+          const worldsOffset = Math.floor(
+            (output[i] - offset - destinationLeft) / destinationWidth
+          );
+          output[i] -= worldsOffset * destinationWidth;
+        }
+        if (worldsAway[i]) {
+          output[i] += worldsAway[i] * destinationWidth;
+        }
+      }
+    }
+    return output;
+  };
 }
 
 /**

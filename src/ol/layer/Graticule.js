@@ -1179,25 +1179,34 @@ class Graticule extends VectorLayer {
       this.toLonLatTransform_ = toLonLatTransform;
     } else {
       const split = this.minLon_ + this.maxLon_ / 2;
-      this.maxLon_ += 360;
-      this.toLonLatTransform_ = function (
-        coordinates,
-        opt_output,
-        opt_dimension
-      ) {
-        const dimension = opt_dimension || 2;
-        const lonLatCoordinates = toLonLatTransform(
+      if (projection.canWrapX()) {
+        if (split > 0) {
+          this.minLon_ -= 360;
+        } else {
+          this.maxLon_ += 360;
+        }
+        this.toLonLatTransform_ = toLonLatTransform;
+      } else {
+        this.maxLon_ += 360;
+        this.toLonLatTransform_ = function (
           coordinates,
           opt_output,
-          dimension
-        );
-        for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {
-          if (lonLatCoordinates[i] < split) {
-            lonLatCoordinates[i] += 360;
+          opt_dimension
+        ) {
+          const dimension = opt_dimension || 2;
+          const lonLatCoordinates = toLonLatTransform(
+            coordinates,
+            opt_output,
+            dimension
+          );
+          for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {
+            if (lonLatCoordinates[i] < split) {
+              lonLatCoordinates[i] += 360;
+            }
           }
-        }
-        return lonLatCoordinates;
-      };
+          return lonLatCoordinates;
+        };
+      }
     }
 
     // Transform the extent to get the limits of the view projection extent

@@ -492,6 +492,27 @@ describe('ol.proj', function () {
       expect(point[1]).to.roughlyEqual(lonLat[1], 1);
     });
 
+    it('wraps Proj4js global projections unless wrapX is false', function () {
+      proj4.defs('merc_150', '+proj=merc +lon_0=150 +units=m +no_defs');
+      register(proj4);
+      const merc = getProjection('merc_150');
+      const half = Math.abs(fromLonLat([-30, 0], merc)[0]);
+      merc.setExtent([-half, -half, half, half]);
+      merc.setGlobal(true);
+      let lonLat;
+      const transformNoWrap = getTransform(merc, 'EPSG:4326', false);
+      for (let x = -210; x <= 570; x += 30) {
+        const point = transform([x, 0], 'EPSG:4326', merc);
+        expect(point[0]).to.roughlyEqual(((x - 150) * half) / 180, 5e-2);
+        lonLat = transform(point, merc, 'EPSG:4326');
+        expect(lonLat[0]).to.roughlyEqual(x, 5e-7);
+        expect(lonLat[1]).to.roughlyEqual(0, 1e-9);
+        lonLat = transformNoWrap(point);
+        const lon = ((x + 540) % 360) - 180;
+        expect(lonLat[0]).to.roughlyEqual(lon, 5e-7);
+      }
+    });
+
     it('caches the new Proj4js projections given their srsCode', function () {
       proj4.defs(
         'EPSG:21781',
