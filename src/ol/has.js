@@ -3,7 +3,9 @@
  */
 
 const ua =
-  typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '';
+  typeof navigator !== 'undefined' && typeof navigator.userAgent !== 'undefined'
+    ? navigator.userAgent.toLowerCase()
+    : '';
 
 /**
  * User agent string says we are dealing with Firefox as browser.
