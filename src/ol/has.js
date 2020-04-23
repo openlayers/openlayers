@@ -3,8 +3,8 @@
  */
 
 const ua =
-  typeof navigator !== 'undefined' && typeof navigator.userAgent !== 'undefined' 
-    ? navigator.userAgent.toLowerCase() 
+  typeof navigator !== 'undefined' && typeof navigator.userAgent !== 'undefined'
+    ? navigator.userAgent.toLowerCase()
     : '';
 
 /**
