@@ -13,25 +13,22 @@ const base = new TileLayer({
 });
 
 const clipLayer = new VectorLayer({
-  style: null,
+  style: new Style({
+    fill: new Fill({
+      color: 'black',
+    }),
+  }),
   source: new VectorSource({
     url: './data/geojson/switzerland.geojson',
     format: new GeoJSON(),
   }),
 });
 
-const style = new Style({
-  fill: new Fill({
-    color: 'black',
-  }),
+clipLayer.on('prerender', function (e) {
+  e.context.globalCompositeOperation = 'destination-in';
 });
 
-base.on('postrender', function (e) {
-  e.context.globalCompositeOperation = 'destination-in';
-  const vectorContext = getVectorContext(e);
-  clipLayer.getSource().forEachFeature(function (feature) {
-    vectorContext.drawFeature(feature, style);
-  });
+clipLayer.on('postrender', function (e) {
   e.context.globalCompositeOperation = 'source-over';
 });
 
