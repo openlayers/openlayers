@@ -84,7 +84,7 @@
     "karma-webpack": "^4.0.0-rc.2",
     "loglevelnext": "^4.0.1",
     "marked": "0.8.2",
-    "mocha": "7.1.1",
+    "mocha": "7.1.2",
     "ol-mapbox-style": "^6.1.1",
     "pixelmatch": "^5.1.0",
     "pngjs": "^5.0.0",
