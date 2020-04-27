@@ -503,11 +503,14 @@ describe('ol.proj', function () {
       const transformNoWrap = getTransform(merc, 'EPSG:4326', false);
       for (let x = -210; x <= 570; x += 30) {
         const point = transform([x, 0], 'EPSG:4326', merc);
-        expect(point[0]).to.roughlyEqual(((x - 150) * half) / 180, 5e-2);
+        const p0 = ((x - 150) * half) / 180;
+        expect(point[0]).to.roughlyEqual(p0, 5e-2);
         lonLat = transform(point, merc, 'EPSG:4326');
         expect(lonLat[0]).to.roughlyEqual(x, 5e-7);
         expect(lonLat[1]).to.roughlyEqual(0, 1e-9);
-        lonLat = transformNoWrap(point);
+        lonLat = transform([p0, 0], merc, 'EPSG:4326');
+        expect(lonLat[0]).to.roughlyEqual(x, 5e-7);
+        lonLat = transformNoWrap([p0, 0]);
         const lon = ((x + 540) % 360) - 180;
         expect(lonLat[0]).to.roughlyEqual(lon, 5e-7);
       }
