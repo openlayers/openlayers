@@ -512,7 +512,12 @@ describe('ol.proj', function () {
         expect(lonLat[0]).to.roughlyEqual(x, 5e-7);
         lonLat = transformNoWrap([p0, 0]);
         const lon = ((x + 540) % 360) - 180;
-        expect(lonLat[0]).to.roughlyEqual(lon, 5e-7);
+        if (Math.abs(lon) == 180) {
+          // with no wrap 180 degrees could be returned as + or -
+          expect(Math.abs(lonLat[0])).to.roughlyEqual(Math.abs(lon), 5e-7);
+        } else {
+          expect(lonLat[0]).to.roughlyEqual(lon, 5e-7);
+        }
       }
     });
 
