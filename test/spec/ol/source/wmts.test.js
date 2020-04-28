@@ -349,6 +349,61 @@ describe('ol.source.WMTS', function () {
       );
     });
   });
+  
+  describe('when creating options from wgs84 capabilities', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities, content;
+    before(function (done) {
+      afterLoadText('spec/ol/format/wmts/capabilities_wgs84.xml', function (xml) {
+        try {
+          content = xml;
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+    
+    
+    it('returns correct bounding box', function () {
+        const options = optionsFromCapabilities(capabilities, {
+          layer: 'baselayer',
+          matrixSet: 'inspire_quad',
+          requestEncoding: 'REST',
+        });
+
+        expect(options.urls).to.be.an('array');
+        expect(options.urls).to.have.length(1);
+        expect(options.urls[0]).to.be.eql(
+          'https://example.com/wmts/baselayer/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png'
+        );
+
+        expect(options.layer).to.be.eql('baselayer');
+
+        expect(options.matrixSet).to.be.eql('inspire_quad');
+
+        expect(options.format).to.be.eql('image/png');
+
+        expect(options.projection).to.be.a(Projection);
+        expect(options.projection).to.be.eql(getProjection('EPSG:4326'));
+
+        expect(options.requestEncoding).to.be.eql('REST');
+
+        expect(options.tileGrid).to.be.a(WMTSTileGrid);
+        expect(options.style).to.be.eql('default');
+
+        const extent = options.tileGrid.getExtent();
+
+        // compare with delta, due to rounding not the exact bounding box is returned...
+        const expectDelta = (value, expected) => expect(Math.abs(value - expected)).to.below(1e-10);
+        
+        expectDelta(extent[0], -180);
+        expectDelta(extent[1], -90);
+        expectDelta(extent[2], 180);
+        expectDelta(extent[3], 90);        
+      });	
+  });
 
   describe('#setUrls()', function () {
     it('sets the URL for the source', function () {
@@ -478,5 +533,6 @@ describe('ol.source.WMTS', function () {
       const requestEncoding = source.getRequestEncoding();
       expect(requestEncoding).to.be.eql('REST');
     });
-  });
+  }); 
+ 
 });
