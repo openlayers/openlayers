@@ -608,6 +608,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[
         i
       ]);
+      const executorGroups = tile.executorGroups[getUid(layer)];
+      if (!executorGroups) {
+        continue;
+      }
       const tileCoord = tile.tileCoord;
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const worldOffset =
@@ -629,7 +633,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           worldOffset
         )
       );
-      const executorGroups = tile.executorGroups[getUid(layer)];
       let clipped = false;
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
