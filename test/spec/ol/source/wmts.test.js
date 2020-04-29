@@ -404,6 +404,51 @@ describe('ol.source.WMTS', function () {
       expectDelta(extent[2], 180);
       expectDelta(extent[3], 90);
     });
+
+    it('returns correct bounding box for a layer restricted by TileMatrixSetLink', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'mean_atlas_land',
+        matrixSet: 'inspire_quad',
+        requestEncoding: 'REST',
+      });
+
+      expect(options.urls).to.be.an('array');
+      expect(options.urls).to.have.length(1);
+      expect(options.urls[0]).to.be.eql(
+        'https://example.com/wmts/mean_atlas_land/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png'
+      );
+
+      expect(options.layer).to.be.eql('mean_atlas_land');
+
+      expect(options.matrixSet).to.be.eql('inspire_quad');
+
+      expect(options.format).to.be.eql('image/png');
+
+      expect(options.projection).to.be.a(Projection);
+      expect(options.projection).to.be.eql(getProjection('EPSG:4326'));
+
+      expect(options.requestEncoding).to.be.eql('REST');
+
+      expect(options.tileGrid).to.be.a(WMTSTileGrid);
+      expect(options.style).to.be.eql('default');
+
+      const extent = options.tileGrid.getExtent();
+
+      // calculate with of one tile, this will be used as tolerance for result extent
+      const tile_width =
+        ((68247.34668319306 * 0.00028) /
+          getProjection('EPSG:4326').getMetersPerUnit()) *
+        256;
+
+      // compare with delta, due to rounding not the exact bounding box is returned...
+      const expectDelta = (value, expected) =>
+        expect(Math.abs(value - expected)).to.below(tile_width + 1e-10);
+
+      expectDelta(extent[0], -36);
+      expectDelta(extent[1], 15);
+      expectDelta(extent[2], 43);
+      expectDelta(extent[3], 90);
+    });
   });
 
   describe('#setUrls()', function () {

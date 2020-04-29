@@ -451,20 +451,39 @@ export function optionsFromCapabilities(wmtsCap, config) {
   const wrapX = false;
   const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
-  const matrix0 = matrixSetObj.TileMatrix[0];
+  let matrix = matrixSetObj.TileMatrix[0];
+
+  // create default matrixLimit
+  let selectedMatrixLimit = {
+    MinTileCol: 0,
+    MinTileRow: 0,
+    // substract one to end up at tile top left
+    MaxTileCol: matrix.MatrixWidth - 1,
+    MaxTileRow: matrix.MatrixHeight - 1,
+  };
+
+  //in case of matrix limits, use matrix limits to calculate extent
+  if (matrixLimits) {
+    selectedMatrixLimit = matrixLimits[matrixLimits.length - 1];
+    matrix = matrixSetObj.TileMatrix.find(
+      (value) => value.Identifier === selectedMatrixLimit.TileMatrix
+    );
+  }
+
   const resolution =
-    (matrix0.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
+    (matrix.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
   const origin = switchOriginXY
-    ? [matrix0.TopLeftCorner[1], matrix0.TopLeftCorner[0]]
-    : matrix0.TopLeftCorner;
-  const tileSpanX = matrix0.TileWidth * resolution;
-  const tileSpanY = matrix0.TileHeight * resolution;
+    ? [matrix.TopLeftCorner[1], matrix.TopLeftCorner[0]]
+    : matrix.TopLeftCorner;
+  const tileSpanX = matrix.TileWidth * resolution;
+  const tileSpanY = matrix.TileHeight * resolution;
 
   const extent = [
-    origin[0],
-    origin[1] - tileSpanY * matrix0.MatrixHeight,
-    origin[0] + tileSpanX * matrix0.MatrixWidth,
-    origin[1],
+    origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
+    // add one to get proper bottom/right coordinate
+    origin[1] - tileSpanY * (1 + selectedMatrixLimit.MaxTileRow),
+    origin[0] + tileSpanX * (1 + selectedMatrixLimit.MaxTileCol),
+    origin[1] - tileSpanY * selectedMatrixLimit.MinTileRow,
   ];
 
   if (projection.getExtent() === null) {
