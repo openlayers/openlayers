@@ -225,6 +225,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const declutterReplays = this.getLayer().getDeclutter() ? {} : null;
     replayGroup.execute(
       context,
+      1,
       transform,
       rotation,
       snapToPixel,
@@ -255,6 +256,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         );
         replayGroup.execute(
           context,
+          1,
           transform,
           rotation,
           snapToPixel,
@@ -279,6 +281,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         );
         replayGroup.execute(
           context,
+          1,
           transform,
           rotation,
           snapToPixel,

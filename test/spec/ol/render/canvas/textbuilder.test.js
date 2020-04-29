@@ -35,7 +35,7 @@ function executeInstructions(
   const executor = new Executor(0.02, 1, false, builder.finish());
   sinon.spy(executor, 'drawLabelWithPointPlacement_');
   const replayImageOrLabelStub = sinon.stub(executor, 'replayImageOrLabel_');
-  executor.execute(context, transform);
+  executor.execute(context, 1, transform);
   expect(executor.drawLabelWithPointPlacement_.callCount).to.be(
     expectedDrawTextImageCalls
   );

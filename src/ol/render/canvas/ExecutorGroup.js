@@ -310,6 +310,7 @@ class ExecutorGroup {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} contextScale Scale of the context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
@@ -319,6 +320,7 @@ class ExecutorGroup {
    */
   execute(
     context,
+    contextScale,
     transform,
     viewRotation,
     snapToPixel,
@@ -357,7 +359,13 @@ class ExecutorGroup {
               declutter.push(replay, transform.slice(0));
             }
           } else {
-            replay.execute(context, transform, viewRotation, snapToPixel);
+            replay.execute(
+              context,
+              contextScale,
+              transform,
+              viewRotation,
+              snapToPixel
+            );
           }
         }
       }
@@ -476,7 +484,7 @@ export function replayDeclutter(
         });
       }
       const transform = executorData[i++];
-      executor.execute(context, transform, rotation, snapToPixel);
+      executor.execute(context, 1, transform, rotation, snapToPixel);
     }
   }
 }

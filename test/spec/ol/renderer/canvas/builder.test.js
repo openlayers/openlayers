@@ -40,7 +40,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
         !!overlaps,
         builder.finish()
       );
-      executor.execute(context, transform, 0, false);
+      executor.execute(context, 1, transform, 0, false);
     }
 
     beforeEach(function () {

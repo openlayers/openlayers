@@ -665,6 +665,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
         executorGroup.execute(
           context,
+          1,
           transform,
           rotation,
           hifi,
@@ -813,6 +814,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroup = executorGroups[i];
       executorGroup.execute(
         context,
+        renderScale,
         transform,
         0,
         true,
