@@ -449,14 +449,14 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   const wrapX = false;
+  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
   const matrix0 = matrixSetObj.TileMatrix[0];
   const resolution =
     (matrix0.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
-  const origin =
-    projection === getProjection('EPSG:4326')
-      ? [matrix0.TopLeftCorner[1], matrix0.TopLeftCorner[0]]
-      : matrix0.TopLeftCorner;
+  const origin = switchOriginXY
+    ? [matrix0.TopLeftCorner[1], matrix0.TopLeftCorner[0]]
+    : matrix0.TopLeftCorner;
   const tileSpanX = matrix0.TileWidth * resolution;
   const tileSpanY = matrix0.TileHeight * resolution;
 
