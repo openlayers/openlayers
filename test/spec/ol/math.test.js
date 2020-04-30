@@ -75,7 +75,7 @@ describe('ol.math.log2', function () {
   });
 
   it('returns the correct value at -1', function () {
-    expect(log2(-1)).to.eql(NaN);
+    expect(log2(-1).toString()).to.eql('NaN');
   });
 });
 
