@@ -331,7 +331,10 @@ export function render(
     context.save();
     context.beginPath();
 
-    if (isBrokenDiagonalRendering() || opt_contextOptions === IMAGE_SMOOTHING_DISABLED) {
+    if (
+      isBrokenDiagonalRendering() ||
+      opt_contextOptions === IMAGE_SMOOTHING_DISABLED
+    ) {
       // Make sure that everything is on pixel boundaries
       const u0r = pixelRound(u0);
       const v0r = pixelRound(v0);
