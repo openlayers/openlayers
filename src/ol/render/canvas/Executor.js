@@ -293,6 +293,7 @@ class Executor {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} contextScale Scale of the context.
    * @param {number} x X.
    * @param {number} y Y.
    * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
@@ -313,6 +314,7 @@ class Executor {
    */
   replayImageOrLabel_(
     context,
+    contextScale,
     x,
     y,
     imageOrLabel,
@@ -395,9 +397,9 @@ class Executor {
       ? (strokeInstruction[2] * scale) / 2
       : 0;
     const intersects =
-      tmpExtent[0] - strokePadding <= canvas.width &&
+      tmpExtent[0] - strokePadding <= canvas.width / contextScale &&
       tmpExtent[2] + strokePadding >= 0 &&
-      tmpExtent[1] - strokePadding <= canvas.height &&
+      tmpExtent[1] - strokePadding <= canvas.height / contextScale &&
       tmpExtent[3] + strokePadding >= 0;
 
     if (snapToPixel) {
@@ -593,6 +595,7 @@ class Executor {
   /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} contextScale Scale of the context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
@@ -604,6 +607,7 @@ class Executor {
    */
   execute_(
     context,
+    contextScale,
     transform,
     instructions,
     snapToPixel,
@@ -826,6 +830,7 @@ class Executor {
             }
             this.replayImageOrLabel_(
               context,
+              contextScale,
               pixelCoordinates[d],
               pixelCoordinates[d + 1],
               image,
@@ -918,6 +923,7 @@ class Executor {
                     offsetY;
                   this.replayImageOrLabel_(
                     context,
+                    contextScale,
                     /** @type {number} */ (part[0]),
                     /** @type {number} */ (part[1]),
                     label,
@@ -947,6 +953,7 @@ class Executor {
                   anchorY = baseline * label.height - offsetY;
                   this.replayImageOrLabel_(
                     context,
+                    contextScale,
                     /** @type {number} */ (part[0]),
                     /** @type {number} */ (part[1]),
                     label,
@@ -1064,14 +1071,16 @@ class Executor {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} contextScale Scale of the context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    */
-  execute(context, transform, viewRotation, snapToPixel) {
+  execute(context, contextScale, transform, viewRotation, snapToPixel) {
     this.viewRotation_ = viewRotation;
     this.execute_(
       context,
+      contextScale,
       transform,
       this.instructions,
       snapToPixel,
@@ -1101,6 +1110,7 @@ class Executor {
     this.viewRotation_ = viewRotation;
     return this.execute_(
       context,
+      1,
       transform,
       this.hitDetectionInstructions,
       true,
