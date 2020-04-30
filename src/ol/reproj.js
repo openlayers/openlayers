@@ -1,7 +1,8 @@
 /**
  * @module ol/reproj
  */
-import {assign, isEmpty} from './obj.js';
+import {IMAGE_SMOOTHING_DISABLED} from './source/common.js';
+import {assign} from './obj.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -330,7 +331,7 @@ export function render(
     context.save();
     context.beginPath();
 
-    if (isBrokenDiagonalRendering() || !isEmpty(opt_contextOptions)) {
+    if (isBrokenDiagonalRendering() || opt_contextOptions === IMAGE_SMOOTHING_DISABLED) {
       // Make sure that everything is on pixel boundaries
       const u0r = pixelRound(u0);
       const v0r = pixelRound(v0);
