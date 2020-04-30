@@ -14,7 +14,7 @@ import {
   intersects,
 } from '../extent.js';
 import {getTransform} from '../proj.js';
-import {modulo} from '../math.js';
+import {log2, modulo} from '../math.js';
 
 /**
  * Single triangle; consists of 3 source points and 3 target points.
@@ -169,7 +169,7 @@ class Triangulation {
         ? Math.max(
             0,
             Math.ceil(
-              Math.log2(
+              log2(
                 getArea(targetExtent) /
                   (opt_destinationResolution *
                     opt_destinationResolution *
