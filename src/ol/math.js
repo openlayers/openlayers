@@ -41,6 +41,31 @@ export const cosh = (function () {
 })();
 
 /**
+ * Return the base 2 logarithm of a given number. The method will use the
+ * native `Math.log2` function if it is available, otherwise the base 2
+ * logarithm will be calculated via the reference implementation of the
+ * Mozilla developer network.
+ *
+ * @param {number} x X.
+ * @return {number} Base 2 logarithm of x.
+ */
+export const log2 = (function () {
+  // Wrapped in a iife, to save the overhead of checking for the native
+  // implementation on every invocation.
+  let log2;
+  if ('log2' in Math) {
+    // The environment supports the native Math.log2 function, use it…
+    log2 = Math.log2;
+  } else {
+    // … else, use the reference implementation of MDN:
+    log2 = function (x) {
+      return Math.log(x) * Math.LOG2E;
+    };
+  }
+  return log2;
+})();
+
+/**
  * Returns the square of the closest distance between the point (x, y) and the
  * line segment (x1, y1) to (x2, y2).
  * @param {number} x X.
