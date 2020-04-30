@@ -2,6 +2,7 @@ import {
   clamp,
   cosh,
   lerp,
+  log2,
   modulo,
   solveLinearSystem,
   toDegrees,
@@ -49,6 +50,32 @@ describe('ol.math.cosh', function () {
 
   it('returns the correct value at Infinity', function () {
     expect(cosh(Infinity)).to.eql(Infinity);
+  });
+});
+
+describe('ol.math.log2', function () {
+  it('returns the correct value at Infinity', function () {
+    expect(log2(Infinity)).to.eql(Infinity);
+  });
+
+  it('returns the correct value at 3', function () {
+    expect(log2(3)).to.roughlyEqual(1.584962500721156, 1e-9);
+  });
+
+  it('returns the correct value at 2', function () {
+    expect(log2(2)).to.eql(1);
+  });
+
+  it('returns the correct value at 1', function () {
+    expect(log2(1)).to.eql(0);
+  });
+
+  it('returns the correct value at 0', function () {
+    expect(log2(0)).to.eql(-Infinity);
+  });
+
+  it('returns the correct value at -1', function () {
+    expect(log2(0)).to.eql(NaN);
   });
 });
 
