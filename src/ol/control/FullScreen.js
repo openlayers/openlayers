@@ -245,8 +245,8 @@ class FullScreen extends Control {
 function isFullScreenSupported() {
   const body = document.body;
   return !!(
-    body.webkitRequestFullscreen ||
-    (body.msRequestFullscreen && document.msFullscreenEnabled) ||
+    body['webkitRequestFullscreen'] ||
+    (body['msRequestFullscreen'] && document['msFullscreenEnabled']) ||
     (body.requestFullscreen && document.fullscreenEnabled)
   );
 }
@@ -256,8 +256,8 @@ function isFullScreenSupported() {
  */
 function isFullScreen() {
   return !!(
-    document.webkitIsFullScreen ||
-    document.msFullscreenElement ||
+    document['webkitIsFullScreen'] ||
+    document['msFullscreenElement'] ||
     document.fullscreenElement
   );
 }
@@ -269,10 +269,10 @@ function isFullScreen() {
 function requestFullScreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
+  } else if (element['msRequestFullscreen']) {
+    element['msRequestFullscreen']();
+  } else if (element['webkitRequestFullscreen']) {
+    element['webkitRequestFullscreen']();
   }
 }
 
@@ -281,8 +281,8 @@ function requestFullScreen(element) {
  * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreenWithKeys(element) {
-  if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
+  if (element['webkitRequestFullscreen']) {
+    element['webkitRequestFullscreen']();
   } else {
     requestFullScreen(element);
   }
@@ -294,10 +294,10 @@ function requestFullScreenWithKeys(element) {
 function exitFullScreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen();
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
+  } else if (document['msExitFullscreen']) {
+    document['msExitFullscreen']();
+  } else if (document['webkitExitFullscreen']) {
+    document['webkitExitFullscreen']();
   }
 }
 
