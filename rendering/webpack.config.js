@@ -34,4 +34,10 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    alias: {
+      // allow imports from 'ol/module' instead of specifiying the source path
+      ol: path.join(__dirname, '..', 'src', 'ol'),
+    },
+  },
 };

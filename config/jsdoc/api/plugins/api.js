@@ -200,6 +200,11 @@ exports.handlers = {
   processingComplete(e) {
     const byLongname = e.doclets.index.longname;
     for (const name in defaultExports) {
+      if (!(name in byLongname)) {
+        throw new Error(
+          `missing ${name} in doclet index, did you forget a @module tag?`
+        );
+      }
       byLongname[name].forEach(function (doclet) {
         doclet.isDefaultExport = true;
       });

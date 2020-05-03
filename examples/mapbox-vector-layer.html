@@ -1,0 +1,15 @@
+---
+layout: example.html
+title: Mapbox Vector Layer
+shortdesc: Rendering a layer with a Mapbox-hosted style.
+docs: >
+  The MapboxVector layer allows you to create a layer based on a Mapbox-hosted style using a single
+  vector source.  If your style uses more than one source, use the `source` property to choose a
+  single vector source.  Use the `layers` property if you only want to render a subset of the style's
+  layers (provided they all share the same source).
+tags: "mapbox, studio, vector, tiles"
+cloak:
+  - key: pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q
+    value: Your Mapbox access token from https://mapbox.com/ here
+---
+<div id="map" class="map"></div>

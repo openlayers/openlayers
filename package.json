@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "elm-pep": "^1.0.4",
+    "ol-mapbox-style": "^6.1.1",
     "pbf": "3.2.1",
     "pixelworks": "1.1.0",
     "rbush": "^3.0.1"
@@ -85,7 +86,6 @@
     "loglevelnext": "^4.0.1",
     "marked": "1.0.0",
     "mocha": "7.1.2",
-    "ol-mapbox-style": "^6.1.1",
     "pixelmatch": "^5.1.0",
     "pngjs": "^5.0.0",
     "proj4": "2.6.1",

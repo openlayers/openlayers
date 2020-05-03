@@ -118,6 +118,12 @@ module.exports = function (karma) {
           },
         ],
       },
+      resolve: {
+        alias: {
+          // allow imports from 'ol/module' instead of specifiying the source path
+          ol: path.join(__dirname, '..', 'src', 'ol'),
+        },
+      },
     },
     webpackMiddleware: {
       noInfo: true,

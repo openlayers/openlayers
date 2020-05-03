@@ -251,7 +251,7 @@ async function render(entries, options) {
     page.on('console', (message) => {
       const type = message.type();
       if (options.log[type]) {
-        options.log[type](message.text());
+        options.log[type](`console: ${message.text()}`);
       }
     });
 
@@ -260,6 +260,10 @@ async function render(entries, options) {
     await page.setViewport({width: 256, height: 256});
     fail = await renderEach(page, entries, options);
   } finally {
+    if (options.interactive) {
+      options.log.info('🐛 you have thirty minutes to debug, go!');
+      await sleep(30 * 60 * 1000);
+    }
     browser.close();
   }
 
@@ -324,10 +328,14 @@ async function main(entries, options) {
   try {
     await render(entries, options);
   } finally {
-    if (!options.interactive) {
-      done();
-    }
+    done();
   }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 if (require.main === module) {
@@ -356,8 +364,7 @@ if (require.main === module) {
       default: false,
     })
     .option('interactive', {
-      describe:
-        'Run all tests and keep the test server running (this option will be reworked later)',
+      describe: 'Run all tests and keep the test server running for 30 minutes',
       type: 'boolean',
       default: false,
     })
