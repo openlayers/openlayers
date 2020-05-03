@@ -29,6 +29,9 @@ export const Mode = {
  * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
  * location as the anchor. When set to `false`, zooming in and out will zoom to
  * the center of the screen instead of zooming on the mouse's location.
+ * @property {boolean} [constrainResolution=false] If true, the mouse wheel zoom
+ * event will always animate to the closest zoom level after an interaction;
+ * false means intermediary zoom levels are allowed.
  */
 
 /**
@@ -83,6 +86,15 @@ class MouseWheelZoom extends Interaction {
      */
     this.useAnchor_ =
       options.useAnchor !== undefined ? options.useAnchor : true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.constrainResolution_ =
+      options.constrainResolution !== undefined
+        ? options.constrainResolution
+        : false;
 
     /**
      * @private
@@ -214,7 +226,10 @@ class MouseWheelZoom extends Interaction {
     }
 
     const view = map.getView();
-    if (this.mode_ === Mode.TRACKPAD && !view.getConstrainResolution()) {
+    if (
+      this.mode_ === Mode.TRACKPAD &&
+      !(view.getConstrainResolution() || this.constrainResolution_)
+    ) {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
@@ -260,7 +275,7 @@ class MouseWheelZoom extends Interaction {
         -this.maxDelta_ * this.deltaPerZoom_,
         this.maxDelta_ * this.deltaPerZoom_
       ) / this.deltaPerZoom_;
-    if (view.getConstrainResolution()) {
+    if (view.getConstrainResolution() || this.constrainResolution_) {
       // view has a zoom constraint, zoom by 1
       delta = delta ? (delta > 0 ? 1 : -1) : 0;
     }
