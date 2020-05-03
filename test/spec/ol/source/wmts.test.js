@@ -404,8 +404,26 @@ describe('ol.source.WMTS', function () {
       expectDelta(extent[2], 180);
       expectDelta(extent[3], 90);
     });
+  });
 
-    it('returns correct bounding box for a layer restricted by TileMatrixSetLink', function () {
+  describe('when creating options from capabilities with TileMatrixSetLink', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_with_tilematrixsetlink.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        }
+      );
+    });
+
+    it('returns correct bounding box for a layer', function () {
       const options = optionsFromCapabilities(capabilities, {
         layer: 'mean_atlas_land',
         matrixSet: 'inspire_quad',
