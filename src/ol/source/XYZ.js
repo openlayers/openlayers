@@ -44,6 +44,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {string} [key] Optional tile key for proper cache fetching
  * @property {number} [zDirection=0] Indicate which resolution should be used
  * by a renderer if the view resolution does not match any resolution of the tile source.
  * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
@@ -104,6 +105,7 @@ class XYZ extends TileImage {
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition,
+      key: options.key,
       attributionsCollapsible: options.attributionsCollapsible,
       zDirection: options.zDirection,
     });
