@@ -332,8 +332,11 @@ class TileImage extends UrlTile {
       if (cache.containsKey(tileCoordKey)) {
         tile = cache.get(tileCoordKey);
       }
-      const key = this.getKey() +
-        (this.contextOptions_ ? '\n' + JSON.stringify(this.contextOptions_) : '');
+      const key =
+        this.getKey() +
+        (this.contextOptions_
+          ? '\n' + JSON.stringify(this.contextOptions_)
+          : '');
       if (tile && tile.key == key) {
         return tile;
       } else {
