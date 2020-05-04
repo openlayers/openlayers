@@ -74,7 +74,7 @@
             'index.html': {
               content: html
             },
-            'index.js': {
+            'main.js': {
               content: js
             },
             "package.json": {
