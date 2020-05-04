@@ -328,15 +328,15 @@ class TileImage extends UrlTile {
       const cache = this.getTileCacheForProjection(projection);
       const tileCoord = [z, x, y];
       let tile;
-      const tileCoordKey = getKey(tileCoord);
-      if (cache.containsKey(tileCoordKey)) {
-        tile = cache.get(tileCoordKey);
-      }
-      const key =
-        this.getKey() +
+      const tileCoordKey =
+        getKey(tileCoord) +
         (this.contextOptions_
           ? '\n' + JSON.stringify(this.contextOptions_)
           : '');
+      if (cache.containsKey(tileCoordKey)) {
+        tile = cache.get(tileCoordKey);
+      }
+      const key = this.getKey();
       if (tile && tile.key == key) {
         return tile;
       } else {
