@@ -30,6 +30,7 @@ import {toSize} from '../size.js';
  * @property {number} [cacheSize=128] Cache size.
  * @property {import("../extent.js").Extent} [extent]
  * @property {import("../format/Feature.js").default} [format] Feature format for tiles. Used and required by the default.
+ * @property {string} [key] Optional tile key for proper cache fetching
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -125,6 +126,7 @@ class VectorTile extends UrlTile {
       attributions: options.attributions,
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
+      key: options.key,
       opaque: false,
       projection: projection,
       state: options.state,
