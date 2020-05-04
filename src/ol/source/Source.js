@@ -163,7 +163,6 @@ class Source extends BaseObject {
   /**
    * Set the state of the source.
    * @param {import("./State.js").default} state State.
-   * @protected
    */
   setState(state) {
     this.state_ = state;
