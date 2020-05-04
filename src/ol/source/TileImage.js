@@ -209,6 +209,18 @@ class TileImage extends UrlTile {
   }
 
   /**
+   * Return the key to be used for all tiles in the source.
+   * @return {string} The key for all tiles.
+   * @protected
+   */
+  getKey() {
+    return (
+      super.getKey() +
+      (this.contextOptions_ ? '\n' + JSON.stringify(this.contextOptions_) : '')
+    );
+  }
+
+  /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {boolean} Opaque.
    */
