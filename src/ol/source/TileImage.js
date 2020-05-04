@@ -207,6 +207,18 @@ class TileImage extends UrlTile {
   getGutter() {
     return 0;
   }
+  
+  /**
+   * Return the key to be used for all tiles in the source.
+   * @return {string} The key for all tiles.
+   * @protected
+   */
+  getKey() {
+    return super.getKey() +
+      (this.contextOptions_
+        ? '\n' + JSON.stringify(this.contextOptions_)
+        : '');
+  }
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
@@ -328,11 +340,7 @@ class TileImage extends UrlTile {
       const cache = this.getTileCacheForProjection(projection);
       const tileCoord = [z, x, y];
       let tile;
-      const tileCoordKey =
-        getKey(tileCoord) +
-        (this.contextOptions_
-          ? '\n' + JSON.stringify(this.contextOptions_)
-          : '');
+      const tileCoordKey = getKey(tileCoord);
       if (cache.containsKey(tileCoordKey)) {
         tile = cache.get(tileCoordKey);
       }
