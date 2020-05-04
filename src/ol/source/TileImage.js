@@ -207,17 +207,17 @@ class TileImage extends UrlTile {
   getGutter() {
     return 0;
   }
-  
+
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
    * @protected
    */
   getKey() {
-    return super.getKey() +
-      (this.contextOptions_
-        ? '\n' + JSON.stringify(this.contextOptions_)
-        : '');
+    return (
+      super.getKey() +
+      (this.contextOptions_ ? '\n' + JSON.stringify(this.contextOptions_) : '')
+    );
   }
 
   /**
