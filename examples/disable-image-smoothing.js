@@ -35,7 +35,7 @@ const enabledLayer = new TileLayer({
   source: new XYZ({
     attributions: attributions,
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key;
+      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
     maxZoom: 10,
     crossOrigin: '',
   }),
