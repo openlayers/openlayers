@@ -280,6 +280,7 @@ class Executor {
     context.lineTo.apply(context, p1);
     if (fillInstruction) {
       this.alignFill_ = /** @type {boolean} */ (fillInstruction[2]);
+      context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (fillInstruction[1]);
       this.fill_(context);
     }
     if (strokeInstruction) {
