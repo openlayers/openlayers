@@ -210,9 +210,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   isDrawableTile(tile) {
     const layer = this.getLayer();
     return (
-      (super.isDrawableTile(tile) &&
-        layer.getRenderMode() === VectorTileRenderType.VECTOR) ||
-      tile.hasContext(layer)
+      super.isDrawableTile(tile) &&
+      (layer.getRenderMode() === VectorTileRenderType.VECTOR
+        ? getUid(layer) in tile.executorGroups
+        : tile.hasContext(layer))
     );
   }
 
