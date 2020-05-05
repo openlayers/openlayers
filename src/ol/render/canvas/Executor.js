@@ -262,6 +262,7 @@ class Executor {
    * @param {import("../../coordinate.js").Coordinate} p4 4th point of the background box.
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
+   * @param {boolean} declutter Declutter.
    */
   replayTextBackground_(
     context,
@@ -270,7 +271,8 @@ class Executor {
     p3,
     p4,
     fillInstruction,
-    strokeInstruction
+    strokeInstruction,
+    declutter
   ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
@@ -280,7 +282,9 @@ class Executor {
     context.lineTo.apply(context, p1);
     if (fillInstruction) {
       this.alignFill_ = /** @type {boolean} */ (fillInstruction[2]);
-      context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (fillInstruction[1]);
+      if (declutter) {
+        context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (fillInstruction[1]);
+      }
       this.fill_(context);
     }
     if (strokeInstruction) {
@@ -450,7 +454,8 @@ class Executor {
           p3,
           p4,
           /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction)
+          /** @type {Array<*>} */ (strokeInstruction),
+          false
         );
       }
       drawImageOrLabel(
@@ -543,7 +548,8 @@ class Executor {
                 declutterData[15],
                 declutterData[16],
                 declutterData[11],
-                declutterData[12]
+                declutterData[12],
+                true
               );
             }
             drawImageOrLabel.apply(undefined, declutterData);
