@@ -18,22 +18,14 @@ proj4.defs(
 register(proj4);
 
 const imageExtent = [0, 0, 700000, 1300000];
+const imageLayer = new ImageLayer();
 
 const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM(),
     }),
-    new ImageLayer({
-      source: new Static({
-        url:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
-          'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
-        crossOrigin: '',
-        projection: 'EPSG:27700',
-        imageExtent: imageExtent,
-      }),
-    }),
+    imageLayer,
   ],
   target: 'map',
   view: new View({
@@ -41,3 +33,21 @@ const map = new Map({
     zoom: 4,
   }),
 });
+
+const imageSmoothing = document.getElementById('imageSmoothing');
+
+function setSource() {
+  const source = new Static({
+    url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
+      'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
+    crossOrigin: '',
+    projection: 'EPSG:27700',
+    imageExtent: imageExtent,
+    imageSmoothing: imageSmoothing.checked,
+  });
+  imageLayer.setSource(source);
+}
+setSource();
+
+imageSmoothing.addEventListener('change', setSource);

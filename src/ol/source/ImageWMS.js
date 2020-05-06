@@ -39,6 +39,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @property {import("./WMSServerType.js").default|string} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {Object<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
@@ -68,6 +69,7 @@ class ImageWMS extends ImageSource {
 
     super({
       attributions: options.attributions,
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
       resolutions: options.resolutions,
     });

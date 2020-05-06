@@ -174,13 +174,6 @@ class TileSource extends Source {
   }
 
   /**
-   * @return {Object|undefined} Context options.
-   */
-  getContextOptions() {
-    return undefined;
-  }
-
-  /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
    */

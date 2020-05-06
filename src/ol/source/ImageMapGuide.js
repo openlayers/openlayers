@@ -32,6 +32,7 @@ import {
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {Object} [params] Additional parameters.
  */
 
@@ -48,6 +49,7 @@ class ImageMapGuide extends ImageSource {
    */
   constructor(options) {
     super({
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
       resolutions: options.resolutions,
     });

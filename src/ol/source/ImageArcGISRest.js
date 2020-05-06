@@ -20,6 +20,7 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  * the remote server.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
@@ -56,6 +57,7 @@ class ImageArcGISRest extends ImageSource {
 
     super({
       attributions: options.attributions,
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
       resolutions: options.resolutions,
     });
