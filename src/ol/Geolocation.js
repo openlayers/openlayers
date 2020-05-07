@@ -213,7 +213,6 @@ class Geolocation extends BaseObject {
    * @param {PositionError} error error object.
    */
   positionError_(error) {
-    this.setTracking(false);
     this.dispatchEvent(new GeolocationError(error));
   }
 

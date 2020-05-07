@@ -1,5 +1,19 @@
 ## Upgrade notes
 
+### v6.3.2
+
+#### Backwards incompatible changes
+
+##### Geolocation no longer stop tracking after an error
+
+Previously, when the Geolocation class encounter an error the tracking was stopped. It now continues to track.
+To get the previous behavior, use the following code:
+```js
+geolocation.on('error', function (error) {
+  geolocation.setTracking(false);
+});
+```
+
 ### v6.3.0
 
 #### Vector source loading when extent crosses +/-180
