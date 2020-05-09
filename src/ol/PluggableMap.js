@@ -1016,15 +1016,21 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    const target = /** @type {Node} */ (mapBrowserEvent.originalEvent.target);
     if (!mapBrowserEvent.dragging) {
+      const rootNode = this.viewport_.getRootNode
+        ? this.viewport_.getRootNode()
+        : document;
+      const originalEvent = /** @type {PointerEvent} */ (mapBrowserEvent.originalEvent);
+      const target =
+        rootNode === document
+          ? /** @type {Node} */ (originalEvent.target)
+          : /** @type {ShadowRoot} */ (rootNode).elementFromPoint(
+              originalEvent.clientX,
+              originalEvent.clientY
+            );
       if (
         this.overlayContainerStopEvent_.contains(target) ||
-        !(
-          document.body.contains(target) ||
-          (this.viewport_.getRootNode &&
-            this.viewport_.getRootNode().contains(target))
-        )
+        !(document.body.contains(target) || this.viewport_.contains(target))
       ) {
         // Abort if the event target is a child of the container that doesn't allow
         // event propagation or is no longer in the page. It's possible for the target to no longer
