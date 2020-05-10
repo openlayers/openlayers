@@ -243,7 +243,7 @@ class OverviewMap extends Control {
     const move = function (event) {
       const position = /** @type {?} */ (computeDesiredMousePosition(event));
       const coordinates = ovmap.getEventCoordinateInternal(
-        /** @type {Event} */ (position)
+        /** @type {MouseEvent} */ (position)
       );
 
       overlay.setPosition(coordinates);

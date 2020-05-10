@@ -704,7 +704,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Returns the coordinate in user projection for a browser event.
-   * @param {Event} event Event.
+   * @param {MouseEvent} event Event.
    * @return {import("./coordinate.js").Coordinate} Coordinate.
    * @api
    */
@@ -714,7 +714,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Returns the coordinate in view projection for a browser event.
-   * @param {Event} event Event.
+   * @param {MouseEvent} event Event.
    * @return {import("./coordinate.js").Coordinate} Coordinate.
    */
   getEventCoordinateInternal(event) {
@@ -723,13 +723,14 @@ class PluggableMap extends BaseObject {
 
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
-   * @param {Event|TouchEvent} event Event.
+   * @param {UIEvent} event Event.
    * @return {import("./pixel.js").Pixel} Pixel.
    * @api
    */
   getEventPixel(event) {
     const viewportPosition = this.viewport_.getBoundingClientRect();
     const eventPosition =
+      //FIXME Are we really calling this with a TouchEvent anywhere?
       'changedTouches' in event
         ? /** @type {TouchEvent} */ (event).changedTouches[0]
         : /** @type {MouseEvent} */ (event);
@@ -998,7 +999,7 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * @param {Event} browserEvent Browser event.
+   * @param {UIEvent} browserEvent Browser event.
    * @param {string=} opt_type Type.
    */
   handleBrowserEvent(browserEvent, opt_type) {
