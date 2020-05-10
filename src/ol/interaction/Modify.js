@@ -130,10 +130,10 @@ export class ModifyEvent extends Event {
    * @param {ModifyEventType} type Type.
    * @param {Collection<Feature>} features
    * The features modified.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserPointerEvent
-   * Associated {@link module:ol/MapBrowserPointerEvent}.
+   * @param {import("../MapBrowserEvent.js").default} MapBrowserEvent
+   * Associated {@link module:ol/MapBrowserEvent}.
    */
-  constructor(type, features, mapBrowserPointerEvent) {
+  constructor(type, features, MapBrowserEvent) {
     super(type);
 
     /**
@@ -148,7 +148,7 @@ export class ModifyEvent extends Event {
      * @type {import("../MapBrowserEvent.js").default}
      * @api
      */
-    this.mapBrowserEvent = mapBrowserPointerEvent;
+    this.mapBrowserEvent = MapBrowserEvent;
   }
 }
 
@@ -350,7 +350,7 @@ class Modify extends PointerInteraction {
     );
 
     /**
-     * @type {import("../MapBrowserPointerEvent.js").default}
+     * @type {import("../MapBrowserEvent.js").default}
      * @private
      */
     this.lastPointerEvent_ = null;
@@ -376,7 +376,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Map browser event
+   * @param {import("../MapBrowserEvent.js").default} evt Map browser event
    * @private
    */
   willModifyFeatures_(evt) {
@@ -743,11 +743,11 @@ class Modify extends PointerInteraction {
 
   /**
    * Handles the {@link module:ol/MapBrowserEvent map browser event} and may modify the geometry.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
-    if (!mapBrowserEvent.pointerEvent) {
+    if (!mapBrowserEvent.originalEvent) {
       return true;
     }
     this.lastPointerEvent_ = mapBrowserEvent;
@@ -780,7 +780,7 @@ class Modify extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+   * @param {import("../MapBrowserEvent.js").default} evt Event.
    */
   handleDragEvent(evt) {
     this.ignoreNextSingleClick_ = false;
@@ -874,7 +874,7 @@ class Modify extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+   * @param {import("../MapBrowserEvent.js").default} evt Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(evt) {
@@ -977,7 +977,7 @@ class Modify extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+   * @param {import("../MapBrowserEvent.js").default} evt Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(evt) {

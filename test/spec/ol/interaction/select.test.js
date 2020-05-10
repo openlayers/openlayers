@@ -2,8 +2,8 @@ import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import Map from '../../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Select from '../../../../src/ol/interaction/Select.js';
 import Style from '../../../../src/ol/style/Style.js';
@@ -106,7 +106,7 @@ describe('ol.interaction.Select', function () {
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey,
     };
-    map.handleMapBrowserEvent(new MapBrowserPointerEvent(type, map, event));
+    map.handleMapBrowserEvent(new MapBrowserEvent(type, map, event));
   }
 
   describe('constructor', function () {

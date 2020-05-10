@@ -12,7 +12,7 @@ class MapBrowserEvent extends MapEvent {
   /**
    * @param {string} type Event type.
    * @param {import("./PluggableMap.js").default} map Map.
-   * @param {Event} browserEvent Browser event.
+   * @param {PointerEvent} browserEvent Browser event.
    * @param {boolean=} opt_dragging Is the map currently being dragged?
    * @param {?import("./PluggableMap.js").FrameState=} opt_frameState Frame state.
    */
@@ -22,7 +22,7 @@ class MapBrowserEvent extends MapEvent {
     /**
      * The original browser event.
      * @const
-     * @type {Event}
+     * @type {PointerEvent}
      * @api
      */
     this.originalEvent = browserEvent;

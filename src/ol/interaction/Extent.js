@@ -276,11 +276,11 @@ class Extent extends PointerInteraction {
   }
 
   /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
-    if (!mapBrowserEvent.pointerEvent) {
+    if (!mapBrowserEvent.originalEvent) {
       return true;
     }
     //display pointer (if not dragging)
@@ -298,7 +298,7 @@ class Extent extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
@@ -359,7 +359,7 @@ class Extent extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     if (this.pointerHandler_) {
@@ -371,7 +371,7 @@ class Extent extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {

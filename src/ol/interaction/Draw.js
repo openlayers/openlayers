@@ -8,8 +8,8 @@ import Feature from '../Feature.js';
 import GeometryType from '../geom/GeometryType.js';
 import InteractionProperty from './Property.js';
 import LineString from '../geom/LineString.js';
+import MapBrowserEvent from '../MapBrowserEvent.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -493,7 +493,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually draw or finish the drawing.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Map browser event.
+   * @param {import("../MapBrowserEvent.js").default} event Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
    */
@@ -545,7 +545,7 @@ class Draw extends PointerInteraction {
           event.preventDefault();
         }
       } else if (
-        event.pointerEvent.pointerType == 'mouse' ||
+        event.originalEvent.pointerType == 'mouse' ||
         (event.type === MapBrowserEventType.POINTERDRAG &&
           this.downTimeout_ === undefined)
       ) {
@@ -560,7 +560,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(event) {
@@ -577,10 +577,10 @@ class Draw extends PointerInteraction {
       this.downTimeout_ = setTimeout(
         function () {
           this.handlePointerMove_(
-            new MapBrowserPointerEvent(
+            new MapBrowserEvent(
               MapBrowserEventType.POINTERMOVE,
               event.map,
-              event.pointerEvent,
+              event.originalEvent,
               false,
               event.frameState
             )
@@ -598,7 +598,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(event) {

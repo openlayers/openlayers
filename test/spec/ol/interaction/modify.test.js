@@ -4,7 +4,7 @@ import Event from '../../../../src/ol/events/Event.js';
 import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -102,7 +102,7 @@ describe('ol.interaction.Modify', function () {
     pointerEvent.preventDefault = function () {};
     pointerEvent.button = button;
     pointerEvent.isPrimary = true;
-    const event = new MapBrowserPointerEvent(type, map, pointerEvent);
+    const event = new MapBrowserEvent(type, map, pointerEvent);
     map.handleMapBrowserEvent(event);
   }
 

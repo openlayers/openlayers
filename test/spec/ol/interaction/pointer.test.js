@@ -1,6 +1,6 @@
 import Event from '../../../../src/ol/events/Event.js';
 import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import PointerInteraction from '../../../../src/ol/interaction/Pointer.js';
 
 describe('ol.interaction.Pointer', function () {
@@ -16,7 +16,7 @@ describe('ol.interaction.Pointer', function () {
       pointerEvent.preventDefault = function () {
         defaultPrevented = true;
       };
-      event = new MapBrowserPointerEvent(type, new Map(), pointerEvent);
+      event = new MapBrowserEvent(type, new Map(), pointerEvent);
       defaultPrevented = false;
     });
 

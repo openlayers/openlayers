@@ -259,7 +259,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Map browser event.
+   * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(evt) {
@@ -307,7 +307,7 @@ class Snap extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+   * @param {import("../MapBrowserEvent.js").default} evt Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(evt) {
