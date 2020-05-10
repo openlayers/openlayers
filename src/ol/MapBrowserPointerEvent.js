@@ -3,6 +3,10 @@
  */
 import MapBrowserEvent from './MapBrowserEvent.js';
 
+/**
+ * @classdesc
+ * @api
+ */
 class MapBrowserPointerEvent extends MapBrowserEvent {
   /**
    * @param {string} type Event type.
