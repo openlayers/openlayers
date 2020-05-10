@@ -32,6 +32,7 @@ class ReprojImage extends ImageBase {
    * @param {number} pixelRatio Pixel ratio.
    * @param {FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
+   * @param {object=} opt_contextOptions Properties to set on the canvas context.
    */
   constructor(
     sourceProj,
@@ -39,7 +40,8 @@ class ReprojImage extends ImageBase {
     targetExtent,
     targetResolution,
     pixelRatio,
-    getImageFunction
+    getImageFunction,
+    opt_contextOptions
   ) {
     const maxSourceExtent = sourceProj.getExtent();
     const maxTargetExtent = targetProj.getExtent();
@@ -122,6 +124,12 @@ class ReprojImage extends ImageBase {
 
     /**
      * @private
+     * @type {object}
+     */
+    this.contextOptions_ = opt_contextOptions;
+
+    /**
+     * @private
      * @type {HTMLCanvasElement}
      */
     this.canvas_ = null;
@@ -181,7 +189,9 @@ class ReprojImage extends ImageBase {
             image: this.sourceImage_.getImage(),
           },
         ],
-        0
+        0,
+        undefined,
+        this.contextOptions_
       );
     }
     this.state = sourceState;

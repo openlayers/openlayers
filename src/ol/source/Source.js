@@ -141,6 +141,13 @@ class Source extends BaseObject {
   }
 
   /**
+   * @return {Object|undefined} Context options.
+   */
+  getContextOptions() {
+    return undefined;
+  }
+
+  /**
    * Refreshes the source. The source will be cleared, and data from the server will be reloaded.
    * @api
    */

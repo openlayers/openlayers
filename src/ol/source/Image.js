@@ -6,6 +6,7 @@ import ImageState from '../ImageState.js';
 import ReprojImage from '../reproj/Image.js';
 import Source from './Source.js';
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
+import {IMAGE_SMOOTHING_DISABLED} from './common.js';
 import {abstract} from '../util.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
@@ -62,6 +63,7 @@ export class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {Array<number>} [resolutions]
  * @property {import("./State.js").default} [state]
@@ -105,6 +107,13 @@ class ImageSource extends Source {
      * @type {number}
      */
     this.reprojectedRevision_ = 0;
+
+    /**
+     * @private
+     * @type {object|undefined}
+     */
+    this.contextOptions_ =
+      options.imageSmoothing === false ? IMAGE_SMOOTHING_DISABLED : undefined;
   }
 
   /**
@@ -112,6 +121,13 @@ class ImageSource extends Source {
    */
   getResolutions() {
     return this.resolutions_;
+  }
+
+  /**
+   * @return {Object|undefined} Context options.
+   */
+  getContextOptions() {
+    return this.contextOptions_;
   }
 
   /**
@@ -173,7 +189,8 @@ class ImageSource extends Source {
             pixelRatio,
             sourceProjection
           );
-        }.bind(this)
+        }.bind(this),
+        this.contextOptions_
       );
       this.reprojectedRevision_ = this.getRevision();
 

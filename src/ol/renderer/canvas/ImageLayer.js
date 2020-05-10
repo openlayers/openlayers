@@ -4,6 +4,7 @@
 import CanvasLayerRenderer from './Layer.js';
 import ViewHint from '../../ViewHint.js';
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
+import {assign} from '../../obj.js';
 import {compose as composeTransform, makeInverse} from '../../transform.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {createTransformString} from '../../render/canvas.js';
@@ -180,6 +181,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const dw = img.width * transform[0];
     const dh = img.height * transform[3];
 
+    assign(context, this.getLayer().getSource().getContextOptions());
     this.preRender(context, frameState);
     if (dw >= 0.5 && dh >= 0.5) {
       const opacity = layerState.opacity;
