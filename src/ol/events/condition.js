@@ -210,8 +210,8 @@ export const targetNotEditable = function (mapBrowserEvent) {
  * @api
  */
 export const mouseOnly = function (mapBrowserEvent) {
-  const pointerEvent = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent)
-    .pointerEvent;
+  const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
+    .originalEvent;
   assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvent.pointerType == 'mouse';
@@ -225,8 +225,8 @@ export const mouseOnly = function (mapBrowserEvent) {
  * @api
  */
 export const touchOnly = function (mapBrowserEvent) {
-  const pointerEvt = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent)
-    .pointerEvent;
+  const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
+    .originalEvent;
   assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'touch';
@@ -240,8 +240,8 @@ export const touchOnly = function (mapBrowserEvent) {
  * @api
  */
 export const penOnly = function (mapBrowserEvent) {
-  const pointerEvt = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent)
-    .pointerEvent;
+  const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
+    .originalEvent;
   assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'pen';
@@ -257,8 +257,8 @@ export const penOnly = function (mapBrowserEvent) {
  * @api
  */
 export const primaryAction = function (mapBrowserEvent) {
-  const pointerEvent = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent)
-    .pointerEvent;
+  const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
+    .originalEvent;
   assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
   return pointerEvent.isPrimary && pointerEvent.button === 0;
 };

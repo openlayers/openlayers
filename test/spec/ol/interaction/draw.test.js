@@ -7,7 +7,7 @@ import Feature from '../../../../src/ol/Feature.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
@@ -75,7 +75,7 @@ describe('ol.interaction.Draw', function () {
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
    * @param {boolean=} opt_shiftKey Shift key is pressed.
-   * @return {module:ol/MapBrowserPointerEvent} The simulated event.
+   * @return {module:ol/MapBrowserEvent} The simulated event.
    */
   function simulateEvent(type, x, y, opt_shiftKey) {
     const viewport = map.getViewport();
@@ -91,7 +91,7 @@ describe('ol.interaction.Draw', function () {
     event.preventDefault = function () {};
     event.pointerType = 'mouse';
     event.pointerId = 0;
-    const simulatedEvent = new MapBrowserPointerEvent(type, map, event);
+    const simulatedEvent = new MapBrowserEvent(type, map, event);
     map.handleMapBrowserEvent(simulatedEvent);
     return simulatedEvent;
   }

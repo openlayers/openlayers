@@ -60,7 +60,7 @@ class DragRotate extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -84,7 +84,7 @@ class DragRotate extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -100,7 +100,7 @@ class DragRotate extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {

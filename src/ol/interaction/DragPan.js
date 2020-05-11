@@ -87,7 +87,7 @@ class DragPan extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     if (!this.panning_) {
@@ -123,7 +123,7 @@ class DragPan extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -163,7 +163,7 @@ class DragPan extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
@@ -192,7 +192,7 @@ class DragPan extends PointerInteraction {
 }
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Browser event.
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Browser event.
  * @return {boolean} Combined condition result.
  */
 function defaultCondition(mapBrowserEvent) {

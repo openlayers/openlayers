@@ -2,7 +2,7 @@ import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Translate, {
   TranslateEvent,
@@ -69,7 +69,7 @@ describe('ol.interaction.Translate', function () {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new MapBrowserPointerEvent(type, map, {
+    const event = new MapBrowserEvent(type, map, {
       type: type,
       target: viewport.firstChild,
       pointerId: 0,

@@ -148,7 +148,7 @@ class MousePosition extends Control {
   }
 
   /**
-   * @param {Event} event Browser event.
+   * @param {MouseEvent} event Browser event.
    * @protected
    */
   handleMouseMove(event) {

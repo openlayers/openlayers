@@ -189,7 +189,7 @@ class Translate extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(event) {
@@ -217,7 +217,7 @@ class Translate extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(event) {
@@ -245,7 +245,7 @@ class Translate extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   handleDragEvent(event) {
     if (this.lastCoordinate_) {
@@ -277,7 +277,7 @@ class Translate extends PointerInteraction {
 
   /**
    * Handle pointer move events.
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   handleMoveEvent(event) {
     const elem = event.map.getViewport();

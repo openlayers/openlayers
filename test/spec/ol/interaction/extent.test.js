@@ -1,6 +1,6 @@
 import ExtentInteraction from '../../../../src/ol/interaction/Extent.js';
 import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
 
 describe('ol.interaction.Extent', function () {
@@ -58,8 +58,8 @@ describe('ol.interaction.Extent', function () {
     pointerEvent.shiftKey = shiftKey;
     pointerEvent.pointerId = 0;
     pointerEvent.preventDefault = function () {};
-    const event = new MapBrowserPointerEvent(type, map, pointerEvent);
-    event.pointerEvent.pointerId = 1;
+    const event = new MapBrowserEvent(type, map, pointerEvent);
+    event.originalEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
 

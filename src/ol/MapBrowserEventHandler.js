@@ -5,8 +5,8 @@
 import 'elm-pep';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
-import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import PointerEventType from './pointer/EventType.js';
 import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {listen, unlistenByKey} from './events.js';
@@ -122,7 +122,7 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   emulateClick_(pointerEvent) {
-    let newEvent = new MapBrowserPointerEvent(
+    let newEvent = new MapBrowserEvent(
       MapBrowserEventType.CLICK,
       this.map_,
       pointerEvent
@@ -132,7 +132,7 @@ class MapBrowserEventHandler extends EventTarget {
       // double-click
       clearTimeout(this.clickTimeoutId_);
       this.clickTimeoutId_ = undefined;
-      newEvent = new MapBrowserPointerEvent(
+      newEvent = new MapBrowserEvent(
         MapBrowserEventType.DBLCLICK,
         this.map_,
         pointerEvent
@@ -143,7 +143,7 @@ class MapBrowserEventHandler extends EventTarget {
       this.clickTimeoutId_ = setTimeout(
         function () {
           this.clickTimeoutId_ = undefined;
-          const newEvent = new MapBrowserPointerEvent(
+          const newEvent = new MapBrowserEvent(
             MapBrowserEventType.SINGLECLICK,
             this.map_,
             pointerEvent
@@ -183,7 +183,7 @@ class MapBrowserEventHandler extends EventTarget {
    */
   handlePointerUp_(pointerEvent) {
     this.updateActivePointers_(pointerEvent);
-    const newEvent = new MapBrowserPointerEvent(
+    const newEvent = new MapBrowserEvent(
       MapBrowserEventType.POINTERUP,
       this.map_,
       pointerEvent
@@ -229,7 +229,7 @@ class MapBrowserEventHandler extends EventTarget {
    */
   handlePointerDown_(pointerEvent) {
     this.updateActivePointers_(pointerEvent);
-    const newEvent = new MapBrowserPointerEvent(
+    const newEvent = new MapBrowserEvent(
       MapBrowserEventType.POINTERDOWN,
       this.map_,
       pointerEvent
@@ -299,7 +299,7 @@ class MapBrowserEventHandler extends EventTarget {
     // moved a significant distance.
     if (this.isMoving_(pointerEvent)) {
       this.dragging_ = true;
-      const newEvent = new MapBrowserPointerEvent(
+      const newEvent = new MapBrowserEvent(
         MapBrowserEventType.POINTERDRAG,
         this.map_,
         pointerEvent,
@@ -311,7 +311,7 @@ class MapBrowserEventHandler extends EventTarget {
 
   /**
    * Wrap and relay a pointer event.  Note that this requires that the type
-   * string for the MapBrowserPointerEvent matches the PointerEvent type.
+   * string for the MapBrowserEvent matches the PointerEvent type.
    * @param {PointerEvent} pointerEvent Pointer
    * event.
    * @private
@@ -320,12 +320,7 @@ class MapBrowserEventHandler extends EventTarget {
     this.originalPointerMoveEvent_ = pointerEvent;
     const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
     this.dispatchEvent(
-      new MapBrowserPointerEvent(
-        pointerEvent.type,
-        this.map_,
-        pointerEvent,
-        dragging
-      )
+      new MapBrowserEvent(pointerEvent.type, this.map_, pointerEvent, dragging)
     );
   }
 
