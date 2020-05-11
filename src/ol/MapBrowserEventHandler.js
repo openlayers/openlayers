@@ -272,6 +272,19 @@ class MapBrowserEventHandler extends EventTarget {
           this
         )
       );
+      if (
+        this.element_.getRootNode &&
+        this.element_.getRootNode() !== document
+      ) {
+        this.dragListenerKeys_.push(
+          listen(
+            this.element_.getRootNode(),
+            MapBrowserEventType.POINTERUP,
+            this.handlePointerUp_,
+            this
+          )
+        );
+      }
     }
   }
 
