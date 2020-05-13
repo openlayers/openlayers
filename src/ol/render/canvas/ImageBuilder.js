@@ -82,7 +82,7 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {import("../../size.js").Size|undefined}
      */
     this.scale_ = undefined;
 
@@ -145,7 +145,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.originY_,
       this.rotateWithView_,
       this.rotation_,
-      this.scale_ * this.pixelRatio,
+      [this.scale_[0] * this.pixelRatio, this.scale_[1] * this.pixelRatio],
       this.width_,
     ]);
     this.hitDetectionInstructions.push([
@@ -202,7 +202,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.originY_,
       this.rotateWithView_,
       this.rotation_,
-      this.scale_ * this.pixelRatio,
+      [this.scale_[0] * this.pixelRatio, this.scale_[1] * this.pixelRatio],
       this.width_,
     ]);
     this.hitDetectionInstructions.push([
@@ -268,7 +268,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.originY_ = origin[1];
     this.rotateWithView_ = imageStyle.getRotateWithView();
     this.rotation_ = imageStyle.getRotation();
-    this.scale_ = imageStyle.getScale();
+    this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
   }
 }

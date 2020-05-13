@@ -303,6 +303,27 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       this.beginGeometry(geometry, feature);
 
+      // adjust padding for negative scale
+      let padding = textState.padding;
+      if (
+        padding != defaultPadding &&
+        (textState.scale[0] < 0 || textState.scale[1] < 0)
+      ) {
+        let p0 = textState.padding[0];
+        let p1 = textState.padding[1];
+        let p2 = textState.padding[2];
+        let p3 = textState.padding[3];
+        if (textState.scale[0] < 0) {
+          p1 = -p1;
+          p3 = -p3;
+        }
+        if (textState.scale[1] < 0) {
+          p0 = -p0;
+          p2 = -p2;
+        }
+        padding = [p0, p1, p2, p3];
+      }
+
       // The image is unknown at this stage so we pass null; it will be computed at render time.
       // For clarity, we pass NaN for offsetX, offsetY, width and height, which will be computed at
       // render time.
@@ -321,11 +342,11 @@ class CanvasTextBuilder extends CanvasBuilder {
         0,
         this.textRotateWithView_,
         this.textRotation_,
-        1,
+        [1, 1],
         NaN,
-        textState.padding == defaultPadding
+        padding == defaultPadding
           ? defaultPadding
-          : textState.padding.map(function (p) {
+          : padding.map(function (p) {
               return p * pixelRatio;
             }),
         !!textState.backgroundFill,
@@ -338,6 +359,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetY_,
         geometryWidths,
       ]);
+      const scale = 1 / pixelRatio;
       this.hitDetectionInstructions.push([
         CanvasInstruction.DRAW_IMAGE,
         begin,
@@ -352,9 +374,9 @@ class CanvasTextBuilder extends CanvasBuilder {
         0,
         this.textRotateWithView_,
         this.textRotation_,
-        1 / this.pixelRatio,
+        [scale, scale],
         NaN,
-        textState.padding,
+        padding,
         !!textState.backgroundFill,
         !!textState.backgroundStroke,
         this.text_,
@@ -431,9 +453,8 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     const offsetY = this.textOffsetY_ * pixelRatio;
     const text = this.text_;
-    const textScale = textState.scale;
     const strokeWidth = strokeState
-      ? (strokeState.lineWidth * textScale) / 2
+      ? (strokeState.lineWidth * Math.abs(textState.scale[0])) / 2
       : 0;
 
     this.instructions.push([
@@ -529,7 +550,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       textState = this.textState_;
       const font = textStyle.getFont() || defaultFont;
       registerFont(font);
-      const textScale = textStyle.getScale();
+      const textScale = textStyle.getScaleArray();
       textState.overflow = textStyle.getOverflow();
       textState.font = font;
       textState.maxAngle = textStyle.getMaxAngle();
@@ -540,7 +561,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       textState.backgroundFill = textStyle.getBackgroundFill();
       textState.backgroundStroke = textStyle.getBackgroundStroke();
       textState.padding = textStyle.getPadding() || defaultPadding;
-      textState.scale = textScale === undefined ? 1 : textScale;
+      textState.scale = textScale === undefined ? [1, 1] : textScale;
 
       const textOffsetX = textStyle.getOffsetX();
       const textOffsetY = textStyle.getOffsetY();

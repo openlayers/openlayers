@@ -36,7 +36,7 @@ import {getUid} from '../util.js';
  * @property {import("./IconOrigin.js").default} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
  * @property {number} [opacity=1] Opacity of the icon.
- * @property {number} [scale=1] Scale.
+ * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {import("../size.js").Size} [size] Icon size in pixel. Can be used together with `offset` to define the
@@ -69,7 +69,7 @@ class Icon extends ImageStyle {
     const rotation = options.rotation !== undefined ? options.rotation : 0;
 
     /**
-     * @type {number}
+     * @type {number|import("../size.js").Size}
      */
     const scale = options.scale !== undefined ? options.scale : 1;
 
@@ -215,6 +215,7 @@ class Icon extends ImageStyle {
    * @api
    */
   clone() {
+    const scale = this.getScale();
     return new Icon({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
@@ -230,7 +231,7 @@ class Icon extends ImageStyle {
       offsetOrigin: this.offsetOrigin_,
       size: this.size_ !== null ? this.size_.slice() : undefined,
       opacity: this.getOpacity(),
-      scale: this.getScale(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
     });
