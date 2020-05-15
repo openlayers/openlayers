@@ -33,9 +33,9 @@ class ZoomToExtent extends Control {
     const options = opt_options ? opt_options : {};
 
     super({
+      element: document.createElement('div'),
       target: options.target,
     });
-    this.createElement();
 
     /**
      * @type {?import("../extent.js").Extent}

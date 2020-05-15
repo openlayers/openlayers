@@ -50,11 +50,16 @@ class Control extends BaseObject {
   constructor(options) {
     super();
 
+    const element = options.element;
+    if (element && !options.target && !element.style.pointerEvents) {
+      element.style.pointerEvents = 'auto';
+    }
+
     /**
      * @protected
      * @type {HTMLElement}
      */
-    this.element = options.element ? options.element : null;
+    this.element = element ? element : null;
 
     /**
      * @private
@@ -81,17 +86,6 @@ class Control extends BaseObject {
     if (options.target) {
       this.setTarget(options.target);
     }
-  }
-
-  /**
-   * Creates the element for this control and sets it on the instance.
-   * @return {HTMLDivElement} Element for this control.
-   */
-  createElement() {
-    const element = document.createElement('div');
-    element.style.pointerEvents = 'auto';
-    this.element = element;
-    return element;
   }
 
   /**
