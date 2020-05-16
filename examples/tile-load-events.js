@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 /**
  * Renders a progress bar.
@@ -71,13 +71,15 @@ Progress.prototype.hide = function () {
 
 const progress = new Progress(document.getElementById('progress'));
 
-const key =
-  'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
-const source = new TileJSON({
-  url:
-    'https://api.tiles.mapbox.com/v4/mapbox.world-bright.json?secure&access_token=' +
-    key,
-  crossOrigin: 'anonymous',
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
+const source = new XYZ({
+  attributions: attributions,
+  url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
+  tileSize: 512,
 });
 
 source.on('tileloadstart', function () {

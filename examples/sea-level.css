@@ -7,3 +7,7 @@
 a.location {
   cursor: pointer;
 }
+
+#map {
+  background: #85ccf9;
+}
