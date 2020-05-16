@@ -38,10 +38,10 @@ class Rotate extends Control {
     const options = opt_options ? opt_options : {};
 
     super({
+      element: document.createElement('div'),
       render: options.render,
       target: options.target,
     });
-    this.createElement();
 
     const className =
       options.className !== undefined ? options.className : 'ol-rotate';

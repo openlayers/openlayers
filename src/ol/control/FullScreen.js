@@ -72,9 +72,9 @@ class FullScreen extends Control {
     const options = opt_options ? opt_options : {};
 
     super({
+      element: document.createElement('div'),
       target: options.target,
     });
-    this.createElement();
 
     /**
      * @private

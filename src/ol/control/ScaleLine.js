@@ -86,10 +86,10 @@ class ScaleLine extends Control {
         : 'ol-scale-line';
 
     super({
+      element: document.createElement('div'),
       render: options.render,
       target: options.target,
     });
-    this.createElement();
 
     /**
      * @private

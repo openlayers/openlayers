@@ -27,6 +27,30 @@ describe('ol.control.Control', function () {
   });
 });
 
+describe('element', function () {
+  it('sets `pointer-events: auto` for default target', function () {
+    const control = new Control({
+      element: document.createElement('div'),
+    });
+    expect(control.element.style.pointerEvents).to.be('auto');
+  });
+  it('does not set `pointer-events: auto` for custom target', function () {
+    const control = new Control({
+      element: document.createElement('div'),
+      target: document.createElement('div'),
+    });
+    expect(control.element.style.pointerEvents).to.be('');
+  });
+  it('does not override `pointer-events` style', function () {
+    const element = document.createElement('div');
+    element.style.pointerEvents = 'none';
+    const control = new Control({
+      element: element,
+    });
+    expect(control.element.style.pointerEvents).to.be('none');
+  });
+});
+
 describe("ol.control.Control's target", function () {
   describe('target as string or element', function () {
     it('transforms target from string to element', function () {
