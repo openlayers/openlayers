@@ -3,6 +3,11 @@ module.exports = {
   entry: './build/index.js',
   devtool: 'source-map',
   mode: 'production',
+  resolve: {
+    alias: {
+      ol: path.resolve('./src/ol'),
+    },
+  },
   output: {
     path: path.resolve('./build/legacy'),
     filename: 'ol.js',
