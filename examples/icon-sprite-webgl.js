@@ -1,24 +1,26 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import {Vector} from '../src/ol/source.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
-const key =
-  'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new TileJSON({
+      source: new XYZ({
+        attributions: attributions,
         url:
-          'https://api.tiles.mapbox.com/v4/mapbox.world-dark.json?secure&access_token=' +
-          key,
-        crossOrigin: 'anonymous',
+          'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+        tileSize: 512,
       }),
     }),
   ],

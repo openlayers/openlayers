@@ -1,3 +1,4 @@
+const assert = require('assert');
 const frontMatter = require('front-matter');
 const fs = require('fs');
 const handlebars = require('handlebars');
@@ -335,6 +336,7 @@ class ExampleBuilder {
         : '';
     }
 
+    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
     const templatePath = path.join(this.templates, attributes.layout);
     const templateSource = await readFile(templatePath, readOptions);
 

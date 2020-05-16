@@ -1,18 +1,21 @@
 import Map from '../src/ol/Map.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
-const key =
-  'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
 const raster = new TileLayer({
-  source: new TileJSON({
-    url:
-      'https://api.tiles.mapbox.com/v4/mapbox.world-dark.json?secure&access_token=' +
-      key,
+  source: new XYZ({
+    attributions: attributions,
+    url: 'https://api.maptiler.com/maps/darkmatter/{z}/{x}/{y}.png?key=' + key,
+    tileSize: 512,
   }),
 });
 
