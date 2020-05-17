@@ -797,6 +797,7 @@ class RasterSource extends ImageSource {
     if (this.processor_) {
       this.processor_.dispose();
     }
+    super.disposeInternal();
   }
 }
 
