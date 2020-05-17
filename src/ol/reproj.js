@@ -300,11 +300,17 @@ export function render(
       y2 = source[2][1];
     // Make sure that everything is on pixel boundaries
     const u0 = pixelRound((target[0][0] - targetTopLeft[0]) / targetResolution);
-    const v0 = pixelRound(-(target[0][1] - targetTopLeft[1]) / targetResolution);
+    const v0 = pixelRound(
+      -(target[0][1] - targetTopLeft[1]) / targetResolution
+    );
     const u1 = pixelRound((target[1][0] - targetTopLeft[0]) / targetResolution);
-    const v1 = pixelRound(-(target[1][1] - targetTopLeft[1]) / targetResolution);
+    const v1 = pixelRound(
+      -(target[1][1] - targetTopLeft[1]) / targetResolution
+    );
     const u2 = pixelRound((target[2][0] - targetTopLeft[0]) / targetResolution);
-    const v2 = pixelRound(-(target[2][1] - targetTopLeft[1]) / targetResolution);
+    const v2 = pixelRound(
+      -(target[2][1] - targetTopLeft[1]) / targetResolution
+    );
 
     // Shift all the source points to improve numerical stability
     // of all the subsequent calculations. The [x0, y0] is used here.
