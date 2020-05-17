@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = function (karma) {
   karma.set({
-    browsers: ['Chrome'],
+    browsers: [process.env.CI ? 'ChromeHeadless' : 'Chrome'],
     browserDisconnectTolerance: 2,
     frameworks: ['mocha'],
     client: {

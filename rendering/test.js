@@ -381,7 +381,7 @@ if (require.main === module) {
     .option('headless', {
       describe: 'Launch Puppeteer in headless mode',
       type: 'boolean',
-      default: false,
+      default: !!process.env.CI,
     })
     .option('puppeteer-args', {
       describe: 'Additional args for Puppeteer',

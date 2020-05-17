@@ -24,4 +24,4 @@ const map = new Map({
 });
 
 map.getView().setRotation(Math.PI / 4);
-render({message: 'Vector tile layer rotates'});
+render({message: 'Vector tile layer rotates', tolerance: 0.01});
