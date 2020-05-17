@@ -298,12 +298,13 @@ export function render(
       y1 = source[1][1];
     let x2 = source[2][0],
       y2 = source[2][1];
-    const u0 = (target[0][0] - targetTopLeft[0]) / targetResolution;
-    const v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
-    const u1 = (target[1][0] - targetTopLeft[0]) / targetResolution;
-    const v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
-    const u2 = (target[2][0] - targetTopLeft[0]) / targetResolution;
-    const v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
+    // Make sure that everything is on pixel boundaries
+    const u0 = pixelRound((target[0][0] - targetTopLeft[0]) / targetResolution);
+    const v0 = pixelRound(-(target[0][1] - targetTopLeft[1]) / targetResolution);
+    const u1 = pixelRound((target[1][0] - targetTopLeft[0]) / targetResolution);
+    const v1 = pixelRound(-(target[1][1] - targetTopLeft[1]) / targetResolution);
+    const u2 = pixelRound((target[2][0] - targetTopLeft[0]) / targetResolution);
+    const v2 = pixelRound(-(target[2][1] - targetTopLeft[1]) / targetResolution);
 
     // Shift all the source points to improve numerical stability
     // of all the subsequent calculations. The [x0, y0] is used here.
@@ -335,35 +336,28 @@ export function render(
       isBrokenDiagonalRendering() ||
       opt_contextOptions === IMAGE_SMOOTHING_DISABLED
     ) {
-      // Make sure that everything is on pixel boundaries
-      const u0r = pixelRound(u0);
-      const v0r = pixelRound(v0);
-      const u1r = pixelRound(u1);
-      const v1r = pixelRound(v1);
-      const u2r = pixelRound(u2);
-      const v2r = pixelRound(v2);
       // Make sure that all lines are horizontal or vertical
-      context.moveTo(u1r, v1r);
+      context.moveTo(u1, v1);
       // This is the diagonal line. Do it in 4 steps
       const steps = 4;
-      const ud = u0r - u1r;
-      const vd = v0r - v1r;
+      const ud = u0 - u1;
+      const vd = v0 - v1;
       for (let step = 0; step < steps; step++) {
         // Go horizontally
         context.lineTo(
-          u1r + pixelRound(((step + 1) * ud) / steps),
-          v1r + pixelRound((step * vd) / (steps - 1))
+          u1 + pixelRound(((step + 1) * ud) / steps),
+          v1 + pixelRound((step * vd) / (steps - 1))
         );
         // Go vertically
         if (step != steps - 1) {
           context.lineTo(
-            u1r + pixelRound(((step + 1) * ud) / steps),
-            v1r + pixelRound(((step + 1) * vd) / (steps - 1))
+            u1 + pixelRound(((step + 1) * ud) / steps),
+            v1 + pixelRound(((step + 1) * vd) / (steps - 1))
           );
         }
       }
       // We are almost at u0r, v0r
-      context.lineTo(u2r, v2r);
+      context.lineTo(u2, v2);
     } else {
       context.moveTo(u1, v1);
       context.lineTo(u0, v0);
