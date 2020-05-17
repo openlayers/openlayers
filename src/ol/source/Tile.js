@@ -19,7 +19,7 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {import("./Source.js").AttributionLike} [attributions]
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
- * @property {boolean} [opaque=false]
+ * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [tilePixelRatio]
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {import("./State.js").default} [state]
