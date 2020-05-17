@@ -23,7 +23,7 @@ import {getUid} from '../util.js';
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [imageSmoothing=true] Enable image smoothing.
- * @property {boolean} [opaque=true] Whether the layer is opaque.
+ * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.

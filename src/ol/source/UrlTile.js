@@ -13,7 +13,7 @@ import {getUid} from '../util.js';
  * @property {import("./Source.js").AttributionLike} [attributions]
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
- * @property {boolean} [opaque]
+ * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {import("./State.js").default} [state]
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
