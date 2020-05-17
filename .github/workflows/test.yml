@@ -41,3 +41,10 @@ jobs:
 
       - name: Run Tests
         run: npm test
+
+      - name: Store Rendering Test Artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: rendering-tests
+          path: rendering/cases/
