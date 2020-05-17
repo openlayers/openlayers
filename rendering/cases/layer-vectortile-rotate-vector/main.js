@@ -48,4 +48,7 @@ new Map({
   }),
 });
 
-render({message: 'Vector tile layer rotates with vector layer on top'});
+render({
+  message: 'Vector tile layer rotates with vector layer on top',
+  tolerance: 0.01,
+});

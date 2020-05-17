@@ -46,4 +46,4 @@ const unmanaged = new VectorLayer({
 });
 unmanaged.setMap(map);
 
-render();
+render({tolerance: 0.01});
