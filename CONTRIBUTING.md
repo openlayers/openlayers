@@ -1,6 +1,6 @@
 # Contributing to OpenLayers
 
-Thanks for your interest in contributing to OpenLayers.
+Thanks for your interest in contributing to OpenLayers.  Please see the project's [Code of Conduct](https://github.com/openlayers/openlayers/blob/master/CODE_OF_CONDUCT.md) before proceeding.
 
 ## Asking Questions
 
