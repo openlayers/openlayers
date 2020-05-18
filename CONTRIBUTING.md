@@ -42,8 +42,7 @@ Your pull request must:
 
  * Follow OpenLayers's coding style.
 
- * Pass the integration tests run automatically by the CircleCI Continuous
-   Integration system.
+ * Pass the integration tests run automatically by the Continuous Integration system.
 
  * Address a single issue or add a single item of functionality.
 
