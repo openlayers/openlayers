@@ -22,7 +22,7 @@
     "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package && shx cp README.md build/ol",
     "build-index": "npm run build-package && node tasks/generate-index",
     "build-legacy": "shx rm -rf build && npm run build-index && webpack --config config/webpack-config-legacy-build.js && cleancss --source-map src/ol/ol.css -o build/legacy/ol.css",
-    "build-site": "npm run build-examples && npm run apidoc && mkdir build/site && cp site/index.html build/site && mv build/apidoc build/site/apidoc && mv build/examples build/site/examples",
+    "build-site": "npm run build-examples && npm run apidoc && mkdir -p build/site && cp site/index.html build/site && mv build/apidoc build/site/apidoc && mv build/examples build/site/examples",
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
     "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build/ol/src && node tasks/serialize-workers && tsc --project config/tsconfig-build.json",
     "typecheck": "tsc --pretty",
