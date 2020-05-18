@@ -64,13 +64,15 @@ module.exports = {
       templates: path.join(__dirname, '..', 'templates'),
       common: 'common',
     }),
-    new CopyPlugin([
-      {from: '../src/ol/ol.css', to: 'css'},
-      {from: 'data', to: 'data'},
-      {from: 'resources', to: 'resources'},
-      {from: 'Jugl.js', to: 'Jugl.js'},
-      {from: 'index.html', to: 'index.html'},
-    ]),
+    new CopyPlugin({
+      patterns: [
+        {from: '../src/ol/ol.css', to: 'css'},
+        {from: 'data', to: 'data'},
+        {from: 'resources', to: 'resources'},
+        {from: 'Jugl.js', to: 'Jugl.js'},
+        {from: 'index.html', to: 'index.html'},
+      ],
+    }),
   ],
   devtool: 'source-map',
   output: {
