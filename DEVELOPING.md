@@ -5,12 +5,6 @@
 You will obviously start by
 [forking](https://github.com/openlayers/openlayers/fork) the OpenLayers repository.
 
-### CircleCI
-
-The CircleCI hook is enabled on the Github repository. This means every pull request
-is run through a full test suite to ensure it compiles and passes the tests. Failing
-pull requests will not be merged.
-
 ### Development dependencies
 
 The minimum requirements are:
