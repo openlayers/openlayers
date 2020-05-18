@@ -25,7 +25,7 @@ import {mouseActionButton} from '../events/condition.js';
  * @property {EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol/pixel~Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
- * @property {function(this:DragBox, import("../MapBrowserEvent.js").default)} [onBoxEnd] Code to execute just
+ * @property {function(this:DragBox, import("../MapBrowserEvent.js").default):void} [onBoxEnd] Code to execute just
  * before `boxend` is fired.
  */
 
