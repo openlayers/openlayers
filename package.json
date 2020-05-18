@@ -61,7 +61,7 @@
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "4.3.0",
-    "copy-webpack-plugin": "^5.0.4",
+    "copy-webpack-plugin": "^6.0.1",
     "coveralls": "3.1.0",
     "eslint": "^6.8.0",
     "eslint-config-openlayers": "^14.0.0",
