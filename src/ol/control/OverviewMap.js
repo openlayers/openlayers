@@ -56,7 +56,7 @@ class ControlledMap extends PluggableMap {
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} [layers]
  * Layers for the overview map.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {boolean} [rotateWithView=false] Whether the control view should rotate with the main map view.
  * @property {HTMLElement|string} [target] Specify a target if you want the control

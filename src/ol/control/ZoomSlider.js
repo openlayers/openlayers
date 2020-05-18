@@ -26,7 +26,7 @@ const Direction = {
  * @typedef {Object} Options
  * @property {string} [className='ol-zoomslider'] CSS class name.
  * @property {number} [duration=200] Animation duration in milliseconds.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  */
 

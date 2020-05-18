@@ -14,9 +14,9 @@ import {easeOut} from '../easing.js';
  * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when the control should
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control should
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
- * @property {function()} [resetNorth] Function called when the control is clicked.
+ * @property {function():void} [resetNorth] Function called when the control is clicked.
  * This will override the default `resetNorth`.
  * @property {HTMLElement|string} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.

@@ -65,7 +65,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @property {number} duration
  * @property {boolean} complete
  * @property {function(number):number} easing
- * @property {function(boolean)} callback
+ * @property {function(boolean):void} callback
  */
 
 /**
@@ -95,7 +95,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.
- * @property {function(boolean)} [callback] Function called when the view is in
+ * @property {function(boolean):void} [callback] Function called when the view is in
  * its final position. The callback will be called with `true` if the animation
  * series completed on its own or `false` if it was cancelled.
  */

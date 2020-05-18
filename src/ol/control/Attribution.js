@@ -26,7 +26,7 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  */

@@ -43,7 +43,7 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * @property {string} [className='ol-scale-line'] CSS Class name.
  * @property {number} [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
  * adjusted to match the dpi used.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
