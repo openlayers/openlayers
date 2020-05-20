@@ -5,6 +5,7 @@ describe('ol.geom.Circle', function () {
     let circle;
     beforeEach(function () {
       circle = new Circle([0, 0], 1);
+      circle.set('k', 1);
     });
 
     describe('#clone', function () {
@@ -14,6 +15,7 @@ describe('ol.geom.Circle', function () {
         expect(clone.getCenter()).to.eql(circle.getCenter());
         expect(clone.getCenter()).not.to.be(circle.getCenter());
         expect(clone.getRadius()).to.be(circle.getRadius());
+        expect(clone.get('k')).to.be(1);
       });
     });
 

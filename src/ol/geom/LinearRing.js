@@ -58,7 +58,12 @@ class LinearRing extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new LinearRing(this.flatCoordinates.slice(), this.layout);
+    const linearRing = new LinearRing(
+      this.flatCoordinates.slice(),
+      this.layout
+    );
+    linearRing.setProperties(this.getProperties(), true);
+    return linearRing;
   }
 
   /**

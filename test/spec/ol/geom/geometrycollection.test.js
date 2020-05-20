@@ -97,8 +97,10 @@ describe('ol.geom.GeometryCollection', function () {
       ]);
       const poly = new Polygon([outer, inner1, inner2]);
       const multi = new GeometryCollection([point, line, poly]);
+      multi.set('k', 1);
       const clone = multi.clone();
       expect(clone).to.not.be(multi);
+      expect(clone.get('k')).to.be(1);
       const geometries = clone.getGeometries();
       expect(geometries[0].getCoordinates()).to.eql([10, 20]);
       expect(geometries[1].getCoordinates()).to.eql([
@@ -110,6 +112,7 @@ describe('ol.geom.GeometryCollection', function () {
 
     it('does a deep clone', function () {
       const point = new Point([30, 40]);
+      point.set('k', 1);
       const originalGeometries = [point];
       const multi = new GeometryCollection(originalGeometries);
       const clone = multi.clone();
@@ -121,6 +124,7 @@ describe('ol.geom.GeometryCollection', function () {
       expect(clonedGeometries[0].getCoordinates()).to.eql(
         originalGeometries[0].getCoordinates()
       );
+      expect(clonedGeometries[0].get('k')).to.equal(1);
     });
   });
 
