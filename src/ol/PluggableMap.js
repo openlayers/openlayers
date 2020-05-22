@@ -1031,7 +1031,7 @@ class PluggableMap extends BaseObject {
             );
       if (
         this.overlayContainerStopEvent_.contains(target) ||
-        !(document.body.contains(target) || this.viewport_.contains(target))
+        !(document.body.contains(target) || rootNode.contains(target))
       ) {
         // Abort if the event target is a child of the container that doesn't allow
         // event propagation or is no longer in the page. It's possible for the target to no longer
