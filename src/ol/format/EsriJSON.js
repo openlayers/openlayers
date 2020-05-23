@@ -13,10 +13,10 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {assert} from '../asserts.js';
+import {assign, isEmpty} from '../obj.js';
 import {containsExtent} from '../extent.js';
 import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {get as getProjection} from '../proj.js';
-import {isEmpty} from '../obj.js';
 import {linearRingIsClockwise} from '../geom/flat/orient.js';
 import {transformGeometryWithOptions} from './Feature.js';
 
@@ -273,10 +273,10 @@ function readGeometry(object, opt_options) {
     const rings = convertRings(esriJSONPolygon.rings, layout);
     if (rings.length === 1) {
       type = GeometryType.POLYGON;
-      object = Object.assign({}, object, {['rings']: rings[0]});
+      object = assign({}, object, {['rings']: rings[0]});
     } else {
       type = GeometryType.MULTI_POLYGON;
-      object = Object.assign({}, object, {['rings']: rings});
+      object = assign({}, object, {['rings']: rings});
     }
   }
   const geometryReader = GEOMETRY_READERS[type];
