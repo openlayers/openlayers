@@ -728,6 +728,20 @@ describe('ol.proj', function () {
       clearAllProjections();
       addCommon();
     });
+
+    it('does not flip axis order', function () {
+      proj4.defs('enu', '+proj=longlat');
+      proj4.defs('neu', '+proj=longlat +axis=neu');
+      register(proj4);
+
+      const got = transform([1, 2], 'neu', 'enu');
+      expect(got).to.eql([1, 2]);
+
+      delete proj4.defs.enu;
+      delete proj4.defs.neu;
+      clearAllProjections();
+      addCommon();
+    });
   });
 
   describe('ol.proj.Projection.prototype.getMetersPerUnit()', function () {
