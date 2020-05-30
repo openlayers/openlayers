@@ -60,6 +60,7 @@
   position: relative;
   height: 10px;
   z-Index: 9;
+  box-sizing: border-box;
   border: 1px solid black;
 }
 
