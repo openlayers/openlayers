@@ -179,14 +179,16 @@ class ZoomSlider extends Control {
    * direction_ and also constrain the dragging of the thumb to always be within
    * the bounds of the container.
    *
+   * @return {boolean} Initialization successful
    * @private
    */
   initSlider_() {
     const container = this.element;
-    const containerSize = {
-      width: container.offsetWidth,
-      height: container.offsetHeight,
-    };
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+    if (containerWidth === 0 && containerHeight === 0) {
+      return (this.sliderInitialized_ = false);
+    }
 
     const thumb = /** @type {HTMLElement} */ (container.firstElementChild);
     const computedStyle = getComputedStyle(thumb);
@@ -200,14 +202,14 @@ class ZoomSlider extends Control {
       parseFloat(computedStyle['marginBottom']);
     this.thumbSize_ = [thumbWidth, thumbHeight];
 
-    if (containerSize.width > containerSize.height) {
+    if (containerWidth > containerHeight) {
       this.direction_ = Direction.HORIZONTAL;
-      this.widthLimit_ = containerSize.width - thumbWidth;
+      this.widthLimit_ = containerWidth - thumbWidth;
     } else {
       this.direction_ = Direction.VERTICAL;
-      this.heightLimit_ = containerSize.height - thumbHeight;
+      this.heightLimit_ = containerHeight - thumbHeight;
     }
-    this.sliderInitialized_ = true;
+    return (this.sliderInitialized_ = true);
   }
 
   /**
@@ -366,8 +368,8 @@ class ZoomSlider extends Control {
     if (!mapEvent.frameState) {
       return;
     }
-    if (!this.sliderInitialized_) {
-      this.initSlider_();
+    if (!this.sliderInitialized_ && !this.initSlider_()) {
+      return;
     }
     const res = mapEvent.frameState.viewState.resolution;
     this.currentResolution_ = res;
