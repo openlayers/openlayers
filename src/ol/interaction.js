@@ -12,7 +12,7 @@ import Kinetic from './Kinetic.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import PinchRotate from './interaction/PinchRotate.js';
 import PinchZoom from './interaction/PinchZoom.js';
-import {focus} from './events/condition.js';
+import {focusWithTabindex} from './events/condition.js';
 
 export {default as DoubleClickZoom} from './interaction/DoubleClickZoom.js';
 export {default as DragAndDrop} from './interaction/DragAndDrop.js';
@@ -112,7 +112,7 @@ export function defaults(opt_options) {
   if (dragPan) {
     interactions.push(
       new DragPan({
-        condition: options.onFocusOnly ? focus : undefined,
+        condition: options.onFocusOnly ? focusWithTabindex : undefined,
         kinetic: kinetic,
       })
     );
@@ -149,7 +149,7 @@ export function defaults(opt_options) {
   if (mouseWheelZoom) {
     interactions.push(
       new MouseWheelZoom({
-        condition: options.onFocusOnly ? focus : undefined,
+        condition: options.onFocusOnly ? focusWithTabindex : undefined,
         duration: options.zoomDuration,
       })
     );

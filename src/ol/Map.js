@@ -64,7 +64,9 @@ class Map extends PluggableMap {
       options.controls = defaultControls();
     }
     if (!options.interactions) {
-      options.interactions = defaultInteractions();
+      options.interactions = defaultInteractions({
+        onFocusOnly: true,
+      });
     }
 
     super(options);

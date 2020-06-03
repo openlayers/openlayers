@@ -4,7 +4,7 @@
 import EventType from '../events/EventType.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
-import {always, focus} from '../events/condition.js';
+import {always} from '../events/condition.js';
 import {clamp} from '../math.js';
 
 /**
@@ -148,19 +148,6 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
-   * @return {boolean} Condition passes.
-   */
-  conditionInternal_(mapBrowserEvent) {
-    let pass = true;
-    if (mapBrowserEvent.map.getTargetElement().hasAttribute('tabindex')) {
-      pass = focus(mapBrowserEvent);
-    }
-    return pass && this.condition_(mapBrowserEvent);
-  }
-
-  /**
-   * @private
    */
   endInteraction_() {
     this.trackpadTimeoutId_ = undefined;
@@ -179,7 +166,7 @@ class MouseWheelZoom extends Interaction {
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
-    if (!this.conditionInternal_(mapBrowserEvent)) {
+    if (!this.condition_(mapBrowserEvent)) {
       return true;
     }
     const type = mapBrowserEvent.type;

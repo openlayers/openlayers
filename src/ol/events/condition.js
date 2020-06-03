@@ -60,6 +60,18 @@ export const focus = function (event) {
 };
 
 /**
+ * Return `true` if the map has the focus or no 'tabindex' attribute set.
+ *
+ * @param {import("../MapBrowserEvent.js").default} event Map browser event.
+ * @return {boolean} The map container has the focus or no 'tabindex' attribute.
+ */
+export const focusWithTabindex = function (event) {
+  return event.map.getTargetElement().hasAttribute('tabindex')
+    ? focus(event)
+    : true;
+};
+
+/**
  * Return always true.
  *
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
