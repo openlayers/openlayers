@@ -18,6 +18,7 @@ import VectorSource from '../../../src/ol/source/Vector.js';
 import View from '../../../src/ol/View.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 import {LineString, Point, Polygon} from '../../../src/ol/geom.js';
+import {TRUE} from '../../../src/ol/functions.js';
 import {
   clearUserProjection,
   fromLonLat,
@@ -26,7 +27,7 @@ import {
   useGeographic,
 } from '../../../src/ol/proj.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
-import {focus} from '../../../src/ol/events/condition.js';
+import {focusWithTabindex} from '../../../src/ol/events/condition.js';
 
 describe('ol.Map', function () {
   describe('constructor', function () {
@@ -726,13 +727,13 @@ describe('ol.Map', function () {
         expect(interactions.item(0).useAnchor_).to.eql(true);
         interactions.item(0).setMouseAnchor(false);
         expect(interactions.item(0).useAnchor_).to.eql(false);
-        expect(interactions.item(0).condition_).to.not.be(focus);
+        expect(interactions.item(0).condition_).to.be(TRUE);
       });
       it('uses the focus condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focus);
+        expect(interactions.item(0).condition_).to.be(focusWithTabindex);
       });
     });
 
@@ -742,13 +743,13 @@ describe('ol.Map', function () {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(DragPan);
-        expect(interactions.item(0).condition_).to.not.be(focus);
+        expect(interactions.item(0).condition_).to.not.be(focusWithTabindex);
       });
       it('uses the focus condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focus);
+        expect(interactions.item(0).condition_).to.be(focusWithTabindex);
       });
     });
 
