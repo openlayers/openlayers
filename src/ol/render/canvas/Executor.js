@@ -69,8 +69,9 @@ class Executor {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {SerializableInstructions} instructions The serializable instructions
+   * @param {number} renderBuffer Render buffer in pixels.
    */
-  constructor(resolution, pixelRatio, overlaps, instructions) {
+  constructor(resolution, pixelRatio, overlaps, instructions, renderBuffer) {
     /**
      * @protected
      * @type {boolean}
@@ -118,6 +119,8 @@ class Executor {
      * @type {!Object<number,import("../../coordinate.js").Coordinate|Array<import("../../coordinate.js").Coordinate>|Array<Array<import("../../coordinate.js").Coordinate>>>}
      */
     this.coordinateCache_ = {};
+
+    this.renderBuffer_ = renderBuffer;
 
     /**
      * @private
@@ -401,11 +404,14 @@ class Executor {
     const strokePadding = strokeInstruction
       ? (strokeInstruction[2] * scale) / 2
       : 0;
+    const renderBuffer = this.renderBuffer_;
     const intersects =
-      tmpExtent[0] - strokePadding <= canvas.width / contextScale &&
-      tmpExtent[2] + strokePadding >= 0 &&
-      tmpExtent[1] - strokePadding <= canvas.height / contextScale &&
-      tmpExtent[3] + strokePadding >= 0;
+      tmpExtent[0] - strokePadding <=
+        (canvas.width + renderBuffer) / contextScale &&
+      tmpExtent[2] + strokePadding >= -renderBuffer / contextScale &&
+      tmpExtent[1] - strokePadding <=
+        (canvas.height + renderBuffer) / contextScale &&
+      tmpExtent[3] + strokePadding >= -renderBuffer / contextScale;
 
     if (snapToPixel) {
       x = Math.round(x);

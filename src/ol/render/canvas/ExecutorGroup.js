@@ -76,7 +76,7 @@ class ExecutorGroup {
      * @private
      * @type {number|undefined}
      */
-    this.renderBuffer_ = opt_renderBuffer;
+    this.renderBuffer_ = opt_renderBuffer || 0;
 
     /**
      * @private
@@ -132,7 +132,8 @@ class ExecutorGroup {
           this.resolution_,
           this.pixelRatio_,
           this.overlaps_,
-          instructions
+          instructions,
+          this.renderBuffer_
         );
       }
     }
