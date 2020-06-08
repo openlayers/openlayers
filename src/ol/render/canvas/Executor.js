@@ -891,10 +891,12 @@ class Executor {
             ) {
               declutterGroups.push(declutterGroup);
             }
-            if (declutterGroup.length - 1 === declutterGroup[0]) {
-              this.declutterItems.push(this, declutterGroup, feature);
+            if (declutterGroup) {
+              if (declutterGroup.length - 1 === declutterGroup[0]) {
+                this.declutterItems.push(this, declutterGroup, feature);
+              }
+              declutterGroupIndex += 1 / declutterGroup[0];
             }
-            declutterGroupIndex += 1 / declutterGroup[0];
           }
           ++i;
           break;
