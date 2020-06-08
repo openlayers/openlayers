@@ -74,9 +74,9 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {import("../../size.js").Size|undefined}
+     * @type {number|undefined}
      */
-    this.renderBuffer_ = [opt_renderBuffer || 0, opt_renderBuffer || 0];
+    this.renderBuffer_ = opt_renderBuffer;
 
     /**
      * @private
@@ -126,6 +126,7 @@ class ExecutorGroup {
         this.executorsByZIndex_[zIndex] = executors;
       }
       const instructionByZindex = allInstructions[zIndex];
+      const renderBuffer = [this.renderBuffer_ || 0, this.renderBuffer_ || 0];
       for (const builderType in instructionByZindex) {
         const instructions = instructionByZindex[builderType];
         executors[builderType] = new Executor(
@@ -133,7 +134,7 @@ class ExecutorGroup {
           this.pixelRatio_,
           this.overlaps_,
           instructions,
-          this.renderBuffer_
+          renderBuffer
         );
       }
     }
