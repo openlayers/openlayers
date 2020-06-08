@@ -14,8 +14,8 @@ import {
 import {
   createEmpty,
   createOrUpdate,
-  createOrUpdateEmpty,
-  extend,
+  getHeight,
+  getWidth,
   intersects,
 } from '../../extent.js';
 import {
@@ -323,6 +323,7 @@ class Executor {
    * @param {Array<number>} padding Padding.
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
+   * @return {boolean} The image or label was rendered.
    */
   replayImageOrLabel_(
     context,
@@ -431,10 +432,9 @@ class Executor {
     }
 
     if (declutterGroup) {
-      if (!intersects && declutterGroup[4] == 1) {
-        return;
+      if (!intersects && declutterGroup[0] == 1) {
+        return false;
       }
-      extend(declutterGroup, tmpExtent);
       const declutterArgs = intersects
         ? [
             context,
@@ -448,6 +448,7 @@ class Executor {
             x,
             y,
             scale,
+            tmpExtent.slice(),
           ]
         : null;
       if (declutterArgs) {
@@ -490,6 +491,7 @@ class Executor {
         scale
       );
     }
+    return true;
   }
 
   /**
@@ -535,51 +537,57 @@ class Executor {
    * @return {?} Declutter tree.
    */
   renderDeclutter(declutterGroup, feature, opacity, declutterTree) {
-    if (declutterGroup && declutterGroup.length > 5) {
-      const groupCount = declutterGroup[4];
-      if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
-        /** @type {import("../../structs/RBush.js").Entry} */
-        const box = {
-          minX: /** @type {number} */ (declutterGroup[0]),
-          minY: /** @type {number} */ (declutterGroup[1]),
-          maxX: /** @type {number} */ (declutterGroup[2]),
-          maxY: /** @type {number} */ (declutterGroup[3]),
-          value: feature,
-        };
-        if (!declutterTree) {
-          declutterTree = new RBush(9);
-        }
-        if (!declutterTree.collides(box)) {
-          declutterTree.insert(box);
-          for (let j = 5, jj = declutterGroup.length; j < jj; ++j) {
-            const declutterData = /** @type {Array} */ (declutterGroup[j]);
-            const context = declutterData[0];
-            const currentAlpha = context.globalAlpha;
-            if (currentAlpha !== opacity) {
-              context.globalAlpha = opacity;
-            }
-            if (declutterData.length > 11) {
-              this.replayTextBackground_(
-                declutterData[0],
-                declutterData[13],
-                declutterData[14],
-                declutterData[15],
-                declutterData[16],
-                declutterData[11],
-                declutterData[12],
-                true
-              );
-            }
-            drawImageOrLabel.apply(undefined, declutterData);
-            if (currentAlpha !== opacity) {
-              context.globalAlpha = currentAlpha;
-            }
-          }
-        }
-        declutterGroup.length = 5;
-        createOrUpdateEmpty(declutterGroup);
+    /** @type {Array<import("../../structs/RBush.js").Entry>} */
+    const boxes = [];
+    for (let i = 1, ii = declutterGroup.length; i < ii; ++i) {
+      const declutterData = declutterGroup[i];
+      const box = declutterData[11];
+      boxes.push({
+        minX: box[0],
+        minY: box[1],
+        maxX: box[2],
+        maxY: box[3],
+        value: feature,
+      });
+    }
+    if (!declutterTree) {
+      declutterTree = new RBush(9);
+    }
+    let collides = false;
+    for (let i = 0, ii = boxes.length; i < ii; ++i) {
+      if (declutterTree.collides(boxes[i])) {
+        collides = true;
+        break;
       }
     }
+    if (!collides) {
+      declutterTree.load(boxes);
+      for (let j = 1, jj = declutterGroup.length; j < jj; ++j) {
+        const declutterData = /** @type {Array} */ (declutterGroup[j]);
+        const context = declutterData[0];
+        const currentAlpha = context.globalAlpha;
+        if (currentAlpha !== opacity) {
+          context.globalAlpha = opacity;
+        }
+        if (declutterData.length > 12) {
+          this.replayTextBackground_(
+            declutterData[0],
+            declutterData[14],
+            declutterData[15],
+            declutterData[16],
+            declutterData[17],
+            declutterData[12],
+            declutterData[13],
+            true
+          );
+        }
+        drawImageOrLabel.apply(undefined, declutterData);
+        if (currentAlpha !== opacity) {
+          context.globalAlpha = currentAlpha;
+        }
+      }
+    }
+    declutterGroup.length = 1;
     return declutterTree;
   }
 
@@ -847,13 +855,11 @@ class Executor {
             if (declutterGroups) {
               const index = Math.floor(declutterGroupIndex);
               if (declutterGroups.length < index + 1) {
-                declutterGroup = createEmpty();
-                declutterGroup.push(declutterGroups[0][4]);
-                declutterGroups.push(declutterGroup);
+                declutterGroup = [declutterGroups[0][0], declutterGroups[0][1]];
               }
               declutterGroup = declutterGroups[index];
             }
-            this.replayImageOrLabel_(
+            const rendered = this.replayImageOrLabel_(
               context,
               contextScale,
               pixelCoordinates[d],
@@ -878,12 +884,17 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null
             );
-            if (declutterGroup) {
-              if (declutterGroupIndex === Math.floor(declutterGroupIndex)) {
-                this.declutterItems.push(this, declutterGroup, feature);
-              }
-              declutterGroupIndex += 1 / declutterGroup[4];
+            if (
+              rendered &&
+              declutterGroup &&
+              declutterGroups[declutterGroups.length] !== declutterGroup
+            ) {
+              declutterGroups.push(declutterGroup);
             }
+            if (declutterGroup.length - 1 === declutterGroup[0]) {
+              this.declutterItems.push(this, declutterGroup, feature);
+            }
+            declutterGroupIndex += 1 / declutterGroup[0];
           }
           ++i;
           break;
@@ -935,6 +946,7 @@ class Executor {
               cachedWidths
             );
             if (parts) {
+              let rendered = false;
               let c, cc, chars, label, part;
               if (strokeKey) {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
@@ -946,27 +958,28 @@ class Executor {
                     baseline * label.height +
                     (0.5 - baseline) * 2 * strokeWidth -
                     offsetY;
-                  this.replayImageOrLabel_(
-                    context,
-                    contextScale,
-                    /** @type {number} */ (part[0]),
-                    /** @type {number} */ (part[1]),
-                    label,
-                    anchorX,
-                    anchorY,
-                    declutterGroup,
-                    label.height,
-                    1,
-                    0,
-                    0,
-                    /** @type {number} */ (part[3]),
-                    pixelRatioScale,
-                    false,
-                    label.width,
-                    defaultPadding,
-                    null,
-                    null
-                  );
+                  rendered =
+                    this.replayImageOrLabel_(
+                      context,
+                      contextScale,
+                      /** @type {number} */ (part[0]),
+                      /** @type {number} */ (part[1]),
+                      label,
+                      anchorX,
+                      anchorY,
+                      declutterGroup,
+                      label.height,
+                      1,
+                      0,
+                      0,
+                      /** @type {number} */ (part[3]),
+                      pixelRatioScale,
+                      false,
+                      label.width,
+                      defaultPadding,
+                      null,
+                      null
+                    ) || rendered;
                 }
               }
               if (fillKey) {
@@ -976,32 +989,35 @@ class Executor {
                   label = this.createLabel(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
-                  this.replayImageOrLabel_(
-                    context,
-                    contextScale,
-                    /** @type {number} */ (part[0]),
-                    /** @type {number} */ (part[1]),
-                    label,
-                    anchorX,
-                    anchorY,
-                    declutterGroup,
-                    label.height,
-                    1,
-                    0,
-                    0,
-                    /** @type {number} */ (part[3]),
-                    pixelRatioScale,
-                    false,
-                    label.width,
-                    defaultPadding,
-                    null,
-                    null
-                  );
+                  rendered =
+                    this.replayImageOrLabel_(
+                      context,
+                      contextScale,
+                      /** @type {number} */ (part[0]),
+                      /** @type {number} */ (part[1]),
+                      label,
+                      anchorX,
+                      anchorY,
+                      declutterGroup,
+                      label.height,
+                      1,
+                      0,
+                      0,
+                      /** @type {number} */ (part[3]),
+                      pixelRatioScale,
+                      false,
+                      label.width,
+                      defaultPadding,
+                      null,
+                      null
+                    ) || rendered;
                 }
+              }
+              if (rendered) {
+                this.declutterItems.push(this, declutterGroup, feature);
               }
             }
           }
-          this.declutterItems.push(this, declutterGroup, feature);
           ++i;
           break;
         case CanvasInstruction.END_GEOMETRY:
