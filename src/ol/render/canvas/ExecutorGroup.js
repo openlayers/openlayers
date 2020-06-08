@@ -74,9 +74,9 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {import("../../size.js").Size|undefined}
      */
-    this.renderBuffer_ = opt_renderBuffer || 0;
+    this.renderBuffer_ = [opt_renderBuffer || 0, opt_renderBuffer || 0];
 
     /**
      * @private

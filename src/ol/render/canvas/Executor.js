@@ -69,7 +69,7 @@ class Executor {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {SerializableInstructions} instructions The serializable instructions
-   * @param {number} renderBuffer Render buffer in pixels.
+   * @param {import("../../size.js").Size} renderBuffer Render buffer (width/height) in pixels.
    */
   constructor(resolution, pixelRatio, overlaps, instructions, renderBuffer) {
     /**
@@ -120,6 +120,10 @@ class Executor {
      */
     this.coordinateCache_ = {};
 
+    /**
+     * @private
+     * @type {import("../../size.js").Size}
+     */
     this.renderBuffer_ = renderBuffer;
 
     /**
@@ -400,6 +404,14 @@ class Executor {
     } else {
       createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
     }
+    this.renderBuffer_[0] = Math.max(
+      this.renderBuffer_[0],
+      getWidth(tmpExtent)
+    );
+    this.renderBuffer_[1] = Math.max(
+      this.renderBuffer_[1],
+      getHeight(tmpExtent)
+    );
     const canvas = context.canvas;
     const strokePadding = strokeInstruction
       ? (strokeInstruction[2] * scale) / 2
@@ -407,11 +419,11 @@ class Executor {
     const renderBuffer = this.renderBuffer_;
     const intersects =
       tmpExtent[0] - strokePadding <=
-        (canvas.width + renderBuffer) / contextScale &&
-      tmpExtent[2] + strokePadding >= -renderBuffer / contextScale &&
+        (canvas.width + renderBuffer[0]) / contextScale &&
+      tmpExtent[2] + strokePadding >= -renderBuffer[0] / contextScale &&
       tmpExtent[1] - strokePadding <=
-        (canvas.height + renderBuffer) / contextScale &&
-      tmpExtent[3] + strokePadding >= -renderBuffer / contextScale;
+        (canvas.height + renderBuffer[1]) / contextScale &&
+      tmpExtent[3] + strokePadding >= -renderBuffer[1] / contextScale;
 
     if (snapToPixel) {
       x = Math.round(x);
