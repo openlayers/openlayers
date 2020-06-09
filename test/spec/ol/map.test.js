@@ -1,5 +1,7 @@
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
-import DragPan from '../../../src/ol/interaction/DragPan.js';
+import DragPan, {
+  defaultCondition,
+} from '../../../src/ol/interaction/DragPan.js';
 import Feature from '../../../src/ol/Feature.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import ImageLayer from '../../../src/ol/layer/Image.js';
@@ -743,13 +745,13 @@ describe('ol.Map', function () {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(DragPan);
-        expect(interactions.item(0).condition_).to.not.be(focusWithTabindex);
+        expect(interactions.item(0).condition_).to.be(defaultCondition);
       });
-      it('uses the focus condition when onFocusOnly option is set', function () {
+      it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focusWithTabindex);
+        expect(interactions.item(0).condition_).to.not.be(defaultCondition);
       });
     });
 

@@ -3,7 +3,9 @@
  */
 import Collection from './Collection.js';
 import DoubleClickZoom from './interaction/DoubleClickZoom.js';
-import DragPan from './interaction/DragPan.js';
+import DragPan, {
+  defaultCondition as dragPanDefaultCondition,
+} from './interaction/DragPan.js';
 import DragRotate from './interaction/DragRotate.js';
 import DragZoom from './interaction/DragZoom.js';
 import KeyboardPan from './interaction/KeyboardPan.js';
@@ -112,7 +114,11 @@ export function defaults(opt_options) {
   if (dragPan) {
     interactions.push(
       new DragPan({
-        condition: options.onFocusOnly ? focusWithTabindex : undefined,
+        condition: options.onFocusOnly
+          ? function (event) {
+              return focusWithTabindex(event) && dragPanDefaultCondition(event);
+            }
+          : undefined,
         kinetic: kinetic,
       })
     );
