@@ -854,10 +854,10 @@ class Executor {
             }
             if (declutterGroups) {
               const index = Math.floor(declutterGroupIndex);
-              if (declutterGroups.length < index + 1) {
-                declutterGroup = [declutterGroups[0][0], declutterGroups[0][1]];
-              }
-              declutterGroup = declutterGroups[index];
+              declutterGroup =
+                declutterGroups.length < index + 1
+                  ? [declutterGroups[0][0]]
+                  : declutterGroups[index];
             }
             const rendered = this.replayImageOrLabel_(
               context,
@@ -887,7 +887,7 @@ class Executor {
             if (
               rendered &&
               declutterGroup &&
-              declutterGroups[declutterGroups.length] !== declutterGroup
+              declutterGroups[declutterGroups.length - 1] !== declutterGroup
             ) {
               declutterGroups.push(declutterGroup);
             }
