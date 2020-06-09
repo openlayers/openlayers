@@ -478,15 +478,15 @@ export function replayDeclutter(
     let currentExecutor;
     for (let i = 0, ii = executorData.length; i < ii; ) {
       const executor = executorData[i++];
-      if (executor !== currentExecutor) {
+      const transform = executorData[i++];
+      executor.execute(context, 1, transform, rotation, snapToPixel);
+      if (executor !== currentExecutor && executor.declutterItems.length > 0) {
         currentExecutor = executor;
         declutterItems.push({
           items: executor.declutterItems,
           opacity: opacity,
         });
       }
-      const transform = executorData[i++];
-      executor.execute(context, 1, transform, rotation, snapToPixel);
     }
   }
 }
