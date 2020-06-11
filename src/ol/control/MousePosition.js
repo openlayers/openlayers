@@ -2,7 +2,6 @@
  * @module ol/control/MousePosition
  */
 
-import 'elm-pep';
 import Control from './Control.js';
 import EventType from '../pointer/EventType.js';
 import {getChangeEventType} from '../Object.js';

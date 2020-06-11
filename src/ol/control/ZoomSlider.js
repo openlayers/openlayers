@@ -2,7 +2,6 @@
  * @module ol/control/ZoomSlider
  */
 
-import 'elm-pep';
 import Control from './Control.js';
 import EventType from '../events/EventType.js';
 import PointerEventType from '../pointer/EventType.js';

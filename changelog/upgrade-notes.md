@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### v6.4.0
+
+#### Pointer events polyfill removed
+
+Now that all major browsers support Pointer events natively, we removed the [elm-pep](https://npmjs.com/package/elm-pep) dependency. If you are targeting older browsers that do not have Pointer events, you now need to include the polyfill in your application.
+
 ### v6.3.2
 
 #### Backwards incompatible changes
