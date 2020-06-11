@@ -55,9 +55,10 @@ const SelectEventType = {
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
- * @property {import("../style/Style.js").StyleLike} [style]
+ * @property {import("../style/Style.js").StyleLike|null} [style]
  * Style for the selected features. By default the default edit style is used
- * (see {@link module:ol/style}).
+ * (see {@link module:ol/style}). Set to `null` if this interaction should not apply
+ * any style changes for selected features.
  * If set to a falsey value, the selected feature's style will not change.
  * @property {import("../events/condition.js").Condition} [removeCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
@@ -367,7 +368,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @return {import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null} Select style.
+   * @return {import("../style/Style.js").StyleLike|null} Select style.
    */
   getStyle() {
     return this.style_;
