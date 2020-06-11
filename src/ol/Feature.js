@@ -178,7 +178,7 @@ class Feature extends BaseObject {
   /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
-   * @return {import("./style/Style.js").StyleLike} The feature style.
+   * @return {import("./style/Style.js").StyleLike|undefined} The feature style.
    * @api
    */
   getStyle() {
@@ -234,16 +234,19 @@ class Feature extends BaseObject {
   }
 
   /**
-   * Set the style for the feature.  This can be a single style object, an array
-   * of styles, or a function that takes a resolution and returns an array of
-   * styles. If it is `null` the feature has no style (a `null` style).
-   * @param {import("./style/Style.js").StyleLike} style Style for this feature.
+   * Set the style for the feature to override the layer style.  This can be a
+   * single style object, an array of styles, or a function that takes a
+   * resolution and returns an array of styles. To unset the feature style, call
+   * `setStyle()` without arguments or a falsey value.
+   * @param {import("./style/Style.js").StyleLike=} opt_style Style for this feature.
    * @api
    * @fires module:ol/events/Event~BaseEvent#event:change
    */
-  setStyle(style) {
-    this.style_ = style;
-    this.styleFunction_ = !style ? undefined : createStyleFunction(style);
+  setStyle(opt_style) {
+    this.style_ = opt_style;
+    this.styleFunction_ = !opt_style
+      ? undefined
+      : createStyleFunction(opt_style);
     this.changed();
   }
 
