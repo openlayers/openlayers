@@ -2,7 +2,6 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import 'elm-pep';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
