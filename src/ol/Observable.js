@@ -78,16 +78,18 @@ class Observable extends EventTarget {
    * @api
    */
   once(type, listener) {
+    let key;
     if (Array.isArray(type)) {
       const len = type.length;
-      const keys = new Array(len);
+      key = new Array(len);
       for (let i = 0; i < len; ++i) {
-        keys[i] = listenOnce(this, type[i], listener);
+        key[i] = listenOnce(this, type[i], listener);
       }
-      return keys;
     } else {
-      return listenOnce(this, /** @type {string} */ (type), listener);
+      key = listenOnce(this, /** @type {string} */ (type), listener);
     }
+    /** @type {Object} */ (listener).ol_key = key;
+    return key;
   }
 
   /**
@@ -97,7 +99,10 @@ class Observable extends EventTarget {
    * @api
    */
   un(type, listener) {
-    if (Array.isArray(type)) {
+    const key = /** @type {Object} */ (listener).ol_key;
+    if (key) {
+      unByKey(key);
+    } else if (Array.isArray(type)) {
       for (let i = 0, ii = type.length; i < ii; ++i) {
         this.removeEventListener(type[i], listener);
       }

@@ -97,6 +97,13 @@ describe('ol.Observable', function () {
 
       expect(typeof key).to.be('object');
     });
+
+    it('can be unregistered with un()', function () {
+      observable.once('foo', listener);
+      observable.un('foo', listener);
+      observable.dispatchEvent('foo');
+      expect(listener.callCount).to.be(0);
+    });
   });
 
   describe('#un()', function () {
