@@ -110,15 +110,23 @@ feature.setStyle(
 );
 vectorSource.addFeature(feature);
 
-// background and padding
+// two dimensional scale
 feature = new Feature({
-  geometry: new Point([-10, 0]),
+  geometry: new Point([100, 20]),
 });
 feature.setStyle(
   new Style({
     text: new Text({
-      text: 'hello',
+      text: 'mirror',
       font: '12px Ubuntu',
+      scale: [-1, 2],
+      rotateWithView: true,
+      fill: new Fill({
+        color: 'red',
+      }),
+      stroke: new Stroke({
+        color: '#000',
+      }),
       padding: [1, 2, 3, 5],
       backgroundFill: new Fill({
         color: 'rgba(55, 55, 55, 0.25)',

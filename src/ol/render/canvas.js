@@ -63,7 +63,7 @@ import {toString} from '../transform.js';
  * @property {boolean} [overflow]
  * @property {import("../style/Fill.js").default} [backgroundFill]
  * @property {import("../style/Stroke.js").default} [backgroundStroke]
- * @property {number} [scale]
+ * @property {import("../size.js").Size} [scale]
  * @property {Array<number>} [padding]
  */
 
@@ -410,7 +410,7 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
  * @param {number} h Height.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {number} scale Scale.
+ * @param {import("../size.js").Size} scale Scale.
  */
 export function drawImageOrLabel(
   context,
@@ -437,10 +437,25 @@ export function drawImageOrLabel(
   if (/** @type {*} */ (labelOrImage).contextInstructions) {
     // label
     context.translate(x, y);
-    context.scale(scale, scale);
+    context.scale(scale[0], scale[1]);
     executeLabelInstructions(/** @type {Label} */ (labelOrImage), context);
+  } else if (scale[0] < 0 || scale[1] < 0) {
+    // flipped image
+    context.translate(x, y);
+    context.scale(scale[0], scale[1]);
+    context.drawImage(
+      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage),
+      originX,
+      originY,
+      w,
+      h,
+      0,
+      0,
+      w,
+      h
+    );
   } else {
-    // image
+    // if image not flipped translate and scale can be avoided
     context.drawImage(
       /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage),
       originX,
@@ -449,8 +464,8 @@ export function drawImageOrLabel(
       h,
       x,
       y,
-      w * scale,
-      h * scale
+      w * scale[0],
+      h * scale[1]
     );
   }
 

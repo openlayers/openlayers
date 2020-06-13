@@ -3,6 +3,7 @@
  */
 import Fill from './Fill.js';
 import TextPlacement from './TextPlacement.js';
+import {toSize} from '../size.js';
 
 /**
  * The default fill color to use if no fill was set at construction time; a
@@ -23,7 +24,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
  * @property {import("./TextPlacement.js").default|string} [placement='point'] Text placement.
- * @property {number} [scale] Scale.
+ * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {string} [text] Text content.
@@ -74,9 +75,15 @@ class Text {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {number|import("../size.js").Size|undefined}
      */
     this.scale_ = options.scale;
+
+    /**
+     * @private
+     * @type {import("../size.js").Size}
+     */
+    this.scaleArray_ = toSize(options.scale !== undefined ? options.scale : 1);
 
     /**
      * @private
@@ -172,6 +179,7 @@ class Text {
    * @api
    */
   clone() {
+    const scale = this.getScale();
     return new Text({
       font: this.getFont(),
       placement: this.getPlacement(),
@@ -179,7 +187,7 @@ class Text {
       overflow: this.getOverflow(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
-      scale: this.getScale(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
       text: this.getText(),
       textAlign: this.getTextAlign(),
       textBaseline: this.getTextBaseline(),
@@ -280,11 +288,19 @@ class Text {
 
   /**
    * Get the text scale.
-   * @return {number|undefined} Scale.
+   * @return {number|import("../size.js").Size|undefined} Scale.
    * @api
    */
   getScale() {
     return this.scale_;
+  }
+
+  /**
+   * Get the symbolizer scale array.
+   * @return {import("../size.js").Size} Scale array.
+   */
+  getScaleArray() {
+    return this.scaleArray_;
   }
 
   /**
@@ -443,11 +459,12 @@ class Text {
   /**
    * Set the scale.
    *
-   * @param {number|undefined} scale Scale.
+   * @param {number|import("../size.js").Size|undefined} scale Scale.
    * @api
    */
   setScale(scale) {
     this.scale_ = scale;
+    this.scaleArray_ = toSize(scale !== undefined ? scale : 1);
   }
 
   /**

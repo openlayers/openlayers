@@ -59,7 +59,7 @@ feature1.setStyle(
 vectorSource.addFeature(feature1);
 
 const lineString2 = lineString1.clone();
-lineString2.translate(0, 30);
+lineString2.translate(0, 20);
 const feature2 = new Feature({geometry: lineString2});
 feature2.setStyle(
   new Style({
@@ -123,7 +123,7 @@ feature4.setStyle(
 vectorSource.addFeature(feature4);
 
 const lineString5 = lineString4.clone();
-lineString5.translate(0, 30);
+lineString5.translate(0, 20);
 const feature5 = new Feature({geometry: lineString5});
 feature5.setStyle(
   new Style({
@@ -141,7 +141,7 @@ feature5.setStyle(
 vectorSource.addFeature(feature5);
 
 const lineString6 = lineString5.clone();
-lineString6.translate(0, 30);
+lineString6.translate(0, 20);
 const feature6 = new Feature({geometry: lineString6});
 feature6.setStyle(
   new Style({
@@ -159,6 +159,28 @@ feature6.setStyle(
   })
 );
 vectorSource.addFeature(feature6);
+
+const lineString7 = lineString6.clone();
+lineString7.translate(0, 30);
+const feature7 = new Feature({geometry: lineString7});
+feature7.setStyle(
+  new Style({
+    stroke: new Stroke({color: 'blue'}),
+    text: new Text({
+      text: 'Reflection',
+      font: 'normal 400 12px/1 Ubuntu',
+      scale: [2, -1],
+      textBaseline: 'bottom',
+      textAlign: 'right',
+      placement: 'line',
+      stroke: new Stroke({
+        color: '#FFFF00',
+        width: 1,
+      }),
+    }),
+  })
+);
+vectorSource.addFeature(feature7);
 
 const map = new Map({
   pixelRatio: 1,

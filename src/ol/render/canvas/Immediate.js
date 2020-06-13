@@ -188,9 +188,9 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {number}
+     * @type {import("../../size.js").Size}
      */
-    this.imageScale_ = 0;
+    this.imageScale_ = [0, 0];
 
     /**
      * @private
@@ -230,9 +230,9 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {number}
+     * @type {import("../../size.js").Size}
      */
-    this.textScale_ = 0;
+    this.textScale_ = [0, 0];
 
     /**
      * @private
@@ -297,35 +297,51 @@ class CanvasImmediateRenderer extends VectorContext {
     for (let i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
       const x = pixelCoordinates[i] - this.imageAnchorX_;
       const y = pixelCoordinates[i + 1] - this.imageAnchorY_;
-      if (rotation !== 0 || this.imageScale_ != 1) {
+      if (
+        rotation !== 0 ||
+        this.imageScale_[0] != 1 ||
+        this.imageScale_[1] != 1
+      ) {
         const centerX = x + this.imageAnchorX_;
         const centerY = y + this.imageAnchorY_;
         composeTransform(
           localTransform,
           centerX,
           centerY,
-          this.imageScale_,
-          this.imageScale_,
+          1,
+          1,
           rotation,
           -centerX,
           -centerY
         );
         context.setTransform.apply(context, localTransform);
+        context.translate(centerX, centerY);
+        context.scale(this.imageScale_[0], this.imageScale_[1]);
+        context.drawImage(
+          this.image_,
+          this.imageOriginX_,
+          this.imageOriginY_,
+          this.imageWidth_,
+          this.imageHeight_,
+          -this.imageAnchorX_,
+          -this.imageAnchorY_,
+          this.imageWidth_,
+          this.imageHeight_
+        );
+        context.setTransform(1, 0, 0, 1, 0, 0);
+      } else {
+        context.drawImage(
+          this.image_,
+          this.imageOriginX_,
+          this.imageOriginY_,
+          this.imageWidth_,
+          this.imageHeight_,
+          x,
+          y,
+          this.imageWidth_,
+          this.imageHeight_
+        );
       }
-      context.drawImage(
-        this.image_,
-        this.imageOriginX_,
-        this.imageOriginY_,
-        this.imageWidth_,
-        this.imageHeight_,
-        x,
-        y,
-        this.imageWidth_,
-        this.imageHeight_
-      );
-    }
-    if (rotation !== 0 || this.imageScale_ != 1) {
-      context.setTransform(1, 0, 0, 1, 0, 0);
     }
     if (this.imageOpacity_ != 1) {
       context.globalAlpha = alpha;
@@ -366,28 +382,39 @@ class CanvasImmediateRenderer extends VectorContext {
     for (; offset < end; offset += stride) {
       const x = pixelCoordinates[offset] + this.textOffsetX_;
       const y = pixelCoordinates[offset + 1] + this.textOffsetY_;
-      if (rotation !== 0 || this.textScale_ != 1) {
+      if (
+        rotation !== 0 ||
+        this.textScale_[0] != 1 ||
+        this.textScale_[1] != 1
+      ) {
         const localTransform = composeTransform(
           this.tmpLocalTransform_,
           x,
           y,
-          this.textScale_,
-          this.textScale_,
+          1,
+          1,
           rotation,
           -x,
           -y
         );
         context.setTransform.apply(context, localTransform);
+        context.translate(x, y);
+        context.scale(this.textScale_[0], this.textScale_[1]);
+        if (this.textStrokeState_) {
+          context.strokeText(this.text_, 0, 0);
+        }
+        if (this.textFillState_) {
+          context.fillText(this.text_, 0, 0);
+        }
+        context.setTransform(1, 0, 0, 1, 0, 0);
+      } else {
+        if (this.textStrokeState_) {
+          context.strokeText(this.text_, x, y);
+        }
+        if (this.textFillState_) {
+          context.fillText(this.text_, x, y);
+        }
       }
-      if (this.textStrokeState_) {
-        context.strokeText(this.text_, x, y);
-      }
-      if (this.textFillState_) {
-        context.fillText(this.text_, x, y);
-      }
-    }
-    if (rotation !== 0 || this.textScale_ != 1) {
-      context.setTransform(1, 0, 0, 1, 0, 0);
     }
   }
 
@@ -994,22 +1021,30 @@ class CanvasImmediateRenderer extends VectorContext {
     if (!imageStyle) {
       this.image_ = null;
     } else {
-      const imageAnchor = imageStyle.getAnchor();
-      // FIXME pixel ratio
-      const imageImage = imageStyle.getImage(1);
-      const imageOrigin = imageStyle.getOrigin();
       const imageSize = imageStyle.getSize();
-      this.imageAnchorX_ = imageAnchor[0];
-      this.imageAnchorY_ = imageAnchor[1];
-      this.imageHeight_ = imageSize[1];
-      this.image_ = imageImage;
-      this.imageOpacity_ = imageStyle.getOpacity();
-      this.imageOriginX_ = imageOrigin[0];
-      this.imageOriginY_ = imageOrigin[1];
-      this.imageRotateWithView_ = imageStyle.getRotateWithView();
-      this.imageRotation_ = imageStyle.getRotation();
-      this.imageScale_ = imageStyle.getScale() * this.pixelRatio_;
-      this.imageWidth_ = imageSize[0];
+      if (!imageSize) {
+        this.image_ = null;
+      } else {
+        const imageAnchor = imageStyle.getAnchor();
+        // FIXME pixel ratio
+        const imageImage = imageStyle.getImage(1);
+        const imageOrigin = imageStyle.getOrigin();
+        const imageScale = imageStyle.getScaleArray();
+        this.imageAnchorX_ = imageAnchor[0];
+        this.imageAnchorY_ = imageAnchor[1];
+        this.imageHeight_ = imageSize[1];
+        this.image_ = imageImage;
+        this.imageOpacity_ = imageStyle.getOpacity();
+        this.imageOriginX_ = imageOrigin[0];
+        this.imageOriginY_ = imageOrigin[1];
+        this.imageRotateWithView_ = imageStyle.getRotateWithView();
+        this.imageRotation_ = imageStyle.getRotation();
+        this.imageScale_ = [
+          this.pixelRatio_ * imageScale[0],
+          this.pixelRatio_ * imageScale[1],
+        ];
+        this.imageWidth_ = imageSize[0];
+      }
     }
   }
 
@@ -1078,7 +1113,7 @@ class CanvasImmediateRenderer extends VectorContext {
       const textOffsetY = textStyle.getOffsetY();
       const textRotateWithView = textStyle.getRotateWithView();
       const textRotation = textStyle.getRotation();
-      const textScale = textStyle.getScale();
+      const textScale = textStyle.getScaleArray();
       const textText = textStyle.getText();
       const textTextAlign = textStyle.getTextAlign();
       const textTextBaseline = textStyle.getTextBaseline();
@@ -1099,8 +1134,10 @@ class CanvasImmediateRenderer extends VectorContext {
       this.textRotateWithView_ =
         textRotateWithView !== undefined ? textRotateWithView : false;
       this.textRotation_ = textRotation !== undefined ? textRotation : 0;
-      this.textScale_ =
-        this.pixelRatio_ * (textScale !== undefined ? textScale : 1);
+      this.textScale_ = [
+        this.pixelRatio_ * textScale[0],
+        this.pixelRatio_ * textScale[1],
+      ];
     }
   }
 }

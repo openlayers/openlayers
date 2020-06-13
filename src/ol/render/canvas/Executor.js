@@ -194,7 +194,10 @@ class Executor {
     const fillState = fillKey ? this.fillStates[fillKey] : null;
     const textState = this.textStates[textKey];
     const pixelRatio = this.pixelRatio;
-    const scale = textState.scale * pixelRatio;
+    const scale = [
+      textState.scale[0] * pixelRatio,
+      textState.scale[1] * pixelRatio,
+    ];
     const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
@@ -207,15 +210,17 @@ class Executor {
     const height = lineHeight * numLines;
     const renderWidth = width + strokeWidth;
     const contextInstructions = [];
+    // make canvas 2 pixels wider to account for italic text width measurement errors
+    const w = (renderWidth + 2) * scale[0];
+    const h = (height + strokeWidth) * scale[1];
     /** @type {import("../canvas.js").Label} */
     const label = {
-      // make canvas 2 pixels wider to account for italic text width measurement errors
-      width: Math.ceil((renderWidth + 2) * scale),
-      height: Math.ceil((height + strokeWidth) * scale),
+      width: w < 0 ? Math.floor(w) : Math.ceil(w),
+      height: h < 0 ? Math.floor(h) : Math.ceil(h),
       contextInstructions: contextInstructions,
     };
-    if (scale != 1) {
-      contextInstructions.push('scale', [scale, scale]);
+    if (scale[0] != 1 || scale[1] != 1) {
+      contextInstructions.push('scale', scale);
     }
     contextInstructions.push('font', textState.font);
     if (strokeKey) {
@@ -317,7 +322,7 @@ class Executor {
    * @param {number} originX Origin X.
    * @param {number} originY Origin Y.
    * @param {number} rotation Rotation.
-   * @param {number} scale Scale.
+   * @param {import("../../size.js").Size} scale Scale.
    * @param {boolean} snapToPixel Snap to pixel.
    * @param {number} width Width.
    * @param {Array<number>} padding Padding.
@@ -347,8 +352,8 @@ class Executor {
     strokeInstruction
   ) {
     const fillStroke = fillInstruction || strokeInstruction;
-    anchorX *= scale;
-    anchorY *= scale;
+    anchorX *= scale[0];
+    anchorY *= scale[1];
     x -= anchorX;
     y -= anchorY;
 
@@ -360,8 +365,8 @@ class Executor {
       height + originY > imageOrLabel.height
         ? imageOrLabel.height - originY
         : height;
-    const boxW = padding[3] + w * scale + padding[1];
-    const boxH = padding[0] + h * scale + padding[2];
+    const boxW = padding[3] + w * scale[0] + padding[1];
+    const boxH = padding[0] + h * scale[1] + padding[2];
     const boxX = x - padding[3];
     const boxY = y - padding[0];
 
@@ -415,7 +420,7 @@ class Executor {
     );
     const canvas = context.canvas;
     const strokePadding = strokeInstruction
-      ? (strokeInstruction[2] * scale) / 2
+      ? (strokeInstruction[2] * scale[0]) / 2
       : 0;
     const renderBuffer = this.renderBuffer_;
     const intersects =
@@ -612,7 +617,7 @@ class Executor {
       strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     // Remove the 2 pixels we added in createLabel() for the anchor
-    const width = label.width / pixelRatio - 2 * textState.scale;
+    const width = label.width / pixelRatio - 2 * textState.scale[0];
     const anchorX = align * width + 2 * (0.5 - align) * strokeWidth;
     const anchorY =
       (baseline * label.height) / pixelRatio +
@@ -791,7 +796,7 @@ class Executor {
           const originY = /** @type {number} */ (instruction[10]);
           const rotateWithView = /** @type {boolean} */ (instruction[11]);
           let rotation = /** @type {number} */ (instruction[12]);
-          const scale = /** @type {number} */ (instruction[13]);
+          const scale = /** @type {import("../../size.js").Size} */ (instruction[13]);
           let width = /** @type {number} */ (instruction[14]);
 
           if (!image && instruction.length >= 19) {
@@ -914,11 +919,17 @@ class Executor {
           const strokeWidth = /** @type {number} */ (instruction[11]);
           text = /** @type {string} */ (instruction[12]);
           textKey = /** @type {string} */ (instruction[13]);
-          const pixelRatioScale = /** @type {number} */ (instruction[14]);
+          const pixelRatioScale = [
+            /** @type {number} */ (instruction[14]),
+            /** @type {number} */ (instruction[14]),
+          ];
 
           const textState = this.textStates[textKey];
           const font = textState.font;
-          const textScale = textState.scale * measurePixelRatio;
+          const textScale = [
+            textState.scale[0] * measurePixelRatio,
+            textState.scale[1] * measurePixelRatio,
+          ];
 
           let cachedWidths;
           if (font in this.widths_) {
@@ -930,7 +941,8 @@ class Executor {
 
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength =
-            textScale * measureAndCacheTextWidth(font, text, cachedWidths);
+            Math.abs(textScale[0]) *
+            measureAndCacheTextWidth(font, text, cachedWidths);
           if (overflow || textLength <= pathLength) {
             const textAlign = this.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
@@ -942,7 +954,7 @@ class Executor {
               text,
               startM,
               maxAngle,
-              textScale,
+              Math.abs(textScale[0]),
               measureAndCacheTextWidth,
               font,
               cachedWidths
@@ -958,7 +970,8 @@ class Executor {
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY =
                     baseline * label.height +
-                    (0.5 - baseline) * 2 * strokeWidth -
+                    ((0.5 - baseline) * 2 * strokeWidth * textScale[1]) /
+                      textScale[0] -
                     offsetY;
                   rendered =
                     this.replayImageOrLabel_(
