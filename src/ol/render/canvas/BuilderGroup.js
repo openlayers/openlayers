@@ -7,7 +7,6 @@ import ImageBuilder from './ImageBuilder.js';
 import LineStringBuilder from './LineStringBuilder.js';
 import PolygonBuilder from './PolygonBuilder.js';
 import TextBuilder from './TextBuilder.js';
-import {createEmpty} from '../../extent.js';
 
 /**
  * @type {Object<import("./BuilderType").default, typeof Builder>}
@@ -78,15 +77,15 @@ class BuilderGroup {
    * @return {import("../canvas").DeclutterGroups} The resulting instruction groups.
    */
   addDeclutter(group) {
+    /** @type {Array<*>} */
     let declutter = null;
     if (this.declutter_) {
       if (group) {
         declutter = this.declutterGroups_;
-        /** @type {number} */ (declutter[0][4])++;
+        /** @type {number} */ (declutter[0][0])++;
       } else {
-        declutter = [createEmpty()];
+        declutter = [[1]];
         this.declutterGroups_ = declutter;
-        declutter[0].push(1);
       }
     }
     return declutter;
