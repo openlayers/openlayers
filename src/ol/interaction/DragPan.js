@@ -6,7 +6,7 @@ import PointerInteraction, {
 } from './Pointer.js';
 import {FALSE} from '../functions.js';
 import {
-  chain,
+  all,
   focusWithTabindex,
   noModifierKeys,
   primaryAction,
@@ -66,14 +66,14 @@ class DragPan extends PointerInteraction {
 
     const condition = options.condition
       ? options.condition
-      : chain(noModifierKeys, primaryAction);
+      : all(noModifierKeys, primaryAction);
 
     /**
      * @private
      * @type {import("../events/condition.js").Condition}
      */
     this.condition_ = options.onFocusOnly
-      ? chain(focusWithTabindex, condition)
+      ? all(focusWithTabindex, condition)
       : condition;
 
     /**

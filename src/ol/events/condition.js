@@ -14,11 +14,11 @@ import {assert} from '../asserts.js';
  */
 
 /**
- * Creates a condition function that is only fulfilled when a chain of conditions pass.
+ * Creates a condition function that passes when all provided conditions pass.
  * @param {...Condition} var_args Conditions to check.
- * @return {Condition} Condition function that checks a chain of conditions.
+ * @return {Condition} Condition function.
  */
-export function chain(var_args) {
+export function all(var_args) {
   const conditions = arguments;
   /**
    * @param {import("../MapBrowserEvent.js").default} event Event.

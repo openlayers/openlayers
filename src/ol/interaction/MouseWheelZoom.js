@@ -4,7 +4,7 @@
 import EventType from '../events/EventType.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
-import {always, chain, focusWithTabindex} from '../events/condition.js';
+import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
 
 /**
@@ -103,7 +103,7 @@ class MouseWheelZoom extends Interaction {
      * @type {import("../events/condition.js").Condition}
      */
     this.condition_ = options.onFocusOnly
-      ? chain(focusWithTabindex, condition)
+      ? all(focusWithTabindex, condition)
       : condition;
 
     /**
