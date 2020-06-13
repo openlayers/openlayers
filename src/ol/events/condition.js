@@ -14,6 +14,29 @@ import {assert} from '../asserts.js';
  */
 
 /**
+ * Creates a condition function that passes when all provided conditions pass.
+ * @param {...Condition} var_args Conditions to check.
+ * @return {Condition} Condition function.
+ */
+export function all(var_args) {
+  const conditions = arguments;
+  /**
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @return {boolean} All conditions passed.
+   */
+  return function (event) {
+    let pass = true;
+    for (let i = 0, ii = conditions.length; i < ii; ++i) {
+      pass = pass && conditions[i](event);
+      if (!pass) {
+        break;
+      }
+    }
+    return pass;
+  };
+}
+
+/**
  * Return `true` if only the alt-key is pressed, `false` otherwise (e.g. when
  * additionally the shift-key is pressed).
  *

@@ -4,7 +4,7 @@
 import EventType from '../events/EventType.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
-import {always} from '../events/condition.js';
+import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
 
 /**
@@ -21,8 +21,8 @@ export const Mode = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~always}.
- * In addition, if there is a `tabindex` attribute on the map element,
- * {@link module:ol/events/condition~focus} will also be applied.
+ * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
+ * the interaction will only handle events when the map has the focus.
  * @property {number} [maxDelta=1] Maximum mouse wheel delta.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
@@ -96,11 +96,15 @@ class MouseWheelZoom extends Interaction {
         ? options.constrainResolution
         : false;
 
+    const condition = options.condition ? options.condition : always;
+
     /**
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : always;
+    this.condition_ = options.onFocusOnly
+      ? all(focusWithTabindex, condition)
+      : condition;
 
     /**
      * @private

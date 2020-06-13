@@ -5,8 +5,13 @@ import PointerInteraction, {
   centroid as centroidFromPointers,
 } from './Pointer.js';
 import {FALSE} from '../functions.js';
+import {
+  all,
+  focusWithTabindex,
+  noModifierKeys,
+  primaryAction,
+} from '../events/condition.js';
 import {easeOut} from '../easing.js';
-import {noModifierKeys, primaryAction} from '../events/condition.js';
 import {
   rotate as rotateCoordinate,
   scale as scaleCoordinate,
@@ -17,8 +22,8 @@ import {
  * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition~noModifierKeys} and {@link module:ol/events/condition~primaryAction}.
- * In addition, if there is a `tabindex` attribute on the map element,
- * {@link module:ol/events/condition~focus} will also be applied.
+ * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
+ * the interaction will only handle events when the map has the focus.
  * @property {import("../Kinetic.js").default} [kinetic] Kinetic inertia to apply to the pan.
  */
 
@@ -59,11 +64,17 @@ class DragPan extends PointerInteraction {
      */
     this.panning_ = false;
 
+    const condition = options.condition
+      ? options.condition
+      : all(noModifierKeys, primaryAction);
+
     /**
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : defaultCondition;
+    this.condition_ = options.onFocusOnly
+      ? all(focusWithTabindex, condition)
+      : condition;
 
     /**
      * @private
@@ -173,14 +184,6 @@ class DragPan extends PointerInteraction {
       return false;
     }
   }
-}
-
-/**
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Browser event.
- * @return {boolean} Combined condition result.
- */
-function defaultCondition(mapBrowserEvent) {
-  return noModifierKeys(mapBrowserEvent) && primaryAction(mapBrowserEvent);
 }
 
 export default DragPan;

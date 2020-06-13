@@ -27,7 +27,6 @@ import {
   useGeographic,
 } from '../../../src/ol/proj.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
-import {focusWithTabindex} from '../../../src/ol/events/condition.js';
 
 describe('ol.Map', function () {
   describe('constructor', function () {
@@ -703,7 +702,7 @@ describe('ol.Map', function () {
   });
 
   describe('create interactions', function () {
-    let options;
+    let options, event, hasTabIndex, hasFocus, isPrimary;
 
     beforeEach(function () {
       options = {
@@ -715,6 +714,33 @@ describe('ol.Map', function () {
         dragPan: false,
         pinchRotate: false,
         pinchZoom: false,
+      };
+      hasTabIndex = true;
+      hasFocus = true;
+      isPrimary = true;
+      event = {
+        map: {
+          getTargetElement: function () {
+            return {
+              hasAttribute: function (attribute) {
+                return hasTabIndex;
+              },
+            };
+          },
+        },
+        originalEvent: {
+          isPrimary: isPrimary,
+          button: 0,
+        },
+        target: {
+          getTargetElement: function () {
+            return {
+              contains: function () {
+                return hasFocus;
+              },
+            };
+          },
+        },
       };
     });
 
@@ -729,11 +755,19 @@ describe('ol.Map', function () {
         expect(interactions.item(0).useAnchor_).to.eql(false);
         expect(interactions.item(0).condition_).to.be(TRUE);
       });
-      it('uses the focus condition when onFocusOnly option is set', function () {
+      it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focusWithTabindex);
+        expect(interactions.item(0).condition_).to.not.be(TRUE);
+        hasTabIndex = true;
+        hasFocus = true;
+        expect(interactions.item(0).condition_(event)).to.be(true);
+        hasTabIndex = true;
+        hasFocus = false;
+        expect(interactions.item(0).condition_(event)).to.be(false);
+        hasTabIndex = false;
+        expect(interactions.item(0).condition_(event)).to.be(true);
       });
     });
 
@@ -743,13 +777,28 @@ describe('ol.Map', function () {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(DragPan);
-        expect(interactions.item(0).condition_).to.not.be(focusWithTabindex);
+        expect(interactions.item(0).condition_(event)).to.be(true);
+        hasTabIndex = true;
+        hasFocus = false;
+        expect(interactions.item(0).condition_(event)).to.be(true);
+        event.originalEvent.altKey = true;
+        expect(interactions.item(0).condition_(event)).to.be(false);
+        delete event.originalEvent.altKey;
+        event.originalEvent.button = 1;
+        expect(interactions.item(0).condition_(event)).to.be(false);
       });
-      it('uses the focus condition when onFocusOnly option is set', function () {
+      it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        expect(interactions.item(0).condition_).to.be(focusWithTabindex);
+        hasTabIndex = true;
+        hasFocus = true;
+        expect(interactions.item(0).condition_(event)).to.be(true);
+        hasTabIndex = true;
+        hasFocus = false;
+        expect(interactions.item(0).condition_(event)).to.be(false);
+        hasTabIndex = false;
+        expect(interactions.item(0).condition_(event)).to.be(true);
       });
     });
 
