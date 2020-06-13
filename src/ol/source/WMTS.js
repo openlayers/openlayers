@@ -465,7 +465,8 @@ export function optionsFromCapabilities(wmtsCap, config) {
   //in case of matrix limits, use matrix limits to calculate extent
   if (matrixLimits) {
     selectedMatrixLimit = matrixLimits[matrixLimits.length - 1];
-    matrix = matrixSetObj.TileMatrix.find(
+    matrix = find(
+      matrixSetObj.TileMatrix,
       (value) => value.Identifier === selectedMatrixLimit.TileMatrix
     );
   }
