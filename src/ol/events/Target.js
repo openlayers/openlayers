@@ -39,22 +39,22 @@ class Target extends Disposable {
     this.eventTarget_ = opt_target;
 
     /**
+     * @name pendingRemovals_
      * @private
      * @type {!Object<string, number>}
      */
-    this.pendingRemovals_ = {};
 
     /**
+     * @name dispatching_
      * @private
      * @type {!Object<string, number>}
      */
-    this.dispatching_ = {};
 
     /**
+     * @name listeners_
      * @private
      * @type {!Object<string, Array<import("../events.js").Listener>>}
      */
-    this.listeners_ = {};
   }
 
   /**
@@ -65,11 +65,8 @@ class Target extends Disposable {
     if (!type || !listener) {
       return;
     }
-    let listeners = this.listeners_[type];
-    if (!listeners) {
-      listeners = [];
-      this.listeners_[type] = listeners;
-    }
+    let listeners = this.listeners_ || (this.listeners_ = {});
+    listeners = listeners[type] || (listeners[type] = []);
     if (listeners.indexOf(listener) === -1) {
       listeners.push(listener);
     }
@@ -92,14 +89,17 @@ class Target extends Disposable {
     if (!evt.target) {
       evt.target = this.eventTarget_ || this;
     }
-    const listeners = this.listeners_[type];
+    const listeners = this.listeners_ && this.listeners_[type];
     let propagate;
     if (listeners) {
-      if (!(type in this.dispatching_)) {
-        this.dispatching_[type] = 0;
-        this.pendingRemovals_[type] = 0;
+      const dispatching = this.dispatching_ || (this.dispatching_ = {});
+      const pendingRemovals =
+        this.pendingRemovals_ || (this.pendingRemovals_ = {});
+      if (!(type in dispatching)) {
+        dispatching[type] = 0;
+        pendingRemovals[type] = 0;
       }
-      ++this.dispatching_[type];
+      ++dispatching[type];
       for (let i = 0, ii = listeners.length; i < ii; ++i) {
         if ('handleEvent' in listeners[i]) {
           propagate = /** @type {import("../events.js").ListenerObject} */ (listeners[
@@ -115,14 +115,14 @@ class Target extends Disposable {
           break;
         }
       }
-      --this.dispatching_[type];
-      if (this.dispatching_[type] === 0) {
-        let pendingRemovals = this.pendingRemovals_[type];
-        delete this.pendingRemovals_[type];
-        while (pendingRemovals--) {
+      --dispatching[type];
+      if (dispatching[type] === 0) {
+        let pr = pendingRemovals[type];
+        delete pendingRemovals[type];
+        while (pr--) {
           this.removeEventListener(type, VOID);
         }
-        delete this.dispatching_[type];
+        delete dispatching[type];
       }
       return propagate;
     }
@@ -132,7 +132,7 @@ class Target extends Disposable {
    * Clean up.
    */
   disposeInternal() {
-    clear(this.listeners_);
+    this.listeners_ && clear(this.listeners_);
   }
 
   /**
@@ -140,10 +140,10 @@ class Target extends Disposable {
    * order that they will be called in.
    *
    * @param {string} type Type.
-   * @return {Array<import("../events.js").Listener>} Listeners.
+   * @return {Array<import("../events.js").Listener>|undefined} Listeners.
    */
   getListeners(type) {
-    return this.listeners_[type];
+    return this.listeners_ && this.listeners_[type];
   }
 
   /**
@@ -152,6 +152,9 @@ class Target extends Disposable {
    * @return {boolean} Has listeners.
    */
   hasListener(opt_type) {
+    if (!this.listeners_) {
+      return false;
+    }
     return opt_type
       ? opt_type in this.listeners_
       : Object.keys(this.listeners_).length > 0;
@@ -162,11 +165,11 @@ class Target extends Disposable {
    * @param {import("../events.js").Listener} listener Listener.
    */
   removeEventListener(type, listener) {
-    const listeners = this.listeners_[type];
+    const listeners = this.listeners_ && this.listeners_[type];
     if (listeners) {
       const index = listeners.indexOf(listener);
       if (index !== -1) {
-        if (type in this.pendingRemovals_) {
+        if (this.pendingRemovals_ && type in this.pendingRemovals_) {
           // make listener a no-op, and remove later in #dispatchEvent()
           listeners[index] = VOID;
           ++this.pendingRemovals_[type];
