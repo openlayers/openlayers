@@ -212,29 +212,32 @@ class GML2 extends GMLBase {
       context.serializers = {};
       context.serializers[featureNS] = {};
     }
-    const properties = feature.getProperties();
     const keys = [];
     const values = [];
-    for (const key in properties) {
-      const value = properties[key];
-      if (value !== null) {
-        keys.push(key);
-        values.push(value);
-        if (
-          key == geometryName ||
-          typeof (/** @type {?} */ (value).getSimplifiedGeometry) === 'function'
-        ) {
-          if (!(key in context.serializers[featureNS])) {
-            context.serializers[featureNS][key] = makeChildAppender(
-              this.writeGeometryElement,
-              this
-            );
-          }
-        } else {
-          if (!(key in context.serializers[featureNS])) {
-            context.serializers[featureNS][key] = makeChildAppender(
-              writeStringTextNode
-            );
+    if (feature.hasProperties()) {
+      const properties = feature.getProperties();
+      for (const key in properties) {
+        const value = properties[key];
+        if (value !== null) {
+          keys.push(key);
+          values.push(value);
+          if (
+            key == geometryName ||
+            typeof (/** @type {?} */ (value).getSimplifiedGeometry) ===
+              'function'
+          ) {
+            if (!(key in context.serializers[featureNS])) {
+              context.serializers[featureNS][key] = makeChildAppender(
+                this.writeGeometryElement,
+                this
+              );
+            }
+          } else {
+            if (!(key in context.serializers[featureNS])) {
+              context.serializers[featureNS][key] = makeChildAppender(
+                writeStringTextNode
+              );
+            }
           }
         }
       }

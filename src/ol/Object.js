@@ -4,7 +4,7 @@
 import Event from './events/Event.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
-import {assign} from './obj.js';
+import {assign, isEmpty} from './obj.js';
 import {getUid} from './util.js';
 
 /**
@@ -94,10 +94,10 @@ class BaseObject extends Observable {
     getUid(this);
 
     /**
+     * @name values_
      * @private
      * @type {!Object<string, *>}
      */
-    this.values_ = {};
 
     if (opt_values !== undefined) {
       this.setProperties(opt_values);
@@ -112,7 +112,7 @@ class BaseObject extends Observable {
    */
   get(key) {
     let value;
-    if (this.values_.hasOwnProperty(key)) {
+    if (this.values_ && this.values_.hasOwnProperty(key)) {
       value = this.values_[key];
     }
     return value;
@@ -124,7 +124,7 @@ class BaseObject extends Observable {
    * @api
    */
   getKeys() {
-    return Object.keys(this.values_);
+    return (this.values_ && Object.keys(this.values_)) || [];
   }
 
   /**
@@ -133,7 +133,14 @@ class BaseObject extends Observable {
    * @api
    */
   getProperties() {
-    return assign({}, this.values_);
+    return (this.values_ && assign({}, this.values_)) || {};
+  }
+
+  /**
+   * @return {boolean} The object has properties.
+   */
+  hasProperties() {
+    return !!this.values_;
   }
 
   /**
@@ -156,11 +163,12 @@ class BaseObject extends Observable {
    * @api
    */
   set(key, value, opt_silent) {
+    const values = this.values_ || (this.values_ = {});
     if (opt_silent) {
-      this.values_[key] = value;
+      values[key] = value;
     } else {
-      const oldValue = this.values_[key];
-      this.values_[key] = value;
+      const oldValue = values[key];
+      values[key] = value;
       if (oldValue !== value) {
         this.notify(key, oldValue);
       }
@@ -187,9 +195,12 @@ class BaseObject extends Observable {
    * @api
    */
   unset(key, opt_silent) {
-    if (key in this.values_) {
+    if (this.values_ && key in this.values_) {
       const oldValue = this.values_[key];
       delete this.values_[key];
+      if (isEmpty(this.values_)) {
+        delete this.values_;
+      }
       if (!opt_silent) {
         this.notify(key, oldValue);
       }

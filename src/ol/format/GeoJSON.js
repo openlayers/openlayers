@@ -207,16 +207,22 @@ class GeoJSON extends JSONFeature {
       object.id = id;
     }
 
-    const geometry = feature.getGeometry();
-    if (geometry) {
-      object.geometry = writeGeometry(geometry, opt_options);
+    if (!feature.hasProperties()) {
+      return object;
     }
 
     const properties = feature.getProperties();
-    delete properties[feature.getGeometryName()];
+    const geometry = feature.getGeometry();
+    if (geometry) {
+      object.geometry = writeGeometry(geometry, opt_options);
+
+      delete properties[feature.getGeometryName()];
+    }
+
     if (!isEmpty(properties)) {
       object.properties = properties;
     }
+
     return object;
   }
 
