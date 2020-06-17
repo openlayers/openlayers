@@ -148,9 +148,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * Render the layer.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
+   * @param {boolean=} opt_noClip Do not clip to layer extent.
    * @return {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, target) {
+  renderFrame(frameState, target, opt_noClip) {
     const pixelRatio = frameState.pixelRatio;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
 
@@ -198,7 +199,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     // clipped rendering if layer extent is set
     let clipped = false;
-    if (layerState.extent) {
+    if (layerState.extent && !opt_noClip) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       clipped =
         !containsExtent(layerExtent, frameState.extent) &&
