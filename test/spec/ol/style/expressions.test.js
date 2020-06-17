@@ -179,6 +179,12 @@ describe('ol.style.expressions', function () {
       expect(getValueType(['!=', 10, ['get', 'attr4']])).to.eql(
         ValueTypes.BOOLEAN
       );
+      expect(getValueType(['all', true, ['get', 'attr4']])).to.eql(
+        ValueTypes.BOOLEAN
+      );
+      expect(getValueType(['any', true, ['get', 'attr4']])).to.eql(
+        ValueTypes.BOOLEAN
+      );
       expect(getValueType(['between', ['get', 'attr4'], -4.0, 5.0])).to.eql(
         ValueTypes.BOOLEAN
       );
@@ -244,6 +250,15 @@ describe('ol.style.expressions', function () {
       expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql(
         '(10.0 != a_attr4)'
       );
+      expect(expressionToGlsl(context, ['all', true, ['get', 'attr4']])).to.eql(
+        '(true && a_attr4)'
+      );
+      expect(expressionToGlsl(context, ['any', true, ['get', 'attr4']])).to.eql(
+        '(true || a_attr4)'
+      );
+      expect(
+        expressionToGlsl(context, ['any', true, ['get', 'attr4'], true])
+      ).to.eql('(true || a_attr4 || true)');
       expect(
         expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])
       ).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
@@ -296,6 +311,22 @@ describe('ol.style.expressions', function () {
 
       thrown = false;
       try {
+        expressionToGlsl(context, ['any', ['var', 'aa'], 10]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['all', ['var', 'aa'], 10]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
         expressionToGlsl(context, ['<', 0, 'aa']);
       } catch (e) {
         thrown = true;
@@ -331,6 +362,22 @@ describe('ol.style.expressions', function () {
       let thrown = false;
       try {
         expressionToGlsl(context, ['var', 1234, 456]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['all', ['var', true], ['get', true], true]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['any', ['var', true]]);
       } catch (e) {
         thrown = true;
       }
