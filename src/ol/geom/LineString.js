@@ -211,7 +211,8 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates.length,
       this.stride,
       fraction,
-      opt_dest
+      opt_dest,
+      this.stride
     );
   }
 
