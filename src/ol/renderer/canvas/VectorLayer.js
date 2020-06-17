@@ -204,7 +204,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         !containsExtent(layerExtent, frameState.extent) &&
         intersectsExtent(layerExtent, frameState.extent);
       if (clipped) {
-        this.clip(context, frameState, layerExtent);
+        this.clipUnrotated(context, frameState, layerExtent);
       }
     }
 
