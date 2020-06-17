@@ -137,7 +137,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.prepareFrame(imageFrameState) &&
             vectorRenderer.replayGroupChanged
           ) {
-            vectorRenderer.renderFrame(imageFrameState, null);
+            vectorRenderer.renderFrame(imageFrameState, null, true);
             renderDeclutterItems(imageFrameState, null);
             callback();
           }
