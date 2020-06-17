@@ -176,7 +176,10 @@ class Geometry extends BaseObject {
     if (this.extentRevision_ != this.getRevision()) {
       this.extent_ = this.computeExtent(this.extent_);
       if (
-        !containsExtent([-Infinity, -Infinity, Infinity, Infinity], this.extent_)
+        !containsExtent(
+          [-Infinity, -Infinity, Infinity, Infinity],
+          this.extent_
+        )
       ) {
         this.extent_ = createEmpty();
       }
