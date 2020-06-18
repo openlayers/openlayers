@@ -4,6 +4,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {shiftKeyOnly} from '../src/ol/events/condition.js';
 
 const vectorSource = new VectorSource({
   url: 'data/geojson/countries.geojson',
@@ -26,18 +27,5 @@ const map = new Map({
   }),
 });
 
-const extent = new ExtentInteraction();
+const extent = new ExtentInteraction({condition: shiftKeyOnly});
 map.addInteraction(extent);
-extent.setActive(false);
-
-//Enable interaction by holding shift
-window.addEventListener('keydown', function (event) {
-  if (event.keyCode == 16) {
-    extent.setActive(true);
-  }
-});
-window.addEventListener('keyup', function (event) {
-  if (event.keyCode == 16) {
-    extent.setActive(false);
-  }
-});
