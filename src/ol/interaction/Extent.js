@@ -9,6 +9,7 @@ import Point from '../geom/Point.js';
 import PointerInteraction from './Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
+import {always} from '../events/condition.js';
 import {boundingExtent, getArea} from '../extent.js';
 import {
   closestOnSegment,
@@ -22,6 +23,10 @@ import {toUserExtent} from '../proj.js';
 
 /**
  * @typedef {Object} Options
+ * @property {import("../events/condition.js").Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled.
+ * Default is {@link module:ol/events/condition~always}.
  * @property {import("../extent.js").Extent} [extent] Initial extent. Defaults to no
  * initial extent.
  * @property {import("../style/Style.js").StyleLike} [boxStyle]
@@ -86,6 +91,13 @@ class Extent extends PointerInteraction {
     const options = opt_options || {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
+
+    /**
+     * Condition
+     * @type {import("../events/condition.js").Condition}
+     * @private
+     */
+    this.condition_ = options.condition ? options.condition : always;
 
     /**
      * Extent of the drawn box
@@ -280,7 +292,10 @@ class Extent extends PointerInteraction {
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
-    if (!mapBrowserEvent.originalEvent) {
+    if (
+      !mapBrowserEvent.originalEvent ||
+      !this.condition_(mapBrowserEvent))
+    {
       return true;
     }
     //display pointer (if not dragging)
