@@ -292,10 +292,7 @@ class Extent extends PointerInteraction {
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
-    if (
-      !mapBrowserEvent.originalEvent ||
-      !this.condition_(mapBrowserEvent))
-    {
+    if (!mapBrowserEvent.originalEvent || !this.condition_(mapBrowserEvent)) {
       return true;
     }
     //display pointer (if not dragging)
