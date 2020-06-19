@@ -38,7 +38,7 @@ EOF
 #
 # Scan the git log for merge commit messages and output Markdown.  This only
 # follows the first parent of merge commits to avoid merges within a topic
-# branch (instead only showing merges to master).
+# branch (instead only showing merges to main).
 #
 main() {
   git log --first-parent --format='%aN|%s %b' ${1} |

@@ -1448,7 +1448,7 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
   });
   ```
 
-  See https://openlayers.org/en/master/examples/vector-layer.html for a real example.
+  See https://openlayers.org/en/main/examples/vector-layer.html for a real example.
 
   Note that you no longer need to set a `projection` on the source!
 
@@ -1470,7 +1470,7 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
 
   The above code uses jQuery to send an Ajax request, but you can obviously use any Ajax library.
 
-  See https://openlayers.org/en/master/examples/igc.html for a real example.
+  See https://openlayers.org/en/main/examples/igc.html for a real example.
 
 * Note about KML
 
@@ -1528,9 +1528,9 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
   });
   ```
 
-  See https://openlayers.org/en/master/examples/vector-osm.html for a real example.
+  See https://openlayers.org/en/main/examples/vector-osm.html for a real example.
 
-* The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See https://openlayers.org/en/master/examples/vector-osm.html for an example.
+* The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See https://openlayers.org/en/main/examples/vector-osm.html for an example.
 
 #### Change to `ol.style.Icon`
 
