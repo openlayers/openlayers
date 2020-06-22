@@ -89,7 +89,7 @@
     "pixelmatch": "^5.1.0",
     "pngjs": "^5.0.0",
     "proj4": "2.6.2",
-    "puppeteer": "3.3.0",
+    "puppeteer": "4.0.0",
     "rollup": "^2.1.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.0",
