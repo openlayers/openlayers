@@ -11,6 +11,7 @@ import {lerp} from '../../math.js';
  * @param {number} stride Stride.
  * @param {number} fraction Fraction.
  * @param {Array<number>=} opt_dest Destination.
+ * @param {number=} opt_dimension Destination dimension (default is `2`)
  * @return {Array<number>} Destination.
  */
 export function interpolatePoint(
@@ -19,21 +20,16 @@ export function interpolatePoint(
   end,
   stride,
   fraction,
-  opt_dest
+  opt_dest,
+  opt_dimension
 ) {
-  let pointX = NaN;
-  let pointY = NaN;
+  let o, t;
   const n = (end - offset) / stride;
   if (n === 1) {
-    pointX = flatCoordinates[offset];
-    pointY = flatCoordinates[offset + 1];
-  } else if (n == 2) {
-    pointX =
-      (1 - fraction) * flatCoordinates[offset] +
-      fraction * flatCoordinates[offset + stride];
-    pointY =
-      (1 - fraction) * flatCoordinates[offset + 1] +
-      fraction * flatCoordinates[offset + stride + 1];
+    o = offset;
+  } else if (n === 2) {
+    o = offset;
+    t = fraction;
   } else if (n !== 0) {
     let x1 = flatCoordinates[offset];
     let y1 = flatCoordinates[offset + 1];
@@ -50,24 +46,25 @@ export function interpolatePoint(
     const target = fraction * length;
     const index = binarySearch(cumulativeLengths, target);
     if (index < 0) {
-      const t =
+      t =
         (target - cumulativeLengths[-index - 2]) /
         (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
-      const o = offset + (-index - 2) * stride;
-      pointX = lerp(flatCoordinates[o], flatCoordinates[o + stride], t);
-      pointY = lerp(flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
+      o = offset + (-index - 2) * stride;
     } else {
-      pointX = flatCoordinates[offset + index * stride];
-      pointY = flatCoordinates[offset + index * stride + 1];
+      o = offset + index * stride;
     }
   }
-  if (opt_dest) {
-    opt_dest[0] = pointX;
-    opt_dest[1] = pointY;
-    return opt_dest;
-  } else {
-    return [pointX, pointY];
+  const dimension = opt_dimension > 1 ? opt_dimension : 2;
+  const dest = opt_dest ? opt_dest : new Array(dimension);
+  for (let i = 0; i < dimension; ++i) {
+    dest[i] =
+      o === undefined
+        ? NaN
+        : t === undefined
+        ? flatCoordinates[o + i]
+        : lerp(flatCoordinates[o + i], flatCoordinates[o + stride + i], t);
   }
+  return dest;
 }
 
 /**

@@ -427,6 +427,12 @@ describe('ol.geom.LineString', function () {
       );
     });
 
+    describe('#getCoordinateAt', function () {
+      it('returns the expected value', function () {
+        expect(lineString.getCoordinateAt(0.5)).to.eql([2.5, 3.5, 4.5]);
+      });
+    });
+
     describe('#getCoordinateAtM', function () {
       it('returns the expected value', function () {
         expect(lineString.getCoordinateAtM(2, false)).to.be(null);
@@ -461,6 +467,12 @@ describe('ol.geom.LineString', function () {
         [18, -18, 36, 18],
         [22, -22, 44, 22],
       ]);
+    });
+
+    describe('#getCoordinateAt', function () {
+      it('returns the expected value', function () {
+        expect(lineString.getCoordinateAt(0.5)).to.eql([11, -11, 22, 11]);
+      });
     });
 
     describe('#getCoordinateAtM', function () {
