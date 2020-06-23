@@ -19,6 +19,7 @@ import RenderFeature from '../render/Feature.js';
 import Units from '../proj/Units.js';
 import {assert} from '../asserts.js';
 import {get} from '../proj.js';
+import {linearRingIsClockwise} from '../geom/flat/orient.js';
 
 /**
  * @typedef {Object} Options
@@ -203,7 +204,7 @@ class MVT extends FeatureFormat {
         for (let i = 0, ii = ends.length; i < ii; ++i) {
           const end = ends[i];
           // classifies an array of rings into polygons with outer rings and holes
-          if (linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
+          if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
             endss.push(ends.slice(prevEndIndex, i + 1));
           } else {
             if (endss.length === 0) {
@@ -443,30 +444,6 @@ function getGeometryType(type, numEnds) {
     // outer rings of polygons.
   }
   return geometryType;
-}
-
-/**
- * Determines Flat coordinates is clockwise in MVT.
- * @param {Array<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
- * @return {boolean} Is clockwise in MVT.
- */
-function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
-  let edge = 0;
-  let x1 = flatCoordinates[end - stride];
-  let y1 = flatCoordinates[end - stride + 1];
-  for (; offset < end; offset += stride) {
-    const x2 = flatCoordinates[offset];
-    const y2 = flatCoordinates[offset + 1];
-    edge += (x2 - x1) * (y2 + y1);
-    x1 = x2;
-    y1 = y2;
-  }
-  // http://tinyurl.com/clockwise-method
-  // MVT has an inverted Y-axis. Then the rule has to be flipped: if the area is negative, the curve is clockwise.
-  return edge < 0;
 }
 
 export default MVT;
