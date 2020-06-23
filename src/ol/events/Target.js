@@ -39,22 +39,22 @@ class Target extends Disposable {
     this.eventTarget_ = opt_target;
 
     /**
-     * @name pendingRemovals_
      * @private
-     * @type {!Object<string, number>}
+     * @type {Object<string, number>}
      */
+    this.pendingRemovals_ = null;
 
     /**
-     * @name dispatching_
      * @private
-     * @type {!Object<string, number>}
+     * @type {Object<string, number>}
      */
+    this.dispatching_ = null;
 
     /**
-     * @name listeners_
      * @private
-     * @type {!Object<string, Array<import("../events.js").Listener>>}
+     * @type {Object<string, Array<import("../events.js").Listener>>}
      */
+    this.listeners_ = null;
   }
 
   /**
@@ -65,10 +65,10 @@ class Target extends Disposable {
     if (!type || !listener) {
       return;
     }
-    let listeners = this.listeners_ || (this.listeners_ = {});
-    listeners = listeners[type] || (listeners[type] = []);
-    if (listeners.indexOf(listener) === -1) {
-      listeners.push(listener);
+    const listeners = this.listeners_ || (this.listeners_ = {});
+    const listenersForType = listeners[type] || (listeners[type] = []);
+    if (listenersForType.indexOf(listener) === -1) {
+      listenersForType.push(listener);
     }
   }
 

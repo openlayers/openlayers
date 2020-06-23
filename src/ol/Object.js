@@ -94,10 +94,10 @@ class BaseObject extends Observable {
     getUid(this);
 
     /**
-     * @name values_
      * @private
      * @type {!Object<string, *>}
      */
+    this.values_ = null;
 
     if (opt_values !== undefined) {
       this.setProperties(opt_values);
