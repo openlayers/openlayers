@@ -181,7 +181,7 @@ describe('ol.format.MVT', function () {
         flatCoordinates,
         ends
       ) {
-        flatCoordinates.push(0, 0, 3, 0, 3, 3, 0, 4, 0, 0);
+        flatCoordinates.push(0, 0, 3, 0, 3, 3, 0, 3, 0, 0);
         flatCoordinates.push(1, 1, 1, 2, 2, 2, 2, 1, 1, 1);
         ends.push(10, 20);
       };
