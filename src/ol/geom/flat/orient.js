@@ -4,6 +4,9 @@
 import {coordinates as reverseCoordinates} from './reverse.js';
 
 /**
+ * Is the linear ring oriented clockwise in a coordinate system with a bottom-left
+ * coordinate origin? For a coordinate system with a top-left coordinate origin,
+ * the ring's orientation is clockwise when this function returns false.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
@@ -11,19 +14,69 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @return {boolean} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
-  // http://tinyurl.com/clockwise-method
-  // https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
-  let edge = 0;
-  let x1 = flatCoordinates[end - stride];
-  let y1 = flatCoordinates[end - stride + 1];
-  for (; offset < end; offset += stride) {
-    const x2 = flatCoordinates[offset];
-    const y2 = flatCoordinates[offset + 1];
-    edge += (x2 - x1) * (y2 + y1);
-    x1 = x2;
-    y1 = y2;
+  // https://stackoverflow.com/a/1180256/2389327
+  // https://en.wikipedia.org/wiki/Curve_orientation#Orientation_of_a_simple_polygon
+
+  let firstVertexRepeated = true;
+  for (let i = 0; i < stride; ++i) {
+    if (flatCoordinates[offset + i] !== flatCoordinates[end - stride + i]) {
+      firstVertexRepeated = false;
+      break;
+    }
   }
-  return edge > 0;
+  if (firstVertexRepeated) {
+    end -= stride;
+  }
+  const iMinVertex = findCornerVertex(flatCoordinates, offset, end, stride);
+  // Orientation matrix:
+  //     [ 1  xa  ya ]
+  // O = | 1  xb  yb |
+  //     [ 1  xc  yc ]
+  let iPreviousVertex = iMinVertex - stride;
+  if (iPreviousVertex < offset) {
+    iPreviousVertex = end - stride;
+  }
+  let iNextVertex = iMinVertex + stride;
+  if (iNextVertex >= end) {
+    iNextVertex = offset;
+  }
+  const aX = flatCoordinates[iPreviousVertex];
+  const aY = flatCoordinates[iPreviousVertex + 1];
+  const bX = flatCoordinates[iMinVertex];
+  const bY = flatCoordinates[iMinVertex + 1];
+  const cX = flatCoordinates[iNextVertex];
+  const cY = flatCoordinates[iNextVertex + 1];
+  const determinant =
+    bX * cY + aX * bY + aY * cX - (aY * bX + bY * cX + aX * cY);
+
+  return determinant < 0;
+}
+
+// Find vertex along one edge of bounding box.
+// In this case, we find smallest y; in case of tie also smallest x.
+function findCornerVertex(flatCoordinates, offset, end, stride) {
+  let iMinVertex = -1;
+  let minY = Infinity;
+  let minXAtMinY = Infinity;
+  for (let i = offset; i < end; i += stride) {
+    const x = flatCoordinates[i];
+    const y = flatCoordinates[i + 1];
+    if (y > minY) {
+      continue;
+    }
+    if (y == minY) {
+      if (x >= minXAtMinY) {
+        continue;
+      }
+    }
+
+    // Minimum so far.
+    iMinVertex = i;
+    minY = y;
+    minXAtMinY = x;
+  }
+
+  return iMinVertex;
 }
 
 /**

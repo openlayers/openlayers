@@ -203,10 +203,16 @@ class MVT extends FeatureFormat {
         let prevEndIndex = 0;
         for (let i = 0, ii = ends.length; i < ii; ++i) {
           const end = ends[i];
+          // classifies an array of rings into polygons with outer rings and holes
           if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
-            endss.push(ends.slice(prevEndIndex, i));
-            prevEndIndex = i;
+            endss.push(ends.slice(prevEndIndex, i + 1));
+          } else {
+            if (endss.length === 0) {
+              continue;
+            }
+            endss[endss.length - 1].push(ends[prevEndIndex]);
           }
+          prevEndIndex = i + 1;
           offset = end;
         }
         if (endss.length > 1) {
