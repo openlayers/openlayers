@@ -95,7 +95,7 @@ class BaseObject extends Observable {
 
     /**
      * @private
-     * @type {?Object<string, *>}
+     * @type {Object<string, *>}
      */
     this.values_ = null;
 
