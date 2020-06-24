@@ -8,7 +8,12 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../transform.js';
-import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
+import {
+  createEmpty,
+  createOrUpdateEmpty,
+  getHeight,
+  returnOrUpdate,
+} from '../extent.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import {memoizeOne} from '../functions.js';
 import {transform2D} from './flat/transform.js';
@@ -169,7 +174,10 @@ class Geometry extends BaseObject {
    */
   getExtent(opt_extent) {
     if (this.extentRevision_ != this.getRevision()) {
-      this.extent_ = this.computeExtent(this.extent_);
+      const extent = this.computeExtent(this.extent_);
+      if (isNaN(extent[0]) || isNaN(extent[1])) {
+        createOrUpdateEmpty(extent);
+      }
       this.extentRevision_ = this.getRevision();
     }
     return returnOrUpdate(this.extent_, opt_extent);
