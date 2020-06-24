@@ -115,6 +115,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         {},
         frameState,
         {
+          coordinateToPixelTransform: create(),
           declutterItems: [],
           extent: renderedExtent,
           size: [width, height],
