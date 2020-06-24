@@ -17,5 +17,4 @@ const map = new Map({
     center: [0, 0],
     zoom: 1,
   }),
-  }
-);
+});
