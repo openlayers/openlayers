@@ -101,6 +101,22 @@ describe('ol.Object', function () {
     });
   });
 
+  describe('hasProperties', function () {
+    it('has no properties after creation', function () {
+      expect(o.hasProperties()).to.eql(false);
+    });
+
+    it('has properties after set', function () {
+      o.set('foo', 1);
+      expect(o.hasProperties()).to.eql(true);
+    });
+
+    it('has no properties after unset all', function () {
+      o.unset('foo');
+      expect(o.hasProperties()).to.eql(false);
+    });
+  });
+
   describe('notify', function () {
     let listener1, listener2;
 

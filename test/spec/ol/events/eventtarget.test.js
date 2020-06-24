@@ -24,9 +24,6 @@ describe('ol.events.EventTarget', function () {
       expect(eventTarget).to.be.a(EventTarget);
       expect(eventTarget).to.be.a(Disposable);
     });
-    it('creates an empty listeners_ object', function () {
-      expect(Object.keys(eventTarget.listeners_)).to.have.length(0);
-    });
     it('accepts a default target', function (done) {
       const defaultTarget = {};
       const target = new EventTarget(defaultTarget);
@@ -36,16 +33,21 @@ describe('ol.events.EventTarget', function () {
       });
       target.dispatchEvent('my-event');
     });
+    it('does not initialize objects in advance', function () {
+      expect(eventTarget.pendingRemovals_).to.be(null);
+      expect(eventTarget.dispatching_).to.be(null);
+      expect(eventTarget.listeners_).to.be(null);
+    });
   });
 
   describe('#hasListener', function () {
     it('reports any listeners when called without argument', function () {
       expect(eventTarget.hasListener()).to.be(false);
-      eventTarget.listeners_['foo'] = [function () {}];
+      eventTarget.addEventListener('foo', function () {});
       expect(eventTarget.hasListener()).to.be(true);
     });
     it('reports listeners for the type passed as argument', function () {
-      eventTarget.listeners_['foo'] = [function () {}];
+      eventTarget.addEventListener('foo', function () {});
       expect(eventTarget.hasListener('foo')).to.be(true);
       expect(eventTarget.hasListener('bar')).to.be(false);
     });

@@ -199,6 +199,11 @@ class EsriJSON extends JSONFeature {
   writeFeatureObject(feature, opt_options) {
     opt_options = this.adaptOptions(opt_options);
     const object = {};
+    if (!feature.hasProperties()) {
+      object['attributes'] = {};
+      return object;
+    }
+    const properties = feature.getProperties();
     const geometry = feature.getGeometry();
     if (geometry) {
       object['geometry'] = writeGeometry(geometry, opt_options);
@@ -214,9 +219,8 @@ class EsriJSON extends JSONFeature {
           ),
         });
       }
+      delete properties[feature.getGeometryName()];
     }
-    const properties = feature.getProperties();
-    delete properties[feature.getGeometryName()];
     if (!isEmpty(properties)) {
       object['attributes'] = properties;
     } else {
