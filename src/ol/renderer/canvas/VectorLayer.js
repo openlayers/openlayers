@@ -318,6 +318,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       container.style.opacity = opacity === 1 ? '' : String(opacity);
     }
 
+    if (this.renderedRotation_ !== viewState.rotation) {
+      this.renderedRotation_ = viewState.rotation;
+      this.hitDetectionImageData_ = null;
+    }
     return this.container;
   }
 
@@ -660,7 +664,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
-    this.renderedRotation_ = viewState.rotation;
     this.renderedCenter_ = center;
     this.renderedProjection_ = projection;
     this.replayGroup_ = executorGroup;
