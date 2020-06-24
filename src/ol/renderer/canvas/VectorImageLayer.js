@@ -150,6 +150,21 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         function () {
           if (image.getState() === ImageState.LOADED) {
             this.image_ = image;
+            const imageResolution = image.getResolution();
+            const imagePixelRatio = image.getPixelRatio();
+            const renderedResolution =
+              (imageResolution * pixelRatio) / imagePixelRatio;
+            this.renderedResolution = renderedResolution;
+            this.coordinateToVectorPixelTransform_ = compose(
+              this.coordinateToVectorPixelTransform_,
+              width / 2,
+              height / 2,
+              1 / renderedResolution,
+              -1 / renderedResolution,
+              0,
+              -viewState.center[0],
+              -viewState.center[1]
+            );
           }
         }.bind(this)
       );
@@ -157,23 +172,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
 
     if (this.image_) {
-      const image = this.image_;
-      const imageResolution = image.getResolution();
-      const imagePixelRatio = image.getPixelRatio();
-      const renderedResolution =
-        (imageResolution * pixelRatio) / imagePixelRatio;
-      this.renderedResolution = renderedResolution;
       this.renderedPixelToCoordinateTransform_ = frameState.pixelToCoordinateTransform.slice();
-      this.coordinateToVectorPixelTransform_ = compose(
-        this.coordinateToVectorPixelTransform_,
-        width / 2,
-        height / 2,
-        1 / renderedResolution,
-        -1 / renderedResolution,
-        0,
-        -viewState.center[0],
-        -viewState.center[1]
-      );
     }
 
     return !!this.image_;
