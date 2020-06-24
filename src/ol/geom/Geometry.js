@@ -9,8 +9,8 @@ import {
   create as createTransform,
 } from '../transform.js';
 import {
-  containsExtent,
   createEmpty,
+  createOrUpdateEmpty,
   getHeight,
   returnOrUpdate,
 } from '../extent.js';
@@ -174,14 +174,9 @@ class Geometry extends BaseObject {
    */
   getExtent(opt_extent) {
     if (this.extentRevision_ != this.getRevision()) {
-      this.extent_ = this.computeExtent(this.extent_);
-      if (
-        !containsExtent(
-          [-Infinity, -Infinity, Infinity, Infinity],
-          this.extent_
-        )
-      ) {
-        this.extent_ = createEmpty();
+      const extent = this.computeExtent(this.extent_);
+      if (isNaN(extent[0]) || isNaN(extent[1])) {
+        createOrUpdateEmpty(extent);
       }
       this.extentRevision_ = this.getRevision();
     }
