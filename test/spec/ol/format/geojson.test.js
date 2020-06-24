@@ -673,6 +673,22 @@ describe('ol.format.GeoJSON', function () {
       const feature = new Feature(new Point([5, 10]));
       const geojson = format.writeFeatureObject(feature);
       expect(geojson.properties).to.eql(null);
+      expect(geojson.geometry).to.eql({type: 'Point', coordinates: [5, 10]});
+    });
+
+    it('writes out a feature with only non-geometry properties correctly', function () {
+      const feature = new Feature({foo: 'bar'});
+      const geojson = format.writeFeatureObject(feature);
+      expect(geojson.geometry).to.eql(null);
+      expect(geojson.properties).to.eql({foo: 'bar'});
+    });
+
+    it('writes out a feature with deleted properties correctly', function () {
+      const feature = new Feature({foo: 'bar'});
+      feature.unset('foo');
+      const geojson = format.writeFeatureObject(feature);
+      expect(geojson.geometry).to.eql(null);
+      expect(geojson.properties).to.eql(null);
     });
 
     it('writes out a feature without geometry correctly', function () {
