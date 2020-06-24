@@ -33,6 +33,11 @@ describe('ol.events.EventTarget', function () {
       });
       target.dispatchEvent('my-event');
     });
+    it('does not initialize objects in advance', function () {
+      expect(eventTarget.pendingRemovals_).to.be(null);
+      expect(eventTarget.dispatching_).to.be(null);
+      expect(eventTarget.listeners_).to.be(null);
+    });
   });
 
   describe('#hasListener', function () {

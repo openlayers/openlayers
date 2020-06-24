@@ -40,19 +40,19 @@ class Target extends Disposable {
 
     /**
      * @private
-     * @type {Object<string, number>}
+     * @type {?Object<string, number>}
      */
     this.pendingRemovals_ = null;
 
     /**
      * @private
-     * @type {Object<string, number>}
+     * @type {?Object<string, number>}
      */
     this.dispatching_ = null;
 
     /**
      * @private
-     * @type {Object<string, Array<import("../events.js").Listener>>}
+     * @type {?Object<string, Array<import("../events.js").Listener>>}
      */
     this.listeners_ = null;
   }
@@ -143,7 +143,7 @@ class Target extends Disposable {
    * @return {Array<import("../events.js").Listener>|undefined} Listeners.
    */
   getListeners(type) {
-    return this.listeners_ && this.listeners_[type];
+    return (this.listeners_ && this.listeners_[type]) || undefined;
   }
 
   /**

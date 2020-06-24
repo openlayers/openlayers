@@ -129,7 +129,7 @@ class Feature extends BaseObject {
    */
   clone() {
     const clone = new Feature(
-      this.hasProperties() ? this.getProperties() : undefined
+      this.hasProperties() ? this.getProperties() : null
     );
     clone.setGeometryName(this.getGeometryName());
     const geometry = this.getGeometry();

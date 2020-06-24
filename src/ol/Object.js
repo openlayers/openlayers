@@ -95,7 +95,7 @@ class BaseObject extends Observable {
 
     /**
      * @private
-     * @type {!Object<string, *>}
+     * @type {?Object<string, *>}
      */
     this.values_ = null;
 
@@ -199,7 +199,7 @@ class BaseObject extends Observable {
       const oldValue = this.values_[key];
       delete this.values_[key];
       if (isEmpty(this.values_)) {
-        delete this.values_;
+        this.values_ = null;
       }
       if (!opt_silent) {
         this.notify(key, oldValue);
