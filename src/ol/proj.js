@@ -71,9 +71,10 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {applyTransform} from './extent.js';
+import {applyTransform, getWidth} from './extent.js';
+import {clamp, modulo} from './math.js';
 import {getDistance} from './sphere.js';
-import {modulo} from './math.js';
+import {getWorldsAway} from './coordinate.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection}, SRS identifier
@@ -623,6 +624,55 @@ export function fromUserExtent(extent, destProjection) {
     return extent;
   }
   return transformExtent(extent, userProjection, destProjection);
+}
+
+/**
+ * Creates a safe coordinate transform function from a coordinate transform function.
+ * "Safe" means that it can handle wrapping of x-coordinates for global projections,
+ * and that coordinates exceeding the projection validity extent's range will be
+ * clamped to the validity range.
+ * @param {Projection} sourceProj Source projection.
+ * @param {Projection} destProj Destination projection.
+ * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} forward Transform function (source to destiation).
+ * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} inverse Transform function (destiation to source).
+ * @return {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} Safe transform function (source to destiation).
+ */
+export function createSafeCoordinateTransform(
+  sourceProj,
+  destProj,
+  forward,
+  inverse
+) {
+  return function (coord) {
+    const worldsAway = getWorldsAway(coord, sourceProj);
+    const sourceExtent = sourceProj.getExtent();
+    const destExtent = destProj.getExtent();
+    let clampBottom, clampTop;
+    if (destExtent) {
+      const clampBottomLeft = inverse(destExtent.slice(0, 2));
+      const clampTopRight = inverse(destExtent.slice(2, 4));
+      clampBottom = isNaN(clampBottomLeft[1])
+        ? sourceExtent
+          ? sourceExtent[1]
+          : undefined
+        : clampBottomLeft[1];
+      clampTop = isNaN(clampTopRight[1])
+        ? sourceExtent
+          ? sourceExtent[3]
+          : undefined
+        : clampTopRight[1];
+    }
+    const transformed = sourceExtent
+      ? forward([
+          coord[0] - worldsAway * getWidth(sourceExtent),
+          clampTop ? clamp(coord[1], clampBottom, clampTop) : coord[1],
+        ])
+      : forward(coord);
+    if (worldsAway && destProj.canWrapX()) {
+      transformed[0] += worldsAway * getWidth(destProj.getExtent());
+    }
+    return transformed;
+  };
 }
 
 /**
