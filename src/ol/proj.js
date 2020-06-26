@@ -644,32 +644,29 @@ export function createSafeCoordinateTransform(
   inverse
 ) {
   return function (coord) {
-    const worldsAway = getWorldsAway(coord, sourceProj);
-    const sourceExtent = sourceProj.getExtent();
-    const destExtent = destProj.getExtent();
-    let clampBottom, clampTop;
-    if (destExtent) {
-      const clampBottomLeft = inverse(destExtent.slice(0, 2));
-      const clampTopRight = inverse(destExtent.slice(2, 4));
-      clampBottom = isNaN(clampBottomLeft[1])
-        ? sourceExtent
-          ? sourceExtent[1]
-          : undefined
-        : clampBottomLeft[1];
-      clampTop = isNaN(clampTopRight[1])
-        ? sourceExtent
-          ? sourceExtent[3]
-          : undefined
-        : clampTopRight[1];
+    let x, y, worldsAway;
+    if (sourceProj.canWrapX()) {
+      worldsAway = getWorldsAway(coord, sourceProj);
+      const sourceExtent = sourceProj.getExtent();
+      if (worldsAway && sourceExtent) {
+        x = coord[0] - worldsAway * getWidth(sourceExtent);
+      }
     }
-    const transformed = sourceExtent
-      ? forward([
-          coord[0] - worldsAway * getWidth(sourceExtent),
-          clampTop ? clamp(coord[1], clampBottom, clampTop) : coord[1],
-        ])
-      : forward(coord);
+    const destExtent = destProj.getExtent();
+    if (destExtent) {
+      const clampMin = inverse(destExtent.slice(0, 2));
+      const clampMax = inverse(destExtent.slice(2, 4));
+      if (!isNaN(clampMin[1]) && !isNaN(clampMax[1])) {
+        y = clamp(coord[1], clampMin[1], clampMax[1]);
+      }
+    }
+    const transformed = forward(
+      x === undefined && y === undefined
+        ? coord
+        : [x === undefined ? coord[0] : x, y === undefined ? coord[1] : y]
+    );
     if (worldsAway && destProj.canWrapX()) {
-      transformed[0] += worldsAway * getWidth(destProj.getExtent());
+      transformed[0] += worldsAway * getWidth(destExtent);
     }
     return transformed;
   };
