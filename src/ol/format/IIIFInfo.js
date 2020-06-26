@@ -145,15 +145,9 @@ IIIF_PROFILE_VALUES['none'] = {
   },
 };
 
-const COMPLIANCE_VERSION1 = new RegExp(
-  '^https?://library.stanford.edu/iiif/image-api/(1.1/)?compliance.html#level[0-2]$'
-);
-const COMPLIANCE_VERSION2 = new RegExp(
-  '^https?://iiif.io/api/image/2/level[0-2](.json)?$'
-);
-const COMPLIANCE_VERSION3 = new RegExp(
-  '(^https?://iiif.io/api/image/3/level[0-2](.json)?$)|(^level[0-2]$)'
-);
+const COMPLIANCE_VERSION1 = /^https?:\/\/library\.stanford\.edu\/iiif\/image-api\/(?:1\.1\/)?compliance\.html#level[0-2]$/;
+const COMPLIANCE_VERSION2 = /^https?:\/\/iiif\.io\/api\/image\/2\/level[0-2](?:\.json)?$/;
+const COMPLIANCE_VERSION3 = /(^https?:\/\/iiif\.io\/api\/image\/3\/level[0-2](?:\.json)?$)|(^level[0-2]$)/;
 
 function generateVersion1Options(iiifInfo) {
   let levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();
@@ -165,7 +159,7 @@ function generateVersion1Options(iiifInfo) {
     url:
       iiifInfo.imageInfo['@id'] === undefined
         ? undefined
-        : iiifInfo.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
+        : iiifInfo.imageInfo['@id'].replace(/\/?(?:info\.json)?$/g, ''),
     supports: levelProfile.supports,
     formats: [
       ...levelProfile.formats,
@@ -209,7 +203,7 @@ function generateVersion2Options(iiifInfo) {
         ? iiifInfo.imageInfo.profile[1].qualities
         : [];
   return {
-    url: iiifInfo.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
+    url: iiifInfo.imageInfo['@id'].replace(/\/?(?:info\.json)?$/g, ''),
     sizes:
       iiifInfo.imageInfo.sizes === undefined
         ? undefined
@@ -419,7 +413,7 @@ class IIIFInfo {
     if (complianceLevel === undefined) {
       return undefined;
     }
-    const level = complianceLevel.match(/level[0-2](\.json)?$/g);
+    const level = complianceLevel.match(/level[0-2](?:\.json)?$/g);
     return Array.isArray(level) ? level[0].replace('.json', '') : undefined;
   }
 
