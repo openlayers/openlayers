@@ -649,7 +649,7 @@ export function createSafeCoordinateTransform(
       const sourceExtent = sourceProj.getExtent();
       const sourceExtentWidth = getWidth(sourceExtent);
       worldsAway = getWorldsAway(coord, sourceProj, sourceExtentWidth);
-      if (worldsAway && sourceExtent) {
+      if (worldsAway) {
         // Move x to the real world
         x = coord[0] - worldsAway * sourceExtentWidth;
       }
