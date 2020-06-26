@@ -71,7 +71,14 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {applyTransform, getWidth} from './extent.js';
+import {
+  applyTransform,
+  getBottomLeft,
+  getBottomRight,
+  getTopLeft,
+  getTopRight,
+  getWidth,
+} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {getDistance} from './sphere.js';
 import {getWorldsAway} from './coordinate.js';
@@ -659,21 +666,19 @@ export function createSafeCoordinateTransform(
     if (!isFinite(transformed[0]) || !isFinite(transformed[1])) {
       // Try to recover from out-of-bounds transform
       if (destExtent) {
-        const corner1 = inverse(destExtent.slice(0, 2));
-        const corner2 = inverse(destExtent.slice(2, 4));
-        const x1 = corner1[0];
-        const x2 = corner2[0];
-        const y1 = corner1[1];
-        const y2 = corner2[1];
-        if (isFinite(x1) && isFinite(x2)) {
-          x = clamp(
-            x == undefined ? coord[1] : x,
-            Math.min(x1, x2),
-            Math.max(x1, x2)
-          );
+        const corner1 = inverse(getBottomLeft(destExtent));
+        const corner2 = inverse(getBottomRight(destExtent));
+        const corner3 = inverse(getTopLeft(destExtent));
+        const corner4 = inverse(getTopRight(destExtent));
+        const minX = Math.min(corner1[0], corner2[0], corner3[0], corner4[0]);
+        const maxX = Math.max(corner1[0], corner2[0], corner3[0], corner4[0]);
+        const minY = Math.min(corner1[1], corner2[1], corner3[1], corner4[1]);
+        const maxY = Math.max(corner1[1], corner2[1], corner3[1], corner4[1]);
+        if (isFinite(minX) && isFinite(maxX)) {
+          x = clamp(x == undefined ? coord[1] : x, minX, maxX);
         }
-        if (isFinite(y1) && isFinite(y2)) {
-          y = clamp(coord[1], Math.min(y1, y2), Math.max(y1, y2));
+        if (isFinite(minY) && isFinite(maxY)) {
+          y = clamp(coord[1], minY, maxY);
         }
         transformed = forward([x, y]);
       }
