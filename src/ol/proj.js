@@ -646,26 +646,29 @@ export function createSafeCoordinateTransform(
   return function (coord) {
     let x, y, worldsAway;
     if (sourceProj.canWrapX()) {
-      worldsAway = getWorldsAway(coord, sourceProj);
       const sourceExtent = sourceProj.getExtent();
+      const sourceExtentWidth = getWidth(sourceExtent);
+      worldsAway = getWorldsAway(coord, sourceProj, sourceExtentWidth);
       if (worldsAway && sourceExtent) {
-        x = coord[0] - worldsAway * getWidth(sourceExtent);
+        // Move x to the real world
+        x = coord[0] - worldsAway * sourceExtentWidth;
       }
     }
+    let transformed = forward(x === undefined ? coord : [x, coord[1]]);
     const destExtent = destProj.getExtent();
-    if (destExtent) {
-      const clampMin = inverse(destExtent.slice(0, 2));
-      const clampMax = inverse(destExtent.slice(2, 4));
-      if (!isNaN(clampMin[1]) && !isNaN(clampMax[1])) {
-        y = clamp(coord[1], clampMin[1], clampMax[1]);
+    if (!isFinite(transformed[0]) || !isFinite(transformed[1])) {
+      // Try to recover from out-of-bounds transform
+      if (destExtent) {
+        const y1 = inverse(destExtent.slice(0, 2))[1];
+        const y2 = inverse(destExtent.slice(2, 4))[1];
+        if (isFinite(y1) && isFinite(y2)) {
+          y = clamp(coord[1], Math.min(y1, y2), Math.max(y1, y2));
+          transformed = forward([x === undefined ? coord[0] : x, y]);
+        }
       }
     }
-    const transformed = forward(
-      x === undefined && y === undefined
-        ? coord
-        : [x === undefined ? coord[0] : x, y === undefined ? coord[1] : y]
-    );
     if (worldsAway && destProj.canWrapX()) {
+      // Move transformed coordinate back to the offset world
       transformed[0] += worldsAway * getWidth(destExtent);
     }
     return transformed;
