@@ -659,12 +659,23 @@ export function createSafeCoordinateTransform(
     if (!isFinite(transformed[0]) || !isFinite(transformed[1])) {
       // Try to recover from out-of-bounds transform
       if (destExtent) {
-        const y1 = inverse(destExtent.slice(0, 2))[1];
-        const y2 = inverse(destExtent.slice(2, 4))[1];
+        const corner1 = inverse(destExtent.slice(0, 2));
+        const corner2 = inverse(destExtent.slice(2, 4));
+        const x1 = corner1[0];
+        const x2 = corner2[0];
+        const y1 = corner1[1];
+        const y2 = corner2[1];
+        if (isFinite(x1) && isFinite(x2)) {
+          x = clamp(
+            x == undefined ? coord[1] : x,
+            Math.min(x1, x2),
+            Math.max(x1, x2)
+          );
+        }
         if (isFinite(y1) && isFinite(y2)) {
           y = clamp(coord[1], Math.min(y1, y2), Math.max(y1, y2));
-          transformed = forward([x === undefined ? coord[0] : x, y]);
         }
+        transformed = forward([x, y]);
       }
     }
     if (worldsAway && destProj.canWrapX()) {
