@@ -560,6 +560,25 @@ describe('ol.proj', function () {
       });
       expect(getProjection('EPSG:4326')).to.equal(epsg4326);
     });
+
+    it('uses safe transform functions', function () {
+      register(proj4);
+      const wgs84 = getProjection('WGS84');
+      const epsg4326 = getProjection('EPSG:4326');
+      wgs84.setExtent(epsg4326.getExtent());
+      wgs84.setGlobal(true);
+      const google = getProjection('GOOGLE');
+      const epsg3857 = getProjection('EPSG:3857');
+      google.setExtent(epsg3857.getExtent());
+      google.setGlobal(true);
+      const coord = [-190, 90];
+      const transformed = transform(coord, wgs84, google);
+      expect(transformed).to.eql(transform(coord, epsg4326, epsg3857));
+      const got = transform(transformed, google, wgs84);
+      const expected = transform(transformed, epsg3857, epsg4326);
+      expect(got[0]).to.roughlyEqual(expected[0], 1e-9);
+      expect(got[1]).to.roughlyEqual(expected[1], 1e-9);
+    });
   });
 
   describe('ol.proj.getTransformFromProjections()', function () {

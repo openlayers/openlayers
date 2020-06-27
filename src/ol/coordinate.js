@@ -406,21 +406,35 @@ export function toStringXY(coordinate, opt_fractionDigits) {
  * exclusive.
  *
  * @param {Coordinate} coordinate Coordinate.
- * @param {import("./proj/Projection.js").default} projection Projection
+ * @param {import("./proj/Projection.js").default} projection Projection.
  * @return {Coordinate} The coordinate within the real world extent.
  */
 export function wrapX(coordinate, projection) {
-  const projectionExtent = projection.getExtent();
-  if (
-    projection.canWrapX() &&
-    (coordinate[0] < projectionExtent[0] ||
-      coordinate[0] >= projectionExtent[2])
-  ) {
-    const worldWidth = getWidth(projectionExtent);
-    const worldsAway = Math.floor(
-      (coordinate[0] - projectionExtent[0]) / worldWidth
-    );
+  const worldWidth = getWidth(projection.getExtent());
+  const worldsAway = getWorldsAway(coordinate, projection, worldWidth);
+  if (worldsAway) {
     coordinate[0] -= worldsAway * worldWidth;
   }
   return coordinate;
+}
+/**
+ * @param {Coordinate} coordinate Coordinate.
+ * @param {import("./proj/Projection.js").default} projection Projection.
+ * @param {number=} opt_sourceExtentWidth Width of the source extent.
+ * @return {number} Offset in world widths.
+ */
+export function getWorldsAway(coordinate, projection, opt_sourceExtentWidth) {
+  const projectionExtent = projection.getExtent();
+  let worldsAway = 0;
+  if (
+    projection.canWrapX() &&
+    (coordinate[0] < projectionExtent[0] || coordinate[0] > projectionExtent[2])
+  ) {
+    const sourceExtentWidth =
+      opt_sourceExtentWidth || getWidth(projectionExtent);
+    worldsAway = Math.floor(
+      (coordinate[0] - projectionExtent[0]) / sourceExtentWidth
+    );
+  }
+  return worldsAway;
 }

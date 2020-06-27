@@ -6,6 +6,7 @@ import {
   addCoordinateTransforms,
   addEquivalentProjections,
   addProjection,
+  createSafeCoordinateTransform,
   get,
 } from '../proj.js';
 import {assign} from '../obj.js';
@@ -60,8 +61,18 @@ export function register(proj4) {
           addCoordinateTransforms(
             proj1,
             proj2,
-            transform.forward,
-            transform.inverse
+            createSafeCoordinateTransform(
+              proj1,
+              proj2,
+              transform.forward,
+              transform.inverse
+            ),
+            createSafeCoordinateTransform(
+              proj2,
+              proj1,
+              transform.inverse,
+              transform.forward
+            )
           );
         }
       }
