@@ -398,6 +398,7 @@ export function render(
   if (opt_renderEdges) {
     context.save();
 
+    context.globalCompositeOperation = 'source-over';
     context.strokeStyle = 'black';
     context.lineWidth = 1;
 
