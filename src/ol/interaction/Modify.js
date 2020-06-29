@@ -897,7 +897,7 @@ class Modify extends PointerInteraction {
       for (let i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
         const segmentDataMatch = segmentDataMatches[i];
         const segment = segmentDataMatch.segment;
-        let uid = getUid(segmentDataMatch.feature);
+        let uid = getUid(segmentDataMatch.geometry);
         const depth = segmentDataMatch.depth;
         if (depth) {
           uid += '-' + depth.join('-'); // separate feature components

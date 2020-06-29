@@ -2,6 +2,7 @@ import Circle from '../../../../src/ol/geom/Circle.js';
 import Collection from '../../../../src/ol/Collection.js';
 import Event from '../../../../src/ol/events/Event.js';
 import Feature from '../../../../src/ol/Feature.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
@@ -599,6 +600,89 @@ describe('ol.interaction.Modify', function () {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
       expect(events).to.have.length(0);
+    });
+  });
+
+  describe('geometry collection modification', function () {
+    it('all geometries should be modified', function () {
+      const firstPolygon = new Polygon([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 1],
+          [0, 0],
+        ],
+      ]);
+      const secondPolygon = firstPolygon.clone();
+
+      const firstLineString = new LineString([
+        [-2, 0],
+        [0, 0],
+        [2, 0],
+      ]);
+      const secondLineString = new LineString([
+        [0, 2],
+        [0, 0],
+        [0, -2],
+      ]);
+
+      const point = new Point([0, 0]);
+
+      const circle = new Circle([0, 0], 1);
+
+      const geometryCollection = new GeometryCollection([
+        firstPolygon,
+        secondPolygon,
+        firstLineString,
+        secondLineString,
+        point,
+        circle,
+      ]);
+
+      const feature = new Feature({
+        geometry: geometryCollection,
+      });
+
+      features.length = 0;
+      features.push(feature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      // Move vertex
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -1, 0, null, 0);
+      simulateEvent('pointerdrag', -1, 0, null, 0);
+      simulateEvent('pointerup', -1, 0, null, 0);
+
+      let geomCoords;
+      geomCoords = firstPolygon.getCoordinates()[0];
+      expect(geomCoords[0][0]).to.equal(-1);
+      expect(geomCoords[0][1]).to.equal(0);
+
+      geomCoords = secondPolygon.getCoordinates()[0];
+      expect(geomCoords[0][0]).to.equal(-1);
+      expect(geomCoords[0][1]).to.equal(0);
+
+      geomCoords = firstLineString.getCoordinates();
+      expect(geomCoords[1][0]).to.equal(-1);
+      expect(geomCoords[1][1]).to.equal(0);
+
+      geomCoords = secondLineString.getCoordinates();
+      expect(geomCoords[1][0]).to.equal(-1);
+      expect(geomCoords[1][1]).to.equal(0);
+
+      geomCoords = point.getCoordinates();
+      expect(geomCoords[0]).to.equal(-1);
+      expect(geomCoords[1]).to.equal(0);
+
+      geomCoords = circle.getCenter();
+      expect(geomCoords[0]).to.equal(-1);
+      expect(geomCoords[1]).to.equal(0);
     });
   });
 

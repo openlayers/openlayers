@@ -212,10 +212,21 @@ const geojsonObject = {
             'type': 'Polygon',
             'coordinates': [
               [
-                [1e6, -6e6],
-                [2e6, -4e6],
-                [3e6, -6e6],
-                [1e6, -6e6],
+                [1e6, -5e6],
+                [2e6, -3.5e6],
+                [3e6, -5e6],
+                [1e6, -5e6],
+              ],
+            ],
+          },
+          {
+            'type': 'Polygon',
+            'coordinates': [
+              [
+                [1e6, -5e6],
+                [2e6, -6.5e6],
+                [3e6, -5e6],
+                [1e6, -5e6],
               ],
             ],
           },
