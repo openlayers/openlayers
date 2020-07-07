@@ -282,12 +282,15 @@ class CanvasLayerRenderer extends LayerRenderer {
 
     let data;
     try {
-      data = context.getImageData(
-        Math.round(renderPixel[0]),
-        Math.round(renderPixel[1]),
-        1,
-        1
-      ).data;
+      const x = Math.round(renderPixel[0]);
+      const y = Math.round(renderPixel[1]);
+      const newCanvas = document.createElement('canvas');
+      const newContext = newCanvas.getContext('2d');
+      newCanvas.width = 1;
+      newCanvas.height = 1;
+      newContext.clearRect(0, 0, 1, 1);
+      newContext.drawImage(context.canvas, x, y, 1, 1, 0, 0, 1, 1);
+      data = newContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
       if (err.name === 'SecurityError') {
         // tainted canvas, we assume there is data at the given pixel (although there might not be)
