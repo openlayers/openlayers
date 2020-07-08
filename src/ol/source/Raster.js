@@ -802,6 +802,13 @@ class RasterSource extends ImageSource {
 }
 
 /**
+ * Clean up and unregister the worker.
+ * @function
+ * @api
+ */
+RasterSource.prototype.dispose;
+
+/**
  * A reusable canvas context.
  * @type {CanvasRenderingContext2D}
  * @private
