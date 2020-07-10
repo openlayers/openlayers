@@ -1,6 +1,7 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
+import Source from '../src/ol/source/Source.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
