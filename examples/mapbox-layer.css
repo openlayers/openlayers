@@ -1,0 +1,5 @@
+/* Reset font size changed by Mapbox CSS */
+.map {
+  font-size: medium;  /* fallback for Internet Explorer */
+  font: initial;
+}
