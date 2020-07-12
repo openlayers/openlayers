@@ -102,30 +102,32 @@
     listExamples(examples);
   }
 
-  function parseQuery() {
+  function parseParams() {
     const params = {};
-    const list = window.location.search.substring(1).split('&');
+    const list = window.location.search
+      .substring(1)
+      .replace(/\+/g, '%20')
+      .split('&');
     for (let i = 0; i < list.length; ++i) {
       const pair = list[i].split('=');
-      if (pair.length == 2) {
+      if (pair.length === 2) {
         params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
       }
     }
-    if (params['q']) {
-      const input = document.getElementById('keywords');
-      input.value = params['q'];
-      inputChange.call(input);
-    }
+    return params;
   }
 
-  window.onload = function () {
+  window.addEventListener('load', function () {
     for (let i = 0; i < info.examples.length; ++i) {
       info.examples[i].link += window.location.search;
     }
     template = new jugl.Template('template');
     target = document.getElementById('examples');
-    listExamples(info.examples);
-    document.getElementById('keywords').onkeyup = inputChange;
-    parseQuery();
-  };
+    const params = parseParams();
+    const text = params['q'] || '';
+    const input = document.getElementById('keywords');
+    input.addEventListener('input', inputChange);
+    input.value = text;
+    filterList(text);
+  });
 })();
