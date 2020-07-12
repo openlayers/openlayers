@@ -29,40 +29,33 @@
     if (text.length === 0) {
       return info.examples;
     }
-    const words = text.split(/\W+/);
+    const words = text.toLowerCase().split(/\W+/);
     const scores = {};
-    for (let i = 0; i < words.length; ++i) {
-      const word = words[i].toLowerCase();
-      let dict = info.index[word];
-      const updateScores = function () {
-        // eslint-disable-next-line prefer-const
-        for (let exIndex in dict) {
-          const count = dict[exIndex];
-          if (scores[exIndex]) {
-            if (scores[exIndex][word]) {
-              scores[exIndex][word] += count;
-            } else {
-              scores[exIndex][word] = count;
-            }
-          } else {
-            scores[exIndex] = {};
-            scores[exIndex][word] = count;
-          }
+    const updateScores = function (dict, word) {
+      // eslint-disable-next-line prefer-const
+      for (let exIndex in dict) {
+        let exScore = scores[exIndex];
+        if (!exScore) {
+          exScore = {};
+          scores[exIndex] = exScore;
         }
-      };
+        exScore[word] = (exScore[word] || 0) + dict[exIndex];
+      }
+    };
+    words.forEach(function (word) {
+      const dict = info.index[word];
       if (dict) {
-        updateScores();
+        updateScores(dict, word);
       } else {
         const r = new RegExp(word);
         // eslint-disable-next-line prefer-const
         for (let idx in info.index) {
           if (r.test(idx)) {
-            dict = info.index[idx];
-            updateScores();
+            updateScores(info.index[idx], word);
           }
         }
       }
-    }
+    });
     const examples = [];
     // eslint-disable-next-line prefer-const
     for (let exIndex in scores) {
