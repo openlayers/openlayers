@@ -169,10 +169,15 @@ class ExampleBuilder {
 
       await Promise.all(promises);
 
+      exampleData.sort((a, b) =>
+        a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
+      );
       const info = {
         examples: exampleData,
         index: createWordIndex(exampleData),
-        tags: Array.from(uniqueTags),
+        tags: Array.from(uniqueTags)
+          .sort() // sort twice to get predictable, case insensitve order
+          .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'})),
       };
 
       const indexSource = `const info = ${JSON.stringify(info)};`;
