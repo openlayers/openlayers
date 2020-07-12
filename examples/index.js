@@ -25,7 +25,8 @@
   }
 
   function getMatchingExamples(text) {
-    if (text.length < 2) {
+    text = text.trim();
+    if (text.length === 0) {
       return info.examples;
     }
     const words = text.split(/\W+/);
