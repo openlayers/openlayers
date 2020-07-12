@@ -13,6 +13,7 @@ import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import MapProperty from './MapProperty.js';
 import ObjectEventType from './ObjectEventType.js';
+import PointerEventType from './pointer/EventType.js';
 import RenderEventType from './render/EventType.js';
 import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
@@ -1017,11 +1018,16 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    if (!mapBrowserEvent.dragging) {
+    const originalEvent = /** @type {PointerEvent} */ (mapBrowserEvent.originalEvent);
+    const eventType = originalEvent.type;
+    if (
+      eventType === PointerEventType.POINTERDOWN ||
+      eventType === EventType.WHEEL ||
+      eventType === EventType.KEYDOWN
+    ) {
       const rootNode = this.viewport_.getRootNode
         ? this.viewport_.getRootNode()
         : document;
-      const originalEvent = /** @type {PointerEvent} */ (mapBrowserEvent.originalEvent);
       const target =
         rootNode === document
           ? /** @type {Node} */ (originalEvent.target)
@@ -1030,16 +1036,14 @@ class PluggableMap extends BaseObject {
               originalEvent.clientY
             );
       if (
-        // Do not abort when the pointer is outside the shadow root
-        originalEvent.target !== document.documentElement &&
-        // Abort when target is on overlayContainerStopEvent
-        (this.overlayContainerStopEvent_.contains(target) ||
-          // Abort if the event target is a child of the container that doesn't allow
-          // event propagation or is no longer in the page. It's possible for the target to no longer
-          // be in the page if it has been removed in an event listener, this might happen in a Control
-          // that recreates it's content based on user interaction either manually or via a render
-          // in something like https://reactjs.org/
-          !(document.body.contains(target) || rootNode.contains(target)))
+        // Abort if the event target is a child of the container that is no longer in the page.
+        // It's possible for the target to no longer be in the page if it has been removed in an
+        // event listener, this might happen in a Control that recreates it's content based on
+        // user interaction either manually or via a render in something like https://reactjs.org/
+        !rootNode.contains(target) ||
+        // Abort if the target is a child of the container for elements whose events are not meant
+        // to be handled by map interactions.
+        this.overlayContainerStopEvent_.contains(target)
       ) {
         return;
       }
