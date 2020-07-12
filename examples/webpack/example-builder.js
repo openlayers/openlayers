@@ -175,7 +175,7 @@ class ExampleBuilder {
         tags: Array.from(uniqueTags),
       };
 
-      const indexSource = `var info = ${JSON.stringify(info)}`;
+      const indexSource = `const info = ${JSON.stringify(info)};`;
       compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }

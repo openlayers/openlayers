@@ -1,42 +1,45 @@
 (function () {
-  var template, target;
+  'use strict';
+  /* global info, jugl */
+  let template, target;
 
   function listExamples(examples) {
-    target.innerHTML = "";
-    var node = template.process({
+    target.innerHTML = '';
+    template.process({
       context: {examples: examples},
       clone: true,
-      parent: target
+      parent: target,
     });
-    document.getElementById("count").innerHTML = "(" + examples.length + ")";
+    document.getElementById('count').innerHTML = '(' + examples.length + ')';
   }
 
-  var timerId;
+  let timerId;
   function inputChange() {
     if (timerId) {
       window.clearTimeout(timerId);
     }
-    var text = this.value;
-    timerId = window.setTimeout(function() {
+    const text = this.value;
+    timerId = window.setTimeout(function () {
       filterList(text);
     }, 500);
   }
 
   function filterList(text) {
-    var examples;
+    let examples;
     if (text.length < 2) {
       examples = info.examples;
     } else {
-      var words = text.split(/\W+/);
-      var scores = {};
-      for(var i=0; i<words.length; ++i) {
-        var word = words[i].toLowerCase();
-        var dict = info.index[word];
-        var updateScores = function() {
-          for(exIndex in dict) {
-            var count = dict[exIndex];
-            if(scores[exIndex]) {
-              if(scores[exIndex][word]) {
+      const words = text.split(/\W+/);
+      const scores = {};
+      for (let i = 0; i < words.length; ++i) {
+        const word = words[i].toLowerCase();
+        let dict = info.index[word];
+        const updateScores = function () {
+          // eslint-disable-next-line prefer-const
+          for (let exIndex in dict) {
+            const count = dict[exIndex];
+            if (scores[exIndex]) {
+              if (scores[exIndex][word]) {
                 scores[exIndex][word] += count;
               } else {
                 scores[exIndex][word] = count;
@@ -50,9 +53,9 @@
         if (dict) {
           updateScores();
         } else {
-          var r;
-          for (idx in info.index) {
-            r = new RegExp(word);
+          const r = new RegExp(word);
+          // eslint-disable-next-line prefer-const
+          for (let idx in info.index) {
             if (r.test(idx)) {
               dict = info.index[idx];
               updateScores();
@@ -61,22 +64,27 @@
         }
       }
       examples = [];
-      for (var j in scores) {
-        var ex = info.examples[j];
+      // eslint-disable-next-line prefer-const
+      for (let j in scores) {
+        const ex = info.examples[j];
         ex.score = scores[j];
         examples.push(ex);
       }
       // sort examples by first by number of words matched, then
       // by word frequency
-      examples.sort(function(a, b) {
-        var cmp;
-        var aWords = 0, bWords = 0;
-        var aScore = 0, bScore = 0;
-        for (var i in a.score) {
+      examples.sort(function (a, b) {
+        let cmp;
+        let aWords = 0,
+          bWords = 0;
+        let aScore = 0,
+          bScore = 0;
+        // eslint-disable-next-line prefer-const
+        for (let i in a.score) {
           aScore += a.score[i];
           aWords += 1;
         }
-        for (var j in b.score) {
+        // eslint-disable-next-line prefer-const
+        for (let j in b.score) {
           bScore += b.score[j];
           bWords += 1;
         }
@@ -92,29 +100,29 @@
   }
 
   function parseQuery() {
-    var params = {};
-    var list = window.location.search.substring(1).split("&");
-    for (var i = 0; i < list.length; ++i) {
-      var pair = list[i].split("=");
+    const params = {};
+    const list = window.location.search.substring(1).split('&');
+    for (let i = 0; i < list.length; ++i) {
+      const pair = list[i].split('=');
       if (pair.length == 2) {
         params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
       }
     }
-    if (params["q"]) {
-      var input = document.getElementById("keywords");
-      input.value = params["q"];
+    if (params['q']) {
+      const input = document.getElementById('keywords');
+      input.value = params['q'];
       inputChange.call(input);
     }
   }
 
-  window.onload = function() {
-    for (var i = 0; i < info.examples.length; ++i) {
+  window.onload = function () {
+    for (let i = 0; i < info.examples.length; ++i) {
       info.examples[i].link += window.location.search;
     }
-    template = new jugl.Template("template");
-    target = document.getElementById("examples");
+    template = new jugl.Template('template');
+    target = document.getElementById('examples');
     listExamples(info.examples);
-    document.getElementById("keywords").onkeyup = inputChange;
+    document.getElementById('keywords').onkeyup = inputChange;
     parseQuery();
   };
 })();
