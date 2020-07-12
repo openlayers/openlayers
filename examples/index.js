@@ -64,35 +64,21 @@
     }
     const examples = [];
     // eslint-disable-next-line prefer-const
-    for (let j in scores) {
-      const ex = info.examples[j];
-      ex.score = scores[j];
+    for (let exIndex in scores) {
+      const ex = info.examples[exIndex];
+      ex.score = 0;
+      ex.words = 0;
+      // eslint-disable-next-line prefer-const
+      for (let word in scores[exIndex]) {
+        ex.score += scores[exIndex][word];
+        ex.words++;
+      }
       examples.push(ex);
     }
-    // sort examples by first by number of words matched, then
+    // sort examples, first by number of words matched, then
     // by word frequency
     examples.sort(function (a, b) {
-      let cmp;
-      let aWords = 0,
-        bWords = 0;
-      let aScore = 0,
-        bScore = 0;
-      // eslint-disable-next-line prefer-const
-      for (let i in a.score) {
-        aScore += a.score[i];
-        aWords += 1;
-      }
-      // eslint-disable-next-line prefer-const
-      for (let j in b.score) {
-        bScore += b.score[j];
-        bWords += 1;
-      }
-      if (aWords == bWords) {
-        cmp = bScore - aScore;
-      } else {
-        cmp = bWords - aWords;
-      }
-      return cmp;
+      return a.score - b.score || a.words - b.words;
     });
     return examples;
   }
