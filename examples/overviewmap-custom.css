@@ -11,12 +11,12 @@
   border: 1px solid black;
 }
 
-.map .ol-custom-overviewmap .map .ol-overviewmap-map {
+.map .ol-custom-overviewmap .ol-overviewmap-map {
   border: none;
   width: 300px;
 }
 
-.map .ol-custom-overviewmap .map .ol-overviewmap-box {
+.map .ol-custom-overviewmap .ol-overviewmap-box {
   border: 2px solid red;
 }
 
