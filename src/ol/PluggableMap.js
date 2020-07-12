@@ -282,17 +282,13 @@ class PluggableMap extends BaseObject {
      * @private
      * @type {MapBrowserEventHandler}
      */
-    this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
-      this,
-      options.moveTolerance
-    );
-    const handleMapBrowserEvent = this.handleMapBrowserEvent.bind(this);
-    for (const key in MapBrowserEventType) {
-      this.mapBrowserEventHandler_.addEventListener(
-        MapBrowserEventType[key],
-        handleMapBrowserEvent
-      );
-    }
+    this.mapBrowserEventHandler_ = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.moveTolerance_ = options.moveTolerance;
 
     /**
      * @private
@@ -305,18 +301,6 @@ class PluggableMap extends BaseObject {
      * @type {?Array<import("./events.js").EventsKey>}
      */
     this.keyHandlerKeys_ = null;
-
-    const handleBrowserEvent = this.handleBrowserEvent.bind(this);
-    this.viewport_.addEventListener(
-      EventType.CONTEXTMENU,
-      handleBrowserEvent,
-      false
-    );
-    this.viewport_.addEventListener(
-      EventType.WHEEL,
-      handleBrowserEvent,
-      PASSIVE_EVENT_LISTENERS ? {passive: false} : false
-    );
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -550,19 +534,6 @@ class PluggableMap extends BaseObject {
    * Clean up.
    */
   disposeInternal() {
-    this.mapBrowserEventHandler_.dispose();
-    this.viewport_.removeEventListener(
-      EventType.CONTEXTMENU,
-      this.boundHandleBrowserEvent_
-    );
-    this.viewport_.removeEventListener(
-      EventType.WHEEL,
-      this.boundHandleBrowserEvent_
-    );
-    if (this.handleResize_ !== undefined) {
-      removeEventListener(EventType.RESIZE, this.handleResize_, false);
-      this.handleResize_ = undefined;
-    }
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -1126,9 +1097,10 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * @param {import("./Object").ObjectEvent} event Event.
    * @private
    */
-  handleTargetChanged_() {
+  handleTargetChanged_(event) {
     // target may be undefined, null, a string or an Element.
     // If it's a string we convert it to an Element before proceeding.
     // If it's not now an Element we remove the viewport from the DOM.
@@ -1139,11 +1111,25 @@ class PluggableMap extends BaseObject {
       targetElement = this.getTargetElement();
     }
 
-    if (this.keyHandlerKeys_) {
+    if (event.oldValue) {
       for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.keyHandlerKeys_[i]);
       }
       this.keyHandlerKeys_ = null;
+      this.viewport_.removeEventListener(
+        EventType.CONTEXTMENU,
+        this.boundHandleBrowserEvent_
+      );
+      this.viewport_.removeEventListener(
+        EventType.WHEEL,
+        this.boundHandleBrowserEvent_
+      );
+      if (this.handleResize_ !== undefined) {
+        removeEventListener(EventType.RESIZE, this.handleResize_, false);
+        this.handleResize_ = undefined;
+      }
+      this.mapBrowserEventHandler_.dispose();
+      removeNode(this.viewport_);
     }
 
     if (!targetElement) {
@@ -1157,16 +1143,32 @@ class PluggableMap extends BaseObject {
         cancelAnimationFrame(this.animationDelayKey_);
         this.animationDelayKey_ = undefined;
       }
-      removeNode(this.viewport_);
-      if (this.handleResize_ !== undefined) {
-        removeEventListener(EventType.RESIZE, this.handleResize_, false);
-        this.handleResize_ = undefined;
-      }
     } else {
       targetElement.appendChild(this.viewport_);
       if (!this.renderer_) {
         this.renderer_ = this.createRenderer();
       }
+
+      this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
+        this,
+        this.moveTolerance_
+      );
+      for (const key in MapBrowserEventType) {
+        this.mapBrowserEventHandler_.addEventListener(
+          MapBrowserEventType[key],
+          this.handleMapBrowserEvent.bind(this)
+        );
+      }
+      this.viewport_.addEventListener(
+        EventType.CONTEXTMENU,
+        this.boundHandleBrowserEvent_,
+        false
+      );
+      this.viewport_.addEventListener(
+        EventType.WHEEL,
+        this.boundHandleBrowserEvent_,
+        PASSIVE_EVENT_LISTENERS ? {passive: false} : false
+      );
 
       const keyboardEventTarget = !this.keyboardEventTarget_
         ? targetElement
