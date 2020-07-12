@@ -176,7 +176,7 @@ class ExampleBuilder {
       };
 
       const indexSource = `var info = ${JSON.stringify(info)}`;
-      compilation.assets['index.js'] = new RawSource(indexSource);
+      compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }
 
