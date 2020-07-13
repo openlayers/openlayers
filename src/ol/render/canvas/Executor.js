@@ -957,7 +957,8 @@ class Executor {
               Math.abs(textScale[0]),
               measureAndCacheTextWidth,
               font,
-              cachedWidths
+              cachedWidths,
+              viewRotationFromTransform ? 0 : this.viewRotation_
             );
             if (parts) {
               let rendered = false;
