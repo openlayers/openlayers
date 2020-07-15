@@ -48,7 +48,7 @@ map.on('click', function (evt) {
   const coordinate = evt.coordinate;
   const hdms = toStringHDMS(toLonLat(coordinate));
 
-  $(element).popover('destroy');
+  $(element).popover('dispose');
   popup.setPosition(coordinate);
   $(element).popover({
     placement: 'top',
