@@ -62,8 +62,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
     <link rel="stylesheet" href="./css/ol.css" type="text/css">
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
@@ -76,21 +76,20 @@
   </head>
   <body>
 
-    <header class="navbar" role="navigation">
-      <div class="container">
-        <div class="display-table pull-left" id="navbar-logo-container">
-          <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers</a>
-        </div>
-        <!-- menu items that get hidden below 768px width -->
-        <nav class='collapse navbar-collapse navbar-responsive-collapse'>
-          <ul class="nav navbar-nav pull-right">
-            <li><a href="../doc">Docs</a></li>
-            <li><a class="active" href="index.html">Examples</a></li>
-            <li><a href="../apidoc">API</a></li>
-            <li><a href="https://github.com/openlayers/openlayers">Code</a></li>
-          </ul>
-        </nav>
-      </div>
+    <header class="navbar navbar-expand-lg navbar-dark mb-3" role="navigation">
+      <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- menu items that get hidden below 768px width -->
+      <nav class="collapse navbar-collapse" id="olmenu">
+        <ul class="nav navbar-nav ml-auto" >
+          <li class="nav-item"><a class="nav-link" href="../doc">Docs</a></li>
+          <li class="nav-item active"><a class="nav-link" href="index.html">Examples</a></li>
+          <li class="nav-item"><a class="nav-link" href="../apidoc">API</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://github.com/openlayers/openlayers">Code</a></li>
+        </ul>
+      </nav>
     </header>
 
     <div class="container-fluid">
@@ -107,14 +106,14 @@
       </div>
 
       <div class="row-fluid">
-        <a class="codepen-button pull-right"><i class="fa fa-codepen"></i> Edit</a>
+        <a href="" class="codepen-button float-right"><i class="fa fa-codepen fa-lg"></i> Edit</a>
         <div class="span12">
           <h4 id="title">
             {{ title }}
           </h4>
           <p class="tags">
             {{#each tags}}
-              <a href="./index.html?q={{.}}" class="label label-primary">{{.}}</a>
+              <a href="./index.html?q={{.}}" class="badge badge-info">{{.}}</a>
             {{/each}}
           </p>
           {{{ contents }}}
@@ -133,7 +132,7 @@
 
       <div class="row-fluid">
         <div class="source-controls">
-          <a class="copy-button" id="copy-js-button" data-clipboard-target="#example-js-source"><i class="fa fa-clipboard"></i> Copy</a>
+          <button class="copy-button btn btn-link" id="copy-js-button" data-clipboard-target="#example-js-source"><i class="fa fa-clipboard fa-lg"></i> Copy</button>
         </div>
         <pre><legend>main.js</legend><code id="example-js-source" class="language-js">import 'ol/ol.css';
 {{ js.source }}</code></pre>
@@ -141,7 +140,7 @@
 
       <div class="row-fluid">
         <div class="source-controls">
-          <a class="copy-button" id="copy-html-button" data-clipboard-target="#example-html-source"><i class="fa fa-clipboard"></i> Copy</a>
+          <button class="copy-button btn btn-link" id="copy-html-button" data-clipboard-target="#example-html-source"><i class="fa fa-clipboard fa-lg"></i> Copy</button>
         </div>
         <pre><legend>index.html</legend><code id="example-html-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -168,7 +167,7 @@
 {{#if worker.source}}
       <div class="row-fluid">
         <div class="source-controls">
-          <a class="copy-button" id="copy-worker-button" data-clipboard-target="#example-worker-source"><i class="fa fa-clipboard"></i> Copy</a>
+          <button class="copy-button btn btn-link" id="copy-worker-button" data-clipboard-target="#example-worker-source"><i class="fa fa-clipboard fa-lg"></i> Copy</button>
         </div>
         <pre><legend>worker.js</legend><code id="example-worker-source" class="language-js">{{ worker.source }}</code></pre>
       </div>
@@ -176,12 +175,14 @@
 
       <div class="row-fluid">
         <div class="source-controls">
-          <a class="copy-button" id="copy-pkg-button" data-clipboard-target="#example-pkg-source"><i class="fa fa-clipboard"></i> Copy</a>
+          <button class="copy-button btn btn-link" id="copy-pkg-button" data-clipboard-target="#example-pkg-source"><i class="fa fa-clipboard fa-lg"></i> Copy</button>
         </div>
         <pre><legend>package.json</legend><code id="example-pkg-source" class="language-js">{{ pkgJson }}</code></pre>
       </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
     <script src="./resources/common.js"></script>
     <script src="./resources/prism/prism.min.js"></script>
     {{{ js.tag }}}
