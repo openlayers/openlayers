@@ -321,6 +321,16 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Get the pixel ratio.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {number} The pixel ration of the image.
+   * @api
+   */
+  getPixelRatio(pixelRatio) {
+    return this.iconImage_.getPixelRatio(pixelRatio);
+  }
+
+  /**
    * @return {import("../size.js").Size} Image size.
    */
   getImageSize() {

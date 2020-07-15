@@ -11,7 +11,7 @@
    height="20"
    version="1.1"
    id="svg6"
-   sodipodi:docname="square.svg"
+   sodipodi:docname="dot.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
      id="metadata12">
@@ -40,27 +40,27 @@
      inkscape:window-height="845"
      id="namedview8"
      showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
      inkscape:zoom="11.8"
-     inkscape:cx="11.5"
+     inkscape:cx="-35.042373"
      inkscape:cy="11.5"
      inkscape:window-x="67"
      inkscape:window-y="102"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg6" />
+     inkscape:current-layer="g4"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <g
      id="g4"
-     transform="matrix(0.85,0,0,0.85,1.5,1.5)"
-     style="fill:#fefefe;fill-opacity:1;stroke:#000000;stroke-width:3.52941179;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
-    <rect
-       width="20"
-       height="20"
-       style="fill:#fefefe;fill-opacity:1;stroke:#000000;stroke-width:3.52941179;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2"
-       x="0"
-       y="0" />
+     transform="translate(1.5,-1.5)">
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path822"
+       cx="8.5"
+       cy="11.5"
+       r="8.5"
+       inkscape:export-xdpi="400"
+       inkscape:export-ydpi="400" />
   </g>
 </svg>
