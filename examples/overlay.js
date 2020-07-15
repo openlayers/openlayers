@@ -51,6 +51,7 @@ map.on('click', function (evt) {
   $(element).popover('dispose');
   popup.setPosition(coordinate);
   $(element).popover({
+    container: element,
     placement: 'top',
     animation: false,
     html: true,
