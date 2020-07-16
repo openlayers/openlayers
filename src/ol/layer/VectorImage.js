@@ -40,12 +40,6 @@ import {assign} from '../obj.js';
  * Within the same z-index, a feature rendered before another has higher priority.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
- * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
- * be recreated during animations. This means that no vectors will be shown clipped, but the
- * setting will have a performance impact for large amounts of vector data. When set to `false`,
- * batches will be recreated when no animation is active.
- * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will
- * be recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
  */
