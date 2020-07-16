@@ -1,16 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
-.navbar-inverse {
-  border: 0;
-}
 .navbar{
   background: #1F6B75;
 }
 
 .navbar-brand img {
-height: 35px;
-vertical-align: middle;
-margin-right: 5px;
-display: inline-block;
+  height: 35px;
+  vertical-align: middle;
+  margin-right: 5px;
+  display: inline-block;
 }
 
 .navbar-brand {
@@ -69,6 +66,7 @@ li {
   border-radius: 4px;
 }
 .navigation {
+  margin-top:15px;
   position: fixed;
   float: left;
   width: 250px;
