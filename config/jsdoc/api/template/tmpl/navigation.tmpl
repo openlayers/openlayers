@@ -7,9 +7,9 @@ function toShortName(name) {
 
 function getItemCssClass(type) {
     if (type === 'module') {
-        return 'glyphicon-plus';
+        return 'fa-plus';
     } else if (type === 'class') {
-        return 'glyphicon-chevron-right';
+        return 'fa-chevron-right';
     }
     return '';
 }
@@ -58,7 +58,7 @@ function listContent(item, title, listItemPrinter) {
         this.nav.forEach(function (item) { ?>
         <li class="item item-<?js= item.type ?>" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
             <span class="title toggle">
-                <span class="glyphicon <?js= getItemCssClass(item.type) ?>"></span>
+                <span class="fa <?js= getItemCssClass(item.type) ?>"></span>
                 <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~]/g, '\u200b$&')) ?></span>
             </span><?js
                 listContent(item, 'Members', printListItem);
