@@ -112,21 +112,21 @@ li {
   border-bottom: 1px solid #333;
 }
 
-.navigation .glyphicon {
+.navigation .fa {
   margin-right: 3px;
   flex-shrink: 0;
 }
-.navigation .item .glyphicon:before {
+.navigation .item .fa:before {
   display: inline-block;
 }
-.navigation .item.toggle-manual .glyphicon:before {
+.navigation .item.toggle-manual .fa:before {
   transition: transform .1s;
 }
-.navigation .item-class.toggle-manual-show .glyphicon:before {
+.navigation .item-class.toggle-manual-show .fa:before {
   /* With 90deg the icon slightly slides left at transition end */
   transform: rotate(89.9deg);
 }
-.navigation .item-module.toggle-manual-show .glyphicon:before {
+.navigation .item-module.toggle-manual-show .fa:before {
   transform: rotate(45deg);
 }
 
