@@ -63,10 +63,10 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
 </tr></table>
 -->
 <div class="row">
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Map</p>
+        <h4 class="card-title">Map</h4>
         <p>A <a href="module-ol_Map-Map.html">map</a> is made of <a href="module-ol_layer_Base-BaseLayer.html">layers</a>, a <a href="module-ol_View-View.html">view</a> to visualize them, <a href="module-ol_interaction_Interaction-Interaction.html">interactions</a> to modify map content and <a href="module-ol_control_Control-Control.html">controls</a> with UI components.</p>
         <a href="module-ol_Map-Map.html">Overview</a><br>
         <a href="module-ol_Map-Map.html#Map">Creation</a><br>
@@ -74,19 +74,19 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">View</p>
+        <h4 class="card-title">View</h4>
         <p>The view manages the visual parameters of the map view, like resolution or rotation.</p>
         <a href="module-ol_View-View.html">View</a> with center, projection, resolution and rotation
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100 ">
       <div class="card-body">
-        <p class="card-title h4">Layers</p>
+        <h4 class="card-title">Layers</h4>
         <p>Layers are lightweight containers that get their data from <a href="module-ol_source_Source-Source.html">sources</a>.</p>
         <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a><br>
         <a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a><br>
@@ -95,19 +95,19 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Controls</p>
+        <h4 class="card-title">Controls</h4>
         <a href="module-ol_control.html#.defaults">Map default controls</a><br>
         <a href="module-ol_control_Control-Control.html">All controls</a>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Interactions</p>
+        <h4 class="card-title">Interactions</h4>
         <a href="module-ol_interaction.html#~defaults">Map default interactions</a><br>
         Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
         <ul><li><a href="module-ol_interaction_Select-Select.html">ol/interaction/Select</a></li>
@@ -118,10 +118,10 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Sources and formats</p>
+        <h4 class="card-title">Sources and formats</h4>
         <a href="module-ol_source_Tile-TileSource.html">Tile sources</a> for <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a>
         <br><a href="module-ol_source_Image-ImageSource.html">Image sources</a> for <a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a>
         <br><a href="module-ol_source_Vector-VectorSource.html">Vector sources</a> for <a href="module-ol_layer_Vector-VectorLayer.html">ol/layer/Vector</a>
@@ -131,27 +131,27 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Projections</p>
+        <h4 class="card-title">Projections</h4>
           <p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use <a href="module-ol_proj.html#.transform">ol/proj#transform()</a> and <a href="module-ol_proj.html#.transformExtent">ol/proj#transformExtent()</a>.</p>
           <a href="module-ol_proj.html">ol/proj</a>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Observable objects</p>
+        <h4 class="card-title">Observable objects</h4>
         <p>Changes to all <a href="module-ol_Object-BaseObject.html">ol/Object</a>s can be observed by calling the <a href="module-ol_Object-BaseObject.html#on">object.on('propertychange')</a> method.  Listeners receive an <a href="module-ol_Object.ObjectEvent.html">ol/Object.ObjectEvent</a> with information on the changed property and old value.</p>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="card h-100 mb-3">
+  <div class="col-lg-4 col-md-6 py-2">
+    <div class="card h-100">
       <div class="card-body">
-        <p class="card-title h4">Other components</p>
+        <h4 class="card-title">Other components</h4>
         <a href="module-ol_Geolocation.html">ol/Geolocation</a><br>
         <a href="module-ol_Overlay-Overlay.html">ol/Overlay</a><br>
       </div>
