@@ -62,7 +62,7 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
 </td>
 </tr></table>
 -->
-<div class="row">
+<div class="row mb-3">
   <div class="col-lg-4 col-md-6 py-2">
     <div class="card h-100">
       <div class="card-body">
@@ -159,7 +159,7 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
   </div>
 </div>
 
-<h3>API change policy</h3>
+<h3 class="mb-3">API change policy</h3>
 The OpenLayers API consists of
 <ul>
   <li>names and signatures of constructors</li>
