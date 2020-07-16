@@ -159,8 +159,19 @@ Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
   </div>
 </div>
 
-&nbsp;
+<h3>API change policy</h3>
+The OpenLayers API consists of
+<ul>
+  <li>names and signatures of constructors</li>
+  <li>names and signatures of instance methods and properties</li>
+  <li>names and signatures of functions</li>
+  <li>names of constants</li>
+</ul>
+<p>Within a major release series, the API will not be changed.  Any changes to the API will be accompanied by a new major release.</p>
+<p class="text-danger">Note: The API change policy does not cover CSS class names that are used to style the OpenLayers UI. It also does not cover any typedefs and enums.</p>
 
+
+<!--
 #### API change policy
 
 The OpenLayers API consists of
@@ -172,3 +183,4 @@ The OpenLayers API consists of
 Within a major release series, the API will not be changed.  Any changes to the API will be accompanied by a new major release.
 
 *Note*: The API change policy does not cover CSS class names that are used to style the OpenLayers UI. It also does not cover any typedefs and enums.
+-->
