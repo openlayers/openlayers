@@ -334,11 +334,13 @@ span.type-signature.static {
 .main .nameContainer .inherited a {
   color: #fff;
 }
-.main .nameContainer .tag-source {
-  position: absolute;
-  top: 17px;
-  right: 0;
-  font-size: 11px;
+@media (min-width: 768px) {
+  .main .nameContainer .tag-source {
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    font-size: 0.8rem;
+  }
 }
 .main .nameContainer .tag-source a {
   color: gray;
