@@ -77,6 +77,11 @@ class IconImage extends EventTarget {
      * @private
      */
     this.tainted_;
+
+    /**
+     * @private
+     */
+    this.taintedTestContext_;
   }
 
   /**
@@ -85,12 +90,15 @@ class IconImage extends EventTarget {
    */
   isTainted_() {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
-      const context = createCanvasContext2D(1, 1);
-      context.drawImage(this.image_, 0, 0);
+      if (!this.taintedTestContext_) {
+        this.taintedTestContext_ = createCanvasContext2D(1, 1);
+      }
+      this.taintedTestContext_.drawImage(this.image_, 0, 0);
       try {
-        context.getImageData(0, 0, 1, 1);
+        this.taintedTestContext_.getImageData(0, 0, 1, 1);
         this.tainted_ = false;
       } catch (e) {
+        this.taintedTestContext_ = undefined;
         this.tainted_ = true;
       }
     }
