@@ -357,7 +357,17 @@ span.type-signature.static {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 .main pre {
-  font-size: 12px;
+  display: block;
+  padding: 0.6rem;
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  line-height: 1.428571429;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 .main table {
   width: 100%;
