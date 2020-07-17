@@ -36,6 +36,14 @@ a {
   -webkit-transition: all .2s;
   transition: all .2s;
 }
+a {
+  color: #03899c;
+  text-decoration:none
+}
+a:hover, a:focus, footer a:hover, footer a:focus {
+  color: #ff7a00;
+  text-decoration:none
+}
 .navigation li {
   color: #888;
 }
