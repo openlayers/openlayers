@@ -236,8 +236,8 @@ $(function () {
     const show = !clsItem.hasClass('toggle-manual-show');
     search.manualToggle(clsItem, show);
   });
-
-  // Auto resizing on navigation
+/*
+  Auto resizing on navigation
   var _onResize = function () {
     var height = $(window).height();
     var $el = $('.navigation');
@@ -247,7 +247,7 @@ $(function () {
 
   $(window).on('resize', _onResize);
   _onResize();
-
+*/
   var currentVersion = document.getElementById('package-version').innerHTML;
 
   // warn about outdated version
