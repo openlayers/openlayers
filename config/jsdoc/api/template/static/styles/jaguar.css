@@ -62,9 +62,11 @@ ol {
 li {
   list-style-type: none;
 }
+/*
 #wrap {
   position: relative;
 }
+ */
 ::-webkit-scrollbar {
   width: 8px;
   background-color: transparent;
@@ -75,12 +77,15 @@ li {
 }
 .navigation {
   margin-top:15px;
-  position: fixed;
-  float: left;
-  width: 250px;
-  height: 100%;
   background-color: #2a2a2a;
 }
+@media (max-width:768px) {
+  .navigation {
+    max-height:220px;
+    overflow-y: hidden;
+    }
+}
+
 .navigation .applicationName {
   margin: 0;
   margin-top: 15px;
@@ -223,8 +228,7 @@ li {
 }
 
 .main {
-  padding: 20px 20px;
-  margin-left: 250px;
+  padding: 1.5rem
 }
 .main .page-title {
   display: none;

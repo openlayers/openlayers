@@ -3,7 +3,7 @@ var version = obj.packageInfo.version;
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <script>
     var gaProperty = 'UA-2577926-1';
     // Disable tracking if the opt-out cookie exists.
@@ -76,8 +76,8 @@ var version = obj.packageInfo.version;
     <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
     <link type="text/css" rel="stylesheet" href="styles/site.css">
-</head>
-<body>
+  </head>
+  <body>
 
     <header class="navbar navbar-expand-sm navbar-dark mb-3 fixed-top" role="navigation">
       <a class="navbar-brand" href="https://openlayers.org/"><img src="logo-70x70.png"> OpenLayers</a>
@@ -94,19 +94,19 @@ var version = obj.packageInfo.version;
       </nav>
     </header>
 
-<div id="wrap" class="clearfix">
-    <?js= this.navigationHtml ?>
-    <div class="main">
-        <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
-        <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
-          <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+    <div id="wrap" class="row">
+        <?js= this.navigationHtml ?>
+        <div class="main col-md-8">
+            <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
+            <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+              <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+            </div>
+            <?js= content ?>
         </div>
-        <?js= content ?>
     </div>
-</div>
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
-<script src="scripts/main.js"></script>
+    <script>prettyPrint();</script>
+    <script src="scripts/linenumber.js"></script>
+    <script src="scripts/main.js"></script>
 </body>
 </html>
