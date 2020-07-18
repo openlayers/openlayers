@@ -250,7 +250,7 @@ $(function () {
 */
 //  Auto resizing on navigation
   var _onResize = function () {
-    var height = $(section).height();
+    var height = $('section').height();
     var $el = $('.navigation');
     $el.height(height).find('.navigation-list').height(height - 133);
   };
