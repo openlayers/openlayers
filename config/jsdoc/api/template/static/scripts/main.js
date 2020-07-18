@@ -249,6 +249,7 @@ $(function () {
   _onResize();
 */
 //  Auto resizing on navigation
+if (window.matchMedia("(min-width: 768px)").matches) {
   var _onResize = function () {
     var height = $('section').height();
     var $el = $('.navigation');
@@ -256,7 +257,7 @@ $(function () {
   };
   $(window).on('resize', _onResize);
   _onResize();
-
+}
   var currentVersion = document.getElementById('package-version').innerHTML;
 
   // warn about outdated version
