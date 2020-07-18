@@ -78,35 +78,35 @@ var version = obj.packageInfo.version;
     <link type="text/css" rel="stylesheet" href="styles/site.css">
   </head>
   <body>
-
-    <header class="navbar navbar-expand-sm navbar-dark mb-3 fixed-top" role="navigation">
-      <a class="navbar-brand" href="https://openlayers.org/"><img src="logo-70x70.png"> OpenLayers</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <nav class="collapse navbar-collapse" id="olmenu">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link" href="../doc">Docs</a></li>
-          <li class="nav-item"><a class="nav-link" href="../examples">Examples</a></li>
-          <li class="nav-item active"><a class="nav-link" href="index.html" class="">API</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://github.com/openlayers/openlayers">Code</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <div id="wrap" class="row">
-        <?js= this.navigationHtml ?>
-        <div class="main col-md-8 col-xl-9">
-            <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
-            <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
-              <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
-            </div>
-            <?js= content ?>
-        </div>
+    <div class="container-fluid">
+      <header class="navbar navbar-expand-sm navbar-dark mb-3 fixed-top" role="navigation">
+        <a class="navbar-brand" href="https://openlayers.org/"><img src="logo-70x70.png"> OpenLayers</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <nav class="collapse navbar-collapse" id="olmenu">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" href="../doc">Docs</a></li>
+            <li class="nav-item"><a class="nav-link" href="../examples">Examples</a></li>
+            <li class="nav-item active"><a class="nav-link" href="index.html" class="">API</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://github.com/openlayers/openlayers">Code</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div id="wrap" class="row">
+          <?js= this.navigationHtml ?>
+          <div class="main col-md-8 col-xl-9">
+              <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
+              <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+                <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+              </div>
+              <?js= content ?>
+          </div>
+      </div>
+      <script>prettyPrint();</script>
+      <script src="scripts/linenumber.js"></script>
+      <script src="scripts/main.js"></script>
     </div>
-    <script>prettyPrint();</script>
-    <script src="scripts/linenumber.js"></script>
-    <script src="scripts/main.js"></script>
-</body>
+  </body>
 </html>
