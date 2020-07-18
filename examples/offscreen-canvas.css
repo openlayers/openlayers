@@ -1,9 +1,9 @@
 .map {
   background: rgba(232, 230, 223, 1);
 }
-.ol-rotate {
+.map .ol-rotate {
   left: .5em;
   bottom: .5em;
-  top: unset;
-  right: unset;
+  top: auto;
+  right: auto;
 }

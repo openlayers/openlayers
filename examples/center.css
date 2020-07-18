@@ -6,15 +6,16 @@
   width: 1000px;
   height: 600px;
 }
-div.ol-zoom {
+.map .ol-zoom {
   top: 178px;
   left: 158px;
 }
-div.ol-rotate {
+.map .ol-rotate {
   top: 178px;
   right: 58px;
 }
-.map div.ol-attribution {
+.map .ol-attribution,
+.map .ol-attribution.ol-uncollapsible {
   bottom: 30px;
   right: 50px;
 }

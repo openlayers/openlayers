@@ -597,6 +597,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
     const tileQueue = frameState.tileQueue;
     const minZoom = tileGrid.getMinZoom();
+    let tileCount = 0;
     let tile, tileRange, tileResolution, x, y, z;
     for (z = minZoom; z <= currentZ; ++z) {
       tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
@@ -604,6 +605,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
           if (currentZ - z <= preload) {
+            ++tileCount;
             tile = tileSource.getTile(z, x, y, pixelRatio, projection);
             if (tile.getState() == TileState.IDLE) {
               wantedTiles[tile.getKey()] = true;
@@ -625,6 +627,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         }
       }
     }
+    tileSource.updateCacheSize(tileCount, projection);
   }
 }
 
