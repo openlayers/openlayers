@@ -1,5 +1,5 @@
 <div class="row mb-3">
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Map</h4>
@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">View</h4>
@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Layers</h4>
@@ -31,7 +31,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Controls</h4>
@@ -40,7 +40,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Interactions</h4>
@@ -54,7 +54,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Sources and formats</h4>
@@ -67,7 +67,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Projections</h4>
@@ -76,7 +76,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Observable objects</h4>
@@ -84,7 +84,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-6 py-3">
+  <div class="col-xl-4 col-lg-6 py-3">
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Other components</h4>
