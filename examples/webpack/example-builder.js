@@ -42,26 +42,19 @@ function createWordIndex(exampleData) {
   const keys = ['shortdesc', 'title', 'tags'];
   exampleData.forEach((data, i) => {
     keys.forEach((key) => {
-      let text = data[key];
+      let text = data[key] || '';
       if (Array.isArray(text)) {
         text = text.join(' ');
       }
-      const words = text ? text.split(/\W+/) : [];
+      const words = text.toLowerCase().split(/\W+/);
       words.forEach((word) => {
         if (word) {
-          word = word.toLowerCase();
           let counts = index[word];
-          if (counts) {
-            if (index in counts) {
-              counts[i] += 1;
-            } else {
-              counts[i] = 1;
-            }
-          } else {
+          if (!counts) {
             counts = {};
-            counts[i] = 1;
             index[word] = counts;
           }
+          counts[i] = (counts[i] || 0) + 1;
         }
       });
     });
@@ -169,14 +162,19 @@ class ExampleBuilder {
 
       await Promise.all(promises);
 
+      exampleData.sort((a, b) =>
+        a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
+      );
       const info = {
         examples: exampleData,
         index: createWordIndex(exampleData),
-        tags: Array.from(uniqueTags),
+        tags: Array.from(uniqueTags)
+          .sort() // sort twice to get predictable, case insensitve order
+          .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'})),
       };
 
-      const indexSource = `var info = ${JSON.stringify(info)}`;
-      compilation.assets['index.js'] = new RawSource(indexSource);
+      const indexSource = `const info = ${JSON.stringify(info)};`;
+      compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }
 

@@ -27,6 +27,8 @@ class LRUCache {
    */
   constructor(opt_highWaterMark) {
     /**
+     * Desired max cache size after expireCache(). If set to 0, no cache entries
+     * will be pruned at all.
      * @type {number}
      */
     this.highWaterMark =
@@ -61,7 +63,7 @@ class LRUCache {
    * @return {boolean} Can expire cache.
    */
   canExpireCache() {
-    return this.getCount() > this.highWaterMark;
+    return this.highWaterMark > 0 && this.getCount() > this.highWaterMark;
   }
 
   /**

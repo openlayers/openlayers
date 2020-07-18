@@ -1,9 +1,13 @@
+import Map from '../../../../src/ol/Map.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import Source from '../../../../src/ol/source/Source.js';
 import Tile from '../../../../src/ol/Tile.js';
+import TileDebugSource from '../../../../src/ol/source/TileDebug.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import TileRange from '../../../../src/ol/TileRange.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
+import View from '../../../../src/ol/View.js';
 import {getKeyZXY} from '../../../../src/ol/tilecoord.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 
@@ -53,23 +57,34 @@ describe('ol.source.Tile', function () {
       expect(source).to.be.a(Source);
       expect(source).to.be.a(TileSource);
     });
-    it('sets a screen dependent cache size', function () {
+    it('sets 0 as initial cache size', function () {
       const source = new TileSource({});
-      expect(source.tileCache.highWaterMark).to.be(
-        4 *
-          Math.ceil(screen.availWidth / 256) *
-          Math.ceil(screen.availHeight / 256)
-      );
+      expect(source.tileCache.highWaterMark).to.be(0);
     });
-    it('ignores a cache size that is too small', function () {
-      const source = new TileSource({
-        cacheSize: 1,
+    it('grows the cache', function () {
+      const source = new TileDebugSource();
+      const layer = new TileLayer({
+        source: source,
       });
-      expect(source.tileCache.highWaterMark).to.be(
-        4 *
-          Math.ceil(screen.availWidth / 256) *
-          Math.ceil(screen.availHeight / 256)
-      );
+      const target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      const map = new Map({
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+        target: target,
+      });
+      map.renderSync();
+      expect(
+        source.getTileCacheForProjection(map.getView().getProjection())
+          .highWaterMark
+      ).to.be(4);
+      map.setTarget(null);
+      document.body.removeChild(target);
     });
     it('sets a custom cache size', function () {
       const projection = getProjection('EPSG:4326');

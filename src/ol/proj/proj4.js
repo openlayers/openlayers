@@ -61,18 +61,8 @@ export function register(proj4) {
           addCoordinateTransforms(
             proj1,
             proj2,
-            createSafeCoordinateTransform(
-              proj1,
-              proj2,
-              transform.forward,
-              transform.inverse
-            ),
-            createSafeCoordinateTransform(
-              proj2,
-              proj1,
-              transform.inverse,
-              transform.forward
-            )
+            createSafeCoordinateTransform(proj1, proj2, transform.forward),
+            createSafeCoordinateTransform(proj2, proj1, transform.inverse)
           );
         }
       }

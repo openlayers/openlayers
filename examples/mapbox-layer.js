@@ -1,6 +1,7 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
+import Source from '../src/ol/source/Source.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
@@ -39,20 +40,16 @@ const mbLayer = new Layer({
 
     // adjust view parameters in mapbox
     const rotation = viewState.rotation;
-    if (rotation) {
-      mbMap.rotateTo((-rotation * 180) / Math.PI, {
-        animate: false,
-      });
-    }
     mbMap.jumpTo({
       center: toLonLat(viewState.center),
       zoom: viewState.zoom - 1,
+      bearing: (-rotation * 180) / Math.PI,
       animate: false,
     });
 
     // cancel the scheduled update & trigger synchronous redraw
     // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
-    // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
+    // NOTE: THIS MIGHT BREAK IF UPDATING THE MAPBOX VERSION
     if (mbMap._frame) {
       mbMap._frame.cancel();
       mbMap._frame = null;
@@ -61,6 +58,12 @@ const mbLayer = new Layer({
 
     return canvas;
   },
+  source: new Source({
+    attributions: [
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a>',
+      '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+    ],
+  }),
 });
 
 const style = new Style({

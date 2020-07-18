@@ -2,6 +2,7 @@
  * @module ol/geom/flat/textpath
  */
 import {lerp} from '../../math.js';
+import {rotate} from './transform.js';
 
 /**
  * @param {Array<number>} flatCoordinates Path to put text on.
@@ -15,6 +16,7 @@ import {lerp} from '../../math.js';
  * @param {function(string, string, Object<string, number>):number} measureAndCacheTextWidth Measure and cache text width.
  * @param {string} font The font.
  * @param {Object<string, number>} cache A cache of measured widths.
+ * @param {number} rotation Rotation to apply to the flatCoordinates to determine whether text needs to be reversed.
  * @return {Array<Array<*>>} The result array (or null if `maxAngle` was
  * exceeded). Entries of the array are x, y, anchorX, angle, chunk.
  */
@@ -29,12 +31,28 @@ export function drawTextOnPath(
   scale,
   measureAndCacheTextWidth,
   font,
-  cache
+  cache,
+  rotation
 ) {
   const result = [];
 
   // Keep text upright
-  const reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+  let reverse;
+  if (rotation) {
+    const rotatedCoordinates = rotate(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      rotation,
+      [flatCoordinates[offset], flatCoordinates[offset + 1]]
+    );
+    reverse =
+      rotatedCoordinates[0] >
+      rotatedCoordinates[rotatedCoordinates.length - stride];
+  } else {
+    reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+  }
 
   const numChars = text.length;
 
