@@ -82,7 +82,7 @@ li {
 @media (max-width:768px) {
   .navigation {
     max-height:220px;
-    overflow-y: hidden;
+    overflow-y: scroll;
     }
 }
 
