@@ -249,11 +249,16 @@ $(function () {
   _onResize();
 */
 //  Auto resizing on navigation
-if (window.matchMedia("(min-width: 767px)").matches) {
+if (window.matchMedia("(min-width: 768px)").matches) {
   var _onResize = function () {
-    var height = $('section').height();
+    var height_w = $(window).height();
+    var height_s = $('section').height();
     var $el = $('.navigation');
-    $el.height(height).find('.navigation-list').height(height - 85);
+    var dif_h = height_w - height_s;
+      if (dif_h >=0)
+         el.height(height_s+dif_h);
+      else
+         el.height(height_s)
   };
   $(window).on('resize', _onResize);
   _onResize();
