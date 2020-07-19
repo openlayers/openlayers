@@ -253,7 +253,7 @@ if (window.matchMedia("(min-width: 768px)").matches) {
   var _onResize = function () {
     var height = $('section').height();
     var $el = $('.navigation');
-    $el.height(height).find('.navigation-list').height(height - 133);
+    $el.height(height).find('.navigation-list').height(height - 85);
   };
   $(window).on('resize', _onResize);
   _onResize();
