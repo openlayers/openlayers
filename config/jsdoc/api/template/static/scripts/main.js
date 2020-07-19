@@ -257,7 +257,7 @@ if (window.matchMedia("(min-width: 768px)").matches) {
   };
   $(window).on('resize', _onResize);
   _onResize();
-}
+}else {$('navigation-list').height('100%')}
   var currentVersion = document.getElementById('package-version').innerHTML;
 
   // warn about outdated version
