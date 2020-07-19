@@ -14,25 +14,11 @@
       input.search-query {
         color: #333;
       }
-      @media (max-width: 480px) {
-        input.search-query {
-          width: 110px;
-        }
-        #count {
-          display: none;
-        }
-      }
-      @media (max-width: 374px) {
-        input.search-query {
-          display: none;
-        }
-      }
       .example {
         display: block;
-        padding: 10px;
-        background-color: #F5F5F5;
+        padding: 0.65rem;
         height: 140px;
-        margin: 10px 0;
+        margin: 0.65rem 0;
         overflow: auto;
       }
       .example p.description {
@@ -40,7 +26,7 @@
         margin: 5px 0;
       }
       .example:hover {
-        background-color: #ddd;
+        background-color: #F5F5F5;
       }
 
       ::-webkit-scrollbar {
@@ -83,9 +69,13 @@
 
       <!-- menu items that get hidden below 768px width -->
       <nav class="collapse navbar-collapse" id="olmenu">
-         <form class="form-inline navbar-form" role="search">
-          <input name="q" type="text" id="keywords" class="form-control search-query" placeholder="Search" autocomplete="off" autofocus>
-          <span id="count"></span>
+        <form class="form-inline" role="search">
+          <div class="input-group">
+          <input name="q" type="text" id="keywords" class="form-control search-query" placeholder="Search" aria-label="Examples" aria-describedby="count" autocomplete="off" autofocus>
+          <div class="input-group-append">
+              <span class="input-group-text text-white bg-transparent" id="count"></span>
+          </div>
+          </div>
         </form>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item"><a class="nav-link" href="../doc">Docs</a></li>
@@ -99,9 +89,9 @@
     <div class="container-fluid">
       <div id="examples"></div>
       <div style="display: none;">
-        <div id="template" class="row">
+        <div id="template" class="row mt-3">
           <div class="col-md-4 col-sm-6" jugl:repeat="example examples">
-            <a jugl:attributes="href example.link" class="example">
+            <a jugl:attributes="href example.link" class="example  bg-light border rounded">
               <span class="mainlink">
                 <strong><span jugl:replace="example.title">title</span></strong><br>
                 <small jugl:content="'(' + example.example + ')'"></small>

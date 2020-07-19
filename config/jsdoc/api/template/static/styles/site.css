@@ -1,9 +1,7 @@
 /* Carbon adds (see https://sell.buysellads.com) */
 
 #ad {
-  margin-left: 1em;
-  float: right;
-  width: 330px;
+  padding:0.5rem;
   min-height: 125px;
 }
 
@@ -64,18 +62,4 @@
 
 #carbonads a.carbon-poweredby {
   color: #aaa;
-}
-
-/* Clear the float after the advertisement. */
-
-.container-overview {
-  clear: both;
-}
-
-pre.source {
-  clear: both;
-}
-
-section.content {
-  overflow-y: auto;
 }

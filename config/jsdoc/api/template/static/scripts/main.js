@@ -236,28 +236,31 @@ $(function () {
     const show = !clsItem.hasClass('toggle-manual-show');
     search.manualToggle(clsItem, show);
   });
-/*
-  Auto resizing on navigation
-  var _onResize = function () {
-    var height = $(window).height();
-    var $el = $('.navigation');
 
-    $el.height(height).find('.navigation-list').height(height - 133);
-  };
-
-  $(window).on('resize', _onResize);
-  _onResize();
-*/
 //  Auto resizing on navigation
-if (window.matchMedia("(min-width: 767px)").matches) {
   var _onResize = function () {
-    var height = $('section').height();
+    var height_w = $(window).height();
+    var height_s = $('section').height();
     var $el = $('.navigation');
-    $el.height(height).find('.navigation-list').height(height - 85);
-  };
+    var dif_h = height_w - height_s;
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      if (dif_h >=0){
+         $('.navigation').height(height_s+dif_h+74);
+         $('.navigation-list').height(height_s+dif_h)
+      }
+      else {
+         $('.navigation').height(height_s+74);
+         $('.navigation-list').height(height_s-60);
+      }
+    }
+    else{
+      $('.navigation').height(220);
+      $('.navigation-list').height(140);
+    }
+  }
   $(window).on('resize', _onResize);
   _onResize();
-}else {$('navigation-list').height('100%');$('.navigation').height('220px');}
+
   var currentVersion = document.getElementById('package-version').innerHTML;
 
   // warn about outdated version
