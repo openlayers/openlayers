@@ -249,7 +249,7 @@ $(function () {
   _onResize();
 */
 //  Auto resizing on navigation
-if (window.matchMedia("(min-width: 768px)").matches) {
+if (window.matchMedia("(min-width: 767px)").matches) {
   var _onResize = function () {
     var height = $('section').height();
     var $el = $('.navigation');
