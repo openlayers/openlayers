@@ -256,7 +256,7 @@ if (window.matchMedia("(min-width: 768px)").matches) {
     var $el = $('.navigation');
     var dif_h = height_w - height_s;
       if (dif_h >=0){
-         $('.navigation').height(height_s+dif_h);
+         $('.navigation').height(height_s+dif_h+16);
          $('.navigation-list').height(height_s+dif_h)
       }
       else {
