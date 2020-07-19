@@ -113,7 +113,7 @@
           </h4>
           <p class="tags">
             {{#each tags}}
-              <a href="./index.html?q={{.}}" class="badge badge-info">{{.}}</a>
+              <a href="./index.html?q={{./tag}}" class="badge badge-info">{{ ./tag }} ({{ ./amount }})</a>
             {{/each}}
           </p>
           {{{ contents }}}

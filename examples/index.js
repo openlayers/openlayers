@@ -43,15 +43,15 @@
       }
     };
     words.forEach(function (word) {
-      const dict = info.index[word];
+      const dict = info.wordIndex[word];
       if (dict) {
         updateScores(dict, word);
       } else {
         const r = new RegExp(word);
         // eslint-disable-next-line prefer-const
-        for (let idx in info.index) {
+        for (let idx in info.wordIndex) {
           if (r.test(idx)) {
-            updateScores(info.index[idx], word);
+            updateScores(info.wordIndex[idx], word);
           }
         }
       }
