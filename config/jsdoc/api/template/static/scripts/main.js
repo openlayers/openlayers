@@ -260,8 +260,8 @@ if (window.matchMedia("(min-width: 768px)").matches) {
          $('.navigation-list').height(height_s+dif_h)
       }
       else {
-         $('.navigation').height(height_s);
-          $('.navigation-list').height(height_s)
+         $('.navigation').height(height_s+16);
+         $('.navigation-list').height(height_s);
       }
   };
   $(window).on('resize', _onResize);
