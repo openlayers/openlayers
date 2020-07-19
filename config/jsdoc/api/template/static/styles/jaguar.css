@@ -87,7 +87,6 @@ li {
     .navigation-list{
       height:100%
     }
-
 }
 
 .navigation .applicationName {
@@ -110,7 +109,7 @@ li {
   vertical-align: text-bottom;
 }
 .navigation .search {
-  padding: 10px 15px;
+  padding: 1rem;
 }
 .navigation .search input {
   background-color: #333;
