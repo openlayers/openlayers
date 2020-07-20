@@ -140,24 +140,21 @@ class DragAndDrop extends Interaction {
     }
 
     const formatConstructors = this.formatConstructors_;
-    let features = [];
     for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
       const format = new formatConstructors[i]();
-      features = this.tryReadFeatures_(format, result, {
+      const features = this.tryReadFeatures_(format, result, {
         featureProjection: projection,
       });
       if (features && features.length > 0) {
         if (this.source_) {
           this.source_.clear();
-          this.source_.addFeatures(
-            /** @type {Array<import("../Feature.js").default>} */ (features)
-          );
+          this.source_.addFeatures(features);
         }
         this.dispatchEvent(
           new DragAndDropEvent(
             DragAndDropEventType.ADD_FEATURES,
             file,
-            /** @type {Array<import("../Feature.js").default>} */ (features),
+            features,
             projection
           )
         );
@@ -217,11 +214,13 @@ class DragAndDrop extends Interaction {
    * @param {string} text Text.
    * @param {import("../format/Feature.js").ReadOptions} options Read options.
    * @private
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {
-      return format.readFeatures(text, options);
+      return
+      /** @type {Array<import("../Feature.js").default>} */
+      (format.readFeatures(text, options));
     } catch (e) {
       return null;
     }
