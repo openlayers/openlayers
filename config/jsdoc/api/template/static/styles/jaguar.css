@@ -51,7 +51,6 @@ a:hover, a:focus, footer a:hover, footer a:focus {
 html,
 body {
   font-family: "Quattrocento Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-  font-size: 1.0em;
   background-color: #fff;
 }
 ul,
@@ -293,7 +292,7 @@ span.type-signature.static {
   margin-right: 3px;
 }
 .main .subsection-title {
-  font-size: 15px;
+  font-size: 18px;
   margin-top: 30px;
   color: #1F6B75;
 }
