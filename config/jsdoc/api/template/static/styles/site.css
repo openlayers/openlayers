@@ -63,17 +63,3 @@
 #carbonads a.carbon-poweredby {
   color: #aaa;
 }
-
-/* Clear the float after the advertisement. */
-
-.container-overview {
-  clear: both;
-}
-
-pre.source {
-  clear: both;
-}
-
-section.content {
-  overflow-y: auto;
-}
