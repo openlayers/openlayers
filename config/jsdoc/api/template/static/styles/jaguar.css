@@ -61,14 +61,6 @@ ol {
 li {
   list-style-type: none;
 }
-::-webkit-scrollbar {
-  width: 8px;
-  background-color: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background-color: gray;
-  border-radius: 4px;
-}
 .navigation {
   margin-top:15px;
   background-color: #2a2a2a;
