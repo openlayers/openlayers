@@ -218,9 +218,10 @@ class DragAndDrop extends Interaction {
    */
   tryReadFeatures_(format, text, options) {
     try {
-      return
-      /** @type {Array<import("../Feature.js").default>} */
-      (format.readFeatures(text, options));
+      return (
+        /** @type {Array<import("../Feature.js").default>} */
+        (format.readFeatures(text, options))
+      );
     } catch (e) {
       return null;
     }
