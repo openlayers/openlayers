@@ -147,21 +147,21 @@ class DragAndDrop extends Interaction {
         featureProjection: projection,
       });
       if (features && features.length > 0) {
+        if (this.source_) {
+          this.source_.clear();
+          this.source_.addFeatures(features);
+        }
+        this.dispatchEvent(
+          new DragAndDropEvent(
+            DragAndDropEventType.ADD_FEATURES,
+            file,
+            features,
+            projection
+          )
+        );
         break;
       }
     }
-    if (this.source_) {
-      this.source_.clear();
-      this.source_.addFeatures(features);
-    }
-    this.dispatchEvent(
-      new DragAndDropEvent(
-        DragAndDropEventType.ADD_FEATURES,
-        file,
-        features,
-        projection
-      )
-    );
   }
 
   /**
