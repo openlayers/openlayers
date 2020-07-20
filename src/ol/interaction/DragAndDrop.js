@@ -149,7 +149,9 @@ class DragAndDrop extends Interaction {
       if (features && features.length > 0) {
         if (this.source_) {
           this.source_.clear();
-          this.source_.addFeatures(/** @type {Array<import("../Feature.js").default>} */ (features));
+          this.source_.addFeatures(
+            /** @type {Array<import("../Feature.js").default>} */ (features)
+          );
         }
         this.dispatchEvent(
           new DragAndDropEvent(
