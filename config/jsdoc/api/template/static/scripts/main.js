@@ -266,7 +266,7 @@ $(function () {
     }
     else{
       $('.navigation').height(220);
-      $('.navigation-list').height('100%');
+      $('.navigation-list').height(140);
     }
   }
   $(window).on('resize', _onResize);
