@@ -61,11 +61,6 @@ ol {
 li {
   list-style-type: none;
 }
-/*
-#wrap {
-  position: relative;
-}
- */
 ::-webkit-scrollbar {
   width: 8px;
   background-color: transparent;
@@ -334,7 +329,7 @@ span.type-signature.static {
   position: relative;
   margin-top: 20px;
   padding-top: 5px;
-  border-top: 1px solid #e1e1e1;
+  border-top: 2px solid #1F6B75;
 }
 .main .nameContainer .inherited {
   display: inline-block;
