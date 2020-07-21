@@ -1045,8 +1045,8 @@ class PluggableMap extends BaseObject {
       }
     }
     mapBrowserEvent.frameState = this.frameState_;
-    const interactionsArray = this.getInteractions().getArray();
     if (this.dispatchEvent(mapBrowserEvent) !== false) {
+      const interactionsArray = this.getInteractions().getArray().slice();
       for (let i = interactionsArray.length - 1; i >= 0; i--) {
         const interaction = interactionsArray[i];
         if (!interaction.getActive()) {
