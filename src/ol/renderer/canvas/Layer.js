@@ -95,7 +95,11 @@ class CanvasLayerRenderer extends LayerRenderer {
         context = canvas.getContext('2d');
       }
     }
-    if (context && context.canvas.style.transform === transform) {
+    if (
+      context &&
+      (context.canvas.width === 0 ||
+        context.canvas.style.transform === transform)
+    ) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
