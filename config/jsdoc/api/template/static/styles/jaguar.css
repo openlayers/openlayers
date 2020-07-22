@@ -258,12 +258,6 @@ li {
 .main h4.name span.type {
   margin-left: 10px;
 }
-.main h4.name span.glyphicon {
-  display: inline-block;
-  vertical-align: middle;
-  color: #c1c1c1;
-  margin-left: 7px;
-}
 .main h4.name span.returnType, .main h4.name span.type {
   margin-left: 3px;
   background-color: transparent!important;
