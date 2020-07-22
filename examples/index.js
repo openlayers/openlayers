@@ -10,7 +10,7 @@
       clone: true,
       parent: target,
     });
-    document.getElementById('count').innerHTML = '(' + examples.length + ')';
+    document.getElementById('count').innerHTML = ' ' + examples.length + ' ';
   }
 
   let timerId;
