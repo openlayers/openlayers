@@ -48,6 +48,7 @@ module.exports = {
         sourceMap: true,
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/],
+        extractComments: false,
       }),
     ],
     runtimeChunk: {
