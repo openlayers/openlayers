@@ -236,18 +236,7 @@ $(function () {
     const show = !clsItem.hasClass('toggle-manual-show');
     search.manualToggle(clsItem, show);
   });
-/*
-  Auto resizing on navigation
-  var _onResize = function () {
-    var height = $(window).height();
-    var $el = $('.navigation');
 
-    $el.height(height).find('.navigation-list').height(height - 133);
-  };
-
-  $(window).on('resize', _onResize);
-  _onResize();
-*/
 //  Auto resizing on navigation
   var _onResize = function () {
     var height_w = $(window).height();
