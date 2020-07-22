@@ -35,6 +35,23 @@ body {
 .display-table {
   display: table;
 }
+a {
+  color: #03899c;
+  text-decoration:none
+}
+a:hover, a:focus, footer a:hover, footer a:focus {
+  color: #ff7a00;
+  text-decoration:none
+}
+.btn-link {
+  font-weight: 400;
+  color: #03899c;
+  text-decoration: none;
+}
+.btn-link:hover {
+  color: #ff7a00;
+  text-decoration: none;
+}
 .version-form, .navbar-form {
   display: table-cell;
   vertical-align: middle;

@@ -3,7 +3,7 @@ var version = obj.packageInfo.version;
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <script>
     var gaProperty = 'UA-2577926-1';
     // Disable tracking if the opt-out cookie exists.
@@ -67,43 +67,46 @@ var version = obj.packageInfo.version;
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <script src="scripts/jquery.min.js"> </script>
+    <script src="scripts/bootstrap.bundle.min.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
     <link type="text/css" rel="stylesheet" href="styles/site.css">
-</head>
-<body>
-
-<div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href="/"><img src="logo-70x70.png"> OpenLayers</a>
-      <ul class="nav navbar-nav pull-right">
-        <li><a href="../doc">Docs</a></li>
-        <li><a href="../examples">Examples</a></li>
-        <li><a href="index.html" class="active">API</a></li>
-        <li><a href="https://github.com/openlayers/openlayers">Code</a></li>
-      </ul>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <header class="navbar navbar-expand-sm navbar-dark mb-3 fixed-top" role="navigation">
+        <a class="navbar-brand" href="https://openlayers.org/"><img src="logo-70x70.png"> OpenLayers</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <nav class="collapse navbar-collapse" id="olmenu">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" href="../doc">Docs</a></li>
+            <li class="nav-item"><a class="nav-link" href="../examples">Examples</a></li>
+            <li class="nav-item active"><a class="nav-link" href="index.html" class="">API</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://github.com/openlayers/openlayers">Code</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div id="wrap" class="row">
+          <?js= this.navigationHtml ?>
+          <div class="main col-md-8 col-lg-9">
+              <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
+              <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+                <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+              </div>
+              <?js= content ?>
+          </div>
+      </div>
+      <script>prettyPrint();</script>
+      <script src="scripts/linenumber.js"></script>
+      <script src="scripts/main.js"></script>
     </div>
-  </div>
-</div>
-
-<div id="wrap" class="clearfix">
-    <?js= this.navigationHtml ?>
-    <div class="main">
-        <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
-        <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
-          <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
-        </div>
-        <?js= content ?>
-    </div>
-</div>
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
-<script src="scripts/main.js"></script>
-</body>
+  </body>
 </html>
