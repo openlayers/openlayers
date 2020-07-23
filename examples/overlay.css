@@ -13,6 +13,6 @@
   font-weight: bold;
   text-shadow: black 0.1em 0.1em 0.2em;
 }
-.popover-content {
-  min-width: 180px;
+.popover-body {
+  min-width: 276px;
 }

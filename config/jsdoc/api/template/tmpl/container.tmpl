@@ -12,7 +12,7 @@
 <section class="content">
 
 <header>
-    <h2><?js if (doc.ancestors && doc.ancestors.length) { ?>
+    <h2 class="my-3"><?js if (doc.ancestors && doc.ancestors.length) { ?>
         <span class="ancestors"><?js= doc.ancestors.join('') ?></span><?js } ?><?js= doc.name ?>
     <?js if (doc.variation) { ?>
         <sup class="variation"><?js= doc.variation ?></sup>
@@ -41,12 +41,14 @@
         <pre class="prettyprint source"><code>import <?js= doc.name ?> from '<?js= importPath ?>';</code></pre>
       <?js } ?>
     <?js } ?>
-    <div id="ad">
+    <div class="row p-3 ">
+      <div id="ad" class="col-lg-5 order-2 align-self-center border rounded bg-light ">
         <script async type="text/javascript" src="https://cdn.carbonads.com/carbon.js?serve=CE7DV53U&placement=openlayersorg" id="_carbonads_js"></script>
-    </div>
+      </div>
     <?js if (doc.classdesc) { ?>
-        <div class="class-description"><?js= doc.classdesc ?></div>
+      <div class="class-description col-lg-7 align-self-center pl-0"><?js= doc.classdesc ?></div>
     <?js } ?>
+    </div>
 </header>
 
 <article>
