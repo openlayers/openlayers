@@ -117,11 +117,13 @@
         This example uses OpenLayers v<span>{{ olVersion }}</span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
       </div>
 
-      <div id="experimental-notice" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+      {{#if ./experimental}}
+      <div id="experimental-notice" class="alert alert-warning alert-dismissible" role="alert">
         <button id="experimental-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         This example uses features that are not part of the stable API and subject to change between releases.  Consult the <a href="https://openlayers.org/en/latest/apidoc/">API documentation</a>
         to see what is supported in the latest release.
       </div>
+      {{/if}}
 
       <div class="row-fluid">
         <a href="" class="codepen-button float-right"><i class="fa fa-codepen fa-lg"></i> Edit</a>
@@ -262,14 +264,6 @@
           document.getElementById('latest-dismiss').onclick = function() {
             latestCheck.style.display = 'none';
             document.cookie = cookieText;
-          }
-        }
-
-        var experimentalNotice = document.getElementById('experimental-notice');
-        if (window.experimental) {
-          experimentalNotice.style.display = 'block';
-          document.getElementById('experimental-dismiss').onclick = function() {
-            experimentalNotice.style.display = 'none';
           }
         }
       });
