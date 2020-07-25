@@ -133,34 +133,16 @@ ol.inline>li {
   width: 100%;
 }
 
-pre[class*="language-"] {
-  margin-top: 20px;
-  background: #FFFFFF;
-}
-
-pre>legend {
-  font-size: 100%;
+.source-heading {
+  margin-top: 1em;
+  margin-bottom: 0;
+  padding-left: .6em;
   font-weight: bold;
 }
 
-.source-controls {
-  position: absolute;
-  margin-top: 10px;
-  right: 40px;
-}
-
-.source-controls a {
-  margin-left: 15px;
-}
-
-.copy-button {
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.codepen-button {
-  text-decoration: none;
-  cursor: pointer;
+pre[class*="language-"] {
+  background: #FFFFFF;
+  font-size: 87.5%;
 }
 
 pre {
@@ -177,4 +159,37 @@ pre {
 #latest-check {
   margin-top: -10px;
   margin-bottom: 10px;
+}
+
+/* restyle prism copy button */
+div.code-toolbar > .toolbar {
+  opacity: 1;
+  top: -2.4em;
+}
+div.code-toolbar > .toolbar button {
+  font-size: 16px;
+  color: #03899c;
+  background-color: transparent;
+  box-shadow: none;
+  padding: .615rem .75rem;
+}
+
+div.code-toolbar > .toolbar button:hover,
+div.code-toolbar > .toolbar button:focus {
+  color: #ff7a00;
+}
+div.code-toolbar > .toolbar button:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+div.code-toolbar > .toolbar button:before {
+  margin-right: .184em;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  content: "\f0ea";
+  font-size: 1.33333333em;
+  line-height: .75em;
+  vertical-align: middle;
 }

@@ -7,19 +7,6 @@
       .replace(/=+$/, ``);
   }
 
-  var htmlClipboard = new Clipboard('#copy-html-button');
-  htmlClipboard.on('success', function(e) {
-    e.clearSelection();
-  });
-  var jsClipboard = new Clipboard('#copy-js-button');
-  jsClipboard.on('success', function(e) {
-    e.clearSelection();
-  });
-  var pkgClipboard = new Clipboard('#copy-pkg-button');
-  pkgClipboard.on('success', function(e) {
-    e.clearSelection();
-  });
-
   function fetchResource(resource) {
     return new Promise((resolve, reject) => {
       const isImage = /\.(png|jpe?g|gif|tiff)$/.test(resource);
