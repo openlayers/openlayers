@@ -38,16 +38,17 @@
     })
   }
 
-  var codepenButton = document.getElementsByClassName('codepen-button')[0];
+  const codepenButton = document.getElementById('codepen-button');
   if (codepenButton) {
-    codepenButton.onclick = function(event) {
+    const form = document.getElementById('codepen-form');
+    codepenButton.href = form.action;
+    codepenButton.addEventListener('click', function(event) {
       event.preventDefault();
       const html = document.getElementById('example-html-source').innerText;
       const js = document.getElementById('example-js-source').innerText;
       const workerContainer = document.getElementById('example-worker-source');
       const worker = workerContainer ? workerContainer.innerText : undefined;
       const pkgJson = document.getElementById('example-pkg-source').innerText;
-      const form = document.getElementById('codepen-form');
 
       const localResources = (js.match(/'data\/[^']*/g) || [])
         .concat(js.match(/'resources\/[^']*/g) || [])
@@ -87,6 +88,6 @@
           form.parameters.value = compress(data);
           form.submit();
         });
-    };
+    });
   }
 })();
