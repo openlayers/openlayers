@@ -18,6 +18,13 @@ handlebars.registerHelper(
   (str) => new handlebars.SafeString(marked(str))
 );
 
+/**
+ * Used to doube-escape the title when stored as data-* attribute.
+ */
+handlebars.registerHelper('escape', (text) => {
+  return handlebars.Utils.escapeExpression(text);
+});
+
 handlebars.registerHelper('indent', (text, options) => {
   if (!text) {
     return text;
@@ -205,9 +212,17 @@ class ExampleBuilder {
       };
       exampleData.forEach((data) => {
         data.tags = data.tags.map((tag) => {
+          const tagExamples = tagIndex[tag.toLowerCase()];
           return {
             tag: tag,
-            amount: tagIndex[tag.toLowerCase()].length,
+            examples: tagExamples.map((exampleIdx) => {
+              const example = examples[exampleIdx];
+              return {
+                link: example.link,
+                title: example.title,
+                isCurrent: data.filename === example.link,
+              };
+            }),
           };
         });
       });

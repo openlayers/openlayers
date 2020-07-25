@@ -113,9 +113,36 @@
           </h4>
           <p class="tags">
             {{#each tags}}
-              <a href="./index.html?q={{./tag}}" class="badge badge-info">{{ ./tag }} ({{ ./amount }})</a>
+            <span class="badge-group">
+              <a
+                href="./index.html?q={{ ./tag }}" class="badge badge-info">{{ ./tag }}</a
+              ><a
+                class="badge badge-info tag-modal-toggle text-white"
+                data-toggle="modal"
+                data-target="#tag-example-list"
+                data-title="{{ ./tag }}"
+                data-content="{{#each ./examples}}
+                  &lt;a class=&quot;list-group-item list-group-item-action{{#if ./isCurrent}} active{{/if}}&quot; href=&quot;./{{ ./link }}&quot;&gt;{{escape ./title}}&lt;/a&gt;{{/each}}"
+                tabindex="0"
+                >{{ ./examples.length }}</a>
+            </span>
             {{/each}}
           </p>
+          <div class="modal modal-tag-example" id="tag-example-list" tabindex="-1" role="dialog" aria-labelledby="tag-example-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="tag-example-title"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="list-group"></div>
+                </div>
+              </div>
+            </div>
+          </div>
           {{{ contents }}}
         </div>
         <form method="POST" id="codepen-form" target="_blank" action="https://codesandbox.io/api/v1/sandboxes/define">
@@ -186,6 +213,16 @@
     <script src="./resources/common.js"></script>
     <script src="./resources/prism/prism.min.js"></script>
     {{{ js.tag }}}
+    <script>
+      $('#tag-example-list').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget); // Button that triggered the modal
+        const title = button.data('title');
+        const content = button.data('content');
+        const modal = $(this)
+        modal.find('.modal-title').text(title);
+        modal.find('.modal-body').html(content);
+      });
+    </script>
   </body>
   <script>
   var packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
