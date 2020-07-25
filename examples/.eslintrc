@@ -5,6 +5,7 @@
     "common": false,
     "createMapboxStreetsV6Style": false,
     "d3": false,
+    "domtoimage": false,
     "geojsonvt": false,
     "GyroNorm": false,
     "jsPDF": false,

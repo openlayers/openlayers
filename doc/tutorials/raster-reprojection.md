@@ -39,10 +39,10 @@ var map = new Map({
 If a source (based on `ol/source/TileImage` or `ol/source/Image`) has a projection different from the current `ol/View`’s projection then the reprojection happens automatically under the hood.
 
 ### Examples
-- [Raster reprojection demo](https://openlayers.org/en/master/examples/reprojection.html)
-- [OpenStreetMap to WGS84 reprojection](https://openlayers.org/en/master/examples/reprojection-wgs84.html)
-- [Reprojection with EPSG.io database search](https://openlayers.org/en/master/examples/reprojection-by-code.html)
-- [Image reprojection](https://openlayers.org/en/master/examples/reprojection-image.html)
+- [Raster reprojection demo](https://openlayers.org/en/latest/examples/reprojection.html)
+- [OpenStreetMap to WGS84 reprojection](https://openlayers.org/en/latest/examples/reprojection-wgs84.html)
+- [Reprojection with EPSG.io database search](https://openlayers.org/en/latest/examples/reprojection-by-code.html)
+- [Image reprojection](https://openlayers.org/en/latest/examples/reprojection-image.html)
 
 ### Custom projection
 The easiest way to use a custom projection is to add the [Proj4js](http://proj4js.org/) library to your project and then define the projection using a proj4 definition string. It can be installed with
@@ -125,7 +125,7 @@ Although this is mathematically correct behavior of the inverse transformation, 
 A possible general solution would be to calculate the forward transformation for every vertex as well - but this would significantly decrease performance (especially for computationally expensive transformations).
 
 Therefore a recommended workaround is to define a proper visibility extent on the `ol.layer.Tile` in the view projection.
-Setting such a limit is demonstrated in the [reprojection demo example](https://openlayers.org/en/master/examples/reprojection.html).
+Setting such a limit is demonstrated in the [reprojection demo example](https://openlayers.org/en/latest/examples/reprojection.html).
 
 ### Resolution calculation
 When determining source tiles to load, the ideal source resolution needs to be calculated.

@@ -2,8 +2,10 @@
  * @module ol/has
  */
 
-const ua = typeof navigator !== 'undefined' ?
-  navigator.userAgent.toLowerCase() : '';
+const ua =
+  typeof navigator !== 'undefined' && typeof navigator.userAgent !== 'undefined'
+    ? navigator.userAgent.toLowerCase()
+    : '';
 
 /**
  * User agent string says we are dealing with Firefox as browser.
@@ -29,7 +31,6 @@ export const WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
  */
 export const MAC = ua.indexOf('macintosh') !== -1;
 
-
 /**
  * The ratio between physical pixels and device-independent pixels
  * (dips) on the device (`window.devicePixelRatio`).
@@ -37,24 +38,36 @@ export const MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api
  */
-export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+export const DEVICE_PIXEL_RATIO =
+  typeof devicePixelRatio !== 'undefined' ? devicePixelRatio : 1;
+
+/**
+ * The execution context is a worker with OffscreenCanvas available.
+ * @const
+ * @type {boolean}
+ */
+export const WORKER_OFFSCREEN_CANVAS =
+  typeof WorkerGlobalScope !== 'undefined' &&
+  typeof OffscreenCanvas !== 'undefined' &&
+  self instanceof WorkerGlobalScope; //eslint-disable-line
 
 /**
  * Image.prototype.decode() is supported.
  * @type {boolean}
  */
-export const IMAGE_DECODE = typeof Image !== 'undefined' && Image.prototype.decode;
+export const IMAGE_DECODE =
+  typeof Image !== 'undefined' && Image.prototype.decode;
 
 /**
  * @type {boolean}
  */
-export const PASSIVE_EVENT_LISTENERS = (function() {
+export const PASSIVE_EVENT_LISTENERS = (function () {
   let passive = false;
   try {
     const options = Object.defineProperty({}, 'passive', {
-      get: function() {
+      get: function () {
         passive = true;
-      }
+      },
     });
 
     window.addEventListener('_', null, options);

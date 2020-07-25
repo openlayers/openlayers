@@ -1,0 +1,47 @@
+---
+layout: example.html
+title: Print to scale example
+shortdesc: Example of printing a map to a specified scale.
+docs: >
+  Example of printing a map to a specified scale.
+  The print is exported as a PDF using the <a href="https://github.com/MrRio/jsPDF" target="_blank">jsPDF</a> library.
+  Unlike the <a href="export-pdf.html">Export PDF example</a> the on screen map is only used to set the center and rotation.
+  The extent printed depends on the scale and page size. To print the scale bar and attributions the example uses the
+  <a href="https://github.com/1904labs/dom-to-image-more" target="_blank">dom-to-image-more</a> library. Due to browser
+  limitations and restrictions <b>Internet Explorer and Safari are not supported</b>.
+tags: "print, printing, scale, scaleline, export, pdf"
+resources:
+  - https://unpkg.com/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js
+---
+<div class="wrapper">
+  <div id="map" class="map"></div>
+</div>
+<form class="form">
+  <label>Page size </label>
+  <select id="format">
+    <option value="a0">A0 (slow)</option>
+    <option value="a1">A1</option>
+    <option value="a2">A2</option>
+    <option value="a3">A3</option>
+    <option value="a4" selected>A4</option>
+    <option value="a5">A5 (fast)</option>
+  </select>
+  <label>Resolution </label>
+  <select id="resolution">
+    <option value="72">72 dpi (fast)</option>
+    <option value="150">150 dpi</option>
+    <option value="200" selected>200 dpi</option>
+    <option value="300">300 dpi (slow)</option>
+  </select>
+  <label>Scale </label>
+  <select id="scale">
+    <option value="500">1:500000</option>
+    <option value="250" selected>1:250000</option>
+    <option value="100">1:100000</option>
+    <option value="50">1:50000</option>
+    <option value="25">1:25000</option>
+    <option value="10">1:10000</option>
+  </select>
+</form>
+<button id="export-pdf">Export PDF</button>

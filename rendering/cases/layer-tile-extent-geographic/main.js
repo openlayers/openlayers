@@ -3,8 +3,8 @@
  */
 
 import Map from '../../../src/ol/Map.js';
-import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
+import View from '../../../src/ol/View.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 import {useGeographic} from '../../../src/ol/proj.js';
 
@@ -17,25 +17,25 @@ new Map({
   target: 'map',
   view: new View({
     center: center,
-    zoom: 3
+    zoom: 3,
   }),
   layers: [
     new TileLayer({
       source: new XYZ({
         url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
-        maxZoom: 3
+        maxZoom: 3,
       }),
-      extent: extent
+      extent: extent,
     }),
     new TileLayer({
       source: new XYZ({
         url: '/data/tiles/stamen-labels/{z}/{x}/{y}.png',
         minZoom: 3,
-        maxZoom: 5
+        maxZoom: 5,
       }),
-      extent: extent
-    })
-  ]
+      extent: extent,
+    }),
+  ],
 });
 
 render();

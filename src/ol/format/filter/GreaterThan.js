@@ -9,7 +9,6 @@ import ComparisonBinary from './ComparisonBinary.js';
  * @api
  */
 class GreaterThan extends ComparisonBinary {
-
   /**
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!number} expression The value to compare.
@@ -17,7 +16,6 @@ class GreaterThan extends ComparisonBinary {
   constructor(propertyName, expression) {
     super('PropertyIsGreaterThan', propertyName, expression);
   }
-
 }
 
 export default GreaterThan;

@@ -4,26 +4,27 @@
 
 import {DEFAULT_WMS_VERSION} from './common.js';
 
-import {assert} from '../asserts.js';
-import {buffer, createEmpty} from '../extent.js';
-import {assign} from '../obj.js';
-import {modulo} from '../math.js';
-import {get as getProjection, transform, transformExtent} from '../proj.js';
-import {calculateSourceResolution} from '../reproj.js';
-import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
 import TileImage from './TileImage.js';
 import WMSServerType from './WMSServerType.js';
-import {hash as tileCoordHash} from '../tilecoord.js';
-import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
+import {assert} from '../asserts.js';
+import {assign} from '../obj.js';
+import {buffer, createEmpty} from '../extent.js';
+import {buffer as bufferSize, scale as scaleSize, toSize} from '../size.js';
+import {calculateSourceResolution} from '../reproj.js';
+import {compareVersions} from '../string.js';
+import {get as getProjection, transform, transformExtent} from '../proj.js';
+import {modulo} from '../math.js';
+import {hash as tileCoordHash} from '../tilecoord.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {Object<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
@@ -69,7 +70,6 @@ import {appendParams} from '../uri.js';
  * To disable the opacity transition, pass `transition: 0`.
  */
 
-
 /**
  * @classdesc
  * Layer source for tile data from WMS servers.
@@ -80,7 +80,6 @@ class TileWMS extends TileImage {
    * @param {Options=} [opt_options] Tile WMS options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : /** @type {Options} */ ({});
 
     const params = options.params || {};
@@ -91,17 +90,17 @@ class TileWMS extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       opaque: !transparent,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileClass: options.tileClass,
       tileGrid: options.tileGrid,
       tileLoadFunction: options.tileLoadFunction,
-      tileUrlFunction: tileUrlFunction,
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      transition: options.transition
+      transition: options.transition,
     });
 
     /**
@@ -142,7 +141,6 @@ class TileWMS extends TileImage {
 
     this.updateV13_();
     this.setKey(this.getKeyForParams_());
-
   }
 
   /**
@@ -179,7 +177,6 @@ class TileWMS extends TileImage {
     let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
     let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
-
     const gutter = this.gutter_;
     if (gutter !== 0) {
       tileSize = bufferSize(tileSize, gutter, this.tmpSize);
@@ -187,8 +184,17 @@ class TileWMS extends TileImage {
     }
 
     if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
-      tileResolution = calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
-      tileExtent = transformExtent(tileExtent, projectionObj, sourceProjectionObj);
+      tileResolution = calculateSourceResolution(
+        sourceProjectionObj,
+        projectionObj,
+        coordinate,
+        tileResolution
+      );
+      tileExtent = transformExtent(
+        tileExtent,
+        projectionObj,
+        sourceProjectionObj
+      );
       coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
     }
 
@@ -198,7 +204,7 @@ class TileWMS extends TileImage {
       'REQUEST': 'GetFeatureInfo',
       'FORMAT': 'image/png',
       'TRANSPARENT': true,
-      'QUERY_LAYERS': this.params_['LAYERS']
+      'QUERY_LAYERS': this.params_['LAYERS'],
     };
     assign(baseParams, this.params_, params);
 
@@ -208,8 +214,14 @@ class TileWMS extends TileImage {
     baseParams[this.v13_ ? 'I' : 'X'] = x;
     baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
-    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      1, sourceProjectionObj || projectionObj, baseParams);
+    return this.getRequestUrl_(
+      tileCoord,
+      tileSize,
+      tileExtent,
+      1,
+      sourceProjectionObj || projectionObj,
+      baseParams
+    );
   }
 
   /**
@@ -235,7 +247,7 @@ class TileWMS extends TileImage {
       'SERVICE': 'WMS',
       'VERSION': DEFAULT_WMS_VERSION,
       'REQUEST': 'GetLegendGraphic',
-      'FORMAT': 'image/png'
+      'FORMAT': 'image/png',
     };
 
     if (params === undefined || params['LAYER'] === undefined) {
@@ -248,7 +260,9 @@ class TileWMS extends TileImage {
     }
 
     if (resolution !== undefined) {
-      const mpu = this.getProjection() ? this.getProjection().getMetersPerUnit() : 1;
+      const mpu = this.getProjection()
+        ? this.getProjection().getMetersPerUnit()
+        : 1;
       const dpi = 25.4 / 0.28;
       const inchesPerMeter = 39.37;
       baseParams['SCALE'] = resolution * mpu * inchesPerMeter * dpi;
@@ -260,7 +274,7 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @inheritDoc
+   * @return {number} Gutter.
    */
   getGutter() {
     return this.gutter_;
@@ -286,8 +300,14 @@ class TileWMS extends TileImage {
    * @return {string|undefined} Request URL.
    * @private
    */
-  getRequestUrl_(tileCoord, tileSize, tileExtent, pixelRatio, projection, params) {
-
+  getRequestUrl_(
+    tileCoord,
+    tileSize,
+    tileExtent,
+    pixelRatio,
+    projection,
+    params
+  ) {
     const urls = this.urls;
     if (!urls) {
       return undefined;
@@ -349,11 +369,12 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @inheritDoc
+   * Get the tile pixel ratio for this source.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {number} Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
-    return (!this.hidpi_ || this.serverType_ === undefined) ? 1 :
-    /** @type {number} */ (pixelRatio);
+    return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
   }
 
   /**
@@ -387,57 +408,60 @@ class TileWMS extends TileImage {
     const version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
     this.v13_ = compareVersions(version, '1.3') >= 0;
   }
+
+  /**
+   * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+   * @param {number} pixelRatio The pixel ratio
+   * @param {import("../proj/Projection.js").default} projection The projection
+   * @return {string|undefined} The tile URL
+   * @override
+   */
+  tileUrlFunction(tileCoord, pixelRatio, projection) {
+    let tileGrid = this.getTileGrid();
+    if (!tileGrid) {
+      tileGrid = this.getTileGridForProjection(projection);
+    }
+
+    if (tileGrid.getResolutions().length <= tileCoord[0]) {
+      return undefined;
+    }
+
+    if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+      pixelRatio = 1;
+    }
+
+    const tileResolution = tileGrid.getResolution(tileCoord[0]);
+    let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+    let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+    const gutter = this.gutter_;
+    if (gutter !== 0) {
+      tileSize = bufferSize(tileSize, gutter, this.tmpSize);
+      tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
+    }
+
+    if (pixelRatio != 1) {
+      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+    }
+
+    const baseParams = {
+      'SERVICE': 'WMS',
+      'VERSION': DEFAULT_WMS_VERSION,
+      'REQUEST': 'GetMap',
+      'FORMAT': 'image/png',
+      'TRANSPARENT': true,
+    };
+    assign(baseParams, this.params_);
+
+    return this.getRequestUrl_(
+      tileCoord,
+      tileSize,
+      tileExtent,
+      pixelRatio,
+      projection,
+      baseParams
+    );
+  }
 }
-
-/**
- * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
- * @param {number} pixelRatio The pixel ratio
- * @param {import("../proj/Projection.js").default} projection The projection
- * @return {string|undefined} The tile URL
- * @this {TileWMS}
- */
-function tileUrlFunction(tileCoord, pixelRatio, projection) {
-
-  let tileGrid = this.getTileGrid();
-  if (!tileGrid) {
-    tileGrid = this.getTileGridForProjection(projection);
-  }
-
-  if (tileGrid.getResolutions().length <= tileCoord[0]) {
-    return undefined;
-  }
-
-  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-    pixelRatio = 1;
-  }
-
-  const tileResolution = tileGrid.getResolution(tileCoord[0]);
-  let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  let tileSize = toSize(
-    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-  const gutter = this.gutter_;
-  if (gutter !== 0) {
-    tileSize = bufferSize(tileSize, gutter, this.tmpSize);
-    tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
-  }
-
-  if (pixelRatio != 1) {
-    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
-  }
-
-  const baseParams = {
-    'SERVICE': 'WMS',
-    'VERSION': DEFAULT_WMS_VERSION,
-    'REQUEST': 'GetMap',
-    'FORMAT': 'image/png',
-    'TRANSPARENT': true
-  };
-  assign(baseParams, this.params_);
-
-  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-    pixelRatio, projection, baseParams);
-}
-
 
 export default TileWMS;

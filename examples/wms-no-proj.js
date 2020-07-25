@@ -1,34 +1,35 @@
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 import Map from '../src/ol/Map.js';
+import Projection from '../src/ol/proj/Projection.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import Projection from '../src/ol/proj/Projection.js';
-import ImageWMS from '../src/ol/source/ImageWMS.js';
-import TileWMS from '../src/ol/source/TileWMS.js';
-
 
 const layers = [
   new TileLayer({
     source: new TileWMS({
-      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-          'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
+      attributions:
+        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+        'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
-        'FORMAT': 'image/jpeg'
+        'FORMAT': 'image/jpeg',
       },
-      url: 'https://wms.geo.admin.ch/'
-    })
+      url: 'https://wms.geo.admin.ch/',
+    }),
   }),
   new ImageLayer({
     source: new ImageWMS({
-      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-          'en/home.html">National parks / geo.admin.ch</a>',
+      attributions:
+        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+        'en/home.html">National parks / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       serverType: 'mapserver',
-      url: 'https://wms.geo.admin.ch/'
-    })
-  })
+      url: 'https://wms.geo.admin.ch/',
+    }),
+  }),
 ];
 
 // A minimal projection object is configured with only the SRS code and the map
@@ -38,7 +39,7 @@ const layers = [
 // coordinates relate to latitude or longitude.
 const projection = new Projection({
   code: 'EPSG:21781',
-  units: 'm'
+  units: 'm',
 });
 
 const map = new Map({
@@ -47,6 +48,6 @@ const map = new Map({
   view: new View({
     center: [660000, 190000],
     projection: projection,
-    zoom: 9
-  })
+    zoom: 9,
+  }),
 });

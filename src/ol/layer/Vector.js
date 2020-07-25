@@ -4,7 +4,6 @@
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
 
-
 /**
  * @classdesc
  * Vector data that is rendered client-side.
@@ -26,12 +25,10 @@ class VectorLayer extends BaseVectorLayer {
   /**
    * Create a renderer for this layer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
-   * @protected
    */
   createRenderer() {
     return new CanvasVectorLayerRenderer(this);
   }
 }
-
 
 export default VectorLayer;

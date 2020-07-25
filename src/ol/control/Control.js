@@ -1,25 +1,23 @@
 /**
  * @module ol/control/Control
  */
-import {VOID} from '../functions.js';
-import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';
-import {removeNode} from '../dom.js';
+import MapEventType from '../MapEventType.js';
+import {VOID} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
-
+import {removeNode} from '../dom.js';
 
 /**
  * @typedef {Object} Options
  * @property {HTMLElement} [element] The element is the control's
  * container element. This only needs to be specified if you're developing
  * a custom control.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want
  * the control to be rendered outside of the map's viewport.
  */
-
 
 /**
  * @classdesc
@@ -46,19 +44,22 @@ import {listen, unlistenByKey} from '../events.js';
  * @api
  */
 class Control extends BaseObject {
-
   /**
    * @param {Options} options Control options.
    */
   constructor(options) {
-
     super();
+
+    const element = options.element;
+    if (element && !options.target && !element.style.pointerEvents) {
+      element.style.pointerEvents = 'auto';
+    }
 
     /**
      * @protected
      * @type {HTMLElement}
      */
-    this.element = options.element ? options.element : null;
+    this.element = element ? element : null;
 
     /**
      * @private
@@ -78,20 +79,17 @@ class Control extends BaseObject {
      */
     this.listenerKeys = [];
 
-    /**
-     * @private
-     * @type {function(import("../MapEvent.js").default): void}
-     */
-    this.render_ = options.render ? options.render : VOID;
+    if (options.render) {
+      this.render = options.render;
+    }
 
     if (options.target) {
       this.setTarget(options.target);
     }
-
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     removeNode(this.element);
@@ -124,26 +122,25 @@ class Control extends BaseObject {
     this.listenerKeys.length = 0;
     this.map_ = map;
     if (this.map_) {
-      const target = this.target_ ?
-        this.target_ : map.getOverlayContainerStopEvent();
+      const target = this.target_
+        ? this.target_
+        : map.getOverlayContainerStopEvent();
       target.appendChild(this.element);
       if (this.render !== VOID) {
-        this.listenerKeys.push(listen(map,
-          MapEventType.POSTRENDER, this.render, this));
+        this.listenerKeys.push(
+          listen(map, MapEventType.POSTRENDER, this.render, this)
+        );
       }
       map.render();
     }
   }
 
   /**
-   * Update the projection. Rendering of the coordinates is done in
-   * `handleMouseMove` and `handleMouseUp`.
+   * Renders the control.
    * @param {import("../MapEvent.js").default} mapEvent Map event.
    * @api
    */
-  render(mapEvent) {
-    this.render_.call(this, mapEvent);
-  }
+  render(mapEvent) {}
 
   /**
    * This function is used to set a target element for the control. It has no
@@ -155,11 +152,9 @@ class Control extends BaseObject {
    * @api
    */
   setTarget(target) {
-    this.target_ = typeof target === 'string' ?
-      document.getElementById(target) :
-      target;
+    this.target_ =
+      typeof target === 'string' ? document.getElementById(target) : target;
   }
 }
-
 
 export default Control;

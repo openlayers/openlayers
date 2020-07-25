@@ -7,6 +7,14 @@
  * @enum {string}
  */
 export default {
+  /**
+   * Anchor is a fraction
+   * @api
+   */
   FRACTION: 'fraction',
-  PIXELS: 'pixels'
+  /**
+   * Anchor is in pixels
+   * @api
+   */
+  PIXELS: 'pixels',
 };

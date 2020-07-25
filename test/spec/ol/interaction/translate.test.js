@@ -1,22 +1,23 @@
 import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
-import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import View from '../../../../src/ol/View.js';
-import Point from '../../../../src/ol/geom/Point.js';
-import Translate, {TranslateEvent} from '../../../../src/ol/interaction/Translate.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
+import Map from '../../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Translate, {
+  TranslateEvent,
+} from '../../../../src/ol/interaction/Translate.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import View from '../../../../src/ol/View.js';
 
-
-describe('ol.interaction.Translate', function() {
+describe('ol.interaction.Translate', function () {
   let target, map, source, features;
 
   const width = 360;
   const height = 180;
 
-  beforeEach(function(done) {
+  beforeEach(function (done) {
     target = document.createElement('div');
     const style = target.style;
     style.position = 'absolute';
@@ -26,11 +27,14 @@ describe('ol.interaction.Translate', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
     source = new VectorSource();
-    features = [new Feature({
-      geometry: new Point([10, -20])
-    }), new Feature({
-      geometry: new Point([20, -30])
-    })];
+    features = [
+      new Feature({
+        geometry: new Point([10, -20]),
+      }),
+      new Feature({
+        geometry: new Point([20, -30]),
+      }),
+    ];
     source.addFeatures(features);
     const layer = new VectorLayer({source: source});
     map = new Map({
@@ -39,15 +43,15 @@ describe('ol.interaction.Translate', function() {
       view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
-        resolution: 1
-      })
+        resolution: 1,
+      }),
     });
-    map.once('postrender', function() {
+    map.once('postrender', function () {
       done();
     });
   });
 
-  afterEach(function() {
+  afterEach(function () {
     map.dispose();
     document.body.removeChild(target);
   });
@@ -65,14 +69,14 @@ describe('ol.interaction.Translate', function() {
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
     const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    const event = new MapBrowserPointerEvent(type, map, {
+    const event = new MapBrowserEvent(type, map, {
       type: type,
       target: viewport.firstChild,
       pointerId: 0,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey,
-      preventDefault: function() {}
+      preventDefault: function () {},
     });
     map.handleMapBrowserEvent(event);
   }
@@ -86,13 +90,13 @@ describe('ol.interaction.Translate', function() {
    */
   function trackEvents(feature, interaction) {
     const events = [];
-    feature.on('change', function(event) {
+    feature.on('change', function (event) {
       events.push('change');
     });
-    interaction.on('translatestart', function(event) {
+    interaction.on('translatestart', function (event) {
       events.push(event);
     });
-    interaction.on('translateend', function(event) {
+    interaction.on('translateend', function (event) {
       events.push(event);
     });
     return events;
@@ -106,7 +110,6 @@ describe('ol.interaction.Translate', function() {
    * @param {Array<ol.Feature>} features The features.
    */
   function validateEvents(events, features) {
-
     const startevent = events[0];
     const endevent = events[events.length - 1];
 
@@ -130,43 +133,38 @@ describe('ol.interaction.Translate', function() {
     expect(endevent.features.getArray()).to.eql(features);
   }
 
-
-  describe('constructor', function() {
-
-    it('creates a new interaction', function() {
+  describe('constructor', function () {
+    it('creates a new interaction', function () {
       const translate = new Translate({
-        features: features
+        features: features,
       });
       expect(translate).to.be.a(Translate);
       expect(translate).to.be.a(Interaction);
     });
-
   });
 
-  describe('setActive', function() {
-
-    it('works when the map is not set', function() {
+  describe('setActive', function () {
+    it('works when the map is not set', function () {
       const translate = new Translate({
-        features: features
+        features: features,
       });
       expect(translate.getActive()).to.be(true);
       translate.setActive(false);
       expect(translate.getActive()).to.be(false);
     });
-
   });
 
-  describe('moving features, with features option', function() {
+  describe('moving features, with features option', function () {
     let translate;
 
-    beforeEach(function() {
+    beforeEach(function () {
       translate = new Translate({
-        features: new Collection([features[0]])
+        features: new Collection([features[0]]),
       });
       map.addInteraction(translate);
     });
 
-    it('moves a selected feature', function() {
+    it('moves a selected feature', function () {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
@@ -180,7 +178,7 @@ describe('ol.interaction.Translate', function() {
       validateEvents(events, [features[0]]);
     });
 
-    it('does not move an unselected feature', function() {
+    it('does not move an unselected feature', function () {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 20, 30);
@@ -195,15 +193,15 @@ describe('ol.interaction.Translate', function() {
     });
   });
 
-  describe('moving features, without features option', function() {
+  describe('moving features, without features option', function () {
     let translate;
 
-    beforeEach(function() {
+    beforeEach(function () {
       translate = new Translate();
       map.addInteraction(translate);
     });
 
-    it('moves only targeted feature', function() {
+    it('moves only targeted feature', function () {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
@@ -217,19 +215,19 @@ describe('ol.interaction.Translate', function() {
     });
   });
 
-  describe('moving features, with filter option', function() {
+  describe('moving features, with filter option', function () {
     let translate;
 
-    beforeEach(function() {
+    beforeEach(function () {
       translate = new Translate({
-        filter: function(feature, layer) {
+        filter: function (feature, layer) {
           return feature == features[0];
-        }
+        },
       });
       map.addInteraction(translate);
     });
 
-    it('moves a filter-passing feature', function() {
+    it('moves a filter-passing feature', function () {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
@@ -243,7 +241,7 @@ describe('ol.interaction.Translate', function() {
       validateEvents(events, [features[0]]);
     });
 
-    it('does not move a filter-discarded feature', function() {
+    it('does not move a filter-discarded feature', function () {
       const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 20, 30);
@@ -258,16 +256,16 @@ describe('ol.interaction.Translate', function() {
     });
   });
 
-  describe('changes css cursor', function() {
+  describe('changes css cursor', function () {
     let element, translate;
 
-    beforeEach(function() {
+    beforeEach(function () {
       translate = new Translate();
       map.addInteraction(translate);
       element = map.getViewport();
     });
 
-    it('changes css cursor', function() {
+    it('changes css cursor', function () {
       expect(element.classList.contains('ol-grabbing')).to.be(false);
       expect(element.classList.contains('ol-grab')).to.be(false);
 
@@ -288,7 +286,7 @@ describe('ol.interaction.Translate', function() {
       expect(element.classList.contains('ol-grab')).to.be(false);
     });
 
-    it('resets css cursor when interaction is deactivated while pointer is on feature', function() {
+    it('resets css cursor when interaction is deactivated while pointer is on feature', function () {
       simulateEvent('pointermove', 10, 20);
       expect(element.classList.contains('ol-grabbing')).to.be(false);
       expect(element.classList.contains('ol-grab')).to.be(true);
@@ -300,7 +298,7 @@ describe('ol.interaction.Translate', function() {
       expect(element.classList.contains('ol-grab')).to.be(false);
     });
 
-    it('resets css cursor interaction is removed while pointer is on feature', function() {
+    it('resets css cursor interaction is removed while pointer is on feature', function () {
       simulateEvent('pointermove', 10, 20);
       expect(element.classList.contains('ol-grabbing')).to.be(false);
       expect(element.classList.contains('ol-grab')).to.be(true);
@@ -312,7 +310,7 @@ describe('ol.interaction.Translate', function() {
       expect(element.classList.contains('ol-grab')).to.be(false);
     });
 
-    it('resets css cursor to existing cursor interaction is removed while pointer is on feature', function() {
+    it('resets css cursor to existing cursor interaction is removed while pointer is on feature', function () {
       element.style.cursor = 'pointer';
 
       simulateEvent('pointermove', 10, 20);
@@ -325,7 +323,5 @@ describe('ol.interaction.Translate', function() {
       expect(element.classList.contains('ol-grabbing')).to.be(false);
       expect(element.classList.contains('ol-grab')).to.be(false);
     });
-
   });
-
 });

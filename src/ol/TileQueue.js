@@ -1,39 +1,36 @@
 /**
  * @module ol/TileQueue
  */
-import TileState from './TileState.js';
 import EventType from './events/EventType.js';
-import PriorityQueue from './structs/PriorityQueue.js';
-
+import PriorityQueue, {DROP} from './structs/PriorityQueue.js';
+import TileState from './TileState.js';
 
 /**
  * @typedef {function(import("./Tile.js").default, string, import("./coordinate.js").Coordinate, number): number} PriorityFunction
  */
 
-
 class TileQueue extends PriorityQueue {
-
   /**
    * @param {PriorityFunction} tilePriorityFunction Tile priority function.
    * @param {function(): ?} tileChangeCallback Function called on each tile change event.
    */
   constructor(tilePriorityFunction, tileChangeCallback) {
-
     super(
       /**
        * @param {Array} element Element.
        * @return {number} Priority.
        */
-      function(element) {
+      function (element) {
         return tilePriorityFunction.apply(null, element);
       },
       /**
        * @param {Array} element Element.
        * @return {string} Key.
        */
-      function(element) {
-        return (/** @type {import("./Tile.js").default} */ (element[0]).getKey());
-      });
+      function (element) {
+        return /** @type {import("./Tile.js").default} */ (element[0]).getKey();
+      }
+    );
 
     /** @private */
     this.boundHandleTileChange_ = this.handleTileChange.bind(this);
@@ -55,11 +52,11 @@ class TileQueue extends PriorityQueue {
      * @type {!Object<string,boolean>}
      */
     this.tilesLoadingKeys_ = {};
-
   }
 
   /**
-   * @inheritDoc
+   * @param {Array} element Element.
+   * @return {boolean} The element was added to the queue.
    */
   enqueue(element) {
     const added = super.enqueue(element);
@@ -84,7 +81,11 @@ class TileQueue extends PriorityQueue {
   handleTileChange(event) {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);
     const state = tile.getState();
-    if (tile.hifi && state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
+    if (
+      (tile.hifi && state === TileState.LOADED) ||
+      state === TileState.ERROR ||
+      state === TileState.EMPTY
+    ) {
       tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
       const tileKey = tile.getKey();
       if (tileKey in this.tilesLoadingKeys_) {
@@ -102,8 +103,11 @@ class TileQueue extends PriorityQueue {
   loadMoreTiles(maxTotalLoading, maxNewLoads) {
     let newLoads = 0;
     let state, tile, tileKey;
-    while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
-           this.getCount() > 0) {
+    while (
+      this.tilesLoading_ < maxTotalLoading &&
+      newLoads < maxNewLoads &&
+      this.getCount() > 0
+    ) {
       tile = /** @type {import("./Tile.js").default} */ (this.dequeue()[0]);
       tileKey = tile.getKey();
       state = tile.getState();
@@ -117,5 +121,42 @@ class TileQueue extends PriorityQueue {
   }
 }
 
-
 export default TileQueue;
+
+/**
+ * @param {import('./PluggableMap.js').FrameState} frameState Frame state.
+ * @param {import("./Tile.js").default} tile Tile.
+ * @param {string} tileSourceKey Tile source key.
+ * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.
+ * @param {number} tileResolution Tile resolution.
+ * @return {number} Tile priority.
+ */
+export function getTilePriority(
+  frameState,
+  tile,
+  tileSourceKey,
+  tileCenter,
+  tileResolution
+) {
+  // Filter out tiles at higher zoom levels than the current zoom level, or that
+  // are outside the visible extent.
+  if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
+    return DROP;
+  }
+  if (!frameState.wantedTiles[tileSourceKey][tile.getKey()]) {
+    return DROP;
+  }
+  // Prioritize the highest zoom level tiles closest to the focus.
+  // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).
+  // Within a zoom level, tiles are prioritized by the distance in pixels between
+  // the center of the tile and the center of the viewport.  The factor of 65536
+  // means that the prioritization should behave as desired for tiles up to
+  // 65536 * Math.log(2) = 45426 pixels from the focus.
+  const center = frameState.viewState.center;
+  const deltaX = tileCenter[0] - center[0];
+  const deltaY = tileCenter[1] - center[1];
+  return (
+    65536 * Math.log(tileResolution) +
+    Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution
+  );
+}

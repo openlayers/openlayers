@@ -17,5 +17,5 @@ export default {
   CENTER_RIGHT: 'center-right',
   TOP_LEFT: 'top-left',
   TOP_CENTER: 'top-center',
-  TOP_RIGHT: 'top-right'
+  TOP_RIGHT: 'top-right',
 };

@@ -1,22 +1,31 @@
 /**
  * @module ol/render/Feature
  */
-import {extend} from '../array.js';
-import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
-import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
-import {interpolatePoint} from '../geom/flat/interpolate.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../transform.js';
+import {
+  createOrUpdateFromCoordinate,
+  createOrUpdateFromFlatCoordinates,
+  getCenter,
+  getHeight,
+} from '../extent.js';
+import {extend} from '../array.js';
+import {
+  getInteriorPointOfArray,
+  getInteriorPointsOfMultiArray,
+} from '../geom/flat/interiorpoint.js';
 import {get as getProjection} from '../proj.js';
+import {interpolatePoint} from '../geom/flat/interpolate.js';
+import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {transform2D} from '../geom/flat/transform.js';
-import {create as createTransform, compose as composeTransform} from '../transform.js';
-
 
 /**
  * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
-
 
 /**
  * Lightweight, read-only, {@link module:ol/Feature~Feature} and {@link module:ol/geom/Geometry~Geometry} like
@@ -25,7 +34,7 @@ const tmpTransform = createTransform();
  */
 class RenderFeature {
   /**
-   * @param {GeometryType} type Geometry type.
+   * @param {import("../geom/GeometryType.js").default} type Geometry type.
    * @param {Array<number>} flatCoordinates Flat coordinates. These always need
    *     to be right-handed for polygons.
    * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -47,7 +56,7 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {GeometryType}
+     * @type {import("../geom/GeometryType.js").default}
      */
     this.type_ = type;
 
@@ -80,7 +89,6 @@ class RenderFeature {
      * @type {Object<string, *>}
      */
     this.properties_ = properties;
-
   }
 
   /**
@@ -100,11 +108,15 @@ class RenderFeature {
    */
   getExtent() {
     if (!this.extent_) {
-      this.extent_ = this.type_ === GeometryType.POINT ?
-        createOrUpdateFromCoordinate(this.flatCoordinates_) :
-        createOrUpdateFromFlatCoordinates(
-          this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
-
+      this.extent_ =
+        this.type_ === GeometryType.POINT
+          ? createOrUpdateFromCoordinate(this.flatCoordinates_)
+          : createOrUpdateFromFlatCoordinates(
+              this.flatCoordinates_,
+              0,
+              this.flatCoordinates_.length,
+              2
+            );
     }
     return this.extent_;
   }
@@ -116,7 +128,13 @@ class RenderFeature {
     if (!this.flatInteriorPoints_) {
       const flatCenter = getCenter(this.getExtent());
       this.flatInteriorPoints_ = getInteriorPointOfArray(
-        this.flatCoordinates_, 0, /** @type {Array<number>} */ (this.ends_), 2, flatCenter, 0);
+        this.flatCoordinates_,
+        0,
+        /** @type {Array<number>} */ (this.ends_),
+        2,
+        flatCenter,
+        0
+      );
     }
     return this.flatInteriorPoints_;
   }
@@ -127,9 +145,18 @@ class RenderFeature {
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
       const flatCenters = linearRingssCenter(
-        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2);
+        this.flatCoordinates_,
+        0,
+        /** @type {Array<Array<number>>} */ (this.ends_),
+        2
+      );
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
-        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2, flatCenters);
+        this.flatCoordinates_,
+        0,
+        /** @type {Array<Array<number>>} */ (this.ends_),
+        2,
+        flatCenters
+      );
     }
     return this.flatInteriorPoints_;
   }
@@ -140,7 +167,12 @@ class RenderFeature {
   getFlatMidpoint() {
     if (!this.flatMidpoints_) {
       this.flatMidpoints_ = interpolatePoint(
-        this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
+        this.flatCoordinates_,
+        0,
+        this.flatCoordinates_.length,
+        2,
+        0.5
+      );
     }
     return this.flatMidpoints_;
   }
@@ -156,8 +188,7 @@ class RenderFeature {
       const ends = /** @type {Array<number>} */ (this.ends_);
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         const end = ends[i];
-        const midpoint = interpolatePoint(
-          flatCoordinates, offset, end, 2, 0.5);
+        const midpoint = interpolatePoint(flatCoordinates, offset, end, 2, 0.5);
         extend(this.flatMidpoints_, midpoint);
         offset = end;
       }
@@ -236,7 +267,7 @@ class RenderFeature {
 
   /**
    * Get the type of this feature's geometry.
-   * @return {GeometryType} Geometry type.
+   * @return {import("../geom/GeometryType.js").default} Geometry type.
    * @api
    */
   getType() {
@@ -255,30 +286,39 @@ class RenderFeature {
     const pixelExtent = source.getExtent();
     const projectedExtent = source.getWorldExtent();
     const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-    composeTransform(tmpTransform,
-      projectedExtent[0], projectedExtent[3],
-      scale, -scale, 0,
-      0, 0);
-    transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
-      tmpTransform, this.flatCoordinates_);
+    composeTransform(
+      tmpTransform,
+      projectedExtent[0],
+      projectedExtent[3],
+      scale,
+      -scale,
+      0,
+      0,
+      0
+    );
+    transform2D(
+      this.flatCoordinates_,
+      0,
+      this.flatCoordinates_.length,
+      2,
+      tmpTransform,
+      this.flatCoordinates_
+    );
+  }
+  /**
+   * @return {Array<number>|Array<Array<number>>} Ends or endss.
+   */
+  getEnds() {
+    return this.ends_;
   }
 }
 
-
-/**
- * @return {Array<number>|Array<Array<number>>} Ends or endss.
- */
-RenderFeature.prototype.getEnds = function() {
-  return this.ends_;
-};
 RenderFeature.prototype.getEndss = RenderFeature.prototype.getEnds;
-
 
 /**
  * @return {Array<number>} Flat coordinates.
  */
 RenderFeature.prototype.getFlatCoordinates =
-    RenderFeature.prototype.getOrientedFlatCoordinates;
-
+  RenderFeature.prototype.getOrientedFlatCoordinates;
 
 export default RenderFeature;

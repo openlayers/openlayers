@@ -35,5 +35,5 @@ export default {
   LOAD: 'load',
   RESIZE: 'resize',
   TOUCHMOVE: 'touchmove',
-  WHEEL: 'wheel'
+  WHEEL: 'wheel',
 };

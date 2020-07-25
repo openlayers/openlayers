@@ -3,11 +3,9 @@
  */
 import {clamp} from './math.js';
 
-
 /**
  * @typedef {function((import("./coordinate.js").Coordinate|undefined), number, import("./size.js").Size, boolean=): (import("./coordinate.js").Coordinate|undefined)} Type
  */
-
 
 /**
  * @param {import("./extent.js").Extent} extent Extent.
@@ -25,7 +23,7 @@ export function createExtent(extent, onlyCenter, smooth) {
      * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
      * @return {import("./coordinate.js").Coordinate|undefined} Center.
      */
-    function(center, resolution, size, opt_isMoving) {
+    function (center, resolution, size, opt_isMoving) {
       if (center) {
         const viewWidth = onlyCenter ? 0 : size[0] * resolution;
         const viewHeight = onlyCenter ? 0 : size[1] * resolution;
@@ -51,9 +49,11 @@ export function createExtent(extent, onlyCenter, smooth) {
 
         // during an interaction, allow some overscroll
         if (opt_isMoving && smooth) {
-          x += -ratio * Math.log(1 + Math.max(0, minX - center[0]) / ratio) +
+          x +=
+            -ratio * Math.log(1 + Math.max(0, minX - center[0]) / ratio) +
             ratio * Math.log(1 + Math.max(0, center[0] - maxX) / ratio);
-          y += -ratio * Math.log(1 + Math.max(0, minY - center[1]) / ratio) +
+          y +=
+            -ratio * Math.log(1 + Math.max(0, minY - center[1]) / ratio) +
             ratio * Math.log(1 + Math.max(0, center[1] - maxY) / ratio);
         }
 
@@ -64,7 +64,6 @@ export function createExtent(extent, onlyCenter, smooth) {
     }
   );
 }
-
 
 /**
  * @param {import("./coordinate.js").Coordinate=} center Center.

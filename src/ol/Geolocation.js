@@ -1,13 +1,16 @@
 /**
  * @module ol/Geolocation
  */
-import BaseObject, {getChangeEventType} from './Object.js';
 import BaseEvent from './events/Event.js';
+import BaseObject, {getChangeEventType} from './Object.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
+import {
+  get as getProjection,
+  getTransformFromProjections,
+  identityTransform,
+} from './proj.js';
 import {toRadians} from './math.js';
-import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
-
 
 /**
  * @enum {string}
@@ -22,9 +25,8 @@ const Property = {
   PROJECTION: 'projection',
   SPEED: 'speed',
   TRACKING: 'tracking',
-  TRACKING_OPTIONS: 'trackingOptions'
+  TRACKING_OPTIONS: 'trackingOptions',
 };
-
 
 /**
  * @classdesc
@@ -49,7 +51,6 @@ class GeolocationError extends BaseEvent {
   }
 }
 
-
 /**
  * @typedef {Object} Options
  * @property {boolean} [tracking=false] Start Tracking right after
@@ -59,7 +60,6 @@ class GeolocationError extends BaseEvent {
  * @property {import("./proj.js").ProjectionLike} [projection] The projection the position
  * is reported in.
  */
-
 
 /**
  * @classdesc
@@ -85,12 +85,10 @@ class GeolocationError extends BaseEvent {
  * @api
  */
 class Geolocation extends BaseObject {
-
   /**
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     super();
 
     const options = opt_options || {};
@@ -114,8 +112,14 @@ class Geolocation extends BaseObject {
      */
     this.watchId_ = undefined;
 
-    this.addEventListener(getChangeEventType(Property.PROJECTION), this.handleProjectionChanged_);
-    this.addEventListener(getChangeEventType(Property.TRACKING), this.handleTrackingChanged_);
+    this.addEventListener(
+      getChangeEventType(Property.PROJECTION),
+      this.handleProjectionChanged_
+    );
+    this.addEventListener(
+      getChangeEventType(Property.TRACKING),
+      this.handleTrackingChanged_
+    );
 
     if (options.projection !== undefined) {
       this.setProjection(options.projection);
@@ -125,11 +129,10 @@ class Geolocation extends BaseObject {
     }
 
     this.setTracking(options.tracking !== undefined ? options.tracking : false);
-
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     this.setTracking(false);
@@ -143,7 +146,9 @@ class Geolocation extends BaseObject {
     const projection = this.getProjection();
     if (projection) {
       this.transform_ = getTransformFromProjections(
-        getProjection('EPSG:4326'), projection);
+        getProjection('EPSG:4326'),
+        projection
+      );
       if (this.position_) {
         this.set(Property.POSITION, this.transform_(this.position_));
       }
@@ -160,7 +165,8 @@ class Geolocation extends BaseObject {
         this.watchId_ = navigator.geolocation.watchPosition(
           this.positionChange_.bind(this),
           this.positionError_.bind(this),
-          this.getTrackingOptions());
+          this.getTrackingOptions()
+        );
       } else if (!tracking && this.watchId_ !== undefined) {
         navigator.geolocation.clearWatch(this.watchId_);
         this.watchId_ = undefined;
@@ -175,13 +181,18 @@ class Geolocation extends BaseObject {
   positionChange_(position) {
     const coords = position.coords;
     this.set(Property.ACCURACY, coords.accuracy);
-    this.set(Property.ALTITUDE,
-      coords.altitude === null ? undefined : coords.altitude);
-    this.set(Property.ALTITUDE_ACCURACY,
-      coords.altitudeAccuracy === null ?
-        undefined : coords.altitudeAccuracy);
-    this.set(Property.HEADING, coords.heading === null ?
-      undefined : toRadians(coords.heading));
+    this.set(
+      Property.ALTITUDE,
+      coords.altitude === null ? undefined : coords.altitude
+    );
+    this.set(
+      Property.ALTITUDE_ACCURACY,
+      coords.altitudeAccuracy === null ? undefined : coords.altitudeAccuracy
+    );
+    this.set(
+      Property.HEADING,
+      coords.heading === null ? undefined : toRadians(coords.heading)
+    );
     if (!this.position_) {
       this.position_ = [coords.longitude, coords.latitude];
     } else {
@@ -190,8 +201,7 @@ class Geolocation extends BaseObject {
     }
     const projectedPosition = this.transform_(this.position_);
     this.set(Property.POSITION, projectedPosition);
-    this.set(Property.SPEED,
-      coords.speed === null ? undefined : coords.speed);
+    this.set(Property.SPEED, coords.speed === null ? undefined : coords.speed);
     const geometry = circularPolygon(this.position_, coords.accuracy);
     geometry.applyTransform(this.transform_);
     this.set(Property.ACCURACY_GEOMETRY, geometry);
@@ -203,7 +213,6 @@ class Geolocation extends BaseObject {
    * @param {PositionError} error error object.
    */
   positionError_(error) {
-    this.setTracking(false);
     this.dispatchEvent(new GeolocationError(error));
   }
 
@@ -225,9 +234,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getAccuracyGeometry() {
-    return (
-      /** @type {?import("./geom/Polygon.js").default} */ (this.get(Property.ACCURACY_GEOMETRY) || null)
-    );
+    return /** @type {?import("./geom/Polygon.js").default} */ (this.get(
+      Property.ACCURACY_GEOMETRY
+    ) || null);
   }
 
   /**
@@ -249,7 +258,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getAltitudeAccuracy() {
-    return /** @type {number|undefined} */ (this.get(Property.ALTITUDE_ACCURACY));
+    return /** @type {number|undefined} */ (this.get(
+      Property.ALTITUDE_ACCURACY
+    ));
   }
 
   /**
@@ -272,9 +283,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getPosition() {
-    return (
-      /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(Property.POSITION))
-    );
+    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(
+      Property.POSITION
+    ));
   }
 
   /**
@@ -285,9 +296,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getProjection() {
-    return (
-      /** @type {import("./proj/Projection.js").default|undefined} */ (this.get(Property.PROJECTION))
-    );
+    return /** @type {import("./proj/Projection.js").default|undefined} */ (this.get(
+      Property.PROJECTION
+    ));
   }
 
   /**
@@ -321,7 +332,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getTrackingOptions() {
-    return /** @type {PositionOptions|undefined} */ (this.get(Property.TRACKING_OPTIONS));
+    return /** @type {PositionOptions|undefined} */ (this.get(
+      Property.TRACKING_OPTIONS
+    ));
   }
 
   /**
@@ -358,6 +371,5 @@ class Geolocation extends BaseObject {
     this.set(Property.TRACKING_OPTIONS, options);
   }
 }
-
 
 export default Geolocation;

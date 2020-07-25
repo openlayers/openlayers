@@ -1,15 +1,12 @@
+import EventType from '../../../src/ol/events/EventType.js';
 import ImageTile from '../../../src/ol/ImageTile.js';
 import TileState from '../../../src/ol/TileState.js';
-import {listen, unlistenByKey} from '../../../src/ol/events.js';
-import EventType from '../../../src/ol/events/EventType.js';
 import {defaultImageLoadFunction} from '../../../src/ol/source/Image.js';
+import {listen, unlistenByKey} from '../../../src/ol/events.js';
 
-
-describe('ol.ImageTile', function() {
-
-  describe('#load()', function() {
-
-    it('can load idle tile', function(done) {
+describe('ol.ImageTile', function () {
+  describe('#load()', function () {
+    it('can load idle tile', function (done) {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-0.png';
@@ -18,7 +15,7 @@ describe('ol.ImageTile', function() {
 
       let previousState = tile.getState();
 
-      listen(tile, EventType.CHANGE, function(event) {
+      listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();
         if (previousState == TileState.IDLE) {
           expect(state).to.be(TileState.LOADING);
@@ -34,7 +31,7 @@ describe('ol.ImageTile', function() {
       tile.load();
     });
 
-    it('can load error tile', function(done) {
+    it('can load error tile', function (done) {
       const tileCoord = [0, 0, 0];
       const state = TileState.ERROR;
       const src = 'spec/ol/data/osm-0-0-0.png';
@@ -43,7 +40,7 @@ describe('ol.ImageTile', function() {
 
       let previousState = tile.getState();
 
-      listen(tile, EventType.CHANGE, function(event) {
+      listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();
         if (previousState == TileState.ERROR) {
           expect(state).to.be(TileState.LOADING);
@@ -59,14 +56,14 @@ describe('ol.ImageTile', function() {
       tile.load();
     });
 
-    it('loads an empty image on error ', function(done) {
+    it('loads an empty image on error ', function (done) {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-99.png';
       const tileLoadFunction = defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      const key = listen(tile, EventType.CHANGE, function(event) {
+      const key = listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();
         if (state == TileState.ERROR) {
           expect(state).to.be(TileState.ERROR);
@@ -80,7 +77,5 @@ describe('ol.ImageTile', function() {
 
       tile.load();
     });
-
   });
-
 });

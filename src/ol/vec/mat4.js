@@ -2,14 +2,12 @@
  * @module ol/vec/mat4
  */
 
-
 /**
  * @return {Array<number>} "4x4 matrix representing a 3D identity transform."
  */
 export function create() {
   return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 }
-
 
 /**
  * @param {Array<number>} mat4 Flattened 4x4 matrix receiving the result.

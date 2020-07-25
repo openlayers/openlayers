@@ -2,23 +2,20 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import 'elm-pep';
-import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
-import MapBrowserEventType from './MapBrowserEventType.js';
-import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
-import {listen, unlistenByKey} from './events.js';
 import EventTarget from './events/Target.js';
-import PointerEventType from './pointer/EventType.js';
 import EventType from './events/EventType.js';
+import MapBrowserEvent from './MapBrowserEvent.js';
+import MapBrowserEventType from './MapBrowserEventType.js';
+import PointerEventType from './pointer/EventType.js';
+import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
+import {listen, unlistenByKey} from './events.js';
 
 class MapBrowserEventHandler extends EventTarget {
-
   /**
    * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
    * @param {number=} moveTolerance The minimal distance the pointer must travel to trigger a move.
    */
   constructor(map, moveTolerance) {
-
     super(map);
 
     /**
@@ -50,8 +47,9 @@ class MapBrowserEventHandler extends EventTarget {
      * @type {number}
      * @private
      */
-    this.moveTolerance_ = moveTolerance ?
-      moveTolerance * DEVICE_PIXEL_RATIO : DEVICE_PIXEL_RATIO;
+    this.moveTolerance_ = moveTolerance
+      ? moveTolerance * DEVICE_PIXEL_RATIO
+      : DEVICE_PIXEL_RATIO;
 
     /**
      * The most recent "down" type event (or null if none have occurred).
@@ -81,9 +79,12 @@ class MapBrowserEventHandler extends EventTarget {
      * @type {?import("./events.js").EventsKey}
      * @private
      */
-    this.pointerdownListenerKey_ = listen(element,
+    this.pointerdownListenerKey_ = listen(
+      element,
       PointerEventType.POINTERDOWN,
-      this.handlePointerDown_, this);
+      this.handlePointerDown_,
+      this
+    );
 
     /**
      * @type {PointerEvent}
@@ -95,17 +96,23 @@ class MapBrowserEventHandler extends EventTarget {
      * @type {?import("./events.js").EventsKey}
      * @private
      */
-    this.relayedListenerKey_ = listen(element,
+    this.relayedListenerKey_ = listen(
+      element,
       PointerEventType.POINTERMOVE,
-      this.relayEvent_, this);
+      this.relayEvent_,
+      this
+    );
 
     /**
      * @private
      */
     this.boundHandleTouchMove_ = this.handleTouchMove_.bind(this);
 
-    this.element_.addEventListener(EventType.TOUCHMOVE, this.boundHandleTouchMove_,
-      PASSIVE_EVENT_LISTENERS ? {passive: false} : false);
+    this.element_.addEventListener(
+      EventType.TOUCHMOVE,
+      this.boundHandleTouchMove_,
+      PASSIVE_EVENT_LISTENERS ? {passive: false} : false
+    );
   }
 
   /**
@@ -114,24 +121,36 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   emulateClick_(pointerEvent) {
-    let newEvent = new MapBrowserPointerEvent(
-      MapBrowserEventType.CLICK, this.map_, pointerEvent);
+    let newEvent = new MapBrowserEvent(
+      MapBrowserEventType.CLICK,
+      this.map_,
+      pointerEvent
+    );
     this.dispatchEvent(newEvent);
     if (this.clickTimeoutId_ !== undefined) {
       // double-click
       clearTimeout(this.clickTimeoutId_);
       this.clickTimeoutId_ = undefined;
-      newEvent = new MapBrowserPointerEvent(
-        MapBrowserEventType.DBLCLICK, this.map_, pointerEvent);
+      newEvent = new MapBrowserEvent(
+        MapBrowserEventType.DBLCLICK,
+        this.map_,
+        pointerEvent
+      );
       this.dispatchEvent(newEvent);
     } else {
       // click
-      this.clickTimeoutId_ = setTimeout(function() {
-        this.clickTimeoutId_ = undefined;
-        const newEvent = new MapBrowserPointerEvent(
-          MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
-        this.dispatchEvent(newEvent);
-      }.bind(this), 250);
+      this.clickTimeoutId_ = setTimeout(
+        function () {
+          this.clickTimeoutId_ = undefined;
+          const newEvent = new MapBrowserEvent(
+            MapBrowserEventType.SINGLECLICK,
+            this.map_,
+            pointerEvent
+          );
+          this.dispatchEvent(newEvent);
+        }.bind(this),
+        250
+      );
     }
   }
 
@@ -145,8 +164,10 @@ class MapBrowserEventHandler extends EventTarget {
   updateActivePointers_(pointerEvent) {
     const event = pointerEvent;
 
-    if (event.type == MapBrowserEventType.POINTERUP ||
-        event.type == MapBrowserEventType.POINTERCANCEL) {
+    if (
+      event.type == MapBrowserEventType.POINTERUP ||
+      event.type == MapBrowserEventType.POINTERCANCEL
+    ) {
       delete this.trackedTouches_[event.pointerId];
     } else if (event.type == MapBrowserEventType.POINTERDOWN) {
       this.trackedTouches_[event.pointerId] = true;
@@ -161,8 +182,11 @@ class MapBrowserEventHandler extends EventTarget {
    */
   handlePointerUp_(pointerEvent) {
     this.updateActivePointers_(pointerEvent);
-    const newEvent = new MapBrowserPointerEvent(
-      MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
+    const newEvent = new MapBrowserEvent(
+      MapBrowserEventType.POINTERUP,
+      this.map_,
+      pointerEvent
+    );
     this.dispatchEvent(newEvent);
 
     // We emulate click events on left mouse button click, touch contact, and pen
@@ -171,7 +195,11 @@ class MapBrowserEventHandler extends EventTarget {
     // See http://www.w3.org/TR/pointerevents/#button-states
     // We only fire click, singleclick, and doubleclick if nobody has called
     // event.stopPropagation() or event.preventDefault().
-    if (!newEvent.propagationStopped && !this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
+    if (
+      !newEvent.propagationStopped &&
+      !this.dragging_ &&
+      this.isMouseActionButton_(pointerEvent)
+    ) {
       this.emulateClick_(this.down_);
     }
 
@@ -200,20 +228,29 @@ class MapBrowserEventHandler extends EventTarget {
    */
   handlePointerDown_(pointerEvent) {
     this.updateActivePointers_(pointerEvent);
-    const newEvent = new MapBrowserPointerEvent(
-      MapBrowserEventType.POINTERDOWN, this.map_, pointerEvent);
+    const newEvent = new MapBrowserEvent(
+      MapBrowserEventType.POINTERDOWN,
+      this.map_,
+      pointerEvent
+    );
     this.dispatchEvent(newEvent);
 
     this.down_ = pointerEvent;
 
     if (this.dragListenerKeys_.length === 0) {
       this.dragListenerKeys_.push(
-        listen(document,
+        listen(
+          document,
           MapBrowserEventType.POINTERMOVE,
-          this.handlePointerMove_, this),
-        listen(document,
+          this.handlePointerMove_,
+          this
+        ),
+        listen(
+          document,
           MapBrowserEventType.POINTERUP,
-          this.handlePointerUp_, this),
+          this.handlePointerUp_,
+          this
+        ),
         /* Note that the listener for `pointercancel is set up on
          * `pointerEventHandler_` and not `documentPointerEventHandler_` like
          * the `pointerup` and `pointermove` listeners.
@@ -227,10 +264,26 @@ class MapBrowserEventHandler extends EventTarget {
          * only receive a `touchcancel` from `pointerEventHandler_`, because it is
          * only registered there.
          */
-        listen(this.element_,
+        listen(
+          this.element_,
           MapBrowserEventType.POINTERCANCEL,
-          this.handlePointerUp_, this)
+          this.handlePointerUp_,
+          this
+        )
       );
+      if (
+        this.element_.getRootNode &&
+        this.element_.getRootNode() !== document
+      ) {
+        this.dragListenerKeys_.push(
+          listen(
+            this.element_.getRootNode(),
+            MapBrowserEventType.POINTERUP,
+            this.handlePointerUp_,
+            this
+          )
+        );
+      }
     }
   }
 
@@ -245,16 +298,19 @@ class MapBrowserEventHandler extends EventTarget {
     // moved a significant distance.
     if (this.isMoving_(pointerEvent)) {
       this.dragging_ = true;
-      const newEvent = new MapBrowserPointerEvent(
-        MapBrowserEventType.POINTERDRAG, this.map_, pointerEvent,
-        this.dragging_);
+      const newEvent = new MapBrowserEvent(
+        MapBrowserEventType.POINTERDRAG,
+        this.map_,
+        pointerEvent,
+        this.dragging_
+      );
       this.dispatchEvent(newEvent);
     }
   }
 
   /**
    * Wrap and relay a pointer event.  Note that this requires that the type
-   * string for the MapBrowserPointerEvent matches the PointerEvent type.
+   * string for the MapBrowserEvent matches the PointerEvent type.
    * @param {PointerEvent} pointerEvent Pointer
    * event.
    * @private
@@ -262,8 +318,9 @@ class MapBrowserEventHandler extends EventTarget {
   relayEvent_(pointerEvent) {
     this.originalPointerMoveEvent_ = pointerEvent;
     const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
-    this.dispatchEvent(new MapBrowserPointerEvent(
-      pointerEvent.type, this.map_, pointerEvent, dragging));
+    this.dispatchEvent(
+      new MapBrowserEvent(pointerEvent.type, this.map_, pointerEvent, dragging)
+    );
   }
 
   /**
@@ -275,7 +332,12 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   handleTouchMove_(event) {
-    if (this.originalPointerMoveEvent_.defaultPrevented) {
+    // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
+    // may not be initialized yet when we get here on a platform without native pointer events.
+    if (
+      !this.originalPointerMoveEvent_ ||
+      this.originalPointerMoveEvent_.defaultPrevented
+    ) {
       event.preventDefault();
     }
   }
@@ -287,20 +349,26 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   isMoving_(pointerEvent) {
-    return this.dragging_ ||
-        Math.abs(pointerEvent.clientX - this.down_.clientX) > this.moveTolerance_ ||
-        Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_;
+    return (
+      this.dragging_ ||
+      Math.abs(pointerEvent.clientX - this.down_.clientX) >
+        this.moveTolerance_ ||
+      Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_
+    );
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     if (this.relayedListenerKey_) {
       unlistenByKey(this.relayedListenerKey_);
       this.relayedListenerKey_ = null;
     }
-    this.element_.removeEventListener(EventType.TOUCHMOVE, this.boundHandleTouchMove_);
+    this.element_.removeEventListener(
+      EventType.TOUCHMOVE,
+      this.boundHandleTouchMove_
+    );
 
     if (this.pointerdownListenerKey_) {
       unlistenByKey(this.pointerdownListenerKey_);
@@ -314,6 +382,5 @@ class MapBrowserEventHandler extends EventTarget {
     super.disposeInternal();
   }
 }
-
 
 export default MapBrowserEventHandler;

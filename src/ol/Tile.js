@@ -1,12 +1,11 @@
 /**
  * @module ol/Tile
  */
-import TileState from './TileState.js';
-import {easeIn} from './easing.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import TileState from './TileState.js';
 import {abstract} from './util.js';
-
+import {easeIn} from './easing.js';
 
 /**
  * A function that takes an {@link module:ol/Tile} for the tile and a
@@ -60,14 +59,12 @@ import {abstract} from './util.js';
  * @api
  */
 
-
 /**
  * @typedef {Object} Options
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @api
  */
-
 
 /**
  * @classdesc
@@ -76,10 +73,9 @@ import {abstract} from './util.js';
  * @abstract
  */
 class Tile extends EventTarget {
-
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @param {Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, opt_options) {
@@ -94,7 +90,7 @@ class Tile extends EventTarget {
 
     /**
      * @protected
-     * @type {TileState}
+     * @type {import("./TileState.js").default}
      */
     this.state = state;
 
@@ -126,7 +122,8 @@ class Tile extends EventTarget {
      * The duration for the opacity transition.
      * @type {number}
      */
-    this.transition_ = options.transition === undefined ? 250 : options.transition;
+    this.transition_ =
+      options.transition === undefined ? 250 : options.transition;
 
     /**
      * Lookup of start times for rendering transitions.  If the start time is
@@ -134,7 +131,6 @@ class Tile extends EventTarget {
      * @type {Object<string, number>}
      */
     this.transitionStarts_ = {};
-
   }
 
   /**
@@ -147,8 +143,7 @@ class Tile extends EventTarget {
   /**
    * Called by the tile cache when the tile is removed from the cache due to expiry
    */
-  release() {
-  }
+  release() {}
 
   /**
    * @return {string} Key.
@@ -232,7 +227,7 @@ class Tile extends EventTarget {
   }
 
   /**
-   * @return {TileState} State.
+   * @return {import("./TileState.js").default} State.
    */
   getState() {
     return this.state;
@@ -243,7 +238,7 @@ class Tile extends EventTarget {
    * it is important to set the state correctly to {@link module:ol/TileState~ERROR}
    * when the tile cannot be loaded. Otherwise the tile cannot be removed from
    * the tile queue and will block other requests.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @api
    */
   setState(state) {
@@ -284,7 +279,7 @@ class Tile extends EventTarget {
       return 1;
     }
 
-    const delta = time - start + (1000 / 60); // avoid rendering at 0
+    const delta = time - start + 1000 / 60; // avoid rendering at 0
     if (delta >= this.transition_) {
       return 1;
     }
@@ -315,6 +310,5 @@ class Tile extends EventTarget {
     }
   }
 }
-
 
 export default Tile;

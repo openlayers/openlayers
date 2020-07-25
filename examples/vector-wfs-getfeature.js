@@ -1,16 +1,15 @@
 import Map from '../src/ol/Map.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import XYZ from '../src/ol/source/XYZ.js';
+import {GeoJSON, WFS} from '../src/ol/format.js';
+import {Stroke, Style} from '../src/ol/style.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {
+  and as andFilter,
   equalTo as equalToFilter,
   like as likeFilter,
-  and as andFilter
 } from '../src/ol/format/filter.js';
-import {WFS, GeoJSON} from '../src/ol/format.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Stroke, Style} from '../src/ol/style.js';
-
 
 const vectorSource = new VectorSource();
 const vector = new VectorLayer({
@@ -18,16 +17,22 @@ const vector = new VectorLayer({
   style: new Style({
     stroke: new Stroke({
       color: 'rgba(0, 0, 255, 1.0)',
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
 const raster = new TileLayer({
-  source: new BingMaps({
-    imagerySet: 'Aerial',
-    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
-  })
+  source: new XYZ({
+    attributions: attributions,
+    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    maxZoom: 20,
+  }),
 });
 
 const map = new Map({
@@ -36,8 +41,8 @@ const map = new Map({
   view: new View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
-    zoom: 12
-  })
+    zoom: 12,
+  }),
 });
 
 // generate a GetFeature request
@@ -50,17 +55,19 @@ const featureRequest = new WFS().writeGetFeature({
   filter: andFilter(
     likeFilter('name', 'Mississippi*'),
     equalToFilter('waterway', 'riverbank')
-  )
+  ),
 });
 
 // then post the request and add the received features to a layer
 fetch('https://ahocevar.com/geoserver/wfs', {
   method: 'POST',
-  body: new XMLSerializer().serializeToString(featureRequest)
-}).then(function(response) {
-  return response.json();
-}).then(function(json) {
-  const features = new GeoJSON().readFeatures(json);
-  vectorSource.addFeatures(features);
-  map.getView().fit(vectorSource.getExtent());
-});
+  body: new XMLSerializer().serializeToString(featureRequest),
+})
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (json) {
+    const features = new GeoJSON().readFeatures(json);
+    vectorSource.addFeatures(features);
+    map.getView().fit(vectorSource.getExtent());
+  });

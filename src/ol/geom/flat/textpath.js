@@ -2,7 +2,7 @@
  * @module ol/geom/flat/textpath
  */
 import {lerp} from '../../math.js';
-
+import {rotate} from './transform.js';
 
 /**
  * @param {Array<number>} flatCoordinates Path to put text on.
@@ -16,15 +16,43 @@ import {lerp} from '../../math.js';
  * @param {function(string, string, Object<string, number>):number} measureAndCacheTextWidth Measure and cache text width.
  * @param {string} font The font.
  * @param {Object<string, number>} cache A cache of measured widths.
+ * @param {number} rotation Rotation to apply to the flatCoordinates to determine whether text needs to be reversed.
  * @return {Array<Array<*>>} The result array (or null if `maxAngle` was
  * exceeded). Entries of the array are x, y, anchorX, angle, chunk.
  */
 export function drawTextOnPath(
-  flatCoordinates, offset, end, stride, text, startM, maxAngle, scale, measureAndCacheTextWidth, font, cache) {
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  text,
+  startM,
+  maxAngle,
+  scale,
+  measureAndCacheTextWidth,
+  font,
+  cache,
+  rotation
+) {
   const result = [];
 
   // Keep text upright
-  const reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+  let reverse;
+  if (rotation) {
+    const rotatedCoordinates = rotate(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      rotation,
+      [flatCoordinates[offset], flatCoordinates[offset + 1]]
+    );
+    reverse =
+      rotatedCoordinates[0] >
+      rotatedCoordinates[rotatedCoordinates.length - stride];
+  } else {
+    reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+  }
 
   const numChars = text.length;
 
@@ -60,7 +88,8 @@ export function drawTextOnPath(
     if (previousAngle !== undefined) {
       let delta = angle - previousAngle;
       angleChanged = angleChanged || delta !== 0;
-      delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
+      delta +=
+        delta > Math.PI ? -2 * Math.PI : delta < -Math.PI ? 2 * Math.PI : 0;
       if (Math.abs(delta) > maxAngle) {
         return null;
       }
@@ -72,5 +101,7 @@ export function drawTextOnPath(
     result[index] = [x, y, charLength / 2, angle, char];
     startM += charLength;
   }
-  return angleChanged ? result : [[result[0][0], result[0][1], result[0][2], result[0][3], text]];
+  return angleChanged
+    ? result
+    : [[result[0][0], result[0][1], result[0][2], result[0][3], text]];
 }

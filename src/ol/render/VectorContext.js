@@ -87,7 +87,7 @@ class VectorContext {
   drawPolygon(polygonGeometry, feature) {}
 
   /**
-   * @param {import("../geom/Geometry.js").default|import("./Feature.js").default} geometry Geometry.
+   * @param {import("../geom/SimpleGeometry.js").default|import("./Feature.js").default} geometry Geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawText(geometry, feature) {}

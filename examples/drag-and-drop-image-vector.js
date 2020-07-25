@@ -1,22 +1,23 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {
+  DragAndDrop,
+  defaults as defaultInteractions,
+} from '../src/ol/interaction.js';
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
-import {defaults as defaultInteractions, DragAndDrop} from '../src/ol/interaction.js';
-import {VectorImage as VectorImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {XYZ, Vector as VectorSource} from '../src/ol/source.js';
+import {
+  Tile as TileLayer,
+  VectorImage as VectorImageLayer,
+} from '../src/ol/layer.js';
+import {Vector as VectorSource, XYZ} from '../src/ol/source.js';
 
 const dragAndDropInteraction = new DragAndDrop({
-  formatConstructors: [
-    GPX,
-    GeoJSON,
-    IGC,
-    KML,
-    TopoJSON
-  ]
+  formatConstructors: [GPX, GeoJSON, IGC, KML, TopoJSON],
 });
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
-const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const map = new Map({
@@ -25,31 +26,34 @@ const map = new Map({
     new TileLayer({
       source: new XYZ({
         attributions: attributions,
-        url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
-        maxZoom: 20
-      })
-    })
+        url:
+          'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+        maxZoom: 20,
+      }),
+    }),
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
-dragAndDropInteraction.on('addfeatures', function(event) {
+dragAndDropInteraction.on('addfeatures', function (event) {
   const vectorSource = new VectorSource({
-    features: event.features
+    features: event.features,
   });
-  map.addLayer(new VectorImageLayer({
-    source: vectorSource
-  }));
+  map.addLayer(
+    new VectorImageLayer({
+      source: vectorSource,
+    })
+  );
   map.getView().fit(vectorSource.getExtent());
 });
 
-const displayFeatureInfo = function(pixel) {
+const displayFeatureInfo = function (pixel) {
   const features = [];
-  map.forEachFeatureAtPixel(pixel, function(feature) {
+  map.forEachFeatureAtPixel(pixel, function (feature) {
     features.push(feature);
   });
   if (features.length > 0) {
@@ -64,7 +68,7 @@ const displayFeatureInfo = function(pixel) {
   }
 };
 
-map.on('pointermove', function(evt) {
+map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
@@ -72,6 +76,6 @@ map.on('pointermove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('click', function(evt) {
+map.on('click', function (evt) {
   displayFeatureInfo(evt.pixel);
 });

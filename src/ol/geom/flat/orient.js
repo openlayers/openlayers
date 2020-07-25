@@ -3,8 +3,10 @@
  */
 import {coordinates as reverseCoordinates} from './reverse.js';
 
-
 /**
+ * Is the linear ring oriented clockwise in a coordinate system with a bottom-left
+ * coordinate origin? For a coordinate system with a top-left coordinate origin,
+ * the ring's orientation is clockwise when this function returns false.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
@@ -12,21 +14,70 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @return {boolean} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
-  // http://tinyurl.com/clockwise-method
-  // https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
-  let edge = 0;
-  let x1 = flatCoordinates[end - stride];
-  let y1 = flatCoordinates[end - stride + 1];
-  for (; offset < end; offset += stride) {
-    const x2 = flatCoordinates[offset];
-    const y2 = flatCoordinates[offset + 1];
-    edge += (x2 - x1) * (y2 + y1);
-    x1 = x2;
-    y1 = y2;
+  // https://stackoverflow.com/a/1180256/2389327
+  // https://en.wikipedia.org/wiki/Curve_orientation#Orientation_of_a_simple_polygon
+
+  let firstVertexRepeated = true;
+  for (let i = 0; i < stride; ++i) {
+    if (flatCoordinates[offset + i] !== flatCoordinates[end - stride + i]) {
+      firstVertexRepeated = false;
+      break;
+    }
   }
-  return edge > 0;
+  if (firstVertexRepeated) {
+    end -= stride;
+  }
+  const iMinVertex = findCornerVertex(flatCoordinates, offset, end, stride);
+  // Orientation matrix:
+  //     [ 1  xa  ya ]
+  // O = | 1  xb  yb |
+  //     [ 1  xc  yc ]
+  let iPreviousVertex = iMinVertex - stride;
+  if (iPreviousVertex < offset) {
+    iPreviousVertex = end - stride;
+  }
+  let iNextVertex = iMinVertex + stride;
+  if (iNextVertex >= end) {
+    iNextVertex = offset;
+  }
+  const aX = flatCoordinates[iPreviousVertex];
+  const aY = flatCoordinates[iPreviousVertex + 1];
+  const bX = flatCoordinates[iMinVertex];
+  const bY = flatCoordinates[iMinVertex + 1];
+  const cX = flatCoordinates[iNextVertex];
+  const cY = flatCoordinates[iNextVertex + 1];
+  const determinant =
+    bX * cY + aX * bY + aY * cX - (aY * bX + bY * cX + aX * cY);
+
+  return determinant < 0;
 }
 
+// Find vertex along one edge of bounding box.
+// In this case, we find smallest y; in case of tie also smallest x.
+function findCornerVertex(flatCoordinates, offset, end, stride) {
+  let iMinVertex = -1;
+  let minY = Infinity;
+  let minXAtMinY = Infinity;
+  for (let i = offset; i < end; i += stride) {
+    const x = flatCoordinates[i];
+    const y = flatCoordinates[i + 1];
+    if (y > minY) {
+      continue;
+    }
+    if (y == minY) {
+      if (x >= minXAtMinY) {
+        continue;
+      }
+    }
+
+    // Minimum so far.
+    iMinVertex = i;
+    minY = y;
+    minXAtMinY = x;
+  }
+
+  return iMinVertex;
+}
 
 /**
  * Determines if linear rings are oriented.  By default, left-hand orientation
@@ -41,12 +92,22 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-export function linearRingsAreOriented(flatCoordinates, offset, ends, stride, opt_right) {
+export function linearRingsAreOriented(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  opt_right
+) {
   const right = opt_right !== undefined ? opt_right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const isClockwise = linearRingIsClockwise(
-      flatCoordinates, offset, end, stride);
+      flatCoordinates,
+      offset,
+      end,
+      stride
+    );
     if (i === 0) {
       if ((right && isClockwise) || (!right && !isClockwise)) {
         return false;
@@ -61,7 +122,6 @@ export function linearRingsAreOriented(flatCoordinates, offset, ends, stride, op
   return true;
 }
 
-
 /**
  * Determines if linear rings are oriented.  By default, left-hand orientation
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
@@ -75,11 +135,18 @@ export function linearRingsAreOriented(flatCoordinates, offset, ends, stride, op
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-export function linearRingssAreOriented(flatCoordinates, offset, endss, stride, opt_right) {
+export function linearRingssAreOriented(
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  opt_right
+) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
-    if (!linearRingsAreOriented(
-      flatCoordinates, offset, ends, stride, opt_right)) {
+    if (
+      !linearRingsAreOriented(flatCoordinates, offset, ends, stride, opt_right)
+    ) {
       return false;
     }
     if (ends.length) {
@@ -88,7 +155,6 @@ export function linearRingssAreOriented(flatCoordinates, offset, endss, stride, 
   }
   return true;
 }
-
 
 /**
  * Orient coordinates in a flat array of linear rings.  By default, rings
@@ -103,15 +169,26 @@ export function linearRingssAreOriented(flatCoordinates, offset, endss, stride, 
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
  */
-export function orientLinearRings(flatCoordinates, offset, ends, stride, opt_right) {
+export function orientLinearRings(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  opt_right
+) {
   const right = opt_right !== undefined ? opt_right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const isClockwise = linearRingIsClockwise(
-      flatCoordinates, offset, end, stride);
-    const reverse = i === 0 ?
-      (right && isClockwise) || (!right && !isClockwise) :
-      (right && !isClockwise) || (!right && isClockwise);
+      flatCoordinates,
+      offset,
+      end,
+      stride
+    );
+    const reverse =
+      i === 0
+        ? (right && isClockwise) || (!right && !isClockwise)
+        : (right && !isClockwise) || (!right && isClockwise);
     if (reverse) {
       reverseCoordinates(flatCoordinates, offset, end, stride);
     }
@@ -119,7 +196,6 @@ export function orientLinearRings(flatCoordinates, offset, ends, stride, opt_rig
   }
   return offset;
 }
-
 
 /**
  * Orient coordinates in a flat array of linear rings.  By default, rings
@@ -134,10 +210,21 @@ export function orientLinearRings(flatCoordinates, offset, ends, stride, opt_rig
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
  */
-export function orientLinearRingsArray(flatCoordinates, offset, endss, stride, opt_right) {
+export function orientLinearRingsArray(
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  opt_right
+) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     offset = orientLinearRings(
-      flatCoordinates, offset, endss[i], stride, opt_right);
+      flatCoordinates,
+      offset,
+      endss[i],
+      stride,
+      opt_right
+    );
   }
   return offset;
 }

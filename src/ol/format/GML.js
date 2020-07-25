@@ -15,7 +15,6 @@ import GML3 from './GML3.js';
  */
 const GML = GML3;
 
-
 /**
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
@@ -26,7 +25,6 @@ const GML = GML3;
  * @api
  */
 GML.prototype.writeFeatures;
-
 
 /**
  * Encode an array of features in the GML 3.1.1 format as an XML node.

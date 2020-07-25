@@ -2,7 +2,6 @@
  * @module ol/geom/flat/transform
  */
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -12,7 +11,14 @@
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed coordinates.
  */
-export function transform2D(flatCoordinates, offset, end, stride, transform, opt_dest) {
+export function transform2D(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  transform,
+  opt_dest
+) {
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {
@@ -27,7 +33,6 @@ export function transform2D(flatCoordinates, offset, end, stride, transform, opt
   return dest;
 }
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -38,7 +43,15 @@ export function transform2D(flatCoordinates, offset, end, stride, transform, opt
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed coordinates.
  */
-export function rotate(flatCoordinates, offset, end, stride, angle, anchor, opt_dest) {
+export function rotate(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  angle,
+  anchor,
+  opt_dest
+) {
   const dest = opt_dest ? opt_dest : [];
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
@@ -60,7 +73,6 @@ export function rotate(flatCoordinates, offset, end, stride, angle, anchor, opt_
   return dest;
 }
 
-
 /**
  * Scale the coordinates.
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -73,7 +85,16 @@ export function rotate(flatCoordinates, offset, end, stride, angle, anchor, opt_
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed coordinates.
  */
-export function scale(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_dest) {
+export function scale(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  sx,
+  sy,
+  anchor,
+  opt_dest
+) {
   const dest = opt_dest ? opt_dest : [];
   const anchorX = anchor[0];
   const anchorY = anchor[1];
@@ -93,7 +114,6 @@ export function scale(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_
   return dest;
 }
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -104,7 +124,15 @@ export function scale(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed coordinates.
  */
-export function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+export function translate(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  deltaX,
+  deltaY,
+  opt_dest
+) {
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {

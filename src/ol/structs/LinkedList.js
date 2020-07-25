@@ -2,7 +2,6 @@
  * @module ol/structs/LinkedList
  */
 
-
 /**
  * @typedef {Object} Item
  * @property {Item} [prev]
@@ -15,13 +14,11 @@
  * Creates an empty linked list structure.
  */
 class LinkedList {
-
   /**
    * @param {boolean=} opt_circular The last item is connected to the first one,
    * and the first item to the last one. Default is true.
    */
   constructor(opt_circular) {
-
     /**
      * @private
      * @type {Item|undefined}
@@ -51,7 +48,6 @@ class LinkedList {
      * @type {number}
      */
     this.length_ = 0;
-
   }
 
   /**
@@ -60,12 +56,11 @@ class LinkedList {
    * @param {?} data Item data.
    */
   insertItem(data) {
-
     /** @type {Item} */
     const item = {
       prev: undefined,
       next: undefined,
-      data: data
+      data: data,
     };
 
     const head = this.head_;
@@ -140,10 +135,10 @@ class LinkedList {
   }
 
   /**
-  * Sets the cursor to the last item, and returns the associated data.
-  *
-  * @return {?} Item data.
-  */
+   * Sets the cursor to the last item, and returns the associated data.
+   *
+   * @return {?} Item data.
+   */
   lastItem() {
     this.head_ = this.last_;
     if (this.head_) {
@@ -259,8 +254,6 @@ class LinkedList {
   getLength() {
     return this.length_;
   }
-
 }
-
 
 export default LinkedList;

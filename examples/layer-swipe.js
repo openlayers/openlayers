@@ -1,24 +1,25 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
 import {getRenderPixel} from '../src/ol/render.js';
 
 const osm = new TileLayer({
-  source: new OSM()
+  source: new OSM(),
 });
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
-const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const aerial = new TileLayer({
   source: new XYZ({
     attributions: attributions,
     url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
-    maxZoom: 20
-  })
+    maxZoom: 20,
+  }),
 });
 
 const map = new Map({
@@ -26,13 +27,13 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 const swipe = document.getElementById('swipe');
 
-aerial.on('prerender', function(event) {
+aerial.on('prerender', function (event) {
   const ctx = event.context;
   const mapSize = map.getSize();
   const width = mapSize[0] * (swipe.value / 100);
@@ -51,11 +52,15 @@ aerial.on('prerender', function(event) {
   ctx.clip();
 });
 
-aerial.on('postrender', function(event) {
+aerial.on('postrender', function (event) {
   const ctx = event.context;
   ctx.restore();
 });
 
-swipe.addEventListener('input', function() {
-  map.render();
-}, false);
+swipe.addEventListener(
+  'input',
+  function () {
+    map.render();
+  },
+  false
+);

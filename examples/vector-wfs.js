@@ -1,40 +1,48 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Map from '../src/ol/Map.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
+import XYZ from '../src/ol/source/XYZ.js';
+import {Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {bbox as bboxStrategy} from '../src/ol/loadingstrategy.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Stroke, Style} from '../src/ol/style.js';
-
 
 const vectorSource = new VectorSource({
   format: new GeoJSON(),
-  url: function(extent) {
-    return 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
-        'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-        'outputFormat=application/json&srsname=EPSG:3857&' +
-        'bbox=' + extent.join(',') + ',EPSG:3857';
+  url: function (extent) {
+    return (
+      'https://ahocevar.com/geoserver/wfs?service=WFS&' +
+      'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
+      'outputFormat=application/json&srsname=EPSG:3857&' +
+      'bbox=' +
+      extent.join(',') +
+      ',EPSG:3857'
+    );
   },
-  strategy: bboxStrategy
+  strategy: bboxStrategy,
 });
-
 
 const vector = new VectorLayer({
   source: vectorSource,
   style: new Style({
     stroke: new Stroke({
       color: 'rgba(0, 0, 255, 1.0)',
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
 const raster = new TileLayer({
-  source: new BingMaps({
-    imagerySet: 'Aerial',
-    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
-  })
+  source: new XYZ({
+    attributions: attributions,
+    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    maxZoom: 20,
+  }),
 });
 
 const map = new Map({
@@ -43,6 +51,6 @@ const map = new Map({
   view: new View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
-    zoom: 12
-  })
+    zoom: 12,
+  }),
 });

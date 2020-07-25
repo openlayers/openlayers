@@ -9,12 +9,14 @@
  * @returns {string} Formatted string
  */
 export function padNumber(number, width, opt_precision) {
-  const numberString = opt_precision !== undefined ? number.toFixed(opt_precision) : '' + number;
+  const numberString =
+    opt_precision !== undefined ? number.toFixed(opt_precision) : '' + number;
   let decimal = numberString.indexOf('.');
   decimal = decimal === -1 ? numberString.length : decimal;
-  return decimal > width ? numberString : new Array(1 + width - decimal).join('0') + numberString;
+  return decimal > width
+    ? numberString
+    : new Array(1 + width - decimal).join('0') + numberString;
 }
-
 
 /**
  * Adapted from https://github.com/omichelsen/compare-versions/blob/master/index.js

@@ -1,13 +1,12 @@
 /**
  * @module ol/control/Attribution
  */
-import {equals} from '../array.js';
 import Control from './Control.js';
-import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
-import {removeChildren, replaceNode} from '../dom.js';
 import EventType from '../events/EventType.js';
+import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
+import {equals} from '../array.js';
 import {inView} from '../layer/Layer.js';
-
+import {removeChildren, replaceNode} from '../dom.js';
 
 /**
  * @typedef {Object} Options
@@ -27,11 +26,10 @@ import {inView} from '../layer/Layer.js';
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {function(import("../MapEvent.js").default)} [render] Function called when
+ * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  */
-
 
 /**
  * @classdesc
@@ -43,18 +41,16 @@ import {inView} from '../layer/Layer.js';
  * @api
  */
 class Attribution extends Control {
-
   /**
    * @param {Options=} opt_options Attribution options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
       element: document.createElement('div'),
-      render: options.render || render,
-      target: options.target
+      render: options.render,
+      target: options.target,
     });
 
     /**
@@ -67,7 +63,8 @@ class Attribution extends Control {
      * @private
      * @type {boolean}
      */
-    this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
+    this.collapsed_ =
+      options.collapsed !== undefined ? options.collapsed : true;
 
     /**
      * @private
@@ -79,18 +76,21 @@ class Attribution extends Control {
      * @private
      * @type {boolean}
      */
-    this.collapsible_ = options.collapsible !== undefined ?
-      options.collapsible : true;
+    this.collapsible_ =
+      options.collapsible !== undefined ? options.collapsible : true;
 
     if (!this.collapsible_) {
       this.collapsed_ = false;
     }
 
-    const className = options.className !== undefined ? options.className : 'ol-attribution';
+    const className =
+      options.className !== undefined ? options.className : 'ol-attribution';
 
-    const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
+    const tipLabel =
+      options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
 
-    const collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
+    const collapseLabel =
+      options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
 
     if (typeof collapseLabel === 'string') {
       /**
@@ -116,19 +116,27 @@ class Attribution extends Control {
       this.label_ = label;
     }
 
-
-    const activeLabel = (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_;
+    const activeLabel =
+      this.collapsible_ && !this.collapsed_ ? this.collapseLabel_ : this.label_;
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.title = tipLabel;
     button.appendChild(activeLabel);
 
-    button.addEventListener(EventType.CLICK, this.handleClick_.bind(this), false);
+    button.addEventListener(
+      EventType.CLICK,
+      this.handleClick_.bind(this),
+      false
+    );
 
-    const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
-        (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
-        (this.collapsible_ ? '' : ' ol-uncollapsible');
+    const cssClasses =
+      className +
+      ' ' +
+      CLASS_UNSELECTABLE +
+      ' ' +
+      CLASS_CONTROL +
+      (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
+      (this.collapsible_ ? '' : ' ol-uncollapsible');
     const element = this.element;
     element.className = cssClasses;
     element.appendChild(this.ulElement_);
@@ -146,7 +154,6 @@ class Attribution extends Control {
      * @type {boolean}
      */
     this.renderedVisible_ = true;
-
   }
 
   /**
@@ -190,7 +197,10 @@ class Attribution extends Control {
         continue;
       }
 
-      if (!this.overrideCollapsible_ && source.getAttributionsCollapsible() === false) {
+      if (
+        !this.overrideCollapsible_ &&
+        source.getAttributionsCollapsible() === false
+      ) {
         this.setCollapsible(false);
       }
 
@@ -318,17 +328,15 @@ class Attribution extends Control {
   getCollapsed() {
     return this.collapsed_;
   }
+
+  /**
+   * Update the attribution element.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @override
+   */
+  render(mapEvent) {
+    this.updateElement_(mapEvent.frameState);
+  }
 }
-
-
-/**
- * Update the attribution element.
- * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {Attribution}
- */
-export function render(mapEvent) {
-  this.updateElement_(mapEvent.frameState);
-}
-
 
 export default Attribution;

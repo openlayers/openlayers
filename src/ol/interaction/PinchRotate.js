@@ -1,10 +1,11 @@
 /**
  * @module ol/interaction/PinchRotate
  */
+import PointerInteraction, {
+  centroid as centroidFromPointers,
+} from './Pointer.js';
 import {FALSE} from '../functions.js';
-import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 import {disable} from '../rotationconstraint.js';
-
 
 /**
  * @typedef {Object} Options
@@ -12,7 +13,6 @@ import {disable} from '../rotationconstraint.js';
  * milliseconds.
  * @property {number} [threshold=0.3] Minimal angle in radians to start a rotation.
  */
-
 
 /**
  * @classdesc
@@ -25,7 +25,6 @@ class PinchRotate extends PointerInteraction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
@@ -71,11 +70,11 @@ class PinchRotate extends PointerInteraction {
      * @type {number}
      */
     this.duration_ = options.duration !== undefined ? options.duration : 250;
-
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer drag events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let rotationDelta = 0.0;
@@ -86,13 +85,13 @@ class PinchRotate extends PointerInteraction {
     // angle between touches
     const angle = Math.atan2(
       touch1.clientY - touch0.clientY,
-      touch1.clientX - touch0.clientX);
+      touch1.clientX - touch0.clientX
+    );
 
     if (this.lastAngle_ !== undefined) {
       const delta = angle - this.lastAngle_;
       this.rotationDelta_ += delta;
-      if (!this.rotating_ &&
-          Math.abs(this.rotationDelta_) > this.threshold_) {
+      if (!this.rotating_ && Math.abs(this.rotationDelta_) > this.threshold_) {
         this.rotating_ = true;
       }
       rotationDelta = delta;
@@ -122,7 +121,9 @@ class PinchRotate extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
     if (this.targetPointers.length < 2) {
@@ -136,7 +137,9 @@ class PinchRotate extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length >= 2) {

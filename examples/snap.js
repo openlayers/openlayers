@@ -1,31 +1,31 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 const raster = new TileLayer({
-  source: new OSM()
+  source: new OSM(),
 });
 
 const vector = new VectorLayer({
   source: new VectorSource(),
   style: new Style({
     fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.2)'
+      color: 'rgba(255, 255, 255, 0.2)',
     }),
     stroke: new Stroke({
       color: '#ffcc33',
-      width: 2
+      width: 2,
     }),
     image: new CircleStyle({
       radius: 7,
       fill: new Fill({
-        color: '#ffcc33'
-      })
-    })
-  })
+        color: '#ffcc33',
+      }),
+    }),
+  }),
 });
 
 const map = new Map({
@@ -33,42 +33,42 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [-11000000, 4600000],
-    zoom: 4
-  })
+    zoom: 4,
+  }),
 });
 
 const ExampleModify = {
-  init: function() {
+  init: function () {
     this.select = new Select();
     map.addInteraction(this.select);
 
     this.modify = new Modify({
-      features: this.select.getFeatures()
+      features: this.select.getFeatures(),
     });
     map.addInteraction(this.modify);
 
     this.setEvents();
   },
-  setEvents: function() {
+  setEvents: function () {
     const selectedFeatures = this.select.getFeatures();
 
-    this.select.on('change:active', function() {
-      selectedFeatures.forEach(function(each) {
+    this.select.on('change:active', function () {
+      selectedFeatures.forEach(function (each) {
         selectedFeatures.remove(each);
       });
     });
   },
-  setActive: function(active) {
+  setActive: function (active) {
     this.select.setActive(active);
     this.modify.setActive(active);
-  }
+  },
 };
 ExampleModify.init();
 
 const optionsForm = document.getElementById('options-form');
 
 const ExampleDraw = {
-  init: function() {
+  init: function () {
     map.addInteraction(this.Point);
     this.Point.setActive(false);
     map.addInteraction(this.LineString);
@@ -80,24 +80,24 @@ const ExampleDraw = {
   },
   Point: new Draw({
     source: vector.getSource(),
-    type: 'Point'
+    type: 'Point',
   }),
   LineString: new Draw({
     source: vector.getSource(),
-    type: 'LineString'
+    type: 'LineString',
   }),
   Polygon: new Draw({
     source: vector.getSource(),
-    type: 'Polygon'
+    type: 'Polygon',
   }),
   Circle: new Draw({
     source: vector.getSource(),
-    type: 'Circle'
+    type: 'Circle',
   }),
-  getActive: function() {
+  getActive: function () {
     return this.activeType ? this[this.activeType].getActive() : false;
   },
-  setActive: function(active) {
+  setActive: function (active) {
     const type = optionsForm.elements['draw-type'].value;
     if (active) {
       this.activeType && this[this.activeType].setActive(false);
@@ -107,16 +107,15 @@ const ExampleDraw = {
       this.activeType && this[this.activeType].setActive(false);
       this.activeType = null;
     }
-  }
+  },
 };
 ExampleDraw.init();
-
 
 /**
  * Let user change the geometry type.
  * @param {Event} e Change event.
  */
-optionsForm.onchange = function(e) {
+optionsForm.onchange = function (e) {
   const type = e.target.getAttribute('name');
   const value = e.target.value;
   if (type == 'draw-type') {
@@ -139,6 +138,6 @@ ExampleModify.setActive(false);
 // in order for its map browser event handlers to be fired first. Its handlers
 // are responsible of doing the snapping.
 const snap = new Snap({
-  source: vector.getSource()
+  source: vector.getSource(),
 });
 map.addInteraction(snap);

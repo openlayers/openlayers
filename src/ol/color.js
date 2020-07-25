@@ -4,7 +4,6 @@
 import {assert} from './asserts.js';
 import {clamp} from './math.js';
 
-
 /**
  * A color represented as a short array [red, green, blue, alpha].
  * red, green, and blue should be integers in the range 0..255 inclusive.
@@ -14,7 +13,6 @@ import {clamp} from './math.js';
  * @api
  */
 
-
 /**
  * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
  * @const
@@ -23,7 +21,6 @@ import {clamp} from './math.js';
  */
 const HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
 
-
 /**
  * Regular expression for matching potential named color style strings.
  * @const
@@ -31,7 +28,6 @@ const HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
  * @private
  */
 const NAMED_COLOR_RE_ = /^([a-z]*)$|^hsla?\(.*\)$/i;
-
 
 /**
  * Return the color as an rgba string.
@@ -65,62 +61,58 @@ function fromNamed(color) {
   }
 }
 
-
 /**
  * @param {string} s String.
  * @return {Color} Color.
  */
-export const fromString = (
-  function() {
+export const fromString = (function () {
+  // We maintain a small cache of parsed strings.  To provide cheap LRU-like
+  // semantics, whenever the cache grows too large we simply delete an
+  // arbitrary 25% of the entries.
 
-    // We maintain a small cache of parsed strings.  To provide cheap LRU-like
-    // semantics, whenever the cache grows too large we simply delete an
-    // arbitrary 25% of the entries.
+  /**
+   * @const
+   * @type {number}
+   */
+  const MAX_CACHE_SIZE = 1024;
 
+  /**
+   * @type {Object<string, Color>}
+   */
+  const cache = {};
+
+  /**
+   * @type {number}
+   */
+  let cacheSize = 0;
+
+  return (
     /**
-     * @const
-     * @type {number}
+     * @param {string} s String.
+     * @return {Color} Color.
      */
-    const MAX_CACHE_SIZE = 1024;
-
-    /**
-     * @type {Object<string, Color>}
-     */
-    const cache = {};
-
-    /**
-     * @type {number}
-     */
-    let cacheSize = 0;
-
-    return (
-      /**
-       * @param {string} s String.
-       * @return {Color} Color.
-       */
-      function(s) {
-        let color;
-        if (cache.hasOwnProperty(s)) {
-          color = cache[s];
-        } else {
-          if (cacheSize >= MAX_CACHE_SIZE) {
-            let i = 0;
-            for (const key in cache) {
-              if ((i++ & 3) === 0) {
-                delete cache[key];
-                --cacheSize;
-              }
+    function (s) {
+      let color;
+      if (cache.hasOwnProperty(s)) {
+        color = cache[s];
+      } else {
+        if (cacheSize >= MAX_CACHE_SIZE) {
+          let i = 0;
+          for (const key in cache) {
+            if ((i++ & 3) === 0) {
+              delete cache[key];
+              --cacheSize;
             }
           }
-          color = fromStringInternal_(s);
-          cache[s] = color;
-          ++cacheSize;
         }
-        return color;
+        color = fromStringInternal_(s);
+        cache[s] = color;
+        ++cacheSize;
       }
-    );
-
-  })();
+      return color;
+    }
+  );
+})();
 
 /**
  * Return the color as an array. This function maintains a cache of calculated
@@ -149,7 +141,8 @@ function fromStringInternal_(s) {
     s = fromNamed(s);
   }
 
-  if (HEX_COLOR_RE_.exec(s)) { // hex
+  if (HEX_COLOR_RE_.exec(s)) {
+    // hex
     const n = s.length - 1; // number of hex digits
     let d; // number of digits per channel
     if (n <= 4) {
@@ -175,10 +168,12 @@ function fromStringInternal_(s) {
       }
     }
     color = [r, g, b, a / 255];
-  } else if (s.indexOf('rgba(') == 0) { // rgba()
+  } else if (s.indexOf('rgba(') == 0) {
+    // rgba()
     color = s.slice(5, -1).split(',').map(Number);
     normalize(color);
-  } else if (s.indexOf('rgb(') == 0) { // rgb()
+  } else if (s.indexOf('rgb(') == 0) {
+    // rgb()
     color = s.slice(4, -1).split(',').map(Number);
     color.push(1);
     normalize(color);
@@ -187,7 +182,6 @@ function fromStringInternal_(s) {
   }
   return color;
 }
-
 
 /**
  * TODO this function is only used in the test, we probably shouldn't export it
@@ -201,7 +195,6 @@ export function normalize(color) {
   color[3] = clamp(color[3], 0, 1);
   return color;
 }
-
 
 /**
  * @param {Color} color Color.
@@ -232,5 +225,7 @@ export function isStringColor(s) {
   if (NAMED_COLOR_RE_.test(s)) {
     s = fromNamed(s);
   }
-  return HEX_COLOR_RE_.test(s) || s.indexOf('rgba(') === 0 || s.indexOf('rgb(') === 0;
+  return (
+    HEX_COLOR_RE_.test(s) || s.indexOf('rgba(') === 0 || s.indexOf('rgb(') === 0
+  );
 }

@@ -1,0 +1,5 @@
+/* Reset font size changed by Mapbox CSS */
+.map {
+  font-size: medium;
+  font-family: 'Quattrocento Sans', sans-serif;
+}

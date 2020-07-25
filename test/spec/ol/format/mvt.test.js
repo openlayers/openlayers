@@ -1,47 +1,50 @@
 import Feature from '../../../../src/ol/Feature.js';
 import MVT from '../../../../src/ol/format/MVT.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import RenderFeature from '../../../../src/ol/render/Feature.js';
 
-where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
-
+where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
   let data;
-  beforeEach(function(done) {
+  beforeEach(function (done) {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'spec/ol/data/14-8938-5680.vector.pbf');
     xhr.responseType = 'arraybuffer';
-    xhr.onload = function() {
+    xhr.onload = function () {
       data = xhr.response;
       done();
     };
     xhr.send();
   });
 
-  describe('#readFeatures', function() {
-
+  describe('#readFeatures', function () {
     const options = {
       featureProjection: 'EPSG:3857',
-      extent: [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608]
+      extent: [
+        1824704.739223726,
+        6141868.096770482,
+        1827150.7241288517,
+        6144314.081675608,
+      ],
     };
 
-    it('uses ol.render.Feature as feature class by default', function() {
+    it('uses ol.render.Feature as feature class by default', function () {
       const format = new MVT({layers: ['water']});
       const features = format.readFeatures(data, options);
       expect(features[0]).to.be.a(RenderFeature);
     });
 
-    it('parses only specified layers', function() {
+    it('parses only specified layers', function () {
       const format = new MVT({layers: ['water']});
       const features = format.readFeatures(data, options);
       expect(features.length).to.be(10);
     });
 
-    it('parses geometries correctly', function() {
+    it('parses geometries correctly', function () {
       const format = new MVT({
         featureClass: Feature,
-        layers: ['poi_label']
+        layers: ['poi_label'],
       });
       let geometry;
 
@@ -62,27 +65,27 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       expect(geometry.getCoordinates()[1][0]).to.eql([4160, 3489]);
     });
 
-    it('parses id property', function() {
+    it('parses id property', function () {
       // ol.Feature
       let format = new MVT({
         featureClass: Feature,
-        layers: ['building']
+        layers: ['building'],
       });
       let features = format.readFeatures(data, options);
       expect(features[0].getId()).to.be(2);
       // ol.render.Feature
       format = new MVT({
-        layers: ['building']
+        layers: ['building'],
       });
       features = format.readFeatures(data, options);
       expect(features[0].getId()).to.be(2);
     });
 
-    it('accepts custom idProperty', function() {
+    it('accepts custom idProperty', function () {
       const format = new MVT({
         featureClass: Feature,
         layers: ['poi_label'],
-        idProperty: 'osm_id'
+        idProperty: 'osm_id',
       });
       const features = format.readFeatures(data, options);
 
@@ -91,10 +94,10 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       expect(first.get('osm_id')).to.be(undefined);
     });
 
-    it('accepts custom idProperty (render features)', function() {
+    it('accepts custom idProperty (render features)', function () {
       const format = new MVT({
         layers: ['poi_label'],
-        idProperty: 'osm_id'
+        idProperty: 'osm_id',
       });
 
       const features = format.readFeatures(data, options);
@@ -104,10 +107,10 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       expect(first.get('osm_id')).to.be(undefined);
     });
 
-    it('works if you provide a bogus idProperty', function() {
+    it('works if you provide a bogus idProperty', function () {
       const format = new MVT({
         layers: ['poi_label'],
-        idProperty: 'bogus'
+        idProperty: 'bogus',
       });
 
       const features = format.readFeatures(data, options);
@@ -115,35 +118,42 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       const first = features[0];
       expect(first.getId()).to.be(undefined);
     });
-
   });
-
 });
 
-describe('ol.format.MVT', function() {
-
+describe('ol.format.MVT', function () {
   const options = {
     featureProjection: 'EPSG:3857',
-    extent: [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608]
+    extent: [
+      1824704.739223726,
+      6141868.096770482,
+      1827150.7241288517,
+      6144314.081675608,
+    ],
   };
 
-  describe('#createFeature_', function() {
-    it('accepts a geometryName', function() {
+  describe('#createFeature_', function () {
+    it('accepts a geometryName', function () {
       const format = new MVT({
         featureClass: Feature,
-        geometryName: 'myGeom'
+        geometryName: 'myGeom',
       });
       const rawFeature = {
         id: 1,
         properties: {
-          geometry: 'foo'
+          geometry: 'foo',
         },
         type: 1,
         layer: {
-          name: 'layer1'
-        }
+          name: 'layer1',
+        },
       };
-      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
+      format.readRawGeometry_ = function (
+        {},
+        rawFeature,
+        flatCoordinates,
+        ends
+      ) {
         flatCoordinates.push(0, 0);
         ends.push(2);
       };
@@ -154,19 +164,24 @@ describe('ol.format.MVT', function() {
       expect(feature.get('geometry')).to.be('foo');
     });
 
-    it('detects a Polygon', function() {
+    it('detects a Polygon', function () {
       const format = new MVT({
-        featureClass: Feature
+        featureClass: Feature,
       });
       const rawFeature = {
         type: 3,
         properties: {},
         layer: {
-          name: 'layer1'
-        }
+          name: 'layer1',
+        },
       };
-      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
-        flatCoordinates.push(0, 0, 3, 0, 3, 3, 3, 0, 0, 0);
+      format.readRawGeometry_ = function (
+        {},
+        rawFeature,
+        flatCoordinates,
+        ends
+      ) {
+        flatCoordinates.push(0, 0, 3, 0, 3, 3, 0, 3, 0, 0);
         flatCoordinates.push(1, 1, 1, 2, 2, 2, 2, 1, 1, 1);
         ends.push(10, 20);
       };
@@ -175,20 +190,25 @@ describe('ol.format.MVT', function() {
       expect(geometry).to.be.a(Polygon);
     });
 
-    it('detects a MultiPolygon', function() {
+    it('detects a MultiPolygon', function () {
       const format = new MVT({
-        featureClass: Feature
+        featureClass: Feature,
       });
       const rawFeature = {
         type: 3,
         properties: {},
         layer: {
-          name: 'layer1'
-        }
+          name: 'layer1',
+        },
       };
-      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
-        flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
-        flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
+      format.readRawGeometry_ = function (
+        {},
+        rawFeature,
+        flatCoordinates,
+        ends
+      ) {
+        flatCoordinates.push(0, 0, 1, 0, 1, 1, 0, 1, 0, 0);
+        flatCoordinates.push(1, 1, 2, 1, 2, 2, 1, 2, 1, 1);
         ends.push(10, 20);
       };
       const feature = format.createFeature_({}, rawFeature);
@@ -196,20 +216,25 @@ describe('ol.format.MVT', function() {
       expect(geometry).to.be.a(MultiPolygon);
     });
 
-    it('creates ol.render.Feature instances', function() {
+    it('creates ol.render.Feature instances', function () {
       const format = new MVT();
       const rawFeature = {
         type: 3,
         properties: {
-          foo: 'bar'
+          foo: 'bar',
         },
         layer: {
-          name: 'layer1'
-        }
+          name: 'layer1',
+        },
       };
       let createdFlatCoordinates;
       let createdEnds;
-      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
+      format.readRawGeometry_ = function (
+        {},
+        rawFeature,
+        flatCoordinates,
+        ends
+      ) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
         createdFlatCoordinates = flatCoordinates;
@@ -218,14 +243,16 @@ describe('ol.format.MVT', function() {
       };
       format.dataProjection.setExtent([0, 0, 4096, 4096]);
       format.dataProjection.setWorldExtent(options.extent);
-      const feature = format.createFeature_({}, rawFeature, format.adaptOptions(options));
+      const feature = format.createFeature_(
+        {},
+        rawFeature,
+        format.adaptOptions(options)
+      );
       expect(feature).to.be.a(RenderFeature);
       expect(feature.getType()).to.be('Polygon');
       expect(feature.getFlatCoordinates()).to.equal(createdFlatCoordinates);
       expect(feature.getEnds()).to.equal(createdEnds);
       expect(feature.get('foo')).to.be('bar');
     });
-
   });
-
 });

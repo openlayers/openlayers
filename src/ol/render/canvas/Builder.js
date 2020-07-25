@@ -1,18 +1,28 @@
 /**
  * @module ol/render/canvas/Builder
  */
-import {equals, reverseSubArray} from '../../array.js';
+import CanvasInstruction from './Instruction.js';
+import GeometryType from '../../geom/GeometryType.js';
+import Relationship from '../../extent/Relationship.js';
+import VectorContext from '../VectorContext.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship} from '../../extent.js';
-import Relationship from '../../extent/Relationship.js';
-import GeometryType from '../../geom/GeometryType.js';
-import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
-import VectorContext from '../VectorContext.js';
-import {defaultFillStyle, defaultStrokeStyle,
-  defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
-  defaultLineDash, defaultLineCap} from '../canvas.js';
-import CanvasInstruction from './Instruction.js';
-
+import {
+  defaultFillStyle,
+  defaultLineCap,
+  defaultLineDash,
+  defaultLineDashOffset,
+  defaultLineJoin,
+  defaultLineWidth,
+  defaultMiterLimit,
+  defaultStrokeStyle,
+} from '../canvas.js';
+import {equals, reverseSubArray} from '../../array.js';
+import {
+  inflateCoordinates,
+  inflateCoordinatesArray,
+  inflateMultiCoordinatesArray,
+} from '../../geom/flat/inflate.js';
 
 /**
  * @typedef {Object} SerializableInstructions
@@ -23,7 +33,6 @@ import CanvasInstruction from './Instruction.js';
  * @property {!Object<string, import("../canvas.js").FillState>} [fillStates] The fill states (decluttering).
  * @property {!Object<string, import("../canvas.js").StrokeState>} [strokeStates] The stroke states (decluttering).
  */
-
 
 class CanvasBuilder extends VectorContext {
   /**
@@ -114,7 +123,6 @@ class CanvasBuilder extends VectorContext {
      * @type {import("../canvas.js").FillStrokeState}
      */
     this.state = /** @type {import("../canvas.js").FillStrokeState} */ ({});
-
   }
 
   /**
@@ -124,9 +132,11 @@ class CanvasBuilder extends VectorContext {
    */
   applyPixelRatio(dashArray) {
     const pixelRatio = this.pixelRatio;
-    return pixelRatio == 1 ? dashArray : dashArray.map(function(dash) {
-      return dash * pixelRatio;
-    });
+    return pixelRatio == 1
+      ? dashArray
+      : dashArray.map(function (dash) {
+          return dash * pixelRatio;
+        });
   }
 
   /**
@@ -139,8 +149,14 @@ class CanvasBuilder extends VectorContext {
    * @protected
    * @return {number} My end.
    */
-  appendFlatCoordinates(flatCoordinates, offset, end, stride, closed, skipFirst) {
-
+  appendFlatCoordinates(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    closed,
+    skipFirst
+  ) {
     let myEnd = this.coordinates.length;
     const extent = this.getBufferedMaxExtent();
     if (skipFirst) {
@@ -195,7 +211,14 @@ class CanvasBuilder extends VectorContext {
   drawCustomCoordinates_(flatCoordinates, offset, ends, stride, builderEnds) {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
-      const builderEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
+      const builderEnd = this.appendFlatCoordinates(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        false,
+        false
+      );
       builderEnds.push(builderEnd);
       offset = end;
     }
@@ -203,7 +226,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @inheritDoc.
+   * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {Function} renderer Renderer.
    */
   drawCustom(geometry, feature, renderer) {
     this.beginGeometry(geometry, feature);
@@ -213,40 +238,85 @@ class CanvasBuilder extends VectorContext {
     let flatCoordinates, builderEnd, builderEnds, builderEndss;
     let offset;
     if (type == GeometryType.MULTI_POLYGON) {
-      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry);
-      flatCoordinates = geometry.getOrientedFlatCoordinates();
+      flatCoordinates = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getOrientedFlatCoordinates();
       builderEndss = [];
-      const endss = geometry.getEndss();
+      const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
       offset = 0;
       for (let i = 0, ii = endss.length; i < ii; ++i) {
         const myEnds = [];
-        offset = this.drawCustomCoordinates_(flatCoordinates, offset, endss[i], stride, myEnds);
+        offset = this.drawCustomCoordinates_(
+          flatCoordinates,
+          offset,
+          endss[i],
+          stride,
+          myEnds
+        );
         builderEndss.push(myEnds);
       }
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        builderBegin, builderEndss, geometry, renderer, inflateMultiCoordinatesArray]);
-    } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
+      this.instructions.push([
+        CanvasInstruction.CUSTOM,
+        builderBegin,
+        builderEndss,
+        geometry,
+        renderer,
+        inflateMultiCoordinatesArray,
+      ]);
+    } else if (
+      type == GeometryType.POLYGON ||
+      type == GeometryType.MULTI_LINE_STRING
+    ) {
       builderEnds = [];
-      flatCoordinates = (type == GeometryType.POLYGON) ?
-        /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates() :
-        geometry.getFlatCoordinates();
-      offset = this.drawCustomCoordinates_(flatCoordinates, 0,
+      flatCoordinates =
+        type == GeometryType.POLYGON
+          ? /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates()
+          : geometry.getFlatCoordinates();
+      offset = this.drawCustomCoordinates_(
+        flatCoordinates,
+        0,
         /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (geometry).getEnds(),
-        stride, builderEnds);
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        builderBegin, builderEnds, geometry, renderer, inflateCoordinatesArray]);
-    } else if (type == GeometryType.LINE_STRING || type == GeometryType.MULTI_POINT) {
+        stride,
+        builderEnds
+      );
+      this.instructions.push([
+        CanvasInstruction.CUSTOM,
+        builderBegin,
+        builderEnds,
+        geometry,
+        renderer,
+        inflateCoordinatesArray,
+      ]);
+    } else if (
+      type == GeometryType.LINE_STRING ||
+      type == GeometryType.MULTI_POINT
+    ) {
       flatCoordinates = geometry.getFlatCoordinates();
       builderEnd = this.appendFlatCoordinates(
-        flatCoordinates, 0, flatCoordinates.length, stride, false, false);
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        builderBegin, builderEnd, geometry, renderer, inflateCoordinates]);
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        stride,
+        false,
+        false
+      );
+      this.instructions.push([
+        CanvasInstruction.CUSTOM,
+        builderBegin,
+        builderEnd,
+        geometry,
+        renderer,
+        inflateCoordinates,
+      ]);
     } else if (type == GeometryType.POINT) {
       flatCoordinates = geometry.getFlatCoordinates();
       this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
       builderEnd = this.coordinates.length;
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        builderBegin, builderEnd, geometry, renderer]);
+      this.instructions.push([
+        CanvasInstruction.CUSTOM,
+        builderBegin,
+        builderEnd,
+        geometry,
+        renderer,
+      ]);
     }
     this.endGeometry(feature);
   }
@@ -258,9 +328,19 @@ class CanvasBuilder extends VectorContext {
    */
   beginGeometry(geometry, feature) {
     const extent = geometry.getExtent();
-    this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0, extent];
+    this.beginGeometryInstruction1_ = [
+      CanvasInstruction.BEGIN_GEOMETRY,
+      feature,
+      0,
+      extent,
+    ];
     this.instructions.push(this.beginGeometryInstruction1_);
-    this.beginGeometryInstruction2_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0, extent];
+    this.beginGeometryInstruction2_ = [
+      CanvasInstruction.BEGIN_GEOMETRY,
+      feature,
+      0,
+      extent,
+    ];
     this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
   }
 
@@ -271,7 +351,7 @@ class CanvasBuilder extends VectorContext {
     return {
       instructions: this.instructions,
       hitDetectionInstructions: this.hitDetectionInstructions,
-      coordinates: this.coordinates
+      coordinates: this.coordinates,
     };
   }
 
@@ -290,7 +370,7 @@ class CanvasBuilder extends VectorContext {
     let begin = -1;
     for (i = 0; i < n; ++i) {
       instruction = hitDetectionInstructions[i];
-      type = /** @type {CanvasInstruction} */ (instruction[0]);
+      type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       if (type == CanvasInstruction.END_GEOMETRY) {
         begin = i;
       } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
@@ -302,39 +382,48 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
+   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
     const state = this.state;
     if (fillStyle) {
       const fillStyleColor = fillStyle.getColor();
-      state.fillStyle = asColorLike(fillStyleColor ?
-        fillStyleColor : defaultFillStyle);
+      state.fillStyle = asColorLike(
+        fillStyleColor ? fillStyleColor : defaultFillStyle
+      );
     } else {
       state.fillStyle = undefined;
     }
     if (strokeStyle) {
       const strokeStyleColor = strokeStyle.getColor();
-      state.strokeStyle = asColorLike(strokeStyleColor ?
-        strokeStyleColor : defaultStrokeStyle);
+      state.strokeStyle = asColorLike(
+        strokeStyleColor ? strokeStyleColor : defaultStrokeStyle
+      );
       const strokeStyleLineCap = strokeStyle.getLineCap();
-      state.lineCap = strokeStyleLineCap !== undefined ?
-        strokeStyleLineCap : defaultLineCap;
+      state.lineCap =
+        strokeStyleLineCap !== undefined ? strokeStyleLineCap : defaultLineCap;
       const strokeStyleLineDash = strokeStyle.getLineDash();
-      state.lineDash = strokeStyleLineDash ?
-        strokeStyleLineDash.slice() : defaultLineDash;
+      state.lineDash = strokeStyleLineDash
+        ? strokeStyleLineDash.slice()
+        : defaultLineDash;
       const strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
-      state.lineDashOffset = strokeStyleLineDashOffset ?
-        strokeStyleLineDashOffset : defaultLineDashOffset;
+      state.lineDashOffset = strokeStyleLineDashOffset
+        ? strokeStyleLineDashOffset
+        : defaultLineDashOffset;
       const strokeStyleLineJoin = strokeStyle.getLineJoin();
-      state.lineJoin = strokeStyleLineJoin !== undefined ?
-        strokeStyleLineJoin : defaultLineJoin;
+      state.lineJoin =
+        strokeStyleLineJoin !== undefined
+          ? strokeStyleLineJoin
+          : defaultLineJoin;
       const strokeStyleWidth = strokeStyle.getWidth();
-      state.lineWidth = strokeStyleWidth !== undefined ?
-        strokeStyleWidth : defaultLineWidth;
+      state.lineWidth =
+        strokeStyleWidth !== undefined ? strokeStyleWidth : defaultLineWidth;
       const strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-      state.miterLimit = strokeStyleMiterLimit !== undefined ?
-        strokeStyleMiterLimit : defaultMiterLimit;
+      state.miterLimit =
+        strokeStyleMiterLimit !== undefined
+          ? strokeStyleMiterLimit
+          : defaultMiterLimit;
 
       if (state.lineWidth > this.maxLineWidth) {
         this.maxLineWidth = state.lineWidth;
@@ -381,9 +470,13 @@ class CanvasBuilder extends VectorContext {
   createStroke(state) {
     return [
       CanvasInstruction.SET_STROKE_STYLE,
-      state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
-      state.lineJoin, state.miterLimit,
-      this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
+      state.strokeStyle,
+      state.lineWidth * this.pixelRatio,
+      state.lineCap,
+      state.lineJoin,
+      state.miterLimit,
+      this.applyPixelRatio(state.lineDash),
+      state.lineDashOffset * this.pixelRatio,
     ];
   }
 
@@ -413,13 +506,16 @@ class CanvasBuilder extends VectorContext {
     const lineJoin = state.lineJoin;
     const lineWidth = state.lineWidth;
     const miterLimit = state.miterLimit;
-    if (state.currentStrokeStyle != strokeStyle ||
-        state.currentLineCap != lineCap ||
-        (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
-        state.currentLineDashOffset != lineDashOffset ||
-        state.currentLineJoin != lineJoin ||
-        state.currentLineWidth != lineWidth ||
-        state.currentMiterLimit != miterLimit) {
+    if (
+      state.currentStrokeStyle != strokeStyle ||
+      state.currentLineCap != lineCap ||
+      (lineDash != state.currentLineDash &&
+        !equals(state.currentLineDash, lineDash)) ||
+      state.currentLineDashOffset != lineDashOffset ||
+      state.currentLineJoin != lineJoin ||
+      state.currentLineWidth != lineWidth ||
+      state.currentMiterLimit != miterLimit
+    ) {
       if (strokeStyle !== undefined) {
         applyStroke.call(this, state);
       }
@@ -457,13 +553,12 @@ class CanvasBuilder extends VectorContext {
     if (!this.bufferedMaxExtent_) {
       this.bufferedMaxExtent_ = clone(this.maxExtent);
       if (this.maxLineWidth > 0) {
-        const width = this.resolution * (this.maxLineWidth + 1) / 2;
+        const width = (this.resolution * (this.maxLineWidth + 1)) / 2;
         buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
       }
     }
     return this.bufferedMaxExtent_;
   }
 }
-
 
 export default CanvasBuilder;

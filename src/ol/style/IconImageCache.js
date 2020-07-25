@@ -9,29 +9,28 @@ import {asString} from '../color.js';
  */
 class IconImageCache {
   constructor() {
-
     /**
-    * @type {!Object<string, import("./IconImage.js").default>}
-    * @private
-    */
+     * @type {!Object<string, import("./IconImage.js").default>}
+     * @private
+     */
     this.cache_ = {};
 
     /**
-    * @type {number}
-    * @private
-    */
+     * @type {number}
+     * @private
+     */
     this.cacheSize_ = 0;
 
     /**
-    * @type {number}
-    * @private
-    */
+     * @type {number}
+     * @private
+     */
     this.maxCacheSize_ = 32;
   }
 
   /**
-  * FIXME empty description for jsdoc
-  */
+   * FIXME empty description for jsdoc
+   */
   clear() {
     this.cache_ = {};
     this.cacheSize_ = 0;
@@ -45,8 +44,8 @@ class IconImageCache {
   }
 
   /**
-  * FIXME empty description for jsdoc
-  */
+   * FIXME empty description for jsdoc
+   */
   expire() {
     if (this.canExpireCache()) {
       let i = 0;
@@ -61,22 +60,22 @@ class IconImageCache {
   }
 
   /**
-  * @param {string} src Src.
-  * @param {?string} crossOrigin Cross origin.
-  * @param {import("../color.js").Color} color Color.
-  * @return {import("./IconImage.js").default} Icon image.
-  */
+   * @param {string} src Src.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {import("../color.js").Color} color Color.
+   * @return {import("./IconImage.js").default} Icon image.
+   */
   get(src, crossOrigin, color) {
     const key = getKey(src, crossOrigin, color);
     return key in this.cache_ ? this.cache_[key] : null;
   }
 
   /**
-  * @param {string} src Src.
-  * @param {?string} crossOrigin Cross origin.
-  * @param {import("../color.js").Color} color Color.
-  * @param {import("./IconImage.js").default} iconImage Icon image.
-  */
+   * @param {string} src Src.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {import("../color.js").Color} color Color.
+   * @param {import("./IconImage.js").default} iconImage Icon image.
+   */
   set(src, crossOrigin, color, iconImage) {
     const key = getKey(src, crossOrigin, color);
     this.cache_[key] = iconImage;
@@ -84,18 +83,17 @@ class IconImageCache {
   }
 
   /**
-  * Set the cache size of the icon cache. Default is `32`. Change this value when
-  * your map uses more than 32 different icon images and you are not caching icon
-  * styles on the application level.
-  * @param {number} maxCacheSize Cache max size.
-  * @api
-  */
+   * Set the cache size of the icon cache. Default is `32`. Change this value when
+   * your map uses more than 32 different icon images and you are not caching icon
+   * styles on the application level.
+   * @param {number} maxCacheSize Cache max size.
+   * @api
+   */
   setSize(maxCacheSize) {
     this.maxCacheSize_ = maxCacheSize;
     this.expire();
   }
 }
-
 
 /**
  * @param {string} src Src.
@@ -108,9 +106,7 @@ function getKey(src, crossOrigin, color) {
   return crossOrigin + ':' + src + ':' + colorString;
 }
 
-
 export default IconImageCache;
-
 
 /**
  * The {@link module:ol/style/IconImageCache~IconImageCache} for

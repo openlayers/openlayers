@@ -1,36 +1,33 @@
-.mapcontainer {
-  position: relative;
-}
 
-div.ol-custom-overviewmap,
-div.ol-custom-overviewmap.ol-uncollapsible {
+.map .ol-custom-overviewmap,
+.map .ol-custom-overviewmap.ol-uncollapsible {
   bottom: auto;
   left: auto;
   right: 0;
   top: 0;
 }
 
-div.ol-custom-overviewmap:not(.ol-collapsed)  {
+.map .ol-custom-overviewmap:not(.ol-collapsed)  {
   border: 1px solid black;
 }
 
-div.ol-custom-overviewmap div.ol-overviewmap-map {
+.map .ol-custom-overviewmap .ol-overviewmap-map {
   border: none;
   width: 300px;
 }
 
-div.ol-custom-overviewmap div.ol-overviewmap-box {
+.map .ol-custom-overviewmap .ol-overviewmap-box {
   border: 2px solid red;
 }
 
-div.ol-custom-overviewmap:not(.ol-collapsed) button{
+.map .ol-custom-overviewmap:not(.ol-collapsed) button{
   bottom: auto;
   left: auto;
   right: 1px;
   top: 1px;
 }
 
-div.ol-rotate {
+.map .ol-rotate {
   top: 170px;
   right: 0;
 }

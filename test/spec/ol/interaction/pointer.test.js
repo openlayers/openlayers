@@ -1,65 +1,62 @@
-import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import Event from '../../../../src/ol/events/Event.js';
+import Map from '../../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import PointerInteraction from '../../../../src/ol/interaction/Pointer.js';
 
-describe('ol.interaction.Pointer', function() {
-
-  describe('#handleEvent', function() {
-
+describe('ol.interaction.Pointer', function () {
+  describe('#handleEvent', function () {
     let event;
     let defaultPrevented;
 
-    beforeEach(function() {
+    beforeEach(function () {
       const type = 'pointerdown';
       const pointerEvent = new Event();
       pointerEvent.type = type;
       pointerEvent.pointerId = 0;
-      pointerEvent.preventDefault = function() {
+      pointerEvent.preventDefault = function () {
         defaultPrevented = true;
       };
-      event = new MapBrowserPointerEvent(type, new Map(), pointerEvent);
+      event = new MapBrowserEvent(type, new Map(), pointerEvent);
       defaultPrevented = false;
     });
 
-    it('does not prevent default on handled down event', function() {
+    it('does not prevent default on handled down event', function () {
       const interaction = new PointerInteraction({
-        handleDownEvent: function() {
+        handleDownEvent: function () {
           return true;
-        }
+        },
       });
       interaction.handleEvent(event);
       expect(defaultPrevented).to.be(false);
     });
 
-    it('does not prevent default on unhandled down event', function() {
+    it('does not prevent default on unhandled down event', function () {
       const interaction = new PointerInteraction({
-        handleDownEvent: function() {
+        handleDownEvent: function () {
           return false;
-        }
+        },
       });
       interaction.handleEvent(event);
       expect(defaultPrevented).to.be(false);
     });
-
   });
 
-  describe('event handlers', function() {
+  describe('event handlers', function () {
     let handleDownCalled, handleDragCalled, handleMoveCalled, handleUpCalled;
 
-    const flagHandleDown = function() {
+    const flagHandleDown = function () {
       handleDownCalled = true;
     };
 
-    const flagHandleDrag = function() {
+    const flagHandleDrag = function () {
       handleDragCalled = true;
     };
 
-    const flagHandleMove = function() {
+    const flagHandleMove = function () {
       handleMoveCalled = true;
     };
 
-    const flagHandleUp = function() {
+    const flagHandleUp = function () {
       handleUpCalled = true;
     };
 
@@ -83,25 +80,25 @@ describe('ol.interaction.Pointer', function() {
       }
     }
 
-    beforeEach(function() {
+    beforeEach(function () {
       handleDownCalled = false;
       handleDragCalled = false;
       handleMoveCalled = false;
       handleUpCalled = false;
     });
 
-    it('has default event handlers', function() {
+    it('has default event handlers', function () {
       const interaction = new PointerInteraction({});
       expect(interaction.handleDownEvent()).to.be(false);
       expect(interaction.handleUpEvent()).to.be(false);
     });
 
-    it('allows event handler overrides via options', function() {
+    it('allows event handler overrides via options', function () {
       const interaction = new PointerInteraction({
         handleDownEvent: flagHandleDown,
         handleDragEvent: flagHandleDrag,
         handleMoveEvent: flagHandleMove,
-        handleUpEvent: flagHandleUp
+        handleUpEvent: flagHandleUp,
       });
 
       interaction.handleDownEvent();
@@ -117,7 +114,7 @@ describe('ol.interaction.Pointer', function() {
       expect(handleUpCalled).to.be(true);
     });
 
-    it('allows event handler overrides via class extension', function() {
+    it('allows event handler overrides via class extension', function () {
       const interaction = new MockPointerInteraction({});
 
       interaction.handleDownEvent();
@@ -132,7 +129,5 @@ describe('ol.interaction.Pointer', function() {
       interaction.handleUpEvent();
       expect(handleUpCalled).to.be(true);
     });
-
   });
-
 });

@@ -1,18 +1,16 @@
 /**
  * @module ol/format/WMSGetFeatureInfo
  */
-import {extend, includes} from '../array.js';
 import GML2 from './GML2.js';
 import XMLFeature from './XMLFeature.js';
 import {assign} from '../obj.js';
+import {extend, includes} from '../array.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
-
 
 /**
  * @typedef {Object} Options
  * @property {Array<string>} [layers] If set, only features of the given layers will be returned by the format when read.
  */
-
 
 /**
  * @const
@@ -20,13 +18,11 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
  */
 const featureIdentifier = '_feature';
 
-
 /**
  * @const
  * @type {string}
  */
 const layerIdentifier = '_layer';
-
 
 /**
  * @classdesc
@@ -36,7 +32,6 @@ const layerIdentifier = '_layer';
  * @api
  */
 class WMSGetFeatureInfo extends XMLFeature {
-
   /**
    * @param {Options=} opt_options Options.
    */
@@ -51,13 +46,11 @@ class WMSGetFeatureInfo extends XMLFeature {
      */
     this.featureNS_ = 'http://mapserver.gis.umn.edu/mapserver';
 
-
     /**
      * @private
      * @type {GML2}
      */
     this.gmlFormat_ = new GML2();
-
 
     /**
      * @private
@@ -111,8 +104,7 @@ class WMSGetFeatureInfo extends XMLFeature {
           continue;
         }
 
-        const featureType = layerName +
-            featureIdentifier;
+        const featureType = layerName + featureIdentifier;
 
         context['featureType'] = featureType;
         context['featureNS'] = this.featureNS_;
@@ -120,22 +112,35 @@ class WMSGetFeatureInfo extends XMLFeature {
         /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         parsers[featureType] = makeArrayPusher(
-          this.gmlFormat_.readFeatureElement, this.gmlFormat_);
+          this.gmlFormat_.readFeatureElement,
+          this.gmlFormat_
+        );
         const parsersNS = makeStructureNS(
-          [context['featureNS'], null], parsers);
+          [context['featureNS'], null],
+          parsers
+        );
         layerElement.setAttribute('namespaceURI', this.featureNS_);
         const layerFeatures = pushParseAndPop(
+          [],
           // @ts-ignore
-          [], parsersNS, layerElement, objectStack, this.gmlFormat_);
+          parsersNS,
+          layerElement,
+          objectStack,
+          this.gmlFormat_
+        );
         if (layerFeatures) {
           extend(features, layerFeatures);
         }
       }
     }
     if (localName == 'FeatureCollection') {
-      const gmlFeatures = pushParseAndPop([],
-        this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
-        [{}], this.gmlFormat_);
+      const gmlFeatures = pushParseAndPop(
+        [],
+        this.gmlFormat_.FEATURE_COLLECTION_PARSERS,
+        node,
+        [{}],
+        this.gmlFormat_
+      );
       if (gmlFeatures) {
         features = gmlFeatures;
       }
@@ -144,7 +149,10 @@ class WMSGetFeatureInfo extends XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * @protected
+   * @param {Element} node Node.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
     const options = {};
@@ -153,8 +161,6 @@ class WMSGetFeatureInfo extends XMLFeature {
     }
     return this.readFeatures_(node, [options]);
   }
-
 }
-
 
 export default WMSGetFeatureInfo;

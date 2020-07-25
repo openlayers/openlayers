@@ -1,12 +1,13 @@
 /**
  * @module ol/render/canvas
  */
-import {getFontParameters} from '../css.js';
-import {createCanvasContext2D} from '../dom.js';
-import {clear} from '../obj.js';
 import BaseObject from '../Object.js';
 import EventTarget from '../events/Target.js';
-
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
+import {clear} from '../obj.js';
+import {createCanvasContext2D} from '../dom.js';
+import {getFontParameters} from '../css.js';
+import {toString} from '../transform.js';
 
 /**
  * @typedef {Object} FillState
@@ -41,7 +42,6 @@ import EventTarget from '../events/Target.js';
  * @property {number} [miterLimit]
  */
 
-
 /**
  * @typedef {Object} StrokeState
  * @property {CanvasLineCap} lineCap
@@ -53,7 +53,6 @@ import EventTarget from '../events/Target.js';
  * @property {import("../colorlike.js").ColorLike} strokeStyle
  */
 
-
 /**
  * @typedef {Object} TextState
  * @property {string} font
@@ -64,7 +63,7 @@ import EventTarget from '../events/Target.js';
  * @property {boolean} [overflow]
  * @property {import("../style/Fill.js").default} [backgroundFill]
  * @property {import("../style/Stroke.js").default} [backgroundStroke]
- * @property {number} [scale]
+ * @property {import("../size.js").Size} [scale]
  * @property {Array<number>} [padding]
  */
 
@@ -80,12 +79,10 @@ import EventTarget from '../events/Target.js';
  * @typedef {Array<*>} DeclutterGroup
  */
 
-
 /**
  * Declutter groups for support of multi geometries.
  * @typedef {Array<DeclutterGroup>} DeclutterGroups
  */
-
 
 /**
  * @const
@@ -93,13 +90,11 @@ import EventTarget from '../events/Target.js';
  */
 export const defaultFont = '10px sans-serif';
 
-
 /**
  * @const
  * @type {import("../colorlike.js").ColorLike}
  */
 export const defaultFillStyle = '#000';
-
 
 /**
  * @const
@@ -107,13 +102,11 @@ export const defaultFillStyle = '#000';
  */
 export const defaultLineCap = 'round';
 
-
 /**
  * @const
  * @type {Array<number>}
  */
 export const defaultLineDash = [];
-
 
 /**
  * @const
@@ -121,13 +114,11 @@ export const defaultLineDash = [];
  */
 export const defaultLineDashOffset = 0;
 
-
 /**
  * @const
  * @type {CanvasLineJoin}
  */
 export const defaultLineJoin = 'round';
-
 
 /**
  * @const
@@ -135,13 +126,11 @@ export const defaultLineJoin = 'round';
  */
 export const defaultMiterLimit = 10;
 
-
 /**
  * @const
  * @type {import("../colorlike.js").ColorLike}
  */
 export const defaultStrokeStyle = '#000';
-
 
 /**
  * @const
@@ -149,20 +138,17 @@ export const defaultStrokeStyle = '#000';
  */
 export const defaultTextAlign = 'center';
 
-
 /**
  * @const
  * @type {string}
  */
 export const defaultTextBaseline = 'middle';
 
-
 /**
  * @const
  * @type {Array<number>}
  */
 export const defaultPadding = [0, 0, 0, 0];
-
 
 /**
  * @const
@@ -184,7 +170,7 @@ export const checkedFonts = new BaseObject();
  * @deprecated
  */
 export const labelCache = new EventTarget();
-labelCache.setSize = function() {
+labelCache.setSize = function () {
   console.warn('labelCache is deprecated.'); //eslint-disable-line
 };
 
@@ -203,12 +189,11 @@ let measureFont;
  */
 export const textHeights = {};
 
-
 /**
  * Clears the label cache when a font becomes available.
  * @param {string} fontSpec CSS font spec.
  */
-export const registerFont = (function() {
+export const registerFont = (function () {
   const retries = 100;
   const size = '32px ';
   const referenceFonts = ['monospace', 'serif'];
@@ -226,9 +211,22 @@ export const registerFont = (function() {
     let available = true;
     for (let i = 0; i < len; ++i) {
       const referenceFont = referenceFonts[i];
-      referenceWidth = measureTextWidth(fontStyle + ' ' + fontWeight + ' ' + size + referenceFont, text);
+      referenceWidth = measureTextWidth(
+        fontStyle + ' ' + fontWeight + ' ' + size + referenceFont,
+        text
+      );
       if (fontFamily != referenceFont) {
-        const width = measureTextWidth(fontStyle + ' ' + fontWeight + ' ' + size + fontFamily + ',' + referenceFont, text);
+        const width = measureTextWidth(
+          fontStyle +
+            ' ' +
+            fontWeight +
+            ' ' +
+            size +
+            fontFamily +
+            ',' +
+            referenceFont,
+          text
+        );
         // If width and referenceWidth are the same, then the fallback was used
         // instead of the font we wanted, so the font is not available.
         available = available && width != referenceWidth;
@@ -264,7 +262,7 @@ export const registerFont = (function() {
     }
   }
 
-  return function(fontSpec) {
+  return function (fontSpec) {
     const font = getFontParameters(fontSpec);
     if (!font) {
       return;
@@ -286,45 +284,54 @@ export const registerFont = (function() {
   };
 })();
 
-
 /**
  * @param {string} font Font to use for measuring.
  * @return {import("../size.js").Size} Measurement.
  */
-export const measureTextHeight = (function() {
+export const measureTextHeight = (function () {
   /**
    * @type {HTMLDivElement}
    */
   let div;
   const heights = textHeights;
-  return function(font) {
-    let height = heights[font];
+  return function (fontSpec) {
+    let height = heights[fontSpec];
     if (height == undefined) {
-      if (!div) {
-        div = document.createElement('div');
-        div.innerHTML = 'M';
-        div.style.margin = '0 !important';
-        div.style.padding = '0 !important';
-        div.style.position = 'absolute !important';
-        div.style.left = '-99999px !important';
+      if (WORKER_OFFSCREEN_CANVAS) {
+        const font = getFontParameters(fontSpec);
+        const metrics = measureText(fontSpec, 'Žg');
+        const lineHeight = isNaN(Number(font.lineHeight))
+          ? 1.2
+          : Number(font.lineHeight);
+        textHeights[fontSpec] =
+          lineHeight *
+          (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+      } else {
+        if (!div) {
+          div = document.createElement('div');
+          div.innerHTML = 'M';
+          div.style.margin = '0 !important';
+          div.style.padding = '0 !important';
+          div.style.position = 'absolute !important';
+          div.style.left = '-99999px !important';
+        }
+        div.style.font = fontSpec;
+        document.body.appendChild(div);
+        height = div.offsetHeight;
+        heights[fontSpec] = height;
+        document.body.removeChild(div);
       }
-      div.style.font = font;
-      document.body.appendChild(div);
-      height = div.offsetHeight;
-      heights[font] = height;
-      document.body.removeChild(div);
     }
     return height;
   };
 })();
 
-
 /**
  * @param {string} font Font.
  * @param {string} text Text.
- * @return {number} Width.
+ * @return {TextMetrics} Text metrics.
  */
-export function measureTextWidth(font, text) {
+function measureText(font, text) {
   if (!measureContext) {
     measureContext = createCanvasContext2D(1, 1);
   }
@@ -332,9 +339,17 @@ export function measureTextWidth(font, text) {
     measureContext.font = font;
     measureFont = measureContext.font;
   }
-  return measureContext.measureText(text).width;
+  return measureContext.measureText(text);
 }
 
+/**
+ * @param {string} font Font.
+ * @param {string} text Text.
+ * @return {number} Width.
+ */
+export function measureTextWidth(font, text) {
+  return measureText(font, text).width;
+}
 
 /**
  * Measure text width using a cache.
@@ -351,7 +366,6 @@ export function measureAndCacheTextWidth(font, text, cache) {
   cache[text] = width;
   return width;
 }
-
 
 /**
  * @param {string} font Font to use for measuring.
@@ -371,7 +385,6 @@ export function measureTextWidths(font, lines, widths) {
   return width;
 }
 
-
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
@@ -386,7 +399,6 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
   }
 }
 
-
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {import("../transform.js").Transform|null} transform Transform.
@@ -398,24 +410,63 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
  * @param {number} h Height.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {number} scale Scale.
+ * @param {import("../size.js").Size} scale Scale.
  */
-export function drawImageOrLabel(context,
-  transform, opacity, labelOrImage, originX, originY, w, h, x, y, scale) {
+export function drawImageOrLabel(
+  context,
+  transform,
+  opacity,
+  labelOrImage,
+  originX,
+  originY,
+  w,
+  h,
+  x,
+  y,
+  scale
+) {
   context.save();
 
+  if (opacity !== 1) {
+    context.globalAlpha *= opacity;
+  }
   if (transform) {
     context.setTransform.apply(context, transform);
   }
 
-  if ((/** @type {*} */ (labelOrImage).contextInstructions)) {
+  if (/** @type {*} */ (labelOrImage).contextInstructions) {
     // label
     context.translate(x, y);
-    context.scale(scale, scale);
+    context.scale(scale[0], scale[1]);
     executeLabelInstructions(/** @type {Label} */ (labelOrImage), context);
+  } else if (scale[0] < 0 || scale[1] < 0) {
+    // flipped image
+    context.translate(x, y);
+    context.scale(scale[0], scale[1]);
+    context.drawImage(
+      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage),
+      originX,
+      originY,
+      w,
+      h,
+      0,
+      0,
+      w,
+      h
+    );
   } else {
-    // image
-    context.drawImage(/** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage), originX, originY, w, h, x, y, w * scale, h * scale);
+    // if image not flipped translate and scale can be avoided
+    context.drawImage(
+      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage),
+      originX,
+      originY,
+      w,
+      h,
+      x,
+      y,
+      w * scale[0],
+      h * scale[1]
+    );
   }
 
   context.restore();
@@ -429,9 +480,34 @@ function executeLabelInstructions(label, context) {
   const contextInstructions = label.contextInstructions;
   for (let i = 0, ii = contextInstructions.length; i < ii; i += 2) {
     if (Array.isArray(contextInstructions[i + 1])) {
-      CanvasRenderingContext2D.prototype[contextInstructions[i]].apply(context, contextInstructions[i + 1]);
+      context[contextInstructions[i]].apply(
+        context,
+        contextInstructions[i + 1]
+      );
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];
     }
+  }
+}
+
+/**
+ * @type {HTMLCanvasElement}
+ * @private
+ */
+let createTransformStringCanvas = null;
+
+/**
+ * @param {import("../transform.js").Transform} transform Transform.
+ * @return {string} CSS transform.
+ */
+export function createTransformString(transform) {
+  if (WORKER_OFFSCREEN_CANVAS) {
+    return toString(transform);
+  } else {
+    if (!createTransformStringCanvas) {
+      createTransformStringCanvas = createCanvasContext2D(1, 1).canvas;
+    }
+    createTransformStringCanvas.style.transform = toString(transform);
+    return createTransformStringCanvas.style.transform;
   }
 }

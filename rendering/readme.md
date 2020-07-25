@@ -21,6 +21,12 @@ To run a single rendering test case:
 node rendering/test.js --match your-test-case-name
 ```
 
+If you want to leave the test server running (and the test browser open) after running a test, use the `--interactive` option.
+
+```bash
+node rendering/test.js --match your-test-case-name --interactive
+```
+
 ## Creating a new test
 
 To create a new test case, add a directory under `cases` and add a `main.js` to it (copied from one of the other cases).  Then to generate the `expected.png` screenshot, run the test script with the `--fix` flag:

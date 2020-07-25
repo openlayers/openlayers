@@ -2,15 +2,15 @@
  * @module ol/source/Cluster
  */
 
-import {getUid} from '../util.js';
-import {assert} from '../asserts.js';
+import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import GeometryType from '../geom/GeometryType.js';
-import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';
-import EventType from '../events/EventType.js';
-import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
 import VectorSource from './Vector.js';
+import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
+import {assert} from '../asserts.js';
+import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
@@ -29,16 +29,19 @@ import VectorSource from './Vector.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {VectorSource} source Source.
+ * @property {VectorSource} [source] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
-
 
 /**
  * @classdesc
  * Layer source to cluster vector data. Works out of the box with point
  * geometries. For other geometry types, or if not all geometries should be
  * considered for clustering, a custom `geometryFunction` can be defined.
+ *
+ * If the instance is disposed without also disposing the underlying
+ * source `setSource(null)` has to be called to remove the listener reference
+ * from the wrapped source.
  * @api
  */
 class Cluster extends VectorSource {
@@ -48,7 +51,7 @@ class Cluster extends VectorSource {
   constructor(options) {
     super({
       attributions: options.attributions,
-      wrapX: options.wrapX
+      wrapX: options.wrapX,
     });
 
     /**
@@ -74,20 +77,27 @@ class Cluster extends VectorSource {
      * @return {Point} Cluster calculation point.
      * @protected
      */
-    this.geometryFunction = options.geometryFunction || function(feature) {
-      const geometry = feature.getGeometry();
-      assert(geometry.getType() == GeometryType.POINT,
-        10); // The default `geometryFunction` can only handle `Point` geometries
-      return geometry;
-    };
+    this.geometryFunction =
+      options.geometryFunction ||
+      function (feature) {
+        const geometry = feature.getGeometry();
+        assert(geometry.getType() == GeometryType.POINT, 10); // The default `geometryFunction` can only handle `Point` geometries
+        return geometry;
+      };
 
-    /**
-     * @type {VectorSource}
-     * @protected
-     */
-    this.source = options.source;
+    this.boundRefresh_ = this.refresh.bind(this);
 
-    this.source.addEventListener(EventType.CHANGE, this.refresh.bind(this));
+    this.setSource(options.source || null);
+  }
+
+  /**
+   * Remove all features from the source.
+   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @api
+   */
+  clear(opt_fast) {
+    this.features.length = 0;
+    super.clear(opt_fast);
   }
 
   /**
@@ -109,7 +119,9 @@ class Cluster extends VectorSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    */
   loadFeatures(extent, resolution, projection) {
     this.source.loadFeatures(extent, resolution, projection);
@@ -132,8 +144,23 @@ class Cluster extends VectorSource {
   }
 
   /**
-   * handle the source changing
-   * @override
+   * Replace the wrapped source.
+   * @param {VectorSource} source The new source for this instance.
+   * @api
+   */
+  setSource(source) {
+    if (this.source) {
+      this.source.removeEventListener(EventType.CHANGE, this.boundRefresh_);
+    }
+    this.source = source;
+    if (source) {
+      source.addEventListener(EventType.CHANGE, this.boundRefresh_);
+    }
+    this.refresh();
+  }
+
+  /**
+   * Handle the source changing.
    */
   refresh() {
     this.clear();
@@ -145,10 +172,9 @@ class Cluster extends VectorSource {
    * @protected
    */
   cluster() {
-    if (this.resolution === undefined) {
+    if (this.resolution === undefined || !this.source) {
       return;
     }
-    this.features.length = 0;
     const extent = createEmpty();
     const mapDistance = this.distance * this.resolution;
     const features = this.source.getFeatures();
@@ -168,7 +194,7 @@ class Cluster extends VectorSource {
           buffer(extent, mapDistance, extent);
 
           let neighbors = this.source.getFeaturesInExtent(extent);
-          neighbors = neighbors.filter(function(neighbor) {
+          neighbors = neighbors.filter(function (neighbor) {
             const uid = getUid(neighbor);
             if (!(uid in clustered)) {
               clustered[uid] = true;
@@ -205,6 +231,5 @@ class Cluster extends VectorSource {
     return cluster;
   }
 }
-
 
 export default Cluster;

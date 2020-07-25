@@ -1,13 +1,15 @@
 /**
  * @module ol/render/canvas/PolygonBuilder
  */
-import {snap} from '../../geom/flat/simplify.js';
-import {defaultFillStyle} from '../canvas.js';
-import CanvasInstruction, {
-  fillInstruction, strokeInstruction, beginPathInstruction, closePathInstruction
-} from './Instruction.js';
 import CanvasBuilder from './Builder.js';
-
+import CanvasInstruction, {
+  beginPathInstruction,
+  closePathInstruction,
+  fillInstruction,
+  strokeInstruction,
+} from './Instruction.js';
+import {defaultFillStyle} from '../canvas.js';
+import {snap} from '../../geom/flat/simplify.js';
 
 class CanvasPolygonBuilder extends CanvasBuilder {
   /**
@@ -38,8 +40,19 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     for (let i = 0; i < numEnds; ++i) {
       const end = ends[i];
       const myBegin = this.coordinates.length;
-      const myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, true, !stroke);
-      const moveToLineToInstruction = [CanvasInstruction.MOVE_TO_LINE_TO, myBegin, myEnd];
+      const myEnd = this.appendFlatCoordinates(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        true,
+        !stroke
+      );
+      const moveToLineToInstruction = [
+        CanvasInstruction.MOVE_TO_LINE_TO,
+        myBegin,
+        myEnd,
+      ];
       this.instructions.push(moveToLineToInstruction);
       this.hitDetectionInstructions.push(moveToLineToInstruction);
       if (stroke) {
@@ -62,7 +75,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/Circle.js").default} circleGeometry Circle geometry.
+   * @param {import("../../Feature.js").default} feature Feature.
    */
   drawCircle(circleGeometry, feature) {
     const state = this.state;
@@ -76,21 +90,32 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
-        defaultFillStyle
+        defaultFillStyle,
       ]);
     }
     if (state.strokeStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-        state.miterLimit, state.lineDash, state.lineDashOffset
+        state.strokeStyle,
+        state.lineWidth,
+        state.lineCap,
+        state.lineJoin,
+        state.miterLimit,
+        state.lineDash,
+        state.lineDashOffset,
       ]);
     }
     const flatCoordinates = circleGeometry.getFlatCoordinates();
     const stride = circleGeometry.getStride();
     const myBegin = this.coordinates.length;
     this.appendFlatCoordinates(
-      flatCoordinates, 0, flatCoordinates.length, stride, false, false);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+      false,
+      false
+    );
     const circleInstruction = [CanvasInstruction.CIRCLE, myBegin];
     this.instructions.push(beginPathInstruction, circleInstruction);
     this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
@@ -106,7 +131,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} polygonGeometry Polygon geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawPolygon(polygonGeometry, feature) {
     const state = this.state;
@@ -120,25 +146,36 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
-        defaultFillStyle
+        defaultFillStyle,
       ]);
     }
     if (state.strokeStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-        state.miterLimit, state.lineDash, state.lineDashOffset
+        state.strokeStyle,
+        state.lineWidth,
+        state.lineCap,
+        state.lineJoin,
+        state.miterLimit,
+        state.lineDash,
+        state.lineDashOffset,
       ]);
     }
     const ends = polygonGeometry.getEnds();
     const flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
     const stride = polygonGeometry.getStride();
-    this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
+    this.drawFlatCoordinatess_(
+      flatCoordinates,
+      0,
+      /** @type {Array<number>} */ (ends),
+      stride
+    );
     this.endGeometry(feature);
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiPolygon(multiPolygonGeometry, feature) {
     const state = this.state;
@@ -152,14 +189,19 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
-        defaultFillStyle
+        defaultFillStyle,
       ]);
     }
     if (state.strokeStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-        state.miterLimit, state.lineDash, state.lineDashOffset
+        state.strokeStyle,
+        state.lineWidth,
+        state.lineCap,
+        state.lineJoin,
+        state.miterLimit,
+        state.lineDash,
+        state.lineDashOffset,
       ]);
     }
     const endss = multiPolygonGeometry.getEndss();
@@ -167,13 +209,18 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const stride = multiPolygonGeometry.getStride();
     let offset = 0;
     for (let i = 0, ii = endss.length; i < ii; ++i) {
-      offset = this.drawFlatCoordinatess_(flatCoordinates, offset, endss[i], stride);
+      offset = this.drawFlatCoordinatess_(
+        flatCoordinates,
+        offset,
+        endss[i],
+        stride
+      );
     }
     this.endGeometry(feature);
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     this.reverseHitDetectionInstructions();
@@ -206,6 +253,5 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     }
   }
 }
-
 
 export default CanvasPolygonBuilder;

@@ -2,17 +2,16 @@
  * @module ol/style/Image
  */
 import {abstract} from '../util.js';
-
+import {toSize} from '../size.js';
 
 /**
  * @typedef {Object} Options
  * @property {number} opacity
  * @property {boolean} rotateWithView
  * @property {number} rotation
- * @property {number} scale
+ * @property {number|import("../size.js").Size} scale
  * @property {Array<number>} displacement
  */
-
 
 /**
  * @classdesc
@@ -27,7 +26,6 @@ class ImageStyle {
    * @param {Options} options Options.
    */
   constructor(options) {
-
     /**
      * @private
      * @type {number}
@@ -48,16 +46,21 @@ class ImageStyle {
 
     /**
      * @private
-     * @type {number}
+     * @type {number|import("../size.js").Size}
      */
     this.scale_ = options.scale;
+
+    /**
+     * @private
+     * @type {import("../size.js").Size}
+     */
+    this.scaleArray_ = toSize(options.scale);
 
     /**
      * @private
      * @type {Array<number>}
      */
     this.displacement_ = options.displacement;
-
   }
 
   /**
@@ -66,12 +69,13 @@ class ImageStyle {
    * @api
    */
   clone() {
+    const scale = this.getScale();
     return new ImageStyle({
       opacity: this.getOpacity(),
-      scale: this.getScale(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
-      displacement: this.getDisplacement().slice()
+      displacement: this.getDisplacement().slice(),
     });
   }
 
@@ -104,11 +108,19 @@ class ImageStyle {
 
   /**
    * Get the symbolizer scale.
-   * @return {number} Scale.
+   * @return {number|import("../size.js").Size} Scale.
    * @api
    */
   getScale() {
     return this.scale_;
+  }
+
+  /**
+   * Get the symbolizer scale array.
+   * @return {import("../size.js").Size} Scale array.
+   */
+  getScaleArray() {
+    return this.scaleArray_;
   }
 
   /**
@@ -223,17 +235,17 @@ class ImageStyle {
   /**
    * Set the scale.
    *
-   * @param {number} scale Scale.
+   * @param {number|import("../size.js").Size} scale Scale.
    * @api
    */
   setScale(scale) {
     this.scale_ = scale;
+    this.scaleArray_ = toSize(scale);
   }
 
   /**
    * @abstract
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
-   * @template T
    */
   listenImageChange(listener) {
     abstract();
@@ -250,7 +262,6 @@ class ImageStyle {
   /**
    * @abstract
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
-   * @template T
    */
   unlistenImageChange(listener) {
     abstract();

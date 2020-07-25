@@ -1,30 +1,26 @@
-import Map from '../../../../src/ol/Map.js';
-import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import View from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import Event from '../../../../src/ol/events/Event.js';
+import Map from '../../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import View from '../../../../src/ol/View.js';
 
-describe('ol.interaction.DragRotateAndZoom', function() {
-
-  describe('constructor', function() {
-
-    it('can be constructed without arguments', function() {
+describe('ol.interaction.DragRotateAndZoom', function () {
+  describe('constructor', function () {
+    it('can be constructed without arguments', function () {
       const instance = new DragRotateAndZoom();
       expect(instance).to.be.an(DragRotateAndZoom);
     });
-
   });
 
-  describe('#handleDragEvent()', function() {
-
+  describe('#handleDragEvent()', function () {
     let target, map, interaction;
 
     const width = 360;
     const height = 180;
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       target = document.createElement('div');
       const style = target.style;
       style.position = 'absolute';
@@ -43,32 +39,32 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         view: new View({
           projection: 'EPSG:4326',
           center: [0, 0],
-          resolution: 1
-        })
+          resolution: 1,
+        }),
       });
-      map.once('postrender', function() {
+      map.once('postrender', function () {
         done();
       });
     });
 
-    afterEach(function() {
+    afterEach(function () {
       map.dispose();
       document.body.removeChild(target);
     });
 
-    it('does not rotate when rotation is disabled on the view', function() {
+    it('does not rotate when rotation is disabled on the view', function () {
       const pointerEvent = new Event();
       pointerEvent.type = 'pointermove';
       pointerEvent.clientX = 20;
       pointerEvent.clientY = 10;
       pointerEvent.pointerType = 'mouse';
-      let event = new MapBrowserPointerEvent('pointermove', map, pointerEvent, true);
+      let event = new MapBrowserEvent('pointermove', map, pointerEvent, true);
       interaction.lastAngle_ = Math.PI;
 
       let callCount = 0;
 
       let view = map.getView();
-      view.on('change:rotation', function() {
+      view.on('change:rotation', function () {
         callCount++;
       });
 
@@ -81,10 +77,10 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1,
-        enableRotation: false
+        enableRotation: false,
       });
       map.setView(view);
-      view.on('change:rotation', function() {
+      view.on('change:rotation', function () {
         callCount++;
       });
 
@@ -92,11 +88,10 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       pointerEvent.clientX = 24;
       pointerEvent.clientY = 16;
       pointerEvent.pointerType = 'mouse';
-      event = new MapBrowserPointerEvent('pointermove', map, pointerEvent, true);
+      event = new MapBrowserEvent('pointermove', map, pointerEvent, true);
 
       interaction.handleDragEvent(event);
       expect(callCount).to.be(0);
     });
   });
-
 });

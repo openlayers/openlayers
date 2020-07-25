@@ -4,7 +4,6 @@
 
 import XYZ from './XYZ.js';
 
-
 /**
  * The attribution containing a link to the OpenStreetMap Copyright and License
  * page.
@@ -12,21 +11,22 @@ import XYZ from './XYZ.js';
  * @type {string}
  * @api
  */
-export const ATTRIBUTION = '&#169; ' +
-      '<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> ' +
-      'contributors.';
-
+export const ATTRIBUTION =
+  '&#169; ' +
+  '<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> ' +
+  'contributors.';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {number} [maxZoom=19] Max zoom.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
- * @property {number} [reprojectionErrorThreshold=1.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
@@ -39,7 +39,6 @@ export const ATTRIBUTION = '&#169; ' +
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
-
 /**
  * @classdesc
  * Layer source for the OpenStreetMap tile server.
@@ -50,7 +49,6 @@ class OSM extends XYZ {
    * @param {Options=} [opt_options] Open Street Map options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     let attributions;
@@ -60,27 +58,28 @@ class OSM extends XYZ {
       attributions = [ATTRIBUTION];
     }
 
-    const crossOrigin = options.crossOrigin !== undefined ?
-      options.crossOrigin : 'anonymous';
+    const crossOrigin =
+      options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous';
 
-    const url = options.url !== undefined ?
-      options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const url =
+      options.url !== undefined
+        ? options.url
+        : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     super({
       attributions: attributions,
       cacheSize: options.cacheSize,
       crossOrigin: crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       opaque: options.opaque !== undefined ? options.opaque : true,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       url: url,
       wrapX: options.wrapX,
-      attributionsCollapsible: false
+      attributionsCollapsible: false,
     });
-
   }
-
 }
 
 export default OSM;

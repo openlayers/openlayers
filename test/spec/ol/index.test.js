@@ -1,12 +1,12 @@
 import {getUid} from '../../../src/ol/util.js';
 
-describe('getUid()', function() {
-  it('is constant once generated', function() {
+describe('getUid()', function () {
+  it('is constant once generated', function () {
     const a = {};
     expect(getUid(a)).to.be(getUid(a));
   });
 
-  it('generates a strictly increasing sequence', function() {
+  it('generates a strictly increasing sequence', function () {
     const a = {};
     const b = {};
     const c = {};

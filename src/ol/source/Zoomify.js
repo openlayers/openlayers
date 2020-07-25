@@ -4,37 +4,42 @@
 import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 
 import ImageTile from '../ImageTile.js';
+import TileGrid from '../tilegrid/TileGrid.js';
+import TileImage from './TileImage.js';
 import TileState from '../TileState.js';
-import {expandUrl, createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
+import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
+import {getCenter} from '../extent.js';
 import {toSize} from '../size.js';
-import TileImage from './TileImage.js';
-import TileGrid from '../tilegrid/TileGrid.js';
-
 
 /**
  * @enum {string}
  */
 const TierSizeCalculation = {
   DEFAULT: 'default',
-  TRUNCATED: 'truncated'
+  TRUNCATED: 'truncated',
 };
 
-
 export class CustomTile extends ImageTile {
-
   /**
    * @param {import("../size.js").Size} tileSize Full tile size.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("../TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("../Tile.js").Options=} opt_options Tile options.
    */
-  constructor(tileSize, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
-
+  constructor(
+    tileSize,
+    tileCoord,
+    state,
+    src,
+    crossOrigin,
+    tileLoadFunction,
+    opt_options
+  ) {
     super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
 
     /**
@@ -47,11 +52,11 @@ export class CustomTile extends ImageTile {
      * @type {import("../size.js").Size}
      */
     this.tileSize_ = tileSize;
-
   }
 
   /**
-   * @inheritDoc
+   * Get the image element for this tile.
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    */
   getImage() {
     if (this.zoomifyImage_) {
@@ -73,22 +78,21 @@ export class CustomTile extends ImageTile {
       return image;
     }
   }
-
 }
-
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {string} [url] URL template or base URL of the Zoomify service.
+ * @property {string} url URL template or base URL of the Zoomify service.
  * A base URL is the fixed part
  * of the URL, excluding the tile group, z, x, and y folder structure, e.g.
  * `http://my.zoomify.info/IMAGE.TIF/`. A URL template must include
@@ -100,7 +104,7 @@ export class CustomTile extends ImageTile {
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
- * @property {import("../size.js").Size} [size] Size of the image.
+ * @property {import("../size.js").Size} size
  * @property {import("../extent.js").Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
  * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the
@@ -115,7 +119,6 @@ export class CustomTile extends ImageTile {
  * will be used. If -1, the nearest higher resolution will be used.
  */
 
-
 /**
  * @classdesc
  * Layer source for tile data in Zoomify format (both Zoomify and Internet
@@ -123,18 +126,17 @@ export class CustomTile extends ImageTile {
  * @api
  */
 class Zoomify extends TileImage {
-
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} opt_options Options.
    */
   constructor(opt_options) {
-
-    const options = opt_options || {};
+    const options = opt_options;
 
     const size = options.size;
-    const tierSizeCalculation = options.tierSizeCalculation !== undefined ?
-      options.tierSizeCalculation :
-      TierSizeCalculation.DEFAULT;
+    const tierSizeCalculation =
+      options.tierSizeCalculation !== undefined
+        ? options.tierSizeCalculation
+        : TierSizeCalculation.DEFAULT;
 
     const tilePixelRatio = options.tilePixelRatio || 1;
     const imageWidth = size[0];
@@ -145,10 +147,13 @@ class Zoomify extends TileImage {
 
     switch (tierSizeCalculation) {
       case TierSizeCalculation.DEFAULT:
-        while (imageWidth > tileSizeForTierSizeCalculation || imageHeight > tileSizeForTierSizeCalculation) {
+        while (
+          imageWidth > tileSizeForTierSizeCalculation ||
+          imageHeight > tileSizeForTierSizeCalculation
+        ) {
           tierSizeInTiles.push([
             Math.ceil(imageWidth / tileSizeForTierSizeCalculation),
-            Math.ceil(imageHeight / tileSizeForTierSizeCalculation)
+            Math.ceil(imageHeight / tileSizeForTierSizeCalculation),
           ]);
           tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
         }
@@ -156,10 +161,13 @@ class Zoomify extends TileImage {
       case TierSizeCalculation.TRUNCATED:
         let width = imageWidth;
         let height = imageHeight;
-        while (width > tileSizeForTierSizeCalculation || height > tileSizeForTierSizeCalculation) {
+        while (
+          width > tileSizeForTierSizeCalculation ||
+          height > tileSizeForTierSizeCalculation
+        ) {
           tierSizeInTiles.push([
             Math.ceil(width / tileSizeForTierSizeCalculation),
-            Math.ceil(height / tileSizeForTierSizeCalculation)
+            Math.ceil(height / tileSizeForTierSizeCalculation),
           ]);
           width >>= 1;
           height >>= 1;
@@ -187,23 +195,26 @@ class Zoomify extends TileImage {
     const tileGrid = new TileGrid({
       tileSize: tileSize,
       extent: options.extent || [0, -imageHeight, imageWidth, 0],
-      resolutions: resolutions
+      resolutions: resolutions,
     });
 
     let url = options.url;
-    if (url && url.indexOf('{TileGroup}') == -1 && url.indexOf('{tileIndex}') == -1) {
+    if (
+      url &&
+      url.indexOf('{TileGroup}') == -1 &&
+      url.indexOf('{tileIndex}') == -1
+    ) {
       url += '{TileGroup}/{z}-{x}-{y}.jpg';
     }
     const urls = expandUrl(url);
 
-    const tileWidth = tileSize * tilePixelRatio;
+    let tileWidth = tileSize * tilePixelRatio;
 
     /**
      * @param {string} template Template.
      * @return {import("../Tile.js").UrlFunction} Tile URL function.
      */
     function createFromTemplate(template) {
-
       return (
         /**
          * @param {import("../tilecoord.js").TileCoord} tileCoord Tile Coordinate.
@@ -211,7 +222,7 @@ class Zoomify extends TileImage {
          * @param {import("../proj/Projection.js").default} projection Projection.
          * @return {string|undefined} Tile URL.
          */
-        function(tileCoord, pixelRatio, projection) {
+        function (tileCoord, pixelRatio, projection) {
           if (!tileCoord) {
             return undefined;
           } else {
@@ -219,17 +230,17 @@ class Zoomify extends TileImage {
             const tileCoordX = tileCoord[1];
             const tileCoordY = tileCoord[2];
             const tileIndex =
-                tileCoordX +
-                tileCoordY * tierSizeInTiles[tileCoordZ][0];
-            const tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
+              tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
+            const tileGroup =
+              ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
             const localContext = {
               'z': tileCoordZ,
               'x': tileCoordX,
               'y': tileCoordY,
               'tileIndex': tileIndex,
-              'TileGroup': 'TileGroup' + tileGroup
+              'TileGroup': 'TileGroup' + tileGroup,
             };
-            return template.replace(/\{(\w+?)\}/g, function(m, p) {
+            return template.replace(/\{(\w+?)\}/g, function (m, p) {
               return localContext[p];
             });
           }
@@ -237,30 +248,53 @@ class Zoomify extends TileImage {
       );
     }
 
-    const tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));
+    const tileUrlFunction = createFromTileUrlFunctions(
+      urls.map(createFromTemplate)
+    );
 
-    const ZoomifyTileClass = CustomTile.bind(null, toSize(tileSize * tilePixelRatio));
+    const ZoomifyTileClass = CustomTile.bind(
+      null,
+      toSize(tileSize * tilePixelRatio)
+    );
 
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
       tilePixelRatio: tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileClass: ZoomifyTileClass,
       tileGrid: tileGrid,
       tileUrlFunction: tileUrlFunction,
-      transition: options.transition
+      transition: options.transition,
     });
 
     /**
-     * @inheritDoc
+     * @type {number}
      */
     this.zDirection = options.zDirection;
 
+    // Server retina tile detection (non-standard):
+    // Try loading the center tile for the highest resolution. If it is not
+    // available, we are dealing with retina tiles, and need to adjust the
+    // tile url calculation.
+    const tileUrl = tileGrid.getTileCoordForCoordAndResolution(
+      getCenter(tileGrid.getExtent()),
+      resolutions[resolutions.length - 1]
+    );
+    const testTileUrl = tileUrlFunction(tileUrl, 1, null);
+    const image = new Image();
+    image.addEventListener(
+      'error',
+      function () {
+        tileWidth = tileSize;
+        this.changed();
+      }.bind(this)
+    );
+    image.src = testTileUrl;
   }
-
 }
 
 export default Zoomify;

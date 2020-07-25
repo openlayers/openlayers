@@ -3,7 +3,6 @@
  */
 import {METERS_PER_UNIT} from './Units.js';
 
-
 /**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
@@ -22,7 +21,6 @@ import {METERS_PER_UNIT} from './Units.js';
  * the `{number}` resolution in projection units at the passed coordinate. If this is `undefined`,
  * the default {@link module:ol/proj#getPointResolution} function will be used.
  */
-
 
 /**
  * @classdesc
@@ -52,7 +50,6 @@ import {METERS_PER_UNIT} from './Units.js';
  * @api
  */
 class Projection {
-
   /**
    * @param {Options} options Projection options.
    */
@@ -88,15 +85,15 @@ class Projection {
      * @private
      * @type {import("../extent.js").Extent}
      */
-    this.worldExtent_ = options.worldExtent !== undefined ?
-      options.worldExtent : null;
+    this.worldExtent_ =
+      options.worldExtent !== undefined ? options.worldExtent : null;
 
     /**
      * @private
      * @type {string}
      */
-    this.axisOrientation_ = options.axisOrientation !== undefined ?
-      options.axisOrientation : 'enu';
+    this.axisOrientation_ =
+      options.axisOrientation !== undefined ? options.axisOrientation : 'enu';
 
     /**
      * @private

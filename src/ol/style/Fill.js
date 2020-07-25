@@ -2,14 +2,12 @@
  * @module ol/style/Fill
  */
 
-
 /**
  * @typedef {Object} Options
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color=null] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  */
-
 
 /**
  * @classdesc
@@ -21,7 +19,6 @@ class Fill {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     /**
@@ -39,7 +36,7 @@ class Fill {
   clone() {
     const color = this.getColor();
     return new Fill({
-      color: Array.isArray(color) ? color.slice() : color || undefined
+      color: Array.isArray(color) ? color.slice() : color || undefined,
     });
   }
 
@@ -61,7 +58,6 @@ class Fill {
   setColor(color) {
     this.color_ = color;
   }
-
 }
 
 export default Fill;

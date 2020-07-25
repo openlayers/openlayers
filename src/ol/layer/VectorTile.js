@@ -1,13 +1,12 @@
 /**
  * @module ol/layer/VectorTile
  */
-import {assert} from '../asserts.js';
-import TileProperty from './TileProperty.js';
 import BaseVectorLayer from './BaseVector.js';
-import VectorTileRenderType from './VectorTileRenderType.js';
 import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
+import TileProperty from './TileProperty.js';
+import VectorTileRenderType from './VectorTileRenderType.js';
+import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
-
 
 /**
  * @typedef {Object} Options
@@ -23,6 +22,10 @@ import {assign} from '../obj.js';
  * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * visible.
+ * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
@@ -66,7 +69,6 @@ import {assign} from '../obj.js';
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */
 
-
 /**
  * @classdesc
  * Layer for vector tile data that is rendered client-side.
@@ -92,22 +94,26 @@ class VectorTileLayer extends BaseVectorLayer {
     super(/** @type {import("./BaseVector.js").Options} */ (baseOptions));
 
     const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
-    assert(renderMode == undefined ||
+    assert(
+      renderMode == undefined ||
         renderMode == VectorTileRenderType.IMAGE ||
         renderMode == VectorTileRenderType.HYBRID ||
         renderMode == VectorTileRenderType.VECTOR,
-    28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
+      28
+    ); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
 
     /**
      * @private
-     * @type {VectorTileRenderType}
+     * @type {import("./VectorTileRenderType.js").default}
      */
     this.renderMode_ = renderMode;
 
     this.setPreload(options.preload ? options.preload : 0);
-    this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
-      options.useInterimTilesOnError : true);
-
+    this.setUseInterimTilesOnError(
+      options.useInterimTilesOnError !== undefined
+        ? options.useInterimTilesOnError
+        : true
+    );
   }
 
   /**
@@ -138,7 +144,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * @return {VectorTileRenderType} The render mode.
+   * @return {import("./VectorTileRenderType.js").default} The render mode.
    */
   getRenderMode() {
     return this.renderMode_;
@@ -161,7 +167,9 @@ class VectorTileLayer extends BaseVectorLayer {
    * @api
    */
   getUseInterimTilesOnError() {
-    return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
+    return /** @type {boolean} */ (this.get(
+      TileProperty.USE_INTERIM_TILES_ON_ERROR
+    ));
   }
 
   /**
@@ -184,6 +192,5 @@ class VectorTileLayer extends BaseVectorLayer {
     this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
   }
 }
-
 
 export default VectorTileLayer;

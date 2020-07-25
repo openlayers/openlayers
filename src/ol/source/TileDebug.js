@@ -4,11 +4,10 @@
 
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
-import {createCanvasContext2D} from '../dom.js';
-import {toSize} from '../size.js';
 import XYZ from './XYZ.js';
+import {createCanvasContext2D} from '../dom.js';
 import {getKeyZXY} from '../tilecoord.js';
-
+import {toSize} from '../size.js';
 
 class LabeledTile extends Tile {
   /**
@@ -17,33 +16,31 @@ class LabeledTile extends Tile {
    * @param {string} text Text.
    */
   constructor(tileCoord, tileSize, text) {
-
     super(tileCoord, TileState.LOADED);
 
     /**
-    * @private
-    * @type {import("../size.js").Size}
-    */
+     * @private
+     * @type {import("../size.js").Size}
+     */
     this.tileSize_ = tileSize;
 
     /**
-    * @private
-    * @type {string}
-    */
+     * @private
+     * @type {string}
+     */
     this.text_ = text;
 
     /**
-    * @private
-    * @type {HTMLCanvasElement}
-    */
+     * @private
+     * @type {HTMLCanvasElement}
+     */
     this.canvas_ = null;
-
   }
 
   /**
-  * Get the image element for this tile.
-  * @return {HTMLCanvasElement} Image.
-  */
+   * Get the image element for this tile.
+   * @return {HTMLCanvasElement} Image.
+   */
   getImage() {
     if (this.canvas_) {
       return this.canvas_;
@@ -60,20 +57,26 @@ class LabeledTile extends Tile {
       context.textBaseline = 'middle';
       context.font = '24px sans-serif';
       context.lineWidth = 4;
-      context.strokeText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
-      context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
+      context.strokeText(
+        this.text_,
+        tileSize[0] / 2,
+        tileSize[1] / 2,
+        tileSize[0]
+      );
+      context.fillText(
+        this.text_,
+        tileSize[0] / 2,
+        tileSize[1] / 2,
+        tileSize[0]
+      );
 
       this.canvas_ = context.canvas;
       return context.canvas;
     }
   }
 
-  /**
-  * @override
-  */
   load() {}
 }
-
 
 /**
  * @typedef {Object} Options
@@ -86,7 +89,6 @@ class LabeledTile extends Tile {
  * resolution will be used. If 1, the nearest lower resolution will be used. If -1, the
  * nearest higher resolution will be used.
  */
-
 
 /**
  * @classdesc
@@ -112,14 +114,16 @@ class TileDebug extends XYZ {
       projection: options.projection,
       tileGrid: options.tileGrid,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      zDirection: options.zDirection
+      zDirection: options.zDirection,
     });
-
   }
 
   /**
-  * @inheritDoc
-  */
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @return {!LabeledTile} Tile.
+   */
   getTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {
@@ -130,7 +134,13 @@ class TileDebug extends XYZ {
       const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
       let text;
       if (textTileCoord) {
-        text = 'z:' + textTileCoord[0] + ' x:' + textTileCoord[1] + ' y:' + textTileCoord[2];
+        text =
+          'z:' +
+          textTileCoord[0] +
+          ' x:' +
+          textTileCoord[1] +
+          ' y:' +
+          textTileCoord[2];
       } else {
         text = 'none';
       }
@@ -140,6 +150,5 @@ class TileDebug extends XYZ {
     }
   }
 }
-
 
 export default TileDebug;

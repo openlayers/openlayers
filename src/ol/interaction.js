@@ -2,17 +2,16 @@
  * @module ol/interaction
  */
 import Collection from './Collection.js';
-import Kinetic from './Kinetic.js';
 import DoubleClickZoom from './interaction/DoubleClickZoom.js';
 import DragPan from './interaction/DragPan.js';
 import DragRotate from './interaction/DragRotate.js';
 import DragZoom from './interaction/DragZoom.js';
 import KeyboardPan from './interaction/KeyboardPan.js';
 import KeyboardZoom from './interaction/KeyboardZoom.js';
+import Kinetic from './Kinetic.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import PinchRotate from './interaction/PinchRotate.js';
 import PinchZoom from './interaction/PinchZoom.js';
-import {focus} from './events/condition.js';
 
 export {default as DoubleClickZoom} from './interaction/DoubleClickZoom.js';
 export {default as DragAndDrop} from './interaction/DragAndDrop.js';
@@ -35,7 +34,6 @@ export {default as Select} from './interaction/Select.js';
 export {default as Snap} from './interaction/Snap.js';
 export {default as Translate} from './interaction/Translate.js';
 
-
 /**
  * @typedef {Object} DefaultsOptions
  * @property {boolean} [altShiftDragRotate=true] Whether Alt-Shift-drag rotate is
@@ -56,7 +54,6 @@ export {default as Translate} from './interaction/Translate.js';
  * @property {number} [zoomDuration] Duration of the zoom animation in
  * milliseconds.
  */
-
 
 /**
  * Set of interactions included in maps by default. Specific interactions can be
@@ -85,75 +82,87 @@ export {default as Translate} from './interaction/Translate.js';
  * @api
  */
 export function defaults(opt_options) {
-
   const options = opt_options ? opt_options : {};
 
   const interactions = new Collection();
 
   const kinetic = new Kinetic(-0.005, 0.05, 100);
 
-  const altShiftDragRotate = options.altShiftDragRotate !== undefined ?
-    options.altShiftDragRotate : true;
+  const altShiftDragRotate =
+    options.altShiftDragRotate !== undefined
+      ? options.altShiftDragRotate
+      : true;
   if (altShiftDragRotate) {
     interactions.push(new DragRotate());
   }
 
-  const doubleClickZoom = options.doubleClickZoom !== undefined ?
-    options.doubleClickZoom : true;
+  const doubleClickZoom =
+    options.doubleClickZoom !== undefined ? options.doubleClickZoom : true;
   if (doubleClickZoom) {
-    interactions.push(new DoubleClickZoom({
-      delta: options.zoomDelta,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new DoubleClickZoom({
+        delta: options.zoomDelta,
+        duration: options.zoomDuration,
+      })
+    );
   }
 
   const dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
-    interactions.push(new DragPan({
-      condition: options.onFocusOnly ? focus : undefined,
-      kinetic: kinetic
-    }));
+    interactions.push(
+      new DragPan({
+        onFocusOnly: options.onFocusOnly,
+        kinetic: kinetic,
+      })
+    );
   }
 
-  const pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
-    true;
+  const pinchRotate =
+    options.pinchRotate !== undefined ? options.pinchRotate : true;
   if (pinchRotate) {
     interactions.push(new PinchRotate());
   }
 
   const pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
-    interactions.push(new PinchZoom({
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new PinchZoom({
+        duration: options.zoomDuration,
+      })
+    );
   }
 
   const keyboard = options.keyboard !== undefined ? options.keyboard : true;
   if (keyboard) {
     interactions.push(new KeyboardPan());
-    interactions.push(new KeyboardZoom({
-      delta: options.zoomDelta,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new KeyboardZoom({
+        delta: options.zoomDelta,
+        duration: options.zoomDuration,
+      })
+    );
   }
 
-  const mouseWheelZoom = options.mouseWheelZoom !== undefined ?
-    options.mouseWheelZoom : true;
+  const mouseWheelZoom =
+    options.mouseWheelZoom !== undefined ? options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    interactions.push(new MouseWheelZoom({
-      condition: options.onFocusOnly ? focus : undefined,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new MouseWheelZoom({
+        onFocusOnly: options.onFocusOnly,
+        duration: options.zoomDuration,
+      })
+    );
   }
 
-  const shiftDragZoom = options.shiftDragZoom !== undefined ?
-    options.shiftDragZoom : true;
+  const shiftDragZoom =
+    options.shiftDragZoom !== undefined ? options.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new DragZoom({
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new DragZoom({
+        duration: options.zoomDuration,
+      })
+    );
   }
 
   return interactions;
-
 }

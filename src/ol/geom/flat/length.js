@@ -2,7 +2,6 @@
  * @module ol/geom/flat/length
  */
 
-
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -23,7 +22,6 @@ export function lineStringLength(flatCoordinates, offset, end, stride) {
   }
   return length;
 }
-
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.

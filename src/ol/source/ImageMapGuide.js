@@ -2,12 +2,18 @@
  * @module ol/source/ImageMapGuide
  */
 
-import ImageWrapper from '../Image.js';
 import EventType from '../events/EventType.js';
-import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
-import {assign} from '../obj.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import ImageWrapper from '../Image.js';
 import {appendParams} from '../uri.js';
+import {assign} from '../obj.js';
+import {
+  containsExtent,
+  getCenter,
+  getHeight,
+  getWidth,
+  scaleFromCenter,
+} from '../extent.js';
 
 /**
  * @typedef {Object} Options
@@ -20,15 +26,15 @@ import {appendParams} from '../uri.js';
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {Object} [params] Additional parameters.
  */
-
 
 /**
  * @classdesc
@@ -42,10 +48,10 @@ class ImageMapGuide extends ImageSource {
    * @param {Options} options ImageMapGuide options.
    */
   constructor(options) {
-
     super({
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
-      resolutions: options.resolutions
+      resolutions: options.resolutions,
     });
 
     /**
@@ -53,14 +59,14 @@ class ImageMapGuide extends ImageSource {
      * @type {?string}
      */
     this.crossOrigin_ =
-        options.crossOrigin !== undefined ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
     /**
      * @private
      * @type {number}
      */
-    this.displayDpi_ = options.displayDpi !== undefined ?
-      options.displayDpi : 96;
+    this.displayDpi_ =
+      options.displayDpi !== undefined ? options.displayDpi : 96;
 
     /**
      * @private
@@ -78,8 +84,10 @@ class ImageMapGuide extends ImageSource {
      * @private
      * @type {import("../Image.js").LoadFunction}
      */
-    this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : defaultImageLoadFunction;
+    this.imageLoadFunction_ =
+      options.imageLoadFunction !== undefined
+        ? options.imageLoadFunction
+        : defaultImageLoadFunction;
 
     /**
      * @private
@@ -91,8 +99,8 @@ class ImageMapGuide extends ImageSource {
      * @private
      * @type {number}
      */
-    this.metersPerUnit_ = options.metersPerUnit !== undefined ?
-      options.metersPerUnit : 1;
+    this.metersPerUnit_ =
+      options.metersPerUnit !== undefined ? options.metersPerUnit : 1;
 
     /**
      * @private
@@ -104,8 +112,8 @@ class ImageMapGuide extends ImageSource {
      * @private
      * @type {boolean}
      */
-    this.useOverlay_ = options.useOverlay !== undefined ?
-      options.useOverlay : false;
+    this.useOverlay_ =
+      options.useOverlay !== undefined ? options.useOverlay : false;
 
     /**
      * @private
@@ -118,7 +126,6 @@ class ImageMapGuide extends ImageSource {
      * @type {number}
      */
     this.renderedRevision_ = 0;
-
   }
 
   /**
@@ -132,18 +139,24 @@ class ImageMapGuide extends ImageSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../Image.js").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     resolution = this.findNearestResolution(resolution);
     pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
     let image = this.image_;
-    if (image &&
-        this.renderedRevision_ == this.getRevision() &&
-        image.getResolution() == resolution &&
-        image.getPixelRatio() == pixelRatio &&
-        containsExtent(image.getExtent(), extent)) {
+    if (
+      image &&
+      this.renderedRevision_ == this.getRevision() &&
+      image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
+      containsExtent(image.getExtent(), extent)
+    ) {
       return image;
     }
 
@@ -156,12 +169,25 @@ class ImageMapGuide extends ImageSource {
     const size = [width * pixelRatio, height * pixelRatio];
 
     if (this.url_ !== undefined) {
-      const imageUrl = this.getUrl(this.url_, this.params_, extent, size,
-        projection);
-      image = new ImageWrapper(extent, resolution, pixelRatio,
-        imageUrl, this.crossOrigin_,
-        this.imageLoadFunction_);
-      image.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
+      const imageUrl = this.getUrl(
+        this.url_,
+        this.params_,
+        extent,
+        size,
+        projection
+      );
+      image = new ImageWrapper(
+        extent,
+        resolution,
+        pixelRatio,
+        imageUrl,
+        this.crossOrigin_,
+        this.imageLoadFunction_
+      );
+      image.addEventListener(
+        EventType.CHANGE,
+        this.handleImageChange.bind(this)
+      );
     } else {
       image = null;
     }
@@ -199,11 +225,12 @@ class ImageMapGuide extends ImageSource {
    * @return {string} The mapagent map image request URL.
    */
   getUrl(baseUrl, params, extent, size, projection) {
-    const scale = getScale(extent, size,
-      this.metersPerUnit_, this.displayDpi_);
+    const scale = getScale(extent, size, this.metersPerUnit_, this.displayDpi_);
     const center = getCenter(extent);
     const baseParams = {
-      'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
+      'OPERATION': this.useOverlay_
+        ? 'GETDYNAMICMAPOVERLAYIMAGE'
+        : 'GETMAPIMAGE',
       'VERSION': '2.0.0',
       'LOCALE': 'en',
       'CLIENTAGENT': 'ol/source/ImageMapGuide source',
@@ -213,7 +240,7 @@ class ImageMapGuide extends ImageSource {
       'SETDISPLAYHEIGHT': Math.round(size[1]),
       'SETVIEWSCALE': scale,
       'SETVIEWCENTERX': center[0],
-      'SETVIEWCENTERY': center[1]
+      'SETVIEWCENTERY': center[1],
     };
     assign(baseParams, params);
     return appendParams(baseUrl, baseParams);
@@ -231,7 +258,6 @@ class ImageMapGuide extends ImageSource {
   }
 }
 
-
 /**
  * @param {import("../extent.js").Extent} extent The map extents.
  * @param {import("../size.js").Size} size The viewport size.
@@ -246,11 +272,10 @@ function getScale(extent, size, metersPerUnit, dpi) {
   const devH = size[1];
   const mpp = 0.0254 / dpi;
   if (devH * mcsW > devW * mcsH) {
-    return mcsW * metersPerUnit / (devW * mpp); // width limited
+    return (mcsW * metersPerUnit) / (devW * mpp); // width limited
   } else {
-    return mcsH * metersPerUnit / (devH * mpp); // height limited
+    return (mcsH * metersPerUnit) / (devH * mpp); // height limited
   }
 }
-
 
 export default ImageMapGuide;

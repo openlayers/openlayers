@@ -2,9 +2,8 @@
  * @module ol/interaction/Interaction
  */
 import BaseObject from '../Object.js';
-import {easeOut, linear} from '../easing.js';
 import InteractionProperty from './Property.js';
-
+import {easeOut, linear} from '../easing.js';
 
 /**
  * Object literal with config options for interactions.
@@ -16,7 +15,6 @@ import InteractionProperty from './Property.js';
  * prevented (this includes functions with no explicit return). The interactions
  * are traversed in reverse order of the interactions collection of the map.
  */
-
 
 /**
  * @classdesc
@@ -33,13 +31,13 @@ import InteractionProperty from './Property.js';
  */
 class Interaction extends BaseObject {
   /**
-   * @param {InteractionOptions} options Options.
+   * @param {InteractionOptions=} opt_options Options.
    */
-  constructor(options) {
+  constructor(opt_options) {
     super();
 
-    if (options.handleEvent) {
-      this.handleEvent = options.handleEvent;
+    if (opt_options && opt_options.handleEvent) {
+      this.handleEvent = opt_options.handleEvent;
     }
 
     /**
@@ -101,7 +99,6 @@ class Interaction extends BaseObject {
   }
 }
 
-
 /**
  * @param {import("../View.js").default} view View.
  * @param {import("../coordinate.js").Coordinate} delta Delta.
@@ -114,7 +111,7 @@ export function pan(view, delta, opt_duration) {
     view.animateInternal({
       duration: opt_duration !== undefined ? opt_duration : 250,
       easing: linear,
-      center: view.getConstrainedCenter(center)
+      center: view.getConstrainedCenter(center),
     });
   }
 }
@@ -142,7 +139,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
     resolution: newResolution,
     anchor: opt_anchor,
     duration: opt_duration !== undefined ? opt_duration : 250,
-    easing: easeOut
+    easing: easeOut,
   });
 }
 

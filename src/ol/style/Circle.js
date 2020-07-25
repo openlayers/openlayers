@@ -4,7 +4,6 @@
 
 import RegularShape from './RegularShape.js';
 
-
 /**
  * @typedef {Object} Options
  * @property {import("./Fill.js").default} [fill] Fill style.
@@ -12,7 +11,6 @@ import RegularShape from './RegularShape.js';
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {Array<number>} [displacement=[0,0]] displacement
  */
-
 
 /**
  * @classdesc
@@ -24,7 +22,6 @@ class CircleStyle extends RegularShape {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
@@ -32,23 +29,22 @@ class CircleStyle extends RegularShape {
       fill: options.fill,
       radius: options.radius,
       stroke: options.stroke,
-      displacement: options.displacement !== undefined ? options.displacement : [0, 0]
+      displacement:
+        options.displacement !== undefined ? options.displacement : [0, 0],
     });
-
   }
 
   /**
-  * Clones the style.
-  * @return {CircleStyle} The cloned style.
-  * @override
-  * @api
-  */
+   * Clones the style.
+   * @return {CircleStyle} The cloned style.
+   * @api
+   */
   clone() {
     const style = new CircleStyle({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       radius: this.getRadius(),
-      displacement: this.getDisplacement().slice()
+      displacement: this.getDisplacement().slice(),
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());
@@ -66,6 +62,5 @@ class CircleStyle extends RegularShape {
     this.render();
   }
 }
-
 
 export default CircleStyle;

@@ -2,13 +2,12 @@
  * @module ol/interaction/Translate
  */
 import Collection from '../Collection.js';
-import {getChangeEventType} from '../Object.js';
 import Event from '../events/Event.js';
-import {TRUE} from '../functions.js';
-import {includes} from '../array.js';
-import PointerInteraction from './Pointer.js';
 import InteractionProperty from './Property.js';
-
+import PointerInteraction from './Pointer.js';
+import {TRUE} from '../functions.js';
+import {getChangeEventType} from '../Object.js';
+import {includes} from '../array.js';
 
 /**
  * @enum {string}
@@ -31,7 +30,7 @@ const TranslateEventType = {
    * @event TranslateEvent#translateend
    * @api
    */
-  TRANSLATEEND: 'translateend'
+  TRANSLATEEND: 'translateend',
 };
 
 /**
@@ -59,7 +58,6 @@ const TranslateEventType = {
  * will be checked for features.
  */
 
-
 /**
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Translate~Translate} instances
@@ -74,7 +72,6 @@ export class TranslateEvent extends Event {
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    */
   constructor(type, features, coordinate, startCoordinate, mapBrowserEvent) {
-
     super(type);
 
     /**
@@ -106,11 +103,8 @@ export class TranslateEvent extends Event {
      * @api
      */
     this.mapBrowserEvent = mapBrowserEvent;
-
   }
-
 }
-
 
 /**
  * @classdesc
@@ -142,7 +136,6 @@ class Translate extends PointerInteraction {
      */
     this.startCoordinate_ = null;
 
-
     /**
      * @type {Collection<import("../Feature.js").default>}
      * @private
@@ -156,7 +149,7 @@ class Translate extends PointerInteraction {
         layerFilter = options.layers;
       } else {
         const layers = options.layers;
-        layerFilter = function(layer) {
+        layerFilter = function (layer) {
           return includes(layers, layer);
         };
       }
@@ -188,12 +181,16 @@ class Translate extends PointerInteraction {
      */
     this.lastFeature_ = null;
 
-    this.addEventListener(getChangeEventType(InteractionProperty.ACTIVE), this.handleActiveChanged_);
-
+    this.addEventListener(
+      getChangeEventType(InteractionProperty.ACTIVE),
+      this.handleActiveChanged_
+    );
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(event) {
     this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
@@ -206,15 +203,22 @@ class Translate extends PointerInteraction {
 
       this.dispatchEvent(
         new TranslateEvent(
-          TranslateEventType.TRANSLATESTART, features,
-          event.coordinate, this.startCoordinate_, event));
+          TranslateEventType.TRANSLATESTART,
+          features,
+          event.coordinate,
+          this.startCoordinate_,
+          event
+        )
+      );
       return true;
     }
     return false;
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(event) {
     if (this.lastCoordinate_) {
@@ -225,8 +229,13 @@ class Translate extends PointerInteraction {
 
       this.dispatchEvent(
         new TranslateEvent(
-          TranslateEventType.TRANSLATEEND, features,
-          event.coordinate, this.startCoordinate_, event));
+          TranslateEventType.TRANSLATEEND,
+          features,
+          event.coordinate,
+          this.startCoordinate_,
+          event
+        )
+      );
       // cleanup
       this.startCoordinate_ = null;
       return true;
@@ -235,7 +244,8 @@ class Translate extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer drag events.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   handleDragEvent(event) {
     if (this.lastCoordinate_) {
@@ -245,22 +255,29 @@ class Translate extends PointerInteraction {
 
       const features = this.features_ || new Collection([this.lastFeature_]);
 
-      features.forEach(function(feature) {
+      features.forEach(function (feature) {
         const geom = feature.getGeometry();
         geom.translate(deltaX, deltaY);
         feature.setGeometry(geom);
       });
 
       this.lastCoordinate_ = newCoordinate;
+
       this.dispatchEvent(
         new TranslateEvent(
-          TranslateEventType.TRANSLATING, features,
-          newCoordinate, this.startCoordinate_, event));
+          TranslateEventType.TRANSLATING,
+          features,
+          newCoordinate,
+          this.startCoordinate_,
+          event
+        )
+      );
     }
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer move events.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   handleMoveEvent(event) {
     const elem = event.map.getViewport();
@@ -285,17 +302,20 @@ class Translate extends PointerInteraction {
    * @private
    */
   featuresAtPixel_(pixel, map) {
-    return map.forEachFeatureAtPixel(pixel,
-      function(feature, layer) {
+    return map.forEachFeatureAtPixel(
+      pixel,
+      function (feature, layer) {
         if (this.filter_(feature, layer)) {
           if (!this.features_ || includes(this.features_.getArray(), feature)) {
             return feature;
           }
         }
-      }.bind(this), {
+      }.bind(this),
+      {
         layerFilter: this.layerFilter_,
-        hitTolerance: this.hitTolerance_
-      });
+        hitTolerance: this.hitTolerance_,
+      }
+    );
   }
 
   /**
@@ -318,7 +338,10 @@ class Translate extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Remove the interaction from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   setMap(map) {
     const oldMap = this.getMap();

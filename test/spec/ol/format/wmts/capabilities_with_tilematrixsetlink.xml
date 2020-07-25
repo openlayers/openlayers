@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0.0">
+    <ows:ServiceIdentification>
+        <ows:Title>Sample WMTS</ows:Title>
+        <ows:ServiceType>OGC WMTS</ows:ServiceType>
+        <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+        <ows:Fees>None</ows:Fees>
+        <ows:AccessConstraints>none</ows:AccessConstraints>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+        <ows:ProviderName></ows:ProviderName>
+        <ows:ProviderSite/>
+        <ows:ServiceContact>
+            <ows:IndividualName></ows:IndividualName>
+            <ows:ContactInfo>
+                <ows:Address>
+                    <ows:City></ows:City>
+                    <ows:Country></ows:Country>
+                    <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+                </ows:Address>
+            </ows:ContactInfo>
+        </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <Contents>
+        <Layer>
+            <ows:Title>Baselayer</ows:Title>
+            <ows:Abstract>Baselayer</ows:Abstract>
+            <ows:Identifier>baselayer</ows:Identifier>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-180.0 -90.0</ows:LowerCorner>
+                <ows:UpperCorner>180.0 90.0</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::4326">
+                <ows:LowerCorner>-90.0 -180.0</ows:LowerCorner>
+                <ows:UpperCorner>90.0 180.0</ows:UpperCorner>
+            </ows:BoundingBox>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/png</Format>               
+            <TileMatrixSetLink>
+                <TileMatrixSet>inspire_quad</TileMatrixSet>
+            </TileMatrixSetLink>
+            <ResourceURL format="image/png" resourceType="tile" template="https://example.com/wmts/baselayer/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+        </Layer>
+        <Layer>
+            <ows:Title>Mean depth full coverage with land coverage</ows:Title>
+            <ows:Abstract></ows:Abstract>
+            <ows:Identifier>mean_atlas_land</ows:Identifier>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-36.0 15.0</ows:LowerCorner>
+                <ows:UpperCorner>43.0 90.0</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::4326">
+                <ows:LowerCorner>14.999942759061003 -36.0</ows:LowerCorner>
+                <ows:UpperCorner>90.0 42.999938986416</ows:UpperCorner>
+            </ows:BoundingBox>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/png</Format>
+            <TileMatrixSetLink>
+                <TileMatrixSet>inspire_quad</TileMatrixSet>
+                <TileMatrixSetLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>0</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>0</MaxTileRow>
+                        <MinTileCol>0</MinTileCol>
+                        <MaxTileCol>1</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>1</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>0</MaxTileRow>
+                        <MinTileCol>1</MinTileCol>
+                        <MaxTileCol>2</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>2</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>1</MaxTileRow>
+                        <MinTileCol>3</MinTileCol>
+                        <MaxTileCol>4</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>3</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>3</MaxTileRow>
+                        <MinTileCol>6</MinTileCol>
+                        <MaxTileCol>9</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>4</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>6</MaxTileRow>
+                        <MinTileCol>12</MinTileCol>
+                        <MaxTileCol>19</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>5</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>13</MaxTileRow>
+                        <MinTileCol>25</MinTileCol>
+                        <MaxTileCol>39</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>6</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>26</MaxTileRow>
+                        <MinTileCol>51</MinTileCol>
+                        <MaxTileCol>79</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>7</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>53</MaxTileRow>
+                        <MinTileCol>102</MinTileCol>
+                        <MaxTileCol>158</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>8</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>106</MaxTileRow>
+                        <MinTileCol>204</MinTileCol>
+                        <MaxTileCol>317</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>9</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>213</MaxTileRow>
+                        <MinTileCol>409</MinTileCol>
+                        <MaxTileCol>634</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>10</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>426</MaxTileRow>
+                        <MinTileCol>819</MinTileCol>
+                        <MaxTileCol>1268</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>11</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>853</MaxTileRow>
+                        <MinTileCol>1638</MinTileCol>
+                        <MaxTileCol>2537</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>12</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>1706</MaxTileRow>
+                        <MinTileCol>3276</MinTileCol>
+                        <MaxTileCol>5074</MaxTileCol>
+                    </TileMatrixLimits>
+                </TileMatrixSetLimits>
+            </TileMatrixSetLink>
+            <ResourceURL format="image/png" resourceType="tile" template="https://example.com/wmts/mean_atlas_land/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+        </Layer>
+        <TileMatrixSet>
+            <ows:Title>InspireCRS84Quad</ows:Title>
+            <ows:Identifier>inspire_quad</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:EPSG::4326</ows:SupportedCRS>
+            <TileMatrix>
+                <ows:Identifier>0</ows:Identifier>
+                <ScaleDenominator>279541132.014357</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>2</MatrixWidth>
+                <MatrixHeight>1</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>1</ows:Identifier>
+                <ScaleDenominator>1.3977056600717938E8</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>4</MatrixWidth>
+                <MatrixHeight>2</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>2</ows:Identifier>
+                <ScaleDenominator>6.988528300358969E7</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>8</MatrixWidth>
+                <MatrixHeight>4</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>3</ows:Identifier>
+                <ScaleDenominator>3.4942641501794845E7</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>16</MatrixWidth>
+                <MatrixHeight>8</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>4</ows:Identifier>
+                <ScaleDenominator>1.7471320750897422E7</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>32</MatrixWidth>
+                <MatrixHeight>16</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>5</ows:Identifier>
+                <ScaleDenominator>8735660.375448711</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>64</MatrixWidth>
+                <MatrixHeight>32</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>6</ows:Identifier>
+                <ScaleDenominator>4367830.187724356</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>128</MatrixWidth>
+                <MatrixHeight>64</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>7</ows:Identifier>
+                <ScaleDenominator>2183915.093862178</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>256</MatrixWidth>
+                <MatrixHeight>128</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>8</ows:Identifier>
+                <ScaleDenominator>1091957.546931089</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>512</MatrixWidth>
+                <MatrixHeight>256</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>9</ows:Identifier>
+                <ScaleDenominator>545978.7734655445</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>1024</MatrixWidth>
+                <MatrixHeight>512</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>10</ows:Identifier>
+                <ScaleDenominator>272989.3867327722</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>2048</MatrixWidth>
+                <MatrixHeight>1024</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>11</ows:Identifier>
+                <ScaleDenominator>136494.6933663861</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>4096</MatrixWidth>
+                <MatrixHeight>2048</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>12</ows:Identifier>
+                <ScaleDenominator>68247.34668319306</ScaleDenominator>
+                <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>8192</MatrixWidth>
+                <MatrixHeight>4096</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>       
+    </Contents>
+    <ServiceMetadataURL xlink:href="https://example.com/wmts/1.0.0/WMTSCapabilities.xml"/>
+</Capabilities>

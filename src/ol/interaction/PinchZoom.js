@@ -1,15 +1,15 @@
 /**
  * @module ol/interaction/PinchZoom
  */
+import PointerInteraction, {
+  centroid as centroidFromPointers,
+} from './Pointer.js';
 import {FALSE} from '../functions.js';
-import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
-
 
 /**
  * @typedef {Object} Options
  * @property {number} [duration=400] Animation duration in milliseconds.
  */
-
 
 /**
  * @classdesc
@@ -22,7 +22,6 @@ class PinchZoom extends PointerInteraction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
@@ -56,11 +55,11 @@ class PinchZoom extends PointerInteraction {
      * @type {number}
      */
     this.lastScaleDelta_ = 1;
-
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer drag events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let scaleDelta = 1.0;
@@ -77,7 +76,6 @@ class PinchZoom extends PointerInteraction {
       scaleDelta = this.lastDistance_ / distance;
     }
     this.lastDistance_ = distance;
-
 
     const map = mapBrowserEvent.map;
     const view = map.getView();
@@ -99,7 +97,9 @@ class PinchZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
     if (this.targetPointers.length < 2) {
@@ -114,7 +114,9 @@ class PinchZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length >= 2) {

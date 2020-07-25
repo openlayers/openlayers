@@ -10,7 +10,6 @@ import Spatial from './Spatial.js';
  * @api
  */
 class Contains extends Spatial {
-
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../../geom/Geometry.js").default} geometry Geometry.
@@ -18,11 +17,8 @@ class Contains extends Spatial {
    *    set on geometries when this is not provided.
    */
   constructor(geometryName, geometry, opt_srsName) {
-
     super('Contains', geometryName, geometry, opt_srsName);
-
   }
-
 }
 
 export default Contains;

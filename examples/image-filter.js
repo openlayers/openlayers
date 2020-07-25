@@ -1,11 +1,12 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import {fromLonLat} from '../src/ol/proj.js';
+import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
+import {fromLonLat} from '../src/ol/proj.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
-const attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+const attributions =
+  '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const imagery = new TileLayer({
@@ -13,8 +14,8 @@ const imagery = new TileLayer({
     attributions: attributions,
     url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
     maxZoom: 20,
-    crossOrigin: ''
-  })
+    crossOrigin: '',
+  }),
 });
 
 const map = new Map({
@@ -22,52 +23,25 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: fromLonLat([-120, 50]),
-    zoom: 6
-  })
+    zoom: 6,
+  }),
 });
 
 const kernels = {
-  none: [
-    0, 0, 0,
-    0, 1, 0,
-    0, 0, 0
-  ],
-  sharpen: [
-    0, -1, 0,
-    -1, 5, -1,
-    0, -1, 0
-  ],
-  sharpenless: [
-    0, -1, 0,
-    -1, 10, -1,
-    0, -1, 0
-  ],
-  blur: [
-    1, 1, 1,
-    1, 1, 1,
-    1, 1, 1
-  ],
-  shadow: [
-    1, 2, 1,
-    0, 1, 0,
-    -1, -2, -1
-  ],
-  emboss: [
-    -2, 1, 0,
-    -1, 1, 1,
-    0, 1, 2
-  ],
-  edge: [
-    0, 1, 0,
-    1, -4, 1,
-    0, 1, 0
-  ]
+  none: [0, 0, 0, 0, 1, 0, 0, 0, 0],
+  sharpen: [0, -1, 0, -1, 5, -1, 0, -1, 0],
+  sharpenless: [0, -1, 0, -1, 10, -1, 0, -1, 0],
+  blur: [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  shadow: [1, 2, 1, 0, 1, 0, -1, -2, -1],
+  emboss: [-2, 1, 0, -1, 1, 1, 0, 1, 2],
+  edge: [0, 1, 0, 1, -4, 1, 0, 1, 0],
 };
 
 function normalize(kernel) {
   const len = kernel.length;
   const normal = new Array(len);
-  let i, sum = 0;
+  let i,
+    sum = 0;
   for (i = 0; i < len; ++i) {
     sum += kernel[i];
   }
@@ -86,23 +60,20 @@ function normalize(kernel) {
 const select = document.getElementById('kernel');
 let selectedKernel = normalize(kernels[select.value]);
 
-
 /**
  * Update the kernel and re-render on change.
  */
-select.onchange = function() {
+select.onchange = function () {
   selectedKernel = normalize(kernels[select.value]);
   map.render();
 };
 
-
 /**
  * Apply a filter on "postrender" events.
  */
-imagery.on('postrender', function(event) {
+imagery.on('postrender', function (event) {
   convolve(event.context, selectedKernel);
 });
-
 
 /**
  * Apply a convolution kernel to canvas.  This works for any size kernel, but
@@ -126,14 +97,21 @@ function convolve(context, kernel) {
   for (let pixelY = 0; pixelY < height; ++pixelY) {
     const pixelsAbove = pixelY * width;
     for (let pixelX = 0; pixelX < width; ++pixelX) {
-      let r = 0, g = 0, b = 0, a = 0;
+      let r = 0,
+        g = 0,
+        b = 0,
+        a = 0;
       for (let kernelY = 0; kernelY < size; ++kernelY) {
         for (let kernelX = 0; kernelX < size; ++kernelX) {
           const weight = kernel[kernelY * size + kernelX];
           const neighborY = Math.min(
-            height - 1, Math.max(0, pixelY + kernelY - half));
+            height - 1,
+            Math.max(0, pixelY + kernelY - half)
+          );
           const neighborX = Math.min(
-            width - 1, Math.max(0, pixelX + kernelX - half));
+            width - 1,
+            Math.max(0, pixelX + kernelX - half)
+          );
           const inputIndex = (neighborY * width + neighborX) * 4;
           r += inputData[inputIndex] * weight;
           g += inputData[inputIndex + 1] * weight;

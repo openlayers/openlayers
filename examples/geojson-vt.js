@@ -1,13 +1,16 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {Tile as TileLayer, VectorTile as VectorTileLayer} from '../src/ol/layer.js';
 import Projection from '../src/ol/proj/Projection.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
+import View from '../src/ol/View.js';
+import {
+  Tile as TileLayer,
+  VectorTile as VectorTileLayer,
+} from '../src/ol/layer.js';
 
 // Converts geojson-vt data to GeoJSON
-const replacer = function(key, value) {
+const replacer = function (key, value) {
   if (value.geometry) {
     let type;
     const rawType = value.type;
@@ -37,9 +40,9 @@ const replacer = function(key, value) {
       'type': 'Feature',
       'geometry': {
         'type': type,
-        'coordinates': geometry
+        'coordinates': geometry,
       },
-      'properties': value.tags
+      'properties': value.tags,
     };
   } else {
     return value;
@@ -49,44 +52,62 @@ const replacer = function(key, value) {
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new OSM()
-    })
+      source: new OSM(),
+    }),
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 const url = 'data/geojson/countries.geojson';
-fetch(url).then(function(response) {
-  return response.json();
-}).then(function(json) {
-  const tileIndex = geojsonvt(json, {
-    extent: 4096,
-    debug: 1
-  });
-  const vectorSource = new VectorTileSource({
-    format: new GeoJSON({
+fetch(url)
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (json) {
+    const tileIndex = geojsonvt(json, {
+      extent: 4096,
+      debug: 1,
+    });
+    const format = new GeoJSON({
       // Data returned from geojson-vt is in tile pixel units
       dataProjection: new Projection({
         code: 'TILE_PIXELS',
         units: 'tile-pixels',
-        extent: [0, 0, 4096, 4096]
-      })
-    }),
-    tileUrlFunction: function(tileCoord) {
-      const data = tileIndex.getTile(tileCoord[0], tileCoord[1], tileCoord[2]);
-      const geojson = JSON.stringify({
-        type: 'FeatureCollection',
-        features: data ? data.features : []
-      }, replacer);
-      return 'data:application/json;charset=UTF-8,' + geojson;
-    }
+        extent: [0, 0, 4096, 4096],
+      }),
+    });
+    const vectorSource = new VectorTileSource({
+      tileUrlFunction: function (tileCoord) {
+        // Use the tile coordinate as a pseudo URL for caching purposes
+        return JSON.stringify(tileCoord);
+      },
+      tileLoadFunction: function (tile, url) {
+        const tileCoord = JSON.parse(url);
+        const data = tileIndex.getTile(
+          tileCoord[0],
+          tileCoord[1],
+          tileCoord[2]
+        );
+        const geojson = JSON.stringify(
+          {
+            type: 'FeatureCollection',
+            features: data ? data.features : [],
+          },
+          replacer
+        );
+        const features = format.readFeatures(geojson, {
+          extent: vectorSource.getTileGrid().getTileCoordExtent(tileCoord),
+          featureProjection: map.getView().getProjection(),
+        });
+        tile.setFeatures(features);
+      },
+    });
+    const vectorLayer = new VectorTileLayer({
+      source: vectorSource,
+    });
+    map.addLayer(vectorLayer);
   });
-  const vectorLayer = new VectorTileLayer({
-    source: vectorSource
-  });
-  map.addLayer(vectorLayer);
-});

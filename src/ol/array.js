@@ -2,7 +2,6 @@
  * @module ol/array
  */
 
-
 /**
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
  * https://github.com/darkskyapp/binary-search
@@ -22,13 +21,14 @@ export function binarySearch(haystack, needle, opt_comparator) {
   while (low < high) {
     /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
      * to double (which gives the wrong results). */
-    mid = low + (high - low >> 1);
+    mid = low + ((high - low) >> 1);
     cmp = +comparator(haystack[mid], needle);
 
-    if (cmp < 0.0) { /* Too low. */
+    if (cmp < 0.0) {
+      /* Too low. */
       low = mid + 1;
-
-    } else { /* Key found or too high */
+    } else {
+      /* Key found or too high */
       high = mid;
       found = !cmp;
     }
@@ -37,7 +37,6 @@ export function binarySearch(haystack, needle, opt_comparator) {
   /* Key not found. */
   return found ? low : ~low;
 }
-
 
 /**
  * Compare function for array sort that is safe for numbers.
@@ -50,7 +49,6 @@ export function numberSafeCompareFunction(a, b) {
   return a > b ? 1 : a < b ? -1 : 0;
 }
 
-
 /**
  * Whether the array contains the given object.
  * @param {Array<*>} arr The array to test for the presence of the element.
@@ -60,7 +58,6 @@ export function numberSafeCompareFunction(a, b) {
 export function includes(arr, obj) {
   return arr.indexOf(obj) >= 0;
 }
-
 
 /**
  * @param {Array<number>} arr Array.
@@ -107,7 +104,6 @@ export function linearFindNearest(arr, target, direction) {
   }
 }
 
-
 /**
  * @param {Array<*>} arr Array.
  * @param {number} begin Begin index.
@@ -123,7 +119,6 @@ export function reverseSubArray(arr, begin, end) {
   }
 }
 
-
 /**
  * @param {Array<VALUE>} arr The array to modify.
  * @param {!Array<VALUE>|VALUE} data The elements or arrays of elements to add to arr.
@@ -136,7 +131,6 @@ export function extend(arr, data) {
     arr[arr.length] = extension[i];
   }
 }
-
 
 /**
  * @param {Array<VALUE>} arr The array to modify.
@@ -152,7 +146,6 @@ export function remove(arr, obj) {
   }
   return found;
 }
-
 
 /**
  * @param {Array<VALUE>} arr The array to search in.
@@ -173,7 +166,6 @@ export function find(arr, func) {
   return null;
 }
 
-
 /**
  * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
  * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
@@ -192,7 +184,6 @@ export function equals(arr1, arr2) {
   return true;
 }
 
-
 /**
  * Sort the passed array such that the relative order of equal elements is preverved.
  * See https://en.wikipedia.org/wiki/Sorting_algorithm#Stability for details.
@@ -207,14 +198,13 @@ export function stableSort(arr, compareFnc) {
   for (i = 0; i < length; i++) {
     tmp[i] = {index: i, value: arr[i]};
   }
-  tmp.sort(function(a, b) {
+  tmp.sort(function (a, b) {
     return compareFnc(a.value, b.value) || a.index - b.index;
   });
   for (i = 0; i < arr.length; i++) {
     arr[i] = tmp[i].value;
   }
 }
-
 
 /**
  * @param {Array<*>} arr The array to search in.
@@ -223,13 +213,12 @@ export function stableSort(arr, compareFnc) {
  */
 export function findIndex(arr, func) {
   let index;
-  const found = !arr.every(function(el, idx) {
+  const found = !arr.every(function (el, idx) {
     index = idx;
     return !func(el, idx, arr);
   });
   return found ? index : -1;
 }
-
 
 /**
  * @param {Array<*>} arr The array to test.
@@ -239,11 +228,11 @@ export function findIndex(arr, func) {
  */
 export function isSorted(arr, opt_func, opt_strict) {
   const compare = opt_func || numberSafeCompareFunction;
-  return arr.every(function(currentVal, index) {
+  return arr.every(function (currentVal, index) {
     if (index === 0) {
       return true;
     }
     const res = compare(arr[index - 1], currentVal);
-    return !(res > 0 || opt_strict && res === 0);
+    return !(res > 0 || (opt_strict && res === 0));
   });
 }

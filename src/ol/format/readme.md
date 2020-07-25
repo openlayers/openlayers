@@ -51,7 +51,7 @@ There are two key concepts to master to understand how `ol/xml` works:
 * How `ol/xml~parse` traverses the XML document (or node) and calls back to your code
 * How `ol/xml` decouples the structure of the XML document (which is always a tree) from the structure of the output data (which could be a single object, an array of objects, or anything else) using an object stack.
 
-It's handy to have the [`src/ol/xml.js` source code](https://github.com/openlayers/openlayers/blob/master/src/ol/xml.js) to hand while you read the following.
+It's handy to have the [`src/ol/xml.js` source code](https://github.com/openlayers/openlayers/blob/main/src/ol/xml.js) to hand while you read the following.
 
 ## How `ol/xml~parse` traverses the XML document
 
@@ -124,7 +124,7 @@ In the above there are many common operations, like setting the property of the 
 
 ### Putting it all together
 
-With the above, you should be able to read through the [source code to `ol/format/GPX`](https://github.com/openlayers/openlayers/blob/master/src/ol/format/gpxformat.js) and get a feel for how it works. Start from the bottom of the file and work upwards. It's also useful to have [an example GPX file](http://www.topografix.com/fells_loop.gpx) and [the GPX specification](http://www.topografix.com/GPX/1/1/) to hand.
+With the above, you should be able to read through the [source code to `ol/format/GPX`](https://github.com/openlayers/openlayers/blob/main/src/ol/format/gpxformat.js) and get a feel for how it works. Start from the bottom of the file and work upwards. It's also useful to have [an example GPX file](http://www.topografix.com/fells_loop.gpx) and [the GPX specification](http://www.topografix.com/GPX/1/1/) to hand.
 
 ### Handling errors
 

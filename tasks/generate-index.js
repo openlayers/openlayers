@@ -2,14 +2,13 @@ const fse = require('fs-extra');
 const path = require('path');
 const generateInfo = require('./generate-info');
 
-
 /**
  * Read the symbols from info file.
  * @return {Promise<Array>} Resolves with an array of symbol objects.
  */
 async function getSymbols() {
   const info = await generateInfo();
-  return info.symbols.filter(symbol => symbol.kind != 'member');
+  return info.symbols.filter((symbol) => symbol.kind != 'member');
 }
 
 /**
@@ -32,7 +31,6 @@ function getImport(symbol, member) {
   }
 }
 
-
 /**
  * Generate code to export a named symbol.
  * @param {Object} symbol Symbol.
@@ -46,19 +44,19 @@ function formatSymbolExport(symbol, namespaces, imports) {
   const isNamed = parts[0].indexOf('.') !== -1;
   const nsParts = parts[0].replace(/^module\:/, '').split(/[\/\.]/);
   const last = nsParts.length - 1;
-  const importName = isNamed ?
-    '_' + nsParts.slice(0, last).join('_') + '$' + nsParts[last] :
-    '$' + nsParts.join('$');
+  const importName = isNamed
+    ? '_' + nsParts.slice(0, last).join('_') + '$' + nsParts[last]
+    : '$' + nsParts.join('$');
   let line = nsParts[0];
   for (let i = 1, ii = nsParts.length; i < ii; ++i) {
     line += `.${nsParts[i]}`;
-    namespaces[line] = (line in namespaces ? namespaces[line] : true) && i < ii - 1;
+    namespaces[line] =
+      (line in namespaces ? namespaces[line] : true) && i < ii - 1;
   }
   line += ` = ${importName};`;
   imports[getImport(symbol, nsParts.pop())] = true;
   return line;
 }
-
 
 /**
  * Generate export code given a list symbol names.
@@ -71,7 +69,7 @@ function generateExports(symbols) {
   const namespaces = {};
   const imports = [];
   let blocks = [];
-  symbols.forEach(function(symbol) {
+  symbols.forEach(function (symbol) {
     const name = symbol.name;
     if (name.indexOf('#') == -1) {
       const imp = getImport(symbol);
@@ -91,11 +89,12 @@ function generateExports(symbols) {
       nsdefs.push(`${ns[i]} = {};`);
     }
   }
-  blocks = Object.keys(imports).concat('\nvar ol = {};\n', nsdefs.sort()).concat(blocks.sort());
+  blocks = Object.keys(imports)
+    .concat('\nvar ol = {};\n', nsdefs.sort())
+    .concat(blocks.sort());
   blocks.push('', 'export default ol;');
   return blocks.join('\n');
 }
-
 
 /**
  * Generate the exports code.
@@ -106,20 +105,20 @@ async function main() {
   return generateExports(symbols);
 }
 
-
 /**
  * If running this module directly, read the config file, call the main
  * function, and write the output file.
  */
 if (require.main === module) {
-  main().then(async code => {
-    const filepath = path.join(__dirname, '..', 'build', 'index.js');
-    await fse.outputFile(filepath, code);
-  }).catch(err => {
-    process.stderr.write(`${err.message}\n`, () => process.exit(1));
-  });
+  main()
+    .then(async (code) => {
+      const filepath = path.join(__dirname, '..', 'build', 'index.js');
+      await fse.outputFile(filepath, code);
+    })
+    .catch((err) => {
+      process.stderr.write(`${err.message}\n`, () => process.exit(1));
+    });
 }
-
 
 /**
  * Export main function.

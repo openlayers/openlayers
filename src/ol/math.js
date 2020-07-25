@@ -14,7 +14,6 @@ export function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-
 /**
  * Return the hyperbolic cosine of a given number. The method will use the
  * native `Math.cosh` function if it is available, otherwise the hyperbolic
@@ -24,7 +23,7 @@ export function clamp(value, min, max) {
  * @param {number} x X.
  * @return {number} Hyperbolic cosine of x.
  */
-export const cosh = (function() {
+export const cosh = (function () {
   // Wrapped in a iife, to save the overhead of checking for the native
   // implementation on every invocation.
   let cosh;
@@ -33,14 +32,38 @@ export const cosh = (function() {
     cosh = Math.cosh;
   } else {
     // … else, use the reference implementation of MDN:
-    cosh = function(x) {
+    cosh = function (x) {
       const y = /** @type {Math} */ (Math).exp(x);
       return (y + 1 / y) / 2;
     };
   }
   return cosh;
-}());
+})();
 
+/**
+ * Return the base 2 logarithm of a given number. The method will use the
+ * native `Math.log2` function if it is available, otherwise the base 2
+ * logarithm will be calculated via the reference implementation of the
+ * Mozilla developer network.
+ *
+ * @param {number} x X.
+ * @return {number} Base 2 logarithm of x.
+ */
+export const log2 = (function () {
+  // Wrapped in a iife, to save the overhead of checking for the native
+  // implementation on every invocation.
+  let log2;
+  if ('log2' in Math) {
+    // The environment supports the native Math.log2 function, use it…
+    log2 = Math.log2;
+  } else {
+    // … else, use the reference implementation of MDN:
+    log2 = function (x) {
+      return Math.log(x) * Math.LOG2E;
+    };
+  }
+  return log2;
+})();
 
 /**
  * Returns the square of the closest distance between the point (x, y) and the
@@ -69,7 +92,6 @@ export function squaredSegmentDistance(x, y, x1, y1, x2, y2) {
   return squaredDistance(x, y, x1, y1);
 }
 
-
 /**
  * Returns the square of the distance between the points (x1, y1) and (x2, y2).
  * @param {number} x1 X1.
@@ -83,7 +105,6 @@ export function squaredDistance(x1, y1, x2, y2) {
   const dy = y2 - y1;
   return dx * dx + dy * dy;
 }
-
 
 /**
  * Solves system of linear equations using Gaussian elimination method.
@@ -140,7 +161,6 @@ export function solveLinearSystem(mat) {
   return x;
 }
 
-
 /**
  * Converts radians to to degrees.
  *
@@ -148,9 +168,8 @@ export function solveLinearSystem(mat) {
  * @return {number} Angle in degrees.
  */
 export function toDegrees(angleInRadians) {
-  return angleInRadians * 180 / Math.PI;
+  return (angleInRadians * 180) / Math.PI;
 }
-
 
 /**
  * Converts degrees to radians.
@@ -159,7 +178,7 @@ export function toDegrees(angleInRadians) {
  * @return {number} Angle in radians.
  */
 export function toRadians(angleInDegrees) {
-  return angleInDegrees * Math.PI / 180;
+  return (angleInDegrees * Math.PI) / 180;
 }
 
 /**

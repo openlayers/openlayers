@@ -3,7 +3,7 @@ const path = require('path');
 
 const cases = path.join(__dirname, 'cases');
 
-const caseDirs = fs.readdirSync(cases).filter(name => {
+const caseDirs = fs.readdirSync(cases).filter((name) => {
   let exists = true;
   try {
     fs.accessSync(path.join(cases, name, 'main.js'));
@@ -14,7 +14,7 @@ const caseDirs = fs.readdirSync(cases).filter(name => {
 });
 
 const entry = {};
-caseDirs.forEach(c => {
+caseDirs.forEach((c) => {
   entry[`cases/${c}/main`] = `./cases/${c}/main.js`;
 });
 
@@ -24,14 +24,20 @@ module.exports = {
   entry: entry,
   devtool: 'source-map',
   module: {
-    rules: [{
-      test: /\.js$/,
-      use: {
-        loader: path.join(__dirname, '../examples/webpack/worker-loader.js')
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: path.join(__dirname, '../examples/webpack/worker-loader.js'),
+        },
+        include: [path.join(__dirname, '../src/ol/worker')],
       },
-      include: [
-        path.join(__dirname, '../src/ol/worker')
-      ]
-    }]
-  }
+    ],
+  },
+  resolve: {
+    alias: {
+      // allow imports from 'ol/module' instead of specifiying the source path
+      ol: path.join(__dirname, '..', 'src', 'ol'),
+    },
+  },
 };

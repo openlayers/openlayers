@@ -1,33 +1,31 @@
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {DragBox, Select} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 
 const vectorSource = new VectorSource({
   url: 'data/geojson/countries.geojson',
-  format: new GeoJSON()
+  format: new GeoJSON(),
 });
-
 
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new OSM()
+      source: new OSM(),
     }),
     new VectorLayer({
-      source: vectorSource
-    })
+      source: vectorSource,
+    }),
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
     zoom: 2,
-    constrainRotation: 16
-  })
+    constrainRotation: 16,
+  }),
 });
 
 // a normal select interaction to handle click
@@ -38,12 +36,12 @@ const selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
 const dragBox = new DragBox({
-  condition: platformModifierKeyOnly
+  condition: platformModifierKeyOnly,
 });
 
 map.addInteraction(dragBox);
 
-dragBox.on('boxend', function() {
+dragBox.on('boxend', function () {
   // features that intersect the box geometry are added to the
   // collection of selected features
 
@@ -54,7 +52,7 @@ dragBox.on('boxend', function() {
   const oblique = rotation % (Math.PI / 2) !== 0;
   const candidateFeatures = oblique ? [] : selectedFeatures;
   const extent = dragBox.getGeometry().getExtent();
-  vectorSource.forEachFeatureIntersectingExtent(extent, function(feature) {
+  vectorSource.forEachFeatureIntersectingExtent(extent, function (feature) {
     candidateFeatures.push(feature);
   });
 
@@ -68,7 +66,7 @@ dragBox.on('boxend', function() {
     const geometry = dragBox.getGeometry().clone();
     geometry.rotate(-rotation, anchor);
     const extent = geometry.getExtent();
-    candidateFeatures.forEach(function(feature) {
+    candidateFeatures.forEach(function (feature) {
       const geometry = feature.getGeometry().clone();
       geometry.rotate(-rotation, anchor);
       if (geometry.intersectsExtent(extent)) {
@@ -76,18 +74,17 @@ dragBox.on('boxend', function() {
       }
     });
   }
-
 });
 
 // clear selection when drawing a new box and when clicking on the map
-dragBox.on('boxstart', function() {
+dragBox.on('boxstart', function () {
   selectedFeatures.clear();
 });
 
 const infoBox = document.getElementById('info');
 
-selectedFeatures.on(['add', 'remove'], function() {
-  const names = selectedFeatures.getArray().map(function(feature) {
+selectedFeatures.on(['add', 'remove'], function () {
+  const names = selectedFeatures.getArray().map(function (feature) {
     return feature.get('name');
   });
   if (names.length > 0) {

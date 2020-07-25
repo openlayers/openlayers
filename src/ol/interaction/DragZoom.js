@@ -1,11 +1,16 @@
 /**
  * @module ol/interaction/DragZoom
  */
+import DragBox from './DragBox.js';
+import {
+  createOrUpdateFromCoordinates,
+  getBottomLeft,
+  getCenter,
+  getTopRight,
+  scaleFromCenter,
+} from '../extent.js';
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
-import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
-import DragBox from './DragBox.js';
-
 
 /**
  * @typedef {Object} Options
@@ -20,7 +25,6 @@ import DragBox from './DragBox.js';
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the parent default
  * `boxEndCondition` function.
  */
-
 
 /**
  * @classdesc
@@ -45,7 +49,6 @@ class DragZoom extends DragBox {
       condition: condition,
       className: options.className || 'ol-dragzoom',
       minArea: options.minArea,
-      onBoxEnd: onBoxEnd
     });
 
     /**
@@ -60,39 +63,41 @@ class DragZoom extends DragBox {
      */
     this.out_ = options.out !== undefined ? options.out : false;
   }
-}
 
+  /**
+   * Function to execute just before `onboxend` is fired
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   */
+  onBoxEnd(event) {
+    const map = this.getMap();
+    const view = /** @type {!import("../View.js").default} */ (map.getView());
+    const size = /** @type {!import("../size.js").Size} */ (map.getSize());
+    let extent = this.getGeometry().getExtent();
 
-/**
- * @this {DragZoom}
- */
-function onBoxEnd() {
-  const map = this.getMap();
-  const view = /** @type {!import("../View.js").default} */ (map.getView());
-  const size = /** @type {!import("../size.js").Size} */ (map.getSize());
-  let extent = this.getGeometry().getExtent();
+    if (this.out_) {
+      const mapExtent = view.calculateExtentInternal(size);
+      const boxPixelExtent = createOrUpdateFromCoordinates([
+        map.getPixelFromCoordinateInternal(getBottomLeft(extent)),
+        map.getPixelFromCoordinateInternal(getTopRight(extent)),
+      ]);
+      const factor = view.getResolutionForExtentInternal(boxPixelExtent, size);
 
-  if (this.out_) {
-    const mapExtent = view.calculateExtentInternal(size);
-    const boxPixelExtent = createOrUpdateFromCoordinates([
-      map.getPixelFromCoordinateInternal(getBottomLeft(extent)),
-      map.getPixelFromCoordinateInternal(getTopRight(extent))]);
-    const factor = view.getResolutionForExtentInternal(boxPixelExtent, size);
+      scaleFromCenter(mapExtent, 1 / factor);
+      extent = mapExtent;
+    }
 
-    scaleFromCenter(mapExtent, 1 / factor);
-    extent = mapExtent;
+    const resolution = view.getConstrainedResolution(
+      view.getResolutionForExtentInternal(extent, size)
+    );
+    const center = view.getConstrainedCenter(getCenter(extent), resolution);
+
+    view.animateInternal({
+      resolution: resolution,
+      center: center,
+      duration: this.duration_,
+      easing: easeOut,
+    });
   }
-
-  const resolution = view.getConstrainedResolution(view.getResolutionForExtentInternal(extent, size));
-  const center = view.getConstrainedCenter(getCenter(extent), resolution);
-
-  view.animateInternal({
-    resolution: resolution,
-    center: center,
-    duration: this.duration_,
-    easing: easeOut
-  });
 }
-
 
 export default DragZoom;

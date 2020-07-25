@@ -1,11 +1,14 @@
 /**
  * @module ol/interaction/DragRotate
  */
-import {disable} from '../rotationconstraint.js';
-import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
-import {FALSE} from '../functions.js';
 import PointerInteraction from './Pointer.js';
-
+import {FALSE} from '../functions.js';
+import {
+  altShiftKeysOnly,
+  mouseActionButton,
+  mouseOnly,
+} from '../events/condition.js';
+import {disable} from '../rotationconstraint.js';
 
 /**
  * @typedef {Object} Options
@@ -15,7 +18,6 @@ import PointerInteraction from './Pointer.js';
  * Default is {@link module:ol/events/condition~altShiftKeysOnly}.
  * @property {number} [duration=250] Animation duration in milliseconds.
  */
-
 
 /**
  * @classdesc
@@ -27,16 +29,14 @@ import PointerInteraction from './Pointer.js';
  * @api
  */
 class DragRotate extends PointerInteraction {
-
   /**
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
-      stopDown: FALSE
+      stopDown: FALSE,
     });
 
     /**
@@ -56,11 +56,11 @@ class DragRotate extends PointerInteraction {
      * @type {number}
      */
     this.duration_ = options.duration !== undefined ? options.duration : 250;
-
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer drag events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -74,8 +74,7 @@ class DragRotate extends PointerInteraction {
     }
     const size = map.getSize();
     const offset = mapBrowserEvent.pixel;
-    const theta =
-        Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
+    const theta = Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
     if (this.lastAngle_ !== undefined) {
       const delta = theta - this.lastAngle_;
       view.adjustRotationInternal(-delta);
@@ -83,9 +82,10 @@ class DragRotate extends PointerInteraction {
     this.lastAngle_ = theta;
   }
 
-
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -98,16 +98,20 @@ class DragRotate extends PointerInteraction {
     return false;
   }
 
-
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
       return false;
     }
 
-    if (mouseActionButton(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
+    if (
+      mouseActionButton(mapBrowserEvent) &&
+      this.condition_(mapBrowserEvent)
+    ) {
       const map = mapBrowserEvent.map;
       map.getView().beginInteraction();
       this.lastAngle_ = undefined;

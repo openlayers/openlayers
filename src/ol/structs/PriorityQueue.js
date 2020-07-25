@@ -4,12 +4,10 @@
 import {assert} from '../asserts.js';
 import {clear} from '../obj.js';
 
-
 /**
  * @type {number}
  */
 export const DROP = Infinity;
-
 
 /**
  * @classdesc
@@ -24,13 +22,11 @@ export const DROP = Infinity;
  * @template T
  */
 class PriorityQueue {
-
   /**
    * @param {function(T): number} priorityFunction Priority function.
    * @param {function(T): string} keyFunction Key function.
    */
   constructor(priorityFunction, keyFunction) {
-
     /**
      * @type {function(T): number}
      * @private
@@ -60,7 +56,6 @@ class PriorityQueue {
      * @private
      */
     this.queuedElements_ = {};
-
   }
 
   /**
@@ -71,7 +66,6 @@ class PriorityQueue {
     this.priorities_.length = 0;
     clear(this.queuedElements_);
   }
-
 
   /**
    * Remove and return the highest-priority element. O(log N).
@@ -94,15 +88,13 @@ class PriorityQueue {
     return element;
   }
 
-
   /**
    * Enqueue an element. O(log N).
    * @param {T} element Element.
    * @return {boolean} The element was added to the queue.
    */
   enqueue(element) {
-    assert(!(this.keyFunction_(element) in this.queuedElements_),
-      31); // Tried to enqueue an `element` that was already added to the queue
+    assert(!(this.keyFunction_(element) in this.queuedElements_), 31); // Tried to enqueue an `element` that was already added to the queue
     const priority = this.priorityFunction_(element);
     if (priority != DROP) {
       this.elements_.push(element);
@@ -114,14 +106,12 @@ class PriorityQueue {
     return false;
   }
 
-
   /**
    * @return {number} Count.
    */
   getCount() {
     return this.elements_.length;
   }
-
 
   /**
    * Gets the index of the left child of the node at the given index.
@@ -133,7 +123,6 @@ class PriorityQueue {
     return index * 2 + 1;
   }
 
-
   /**
    * Gets the index of the right child of the node at the given index.
    * @param {number} index The index of the node to get the right child for.
@@ -144,7 +133,6 @@ class PriorityQueue {
     return index * 2 + 2;
   }
 
-
   /**
    * Gets the index of the parent of the node at the given index.
    * @param {number} index The index of the node to get the parent for.
@@ -154,7 +142,6 @@ class PriorityQueue {
   getParentIndex_(index) {
     return (index - 1) >> 1;
   }
-
 
   /**
    * Make this a heap. O(N).
@@ -167,14 +154,12 @@ class PriorityQueue {
     }
   }
 
-
   /**
    * @return {boolean} Is empty.
    */
   isEmpty() {
     return this.elements_.length === 0;
   }
-
 
   /**
    * @param {string} key Key.
@@ -184,7 +169,6 @@ class PriorityQueue {
     return key in this.queuedElements_;
   }
 
-
   /**
    * @param {T} element Element.
    * @return {boolean} Is queued.
@@ -192,7 +176,6 @@ class PriorityQueue {
   isQueued(element) {
     return this.isKeyQueued(this.keyFunction_(element));
   }
-
 
   /**
    * @param {number} index The index of the node to move down.
@@ -206,13 +189,14 @@ class PriorityQueue {
     const priority = priorities[index];
     const startIndex = index;
 
-    while (index < (count >> 1)) {
+    while (index < count >> 1) {
       const lIndex = this.getLeftChildIndex_(index);
       const rIndex = this.getRightChildIndex_(index);
 
-      const smallerChildIndex = rIndex < count &&
-          priorities[rIndex] < priorities[lIndex] ?
-        rIndex : lIndex;
+      const smallerChildIndex =
+        rIndex < count && priorities[rIndex] < priorities[lIndex]
+          ? rIndex
+          : lIndex;
 
       elements[index] = elements[smallerChildIndex];
       priorities[index] = priorities[smallerChildIndex];
@@ -223,7 +207,6 @@ class PriorityQueue {
     priorities[index] = priority;
     this.siftDown_(startIndex, index);
   }
-
 
   /**
    * @param {number} startIndex The index of the root.
@@ -250,7 +233,6 @@ class PriorityQueue {
     priorities[index] = priority;
   }
 
-
   /**
    * FIXME empty description for jsdoc
    */
@@ -275,8 +257,6 @@ class PriorityQueue {
     priorities.length = index;
     this.heapify_();
   }
-
 }
-
 
 export default PriorityQueue;

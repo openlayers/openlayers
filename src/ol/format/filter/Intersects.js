@@ -10,7 +10,6 @@ import Spatial from './Spatial.js';
  * @api
  */
 class Intersects extends Spatial {
-
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../../geom/Geometry.js").default} geometry Geometry.
@@ -20,7 +19,6 @@ class Intersects extends Spatial {
   constructor(geometryName, geometry, opt_srsName) {
     super('Intersects', geometryName, geometry, opt_srsName);
   }
-
 }
 
 export default Intersects;

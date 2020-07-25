@@ -2,14 +2,13 @@
  * @module ol/source/ImageArcGISRest
  */
 
-import ImageWrapper from '../Image.js';
-import {assert} from '../asserts.js';
 import EventType from '../events/EventType.js';
-import {containsExtent, getHeight, getWidth} from '../extent.js';
-import {assign} from '../obj.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import ImageWrapper from '../Image.js';
 import {appendParams} from '../uri.js';
-
+import {assert} from '../asserts.js';
+import {assign} from '../obj.js';
+import {containsExtent, getHeight, getWidth} from '../extent.js';
 
 /**
  * @typedef {Object} Options
@@ -21,6 +20,7 @@ import {appendParams} from '../uri.js';
  * the remote server.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
@@ -35,7 +35,6 @@ import {appendParams} from '../uri.js';
  * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.
  */
-
 
 /**
  * @classdesc
@@ -54,13 +53,13 @@ class ImageArcGISRest extends ImageSource {
    * @param {Options=} opt_options Image ArcGIS Rest Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
       attributions: options.attributions,
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
-      resolutions: options.resolutions
+      resolutions: options.resolutions,
     });
 
     /**
@@ -68,7 +67,7 @@ class ImageArcGISRest extends ImageSource {
      * @type {?string}
      */
     this.crossOrigin_ =
-        options.crossOrigin !== undefined ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
     /**
      * @private
@@ -86,9 +85,10 @@ class ImageArcGISRest extends ImageSource {
      * @private
      * @type {import("../Image.js").LoadFunction}
      */
-    this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : defaultImageLoadFunction;
-
+    this.imageLoadFunction_ =
+      options.imageLoadFunction !== undefined
+        ? options.imageLoadFunction
+        : defaultImageLoadFunction;
 
     /**
      * @private
@@ -108,7 +108,6 @@ class ImageArcGISRest extends ImageSource {
      */
     this.imageSize_ = [0, 0];
 
-
     /**
      * @private
      * @type {number}
@@ -120,7 +119,6 @@ class ImageArcGISRest extends ImageSource {
      * @type {number}
      */
     this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
-
   }
 
   /**
@@ -134,10 +132,13 @@ class ImageArcGISRest extends ImageSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../Image.js").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
-
     if (this.url_ === undefined) {
       return null;
     }
@@ -146,18 +147,20 @@ class ImageArcGISRest extends ImageSource {
     pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
     const image = this.image_;
-    if (image &&
-        this.renderedRevision_ == this.getRevision() &&
-        image.getResolution() == resolution &&
-        image.getPixelRatio() == pixelRatio &&
-        containsExtent(image.getExtent(), extent)) {
+    if (
+      image &&
+      this.renderedRevision_ == this.getRevision() &&
+      image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
+      containsExtent(image.getExtent(), extent)
+    ) {
       return image;
     }
 
     const params = {
       'F': 'image',
       'FORMAT': 'PNG32',
-      'TRANSPARENT': true
+      'TRANSPARENT': true,
     };
     assign(params, this.params_);
 
@@ -165,8 +168,8 @@ class ImageArcGISRest extends ImageSource {
     const centerX = (extent[0] + extent[2]) / 2;
     const centerY = (extent[1] + extent[3]) / 2;
     if (this.ratio_ != 1) {
-      const halfWidth = this.ratio_ * getWidth(extent) / 2;
-      const halfHeight = this.ratio_ * getHeight(extent) / 2;
+      const halfWidth = (this.ratio_ * getWidth(extent)) / 2;
+      const halfHeight = (this.ratio_ * getHeight(extent)) / 2;
       extent[0] = centerX - halfWidth;
       extent[1] = centerY - halfHeight;
       extent[2] = centerX + halfWidth;
@@ -180,26 +183,39 @@ class ImageArcGISRest extends ImageSource {
     const height = Math.ceil(getHeight(extent) / imageResolution);
 
     // Modify the extent to match the integer width and height.
-    extent[0] = centerX - imageResolution * width / 2;
-    extent[2] = centerX + imageResolution * width / 2;
-    extent[1] = centerY - imageResolution * height / 2;
-    extent[3] = centerY + imageResolution * height / 2;
+    extent[0] = centerX - (imageResolution * width) / 2;
+    extent[2] = centerX + (imageResolution * width) / 2;
+    extent[1] = centerY - (imageResolution * height) / 2;
+    extent[3] = centerY + (imageResolution * height) / 2;
 
     this.imageSize_[0] = width;
     this.imageSize_[1] = height;
 
-    const url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
-      projection, params);
+    const url = this.getRequestUrl_(
+      extent,
+      this.imageSize_,
+      pixelRatio,
+      projection,
+      params
+    );
 
-    this.image_ = new ImageWrapper(extent, resolution, pixelRatio,
-      url, this.crossOrigin_, this.imageLoadFunction_);
+    this.image_ = new ImageWrapper(
+      extent,
+      resolution,
+      pixelRatio,
+      url,
+      this.crossOrigin_,
+      this.imageLoadFunction_
+    );
 
     this.renderedRevision_ = this.getRevision();
 
-    this.image_.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
+    this.image_.addEventListener(
+      EventType.CHANGE,
+      this.handleImageChange.bind(this)
+    );
 
     return this.image_;
-
   }
 
   /**
@@ -285,6 +301,5 @@ class ImageArcGISRest extends ImageSource {
     this.changed();
   }
 }
-
 
 export default ImageArcGISRest;

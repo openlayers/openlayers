@@ -35,7 +35,7 @@ function indexHandler(req, res) {
   const markup = `<!DOCTYPE html><body><ul>${items.join('')}</ul></body>`;
 
   res.writeHead(404, {
-    'Content-Type': 'text/html'
+    'Content-Type': 'text/html',
   });
   res.end(markup);
 }
@@ -58,7 +58,7 @@ function serve(options) {
   const webpackHandler = webpackMiddleware(compiler, {
     lazy: true,
     logger: options.log,
-    stats: 'minimal'
+    stats: 'minimal',
   });
 
   return new Promise((resolve, reject) => {
@@ -78,12 +78,14 @@ function serve(options) {
       staticHandler(req, res, notFound(req, res));
     });
 
-    server.listen(options.port, options.host, err => {
+    server.listen(options.port, options.host, (err) => {
       if (err) {
         return reject(err);
       }
       const address = server.address();
-      options.log.info(`test server listening http://${address.address}:${address.port}/`);
+      options.log.info(
+        `test server listening http://${address.address}:${address.port}/`
+      );
       resolve(() => server.close());
     });
   });
@@ -104,7 +106,7 @@ function getPassFilePath(entry) {
 function parsePNG(filepath) {
   return new Promise((resolve, reject) => {
     const stream = fs.createReadStream(filepath);
-    stream.on('error', err => {
+    stream.on('error', (err) => {
       if (err.code === 'ENOENT') {
         return reject(new Error(`File not found: ${filepath}`));
       }
@@ -123,12 +125,22 @@ async function match(actual, expected) {
   const width = expectedImage.width;
   const height = expectedImage.height;
   if (actualImage.width != width) {
-    throw new Error(`Unexpected width for ${actual}: expected ${width}, got ${actualImage.width}`);
+    throw new Error(
+      `Unexpected width for ${actual}: expected ${width}, got ${actualImage.width}`
+    );
   }
   if (actualImage.height != height) {
-    throw new Error(`Unexpected height for ${actual}: expected ${height}, got ${actualImage.height}`);
+    throw new Error(
+      `Unexpected height for ${actual}: expected ${height}, got ${actualImage.height}`
+    );
   }
-  const count = pixelmatch(actualImage.data, expectedImage.data, null, width, height);
+  const count = pixelmatch(
+    actualImage.data,
+    expectedImage.data,
+    null,
+    width,
+    height
+  );
   return count / (width * height);
 }
 
@@ -155,14 +167,16 @@ async function exposeRender(page) {
 }
 
 async function renderPage(page, entry, options) {
-  const renderCalled = new Promise(resolve => {
+  const renderCalled = new Promise((resolve) => {
     handleRender = (config) => {
       handleRender = null;
       resolve(config || {});
     };
   });
   options.log.debug('navigating', entry);
-  await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
+  await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {
+    waitUntil: 'networkidle0',
+  });
   const config = await renderCalled;
   options.log.debug('screenshot', entry);
   await page.screenshot({path: getActualScreenshotPath(entry)});
@@ -184,7 +198,11 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    const {tolerance = 0.005, message = ''} = await renderPage(page, entry, options);
+    const {tolerance = 0.005, message = ''} = await renderPage(
+      page,
+      entry,
+      options
+    );
 
     if (options.fix) {
       await copyActualToExpected(entry);
@@ -217,23 +235,23 @@ async function renderEach(page, entries, options) {
 async function render(entries, options) {
   const browser = await puppeteer.launch({
     args: options.puppeteerArgs,
-    headless: options.headless
+    headless: options.headless,
   });
 
   let fail = false;
 
   try {
     const page = await browser.newPage();
-    page.on('error', err => {
+    page.on('error', (err) => {
       options.log.error('page crash', err);
     });
-    page.on('pageerror', err => {
+    page.on('pageerror', (err) => {
       options.log.error('uncaught exception', err);
     });
-    page.on('console', message => {
+    page.on('console', (message) => {
       const type = message.type();
       if (options.log[type]) {
-        options.log[type](message.text());
+        options.log[type](`console: ${message.text()}`);
       }
     });
 
@@ -242,6 +260,10 @@ async function render(entries, options) {
     await page.setViewport({width: 256, height: 256});
     fail = await renderEach(page, entries, options);
   } finally {
+    if (options.interactive) {
+      options.log.info('🐛 you have thirty minutes to debug, go!');
+      await sleep(30 * 60 * 1000);
+    }
     browser.close();
   }
 
@@ -262,7 +284,9 @@ async function getLatest(patterns) {
 }
 
 async function getOutdated(entries, options) {
-  const libTime = await getLatest(path.join(__dirname, '..', 'src', 'ol', '**', '*'));
+  const libTime = await getLatest(
+    path.join(__dirname, '..', 'src', 'ol', '**', '*')
+  );
   options.log.debug('library time', libTime);
   const outdated = [];
   for (const entry of entries) {
@@ -274,7 +298,9 @@ async function getOutdated(entries, options) {
       continue;
     }
 
-    const caseTime = await getLatest(path.join(__dirname, path.dirname(entry), '**', '*'));
+    const caseTime = await getLatest(
+      path.join(__dirname, path.dirname(entry), '**', '*')
+    );
     options.log.debug('case time', entry, caseTime);
     if (passTime < caseTime) {
       outdated.push(entry);
@@ -292,7 +318,7 @@ async function main(entries, options) {
   }
   if (options.match) {
     const exp = new RegExp(options.match);
-    entries = entries.filter(entry => exp.test(entry));
+    entries = entries.filter((entry) => exp.test(entry));
   }
   if (!options.interactive && entries.length === 0) {
     return;
@@ -302,70 +328,79 @@ async function main(entries, options) {
   try {
     await render(entries, options);
   } finally {
-    if (!options.interactive) {
-      done();
-    }
+    done();
   }
 }
 
-if (require.main === module) {
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
-  const options = yargs.
-    option('fix', {
+if (require.main === module) {
+  const options = yargs
+    .option('fix', {
       describe: 'Accept all screenshots as accepted',
       type: 'boolean',
-      default: false
-    }).
-    option('host', {
+      default: false,
+    })
+    .option('host', {
       describe: 'The host for serving rendering cases',
-      default: '127.0.0.1'
-    }).
-    option('port', {
+      default: '127.0.0.1',
+    })
+    .option('port', {
       describe: 'The port for serving rendering cases',
       type: 'number',
-      default: 3000
-    }).
-    option('match', {
+      default: 3000,
+    })
+    .option('match', {
       describe: 'Only run tests matching the provided string RegExp pattern',
-      type: 'string'
-    }).
-    option('force', {
+      type: 'string',
+    })
+    .option('force', {
       describe: 'Run all tests (instead of just outdated tests)',
       type: 'boolean',
-      default: false
-    }).
-    option('interactive', {
-      describe: 'Run all tests and keep the test server running (this option will be reworked later)',
+      default: false,
+    })
+    .option('interactive', {
+      describe: 'Run all tests and keep the test server running for 30 minutes',
       type: 'boolean',
-      default: false
-    }).
-    option('log-level', {
+      default: false,
+    })
+    .option('log-level', {
       describe: 'The level for logging',
       choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
-      default: 'error'
-    }).
-    option('timeout', {
+      default: 'error',
+    })
+    .option('timeout', {
       describe: 'The timeout for loading pages (in milliseconds)',
       type: 'number',
-      default: 60000
-    }).
-    option('headless', {
+      default: 60000,
+    })
+    .option('headless', {
       describe: 'Launch Puppeteer in headless mode',
       type: 'boolean',
-      default: false
-    }).
-    option('puppeteer-args', {
+      default: !!process.env.CI,
+    })
+    .option('puppeteer-args', {
       describe: 'Additional args for Puppeteer',
       type: 'array',
-      default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] : []
-    }).
-    parse();
+      default: process.env.CI
+        ? [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+          ]
+        : [],
+    })
+    .parse();
 
-  const entries = Object.keys(config.entry).map(key => config.entry[key]);
+  const entries = Object.keys(config.entry).map((key) => config.entry[key]);
 
   options.log = log.create({name: 'rendering', level: options.logLevel});
 
-  main(entries, options).catch(err => {
+  main(entries, options).catch((err) => {
     options.log.error(err.message);
     process.exit(1);
   });

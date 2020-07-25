@@ -6,18 +6,22 @@ docs: >
   This example shows client-side raster reprojection capabilities from
   OSM (EPSG:3857) to arbitrary projection by searching
   in <a href="https://epsg.io/">EPSG.io</a> database.
-tags: "reprojection, projection, proj4js, epsg.io"
+tags: "reprojection, projection, proj4js, epsg.io, graticule"
 ---
 <div id="map" class="map"></div>
 <form class="form-inline">
   <label for="epsg-query">Search projection:</label>
-  <input type="text" id="epsg-query" placeholder="4326, 27700, US National Atlas, Swiss, France, ..." class="form-control" size="50" />
+  <input type="text" id="epsg-query" placeholder="4326, 27700, 3031, US National Atlas, Swiss, France, ..." class="form-control" size="50" />
   <button id="epsg-search" class="btn">Search</button>
   <span id="epsg-result"></span>
   <div>
     <label for="render-edges">
       Render reprojection edges
       <input type="checkbox" id="render-edges">
+    </label>
+    <label for="show-graticule">
+      &nbsp;&nbsp;&nbsp;Show graticule
+      <input type="checkbox" id="show-graticule" />
     </label>
   </div>
 </form>

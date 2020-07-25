@@ -2,13 +2,13 @@
  * @module ol/source/IIIF
  */
 
-import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
-import {getTopLeft} from '../extent.js';
-import {CustomTile} from './Zoomify.js';
-import {Versions} from '../format/IIIFInfo.js';
-import {assert} from '../asserts.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import TileImage from './TileImage.js';
+import {CustomTile} from './Zoomify.js';
+import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
+import {Versions} from '../format/IIIFInfo.js';
+import {assert} from '../asserts.js';
+import {getTopLeft} from '../extent.js';
 import {toSize} from '../size.js';
 
 /**
@@ -19,6 +19,7 @@ import {toSize} from '../size.js';
  * @property {null|string} [crossOrigin]
  * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]]
  * @property {string} [format='jpg'] Requested image format.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {string} [quality] Requested IIIF image quality. Default is 'native'
  * for version 1, 'default' for versions 2 and 3.
@@ -40,7 +41,7 @@ import {toSize} from '../size.js';
  * @property {number} [transition]
  * @property {string} [url] Base URL of the IIIF Image service.
  * This should be the same as the IIIF Image ID.
- * @property {Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
+ * @property {import("../format/IIIFInfo.js").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
  * @property {number} [zDirection=0] Indicate which resolution should be used
  * by a renderer if the view resolution does not match any resolution of the tile source.
  * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
@@ -57,66 +58,99 @@ function formatPercentage(percentage) {
  * @api
  */
 class IIIF extends TileImage {
-
   /**
-   * @param {Options} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
+   * @param {Options=} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
    * to parse Image API service information responses into constructor options.
    * @api
    */
   constructor(opt_options) {
-
     /**
      * @type {Partial<Options>}
      */
     const options = opt_options || {};
 
     let baseUrl = options.url || '';
-    baseUrl = baseUrl + (baseUrl.lastIndexOf('/') === baseUrl.length - 1 || baseUrl === '' ? '' : '/');
+    baseUrl =
+      baseUrl +
+      (baseUrl.lastIndexOf('/') === baseUrl.length - 1 || baseUrl === ''
+        ? ''
+        : '/');
     const version = options.version || Versions.VERSION2;
     const sizes = options.sizes || [];
     const size = options.size;
-    assert(size != undefined && Array.isArray(size) && size.length == 2 &&
-      !isNaN(size[0]) && size[0] > 0 && !isNaN(size[1]) && size[1] > 0, 60);
+    assert(
+      size != undefined &&
+        Array.isArray(size) &&
+        size.length == 2 &&
+        !isNaN(size[0]) &&
+        size[0] > 0 &&
+        !isNaN(size[1]) &&
+        size[1] > 0,
+      60
+    );
     const width = size[0];
     const height = size[1];
     const tileSize = options.tileSize;
     const tilePixelRatio = options.tilePixelRatio || 1;
     const format = options.format || 'jpg';
-    const quality = options.quality || (options.version == Versions.VERSION1 ? 'native' : 'default');
+    const quality =
+      options.quality ||
+      (options.version == Versions.VERSION1 ? 'native' : 'default');
     let resolutions = options.resolutions || [];
     const supports = options.supports || [];
     const extent = options.extent || [0, -height, width, 0];
 
-    const supportsListedSizes = sizes != undefined && Array.isArray(sizes) && sizes.length > 0;
-    const supportsListedTiles = tileSize !== undefined && (typeof tileSize === 'number' && Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0);
-    const supportsArbitraryTiling = supports != undefined && Array.isArray(supports) &&
+    const supportsListedSizes =
+      sizes != undefined && Array.isArray(sizes) && sizes.length > 0;
+    const supportsListedTiles =
+      tileSize !== undefined &&
+      ((typeof tileSize === 'number' &&
+        Number.isInteger(tileSize) &&
+        tileSize > 0) ||
+        (Array.isArray(tileSize) && tileSize.length > 0));
+    const supportsArbitraryTiling =
+      supports != undefined &&
+      Array.isArray(supports) &&
       (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
-      (supports.includes('sizeByWh') || supports.includes('sizeByH') ||
-      supports.includes('sizeByW') || supports.includes('sizeByPct'));
+      (supports.includes('sizeByWh') ||
+        supports.includes('sizeByH') ||
+        supports.includes('sizeByW') ||
+        supports.includes('sizeByPct'));
 
-    let tileWidth,
-        tileHeight,
-        maxZoom;
+    let tileWidth, tileHeight, maxZoom;
 
-    resolutions.sort(function(a, b) {
+    resolutions.sort(function (a, b) {
       return b - a;
     });
 
     if (supportsListedTiles || supportsArbitraryTiling) {
       if (tileSize != undefined) {
-        if (typeof tileSize === 'number' && Number.isInteger(tileSize) && tileSize > 0) {
+        if (
+          typeof tileSize === 'number' &&
+          Number.isInteger(tileSize) &&
+          tileSize > 0
+        ) {
           tileWidth = tileSize;
           tileHeight = tileSize;
         } else if (Array.isArray(tileSize) && tileSize.length > 0) {
-          if (tileSize.length == 1 || tileSize[1] == undefined && Number.isInteger(tileSize[0])) {
+          if (
+            tileSize.length == 1 ||
+            (tileSize[1] == undefined && Number.isInteger(tileSize[0]))
+          ) {
             tileWidth = tileSize[0];
             tileHeight = tileSize[0];
           }
           if (tileSize.length == 2) {
-            if (Number.isInteger(tileSize[0]) && Number.isInteger(tileSize[1])) {
+            if (
+              Number.isInteger(tileSize[0]) &&
+              Number.isInteger(tileSize[1])
+            ) {
               tileWidth = tileSize[0];
               tileHeight = tileSize[1];
-            } else if (tileSize[0] == undefined && Number.isInteger(tileSize[1])) {
+            } else if (
+              tileSize[0] == undefined &&
+              Number.isInteger(tileSize[1])
+            ) {
               tileWidth = tileSize[1];
               tileHeight = tileSize[1];
             }
@@ -150,14 +184,17 @@ class IIIF extends TileImage {
          * 'sizes' provided. Use full region in different resolutions. Every
          * resolution has only one tile.
          */
-        sizes.sort(function(a, b) {
+        sizes.sort(function (a, b) {
           return a[0] - b[0];
         });
         maxZoom = -1;
         const ignoredSizesIndex = [];
         for (let i = 0; i < sizes.length; i++) {
           const resolution = width / sizes[i][0];
-          if (resolutions.length > 0 && resolutions[resolutions.length - 1] == resolution) {
+          if (
+            resolutions.length > 0 &&
+            resolutions[resolutions.length - 1] == resolution
+          ) {
             ignoredSizesIndex.push(i);
             continue;
           }
@@ -181,31 +218,36 @@ class IIIF extends TileImage {
       tileSize: [tileWidth, tileHeight],
       extent: extent,
       origin: getTopLeft(extent),
-      resolutions: resolutions
+      resolutions: resolutions,
     });
 
-    const tileUrlFunction = function(tileCoord, pixelRatio, projection) {
-      let regionParam,
-          sizeParam;
+    const tileUrlFunction = function (tileCoord, pixelRatio, projection) {
+      let regionParam, sizeParam;
       const zoom = tileCoord[0];
       if (zoom > maxZoom) {
         return;
       }
       const tileX = tileCoord[1],
-          tileY = tileCoord[2],
-          scale = resolutions[zoom];
-      if (tileX === undefined || tileY === undefined || scale === undefined ||
-      tileX < 0 || Math.ceil(width / scale / tileWidth) <= tileX ||
-      tileY < 0 || Math.ceil(height / scale / tileHeight) <= tileY) {
+        tileY = tileCoord[2],
+        scale = resolutions[zoom];
+      if (
+        tileX === undefined ||
+        tileY === undefined ||
+        scale === undefined ||
+        tileX < 0 ||
+        Math.ceil(width / scale / tileWidth) <= tileX ||
+        tileY < 0 ||
+        Math.ceil(height / scale / tileHeight) <= tileY
+      ) {
         return;
       }
       if (supportsArbitraryTiling || supportsListedTiles) {
         const regionX = tileX * tileWidth * scale,
-            regionY = tileY * tileHeight * scale;
+          regionY = tileY * tileHeight * scale;
         let regionW = tileWidth * scale,
-            regionH = tileHeight * scale,
-            sizeW = tileWidth,
-            sizeH = tileHeight;
+          regionH = tileHeight * scale,
+          sizeW = tileWidth,
+          sizeH = tileHeight;
         if (regionX + regionW > width) {
           regionW = width - regionX;
         }
@@ -218,19 +260,30 @@ class IIIF extends TileImage {
         if (regionY + tileHeight * scale > height) {
           sizeH = Math.floor((height - regionY + scale - 1) / scale);
         }
-        if (regionX == 0 && regionW == width && regionY == 0 && regionH == height) {
+        if (
+          regionX == 0 &&
+          regionW == width &&
+          regionY == 0 &&
+          regionH == height
+        ) {
           // canonical full image region parameter is 'full', not 'x,y,w,h'
           regionParam = 'full';
-        } else if (!supportsArbitraryTiling || supports.includes('regionByPx')) {
+        } else if (
+          !supportsArbitraryTiling ||
+          supports.includes('regionByPx')
+        ) {
           regionParam = regionX + ',' + regionY + ',' + regionW + ',' + regionH;
         } else if (supports.includes('regionByPct')) {
-          const pctX = formatPercentage(regionX / width * 100),
-              pctY = formatPercentage(regionY / height * 100),
-              pctW = formatPercentage(regionW / width * 100),
-              pctH = formatPercentage(regionH / height * 100);
+          const pctX = formatPercentage((regionX / width) * 100),
+            pctY = formatPercentage((regionY / height) * 100),
+            pctW = formatPercentage((regionW / width) * 100),
+            pctH = formatPercentage((regionH / height) * 100);
           regionParam = 'pct:' + pctX + ',' + pctY + ',' + pctW + ',' + pctH;
         }
-        if (version == Versions.VERSION3 && (!supportsArbitraryTiling || supports.includes('sizeByWh'))) {
+        if (
+          version == Versions.VERSION3 &&
+          (!supportsArbitraryTiling || supports.includes('sizeByWh'))
+        ) {
           sizeParam = sizeW + ',' + sizeH;
         } else if (!supportsArbitraryTiling || supports.includes('sizeByW')) {
           sizeParam = sizeW + ',';
@@ -245,7 +298,7 @@ class IIIF extends TileImage {
         regionParam = 'full';
         if (supportsListedSizes) {
           const regionWidth = sizes[zoom][0],
-              regionHeight = sizes[zoom][1];
+            regionHeight = sizes[zoom][1];
           if (version == Versions.VERSION3) {
             if (regionWidth == width && regionHeight == height) {
               sizeParam = 'max';
@@ -263,18 +316,24 @@ class IIIF extends TileImage {
           sizeParam = version == Versions.VERSION3 ? 'max' : 'full';
         }
       }
-      return baseUrl + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
+      return (
+        baseUrl + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format
+      );
     };
 
-    const IiifTileClass = CustomTile.bind(null, toSize(tileSize || 256).map(function(size) {
-      return size * tilePixelRatio;
-    }));
+    const IiifTileClass = CustomTile.bind(
+      null,
+      toSize(tileSize || 256).map(function (size) {
+        return size * tilePixelRatio;
+      })
+    );
 
     super({
       attributions: options.attributions,
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      imageSmoothing: options.imageSmoothing,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: options.state,
@@ -282,16 +341,14 @@ class IIIF extends TileImage {
       tileGrid: tileGrid,
       tilePixelRatio: options.tilePixelRatio,
       tileUrlFunction: tileUrlFunction,
-      transition: options.transition
+      transition: options.transition,
     });
 
     /**
-     * @inheritDoc
+     * @type {number}
      */
     this.zDirection = options.zDirection;
-
   }
-
 }
 
 export default IIIF;

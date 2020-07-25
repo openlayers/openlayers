@@ -10,14 +10,12 @@ import LogicalNary from './LogicalNary.js';
  * @abstract
  */
 class And extends LogicalNary {
-
   /**
    * @param {...import("./Filter.js").default} conditions Conditions.
    */
   constructor(conditions) {
     super('And', Array.prototype.slice.call(arguments));
   }
-
 }
 
 export default And;

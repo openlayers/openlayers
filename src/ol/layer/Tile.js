@@ -4,7 +4,6 @@
 import BaseTileLayer from './BaseTile.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 
-
 /**
  * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
@@ -16,7 +15,6 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
  * @api
  */
 class TileLayer extends BaseTileLayer {
-
   /**
    * @param {import("./BaseTile.js").Options=} opt_options Tile layer options.
    */
@@ -32,7 +30,6 @@ class TileLayer extends BaseTileLayer {
   createRenderer() {
     return new CanvasTileLayerRenderer(this);
   }
-
 }
 
 export default TileLayer;

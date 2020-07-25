@@ -1,11 +1,11 @@
 /**
  * @module ol/Map
  */
+import CompositeMapRenderer from './renderer/Composite.js';
 import PluggableMap from './PluggableMap.js';
+import {assign} from './obj.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
-import {assign} from './obj.js';
-import CompositeMapRenderer from './renderer/Composite.js';
 
 /**
  * @classdesc
@@ -55,7 +55,6 @@ import CompositeMapRenderer from './renderer/Composite.js';
  * @api
  */
 class Map extends PluggableMap {
-
   /**
    * @param {import("./PluggableMap.js").MapOptions} options Map options.
    */
@@ -65,7 +64,9 @@ class Map extends PluggableMap {
       options.controls = defaultControls();
     }
     if (!options.interactions) {
-      options.interactions = defaultInteractions();
+      options.interactions = defaultInteractions({
+        onFocusOnly: true,
+      });
     }
 
     super(options);
@@ -75,6 +76,5 @@ class Map extends PluggableMap {
     return new CompositeMapRenderer(this);
   }
 }
-
 
 export default Map;

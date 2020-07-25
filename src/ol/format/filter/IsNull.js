@@ -9,14 +9,12 @@ import Comparison from './Comparison.js';
  * @api
  */
 class IsNull extends Comparison {
-
   /**
    * @param {!string} propertyName Name of the context property to compare.
    */
   constructor(propertyName) {
     super('PropertyIsNull', propertyName);
   }
-
 }
 
 export default IsNull;

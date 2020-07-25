@@ -8,5 +8,5 @@
  */
 export default {
   KVP: 'KVP', // see spec §8
-  REST: 'REST' // see spec §10
+  REST: 'REST', // see spec §10
 };

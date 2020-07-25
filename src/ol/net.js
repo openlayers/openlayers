@@ -3,7 +3,6 @@
  */
 import {getUid} from './util.js';
 
-
 /**
  * Simple JSONP helper. Supports error callbacks and a custom callback param.
  * The error callback will be called when no JSONP is executed after 10 seconds.
@@ -23,15 +22,19 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
     script.parentNode.removeChild(script);
   }
   script.async = true;
-  script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
-      (opt_callbackParam || 'callback') + '=' + key;
-  const timer = setTimeout(function() {
+  script.src =
+    url +
+    (url.indexOf('?') == -1 ? '?' : '&') +
+    (opt_callbackParam || 'callback') +
+    '=' +
+    key;
+  const timer = setTimeout(function () {
     cleanup();
     if (opt_errback) {
       opt_errback();
     }
   }, 10000);
-  window[key] = function(data) {
+  window[key] = function (data) {
     clearTimeout(timer);
     cleanup();
     callback(data);

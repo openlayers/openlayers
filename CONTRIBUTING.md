@@ -1,6 +1,6 @@
 # Contributing to OpenLayers
 
-Thanks for your interest in contributing to OpenLayers.
+Thanks for your interest in contributing to OpenLayers.  Please see the project's [Code of Conduct](https://github.com/openlayers/openlayers/blob/main/CODE_OF_CONDUCT.md) before proceeding.
 
 ## Asking Questions
 
@@ -21,7 +21,7 @@ Look for `readme.md` files! Several directories contain a `readme.md` file that 
 
 ## Contributing Code
 
-See [`DEVELOPING.md`](https://github.com/openlayers/openlayers/blob/master/DEVELOPING.md) to learn how to get started developing.
+See [`DEVELOPING.md`](https://github.com/openlayers/openlayers/blob/main/DEVELOPING.md) to learn how to get started developing.
 
 Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
 that your pull request follows our pull request guidelines below before submitting it.
@@ -31,7 +31,7 @@ This page describes what you need to know to contribute code to OpenLayers as a 
 
 ## Contributor License Agreement
 
-Your contribution will be under our [license](https://raw.githubusercontent.com/openlayers/openlayers/master/LICENSE.md) as per [GitHub's terms of service](https://help.github.com/articles/github-terms-of-service/#6-contributions-under-repository-license).
+Your contribution will be under our [license](https://raw.githubusercontent.com/openlayers/openlayers/main/LICENSE.md) as per [GitHub's terms of service](https://help.github.com/articles/github-terms-of-service/#6-contributions-under-repository-license).
 
 
 ## Pull request guidelines
@@ -42,8 +42,7 @@ Your pull request must:
 
  * Follow OpenLayers's coding style.
 
- * Pass the integration tests run automatically by the CircleCI Continuous
-   Integration system.
+ * Pass the integration tests run automatically by the Continuous Integration system.
 
  * Address a single issue or add a single item of functionality.
 
@@ -104,7 +103,7 @@ Please keep the header line short, no more than 50 characters.
 
 ### Be possible to merge automatically
 
-Occasionally other changes to `master` might mean that your pull request cannot
+Occasionally other changes to `main` might mean that your pull request cannot
 be merged automatically.  In this case you may need to rebase your branch on a
-more recent `master`, resolve any conflicts, and `git push --force` to update
+more recent `main`, resolve any conflicts, and `git push --force` to update
 your branch so that it can be merged automatically.

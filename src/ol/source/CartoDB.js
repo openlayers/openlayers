@@ -2,14 +2,14 @@
  * @module ol/source/CartoDB
  */
 
-import {assign} from '../obj.js';
 import SourceState from './State.js';
 import XYZ from './XYZ.js';
+import {assign} from '../obj.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
+ * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -28,7 +28,6 @@ import XYZ from './XYZ.js';
  * for more detail.
  * @property {string} account If using named maps, this will be the name of the template to load.
  */
-
 
 /**
  * @typedef {Object} CartoDBLayerInfo
@@ -53,7 +52,7 @@ class CartoDB extends XYZ {
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
       minZoom: options.minZoom,
       projection: options.projection,
-      wrapX: options.wrapX
+      wrapX: options.wrapX,
     });
 
     /**
@@ -132,7 +131,10 @@ class CartoDB extends XYZ {
     }
 
     const client = new XMLHttpRequest();
-    client.addEventListener('load', this.handleInitResponse_.bind(this, paramHash));
+    client.addEventListener(
+      'load',
+      this.handleInitResponse_.bind(this, paramHash)
+    );
     client.addEventListener('error', this.handleInitError_.bind(this));
     client.open('POST', mapUrl);
     client.setRequestHeader('Content-type', 'application/json');
@@ -149,10 +151,12 @@ class CartoDB extends XYZ {
   handleInitResponse_(paramHash, event) {
     const client = /** @type {XMLHttpRequest} */ (event.target);
     // status will be 0 for file:// urls
-    if (!client.status || client.status >= 200 && client.status < 300) {
+    if (!client.status || (client.status >= 200 && client.status < 300)) {
       let response;
       try {
-        response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));
+        response = /** @type {CartoDBLayerInfo} */ (JSON.parse(
+          client.responseText
+        ));
       } catch (err) {
         this.setState(SourceState.ERROR);
         return;
@@ -179,11 +183,16 @@ class CartoDB extends XYZ {
    * @private
    */
   applyTemplate_(data) {
-    const tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
-        '/api/v1/map/' + data.layergroupid + '/{z}/{x}/{y}.png';
+    const tilesUrl =
+      'https://' +
+      data.cdn_url.https +
+      '/' +
+      this.account_ +
+      '/api/v1/map/' +
+      data.layergroupid +
+      '/{z}/{x}/{y}.png';
     this.setUrl(tilesUrl);
   }
 }
-
 
 export default CartoDB;

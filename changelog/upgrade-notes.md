@@ -1,8 +1,30 @@
 ## Upgrade notes
 
-### v6.2.0
+### v6.4.0
 
-### v6.1.0
+#### Pointer events polyfill removed
+
+Now that all major browsers support Pointer events natively, we removed the [elm-pep](https://npmjs.com/package/elm-pep) dependency. If you are targeting older browsers that do not have Pointer events, you now need to include the polyfill in your application.
+
+### v6.3.2
+
+#### Backwards incompatible changes
+
+##### Geolocation no longer stop tracking after an error
+
+Previously, when the Geolocation class encounter an error the tracking was stopped. It now continues to track.
+To get the previous behavior, use the following code:
+```js
+geolocation.on('error', function (error) {
+  geolocation.setTracking(false);
+});
+```
+
+### v6.3.0
+
+#### Vector source loading when extent crosses +/-180
+
+Previously, when an extent crossed the date line, vector source loaders were called with an extent with 540 degrees of longitude. Now, two loader calls with the visible extent on both sides of the projection extent are issued. This should not require any application code changes, but may affect custom loaders.
 
 ### v6.0.0
 
@@ -1426,7 +1448,7 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
   });
   ```
 
-  See https://openlayers.org/en/master/examples/vector-layer.html for a real example.
+  See https://openlayers.org/en/latest/examples/vector-layer.html for a real example.
 
   Note that you no longer need to set a `projection` on the source!
 
@@ -1448,7 +1470,7 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
 
   The above code uses jQuery to send an Ajax request, but you can obviously use any Ajax library.
 
-  See https://openlayers.org/en/master/examples/igc.html for a real example.
+  See https://openlayers.org/en/latest/examples/igc.html for a real example.
 
 * Note about KML
 
@@ -1506,9 +1528,9 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
   });
   ```
 
-  See https://openlayers.org/en/master/examples/vector-osm.html for a real example.
+  See https://openlayers.org/en/latest/examples/vector-osm.html for a real example.
 
-* The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See https://openlayers.org/en/master/examples/vector-osm.html for an example.
+* The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See https://openlayers.org/en/latest/examples/vector-osm.html for an example.
 
 #### Change to `ol.style.Icon`
 

@@ -1,9 +1,9 @@
 /**
  * @module ol/format/TextFeature
  */
-import {abstract} from '../util.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
+import {abstract} from '../util.js';
 
 /**
  * @classdesc
@@ -19,7 +19,7 @@ class TextFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./FormatType.js").default} Format.
    */
   getType() {
     return FormatType.TEXT;
@@ -28,13 +28,16 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the feature from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
    */
   readFeature(source, opt_options) {
-    return this.readFeatureFromText(getText(source), this.adaptOptions(opt_options));
+    return this.readFeatureFromText(
+      getText(source),
+      this.adaptOptions(opt_options)
+    );
   }
 
   /**
@@ -51,13 +54,16 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the features from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
-    return this.readFeaturesFromText(getText(source), this.adaptOptions(opt_options));
+    return this.readFeaturesFromText(
+      getText(source),
+      this.adaptOptions(opt_options)
+    );
   }
 
   /**
@@ -74,13 +80,16 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the geometry from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
   readGeometry(source, opt_options) {
-    return this.readGeometryFromText(getText(source), this.adaptOptions(opt_options));
+    return this.readGeometryFromText(
+      getText(source),
+      this.adaptOptions(opt_options)
+    );
   }
 
   /**
@@ -97,7 +106,7 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the projection from the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
@@ -184,9 +193,8 @@ class TextFeature extends FeatureFormat {
   }
 }
 
-
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Element|Object|string} source Source.
  * @return {string} Text.
  */
 function getText(source) {
@@ -196,6 +204,5 @@ function getText(source) {
     return '';
   }
 }
-
 
 export default TextFeature;

@@ -1,11 +1,10 @@
 /**
  * @module ol/source/Source
  */
-import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
-import {get as getProjection} from '../proj.js';
 import SourceState from './State.js';
-
+import {abstract} from '../util.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * A function that returns a string or an array of strings representing source
@@ -13,7 +12,6 @@ import SourceState from './State.js';
  *
  * @typedef {function(import("../PluggableMap.js").FrameState): (string|Array<string>)} Attribution
  */
-
 
 /**
  * A type that can be used to provide attribution information for data sources.
@@ -26,16 +24,14 @@ import SourceState from './State.js';
  * @typedef {string|Array<string>|Attribution} AttributionLike
  */
 
-
 /**
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {SourceState} [state='ready']
+ * @property {import("./State.js").default} [state='ready']
  * @property {boolean} [wrapX=false]
  */
-
 
 /**
  * @classdesc
@@ -52,7 +48,6 @@ class Source extends BaseObject {
    * @param {Options} options Source options.
    */
   constructor(options) {
-
     super();
 
     /**
@@ -71,8 +66,10 @@ class Source extends BaseObject {
      * @private
      * @type {boolean}
      */
-    this.attributionsCollapsible_ = options.attributionsCollapsible !== undefined ?
-      options.attributionsCollapsible : true;
+    this.attributionsCollapsible_ =
+      options.attributionsCollapsible !== undefined
+        ? options.attributionsCollapsible
+        : true;
 
     /**
      * This source is currently loading data. Sources that defer loading to the
@@ -83,17 +80,16 @@ class Source extends BaseObject {
 
     /**
      * @private
-     * @type {SourceState}
+     * @type {import("./State.js").default}
      */
-    this.state_ = options.state !== undefined ?
-      options.state : SourceState.READY;
+    this.state_ =
+      options.state !== undefined ? options.state : SourceState.READY;
 
     /**
      * @private
      * @type {boolean}
      */
     this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
-
   }
 
   /**
@@ -130,7 +126,7 @@ class Source extends BaseObject {
 
   /**
    * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-   * @return {SourceState} State.
+   * @return {import("./State.js").default} State.
    * @api
    */
   getState() {
@@ -142,6 +138,13 @@ class Source extends BaseObject {
    */
   getWrapX() {
     return this.wrapX_;
+  }
+
+  /**
+   * @return {Object|undefined} Context options.
+   */
+  getContextOptions() {
+    return undefined;
   }
 
   /**
@@ -166,15 +169,13 @@ class Source extends BaseObject {
 
   /**
    * Set the state of the source.
-   * @param {SourceState} state State.
-   * @protected
+   * @param {import("./State.js").default} state State.
    */
   setState(state) {
     this.state_ = state;
     this.changed();
   }
 }
-
 
 /**
  * Turns the attributions option into an attributions function.
@@ -186,7 +187,7 @@ function adaptAttributions(attributionLike) {
     return null;
   }
   if (Array.isArray(attributionLike)) {
-    return function(frameState) {
+    return function (frameState) {
       return attributionLike;
     };
   }
@@ -195,10 +196,9 @@ function adaptAttributions(attributionLike) {
     return attributionLike;
   }
 
-  return function(frameState) {
+  return function (frameState) {
     return [attributionLike];
   };
 }
-
 
 export default Source;

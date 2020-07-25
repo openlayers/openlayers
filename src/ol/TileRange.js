@@ -7,7 +7,6 @@
  * by its min/max tile coordinates and is inclusive of coordinates.
  */
 class TileRange {
-
   /**
    * @param {number} minX Minimum X.
    * @param {number} maxX Maximum X.
@@ -15,7 +14,6 @@ class TileRange {
    * @param {number} maxY Maximum Y.
    */
   constructor(minX, maxX, minY, maxY) {
-
     /**
      * @type {number}
      */
@@ -35,7 +33,6 @@ class TileRange {
      * @type {number}
      */
     this.maxY = maxY;
-
   }
 
   /**
@@ -51,8 +48,12 @@ class TileRange {
    * @return {boolean} Contains.
    */
   containsTileRange(tileRange) {
-    return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
-       this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
+    return (
+      this.minX <= tileRange.minX &&
+      tileRange.maxX <= this.maxX &&
+      this.minY <= tileRange.minY &&
+      tileRange.maxY <= this.maxY
+    );
   }
 
   /**
@@ -69,8 +70,12 @@ class TileRange {
    * @return {boolean} Equals.
    */
   equals(tileRange) {
-    return this.minX == tileRange.minX && this.minY == tileRange.minY &&
-       this.maxX == tileRange.maxX && this.maxY == tileRange.maxY;
+    return (
+      this.minX == tileRange.minX &&
+      this.minY == tileRange.minY &&
+      this.maxX == tileRange.maxX &&
+      this.maxY == tileRange.maxY
+    );
   }
 
   /**
@@ -117,13 +122,14 @@ class TileRange {
    * @return {boolean} Intersects.
    */
   intersects(tileRange) {
-    return this.minX <= tileRange.maxX &&
-       this.maxX >= tileRange.minX &&
-       this.minY <= tileRange.maxY &&
-       this.maxY >= tileRange.minY;
+    return (
+      this.minX <= tileRange.maxX &&
+      this.maxX >= tileRange.minX &&
+      this.minY <= tileRange.maxY &&
+      this.maxY >= tileRange.minY
+    );
   }
 }
-
 
 /**
  * @param {number} minX Minimum X.
@@ -144,6 +150,5 @@ export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
     return new TileRange(minX, maxX, minY, maxY);
   }
 }
-
 
 export default TileRange;

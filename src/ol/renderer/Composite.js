@@ -1,17 +1,16 @@
 /**
  * @module ol/renderer/Composite
  */
-import {CLASS_UNSELECTABLE} from '../css.js';
-import {inView} from '../layer/Layer.js';
+import MapRenderer from './Map.js';
+import ObjectEventType from '../ObjectEventType.js';
 import RenderEvent from '../render/Event.js';
 import RenderEventType from '../render/EventType.js';
-import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
-import {replaceChildren} from '../dom.js';
-import {listen, unlistenByKey} from '../events.js';
+import {CLASS_UNSELECTABLE} from '../css.js';
 import {checkedFonts} from '../render/canvas.js';
-import ObjectEventType from '../ObjectEventType.js';
-
+import {inView} from '../layer/Layer.js';
+import {listen, unlistenByKey} from '../events.js';
+import {replaceChildren} from '../dom.js';
 
 /**
  * @classdesc
@@ -19,7 +18,6 @@ import ObjectEventType from '../ObjectEventType.js';
  * @api
  */
 class CompositeMapRenderer extends MapRenderer {
-
   /**
    * @param {import("../PluggableMap.js").default} map Map.
    */
@@ -29,7 +27,11 @@ class CompositeMapRenderer extends MapRenderer {
     /**
      * @type {import("../events.js").EventsKey}
      */
-    this.fontChangeListenerKey_ = listen(checkedFonts, ObjectEventType.PROPERTYCHANGE, map.redrawText.bind(map));
+    this.fontChangeListenerKey_ = listen(
+      checkedFonts,
+      ObjectEventType.PROPERTYCHANGE,
+      map.redrawText.bind(map)
+    );
 
     /**
      * @private
@@ -79,7 +81,8 @@ class CompositeMapRenderer extends MapRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Render.
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
     if (!frameState) {
@@ -93,7 +96,7 @@ class CompositeMapRenderer extends MapRenderer {
     this.calculateMatrices2D(frameState);
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
-    const layerStatesArray = frameState.layerStatesArray.sort(function(a, b) {
+    const layerStatesArray = frameState.layerStatesArray.sort(function (a, b) {
       return a.zIndex - b.zIndex;
     });
     const viewState = frameState.viewState;
@@ -103,8 +106,11 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
       frameState.layerIndex = i;
-      if (!inView(layerState, viewState) ||
-        (layerState.sourceState != SourceState.READY && layerState.sourceState != SourceState.UNDEFINED)) {
+      if (
+        !inView(layerState, viewState) ||
+        (layerState.sourceState != SourceState.READY &&
+          layerState.sourceState != SourceState.UNDEFINED)
+      ) {
         continue;
       }
 
@@ -133,7 +139,17 @@ class CompositeMapRenderer extends MapRenderer {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {function(import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   *     callback.
+   * @param {function(import("../layer/Layer.js").default): boolean} layerFilter Layer filter
+   *     function, only layers which are visible and for which this function
+   *     returns `true` will be tested for features.  By default, all visible
+   *     layers will be tested.
+   * @return {T|undefined} Callback result.
+   * @template T
    */
   forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
     const viewState = frameState.viewState;
@@ -144,9 +160,17 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = layerState.layer;
-      if (layer.hasRenderer() && inView(layerState, viewState) && layerFilter(layer)) {
+      if (
+        layer.hasRenderer() &&
+        inView(layerState, viewState) &&
+        layerFilter(layer)
+      ) {
         const layerRenderer = layer.getRenderer();
-        const data = layerRenderer.getDataAtPixel(pixel, frameState, hitTolerance);
+        const data = layerRenderer.getDataAtPixel(
+          pixel,
+          frameState,
+          hitTolerance
+        );
         if (data) {
           const result = callback(layer, data);
           if (result) {
@@ -157,8 +181,6 @@ class CompositeMapRenderer extends MapRenderer {
     }
     return undefined;
   }
-
 }
-
 
 export default CompositeMapRenderer;

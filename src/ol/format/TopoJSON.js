@@ -2,7 +2,6 @@
  * @module ol/format/TopoJSON
  */
 import Feature from '../Feature.js';
-import {transformGeometryWithOptions} from './Feature.js';
 import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -11,6 +10,7 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
+import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {import("topojson-specification").Topology} TopoJSONTopology
@@ -48,7 +48,6 @@ import {get as getProjection} from '../proj.js';
  * be read from all children.
  */
 
-
 /**
  * @classdesc
  * Feature format for reading data in the TopoJSON format.
@@ -56,7 +55,6 @@ import {get as getProjection} from '../proj.js';
  * @api
  */
 class TopoJSON extends JSONFeature {
-
   /**
    * @param {Options=} opt_options Options.
    */
@@ -78,21 +76,25 @@ class TopoJSON extends JSONFeature {
     this.layers_ = options.layers ? options.layers : null;
 
     /**
-     * @inheritDoc
+     * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection(
-      options.dataProjection ?
-        options.dataProjection : 'EPSG:4326');
-
+      options.dataProjection ? options.dataProjection : 'EPSG:4326'
+    );
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @protected
+   * @return {Array<Feature>} Features.
    */
   readFeaturesFromObject(object, opt_options) {
     if (object.type == 'Topology') {
       const topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
-      let transform, scale = null, translate = null;
+      let transform,
+        scale = null,
+        translate = null;
       if (topoJSONTopology['transform']) {
         transform = topoJSONTopology['transform'];
         scale = transform['scale'];
@@ -112,13 +114,36 @@ class TopoJSON extends JSONFeature {
           continue;
         }
         if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
-          feature = /** @type {TopoJSONGeometryCollection} */ (topoJSONFeatures[objectName]);
-          features.push.apply(features, readFeaturesFromGeometryCollection(
-            feature, arcs, scale, translate, property, objectName, opt_options));
+          feature = /** @type {TopoJSONGeometryCollection} */ (topoJSONFeatures[
+            objectName
+          ]);
+          features.push.apply(
+            features,
+            readFeaturesFromGeometryCollection(
+              feature,
+              arcs,
+              scale,
+              translate,
+              property,
+              objectName,
+              opt_options
+            )
+          );
         } else {
-          feature = /** @type {TopoJSONGeometry} */ (topoJSONFeatures[objectName]);
-          features.push(readFeatureFromGeometry(
-            feature, arcs, scale, translate, property, objectName, opt_options));
+          feature = /** @type {TopoJSONGeometry} */ (topoJSONFeatures[
+            objectName
+          ]);
+          features.push(
+            readFeatureFromGeometry(
+              feature,
+              arcs,
+              scale,
+              translate,
+              property,
+              objectName,
+              opt_options
+            )
+          );
         }
       }
       return features;
@@ -128,14 +153,14 @@ class TopoJSON extends JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * @param {Object} object Object.
+   * @protected
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromObject(object) {
     return this.dataProjection;
   }
-
 }
-
 
 /**
  * @const
@@ -147,9 +172,8 @@ const GEOMETRY_READERS = {
   'Polygon': readPolygonGeometry,
   'MultiPoint': readMultiPointGeometry,
   'MultiLineString': readMultiLineStringGeometry,
-  'MultiPolygon': readMultiPolygonGeometry
+  'MultiPolygon': readMultiPolygonGeometry,
 };
-
 
 /**
  * Concatenate arcs into a coordinate array.
@@ -185,7 +209,6 @@ function concatenateArcs(indices, arcs) {
   return coordinates;
 }
 
-
 /**
  * Create a point from a TopoJSON geometry object.
  *
@@ -201,7 +224,6 @@ function readPointGeometry(object, scale, translate) {
   }
   return new Point(coordinates);
 }
-
 
 /**
  * Create a multi-point from a TopoJSON geometry object.
@@ -221,7 +243,6 @@ function readMultiPointGeometry(object, scale, translate) {
   return new MultiPoint(coordinates);
 }
 
-
 /**
  * Create a linestring from a TopoJSON geometry object.
  *
@@ -233,7 +254,6 @@ function readLineStringGeometry(object, arcs) {
   const coordinates = concatenateArcs(object['arcs'], arcs);
   return new LineString(coordinates);
 }
-
 
 /**
  * Create a multi-linestring from a TopoJSON geometry object.
@@ -250,7 +270,6 @@ function readMultiLineStringGeometry(object, arcs) {
   return new MultiLineString(coordinates);
 }
 
-
 /**
  * Create a polygon from a TopoJSON geometry object.
  *
@@ -265,7 +284,6 @@ function readPolygonGeometry(object, arcs) {
   }
   return new Polygon(coordinates);
 }
-
 
 /**
  * Create a multi-polygon from a TopoJSON geometry object.
@@ -289,7 +307,6 @@ function readMultiPolygonGeometry(object, arcs) {
   return new MultiPolygon(coordinates);
 }
 
-
 /**
  * Create features from a TopoJSON GeometryCollection object.
  *
@@ -304,16 +321,30 @@ function readMultiPolygonGeometry(object, arcs) {
  * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
  * @return {Array<Feature>} Array of features.
  */
-function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
+function readFeaturesFromGeometryCollection(
+  collection,
+  arcs,
+  scale,
+  translate,
+  property,
+  name,
+  opt_options
+) {
   const geometries = collection['geometries'];
   const features = [];
   for (let i = 0, ii = geometries.length; i < ii; ++i) {
     features[i] = readFeatureFromGeometry(
-      geometries[i], arcs, scale, translate, property, name, opt_options);
+      geometries[i],
+      arcs,
+      scale,
+      translate,
+      property,
+      name,
+      opt_options
+    );
   }
   return features;
 }
-
 
 /**
  * Create a feature from a TopoJSON geometry object.
@@ -328,17 +359,27 @@ function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, 
  * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
  * @return {Feature} Feature.
  */
-function readFeatureFromGeometry(object, arcs, scale, translate, property, name, opt_options) {
+function readFeatureFromGeometry(
+  object,
+  arcs,
+  scale,
+  translate,
+  property,
+  name,
+  opt_options
+) {
   let geometry;
   const type = object.type;
   const geometryReader = GEOMETRY_READERS[type];
-  if ((type === 'Point') || (type === 'MultiPoint')) {
+  if (type === 'Point' || type === 'MultiPoint') {
     geometry = geometryReader(object, scale, translate);
   } else {
     geometry = geometryReader(object, arcs);
   }
   const feature = new Feature();
-  feature.setGeometry(transformGeometryWithOptions(geometry, false, opt_options));
+  feature.setGeometry(
+    transformGeometryWithOptions(geometry, false, opt_options)
+  );
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
@@ -355,7 +396,6 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
   return feature;
 }
 
-
 /**
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
@@ -369,7 +409,6 @@ function transformArcs(arcs, scale, translate) {
     transformArc(arcs[i], scale, translate);
   }
 }
-
 
 /**
  * Apply a linear transform to an arc.  The provided arc is modified in place.
@@ -391,7 +430,6 @@ function transformArc(arc, scale, translate) {
   }
 }
 
-
 /**
  * Apply a linear transform to a vertex.  The provided vertex is modified in
  * place.
@@ -404,6 +442,5 @@ function transformVertex(vertex, scale, translate) {
   vertex[0] = vertex[0] * scale[0] + translate[0];
   vertex[1] = vertex[1] * scale[1] + translate[1];
 }
-
 
 export default TopoJSON;

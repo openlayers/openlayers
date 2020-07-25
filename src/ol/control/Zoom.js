@@ -1,11 +1,10 @@
 /**
  * @module ol/control/Zoom
  */
-import EventType from '../events/EventType.js';
 import Control from './Control.js';
+import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
-
 
 /**
  * @typedef {Object} Options
@@ -22,7 +21,6 @@ import {easeOut} from '../easing.js';
  * rendered outside of the map's viewport.
  */
 
-
 /**
  * @classdesc
  * A control with 2 buttons, one for zoom in and one for zoom out.
@@ -32,52 +30,68 @@ import {easeOut} from '../easing.js';
  * @api
  */
 class Zoom extends Control {
-
   /**
    * @param {Options=} opt_options Zoom options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
       element: document.createElement('div'),
-      target: options.target
+      target: options.target,
     });
 
-    const className = options.className !== undefined ? options.className : 'ol-zoom';
+    const className =
+      options.className !== undefined ? options.className : 'ol-zoom';
 
     const delta = options.delta !== undefined ? options.delta : 1;
 
-    const zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
-    const zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
+    const zoomInLabel =
+      options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
+    const zoomOutLabel =
+      options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
 
-    const zoomInTipLabel = options.zoomInTipLabel !== undefined ?
-      options.zoomInTipLabel : 'Zoom in';
-    const zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
-      options.zoomOutTipLabel : 'Zoom out';
+    const zoomInTipLabel =
+      options.zoomInTipLabel !== undefined ? options.zoomInTipLabel : 'Zoom in';
+    const zoomOutTipLabel =
+      options.zoomOutTipLabel !== undefined
+        ? options.zoomOutTipLabel
+        : 'Zoom out';
 
     const inElement = document.createElement('button');
     inElement.className = className + '-in';
     inElement.setAttribute('type', 'button');
     inElement.title = zoomInTipLabel;
     inElement.appendChild(
-      typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
+      typeof zoomInLabel === 'string'
+        ? document.createTextNode(zoomInLabel)
+        : zoomInLabel
     );
 
-    inElement.addEventListener(EventType.CLICK, this.handleClick_.bind(this, delta), false);
+    inElement.addEventListener(
+      EventType.CLICK,
+      this.handleClick_.bind(this, delta),
+      false
+    );
 
     const outElement = document.createElement('button');
     outElement.className = className + '-out';
     outElement.setAttribute('type', 'button');
     outElement.title = zoomOutTipLabel;
     outElement.appendChild(
-      typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
+      typeof zoomOutLabel === 'string'
+        ? document.createTextNode(zoomOutLabel)
+        : zoomOutLabel
     );
 
-    outElement.addEventListener(EventType.CLICK, this.handleClick_.bind(this, -delta), false);
+    outElement.addEventListener(
+      EventType.CLICK,
+      this.handleClick_.bind(this, -delta),
+      false
+    );
 
-    const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+    const cssClasses =
+      className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     const element = this.element;
     element.className = cssClasses;
     element.appendChild(inElement);
@@ -88,7 +102,6 @@ class Zoom extends Control {
      * @private
      */
     this.duration_ = options.duration !== undefined ? options.duration : 250;
-
   }
 
   /**
@@ -123,7 +136,7 @@ class Zoom extends Control {
         view.animate({
           zoom: newZoom,
           duration: this.duration_,
-          easing: easeOut
+          easing: easeOut,
         });
       } else {
         view.setZoom(newZoom);
@@ -131,6 +144,5 @@ class Zoom extends Control {
     }
   }
 }
-
 
 export default Zoom;

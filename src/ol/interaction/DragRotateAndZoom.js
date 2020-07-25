@@ -1,9 +1,8 @@
 /**
  * @module ol/interaction/DragRotateAndZoom
  */
-import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
 import PointerInteraction from './Pointer.js';
-
+import {mouseOnly, shiftKeyOnly} from '../events/condition.js';
 
 /**
  * @typedef {Object} Options
@@ -13,7 +12,6 @@ import PointerInteraction from './Pointer.js';
  * Default is {@link module:ol/events/condition~shiftKeyOnly}.
  * @property {number} [duration=400] Animation duration in milliseconds.
  */
-
 
 /**
  * @classdesc
@@ -27,12 +25,10 @@ import PointerInteraction from './Pointer.js';
  * @api
  */
 class DragRotateAndZoom extends PointerInteraction {
-
   /**
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
@@ -66,11 +62,11 @@ class DragRotateAndZoom extends PointerInteraction {
      * @type {number}
      */
     this.duration_ = options.duration !== undefined ? options.duration : 400;
-
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer drag events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -100,7 +96,9 @@ class DragRotateAndZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer up events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -116,7 +114,9 @@ class DragRotateAndZoom extends PointerInteraction {
   }
 
   /**
-   * @inheritDoc
+   * Handle pointer down events.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {

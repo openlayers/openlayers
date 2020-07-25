@@ -1,8 +1,8 @@
 /**
  * @module ol/format/filter/LogicalNary
  */
-import {assert} from '../../asserts.js';
 import Filter from './Filter.js';
+import {assert} from '../../asserts.js';
 
 /**
  * @classdesc
@@ -12,13 +12,11 @@ import Filter from './Filter.js';
  * @abstract
  */
 class LogicalNary extends Filter {
-
   /**
    * @param {!string} tagName The XML tag name for this filter.
    * @param {Array<import("./Filter.js").default>} conditions Conditions.
    */
   constructor(tagName, conditions) {
-
     super(tagName);
 
     /**
@@ -27,7 +25,6 @@ class LogicalNary extends Filter {
     this.conditions = conditions;
     assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
   }
-
 }
 
 export default LogicalNary;

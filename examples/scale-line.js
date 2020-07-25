@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {defaults as defaultControls, ScaleLine} from '../src/ol/control.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import View from '../src/ol/View.js';
+import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 
 const unitsSelect = document.getElementById('units');
 const typeSelect = document.getElementById('type');
@@ -18,7 +18,7 @@ let control;
 function scaleControl() {
   if (scaleType === 'scaleline') {
     control = new ScaleLine({
-      units: unitsSelect.value
+      units: unitsSelect.value,
     });
     return control;
   }
@@ -27,24 +27,22 @@ function scaleControl() {
     bar: true,
     steps: scaleBarSteps,
     text: scaleBarText,
-    minWidth: 140
+    minWidth: 140,
   });
   return control;
 }
 const map = new Map({
-  controls: defaultControls().extend([
-    scaleControl()
-  ]),
+  controls: defaultControls().extend([scaleControl()]),
   layers: [
     new TileLayer({
-      source: new OSM()
-    })
+      source: new OSM(),
+    }),
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 function onChange() {

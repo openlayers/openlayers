@@ -3,13 +3,12 @@
  */
 // FIXME should handle all geo-referenced data, not just vector data
 
-import {TRUE} from '../functions.js';
-import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Interaction from './Interaction.js';
+import {TRUE} from '../functions.js';
 import {get as getProjection} from '../proj.js';
-
+import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Options
@@ -23,7 +22,6 @@ import {get as getProjection} from '../proj.js';
  * @property {HTMLElement} [target] The element that is used as the drop target, default is the viewport element.
  */
 
-
 /**
  * @enum {string}
  */
@@ -33,9 +31,8 @@ const DragAndDropEventType = {
    * @event DragAndDropEvent#addfeatures
    * @api
    */
-  ADD_FEATURES: 'addfeatures'
+  ADD_FEATURES: 'addfeatures',
 };
-
 
 /**
  * @classdesc
@@ -43,7 +40,6 @@ const DragAndDropEventType = {
  * of this type.
  */
 class DragAndDropEvent extends Event {
-
   /**
    * @param {DragAndDropEventType} type Type.
    * @param {File} file File.
@@ -51,7 +47,6 @@ class DragAndDropEvent extends Event {
    * @param {import("../proj/Projection.js").default=} opt_projection Projection.
    */
   constructor(type, file, opt_features, opt_projection) {
-
     super(type);
 
     /**
@@ -74,11 +69,8 @@ class DragAndDropEvent extends Event {
      * @api
      */
     this.projection = opt_projection;
-
   }
-
 }
-
 
 /**
  * @classdesc
@@ -92,26 +84,27 @@ class DragAndDrop extends Interaction {
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-
     const options = opt_options ? opt_options : {};
 
     super({
-      handleEvent: TRUE
+      handleEvent: TRUE,
     });
 
     /**
      * @private
      * @type {Array<typeof import("../format/Feature.js").default>}
      */
-    this.formatConstructors_ = options.formatConstructors ?
-      options.formatConstructors : [];
+    this.formatConstructors_ = options.formatConstructors
+      ? options.formatConstructors
+      : [];
 
     /**
      * @private
      * @type {import("../proj/Projection.js").default}
      */
-    this.projection_ = options.projection ?
-      getProjection(options.projection) : null;
+    this.projection_ = options.projection
+      ? getProjection(options.projection)
+      : null;
 
     /**
      * @private
@@ -130,7 +123,6 @@ class DragAndDrop extends Interaction {
      * @type {HTMLElement}
      */
     this.target = options.target ? options.target : null;
-
   }
 
   /**
@@ -148,24 +140,27 @@ class DragAndDrop extends Interaction {
     }
 
     const formatConstructors = this.formatConstructors_;
-    let features = [];
     for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
       const format = new formatConstructors[i]();
-      features = this.tryReadFeatures_(format, result, {
-        featureProjection: projection
+      const features = this.tryReadFeatures_(format, result, {
+        featureProjection: projection,
       });
       if (features && features.length > 0) {
+        if (this.source_) {
+          this.source_.clear();
+          this.source_.addFeatures(features);
+        }
+        this.dispatchEvent(
+          new DragAndDropEvent(
+            DragAndDropEventType.ADD_FEATURES,
+            file,
+            features,
+            projection
+          )
+        );
         break;
       }
     }
-    if (this.source_) {
-      this.source_.clear();
-      this.source_.addFeatures(features);
-    }
-    this.dispatchEvent(
-      new DragAndDropEvent(
-        DragAndDropEventType.ADD_FEATURES, file,
-        features, projection));
   }
 
   /**
@@ -176,16 +171,19 @@ class DragAndDrop extends Interaction {
     if (map) {
       const dropArea = this.target ? this.target : map.getViewport();
       this.dropListenKeys_ = [
-        listen(dropArea, EventType.DROP, handleDrop, this),
-        listen(dropArea, EventType.DRAGENTER, handleStop, this),
-        listen(dropArea, EventType.DRAGOVER, handleStop, this),
-        listen(dropArea, EventType.DROP, handleStop, this)
+        listen(dropArea, EventType.DROP, this.handleDrop, this),
+        listen(dropArea, EventType.DRAGENTER, this.handleStop, this),
+        listen(dropArea, EventType.DRAGOVER, this.handleStop, this),
+        listen(dropArea, EventType.DROP, this.handleStop, this),
       ];
     }
   }
 
   /**
-   * @inheritDoc
+   * Activate or deactivate the interaction.
+   * @param {boolean} active Active.
+   * @observable
+   * @api
    */
   setActive(active) {
     if (!this.getActive() && active) {
@@ -198,7 +196,10 @@ class DragAndDrop extends Interaction {
   }
 
   /**
-   * @inheritDoc
+   * Remove the interaction from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   setMap(map) {
     this.unregisterListeners_();
@@ -213,11 +214,14 @@ class DragAndDrop extends Interaction {
    * @param {string} text Text.
    * @param {import("../format/Feature.js").ReadOptions} options Read options.
    * @private
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {
-      return format.readFeatures(text, options);
+      return (
+        /** @type {Array<import("../Feature.js").default>} */
+        (format.readFeatures(text, options))
+      );
     } catch (e) {
       return null;
     }
@@ -232,32 +236,31 @@ class DragAndDrop extends Interaction {
       this.dropListenKeys_ = null;
     }
   }
-}
 
+  /**
+   * @param {DragEvent} event Event.
+   */
+  handleDrop(event) {
+    const files = event.dataTransfer.files;
+    for (let i = 0, ii = files.length; i < ii; ++i) {
+      const file = files.item(i);
+      const reader = new FileReader();
+      reader.addEventListener(
+        EventType.LOAD,
+        this.handleResult_.bind(this, file)
+      );
+      reader.readAsText(file);
+    }
+  }
 
-/**
- * @param {DragEvent} event Event.
- * @this {DragAndDrop}
- */
-function handleDrop(event) {
-  const files = event.dataTransfer.files;
-  for (let i = 0, ii = files.length; i < ii; ++i) {
-    const file = files.item(i);
-    const reader = new FileReader();
-    reader.addEventListener(EventType.LOAD, this.handleResult_.bind(this, file));
-    reader.readAsText(file);
+  /**
+   * @param {DragEvent} event Event.
+   */
+  handleStop(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
   }
 }
-
-
-/**
- * @param {DragEvent} event Event.
- */
-function handleStop(event) {
-  event.stopPropagation();
-  event.preventDefault();
-  event.dataTransfer.dropEffect = 'copy';
-}
-
 
 export default DragAndDrop;

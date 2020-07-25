@@ -6,19 +6,23 @@ import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import {listenImage} from './Image.js';
 
-
 class ImageTile extends Tile {
-
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options=} opt_options Tile options.
    */
-  constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
-
+  constructor(
+    tileCoord,
+    state,
+    src,
+    crossOrigin,
+    tileLoadFunction,
+    opt_options
+  ) {
     super(tileCoord, state, opt_options);
 
     /**
@@ -55,7 +59,6 @@ class ImageTile extends Tile {
      * @type {import("./Tile.js").LoadFunction}
      */
     this.tileLoadFunction_ = tileLoadFunction;
-
   }
 
   /**
@@ -68,7 +71,7 @@ class ImageTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * @return {string} Key.
    */
   getKey() {
     return this.src_;
@@ -103,7 +106,7 @@ class ImageTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    * @api
    */
   load() {
@@ -138,7 +141,6 @@ class ImageTile extends Tile {
     }
   }
 }
-
 
 /**
  * Get a 1-pixel blank image.

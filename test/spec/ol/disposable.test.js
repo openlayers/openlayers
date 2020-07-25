@@ -1,35 +1,28 @@
 import Disposable from '../../../src/ol/Disposable.js';
 
-
-describe('ol.Disposable', function() {
-
-  describe('constructor', function() {
-
-    it('creates an instance', function() {
+describe('ol.Disposable', function () {
+  describe('constructor', function () {
+    it('creates an instance', function () {
       const disposable = new Disposable();
       expect(disposable).to.be.a(Disposable);
     });
-
   });
 
-  describe('#disposed_', function() {
-
-    it('is initially false', function() {
+  describe('#disposed', function () {
+    it('is initially false', function () {
       const disposable = new Disposable();
-      expect(disposable.disposed_).to.be(false);
+      expect(disposable.disposed).to.be(false);
     });
 
-    it('is true after a call to dispose', function() {
+    it('is true after a call to dispose', function () {
       const disposable = new Disposable();
       disposable.dispose();
-      expect(disposable.disposed_).to.be(true);
+      expect(disposable.disposed).to.be(true);
     });
-
   });
 
-  describe('#dispose()', function() {
-
-    it('calls disposeInternal only once', function() {
+  describe('#dispose()', function () {
+    it('calls disposeInternal only once', function () {
       const disposable = new Disposable();
       sinon.spy(disposable, 'disposeInternal');
       expect(disposable.disposeInternal.called).to.be(false);
@@ -38,7 +31,5 @@ describe('ol.Disposable', function() {
       disposable.dispose();
       expect(disposable.disposeInternal.callCount).to.be(1);
     });
-
   });
-
 });

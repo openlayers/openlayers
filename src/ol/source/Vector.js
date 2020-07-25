@@ -2,24 +2,24 @@
  * @module ol/source/Vector
  */
 
-import {getUid} from '../util.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import ObjectEventType from '../ObjectEventType.js';
-import {extend} from '../array.js';
-import {assert} from '../asserts.js';
-import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {containsExtent, equals} from '../extent.js';
-import {xhr} from '../featureloader.js';
-import {TRUE, VOID} from '../functions.js';
-import {all as allStrategy} from '../loadingstrategy.js';
-import {isEmpty, getValues} from '../obj.js';
+import ObjectEventType from '../ObjectEventType.js';
+import RBush from '../structs/RBush.js';
 import Source from './Source.js';
 import SourceState from './State.js';
 import VectorEventType from './VectorEventType.js';
-import RBush from '../structs/RBush.js';
+import {TRUE, VOID} from '../functions.js';
+import {all as allStrategy} from '../loadingstrategy.js';
+import {assert} from '../asserts.js';
+import {containsExtent, equals} from '../extent.js';
+import {extend} from '../array.js';
+import {getUid} from '../util.js';
+import {getValues, isEmpty} from '../obj.js';
+import {listen, unlistenByKey} from '../events.js';
+import {xhr} from '../featureloader.js';
 
 /**
  * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
@@ -30,7 +30,6 @@ import RBush from '../structs/RBush.js';
  * @api
  */
 
-
 /**
  * @classdesc
  * Events emitted by {@link module:ol/source/Vector} instances are instances of this
@@ -38,13 +37,11 @@ import RBush from '../structs/RBush.js';
  * @template {import("../geom/Geometry.js").default} Geometry
  */
 export class VectorSourceEvent extends Event {
-
   /**
    * @param {string} type Type.
    * @param {import("../Feature.js").default<Geometry>=} opt_feature Feature.
    */
   constructor(type, opt_feature) {
-
     super(type);
 
     /**
@@ -53,11 +50,8 @@ export class VectorSourceEvent extends Event {
      * @api
      */
     this.feature = opt_feature;
-
   }
-
 }
-
 
 /**
  * @typedef {Object} Options
@@ -148,7 +142,6 @@ export class VectorSourceEvent extends Event {
  * resulting geometry coordinates will then exceed the world bounds.
  */
 
-
 /**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
@@ -164,14 +157,13 @@ class VectorSource extends Source {
    * @param {Options=} opt_options Vector source options.
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
 
     super({
       attributions: options.attributions,
       projection: undefined,
       state: SourceState.READY,
-      wrapX: options.wrapX !== undefined ? options.wrapX : true
+      wrapX: options.wrapX !== undefined ? options.wrapX : true,
     });
 
     /**
@@ -190,7 +182,7 @@ class VectorSource extends Source {
      * @private
      * @type {boolean}
      */
-    this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
+    this.overlaps_ = options.overlaps === undefined ? true : options.overlaps;
 
     /**
      * @private
@@ -203,17 +195,21 @@ class VectorSource extends Source {
     } else if (this.url_ !== undefined) {
       assert(this.format_, 7); // `format` must be set when `url` is set
       // create a XHR feature loader for "url" and "format"
-      this.loader_ = xhr(this.url_, /** @type {import("../format/Feature.js").default} */ (this.format_));
+      this.loader_ = xhr(
+        this.url_,
+        /** @type {import("../format/Feature.js").default} */ (this.format_)
+      );
     }
 
     /**
      * @private
      * @type {LoadingStrategy}
      */
-    this.strategy_ = options.strategy !== undefined ? options.strategy : allStrategy;
+    this.strategy_ =
+      options.strategy !== undefined ? options.strategy : allStrategy;
 
     const useSpatialIndex =
-        options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
+      options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
 
     /**
      * @private
@@ -275,7 +271,6 @@ class VectorSource extends Source {
     if (collection !== undefined) {
       this.bindFeaturesCollection_(collection);
     }
-
   }
 
   /**
@@ -294,7 +289,6 @@ class VectorSource extends Source {
     this.addFeatureInternal(feature);
     this.changed();
   }
-
 
   /**
    * Add a feature without firing a `change` event.
@@ -324,9 +318,9 @@ class VectorSource extends Source {
     }
 
     this.dispatchEvent(
-      new VectorSourceEvent(VectorEventType.ADDFEATURE, feature));
+      new VectorSourceEvent(VectorEventType.ADDFEATURE, feature)
+    );
   }
-
 
   /**
    * @param {string} featureKey Unique identifier for the feature.
@@ -335,13 +329,15 @@ class VectorSource extends Source {
    */
   setupChangeEvents_(featureKey, feature) {
     this.featureChangeKeys_[featureKey] = [
-      listen(feature, EventType.CHANGE,
-        this.handleFeatureChange_, this),
-      listen(feature, ObjectEventType.PROPERTYCHANGE,
-        this.handleFeatureChange_, this)
+      listen(feature, EventType.CHANGE, this.handleFeatureChange_, this),
+      listen(
+        feature,
+        ObjectEventType.PROPERTYCHANGE,
+        this.handleFeatureChange_,
+        this
+      ),
     ];
   }
-
 
   /**
    * @param {string} featureKey Unique identifier for the feature.
@@ -361,13 +357,11 @@ class VectorSource extends Source {
       }
     }
     if (valid) {
-      assert(!(featureKey in this.uidIndex_),
-        30); // The passed `feature` was already added to the source
+      assert(!(featureKey in this.uidIndex_), 30); // The passed `feature` was already added to the source
       this.uidIndex_[featureKey] = feature;
     }
     return valid;
   }
-
 
   /**
    * Add a batch of features to the source.
@@ -378,7 +372,6 @@ class VectorSource extends Source {
     this.addFeaturesInternal(features);
     this.changed();
   }
-
 
   /**
    * Add features without firing a `change` event.
@@ -417,10 +410,11 @@ class VectorSource extends Source {
     }
 
     for (let i = 0, length = newFeatures.length; i < length; i++) {
-      this.dispatchEvent(new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i]));
+      this.dispatchEvent(
+        new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i])
+      );
     }
   }
-
 
   /**
    * @param {!Collection<import("../Feature.js").default<Geometry>>} collection Collection.
@@ -428,53 +422,64 @@ class VectorSource extends Source {
    */
   bindFeaturesCollection_(collection) {
     let modifyingCollection = false;
-    this.addEventListener(VectorEventType.ADDFEATURE,
+    this.addEventListener(
+      VectorEventType.ADDFEATURE,
       /**
        * @param {VectorSourceEvent<Geometry>} evt The vector source event
        */
-      function(evt) {
+      function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
           collection.push(evt.feature);
           modifyingCollection = false;
         }
-      });
-    this.addEventListener(VectorEventType.REMOVEFEATURE,
+      }
+    );
+    this.addEventListener(
+      VectorEventType.REMOVEFEATURE,
       /**
        * @param {VectorSourceEvent<Geometry>} evt The vector source event
        */
-      function(evt) {
+      function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
           collection.remove(evt.feature);
           modifyingCollection = false;
         }
-      });
-    collection.addEventListener(CollectionEventType.ADD,
+      }
+    );
+    collection.addEventListener(
+      CollectionEventType.ADD,
       /**
        * @param {import("../Collection.js").CollectionEvent} evt The collection event
        */
-      function(evt) {
+      function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
-          this.addFeature(/** @type {import("../Feature.js").default<Geometry>} */ (evt.element));
+          this.addFeature(
+            /** @type {import("../Feature.js").default<Geometry>} */ (evt.element)
+          );
           modifyingCollection = false;
         }
-      }.bind(this));
-    collection.addEventListener(CollectionEventType.REMOVE,
+      }.bind(this)
+    );
+    collection.addEventListener(
+      CollectionEventType.REMOVE,
       /**
        * @param {import("../Collection.js").CollectionEvent} evt The collection event
        */
-      function(evt) {
+      function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
-          this.removeFeature(/** @type {import("../Feature.js").default<Geometry>} */ (evt.element));
+          this.removeFeature(
+            /** @type {import("../Feature.js").default<Geometry>} */ (evt.element)
+          );
           modifyingCollection = false;
         }
-      }.bind(this));
+      }.bind(this)
+    );
     this.featuresCollection_ = collection;
   }
-
 
   /**
    * Remove all features from the source.
@@ -514,7 +519,6 @@ class VectorSource extends Source {
     this.changed();
   }
 
-
   /**
    * Iterate through all features on the source, calling the provided callback
    * with each one.  If the callback returns any "truthy" value, iteration will
@@ -535,7 +539,6 @@ class VectorSource extends Source {
     }
   }
 
-
   /**
    * Iterate through all features whose geometries contain the provided
    * coordinate, calling the callback with each feature.  If the callback returns
@@ -550,7 +553,7 @@ class VectorSource extends Source {
    */
   forEachFeatureAtCoordinateDirect(coordinate, callback) {
     const extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
-    return this.forEachFeatureInExtent(extent, function(feature) {
+    return this.forEachFeatureInExtent(extent, function (feature) {
       const geometry = feature.getGeometry();
       if (geometry.intersectsCoordinate(coordinate)) {
         return callback(feature);
@@ -559,7 +562,6 @@ class VectorSource extends Source {
       }
     });
   }
-
 
   /**
    * Iterate through all features whose bounding box intersects the provided
@@ -588,7 +590,6 @@ class VectorSource extends Source {
     }
   }
 
-
   /**
    * Iterate through all features whose geometry intersects the provided extent,
    * calling the callback with each feature.  If the callback returns a "truthy"
@@ -605,12 +606,13 @@ class VectorSource extends Source {
    * @api
    */
   forEachFeatureIntersectingExtent(extent, callback) {
-    return this.forEachFeatureInExtent(extent,
+    return this.forEachFeatureInExtent(
+      extent,
       /**
        * @param {import("../Feature.js").default<Geometry>} feature Feature.
        * @return {T|undefined} The return value from the last call to the callback.
        */
-      function(feature) {
+      function (feature) {
         const geometry = feature.getGeometry();
         if (geometry.intersectsExtent(extent)) {
           const result = callback(feature);
@@ -618,9 +620,9 @@ class VectorSource extends Source {
             return result;
           }
         }
-      });
+      }
+    );
   }
-
 
   /**
    * Get the features collection associated with this source. Will be `null`
@@ -632,7 +634,6 @@ class VectorSource extends Source {
   getFeaturesCollection() {
     return this.featuresCollection_;
   }
-
 
   /**
    * Get all features on the source in random order.
@@ -649,11 +650,8 @@ class VectorSource extends Source {
         extend(features, getValues(this.nullGeometryFeatures_));
       }
     }
-    return (
-      /** @type {Array<import("../Feature.js").default<Geometry>>} */ (features)
-    );
+    return /** @type {Array<import("../Feature.js").default<Geometry>>} */ (features);
   }
-
 
   /**
    * Get all features whose geometry intersects the provided coordinate.
@@ -663,12 +661,11 @@ class VectorSource extends Source {
    */
   getFeaturesAtCoordinate(coordinate) {
     const features = [];
-    this.forEachFeatureAtCoordinateDirect(coordinate, function(feature) {
+    this.forEachFeatureAtCoordinateDirect(coordinate, function (feature) {
       features.push(feature);
     });
     return features;
   }
-
 
   /**
    * Get all features whose bounding box intersects the provided extent.  Note that this returns an array of
@@ -691,7 +688,6 @@ class VectorSource extends Source {
       return [];
     }
   }
-
 
   /**
    * Get the closest feature to the provided coordinate.
@@ -720,16 +716,21 @@ class VectorSource extends Source {
     let minSquaredDistance = Infinity;
     const extent = [-Infinity, -Infinity, Infinity, Infinity];
     const filter = opt_filter ? opt_filter : TRUE;
-    this.featuresRtree_.forEachInExtent(extent,
+    this.featuresRtree_.forEachInExtent(
+      extent,
       /**
        * @param {import("../Feature.js").default<Geometry>} feature Feature.
        */
-      function(feature) {
+      function (feature) {
         if (filter(feature)) {
           const geometry = feature.getGeometry();
           const previousMinSquaredDistance = minSquaredDistance;
           minSquaredDistance = geometry.closestPointXY(
-            x, y, closestPoint, minSquaredDistance);
+            x,
+            y,
+            closestPoint,
+            minSquaredDistance
+          );
           if (minSquaredDistance < previousMinSquaredDistance) {
             closestFeature = feature;
             // This is sneaky.  Reduce the extent that it is currently being
@@ -743,10 +744,10 @@ class VectorSource extends Source {
             extent[3] = y + minDistance;
           }
         }
-      });
+      }
+    );
     return closestFeature;
   }
-
 
   /**
    * Get the extent of the features currently in the source.
@@ -762,7 +763,6 @@ class VectorSource extends Source {
     return this.featuresRtree_.getExtent(opt_extent);
   }
 
-
   /**
    * Get a feature by its identifier (the value returned by feature.getId()).
    * Note that the index treats string and numeric identifiers as the same.  So
@@ -777,7 +777,6 @@ class VectorSource extends Source {
     return feature !== undefined ? feature : null;
   }
 
-
   /**
    * Get a feature by its internal unique identifier (using `getUid`).
    *
@@ -789,7 +788,6 @@ class VectorSource extends Source {
     return feature !== undefined ? feature : null;
   }
 
-
   /**
    * Get the format associated with this source.
    *
@@ -800,14 +798,12 @@ class VectorSource extends Source {
     return this.format_;
   }
 
-
   /**
    * @return {boolean} The source can have overlapping geometries.
    */
   getOverlaps() {
     return this.overlaps_;
   }
-
 
   /**
    * Get the url associated with this source.
@@ -818,7 +814,6 @@ class VectorSource extends Source {
   getUrl() {
     return this.url_;
   }
-
 
   /**
    * @param {Event} event Event.
@@ -860,8 +855,9 @@ class VectorSource extends Source {
       this.uidIndex_[featureKey] = feature;
     }
     this.changed();
-    this.dispatchEvent(new VectorSourceEvent(
-      VectorEventType.CHANGEFEATURE, feature));
+    this.dispatchEvent(
+      new VectorSourceEvent(VectorEventType.CHANGEFEATURE, feature)
+    );
   }
 
   /**
@@ -886,7 +882,6 @@ class VectorSource extends Source {
     return this.featuresRtree_.isEmpty() && isEmpty(this.nullGeometryFeatures_);
   }
 
-
   /**
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
@@ -898,14 +893,16 @@ class VectorSource extends Source {
     this.loading = false;
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
-      const alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
+      const alreadyLoaded = loadedExtentsRtree.forEachInExtent(
+        extentToLoad,
         /**
          * @param {{extent: import("../extent.js").Extent}} object Object.
          * @return {boolean} Contains.
          */
-        function(object) {
+        function (object) {
           return containsExtent(object.extent, extentToLoad);
-        });
+        }
+      );
       if (!alreadyLoaded) {
         this.loader_.call(this, extentToLoad, resolution, projection);
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
@@ -920,7 +917,6 @@ class VectorSource extends Source {
     super.refresh();
   }
 
-
   /**
    * Remove an extent from the list of loaded extents.
    * @param {import("../extent.js").Extent} extent Extent.
@@ -929,7 +925,7 @@ class VectorSource extends Source {
   removeLoadedExtent(extent) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
     let obj;
-    loadedExtentsRtree.forEachInExtent(extent, function(object) {
+    loadedExtentsRtree.forEachInExtent(extent, function (object) {
       if (equals(object.extent, extent)) {
         obj = object;
         return true;
@@ -939,7 +935,6 @@ class VectorSource extends Source {
       loadedExtentsRtree.remove(obj);
     }
   }
-
 
   /**
    * Remove a single feature from the source.  If you want to remove all features
@@ -961,7 +956,6 @@ class VectorSource extends Source {
     this.changed();
   }
 
-
   /**
    * Remove feature without firing a `change` event.
    * @param {import("../Feature.js").default<Geometry>} feature Feature.
@@ -976,10 +970,10 @@ class VectorSource extends Source {
       delete this.idIndex_[id.toString()];
     }
     delete this.uidIndex_[featureKey];
-    this.dispatchEvent(new VectorSourceEvent(
-      VectorEventType.REMOVEFEATURE, feature));
+    this.dispatchEvent(
+      new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature)
+    );
   }
-
 
   /**
    * Remove a feature from the id index.  Called internally when the feature id
@@ -1000,7 +994,6 @@ class VectorSource extends Source {
     return removed;
   }
 
-
   /**
    * Set the new loader of the source. The next render cycle will use the
    * new loader.
@@ -1020,8 +1013,6 @@ class VectorSource extends Source {
     assert(this.format_, 7); // `format` must be set when `url` is set
     this.setLoader(xhr(url, this.format_));
   }
-
 }
-
 
 export default VectorSource;

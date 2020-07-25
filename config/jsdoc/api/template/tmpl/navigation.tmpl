@@ -7,53 +7,64 @@ function toShortName(name) {
 
 function getItemCssClass(type) {
     if (type === 'module') {
-        return 'glyphicon-plus';
+        return 'fa-plus';
     } else if (type === 'class') {
-        return 'glyphicon-chevron-right';
+        return 'fa-chevron-right';
     }
     return '';
 }
 
-const printList = v => { ?>
-                    <li data-name="<?js= v.longname ?>"><?js
-}
-const printListWithStability = v => {
-    const cls = v.stability && v.stability !== 'stable' ? ' class="unstable"' : ''; ?>
-                    <li data-name="<?js= v.longname ?>"<?js= cls ?>><?js
-}
+const printListItem = (member) => {
+    const shortName = toShortName(member.name); ?>
+                    <li data-name="<?js= shortName.toLowerCase() ?>"><?js= self.linkto(member.longname, shortName) ?><?js
+};
+const printListItemWithStability = (member) => {
+    const shortName = toShortName(member.name);
+    const cls = member.stability && member.stability !== 'stable' ? ' class="unstable"' : ''; ?>
+                    <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= self.linkto(member.longname, shortName) ?><?js
+};
+const printFiresListItem = (eventName) => {
+    const ancestor = self.find({longname: eventName})[0] ||
+        {longname: eventName, name: eventName.split(/#?event:/)[1]};
+    const eventEnum = ancestor.longname.split(/#?event:/)[0];
+    if (self.find({longname: eventEnum})[0]) {
+        printListItemWithStability(ancestor);
+    } else {
+        const cls = ancestor.stability && ancestor.stability !== 'stable' ? ' class="unstable"' : '';
+        const shortName = toShortName(ancestor.name); ?>
+                    <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= shortName ?><?js
+    }
+};
 
 function listContent(item, title, listItemPrinter) {
     const type = title.toLowerCase();
     if (item[type] && item[type].length) { ?>
-            <div class="member-list">
+            <div class="member-list" data-type="<?js= type ?>">
                 <span class="subtitle"><?js= title ?></span>
                 <ul><?js
         item[type].forEach(function (v) {
-            listItemPrinter(v); ?><?js= self.linkto(v.longname, toShortName(v.name)) ?><?js
+            listItemPrinter(v);
          }); ?>
                 </ul>
             </div><?js
     }
 }
 ?>
-<div class="navigation">
+<div class="navigation col-md-4 col-lg-3">
     <div class="search">
-        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentation">
+        <input id="search" type="text" autocomplete="off" class="form-control input-sm" placeholder="Search Documentation">
     </div>
-    <ul class="list"><?js
+    <ul class="navigation-list search-empty"><?js
         this.nav.forEach(function (item) { ?>
-        <li class="item" data-name="<?js= item.longname ?>" data-shortname="<?js= item.name.toLowerCase() ?>">
-            <span class="title">
-                <span class="glyphicon <?js= getItemCssClass(item.type) ?> toggle"></span>
-                <?js= self.linkto(item.longname, item.prettyname) ?>
+        <li class="item item-<?js= item.type ?>" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
+            <span class="title toggle">
+                <span class="fa <?js= getItemCssClass(item.type) ?> mr-2 mt-1"></span>
+                <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~\/]/g, '\u200b$&')) ?></span>
             </span><?js
-                listContent(item, 'Members', printList);
-                listContent(item, 'Typedefs', printListWithStability);
-                listContent(item, 'Methods', printListWithStability);
-                if (item.fires) {
-                    const fires = item.fires.map(v => self.find({longname: v})[0] || {longname: v, name: v.split(/#?event:/)[1]});
-                    listContent({fires: fires}, 'Fires', printListWithStability)
-                }
+                listContent(item, 'Members', printListItem);
+                listContent(item, 'Typedefs', printListItemWithStability);
+                listContent(item, 'Methods', printListItemWithStability);
+                listContent(item, 'Fires', printFiresListItem);
         }); ?>
     </ul>
 </div>

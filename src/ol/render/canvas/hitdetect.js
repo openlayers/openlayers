@@ -3,10 +3,10 @@
  */
 
 import CanvasImmediateRenderer from './Immediate.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {Icon} from '../../style.js';
-import IconAnchorUnits from '../../style/IconAnchorUnits.js';
 import GeometryType from '../../geom/GeometryType.js';
+import IconAnchorUnits from '../../style/IconAnchorUnits.js';
+import {Icon} from '../../style.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
 
@@ -24,16 +24,30 @@ import {numberSafeCompareFunction} from '../../array.js';
  * @param {number} rotation Rotation.
  * @return {ImageData} Hit detection image data.
  */
-export function createHitDetectionImageData(size, transforms, features, styleFunction, extent, resolution, rotation) {
+export function createHitDetectionImageData(
+  size,
+  transforms,
+  features,
+  styleFunction,
+  extent,
+  resolution,
+  rotation
+) {
   const width = size[0] / 2;
   const height = size[1] / 2;
   const context = createCanvasContext2D(width, height);
   context.imageSmoothingEnabled = false;
   const canvas = context.canvas;
-  const renderer = new CanvasImmediateRenderer(context, 0.5, extent, null, rotation);
+  const renderer = new CanvasImmediateRenderer(
+    context,
+    0.5,
+    extent,
+    null,
+    rotation
+  );
   const featureCount = features.length;
   // Stretch hit detection index to use the whole available color range
-  const indexFactor = Math.ceil((256 * 256 * 256 - 1) / featureCount);
+  const indexFactor = Math.floor((256 * 256 * 256 - 1) / featureCount);
   const featuresByZIndex = {};
   for (let i = 1; i <= featureCount; ++i) {
     const feature = features[i - 1];
@@ -65,6 +79,10 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       const image = originalStyle.getImage();
       if (image) {
         const imgSize = image.getImageSize();
+        if (!imgSize) {
+          continue;
+        }
+
         const canvas = document.createElement('canvas');
         canvas.width = imgSize[0];
         canvas.height = imgSize[1];
@@ -76,19 +94,21 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
         const height = imgSize ? imgSize[1] : img.height;
         const iconContext = createCanvasContext2D(width, height);
         iconContext.drawImage(img, 0, 0);
-        style.setImage(new Icon({
-          img: img,
-          imgSize: imgSize,
-          anchor: image.getAnchor(),
-          anchorXUnits: IconAnchorUnits.PIXELS,
-          anchorYUnits: IconAnchorUnits.PIXELS,
-          offset: image.getOrigin(),
-          size: image.getSize(),
-          opacity: image.getOpacity(),
-          scale: image.getScale(),
-          rotation: image.getRotation(),
-          rotateWithView: image.getRotateWithView()
-        }));
+        style.setImage(
+          new Icon({
+            img: img,
+            imgSize: imgSize,
+            anchor: image.getAnchor(),
+            anchorXUnits: IconAnchorUnits.PIXELS,
+            anchorYUnits: IconAnchorUnits.PIXELS,
+            offset: image.getOrigin(),
+            size: image.getSize(),
+            opacity: image.getOpacity(),
+            scale: image.getScale(),
+            rotation: image.getRotation(),
+            rotateWithView: image.getRotateWithView(),
+          })
+        );
       }
       const zIndex = Number(style.getZIndex());
       let byGeometryType = featuresByZIndex[zIndex];
@@ -102,12 +122,17 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
       }
       const geometry = style.getGeometryFunction()(feature);
       if (geometry && intersects(extent, geometry.getExtent())) {
-        byGeometryType[geometry.getType().replace('Multi', '')].push(geometry, style);
+        byGeometryType[geometry.getType().replace('Multi', '')].push(
+          geometry,
+          style
+        );
       }
     }
   }
 
-  const zIndexKeys = Object.keys(featuresByZIndex).map(Number).sort(numberSafeCompareFunction);
+  const zIndexKeys = Object.keys(featuresByZIndex)
+    .map(Number)
+    .sort(numberSafeCompareFunction);
   for (let i = 0, ii = zIndexKeys.length; i < ii; ++i) {
     const byGeometryType = featuresByZIndex[zIndexKeys[i]];
     for (const type in byGeometryType) {
@@ -136,12 +161,14 @@ export function createHitDetectionImageData(size, transforms, features, styleFun
 export function hitDetect(pixel, features, imageData) {
   const resultFeatures = [];
   if (imageData) {
-    const index = (Math.round(pixel[0] / 2) + Math.round(pixel[1] / 2) * imageData.width) * 4;
+    const index =
+      (Math.round(pixel[0] / 2) + Math.round(pixel[1] / 2) * imageData.width) *
+      4;
     const r = imageData.data[index];
     const g = imageData.data[index + 1];
     const b = imageData.data[index + 2];
-    const i = b + (256 * (g + (256 * r)));
-    const indexFactor = Math.ceil((256 * 256 * 256 - 1) / features.length);
+    const i = b + 256 * (g + 256 * r);
+    const indexFactor = Math.floor((256 * 256 * 256 - 1) / features.length);
     if (i && i % indexFactor === 0) {
       resultFeatures.push(features[i / indexFactor - 1]);
     }

@@ -1,13 +1,12 @@
 /**
  * @module ol/layer/Base
  */
-import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import LayerProperty from './Property.js';
-import {clamp} from '../math.js';
-import {assign} from '../obj.js';
+import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
-
+import {assign} from '../obj.js';
+import {clamp} from '../math.js';
 
 /**
  * @typedef {Object} Options
@@ -30,7 +29,6 @@ import {assert} from '../asserts.js';
  * be visible.
  */
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -46,7 +44,6 @@ class BaseLayer extends BaseObject {
    * @param {Options} options Layer options.
    */
   constructor(options) {
-
     super();
 
     /**
@@ -55,26 +52,27 @@ class BaseLayer extends BaseObject {
     const properties = assign({}, options);
 
     properties[LayerProperty.OPACITY] =
-        options.opacity !== undefined ? options.opacity : 1;
+      options.opacity !== undefined ? options.opacity : 1;
     assert(typeof properties[LayerProperty.OPACITY] === 'number', 64); // Layer opacity must be a number
 
     properties[LayerProperty.VISIBLE] =
-       options.visible !== undefined ? options.visible : true;
+      options.visible !== undefined ? options.visible : true;
     properties[LayerProperty.Z_INDEX] = options.zIndex;
     properties[LayerProperty.MAX_RESOLUTION] =
-       options.maxResolution !== undefined ? options.maxResolution : Infinity;
+      options.maxResolution !== undefined ? options.maxResolution : Infinity;
     properties[LayerProperty.MIN_RESOLUTION] =
-       options.minResolution !== undefined ? options.minResolution : 0;
+      options.minResolution !== undefined ? options.minResolution : 0;
     properties[LayerProperty.MIN_ZOOM] =
-       options.minZoom !== undefined ? options.minZoom : -Infinity;
+      options.minZoom !== undefined ? options.minZoom : -Infinity;
     properties[LayerProperty.MAX_ZOOM] =
-       options.maxZoom !== undefined ? options.maxZoom : Infinity;
+      options.maxZoom !== undefined ? options.maxZoom : Infinity;
 
     /**
      * @type {string}
      * @private
      */
-    this.className_ = properties.className !== undefined ? options.className : 'ol-layer';
+    this.className_ =
+      properties.className !== undefined ? options.className : 'ol-layer';
     delete properties.className;
 
     this.setProperties(properties);
@@ -84,7 +82,6 @@ class BaseLayer extends BaseObject {
      * @private
      */
     this.state_ = null;
-
   }
 
   /**
@@ -103,16 +100,19 @@ class BaseLayer extends BaseObject {
    */
   getLayerState(opt_managed) {
     /** @type {import("./Layer.js").State} */
-    const state = this.state_ || /** @type {?} */ ({
-      layer: this,
-      managed: opt_managed === undefined ? true : opt_managed
-    });
+    const state =
+      this.state_ ||
+      /** @type {?} */ ({
+        layer: this,
+        managed: opt_managed === undefined ? true : opt_managed,
+      });
     const zIndex = this.getZIndex();
     state.opacity = clamp(Math.round(this.getOpacity() * 100) / 100, 0, 1);
     state.sourceState = this.getSourceState();
     state.visible = this.getVisible();
     state.extent = this.getExtent();
-    state.zIndex = zIndex !== undefined ? zIndex : (state.managed === false ? Infinity : 0);
+    state.zIndex =
+      zIndex !== undefined ? zIndex : state.managed === false ? Infinity : 0;
     state.maxResolution = this.getMaxResolution();
     state.minResolution = Math.max(this.getMinResolution(), 0);
     state.minZoom = this.getMinZoom();
@@ -150,9 +150,9 @@ class BaseLayer extends BaseObject {
    * @api
    */
   getExtent() {
-    return (
-      /** @type {import("../extent.js").Extent|undefined} */ (this.get(LayerProperty.EXTENT))
-    );
+    return /** @type {import("../extent.js").Extent|undefined} */ (this.get(
+      LayerProperty.EXTENT
+    ));
   }
 
   /**
@@ -322,7 +322,7 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * @inheritDoc
+   * Clean up.
    */
   disposeInternal() {
     if (this.state_) {
@@ -332,6 +332,5 @@ class BaseLayer extends BaseObject {
     super.disposeInternal();
   }
 }
-
 
 export default BaseLayer;

@@ -1,11 +1,14 @@
-import Map from '../../../src/ol/Map.js';
-import View from '../../../src/ol/View.js';
-import {Vector as VectorLayer, Tile as TileLayer} from '../../../src/ol/layer.js';
-import {Vector as VectorSource, XYZ} from '../../../src/ol/source.js';
-import GeoJSON from '../../../src/ol/format/GeoJSON.js';
-import {Style, Stroke} from '../../../src/ol/style.js';
 import Feature from '../../../src/ol/Feature.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
+import Map from '../../../src/ol/Map.js';
 import Point from '../../../src/ol/geom/Point.js';
+import View from '../../../src/ol/View.js';
+import {Stroke, Style} from '../../../src/ol/style.js';
+import {
+  Tile as TileLayer,
+  Vector as VectorLayer,
+} from '../../../src/ol/layer.js';
+import {Vector as VectorSource, XYZ} from '../../../src/ol/source.js';
 
 const map = new Map({
   layers: [
@@ -14,33 +17,33 @@ const map = new Map({
       style: new Style({
         stroke: new Stroke({
           color: 'rgba(255,255,255,0.5)',
-          width: 0.75
-        })
+          width: 0.75,
+        }),
       }),
       source: new VectorSource({
         url: '/data/countries.json',
-        format: new GeoJSON()
-      })
+        format: new GeoJSON(),
+      }),
     }),
     new TileLayer({
       source: new XYZ({
         url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
-        maxZoom: 3
-      })
-    })
+        maxZoom: 3,
+      }),
+    }),
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 const unmanaged = new VectorLayer({
   source: new VectorSource({
-    features: [new Feature(new Point([0, 0]))]
-  })
+    features: [new Feature(new Point([0, 0]))],
+  }),
 });
 unmanaged.setMap(map);
 
-render();
+render({tolerance: 0.01});

@@ -2,18 +2,17 @@
  * Define an @api tag
  * @param {Object} dictionary The tag dictionary.
  */
-exports.defineTags = function(dictionary) {
+exports.defineTags = function (dictionary) {
   dictionary.defineTag('api', {
     mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
-    onTagged: function(doclet, tag) {
+    onTagged: function (doclet, tag) {
       includeTypes(doclet);
       doclet.stability = 'stable';
-    }
+    },
   });
 };
-
 
 /*
  * Based on @api annotations, and assuming that items with no @api annotation
@@ -56,7 +55,7 @@ function includeAugments(doclet) {
           if (!doclet.fires) {
             doclet.fires = [];
           }
-          cls.fires.forEach(function(f) {
+          cls.fires.forEach(function (f) {
             if (doclet.fires.indexOf(f) == -1) {
               doclet.fires.push(f);
             }
@@ -66,23 +65,20 @@ function includeAugments(doclet) {
           if (!doclet.observables) {
             doclet.observables = [];
           }
-          cls.observables.forEach(function(f) {
+          cls.observables.forEach(function (f) {
             if (doclet.observables.indexOf(f) == -1) {
               doclet.observables.push(f);
             }
           });
         }
         cls._hideConstructor = true;
-        if (!cls.undocumented) {
-          cls._documented = true;
-        }
       }
     }
   }
 }
 
 function extractTypes(item) {
-  item.type.names.forEach(function(type) {
+  item.type.names.forEach(function (type) {
     const match = type.match(/^(.*<)?([^>]*)>?$/);
     if (match) {
       modules[match[2]] = true;
@@ -106,9 +102,41 @@ function includeTypes(doclet) {
   }
 }
 
-exports.handlers = {
+const defaultExports = {};
+const path = require('path');
+const moduleRoot = path.join(process.cwd(), 'src');
 
-  newDoclet: function(e) {
+// Tag default exported Identifiers because their name should be the same as the module name.
+exports.astNodeVisitor = {
+  visitNode: function (node, e, parser, currentSourceName) {
+    if (node.parent && node.parent.type === 'ExportDefaultDeclaration') {
+      const modulePath = path
+        .relative(moduleRoot, currentSourceName)
+        .replace(/\.js$/, '');
+      const exportName =
+        'module:' +
+        modulePath.replace(/\\/g, '/') +
+        (node.name ? '~' + node.name : '');
+      defaultExports[exportName] = true;
+    }
+  },
+};
+
+function sortOtherMembers(doclet) {
+  if (doclet.fires) {
+    doclet.fires.sort(function (a, b) {
+      return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
+    });
+  }
+  if (doclet.observables) {
+    doclet.observables.sort(function (a, b) {
+      return a.name < b.name ? -1 : 1;
+    });
+  }
+}
+
+exports.handlers = {
+  newDoclet: function (e) {
     const doclet = e.doclet;
     if (doclet.stability) {
       modules[doclet.longname.split(/[~\.]/).shift()] = true;
@@ -127,24 +155,16 @@ exports.handlers = {
     }
   },
 
-  parseComplete: function(e) {
+  parseComplete: function (e) {
     const doclets = e.doclets;
+    const byLongname = doclets.index.longname;
     for (let i = doclets.length - 1; i >= 0; --i) {
       const doclet = doclets[i];
       if (doclet.stability) {
         if (doclet.kind == 'class') {
           includeAugments(doclet);
         }
-        if (doclet.fires) {
-          doclet.fires.sort(function(a, b) {
-            return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
-          });
-        }
-        if (doclet.observables) {
-          doclet.observables.sort(function(a, b) {
-            return a.name < b.name ? -1 : 1;
-          });
-        }
+        sortOtherMembers(doclet);
         // Always document namespaces and items with stability annotation
         continue;
       }
@@ -161,14 +181,33 @@ exports.handlers = {
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
-      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
+        sortOtherMembers(doclet);
+      } else if (!doclet._hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
-      if (doclet._documented) {
-        delete doclet.undocumented;
+      if (
+        doclet.memberof &&
+        byLongname[doclet.memberof] &&
+        byLongname[doclet.memberof][0].isEnum &&
+        !byLongname[doclet.memberof][0].properties.some((p) => p.stability)
+      ) {
+        byLongname[doclet.memberof][0].undocumented = true;
       }
     }
-  }
+  },
 
+  processingComplete(e) {
+    const byLongname = e.doclets.index.longname;
+    for (const name in defaultExports) {
+      if (!(name in byLongname)) {
+        throw new Error(
+          `missing ${name} in doclet index, did you forget a @module tag?`
+        );
+      }
+      byLongname[name].forEach(function (doclet) {
+        doclet.isDefaultExport = true;
+      });
+    }
+  },
 };

@@ -5,7 +5,7 @@ function loader() {
   const minify = this.mode === 'production';
 
   build(this.resource, {minify})
-    .then(chunk => {
+    .then((chunk) => {
       for (const filePath in chunk.modules) {
         this.addDependency(filePath);
       }

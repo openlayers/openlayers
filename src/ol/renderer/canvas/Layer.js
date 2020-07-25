@@ -1,25 +1,32 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
-import {createCanvasContext2D} from '../../dom.js';
+import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+  create as createTransform,
+} from '../../transform.js';
+import {createCanvasContext2D} from '../../dom.js';
+import {
+  getBottomLeft,
+  getBottomRight,
+  getTopLeft,
+  getTopRight,
+} from '../../extent.js';
 import {rotateAtOffset} from '../../render/canvas.js';
-import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform, toString} from '../../transform.js';
 
 /**
  * @abstract
  * @template {import("../../layer/Layer.js").default} LayerType
  */
 class CanvasLayerRenderer extends LayerRenderer {
-
   /**
    * @param {LayerType} layer Layer.
    */
   constructor(layer) {
-
     super(layer);
 
     /**
@@ -37,10 +44,10 @@ class CanvasLayerRenderer extends LayerRenderer {
     /**
      * A temporary transform.  The values in this transform should only be used in a
      * function that sets the values.
-     * @private
+     * @protected
      * @type {import("../../transform.js").Transform}
      */
-    this.tempTransform_ = createTransform();
+    this.tempTransform = createTransform();
 
     /**
      * The transform for rendered pixels to viewport CSS pixels.  This transform must
@@ -59,7 +66,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.inversePixelTransform = createTransform();
 
     /**
-     * @protected
      * @type {CanvasRenderingContext2D}
      */
     this.context = null;
@@ -68,13 +74,6 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {boolean}
      */
     this.containerReused = false;
-
-    /**
-     * @type {HTMLCanvasElement}
-     * @private
-     */
-    this.createTransformStringCanvas_ = createCanvasContext2D(1, 1).canvas;
-
   }
 
   /**
@@ -86,13 +85,21 @@ class CanvasLayerRenderer extends LayerRenderer {
   useContainer(target, transform, opacity) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
-    if (target && target.style.opacity === '' && target.className === layerClassName) {
+    if (
+      target &&
+      target.style.opacity === '' &&
+      target.className === layerClassName
+    ) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
         context = canvas.getContext('2d');
       }
     }
-    if (context && context.canvas.style.transform === transform) {
+    if (
+      context &&
+      (context.canvas.width === 0 ||
+        context.canvas.style.transform === transform)
+    ) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
@@ -195,7 +202,12 @@ class CanvasLayerRenderer extends LayerRenderer {
   dispatchRenderEvent_(type, context, frameState) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const event = new RenderEvent(type, this.inversePixelTransform, frameState, context);
+      const event = new RenderEvent(
+        type,
+        this.inversePixelTransform,
+        frameState,
+        context
+      );
       layer.dispatchEvent(event);
     }
   }
@@ -230,14 +242,31 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    * @return {!import("../../transform.js").Transform} Transform.
    */
-  getRenderTransform(center, resolution, rotation, pixelRatio, width, height, offsetX) {
+  getRenderTransform(
+    center,
+    resolution,
+    rotation,
+    pixelRatio,
+    width,
+    height,
+    offsetX
+  ) {
     const dx1 = width / 2;
     const dy1 = height / 2;
     const sx = pixelRatio / resolution;
     const sy = -sx;
     const dx2 = -center[0] + offsetX;
     const dy2 = -center[1];
-    return composeTransform(this.tempTransform_, dx1, dy1, sx, sy, -rotation, dx2, dy2);
+    return composeTransform(
+      this.tempTransform,
+      dx1,
+      dy1,
+      sx,
+      sy,
+      -rotation,
+      dx2,
+      dy2
+    );
   }
 
   /**
@@ -249,12 +278,23 @@ class CanvasLayerRenderer extends LayerRenderer {
    *    returned, and empty array will be returned.
    */
   getDataAtPixel(pixel, frameState, hitTolerance) {
-    const renderPixel = applyTransform(this.inversePixelTransform, pixel.slice());
+    const renderPixel = applyTransform(
+      this.inversePixelTransform,
+      pixel.slice()
+    );
     const context = this.context;
 
     let data;
     try {
-      data = context.getImageData(Math.round(renderPixel[0]), Math.round(renderPixel[1]), 1, 1).data;
+      const x = Math.round(renderPixel[0]);
+      const y = Math.round(renderPixel[1]);
+      const newCanvas = document.createElement('canvas');
+      const newContext = newCanvas.getContext('2d');
+      newCanvas.width = 1;
+      newCanvas.height = 1;
+      newContext.clearRect(0, 0, 1, 1);
+      newContext.drawImage(context.canvas, x, y, 1, 1, 0, 0, 1, 1);
+      data = newContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
       if (err.name === 'SecurityError') {
         // tainted canvas, we assume there is data at the given pixel (although there might not be)
@@ -268,16 +308,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     }
     return data;
   }
-
-  /**
-   * @param {import("../../transform.js").Transform} transform Transform.
-   * @return {string} CSS transform.
-   */
-  createTransformString(transform) {
-    this.createTransformStringCanvas_.style.transform = toString(transform);
-    return this.createTransformStringCanvas_.style.transform;
-  }
-
 }
 
 export default CanvasLayerRenderer;

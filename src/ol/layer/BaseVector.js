@@ -3,8 +3,10 @@
  */
 import Layer from './Layer.js';
 import {assign} from '../obj.js';
-import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.js';
-
+import {
+  createDefaultStyle,
+  toFunction as toStyleFunction,
+} from '../style/Style.js';
 
 /**
  * @typedef {Object} Options
@@ -20,6 +22,10 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * visible.
+ * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
@@ -37,8 +43,9 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
- * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
- * {@link module:ol/style} for default style which will be used if this is not defined.
+ * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
+ * features that have their own style will be rendered. See {@link module:ol/style} for default style
+ * which will be used if this is not set.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
  * be recreated during animations. This means that no vectors will be shown clipped, but the
  * setting will have a performance impact for large amounts of vector data. When set to `false`,
@@ -47,15 +54,13 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * be recreated during interactions. See also `updateWhileAnimating`.
  */
 
-
 /**
  * @enum {string}
  * @private
  */
 const Property = {
-  RENDER_ORDER: 'renderOrder'
+  RENDER_ORDER: 'renderOrder',
 };
-
 
 /**
  * @classdesc
@@ -87,14 +92,15 @@ class BaseVectorLayer extends Layer {
      * @private
      * @type {boolean}
      */
-    this.declutter_ = options.declutter !== undefined ? options.declutter : false;
+    this.declutter_ =
+      options.declutter !== undefined ? options.declutter : false;
 
     /**
      * @type {number}
      * @private
      */
-    this.renderBuffer_ = options.renderBuffer !== undefined ?
-      options.renderBuffer : 100;
+    this.renderBuffer_ =
+      options.renderBuffer !== undefined ? options.renderBuffer : 100;
 
     /**
      * User provided style.
@@ -116,16 +122,19 @@ class BaseVectorLayer extends Layer {
      * @type {boolean}
      * @private
      */
-    this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
-      options.updateWhileAnimating : false;
+    this.updateWhileAnimating_ =
+      options.updateWhileAnimating !== undefined
+        ? options.updateWhileAnimating
+        : false;
 
     /**
      * @type {boolean}
      * @private
      */
-    this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
-      options.updateWhileInteracting : false;
-
+    this.updateWhileInteracting_ =
+      options.updateWhileInteracting !== undefined
+        ? options.updateWhileInteracting
+        : false;
   }
 
   /**
@@ -165,16 +174,15 @@ class BaseVectorLayer extends Layer {
    *     order.
    */
   getRenderOrder() {
-    return (
-    /** @type {import("../render.js").OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER))
-    );
+    return /** @type {import("../render.js").OrderFunction|null|undefined} */ (this.get(
+      Property.RENDER_ORDER
+    ));
   }
 
   /**
    * Get the style for features.  This returns whatever was passed to the `style`
    * option at construction or to the `setStyle` method.
-   * @return {import("../style/Style.js").StyleLike}
-   *     Layer style.
+   * @return {import("../style/Style.js").StyleLike|null|undefined} Layer style.
    * @api
    */
   getStyle() {
@@ -217,21 +225,19 @@ class BaseVectorLayer extends Layer {
   /**
    * Set the style for features.  This can be a single style object, an array
    * of styles, or a function that takes a feature and resolution and returns
-   * an array of styles. If it is `undefined` the default style is used. If
-   * it is `null` the layer has no style (a `null` style), so only features
-   * that have their own styles will be rendered in the layer. See
+   * an array of styles. If set to `null`, the layer has no style (a `null` style),
+   * so only features that have their own styles will be rendered in the layer. Call
+   * `setStyle()` without arguments to reset to the default style. See
    * {@link module:ol/style} for information on the default style.
-   * @param {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null|undefined} style Layer style.
+   * @param {(import("../style/Style.js").StyleLike|null)=} opt_style Layer style.
    * @api
    */
-  setStyle(style) {
-    this.style_ = style !== undefined ? style : createDefaultStyle;
-    this.styleFunction_ = style === null ?
-      undefined : toStyleFunction(this.style_);
+  setStyle(opt_style) {
+    this.style_ = opt_style !== undefined ? opt_style : createDefaultStyle;
+    this.styleFunction_ =
+      opt_style === null ? undefined : toStyleFunction(this.style_);
     this.changed();
   }
-
 }
-
 
 export default BaseVectorLayer;

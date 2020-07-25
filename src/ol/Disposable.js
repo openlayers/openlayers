@@ -7,22 +7,21 @@
  * Objects that need to clean up after themselves.
  */
 class Disposable {
-
   constructor() {
     /**
      * The object has already been disposed.
      * @type {boolean}
-     * @private
+     * @protected
      */
-    this.disposed_ = false;
+    this.disposed = false;
   }
 
   /**
    * Clean up.
    */
   dispose() {
-    if (!this.disposed_) {
-      this.disposed_ = true;
+    if (!this.disposed) {
+      this.disposed = true;
       this.disposeInternal();
     }
   }

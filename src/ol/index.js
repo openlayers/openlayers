@@ -16,7 +16,6 @@ export {default as Kinetic} from './Kinetic.js';
 export {default as Map} from './Map.js';
 export {default as MapBrowserEvent} from './MapBrowserEvent.js';
 export {default as MapBrowserEventHandler} from './MapBrowserEventHandler.js';
-export {default as MapBrowserPointerEvent} from './MapBrowserPointerEvent.js';
 export {default as MapEvent} from './MapEvent.js';
 export {default as Object} from './Object.js';
 export {default as Observable} from './Observable.js';

@@ -5,17 +5,15 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 
 class VectorTile extends Tile {
-
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @param {string} src Data source url.
    * @param {import("./format/Feature.js").default} format Feature format.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, src, format, tileLoadFunction, opt_options) {
-
     super(tileCoord, state, opt_options);
 
     /**
@@ -65,7 +63,6 @@ class VectorTile extends Tile {
      * @type {string}
      */
     this.url_ = src;
-
   }
 
   /**
@@ -87,14 +84,14 @@ class VectorTile extends Tile {
   }
 
   /**
-   * @inheritDoc
+   * @return {string} Key.
    */
   getKey() {
     return this.url_;
   }
 
   /**
-   * @inheritDoc
+   * Load not yet loaded URI.
    */
   load() {
     if (this.state == TileState.IDLE) {

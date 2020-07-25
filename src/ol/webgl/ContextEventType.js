@@ -7,5 +7,5 @@
  */
 export default {
   LOST: 'webglcontextlost',
-  RESTORED: 'webglcontextrestored'
+  RESTORED: 'webglcontextrestored',
 };

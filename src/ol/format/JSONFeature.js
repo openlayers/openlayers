@@ -1,9 +1,9 @@
 /**
  * @module ol/format/JSONFeature
  */
-import {abstract} from '../util.js';
 import FeatureFormat from './Feature.js';
 import FormatType from './FormatType.js';
+import {abstract} from '../util.js';
 
 /**
  * @classdesc
@@ -19,7 +19,7 @@ class JSONFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * @return {import("./FormatType.js").default} Format.
    */
   getType() {
     return FormatType.JSON;
@@ -29,28 +29,32 @@ class JSONFeature extends FeatureFormat {
    * Read a feature.  Only works for a single feature. Use `readFeatures` to
    * read a feature collection.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
    */
   readFeature(source, opt_options) {
     return this.readFeatureFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+      getObject(source),
+      this.getReadOptions(source, opt_options)
+    );
   }
 
   /**
    * Read all features.  Works with both a single feature and a feature
    * collection.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
     return this.readFeaturesFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+      getObject(source),
+      this.getReadOptions(source, opt_options)
+    );
   }
 
   /**
@@ -78,14 +82,16 @@ class JSONFeature extends FeatureFormat {
   /**
    * Read a geometry.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
   readGeometry(source, opt_options) {
     return this.readGeometryFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+      getObject(source),
+      this.getReadOptions(source, opt_options)
+    );
   }
 
   /**
@@ -102,7 +108,7 @@ class JSONFeature extends FeatureFormat {
   /**
    * Read the projection.
    *
-   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
@@ -187,9 +193,8 @@ class JSONFeature extends FeatureFormat {
   }
 }
 
-
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Element|Object|string} source Source.
  * @return {Object} Object.
  */
 function getObject(source) {
@@ -202,6 +207,5 @@ function getObject(source) {
     return null;
   }
 }
-
 
 export default JSONFeature;

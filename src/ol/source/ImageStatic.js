@@ -2,13 +2,13 @@
  * @module ol/source/ImageStatic
  */
 
-import ImageWrapper from '../Image.js';
-import ImageState from '../ImageState.js';
-import {createCanvasContext2D} from '../dom.js';
 import EventType from '../events/EventType.js';
-import {intersects, getHeight, getWidth} from '../extent.js';
-import {get as getProjection} from '../proj.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import ImageState from '../ImageState.js';
+import ImageWrapper from '../Image.js';
+import {createCanvasContext2D} from '../dom.js';
+import {getHeight, getWidth, intersects} from '../extent.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
@@ -19,12 +19,12 @@ import ImageSource, {defaultImageLoadFunction} from './Image.js';
  * @property {import("../extent.js").Extent} [imageExtent] Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {import("../size.js").Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
  * only needs to be set if auto-detection fails for some reason.
  * @property {string} url Image URL.
  */
-
 
 /**
  * @classdesc
@@ -36,16 +36,18 @@ class Static extends ImageSource {
    * @param {Options} options ImageStatic options.
    */
   constructor(options) {
-    const crossOrigin = options.crossOrigin !== undefined ?
-      options.crossOrigin : null;
+    const crossOrigin =
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
     const /** @type {import("../Image.js").LoadFunction} */ imageLoadFunction =
-        options.imageLoadFunction !== undefined ?
-          options.imageLoadFunction : defaultImageLoadFunction;
+        options.imageLoadFunction !== undefined
+          ? options.imageLoadFunction
+          : defaultImageLoadFunction;
 
     super({
       attributions: options.attributions,
-      projection: getProjection(options.projection)
+      imageSmoothing: options.imageSmoothing,
+      projection: getProjection(options.projection),
     });
 
     /**
@@ -64,7 +66,14 @@ class Static extends ImageSource {
      * @private
      * @type {import("../Image.js").default}
      */
-    this.image_ = new ImageWrapper(this.imageExtent_, undefined, 1, this.url_, crossOrigin, imageLoadFunction);
+    this.image_ = new ImageWrapper(
+      this.imageExtent_,
+      undefined,
+      1,
+      this.url_,
+      crossOrigin,
+      imageLoadFunction
+    );
 
     /**
      * @private
@@ -72,8 +81,10 @@ class Static extends ImageSource {
      */
     this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-    this.image_.addEventListener(EventType.CHANGE, this.handleImageChange.bind(this));
-
+    this.image_.addEventListener(
+      EventType.CHANGE,
+      this.handleImageChange.bind(this)
+    );
   }
 
   /**
@@ -86,7 +97,11 @@ class Static extends ImageSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../Image.js").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     if (intersects(extent, this.image_.getExtent())) {
@@ -105,7 +120,7 @@ class Static extends ImageSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../events/Event.js").default} evt Event.
    */
   handleImageChange(evt) {
     if (this.image_.getState() == ImageState.LOADED) {
@@ -124,14 +139,22 @@ class Static extends ImageSource {
       if (targetWidth != imageWidth) {
         const context = createCanvasContext2D(targetWidth, imageHeight);
         const canvas = context.canvas;
-        context.drawImage(image, 0, 0, imageWidth, imageHeight,
-          0, 0, canvas.width, canvas.height);
+        context.drawImage(
+          image,
+          0,
+          0,
+          imageWidth,
+          imageHeight,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
         this.image_.setImage(canvas);
       }
     }
     super.handleImageChange(evt);
   }
 }
-
 
 export default Static;

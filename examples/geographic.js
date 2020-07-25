@@ -1,9 +1,9 @@
-import {useGeographic} from '../src/ol/proj.js';
-import {Map, View, Feature, Overlay} from '../src/ol/index.js';
-import {Point} from '../src/ol/geom.js';
-import {Vector as VectorLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {Circle, Fill, Style} from '../src/ol/style.js';
+import {Feature, Map, Overlay, View} from '../src/ol/index.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Style, Circle, Fill} from '../src/ol/style.js';
+import {Point} from '../src/ol/geom.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {useGeographic} from '../src/ol/proj.js';
 
 useGeographic();
 
@@ -15,26 +15,24 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: place,
-    zoom: 8
+    zoom: 8,
   }),
   layers: [
     new TileLayer({
-      source: new OSM()
+      source: new OSM(),
     }),
     new VectorLayer({
       source: new VectorSource({
-        features: [
-          new Feature(point)
-        ]
+        features: [new Feature(point)],
       }),
       style: new Style({
         image: new Circle({
           radius: 9,
-          fill: new Fill({color: 'red'})
-        })
-      })
-    })
-  ]
+          fill: new Fill({color: 'red'}),
+        }),
+      }),
+    }),
+  ],
 });
 
 const element = document.getElementById('popup');
@@ -43,7 +41,7 @@ const popup = new Overlay({
   element: element,
   positioning: 'bottom-center',
   stopEvent: false,
-  offset: [0, -10]
+  offset: [0, -10],
 });
 map.addOverlay(popup);
 
@@ -58,13 +56,13 @@ function formatCoordinate(coordinate) {
 }
 
 const info = document.getElementById('info');
-map.on('moveend', function() {
+map.on('moveend', function () {
   const view = map.getView();
   const center = view.getCenter();
   info.innerHTML = formatCoordinate(center);
 });
 
-map.on('click', function(event) {
+map.on('click', function (event) {
   const feature = map.getFeaturesAtPixel(event.pixel)[0];
   if (feature) {
     const coordinate = feature.getGeometry().getCoordinates();
@@ -72,7 +70,7 @@ map.on('click', function(event) {
     $(element).popover({
       placement: 'top',
       html: true,
-      content: formatCoordinate(coordinate)
+      content: formatCoordinate(coordinate),
     });
     $(element).popover('show');
   } else {
@@ -80,7 +78,7 @@ map.on('click', function(event) {
   }
 });
 
-map.on('pointermove', function(event) {
+map.on('pointermove', function (event) {
   if (map.hasFeatureAtPixel(event.pixel)) {
     map.getViewport().style.cursor = 'pointer';
   } else {

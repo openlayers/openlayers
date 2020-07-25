@@ -1,18 +1,18 @@
+import Stamen from '../src/ol/source/Stamen.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {Circle, Fill, Style} from '../src/ol/style.js';
 import {Map, View} from '../src/ol/index.js';
 import {Point} from '../src/ol/geom.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import Stamen from '../src/ol/source/Stamen.js';
-import {Circle, Fill, Style} from '../src/ol/style.js';
 import {getVectorContext} from '../src/ol/render.js';
-import {useGeographic} from '../src/ol/proj.js';
 import {upAndDown} from '../src/ol/easing.js';
+import {useGeographic} from '../src/ol/proj.js';
 
 useGeographic();
 
 const layer = new TileLayer({
   source: new Stamen({
-    layer: 'toner'
-  })
+    layer: 'toner',
+  }),
 });
 
 const map = new Map({
@@ -20,17 +20,17 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 const image = new Circle({
   radius: 8,
-  fill: new Fill({color: 'rgb(255, 153, 0)'})
+  fill: new Fill({color: 'rgb(255, 153, 0)'}),
 });
 
 const style = new Style({
-  image: image
+  image: image,
 });
 
 const n = 1000;
@@ -42,7 +42,7 @@ for (let i = 0; i < n; ++i) {
   geometries[i] = new Point([lon, lat]);
 }
 
-layer.on('postrender', function(event) {
+layer.on('postrender', function (event) {
   const vectorContext = getVectorContext(event);
 
   for (let i = 0; i < n; ++i) {

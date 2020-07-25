@@ -1,19 +1,19 @@
 /**
  * @module ol/source/UrlTile
  */
-import {getUid} from '../util.js';
-import TileState from '../TileState.js';
-import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
 import TileEventType from './TileEventType.js';
+import TileSource, {TileSourceEvent} from './Tile.js';
+import TileState from '../TileState.js';
+import {createFromTemplates, expandUrl} from '../tileurlfunction.js';
 import {getKeyZXY} from '../tilecoord.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
- * @property {boolean} [opaque]
+ * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {import("./State.js").default} [state]
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
@@ -28,7 +28,6 @@ import {getKeyZXY} from '../tilecoord.js';
  * @property {number} [zDirection=0]
  */
 
-
 /**
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
@@ -40,7 +39,6 @@ class UrlTile extends TileSource {
    * @param {Options} options Image tile options.
    */
   constructor(options) {
-
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
@@ -53,14 +51,15 @@ class UrlTile extends TileSource {
       transition: options.transition,
       key: options.key,
       attributionsCollapsible: options.attributionsCollapsible,
-      zDirection: options.zDirection
+      zDirection: options.zDirection,
     });
 
     /**
      * @private
      * @type {boolean}
      */
-    this.generateTileUrlFunction_ = !options.tileUrlFunction;
+    this.generateTileUrlFunction_ =
+      this.tileUrlFunction === UrlTile.prototype.tileUrlFunction;
 
     /**
      * @protected
@@ -68,11 +67,9 @@ class UrlTile extends TileSource {
      */
     this.tileLoadFunction = options.tileLoadFunction;
 
-    /**
-     * @protected
-     * @type {import("../Tile.js").UrlFunction}
-     */
-    this.tileUrlFunction = options.tileUrlFunction ? options.tileUrlFunction.bind(this) : nullTileUrlFunction;
+    if (options.tileUrlFunction) {
+      this.tileUrlFunction = options.tileUrlFunction.bind(this);
+    }
 
     /**
      * @protected
@@ -91,7 +88,6 @@ class UrlTile extends TileSource {
      * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
-
   }
 
   /**
@@ -138,9 +134,12 @@ class UrlTile extends TileSource {
       type = TileEventType.TILELOADSTART;
     } else if (uid in this.tileLoadingKeys_) {
       delete this.tileLoadingKeys_[uid];
-      type = tileState == TileState.ERROR ? TileEventType.TILELOADERROR :
-        tileState == TileState.LOADED ?
-          TileEventType.TILELOADEND : undefined;
+      type =
+        tileState == TileState.ERROR
+          ? TileEventType.TILELOADERROR
+          : tileState == TileState.LOADED
+          ? TileEventType.TILELOADEND
+          : undefined;
     }
     if (type != undefined) {
       this.dispatchEvent(new TileSourceEvent(type, tile));
@@ -201,7 +200,20 @@ class UrlTile extends TileSource {
   }
 
   /**
-   * @inheritDoc
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {string|undefined} Tile URL.
+   */
+  tileUrlFunction(tileCoord, pixelRatio, projection) {
+    return undefined;
+  }
+
+  /**
+   * Marks a tile coord as being used, without triggering a load.
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
    */
   useTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);
@@ -210,6 +222,5 @@ class UrlTile extends TileSource {
     }
   }
 }
-
 
 export default UrlTile;

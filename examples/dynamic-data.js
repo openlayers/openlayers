@@ -1,13 +1,13 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {MultiPoint, Point} from '../src/ol/geom.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import View from '../src/ol/View.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {MultiPoint, Point} from '../src/ol/geom.js';
 import {getVectorContext} from '../src/ol/render.js';
 
 const tileLayer = new TileLayer({
-  source: new OSM()
+  source: new OSM(),
 });
 
 const map = new Map({
@@ -15,30 +15,30 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
-  })
+    zoom: 2,
+  }),
 });
 
 const imageStyle = new Style({
   image: new CircleStyle({
     radius: 5,
     fill: new Fill({color: 'yellow'}),
-    stroke: new Stroke({color: 'red', width: 1})
-  })
+    stroke: new Stroke({color: 'red', width: 1}),
+  }),
 });
 
 const headInnerImageStyle = new Style({
   image: new CircleStyle({
     radius: 2,
-    fill: new Fill({color: 'blue'})
-  })
+    fill: new Fill({color: 'blue'}),
+  }),
 });
 
 const headOuterImageStyle = new Style({
   image: new CircleStyle({
     radius: 5,
-    fill: new Fill({color: 'black'})
-  })
+    fill: new Fill({color: 'black'}),
+  }),
 });
 
 const n = 200;
@@ -46,16 +46,16 @@ const omegaTheta = 30000; // Rotation period in ms
 const R = 7e6;
 const r = 2e6;
 const p = 2e6;
-tileLayer.on('postrender', function(event) {
+tileLayer.on('postrender', function (event) {
   const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
-  const theta = 2 * Math.PI * frameState.time / omegaTheta;
+  const theta = (2 * Math.PI * frameState.time) / omegaTheta;
   const coordinates = [];
   let i;
   for (i = 0; i < n; ++i) {
-    const t = theta + 2 * Math.PI * i / n;
-    const x = (R + r) * Math.cos(t) + p * Math.cos((R + r) * t / r);
-    const y = (R + r) * Math.sin(t) + p * Math.sin((R + r) * t / r);
+    const t = theta + (2 * Math.PI * i) / n;
+    const x = (R + r) * Math.cos(t) + p * Math.cos(((R + r) * t) / r);
+    const y = (R + r) * Math.sin(t) + p * Math.sin(((R + r) * t) / r);
     coordinates.push([x, y]);
   }
   vectorContext.setStyle(imageStyle);
