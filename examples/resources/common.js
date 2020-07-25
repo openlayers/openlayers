@@ -50,9 +50,11 @@
       const worker = workerContainer ? workerContainer.innerText : undefined;
       const pkgJson = document.getElementById('example-pkg-source').innerText;
 
+      const unique = new Set();
       const localResources = (js.match(/'data\/[^']*/g) || [])
         .concat(js.match(/'resources\/[^']*/g) || [])
-        .map(f => f.slice(1));
+        .map(f => f.slice(1))
+        .filter(f => unique.has(f) ? false : unique.add(f));
 
       const promises = localResources.map(resource => fetchResource(resource));
 
