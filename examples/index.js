@@ -98,9 +98,6 @@
   }
 
   window.addEventListener('load', function () {
-    for (let i = 0; i < info.examples.length; ++i) {
-      info.examples[i].link += window.location.search;
-    }
     template = new jugl.Template('template');
     target = document.getElementById('examples');
     const params = parseParams();

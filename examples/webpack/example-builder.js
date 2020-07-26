@@ -193,7 +193,6 @@ class ExampleBuilder {
       const examples = exampleData.map((data) => {
         return {
           link: data.filename,
-          example: data.filename,
           title: data.title,
           shortdesc: data.shortdesc,
           tags: data.tags,
@@ -292,14 +291,10 @@ class ExampleBuilder {
     jsSource = jsSource.replace('new Worker()', "new Worker('./worker.js')");
 
     data.js = {
-      tag: `<script src="${this.common}.js"></script><script src="${jsName}"></script>`,
+      tag: `<script src="${this.common}.js"></script>
+        <script src="${jsName}"></script>`,
       source: jsSource,
     };
-
-    if (data.experimental) {
-      const prelude = '<script>window.experimental = true;</script>';
-      data.js.tag = prelude + data.js.tag;
-    }
 
     // check for worker js
     const workerName = `${name}.worker.js`;

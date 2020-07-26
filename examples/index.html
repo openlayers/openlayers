@@ -6,7 +6,6 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
     <style>
       body {
@@ -62,7 +61,7 @@
   <body>
 
     <header class="navbar navbar-expand-md navbar-dark mb-3 py-0 fixed-top" role="navigation">
-      <a class="navbar-brand" href="https://openlayers.org/"><img class="header-logo" src="./resources/logo-70x70.png">&nbsp;OpenLayers</a>
+      <a class="navbar-brand" href="https://openlayers.org/"><img class="header-logo" src="./resources/logo-70x70.png" alt="">&nbsp;OpenLayers</a>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -113,7 +112,7 @@
             <a jugl:attributes="href example.link" class="example  bg-light border rounded">
               <span class="mainlink">
                 <strong><span jugl:replace="example.title">title</span></strong><br>
-                <small jugl:content="'(' + example.example + ')'"></small>
+                <small jugl:content="'(' + example.link + ')'"></small>
               </span>
               <p class="description" jugl:content="example.shortdesc"></p>
             </a>
