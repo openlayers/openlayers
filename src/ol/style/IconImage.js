@@ -9,6 +9,11 @@ import {createCanvasContext2D} from '../dom.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 import {listenImage} from '../Image.js';
 
+/**
+ * @type {CanvasRenderingContext2D}
+ */
+let taintedTestContext = null;
+
 class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement} image Image.
@@ -77,11 +82,6 @@ class IconImage extends EventTarget {
      * @private
      */
     this.tainted_;
-
-    /**
-     * @private
-     */
-    this.taintedTestContext_;
   }
 
   /**
@@ -90,15 +90,15 @@ class IconImage extends EventTarget {
    */
   isTainted_() {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
-      if (!this.taintedTestContext_) {
-        this.taintedTestContext_ = createCanvasContext2D(1, 1);
+      if (!taintedTestContext) {
+        taintedTestContext = createCanvasContext2D(1, 1);
       }
-      this.taintedTestContext_.drawImage(this.image_, 0, 0);
+      taintedTestContext.drawImage(this.image_, 0, 0);
       try {
-        this.taintedTestContext_.getImageData(0, 0, 1, 1);
+        taintedTestContext.getImageData(0, 0, 1, 1);
         this.tainted_ = false;
       } catch (e) {
-        this.taintedTestContext_ = undefined;
+        taintedTestContext = null;
         this.tainted_ = true;
       }
     }
