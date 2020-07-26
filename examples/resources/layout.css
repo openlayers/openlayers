@@ -64,6 +64,35 @@ a:hover, a:focus, footer a:hover, footer a:focus {
   margin-top: 0;
 }
 
+.badge-group {
+  display: inline-block;
+}
+.badge-group > .badge:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.badge-group > .badge:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.tag-modal-toggle {
+  cursor: pointer;
+}
+.modal-tag-example .modal-body {
+  padding: 0;
+}
+.modal-tag-example .list-group-item:focus,
+.modal-tag-example .list-group-item:hover,
+.modal-tag-example .list-group-item:active {
+  background-color: rgba(31, 107, 117, .6875);
+  border-color: #1F6B75;
+  color: white;
+}
+.modal-tag-example .list-group-item.active {
+  background-color: #1F6B75;
+  color: white;
+}
+
 #docs {
   margin-top: 1em;
 }

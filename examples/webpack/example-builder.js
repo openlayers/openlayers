@@ -18,6 +18,13 @@ handlebars.registerHelper(
   (str) => new handlebars.SafeString(marked(str))
 );
 
+/**
+ * Used to doube-escape the title when stored as data-* attribute.
+ */
+handlebars.registerHelper('escape', (text) => {
+  return handlebars.Utils.escapeExpression(text);
+});
+
 handlebars.registerHelper('indent', (text, options) => {
   if (!text) {
     return text;
@@ -29,6 +36,43 @@ handlebars.registerHelper('indent', (text, options) => {
     .map((line) => (line ? spaces + line : ''))
     .join('\n');
 });
+
+/**
+ * Returns the object with the keys inserted in alphabetic order.
+ * When exporting with `JSON.stringify(obj)` the keys are sorted.
+ * @param {Object<string, *>} obj Any object
+ * @return {Object<string, *>} New object
+ */
+function sortObjectByKey(obj) {
+  return Object.keys(obj)
+    .sort() // sort twice to get predictable, case insensitve order
+    .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'}))
+    .reduce((idx, tag) => {
+      idx[tag] = obj[tag];
+      return idx;
+    }, {});
+}
+
+/**
+ * Create an index of tags belonging to examples
+ * @param {Array<Object>} exampleData Array of example data objects.
+ * @return {Object} Word index.
+ */
+function createTagIndex(exampleData) {
+  const index = {};
+  exampleData.forEach((data, i) => {
+    data.tags.forEach((tag) => {
+      tag = tag.toLowerCase();
+      let tagIndex = index[tag];
+      if (!tagIndex) {
+        tagIndex = [];
+        index[tag] = tagIndex;
+      }
+      tagIndex.push(i);
+    });
+  });
+  return index;
+}
 
 /**
  * Create an inverted index of keywords from examples.  Property names are
@@ -140,59 +184,76 @@ class ExampleBuilder {
         .chunks.filter((chunk) => chunk.names[0] !== this.common);
 
       const exampleData = [];
-      const uniqueTags = new Set();
-      const promises = chunks.map(async (chunk) => {
-        const [assets, data] = await this.render(compiler.context, chunk);
-
-        // collect tags for main page... TODO: implement index tag links
-        data.tags.forEach((tag) => uniqueTags.add(tag));
-
-        exampleData.push({
+      await Promise.all(
+        chunks.map(async (chunk) => {
+          const data = await this.readHtml(compiler.context, chunk);
+          exampleData.push(data);
+        })
+      );
+      const examples = exampleData.map((data) => {
+        return {
           link: data.filename,
           example: data.filename,
           title: data.title,
           shortdesc: data.shortdesc,
           tags: data.tags,
-        });
-
-        for (const file in assets) {
-          compilation.assets[file] = new RawSource(assets[file]);
-        }
+        };
       });
 
-      await Promise.all(promises);
-
-      exampleData.sort((a, b) =>
+      examples.sort((a, b) =>
         a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
       );
+      const tagIndex = createTagIndex(examples);
       const info = {
-        examples: exampleData,
-        index: createWordIndex(exampleData),
-        tags: Array.from(uniqueTags)
-          .sort() // sort twice to get predictable, case insensitve order
-          .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'})),
+        examples: examples,
+        // Tags for main page... TODO: implement index tag links
+        // tagIndex: sortObjectByKey(tagIndex),
+        wordIndex: sortObjectByKey(createWordIndex(examples)),
       };
+      exampleData.forEach((data) => {
+        data.tags = data.tags.map((tag) => {
+          const tagExamples = tagIndex[tag.toLowerCase()];
+          return {
+            tag: tag,
+            examples: tagExamples.map((exampleIdx) => {
+              const example = examples[exampleIdx];
+              return {
+                link: example.link,
+                title: example.title,
+                isCurrent: data.filename === example.link,
+              };
+            }),
+          };
+        });
+      });
 
+      await Promise.all(
+        exampleData.map(async (data) => {
+          const assets = await this.render(data, data.chunk);
+          for (const file in assets) {
+            compilation.assets[file] = new RawSource(assets[file]);
+          }
+        })
+      );
       const indexSource = `const info = ${JSON.stringify(info)};`;
       compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }
 
-  async render(dir, chunk) {
+  async readHtml(dir, chunk) {
     const name = chunk.names[0];
-
-    const assets = {};
-    const readOptions = {encoding: 'utf8'};
-
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
-    const htmlSource = await readFile(htmlPath, readOptions);
+    const htmlSource = await readFile(htmlPath, {encoding: 'utf8'});
 
     const {attributes, body} = frontMatter(htmlSource);
+    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
     const data = Object.assign(attributes, {contents: body});
 
     data.olVersion = pkg.version;
     data.filename = htmlName;
+    data.dir = dir;
+    data.chunk = chunk;
 
     // process tags
     if (data.tags) {
@@ -200,6 +261,14 @@ class ExampleBuilder {
     } else {
       data.tags = [];
     }
+    return data;
+  }
+
+  async render(data, chunk) {
+    const name = chunk.names[0];
+
+    const assets = {};
+    const readOptions = {encoding: 'utf8'};
 
     // add in script tag
     const jsName = `${name}.js`;
@@ -234,7 +303,7 @@ class ExampleBuilder {
 
     // check for worker js
     const workerName = `${name}.worker.js`;
-    const workerPath = path.join(dir, workerName);
+    const workerPath = path.join(data.dir, workerName);
     let workerSource;
     try {
       workerSource = await readFile(workerPath, readOptions);
@@ -280,7 +349,7 @@ class ExampleBuilder {
 
     // check for example css
     const cssName = `${name}.css`;
-    const cssPath = path.join(dir, cssName);
+    const cssPath = path.join(data.dir, cssName);
     let cssSource;
     try {
       cssSource = await readFile(cssPath, readOptions);
@@ -321,7 +390,7 @@ class ExampleBuilder {
             'Invalid value for resource: ' +
               resource +
               ' is not .js or .css: ' +
-              htmlName
+              data.filename
           );
         }
       }
@@ -334,12 +403,11 @@ class ExampleBuilder {
         : '';
     }
 
-    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
-    const templatePath = path.join(this.templates, attributes.layout);
+    const templatePath = path.join(this.templates, data.layout);
     const templateSource = await readFile(templatePath, readOptions);
 
-    assets[htmlName] = handlebars.compile(templateSource)(data);
-    return [assets, data];
+    assets[data.filename] = handlebars.compile(templateSource)(data);
+    return assets;
   }
 }
 
