@@ -4,7 +4,7 @@
 
 #### Pointer events polyfill removed
 
-Now that all major browsers support Pointer events natively, we removed the [elm-pep](https://npmjs.com/package/elm-pep) dependency. If you are targeting older browsers that do not have Pointer events, you now need to include the polyfill in your application.
+Now that all major browsers support Pointer events natively, we removed the [elm-pep](https://npmjs.com/package/elm-pep) dependency. If you are targeting older browsers that do not support Pointer events, you now need to include a pointer events polyfill ([elm-pep](https://npmjs.com/package/elm-pep) or [pepjs](https://www.npmjs.com/package/@openlayers/pepjs)) in your application.
 
 ### v6.3.2
 
