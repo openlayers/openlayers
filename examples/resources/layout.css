@@ -26,6 +26,11 @@ body {
   margin-right: 5px;
   display: inline-block;
 }
+.dropdown-item.active, .dropdown-item:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color:#268591
+}
 .nav>li>a:hover, .nav>li>a:focus, .nav>li>a.active {
   background-color: #268591;
 }
