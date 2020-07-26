@@ -29,7 +29,7 @@ const berlin = new Feature({
 rome.setStyle(
   new Style({
     image: new Icon({
-      color: '#8959A8',
+      color: '#BADA55',
       crossOrigin: 'anonymous',
       // For Internet Explorer 11
       imgSize: [20, 20],
