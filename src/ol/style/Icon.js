@@ -352,11 +352,10 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLImageElement|HTMLCanvasElement} Image element.
    */
-  getHitDetectionImage(pixelRatio) {
-    return this.iconImage_.getHitDetectionImage(pixelRatio);
+  getHitDetectionImage() {
+    return this.iconImage_.getHitDetectionImage();
   }
 
   /**

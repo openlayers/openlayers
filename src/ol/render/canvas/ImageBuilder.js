@@ -163,20 +163,17 @@ class CanvasImageBuilder extends CanvasBuilder {
       myEnd,
       this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_ * this.imagePixelRatio_,
-      this.anchorY_ * this.imagePixelRatio_,
+      this.anchorX_,
+      this.anchorY_,
       this.declutterGroups_,
-      Math.ceil(this.height_ * this.imagePixelRatio_),
+      this.height_,
       this.opacity_,
       this.originX_,
       this.originY_,
       this.rotateWithView_,
       this.rotation_,
-      [
-        (this.scale_[0] * this.pixelRatio) / this.imagePixelRatio_,
-        (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
-      ],
-      Math.ceil(this.width_ * this.imagePixelRatio_),
+      this.scale_,
+      this.width_,
     ]);
     this.endGeometry(feature);
   }
@@ -226,20 +223,17 @@ class CanvasImageBuilder extends CanvasBuilder {
       myEnd,
       this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_ * this.imagePixelRatio_,
-      this.anchorY_ * this.imagePixelRatio_,
+      this.anchorX_,
+      this.anchorY_,
       this.declutterGroups_,
-      Math.ceil(this.height_ * this.imagePixelRatio_),
+      this.height_,
       this.opacity_,
       this.originX_,
       this.originY_,
       this.rotateWithView_,
       this.rotation_,
-      [
-        (this.scale_[0] * this.pixelRatio) / this.imagePixelRatio_,
-        (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
-      ],
-      Math.ceil(this.width_ * this.imagePixelRatio_),
+      this.scale_,
+      this.width_,
     ]);
     this.endGeometry(feature);
   }
@@ -273,7 +267,7 @@ class CanvasImageBuilder extends CanvasBuilder {
   setImageStyle(imageStyle, declutterGroups) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
-    const hitDetectionImage = imageStyle.getHitDetectionImage(this.pixelRatio);
+    const hitDetectionImage = imageStyle.getHitDetectionImage();
     const image = imageStyle.getImage(this.pixelRatio);
     const origin = imageStyle.getOrigin();
     this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);

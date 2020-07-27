@@ -12,8 +12,8 @@ describe('ol.style.Circle', function () {
       expect(style.getOrigin()).to.eql([0, 0]);
       expect(style.getAnchor()).to.eql([10.5, 10.5]);
       // no hit-detection image is created, because no fill style is set
-      expect(style.getImage(1)).to.be(style.getHitDetectionImage(1));
-      expect(style.getHitDetectionImage(1)).to.be.an(HTMLCanvasElement);
+      expect(style.getImage(1)).to.be(style.getHitDetectionImage());
+      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
@@ -30,8 +30,8 @@ describe('ol.style.Circle', function () {
       expect(style.getOrigin()).to.eql([0, 0]);
       expect(style.getAnchor()).to.eql([10.5, 10.5]);
       // hit-detection image is created, because transparent fill style is set
-      expect(style.getImage(1)).to.not.be(style.getHitDetectionImage(1));
-      expect(style.getHitDetectionImage(1)).to.be.an(HTMLCanvasElement);
+      expect(style.getImage(1)).to.not.be(style.getHitDetectionImage());
+      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
@@ -48,8 +48,8 @@ describe('ol.style.Circle', function () {
       expect(style.getOrigin()).to.eql([0, 0]);
       expect(style.getAnchor()).to.eql([10.5, 10.5]);
       // no hit-detection image is created, because non-transparent fill style is set
-      expect(style.getImage(1)).to.be(style.getHitDetectionImage(1));
-      expect(style.getHitDetectionImage(1)).to.be.an(HTMLCanvasElement);
+      expect(style.getImage(1)).to.be(style.getHitDetectionImage());
+      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
   });
