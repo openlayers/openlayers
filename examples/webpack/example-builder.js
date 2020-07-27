@@ -9,9 +9,11 @@ const promisify = require('util').promisify;
 const RawSource = require('webpack-sources').RawSource;
 
 const readFile = promisify(fs.readFile);
-const isCssRegEx = /\.css$/;
+const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
 const importRegEx = /^import .* from '(.*)';$/;
+const isTemplateJs = /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
+const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
 
 handlebars.registerHelper(
   'md',
@@ -361,41 +363,34 @@ class ExampleBuilder {
 
     // add additional resources
     if (data.resources) {
-      const resources = [];
+      const localResources = [];
       const remoteResources = [];
-      const codePenResources = [];
-      for (let i = 0, ii = data.resources.length; i < ii; ++i) {
-        const resource = data.resources[i];
-        const remoteResource =
-          resource.indexOf('//') === -1
-            ? `https://openlayers.org/en/v${pkg.version}/examples/${resource}`
-            : resource;
-        codePenResources[i] = remoteResource;
+      data.resources.forEach((resource) => {
+        const remoteResource = /^https?:\/\//.test(resource)
+          ? resource
+          : `https://openlayers.org/en/v${pkg.version}/examples/${resource}`;
         if (isJsRegEx.test(resource)) {
-          resources[i] = `<script src="${resource}"></script>`;
-          remoteResources[i] = `<script src="${remoteResource}"></script>`;
-        } else if (isCssRegEx.test(resource)) {
-          if (resource.indexOf('bootstrap.min.css') === -1) {
-            resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+          if (!isTemplateJs.test(resource)) {
+            localResources.push(`<script src="${resource}"></script>`);
           }
-          remoteResources[i] =
-            '<link rel="stylesheet" href="' + remoteResource + '">';
+          remoteResources.push(`<script src="${remoteResource}"></script>`);
+        } else if (isCssRegEx.test(resource)) {
+          if (!isTemplateCss.test(resource)) {
+            localResources.push(`<link rel="stylesheet" href="${resource}">`);
+          }
+          remoteResources.push(
+            `<link rel="stylesheet" href="${remoteResource}">`
+          );
         } else {
           throw new Error(
-            'Invalid value for resource: ' +
-              resource +
-              ' is not .js or .css: ' +
-              data.filename
+            `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`
           );
         }
-      }
+      });
       data.extraHead = {
-        local: resources.join('\n'),
+        local: localResources.join('\n'),
         remote: remoteResources.join('\n'),
       };
-      data.extraResources = data.resources.length
-        ? ',' + codePenResources.join(',')
-        : '';
     }
 
     const templatePath = path.join(this.templates, data.layout);
