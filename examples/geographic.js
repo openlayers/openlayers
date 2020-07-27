@@ -74,7 +74,7 @@ map.on('click', function (event) {
     });
     $(element).popover('show');
   } else {
-    $(element).popover('destroy');
+    $(element).popover('dispose');
   }
 });
 

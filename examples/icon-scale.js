@@ -107,7 +107,7 @@ map.on('click', function (evt) {
   const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
     return feature;
   });
-  $(element).popover('destroy');
+  $(element).popover('dispose');
   if (feature) {
     const coordinates = feature.getGeometry().getCoordinates();
     popup.setPosition(coordinates);
@@ -124,7 +124,7 @@ map.on('click', function (evt) {
 // change mouse cursor when over marker
 map.on('pointermove', function (e) {
   if (e.dragging) {
-    $(element).popover('destroy');
+    $(element).popover('dispose');
     return;
   }
   const pixel = map.getEventPixel(e.originalEvent);
