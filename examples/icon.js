@@ -75,14 +75,14 @@ map.on('click', function (evt) {
     });
     $(element).popover('show');
   } else {
-    $(element).popover('destroy');
+    $(element).popover('dispose');
   }
 });
 
 // change mouse cursor when over marker
 map.on('pointermove', function (e) {
   if (e.dragging) {
-    $(element).popover('destroy');
+    $(element).popover('dispose');
     return;
   }
   const pixel = map.getEventPixel(e.originalEvent);
