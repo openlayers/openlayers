@@ -28,9 +28,9 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {Object<number, HTMLImageElement|HTMLCanvasElement>}
+     * @type {HTMLImageElement|HTMLCanvasElement}
      */
-    this.hitDetectionImage_ = {};
+    this.hitDetectionImage_ = null;
 
     /**
      * @private
@@ -162,27 +162,21 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLImageElement|HTMLCanvasElement} Image element.
    */
-  getHitDetectionImage(pixelRatio) {
-    if (!this.hitDetectionImage_[pixelRatio]) {
+  getHitDetectionImage() {
+    if (!this.hitDetectionImage_) {
       if (this.isTainted_()) {
-        const usedPixelRatio = this.color_ ? pixelRatio : 1;
         const width = this.size_[0];
         const height = this.size_[1];
-        const context = createCanvasContext2D(
-          Math.ceil(width * usedPixelRatio),
-          Math.ceil(height * usedPixelRatio)
-        );
-        context.scale(usedPixelRatio, usedPixelRatio);
+        const context = createCanvasContext2D(width, height);
         context.fillRect(0, 0, width, height);
-        this.hitDetectionImage_[pixelRatio] = context.canvas;
+        this.hitDetectionImage_ = context.canvas;
       } else {
-        this.hitDetectionImage_[pixelRatio] = this.image_;
+        this.hitDetectionImage_ = this.image_;
       }
     }
-    return this.hitDetectionImage_[pixelRatio];
+    return this.hitDetectionImage_;
   }
 
   /**

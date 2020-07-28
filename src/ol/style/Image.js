@@ -154,10 +154,9 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
    */
-  getHitDetectionImage(pixelRatio) {
+  getHitDetectionImage() {
     return abstract();
   }
 
