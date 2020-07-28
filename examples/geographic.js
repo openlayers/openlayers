@@ -68,9 +68,11 @@ map.on('click', function (event) {
     const coordinate = feature.getGeometry().getCoordinates();
     popup.setPosition(coordinate);
     $(element).popover({
-      placement: 'top',
+      container: element.parentElement,
       html: true,
+      sanitize: false,
       content: formatCoordinate(coordinate),
+      placement: 'top',
     });
     $(element).popover('show');
   } else {
