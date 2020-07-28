@@ -73,7 +73,7 @@
     "istanbul": "0.4.5",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jquery": "3.5.1",
-    "jsdoc": "3.6.4",
+    "jsdoc": "3.6.5",
     "jsdoc-plugin-typescript": "^2.0.5",
     "json-stringify-safe": "^5.0.1",
     "karma": "^5.0.1",
