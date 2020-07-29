@@ -1103,10 +1103,9 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * @param {import("./Object").ObjectEvent} event Event.
    * @private
    */
-  handleTargetChanged_(event) {
+  handleTargetChanged_() {
     // target may be undefined, null, a string or an Element.
     // If it's a string we convert it to an Element before proceeding.
     // If it's not now an Element we remove the viewport from the DOM.
@@ -1117,7 +1116,7 @@ class PluggableMap extends BaseObject {
       targetElement = this.getTargetElement();
     }
 
-    if (event.oldValue) {
+    if (this.mapBrowserEventHandler_) {
       for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.keyHandlerKeys_[i]);
       }
@@ -1135,6 +1134,7 @@ class PluggableMap extends BaseObject {
         this.handleResize_ = undefined;
       }
       this.mapBrowserEventHandler_.dispose();
+      this.mapBrowserEventHandler_ = null;
       removeNode(this.viewport_);
     }
 
