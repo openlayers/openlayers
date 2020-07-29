@@ -7,19 +7,6 @@
       .replace(/=+$/, ``);
   }
 
-  var htmlClipboard = new Clipboard('#copy-html-button');
-  htmlClipboard.on('success', function(e) {
-    e.clearSelection();
-  });
-  var jsClipboard = new Clipboard('#copy-js-button');
-  jsClipboard.on('success', function(e) {
-    e.clearSelection();
-  });
-  var pkgClipboard = new Clipboard('#copy-pkg-button');
-  pkgClipboard.on('success', function(e) {
-    e.clearSelection();
-  });
-
   function fetchResource(resource) {
     return new Promise((resolve, reject) => {
       const isImage = /\.(png|jpe?g|gif|tiff)$/.test(resource);
@@ -51,20 +38,23 @@
     })
   }
 
-  var codepenButton = document.getElementsByClassName('codepen-button')[0];
+  const codepenButton = document.getElementById('codepen-button');
   if (codepenButton) {
-    codepenButton.onclick = function(event) {
+    const form = document.getElementById('codepen-form');
+    codepenButton.href = form.action;
+    codepenButton.addEventListener('click', function(event) {
       event.preventDefault();
       const html = document.getElementById('example-html-source').innerText;
       const js = document.getElementById('example-js-source').innerText;
       const workerContainer = document.getElementById('example-worker-source');
       const worker = workerContainer ? workerContainer.innerText : undefined;
       const pkgJson = document.getElementById('example-pkg-source').innerText;
-      const form = document.getElementById('codepen-form');
 
+      const unique = new Set();
       const localResources = (js.match(/'data\/[^']*/g) || [])
         .concat(js.match(/'resources\/[^']*/g) || [])
-        .map(f => f.slice(1));
+        .map(f => f.slice(1))
+        .filter(f => unique.has(f) ? false : unique.add(f));
 
       const promises = localResources.map(resource => fetchResource(resource));
 
@@ -100,6 +90,6 @@
           form.parameters.value = compress(data);
           form.submit();
         });
-    };
+    });
   }
 })();

@@ -9,14 +9,23 @@ const promisify = require('util').promisify;
 const RawSource = require('webpack-sources').RawSource;
 
 const readFile = promisify(fs.readFile);
-const isCssRegEx = /\.css$/;
+const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
 const importRegEx = /^import .* from '(.*)';$/;
+const isTemplateJs = /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
+const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
 
 handlebars.registerHelper(
   'md',
   (str) => new handlebars.SafeString(marked(str))
 );
+
+/**
+ * Used to doube-escape the title when stored as data-* attribute.
+ */
+handlebars.registerHelper('escape', (text) => {
+  return handlebars.Utils.escapeExpression(text);
+});
 
 handlebars.registerHelper('indent', (text, options) => {
   if (!text) {
@@ -31,6 +40,43 @@ handlebars.registerHelper('indent', (text, options) => {
 });
 
 /**
+ * Returns the object with the keys inserted in alphabetic order.
+ * When exporting with `JSON.stringify(obj)` the keys are sorted.
+ * @param {Object<string, *>} obj Any object
+ * @return {Object<string, *>} New object
+ */
+function sortObjectByKey(obj) {
+  return Object.keys(obj)
+    .sort() // sort twice to get predictable, case insensitve order
+    .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'}))
+    .reduce((idx, tag) => {
+      idx[tag] = obj[tag];
+      return idx;
+    }, {});
+}
+
+/**
+ * Create an index of tags belonging to examples
+ * @param {Array<Object>} exampleData Array of example data objects.
+ * @return {Object} Word index.
+ */
+function createTagIndex(exampleData) {
+  const index = {};
+  exampleData.forEach((data, i) => {
+    data.tags.forEach((tag) => {
+      tag = tag.toLowerCase();
+      let tagIndex = index[tag];
+      if (!tagIndex) {
+        tagIndex = [];
+        index[tag] = tagIndex;
+      }
+      tagIndex.push(i);
+    });
+  });
+  return index;
+}
+
+/**
  * Create an inverted index of keywords from examples.  Property names are
  * lowercased words.  Property values are objects mapping example index to word
  * count.
@@ -42,26 +88,19 @@ function createWordIndex(exampleData) {
   const keys = ['shortdesc', 'title', 'tags'];
   exampleData.forEach((data, i) => {
     keys.forEach((key) => {
-      let text = data[key];
+      let text = data[key] || '';
       if (Array.isArray(text)) {
         text = text.join(' ');
       }
-      const words = text ? text.split(/\W+/) : [];
+      const words = text.toLowerCase().split(/\W+/);
       words.forEach((word) => {
         if (word) {
-          word = word.toLowerCase();
           let counts = index[word];
-          if (counts) {
-            if (index in counts) {
-              counts[i] += 1;
-            } else {
-              counts[i] = 1;
-            }
-          } else {
+          if (!counts) {
             counts = {};
-            counts[i] = 1;
             index[word] = counts;
           }
+          counts[i] = (counts[i] || 0) + 1;
         }
       });
     });
@@ -147,54 +186,75 @@ class ExampleBuilder {
         .chunks.filter((chunk) => chunk.names[0] !== this.common);
 
       const exampleData = [];
-      const uniqueTags = new Set();
-      const promises = chunks.map(async (chunk) => {
-        const [assets, data] = await this.render(compiler.context, chunk);
-
-        // collect tags for main page... TODO: implement index tag links
-        data.tags.forEach((tag) => uniqueTags.add(tag));
-
-        exampleData.push({
+      await Promise.all(
+        chunks.map(async (chunk) => {
+          const data = await this.readHtml(compiler.context, chunk);
+          exampleData.push(data);
+        })
+      );
+      const examples = exampleData.map((data) => {
+        return {
           link: data.filename,
-          example: data.filename,
           title: data.title,
           shortdesc: data.shortdesc,
           tags: data.tags,
-        });
-
-        for (const file in assets) {
-          compilation.assets[file] = new RawSource(assets[file]);
-        }
+        };
       });
 
-      await Promise.all(promises);
-
+      examples.sort((a, b) =>
+        a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
+      );
+      const tagIndex = createTagIndex(examples);
       const info = {
-        examples: exampleData,
-        index: createWordIndex(exampleData),
-        tags: Array.from(uniqueTags),
+        examples: examples,
+        // Tags for main page... TODO: implement index tag links
+        // tagIndex: sortObjectByKey(tagIndex),
+        wordIndex: sortObjectByKey(createWordIndex(examples)),
       };
+      exampleData.forEach((data) => {
+        data.tags = data.tags.map((tag) => {
+          const tagExamples = tagIndex[tag.toLowerCase()];
+          return {
+            tag: tag,
+            examples: tagExamples.map((exampleIdx) => {
+              const example = examples[exampleIdx];
+              return {
+                link: example.link,
+                title: example.title,
+                isCurrent: data.filename === example.link,
+              };
+            }),
+          };
+        });
+      });
 
-      const indexSource = `var info = ${JSON.stringify(info)}`;
-      compilation.assets['index.js'] = new RawSource(indexSource);
+      await Promise.all(
+        exampleData.map(async (data) => {
+          const assets = await this.render(data, data.chunk);
+          for (const file in assets) {
+            compilation.assets[file] = new RawSource(assets[file]);
+          }
+        })
+      );
+      const indexSource = `const info = ${JSON.stringify(info)};`;
+      compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }
 
-  async render(dir, chunk) {
+  async readHtml(dir, chunk) {
     const name = chunk.names[0];
-
-    const assets = {};
-    const readOptions = {encoding: 'utf8'};
-
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
-    const htmlSource = await readFile(htmlPath, readOptions);
+    const htmlSource = await readFile(htmlPath, {encoding: 'utf8'});
 
     const {attributes, body} = frontMatter(htmlSource);
+    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
     const data = Object.assign(attributes, {contents: body});
 
     data.olVersion = pkg.version;
     data.filename = htmlName;
+    data.dir = dir;
+    data.chunk = chunk;
 
     // process tags
     if (data.tags) {
@@ -202,6 +262,14 @@ class ExampleBuilder {
     } else {
       data.tags = [];
     }
+    return data;
+  }
+
+  async render(data, chunk) {
+    const name = chunk.names[0];
+
+    const assets = {};
+    const readOptions = {encoding: 'utf8'};
 
     // add in script tag
     const jsName = `${name}.js`;
@@ -225,18 +293,14 @@ class ExampleBuilder {
     jsSource = jsSource.replace('new Worker()', "new Worker('./worker.js')");
 
     data.js = {
-      tag: `<script src="${this.common}.js"></script><script src="${jsName}"></script>`,
+      tag: `<script src="${this.common}.js"></script>
+        <script src="${jsName}"></script>`,
       source: jsSource,
     };
 
-    if (data.experimental) {
-      const prelude = '<script>window.experimental = true;</script>';
-      data.js.tag = prelude + data.js.tag;
-    }
-
     // check for worker js
     const workerName = `${name}.worker.js`;
-    const workerPath = path.join(dir, workerName);
+    const workerPath = path.join(data.dir, workerName);
     let workerSource;
     try {
       workerSource = await readFile(workerPath, readOptions);
@@ -282,7 +346,7 @@ class ExampleBuilder {
 
     // check for example css
     const cssName = `${name}.css`;
-    const cssPath = path.join(dir, cssName);
+    const cssPath = path.join(data.dir, cssName);
     let cssSource;
     try {
       cssSource = await readFile(cssPath, readOptions);
@@ -299,49 +363,41 @@ class ExampleBuilder {
 
     // add additional resources
     if (data.resources) {
-      const resources = [];
+      const localResources = [];
       const remoteResources = [];
-      const codePenResources = [];
-      for (let i = 0, ii = data.resources.length; i < ii; ++i) {
-        const resource = data.resources[i];
-        const remoteResource =
-          resource.indexOf('//') === -1
-            ? `https://openlayers.org/en/v${pkg.version}/examples/${resource}`
-            : resource;
-        codePenResources[i] = remoteResource;
+      data.resources.forEach((resource) => {
+        const remoteResource = /^https?:\/\//.test(resource)
+          ? resource
+          : `https://openlayers.org/en/v${pkg.version}/examples/${resource}`;
         if (isJsRegEx.test(resource)) {
-          resources[i] = `<script src="${resource}"></script>`;
-          remoteResources[i] = `<script src="${remoteResource}"></script>`;
-        } else if (isCssRegEx.test(resource)) {
-          if (resource.indexOf('bootstrap.min.css') === -1) {
-            resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+          if (!isTemplateJs.test(resource)) {
+            localResources.push(`<script src="${resource}"></script>`);
           }
-          remoteResources[i] =
-            '<link rel="stylesheet" href="' + remoteResource + '">';
+          remoteResources.push(`<script src="${remoteResource}"></script>`);
+        } else if (isCssRegEx.test(resource)) {
+          if (!isTemplateCss.test(resource)) {
+            localResources.push(`<link rel="stylesheet" href="${resource}">`);
+          }
+          remoteResources.push(
+            `<link rel="stylesheet" href="${remoteResource}">`
+          );
         } else {
           throw new Error(
-            'Invalid value for resource: ' +
-              resource +
-              ' is not .js or .css: ' +
-              htmlName
+            `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`
           );
         }
-      }
+      });
       data.extraHead = {
-        local: resources.join('\n'),
+        local: localResources.join('\n'),
         remote: remoteResources.join('\n'),
       };
-      data.extraResources = data.resources.length
-        ? ',' + codePenResources.join(',')
-        : '';
     }
 
-    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
-    const templatePath = path.join(this.templates, attributes.layout);
+    const templatePath = path.join(this.templates, data.layout);
     const templateSource = await readFile(templatePath, readOptions);
 
-    assets[htmlName] = handlebars.compile(templateSource)(data);
-    return [assets, data];
+    assets[data.filename] = handlebars.compile(templateSource)(data);
+    return assets;
   }
 }
 

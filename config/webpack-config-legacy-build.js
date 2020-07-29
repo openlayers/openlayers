@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production',
   resolve: {
     alias: {
-      ol: path.resolve('./src/ol'),
+      ol: path.resolve('./build/ol'),
     },
   },
   output: {

@@ -13,6 +13,7 @@ import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import MapProperty from './MapProperty.js';
 import ObjectEventType from './ObjectEventType.js';
+import PointerEventType from './pointer/EventType.js';
 import RenderEventType from './render/EventType.js';
 import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
@@ -282,17 +283,13 @@ class PluggableMap extends BaseObject {
      * @private
      * @type {MapBrowserEventHandler}
      */
-    this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
-      this,
-      options.moveTolerance
-    );
-    const handleMapBrowserEvent = this.handleMapBrowserEvent.bind(this);
-    for (const key in MapBrowserEventType) {
-      this.mapBrowserEventHandler_.addEventListener(
-        MapBrowserEventType[key],
-        handleMapBrowserEvent
-      );
-    }
+    this.mapBrowserEventHandler_ = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.moveTolerance_ = options.moveTolerance;
 
     /**
      * @private
@@ -305,18 +302,6 @@ class PluggableMap extends BaseObject {
      * @type {?Array<import("./events.js").EventsKey>}
      */
     this.keyHandlerKeys_ = null;
-
-    const handleBrowserEvent = this.handleBrowserEvent.bind(this);
-    this.viewport_.addEventListener(
-      EventType.CONTEXTMENU,
-      handleBrowserEvent,
-      false
-    );
-    this.viewport_.addEventListener(
-      EventType.WHEEL,
-      handleBrowserEvent,
-      PASSIVE_EVENT_LISTENERS ? {passive: false} : false
-    );
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -550,19 +535,6 @@ class PluggableMap extends BaseObject {
    * Clean up.
    */
   disposeInternal() {
-    this.mapBrowserEventHandler_.dispose();
-    this.viewport_.removeEventListener(
-      EventType.CONTEXTMENU,
-      this.boundHandleBrowserEvent_
-    );
-    this.viewport_.removeEventListener(
-      EventType.WHEEL,
-      this.boundHandleBrowserEvent_
-    );
-    if (this.handleResize_ !== undefined) {
-      removeEventListener(EventType.RESIZE, this.handleResize_, false);
-      this.handleResize_ = undefined;
-    }
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -1017,11 +989,16 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    if (!mapBrowserEvent.dragging) {
+    const originalEvent = /** @type {PointerEvent} */ (mapBrowserEvent.originalEvent);
+    const eventType = originalEvent.type;
+    if (
+      eventType === PointerEventType.POINTERDOWN ||
+      eventType === EventType.WHEEL ||
+      eventType === EventType.KEYDOWN
+    ) {
       const rootNode = this.viewport_.getRootNode
         ? this.viewport_.getRootNode()
         : document;
-      const originalEvent = /** @type {PointerEvent} */ (mapBrowserEvent.originalEvent);
       const target =
         rootNode === document
           ? /** @type {Node} */ (originalEvent.target)
@@ -1030,16 +1007,16 @@ class PluggableMap extends BaseObject {
               originalEvent.clientY
             );
       if (
-        // Do not abort when the pointer is outside the shadow root
-        originalEvent.target !== document.documentElement &&
-        // Abort when target is on overlayContainerStopEvent
-        (this.overlayContainerStopEvent_.contains(target) ||
-          // Abort if the event target is a child of the container that doesn't allow
-          // event propagation or is no longer in the page. It's possible for the target to no longer
-          // be in the page if it has been removed in an event listener, this might happen in a Control
-          // that recreates it's content based on user interaction either manually or via a render
-          // in something like https://reactjs.org/
-          !(document.body.contains(target) || rootNode.contains(target)))
+        // Abort if the target is a child of the container for elements whose events are not meant
+        // to be handled by map interactions.
+        this.overlayContainerStopEvent_.contains(target) ||
+        // Abort if the event target is a child of the container that is no longer in the page.
+        // It's possible for the target to no longer be in the page if it has been removed in an
+        // event listener, this might happen in a Control that recreates it's content based on
+        // user interaction either manually or via a render in something like https://reactjs.org/
+        !(rootNode === document ? document.documentElement : rootNode).contains(
+          target
+        )
       ) {
         return;
       }
@@ -1139,11 +1116,26 @@ class PluggableMap extends BaseObject {
       targetElement = this.getTargetElement();
     }
 
-    if (this.keyHandlerKeys_) {
+    if (this.mapBrowserEventHandler_) {
       for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.keyHandlerKeys_[i]);
       }
       this.keyHandlerKeys_ = null;
+      this.viewport_.removeEventListener(
+        EventType.CONTEXTMENU,
+        this.boundHandleBrowserEvent_
+      );
+      this.viewport_.removeEventListener(
+        EventType.WHEEL,
+        this.boundHandleBrowserEvent_
+      );
+      if (this.handleResize_ !== undefined) {
+        removeEventListener(EventType.RESIZE, this.handleResize_, false);
+        this.handleResize_ = undefined;
+      }
+      this.mapBrowserEventHandler_.dispose();
+      this.mapBrowserEventHandler_ = null;
+      removeNode(this.viewport_);
     }
 
     if (!targetElement) {
@@ -1157,16 +1149,32 @@ class PluggableMap extends BaseObject {
         cancelAnimationFrame(this.animationDelayKey_);
         this.animationDelayKey_ = undefined;
       }
-      removeNode(this.viewport_);
-      if (this.handleResize_ !== undefined) {
-        removeEventListener(EventType.RESIZE, this.handleResize_, false);
-        this.handleResize_ = undefined;
-      }
     } else {
       targetElement.appendChild(this.viewport_);
       if (!this.renderer_) {
         this.renderer_ = this.createRenderer();
       }
+
+      this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
+        this,
+        this.moveTolerance_
+      );
+      for (const key in MapBrowserEventType) {
+        this.mapBrowserEventHandler_.addEventListener(
+          MapBrowserEventType[key],
+          this.handleMapBrowserEvent.bind(this)
+        );
+      }
+      this.viewport_.addEventListener(
+        EventType.CONTEXTMENU,
+        this.boundHandleBrowserEvent_,
+        false
+      );
+      this.viewport_.addEventListener(
+        EventType.WHEEL,
+        this.boundHandleBrowserEvent_,
+        PASSIVE_EVENT_LISTENERS ? {passive: false} : false
+      );
 
       const keyboardEventTarget = !this.keyboardEventTarget_
         ? targetElement

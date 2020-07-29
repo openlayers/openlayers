@@ -19,12 +19,19 @@ const london = new Feature({
 const madrid = new Feature({
   geometry: new Point(fromLonLat([-3.683333, 40.4])),
 });
+const paris = new Feature({
+  geometry: new Point(fromLonLat([2.353, 48.8566])),
+});
+const berlin = new Feature({
+  geometry: new Point(fromLonLat([13.3884, 52.5169])),
+});
 
 rome.setStyle(
   new Style({
     image: new Icon({
-      color: '#8959A8',
+      color: '#BADA55',
       crossOrigin: 'anonymous',
+      // For Internet Explorer 11
       imgSize: [20, 20],
       src: 'data/square.svg',
     }),
@@ -36,7 +43,8 @@ london.setStyle(
     image: new Icon({
       color: '#4271AE',
       crossOrigin: 'anonymous',
-      src: 'data/dot.png',
+      src: 'data/bigdot.png',
+      scale: 0.2,
     }),
   })
 );
@@ -44,15 +52,37 @@ london.setStyle(
 madrid.setStyle(
   new Style({
     image: new Icon({
-      color: [113, 140, 0],
       crossOrigin: 'anonymous',
-      src: 'data/dot.png',
+      src: 'data/bigdot.png',
+      scale: 0.2,
     }),
   })
 );
 
+paris.setStyle(
+  new Style({
+    image: new Icon({
+      color: '#8959A8',
+      crossOrigin: 'anonymous',
+      // For Internet Explorer 11
+      imgSize: [20, 20],
+      src: 'data/dot.svg',
+    }),
+  })
+);
+
+berlin.setStyle(
+  new Style({
+    image: new Icon({
+      crossOrigin: 'anonymous',
+      // For Internet Explorer 11
+      imgSize: [20, 20],
+      src: 'data/dot.svg',
+    }),
+  })
+);
 const vectorSource = new VectorSource({
-  features: [rome, london, madrid],
+  features: [rome, london, madrid, paris, berlin],
 });
 
 const vectorLayer = new VectorLayer({

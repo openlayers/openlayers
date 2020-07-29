@@ -53,6 +53,8 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
  *   * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
  *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
+ *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
+ *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
  *
@@ -494,7 +496,6 @@ Operators['^'] = {
     )})`;
   },
 };
-
 Operators['>'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -590,6 +591,29 @@ Operators['!'] = {
     return `(!${expressionToGlsl(context, args[0])})`;
   },
 };
+
+function getDecisionOperator(operator) {
+  return {
+    getReturnType: function (args) {
+      return ValueTypes.BOOLEAN;
+    },
+    toGlsl: function (context, args) {
+      assertArgsMinCount(args, 2);
+      for (let i = 0; i < args.length; i++) {
+        assertBoolean(args[i]);
+      }
+      let result = '';
+      result = args
+        .map((arg) => expressionToGlsl(context, arg))
+        .join(` ${operator} `);
+      result = `(${result})`;
+      return result;
+    },
+  };
+}
+
+Operators['all'] = getDecisionOperator('&&');
+Operators['any'] = getDecisionOperator('||');
 Operators['between'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;

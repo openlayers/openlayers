@@ -48,6 +48,7 @@ module.exports = {
         sourceMap: true,
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/],
+        extractComments: false,
       }),
     ],
     runtimeChunk: {
@@ -71,6 +72,7 @@ module.exports = {
         {from: 'resources', to: 'resources'},
         {from: 'Jugl.js', to: 'Jugl.js'},
         {from: 'index.html', to: 'index.html'},
+        {from: 'index.js', to: 'index.js'},
       ],
     }),
   ],

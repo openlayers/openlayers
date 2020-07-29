@@ -8,6 +8,6 @@
 .map:fullscreen {
   height: 100%;
 }
-.ol-rotate {
+.map .ol-rotate {
   top: 3em;
 }

@@ -86,7 +86,7 @@ const ProviderConfig = {
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
+ * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.

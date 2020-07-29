@@ -75,19 +75,12 @@ class TileSource extends Source {
     if (tileGrid) {
       toSize(tileGrid.getTileSize(tileGrid.getMinZoom()), tileSize);
     }
-    const canUseScreen = typeof screen !== 'undefined';
-    const width = canUseScreen ? screen.availWidth || screen.width : 1920;
-    const height = canUseScreen ? screen.availHeight || screen.height : 1080;
-    const minCacheSize =
-      4 * Math.ceil(width / tileSize[0]) * Math.ceil(height / tileSize[1]);
 
     /**
      * @protected
      * @type {import("../TileCache.js").default}
      */
-    this.tileCache = new TileCache(
-      Math.max(minCacheSize, options.cacheSize || 0)
-    );
+    this.tileCache = new TileCache(options.cacheSize || 0);
 
     /**
      * @protected
@@ -323,6 +316,18 @@ class TileSource extends Source {
   refresh() {
     this.clear();
     super.refresh();
+  }
+
+  /**
+   * Increases the cache size if needed
+   * @param {number} tileCount Minimum number of tiles needed.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   */
+  updateCacheSize(tileCount, projection) {
+    const tileCache = this.getTileCacheForProjection(projection);
+    if (tileCount > tileCache.highWaterMark) {
+      tileCache.highWaterMark = tileCount;
+    }
   }
 
   /**

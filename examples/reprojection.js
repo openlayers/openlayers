@@ -5,7 +5,7 @@ import View from '../src/ol/View.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import proj4 from 'proj4';
-import {OSM, TileImage, TileWMS, XYZ} from '../src/ol/source.js';
+import {OSM, TileImage, TileWMS} from '../src/ol/source.js';
 import {getCenter, getWidth} from '../src/ol/extent.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
@@ -145,18 +145,6 @@ fetch(urlB)
     options.wrapX = false;
     layers['bng'].setSource(new WMTS(options));
   });
-
-layers['grandcanyon'] = new TileLayer({
-  source: new XYZ({
-    url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
-    crossOrigin: '',
-    tilePixelRatio: 2,
-    maxZoom: 15,
-    attributions:
-      'Tiles © USGS, rendered with ' +
-      '<a href="http://www.maptiler.com/">MapTiler</a>',
-  }),
-});
 
 const startResolution = getWidth(getProjection('EPSG:3857').getExtent()) / 256;
 const resolutions = new Array(22);

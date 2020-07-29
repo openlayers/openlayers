@@ -571,13 +571,18 @@ describe('ol.proj', function () {
       const epsg3857 = getProjection('EPSG:3857');
       google.setExtent(epsg3857.getExtent());
       google.setGlobal(true);
-      const coord = [-190, 90];
-      const transformed = transform(coord, wgs84, google);
-      expect(transformed).to.eql(transform(coord, epsg4326, epsg3857));
-      const got = transform(transformed, google, wgs84);
-      const expected = transform(transformed, epsg3857, epsg4326);
-      expect(got[0]).to.roughlyEqual(expected[0], 1e-9);
-      expect(got[1]).to.roughlyEqual(expected[1], 1e-9);
+
+      const coord = [-190, 85];
+
+      let expected = transform(coord, wgs84, google);
+      let got = transform(coord, epsg4326, epsg3857);
+      expect(got[0]).to.roughlyEqual(expected[0], 1e-7);
+      expect(got[1]).to.roughlyEqual(expected[1], 1e-7);
+
+      expected = transform(expected, google, wgs84);
+      got = transform(got, epsg3857, epsg4326);
+      expect(got[0]).to.roughlyEqual(expected[0], 1e-7);
+      expect(got[1]).to.roughlyEqual(expected[1], 1e-7);
     });
   });
 
