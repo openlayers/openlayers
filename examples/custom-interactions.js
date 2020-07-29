@@ -139,7 +139,7 @@ const map = new Map({
     new TileLayer({
       source: new TileJSON({
         url:
-          'https://a.tiles.mapbox.com/v4/aj.1x1-degrees.json?access_token=' +
+          'https://a.tiles.mapbox.com/v4/aj.1x1-degrees.json?secure&access_token=' +
           key,
       }),
     }),

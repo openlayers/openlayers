@@ -12,7 +12,7 @@ import {getVectorContext} from '../src/ol/render.js';
 
 const rasterLayer = new TileLayer({
   source: new TileJSON({
-    url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json',
+    url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json?secure=1',
     crossOrigin: '',
   }),
 });
