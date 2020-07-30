@@ -272,9 +272,9 @@ describe('ol.coordinate', function () {
     it('moves far off right coordinate to real world', function () {
       expect(wrapX([1096, 48], projection)).to.eql([16, 48]);
     });
-    
+
     const swiss = new Projection({code: 'EPSG:21781', units: 'm'});
-    
+
     it('leaves non-global projection coordinates untouched', function () {
       expect(wrapX([1096, 48], swiss)).to.eql([1096, 48]);
     });
