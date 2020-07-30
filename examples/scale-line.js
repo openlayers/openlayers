@@ -9,10 +9,13 @@ const typeSelect = document.getElementById('type');
 const stepsSelect = document.getElementById('steps');
 const scaleTextCheckbox = document.getElementById('showScaleText');
 const showScaleTextDiv = document.getElementById('showScaleTextDiv');
+const nominalScaleCheckbox = document.getElementById('nominalScale');
+const nominalScaleDiv = document.getElementById('nominalScaleDiv');
 
 let scaleType = 'scaleline';
 let scaleBarSteps = 4;
 let scaleBarText = true;
+let nominalScale = false;
 let control;
 
 function scaleControl() {
@@ -27,6 +30,7 @@ function scaleControl() {
     bar: true,
     steps: scaleBarSteps,
     text: scaleBarText,
+    nominalScale: nominalScale,
     minWidth: 140,
   });
   return control;
@@ -53,14 +57,14 @@ function onChangeType() {
   if (typeSelect.value === 'scalebar') {
     stepsSelect.style.display = 'inline';
     showScaleTextDiv.style.display = 'inline';
-    map.removeControl(control);
-    map.addControl(scaleControl());
+    nominalScaleDiv.style.display = scaleBarText ? 'inline' : 'none';
   } else {
     stepsSelect.style.display = 'none';
     showScaleTextDiv.style.display = 'none';
-    map.removeControl(control);
-    map.addControl(scaleControl());
+    nominalScaleDiv.style.display = 'none';
   }
+  map.removeControl(control);
+  map.addControl(scaleControl());
 }
 function onChangeSteps() {
   scaleBarSteps = parseInt(stepsSelect.value, 10);
@@ -69,6 +73,12 @@ function onChangeSteps() {
 }
 function onChangeScaleText() {
   scaleBarText = scaleTextCheckbox.checked;
+  nominalScaleDiv.style.display = scaleBarText ? 'inline' : 'none';
+  map.removeControl(control);
+  map.addControl(scaleControl());
+}
+function onChangeNominalScale() {
+  nominalScale = nominalScaleCheckbox.checked;
   map.removeControl(control);
   map.addControl(scaleControl());
 }
@@ -76,3 +86,4 @@ unitsSelect.addEventListener('change', onChange);
 typeSelect.addEventListener('change', onChangeType);
 stepsSelect.addEventListener('change', onChangeSteps);
 scaleTextCheckbox.addEventListener('change', onChangeScaleText);
+nominalScaleCheckbox.addEventListener('change', onChangeNominalScale);
