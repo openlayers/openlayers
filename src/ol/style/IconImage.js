@@ -9,6 +9,11 @@ import {createCanvasContext2D} from '../dom.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 import {listenImage} from '../Image.js';
 
+/**
+ * @type {CanvasRenderingContext2D}
+ */
+let taintedTestContext = null;
+
 class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement} image Image.
@@ -39,9 +44,9 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {Object<number, HTMLCanvasElement>}
      */
-    this.canvas_ = color ? document.createElement('canvas') : null;
+    this.canvas_ = {};
 
     /**
      * @private
@@ -75,26 +80,25 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {boolean|undefined}
      */
     this.tainted_;
   }
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D=} context A context with the image already drawn into.
    * @return {boolean} The image canvas is tainted.
    */
-  isTainted_(context) {
+  isTainted_() {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
-      if (!context) {
-        context = createCanvasContext2D(1, 1);
-        context.drawImage(this.image_, 0, 0);
+      if (!taintedTestContext) {
+        taintedTestContext = createCanvasContext2D(1, 1);
       }
+      taintedTestContext.drawImage(this.image_, 0, 0);
       try {
-        context.getImageData(0, 0, 1, 1);
+        taintedTestContext.getImageData(0, 0, 1, 1);
         this.tainted_ = false;
       } catch (e) {
+        taintedTestContext = null;
         this.tainted_ = true;
       }
     }
@@ -125,10 +129,10 @@ class IconImage extends EventTarget {
     if (this.size_) {
       this.image_.width = this.size_[0];
       this.image_.height = this.size_[1];
+    } else {
+      this.size_ = [this.image_.width, this.image_.height];
     }
-    this.size_ = [this.image_.width, this.image_.height];
     this.unlistenImage_();
-    this.replaceColor_();
     this.dispatchChangeEvent_();
   }
 
@@ -137,7 +141,17 @@ class IconImage extends EventTarget {
    * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
    */
   getImage(pixelRatio) {
-    return this.canvas_ ? this.canvas_ : this.image_;
+    this.replaceColor_(pixelRatio);
+    return this.canvas_[pixelRatio] ? this.canvas_[pixelRatio] : this.image_;
+  }
+
+  /**
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {number} Image or Canvas element.
+   */
+  getPixelRatio(pixelRatio) {
+    this.replaceColor_(pixelRatio);
+    return this.canvas_[pixelRatio] ? pixelRatio : 1;
   }
 
   /**
@@ -148,10 +162,9 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLImageElement|HTMLCanvasElement} Image element.
    */
-  getHitDetectionImage(pixelRatio) {
+  getHitDetectionImage() {
     if (!this.hitDetectionImage_) {
       if (this.isTainted_()) {
         const width = this.size_[0];
@@ -201,20 +214,25 @@ class IconImage extends EventTarget {
   }
 
   /**
+   * @param {number} pixelRatio Pixel ratio.
    * @private
    */
-  replaceColor_() {
-    if (!this.color_) {
+  replaceColor_(pixelRatio) {
+    if (!this.color_ || this.canvas_[pixelRatio]) {
       return;
     }
 
-    this.canvas_.width = this.image_.width;
-    this.canvas_.height = this.image_.height;
+    const canvas = document.createElement('canvas');
+    this.canvas_[pixelRatio] = canvas;
 
-    const ctx = this.canvas_.getContext('2d');
+    canvas.width = Math.ceil(this.image_.width * pixelRatio);
+    canvas.height = Math.ceil(this.image_.height * pixelRatio);
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(pixelRatio, pixelRatio);
     ctx.drawImage(this.image_, 0, 0);
 
-    if (this.isTainted_(ctx)) {
+    if (this.isTainted_()) {
       // If reading from the canvas throws a SecurityError the same effect can be
       // achieved with globalCompositeOperation.
       // This could be used as the default, but it is not fully supported by all
@@ -226,19 +244,14 @@ class IconImage extends EventTarget {
       const c = this.color_;
       ctx.globalCompositeOperation = 'multiply';
       ctx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
-      ctx.fillRect(0, 0, this.image_.width, this.image_.height);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.globalCompositeOperation = 'destination-in';
       ctx.drawImage(this.image_, 0, 0);
       return;
     }
 
-    const imgData = ctx.getImageData(
-      0,
-      0,
-      this.image_.width,
-      this.image_.height
-    );
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imgData.data;
     const r = this.color_[0] / 255.0;
     const g = this.color_[1] / 255.0;

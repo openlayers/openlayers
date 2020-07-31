@@ -174,7 +174,7 @@ class CanvasTextBuilder extends CanvasBuilder {
     const geometryType = geometry.getType();
     let flatCoordinates = null;
     let end = 2;
-    let stride = 2;
+    let stride = geometry.getStride();
     let i, ii;
 
     if (textState.placement === TextPlacement.LINE) {
@@ -183,7 +183,6 @@ class CanvasTextBuilder extends CanvasBuilder {
       }
       let ends;
       flatCoordinates = geometry.getFlatCoordinates();
-      stride = geometry.getStride();
       if (geometryType == GeometryType.LINE_STRING) {
         ends = [flatCoordinates.length];
       } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
@@ -250,6 +249,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           break;
         case GeometryType.MULTI_LINE_STRING:
           flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
+          stride = 2;
           end = flatCoordinates.length;
           break;
         case GeometryType.POLYGON:
@@ -268,6 +268,7 @@ class CanvasTextBuilder extends CanvasBuilder {
             }
             flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
           }
+          stride = 2;
           end = flatCoordinates.length;
           if (end == 0) {
             return;

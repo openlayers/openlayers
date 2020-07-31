@@ -115,7 +115,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         {},
         frameState,
         {
-          coordinateToPixelTransform: create(),
           declutterItems: [],
           extent: renderedExtent,
           size: [width, height],
@@ -138,6 +137,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.prepareFrame(imageFrameState) &&
             vectorRenderer.replayGroupChanged
           ) {
+            vectorRenderer.clipping = false;
             vectorRenderer.renderFrame(imageFrameState, null);
             renderDeclutterItems(imageFrameState, null);
             callback();

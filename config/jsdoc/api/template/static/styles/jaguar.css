@@ -14,15 +14,15 @@
   color: #fff;
   font-size: 160%;
   font-weight: bold;
-  padding 8px 0;
+  padding: 8px 0;
 }
 
 body {
-  padding-top: 50px;
+  padding-top: 55px;
 }
 .nameContainer .anchor {
-  padding-top: 50px;
-  margin-top: -50px;
+  padding-top: 70px;
+  margin-top: -70px;
   width: 0px;
   height: 0px;
 }
@@ -70,7 +70,6 @@ li {
   border-radius: 4px;
 }
 .navigation {
-  margin-top:15px;
   background-color: #2a2a2a;
 }
 @media (max-width:768px) {
@@ -84,7 +83,6 @@ li {
 
 .navigation .applicationName {
   margin: 0;
-  margin-top: 15px;
   padding: 10px 15px;
   font: bold 1.25em Helvetica;
   color: #fff;
@@ -410,13 +408,6 @@ span.type-signature.static {
   padding: 2px 4px;
   margin-right: 5px;
   color: gray;
-}
-.main .readme p {
-/*
-  margin-top: 15px;
-  line-height: 1.2;
-  font-size: 0.9em;
- */
 }
 .main .readme h1 {
   font-size: 1.7em;
