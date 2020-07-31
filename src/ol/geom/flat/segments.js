@@ -22,7 +22,7 @@ export function forEach(flatCoordinates, offset, end, stride, callback) {
   for (; offset + stride < end; offset += stride) {
     point2[0] = flatCoordinates[offset + stride];
     point2[1] = flatCoordinates[offset + stride + 1];
-    ret = callback(point1, point2);
+    ret = callback([...point1], [...point2]);
     if (ret) {
       return ret;
     }
