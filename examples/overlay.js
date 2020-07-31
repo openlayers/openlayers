@@ -21,6 +21,12 @@ const map = new Map({
 
 const pos = fromLonLat([16.3725, 48.208889]);
 
+// Popup showing the position the user clicked
+const popup = new Overlay({
+  element: document.getElementById('popup'),
+});
+map.addOverlay(popup);
+
 // Vienna marker
 const marker = new Overlay({
   position: pos,
@@ -36,12 +42,6 @@ const vienna = new Overlay({
   element: document.getElementById('vienna'),
 });
 map.addOverlay(vienna);
-
-// Popup showing the position the user clicked
-const popup = new Overlay({
-  element: document.getElementById('popup'),
-});
-map.addOverlay(popup);
 
 map.on('click', function (evt) {
   const element = popup.getElement();
