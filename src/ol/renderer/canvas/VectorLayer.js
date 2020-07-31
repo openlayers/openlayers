@@ -129,6 +129,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.replayGroupChanged = true;
+
+    /**
+     * Clipping to be performed by `renderFrame()`
+     * @type {boolean}
+     */
+    this.clipping = true;
   }
 
   /**
@@ -198,7 +204,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     // clipped rendering if layer extent is set
     let clipped = false;
-    if (layerState.extent) {
+    if (layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       clipped =
         !containsExtent(layerExtent, frameState.extent) &&

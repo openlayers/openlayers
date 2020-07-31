@@ -36,6 +36,12 @@ class CanvasImageBuilder extends CanvasBuilder {
      * @private
      * @type {number|undefined}
      */
+    this.imagePixelRatio_ = undefined;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
     this.anchorX_ = undefined;
 
     /**
@@ -136,17 +142,20 @@ class CanvasImageBuilder extends CanvasBuilder {
       myEnd,
       this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_,
-      this.anchorY_,
+      this.anchorX_ * this.imagePixelRatio_,
+      this.anchorY_ * this.imagePixelRatio_,
       this.declutterGroups_,
-      this.height_,
+      Math.ceil(this.height_ * this.imagePixelRatio_),
       this.opacity_,
       this.originX_,
       this.originY_,
       this.rotateWithView_,
       this.rotation_,
-      [this.scale_[0] * this.pixelRatio, this.scale_[1] * this.pixelRatio],
-      this.width_,
+      [
+        (this.scale_[0] * this.pixelRatio) / this.imagePixelRatio_,
+        (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
+      ],
+      Math.ceil(this.width_ * this.imagePixelRatio_),
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_IMAGE,
@@ -193,17 +202,20 @@ class CanvasImageBuilder extends CanvasBuilder {
       myEnd,
       this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_,
-      this.anchorY_,
+      this.anchorX_ * this.imagePixelRatio_,
+      this.anchorY_ * this.imagePixelRatio_,
       this.declutterGroups_,
-      this.height_,
+      Math.ceil(this.height_ * this.imagePixelRatio_),
       this.opacity_,
       this.originX_,
       this.originY_,
       this.rotateWithView_,
       this.rotation_,
-      [this.scale_[0] * this.pixelRatio, this.scale_[1] * this.pixelRatio],
-      this.width_,
+      [
+        (this.scale_[0] * this.pixelRatio) / this.imagePixelRatio_,
+        (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
+      ],
+      Math.ceil(this.width_ * this.imagePixelRatio_),
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_IMAGE,
@@ -236,6 +248,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.anchorY_ = undefined;
     this.hitDetectionImage_ = null;
     this.image_ = null;
+    this.imagePixelRatio_ = undefined;
     this.height_ = undefined;
     this.scale_ = undefined;
     this.opacity_ = undefined;
@@ -254,9 +267,10 @@ class CanvasImageBuilder extends CanvasBuilder {
   setImageStyle(imageStyle, declutterGroups) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
-    const hitDetectionImage = imageStyle.getHitDetectionImage(1);
-    const image = imageStyle.getImage(1);
+    const hitDetectionImage = imageStyle.getHitDetectionImage();
+    const image = imageStyle.getImage(this.pixelRatio);
     const origin = imageStyle.getOrigin();
+    this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
     this.declutterGroups_ = declutterGroups;

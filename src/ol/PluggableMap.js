@@ -1007,14 +1007,16 @@ class PluggableMap extends BaseObject {
               originalEvent.clientY
             );
       if (
+        // Abort if the target is a child of the container for elements whose events are not meant
+        // to be handled by map interactions.
+        this.overlayContainerStopEvent_.contains(target) ||
         // Abort if the event target is a child of the container that is no longer in the page.
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        !rootNode.contains(target) ||
-        // Abort if the target is a child of the container for elements whose events are not meant
-        // to be handled by map interactions.
-        this.overlayContainerStopEvent_.contains(target)
+        !(rootNode === document ? document.documentElement : rootNode).contains(
+          target
+        )
       ) {
         return;
       }
@@ -1101,10 +1103,9 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * @param {import("./Object").ObjectEvent} event Event.
    * @private
    */
-  handleTargetChanged_(event) {
+  handleTargetChanged_() {
     // target may be undefined, null, a string or an Element.
     // If it's a string we convert it to an Element before proceeding.
     // If it's not now an Element we remove the viewport from the DOM.
@@ -1115,7 +1116,7 @@ class PluggableMap extends BaseObject {
       targetElement = this.getTargetElement();
     }
 
-    if (event.oldValue) {
+    if (this.mapBrowserEventHandler_) {
       for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.keyHandlerKeys_[i]);
       }
@@ -1133,6 +1134,7 @@ class PluggableMap extends BaseObject {
         this.handleResize_ = undefined;
       }
       this.mapBrowserEventHandler_.dispose();
+      this.mapBrowserEventHandler_ = null;
       removeNode(this.viewport_);
     }
 
