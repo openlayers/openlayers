@@ -6,6 +6,7 @@ import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import ImageState from '../ImageState.js';
 import ImageWrapper from '../Image.js';
+import {assign} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getHeight, getWidth, intersects} from '../extent.js';
 import {get as getProjection} from '../proj.js';
@@ -138,6 +139,7 @@ class Static extends ImageSource {
       const targetWidth = Math.ceil(getWidth(imageExtent) / resolution);
       if (targetWidth != imageWidth) {
         const context = createCanvasContext2D(targetWidth, imageHeight);
+        assign(context, this.getContextOptions());
         const canvas = context.canvas;
         context.drawImage(
           image,
