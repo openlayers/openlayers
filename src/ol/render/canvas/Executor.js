@@ -309,6 +309,7 @@ class Executor {
   }
 
   /**
+   * @private
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} contextScale Scale of the context.
    * @param {number} x X.
@@ -410,26 +411,26 @@ class Executor {
     } else {
       createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
     }
-    this.renderBuffer_[0] = Math.max(
-      this.renderBuffer_[0],
-      getWidth(tmpExtent)
-    );
-    this.renderBuffer_[1] = Math.max(
-      this.renderBuffer_[1],
-      getHeight(tmpExtent)
-    );
+    let renderBufferX = 0;
+    let renderBufferY = 0;
+    if (declutterGroup) {
+      const renderBuffer = this.renderBuffer_;
+      renderBuffer[0] = Math.max(renderBuffer[0], getWidth(tmpExtent));
+      renderBufferX = renderBuffer[0];
+      renderBuffer[1] = Math.max(renderBuffer[1], getHeight(tmpExtent));
+      renderBufferY = renderBuffer[1];
+    }
     const canvas = context.canvas;
     const strokePadding = strokeInstruction
       ? (strokeInstruction[2] * scale[0]) / 2
       : 0;
-    const renderBuffer = this.renderBuffer_;
     const intersects =
       tmpExtent[0] - strokePadding <=
-        (canvas.width + renderBuffer[0]) / contextScale &&
-      tmpExtent[2] + strokePadding >= -renderBuffer[0] / contextScale &&
+        (canvas.width + renderBufferX) / contextScale &&
+      tmpExtent[2] + strokePadding >= -renderBufferX / contextScale &&
       tmpExtent[1] - strokePadding <=
-        (canvas.height + renderBuffer[1]) / contextScale &&
-      tmpExtent[3] + strokePadding >= -renderBuffer[1] / contextScale;
+        (canvas.height + renderBufferY) / contextScale &&
+      tmpExtent[3] + strokePadding >= -renderBufferY / contextScale;
 
     if (snapToPixel) {
       x = Math.round(x);

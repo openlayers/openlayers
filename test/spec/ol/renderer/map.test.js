@@ -5,6 +5,7 @@ import MapRenderer from '../../../../src/ol/renderer/Map.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import {Circle, Fill, Style} from '../../../../src/ol/style.js';
 import {Point} from '../../../../src/ol/geom.js';
 import {Projection} from '../../../../src/ol/proj.js';
 
@@ -21,7 +22,7 @@ describe('ol.renderer.Map', function () {
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    let map;
+    let map, source;
     beforeEach(function () {
       const target = document.createElement('div');
       target.style.width = '100px';
@@ -31,13 +32,23 @@ describe('ol.renderer.Map', function () {
         code: 'EPSG:21781',
         units: 'm',
       });
+      source = new VectorSource({
+        projection: projection,
+        features: [new Feature(new Point([660000, 190000]))],
+      });
       map = new Map({
         target: target,
         layers: [
           new VectorLayer({
-            source: new VectorSource({
-              projection: projection,
-              features: [new Feature(new Point([660000, 190000]))],
+            source: source,
+            renderBuffer: 12,
+            style: new Style({
+              image: new Circle({
+                radius: 6,
+                fill: new Fill({
+                  color: 'fuchsia',
+                }),
+              }),
             }),
           }),
         ],
@@ -47,7 +58,6 @@ describe('ol.renderer.Map', function () {
           zoom: 9,
         }),
       });
-      map.renderSync();
     });
 
     afterEach(function () {
@@ -57,8 +67,25 @@ describe('ol.renderer.Map', function () {
     });
 
     it('works with custom projection', function () {
+      map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
       expect(features.length).to.be(1);
+    });
+
+    it('only draws features that intersect the hit detection viewport', function () {
+      const resolution = map.getView().getResolution();
+      source.addFeature(
+        new Feature(new Point([660000 + resolution * 6, 190000]))
+      );
+      source.addFeature(
+        new Feature(new Point([660000 - resolution * 12, 190000]))
+      );
+      map.renderSync();
+      const spy = sinon.spy(CanvasRenderingContext2D.prototype, 'drawImage');
+      const features = map.getFeaturesAtPixel([50, 44]);
+      expect(features.length).to.be(1);
+      expect(spy.callCount).to.be(2);
+      spy.restore();
     });
   });
 });
