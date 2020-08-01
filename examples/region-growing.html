@@ -28,10 +28,11 @@ cloak:
   - key: get_your_own_D6rA4zTHduk6KOKTXzGB
     value: Get your own API key at https://www.maptiler.com/cloud/
 ---
-<div id="map" class="map" style="cursor: pointer"></div>
-<table class="controls">
-  <tr>
-    <td>Threshold: <span id="threshold-value"></span></td>
-    <td><input id="threshold" type="range" min="1" max="50" value="20"></td>
-  </tr>
-</table>
+<div id="map" class="map"></div>
+<div>
+  <label class="input-group">
+    Threshold:
+    <input id="threshold" type="range" min="1" max="50" value="20">
+    <span id="threshold-value"></span>
+  </label>
+</div>
