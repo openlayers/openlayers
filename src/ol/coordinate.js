@@ -410,10 +410,12 @@ export function toStringXY(coordinate, opt_fractionDigits) {
  * @return {Coordinate} The coordinate within the real world extent.
  */
 export function wrapX(coordinate, projection) {
-  const worldWidth = getWidth(projection.getExtent());
-  const worldsAway = getWorldsAway(coordinate, projection, worldWidth);
-  if (worldsAway) {
-    coordinate[0] -= worldsAway * worldWidth;
+  if (projection.canWrapX()) {
+    const worldWidth = getWidth(projection.getExtent());
+    const worldsAway = getWorldsAway(coordinate, projection, worldWidth);
+    if (worldsAway) {
+      coordinate[0] -= worldsAway * worldWidth;
+    }
   }
   return coordinate;
 }
