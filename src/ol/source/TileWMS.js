@@ -263,9 +263,8 @@ class TileWMS extends TileImage {
       const mpu = this.getProjection()
         ? this.getProjection().getMetersPerUnit()
         : 1;
-      const dpi = 25.4 / 0.28;
-      const inchesPerMeter = 39.37;
-      baseParams['SCALE'] = resolution * mpu * inchesPerMeter * dpi;
+      const pixelSize = 0.00028;
+      baseParams['SCALE'] = (resolution * mpu) / pixelSize;
     }
 
     assign(baseParams, params);

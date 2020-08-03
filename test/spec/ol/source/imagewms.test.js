@@ -369,7 +369,7 @@ describe('ol.source.ImageWMS', function () {
       expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14214285714274');
+      expect(queryData.get('SCALE')).to.be('357.14285714285717');
     });
 
     it('does not include SCALE if no resolution was provided', function () {
@@ -405,7 +405,7 @@ describe('ol.source.ImageWMS', function () {
       expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14214285714274');
+      expect(queryData.get('SCALE')).to.be('357.14285714285717');
       expect(queryData.get('STYLE')).to.be('STYLE_VALUE');
       expect(queryData.get('FEATURETYPE')).to.be('FEATURETYPE_VALUE');
       expect(queryData.get('RULE')).to.be('RULE_VALUE');
