@@ -102,8 +102,8 @@ class FullScreen extends Control {
      */
     this.inactiveClassName_ =
       options.inactiveClassName !== undefined
-      ? options.inactiveClassName.split(' ')
-      : [this.cssClassName_ + '-false'];
+        ? options.inactiveClassName.split(' ')
+        : [this.cssClassName_ + '-false'];
 
     const label = options.label !== undefined ? options.label : '\u2922';
 
