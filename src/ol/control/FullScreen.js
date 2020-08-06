@@ -89,7 +89,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {string}
+     * @type {Array<string>}
      */
     this.activeClassName_ =
       options.activeClassName !== undefined
@@ -98,7 +98,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {string}
+     * @type {Array<string>}
      */
     this.inactiveClassName_ =
       options.inactiveClassName !== undefined
