@@ -23,12 +23,12 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {string} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [expandClassName==className + '-expand'] CSS class name for the
+ * @property {string} [expandClassName=className + '-expand'] CSS class name for the
  * collapsed attributions button.
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [collapseClassName==className + '-collapse'] CSS class name for the
+ * @property {string} [collapseClassName=className + '-collapse'] CSS class name for the
  * expanded attributions button.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
