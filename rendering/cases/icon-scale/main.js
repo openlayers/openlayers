@@ -7,7 +7,14 @@ import VectorLayer from '../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import View from '../../../src/ol/View.js';
 
-const features = [];
+const features = [
+  new Feature({
+    geometry: new Point([-1, 12]),
+    scale: [-8, -8],
+    anchor: [0.5, 0.5],
+    rotated: 0,
+  }),
+];
 for (let i = 0; i < 2; ++i) {
   const x = i * 5;
   features.push(
@@ -104,6 +111,7 @@ const vectorLayer = new VectorLayer({
     style.getImage().setRotation((feature.get('rotated') * Math.PI) / 4);
     return style;
   },
+  renderBuffer: 25,
 });
 
 const map = new Map({

@@ -409,7 +409,13 @@ class Executor {
         tmpExtent
       );
     } else {
-      createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
+      createOrUpdate(
+        Math.min(boxX, boxX + boxW),
+        Math.min(boxY, boxY + boxH),
+        Math.max(boxX, boxX + boxW),
+        Math.max(boxY, boxY + boxH),
+        tmpExtent
+      );
     }
     let renderBufferX = 0;
     let renderBufferY = 0;
