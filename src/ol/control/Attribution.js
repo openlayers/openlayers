@@ -96,7 +96,7 @@ class Attribution extends Control {
     const expandClassName =
       options.expandClassName !== undefined
       ? options.expandClassName
-      : (className + '-expand');
+      : className + '-expand';
 
     const collapseLabel =
       options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
@@ -104,7 +104,7 @@ class Attribution extends Control {
     const collapseClassName =
       options.collapseClassName !== undefined
       ? options.collapseClassName
-      : (className + '-collpase');
+      : className + '-collpase';
 
     if (typeof collapseLabel === 'string') {
       /**
