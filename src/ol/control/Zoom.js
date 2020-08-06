@@ -52,7 +52,7 @@ class Zoom extends Control {
       options.zoomInClassName !== undefined
         ? options.zoomInClassName
         : className + '-in';
-        
+
     const zoomOutClassName =
       options.zoomOutClassName !== undefined
         ? options.zoomOutClassName
