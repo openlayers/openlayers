@@ -22,7 +22,7 @@ describe('ol.renderer.Map', function () {
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    let map, source;
+    let map, source, style;
     beforeEach(function () {
       const target = document.createElement('div');
       target.style.width = '100px';
@@ -36,20 +36,21 @@ describe('ol.renderer.Map', function () {
         projection: projection,
         features: [new Feature(new Point([660000, 190000]))],
       });
+      style = new Style({
+        image: new Circle({
+          radius: 6,
+          fill: new Fill({
+            color: 'fuchsia',
+          }),
+        }),
+      });
       map = new Map({
         target: target,
         layers: [
           new VectorLayer({
             source: source,
             renderBuffer: 12,
-            style: new Style({
-              image: new Circle({
-                radius: 6,
-                fill: new Fill({
-                  color: 'fuchsia',
-                }),
-              }),
-            }),
+            style: style,
           }),
         ],
         view: new View({
@@ -67,6 +68,13 @@ describe('ol.renderer.Map', function () {
     });
 
     it('works with custom projection', function () {
+      map.renderSync();
+      const features = map.getFeaturesAtPixel([50, 50]);
+      expect(features.length).to.be(1);
+    });
+
+    it('works with negative image scale', function () {
+      style.getImage().setScale([-1, -1]);
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
       expect(features.length).to.be(1);
