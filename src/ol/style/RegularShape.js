@@ -30,6 +30,8 @@ import {
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
+ * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
+ * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2.
  */
 
 /**
@@ -66,7 +68,7 @@ class RegularShape extends ImageStyle {
       opacity: 1,
       rotateWithView: rotateWithView,
       rotation: options.rotation !== undefined ? options.rotation : 0,
-      scale: 1,
+      scale: options.scale !== undefined ? options.scale : 1,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
     });
@@ -159,6 +161,7 @@ class RegularShape extends ImageStyle {
    * @api
    */
   clone() {
+    const scale = this.getScale();
     const style = new RegularShape({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       points: this.getPoints(),
@@ -168,10 +171,10 @@ class RegularShape extends ImageStyle {
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
       displacement: this.getDisplacement().slice(),
     });
     style.setOpacity(this.getOpacity());
-    style.setScale(this.getScale());
     return style;
   }
 
