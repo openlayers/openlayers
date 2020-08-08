@@ -617,9 +617,7 @@ describe('ol.control.ScaleLine', function () {
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;
       expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(
-        Math.round(map.getView().getResolution() / 0.00028)
-      );
+      expect(text.replace(/^1|\D/g, '')).to.eql(139770566);
     });
     it('it changes with latitude', function () {
       const ctrl = new ScaleLine({
@@ -640,9 +638,7 @@ describe('ol.control.ScaleLine', function () {
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;
       expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(
-        Math.round((map.getView().getResolution() * 0.5) / 0.00028)
-      );
+      expect(text.replace(/^1|\D/g, '')).to.eql(69885283);
     });
   });
 });
