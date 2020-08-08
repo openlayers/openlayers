@@ -1,6 +1,7 @@
 /**
  * @module ol/format/GML3
  */
+import GML2 from './GML2.js';
 import GMLBase, {GMLNS} from './GMLBase.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -1032,6 +1033,7 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
     'pos': makeReplacer(GML3.prototype.readFlatPos),
     'posList': makeReplacer(GML3.prototype.readFlatPosList),
+    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates),
   },
 };
 
