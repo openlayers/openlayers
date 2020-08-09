@@ -301,7 +301,7 @@ class WFS extends XMLFeature {
   readFeaturesFromNode(node, opt_options) {
     /** @type {import("../xml.js").NodeStackItem} */
     const context = {
-      node: node,
+      node,
     };
     assign(context, {
       'featureType': this.featureType_,
@@ -494,7 +494,7 @@ class WFS extends XMLFeature {
     );
     /** @type {import("../xml.js").NodeStackItem} */
     const context = {
-      node: node,
+      node,
     };
     assign(context, {
       'version': this.version_,
@@ -551,7 +551,7 @@ class WFS extends XMLFeature {
       : FEATURE_PREFIX;
     if (inserts) {
       obj = assign(
-        {node: node},
+        {node},
         {
           version,
           'featureNS': options.featureNS,
@@ -573,7 +573,7 @@ class WFS extends XMLFeature {
     }
     if (updates) {
       obj = assign(
-        {node: node},
+        {node},
         {
           version,
           'featureNS': options.featureNS,
@@ -832,7 +832,7 @@ function writeUpdate(node, feature, objectStack) {
       /** @type {import("../xml.js").NodeStackItem} */ ({
         version,
         'gmlVersion': context['gmlVersion'],
-        node: node,
+        node,
         'hasZ': context['hasZ'],
         'srsName': context['srsName'],
       }),
@@ -998,8 +998,8 @@ function writeQuery(node, featureType, objectStack) {
 function writeFilterCondition(node, filter, objectStack) {
   const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   /** @type {import("../xml.js").NodeStackItem} */
-  const item = {node: node};
-  assign(item, {context: context});
+  const item = {node};
+  assign(item, {context});
   pushSerializeAndPop(
     item,
     GETFEATURE_SERIALIZERS,
@@ -1017,7 +1017,7 @@ function writeFilterCondition(node, filter, objectStack) {
 function writeBboxFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
-  context['srsName'] = filter.srsName;
+  parent['srsName'] = filter.srsName;
   const ns = OGCNS[context['version']];
 
   writeOgcPropertyName(ns, node, filter.geometryName);
@@ -1032,7 +1032,7 @@ function writeBboxFilter(node, filter, objectStack) {
 function writeContainsFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
-  context['srsName'] = filter.srsName;
+  parent['srsName'] = filter.srsName;
   const ns = OGCNS[context['version']];
 
   writeOgcPropertyName(ns, node, filter.geometryName);
@@ -1047,7 +1047,7 @@ function writeContainsFilter(node, filter, objectStack) {
 function writeIntersectsFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
-  context['srsName'] = filter.srsName;
+  parent['srsName'] = filter.srsName;
   const ns = OGCNS[context['version']];
 
   writeOgcPropertyName(ns, node, filter.geometryName);
@@ -1062,7 +1062,7 @@ function writeIntersectsFilter(node, filter, objectStack) {
 function writeWithinFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
-  context['srsName'] = filter.srsName;
+  parent['srsName'] = filter.srsName;
   const ns = OGCNS[context['version']];
 
   writeOgcPropertyName(ns, node, filter.geometryName);
@@ -1101,7 +1101,7 @@ function writeLogicalFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   /** @type {import("../xml.js").NodeStackItem} */
-  const item = {node: node};
+  const item = {node};
   assign(item, {context});
   const conditions = filter.conditions;
   for (let i = 0, ii = conditions.length; i < ii; ++i) {
@@ -1125,7 +1125,7 @@ function writeNotFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   /** @type {import("../xml.js").NodeStackItem} */
-  const item = {node: node};
+  const item = {node};
   assign(item, {context});
   const condition = filter.condition;
   pushSerializeAndPop(
