@@ -529,12 +529,11 @@ class WFS extends XMLFeature {
     const objectStack = [];
     const version = options.version ? options.version : this.version_;
     const node = createElementNS(WFSNS[version], 'Transaction');
-    const gmlVersion = version === '1.0.0' ? 2 : 3;
+
     node.setAttribute('service', 'WFS');
     node.setAttribute('version', version);
     let baseObj;
     /** @type {import("../xml.js").NodeStackItem} */
-    let obj;
     if (options) {
       baseObj = options.gmlOptions ? options.gmlOptions : {};
       if (options.handle) {
@@ -546,85 +545,23 @@ class WFS extends XMLFeature {
       'xsi:schemaLocation',
       SCHEMA_LOCATIONS[version]
     );
-    const featurePrefix = options.featurePrefix
-      ? options.featurePrefix
-      : FEATURE_PREFIX;
+
+    const request = createTransactionRequest(node, baseObj, version, options);
     if (inserts) {
-      obj = assign(
-        {node},
-        {
-          version,
-          'featureNS': options.featureNS,
-          'featureType': options.featureType,
-          'featurePrefix': featurePrefix,
-          'gmlVersion': gmlVersion,
-          'hasZ': options.hasZ,
-          'srsName': options.srsName,
-        }
-      );
-      assign(obj, baseObj);
-      pushSerializeAndPop(
-        obj,
-        TRANSACTION_SERIALIZERS,
-        makeSimpleNodeFactory('Insert'),
-        inserts,
-        objectStack
-      );
+      serializeTransactionRequest('Insert', inserts, objectStack, request);
     }
     if (updates) {
-      obj = assign(
-        {node},
-        {
-          version,
-          'featureNS': options.featureNS,
-          'featureType': options.featureType,
-          'featurePrefix': featurePrefix,
-          'gmlVersion': gmlVersion,
-          'hasZ': options.hasZ,
-          'srsName': options.srsName,
-        }
-      );
-      assign(obj, baseObj);
-      pushSerializeAndPop(
-        obj,
-        TRANSACTION_SERIALIZERS,
-        makeSimpleNodeFactory('Update'),
-        updates,
-        objectStack
-      );
+      serializeTransactionRequest('Update', updates, objectStack, request);
     }
     if (deletes) {
-      pushSerializeAndPop(
-        {
-          node,
-          version,
-          'featureNS': options.featureNS,
-          'featureType': options.featureType,
-          'featurePrefix': featurePrefix,
-          'gmlVersion': gmlVersion,
-          'srsName': options.srsName,
-        },
-        TRANSACTION_SERIALIZERS,
-        makeSimpleNodeFactory('Delete'),
-        deletes,
-        objectStack
-      );
+      serializeTransactionRequest('Delete', deletes, objectStack, request);
     }
     if (options.nativeElements) {
-      pushSerializeAndPop(
-        {
-          node,
-          version,
-          'featureNS': options.featureNS,
-          'featureType': options.featureType,
-          'featurePrefix': featurePrefix,
-          'gmlVersion': gmlVersion,
-          'srsName': options.srsName,
-        },
-        TRANSACTION_SERIALIZERS,
-        makeSimpleNodeFactory('Native'),
+      serializeTransactionRequest(
+        'Native',
         options.nativeElements,
-        objectStack
+        objectStack,
+        request
       );
     }
     return node;
@@ -666,6 +603,50 @@ class WFS extends XMLFeature {
 
     return null;
   }
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {*} baseObj Base object.
+ * @param {string} version Version.
+ * @param {WriteTransactionOptions} options Options.
+ * @return {Object} Request object.
+ */
+function createTransactionRequest(node, baseObj, version, options) {
+  const featurePrefix = options.featurePrefix
+    ? options.featurePrefix
+    : FEATURE_PREFIX;
+  const gmlVersion = version === '1.0.0' ? 2 : 3;
+  const obj = assign(
+    {node},
+    {
+      version,
+      'featureNS': options.featureNS,
+      'featureType': options.featureType,
+      'featurePrefix': featurePrefix,
+      'gmlVersion': gmlVersion,
+      'hasZ': options.hasZ,
+      'srsName': options.srsName,
+    },
+    baseObj
+  );
+  return obj;
+}
+
+/**
+ * @param {string} type Request type.
+ * @param {Array<import("../Feature.js").default>} features Features.
+ * @param {Array<*>} objectStack Object stack.
+ * @param {Element} request Transaction Request.
+ */
+function serializeTransactionRequest(type, features, objectStack, request) {
+  pushSerializeAndPop(
+    request,
+    TRANSACTION_SERIALIZERS,
+    makeSimpleNodeFactory(type),
+    features,
+    objectStack
+  );
 }
 
 /**
