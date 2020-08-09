@@ -1376,7 +1376,8 @@ describe('ol.format.WFS', function () {
         andFilter(
           likeFilter('name', 'Mississippi*'),
           equalToFilter('waterway', 'riverbank')
-        )
+        ),
+        '1.1.0'
       );
       expect(serialized).to.xmleql(parse(text));
     });
