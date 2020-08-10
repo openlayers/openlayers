@@ -205,16 +205,20 @@ const WFSNS = {
 };
 
 /**
- * @type {string}
+ * @type {Object<string, string>}
  */
-const FESNS = 'http://www.opengis.net/fes';
+const FESNS = {
+  '2.0.0': 'http://www.opengis.net/fes/2.0',
+  '1.1.0': 'http://www.opengis.net/fes',
+  '1.0.0': 'http://www.opengis.net/fes',
+};
 
 /**
  * @type {Object<string, string>}
  */
 const SCHEMA_LOCATIONS = {
   '2.0.0':
-    'http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0.0/wfs.xsd',
+    'http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd',
   '1.1.0':
     'http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd',
   '1.0.0':
@@ -904,7 +908,7 @@ const GETFEATURE_SERIALIZERS = {
     'PropertyIsBetween': makeChildAppender(writeIsBetweenFilter),
     'PropertyIsLike': makeChildAppender(writeIsLikeFilter),
   },
-  'http://www.opengis.net/ogc/1.1': {
+  'http://www.opengis.net/fes/2.0': {
     'During': makeChildAppender(writeDuringFilter),
     'And': makeChildAppender(writeLogicalFilter),
     'Or': makeChildAppender(writeLogicalFilter),
@@ -912,6 +916,7 @@ const GETFEATURE_SERIALIZERS = {
     'BBOX': makeChildAppender(writeBboxFilter),
     'Contains': makeChildAppender(writeContainsFilter),
     'Intersects': makeChildAppender(writeIntersectsFilter),
+    'ResourceId': makeChildAppender(writeResourceIdFilter),
     'Within': makeChildAppender(writeWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
@@ -944,7 +949,13 @@ function writeQuery(node, featureType, objectStack) {
   } else {
     typeName = featureType;
   }
-  node.setAttribute('typeName', typeName);
+  let typeNameAttr;
+  if (version === '2.0.0') {
+    typeNameAttr = 'typeNames';
+  } else {
+    typeNameAttr = 'typeName';
+  }
+  node.setAttribute(typeNameAttr, typeName);
   if (srsName) {
     node.setAttribute('srsName', srsName);
   }
@@ -965,7 +976,7 @@ function writeQuery(node, featureType, objectStack) {
   );
   const filter = context['filter'];
   if (filter) {
-    const child = createElementNS(OGCNS[version], 'Filter');
+    const child = createElementNS(getFilterNS(version), 'Filter');
     node.appendChild(child);
     writeFilterCondition(child, filter, objectStack);
   }
@@ -1036,6 +1047,15 @@ function writeIntersectsFilter(node, filter, objectStack) {
 }
 
 /**
+ * @param {Element} node Element.
+ * @param {import("./filter/ResourceId.js").default} filter Filter.
+ * @param {Array<*>} objectStack Node stack.
+ */
+function writeResourceIdFilter(node, filter, objectStack) {
+  node.setAttribute('rid', /** @type {string} */ (filter.rid));
+}
+
+/**
  * @param {Node} node Node.
  * @param {import("./filter/Within.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
@@ -1056,7 +1076,11 @@ function writeWithinFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeDuringFilter(node, filter, objectStack) {
-  const valueReference = createElementNS(FESNS, 'ValueReference');
+  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = parent['context'];
+  const version = context['version'];
+  const ns = FESNS[version];
+  const valueReference = createElementNS(ns, 'ValueReference');
   writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
@@ -1269,6 +1293,16 @@ function writeGetFeature(node, featureTypes, objectStack) {
     featureTypes,
     objectStack
   );
+}
+
+function getFilterNS(version) {
+  let ns;
+  if (version === '2.0.0') {
+    ns = FESNS[version];
+  } else {
+    ns = OGCNS[version];
+  }
+  return ns;
 }
 
 export default WFS;

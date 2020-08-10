@@ -27,6 +27,7 @@ import {
   like as likeFilter,
   not as notFilter,
   or as orFilter,
+  resourceId as resourceIdFilter,
   within as withinFilter,
 } from '../../../../src/ol/format/filter.js';
 import {parse} from '../../../../src/ol/xml.js';
@@ -1380,6 +1381,30 @@ describe('ol.format.WFS', function () {
         '1.1.0'
       );
       expect(serialized).to.xmleql(parse(text));
+    });
+  });
+
+  describe('WFS 2.0.0', function () {
+    let getFeatureXml;
+    before(function (done) {
+      afterLoadText('spec/ol/format/wfs/2.0.0/GetFeature.xml', function (xml) {
+        getFeatureXml = xml;
+        done();
+      });
+    });
+
+    it('GetFeature', function () {
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const filter = resourceIdFilter('bugsites.3');
+      const serialized = wfs.writeGetFeature({
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureTypes: ['bugsites'],
+        featurePrefix: 'sf',
+        filter,
+      });
+      expect(serialized).to.xmleql(parse(getFeatureXml));
     });
   });
 });

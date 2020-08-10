@@ -17,6 +17,7 @@ import LessThanOrEqualTo from './filter/LessThanOrEqualTo.js';
 import Not from './filter/Not.js';
 import NotEqualTo from './filter/NotEqualTo.js';
 import Or from './filter/Or.js';
+import ResourceId from './filter/ResourceId.js';
 import Within from './filter/Within.js';
 
 /**
@@ -259,4 +260,8 @@ export function like(
  */
 export function during(propertyName, begin, end) {
   return new During(propertyName, begin, end);
+}
+
+export function resourceId(rid) {
+  return new ResourceId(rid);
 }

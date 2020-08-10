@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This example demonstrates a WFS 2.0 GetFeature POST request.
+
+    This filter selects a single feature with id "bugsites.3".
+
+    See also:
+    WFS Standard: http://www.opengeospatial.org/standards/wfs
+    Filter Encoding Standard: http://www.opengeospatial.org/standards/filter
+-->
+<wfs:GetFeature service="WFS" version="2.0.0"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:fes="http://www.opengis.net/fes/2.0"
+    xmlns:sf="http://www.openplans.org/spearfish" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd">
+    <wfs:Query typeNames="sf:bugsites">
+        <fes:Filter>
+            <fes:ResourceId rid="bugsites.3"/>
+        </fes:Filter>
+    </wfs:Query>
+</wfs:GetFeature>
