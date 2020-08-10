@@ -72,7 +72,7 @@
     // sort examples, first by number of words matched, then
     // by word frequency
     examples.sort(function (a, b) {
-      return a.score - b.score || a.words - b.words;
+      return b.score - a.score || b.words - a.words;
     });
     return examples;
   }
