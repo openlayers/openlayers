@@ -3,6 +3,7 @@
  */
 import GML2 from './GML2.js';
 import GML3 from './GML3.js';
+import GML32 from './GML32.js';
 import GMLBase, {GMLNS} from './GMLBase.js';
 import XMLFeature from './XMLFeature.js';
 import {
@@ -226,6 +227,15 @@ const SCHEMA_LOCATIONS = {
 };
 
 /**
+ * @type {Object<string, object>}
+ */
+const GML_FORMATS = {
+  '2.0.0': GML32,
+  '1.1.0': GML3,
+  '1.0.0': GML2,
+};
+
+/**
  * @const
  * @type {string}
  */
@@ -271,7 +281,9 @@ class WFS extends XMLFeature {
      * @private
      * @type {GMLBase}
      */
-    this.gmlFormat_ = options.gmlFormat ? options.gmlFormat : new GML3();
+    this.gmlFormat_ = options.gmlFormat
+      ? options.gmlFormat
+      : new GML_FORMATS[this.version_]();
 
     /**
      * @private
@@ -620,7 +632,14 @@ function createTransactionRequest(node, baseObj, version, options) {
   const featurePrefix = options.featurePrefix
     ? options.featurePrefix
     : FEATURE_PREFIX;
-  const gmlVersion = version === '1.0.0' ? 2 : 3;
+  let gmlVersion;
+  if (version === '1.0.0') {
+    gmlVersion = 2;
+  } else if (version === '1.1.0') {
+    gmlVersion = 3;
+  } else if (version === '2.0.0') {
+    gmlVersion = 3.2;
+  }
   const obj = assign(
     {node},
     {
@@ -723,8 +742,10 @@ function writeFeature(node, feature, objectStack) {
   node.appendChild(child);
   if (gmlVersion === 2) {
     GML2.prototype.writeFeatureElement(child, feature, objectStack);
-  } else {
+  } else if (gmlVersion === 3) {
     GML3.prototype.writeFeatureElement(child, feature, objectStack);
+  } else {
+    GML32.prototype.writeFeatureElement(child, feature, objectStack);
   }
 }
 
@@ -853,8 +874,10 @@ function writeProperty(node, pair, objectStack) {
     ) {
       if (gmlVersion === 2) {
         GML2.prototype.writeGeometryElement(value, pair.value, objectStack);
-      } else {
+      } else if (gmlVersion === 3) {
         GML3.prototype.writeGeometryElement(value, pair.value, objectStack);
+      } else {
+        GML32.prototype.writeGeometryElement(value, pair.value, objectStack);
       }
     } else {
       writeStringTextNode(value, pair.value);
@@ -915,6 +938,7 @@ const GETFEATURE_SERIALIZERS = {
     'Not': makeChildAppender(writeNotFilter),
     'BBOX': makeChildAppender(writeBboxFilter),
     'Contains': makeChildAppender(writeContainsFilter),
+    'Disjoint': makeChildAppender(writeDisjointFilter),
     'Intersects': makeChildAppender(writeIntersectsFilter),
     'ResourceId': makeChildAppender(writeResourceIdFilter),
     'Within': makeChildAppender(writeWithinFilter),
@@ -1009,11 +1033,12 @@ function writeFilterCondition(node, filter, objectStack) {
 function writeBboxFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
+  const version = context['version'];
   parent['srsName'] = filter.srsName;
-  const ns = OGCNS[context['version']];
+  const format = GML_FORMATS[version];
 
-  writeOgcPropertyName(ns, node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.extent, objectStack);
+  writePropertyName(version, node, filter.geometryName);
+  format.prototype.writeGeometryElement(node, filter.extent, objectStack);
 }
 
 /**
@@ -1024,11 +1049,12 @@ function writeBboxFilter(node, filter, objectStack) {
 function writeContainsFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
+  const version = context['version'];
   parent['srsName'] = filter.srsName;
-  const ns = OGCNS[context['version']];
+  const format = GML_FORMATS[version];
 
-  writeOgcPropertyName(ns, node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  writePropertyName(version, node, filter.geometryName);
+  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 }
 
 /**
@@ -1039,11 +1065,28 @@ function writeContainsFilter(node, filter, objectStack) {
 function writeIntersectsFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
+  const version = context['version'];
   parent['srsName'] = filter.srsName;
-  const ns = OGCNS[context['version']];
+  const format = GML_FORMATS[version];
 
-  writeOgcPropertyName(ns, node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  writePropertyName(version, node, filter.geometryName);
+  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+}
+
+/**
+ * @param {Node} node Node.
+ * @param {import("./filter/Disjoint.js").default} filter Filter.
+ * @param {Array<*>} objectStack Node stack.
+ */
+function writeDisjointFilter(node, filter, objectStack) {
+  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = parent['context'];
+  const version = context['version'];
+  parent['srsName'] = filter.srsName;
+  const format = GML_FORMATS[version];
+
+  writePropertyName(version, node, filter.geometryName);
+  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 }
 
 /**
@@ -1063,11 +1106,12 @@ function writeResourceIdFilter(node, filter, objectStack) {
 function writeWithinFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
+  const version = context['version'];
   parent['srsName'] = filter.srsName;
-  const ns = OGCNS[context['version']];
+  const format = GML_FORMATS[version];
 
-  writeOgcPropertyName(ns, node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  writePropertyName(version, node, filter.geometryName);
+  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 }
 
 /**
@@ -1150,11 +1194,12 @@ function writeNotFilter(node, filter, objectStack) {
 function writeComparisonFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
+  const version = context['version'];
   const ns = OGCNS[context['version']];
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
-  writeOgcPropertyName(ns, node, filter.propertyName);
+  writePropertyName(version, node, filter.propertyName);
   writeOgcLiteral(ns, node, '' + filter.expression);
 }
 
@@ -1166,8 +1211,8 @@ function writeComparisonFilter(node, filter, objectStack) {
 function writeIsNullFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
-  const ns = OGCNS[context['version']];
-  writeOgcPropertyName(ns, node, filter.propertyName);
+  const version = context['version'];
+  writePropertyName(version, node, filter.propertyName);
 }
 
 /**
@@ -1178,9 +1223,10 @@ function writeIsNullFilter(node, filter, objectStack) {
 function writeIsBetweenFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
+  const version = context['version'];
   const ns = OGCNS[context['version']];
 
-  writeOgcPropertyName(ns, node, filter.propertyName);
+  writePropertyName(version, node, filter.propertyName);
 
   const lowerBoundary = createElementNS(ns, 'LowerBoundary');
   node.appendChild(lowerBoundary);
@@ -1199,14 +1245,15 @@ function writeIsBetweenFilter(node, filter, objectStack) {
 function writeIsLikeFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
-  const ns = OGCNS[context['version']];
+  const version = context['version'];
+  const ns = OGCNS[version];
   node.setAttribute('wildCard', filter.wildCard);
   node.setAttribute('singleChar', filter.singleChar);
   node.setAttribute('escapeChar', filter.escapeChar);
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
-  writeOgcPropertyName(ns, node, filter.propertyName);
+  writePropertyName(version, node, filter.propertyName);
   writeOgcLiteral(ns, node, '' + filter.pattern);
 }
 
@@ -1223,12 +1270,25 @@ function writeOgcExpression(ns, tagName, node, value) {
 }
 
 /**
+ * @param {string} version Version.
+ * @param {Node} node Node.
+ * @param {string} value PropertyName value.
+ */
+function writePropertyName(version, node, value) {
+  if (version === '2.0.0') {
+    writeFesValueReference(FESNS[version], node, value);
+  } else {
+    writeOgcExpression(OGCNS[version], 'PropertyName', node, value);
+  }
+}
+
+/**
  * @param {string} ns Namespace.
  * @param {Node} node Node.
  * @param {string} value PropertyName value.
  */
-function writeOgcPropertyName(ns, node, value) {
-  writeOgcExpression(ns, 'PropertyName', node, value);
+function writeFesValueReference(ns, node, value) {
+  writeOgcExpression(ns, 'ValueReference', node, value);
 }
 
 /**

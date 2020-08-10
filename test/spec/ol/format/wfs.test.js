@@ -1,5 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import GML2 from '../../../../src/ol/format/GML2.js';
+import GML32 from '../../../../src/ol/format/GML32.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
@@ -16,6 +17,7 @@ import {
   bbox as bboxFilter,
   between as betweenFilter,
   contains as containsFilter,
+  disjoint as disjointFilter,
   during as duringFilter,
   equalTo as equalToFilter,
   greaterThan as greaterThanFilter,
@@ -1386,14 +1388,32 @@ describe('ol.format.WFS', function () {
 
   describe('WFS 2.0.0', function () {
     let getFeatureXml;
+    let getFeatureXml2;
+
     before(function (done) {
-      afterLoadText('spec/ol/format/wfs/2.0.0/GetFeature.xml', function (xml) {
-        getFeatureXml = xml;
-        done();
+      proj4.defs(
+        'http://www.opengis.net/def/crs/EPSG/0/26713',
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+      );
+      register(proj4);
+      afterLoadText('spec/ol/format/wfs/2.0.0/GetFeature2.xml', function (xml) {
+        getFeatureXml2 = xml;
+        afterLoadText('spec/ol/format/wfs/2.0.0/GetFeature.xml', function (
+          xml
+        ) {
+          getFeatureXml = xml;
+          done();
+        });
       });
     });
 
-    it('GetFeature', function () {
+    after(function () {
+      delete proj4.defs['http://www.opengis.net/def/crs/EPSG/0/26713'];
+      clearAllProjections();
+      addCommon();
+    });
+
+    it('can writeGetFeature query with simple resourceId filter', function () {
       const wfs = new WFS({
         version: '2.0.0',
       });
@@ -1405,6 +1425,34 @@ describe('ol.format.WFS', function () {
         filter,
       });
       expect(serialized).to.xmleql(parse(getFeatureXml));
+    });
+
+    it('can writeGetFeature query with negated disjoint spatial filter', function () {
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const geometryNode = parse(
+        `<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
+            srsName='http://www.opengis.net/def/crs/EPSG/0/26713'>
+            <gml:exterior>
+                <gml:LinearRing>
+                    <!-- pairs must form a closed ring -->
+                    <gml:posList>590431 4915204 590430
+                        4915205 590429 4915204 590430
+                        4915203 590431 4915204</gml:posList>
+                </gml:LinearRing>
+            </gml:exterior>
+        </gml:Polygon>`
+      );
+      const geometry = new GML32().readGeometryElement(geometryNode, [{}]);
+      const filter = notFilter(disjointFilter('sf:the_geom', geometry));
+      const serialized = wfs.writeGetFeature({
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureTypes: ['bugsites'],
+        featurePrefix: 'sf',
+        filter,
+      });
+      expect(serialized).to.xmleql(parse(getFeatureXml2));
     });
   });
 });
