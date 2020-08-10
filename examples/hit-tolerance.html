@@ -11,15 +11,14 @@ docs: >
 tags: "hitTolerance"
 ---
 <div id="map" class="map"></div>
+<span id="status">Try to click the line in the map.</span>
 <form class="form-inline">
-  <span id="status">&nbsp;No feature got hit.</span>
-  <br />
-  <label>Hit tolerance for selecting features </label>
+  <label for="hitTolerance">Hit tolerance for selecting features: &nbsp;</label>
   <select id="hitTolerance" class="form-control">
     <option value="0" selected>0 Pixels</option>
     <option value="5">5 Pixels</option>
     <option value="10">10 Pixels</option>
   </select>
-  <br />
-  Area: &nbsp;<canvas id="circle" style="vertical-align: middle"/>
+  &nbsp; Area: &nbsp;
+  <canvas id="circle" style="vertical-align: middle" />
 </form>

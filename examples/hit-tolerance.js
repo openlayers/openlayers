@@ -57,10 +57,10 @@ map.on('singleclick', function (e) {
   );
   if (hit) {
     style.getStroke().setColor('green');
-    statusElement.innerHTML = '&nbsp;A feature got hit!';
+    statusElement.innerHTML = 'A feature got hit!';
   } else {
     style.getStroke().setColor('black');
-    statusElement.innerHTML = '&nbsp;No feature got hit.';
+    statusElement.innerHTML = 'No feature got hit.';
   }
   feature.changed();
 });

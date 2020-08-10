@@ -28,15 +28,18 @@ tags: "raster, shaded relief"
 <div id="map" class="map"></div>
 <table class="controls">
   <tr>
-    <td>vertical exaggeration: <span id="vertOut"></span>x</td>
+    <td><label for="vert">vertical exaggeration:</label></td>
     <td><input id="vert" type="range" min="1" max="5" value="1"/></td>
+    <td><span id="vertOut"></span> x</td>
   </tr>
   <tr>
-    <td>sun elevation: <span id="sunElOut"></span>°</td>
+    <td><label for="sunEl">sun elevation:</label></td>
     <td><input id="sunEl" type="range" min="0" max="90" value="45"/></td>
+    <td><span id="sunElOut"></span> °</td>
   </tr>
   <tr>
-    <td>sun azimuth: <span id="sunAzOut"></span>°</td>
+    <td><label for="sunAz">sun azimuth:</label></td>
     <td><input id="sunAz" type="range" min="0" max="360" value="45"/></td>
+    <td><span id="sunAzOut"></span> °</td>
   </tr>
 </table>
