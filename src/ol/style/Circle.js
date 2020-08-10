@@ -10,6 +10,8 @@ import RegularShape from './RegularShape.js';
  * @property {number} radius Circle radius.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {Array<number>} [displacement=[0,0]] displacement
+ * @property {number|import("../size.js").Size} [scale=1] Scale. A two dimensional scale will produce an ellipse.
+ * Unless two dimensional scaling is required a better result may be obtained with an appropriate setting for `radius`.
  */
 
 /**
@@ -29,6 +31,7 @@ class CircleStyle extends RegularShape {
       fill: options.fill,
       radius: options.radius,
       stroke: options.stroke,
+      scale: options.scale !== undefined ? options.scale : 1,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
     });
@@ -40,14 +43,15 @@ class CircleStyle extends RegularShape {
    * @api
    */
   clone() {
+    const scale = this.getScale();
     const style = new CircleStyle({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       radius: this.getRadius(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
       displacement: this.getDisplacement().slice(),
     });
     style.setOpacity(this.getOpacity());
-    style.setScale(this.getScale());
     return style;
   }
 

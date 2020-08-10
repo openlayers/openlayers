@@ -83,6 +83,25 @@ function createFeatures(stroke, fill, offSet = [0, 0]) {
     })
   );
   vectorSource.addFeature(feature);
+
+  feature = new Feature({
+    geometry: new Point([8 + offSet[0], 30 + offSet[1]]),
+  });
+  // rectangle
+  feature.setStyle(
+    new Style({
+      image: new RegularShape({
+        fill: fill,
+        stroke: stroke,
+        radius: 10 / Math.SQRT2,
+        radius2: 10,
+        points: 4,
+        angle: 0,
+        scale: [1, 0.5],
+      }),
+    })
+  );
+  vectorSource.addFeature(feature);
 }
 
 createFeatures(new Stroke({width: 2}), new Fill({color: 'red'}));
