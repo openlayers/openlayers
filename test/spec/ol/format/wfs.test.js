@@ -1532,5 +1532,68 @@ describe('ol.format.WFS', function () {
       expect(features.length).to.be(1);
       expect(features[0]).to.be.an(Feature);
     });
+
+    describe('when writing out a Transaction request', function () {
+      it('creates a handle', function () {
+        const text =
+          '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+          'service="WFS" version="2.0.0" handle="handle_t" ' +
+          'xsi:schemaLocation="http://www.opengis.net/wfs/2.0 ' +
+          'http://schemas.opengis.net/wfs/2.0/wfs.xsd"/>';
+        const serialized = new WFS({
+          version: '2.0.0',
+        }).writeTransaction(null, null, null, {
+          handle: 'handle_t',
+        });
+        expect(serialized).to.xmleql(parse(text));
+      });
+    });
+
+    describe('when writing out a Transaction request', function () {
+      it('creates the correct srsName', function () {
+        const text = `
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs/2.0" service="WFS" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wfs:Insert>
+    <feature:FAULTS xmlns:feature="http://foo">
+        <feature:the_geom>
+            <gml:MultiCurve xmlns:gml="http://www.opengis.net/gml/3.2" srsName="EPSG:900913">
+                <gml:curveMember>
+                    <gml:LineString srsName="EPSG:900913">
+                        <gml:posList srsDimension="2">-5178372.1885436 1992365.7775042 -4434792.7774889 1601008.1927386 -4043435.1927233 2148908.8114105</gml:posList>
+                    </gml:LineString>
+                </gml:curveMember>
+            </gml:MultiCurve>
+        </feature:the_geom>
+        <feature:TYPE>xyz</feature:TYPE>
+    </feature:FAULTS>
+</wfs:Insert>
+</wfs:Transaction>
+        `.trim();
+        const format = new WFS({
+          version: '2.0.0',
+        });
+        const insertFeature = new Feature({
+          the_geom: new MultiLineString([
+            [
+              [-5178372.1885436, 1992365.7775042],
+              [-4434792.7774889, 1601008.1927386],
+              [-4043435.1927233, 2148908.8114105],
+            ],
+          ]),
+          TYPE: 'xyz',
+        });
+        insertFeature.setGeometryName('the_geom');
+        const inserts = [insertFeature];
+        const serialized = format.writeTransaction(inserts, null, null, {
+          featureNS: 'http://foo',
+          featureType: 'FAULTS',
+          featurePrefix: 'feature',
+          gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'},
+        });
+        expect(serialized).to.xmleql(parse(text));
+      });
+    });
   });
 });
