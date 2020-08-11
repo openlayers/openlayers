@@ -1528,12 +1528,13 @@ describe('ol.format.WFS', function () {
       expect(serialized).to.xmleql(parse(getFeatureComplexXml));
     });
 
-    it('can parse a basic GetFeature response', function () {
+    it('can parse basic GetFeature response', function () {
       const wfs = new WFS({
         version: '2.0.0',
       });
       const features = wfs.readFeatures(parse(getFeatureSimpleXmlResponse));
       expect(features.length).to.be(1);
+      expect(features[0]).to.be.an(Feature);
     });
   });
 });

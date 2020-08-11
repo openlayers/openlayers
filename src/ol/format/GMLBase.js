@@ -150,7 +150,11 @@ class GMLBase extends XMLFeature {
         objectStack,
         this
       );
-    } else if (localName == 'featureMembers' || localName == 'featureMember') {
+    } else if (
+      localName == 'featureMembers' ||
+      localName == 'featureMember' ||
+      localName == 'member'
+    ) {
       const context = objectStack[0];
       let featureType = context['featureType'];
       let featureNS = context['featureNS'];
@@ -214,7 +218,7 @@ class GMLBase extends XMLFeature {
         }
         parsersNS[featureNS[p]] = parsers;
       }
-      if (localName == 'featureMember') {
+      if (localName == 'featureMember' || localName == 'member') {
         features = pushParseAndPop(undefined, parsersNS, node, objectStack);
       } else {
         features = pushParseAndPop([], parsersNS, node, objectStack);
