@@ -5,6 +5,7 @@
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
+import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 import {listenImage} from '../Image.js';
@@ -232,37 +233,32 @@ class IconImage extends EventTarget {
     ctx.scale(pixelRatio, pixelRatio);
     ctx.drawImage(this.image_, 0, 0);
 
-    if (this.isTainted_()) {
-      // If reading from the canvas throws a SecurityError the same effect can be
-      // achieved with globalCompositeOperation.
-      // This could be used as the default, but it is not fully supported by all
-      // browsers. E. g. Internet Explorer 11 does not support the multiply
-      // operation and the resulting image shape will be completelly filled with
-      // the provided color.
-      // So this is only used as a fallback. It is still better than having no icon
-      // at all.
-      const c = this.color_;
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+    ctx.globalCompositeOperation = 'multiply';
+    // Internet Explorer 11 does not support the multiply operation.
+    // If the canvas is tainted in Internet Explorer this still produces
+    // a solid color image with the shape of the icon.
+    if (ctx.globalCompositeOperation === 'multiply' || this.isTainted_()) {
+      ctx.fillStyle = asString(this.color_);
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.globalCompositeOperation = 'destination-in';
       ctx.drawImage(this.image_, 0, 0);
-      return;
-    }
+    } else {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const r = this.color_[0] / 255.0;
+      const g = this.color_[1] / 255.0;
+      const b = this.color_[2] / 255.0;
+      const a = this.color_[3];
 
-    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imgData.data;
-    const r = this.color_[0] / 255.0;
-    const g = this.color_[1] / 255.0;
-    const b = this.color_[2] / 255.0;
-
-    for (let i = 0, ii = data.length; i < ii; i += 4) {
-      data[i] *= r;
-      data[i + 1] *= g;
-      data[i + 2] *= b;
+      for (let i = 0, ii = data.length; i < ii; i += 4) {
+        data[i] *= r;
+        data[i + 1] *= g;
+        data[i + 2] *= b;
+        data[i + 3] *= a;
+      }
+      ctx.putImageData(imgData, 0, 0);
     }
-    ctx.putImageData(imgData, 0, 0);
   }
 
   /**
