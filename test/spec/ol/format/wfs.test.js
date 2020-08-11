@@ -1387,20 +1387,28 @@ describe('ol.format.WFS', function () {
   });
 
   describe('WFS 2.0.0', function () {
-    const geometryXml = `
-<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2">
-  <gml:exterior>
-      <gml:LinearRing>
-          <!-- pairs must form a closed ring -->
-          <gml:posList srsDimension="2">590431 4915204 590430
-              4915205 590429 4915204 590430
-              4915203 590431 4915204</gml:posList>
-      </gml:LinearRing>
-  </gml:exterior>
-</gml:Polygon>
-  `.trim();
+    before(function (done) {
+      proj4.defs(
+        'http://www.opengis.net/def/crs/EPSG/0/26713',
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+      );
+      proj4.defs(
+        'urn:ogc:def:crs:EPSG::26713',
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+      );
+      register(proj4);
+      done();
+    });
 
-    const getFeatureSimpleXml = `
+    after(function () {
+      delete proj4.defs['http://www.opengis.net/def/crs/EPSG/0/26713'];
+      delete proj4.defs['urn:ogc:def:crs:EPSG::26713'];
+      clearAllProjections();
+      addCommon();
+    });
+
+    it('can writeGetFeature query with simple resourceId filter', function () {
+      const getFeatureXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     This example demonstrates a WFS 2.0 GetFeature POST request.
@@ -1422,8 +1430,33 @@ describe('ol.format.WFS', function () {
     </wfs:Query>
 </wfs:GetFeature>
     `.trim();
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const filter = resourceIdFilter('bugsites.3');
+      const serialized = wfs.writeGetFeature({
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureTypes: ['bugsites'],
+        featurePrefix: 'sf',
+        filter,
+      });
+      expect(serialized).to.xmleql(parse(getFeatureXml));
+    });
 
-    const getFeatureComplexXml = `
+    it('can writeGetFeature query with negated disjoint spatial filter', function () {
+      const geometryXml = `
+<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2">
+  <gml:exterior>
+      <gml:LinearRing>
+          <!-- pairs must form a closed ring -->
+          <gml:posList srsDimension="2">590431 4915204 590430
+              4915205 590429 4915204 590430
+              4915203 590431 4915204</gml:posList>
+      </gml:LinearRing>
+  </gml:exterior>
+</gml:Polygon>
+  `.trim();
+      const getFeatureXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     This example demonstrates a WFS 2.0 GetFeature POST request.
@@ -1456,8 +1489,23 @@ describe('ol.format.WFS', function () {
     </wfs:Query>
 </wfs:GetFeature>
     `.trim();
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const geometryNode = parse(geometryXml);
+      const geometry = new GML32().readGeometryElement(geometryNode, [{}]);
+      const filter = notFilter(disjointFilter('sf:the_geom', geometry));
+      const serialized = wfs.writeGetFeature({
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureTypes: ['bugsites'],
+        featurePrefix: 'sf',
+        filter,
+      });
+      expect(serialized).to.xmleql(parse(getFeatureXml));
+    });
 
-    const getFeatureSimpleXmlResponse = `
+    it('can parse basic GetFeature response', function () {
+      const response = `
 <?xml version="1.0" encoding="UTF-8"?>
 <wfs:FeatureCollection xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:sf="http://www.openplans.org/spearfish"
@@ -1477,62 +1525,10 @@ describe('ol.format.WFS', function () {
     </wfs:member>
 </wfs:FeatureCollection>
     `.trim();
-
-    before(function (done) {
-      proj4.defs(
-        'http://www.opengis.net/def/crs/EPSG/0/26713',
-        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
-      );
-      proj4.defs(
-        'urn:ogc:def:crs:EPSG::26713',
-        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
-      );
-      register(proj4);
-      done();
-    });
-
-    after(function () {
-      delete proj4.defs['http://www.opengis.net/def/crs/EPSG/0/26713'];
-      delete proj4.defs['urn:ogc:def:crs:EPSG::26713'];
-      clearAllProjections();
-      addCommon();
-    });
-
-    it('can writeGetFeature query with simple resourceId filter', function () {
       const wfs = new WFS({
         version: '2.0.0',
       });
-      const filter = resourceIdFilter('bugsites.3');
-      const serialized = wfs.writeGetFeature({
-        featureNS: 'http://www.openplans.org/spearfish',
-        featureTypes: ['bugsites'],
-        featurePrefix: 'sf',
-        filter,
-      });
-      expect(serialized).to.xmleql(parse(getFeatureSimpleXml));
-    });
-
-    it('can writeGetFeature query with negated disjoint spatial filter', function () {
-      const wfs = new WFS({
-        version: '2.0.0',
-      });
-      const geometryNode = parse(geometryXml);
-      const geometry = new GML32().readGeometryElement(geometryNode, [{}]);
-      const filter = notFilter(disjointFilter('sf:the_geom', geometry));
-      const serialized = wfs.writeGetFeature({
-        featureNS: 'http://www.openplans.org/spearfish',
-        featureTypes: ['bugsites'],
-        featurePrefix: 'sf',
-        filter,
-      });
-      expect(serialized).to.xmleql(parse(getFeatureComplexXml));
-    });
-
-    it('can parse basic GetFeature response', function () {
-      const wfs = new WFS({
-        version: '2.0.0',
-      });
-      const features = wfs.readFeatures(parse(getFeatureSimpleXmlResponse));
+      const features = wfs.readFeatures(parse(response));
       expect(features.length).to.be(1);
       expect(features[0]).to.be.an(Feature);
     });
