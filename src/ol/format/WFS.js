@@ -40,6 +40,9 @@ const FEATURE_COLLECTION_PARSERS = {
       'bounds'
     ),
   },
+  'http://www.opengis.net/wfs/2.0': {
+    'member': makeArrayPusher(GMLBase.prototype.readFeaturesInternal),
+  },
 };
 
 /**
@@ -326,12 +329,15 @@ class WFS extends XMLFeature {
 
     assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
     const objectStack = [context];
-    this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
-      'featureMember'
-    ] = makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
+    let featuresNS;
+    if (this.version_ === '2.0.0') {
+      featuresNS = FEATURE_COLLECTION_PARSERS;
+    } else {
+      featuresNS = this.gmlFormat_.FEATURE_COLLECTION_PARSERS;
+    }
     let features = pushParseAndPop(
       [],
-      this.gmlFormat_.FEATURE_COLLECTION_PARSERS,
+      featuresNS,
       node,
       objectStack,
       this.gmlFormat_
