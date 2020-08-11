@@ -119,7 +119,8 @@ const TRANSACTION_SERIALIZERS = {
  * @typedef {Object} Options
  * @property {Object<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
- * @property {GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
+ * @property {GMLBase} [gmlFormat] The GML format to use to parse the response.
+ * Default is `ol/format/GML2` for WFS 1.0.0, `ol/format/GML3` for WFS 1.1.0 and `ol/format/GML32` for WFS 2.0.0.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  * @property {string} [version='1.1.0'] WFS version to use. Can be either `1.0.0`, `1.1.0` or `2.0.0`.
  */
@@ -161,7 +162,7 @@ const TRANSACTION_SERIALIZERS = {
  * a 3D layer. This will allow the Z coordinate to be included in the transaction.
  * @property {Array<Object>} nativeElements Native elements. Currently not supported.
  * @property {import("./GMLBase.js").Options} [gmlOptions] GML options for the WFS transaction writer.
- * @property {string} [version='1.1.0'] WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
+ * @property {string} [version='1.1.0'] WFS version to use for the transaction. Can be either `1.0.0`, `1.1.0` or `2.0.0`.
  */
 
 /**
@@ -248,7 +249,7 @@ const DEFAULT_VERSION = '1.1.0';
  * @classdesc
  * Feature format for reading and writing data in the WFS format.
  * By default, supports WFS version 1.1.0. You can pass a GML format
- * as option if you want to read a WFS that contains GML2 (WFS 1.0.0).
+ * as option to override the default.
  * Also see {@link module:ol/format/GMLBase~GMLBase} which is used by this format.
  *
  * @api
