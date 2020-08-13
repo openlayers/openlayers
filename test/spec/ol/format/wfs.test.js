@@ -1,5 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import GML2 from '../../../../src/ol/format/GML2.js';
+import GML32 from '../../../../src/ol/format/GML32.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
@@ -16,6 +17,7 @@ import {
   bbox as bboxFilter,
   between as betweenFilter,
   contains as containsFilter,
+  disjoint as disjointFilter,
   during as duringFilter,
   equalTo as equalToFilter,
   greaterThan as greaterThanFilter,
@@ -27,6 +29,7 @@ import {
   like as likeFilter,
   not as notFilter,
   or as orFilter,
+  resourceId as resourceIdFilter,
   within as withinFilter,
 } from '../../../../src/ol/format/filter.js';
 import {parse} from '../../../../src/ol/xml.js';
@@ -1376,9 +1379,221 @@ describe('ol.format.WFS', function () {
         andFilter(
           likeFilter('name', 'Mississippi*'),
           equalToFilter('waterway', 'riverbank')
-        )
+        ),
+        '1.1.0'
       );
       expect(serialized).to.xmleql(parse(text));
+    });
+  });
+
+  describe('WFS 2.0.0', function () {
+    before(function (done) {
+      proj4.defs(
+        'http://www.opengis.net/def/crs/EPSG/0/26713',
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+      );
+      proj4.defs(
+        'urn:ogc:def:crs:EPSG::26713',
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+      );
+      register(proj4);
+      done();
+    });
+
+    after(function () {
+      delete proj4.defs['http://www.opengis.net/def/crs/EPSG/0/26713'];
+      delete proj4.defs['urn:ogc:def:crs:EPSG::26713'];
+      clearAllProjections();
+      addCommon();
+    });
+
+    it('can writeGetFeature query with simple resourceId filter', function () {
+      const getFeatureXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This example demonstrates a WFS 2.0 GetFeature POST request.
+
+    This filter selects a single feature with id "bugsites.3".
+
+    See also:
+    WFS Standard: http://www.opengeospatial.org/standards/wfs
+    Filter Encoding Standard: http://www.opengeospatial.org/standards/filter
+-->
+<wfs:GetFeature service="WFS" version="2.0.0"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:fes="http://www.opengis.net/fes/2.0"
+    xmlns:sf="http://www.openplans.org/spearfish" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd">
+    <wfs:Query typeNames="sf:bugsites">
+        <fes:Filter>
+            <fes:ResourceId rid="bugsites.3"/>
+        </fes:Filter>
+    </wfs:Query>
+</wfs:GetFeature>
+    `.trim();
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const filter = resourceIdFilter('bugsites.3');
+      const serialized = wfs.writeGetFeature({
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureTypes: ['bugsites'],
+        featurePrefix: 'sf',
+        filter,
+      });
+      expect(serialized).to.xmleql(parse(getFeatureXml));
+    });
+
+    it('can writeGetFeature query with negated disjoint spatial filter', function () {
+      const geometryXml = `
+<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2">
+  <gml:exterior>
+      <gml:LinearRing>
+          <!-- pairs must form a closed ring -->
+          <gml:posList srsDimension="2">590431 4915204 590430
+              4915205 590429 4915204 590430
+              4915203 590431 4915204</gml:posList>
+      </gml:LinearRing>
+  </gml:exterior>
+</gml:Polygon>
+  `.trim();
+      const getFeatureXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This example demonstrates a WFS 2.0 GetFeature POST request.
+
+    WFS 2.0 does not depend on any one GML version and thus
+    requires an explicit namespace and schemaLocation for GML.
+
+    This spatial filter selects a single feature with
+    gml:id="bugsites.2".
+
+    See also:
+    WFS Standard: http://www.opengeospatial.org/standards/wfs
+    Filter Encoding Standard: http://www.opengeospatial.org/standards/filter
+-->
+<wfs:GetFeature service="WFS" version="2.0.0"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0"
+    xmlns:fes="http://www.opengis.net/fes/2.0"
+    xmlns:sf="http://www.openplans.org/spearfish"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd">
+    <wfs:Query typeNames="sf:bugsites">
+        <fes:Filter>
+            <fes:Not>
+                <fes:Disjoint>
+                    <fes:ValueReference>sf:the_geom</fes:ValueReference>
+                    ${geometryXml}
+                </fes:Disjoint>
+            </fes:Not>
+        </fes:Filter>
+    </wfs:Query>
+</wfs:GetFeature>
+    `.trim();
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const geometryNode = parse(geometryXml);
+      const geometry = new GML32().readGeometryElement(geometryNode, [{}]);
+      const filter = notFilter(disjointFilter('sf:the_geom', geometry));
+      const serialized = wfs.writeGetFeature({
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureTypes: ['bugsites'],
+        featurePrefix: 'sf',
+        filter,
+      });
+      expect(serialized).to.xmleql(parse(getFeatureXml));
+    });
+
+    it('can parse basic GetFeature response', function () {
+      const response = `
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:sf="http://www.openplans.org/spearfish"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" numberMatched="1" numberReturned="1" timeStamp="2020-08-11T12:18:35.474Z" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://localhost:8080/geoserver/schemas/wfs/2.0/wfs.xsd http://www.openplans.org/spearfish http://localhost:8080/geoserver/wfs?service=WFS&amp;version=2.0.0&amp;request=DescribeFeatureType&amp;typeName=sf%3Abugsites http://www.opengis.net/gml/3.2 http://localhost:8080/geoserver/schemas/gml/3.2.1/gml.xsd">
+    <wfs:member>
+        <sf:bugsites gml:id="bugsites.3">
+            <sf:the_geom>
+                <gml:Point srsName="urn:ogc:def:crs:EPSG::26713" srsDimension="2" gml:id="bugsites.3.the_geom">
+                    <gml:pos>590529 4914625</gml:pos>
+                </gml:Point>
+            </sf:the_geom>
+            <sf:cat>3</sf:cat>
+            <sf:str1>Beetle site</sf:str1>
+        </sf:bugsites>
+    </wfs:member>
+</wfs:FeatureCollection>
+    `.trim();
+      const wfs = new WFS({
+        version: '2.0.0',
+      });
+      const features = wfs.readFeatures(parse(response));
+      expect(features.length).to.be(1);
+      expect(features[0]).to.be.an(Feature);
+    });
+
+    describe('when writing out a Transaction request', function () {
+      it('creates a handle', function () {
+        const text =
+          '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+          'service="WFS" version="2.0.0" handle="handle_t" ' +
+          'xsi:schemaLocation="http://www.opengis.net/wfs/2.0 ' +
+          'http://schemas.opengis.net/wfs/2.0/wfs.xsd"/>';
+        const serialized = new WFS({
+          version: '2.0.0',
+        }).writeTransaction(null, null, null, {
+          handle: 'handle_t',
+        });
+        expect(serialized).to.xmleql(parse(text));
+      });
+    });
+
+    describe('when writing out a Transaction request', function () {
+      it('creates the correct srsName', function () {
+        const text = `
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs/2.0" service="WFS" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wfs:Insert>
+    <feature:FAULTS xmlns:feature="http://foo">
+        <feature:the_geom>
+            <gml:MultiCurve xmlns:gml="http://www.opengis.net/gml/3.2" srsName="EPSG:900913">
+                <gml:curveMember>
+                    <gml:LineString srsName="EPSG:900913">
+                        <gml:posList srsDimension="2">-5178372.1885436 1992365.7775042 -4434792.7774889 1601008.1927386 -4043435.1927233 2148908.8114105</gml:posList>
+                    </gml:LineString>
+                </gml:curveMember>
+            </gml:MultiCurve>
+        </feature:the_geom>
+        <feature:TYPE>xyz</feature:TYPE>
+    </feature:FAULTS>
+</wfs:Insert>
+</wfs:Transaction>
+        `.trim();
+        const format = new WFS({
+          version: '2.0.0',
+        });
+        const insertFeature = new Feature({
+          the_geom: new MultiLineString([
+            [
+              [-5178372.1885436, 1992365.7775042],
+              [-4434792.7774889, 1601008.1927386],
+              [-4043435.1927233, 2148908.8114105],
+            ],
+          ]),
+          TYPE: 'xyz',
+        });
+        insertFeature.setGeometryName('the_geom');
+        const inserts = [insertFeature];
+        const serialized = format.writeTransaction(inserts, null, null, {
+          featureNS: 'http://foo',
+          featureType: 'FAULTS',
+          featurePrefix: 'feature',
+          gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'},
+        });
+        expect(serialized).to.xmleql(parse(text));
+      });
     });
   });
 });

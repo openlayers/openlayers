@@ -4,6 +4,7 @@
 import And from './filter/And.js';
 import Bbox from './filter/Bbox.js';
 import Contains from './filter/Contains.js';
+import Disjoint from './filter/Disjoint.js';
 import During from './filter/During.js';
 import EqualTo from './filter/EqualTo.js';
 import GreaterThan from './filter/GreaterThan.js';
@@ -17,6 +18,7 @@ import LessThanOrEqualTo from './filter/LessThanOrEqualTo.js';
 import Not from './filter/Not.js';
 import NotEqualTo from './filter/NotEqualTo.js';
 import Or from './filter/Or.js';
+import ResourceId from './filter/ResourceId.js';
 import Within from './filter/Within.js';
 
 /**
@@ -97,6 +99,21 @@ export function contains(geometryName, geometry, opt_srsName) {
  */
 export function intersects(geometryName, geometry, opt_srsName) {
   return new Intersects(geometryName, geometry, opt_srsName);
+}
+
+/**
+ * Create a `<Disjoint>` operator to test whether a geometry-valued property
+ * is disjoint to a given geometry.
+ *
+ * @param {!string} geometryName Geometry name to use.
+ * @param {!import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ *    set on geometries when this is not provided.
+ * @returns {!Disjoint} `<Disjoint>` operator.
+ * @api
+ */
+export function disjoint(geometryName, geometry, opt_srsName) {
+  return new Disjoint(geometryName, geometry, opt_srsName);
 }
 
 /**
@@ -259,4 +276,8 @@ export function like(
  */
 export function during(propertyName, begin, end) {
   return new During(propertyName, begin, end);
+}
+
+export function resourceId(rid) {
+  return new ResourceId(rid);
 }
