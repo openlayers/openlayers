@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/hitdetet
+ * @module ol/render/canvas/hitdetect
  */
 
 import CanvasImmediateRenderer from './Immediate.js';
