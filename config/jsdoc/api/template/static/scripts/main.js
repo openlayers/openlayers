@@ -237,10 +237,8 @@ $(function () {
     search.manualToggle(clsItem, show);
   });
 
-
-  var currentVersion = document.getElementById('package-version').innerHTML;
-
   // warn about outdated version
+  var currentVersion = document.getElementById('package-version').innerHTML;
   var packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
   fetch(packageUrl).then(function(response) {
     return response.json();
@@ -264,16 +262,5 @@ $(function () {
         document.cookie = cookieText;
       }
     }
-  });
-
-  // create source code links to github
-  var srcLinks = $('div.tag-source');
-  srcLinks.each(function(i, el) {
-    var textParts = el.innerHTML.trim().split(', ');
-    var link = 'https://github.com/openlayers/openlayers/blob/v' + currentVersion + '/src/ol/' +
-      textParts[0];
-    el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
-      '<a href="' + link + textParts[1].replace('line ', '#L') + '">' +
-      textParts[1] + '</a>';
   });
 });
