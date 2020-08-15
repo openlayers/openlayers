@@ -9,8 +9,8 @@ if (/-dev$/.test(version)) {
 }
 ?>
 <dt class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
+    <?js if (data.stability || kind !== 'class') { ?>
     <div class="nameContainer<?js if (data.inherited) { ?> inherited<?js } ?>">
-        <?js if (data.stability || kind !== 'class') { ?>
         <div class="anchor" id="<?js= id ?>">
         </div>
         <h4 class="name">
@@ -26,8 +26,8 @@ if (/-dev$/.test(version)) {
             <a href="https://github.com/openlayers/openlayers/blob/<?js= version ?>/src/ol/<?js= meta.filename ?>#L<?js= meta.lineno ?>">line <?js= meta.lineno ?></a>
         </div>
         <?js } ?>
-        <?js } ?>
     </div>
+    <?js } ?>
     <?js if (data.summary) { ?>
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
