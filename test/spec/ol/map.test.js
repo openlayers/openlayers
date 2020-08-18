@@ -7,6 +7,7 @@ import ImageState from '../../../src/ol/ImageState.js';
 import ImageStatic from '../../../src/ol/source/ImageStatic.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import Map from '../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../src/ol/MapBrowserEvent.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import Overlay from '../../../src/ol/Overlay.js';
@@ -1021,6 +1022,76 @@ describe('ol.Map', function () {
         expect(pixel).to.eql(screenCenter);
         done();
       });
+    });
+  });
+
+  describe('#handleMapBrowserEvent()', function () {
+    let map, target, dragpan;
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      dragpan = new DragPan();
+      map = new Map({
+        target: target,
+        interactions: [dragpan],
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+            }),
+          }),
+        ],
+        view: new View({
+          zoom: 0,
+          center: [0, 0],
+        }),
+      });
+      map.renderSync();
+    });
+
+    afterEach(function () {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('calls handleEvent on interaction', function () {
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(spy.callCount).to.be(1);
+      spy.restore();
+    });
+
+    it('does not call handleEvent on interaction when map has no target', function () {
+      map.setTarget(null);
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+    it('does not call handleEvent on interaction that has been removed', function () {
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      let callCount = 0;
+      const interaction = new Interaction({
+        handleEvent: function () {
+          ++callCount;
+          map.removeInteraction(dragpan);
+          return true;
+        },
+      });
+      map.addInteraction(interaction);
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(callCount).to.be(1);
+      expect(spy.callCount).to.be(0);
+      spy.restore();
     });
   });
 });

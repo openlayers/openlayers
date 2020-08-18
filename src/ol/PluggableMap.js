@@ -1026,7 +1026,11 @@ class PluggableMap extends BaseObject {
       const interactionsArray = this.getInteractions().getArray().slice();
       for (let i = interactionsArray.length - 1; i >= 0; i--) {
         const interaction = interactionsArray[i];
-        if (!interaction.getActive()) {
+        if (
+          interaction.getMap() !== this ||
+          !interaction.getActive() ||
+          !this.getTargetElement()
+        ) {
           continue;
         }
         const cont = interaction.handleEvent(mapBrowserEvent);
