@@ -21,7 +21,7 @@ import {
  * references the {@link module:ol/source/ImageCanvas}.
  *
  * @typedef {function(this:import("../ImageCanvas.js").default, import("../extent.js").Extent, number,
- *     number, import("../size.js").Size, import("../proj/Projection.js").default): HTMLCanvasElement} FunctionType
+ *     number, import("../size.js").Size, import("../proj/Projection.js").default): HTMLCanvasElement|null} FunctionType
  */
 
 /**
