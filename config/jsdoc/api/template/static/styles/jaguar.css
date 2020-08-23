@@ -67,17 +67,23 @@ li {
 }
 .navigation {
   background-color: #2a2a2a;
-  position: sticky;
-  top: 54px;
-  height: calc(100vh - 54px);
 }
 .navigation-list {
-  overflow: auto;
   padding: 0 15px 0 15px;
-  /* 54px navbar height */
-  /* 4.25rem + 2px  searchbox height */
-  /* 25px navigation padding */
-  height: calc(100vh - 54px - 4.25rem - 2px - 25px);
+}
+@supports (position: sticky) {
+  .navigation {
+    position: sticky;
+    top: 54px;
+    height: calc(100vh - 54px);
+  }
+  .navigation-list {
+    overflow: auto;
+    /* 54px navbar height */
+    /* 4.25rem + 2px  searchbox height */
+    /* 25px navigation padding */
+    height: calc(100vh - 54px - 4.25rem - 2px - 25px);
+  }
 }
 @media (max-width: 768px) {
   #wrap {
@@ -88,6 +94,7 @@ li {
     position: inherit;
   }
   .navigation-list {
+    overflow: auto;
     max-height: 33vh;
     height: inherit;
   }
