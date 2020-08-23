@@ -20,6 +20,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../transform.js';
+import {assert} from '../../asserts.js';
 import {
   buffer,
   containsCoordinate,
@@ -34,6 +35,7 @@ import {
   createHitDetectionImageData,
   hitDetect,
 } from '../../render/canvas/hitdetect.js';
+import {equivalent} from '../../proj.js';
 import {
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
@@ -230,7 +232,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
-    const layerRevision = this.getLayer().getRevision();
+    const layer = this.getLayer();
+    assert(
+      equivalent(
+        layer.getSource().getProjection(),
+        frameState.viewState.projection
+      ),
+      68 // A VectorTile source can only be rendered if it has a projection compatible with the view projection.
+    );
+    const layerRevision = layer.getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
     }
