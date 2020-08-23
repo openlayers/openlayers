@@ -335,8 +335,8 @@ span.type-signature.static {
 }
 .main .nameContainer {
   position: relative;
-  margin-top: 20px;
-  padding-top: 5px;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
   border-top: 2px solid #1F6B75;
 }
 .main .nameContainer .inherited {
@@ -354,7 +354,7 @@ span.type-signature.static {
 @media (min-width: 768px) {
   .main .nameContainer .tag-source {
     position: absolute;
-    top: 0.2rem;
+    top: 1.2rem;
     right: 0;
     font-size: 0.8rem;
   }
