@@ -54,11 +54,15 @@
 <article>
     <div class="container-overview">
     <?js if (doc.kind === 'module' && doc.module) { ?>
-        <?js= self.partial('method.tmpl', doc.module) ?>
+        <dl>
+            <?js= self.partial('method.tmpl', doc.module) ?>
+        </dl>
     <?js } ?>
 
     <?js if (doc.kind === 'class') { ?>
-        <?js= self.partial('method.tmpl', doc) ?>
+        <dl>
+            <?js= self.partial('method.tmpl', doc) ?>
+        </dl>
     <?js } else { ?>
         <?js if (doc.description) { ?>
             <div class="description"><?js= doc.description ?></div>
