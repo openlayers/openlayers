@@ -252,4 +252,4 @@ A layer can only be added to the map once. Use either `layer.setMap()` or `map.a
 
 ### 68
 
-A VectorTile source can only be rendered if it has a projection compatible with the view projection.
+Data from this source can only be rendered if it has a projection compatible with the view projection.

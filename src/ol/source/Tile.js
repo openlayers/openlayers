@@ -6,6 +6,7 @@ import Source from './Source.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import {abstract} from '../util.js';
+import {assert} from '../asserts.js';
 import {equivalent} from '../proj.js';
 import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {
@@ -250,12 +251,11 @@ class TileSource extends Source {
    * @protected
    */
   getTileCacheForProjection(projection) {
-    const thisProj = this.getProjection();
-    if (thisProj && !equivalent(thisProj, projection)) {
-      return null;
-    } else {
-      return this.tileCache;
-    }
+    assert(
+      equivalent(this.getProjection(), projection),
+      68 // A VectorTile source can only be rendered if it has a projection compatible with the view projection.
+    );
+    return this.tileCache;
   }
 
   /**
