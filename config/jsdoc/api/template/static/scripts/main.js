@@ -237,29 +237,6 @@ $(function () {
     search.manualToggle(clsItem, show);
   });
 
-//  Auto resizing on navigation
-  var _onResize = function () {
-    var height_w = $(window).height();
-    var height_s = $('section').height();
-    var $el = $('.navigation');
-    var dif_h = height_w - height_s;
-    if (window.matchMedia("(min-width: 768px)").matches) {
-      if (dif_h >=0){
-         $('.navigation').height(height_s+dif_h+74);
-         $('.navigation-list').height(height_s+dif_h)
-      }
-      else {
-         $('.navigation').height(height_s+74);
-         $('.navigation-list').height(height_s-60);
-      }
-    }
-    else{
-      $('.navigation').height(220);
-      $('.navigation-list').height(140);
-    }
-  }
-  $(window).on('resize', _onResize);
-  _onResize();
 
   var currentVersion = document.getElementById('package-version').innerHTML;
 
