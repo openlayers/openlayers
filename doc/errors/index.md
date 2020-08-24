@@ -249,3 +249,7 @@ This is done by providing adequate shaders using the `hitVertexShader` and `hitF
 ### 67
 
 A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.
+
+### 68
+
+Data from this source can only be rendered if it has a projection compatible with the view projection.
