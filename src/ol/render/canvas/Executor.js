@@ -2,7 +2,7 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
-import RBush from 'rbush/rbush.js';
+import RBush from 'rbush';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
