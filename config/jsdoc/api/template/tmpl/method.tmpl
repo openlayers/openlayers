@@ -1,10 +1,16 @@
 <?js
 var data = obj;
 var self = this;
+var version = self.find({kind: 'package' })[0].version;
+if (/-dev$/.test(version)) {
+    version = 'main';
+} else {
+    version = 'v' + version;
+}
 ?>
 <dt class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
+    <?js if (data.stability || kind !== 'class') { ?>
     <div class="nameContainer<?js if (data.inherited) { ?> inherited<?js } ?>">
-        <?js if (data.stability || kind !== 'class') { ?>
         <div class="anchor" id="<?js= id ?>">
         </div>
         <h4 class="name">
@@ -16,11 +22,12 @@ var self = this;
         </h4>
         <?js if (data.meta) {?>
         <div class="tag-source">
-            <?js= self.linkto(meta.filename) ?>, <?js= self.linkto(meta.filename, 'line ' + meta.lineno, null, 'line' + meta.lineno) ?>
+            <a href="https://github.com/openlayers/openlayers/blob/<?js= version ?>/src/ol/<?js= meta.filename ?>"><?js= meta.filename ?></a>,
+            <a href="https://github.com/openlayers/openlayers/blob/<?js= version ?>/src/ol/<?js= meta.filename ?>#L<?js= meta.lineno ?>">line <?js= meta.lineno ?></a>
         </div>
         <?js } ?>
-        <?js } ?>
     </div>
+    <?js } ?>
     <?js if (data.summary) { ?>
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
