@@ -13,7 +13,7 @@ import {linearFindNearest} from './array.js';
  * Returns a modified resolution taking into account the viewport size and maximum
  * allowed extent.
  * @param {number} resolution Resolution
- * @param {import("./extent.js").Extent=} maxExtent Maximum allowed extent.
+ * @param {import("./extent.js").Extent} maxExtent Maximum allowed extent.
  * @param {import("./size.js").Size} viewportSize Viewport size.
  * @param {boolean} showFullExtent Whether to show the full extent.
  * @return {number} Capped resolution.

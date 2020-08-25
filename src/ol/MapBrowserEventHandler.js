@@ -140,6 +140,7 @@ class MapBrowserEventHandler extends EventTarget {
     } else {
       // click
       this.clickTimeoutId_ = setTimeout(
+        /** @this {MapBrowserEventHandler} */
         function () {
           this.clickTimeoutId_ = undefined;
           const newEvent = new MapBrowserEvent(

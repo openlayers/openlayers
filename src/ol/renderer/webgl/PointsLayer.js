@@ -267,6 +267,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener(
       'message',
+      /**
+       * @param {*} event Event.
+       * @this {WebGLPointsLayerRenderer}
+       */
       function (event) {
         const received = event.data;
         if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
