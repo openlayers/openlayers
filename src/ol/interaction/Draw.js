@@ -109,8 +109,8 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * and a projection as arguments, and returns a geometry. The optional existing
  * geometry is the geometry that is returned when the function is called without
  * a second argument.
- * @typedef {function(!SketchCoordType, import("../geom/SimpleGeometry.js").default=,
- *     import("../proj/Projection.js").default=):
+ * @typedef {function(!SketchCoordType, import("../geom/SimpleGeometry.js").default,
+ *     import("../proj/Projection.js").default):
  *     import("../geom/SimpleGeometry.js").default} GeometryFunction
  */
 
@@ -299,13 +299,13 @@ class Draw extends PointerInteraction {
       if (this.type_ === GeometryType.CIRCLE) {
         /**
          * @param {!LineCoordType} coordinates The coordinates.
-         * @param {import("../geom/SimpleGeometry.js").default=} opt_geometry Optional geometry.
+         * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
          * @param {import("../proj/Projection.js").default} projection The view projection.
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
-        geometryFunction = function (coordinates, opt_geometry, projection) {
-          const circle = opt_geometry
-            ? /** @type {Circle} */ (opt_geometry)
+        geometryFunction = function (coordinates, geometry, projection) {
+          const circle = geometry
+            ? /** @type {Circle} */ (geometry)
             : new Circle([NaN, NaN]);
           const center = fromUserCoordinate(coordinates[0], projection);
           const squaredLength = squaredCoordinateDistance(
@@ -331,12 +331,11 @@ class Draw extends PointerInteraction {
         }
         /**
          * @param {!LineCoordType} coordinates The coordinates.
-         * @param {import("../geom/SimpleGeometry.js").default=} opt_geometry Optional geometry.
+         * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
          * @param {import("../proj/Projection.js").default} projection The view projection.
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
-        geometryFunction = function (coordinates, opt_geometry, projection) {
-          let geometry = opt_geometry;
+        geometryFunction = function (coordinates, geometry, projection) {
           if (geometry) {
             if (mode === Mode.POLYGON) {
               if (coordinates[0].length) {

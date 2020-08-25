@@ -338,7 +338,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   getFeatures(pixel) {
     return new Promise(
-      function (resolve, reject) {
+      /**
+       * @param {function(Array<import("../../Feature").default|import("../../render/Feature").default>): void} resolve Resolver function.
+       * @this {CanvasVectorLayerRenderer}
+       */
+      function (resolve) {
         if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
           const size = [this.context.canvas.width, this.context.canvas.height];
           apply(this.pixelTransform, size);
@@ -622,28 +626,29 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
-    /**
-     * @param {import("../../Feature.js").default} feature Feature.
-     * @this {CanvasVectorLayerRenderer}
-     */
-    const render = function (feature) {
-      let styles;
-      const styleFunction =
-        feature.getStyleFunction() || vectorLayer.getStyleFunction();
-      if (styleFunction) {
-        styles = styleFunction(feature, resolution);
-      }
-      if (styles) {
-        const dirty = this.renderFeature(
-          feature,
-          squaredTolerance,
-          styles,
-          replayGroup,
-          userTransform
-        );
-        this.dirty_ = this.dirty_ || dirty;
-      }
-    }.bind(this);
+    const render =
+      /**
+       * @param {import("../../Feature.js").default} feature Feature.
+       * @this {CanvasVectorLayerRenderer}
+       */
+      function (feature) {
+        let styles;
+        const styleFunction =
+          feature.getStyleFunction() || vectorLayer.getStyleFunction();
+        if (styleFunction) {
+          styles = styleFunction(feature, resolution);
+        }
+        if (styles) {
+          const dirty = this.renderFeature(
+            feature,
+            squaredTolerance,
+            styles,
+            replayGroup,
+            userTransform
+          );
+          this.dirty_ = this.dirty_ || dirty;
+        }
+      }.bind(this);
 
     const userExtent = toUserExtent(extent, projection);
     /** @type {Array<import("../../Feature.js").default>} */
