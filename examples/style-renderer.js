@@ -3,11 +3,15 @@ import Map from '../src/ol/Map.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Style} from '../src/ol/style.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {getBottomLeft, getHeight, getWidth} from '../src/ol/extent.js';
 import {toContext} from '../src/ol/render.js';
 
-const polygonFill = new Fill();
+const fill = new Fill();
+const stroke = new Stroke({
+  color: 'rgba(255,255,255,0.8)',
+  width: 2,
+});
 const style = new Style({
   renderer: function (pixelCoordinates, state) {
     const context = state.context;
@@ -20,19 +24,22 @@ const style = new Style({
     if (!flag || height < 1 || width < 1) {
       return;
     }
+
     // Stitch out country shape from the blue canvas
-    context.globalCompositeOperation = 'destination-out';
+    context.save();
     const renderContext = toContext(context, {
       pixelRatio: 1,
     });
-    renderContext.setFillStrokeStyle(polygonFill);
+    renderContext.setFillStrokeStyle(fill, stroke);
     renderContext.drawGeometry(geometry);
-    const bottomLeft = getBottomLeft(extent);
+    context.clip();
+
     // Fill transparent country with the flag image
-    context.globalCompositeOperation = 'destination-over';
+    const bottomLeft = getBottomLeft(extent);
     const left = bottomLeft[0];
     const bottom = bottomLeft[1];
     context.drawImage(flag, 2, 12, 60, 40, left, bottom, width, height);
+    context.restore();
   },
 });
 
@@ -43,14 +50,6 @@ const vectorLayer = new VectorLayer({
     format: new GeoJSON(),
   }),
   style: style,
-});
-
-// Fill the canvas blue as clip mask for flag images
-vectorLayer.on('prerender', function (event) {
-  const context = event.context;
-  context.globalCompositeOperation = 'source-over';
-  context.fillStyle = 'rgb(152,293,253)';
-  context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 });
 
 // Load country flags and set them as `flag` attribute on the country feature
