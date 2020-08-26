@@ -30,6 +30,7 @@ class Point extends SimpleGeometry {
    */
   clone() {
     const point = new Point(this.flatCoordinates.slice(), this.layout);
+    point.importPropertiesFrom(this);
     return point;
   }
 
