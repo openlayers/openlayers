@@ -42,7 +42,7 @@ class Circle extends SimpleGeometry {
       undefined,
       this.layout
     );
-    circle.importPropertiesFrom(this);
+    circle.applyProperties(this);
     return circle;
   }
 

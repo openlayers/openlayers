@@ -91,7 +91,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates.slice(),
       this.layout
     );
-    lineString.importPropertiesFrom(this);
+    lineString.applyProperties(this);
     return lineString;
   }
 

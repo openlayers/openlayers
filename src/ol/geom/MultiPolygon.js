@@ -160,7 +160,7 @@ class MultiPolygon extends SimpleGeometry {
       this.layout,
       newEndss
     );
-    multiPolygon.importPropertiesFrom(this);
+    multiPolygon.applyProperties(this);
 
     return multiPolygon;
   }

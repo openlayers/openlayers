@@ -110,17 +110,6 @@ class Geometry extends BaseObject {
   }
 
   /**
-   * Import properties from another geometry.
-   * @param {Geometry} geometry Source geometry.
-   * @protected
-   */
-  importPropertiesFrom(geometry) {
-    if (geometry.hasProperties()) {
-      this.setProperties(geometry.getProperties(), true);
-    }
-  }
-
-  /**
    * @abstract
    * @param {number} x X.
    * @param {number} y Y.

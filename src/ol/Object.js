@@ -189,6 +189,18 @@ class BaseObject extends Observable {
   }
 
   /**
+   * Apply any properties from another object without triggering events.
+   * @param {BaseObject} source The source object.
+   * @protected
+   */
+  applyProperties(source) {
+    if (!source.values_) {
+      return;
+    }
+    assign(this.values_ || (this.values_ = {}), source.values_);
+  }
+
+  /**
    * Unsets a property.
    * @param {string} key Key name.
    * @param {boolean=} opt_silent Unset without triggering an event.

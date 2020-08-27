@@ -107,7 +107,7 @@ class MultiLineString extends SimpleGeometry {
       this.layout,
       this.ends_.slice()
     );
-    multiLineString.importPropertiesFrom(this);
+    multiLineString.applyProperties(this);
     return multiLineString;
   }
 

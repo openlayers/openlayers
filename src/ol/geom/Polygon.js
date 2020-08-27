@@ -123,7 +123,7 @@ class Polygon extends SimpleGeometry {
       this.layout,
       this.ends_.slice()
     );
-    polygon.importPropertiesFrom(this);
+    polygon.applyProperties(this);
     return polygon;
   }
 
