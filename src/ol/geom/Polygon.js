@@ -118,11 +118,13 @@ class Polygon extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new Polygon(
+    const polygon = new Polygon(
       this.flatCoordinates.slice(),
       this.layout,
       this.ends_.slice()
     );
+    polygon.applyProperties(this);
+    return polygon;
   }
 
   /**

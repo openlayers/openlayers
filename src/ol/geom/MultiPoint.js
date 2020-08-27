@@ -61,6 +61,7 @@ class MultiPoint extends SimpleGeometry {
       this.flatCoordinates.slice(),
       this.layout
     );
+    multiPoint.applyProperties(this);
     return multiPoint;
   }
 

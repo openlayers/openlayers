@@ -69,6 +69,7 @@ class GeometryCollection extends Geometry {
   clone() {
     const geometryCollection = new GeometryCollection(null);
     geometryCollection.setGeometries(this.geometries_);
+    geometryCollection.applyProperties(this);
     return geometryCollection;
   }
 

@@ -102,11 +102,13 @@ class MultiLineString extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new MultiLineString(
+    const multiLineString = new MultiLineString(
       this.flatCoordinates.slice(),
       this.layout,
       this.ends_.slice()
     );
+    multiLineString.applyProperties(this);
+    return multiLineString;
   }
 
   /**

@@ -155,11 +155,14 @@ class MultiPolygon extends SimpleGeometry {
       newEndss[i] = this.endss_[i].slice();
     }
 
-    return new MultiPolygon(
+    const multiPolygon = new MultiPolygon(
       this.flatCoordinates.slice(),
       this.layout,
       newEndss
     );
+    multiPolygon.applyProperties(this);
+
+    return multiPolygon;
   }
 
   /**

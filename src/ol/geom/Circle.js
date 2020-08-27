@@ -37,7 +37,13 @@ class Circle extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new Circle(this.flatCoordinates.slice(), undefined, this.layout);
+    const circle = new Circle(
+      this.flatCoordinates.slice(),
+      undefined,
+      this.layout
+    );
+    circle.applyProperties(this);
+    return circle;
   }
 
   /**

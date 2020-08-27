@@ -87,7 +87,12 @@ class LineString extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new LineString(this.flatCoordinates.slice(), this.layout);
+    const lineString = new LineString(
+      this.flatCoordinates.slice(),
+      this.layout
+    );
+    lineString.applyProperties(this);
+    return lineString;
   }
 
   /**
