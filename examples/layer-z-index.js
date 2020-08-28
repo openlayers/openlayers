@@ -56,7 +56,7 @@ function createLayer(coordinates, style, zIndex) {
   return vectorLayer;
 }
 
-const layer0 = createLayer([40, 40], styles['star'], 0);
+const layer0 = createLayer([40, 40], styles['star']);
 const layer1 = createLayer([0, 0], styles['square'], 1);
 const layer2 = createLayer([0, 40], styles['triangle'], 0);
 
