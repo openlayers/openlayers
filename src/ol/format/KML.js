@@ -379,6 +379,24 @@ function createStyleDefaults() {
 let TEXTAREA;
 
 /**
+ * A function that takes a url `{string}` and returns a url `{string}`.
+ * Might be used to change an icon path or to substitute a
+ * data url obtained from a KMZ array buffer.
+ *
+ * @typedef {function(string):string} IconUrlFunction
+ * @api
+ */
+
+/**
+ * Function that returns a url unchanged.
+ * @param {string} href Input url.
+ * @return {string} Output url.
+ */
+function defaultIconUrlFunction(href) {
+  return href;
+}
+
+/**
  * @typedef {Object} Options
  * @property {boolean} [extractStyles=true] Extract styles from the KML.
  * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
@@ -387,6 +405,8 @@ let TEXTAREA;
  * @property {boolean} [writeStyles=true] Write styles into KML.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * @property {IconUrlFunction} [iconUrlFunction] Function that takes a url string and returns a url string.
+ * Might be used to change an icon path or to substitute a data url obtained from a KMZ array buffer.
  */
 
 /**
@@ -462,6 +482,13 @@ class KML extends XMLFeature {
      */
     this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous';
+
+    /**
+     * @type {IconUrlFunction}
+     */
+    this.iconUrlFunction_ = options.iconUrlFunction
+      ? options.iconUrlFunction
+      : defaultIconUrlFunction;
   }
 
   /**
@@ -1282,7 +1309,7 @@ function iconStyleParser(node, objectStack) {
       rotation: rotation,
       scale: scale,
       size: size,
-      src: src,
+      src: this.iconUrlFunction_(src),
       color: color,
     });
     styleObject['imageStyle'] = imageStyle;
