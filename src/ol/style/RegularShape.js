@@ -31,7 +31,7 @@ import {
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
- * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2.
+ * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2`.
  */
 
 /**
