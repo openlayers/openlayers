@@ -17,7 +17,7 @@ class RenderEvent extends Event {
 
     /**
      * Transform from CSS pixels (relative to the top-left corner of the map viewport)
-     * to rendered pixels on this event's `context`.
+     * to rendered pixels on this event's `context`. Only available when a Canvas renderer is used, null otherwise.
      * @type {import("../transform.js").Transform|undefined}
      * @api
      */
