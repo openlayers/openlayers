@@ -4,6 +4,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import ViewHint from '../../../../../src/ol/ViewHint.js';
+import WebGLPointsLayer from '../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer.js';
 import {WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
 import {
@@ -614,8 +615,13 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         }),
       });
 
-      layer = new VectorLayer({
+      layer = new WebGLPointsLayer({
         source,
+        style: {
+          symbol: {
+            symbolType: 'square',
+          },
+        },
       });
 
       renderer = new WebGLPointsLayerRenderer(layer, {
