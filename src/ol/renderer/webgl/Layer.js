@@ -2,6 +2,8 @@
  * @module ol/renderer/webgl/Layer
  */
 import LayerRenderer from '../Layer.js';
+import RenderEvent from '../../render/Event.js';
+import RenderEventType from '../../render/EventType.js';
 import WebGLHelper from '../../webgl/Helper.js';
 
 /**
@@ -80,6 +82,36 @@ class WebGLLayerRenderer extends LayerRenderer {
    */
   getShaderCompileErrors() {
     return this.helper.getShaderCompileErrors();
+  }
+
+  /**
+   * @param {import("../../render/EventType.js").default} type Event type.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @private
+   */
+  dispatchRenderEvent_(type, frameState) {
+    const layer = this.getLayer();
+    if (layer.hasListener(type)) {
+      // RenderEvent does not get a context or an inversePixelTransform, because WebGL allows much less direct editing than Canvas2d does.
+      const event = new RenderEvent(type, null, frameState, null);
+      layer.dispatchEvent(event);
+    }
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  preRender(frameState) {
+    this.dispatchRenderEvent_(RenderEventType.PRERENDER, frameState);
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  postRender(frameState) {
+    this.dispatchRenderEvent_(RenderEventType.POSTRENDER, frameState);
   }
 }
 

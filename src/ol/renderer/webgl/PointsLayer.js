@@ -409,6 +409,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
+    this.preRender(frameState);
+
     const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
     this.helper.finalizeDraw(frameState);
@@ -424,6 +426,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.renderHitDetection(frameState);
       this.hitRenderTarget_.clearCachedData();
     }
+
+    this.postRender(frameState);
 
     return canvas;
   }
