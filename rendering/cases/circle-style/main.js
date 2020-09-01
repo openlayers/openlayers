@@ -52,7 +52,7 @@ const style = new Style({
 });
 
 new Map({
-  pixelRatio: 1,
+  pixelRatio: 2,
   layers: [
     new VectorLayer({
       source: vectorSource,

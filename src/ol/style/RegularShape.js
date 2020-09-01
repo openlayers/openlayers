@@ -404,6 +404,7 @@ class RegularShape extends ImageStyle {
 
     this.draw_(renderOptions, context, 0, 0, 1);
 
+    this.canvas_ = {};
     this.canvas_[1] = context.canvas;
 
     // canvas.width and height are rounded to the closest integer
