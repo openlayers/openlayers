@@ -409,7 +409,7 @@ function readException(node, objectStack) {
 function readCapabilityLayer(node, objectStack) {
   const layerObject = pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 
-  if (layerObject.Layer === undefined) {
+  if (layerObject['Layer'] === undefined) {
     return Object.assign(layerObject, readLayer(node, objectStack));
   }
 
