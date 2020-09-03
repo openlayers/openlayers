@@ -561,10 +561,6 @@ class GML3 extends GMLBase {
    */
   writeLinearRing(node, geometry, objectStack) {
     const context = objectStack[objectStack.length - 1];
-    const srsName = context['srsName'];
-    if (srsName) {
-      node.setAttribute('srsName', srsName);
-    }
     const posList = createElementNS(node.namespaceURI, 'posList');
     node.appendChild(posList);
     this.writePosList_(posList, geometry, objectStack);

@@ -560,10 +560,6 @@ class GML2 extends GMLBase {
    */
   writeLinearRing(node, geometry, objectStack) {
     const context = objectStack[objectStack.length - 1];
-    const srsName = context['srsName'];
-    if (srsName) {
-      node.setAttribute('srsName', srsName);
-    }
     const coordinates = this.createCoordinatesNode_(node.namespaceURI);
     node.appendChild(coordinates);
     this.writeCoordinates_(coordinates, geometry, objectStack);
