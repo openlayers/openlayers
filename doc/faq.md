@@ -31,7 +31,7 @@ view of a map isn't, we need a mathematical expression to represent it. Enter
 projections.
 
 There isn't only one projection, but there are many common ones. Each projection
-has different properties, in that it accurately represents distances, angles or
+has different properties, in that it accurately represents distances, angles, or
 areas. Certain projections are better suited for different regions in the world.
 
 Back to the original question: OpenLayers is capable of dealing with most
@@ -40,7 +40,7 @@ default which is the Web Mercator projection (EPSG:3857). The same projection is
 used e.g. for the maps of the OpenStreetMap-project and commercial products such
 as Bing Maps or Google Maps.
 
-This projection is a good choice if you want a map which shows the whole world,
+This projection is a good choice if you want a map that shows the whole world,
 and you may need to have this projection if you want to e.g. use the
 OpenStreetMap or Bing tiles.
 
@@ -102,7 +102,7 @@ We recommend to lookup parameters of your projection (like the validity extent)
 over at [epsg.io](https://epsg.io/).
 
 
-## Why is my map centered on the gulf of guinea (or africa, the ocean, null-island)?
+## Why is my map centered on the gulf of guinea (or Africa, the ocean, null-island)?
 
 If you have set a center in your map view, but don't see a real change in visual
 output, chances are that you have provided the coordinates of the map center in
@@ -136,7 +136,7 @@ const map = new Map({
 Here `[-77.036667, 38.895]` is provided as the center of the view. But as Web
 Mercator is a metric projection, you are currently telling OpenLayers that the
 center shall be some meters (~77m and ~39m respectively) away from `[0, 0]`. In
-the Web Mercator projection the coordinate is right in the gulf of guinea.
+the Web Mercator projection, the coordinate is right in the gulf of guinea.
 
 The solution is easy: Provide the coordinates projected into Web Mercator.
 OpenLayers has some helpful utility methods to assist you:
@@ -197,7 +197,7 @@ for English, `en`, as a mnemonic: East before North.
 #### A practical example
 So you want to center your map on a certain place on the earth and obviously you
 need to have its coordinates for this. Let's assume you want your map centered
-on Schladming, a beautiful place in Austria. Head over to the wikipedia
+on Schladming, a beautiful place in Austria. Head over to the Wikipedia
 page for [Schladming](http://en.wikipedia.org/wiki/Schladming). In the top-right
 corner there is a link to [GeoHack](http://tools.wmflabs.org/geohack/geohack.php?pagename=Schladming&params=47_23_39_N_13_41_21_E_type:city(4565)_region:AT-6),
 which effectively tells you the coordinates are:
@@ -273,8 +273,8 @@ const map = new Map({
 Schladming is now correctly displayed in the center of the map.
 
 So when you deal with EPSG:4326 coordinates in OpenLayers, put the longitude
-first, and then the latitude. This behaviour is the same as we had in OpenLayers
-2, and it actually makes sense because of the natural axis order in WGS84.
+first, and then the latitude. This behavior is the same as we had in OpenLayers
+2, and it makes sense because of the natural axis order in WGS84.
 
 If you cannot remember the correct order, just have a look at the method name
 we used: `fromLonLat`; even there we hint that we expect longitude
@@ -370,14 +370,14 @@ const vectorLayer = new VectorLayer({
 });
 ```
 
-The recommended value is the size of the largest symbol, line width or label.
+The recommended value is the size of the largest symbol, line width, or label.
 
 ## Why is zooming or clicking in the map off/inaccurate?
 
 OpenLayers does not update the map when the container element is resized. This can be caused by progressive updates
 to CSS styles or manually resizing the map. When that happens, any interaction will become inaccurate: the map would zoom in and out, and end up not being centered on the pointer. This makes it hard to do certain interactions, e.g. selecting the desired feature.
 
-There is currently no built-in way to react to element's size changes, as [Resize Observer API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) is only implemented in Chrome.
+There is currently no built-in way to react to the element's size changes, as [Resize Observer API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) is only implemented in Chrome.
 
 There is however an easy to use [polyfill](https://github.com/que-etc/resize-observer-polyfill):
 
