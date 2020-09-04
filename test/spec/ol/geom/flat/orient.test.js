@@ -29,6 +29,61 @@ describe('ol.geom.flat.orient', function () {
       );
       expect(isClockwise).to.be(false);
     });
+
+    it('identifies clockwise with duplicated coordinates', function () {
+      const flatCoordinates = [0, 1, 0, 1, 1, 4, 1, 4, 4, 3, 4, 3, 3, 0, 3, 0];
+      const isClockwise = linearRingIsClockwise(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        2
+      );
+      expect(isClockwise).to.be(true);
+    });
+
+    it('identifies anti-clockwise with duplicated coordinates', function () {
+      const flatCoordinates = [2, 2, 2, 2, 3, 2, 3, 2, 3, 3, 3, 3, 2, 3, 2, 3];
+      const isClockwise = linearRingIsClockwise(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        2
+      );
+      expect(isClockwise).to.be(false);
+    });
+
+    it('identifies clockwise when last coordinate equals first', function () {
+      const flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0, 0, 1];
+      const isClockwise = linearRingIsClockwise(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        2
+      );
+      expect(isClockwise).to.be(true);
+    });
+
+    it('identifies anti-clockwise when last coordinate equals first', function () {
+      const flatCoordinates = [2, 2, 3, 2, 3, 3, 2, 3, 2, 2];
+      const isClockwise = linearRingIsClockwise(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        2
+      );
+      expect(isClockwise).to.be(false);
+    });
+
+    it('returns undefined when ring has too few vertices', function () {
+      const flatCoordinates = [2, 2, 3, 2];
+      const isClockwise = linearRingIsClockwise(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        2
+      );
+      expect(isClockwise).to.be(undefined);
+    });
   });
 
   describe('ol.geom.flat.orient.linearRingsAreOriented', function () {
