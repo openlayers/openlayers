@@ -864,13 +864,12 @@ class Executor {
             ) {
               continue;
             }
-            let index;
             if (declutterGroups) {
-              index = Math.floor(declutterGroupIndex);
-              declutterGroup =
-                declutterGroups.length <= index
-                  ? [declutterGroups[0][0]]
-                  : declutterGroups[index];
+              declutterGroup = declutterGroups[declutterGroupIndex];
+              if (!declutterGroup) {
+                declutterGroup = [declutterGroups[0][0]];
+                declutterGroups.push(declutterGroup);
+              }
             }
             const rendered = this.replayImageOrLabel_(
               context,
@@ -897,14 +896,11 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null
             );
-            if (declutterGroup) {
-              if (rendered && declutterGroups.length <= index) {
-                declutterGroups.push(declutterGroup);
-              }
+            if (rendered && declutterGroup) {
               if (declutterGroup.length - 1 === declutterGroup[0]) {
                 this.declutterItems.push(this, declutterGroup, feature);
               }
-              declutterGroupIndex += 1 / declutterGroup[0];
+              declutterGroupIndex++;
             }
           }
           ++i;
