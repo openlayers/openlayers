@@ -864,10 +864,11 @@ class Executor {
             ) {
               continue;
             }
+            let index;
             if (declutterGroups) {
-              const index = Math.floor(declutterGroupIndex);
+              index = Math.floor(declutterGroupIndex);
               declutterGroup =
-                declutterGroups.length < index + 1
+                declutterGroups.length <= index
                   ? [declutterGroups[0][0]]
                   : declutterGroups[index];
             }
@@ -896,14 +897,10 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null
             );
-            if (
-              rendered &&
-              declutterGroup &&
-              declutterGroups[declutterGroups.length - 1] !== declutterGroup
-            ) {
-              declutterGroups.push(declutterGroup);
-            }
             if (declutterGroup) {
+              if (rendered && declutterGroups.length <= index) {
+                declutterGroups.push(declutterGroup);
+              }
               if (declutterGroup.length - 1 === declutterGroup[0]) {
                 this.declutterItems.push(this, declutterGroup, feature);
               }
