@@ -16,44 +16,85 @@ import {coordinates as reverseCoordinates} from './reverse.js';
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
   // https://stackoverflow.com/a/1180256/2389327
   // https://en.wikipedia.org/wiki/Curve_orientation#Orientation_of_a_simple_polygon
+  if ((end - offset) / stride >= 3) {
+    const minVertex = findCornerVertex(flatCoordinates, offset, end, stride);
+    // Orientation matrix:
+    //     [ 1  xa  ya ]
+    // O = | 1  xb  yb |
+    //     [ 1  xc  yc ]
+    const previousVertex = findUniqueVertex(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      minVertex,
+      -1
+    );
+    const nextVertex = findUniqueVertex(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      minVertex,
+      1
+    );
+    const aX = flatCoordinates[previousVertex];
+    const aY = flatCoordinates[previousVertex + 1];
+    const bX = flatCoordinates[minVertex];
+    const bY = flatCoordinates[minVertex + 1];
+    const cX = flatCoordinates[nextVertex];
+    const cY = flatCoordinates[nextVertex + 1];
+    const determinant =
+      bX * cY + aX * bY + aY * cX - (aY * bX + bY * cX + aX * cY);
 
-  let firstVertexRepeated = true;
-  for (let i = 0; i < stride; ++i) {
-    if (flatCoordinates[offset + i] !== flatCoordinates[end - stride + i]) {
-      firstVertexRepeated = false;
-      break;
-    }
+    return determinant < 0;
   }
-  if (firstVertexRepeated) {
-    end -= stride;
-  }
-  const iMinVertex = findCornerVertex(flatCoordinates, offset, end, stride);
-  // Orientation matrix:
-  //     [ 1  xa  ya ]
-  // O = | 1  xb  yb |
-  //     [ 1  xc  yc ]
-  let iPreviousVertex = iMinVertex - stride;
-  if (iPreviousVertex < offset) {
-    iPreviousVertex = end - stride;
-  }
-  let iNextVertex = iMinVertex + stride;
-  if (iNextVertex >= end) {
-    iNextVertex = offset;
-  }
-  const aX = flatCoordinates[iPreviousVertex];
-  const aY = flatCoordinates[iPreviousVertex + 1];
-  const bX = flatCoordinates[iMinVertex];
-  const bY = flatCoordinates[iMinVertex + 1];
-  const cX = flatCoordinates[iNextVertex];
-  const cY = flatCoordinates[iNextVertex + 1];
-  const determinant =
-    bX * cY + aX * bY + aY * cX - (aY * bX + bY * cX + aX * cY);
-
-  return determinant < 0;
 }
 
-// Find vertex along one edge of bounding box.
-// In this case, we find smallest y; in case of tie also smallest x.
+/**
+ * Finds the next unique vertex in forward or backward direction of a ring.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {number} start Start vertex.
+ * @param {number} direction 1 for forward, -1 for backward.
+ * @return {number} vertex Index of the found vertex.
+ */
+function findUniqueVertex(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  start,
+  direction
+) {
+  let previousX, previousY, x, y;
+  let i = start;
+  while (x === previousX && y === previousY) {
+    previousX = flatCoordinates[i];
+    previousY = flatCoordinates[i + 1];
+    i += direction * stride;
+    if (i >= end) {
+      i = offset;
+    } else if (i < offset) {
+      i = end - stride;
+    }
+    x = flatCoordinates[i];
+    y = flatCoordinates[i + 1];
+  }
+  return i;
+}
+
+/**
+ * Find vertex along one edge of bounding box.
+ * In this case, we find smallest y; in case of tie also smallest x.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @return {number} Corner vertex.
+ */
 function findCornerVertex(flatCoordinates, offset, end, stride) {
   let iMinVertex = -1;
   let minY = Infinity;
