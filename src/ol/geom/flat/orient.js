@@ -77,7 +77,7 @@ function findUniqueVertex(
     i += direction * stride;
     if (i >= end) {
       i = offset;
-    } else if (i <= offset) {
+    } else if (i < offset) {
       i = end - stride;
     }
     x = flatCoordinates[i];
