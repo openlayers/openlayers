@@ -64,8 +64,6 @@ export const PROJECTIONS = [
   new EPSG3857Projection('EPSG:102100'),
   new EPSG3857Projection('EPSG:102113'),
   new EPSG3857Projection('EPSG:900913'),
-  new EPSG3857Projection('urn:ogc:def:crs:EPSG:6.18:3:3857'),
-  new EPSG3857Projection('urn:ogc:def:crs:EPSG::3857'),
   new EPSG3857Projection('http://www.opengis.net/gml/srs/epsg.xml#3857'),
 ];
 

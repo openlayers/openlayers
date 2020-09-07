@@ -124,10 +124,7 @@ export function createFromCapabilitiesMatrixSet(
   const tileHeightPropName = 'TileHeight';
 
   const code = matrixSet[supportedCRSPropName];
-  const projection =
-    getProjection(
-      code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')
-    ) || getProjection(code);
+  const projection = getProjection(code);
   const metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
   const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
