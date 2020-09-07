@@ -210,6 +210,26 @@ describe('ol.tilegrid.TileGrid', function () {
     });
   });
 
+  describe('create with sizes', function () {
+    let tileGrid;
+    beforeEach(function () {
+      tileGrid = new TileGrid({
+        origin: [10, 40],
+        sizes: [[3, 3]],
+        tileSize: 10,
+        resolutions: [1],
+      });
+    });
+
+    it('calculates full tile ranges from sizes', function () {
+      const fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minX).to.equal(0);
+      expect(fullTileRange.maxX).to.equal(2);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(2);
+    });
+  });
+
   describe('create with extent and sizes', function () {
     let tileGrid;
     beforeEach(function () {
@@ -225,12 +245,31 @@ describe('ol.tilegrid.TileGrid', function () {
       expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
     });
 
-    it('calculates full tile ranges from sizes', function () {
+    it('calculates full tile ranges from sizes, further limited by extent', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
       expect(fullTileRange.minX).to.equal(0);
-      expect(fullTileRange.maxX).to.equal(2);
+      expect(fullTileRange.maxX).to.equal(1);
       expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(2);
+      expect(fullTileRange.maxY).to.equal(1);
+    });
+  });
+
+  describe('create with extent', function () {
+    let tileGrid;
+    beforeEach(function () {
+      tileGrid = new TileGrid({
+        extent: [10, 20, 30, 40],
+        tileSize: 10,
+        resolutions: [1],
+      });
+    });
+
+    it('calculates full tile ranges from extent', function () {
+      const fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minX).to.equal(0);
+      expect(fullTileRange.maxX).to.equal(1);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(1);
     });
   });
 

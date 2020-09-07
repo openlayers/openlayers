@@ -188,6 +188,13 @@ class TileGrid {
           Math.min(0, size[1]),
           Math.max(size[1] - 1, -1)
         );
+        if (extent) {
+          const restrictedTileRange = this.getTileRangeForExtentAndZ(extent, z);
+          tileRange.minX = Math.max(restrictedTileRange.minX, tileRange.minX);
+          tileRange.maxX = Math.min(restrictedTileRange.maxX, tileRange.maxX);
+          tileRange.minY = Math.max(restrictedTileRange.minY, tileRange.minY);
+          tileRange.maxY = Math.min(restrictedTileRange.maxY, tileRange.maxY);
+        }
         return tileRange;
       }, this);
     } else if (extent) {
@@ -566,7 +573,9 @@ class TileGrid {
    */
   getFullTileRange(z) {
     if (!this.fullTileRanges_) {
-      return null;
+      return this.extent_
+        ? this.getTileRangeForExtentAndZ(this.extent_, z)
+        : null;
     } else {
       return this.fullTileRanges_[z];
     }

@@ -76,13 +76,7 @@ export function withinExtentAndZ(tileCoord, tileGrid) {
   if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
     return false;
   }
-  const extent = tileGrid.getExtent();
-  let tileRange;
-  if (!extent) {
-    tileRange = tileGrid.getFullTileRange(z);
-  } else {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-  }
+  const tileRange = tileGrid.getFullTileRange(z);
   if (!tileRange) {
     return true;
   } else {
