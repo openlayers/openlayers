@@ -469,8 +469,8 @@ export function optionsFromCapabilities(wmtsCap, config) {
       matrixSetObj.TileMatrix,
       (tileMatrixValue) =>
         tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix ||
-        matrixSetObj.Identifier + ":" + tileMatrixValue.Identifier ===
-        selectedMatrixLimit.TileMatrix
+        matrixSetObj.Identifier + ':' + tileMatrixValue.Identifier ===
+          selectedMatrixLimit.TileMatrix
     );
     if (m) {
       matrix = m;
