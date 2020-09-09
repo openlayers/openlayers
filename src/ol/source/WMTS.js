@@ -465,10 +465,12 @@ export function optionsFromCapabilities(wmtsCap, config) {
   //in case of matrix limits, use matrix limits to calculate extent
   if (matrixLimits) {
     selectedMatrixLimit = matrixLimits[matrixLimits.length - 1];
-    matrix = find(
+    const m = find(
       matrixSetObj.TileMatrix,
-      (value) => value.Identifier === selectedMatrixLimit.TileMatrix
+      (tileMatrixValue) => tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix || matrixSetObj.Identifier + ":" + tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix
     );
+    if (m)
+      matrix = m;
   }
 
   const resolution =
