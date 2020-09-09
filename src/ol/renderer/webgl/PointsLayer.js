@@ -44,6 +44,7 @@ import {listen, unlistenByKey} from '../../events.js';
 
 /**
  * @typedef {Object} Options
+ * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source and then
  * passed to the GPU. The `name` property of each attribute will serve as its identifier:
  *  * In the vertex shader as an `attribute` by prefixing it with `a_`
@@ -131,6 +132,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 
     super(layer, {
+      className: options.className,
       uniforms: uniforms,
       postProcesses: options.postProcesses,
     });

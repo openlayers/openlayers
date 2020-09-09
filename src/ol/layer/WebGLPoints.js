@@ -96,6 +96,7 @@ class WebGLPointsLayer extends Layer {
    */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
+      className: this.getClassName(),
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),
       fragmentShader: this.parseResult_.builder.getSymbolFragmentShader(),
       hitVertexShader:

@@ -11,6 +11,21 @@ describe('ol.layer.Heatmap', function () {
       const instance = new HeatmapLayer();
       expect(instance).to.be.an(HeatmapLayer);
     });
+    it('has a default className', function () {
+      const layer = new HeatmapLayer({
+        source: new VectorSource(),
+      });
+      const canvas = layer.getRenderer().helper.getCanvas();
+      expect(canvas.className).to.eql('ol-layer');
+    });
+    it('accepts a custom className', function () {
+      const layer = new HeatmapLayer({
+        source: new VectorSource(),
+        className: 'a-class-name',
+      });
+      const canvas = layer.getRenderer().helper.getCanvas();
+      expect(canvas.className).to.eql('a-class-name');
+    });
   });
 
   describe('hit detection', function () {

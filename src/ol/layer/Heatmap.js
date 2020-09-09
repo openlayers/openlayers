@@ -182,6 +182,7 @@ class Heatmap extends VectorLayer {
    */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
+      className: this.getClassName(),
       attributes: [
         {
           name: 'weight',
