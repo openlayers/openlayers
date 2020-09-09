@@ -369,10 +369,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
           return el['Identifier'] == elt['TileMatrixSet'];
         });
         const supportedCRS = tileMatrixSet['SupportedCRS'];
-        const proj1 =
-          getProjection(
-            supportedCRS.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')
-          ) || getProjection(supportedCRS);
+        const proj1 = getProjection(supportedCRS);
         const proj2 = getProjection(config['projection']);
         if (proj1 && proj2) {
           return equivalent(proj1, proj2);
@@ -434,10 +431,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let projection;
   const code = matrixSetObj['SupportedCRS'];
   if (code) {
-    projection =
-      getProjection(
-        code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')
-      ) || getProjection(code);
+    projection = getProjection(code);
   }
   if ('projection' in config) {
     const projConfig = getProjection(config['projection']);
