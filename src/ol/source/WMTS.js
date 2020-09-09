@@ -467,7 +467,9 @@ export function optionsFromCapabilities(wmtsCap, config) {
     selectedMatrixLimit = matrixLimits[matrixLimits.length - 1];
     const m = find(
       matrixSetObj.TileMatrix,
-      (tileMatrixValue) => tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix || matrixSetObj.Identifier + ":" + tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix
+      (tileMatrixValue) =>
+        tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix ||
+        matrixSetObj.Identifier + ":" + tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix
     );
     if (m) {
       matrix = m;
