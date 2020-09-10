@@ -68,7 +68,7 @@ class UrlTile extends TileSource {
     this.tileLoadFunction = options.tileLoadFunction;
 
     if (options.tileUrlFunction) {
-      this.tileUrlFunction = options.tileUrlFunction.bind(this);
+      this.tileUrlFunction = options.tileUrlFunction;
     }
 
     /**
@@ -105,7 +105,9 @@ class UrlTile extends TileSource {
    * @api
    */
   getTileUrlFunction() {
-    return this.tileUrlFunction;
+    return Object.getPrototypeOf(this).tileUrlFunction === this.tileUrlFunction
+      ? this.tileUrlFunction.bind(this)
+      : this.tileUrlFunction;
   }
 
   /**
