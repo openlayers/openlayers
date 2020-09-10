@@ -276,34 +276,34 @@ class RenderFeature {
 
   /**
    * Transform geometry coordinates from tile pixel space to projected.
-   * The SRS of the source and destination are expected to be the same.
    *
-   * @param {import("../proj.js").ProjectionLike} source The current projection
-   * @param {import("../proj.js").ProjectionLike} destination The desired projection.
+   * @param {import("../proj.js").ProjectionLike} projection The data projection
    */
-  transform(source, destination) {
-    source = getProjection(source);
-    const pixelExtent = source.getExtent();
-    const projectedExtent = source.getWorldExtent();
-    const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-    composeTransform(
-      tmpTransform,
-      projectedExtent[0],
-      projectedExtent[3],
-      scale,
-      -scale,
-      0,
-      0,
-      0
-    );
-    transform2D(
-      this.flatCoordinates_,
-      0,
-      this.flatCoordinates_.length,
-      2,
-      tmpTransform,
-      this.flatCoordinates_
-    );
+  transform(projection) {
+    projection = getProjection(projection);
+    const pixelExtent = projection.getExtent();
+    const projectedExtent = projection.getWorldExtent();
+    if (pixelExtent && projectedExtent) {
+      const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
+      composeTransform(
+        tmpTransform,
+        projectedExtent[0],
+        projectedExtent[3],
+        scale,
+        -scale,
+        0,
+        0,
+        0
+      );
+      transform2D(
+        this.flatCoordinates_,
+        0,
+        this.flatCoordinates_.length,
+        2,
+        tmpTransform,
+        this.flatCoordinates_
+      );
+    }
   }
   /**
    * @return {Array<number>|Array<Array<number>>} Ends or endss.
