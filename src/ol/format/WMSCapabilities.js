@@ -407,7 +407,13 @@ function readException(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 function readCapabilityLayer(node, objectStack) {
-  return pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
+  const layerObject = pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
+
+  if (layerObject['Layer'] === undefined) {
+    return Object.assign(layerObject, readLayer(node, objectStack));
+  }
+
+  return layerObject;
 }
 
 /**
