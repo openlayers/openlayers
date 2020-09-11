@@ -169,11 +169,11 @@ class CanvasTextBuilder extends CanvasBuilder {
       return;
     }
 
-    let begin = this.coordinates.length;
+    const coordinates = this.coordinates;
+    let begin = coordinates.length;
 
     const geometryType = geometry.getType();
     let flatCoordinates = null;
-    let end = 2;
     let stride = geometry.getStride();
     let i, ii;
 
@@ -217,9 +217,9 @@ class CanvasTextBuilder extends CanvasBuilder {
           flatEnd = ends[o];
         }
         for (i = flatOffset; i < flatEnd; i += stride) {
-          this.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+          coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
         }
-        end = this.coordinates.length;
+        const end = coordinates.length;
         flatOffset = ends[o];
         const declutterGroup = this.declutterGroups_
           ? o === 0
@@ -231,15 +231,11 @@ class CanvasTextBuilder extends CanvasBuilder {
       }
       this.endGeometry(feature);
     } else {
-      let geometryWidths = null;
-      if (!textState.overflow) {
-        geometryWidths = [];
-      }
+      const geometryWidths = textState.overflow ? null : [];
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
           flatCoordinates = /** @type {import("../../geom/MultiPoint.js").default} */ (geometry).getFlatCoordinates();
-          end = flatCoordinates.length;
           break;
         case GeometryType.LINE_STRING:
           flatCoordinates = /** @type {import("../../geom/LineString.js").default} */ (geometry).getFlatMidpoint();
@@ -250,7 +246,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         case GeometryType.MULTI_LINE_STRING:
           flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
           stride = 2;
-          end = flatCoordinates.length;
           break;
         case GeometryType.POLYGON:
           flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
@@ -268,20 +263,22 @@ class CanvasTextBuilder extends CanvasBuilder {
             }
             flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
           }
-          stride = 2;
-          end = flatCoordinates.length;
-          if (end == 0) {
+          if (flatCoordinates.length === 0) {
             return;
           }
+          stride = 2;
           break;
         default:
       }
-      end = this.appendFlatPointCoordinates(
+      const end = this.appendFlatPointCoordinates(
         flatCoordinates,
         0,
-        end,
+        flatCoordinates.length,
         stride
       );
+      if (end === begin) {
+        return;
+      }
 
       this.saveTextStates_();
 

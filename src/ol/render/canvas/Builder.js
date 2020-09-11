@@ -186,7 +186,8 @@ class CanvasBuilder extends VectorContext {
     closed,
     skipFirst
   ) {
-    let myEnd = this.coordinates.length;
+    const coordinates = this.coordinates;
+    let myEnd = coordinates.length;
     const extent = this.getBufferedMaxExtent();
     if (skipFirst) {
       offset += stride;
@@ -203,15 +204,15 @@ class CanvasBuilder extends VectorContext {
       nextRel = coordinateRelationship(extent, nextCoord);
       if (nextRel !== lastRel) {
         if (skipped) {
-          this.coordinates[myEnd++] = lastXCoord;
-          this.coordinates[myEnd++] = lastYCoord;
+          coordinates[myEnd++] = lastXCoord;
+          coordinates[myEnd++] = lastYCoord;
+          skipped = false;
         }
-        this.coordinates[myEnd++] = nextCoord[0];
-        this.coordinates[myEnd++] = nextCoord[1];
-        skipped = false;
+        coordinates[myEnd++] = nextCoord[0];
+        coordinates[myEnd++] = nextCoord[1];
       } else if (nextRel === Relationship.INTERSECTING) {
-        this.coordinates[myEnd++] = nextCoord[0];
-        this.coordinates[myEnd++] = nextCoord[1];
+        coordinates[myEnd++] = nextCoord[0];
+        coordinates[myEnd++] = nextCoord[1];
         skipped = false;
       } else {
         skipped = true;
@@ -223,8 +224,8 @@ class CanvasBuilder extends VectorContext {
 
     // Last coordinate equals first or only one point to append:
     if ((closed && skipped) || i === offset + stride) {
-      this.coordinates[myEnd++] = lastXCoord;
-      this.coordinates[myEnd++] = lastYCoord;
+      coordinates[myEnd++] = lastXCoord;
+      coordinates[myEnd++] = lastYCoord;
     }
     return myEnd;
   }
