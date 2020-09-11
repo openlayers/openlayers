@@ -14,13 +14,17 @@ const fragShaderCode = `
       gl_FragColor = vec4(texelColour.rg, texelColour.b * 1.1, 1.0);
 
       vec4 texelElevation = texture2D(uTexture1, vec2(vTextureCoords.s, vTextureCoords.t));
-      if (texelElevation.x > 0.) {
+
+      /// FIXME: careful with 8-bit RGBA vs 16-bit LUMINANCE_ALPHA packing!!!
+      float elevation = texelElevation.x + texelElevation.a * 256.;
+
+      if (elevation > 0.) {
 
         vec4 colours[5];
         colours[0] = vec4(.0, .0, .8, 0.);
         colours[1] = vec4(.4, .55, .3, 0.01);
         colours[2] = vec4(.9, .9, .6, 150.);
-        colours[3] = vec4(.6, .4, .3, 500.);
+        colours[3] = vec4(.6, .4, .3, 700.);
         colours[4] = vec4(1., 1., 1., 4000.);
 
         // Init pixel color to first stop, to get the blending right.
@@ -36,22 +40,30 @@ const fragShaderCode = `
           pixelColor.rgb = mix(
             pixelColor.rgb,
             colours[i+1].rgb,
-            smoothstep( colours[i].a, colours[i+1].a, texelElevation.x * 256.)
+            smoothstep( colours[i].a, colours[i+1].a, elevation * 256.)
           );
         }
 
         gl_FragColor.rgb = pixelColor.rgb;
       }
 
-// 					gl_FragColor.rgb = min(vec3(1.) - texelElevation.xxx, texelColour.gbr);
+      //gl_FragColor.rgb = min(vec3(1.) - texelElevation.xxx, texelColour.gbr);
+//       gl_FragColor.rgb = texelElevation.rga * 200.;
+
       gl_FragColor.a = 1.;
     }
     `;
 
 const geotiffTexture = new GlTiledTextureGeoTiff(
-  GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia_8bit.tiff'),
+//   GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Byte-noCOG.tiff'),
+//   GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Byte-COG.tiff'),
+//   GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Int16-noCOG.tiff'),
+  GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Int16-COG.tiff'),
+//   GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Float32-noCOG.tiff'),
+//   GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Float32-COG.tiff'),
   0,  // sample, zero-indexed. This is a one-channel GeoTIFF, so sample is zero.
-  0   // fillValue; in this case, "no data" is zero which means "sea level".
+  0,  // fillValue; in this case, "no data" is zero which means "sea level".
+  "getElevation"
 );
 
 const map = new Map({
@@ -62,7 +74,6 @@ const map = new Map({
         textureSources: [
           new OSM(),
           geotiffTexture,
-//           new GlTiledTextureNoise(Uint8ClampedArray, -50, 200)
         ]
       })
     })

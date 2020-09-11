@@ -534,9 +534,21 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   gl.activeTexture(gl.TEXTURE0 + index);
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
-  // For 8-bit data:
-  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, w, h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, arr);
+  const castArr = new Uint8Array(arr.buffer);
+  console.log(arr);
+
+  if (arr instanceof Uint8Array) {
+    // For 8-bit data:
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, w, h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, arr);
+  } else if (arr instanceof Int16Array) {
+    // For 16-bit int data:
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, w, h, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, castArr);
+  } else {
+    console.warn("Unimplemented datatype for dumping data into texture, ", arr);
+  }
+
 
   //   void gl.texImage2D(target, level, internalformat, width, height, border, format, type, ArrayBufferView? pixels);
 
