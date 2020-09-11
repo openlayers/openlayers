@@ -108,7 +108,7 @@ class CanvasImageBuilder extends CanvasBuilder {
    * @return {number} My end.
    */
   drawCoordinates_(flatCoordinates, offset, end, stride) {
-    return this.appendFlatCoordinates(
+    return this.appendFlatLineCoordinates(
       flatCoordinates,
       offset,
       end,

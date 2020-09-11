@@ -276,7 +276,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           break;
         default:
       }
-      end = this.appendFlatCoordinates(
+      end = this.appendFlatLineCoordinates(
         flatCoordinates,
         0,
         end,

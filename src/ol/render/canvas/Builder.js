@@ -149,7 +149,7 @@ class CanvasBuilder extends VectorContext {
    * @protected
    * @return {number} My end.
    */
-  appendFlatCoordinates(
+  appendFlatLineCoordinates(
     flatCoordinates,
     offset,
     end,
@@ -211,7 +211,7 @@ class CanvasBuilder extends VectorContext {
   drawCustomCoordinates_(flatCoordinates, offset, ends, stride, builderEnds) {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
-      const builderEnd = this.appendFlatCoordinates(
+      const builderEnd = this.appendFlatLineCoordinates(
         flatCoordinates,
         offset,
         end,
@@ -290,7 +290,7 @@ class CanvasBuilder extends VectorContext {
       type == GeometryType.MULTI_POINT
     ) {
       flatCoordinates = geometry.getFlatCoordinates();
-      builderEnd = this.appendFlatCoordinates(
+      builderEnd = this.appendFlatLineCoordinates(
         flatCoordinates,
         0,
         flatCoordinates.length,
