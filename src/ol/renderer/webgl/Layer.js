@@ -37,6 +37,7 @@ export const WebGLWorkerMessageType = {
 
 /**
  * @typedef {Object} Options
+ * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -65,6 +66,10 @@ class WebGLLayerRenderer extends LayerRenderer {
       postProcesses: options.postProcesses,
       uniforms: options.uniforms,
     });
+
+    if (options.className !== undefined) {
+      this.helper.getCanvas().className = options.className;
+    }
   }
 
   /**
