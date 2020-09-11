@@ -6,7 +6,12 @@ import GeometryType from '../../geom/GeometryType.js';
 import Relationship from '../../extent/Relationship.js';
 import VectorContext from '../VectorContext.js';
 import {asColorLike} from '../../colorlike.js';
-import {buffer, clone, coordinateRelationship} from '../../extent.js';
+import {
+  buffer,
+  clone,
+  containsCoordinate,
+  coordinateRelationship,
+} from '../../extent.js';
 import {
   defaultFillStyle,
   defaultLineCap,
@@ -137,6 +142,30 @@ class CanvasBuilder extends VectorContext {
       : dashArray.map(function (dash) {
           return dash * pixelRatio;
         });
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @protected
+   * @return {number} My end
+   */
+  appendFlatPointCoordinates(flatCoordinates, offset, end, stride) {
+    const extent = this.getBufferedMaxExtent();
+    const tmpCoord = this.tmpCoordinate_;
+    const coordinates = this.coordinates;
+    let myEnd = coordinates.length;
+    for (let i = offset; i < end; i += stride) {
+      tmpCoord[0] = flatCoordinates[i];
+      tmpCoord[1] = flatCoordinates[i + 1];
+      if (containsCoordinate(extent, tmpCoord)) {
+        coordinates[myEnd++] = tmpCoord[0];
+        coordinates[myEnd++] = tmpCoord[1];
+      }
+    }
+    return myEnd;
   }
 
   /**
@@ -285,10 +314,7 @@ class CanvasBuilder extends VectorContext {
         renderer,
         inflateCoordinatesArray,
       ]);
-    } else if (
-      type == GeometryType.LINE_STRING ||
-      type == GeometryType.MULTI_POINT
-    ) {
+    } else if (type == GeometryType.LINE_STRING) {
       flatCoordinates = geometry.getFlatCoordinates();
       builderEnd = this.appendFlatLineCoordinates(
         flatCoordinates,
@@ -306,6 +332,24 @@ class CanvasBuilder extends VectorContext {
         renderer,
         inflateCoordinates,
       ]);
+    } else if (type == GeometryType.MULTI_POINT) {
+      flatCoordinates = geometry.getFlatCoordinates();
+      builderEnd = this.appendFlatPointCoordinates(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        stride
+      );
+      if (builderEnd > builderBegin) {
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          renderer,
+          inflateCoordinates,
+        ]);
+      }
     } else if (type == GeometryType.POINT) {
       flatCoordinates = geometry.getFlatCoordinates();
       this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
