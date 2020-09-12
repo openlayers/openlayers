@@ -111,12 +111,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
-    const myEnd = this.appendFlatPointCoordinates(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride
-    );
+    const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,
@@ -171,12 +166,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const flatCoordinates = multiPointGeometry.getFlatCoordinates();
     const stride = multiPointGeometry.getStride();
     const myBegin = this.coordinates.length;
-    const myEnd = this.appendFlatPointCoordinates(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride
-    );
+    const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,

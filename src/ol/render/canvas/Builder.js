@@ -146,18 +146,16 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
    * @param {number} stride Stride.
    * @protected
    * @return {number} My end
    */
-  appendFlatPointCoordinates(flatCoordinates, offset, end, stride) {
+  appendFlatPointCoordinates(flatCoordinates, stride) {
     const extent = this.getBufferedMaxExtent();
     const tmpCoord = this.tmpCoordinate_;
     const coordinates = this.coordinates;
     let myEnd = coordinates.length;
-    for (let i = offset; i < end; i += stride) {
+    for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
       tmpCoord[0] = flatCoordinates[i];
       tmpCoord[1] = flatCoordinates[i + 1];
       if (containsCoordinate(extent, tmpCoord)) {
@@ -335,12 +333,7 @@ class CanvasBuilder extends VectorContext {
       ]);
     } else if (type == GeometryType.MULTI_POINT) {
       flatCoordinates = geometry.getFlatCoordinates();
-      builderEnd = this.appendFlatPointCoordinates(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride
-      );
+      builderEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
       if (builderEnd > builderBegin) {
         this.instructions.push([
           CanvasInstruction.CUSTOM,

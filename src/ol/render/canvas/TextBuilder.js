@@ -269,12 +269,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           break;
         default:
       }
-      const end = this.appendFlatPointCoordinates(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride
-      );
+      const end = this.appendFlatPointCoordinates(flatCoordinates, stride);
       if (end === begin) {
         return;
       }
