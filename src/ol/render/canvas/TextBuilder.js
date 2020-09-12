@@ -176,7 +176,13 @@ class CanvasTextBuilder extends CanvasBuilder {
     let flatCoordinates = null;
     let stride = geometry.getStride();
 
-    if (textState.placement === TextPlacement.LINE) {
+    if (
+      textState.placement === TextPlacement.LINE &&
+      (geometryType == GeometryType.LINE_STRING ||
+        geometryType == GeometryType.MULTI_LINE_STRING ||
+        geometryType == GeometryType.POLYGON ||
+        geometryType == GeometryType.MULTI_POLYGON)
+    ) {
       if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
         return;
       }
