@@ -57,7 +57,7 @@ describe('ol.TileCoord', function () {
     it('restricts by extent when extent defines tile ranges', function () {
       const tileGrid = new TileGrid({
         extent: [10, 20, 30, 40],
-        sizes: [[3, -3]],
+        sizes: [[3, 3]],
         tileSize: 10,
         resolutions: [1],
       });
