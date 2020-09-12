@@ -175,7 +175,6 @@ class CanvasTextBuilder extends CanvasBuilder {
     const geometryType = geometry.getType();
     let flatCoordinates = null;
     let stride = geometry.getStride();
-    let i, ii;
 
     if (textState.placement === TextPlacement.LINE) {
       if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
@@ -194,7 +193,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       } else if (geometryType == GeometryType.MULTI_POLYGON) {
         const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
         ends = [];
-        for (i = 0, ii = endss.length; i < ii; ++i) {
+        for (let i = 0, ii = endss.length; i < ii; ++i) {
           ends.push(endss[i][0]);
         }
       }
@@ -216,7 +215,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         } else {
           flatEnd = ends[o];
         }
-        for (i = flatOffset; i < flatEnd; i += stride) {
+        for (let i = flatOffset; i < flatEnd; i += stride) {
           coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
         }
         const end = coordinates.length;
@@ -257,7 +256,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         case GeometryType.MULTI_POLYGON:
           const interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
           flatCoordinates = [];
-          for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+          for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
             if (!textState.overflow) {
               geometryWidths.push(interiorPoints[i + 2] / this.resolution);
             }
