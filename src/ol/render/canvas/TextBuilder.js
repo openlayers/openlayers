@@ -169,15 +169,20 @@ class CanvasTextBuilder extends CanvasBuilder {
       return;
     }
 
-    let begin = this.coordinates.length;
+    const coordinates = this.coordinates;
+    let begin = coordinates.length;
 
     const geometryType = geometry.getType();
     let flatCoordinates = null;
-    let end = 2;
     let stride = geometry.getStride();
-    let i, ii;
 
-    if (textState.placement === TextPlacement.LINE) {
+    if (
+      textState.placement === TextPlacement.LINE &&
+      (geometryType == GeometryType.LINE_STRING ||
+        geometryType == GeometryType.MULTI_LINE_STRING ||
+        geometryType == GeometryType.POLYGON ||
+        geometryType == GeometryType.MULTI_POLYGON)
+    ) {
       if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
         return;
       }
@@ -194,7 +199,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       } else if (geometryType == GeometryType.MULTI_POLYGON) {
         const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
         ends = [];
-        for (i = 0, ii = endss.length; i < ii; ++i) {
+        for (let i = 0, ii = endss.length; i < ii; ++i) {
           ends.push(endss[i][0]);
         }
       }
@@ -216,10 +221,10 @@ class CanvasTextBuilder extends CanvasBuilder {
         } else {
           flatEnd = ends[o];
         }
-        for (i = flatOffset; i < flatEnd; i += stride) {
-          this.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+        for (let i = flatOffset; i < flatEnd; i += stride) {
+          coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
         }
-        end = this.coordinates.length;
+        const end = coordinates.length;
         flatOffset = ends[o];
         const declutterGroup = this.declutterGroups_
           ? o === 0
@@ -231,15 +236,11 @@ class CanvasTextBuilder extends CanvasBuilder {
       }
       this.endGeometry(feature);
     } else {
-      let geometryWidths = null;
-      if (!textState.overflow) {
-        geometryWidths = [];
-      }
+      const geometryWidths = textState.overflow ? null : [];
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
           flatCoordinates = /** @type {import("../../geom/MultiPoint.js").default} */ (geometry).getFlatCoordinates();
-          end = flatCoordinates.length;
           break;
         case GeometryType.LINE_STRING:
           flatCoordinates = /** @type {import("../../geom/LineString.js").default} */ (geometry).getFlatMidpoint();
@@ -250,7 +251,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         case GeometryType.MULTI_LINE_STRING:
           flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
           stride = 2;
-          end = flatCoordinates.length;
           break;
         case GeometryType.POLYGON:
           flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
@@ -262,28 +262,23 @@ class CanvasTextBuilder extends CanvasBuilder {
         case GeometryType.MULTI_POLYGON:
           const interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
           flatCoordinates = [];
-          for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+          for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
             if (!textState.overflow) {
               geometryWidths.push(interiorPoints[i + 2] / this.resolution);
             }
             flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
           }
-          stride = 2;
-          end = flatCoordinates.length;
-          if (end == 0) {
+          if (flatCoordinates.length === 0) {
             return;
           }
+          stride = 2;
           break;
         default:
       }
-      end = this.appendFlatCoordinates(
-        flatCoordinates,
-        0,
-        end,
-        stride,
-        false,
-        false
-      );
+      const end = this.appendFlatPointCoordinates(flatCoordinates, stride);
+      if (end === begin) {
+        return;
+      }
 
       this.saveTextStates_();
 

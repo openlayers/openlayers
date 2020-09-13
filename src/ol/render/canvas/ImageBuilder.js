@@ -100,25 +100,6 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @private
-   * @return {number} My end.
-   */
-  drawCoordinates_(flatCoordinates, offset, end, stride) {
-    return this.appendFlatCoordinates(
-      flatCoordinates,
-      offset,
-      end,
-      stride,
-      false,
-      false
-    );
-  }
-
-  /**
    * @param {import("../../geom/Point.js").default|import("../Feature.js").default} pointGeometry Point geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
@@ -130,12 +111,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
-    const myEnd = this.drawCoordinates_(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride
-    );
+    const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,
@@ -190,12 +166,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const flatCoordinates = multiPointGeometry.getFlatCoordinates();
     const stride = multiPointGeometry.getStride();
     const myBegin = this.coordinates.length;
-    const myEnd = this.drawCoordinates_(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride
-    );
+    const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,

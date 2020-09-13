@@ -28,7 +28,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    */
   drawFlatCoordinates_(flatCoordinates, offset, end, stride) {
     const myBegin = this.coordinates.length;
-    const myEnd = this.appendFlatCoordinates(
+    const myEnd = this.appendFlatLineCoordinates(
       flatCoordinates,
       offset,
       end,
