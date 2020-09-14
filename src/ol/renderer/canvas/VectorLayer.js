@@ -219,84 +219,37 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
 
-    const transform = this.getRenderTransform(
-      center,
-      resolution,
-      rotation,
-      pixelRatio,
-      width,
-      height,
-      0
-    );
     const declutterReplays = this.getLayer().getDeclutter() ? {} : null;
-    replayGroup.execute(
-      context,
-      1,
-      transform,
-      rotation,
-      snapToPixel,
-      undefined,
-      declutterReplays
-    );
 
-    if (
-      vectorSource.getWrapX() &&
-      projection.canWrapX() &&
-      !containsExtent(projectionExtent, extent)
-    ) {
-      let startX = extent[0];
-      const worldWidth = getWidth(projectionExtent);
-      let world = 0;
-      let offsetX;
-      while (startX < projectionExtent[0]) {
-        --world;
-        offsetX = worldWidth * world;
-        const transform = this.getRenderTransform(
-          center,
-          resolution,
-          rotation,
-          pixelRatio,
-          width,
-          height,
-          offsetX
-        );
-        replayGroup.execute(
-          context,
-          1,
-          transform,
-          rotation,
-          snapToPixel,
-          undefined,
-          declutterReplays
-        );
-        startX += worldWidth;
-      }
-      world = 0;
-      startX = extent[2];
-      while (startX > projectionExtent[2]) {
-        ++world;
-        offsetX = worldWidth * world;
-        const transform = this.getRenderTransform(
-          center,
-          resolution,
-          rotation,
-          pixelRatio,
-          width,
-          height,
-          offsetX
-        );
-        replayGroup.execute(
-          context,
-          1,
-          transform,
-          rotation,
-          snapToPixel,
-          undefined,
-          declutterReplays
-        );
-        startX -= worldWidth;
-      }
-    }
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
+    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+    const endWorld = multiWorld
+      ? Math.ceil((extent[2] + projectionExtent[2]) / worldWidth)
+      : 1;
+    let world = multiWorld
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      : 0;
+    do {
+      const transform = this.getRenderTransform(
+        center,
+        resolution,
+        rotation,
+        pixelRatio,
+        width,
+        height,
+        world * worldWidth
+      );
+      replayGroup.execute(
+        context,
+        1,
+        transform,
+        rotation,
+        snapToPixel,
+        undefined,
+        declutterReplays
+      );
+    } while (++world < endWorld);
+
     if (declutterReplays) {
       const viewHints = frameState.viewHints;
       const hifi = !(
