@@ -475,13 +475,16 @@ export function replayDeclutter(
     .sort(numberSafeCompareFunction);
   for (let z = 0, zz = zs.length; z < zz; ++z) {
     const executorData = declutterReplays[zs[z].toString()];
-    let currentExecutor;
+    let currentDeclutterItems;
     for (let i = 0, ii = executorData.length; i < ii; ) {
       const executor = executorData[i++];
       const transform = executorData[i++];
       executor.execute(context, 1, transform, rotation, snapToPixel);
-      if (executor !== currentExecutor && executor.declutterItems.length > 0) {
-        currentExecutor = executor;
+      if (
+        executor.declutterItems &&
+        executor.declutterItems !== currentDeclutterItems
+      ) {
+        currentDeclutterItems = executor.declutterItems;
         declutterItems.push({
           items: executor.declutterItems,
           opacity: opacity,

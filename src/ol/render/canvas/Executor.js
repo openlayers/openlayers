@@ -659,7 +659,7 @@ class Executor {
     featureCallback,
     opt_hitExtent
   ) {
-    this.declutterItems.length = 0;
+    this.declutterItems = [];
     /** @type {Array<number>} */
     let pixelCoordinates;
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
