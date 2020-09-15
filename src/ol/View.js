@@ -1290,14 +1290,14 @@ class View extends BaseObject {
     centerRotY += ((padding[0] - padding[2]) / 2) * resolution;
     const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
     const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
-    const center = [centerX, centerY];
+    const center = this.getConstrainedCenter([centerX, centerY], resolution);
     const callback = options.callback ? options.callback : VOID;
 
     if (options.duration !== undefined) {
       this.animateInternal(
         {
           resolution: resolution,
-          center: this.getConstrainedCenter(center, resolution),
+          center: center,
           duration: options.duration,
           easing: options.easing,
         },
