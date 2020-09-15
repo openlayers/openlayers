@@ -283,7 +283,7 @@ export class Processor extends Disposable {
           const offset = i * segmentLength;
           const slices = [];
           for (let j = 0, jj = buffers.length; j < jj; ++j) {
-            slices.push(buffers[i].slice(offset, offset + segmentLength));
+            slices.push(buffers[j].slice(offset, offset + segmentLength));
           }
           this._workers[i].postMessage(
             {
