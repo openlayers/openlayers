@@ -856,7 +856,9 @@ class Executor {
             rotation -= viewRotation;
           }
           let widthIndex = 0;
-          let declutterGroupIndex = 0;
+          let declutterGroupIndex = declutterGroups
+            ? declutterGroups.length - 1
+            : null;
           for (; d < dd; d += 2) {
             if (
               geometryWidths &&
