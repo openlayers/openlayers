@@ -224,7 +224,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
     const endWorld = multiWorld
-      ? Math.ceil((extent[2] + projectionExtent[2]) / worldWidth)
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
       : 1;
     let world = multiWorld
       ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
