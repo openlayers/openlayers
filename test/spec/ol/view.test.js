@@ -1776,6 +1776,12 @@ describe('ol.View', function () {
       expect(view.getCenter()[0]).to.be(1500);
       expect(view.getCenter()[1]).to.be(1500);
     });
+    it('fits correctly to the extent when a view extent is configured', function () {
+      view.options_.extent = [1500, 0, 2500, 10000];
+      view.applyOptions_(view.options_);
+      view.fit([1000, 1000, 2000, 2000]);
+      expect(view.calculateExtent()).eql([1500, 1000, 2500, 2000]);
+    });
     it('throws on invalid geometry/extent value', function () {
       expect(function () {
         view.fit(true, [200, 200]);
