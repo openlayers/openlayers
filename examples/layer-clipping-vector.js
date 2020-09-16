@@ -22,7 +22,7 @@ const base = new TileLayer({
 const clipLayer = new VectorLayer({
   style: null,
   source: new VectorSource({
-    url: './data/geojson/switzerland.geojson',
+    url: 'data/geojson/switzerland.geojson',
     format: new GeoJSON(),
   }),
 });
