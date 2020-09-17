@@ -45,7 +45,6 @@ class GlTile extends Tile {
     this.textures_ = textures;
 
     this.render();
-
   }
 
   /**
@@ -84,7 +83,7 @@ class GlTile extends Tile {
       }
 
       // TODO: copy-paste code from Leaflet.TileLayerGL's render() method
-      // to update the per-tile attributes
+      // to update the per-tile attributes, if those are needed/wanted
 
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       gl.clearColor(0.5, 0.5, 0.5, 0);
@@ -175,6 +174,10 @@ class GlTiles extends XYZ {
       throw new Error('GlTiles can not work on a tileGrid with multiple tile sizes.');
     }
 
+    this._programReady = new Promise((res)=>{
+      this._markProgramAsReady = res;
+    });
+
     const tileSize = toSize(this.tileGrid.getTileSize());
 
     // Init WebGL context. Mostly copy-pasted from Leaflet.TileLayerGL.
@@ -193,7 +196,29 @@ class GlTiles extends XYZ {
     this._gl.viewportWidth = tileSize[0];
     this._gl.viewportHeight = tileSize[1];
 
-    this.loadGLProgram_();
+    this._maxTextures = this._gl.getParameter(this._gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+    if (this.texSources.length > this._maxTextures) {
+      console.warn(`This WebGL implementation allows for a maximum of ${this._maxTextures}, but ${this.texSources.length} are being used. Some textures SHALL be dropped.`);
+    }
+
+    // A `Promise` that resolves when all the `GlTiledTexture`s have reported their
+    // fetchFunc definition.
+    this._fetchFuncDefs = Promise.all(this.texSources.map((glTex, i)=>{
+      if (glTex instanceof GlTiledTextureAbstract) {
+        return glTex.getFetchFunctionDef(`uTexture${i}`);
+      } else {
+        // Any other image-based tile source, e.g. XYZ image tiles
+        return "";
+      }
+    }));
+
+    // Init texture units (before program load) so that early tiles can access them.
+    this.textures_ = [];
+    for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
+      this.textures_[i] = this._gl.createTexture();
+//       gl.uniform1i(gl.getUniformLocation(this._glProgram, 'uTexture' + i), i); // Done later
+    }
+    this._fetchFuncDefs.then((defs)=>this.loadGLProgram_(defs));
   }
 
   /**
@@ -238,7 +263,11 @@ class GlTiles extends XYZ {
         } else {
           throw new Error('GLTiles expected a TileImage source or a GlTiledTexture (e.g. GeoTIFF), got:' + this.texSources[i]);
         }
+        // Delay all texture fetching until the fetch function defs are resolved
+        const tmp = texFetches[i];
+        texFetches[i] = this._programReady.then(()=>tmp);
       }
+
 
       // Instantiate tile, pass an array of texfetches for this particular tile,
       // and the instances of WebGLTexture (so they can be re-put into the texture units)
@@ -256,7 +285,11 @@ class GlTiles extends XYZ {
   }
 
 
-  loadGLProgram_() {
+  // Takes as the only argument the texture fetch function definitions, an array of `String`s
+  loadGLProgram_(defs) {
+
+    console.log("Loading GL program, func defs: ", defs);
+
     // Mostly copy-pasted from Leaflet.TileLayerGL's code.
     const gl = this._gl;
 
@@ -280,17 +313,20 @@ class GlTiles extends XYZ {
     // Force using this bit for the fragment shader. All fragment shaders
     // will use the same predefined varyings.
     let fragmentShaderHeader =
+      '#line 10001\n' +
       'precision highp float;\n' +
       'uniform float uNow;\n' +
       'varying vec2 vTextureCoords;\n' +
       'varying vec2 vCRSCoords;\n' +
       'varying vec2 vLatLngCoords;\n';
 
-    for (let i = 0; i < this.texSources.length && i < 8; i++) {
+    for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
       fragmentShaderHeader += 'uniform sampler2D uTexture' + i + ';\n';
     }
 
     fragmentShaderHeader += this.getUniformSizes_();
+    fragmentShaderHeader += defs.join("\n");
+    fragmentShaderHeader += '\n#line 1\n';
 
     this._glProgram = gl.createProgram();
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -388,11 +424,13 @@ class GlTiles extends XYZ {
 
     // Init textures
     this.textures_ = [];
-    for (let i = 0; i < this.texSources.length && i < 8; i++) {
-      this.textures_[i] = gl.createTexture();
+    for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
+//       this.textures_[i] = gl.createTexture();  // Done earlier
       gl.uniform1i(gl.getUniformLocation(this._glProgram, 'uTexture' + i), i);
     }
 
+    console.log("Marking program as ready");
+    this._markProgramAsReady();
   }
 
 
@@ -473,6 +511,7 @@ class GlTiles extends XYZ {
 
   // Triggers a re-render of all tiles in this GlTiles source
   reRender() {
+    // TODO: Add some mechanism to wait at least one frame before re-rendering.
 
     this.tileCache.forEach((tile, key)=>{
       // Not using tile.setState(), because rolling back the state of a tile
@@ -498,7 +537,6 @@ class GlTiles extends XYZ {
   * @return {undefined}
   */
 function bindTextureImageData(gl, texture, index, imageData) {
-
   gl.activeTexture(gl.TEXTURE0 + index);
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
@@ -535,7 +573,7 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   const castArr = new Uint8Array(arr.buffer);
-  console.log(arr);
+//   console.log(arr);
 
   if (arr instanceof Uint8Array) {
     // For 8-bit data:

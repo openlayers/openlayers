@@ -103,7 +103,7 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
         samples: [this.sample_],
         fillValue: this.fillValue_
       }).then(rasters=>{
-        console.log(rasters[0]);
+//         console.log(rasters[0]);
         return rasters[0]
       });
     });
@@ -151,7 +151,7 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
       }
 
       return `float ${this.fetchFuncName_}(vec2 texelCoords) {
-        vec4 texel = (${uniformName}, texelCoords.st);
+        vec4 texel = texture2D(${uniformName}, texelCoords.st);
         ${body}
       }`
     });

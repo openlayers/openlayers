@@ -9,14 +9,16 @@ import GlTiledTextureGeoTiff from '../src/ol/source/GlTiledTexture/GlTiledTextur
 
 const fragShaderCode = `
     void main(void) {
-      vec4 texelColour = texture2D(uTexture0, vec2(vTextureCoords.s, vTextureCoords.t));
+      vec4 texelColour = texture2D(uTexture0, vTextureCoords.st);
 //           gl_FragColor = vec4(texelColour.gbr, 1.0);
       gl_FragColor = vec4(texelColour.rg, texelColour.b * 1.1, 1.0);
 
-      vec4 texelElevation = texture2D(uTexture1, vec2(vTextureCoords.s, vTextureCoords.t));
+      // Obsolete: use the getElevation() function now
+//       vec4 texelElevation = texture2D(uTexture1, vTextureCoords.st);
+//       /// FIXME: careful with 8-bit RGBA vs 16-bit LUMINANCE_ALPHA packing!!!
+//       float elevation = texelElevation.x + texelElevation.a * 256.;
 
-      /// FIXME: careful with 8-bit RGBA vs 16-bit LUMINANCE_ALPHA packing!!!
-      float elevation = texelElevation.x + texelElevation.a * 256.;
+      float elevation = getElevation(vTextureCoords.st);
 
       if (elevation > 0.) {
 
