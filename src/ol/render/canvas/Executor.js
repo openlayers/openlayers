@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
-import RBush from 'rbush';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
@@ -11,13 +10,7 @@ import {
   create as createTransform,
   setFromArray as transformSetFromArray,
 } from '../../transform.js';
-import {
-  createEmpty,
-  createOrUpdate,
-  getHeight,
-  getWidth,
-  intersects,
-} from '../../extent.js';
+import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
 import {
   defaultPadding,
   defaultTextBaseline,
@@ -96,11 +89,6 @@ class Executor {
      * @type {boolean}
      */
     this.alignFill_;
-
-    /**
-     * @type {Array<*>}
-     */
-    this.declutterItems = [];
 
     /**
      * @protected
@@ -274,7 +262,6 @@ class Executor {
    * @param {import("../../coordinate.js").Coordinate} p4 4th point of the background box.
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
-   * @param {boolean} declutter Declutter.
    */
   replayTextBackground_(
     context,
@@ -283,8 +270,7 @@ class Executor {
     p3,
     p4,
     fillInstruction,
-    strokeInstruction,
-    declutter
+    strokeInstruction
   ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
@@ -294,9 +280,6 @@ class Executor {
     context.lineTo.apply(context, p1);
     if (fillInstruction) {
       this.alignFill_ = /** @type {boolean} */ (fillInstruction[2]);
-      if (declutter) {
-        context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (fillInstruction[1]);
-      }
       this.fill_(context);
     }
     if (strokeInstruction) {
@@ -317,7 +300,6 @@ class Executor {
    * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
    * @param {number} anchorX Anchor X.
    * @param {number} anchorY Anchor Y.
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    * @param {number} height Height.
    * @param {number} opacity Opacity.
    * @param {number} originX Origin X.
@@ -339,7 +321,6 @@ class Executor {
     imageOrLabel,
     anchorX,
     anchorY,
-    declutterGroup,
     height,
     opacity,
     originX,
@@ -417,15 +398,8 @@ class Executor {
         tmpExtent
       );
     }
-    let renderBufferX = 0;
-    let renderBufferY = 0;
-    if (declutterGroup) {
-      const renderBuffer = this.renderBuffer_;
-      renderBuffer[0] = Math.max(renderBuffer[0], getWidth(tmpExtent));
-      renderBufferX = renderBuffer[0];
-      renderBuffer[1] = Math.max(renderBuffer[1], getHeight(tmpExtent));
-      renderBufferY = renderBuffer[1];
-    }
+    const renderBufferX = 0; // increase this.renderBuffer_ for decluttering
+    const renderBufferY = 0; // increase this.renderBuffer_ for decluttering
     const canvas = context.canvas;
     const strokePadding = strokeInstruction
       ? (strokeInstruction[2] * scale[0]) / 2
@@ -443,40 +417,7 @@ class Executor {
       y = Math.round(y);
     }
 
-    if (declutterGroup) {
-      if (!intersects && declutterGroup[0] == 1) {
-        return false;
-      }
-      const declutterArgs = intersects
-        ? [
-            context,
-            transform ? transform.slice(0) : null,
-            opacity,
-            imageOrLabel,
-            originX,
-            originY,
-            w,
-            h,
-            x,
-            y,
-            scale,
-            tmpExtent.slice(),
-          ]
-        : null;
-      if (declutterArgs) {
-        if (fillStroke) {
-          declutterArgs.push(
-            fillInstruction,
-            strokeInstruction,
-            p1.slice(0),
-            p2.slice(0),
-            p3.slice(0),
-            p4.slice(0)
-          );
-        }
-        declutterGroup.push(declutterArgs);
-      }
-    } else if (intersects) {
+    if (intersects) {
       if (fillStroke) {
         this.replayTextBackground_(
           context,
@@ -485,8 +426,7 @@ class Executor {
           p3,
           p4,
           /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction),
-          false
+          /** @type {Array<*>} */ (strokeInstruction)
         );
       }
       drawImageOrLabel(
@@ -539,68 +479,6 @@ class Executor {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
       context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
     }
-  }
-
-  /**
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
-   * @param {import("../../Feature.js").FeatureLike} feature Feature.
-   * @param {number} opacity Layer opacity.
-   * @param {?} declutterTree Declutter tree.
-   * @return {?} Declutter tree.
-   */
-  renderDeclutter(declutterGroup, feature, opacity, declutterTree) {
-    /** @type {Array<import("../../structs/RBush.js").Entry>} */
-    const boxes = [];
-    for (let i = 1, ii = declutterGroup.length; i < ii; ++i) {
-      const declutterData = declutterGroup[i];
-      const box = declutterData[11];
-      boxes.push({
-        minX: box[0],
-        minY: box[1],
-        maxX: box[2],
-        maxY: box[3],
-        value: feature,
-      });
-    }
-    if (!declutterTree) {
-      declutterTree = new RBush(9);
-    }
-    let collides = false;
-    for (let i = 0, ii = boxes.length; i < ii; ++i) {
-      if (declutterTree.collides(boxes[i])) {
-        collides = true;
-        break;
-      }
-    }
-    if (!collides) {
-      declutterTree.load(boxes);
-      for (let j = 1, jj = declutterGroup.length; j < jj; ++j) {
-        const declutterData = /** @type {Array} */ (declutterGroup[j]);
-        const context = declutterData[0];
-        const currentAlpha = context.globalAlpha;
-        if (currentAlpha !== opacity) {
-          context.globalAlpha = opacity;
-        }
-        if (declutterData.length > 12) {
-          this.replayTextBackground_(
-            declutterData[0],
-            declutterData[14],
-            declutterData[15],
-            declutterData[16],
-            declutterData[17],
-            declutterData[12],
-            declutterData[13],
-            true
-          );
-        }
-        drawImageOrLabel.apply(undefined, declutterData);
-        if (currentAlpha !== opacity) {
-          context.globalAlpha = currentAlpha;
-        }
-      }
-    }
-    declutterGroup.length = 1;
-    return declutterTree;
   }
 
   /**
@@ -659,7 +537,6 @@ class Executor {
     featureCallback,
     opt_hitExtent
   ) {
-    this.declutterItems.length = 0;
     /** @type {Array<number>} */
     let pixelCoordinates;
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
@@ -682,17 +559,7 @@ class Executor {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    let anchorX,
-      anchorY,
-      prevX,
-      prevY,
-      roundX,
-      roundY,
-      declutterGroup,
-      declutterGroups,
-      image,
-      text,
-      textKey;
+    let anchorX, anchorY, prevX, prevY, roundX, roundY, image, text, textKey;
     let strokeKey, fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
@@ -796,22 +663,21 @@ class Executor {
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
-          declutterGroups = featureCallback ? null : instruction[6];
-          let height = /** @type {number} */ (instruction[7]);
-          const opacity = /** @type {number} */ (instruction[8]);
-          const originX = /** @type {number} */ (instruction[9]);
-          const originY = /** @type {number} */ (instruction[10]);
-          const rotateWithView = /** @type {boolean} */ (instruction[11]);
-          let rotation = /** @type {number} */ (instruction[12]);
-          const scale = /** @type {import("../../size.js").Size} */ (instruction[13]);
-          let width = /** @type {number} */ (instruction[14]);
+          let height = /** @type {number} */ (instruction[6]);
+          const opacity = /** @type {number} */ (instruction[7]);
+          const originX = /** @type {number} */ (instruction[8]);
+          const originY = /** @type {number} */ (instruction[9]);
+          const rotateWithView = /** @type {boolean} */ (instruction[10]);
+          let rotation = /** @type {number} */ (instruction[11]);
+          const scale = /** @type {import("../../size.js").Size} */ (instruction[12]);
+          let width = /** @type {number} */ (instruction[13]);
 
-          if (!image && instruction.length >= 19) {
+          if (!image && instruction.length >= 18) {
             // create label images
-            text = /** @type {string} */ (instruction[18]);
-            textKey = /** @type {string} */ (instruction[19]);
-            strokeKey = /** @type {string} */ (instruction[20]);
-            fillKey = /** @type {string} */ (instruction[21]);
+            text = /** @type {string} */ (instruction[17]);
+            textKey = /** @type {string} */ (instruction[18]);
+            strokeKey = /** @type {string} */ (instruction[19]);
+            fillKey = /** @type {string} */ (instruction[20]);
             const labelWithAnchor = this.drawLabelWithPointPlacement_(
               text,
               textKey,
@@ -820,28 +686,28 @@ class Executor {
             );
             image = labelWithAnchor.label;
             instruction[3] = image;
-            const textOffsetX = /** @type {number} */ (instruction[22]);
+            const textOffsetX = /** @type {number} */ (instruction[21]);
             anchorX = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
             instruction[4] = anchorX;
-            const textOffsetY = /** @type {number} */ (instruction[23]);
+            const textOffsetY = /** @type {number} */ (instruction[22]);
             anchorY = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
             instruction[5] = anchorY;
             height = image.height;
-            instruction[7] = height;
+            instruction[6] = height;
             width = image.width;
-            instruction[14] = width;
+            instruction[13] = width;
           }
 
           let geometryWidths;
-          if (instruction.length > 24) {
-            geometryWidths = /** @type {number} */ (instruction[24]);
+          if (instruction.length > 23) {
+            geometryWidths = /** @type {number} */ (instruction[23]);
           }
 
           let padding, backgroundFill, backgroundStroke;
-          if (instruction.length > 16) {
-            padding = /** @type {Array<number>} */ (instruction[15]);
-            backgroundFill = /** @type {boolean} */ (instruction[16]);
-            backgroundStroke = /** @type {boolean} */ (instruction[17]);
+          if (instruction.length > 15) {
+            padding = /** @type {Array<number>} */ (instruction[14]);
+            backgroundFill = /** @type {boolean} */ (instruction[15]);
+            backgroundStroke = /** @type {boolean} */ (instruction[16]);
           } else {
             padding = defaultPadding;
             backgroundFill = false;
@@ -856,7 +722,6 @@ class Executor {
             rotation -= viewRotation;
           }
           let widthIndex = 0;
-          let declutterGroupIndex = 0;
           for (; d < dd; d += 2) {
             if (
               geometryWidths &&
@@ -864,14 +729,7 @@ class Executor {
             ) {
               continue;
             }
-            if (declutterGroups) {
-              const index = Math.floor(declutterGroupIndex);
-              declutterGroup =
-                declutterGroups.length < index + 1
-                  ? [declutterGroups[0][0]]
-                  : declutterGroups[index];
-            }
-            const rendered = this.replayImageOrLabel_(
+            this.replayImageOrLabel_(
               context,
               contextScale,
               pixelCoordinates[d],
@@ -879,7 +737,6 @@ class Executor {
               image,
               anchorX,
               anchorY,
-              declutterGroup,
               height,
               opacity,
               originX,
@@ -896,19 +753,6 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null
             );
-            if (
-              rendered &&
-              declutterGroup &&
-              declutterGroups[declutterGroups.length - 1] !== declutterGroup
-            ) {
-              declutterGroups.push(declutterGroup);
-            }
-            if (declutterGroup) {
-              if (declutterGroup.length - 1 === declutterGroup[0]) {
-                this.declutterItems.push(this, declutterGroup, feature);
-              }
-              declutterGroupIndex += 1 / declutterGroup[0];
-            }
           }
           ++i;
           break;
@@ -916,19 +760,18 @@ class Executor {
           const begin = /** @type {number} */ (instruction[1]);
           const end = /** @type {number} */ (instruction[2]);
           const baseline = /** @type {number} */ (instruction[3]);
-          declutterGroup = featureCallback ? null : instruction[4];
-          const overflow = /** @type {number} */ (instruction[5]);
-          fillKey = /** @type {string} */ (instruction[6]);
-          const maxAngle = /** @type {number} */ (instruction[7]);
-          const measurePixelRatio = /** @type {number} */ (instruction[8]);
-          const offsetY = /** @type {number} */ (instruction[9]);
-          strokeKey = /** @type {string} */ (instruction[10]);
-          const strokeWidth = /** @type {number} */ (instruction[11]);
-          text = /** @type {string} */ (instruction[12]);
-          textKey = /** @type {string} */ (instruction[13]);
+          const overflow = /** @type {number} */ (instruction[4]);
+          fillKey = /** @type {string} */ (instruction[5]);
+          const maxAngle = /** @type {number} */ (instruction[6]);
+          const measurePixelRatio = /** @type {number} */ (instruction[7]);
+          const offsetY = /** @type {number} */ (instruction[8]);
+          strokeKey = /** @type {string} */ (instruction[9]);
+          const strokeWidth = /** @type {number} */ (instruction[10]);
+          text = /** @type {string} */ (instruction[11]);
+          textKey = /** @type {string} */ (instruction[12]);
           const pixelRatioScale = [
-            /** @type {number} */ (instruction[14]),
-            /** @type {number} */ (instruction[14]),
+            /** @type {number} */ (instruction[13]),
+            /** @type {number} */ (instruction[13]),
           ];
 
           const textState = this.textStates[textKey];
@@ -990,7 +833,6 @@ class Executor {
                       label,
                       anchorX,
                       anchorY,
-                      declutterGroup,
                       label.height,
                       1,
                       0,
@@ -1021,7 +863,6 @@ class Executor {
                       label,
                       anchorX,
                       anchorY,
-                      declutterGroup,
                       label.height,
                       1,
                       0,
@@ -1035,9 +876,6 @@ class Executor {
                       null
                     ) || rendered;
                 }
-              }
-              if (rendered) {
-                this.declutterItems.push(this, declutterGroup, feature);
               }
             }
           }

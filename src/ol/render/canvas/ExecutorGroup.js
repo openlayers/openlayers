@@ -162,7 +162,6 @@ class ExecutorGroup {
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike): T} callback Feature callback.
-   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -171,8 +170,7 @@ class ExecutorGroup {
     resolution,
     rotation,
     hitTolerance,
-    callback,
-    declutteredFeatures
+    callback
   ) {
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
@@ -234,17 +232,7 @@ class ExecutorGroup {
         for (let j = 0; j < contextSize; j++) {
           if (mask[i][j]) {
             if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-              let result;
-              if (
-                !(
-                  declutteredFeatures &&
-                  (builderType == BuilderType.IMAGE ||
-                    builderType == BuilderType.TEXT)
-                ) ||
-                declutteredFeatures.indexOf(feature) !== -1
-              ) {
-                result = callback(feature);
-              }
+              const result = callback(feature);
               if (result) {
                 return result;
               } else {
@@ -318,7 +306,6 @@ class ExecutorGroup {
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<import("./BuilderType.js").default>=} opt_builderTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
   execute(
     context,
@@ -326,8 +313,7 @@ class ExecutorGroup {
     transform,
     viewRotation,
     snapToPixel,
-    opt_builderTypes,
-    opt_declutterReplays
+    opt_builderTypes
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -349,26 +335,13 @@ class ExecutorGroup {
         const builderType = builderTypes[j];
         replay = replays[builderType];
         if (replay !== undefined) {
-          if (
-            opt_declutterReplays &&
-            (builderType == BuilderType.IMAGE ||
-              builderType == BuilderType.TEXT)
-          ) {
-            const declutter = opt_declutterReplays[zIndexKey];
-            if (!declutter) {
-              opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-            } else {
-              declutter.push(replay, transform.slice(0));
-            }
-          } else {
-            replay.execute(
-              context,
-              contextScale,
-              transform,
-              viewRotation,
-              snapToPixel
-            );
-          }
+          replay.execute(
+            context,
+            contextScale,
+            transform,
+            viewRotation,
+            snapToPixel
+          );
         }
       }
     }
@@ -452,43 +425,6 @@ export function getCircleArray(radius) {
 
   circleArrayCache[radius] = arr;
   return arr;
-}
-
-/**
- * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
- * @param {CanvasRenderingContext2D} context Context.
- * @param {number} rotation Rotation.
- * @param {number} opacity Opacity.
- * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
- * @param {Array<import("../../PluggableMap.js").DeclutterItems>} declutterItems Declutter items.
- */
-export function replayDeclutter(
-  declutterReplays,
-  context,
-  rotation,
-  opacity,
-  snapToPixel,
-  declutterItems
-) {
-  const zs = Object.keys(declutterReplays)
-    .map(Number)
-    .sort(numberSafeCompareFunction);
-  for (let z = 0, zz = zs.length; z < zz; ++z) {
-    const executorData = declutterReplays[zs[z].toString()];
-    let currentExecutor;
-    for (let i = 0, ii = executorData.length; i < ii; ) {
-      const executor = executorData[i++];
-      const transform = executorData[i++];
-      executor.execute(context, 1, transform, rotation, snapToPixel);
-      if (executor !== currentExecutor && executor.declutterItems.length > 0) {
-        currentExecutor = executor;
-        declutterItems.push({
-          items: executor.declutterItems,
-          opacity: opacity,
-        });
-      }
-    }
-  }
 }
 
 export default ExecutorGroup;

@@ -54,12 +54,6 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import("../canvas.js").DeclutterGroups}
-     */
-    this.declutterGroups_;
-
-    /**
-     * @private
      * @type {Array<HTMLCanvasElement>}
      */
     this.labels_ = null;
@@ -226,12 +220,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
         const end = coordinates.length;
         flatOffset = ends[o];
-        const declutterGroup = this.declutterGroups_
-          ? o === 0
-            ? this.declutterGroups_[0]
-            : [].concat(this.declutterGroups_[0])
-          : null;
-        this.drawChars_(begin, end, declutterGroup);
+        this.drawChars_(begin, end);
         begin = end;
       }
       this.endGeometry(feature);
@@ -331,7 +320,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         null,
         NaN,
         NaN,
-        this.declutterGroups_,
         NaN,
         1,
         0,
@@ -363,7 +351,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         null,
         NaN,
         NaN,
-        this.declutterGroups_,
         NaN,
         1,
         0,
@@ -433,9 +420,8 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @private
    * @param {number} begin Begin.
    * @param {number} end End.
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    */
-  drawChars_(begin, end, declutterGroup) {
+  drawChars_(begin, end) {
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
 
@@ -458,7 +444,6 @@ class CanvasTextBuilder extends CanvasBuilder {
       begin,
       end,
       baseline,
-      declutterGroup,
       textState.overflow,
       fillKey,
       textState.maxAngle,
@@ -475,7 +460,6 @@ class CanvasTextBuilder extends CanvasBuilder {
       begin,
       end,
       baseline,
-      declutterGroup,
       textState.overflow,
       fillKey,
       textState.maxAngle,
@@ -491,15 +475,12 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
-   * @param {import("../canvas.js").DeclutterGroups} declutterGroups Declutter.
    */
-  setTextStyle(textStyle, declutterGroups) {
+  setTextStyle(textStyle) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
     } else {
-      this.declutterGroups_ = declutterGroups;
-
       const textFillStyle = textStyle.getFill();
       if (!textFillStyle) {
         fillState = null;

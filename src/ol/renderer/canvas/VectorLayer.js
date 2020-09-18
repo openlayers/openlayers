@@ -3,9 +3,7 @@
  */
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasLayerRenderer from './Layer.js';
-import ExecutorGroup, {
-  replayDeclutter,
-} from '../../render/canvas/ExecutorGroup.js';
+import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import ViewHint from '../../ViewHint.js';
 import {
   apply,
@@ -219,8 +217,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
 
-    const declutterReplays = this.getLayer().getDeclutter() ? {} : null;
-
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
     const endWorld = multiWorld
@@ -245,25 +241,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         transform,
         rotation,
         snapToPixel,
-        undefined,
-        declutterReplays
+        undefined
       );
     } while (++world < endWorld);
-
-    if (declutterReplays) {
-      const viewHints = frameState.viewHints;
-      const hifi = !(
-        viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
-      );
-      replayDeclutter(
-        declutterReplays,
-        context,
-        rotation,
-        1,
-        hifi,
-        frameState.declutterItems
-      );
-    }
 
     if (clipped) {
       context.restore();
@@ -388,17 +368,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
-   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(
-    coordinate,
-    frameState,
-    hitTolerance,
-    callback,
-    declutteredFeatures
-  ) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
     if (!this.replayGroup_) {
       return undefined;
     } else {
@@ -423,8 +396,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             features[key] = true;
             return callback(feature, layer);
           }
-        },
-        layer.getDeclutter() ? declutteredFeatures : null
+        }
       );
 
       return result;
@@ -556,8 +528,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       getRenderTolerance(resolution, pixelRatio),
       extent,
       resolution,
-      pixelRatio,
-      vectorLayer.getDeclutter()
+      pixelRatio
     );
 
     const userProjection = getUserProjection();

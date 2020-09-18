@@ -16,12 +16,6 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import("../canvas.js").DeclutterGroups}
-     */
-    this.declutterGroups_ = null;
-
-    /**
-     * @private
      * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
      */
     this.hitDetectionImage_ = null;
@@ -120,7 +114,6 @@ class CanvasImageBuilder extends CanvasBuilder {
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_ * this.imagePixelRatio_,
       this.anchorY_ * this.imagePixelRatio_,
-      this.declutterGroups_,
       Math.ceil(this.height_ * this.imagePixelRatio_),
       this.opacity_,
       this.originX_,
@@ -141,7 +134,6 @@ class CanvasImageBuilder extends CanvasBuilder {
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_,
       this.anchorY_,
-      this.declutterGroups_,
       this.height_,
       this.opacity_,
       this.originX_,
@@ -175,7 +167,6 @@ class CanvasImageBuilder extends CanvasBuilder {
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_ * this.imagePixelRatio_,
       this.anchorY_ * this.imagePixelRatio_,
-      this.declutterGroups_,
       Math.ceil(this.height_ * this.imagePixelRatio_),
       this.opacity_,
       this.originX_,
@@ -196,7 +187,6 @@ class CanvasImageBuilder extends CanvasBuilder {
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_,
       this.anchorY_,
-      this.declutterGroups_,
       this.height_,
       this.opacity_,
       this.originX_,
@@ -233,9 +223,8 @@ class CanvasImageBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Image.js").default} imageStyle Image style.
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroups Declutter.
    */
-  setImageStyle(imageStyle, declutterGroups) {
+  setImageStyle(imageStyle) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
     const hitDetectionImage = imageStyle.getHitDetectionImage();
@@ -244,7 +233,6 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
-    this.declutterGroups_ = declutterGroups;
     this.hitDetectionImage_ = hitDetectionImage;
     this.image_ = image;
     this.height_ = size[1];

@@ -51,7 +51,6 @@ import {removeNode} from './dom.js';
  * @property {boolean} animate
  * @property {import("./transform.js").Transform} coordinateToPixelTransform
  * @property {null|import("./extent.js").Extent} extent
- * @property {Array<DeclutterItems>} declutterItems
  * @property {number} index
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
  * @property {number} layerIndex
@@ -62,12 +61,6 @@ import {removeNode} from './dom.js';
  * @property {!Object<string, Object<string, boolean>>} usedTiles
  * @property {Array<number>} viewHints
  * @property {!Object<string, Object<string, boolean>>} wantedTiles
- */
-
-/**
- * @typedef {Object} DeclutterItems
- * @property {Array<*>} items Declutter items of an executor.
- * @property {number} opacity Layer opacity.
  */
 
 /**
@@ -1379,9 +1372,6 @@ class PluggableMap extends BaseObject {
       frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
-        declutterItems: previousFrameState
-          ? previousFrameState.declutterItems
-          : [],
         extent: getForViewAndSize(
           viewState.center,
           viewState.resolution,

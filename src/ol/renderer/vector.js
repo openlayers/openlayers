@@ -80,7 +80,7 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -224,7 +224,7 @@ function renderLineStringGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -251,7 +251,7 @@ function renderMultiLineStringGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -279,7 +279,7 @@ function renderMultiPolygonGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -300,7 +300,7 @@ function renderPointGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.IMAGE
     );
-    imageReplay.setImageStyle(imageStyle, builderGroup.addDeclutter(false));
+    imageReplay.setImageStyle(imageStyle);
     imageReplay.drawPoint(geometry, feature);
   }
   const textStyle = style.getText();
@@ -309,7 +309,7 @@ function renderPointGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(!!imageStyle));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -330,7 +330,7 @@ function renderMultiPointGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.IMAGE
     );
-    imageReplay.setImageStyle(imageStyle, builderGroup.addDeclutter(false));
+    imageReplay.setImageStyle(imageStyle);
     imageReplay.drawMultiPoint(geometry, feature);
   }
   const textStyle = style.getText();
@@ -339,7 +339,7 @@ function renderMultiPointGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(!!imageStyle));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -367,7 +367,7 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature) {
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, builderGroup.addDeclutter(false));
+    textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
 }
