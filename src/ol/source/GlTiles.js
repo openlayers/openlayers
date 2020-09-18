@@ -423,7 +423,6 @@ class GlTiles extends XYZ {
     }
 
     // Init textures
-    this.textures_ = [];
     for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
 //       this.textures_[i] = gl.createTexture();  // Done earlier
       gl.uniform1i(gl.getUniformLocation(this._glProgram, 'uTexture' + i), i);
