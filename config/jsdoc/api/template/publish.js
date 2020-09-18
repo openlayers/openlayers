@@ -500,6 +500,7 @@ exports.publish = function (taffyData, opts, tutorials) {
 
   // once for all
   view.nav = buildNav(members);
+
   attachModuleSymbols(
     find({kind: ['class', 'function'], longname: {left: 'module:'}}),
     members.modules
@@ -518,7 +519,16 @@ exports.publish = function (taffyData, opts, tutorials) {
   // index page displays information from package.json and lists files
   const files = find({kind: 'file'});
 
-  view.navigationHtml = helper.resolveLinks(view.partial('navigation.tmpl'));
+  view.navigationItems = view.nav.reduce(function (dict, item) {
+    dict[item.longname] = item;
+    return dict;
+  }, {});
+  const navigationHtml = helper.resolveLinks(
+    view.nav.map((item) => view.partial('navigation.tmpl', {item})).join('')
+  );
+  const navHtmlPath = path.join(outdir, 'navigation.tmpl.html');
+  fs.writeFileSync(navHtmlPath, navigationHtml, 'utf8');
+
   generate(
     'Index',
     [

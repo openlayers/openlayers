@@ -5,6 +5,7 @@
 
 .navbar-brand img {
   height: 35px;
+  width: 35px;
   vertical-align: middle;
   margin-right: 5px;
   display: inline-block;
@@ -71,6 +72,11 @@ li {
 .navigation-list {
   padding: 0 15px 0 15px;
 }
+.no-transition,
+.no-transition:after,
+.no-transition:before {
+    transition: none!important;
+}
 @supports (position: sticky) {
   .navigation {
     position: sticky;
@@ -78,7 +84,7 @@ li {
     height: calc(100vh - 54px);
   }
   .navigation-list {
-    overflow: auto;
+    overflow-y: auto;
     /* 54px navbar height */
     /* 4.25rem + 2px  searchbox height */
     /* 25px navigation padding */
@@ -94,7 +100,7 @@ li {
     position: inherit;
   }
   .navigation-list {
-    overflow: auto;
+    overflow-y: auto;
     max-height: 33vh;
     height: inherit;
   }
@@ -206,6 +212,10 @@ li {
   padding-left: 8px;
 }
 
+.navigation-list li.loading {
+  display: block;
+  height: 101vh;
+}
 /* search state */
 /* show all classes when search is empty */
 .navigation-list.search-empty .item {
