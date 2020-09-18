@@ -65,7 +65,7 @@ const geotiffTexture = new GlTiledTextureGeoTiff(
 //   GeoTIFF.fromUrl('data/geotiff/PNOA_MDT200_EPSG3857_Valencia-Float32-COG.tiff'),
   0,  // sample, zero-indexed. This is a one-channel GeoTIFF, so sample is zero.
   0,  // fillValue; in this case, "no data" is zero which means "sea level".
-  "getElevation"
+  "getElevation"  // Name of the GLSL function to be available in the frag shader
 );
 
 const map = new Map({
@@ -74,8 +74,8 @@ const map = new Map({
       source: new GlTiles({
         fragmentShader: fragShaderCode,
         textureSources: [
-          new OSM(),
-          geotiffTexture,
+          new OSM(),  // Mapped to uTexture0
+          geotiffTexture, // Mapped to uTexture1 *and* getElevation(vec2)
         ]
       })
     })
