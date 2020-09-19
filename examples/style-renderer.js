@@ -38,7 +38,7 @@ const style = new Style({
     const bottomLeft = getBottomLeft(extent);
     const left = bottomLeft[0];
     const bottom = bottomLeft[1];
-    context.drawImage(flag, 2, 12, 60, 40, left, bottom, width, height);
+    context.drawImage(flag, left, bottom, width, height);
     context.restore();
   },
 });
@@ -60,9 +60,7 @@ vectorLayer.getSource().on('addfeature', function (event) {
     feature.set('flag', img);
   };
   img.src =
-    'https://www.countryflags.io/' +
-    feature.get('iso_a2').toLowerCase() +
-    '/flat/64.png';
+    'https://flagcdn.com/w320/' + feature.get('iso_a2').toLowerCase() + '.png';
 });
 
 new Map({
