@@ -50,6 +50,7 @@ import {removeNode} from './dom.js';
  * @property {import("./View.js").State} viewState The state of the current view.
  * @property {boolean} animate
  * @property {import("./transform.js").Transform} coordinateToPixelTransform
+ * @property {import("rbush").default} declutterTree
  * @property {null|import("./extent.js").Extent} extent
  * @property {number} index
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
@@ -1372,6 +1373,7 @@ class PluggableMap extends BaseObject {
       frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
+        declutterTree: null,
         extent: getForViewAndSize(
           viewState.center,
           viewState.resolution,

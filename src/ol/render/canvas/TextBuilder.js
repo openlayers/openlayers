@@ -138,10 +138,17 @@ class CanvasTextBuilder extends CanvasBuilder {
      * @type {string}
      */
     this.strokeKey_ = '';
+
+    /**
+     * Data shared with an image builder for combined decluttering.
+     * @private
+     * @type {Object}
+     */
+    this.sharedData_ = undefined;
   }
 
   /**
-   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
+   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     const instructions = super.finish();
@@ -328,6 +335,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [1, 1],
         NaN,
+        this.sharedData_,
         padding == defaultPadding
           ? defaultPadding
           : padding.map(function (p) {
@@ -359,6 +367,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [scale, scale],
         NaN,
+        this.sharedData_,
         padding,
         !!textState.backgroundFill,
         !!textState.backgroundStroke,
@@ -475,8 +484,9 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
+   * @param {Object=} opt_sharedData Shared data.
    */
-  setTextStyle(textStyle) {
+  setTextStyle(textStyle, opt_sharedData) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
@@ -576,6 +586,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           : '|' + getUid(fillState.fillStyle)
         : '';
     }
+    this.sharedData_ = opt_sharedData;
   }
 }
 

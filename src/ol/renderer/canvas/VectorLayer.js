@@ -129,6 +129,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.replayGroupChanged = true;
 
     /**
+     * @type {import("../../render/canvas/ExecutorGroup").default}
+     */
+    this.declutterExecutorGroup = null;
+
+    /**
      * Clipping to be performed by `renderFrame()`
      * @type {boolean}
      */
@@ -146,6 +151,73 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       target = null;
     }
     super.useContainer(target, transform, opacity);
+  }
+
+  /**
+   * @param {ExecutorGroup} executorGroup Executor group.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   */
+  renderWorlds(executorGroup, frameState, opt_declutterTree) {
+    const extent = frameState.extent;
+    const viewState = frameState.viewState;
+    const center = viewState.center;
+    const resolution = viewState.resolution;
+    const projection = viewState.projection;
+    const rotation = viewState.rotation;
+    const projectionExtent = projection.getExtent();
+    const vectorSource = this.getLayer().getSource();
+    const pixelRatio = frameState.pixelRatio;
+    const viewHints = frameState.viewHints;
+    const snapToPixel = !(
+      viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
+    );
+    const context = this.context;
+    const width = Math.round(frameState.size[0] * pixelRatio);
+    const height = Math.round(frameState.size[1] * pixelRatio);
+
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
+    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+    const endWorld = multiWorld
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+      : 1;
+    let world = multiWorld
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      : 0;
+    do {
+      const transform = this.getRenderTransform(
+        center,
+        resolution,
+        rotation,
+        pixelRatio,
+        width,
+        height,
+        world * worldWidth
+      );
+      executorGroup.execute(
+        context,
+        1,
+        transform,
+        rotation,
+        snapToPixel,
+        undefined,
+        opt_declutterTree
+      );
+    } while (++world < endWorld);
+  }
+
+  /**
+   * Render declutter items for this layer
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  renderDeclutter(frameState) {
+    if (this.declutterExecutorGroup) {
+      this.renderWorlds(
+        this.declutterExecutorGroup,
+        frameState,
+        frameState.declutterTree
+      );
+    }
   }
 
   /**
@@ -169,7 +241,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const canvas = context.canvas;
 
     const replayGroup = this.replayGroup_;
-    if (!replayGroup || replayGroup.isEmpty()) {
+    const declutterExecutorGroup = this.declutterExecutorGroup;
+    if (
+      (!replayGroup || replayGroup.isEmpty()) &&
+      (!declutterExecutorGroup || declutterExecutorGroup.isEmpty())
+    ) {
       if (!this.containerReused && canvas.width > 0) {
         canvas.width = 0;
       }
@@ -191,14 +267,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
 
-    const extent = frameState.extent;
     const viewState = frameState.viewState;
-    const center = viewState.center;
-    const resolution = viewState.resolution;
     const projection = viewState.projection;
-    const rotation = viewState.rotation;
-    const projectionExtent = projection.getExtent();
-    const vectorSource = this.getLayer().getSource();
 
     // clipped rendering if layer extent is set
     let clipped = false;
@@ -212,38 +282,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const viewHints = frameState.viewHints;
-    const snapToPixel = !(
-      viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
-    );
-
-    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
-    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
-    const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
-      : 1;
-    let world = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
-      : 0;
-    do {
-      const transform = this.getRenderTransform(
-        center,
-        resolution,
-        rotation,
-        pixelRatio,
-        width,
-        height,
-        world * worldWidth
-      );
-      replayGroup.execute(
-        context,
-        1,
-        transform,
-        rotation,
-        snapToPixel,
-        undefined
-      );
-    } while (++world < endWorld);
+    this.renderWorlds(replayGroup, frameState);
 
     if (clipped) {
       context.restore();
@@ -378,26 +417,41 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const resolution = frameState.viewState.resolution;
       const rotation = frameState.viewState.rotation;
       const layer = this.getLayer();
+
       /** @type {!Object<string, boolean>} */
       const features = {};
 
-      const result = this.replayGroup_.forEachFeatureAtCoordinate(
-        coordinate,
-        resolution,
-        rotation,
-        hitTolerance,
-        /**
-         * @param {import("../../Feature.js").FeatureLike} feature Feature.
-         * @return {?} Callback result.
-         */
-        function (feature) {
-          const key = getUid(feature);
-          if (!(key in features)) {
-            features[key] = true;
-            return callback(feature, layer);
-          }
+      /**
+       * @param {import("../../Feature.js").FeatureLike} feature Feature.
+       * @return {?} Callback result.
+       */
+      const featureCallback = function (feature) {
+        const key = getUid(feature);
+        if (!(key in features)) {
+          features[key] = true;
+          return callback(feature, layer);
         }
-      );
+      };
+
+      let result;
+      const executorGroups = [this.replayGroup_];
+      if (this.declutterExecutorGroup) {
+        executorGroups.push(this.declutterExecutorGroup);
+      }
+      executorGroups.forEach((executorGroup) => {
+        result =
+          result ||
+          executorGroup.forEachFeatureAtCoordinate(
+            coordinate,
+            resolution,
+            rotation,
+            hitTolerance,
+            featureCallback,
+            executorGroup === this.declutterExecutorGroup
+              ? frameState.declutterTree.all().map((item) => item.value)
+              : null
+          );
+      });
 
       return result;
     }
@@ -531,6 +585,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       pixelRatio
     );
 
+    let declutterBuilderGroup;
+    if (this.getLayer().getDeclutter()) {
+      declutterBuilderGroup = new CanvasBuilderGroup(
+        getRenderTolerance(resolution, pixelRatio),
+        extent,
+        resolution,
+        pixelRatio
+      );
+    }
+
     const userProjection = getUserProjection();
     let userTransform;
     if (userProjection) {
@@ -568,7 +632,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             squaredTolerance,
             styles,
             replayGroup,
-            userTransform
+            userTransform,
+            declutterBuilderGroup
           );
           this.dirty_ = this.dirty_ || dirty;
         }
@@ -595,6 +660,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       vectorLayer.getRenderBuffer()
     );
 
+    if (declutterBuilderGroup) {
+      this.declutterExecutorGroup = new ExecutorGroup(
+        extent,
+        resolution,
+        pixelRatio,
+        vectorSource.getOverlaps(),
+        declutterBuilderGroup.finish(),
+        vectorLayer.getRenderBuffer()
+      );
+    }
+
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
@@ -614,6 +690,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
    * @param {import("../../proj.js").TransformFunction=} opt_transform Transform from user to view projection.
+   * @param {import("../../render/canvas/BuilderGroup.js").default=} opt_declutterBuilderGroup Builder for decluttering.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(
@@ -621,7 +698,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     squaredTolerance,
     styles,
     builderGroup,
-    opt_transform
+    opt_transform,
+    opt_declutterBuilderGroup
   ) {
     if (!styles) {
       return false;
@@ -636,7 +714,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             styles[i],
             squaredTolerance,
             this.boundHandleStyleImageChange_,
-            opt_transform
+            opt_transform,
+            opt_declutterBuilderGroup
           ) || loading;
       }
     } else {
@@ -646,7 +725,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         styles,
         squaredTolerance,
         this.boundHandleStyleImageChange_,
-        opt_transform
+        opt_transform,
+        opt_declutterBuilderGroup
       );
     }
     return loading;

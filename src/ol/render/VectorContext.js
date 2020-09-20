@@ -100,13 +100,15 @@ class VectorContext {
 
   /**
    * @param {import("../style/Image.js").default} imageStyle Image style.
+   * @param {Object=} opt_sharedData Shared data for combined decluttering with a text style.
    */
-  setImageStyle(imageStyle) {}
+  setImageStyle(imageStyle, opt_sharedData) {}
 
   /**
    * @param {import("../style/Text.js").default} textStyle Text style.
+   * @param {Object=} opt_sharedData Shared data for combined decluttering with an image style.
    */
-  setTextStyle(textStyle) {}
+  setTextStyle(textStyle, opt_sharedData) {}
 }
 
 export default VectorContext;

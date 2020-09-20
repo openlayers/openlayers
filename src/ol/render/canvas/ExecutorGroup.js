@@ -36,7 +36,7 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
-   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("./Builder.js").SerializableInstructions>>} allInstructions
+   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
@@ -116,7 +116,7 @@ class ExecutorGroup {
   /**
    * Create executors and populate them using the provided instructions.
    * @private
-   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   createExecutors_(allInstructions) {
     for (const zIndex in allInstructions) {
@@ -162,6 +162,7 @@ class ExecutorGroup {
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike): T} callback Feature callback.
+   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -170,7 +171,8 @@ class ExecutorGroup {
     resolution,
     rotation,
     hitTolerance,
-    callback
+    callback,
+    declutteredFeatures
   ) {
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
@@ -232,7 +234,17 @@ class ExecutorGroup {
         for (let j = 0; j < contextSize; j++) {
           if (mask[i][j]) {
             if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-              const result = callback(feature);
+              let result;
+              if (
+                !(
+                  declutteredFeatures &&
+                  (builderType == BuilderType.IMAGE ||
+                    builderType == BuilderType.TEXT)
+                ) ||
+                declutteredFeatures.indexOf(feature) !== -1
+              ) {
+                result = callback(feature);
+              }
               if (result) {
                 return result;
               } else {
@@ -306,6 +318,7 @@ class ExecutorGroup {
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<import("./BuilderType.js").default>=} opt_builderTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
+   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
    */
   execute(
     context,
@@ -313,7 +326,8 @@ class ExecutorGroup {
     transform,
     viewRotation,
     snapToPixel,
-    opt_builderTypes
+    opt_builderTypes,
+    opt_declutterTree
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -328,6 +342,9 @@ class ExecutorGroup {
 
     const builderTypes = opt_builderTypes ? opt_builderTypes : ORDER;
     let i, ii, j, jj, replays, replay;
+    if (opt_declutterTree) {
+      zs.reverse();
+    }
     for (i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
       replays = this.executorsByZIndex_[zIndexKey];
@@ -340,7 +357,8 @@ class ExecutorGroup {
             contextScale,
             transform,
             viewRotation,
-            snapToPixel
+            snapToPixel,
+            opt_declutterTree
           );
         }
       }

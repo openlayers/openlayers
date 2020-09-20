@@ -28,24 +28,31 @@ import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
 /**
- * @typedef {Object} SerializableInstructions
- * @property {Array<*>} instructions The rendering instructions.
- * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
- * @property {Array<number>} coordinates The array of all coordinates.
- * @property {!Object<string, import("../canvas.js").TextState>} textStates The text states (decluttering).
- * @property {!Object<string, import("../canvas.js").FillState>} fillStates The fill states (decluttering).
- * @property {!Object<string, import("../canvas.js").StrokeState>} strokeStates The stroke states (decluttering).
+ * @typedef {Object} BBox
+ * @property {number} minX
+ * @property {number} minY
+ * @property {number} maxX
+ * @property {number} maxY
+ * @property {*} value
+ */
+
+/**
+ * @typedef {Object} ImageOrLabelDimensions
+ * @property {number} drawImageX
+ * @property {number} drawImageY
+ * @property {number} drawImageW
+ * @property {number} drawImageH
+ * @property {number} originX
+ * @property {number} originY
+ * @property {Array<number>} scale
+ * @property {BBox} declutterBox
+ * @property {import("../../transform.js").Transform} canvasTransform
  */
 
 /**
  * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
-
-/**
- * @type {!import("../../transform.js").Transform}
- */
-const tmpTransform = createTransform();
 
 /** @type {import("../../coordinate.js").Coordinate} */
 const p1 = [];
@@ -56,12 +63,21 @@ const p3 = [];
 /** @type {import("../../coordinate.js").Coordinate} */
 const p4 = [];
 
+/**
+ * @param {Array<*>} replayImageOrLabelArgs Arguments to replayImageOrLabel
+ * @return {BBox} Declutter bbox.
+ */
+function getDeclutterBox(replayImageOrLabelArgs) {
+  return /** @type {ImageOrLabelDimensions} */ (replayImageOrLabelArgs[3])
+    .declutterBox;
+}
+
 class Executor {
   /**
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
-   * @param {SerializableInstructions} instructions The serializable instructions
+   * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions
    * @param {import("../../size.js").Size} renderBuffer Render buffer (width/height) in pixels.
    */
   constructor(resolution, pixelRatio, overlaps, instructions, renderBuffer) {
@@ -293,60 +309,49 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} contextScale Scale of the context.
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
+   * @param {number} sheetWidth Width of the sprite sheet.
+   * @param {number} sheetHeight Height of the sprite sheet.
+   * @param {number} centerX X.
+   * @param {number} centerY Y.
+   * @param {number} width Width.
+   * @param {number} height Height.
    * @param {number} anchorX Anchor X.
    * @param {number} anchorY Anchor Y.
-   * @param {number} height Height.
-   * @param {number} opacity Opacity.
    * @param {number} originX Origin X.
    * @param {number} originY Origin Y.
    * @param {number} rotation Rotation.
    * @param {import("../../size.js").Size} scale Scale.
    * @param {boolean} snapToPixel Snap to pixel.
-   * @param {number} width Width.
    * @param {Array<number>} padding Padding.
-   * @param {Array<*>} fillInstruction Fill instruction.
-   * @param {Array<*>} strokeInstruction Stroke instruction.
-   * @return {boolean} The image or label was rendered.
+   * @param {boolean} fillStroke Background fill or stroke.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @return {ImageOrLabelDimensions} Dimensions for positioning and decluttering the image or label.
    */
-  replayImageOrLabel_(
-    context,
-    contextScale,
-    x,
-    y,
-    imageOrLabel,
+  calculateImageOrLabelDimensions_(
+    sheetWidth,
+    sheetHeight,
+    centerX,
+    centerY,
+    width,
+    height,
     anchorX,
     anchorY,
-    height,
-    opacity,
     originX,
     originY,
     rotation,
     scale,
     snapToPixel,
-    width,
     padding,
-    fillInstruction,
-    strokeInstruction
+    fillStroke,
+    feature
   ) {
-    const fillStroke = fillInstruction || strokeInstruction;
     anchorX *= scale[0];
     anchorY *= scale[1];
-    x -= anchorX;
-    y -= anchorY;
+    let x = centerX - anchorX;
+    let y = centerY - anchorY;
 
-    const w =
-      width + originX > imageOrLabel.width
-        ? imageOrLabel.width - originX
-        : width;
-    const h =
-      height + originY > imageOrLabel.height
-        ? imageOrLabel.height - originY
-        : height;
+    const w = width + originX > sheetWidth ? sheetWidth - originX : width;
+    const h = height + originY > sheetHeight ? sheetHeight - originY : height;
     const boxW = padding[3] + w * scale[0] + padding[1];
     const boxH = padding[0] + h * scale[1] + padding[2];
     const boxX = x - padding[3];
@@ -363,12 +368,10 @@ class Executor {
       p4[1] = p3[1];
     }
 
-    let transform = null;
+    let transform;
     if (rotation !== 0) {
-      const centerX = x + anchorX;
-      const centerY = y + anchorY;
       transform = composeTransform(
-        tmpTransform,
+        createTransform(),
         centerX,
         centerY,
         1,
@@ -378,10 +381,10 @@ class Executor {
         -centerY
       );
 
-      applyTransform(tmpTransform, p1);
-      applyTransform(tmpTransform, p2);
-      applyTransform(tmpTransform, p3);
-      applyTransform(tmpTransform, p4);
+      applyTransform(transform, p1);
+      applyTransform(transform, p2);
+      applyTransform(transform, p3);
+      applyTransform(transform, p4);
       createOrUpdate(
         Math.min(p1[0], p2[0], p3[0], p4[0]),
         Math.min(p1[1], p2[1], p3[1], p4[1]),
@@ -398,24 +401,61 @@ class Executor {
         tmpExtent
       );
     }
-    const renderBufferX = 0; // increase this.renderBuffer_ for decluttering
-    const renderBufferY = 0; // increase this.renderBuffer_ for decluttering
-    const canvas = context.canvas;
-    const strokePadding = strokeInstruction
-      ? (strokeInstruction[2] * scale[0]) / 2
-      : 0;
-    const intersects =
-      tmpExtent[0] - strokePadding <=
-        (canvas.width + renderBufferX) / contextScale &&
-      tmpExtent[2] + strokePadding >= -renderBufferX / contextScale &&
-      tmpExtent[1] - strokePadding <=
-        (canvas.height + renderBufferY) / contextScale &&
-      tmpExtent[3] + strokePadding >= -renderBufferY / contextScale;
-
     if (snapToPixel) {
       x = Math.round(x);
       y = Math.round(y);
     }
+    return {
+      drawImageX: x,
+      drawImageY: y,
+      drawImageW: w,
+      drawImageH: h,
+      originX: originX,
+      originY: originY,
+      declutterBox: {
+        minX: tmpExtent[0],
+        minY: tmpExtent[1],
+        maxX: tmpExtent[2],
+        maxY: tmpExtent[3],
+        value: feature,
+      },
+      canvasTransform: transform,
+      scale: scale,
+    };
+  }
+
+  /**
+   * @private
+   * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} contextScale Scale of the context.
+   * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
+   * @param {ImageOrLabelDimensions} dimensions Dimensions.
+   * @param {number} opacity Opacity.
+   * @param {Array<*>} fillInstruction Fill instruction.
+   * @param {Array<*>} strokeInstruction Stroke instruction.
+   * @return {boolean} The image or label was rendered.
+   */
+  replayImageOrLabel_(
+    context,
+    contextScale,
+    imageOrLabel,
+    dimensions,
+    opacity,
+    fillInstruction,
+    strokeInstruction
+  ) {
+    const fillStroke = !!(fillInstruction || strokeInstruction);
+
+    const box = dimensions.declutterBox;
+    const canvas = context.canvas;
+    const strokePadding = strokeInstruction
+      ? (strokeInstruction[2] * dimensions.scale[0]) / 2
+      : 0;
+    const intersects =
+      box.minX - strokePadding <= canvas.width / contextScale &&
+      box.maxX + strokePadding >= 0 &&
+      box.minY - strokePadding <= canvas.height / contextScale &&
+      box.maxY + strokePadding >= 0;
 
     if (intersects) {
       if (fillStroke) {
@@ -431,16 +471,16 @@ class Executor {
       }
       drawImageOrLabel(
         context,
-        transform,
+        dimensions.canvasTransform,
         opacity,
         imageOrLabel,
-        originX,
-        originY,
-        w,
-        h,
-        x,
-        y,
-        scale
+        dimensions.originX,
+        dimensions.originY,
+        dimensions.drawImageW,
+        dimensions.drawImageH,
+        dimensions.drawImageX,
+        dimensions.drawImageY,
+        dimensions.scale
       );
     }
     return true;
@@ -470,7 +510,9 @@ class Executor {
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
-    context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+    context[
+      'strokeStyle'
+    ] = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
@@ -525,6 +567,7 @@ class Executor {
    * @param {function(import("../../Feature.js").FeatureLike): T|undefined} featureCallback Feature callback.
    * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
+   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -535,7 +578,8 @@ class Executor {
     instructions,
     snapToPixel,
     featureCallback,
-    opt_hitExtent
+    opt_hitExtent,
+    opt_declutterTree
   ) {
     /** @type {Array<number>} */
     let pixelCoordinates;
@@ -559,8 +603,17 @@ class Executor {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    let anchorX, anchorY, prevX, prevY, roundX, roundY, image, text, textKey;
-    let strokeKey, fillKey;
+    let anchorX,
+      anchorY,
+      prevX,
+      prevY,
+      roundX,
+      roundY,
+      image,
+      text,
+      textKey,
+      strokeKey,
+      fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
     let lastFillInstruction = null;
@@ -671,13 +724,14 @@ class Executor {
           let rotation = /** @type {number} */ (instruction[11]);
           const scale = /** @type {import("../../size.js").Size} */ (instruction[12]);
           let width = /** @type {number} */ (instruction[13]);
+          const sharedData = instruction[14];
 
-          if (!image && instruction.length >= 18) {
+          if (!image && instruction.length >= 19) {
             // create label images
-            text = /** @type {string} */ (instruction[17]);
-            textKey = /** @type {string} */ (instruction[18]);
-            strokeKey = /** @type {string} */ (instruction[19]);
-            fillKey = /** @type {string} */ (instruction[20]);
+            text = /** @type {string} */ (instruction[18]);
+            textKey = /** @type {string} */ (instruction[19]);
+            strokeKey = /** @type {string} */ (instruction[20]);
+            fillKey = /** @type {string} */ (instruction[21]);
             const labelWithAnchor = this.drawLabelWithPointPlacement_(
               text,
               textKey,
@@ -686,10 +740,10 @@ class Executor {
             );
             image = labelWithAnchor.label;
             instruction[3] = image;
-            const textOffsetX = /** @type {number} */ (instruction[21]);
+            const textOffsetX = /** @type {number} */ (instruction[22]);
             anchorX = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
             instruction[4] = anchorX;
-            const textOffsetY = /** @type {number} */ (instruction[22]);
+            const textOffsetY = /** @type {number} */ (instruction[23]);
             anchorY = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
             instruction[5] = anchorY;
             height = image.height;
@@ -699,15 +753,15 @@ class Executor {
           }
 
           let geometryWidths;
-          if (instruction.length > 23) {
-            geometryWidths = /** @type {number} */ (instruction[23]);
+          if (instruction.length > 24) {
+            geometryWidths = /** @type {number} */ (instruction[24]);
           }
 
           let padding, backgroundFill, backgroundStroke;
-          if (instruction.length > 15) {
-            padding = /** @type {Array<number>} */ (instruction[14]);
-            backgroundFill = /** @type {boolean} */ (instruction[15]);
-            backgroundStroke = /** @type {boolean} */ (instruction[16]);
+          if (instruction.length > 16) {
+            padding = /** @type {Array<number>} */ (instruction[15]);
+            backgroundFill = /** @type {boolean} */ (instruction[16]);
+            backgroundStroke = /** @type {boolean} */ (instruction[17]);
           } else {
             padding = defaultPadding;
             backgroundFill = false;
@@ -729,30 +783,67 @@ class Executor {
             ) {
               continue;
             }
-            this.replayImageOrLabel_(
-              context,
-              contextScale,
+            const dimensions = this.calculateImageOrLabelDimensions_(
+              image.width,
+              image.height,
               pixelCoordinates[d],
               pixelCoordinates[d + 1],
-              image,
+              width,
+              height,
               anchorX,
               anchorY,
-              height,
-              opacity,
               originX,
               originY,
               rotation,
               scale,
               snapToPixel,
-              width,
               padding,
+              backgroundFill || backgroundStroke,
+              feature
+            );
+            const args = [
+              context,
+              contextScale,
+              image,
+              dimensions,
+              opacity,
               backgroundFill
                 ? /** @type {Array<*>} */ (lastFillInstruction)
                 : null,
               backgroundStroke
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
-                : null
-            );
+                : null,
+            ];
+            let imageArgs;
+            let imageDeclutterBox;
+            if (opt_declutterTree && sharedData) {
+              if (!sharedData[d]) {
+                sharedData[d] = args;
+                continue;
+              }
+              imageArgs = sharedData[d];
+              delete sharedData[d];
+              imageDeclutterBox = getDeclutterBox(imageArgs);
+              if (opt_declutterTree.collides(imageDeclutterBox)) {
+                continue;
+              }
+            }
+            if (
+              opt_declutterTree &&
+              opt_declutterTree.collides(dimensions.declutterBox)
+            ) {
+              continue;
+            }
+            if (imageArgs) {
+              if (opt_declutterTree) {
+                opt_declutterTree.insert(imageDeclutterBox);
+              }
+              this.replayImageOrLabel_.apply(this, imageArgs);
+            }
+            if (opt_declutterTree) {
+              opt_declutterTree.insert(dimensions.declutterBox);
+            }
+            this.replayImageOrLabel_.apply(this, args);
           }
           ++i;
           break;
@@ -810,8 +901,8 @@ class Executor {
               cachedWidths,
               viewRotationFromTransform ? 0 : this.viewRotation_
             );
-            if (parts) {
-              let rendered = false;
+            drawChars: if (parts) {
+              const replayImageOrLabelArgs = [];
               let c, cc, chars, label, part;
               if (strokeKey) {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
@@ -824,27 +915,39 @@ class Executor {
                     ((0.5 - baseline) * 2 * strokeWidth * textScale[1]) /
                       textScale[0] -
                     offsetY;
-                  rendered =
-                    this.replayImageOrLabel_(
-                      context,
-                      contextScale,
-                      /** @type {number} */ (part[0]),
-                      /** @type {number} */ (part[1]),
-                      label,
-                      anchorX,
-                      anchorY,
-                      label.height,
-                      1,
-                      0,
-                      0,
-                      /** @type {number} */ (part[3]),
-                      pixelRatioScale,
-                      false,
-                      label.width,
-                      defaultPadding,
-                      null,
-                      null
-                    ) || rendered;
+                  const dimensions = this.calculateImageOrLabelDimensions_(
+                    label.width,
+                    label.height,
+                    part[0],
+                    part[1],
+                    label.width,
+                    label.height,
+                    anchorX,
+                    anchorY,
+                    0,
+                    0,
+                    part[3],
+                    pixelRatioScale,
+                    false,
+                    defaultPadding,
+                    false,
+                    feature
+                  );
+                  if (
+                    opt_declutterTree &&
+                    opt_declutterTree.collides(dimensions.declutterBox)
+                  ) {
+                    break drawChars;
+                  }
+                  replayImageOrLabelArgs.push([
+                    context,
+                    contextScale,
+                    label,
+                    dimensions,
+                    1,
+                    null,
+                    null,
+                  ]);
                 }
               }
               if (fillKey) {
@@ -854,28 +957,48 @@ class Executor {
                   label = this.createLabel(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
-                  rendered =
-                    this.replayImageOrLabel_(
-                      context,
-                      contextScale,
-                      /** @type {number} */ (part[0]),
-                      /** @type {number} */ (part[1]),
-                      label,
-                      anchorX,
-                      anchorY,
-                      label.height,
-                      1,
-                      0,
-                      0,
-                      /** @type {number} */ (part[3]),
-                      pixelRatioScale,
-                      false,
-                      label.width,
-                      defaultPadding,
-                      null,
-                      null
-                    ) || rendered;
+                  const dimensions = this.calculateImageOrLabelDimensions_(
+                    label.width,
+                    label.height,
+                    part[0],
+                    part[1],
+                    label.width,
+                    label.height,
+                    anchorX,
+                    anchorY,
+                    0,
+                    0,
+                    part[3],
+                    pixelRatioScale,
+                    false,
+                    defaultPadding,
+                    false,
+                    feature
+                  );
+                  if (
+                    opt_declutterTree &&
+                    opt_declutterTree.collides(dimensions.declutterBox)
+                  ) {
+                    break drawChars;
+                  }
+                  replayImageOrLabelArgs.push([
+                    context,
+                    contextScale,
+                    label,
+                    dimensions,
+                    1,
+                    null,
+                    null,
+                  ]);
                 }
+              }
+              if (opt_declutterTree) {
+                opt_declutterTree.load(
+                  replayImageOrLabelArgs.map(getDeclutterBox)
+                );
+              }
+              for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {
+                this.replayImageOrLabel_.apply(this, replayImageOrLabelArgs[i]);
               }
             }
           }
@@ -977,8 +1100,16 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
+   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
    */
-  execute(context, contextScale, transform, viewRotation, snapToPixel) {
+  execute(
+    context,
+    contextScale,
+    transform,
+    viewRotation,
+    snapToPixel,
+    opt_declutterTree
+  ) {
     this.viewRotation_ = viewRotation;
     this.execute_(
       context,
@@ -987,7 +1118,8 @@ class Executor {
       this.instructions,
       snapToPixel,
       undefined,
-      undefined
+      undefined,
+      opt_declutterTree
     );
   }
 

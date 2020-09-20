@@ -29,16 +29,6 @@ import {
   inflateMultiCoordinatesArray,
 } from '../../geom/flat/inflate.js';
 
-/**
- * @typedef {Object} SerializableInstructions
- * @property {Array<*>} instructions The rendering instructions.
- * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
- * @property {Array<number>} coordinates The array of all coordinates.
- * @property {!Object<string, import("../canvas.js").TextState>} [textStates] The text states (decluttering).
- * @property {!Object<string, import("../canvas.js").FillState>} [fillStates] The fill states (decluttering).
- * @property {!Object<string, import("../canvas.js").StrokeState>} [strokeStates] The stroke states (decluttering).
- */
-
 class CanvasBuilder extends VectorContext {
   /**
    * @param {number} tolerance Tolerance.
@@ -383,7 +373,7 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @return {SerializableInstructions} the serializable instructions.
+   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     return {

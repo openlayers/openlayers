@@ -127,7 +127,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
+   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     const state = this.state;

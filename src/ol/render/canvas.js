@@ -68,6 +68,16 @@ import {toString} from '../transform.js';
  */
 
 /**
+ * @typedef {Object} SerializableInstructions
+ * @property {Array<*>} instructions The rendering instructions.
+ * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
+ * @property {Array<number>} coordinates The array of all coordinates.
+ * @property {!Object<string, TextState>} [textStates] The text states (decluttering).
+ * @property {!Object<string, FillState>} [fillStates] The fill states (decluttering).
+ * @property {!Object<string, StrokeState>} [strokeStates] The stroke states (decluttering).
+ */
+
+/**
  * @const
  * @type {string}
  */
@@ -276,9 +286,8 @@ export const measureTextHeight = (function () {
    * @type {HTMLDivElement}
    */
   let div;
-  const heights = textHeights;
   return function (fontSpec) {
-    let height = heights[fontSpec];
+    let height = textHeights[fontSpec];
     if (height == undefined) {
       if (WORKER_OFFSCREEN_CANVAS) {
         const font = getFontParameters(fontSpec);
@@ -286,7 +295,7 @@ export const measureTextHeight = (function () {
         const lineHeight = isNaN(Number(font.lineHeight))
           ? 1.2
           : Number(font.lineHeight);
-        textHeights[fontSpec] =
+        height =
           lineHeight *
           (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
       } else {
@@ -301,9 +310,9 @@ export const measureTextHeight = (function () {
         div.style.font = fontSpec;
         document.body.appendChild(div);
         height = div.offsetHeight;
-        heights[fontSpec] = height;
         document.body.removeChild(div);
       }
+      textHeights[fontSpec] = height;
     }
     return height;
   };

@@ -309,6 +309,8 @@ class Heatmap extends VectorLayer {
       ],
     });
   }
+
+  renderDeclutter() {}
 }
 
 /**

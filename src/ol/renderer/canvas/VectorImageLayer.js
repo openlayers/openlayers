@@ -6,6 +6,7 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import EventType from '../../events/EventType.js';
 import ImageCanvas from '../../ImageCanvas.js';
 import ImageState from '../../ImageState.js';
+import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
 import {apply, compose, create} from '../../transform.js';
 import {assign} from '../../obj.js';
@@ -114,6 +115,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         {},
         frameState,
         {
+          declutterTree: new RBush(9),
           extent: renderedExtent,
           size: [width, height],
           viewState: /** @type {import("../../View.js").State} */ (assign(
@@ -137,6 +139,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           ) {
             vectorRenderer.clipping = false;
             vectorRenderer.renderFrame(imageFrameState, null);
+            vectorRenderer.renderDeclutter(imageFrameState);
             callback();
           }
         }
@@ -182,6 +185,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
    */
   postRender() {}
+
+  /**
+   */
+  renderDeclutter() {}
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.

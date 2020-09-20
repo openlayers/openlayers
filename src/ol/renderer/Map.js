@@ -211,9 +211,12 @@ class MapRenderer extends Disposable {
 
   /**
    * Render.
+   * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
-  renderFrame(frameState) {}
+  renderFrame(frameState) {
+    abstract();
+  }
 
   /**
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
