@@ -36,11 +36,12 @@
     codepenButton.href = form.action;
     codepenButton.addEventListener('click', function (event) {
       event.preventDefault();
-      const html = document.getElementById('example-html-source').innerText;
-      const js = document.getElementById('example-js-source').innerText;
+      const innerText = document.documentMode ? 'textContent' : 'innerText';
+      const html = document.getElementById('example-html-source')[innerText];
+      const js = document.getElementById('example-js-source')[innerText];
       const workerContainer = document.getElementById('example-worker-source');
-      const worker = workerContainer ? workerContainer.innerText : undefined;
-      const pkgJson = document.getElementById('example-pkg-source').innerText;
+      const worker = workerContainer ? workerContainer[innerText] : undefined;
+      const pkgJson = document.getElementById('example-pkg-source')[innerText];
 
       const unique = new Set();
       const localResources = (js.match(/'(\.\/)?data\/[^']*/g) || [])
