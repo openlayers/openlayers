@@ -2,39 +2,31 @@
 
   function compress(json) {
     return LZString.compressToBase64(JSON.stringify(json))
-      .replace(/\+/g, `-`)
-      .replace(/\//g, `_`)
-      .replace(/=+$/, ``);
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
   }
 
   function fetchResource(resource) {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
       const isImage = /\.(png|jpe?g|gif|tiff)$/.test(resource);
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', resource);
       if (isImage) {
-        xhr.responseType = 'blob';
+        resolve ({
+          isBinary: true,
+          content: new URL(resource, window.location.href).href
+        });
       } else {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', resource);
         xhr.responseType = 'text';
-      }
-      xhr.addEventListener('load', () => {
-        if (isImage) {
-          const a = new FileReader();
-          a.addEventListener('load', e => {
-            resolve ({
-              isBinary: true,
-              content: e.target.result
-            })
-          });
-          a.readAsDataURL(xhr.response);
-        } else {
+        xhr.addEventListener('load', function () {
           resolve ({
             content: xhr.response
-          })
-        }
-      });
-      xhr.addEventListener('error', reject);
-      xhr.send();
+          });
+        });
+        xhr.addEventListener('error', reject);
+        xhr.send();
+      }
     })
   }
 
@@ -42,24 +34,37 @@
   if (codepenButton) {
     const form = document.getElementById('codepen-form');
     codepenButton.href = form.action;
-    codepenButton.addEventListener('click', function(event) {
+    codepenButton.addEventListener('click', function (event) {
       event.preventDefault();
-      const html = document.getElementById('example-html-source').innerText;
-      const js = document.getElementById('example-js-source').innerText;
+      const innerText = document.documentMode ? 'textContent' : 'innerText';
+      const html = document.getElementById('example-html-source')[innerText];
+      const js = document.getElementById('example-js-source')[innerText];
       const workerContainer = document.getElementById('example-worker-source');
-      const worker = workerContainer ? workerContainer.innerText : undefined;
-      const pkgJson = document.getElementById('example-pkg-source').innerText;
+      const worker = workerContainer ? workerContainer[innerText] : undefined;
+      const pkgJson = document.getElementById('example-pkg-source')[innerText];
 
       const unique = new Set();
-      const localResources = (js.match(/'data\/[^']*/g) || [])
-        .concat(js.match(/'resources\/[^']*/g) || [])
-        .map(f => f.slice(1))
-        .filter(f => unique.has(f) ? false : unique.add(f));
+      const localResources = (js.match(/'(\.\/)?data\/[^']*/g) || [])
+        .concat(js.match(/'(\.\/)?resources\/[^']*/g) || [])
+        .map(
+          function (f) {
+            return f.replace(/^'(\.\/)?/, '');
+          }
+        )
+        .filter(
+          function (f) {
+            return unique.has(f) ? false : (unique.add(f) || unique);
+          }
+        );
 
-      const promises = localResources.map(resource => fetchResource(resource));
+      const promises = localResources.map(
+        function (resource) {
+          return fetchResource(resource);
+        }
+      );
 
-      Promise.all(promises)
-        .then(results => {
+      Promise.all(promises).then(
+        function (results) {
           const files = {
             'index.html': {
               content: html
@@ -67,7 +72,7 @@
             'main.js': {
               content: js
             },
-            "package.json": {
+            'package.json': {
               content: pkgJson
             },
             'sandbox.config.json': {
@@ -89,7 +94,8 @@
 
           form.parameters.value = compress(data);
           form.submit();
-        });
+        }
+      );
     });
   }
 })();
