@@ -30,10 +30,10 @@ import {matchingChunk} from '../../geom/flat/straightchunk.js';
  */
 export const TEXT_ALIGN = {
   'left': 0,
-  'end': 0,
+  'start': 0,
   'center': 0.5,
   'right': 1,
-  'start': 1,
+  'end': 1,
   'top': 0,
   'middle': 0.5,
   'hanging': 0.2,
