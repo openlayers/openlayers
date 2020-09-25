@@ -13,7 +13,7 @@ if (window.location.hash !== '') {
   const hash = window.location.hash.replace('#map=', '');
   const parts = hash.split('/');
   if (parts.length === 4) {
-    zoom = parseInt(parts[0], 10);
+    zoom = parseFloat(parts[0]);
     center = [parseFloat(parts[1]), parseFloat(parts[2])];
     rotation = parseFloat(parts[3]);
   }
@@ -45,11 +45,11 @@ const updatePermalink = function () {
   const center = view.getCenter();
   const hash =
     '#map=' +
-    view.getZoom() +
+    view.getZoom().toFixed(2) +
     '/' +
-    Math.round(center[0] * 100) / 100 +
+    center[0].toFixed(2) +
     '/' +
-    Math.round(center[1] * 100) / 100 +
+    center[1].toFixed(2) +
     '/' +
     view.getRotation();
   const state = {
