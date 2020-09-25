@@ -13,7 +13,7 @@ if (window.location.hash !== '') {
   const hash = window.location.hash.replace('#map=', '');
   const parts = hash.split('/');
   if (parts.length === 4) {
-    zoom = parseInt(parts[0], 10);
+    zoom = parseFloat(parts[0]);
     center = [parseFloat(parts[1]), parseFloat(parts[2])];
     rotation = parseFloat(parts[3]);
   }
