@@ -34,71 +34,89 @@ export function drawTextOnPath(
   cache,
   rotation
 ) {
-  const result = [];
+  let x2 = flatCoordinates[offset];
+  let y2 = flatCoordinates[offset + 1];
+  let x1 = 0;
+  let y1 = 0;
+  let segmentLength = 0;
+  let segmentM = 0;
+
+  function advance() {
+    x1 = x2;
+    y1 = y2;
+    offset += stride;
+    x2 = flatCoordinates[offset];
+    y2 = flatCoordinates[offset + 1];
+    segmentM += segmentLength;
+    segmentLength = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+  }
+  do {
+    advance();
+  } while (offset < end - stride && segmentM + segmentLength < startM);
+
+  let interpolate = (startM - segmentM) / segmentLength;
+  const beginX = lerp(x1, x2, interpolate);
+  const beginY = lerp(y1, y2, interpolate);
+
+  const startOffset = offset - stride;
+  const startLength = segmentM;
+  const endM = startM + measureAndCacheTextWidth(font, text, cache);
+  while (offset < end - stride && segmentM + segmentLength < endM) {
+    advance();
+  }
+  interpolate = (endM - segmentM) / segmentLength;
+  const endX = lerp(x1, x2, interpolate);
+  const endY = lerp(y1, y2, interpolate);
 
   // Keep text upright
   let reverse;
   if (rotation) {
-    const rotatedCoordinates = rotate(
-      flatCoordinates,
-      offset,
-      end,
-      stride,
-      rotation,
-      [flatCoordinates[offset], flatCoordinates[offset + 1]]
-    );
-    reverse =
-      rotatedCoordinates[0] >
-      rotatedCoordinates[rotatedCoordinates.length - stride];
+    const flat = [beginX, beginY, endX, endY];
+    rotate(flat, 0, 4, 2, rotation, flat, flat);
+    reverse = flat[0] > flat[2];
   } else {
-    reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+    reverse = beginX > endX;
   }
 
-  const numChars = text.length;
-
-  let x1 = flatCoordinates[offset];
-  let y1 = flatCoordinates[offset + 1];
-  offset += stride;
-  let x2 = flatCoordinates[offset];
-  let y2 = flatCoordinates[offset + 1];
-  let segmentM = 0;
-  let segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  offset = startOffset;
+  segmentLength = 0;
+  segmentM = startLength;
+  x2 = flatCoordinates[offset];
+  y2 = flatCoordinates[offset + 1];
+  advance();
   let angleChanged = false;
 
-  let index, previousAngle;
-  for (let i = 0; i < numChars; ++i) {
-    index = reverse ? numChars - i - 1 : i;
+  const PI = Math.PI;
+  const result = [];
+  let previousAngle = Math.atan2(y2 - y1, x2 - x1);
+  if (reverse) {
+    previousAngle += previousAngle > 0 ? -PI : PI;
+  }
+  for (let i = 0, ii = text.length; i < ii; ++i) {
+    const index = reverse ? ii - i - 1 : i;
     const char = text[index];
     const charLength = scale * measureAndCacheTextWidth(font, char, cache);
     const charM = startM + charLength / 2;
     while (offset < end - stride && segmentM + segmentLength < charM) {
-      x1 = x2;
-      y1 = y2;
-      offset += stride;
-      x2 = flatCoordinates[offset];
-      y2 = flatCoordinates[offset + 1];
-      segmentM += segmentLength;
-      segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-    }
-    const segmentPos = charM - segmentM;
-    let angle = Math.atan2(y2 - y1, x2 - x1);
-    if (reverse) {
-      angle += angle > 0 ? -Math.PI : Math.PI;
-    }
-    if (previousAngle !== undefined) {
-      let delta = angle - previousAngle;
-      angleChanged = angleChanged || delta !== 0;
-      delta +=
-        delta > Math.PI ? -2 * Math.PI : delta < -Math.PI ? 2 * Math.PI : 0;
-      if (Math.abs(delta) > maxAngle) {
-        return null;
+      advance();
+      let angle = Math.atan2(y2 - y1, x2 - x1);
+      if (reverse) {
+        angle += angle > 0 ? -PI : PI;
       }
+      if (previousAngle !== undefined && angle !== previousAngle) {
+        let delta = angle - previousAngle;
+        delta += delta > PI ? -2 * PI : delta < -PI ? 2 * PI : 0;
+        if (Math.abs(delta) > maxAngle) {
+          return null;
+        }
+        angleChanged = true;
+      }
+      previousAngle = angle;
     }
-    previousAngle = angle;
-    const interpolate = segmentPos / segmentLength;
+    interpolate = (charM - segmentM) / segmentLength;
     const x = lerp(x1, x2, interpolate);
     const y = lerp(y1, y2, interpolate);
-    result[index] = [x, y, charLength / 2, angle, char];
+    result[index] = [x, y, charLength / 2, previousAngle, char];
     startM += charLength;
   }
   return angleChanged
