@@ -78,6 +78,8 @@ export function drawTextOnPath(
     reverse = beginX > endX;
   }
 
+  const PI = Math.PI;
+  const result = [];
   const singleSegment = startOffset + stride === offset;
 
   offset = startOffset;
@@ -85,48 +87,60 @@ export function drawTextOnPath(
   segmentM = startLength;
   x2 = flatCoordinates[offset];
   y2 = flatCoordinates[offset + 1];
-  advance();
-
-  const PI = Math.PI;
-  const result = [];
-  let previousAngle = Math.atan2(y2 - y1, x2 - x1);
-  if (reverse) {
-    previousAngle += previousAngle > 0 ? -PI : PI;
-  }
 
   // All on the same segment
   if (singleSegment) {
+    advance();
+
+    let previousAngle = Math.atan2(y2 - y1, x2 - x1);
+    if (reverse) {
+      previousAngle += previousAngle > 0 ? -PI : PI;
+    }
     const x = (endX + beginX) / 2;
     const y = (endY + beginY) / 2;
     result[0] = [x, y, (endM - startM) / 2, previousAngle, text];
     return result;
   }
 
-  for (let i = 0, ii = text.length; i < ii; ++i) {
-    const index = reverse ? ii - i - 1 : i;
-    const char = text[index];
-    const charLength = scale * measureAndCacheTextWidth(font, char, cache);
-    const charM = startM + charLength / 2;
-    let angle;
-    while (offset < end - stride && segmentM + segmentLength < charM) {
-      advance();
-      angle = Math.atan2(y2 - y1, x2 - x1);
-      if (reverse) {
-        angle += angle > 0 ? -PI : PI;
-      }
+  let previousAngle;
+  for (let i = 0, ii = text.length; i < ii; ) {
+    advance();
+    let angle = Math.atan2(y2 - y1, x2 - x1);
+    if (reverse) {
+      angle += angle > 0 ? -PI : PI;
     }
-    if (angle !== undefined) {
+    if (previousAngle !== undefined) {
       let delta = angle - previousAngle;
       delta += delta > PI ? -2 * PI : delta < -PI ? 2 * PI : 0;
       if (Math.abs(delta) > maxAngle) {
         return null;
       }
-      previousAngle = angle;
     }
-    interpolate = (charM - segmentM) / segmentLength;
+    previousAngle = angle;
+
+    const iStart = i;
+    let charLength = 0;
+    for (; i < ii; ++i) {
+      const index = reverse ? ii - i - 1 : i;
+      const len = scale * measureAndCacheTextWidth(font, text[index], cache);
+      if (
+        offset + stride < end &&
+        segmentM + segmentLength < startM + charLength + len / 2
+      ) {
+        break;
+      }
+      charLength += len;
+    }
+    if (i === iStart) {
+      continue;
+    }
+    const chars = reverse
+      ? text.substring(ii - iStart, ii - i)
+      : text.substring(iStart, i);
+    interpolate = (startM + charLength / 2 - segmentM) / segmentLength;
     const x = lerp(x1, x2, interpolate);
     const y = lerp(y1, y2, interpolate);
-    result[index] = [x, y, charLength / 2, previousAngle, char];
+    result.push([x, y, charLength / 2, angle, chars]);
     startM += charLength;
   }
   return result;
