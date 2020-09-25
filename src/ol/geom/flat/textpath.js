@@ -60,7 +60,7 @@ export function drawTextOnPath(
 
   const startOffset = offset - stride;
   const startLength = segmentM;
-  const endM = startM + measureAndCacheTextWidth(font, text, cache);
+  const endM = startM + scale * measureAndCacheTextWidth(font, text, cache);
   while (offset < end - stride && segmentM + segmentLength < endM) {
     advance();
   }
@@ -78,13 +78,14 @@ export function drawTextOnPath(
     reverse = beginX > endX;
   }
 
+  const singleSegment = startOffset + stride === offset;
+
   offset = startOffset;
   segmentLength = 0;
   segmentM = startLength;
   x2 = flatCoordinates[offset];
   y2 = flatCoordinates[offset + 1];
   advance();
-  let angleChanged = false;
 
   const PI = Math.PI;
   const result = [];
@@ -92,24 +93,33 @@ export function drawTextOnPath(
   if (reverse) {
     previousAngle += previousAngle > 0 ? -PI : PI;
   }
+
+  // All on the same segment
+  if (singleSegment) {
+    const x = (endX + beginX) / 2;
+    const y = (endY + beginY) / 2;
+    result[0] = [x, y, (endM - startM) / 2, previousAngle, text];
+    return result;
+  }
+
   for (let i = 0, ii = text.length; i < ii; ++i) {
     const index = reverse ? ii - i - 1 : i;
     const char = text[index];
     const charLength = scale * measureAndCacheTextWidth(font, char, cache);
     const charM = startM + charLength / 2;
+    let angle;
     while (offset < end - stride && segmentM + segmentLength < charM) {
       advance();
-      let angle = Math.atan2(y2 - y1, x2 - x1);
+      angle = Math.atan2(y2 - y1, x2 - x1);
       if (reverse) {
         angle += angle > 0 ? -PI : PI;
       }
-      if (previousAngle !== undefined && angle !== previousAngle) {
-        let delta = angle - previousAngle;
-        delta += delta > PI ? -2 * PI : delta < -PI ? 2 * PI : 0;
-        if (Math.abs(delta) > maxAngle) {
-          return null;
-        }
-        angleChanged = true;
+    }
+    if (angle !== undefined) {
+      let delta = angle - previousAngle;
+      delta += delta > PI ? -2 * PI : delta < -PI ? 2 * PI : 0;
+      if (Math.abs(delta) > maxAngle) {
+        return null;
       }
       previousAngle = angle;
     }
@@ -119,7 +129,5 @@ export function drawTextOnPath(
     result[index] = [x, y, charLength / 2, previousAngle, char];
     startM += charLength;
   }
-  return angleChanged
-    ? result
-    : [[result[0][0], result[0][1], result[0][2], result[0][3], text]];
+  return result;
 }
