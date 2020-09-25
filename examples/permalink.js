@@ -45,11 +45,11 @@ const updatePermalink = function () {
   const center = view.getCenter();
   const hash =
     '#map=' +
-    view.getZoom() +
+    view.getZoom().toFixed(2) +
     '/' +
-    Math.round(center[0] * 100) / 100 +
+    center[0].toFixed(2) +
     '/' +
-    Math.round(center[1] * 100) / 100 +
+    center[1].toFixed(2) +
     '/' +
     view.getRotation();
   const state = {
