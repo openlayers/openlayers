@@ -155,7 +155,7 @@ const DrawEventType = {
  * Events emitted by {@link module:ol/interaction/Draw~Draw} instances are
  * instances of this type.
  */
-class DrawEvent extends Event {
+export class DrawEvent extends Event {
   /**
    * @param {DrawEventType} type Type.
    * @param {Feature} feature The feature drawn.

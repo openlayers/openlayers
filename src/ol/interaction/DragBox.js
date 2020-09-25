@@ -60,7 +60,7 @@ const DragBoxEventType = {
  * Events emitted by {@link module:ol/interaction/DragBox~DragBox} instances are instances of
  * this type.
  */
-class DragBoxEvent extends Event {
+export class DragBoxEvent extends Event {
   /**
    * @param {string} type The event type.
    * @param {import("../coordinate.js").Coordinate} coordinate The event coordinate.

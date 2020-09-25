@@ -58,7 +58,7 @@ const ExtentEventType = {
  * Events emitted by {@link module:ol/interaction/Extent~Extent} instances are
  * instances of this type.
  */
-class ExtentEvent extends Event {
+export class ExtentEvent extends Event {
   /**
    * @param {import("../extent.js").Extent} extent the new extent
    */
