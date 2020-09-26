@@ -918,7 +918,9 @@ class Executor {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
                   label = this.createLabel(chars, textKey, '', strokeKey);
-                  anchorX = /** @type {number} */ (part[2]) + strokeWidth;
+                  anchorX =
+                    /** @type {number} */ (part[2]) +
+                    (textScale[0] < 0 ? -strokeWidth : strokeWidth);
                   anchorY =
                     baseline * label.height +
                     ((0.5 - baseline) * 2 * strokeWidth * textScale[1]) /
