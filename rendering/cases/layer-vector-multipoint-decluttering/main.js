@@ -32,7 +32,7 @@ const vectorLayer = new VectorLayer({
     }),
     text: new Text({
       text: 'Test',
-      font: '700 italic 20px "Quattrocento Sans"',
+      font: 'italic 700 20px Ubuntu',
       stroke: new Stroke({
         color: 'red',
         width: 20,
