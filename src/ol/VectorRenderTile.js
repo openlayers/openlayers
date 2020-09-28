@@ -164,6 +164,7 @@ class VectorRenderTile extends Tile {
   release() {
     for (const key in this.context_) {
       canvasPool.push(this.context_[key].canvas);
+      delete this.context_[key];
     }
     super.release();
   }
