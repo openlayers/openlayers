@@ -1070,6 +1070,7 @@ class Modify extends PointerInteraction {
       if (dist <= this.pixelTolerance_) {
         /** @type {Object<string, boolean>} */
         const vertexSegments = {};
+        vertexSegments[getUid(closestSegment)] = true;
 
         if (
           node.geometry.getType() === GeometryType.CIRCLE &&
@@ -1091,14 +1092,18 @@ class Modify extends PointerInteraction {
                 : closestSegment[0];
           }
           this.createOrUpdateVertexFeature_(vertex);
+          const geometries = {};
+          geometries[getUid(node.geometry)] = true;
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (
-              (coordinatesEqual(closestSegment[0], segment[0]) &&
+              ((coordinatesEqual(closestSegment[0], segment[0]) &&
                 coordinatesEqual(closestSegment[1], segment[1])) ||
-              (coordinatesEqual(closestSegment[0], segment[1]) &&
-                coordinatesEqual(closestSegment[1], segment[0]))
+                (coordinatesEqual(closestSegment[0], segment[1]) &&
+                  coordinatesEqual(closestSegment[1], segment[0]))) &&
+              !(getUid(nodes[i].geometry) in geometries)
             ) {
+              geometries[getUid(nodes[i].geometry)] = true;
               vertexSegments[getUid(segment)] = true;
             } else {
               break;
@@ -1106,7 +1111,6 @@ class Modify extends PointerInteraction {
           }
         }
 
-        vertexSegments[getUid(closestSegment)] = true;
         this.vertexSegments_ = vertexSegments;
         return;
       }
