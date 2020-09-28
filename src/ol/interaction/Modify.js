@@ -960,7 +960,7 @@ class Modify extends PointerInteraction {
           !componentSegments[uid][1] &&
           this.insertVertexCondition_(evt)
         ) {
-          insertVertices.push([segmentDataMatch, vertex]);
+          insertVertices.push(segmentDataMatch);
         }
       }
 
@@ -969,7 +969,7 @@ class Modify extends PointerInteraction {
       }
 
       for (let j = insertVertices.length - 1; j >= 0; --j) {
-        this.insertVertex_.apply(this, insertVertices[j]);
+        this.insertVertex_(insertVertices[j], vertex);
       }
     }
     return !!this.vertexFeature_;
