@@ -175,6 +175,7 @@ class Attribution extends Control {
      */
     const visibleAttributions = [];
 
+    let collapsible = true;
     const layerStatesArray = frameState.layerStatesArray;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
@@ -197,12 +198,8 @@ class Attribution extends Control {
         continue;
       }
 
-      if (
-        !this.overrideCollapsible_ &&
-        source.getAttributionsCollapsible() === false
-      ) {
-        this.setCollapsible(false);
-      }
+      collapsible =
+        collapsible && source.getAttributionsCollapsible() !== false;
 
       if (Array.isArray(attributions)) {
         for (let j = 0, jj = attributions.length; j < jj; ++j) {
@@ -217,6 +214,9 @@ class Attribution extends Control {
           lookup[attributions] = true;
         }
       }
+    }
+    if (!this.overrideCollapsible_) {
+      this.setCollapsible(collapsible);
     }
     return visibleAttributions;
   }
