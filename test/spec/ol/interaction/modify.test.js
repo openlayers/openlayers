@@ -398,6 +398,33 @@ describe('ol.interaction.Modify', function () {
     });
   });
 
+  describe('vertex insertion', function () {
+    it('only inserts one vertex per geometry', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [-10, -10],
+          [10, 10],
+          [-10, -10],
+          [10, 10],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      // Click on line
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointerup', 0, 0, null, 0);
+
+      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(5);
+    });
+  });
+
   describe('circle modification', function () {
     it('changes the circle radius and center', function () {
       const circleFeature = new Feature(new Circle([10, 10], 20));
