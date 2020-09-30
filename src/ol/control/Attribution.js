@@ -70,6 +70,12 @@ class Attribution extends Control {
      * @private
      * @type {boolean}
      */
+    this.userCollapsed_ = this.collapsed_;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.overrideCollapsible_ = options.collapsible !== undefined;
 
     /**
@@ -265,6 +271,7 @@ class Attribution extends Control {
   handleClick_(event) {
     event.preventDefault();
     this.handleToggle_();
+    this.userCollapsed_ = this.collapsed_;
   }
 
   /**
@@ -300,7 +307,7 @@ class Attribution extends Control {
     }
     this.collapsible_ = collapsible;
     this.element.classList.toggle('ol-uncollapsible');
-    if (!collapsible && this.collapsed_) {
+    if (this.userCollapsed_) {
       this.handleToggle_();
     }
   }
@@ -313,6 +320,7 @@ class Attribution extends Control {
    * @api
    */
   setCollapsed(collapsed) {
+    this.userCollapsed_ = collapsed;
     if (!this.collapsible_ || this.collapsed_ === collapsed) {
       return;
     }
