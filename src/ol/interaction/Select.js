@@ -391,25 +391,23 @@ class Select extends Interaction {
    * @private
    */
   restorePreviousStyle_(feature) {
-    const key = getUid(feature);
-    const selectInteractions = /** @type {Array<Select>} */ (this.getMap()
-      .getInteractions()
-      .getArray()
-      .filter(function (interaction) {
-        return (
-          interaction instanceof Select &&
-          interaction.getStyle() &&
-          interaction.getFeatures().getArray().indexOf(feature) !== -1
-        );
-      }));
-    if (selectInteractions.length > 0) {
-      feature.setStyle(
-        selectInteractions[selectInteractions.length - 1].getStyle()
-      );
-    } else {
-      feature.setStyle(originalFeatureStyles[key]);
-      delete originalFeatureStyles[key];
+    const interactions = this.getMap().getInteractions().getArray();
+    for (let i = interactions.length - 1; i >= 0; --i) {
+      const interaction = interactions[i];
+      if (
+        interaction !== this &&
+        interaction instanceof Select &&
+        interaction.getStyle() &&
+        interaction.getFeatures().getArray().lastIndexOf(feature) !== -1
+      ) {
+        feature.setStyle(interaction.getStyle());
+        return;
+      }
     }
+
+    const key = getUid(feature);
+    feature.setStyle(originalFeatureStyles[key]);
+    delete originalFeatureStyles[key];
   }
 
   /**
