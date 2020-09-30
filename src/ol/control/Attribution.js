@@ -70,6 +70,12 @@ class Attribution extends Control {
      * @private
      * @type {boolean}
      */
+    this.userCollapsed_ = this.collapsed_;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.overrideCollapsible_ = options.collapsible !== undefined;
 
     /**
@@ -175,6 +181,7 @@ class Attribution extends Control {
      */
     const visibleAttributions = [];
 
+    let collapsible = true;
     const layerStatesArray = frameState.layerStatesArray;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
@@ -197,12 +204,8 @@ class Attribution extends Control {
         continue;
       }
 
-      if (
-        !this.overrideCollapsible_ &&
-        source.getAttributionsCollapsible() === false
-      ) {
-        this.setCollapsible(false);
-      }
+      collapsible =
+        collapsible && source.getAttributionsCollapsible() !== false;
 
       if (Array.isArray(attributions)) {
         for (let j = 0, jj = attributions.length; j < jj; ++j) {
@@ -217,6 +220,9 @@ class Attribution extends Control {
           lookup[attributions] = true;
         }
       }
+    }
+    if (!this.overrideCollapsible_) {
+      this.setCollapsible(collapsible);
     }
     return visibleAttributions;
   }
@@ -265,6 +271,7 @@ class Attribution extends Control {
   handleClick_(event) {
     event.preventDefault();
     this.handleToggle_();
+    this.userCollapsed_ = this.collapsed_;
   }
 
   /**
@@ -300,7 +307,7 @@ class Attribution extends Control {
     }
     this.collapsible_ = collapsible;
     this.element.classList.toggle('ol-uncollapsible');
-    if (!collapsible && this.collapsed_) {
+    if (this.userCollapsed_) {
       this.handleToggle_();
     }
   }
@@ -313,6 +320,7 @@ class Attribution extends Control {
    * @api
    */
   setCollapsed(collapsed) {
+    this.userCollapsed_ = collapsed;
     if (!this.collapsible_ || this.collapsed_ === collapsed) {
       return;
     }
