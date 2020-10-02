@@ -130,7 +130,7 @@ import {removeNode} from './dom.js';
  * @property {HTMLElement|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
- * rendered.
+ * rendered. If passed by element, the container can be in a secondary document.
  * @property {View} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
@@ -954,6 +954,15 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * @return {!Document} The document where the map is displayed.
+   */
+  getOwnerDocument() {
+    return this.getTargetElement()
+      ? this.getTargetElement().ownerDocument
+      : document;
+  }
+
+  /**
    * @param {import("./Tile.js").default} tile Tile.
    * @param {string} tileSourceKey Tile source key.
    * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.
@@ -996,9 +1005,10 @@ class PluggableMap extends BaseObject {
       eventType === EventType.WHEEL ||
       eventType === EventType.KEYDOWN
     ) {
+      const doc = this.getOwnerDocument();
       const rootNode = this.viewport_.getRootNode
         ? this.viewport_.getRootNode()
-        : document;
+        : doc;
       const target =
         'host' in rootNode // ShadowRoot
           ? /** @type {ShadowRoot} */ (rootNode).elementFromPoint(
@@ -1014,9 +1024,7 @@ class PluggableMap extends BaseObject {
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        !(rootNode === document ? document.documentElement : rootNode).contains(
-          target
-        )
+        !(rootNode === doc ? doc.documentElement : rootNode).contains(target)
       ) {
         return;
       }

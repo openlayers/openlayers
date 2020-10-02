@@ -239,19 +239,15 @@ class MapBrowserEventHandler extends EventTarget {
     this.down_ = pointerEvent;
 
     if (this.dragListenerKeys_.length === 0) {
+      const doc = this.map_.getOwnerDocument();
       this.dragListenerKeys_.push(
         listen(
-          document,
+          doc,
           MapBrowserEventType.POINTERMOVE,
           this.handlePointerMove_,
           this
         ),
-        listen(
-          document,
-          MapBrowserEventType.POINTERUP,
-          this.handlePointerUp_,
-          this
-        ),
+        listen(doc, MapBrowserEventType.POINTERUP, this.handlePointerUp_, this),
         /* Note that the listener for `pointercancel is set up on
          * `pointerEventHandler_` and not `documentPointerEventHandler_` like
          * the `pointerup` and `pointermove` listeners.
@@ -272,10 +268,7 @@ class MapBrowserEventHandler extends EventTarget {
           this
         )
       );
-      if (
-        this.element_.getRootNode &&
-        this.element_.getRootNode() !== document
-      ) {
+      if (this.element_.getRootNode && this.element_.getRootNode() !== doc) {
         this.dragListenerKeys_.push(
           listen(
             this.element_.getRootNode(),
