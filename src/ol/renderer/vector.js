@@ -82,7 +82,7 @@ function renderCircleGeometry(
     circleReplay.drawCircle(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -251,7 +251,7 @@ function renderLineStringGeometry(
     lineStringReplay.drawLineString(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -285,7 +285,7 @@ function renderMultiLineStringGeometry(
     lineStringReplay.drawMultiLineString(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -320,7 +320,7 @@ function renderMultiPolygonGeometry(
     polygonReplay.drawMultiPolygon(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -349,7 +349,8 @@ function renderPointGeometry(
   let sharedData;
   if (opt_declutterBuilderGroup) {
     builderGroup = opt_declutterBuilderGroup;
-    sharedData = imageStyle && textStyle ? {} : undefined;
+    sharedData =
+      imageStyle && textStyle && textStyle.getText() ? {} : undefined;
   }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -362,7 +363,7 @@ function renderPointGeometry(
     imageReplay.setImageStyle(imageStyle, sharedData);
     imageReplay.drawPoint(geometry, feature);
   }
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -391,7 +392,8 @@ function renderMultiPointGeometry(
   let sharedData;
   if (opt_declutterBuilderGroup) {
     builderGroup = opt_declutterBuilderGroup;
-    sharedData = imageStyle && textStyle ? {} : undefined;
+    sharedData =
+      imageStyle && textStyle && textStyle.getText() ? {} : undefined;
   }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -404,7 +406,7 @@ function renderMultiPointGeometry(
     imageReplay.setImageStyle(imageStyle, sharedData);
     imageReplay.drawMultiPoint(geometry, feature);
   }
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -439,7 +441,7 @@ function renderPolygonGeometry(
     polygonReplay.drawPolygon(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
