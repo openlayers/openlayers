@@ -75,7 +75,7 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
     circleReplay.drawCircle(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -219,7 +219,7 @@ function renderLineStringGeometry(builderGroup, geometry, style, feature) {
     lineStringReplay.drawLineString(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -246,7 +246,7 @@ function renderMultiLineStringGeometry(builderGroup, geometry, style, feature) {
     lineStringReplay.drawMultiLineString(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -274,7 +274,7 @@ function renderMultiPolygonGeometry(builderGroup, geometry, style, feature) {
     polygonReplay.drawMultiPolygon(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -304,7 +304,7 @@ function renderPointGeometry(builderGroup, geometry, style, feature) {
     imageReplay.drawPoint(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -334,7 +334,7 @@ function renderMultiPointGeometry(builderGroup, geometry, style, feature) {
     imageReplay.drawMultiPoint(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
@@ -362,7 +362,7 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature) {
     polygonReplay.drawPolygon(geometry, feature);
   }
   const textStyle = style.getText();
-  if (textStyle) {
+  if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
