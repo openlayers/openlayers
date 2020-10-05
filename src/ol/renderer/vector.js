@@ -346,10 +346,11 @@ function renderPointGeometry(
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
-  let sharedData;
+  /** @type {import("../render/canvas.js").DeclutterImageWithText} */
+  let declutterImageWithText;
   if (opt_declutterBuilderGroup) {
     builderGroup = opt_declutterBuilderGroup;
-    sharedData =
+    declutterImageWithText =
       imageStyle && textStyle && textStyle.getText() ? {} : undefined;
   }
   if (imageStyle) {
@@ -360,7 +361,7 @@ function renderPointGeometry(
       style.getZIndex(),
       BuilderType.IMAGE
     );
-    imageReplay.setImageStyle(imageStyle, sharedData);
+    imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
@@ -368,7 +369,7 @@ function renderPointGeometry(
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, sharedData);
+    textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }
 }
@@ -389,10 +390,11 @@ function renderMultiPointGeometry(
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
-  let sharedData;
+  /** @type {import("../render/canvas.js").DeclutterImageWithText} */
+  let declutterImageWithText;
   if (opt_declutterBuilderGroup) {
     builderGroup = opt_declutterBuilderGroup;
-    sharedData =
+    declutterImageWithText =
       imageStyle && textStyle && textStyle.getText() ? {} : undefined;
   }
   if (imageStyle) {
@@ -403,7 +405,7 @@ function renderMultiPointGeometry(
       style.getZIndex(),
       BuilderType.IMAGE
     );
-    imageReplay.setImageStyle(imageStyle, sharedData);
+    imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawMultiPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
@@ -411,7 +413,7 @@ function renderMultiPointGeometry(
       style.getZIndex(),
       BuilderType.TEXT
     );
-    textReplay.setTextStyle(textStyle, sharedData);
+    textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }
 }

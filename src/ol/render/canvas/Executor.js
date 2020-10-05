@@ -50,6 +50,10 @@ import {transform2D} from '../../geom/flat/transform.js';
  */
 
 /**
+ * @typedef {{0: CanvasRenderingContext2D, 1: number, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ */
+
+/**
  * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
@@ -64,12 +68,11 @@ const p3 = [];
 const p4 = [];
 
 /**
- * @param {Array<*>} replayImageOrLabelArgs Arguments to replayImageOrLabel
+ * @param {ReplayImageOrLabelArgs} replayImageOrLabelArgs Arguments to replayImageOrLabel
  * @return {BBox} Declutter bbox.
  */
 function getDeclutterBox(replayImageOrLabelArgs) {
-  return /** @type {ImageOrLabelDimensions} */ (replayImageOrLabelArgs[3])
-    .declutterBox;
+  return replayImageOrLabelArgs[3].declutterBox;
 }
 
 class Executor {
@@ -724,7 +727,7 @@ class Executor {
           let rotation = /** @type {number} */ (instruction[11]);
           const scale = /** @type {import("../../size.js").Size} */ (instruction[12]);
           let width = /** @type {number} */ (instruction[13]);
-          const sharedData = instruction[14];
+          const declutterImageWithText = /** @type {import("../canvas.js").DeclutterImageWithText} */ (instruction[14]);
 
           if (!image && instruction.length >= 19) {
             // create label images
@@ -801,6 +804,7 @@ class Executor {
               backgroundFill || backgroundStroke,
               feature
             );
+            /** @type {ReplayImageOrLabelArgs} */
             const args = [
               context,
               contextScale,
@@ -816,13 +820,15 @@ class Executor {
             ];
             let imageArgs;
             let imageDeclutterBox;
-            if (opt_declutterTree && sharedData) {
-              if (!sharedData[d]) {
-                sharedData[d] = args;
+            if (opt_declutterTree && declutterImageWithText) {
+              if (!declutterImageWithText[d]) {
+                // We now have the image for an image+text combination.
+                declutterImageWithText[d] = args;
+                // Don't render anything for now, wait for the text.
                 continue;
               }
-              imageArgs = sharedData[d];
-              delete sharedData[d];
+              imageArgs = declutterImageWithText[d];
+              delete declutterImageWithText[d];
               imageDeclutterBox = getDeclutterBox(imageArgs);
               if (opt_declutterTree.collides(imageDeclutterBox)) {
                 continue;
@@ -835,9 +841,11 @@ class Executor {
               continue;
             }
             if (imageArgs) {
+              // We now have image and text for an image+text combination.
               if (opt_declutterTree) {
                 opt_declutterTree.insert(imageDeclutterBox);
               }
+              // Render the image before we render the text.
               this.replayImageOrLabel_.apply(this, imageArgs);
             }
             if (opt_declutterTree) {
@@ -902,6 +910,7 @@ class Executor {
               viewRotationFromTransform ? 0 : this.viewRotation_
             );
             drawChars: if (parts) {
+              /** @type {Array<ReplayImageOrLabelArgs>} */
               const replayImageOrLabelArgs = [];
               let c, cc, chars, label, part;
               if (strokeKey) {

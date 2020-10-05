@@ -78,6 +78,10 @@ import {toString} from '../transform.js';
  */
 
 /**
+ * @typedef {Object<number, import("./canvas/Executor.js").ReplayImageOrLabelArgs>} DeclutterImageWithText
+ */
+
+/**
  * @const
  * @type {string}
  */

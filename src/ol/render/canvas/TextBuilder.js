@@ -142,9 +142,9 @@ class CanvasTextBuilder extends CanvasBuilder {
     /**
      * Data shared with an image builder for combined decluttering.
      * @private
-     * @type {Object}
+     * @type {import("../canvas.js").DeclutterImageWithText}
      */
-    this.sharedData_ = undefined;
+    this.declutterImageWithText_ = undefined;
   }
 
   /**
@@ -335,7 +335,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [1, 1],
         NaN,
-        this.sharedData_,
+        this.declutterImageWithText_,
         padding == defaultPadding
           ? defaultPadding
           : padding.map(function (p) {
@@ -367,7 +367,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [scale, scale],
         NaN,
-        this.sharedData_,
+        this.declutterImageWithText_,
         padding,
         !!textState.backgroundFill,
         !!textState.backgroundStroke,
@@ -586,7 +586,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           : '|' + getUid(fillState.fillStyle)
         : '';
     }
-    this.sharedData_ = opt_sharedData;
+    this.declutterImageWithText_ = opt_sharedData;
   }
 }
 
