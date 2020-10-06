@@ -40,8 +40,9 @@ export class VectorSourceEvent extends Event {
   /**
    * @param {string} type Type.
    * @param {import("../Feature.js").default<Geometry>=} opt_feature Feature.
+   * @param {Array<import("../Feature.js").default<Geometry>>=} opt_features Features.
    */
-  constructor(type, opt_feature) {
+  constructor(type, opt_feature, opt_features) {
     super(type);
 
     /**
@@ -50,6 +51,13 @@ export class VectorSourceEvent extends Event {
      * @api
      */
     this.feature = opt_feature;
+
+    /**
+     * The features being loaded.
+     * @type {Array<import("../Feature.js").default<Geometry>>}
+     * @api
+     */
+    this.features = opt_features;
   }
 }
 
@@ -904,7 +912,29 @@ class VectorSource extends Source {
         }
       );
       if (!alreadyLoaded) {
-        this.loader_.call(this, extentToLoad, resolution, projection);
+        this.dispatchEvent(
+          new VectorSourceEvent(VectorEventType.FEATURESLOADSTART)
+        );
+        this.loader_.call(
+          this,
+          extentToLoad,
+          resolution,
+          projection,
+          function (features) {
+            this.dispatchEvent(
+              new VectorSourceEvent(
+                VectorEventType.FEATURESLOADEND,
+                undefined,
+                features
+              )
+            );
+          }.bind(this),
+          function () {
+            this.dispatchEvent(
+              new VectorSourceEvent(VectorEventType.FEATURESLOADERROR)
+            );
+          }.bind(this)
+        );
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
         this.loading = this.loader_ !== VOID;
       }

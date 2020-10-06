@@ -34,4 +34,25 @@ export default {
    * @api
    */
   REMOVEFEATURE: 'removefeature',
+
+  /**
+   * Triggered when features starts loading.
+   * @event module:ol/source/Vector.VectorSourceEvent#featureloadstart
+   * @api
+   */
+  FEATURESLOADSTART: 'featuresloadstart',
+
+  /**
+   * Triggered when features finishes loading.
+   * @event module:ol/source/Vector.VectorSourceEvent#featureloadend
+   * @api
+   */
+  FEATURESLOADEND: 'featuresloadend',
+
+  /**
+   * Triggered if feature loading results in an error.
+   * @event module:ol/source/Vector.VectorSourceEvent#featureloaderror
+   * @api
+   */
+  FEATURESLOADERROR: 'featuresloaderror',
 };

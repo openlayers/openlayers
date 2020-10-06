@@ -19,8 +19,10 @@ describe('ol.featureloader', function () {
     it('adds features to the source', function (done) {
       loader = xhr(url, format);
       source.on('addfeature', function (e) {
-        expect(source.getFeatures().length).to.be.greaterThan(0);
-        done();
+        setTimeout(function () {
+          expect(source.getFeatures().length).to.be.greaterThan(0);
+          done();
+        }, 0);
       });
       loader.call(source, [], 1, 'EPSG:3857');
     });
@@ -33,8 +35,10 @@ describe('ol.featureloader', function () {
         loader = xhr(url, format);
 
         source.on('addfeature', function (e) {
-          expect(source.getFeatures().length).to.be.greaterThan(0);
-          done();
+          setTimeout(function () {
+            expect(source.getFeatures().length).to.be.greaterThan(0);
+            done();
+          }, 0);
         });
         loader.call(source, [], 1, 'EPSG:3857');
       });
@@ -53,6 +57,24 @@ describe('ol.featureloader', function () {
         loader = xhr(url, format);
         loader.call(source, [], 1, 'EPSG:3857');
       });
+    });
+
+    it('it calls the success callback', function (done) {
+      const errorSpy = sinon.spy();
+      loader = xhr(url, format);
+      loader.call(
+        source,
+        [],
+        1,
+        'EPSG:3857',
+        function () {
+          setTimeout(function () {
+            expect(errorSpy.callCount).to.be(0);
+            done();
+          }, 0);
+        },
+        errorSpy
+      );
     });
   });
 });

@@ -27,7 +27,7 @@ let withCredentials = false;
  *           import("./extent.js").Extent,
  *           number,
  *           import("./proj/Projection.js").default,
- *           function(): void=,
+ *           function(Array<import("./Feature.js").default>): void=,
  *           function(): void=): void} FeatureLoader
  * @api
  */
@@ -134,14 +134,14 @@ export function xhr(url, format) {
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {function(): void} success Success
+   * @param {function(): void=} success Success
    *      Function called when loading succeeded.
-   * @param {function(): void} failure Failure
+   * @param {function(): void=} failure Failure
    *      Function called when loading failed.
    * @this {import("./source/Vector").default}
    */
   return function (extent, resolution, projection, success, failure) {
-    const sourceOrTile = /** @type {import("./source/Vector").default} */ (this);
+    const source = /** @type {import("./source/Vector").default} */ (this);
     loadFeaturesXhr(
       url,
       format,
@@ -154,9 +154,12 @@ export function xhr(url, format) {
        * projection.
        */
       function (features, dataProjection) {
-        sourceOrTile.addFeatures(features);
+        if (success !== undefined) {
+          success(features);
+        }
+        source.addFeatures(features);
       },
-      /* FIXME handle error */ VOID
+      /* FIXME handle error */ failure ? failure : VOID
     );
   };
 }
