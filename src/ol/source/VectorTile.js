@@ -528,11 +528,22 @@ export default VectorTile;
  * @param {string} url URL.
  */
 export function defaultLoadFunction(tile, url) {
-  const loader = loadFeaturesXhr(
-    url,
-    tile.getFormat(),
-    tile.onLoad.bind(tile),
-    tile.onError.bind(tile)
+  tile.setLoader(
+    /**
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @param {number} resolution Resolution.
+     * @param {import("../proj/Projection.js").default} projection Projection.
+     */
+    function (extent, resolution, projection) {
+      loadFeaturesXhr(
+        url,
+        tile.getFormat(),
+        extent,
+        resolution,
+        projection,
+        tile.onLoad.bind(tile),
+        tile.onError.bind(tile)
+      );
+    }
   );
-  tile.setLoader(loader);
 }
