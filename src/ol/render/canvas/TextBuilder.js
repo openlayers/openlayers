@@ -54,12 +54,6 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import("../canvas.js").DeclutterGroups}
-     */
-    this.declutterGroups_;
-
-    /**
-     * @private
      * @type {Array<HTMLCanvasElement>}
      */
     this.labels_ = null;
@@ -144,10 +138,17 @@ class CanvasTextBuilder extends CanvasBuilder {
      * @type {string}
      */
     this.strokeKey_ = '';
+
+    /**
+     * Data shared with an image builder for combined decluttering.
+     * @private
+     * @type {import("../canvas.js").DeclutterImageWithText}
+     */
+    this.declutterImageWithText_ = undefined;
   }
 
   /**
-   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
+   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     const instructions = super.finish();
@@ -226,12 +227,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
         const end = coordinates.length;
         flatOffset = ends[o];
-        const declutterGroup = this.declutterGroups_
-          ? o === 0
-            ? this.declutterGroups_[0]
-            : [].concat(this.declutterGroups_[0])
-          : null;
-        this.drawChars_(begin, end, declutterGroup);
+        this.drawChars_(begin, end);
         begin = end;
       }
       this.endGeometry(feature);
@@ -331,7 +327,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         null,
         NaN,
         NaN,
-        this.declutterGroups_,
         NaN,
         1,
         0,
@@ -340,6 +335,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [1, 1],
         NaN,
+        this.declutterImageWithText_,
         padding == defaultPadding
           ? defaultPadding
           : padding.map(function (p) {
@@ -363,7 +359,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         null,
         NaN,
         NaN,
-        this.declutterGroups_,
         NaN,
         1,
         0,
@@ -372,6 +367,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [scale, scale],
         NaN,
+        this.declutterImageWithText_,
         padding,
         !!textState.backgroundFill,
         !!textState.backgroundStroke,
@@ -433,9 +429,8 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @private
    * @param {number} begin Begin.
    * @param {number} end End.
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    */
-  drawChars_(begin, end, declutterGroup) {
+  drawChars_(begin, end) {
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
 
@@ -458,7 +453,6 @@ class CanvasTextBuilder extends CanvasBuilder {
       begin,
       end,
       baseline,
-      declutterGroup,
       textState.overflow,
       fillKey,
       textState.maxAngle,
@@ -475,7 +469,6 @@ class CanvasTextBuilder extends CanvasBuilder {
       begin,
       end,
       baseline,
-      declutterGroup,
       textState.overflow,
       fillKey,
       textState.maxAngle,
@@ -491,15 +484,13 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
-   * @param {import("../canvas.js").DeclutterGroups} declutterGroups Declutter.
+   * @param {Object=} opt_sharedData Shared data.
    */
-  setTextStyle(textStyle, declutterGroups) {
+  setTextStyle(textStyle, opt_sharedData) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
     } else {
-      this.declutterGroups_ = declutterGroups;
-
       const textFillStyle = textStyle.getFill();
       if (!textFillStyle) {
         fillState = null;
@@ -595,6 +586,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           : '|' + getUid(fillState.fillStyle)
         : '';
     }
+    this.declutterImageWithText_ = opt_sharedData;
   }
 }
 

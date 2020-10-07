@@ -68,20 +68,17 @@ import {toString} from '../transform.js';
  */
 
 /**
- * Container for decluttered replay instructions that need to be rendered or
- * omitted together, i.e. when styles render both an image and text, or for the
- * characters that form text along lines. The basic elements of this array are
- * `[minX, minY, maxX, maxY, count]`, where the first four entries are the
- * rendered extent of the group in pixel space. `count` is the number of styles
- * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
- * In addition to these four elements, declutter instruction arrays (i.e. the
- * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
- * @typedef {Array<*>} DeclutterGroup
+ * @typedef {Object} SerializableInstructions
+ * @property {Array<*>} instructions The rendering instructions.
+ * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
+ * @property {Array<number>} coordinates The array of all coordinates.
+ * @property {!Object<string, TextState>} [textStates] The text states (decluttering).
+ * @property {!Object<string, FillState>} [fillStates] The fill states (decluttering).
+ * @property {!Object<string, StrokeState>} [strokeStates] The stroke states (decluttering).
  */
 
 /**
- * Declutter groups for support of multi geometries.
- * @typedef {Array<DeclutterGroup>} DeclutterGroups
+ * @typedef {Object<number, import("./canvas/Executor.js").ReplayImageOrLabelArgs>} DeclutterImageWithText
  */
 
 /**
@@ -293,9 +290,8 @@ export const measureTextHeight = (function () {
    * @type {HTMLDivElement}
    */
   let div;
-  const heights = textHeights;
   return function (fontSpec) {
-    let height = heights[fontSpec];
+    let height = textHeights[fontSpec];
     if (height == undefined) {
       if (WORKER_OFFSCREEN_CANVAS) {
         const font = getFontParameters(fontSpec);
@@ -303,7 +299,7 @@ export const measureTextHeight = (function () {
         const lineHeight = isNaN(Number(font.lineHeight))
           ? 1.2
           : Number(font.lineHeight);
-        textHeights[fontSpec] =
+        height =
           lineHeight *
           (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
       } else {
@@ -318,9 +314,9 @@ export const measureTextHeight = (function () {
         div.style.font = fontSpec;
         document.body.appendChild(div);
         height = div.offsetHeight;
-        heights[fontSpec] = height;
         document.body.removeChild(div);
       }
+      textHeights[fontSpec] = height;
     }
     return height;
   };

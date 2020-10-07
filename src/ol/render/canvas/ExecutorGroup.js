@@ -36,7 +36,7 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
-   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("./Builder.js").SerializableInstructions>>} allInstructions
+   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
@@ -116,7 +116,7 @@ class ExecutorGroup {
   /**
    * Create executors and populate them using the provided instructions.
    * @private
-   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   createExecutors_(allInstructions) {
     for (const zIndex in allInstructions) {
@@ -318,7 +318,7 @@ class ExecutorGroup {
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<import("./BuilderType.js").default>=} opt_builderTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
+   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
    */
   execute(
     context,
@@ -327,7 +327,7 @@ class ExecutorGroup {
     viewRotation,
     snapToPixel,
     opt_builderTypes,
-    opt_declutterReplays
+    opt_declutterTree
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -342,6 +342,9 @@ class ExecutorGroup {
 
     const builderTypes = opt_builderTypes ? opt_builderTypes : ORDER;
     let i, ii, j, jj, replays, replay;
+    if (opt_declutterTree) {
+      zs.reverse();
+    }
     for (i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
       replays = this.executorsByZIndex_[zIndexKey];
@@ -349,26 +352,14 @@ class ExecutorGroup {
         const builderType = builderTypes[j];
         replay = replays[builderType];
         if (replay !== undefined) {
-          if (
-            opt_declutterReplays &&
-            (builderType == BuilderType.IMAGE ||
-              builderType == BuilderType.TEXT)
-          ) {
-            const declutter = opt_declutterReplays[zIndexKey];
-            if (!declutter) {
-              opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-            } else {
-              declutter.push(replay, transform.slice(0));
-            }
-          } else {
-            replay.execute(
-              context,
-              contextScale,
-              transform,
-              viewRotation,
-              snapToPixel
-            );
-          }
+          replay.execute(
+            context,
+            contextScale,
+            transform,
+            viewRotation,
+            snapToPixel,
+            opt_declutterTree
+          );
         }
       }
     }
@@ -452,43 +443,6 @@ export function getCircleArray(radius) {
 
   circleArrayCache[radius] = arr;
   return arr;
-}
-
-/**
- * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
- * @param {CanvasRenderingContext2D} context Context.
- * @param {number} rotation Rotation.
- * @param {number} opacity Opacity.
- * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
- * @param {Array<import("../../PluggableMap.js").DeclutterItems>} declutterItems Declutter items.
- */
-export function replayDeclutter(
-  declutterReplays,
-  context,
-  rotation,
-  opacity,
-  snapToPixel,
-  declutterItems
-) {
-  const zs = Object.keys(declutterReplays)
-    .map(Number)
-    .sort(numberSafeCompareFunction);
-  for (let z = 0, zz = zs.length; z < zz; ++z) {
-    const executorData = declutterReplays[zs[z].toString()];
-    let currentExecutor;
-    for (let i = 0, ii = executorData.length; i < ii; ) {
-      const executor = executorData[i++];
-      const transform = executorData[i++];
-      executor.execute(context, 1, transform, rotation, snapToPixel);
-      if (executor !== currentExecutor && executor.declutterItems.length > 0) {
-        currentExecutor = executor;
-        declutterItems.push({
-          items: executor.declutterItems,
-          opacity: opacity,
-        });
-      }
-    }
-  }
 }
 
 export default ExecutorGroup;

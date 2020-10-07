@@ -598,17 +598,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
-   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(
-    coordinate,
-    frameState,
-    hitTolerance,
-    callback,
-    declutteredFeatures
-  ) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
     assert(this.hitDetectionEnabled_, 66);
     if (!this.hitRenderInstructions_) {
       return;

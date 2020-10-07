@@ -8,7 +8,6 @@ import {compose as composeTransform, makeInverse} from '../transform.js';
 import {getWidth} from '../extent.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {inView} from '../layer/Layer.js';
-import {renderDeclutterItems} from '../render.js';
 import {wrapX} from '../coordinate.js';
 
 /**
@@ -26,11 +25,6 @@ class MapRenderer extends Disposable {
      * @type {import("../PluggableMap.js").default}
      */
     this.map_ = map;
-
-    /**
-     * @private
-     */
-    this.declutterTree_ = null;
   }
 
   /**
@@ -116,12 +110,6 @@ class MapRenderer extends Disposable {
 
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
-    let declutteredFeatures;
-    if (this.declutterTree_) {
-      declutteredFeatures = this.declutterTree_.all().map(function (entry) {
-        return entry.value;
-      });
-    }
 
     const tmpCoord = [];
     for (let i = 0; i < offsets.length; i++) {
@@ -149,8 +137,7 @@ class MapRenderer extends Disposable {
               tmpCoord,
               frameState,
               hitTolerance,
-              callback,
-              declutteredFeatures
+              callback
             );
           }
           if (result) {
@@ -224,10 +211,11 @@ class MapRenderer extends Disposable {
 
   /**
    * Render.
+   * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
-    this.declutterTree_ = renderDeclutterItems(frameState, this.declutterTree_);
+    abstract();
   }
 
   /**

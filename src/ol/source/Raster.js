@@ -549,6 +549,7 @@ class RasterSource extends ImageSource {
     this.frameState_ = {
       animate: false,
       coordinateToPixelTransform: createTransform(),
+      declutterTree: null,
       extent: null,
       index: 0,
       layerIndex: 0,
@@ -565,7 +566,6 @@ class RasterSource extends ImageSource {
       }),
       viewHints: [],
       wantedTiles: {},
-      declutterItems: [],
     };
 
     this.setAttributions(function (frameState) {

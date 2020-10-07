@@ -102,6 +102,10 @@ class CompositeMapRenderer extends MapRenderer {
     const viewState = frameState.viewState;
 
     this.children_.length = 0;
+    /**
+     * @type {Array<import("../layer/BaseVector.js").default>}
+     */
+    const declutterLayers = [];
     let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
@@ -123,8 +127,13 @@ class CompositeMapRenderer extends MapRenderer {
         this.children_.push(element);
         previousElement = element;
       }
+      if ('getDeclutter' in layer) {
+        declutterLayers.push(layer);
+      }
     }
-    super.renderFrame(frameState);
+    for (let i = declutterLayers.length - 1; i >= 0; --i) {
+      declutterLayers[i].renderDeclutter(frameState);
+    }
 
     replaceChildren(this.element_, this.children_);
 

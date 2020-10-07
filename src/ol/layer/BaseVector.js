@@ -2,6 +2,7 @@
  * @module ol/layer/BaseVector
  */
 import Layer from './Layer.js';
+import RBush from 'rbush';
 import {assign} from '../obj.js';
 import {
   createDefaultStyle,
@@ -212,6 +213,17 @@ class BaseVectorLayer extends Layer {
    */
   getUpdateWhileInteracting() {
     return this.updateWhileInteracting_;
+  }
+
+  /**
+   * Render declutter items for this layer
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  renderDeclutter(frameState) {
+    if (!frameState.declutterTree) {
+      frameState.declutterTree = new RBush(9);
+    }
+    /** @type {*} */ (this.getRenderer()).renderDeclutter(frameState);
   }
 
   /**

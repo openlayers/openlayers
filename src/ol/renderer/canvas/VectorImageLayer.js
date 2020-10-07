@@ -6,11 +6,11 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import EventType from '../../events/EventType.js';
 import ImageCanvas from '../../ImageCanvas.js';
 import ImageState from '../../ImageState.js';
+import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
 import {apply, compose, create} from '../../transform.js';
 import {assign} from '../../obj.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
-import {renderDeclutterItems} from '../../render.js';
 
 /**
  * @classdesc
@@ -115,7 +115,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         {},
         frameState,
         {
-          declutterItems: [],
+          declutterTree: new RBush(9),
           extent: renderedExtent,
           size: [width, height],
           viewState: /** @type {import("../../View.js").State} */ (assign(
@@ -139,7 +139,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           ) {
             vectorRenderer.clipping = false;
             vectorRenderer.renderFrame(imageFrameState, null);
-            renderDeclutterItems(imageFrameState, null);
+            vectorRenderer.renderDeclutter(imageFrameState);
             callback();
           }
         }
@@ -187,36 +187,31 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   postRender() {}
 
   /**
+   */
+  renderDeclutter() {}
+
+  /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
-   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(
-    coordinate,
-    frameState,
-    hitTolerance,
-    callback,
-    declutteredFeatures
-  ) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
     if (this.vectorRenderer_) {
       return this.vectorRenderer_.forEachFeatureAtCoordinate(
         coordinate,
         frameState,
         hitTolerance,
-        callback,
-        declutteredFeatures
+        callback
       );
     } else {
       return super.forEachFeatureAtCoordinate(
         coordinate,
         frameState,
         hitTolerance,
-        callback,
-        declutteredFeatures
+        callback
       );
     }
   }
