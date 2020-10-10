@@ -10,6 +10,8 @@ import {easeOut} from '../easing.js';
  * @typedef {Object} Options
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {string} [className='ol-zoom'] CSS class name.
+ * @property {string} [zoomInClassName=className + '-in'] CSS class name for the zoom-in button.
+ * @property {string} [zoomOutClassName=className + '-out'] CSS class name for the zoom-out button.
  * @property {string|HTMLElement} [zoomInLabel='+'] Text label to use for the zoom-in
  * button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|HTMLElement} [zoomOutLabel='-'] Text label to use for the zoom-out button.
@@ -46,6 +48,16 @@ class Zoom extends Control {
 
     const delta = options.delta !== undefined ? options.delta : 1;
 
+    const zoomInClassName =
+      options.zoomInClassName !== undefined
+        ? options.zoomInClassName
+        : className + '-in';
+
+    const zoomOutClassName =
+      options.zoomOutClassName !== undefined
+        ? options.zoomOutClassName
+        : className + '-out';
+
     const zoomInLabel =
       options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
     const zoomOutLabel =
@@ -59,7 +71,7 @@ class Zoom extends Control {
         : 'Zoom out';
 
     const inElement = document.createElement('button');
-    inElement.className = className + '-in';
+    inElement.className = zoomInClassName;
     inElement.setAttribute('type', 'button');
     inElement.title = zoomInTipLabel;
     inElement.appendChild(
@@ -75,7 +87,7 @@ class Zoom extends Control {
     );
 
     const outElement = document.createElement('button');
-    outElement.className = className + '-out';
+    outElement.className = zoomOutClassName;
     outElement.setAttribute('type', 'button');
     outElement.title = zoomOutTipLabel;
     outElement.appendChild(

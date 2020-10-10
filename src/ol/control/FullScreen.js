@@ -39,6 +39,10 @@ const FullScreenEventType = {
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|Text} [labelActive='\u00d7'] Text label to use for the
  * button when full-screen is active.
+ * @property {string} [activeClassName=className + '-true'] CSS class name for the button
+ * when full-screen is active.
+ * @property {string} [inactiveClassName=className + '-false'] CSS class name for the button
+ * when full-screen is inactive.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
  * @property {boolean} [keys=false] Full keyboard access.
@@ -82,6 +86,24 @@ class FullScreen extends Control {
      */
     this.cssClassName_ =
       options.className !== undefined ? options.className : 'ol-full-screen';
+
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    this.activeClassName_ =
+      options.activeClassName !== undefined
+        ? options.activeClassName.split(' ')
+        : [this.cssClassName_ + '-true'];
+
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    this.inactiveClassName_ =
+      options.inactiveClassName !== undefined
+        ? options.inactiveClassName.split(' ')
+        : [this.cssClassName_ + '-false'];
 
     const label = options.label !== undefined ? options.label : '\u2922';
 
@@ -212,12 +234,12 @@ class FullScreen extends Control {
    * @private
    */
   setClassName_(element, fullscreen) {
-    const activeClassName = this.cssClassName_ + '-true';
-    const inactiveClassName = this.cssClassName_ + '-false';
+    const activeClassName = this.activeClassName_;
+    const inactiveClassName = this.inactiveClassName_;
     const nextClassName = fullscreen ? activeClassName : inactiveClassName;
-    element.classList.remove(activeClassName);
-    element.classList.remove(inactiveClassName);
-    element.classList.add(nextClassName);
+    element.classList.remove(...activeClassName);
+    element.classList.remove(...inactiveClassName);
+    element.classList.add(...nextClassName);
   }
 
   /**

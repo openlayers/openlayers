@@ -12,6 +12,7 @@ import {easeOut} from '../easing.js';
  * @property {string|HTMLElement} [label='⇧'] Text label to use for the rotate button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
+ * @property {string} [compassClassName='ol-compass'] CSS class name for the compass.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control should
@@ -48,6 +49,11 @@ class Rotate extends Control {
 
     const label = options.label !== undefined ? options.label : '\u21E7';
 
+    const compassClassName =
+      options.compassClassName !== undefined
+        ? options.compassClassName
+        : 'ol-comapss';
+
     /**
      * @type {HTMLElement}
      * @private
@@ -56,11 +62,11 @@ class Rotate extends Control {
 
     if (typeof label === 'string') {
       this.label_ = document.createElement('span');
-      this.label_.className = 'ol-compass';
+      this.label_.className = compassClassName;
       this.label_.textContent = label;
     } else {
       this.label_ = label;
-      this.label_.classList.add('ol-compass');
+      this.label_.classList.add(compassClassName);
     }
 
     const tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';

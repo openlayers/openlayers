@@ -23,9 +23,13 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {string} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string} [expandClassName=className + '-expand'] CSS class name for the
+ * collapsed attributions button.
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string} [collapseClassName=className + '-collapse'] CSS class name for the
+ * expanded attributions button.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
@@ -95,8 +99,18 @@ class Attribution extends Control {
     const tipLabel =
       options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
 
+    const expandClassName =
+      options.expandClassName !== undefined
+        ? options.expandClassName
+        : className + '-expand';
+
     const collapseLabel =
       options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
+
+    const collapseClassName =
+      options.collapseClassName !== undefined
+        ? options.collapseClassName
+        : className + '-collpase';
 
     if (typeof collapseLabel === 'string') {
       /**
@@ -105,6 +119,7 @@ class Attribution extends Control {
        */
       this.collapseLabel_ = document.createElement('span');
       this.collapseLabel_.textContent = collapseLabel;
+      this.collapseLabel_.className = collapseClassName;
     } else {
       this.collapseLabel_ = collapseLabel;
     }
@@ -118,6 +133,7 @@ class Attribution extends Control {
        */
       this.label_ = document.createElement('span');
       this.label_.textContent = label;
+      this.label_.className = expandClassName;
     } else {
       this.label_ = label;
     }
