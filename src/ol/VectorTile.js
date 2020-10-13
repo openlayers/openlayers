@@ -63,6 +63,8 @@ class VectorTile extends Tile {
      * @type {string}
      */
     this.url_ = src;
+
+    this.key = src;
   }
 
   /**
@@ -81,13 +83,6 @@ class VectorTile extends Tile {
    */
   getFeatures() {
     return this.features_;
-  }
-
-  /**
-   * @return {string} Key.
-   */
-  getKey() {
-    return this.url_;
   }
 
   /**
