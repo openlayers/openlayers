@@ -103,7 +103,7 @@
     "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
     "webpack": "4.44.2",
-    "webpack-cli": "^3.3.2",
+    "webpack-cli": "^4.0.0",
     "webpack-dev-middleware": "^3.6.2",
     "webpack-dev-server": "^3.3.1",
     "worker-loader": "^3.0.0",
