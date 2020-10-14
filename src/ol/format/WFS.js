@@ -1087,7 +1087,11 @@ function writeDWithinFilter(node, filter, objectStack) {
   writeSpatialFilter(node, filter, objectStack);
   const distance = createElementNS(getFilterNS(version), 'Distance');
   writeStringTextNode(distance, filter.distance.toString());
-  distance.setAttribute('uom', filter.unit);
+  if (version === '2.0.0') {
+    distance.setAttribute('uom', filter.unit);
+  } else {
+    distance.setAttribute('units', filter.unit);
+  }
   node.appendChild(distance);
 }
 

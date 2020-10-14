@@ -687,7 +687,7 @@ describe('ol.format.WFS', function () {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a dwithin filter', function () {
+    it('creates a dwithin filter for WFS 1.x', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
         '    typeName="area" srsName="EPSG:4326" ' +
@@ -704,11 +704,53 @@ describe('ol.format.WFS', function () {
         '          </gml:LinearRing>' +
         '        </gml:exterior>' +
         '      </gml:Polygon>' +
-        '      <ogc:Distance uom="m">10</ogc:Distance>' +
+        '      <ogc:Distance units="m">10</ogc:Distance>' +
         '    </ogc:DWithin>' +
         '  </ogc:Filter>' +
         '</wfs:Query>';
       const serialized = new WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: dwithinFilter(
+          'the_geom',
+          new Polygon([
+            [
+              [10, 20],
+              [10, 25],
+              [15, 25],
+              [15, 20],
+              [10, 20],
+            ],
+          ]),
+          10,
+          'm'
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('creates a dwithin filter for WFS 2.0', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    typeNames="area" srsName="EPSG:4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '    <fes:DWithin>' +
+        '      <fes:ValueReference>the_geom</fes:ValueReference>' +
+        '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2">' +
+        '        <gml:exterior>' +
+        '          <gml:LinearRing>' +
+        '            <gml:posList srsDimension="2">' +
+        '              10 20 10 25 15 25 15 20 10 20' +
+        '            </gml:posList>' +
+        '          </gml:LinearRing>' +
+        '        </gml:exterior>' +
+        '      </gml:Polygon>' +
+        '      <fes:Distance uom="m">10</fes:Distance>' +
+        '    </fes:DWithin>' +
+        '  </fes:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
         filter: dwithinFilter(
