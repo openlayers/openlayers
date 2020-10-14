@@ -19,6 +19,7 @@ import {
   contains as containsFilter,
   disjoint as disjointFilter,
   during as duringFilter,
+  dwithin as dwithinFilter,
   equalTo as equalToFilter,
   greaterThan as greaterThanFilter,
   greaterThanOrEqualTo as greaterThanOrEqualToFilter,
@@ -681,6 +682,48 @@ describe('ol.format.WFS', function () {
               [10, 20],
             ],
           ])
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('creates a dwithin filter', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+        '    typeName="area" srsName="EPSG:4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+        '    <ogc:DWithin>' +
+        '      <ogc:PropertyName>the_geom</ogc:PropertyName>' +
+        '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml">' +
+        '        <gml:exterior>' +
+        '          <gml:LinearRing>' +
+        '            <gml:posList srsDimension="2">' +
+        '              10 20 10 25 15 25 15 20 10 20' +
+        '            </gml:posList>' +
+        '          </gml:LinearRing>' +
+        '        </gml:exterior>' +
+        '      </gml:Polygon>' +
+        '      <ogc:Distance uom="m">10</ogc:Distance>' +
+        '    </ogc:DWithin>' +
+        '  </ogc:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: dwithinFilter(
+          'the_geom',
+          new Polygon([
+            [
+              [10, 20],
+              [10, 25],
+              [15, 25],
+              [15, 20],
+              [10, 20],
+            ],
+          ]),
+          10,
+          'm'
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));

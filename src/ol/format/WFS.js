@@ -928,6 +928,7 @@ const GETFEATURE_SERIALIZERS = {
     'Contains': makeChildAppender(writeContainsFilter),
     'Intersects': makeChildAppender(writeIntersectsFilter),
     'Within': makeChildAppender(writeWithinFilter),
+    'DWithin': makeChildAppender(writeDWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsLessThan': makeChildAppender(writeComparisonFilter),
@@ -949,6 +950,7 @@ const GETFEATURE_SERIALIZERS = {
     'Intersects': makeChildAppender(writeIntersectsFilter),
     'ResourceId': makeChildAppender(writeResourceIdFilter),
     'Within': makeChildAppender(writeWithinFilter),
+    'DWithin': makeChildAppender(writeDWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsLessThan': makeChildAppender(writeComparisonFilter),
@@ -1119,6 +1121,27 @@ function writeWithinFilter(node, filter, objectStack) {
 
   writePropertyName(version, node, filter.geometryName);
   format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+}
+
+/**
+ * @param {Node} node Node.
+ * @param {import("./filter/DWithin.js").default} filter Filter.
+ * @param {Array<*>} objectStack Node stack.
+ */
+function writeDWithinFilter(node, filter, objectStack) {
+  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = parent['context'];
+  const version = context['version'];
+  context['srsName'] = filter.srsName;
+  const format = GML_FORMATS[version];
+
+  writePropertyName(version, node, filter.geometryName);
+  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+
+  const distance = createElementNS(getFilterNS(version), 'Distance');
+  writeStringTextNode(distance, filter.distance.toString());
+  distance.setAttribute('uom', filter.unit);
+  node.appendChild(distance);
 }
 
 /**
