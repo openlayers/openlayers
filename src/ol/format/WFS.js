@@ -925,9 +925,9 @@ const GETFEATURE_SERIALIZERS = {
     'Or': makeChildAppender(writeLogicalFilter),
     'Not': makeChildAppender(writeNotFilter),
     'BBOX': makeChildAppender(writeBboxFilter),
-    'Contains': makeChildAppender(writeContainsFilter),
-    'Intersects': makeChildAppender(writeIntersectsFilter),
-    'Within': makeChildAppender(writeWithinFilter),
+    'Contains': makeChildAppender(writeSpatialFilter),
+    'Intersects': makeChildAppender(writeSpatialFilter),
+    'Within': makeChildAppender(writeSpatialFilter),
     'DWithin': makeChildAppender(writeDWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
@@ -945,11 +945,11 @@ const GETFEATURE_SERIALIZERS = {
     'Or': makeChildAppender(writeLogicalFilter),
     'Not': makeChildAppender(writeNotFilter),
     'BBOX': makeChildAppender(writeBboxFilter),
-    'Contains': makeChildAppender(writeContainsFilter),
-    'Disjoint': makeChildAppender(writeDisjointFilter),
-    'Intersects': makeChildAppender(writeIntersectsFilter),
+    'Contains': makeChildAppender(writeSpatialFilter),
+    'Disjoint': makeChildAppender(writeSpatialFilter),
+    'Intersects': makeChildAppender(writeSpatialFilter),
     'ResourceId': makeChildAppender(writeResourceIdFilter),
-    'Within': makeChildAppender(writeWithinFilter),
+    'Within': makeChildAppender(writeSpatialFilter),
     'DWithin': makeChildAppender(writeDWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
@@ -1051,54 +1051,6 @@ function writeBboxFilter(node, filter, objectStack) {
 }
 
 /**
- * @param {Node} node Node.
- * @param {import("./filter/Contains.js").default} filter Filter.
- * @param {Array<*>} objectStack Node stack.
- */
-function writeContainsFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
-  parent['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-}
-
-/**
- * @param {Node} node Node.
- * @param {import("./filter/Intersects.js").default} filter Filter.
- * @param {Array<*>} objectStack Node stack.
- */
-function writeIntersectsFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
-  parent['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-}
-
-/**
- * @param {Node} node Node.
- * @param {import("./filter/Disjoint.js").default} filter Filter.
- * @param {Array<*>} objectStack Node stack.
- */
-function writeDisjointFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
-  parent['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-}
-
-/**
  * @param {Element} node Element.
  * @param {import("./filter/ResourceId.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
@@ -1109,10 +1061,10 @@ function writeResourceIdFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {import("./filter/Within.js").default} filter Filter.
+ * @param {import("./filter/Spatial.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
-function writeWithinFilter(node, filter, objectStack) {
+function writeSpatialFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
@@ -1132,12 +1084,7 @@ function writeDWithinFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  context['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-
+  writeSpatialFilter(node, filter, objectStack);
   const distance = createElementNS(getFilterNS(version), 'Distance');
   writeStringTextNode(distance, filter.distance.toString());
   distance.setAttribute('uom', filter.unit);
