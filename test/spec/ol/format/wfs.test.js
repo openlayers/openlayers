@@ -687,7 +687,7 @@ describe('ol.format.WFS', function () {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a dwithin filter for WFS 1.x', function () {
+    it('creates a dwithin filter', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
         '    typeName="area" srsName="EPSG:4326" ' +
@@ -729,55 +729,13 @@ describe('ol.format.WFS', function () {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
-    it('creates a dwithin filter for WFS 2.0', function () {
-      const text =
-        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
-        '    typeNames="area" srsName="EPSG:4326" ' +
-        '    xmlns:topp="http://www.openplans.org/topp">' +
-        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
-        '    <fes:DWithin>' +
-        '      <fes:ValueReference>the_geom</fes:ValueReference>' +
-        '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2">' +
-        '        <gml:exterior>' +
-        '          <gml:LinearRing>' +
-        '            <gml:posList srsDimension="2">' +
-        '              10 20 10 25 15 25 15 20 10 20' +
-        '            </gml:posList>' +
-        '          </gml:LinearRing>' +
-        '        </gml:exterior>' +
-        '      </gml:Polygon>' +
-        '      <fes:Distance uom="m">10</fes:Distance>' +
-        '    </fes:DWithin>' +
-        '  </fes:Filter>' +
-        '</wfs:Query>';
-      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
-        srsName: 'EPSG:4326',
-        featureTypes: ['area'],
-        filter: dwithinFilter(
-          'the_geom',
-          new Polygon([
-            [
-              [10, 20],
-              [10, 25],
-              [15, 25],
-              [15, 20],
-              [10, 20],
-            ],
-          ]),
-          10,
-          'm'
-        ),
-      });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
-    });
-
     it('creates During property filter', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
         '    typeName="states" srsName="EPSG:4326">' +
         '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
         '    <ogc:During>' +
-        '      <fes:ValueReference xmlns:fes="http://www.opengis.net/fes">date_prop</fes:ValueReference>' +
+        '      <ogc:PropertyName>date_prop</ogc:PropertyName>' +
         '      <gml:TimePeriod xmlns:gml="http://www.opengis.net/gml">' +
         '        <gml:begin>' +
         '          <gml:TimeInstant>' +
@@ -1679,6 +1637,177 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         });
         expect(serialized).to.xmleql(parse(text));
       });
+    });
+
+    it('creates a dwithin filter', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    typeNames="area" srsName="EPSG:4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '    <fes:DWithin>' +
+        '      <fes:ValueReference>the_geom</fes:ValueReference>' +
+        '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2">' +
+        '        <gml:exterior>' +
+        '          <gml:LinearRing>' +
+        '            <gml:posList srsDimension="2">' +
+        '              10 20 10 25 15 25 15 20 10 20' +
+        '            </gml:posList>' +
+        '          </gml:LinearRing>' +
+        '        </gml:exterior>' +
+        '      </gml:Polygon>' +
+        '      <fes:Distance uom="m">10</fes:Distance>' +
+        '    </fes:DWithin>' +
+        '  </fes:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: dwithinFilter(
+          'the_geom',
+          new Polygon([
+            [
+              [10, 20],
+              [10, 25],
+              [15, 25],
+              [15, 20],
+              [10, 20],
+            ],
+          ]),
+          10,
+          'm'
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('creates isLike property filter', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    typeNames="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '    <fes:PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+        '      <fes:ValueReference>name</fes:ValueReference>' +
+        '      <fes:Literal>New*</fes:Literal>' +
+        '    </fes:PropertyIsLike>' +
+        '  </fes:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: likeFilter('name', 'New*'),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('creates isBetween property filter', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    typeNames="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '    <fes:PropertyIsBetween>' +
+        '      <fes:ValueReference>area</fes:ValueReference>' +
+        '      <fes:LowerBoundary><fes:Literal>100</fes:Literal></fes:LowerBoundary>' +
+        '      <fes:UpperBoundary><fes:Literal>1000</fes:Literal></fes:UpperBoundary>' +
+        '    </fes:PropertyIsBetween>' +
+        '  </fes:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: betweenFilter('area', 100, 1000),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('creates greater/less than property filters', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    typeNames="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '    <fes:Or>' +
+        '      <fes:And>' +
+        '        <fes:PropertyIsGreaterThan>' +
+        '          <fes:ValueReference>area</fes:ValueReference>' +
+        '          <fes:Literal>100</fes:Literal>' +
+        '        </fes:PropertyIsGreaterThan>' +
+        '        <fes:PropertyIsGreaterThanOrEqualTo>' +
+        '          <fes:ValueReference>pop</fes:ValueReference>' +
+        '          <fes:Literal>20000</fes:Literal>' +
+        '        </fes:PropertyIsGreaterThanOrEqualTo>' +
+        '      </fes:And>' +
+        '      <fes:And>' +
+        '        <fes:PropertyIsLessThan>' +
+        '          <fes:ValueReference>area</fes:ValueReference>' +
+        '          <fes:Literal>100</fes:Literal>' +
+        '        </fes:PropertyIsLessThan>' +
+        '        <fes:PropertyIsLessThanOrEqualTo>' +
+        '          <fes:ValueReference>pop</fes:ValueReference>' +
+        '          <fes:Literal>20000</fes:Literal>' +
+        '        </fes:PropertyIsLessThanOrEqualTo>' +
+        '      </fes:And>' +
+        '    </fes:Or>' +
+        '  </fes:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: orFilter(
+          andFilter(
+            greaterThanFilter('area', 100),
+            greaterThanOrEqualToFilter('pop', 20000)
+          ),
+          andFilter(
+            lessThanFilter('area', 100),
+            lessThanOrEqualToFilter('pop', 20000)
+          )
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('creates During property filter', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    typeNames="states" srsName="EPSG:4326">' +
+        '  <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '    <fes:During>' +
+        '      <fes:ValueReference>date_prop</fes:ValueReference>' +
+        '      <gml:TimePeriod xmlns:gml="http://www.opengis.net/gml">' +
+        '        <gml:begin>' +
+        '          <gml:TimeInstant>' +
+        '            <gml:timePosition>2010-01-20T00:00:00Z</gml:timePosition>' +
+        '          </gml:TimeInstant>' +
+        '        </gml:begin>' +
+        '        <gml:end>' +
+        '          <gml:TimeInstant>' +
+        '            <gml:timePosition>2012-12-31T00:00:00Z</gml:timePosition>' +
+        '          </gml:TimeInstant>' +
+        '        </gml:end>' +
+        '      </gml:TimePeriod>' +
+        '    </fes:During>' +
+        '  </fes:Filter>' +
+        '</wfs:Query>';
+
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['states'],
+        filter: duringFilter(
+          'date_prop',
+          '2010-01-20T00:00:00Z',
+          '2012-12-31T00:00:00Z'
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
   });
 });

@@ -1104,11 +1104,8 @@ function writeDuringFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = FESNS[version];
-  const valueReference = createElementNS(ns, 'ValueReference');
-  writeStringTextNode(valueReference, filter.propertyName);
-  node.appendChild(valueReference);
 
+  writePropertyName(version, node, filter.propertyName);
   const timePeriod = createElementNS(GMLNS, 'TimePeriod');
 
   node.appendChild(timePeriod);
@@ -1176,12 +1173,11 @@ function writeComparisonFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = OGCNS[context['version']];
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
   writePropertyName(version, node, filter.propertyName);
-  writeOgcLiteral(ns, node, '' + filter.expression);
+  writeLiteral(version, node, '' + filter.expression);
 }
 
 /**
@@ -1205,17 +1201,17 @@ function writeIsBetweenFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = OGCNS[context['version']];
+  const ns = getFilterNS(version);
 
   writePropertyName(version, node, filter.propertyName);
 
   const lowerBoundary = createElementNS(ns, 'LowerBoundary');
   node.appendChild(lowerBoundary);
-  writeOgcLiteral(ns, lowerBoundary, '' + filter.lowerBoundary);
+  writeLiteral(version, lowerBoundary, '' + filter.lowerBoundary);
 
   const upperBoundary = createElementNS(ns, 'UpperBoundary');
   node.appendChild(upperBoundary);
-  writeOgcLiteral(ns, upperBoundary, '' + filter.upperBoundary);
+  writeLiteral(version, upperBoundary, '' + filter.upperBoundary);
 }
 
 /**
@@ -1227,7 +1223,6 @@ function writeIsLikeFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = OGCNS[version];
   node.setAttribute('wildCard', filter.wildCard);
   node.setAttribute('singleChar', filter.singleChar);
   node.setAttribute('escapeChar', filter.escapeChar);
@@ -1235,7 +1230,7 @@ function writeIsLikeFilter(node, filter, objectStack) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
   writePropertyName(version, node, filter.propertyName);
-  writeOgcLiteral(ns, node, '' + filter.pattern);
+  writeLiteral(version, node, '' + filter.pattern);
 }
 
 /**
@@ -1244,7 +1239,7 @@ function writeIsLikeFilter(node, filter, objectStack) {
  * @param {Node} node Node.
  * @param {string} value Value.
  */
-function writeOgcExpression(ns, tagName, node, value) {
+function writeExpression(ns, tagName, node, value) {
   const property = createElementNS(ns, tagName);
   writeStringTextNode(property, value);
   node.appendChild(property);
@@ -1255,30 +1250,21 @@ function writeOgcExpression(ns, tagName, node, value) {
  * @param {Node} node Node.
  * @param {string} value PropertyName value.
  */
+function writeLiteral(version, node, value) {
+  writeExpression(getFilterNS(version), 'Literal', node, value);
+}
+
+/**
+ * @param {string} version Version.
+ * @param {Node} node Node.
+ * @param {string} value PropertyName value.
+ */
 function writePropertyName(version, node, value) {
   if (version === '2.0.0') {
-    writeFesValueReference(FESNS[version], node, value);
+    writeExpression(FESNS[version], 'ValueReference', node, value);
   } else {
-    writeOgcExpression(OGCNS[version], 'PropertyName', node, value);
+    writeExpression(OGCNS[version], 'PropertyName', node, value);
   }
-}
-
-/**
- * @param {string} ns Namespace.
- * @param {Node} node Node.
- * @param {string} value PropertyName value.
- */
-function writeFesValueReference(ns, node, value) {
-  writeOgcExpression(ns, 'ValueReference', node, value);
-}
-
-/**
- * @param {string} ns Namespace.
- * @param {Node} node Node.
- * @param {string} value PropertyName value.
- */
-function writeOgcLiteral(ns, node, value) {
-  writeOgcExpression(ns, 'Literal', node, value);
 }
 
 /**
