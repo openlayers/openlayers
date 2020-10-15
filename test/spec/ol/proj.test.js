@@ -1,4 +1,5 @@
 import Projection from '../../../src/ol/proj/Projection.js';
+import Units from '../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
 import {
   METERS_PER_UNIT,
@@ -446,6 +447,20 @@ describe('ol.proj', function () {
       expect(proj.getMetersPerUnit()).to.eql(1200 / 3937);
 
       delete proj4.defs['EPSG:3739'];
+    });
+
+    it('creates ol.proj.Projection instance from EPSG:4258', function () {
+      proj4.defs(
+        'EPSG:4258',
+        '+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs'
+      );
+      register(proj4);
+      const proj = getProjection('EPSG:4258');
+      expect(proj.getCode()).to.eql('EPSG:4258');
+      expect(proj.getUnits()).to.eql('degrees');
+      expect(proj.getMetersPerUnit()).to.eql(METERS_PER_UNIT[Units.DEGREES]);
+
+      delete proj4.defs['EPSG:4258'];
     });
 
     it('allows Proj4js projections to be used transparently', function () {
