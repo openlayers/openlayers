@@ -7,7 +7,7 @@ import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import proj4 from 'proj4';
 import {OSM, TileImage, TileWMS} from '../src/ol/source.js';
 import {getCenter, getWidth} from '../src/ol/extent.js';
-import {get as getProjection} from '../src/ol/proj.js';
+import {get as getProjection, transformExtent} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 
 proj4.defs(
@@ -51,7 +51,7 @@ proj4.defs(
 register(proj4);
 
 const proj27700 = getProjection('EPSG:27700');
-proj27700.setExtent([0, 0, 700000, 1300000]);
+proj27700.setExtent([-650000, -150000, 1350000, 1450000]);
 
 const proj23032 = getProjection('EPSG:23032');
 proj23032.setExtent([-1206118.71, 4021309.92, 1295389.0, 8051813.28]);
@@ -139,7 +139,8 @@ fetch(urlB)
       layer: 'OS_Open_Raster',
     });
     options.attributions =
-      'Contains OS data © Crown Copyright and database right 2019';
+      'Contains OS data © Crown Copyright and database right ' +
+      new Date().getFullYear();
     options.crossOrigin = '';
     options.projection = 'EPSG:27700';
     options.wrapX = false;
@@ -195,8 +196,10 @@ function updateViewProjection() {
   map.setView(newView);
 
   // Example how to prevent double occurrence of map by limiting layer extent
-  if (newProj == getProjection('EPSG:3857')) {
-    layers['bng'].setExtent([-1057216, 6405988, 404315, 8759696]);
+  if (newProj.isGlobal()) {
+    layers['bng'].setExtent(
+      transformExtent(proj27700.getExtent(), proj27700, newProj, 2)
+    );
   } else {
     layers['bng'].setExtent(undefined);
   }
