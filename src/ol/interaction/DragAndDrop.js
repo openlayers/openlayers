@@ -39,7 +39,7 @@ const DragAndDropEventType = {
  * Events emitted by {@link module:ol/interaction/DragAndDrop~DragAndDrop} instances are instances
  * of this type.
  */
-class DragAndDropEvent extends Event {
+export class DragAndDropEvent extends Event {
   /**
    * @param {DragAndDropEventType} type Type.
    * @param {File} file File.
