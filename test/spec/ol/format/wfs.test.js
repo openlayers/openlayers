@@ -735,7 +735,7 @@ describe('ol.format.WFS', function () {
         '    typeName="states" srsName="EPSG:4326">' +
         '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
         '    <ogc:During>' +
-        '      <ogc:PropertyName>date_prop</ogc:PropertyName>' +
+        '      <fes:ValueReference xmlns:fes="http://www.opengis.net/fes">date_prop</fes:ValueReference>' +
         '      <gml:TimePeriod xmlns:gml="http://www.opengis.net/gml">' +
         '        <gml:begin>' +
         '          <gml:TimeInstant>' +

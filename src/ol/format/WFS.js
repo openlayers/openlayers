@@ -1105,7 +1105,7 @@ function writeDuringFilter(node, filter, objectStack) {
   const context = parent['context'];
   const version = context['version'];
 
-  writePropertyName(version, node, filter.propertyName);
+  writeExpression(FESNS[version], 'ValueReference', node, filter.propertyName);
   const timePeriod = createElementNS(GMLNS, 'TimePeriod');
 
   node.appendChild(timePeriod);
