@@ -4,6 +4,7 @@
 import And from './filter/And.js';
 import Bbox from './filter/Bbox.js';
 import Contains from './filter/Contains.js';
+import DWithin from './filter/DWithin.js';
 import Disjoint from './filter/Disjoint.js';
 import During from './filter/During.js';
 import EqualTo from './filter/EqualTo.js';
@@ -129,6 +130,23 @@ export function disjoint(geometryName, geometry, opt_srsName) {
  */
 export function within(geometryName, geometry, opt_srsName) {
   return new Within(geometryName, geometry, opt_srsName);
+}
+
+/**
+ * Create a `<DWithin>` operator to test whether a geometry-valued property
+ * is within a distance to a given geometry.
+ *
+ * @param {!string} geometryName Geometry name to use.
+ * @param {!import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {!number} distance Distance.
+ * @param {!string} unit Unit.
+ * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ *    set on geometries when this is not provided.
+ * @returns {!DWithin} `<DWithin>` operator.
+ * @api
+ */
+export function dwithin(geometryName, geometry, distance, unit, opt_srsName) {
+  return new DWithin(geometryName, geometry, distance, unit, opt_srsName);
 }
 
 /**

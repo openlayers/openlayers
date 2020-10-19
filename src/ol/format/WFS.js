@@ -925,9 +925,10 @@ const GETFEATURE_SERIALIZERS = {
     'Or': makeChildAppender(writeLogicalFilter),
     'Not': makeChildAppender(writeNotFilter),
     'BBOX': makeChildAppender(writeBboxFilter),
-    'Contains': makeChildAppender(writeContainsFilter),
-    'Intersects': makeChildAppender(writeIntersectsFilter),
-    'Within': makeChildAppender(writeWithinFilter),
+    'Contains': makeChildAppender(writeSpatialFilter),
+    'Intersects': makeChildAppender(writeSpatialFilter),
+    'Within': makeChildAppender(writeSpatialFilter),
+    'DWithin': makeChildAppender(writeDWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsLessThan': makeChildAppender(writeComparisonFilter),
@@ -944,11 +945,12 @@ const GETFEATURE_SERIALIZERS = {
     'Or': makeChildAppender(writeLogicalFilter),
     'Not': makeChildAppender(writeNotFilter),
     'BBOX': makeChildAppender(writeBboxFilter),
-    'Contains': makeChildAppender(writeContainsFilter),
-    'Disjoint': makeChildAppender(writeDisjointFilter),
-    'Intersects': makeChildAppender(writeIntersectsFilter),
+    'Contains': makeChildAppender(writeSpatialFilter),
+    'Disjoint': makeChildAppender(writeSpatialFilter),
+    'Intersects': makeChildAppender(writeSpatialFilter),
     'ResourceId': makeChildAppender(writeResourceIdFilter),
-    'Within': makeChildAppender(writeWithinFilter),
+    'Within': makeChildAppender(writeSpatialFilter),
+    'DWithin': makeChildAppender(writeDWithinFilter),
     'PropertyIsEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsNotEqualTo': makeChildAppender(writeComparisonFilter),
     'PropertyIsLessThan': makeChildAppender(writeComparisonFilter),
@@ -1049,54 +1051,6 @@ function writeBboxFilter(node, filter, objectStack) {
 }
 
 /**
- * @param {Node} node Node.
- * @param {import("./filter/Contains.js").default} filter Filter.
- * @param {Array<*>} objectStack Node stack.
- */
-function writeContainsFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
-  parent['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-}
-
-/**
- * @param {Node} node Node.
- * @param {import("./filter/Intersects.js").default} filter Filter.
- * @param {Array<*>} objectStack Node stack.
- */
-function writeIntersectsFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
-  parent['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-}
-
-/**
- * @param {Node} node Node.
- * @param {import("./filter/Disjoint.js").default} filter Filter.
- * @param {Array<*>} objectStack Node stack.
- */
-function writeDisjointFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
-  parent['srsName'] = filter.srsName;
-  const format = GML_FORMATS[version];
-
-  writePropertyName(version, node, filter.geometryName);
-  format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
-}
-
-/**
  * @param {Element} node Element.
  * @param {import("./filter/ResourceId.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
@@ -1107,10 +1061,10 @@ function writeResourceIdFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {import("./filter/Within.js").default} filter Filter.
+ * @param {import("./filter/Spatial.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
-function writeWithinFilter(node, filter, objectStack) {
+function writeSpatialFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
@@ -1119,6 +1073,26 @@ function writeWithinFilter(node, filter, objectStack) {
 
   writePropertyName(version, node, filter.geometryName);
   format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+}
+
+/**
+ * @param {Node} node Node.
+ * @param {import("./filter/DWithin.js").default} filter Filter.
+ * @param {Array<*>} objectStack Node stack.
+ */
+function writeDWithinFilter(node, filter, objectStack) {
+  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = parent['context'];
+  const version = context['version'];
+  writeSpatialFilter(node, filter, objectStack);
+  const distance = createElementNS(getFilterNS(version), 'Distance');
+  writeStringTextNode(distance, filter.distance.toString());
+  if (version === '2.0.0') {
+    distance.setAttribute('uom', filter.unit);
+  } else {
+    distance.setAttribute('units', filter.unit);
+  }
+  node.appendChild(distance);
 }
 
 /**
@@ -1130,11 +1104,8 @@ function writeDuringFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = FESNS[version];
-  const valueReference = createElementNS(ns, 'ValueReference');
-  writeStringTextNode(valueReference, filter.propertyName);
-  node.appendChild(valueReference);
 
+  writeExpression(FESNS[version], 'ValueReference', node, filter.propertyName);
   const timePeriod = createElementNS(GMLNS, 'TimePeriod');
 
   node.appendChild(timePeriod);
@@ -1202,12 +1173,11 @@ function writeComparisonFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = OGCNS[context['version']];
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
   writePropertyName(version, node, filter.propertyName);
-  writeOgcLiteral(ns, node, '' + filter.expression);
+  writeLiteral(version, node, '' + filter.expression);
 }
 
 /**
@@ -1231,17 +1201,17 @@ function writeIsBetweenFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = OGCNS[context['version']];
+  const ns = getFilterNS(version);
 
   writePropertyName(version, node, filter.propertyName);
 
   const lowerBoundary = createElementNS(ns, 'LowerBoundary');
   node.appendChild(lowerBoundary);
-  writeOgcLiteral(ns, lowerBoundary, '' + filter.lowerBoundary);
+  writeLiteral(version, lowerBoundary, '' + filter.lowerBoundary);
 
   const upperBoundary = createElementNS(ns, 'UpperBoundary');
   node.appendChild(upperBoundary);
-  writeOgcLiteral(ns, upperBoundary, '' + filter.upperBoundary);
+  writeLiteral(version, upperBoundary, '' + filter.upperBoundary);
 }
 
 /**
@@ -1253,7 +1223,6 @@ function writeIsLikeFilter(node, filter, objectStack) {
   const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const context = parent['context'];
   const version = context['version'];
-  const ns = OGCNS[version];
   node.setAttribute('wildCard', filter.wildCard);
   node.setAttribute('singleChar', filter.singleChar);
   node.setAttribute('escapeChar', filter.escapeChar);
@@ -1261,7 +1230,7 @@ function writeIsLikeFilter(node, filter, objectStack) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
   writePropertyName(version, node, filter.propertyName);
-  writeOgcLiteral(ns, node, '' + filter.pattern);
+  writeLiteral(version, node, '' + filter.pattern);
 }
 
 /**
@@ -1270,7 +1239,7 @@ function writeIsLikeFilter(node, filter, objectStack) {
  * @param {Node} node Node.
  * @param {string} value Value.
  */
-function writeOgcExpression(ns, tagName, node, value) {
+function writeExpression(ns, tagName, node, value) {
   const property = createElementNS(ns, tagName);
   writeStringTextNode(property, value);
   node.appendChild(property);
@@ -1281,30 +1250,21 @@ function writeOgcExpression(ns, tagName, node, value) {
  * @param {Node} node Node.
  * @param {string} value PropertyName value.
  */
+function writeLiteral(version, node, value) {
+  writeExpression(getFilterNS(version), 'Literal', node, value);
+}
+
+/**
+ * @param {string} version Version.
+ * @param {Node} node Node.
+ * @param {string} value PropertyName value.
+ */
 function writePropertyName(version, node, value) {
   if (version === '2.0.0') {
-    writeFesValueReference(FESNS[version], node, value);
+    writeExpression(FESNS[version], 'ValueReference', node, value);
   } else {
-    writeOgcExpression(OGCNS[version], 'PropertyName', node, value);
+    writeExpression(OGCNS[version], 'PropertyName', node, value);
   }
-}
-
-/**
- * @param {string} ns Namespace.
- * @param {Node} node Node.
- * @param {string} value PropertyName value.
- */
-function writeFesValueReference(ns, node, value) {
-  writeOgcExpression(ns, 'ValueReference', node, value);
-}
-
-/**
- * @param {string} ns Namespace.
- * @param {Node} node Node.
- * @param {string} value PropertyName value.
- */
-function writeOgcLiteral(ns, node, value) {
-  writeOgcExpression(ns, 'Literal', node, value);
 }
 
 /**
