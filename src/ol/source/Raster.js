@@ -832,6 +832,9 @@ function getImageData(layer, frameState) {
   }
   const width = frameState.size[0];
   const height = frameState.size[1];
+  if (width === 0 || height === 0) {
+    return null;
+  }
   const container = renderer.renderFrame(frameState, null);
   let element;
   if (container) {
