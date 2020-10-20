@@ -39,6 +39,8 @@ class ImageTile extends Tile {
      */
     this.src_ = src;
 
+    this.key = src;
+
     /**
      * @private
      * @type {HTMLImageElement|HTMLCanvasElement}
@@ -68,13 +70,6 @@ class ImageTile extends Tile {
    */
   getImage() {
     return this.image_;
-  }
-
-  /**
-   * @return {string} Key.
-   */
-  getKey() {
-    return this.src_;
   }
 
   /**
