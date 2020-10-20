@@ -137,7 +137,7 @@ class MapBrowserEventHandler extends EventTarget {
         pointerEvent
       );
       this.dispatchEvent(newEvent);
-    } else {
+    } else if (this.activePointers_ === 0) {
       // click
       this.clickTimeoutId_ = setTimeout(
         /** @this {MapBrowserEventHandler} */

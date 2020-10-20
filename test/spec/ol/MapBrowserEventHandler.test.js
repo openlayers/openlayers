@@ -82,6 +82,26 @@ describe('ol/MapBrowserEventHandler', function () {
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.calledOnce).to.be.ok();
     });
+
+    it('does not emulate dblclick when multiple pointers are involved', function () {
+      const event = new Event();
+      event.type = 'pointerdown';
+      event.target = target;
+      event.clientX = 0;
+      event.clientY = 0;
+      handler.activePointers_ = 1;
+      handler.emulateClick_(event);
+      expect(singleclickSpy.called).to.not.be.ok();
+      expect(dblclickSpy.called).to.not.be.ok();
+
+      handler.emulateClick_(event);
+      expect(singleclickSpy.called).to.not.be.ok();
+      expect(dblclickSpy.called).to.not.be.ok();
+
+      clock.tick(250);
+      expect(singleclickSpy.called).to.not.be.ok();
+      expect(dblclickSpy.called).to.not.be.ok();
+    });
   });
 
   describe('#down_', function () {
