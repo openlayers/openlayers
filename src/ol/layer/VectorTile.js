@@ -36,10 +36,10 @@ import {assign} from '../obj.js';
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
  * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
- *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
- *    are always rotated with the view and pixels are scaled during zoom animations. When `declutter`
- *    is set to `true`, the decluttering is done per tile resulting in labels and point symbols getting
- *    cut off at tile boundaries.
+ *  * `'image'`: Vector tiles are rendered as images. Only available when `declutter` is set to `false` (default).
+ *    Otherwise, `'hybrid'` mode will used instead. Great performance, but point symbols and texts
+ *    are always rotated with the view and pixels are scaled during zoom animations. Labels and point symbols will
+ *    get cut off at tile boundaries.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
