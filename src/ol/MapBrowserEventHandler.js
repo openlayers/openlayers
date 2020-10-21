@@ -32,6 +32,12 @@ class MapBrowserEventHandler extends EventTarget {
     this.clickTimeoutId_;
 
     /**
+     * Emulate dblclick and singleclick. Will be true when only one pointer is active.
+     * @type {boolean}
+     */
+    this.emulateClicks_ = false;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -137,7 +143,7 @@ class MapBrowserEventHandler extends EventTarget {
         pointerEvent
       );
       this.dispatchEvent(newEvent);
-    } else if (this.activePointers_ === 0) {
+    } else {
       // click
       this.clickTimeoutId_ = setTimeout(
         /** @this {MapBrowserEventHandler} */
@@ -197,6 +203,7 @@ class MapBrowserEventHandler extends EventTarget {
     // We only fire click, singleclick, and doubleclick if nobody has called
     // event.stopPropagation() or event.preventDefault().
     if (
+      this.emulateClicks_ &&
       !newEvent.propagationStopped &&
       !this.dragging_ &&
       this.isMouseActionButton_(pointerEvent)
@@ -228,6 +235,7 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   handlePointerDown_(pointerEvent) {
+    this.emulateClicks_ = this.activePointers_ === 0;
     this.updateActivePointers_(pointerEvent);
     const newEvent = new MapBrowserEvent(
       MapBrowserEventType.POINTERDOWN,
