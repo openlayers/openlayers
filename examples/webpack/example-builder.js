@@ -332,12 +332,11 @@ class ExampleBuilder {
           jsSource + (workerSource ? `\n${workerSource}` : '')
         ),
         devDependencies: {
-          parcel: '1.11.0',
+          parcel: '^2.0.0-beta.1',
         },
         scripts: {
           start: 'parcel index.html',
-          build:
-            'parcel build --experimental-scope-hoisting --public-url . index.html',
+          build: 'parcel build --public-url . index.html',
         },
       },
       null,
