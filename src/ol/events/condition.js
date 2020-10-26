@@ -37,6 +37,18 @@ export function all(var_args) {
 }
 
 /**
+ * Return `true` if the platform-modifier-key (the meta-key on Mac, ctrl-key otherwise) is
+ * pressed, `false` otherwise.
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the platform modifier key is pressed.
+ */
+export const isPlatformModifierKey = function (mapBrowserEvent) {
+  const originalEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
+  // Do not use key.ctrl (or key.meta on Mac) Because Firefox sometimes doesn't assign the ctrlKey.
+  return MAC ? originalEvent.key === 'Meta' : originalEvent.key === 'Control';
+};
+
+/**
  * Return `true` if only the alt-key is pressed, `false` otherwise (e.g. when
  * additionally the shift-key is pressed).
  *
@@ -48,7 +60,7 @@ export const altKeyOnly = function (mapBrowserEvent) {
   const originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
   return (
     originalEvent.altKey &&
-    !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+    !isPlatformModifierKey(mapBrowserEvent) &&
     !originalEvent.shiftKey
   );
 };
@@ -65,7 +77,7 @@ export const altShiftKeysOnly = function (mapBrowserEvent) {
   const originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
   return (
     originalEvent.altKey &&
-    !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+    !isPlatformModifierKey(mapBrowserEvent) &&
     originalEvent.shiftKey
   );
 };
@@ -183,7 +195,7 @@ export const noModifierKeys = function (mapBrowserEvent) {
   const originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
   return (
     !originalEvent.altKey &&
-    !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+    !isPlatformModifierKey(mapBrowserEvent) &&
     !originalEvent.shiftKey
   );
 };
@@ -201,7 +213,7 @@ export const platformModifierKeyOnly = function (mapBrowserEvent) {
   const originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
   return (
     !originalEvent.altKey &&
-    (MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
+    isPlatformModifierKey(mapBrowserEvent) &&
     !originalEvent.shiftKey
   );
 };
@@ -218,7 +230,7 @@ export const shiftKeyOnly = function (mapBrowserEvent) {
   const originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
   return (
     !originalEvent.altKey &&
-    !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+    !isPlatformModifierKey(mapBrowserEvent) &&
     originalEvent.shiftKey
   );
 };
