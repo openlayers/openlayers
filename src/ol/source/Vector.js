@@ -46,15 +46,15 @@ export class VectorSourceEvent extends Event {
     super(type);
 
     /**
-     * The feature being added or removed.
+     * The added or removed feature for the `ADDFEATURE` and `REMOVEFEATURE` events, `undefined` otherwise.
      * @type {import("../Feature.js").default<Geometry>|undefined}
      * @api
      */
     this.feature = opt_feature;
 
     /**
-     * The features being loaded.
-     * @type {Array<import("../Feature.js").default<Geometry>>}
+     * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
+     * @type {Array<import("../Feature.js").default<Geometry>>|undefined}
      * @api
      */
     this.features = opt_features;
