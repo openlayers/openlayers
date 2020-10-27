@@ -16,15 +16,19 @@ let withCredentials = false;
  * load features.
  *
  * This function takes an {@link module:ol/extent~Extent} representing the area to be loaded,
- * a `{number}` representing the resolution (map units per pixel) and an
- * {@link module:ol/proj/Projection} for the projection  as
+ * a `{number}` representing the resolution (map units per pixel), an
+ * {@link module:ol/proj/Projection} for the projection and success and failure callbacks as
  * arguments. `this` within the function is bound to the
  * {@link module:ol/source/Vector} it's called from.
  *
  * The function is responsible for loading the features and adding them to the
  * source.
- * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default), import("./extent.js").Extent, number,
- *                    import("./proj/Projection.js").default): void} FeatureLoader
+ * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default),
+ *           import("./extent.js").Extent,
+ *           number,
+ *           import("./proj/Projection.js").default,
+ *           function(Array<import("./Feature.js").default>): void=,
+ *           function(): void=): void} FeatureLoader
  * @api
  */
 
@@ -43,81 +47,77 @@ let withCredentials = false;
 /**
  * @param {string|FeatureUrlFunction} url Feature URL service.
  * @param {import("./format/Feature.js").default} format Feature format.
- * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent): void|function(this:import("./source/Vector").default, Array<import("./Feature.js").default>): void} success
- *     Function called with the loaded features and optionally with the data
- *     projection. Called with the vector tile or source as `this`.
- * @param {function(this:import("./VectorTile.js").default): void|function(this:import("./source/Vector").default): void} failure
- *     Function called when loading failed. Called with the vector tile or
- *     source as `this`.
- * @return {FeatureLoader} The feature loader.
+ * @param {import("./extent.js").Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {import("./proj/Projection.js").default} projection Projection.
+ * @param {function(Array<import("./Feature.js").default>, import("./proj/Projection.js").default): void} success Success
+ *      Function called with the loaded features and optionally with the data projection.
+ * @param {function(): void} failure Failure
+ *      Function called when loading failed.
  */
-export function loadFeaturesXhr(url, format, success, failure) {
-  return (
-    /**
-     * @param {import("./extent.js").Extent} extent Extent.
-     * @param {number} resolution Resolution.
-     * @param {import("./proj/Projection.js").default} projection Projection.
-     * @this {import("./source/Vector").default|import("./VectorTile.js").default}
-     */
-    function (extent, resolution, projection) {
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        typeof url === 'function' ? url(extent, resolution, projection) : url,
-        true
-      );
-      if (format.getType() == FormatType.ARRAY_BUFFER) {
-        xhr.responseType = 'arraybuffer';
-      }
-      xhr.withCredentials = withCredentials;
-      /**
-       * @param {Event} event Event.
-       * @private
-       */
-      xhr.onload = function (event) {
-        // status will be 0 for file:// urls
-        if (!xhr.status || (xhr.status >= 200 && xhr.status < 300)) {
-          const type = format.getType();
-          /** @type {Document|Node|Object|string|undefined} */
-          let source;
-          if (type == FormatType.JSON || type == FormatType.TEXT) {
-            source = xhr.responseText;
-          } else if (type == FormatType.XML) {
-            source = xhr.responseXML;
-            if (!source) {
-              source = new DOMParser().parseFromString(
-                xhr.responseText,
-                'application/xml'
-              );
-            }
-          } else if (type == FormatType.ARRAY_BUFFER) {
-            source = /** @type {ArrayBuffer} */ (xhr.response);
-          }
-          if (source) {
-            success.call(
-              this,
-              format.readFeatures(source, {
-                extent: extent,
-                featureProjection: projection,
-              }),
-              format.readProjection(source)
-            );
-          } else {
-            failure.call(this);
-          }
-        } else {
-          failure.call(this);
-        }
-      }.bind(this);
-      /**
-       * @private
-       */
-      xhr.onerror = function () {
-        failure.call(this);
-      }.bind(this);
-      xhr.send();
-    }
+export function loadFeaturesXhr(
+  url,
+  format,
+  extent,
+  resolution,
+  projection,
+  success,
+  failure
+) {
+  const xhr = new XMLHttpRequest();
+  xhr.open(
+    'GET',
+    typeof url === 'function' ? url(extent, resolution, projection) : url,
+    true
   );
+  if (format.getType() == FormatType.ARRAY_BUFFER) {
+    xhr.responseType = 'arraybuffer';
+  }
+  xhr.withCredentials = withCredentials;
+  /**
+   * @param {Event} event Event.
+   * @private
+   */
+  xhr.onload = function (event) {
+    // status will be 0 for file:// urls
+    if (!xhr.status || (xhr.status >= 200 && xhr.status < 300)) {
+      const type = format.getType();
+      /** @type {Document|Node|Object|string|undefined} */
+      let source;
+      if (type == FormatType.JSON || type == FormatType.TEXT) {
+        source = xhr.responseText;
+      } else if (type == FormatType.XML) {
+        source = xhr.responseXML;
+        if (!source) {
+          source = new DOMParser().parseFromString(
+            xhr.responseText,
+            'application/xml'
+          );
+        }
+      } else if (type == FormatType.ARRAY_BUFFER) {
+        source = /** @type {ArrayBuffer} */ (xhr.response);
+      }
+      if (source) {
+        success(
+          /** @type {Array<import("./Feature.js").default>} */
+          (format.readFeatures(source, {
+            extent: extent,
+            featureProjection: projection,
+          })),
+          format.readProjection(source)
+        );
+      } else {
+        failure();
+      }
+    } else {
+      failure();
+    }
+  };
+  /**
+   * @private
+   */
+  xhr.onerror = failure;
+  xhr.send();
 }
 
 /**
@@ -130,25 +130,38 @@ export function loadFeaturesXhr(url, format, success, failure) {
  * @api
  */
 export function xhr(url, format) {
-  return loadFeaturesXhr(
-    url,
-    format,
-    /**
-     * @param {Array<import("./Feature.js").default>} features The loaded features.
-     * @param {import("./proj/Projection.js").default} dataProjection Data
-     * projection.
-     * @this {import("./source/Vector").default|import("./VectorTile.js").default}
-     */
-    function (features, dataProjection) {
-      const sourceOrTile = /** @type {?} */ (this);
-      if (typeof sourceOrTile.addFeatures === 'function') {
-        /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(
-          features
-        );
-      }
-    },
-    /* FIXME handle error */ VOID
-  );
+  /**
+   * @param {import("./extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {import("./proj/Projection.js").default} projection Projection.
+   * @param {function(): void=} success Success
+   *      Function called when loading succeeded.
+   * @param {function(): void=} failure Failure
+   *      Function called when loading failed.
+   * @this {import("./source/Vector").default}
+   */
+  return function (extent, resolution, projection, success, failure) {
+    const source = /** @type {import("./source/Vector").default} */ (this);
+    loadFeaturesXhr(
+      url,
+      format,
+      extent,
+      resolution,
+      projection,
+      /**
+       * @param {Array<import("./Feature.js").default>} features The loaded features.
+       * @param {import("./proj/Projection.js").default} dataProjection Data
+       * projection.
+       */
+      function (features, dataProjection) {
+        if (success !== undefined) {
+          success(features);
+        }
+        source.addFeatures(features);
+      },
+      /* FIXME handle error */ failure ? failure : VOID
+    );
+  };
 }
 
 /**

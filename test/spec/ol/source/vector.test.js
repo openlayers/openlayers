@@ -559,6 +559,35 @@ describe('ol.source.Vector', function () {
   });
 
   describe('#loadFeatures', function () {
+    it('fires the FEATURESLOADSTART event', function (done) {
+      const source = new VectorSource();
+      source.on('featuresloadstart', function () {
+        done();
+      });
+      source.loadFeatures(
+        [-10000, -10000, 10000, 10000],
+        1,
+        getProjection('EPSG:3857')
+      );
+    });
+
+    it('fires the FEATURESLOADEND event if the default load function is used', function (done) {
+      const source = new VectorSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/source/vectorsource/single-feature.json',
+      });
+      source.on('featuresloadend', function (event) {
+        expect(event.features).to.be.an('array');
+        expect(event.features.length).to.be(1);
+        done();
+      });
+      source.loadFeatures(
+        [-10000, -10000, 10000, 10000],
+        1,
+        getProjection('EPSG:3857')
+      );
+    });
+
     describe('with the "bbox" strategy', function () {
       it('requests the view extent plus render buffer', function (done) {
         const center = [-97.6114, 38.8403];
@@ -652,6 +681,54 @@ describe('ol.source.Vector', function () {
             expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
             source.removeLoadedExtent(bbox);
             expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+            done();
+          }, 0);
+        });
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          getProjection('EPSG:3857')
+        );
+      });
+
+      it('fires the FEATURESLOADEND event if the load function uses the callback', function (done) {
+        const source = new VectorSource();
+        const spy = sinon.spy();
+        source.on('featuresloadend', spy);
+
+        const features = [new Feature(), new Feature()];
+
+        source.setLoader(function (bbox, resolution, projection, success) {
+          success(features);
+          setTimeout(function () {
+            expect(spy.calledOnce).to.be(true);
+            const event = spy.getCall(0).args[0];
+            expect(event.features).to.be(features);
+            done();
+          }, 0);
+        });
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          getProjection('EPSG:3857')
+        );
+      });
+
+      it('fires the FEATURESLOADERROR event if the load function uses the callback', function (done) {
+        const source = new VectorSource();
+        const spy = sinon.spy();
+        source.on('featuresloaderror', spy);
+
+        source.setLoader(function (
+          bbox,
+          resolution,
+          projection,
+          success,
+          failure
+        ) {
+          failure();
+          setTimeout(function () {
+            expect(spy.calledOnce).to.be(true);
             done();
           }, 0);
         });
