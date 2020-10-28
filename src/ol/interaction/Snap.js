@@ -260,7 +260,7 @@ class Snap extends PointerInteraction {
 
   /**
    * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);

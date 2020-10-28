@@ -985,6 +985,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * @param {MapBrowserEvent} mapBrowserEvent The event to handle.
+   * @return {Promise<void>|void} Void
    */
   handleMapBrowserEvent(mapBrowserEvent) {
     if (!this.frameState_) {
@@ -1024,21 +1025,65 @@ class PluggableMap extends BaseObject {
       }
     }
     mapBrowserEvent.frameState = this.frameState_;
-    if (this.dispatchEvent(mapBrowserEvent) !== false) {
-      const interactionsArray = this.getInteractions().getArray().slice();
-      for (let i = interactionsArray.length - 1; i >= 0; i--) {
-        const interaction = interactionsArray[i];
-        if (
-          interaction.getMap() !== this ||
-          !interaction.getActive() ||
-          !this.getTargetElement()
-        ) {
-          continue;
+    const dispatchResult = this.dispatchEvent(mapBrowserEvent);
+    if (dispatchResult === false) {
+      return;
+    } else if (dispatchResult instanceof Promise) {
+      return dispatchResult.then((result) => {
+        if (result === false) {
+          return;
         }
-        const cont = interaction.handleEvent(mapBrowserEvent);
-        if (!cont) {
-          break;
-        }
+        return this.fireInteractions_(mapBrowserEvent);
+      });
+    }
+    return this.fireInteractions_(mapBrowserEvent);
+  }
+
+  /**
+   * @param {MapBrowserEvent} mapBrowserEvent The event to handle.
+   * @return {Promise<void>|void} Void
+   * @private
+   */
+  fireInteractions_(mapBrowserEvent) {
+    const interactionsArray = this.getInteractions().getArray().slice();
+    for (let i = interactionsArray.length - 1; i >= 0; i--) {
+      const interaction = interactionsArray[i];
+      if (
+        interaction.getMap() !== this ||
+        !interaction.getActive() ||
+        !this.getTargetElement()
+      ) {
+        continue;
+      }
+      const cont = interaction.handleEvent(mapBrowserEvent);
+      const handleContPromise = (cont) => {
+        return cont.then((cont) => {
+          if (!cont) {
+            return;
+          }
+          for (; i >= 0; i--) {
+            const interaction = interactionsArray[i];
+            if (
+              interaction.getMap() !== this ||
+              !interaction.getActive() ||
+              !this.getTargetElement()
+            ) {
+              continue;
+            }
+            const cont = interaction.handleEvent(mapBrowserEvent);
+            if (cont instanceof Promise) {
+              i--;
+              return handleContPromise(cont);
+            } else if (!cont) {
+              break;
+            }
+          }
+        });
+      };
+      if (cont instanceof Promise) {
+        return handleContPromise(cont);
+      } else if (!cont) {
+        break;
       }
     }
   }

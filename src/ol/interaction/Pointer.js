@@ -106,7 +106,7 @@ class PointerInteraction extends Interaction {
   /**
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} If the event was consumed.
+   * @return {Promise<boolean>|boolean} If the event was consumed.
    * @protected
    */
   handleDownEvent(mapBrowserEvent) {
@@ -125,7 +125,7 @@ class PointerInteraction extends Interaction {
    * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
    * detected.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    * @api
    */
   handleEvent(mapBrowserEvent) {
@@ -142,12 +142,26 @@ class PointerInteraction extends Interaction {
         mapBrowserEvent.preventDefault();
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
         const handledUp = this.handleUpEvent(mapBrowserEvent);
+        if (handledUp instanceof Promise) {
+          return handledUp.then((handledUpRes) => {
+            this.handlingDownUpSequence =
+              handledUpRes && this.targetPointers.length > 0;
+            return !stopEvent;
+          });
+        }
         this.handlingDownUpSequence =
           handledUp && this.targetPointers.length > 0;
       }
     } else {
       if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
         const handled = this.handleDownEvent(mapBrowserEvent);
+        if (handled instanceof Promise) {
+          return handled.then((handledRes) => {
+            this.handlingDownUpSequence = handledRes;
+            stopEvent = this.stopDown(handledRes);
+            return !stopEvent;
+          });
+        }
         this.handlingDownUpSequence = handled;
         stopEvent = this.stopDown(handled);
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
@@ -167,7 +181,7 @@ class PointerInteraction extends Interaction {
   /**
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} If the event was consumed.
+   * @return {Promise<boolean>|boolean} If the event was consumed.
    * @protected
    */
   handleUpEvent(mapBrowserEvent) {

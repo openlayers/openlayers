@@ -19,6 +19,10 @@ import VectorSource from '../../../src/ol/source/Vector.js';
 import View from '../../../src/ol/View.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 import {LineString, Point, Polygon} from '../../../src/ol/geom.js';
+import {
+  Pointer,
+  defaults as defaultInteractions,
+} from '../../../src/ol/interaction.js';
 import {TRUE} from '../../../src/ol/functions.js';
 import {
   clearUserProjection,
@@ -27,7 +31,6 @@ import {
   transform,
   useGeographic,
 } from '../../../src/ol/proj.js';
-import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
 
 describe('ol.Map', function () {
   describe('constructor', function () {
@@ -1026,16 +1029,23 @@ describe('ol.Map', function () {
   });
 
   describe('#handleMapBrowserEvent()', function () {
-    let map, target, dragpan;
+    let map, target, dragpan, asyncInteraction, syncInteraction;
+    class AsyncInteraction extends Pointer {
+      handleEvent(mapBrowserEvent) {
+        return new Promise((res) => res(false));
+      }
+    }
     beforeEach(function () {
       target = document.createElement('div');
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
       dragpan = new DragPan();
+      asyncInteraction = new AsyncInteraction();
+      syncInteraction = new Pointer();
       map = new Map({
         target: target,
-        interactions: [dragpan],
+        interactions: [syncInteraction, asyncInteraction, dragpan],
         layers: [
           new TileLayer({
             source: new XYZ({
@@ -1091,7 +1101,31 @@ describe('ol.Map', function () {
       );
       expect(callCount).to.be(1);
       expect(spy.callCount).to.be(0);
-      spy.restore();
+    });
+
+    it('calls handleEvent on an interaction which returns a promise', function (done) {
+      const stub = sinon.stub(dragpan, 'handleEvent');
+      stub.returns(true);
+      const asyncSpy = sinon.spy(asyncInteraction, 'handleEvent');
+      const syncSpy = sinon.spy(syncInteraction, 'handleEvent');
+      map
+        .handleMapBrowserEvent(
+          new MapBrowserEvent(
+            'pointermove',
+            map,
+            new MapBrowserEvent('pointermove')
+          )
+        )
+        .then(() => {
+          expect(asyncSpy.callCount).to.be(1);
+          expect(syncSpy.callCount).to.be(0);
+          asyncSpy.restore();
+          syncSpy.restore();
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
     });
   });
 });

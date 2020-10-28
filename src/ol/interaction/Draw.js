@@ -493,7 +493,7 @@ class Draw extends PointerInteraction {
   /**
    * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually draw or finish the drawing.
    * @param {import("../MapBrowserEvent.js").default} event Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    * @api
    */
   handleEvent(event) {

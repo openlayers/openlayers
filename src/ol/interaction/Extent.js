@@ -289,7 +289,7 @@ class Extent extends PointerInteraction {
 
   /**
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
     if (!mapBrowserEvent.originalEvent || !this.condition_(mapBrowserEvent)) {

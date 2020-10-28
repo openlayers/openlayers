@@ -422,7 +422,7 @@ class Select extends Interaction {
    * Handles the {@link module:ol/MapBrowserEvent map browser event} and may change the
    * selected state of features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    * @this {Select}
    */
   handleEvent(mapBrowserEvent) {

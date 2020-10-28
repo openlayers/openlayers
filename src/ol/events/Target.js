@@ -78,8 +78,9 @@ class Target extends Disposable {
    * Object with a `type` property.
    *
    * @param {import("./Event.js").default|string} event Event object.
-   * @return {boolean|undefined} `false` if anyone called preventDefault on the
-   *     event object or if any of the listeners returned false.
+   * @return {Promise<boolean|undefined>|boolean|undefined} A promise that resolves to
+   *     `false` if anyone called preventDefault on the event object
+   *     or if any of the listeners returned false.
    * @api
    */
   dispatchEvent(event) {
@@ -95,6 +96,44 @@ class Target extends Disposable {
       const dispatching = this.dispatching_ || (this.dispatching_ = {});
       const pendingRemovals =
         this.pendingRemovals_ || (this.pendingRemovals_ = {});
+      const finishDispatching = () => {
+        --dispatching[type];
+        if (dispatching[type] === 0) {
+          let pr = pendingRemovals[type];
+          delete pendingRemovals[type];
+          while (pr--) {
+            this.removeEventListener(type, VOID);
+          }
+          delete dispatching[type];
+        }
+      };
+      const handlePropagatePromise = (i, ii) => {
+        return propagate.then((result) => {
+          if (result === false) {
+            finishDispatching();
+            return false;
+          }
+          for (++i; i < ii; ++i) {
+            if ('handleEvent' in listeners[i]) {
+              propagate = /** @type {import("../events.js").ListenerObject} */ (listeners[
+                i
+              ]).handleEvent(evt);
+            } else {
+              propagate = /** @type {import("../events.js").ListenerFunction} */ (listeners[
+                i
+              ]).call(this, evt);
+            }
+            if (propagate instanceof Promise) {
+              return handlePropagatePromise(i, ii);
+            } else if (propagate === false || evt.propagationStopped) {
+              propagate = false;
+              break;
+            }
+          }
+          finishDispatching();
+          return propagate;
+        });
+      };
       if (!(type in dispatching)) {
         dispatching[type] = 0;
         pendingRemovals[type] = 0;
@@ -110,20 +149,14 @@ class Target extends Disposable {
             i
           ]).call(this, evt);
         }
-        if (propagate === false || evt.propagationStopped) {
+        if (propagate instanceof Promise) {
+          return handlePropagatePromise(i, ii);
+        } else if (propagate === false || evt.propagationStopped) {
           propagate = false;
           break;
         }
       }
-      --dispatching[type];
-      if (dispatching[type] === 0) {
-        let pr = pendingRemovals[type];
-        delete pendingRemovals[type];
-        while (pr--) {
-          this.removeEventListener(type, VOID);
-        }
-        delete dispatching[type];
-      }
+      finishDispatching();
       return propagate;
     }
   }

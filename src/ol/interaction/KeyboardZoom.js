@@ -61,7 +61,7 @@ class KeyboardZoom extends Interaction {
    * `KeyEvent`, and decides whether to zoom in or out (depending on whether the
    * key pressed was '+' or '-').
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    * @this {KeyboardZoom}
    */
   handleEvent(mapBrowserEvent) {

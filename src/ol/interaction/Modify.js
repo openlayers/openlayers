@@ -744,7 +744,7 @@ class Modify extends PointerInteraction {
   /**
    * Handles the {@link module:ol/MapBrowserEvent map browser event} and may modify the geometry.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
     if (!mapBrowserEvent.originalEvent) {

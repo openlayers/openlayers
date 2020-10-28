@@ -80,7 +80,7 @@ class KeyboardPan extends Interaction {
    * `KeyEvent`, and decides the direction to pan to (if an arrow key was
    * pressed).
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
+   * @return {Promise<boolean>|boolean} `false` to stop event propagation.
    * @this {KeyboardPan}
    */
   handleEvent(mapBrowserEvent) {
