@@ -87,7 +87,7 @@
     "marked": "1.2.2",
     "mocha": "8.2.0",
     "pixelmatch": "^5.1.0",
-    "pngjs": "^5.0.0",
+    "pngjs": "^6.0.0",
     "proj4": "2.6.2",
     "puppeteer": "5.4.0",
     "rollup": "^2.1.0",
