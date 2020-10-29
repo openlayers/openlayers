@@ -216,6 +216,13 @@ class Draw extends PointerInteraction {
     this.lastDragTime_;
 
     /**
+     * Pointer type of the last pointermove event
+     * @type {string}
+     * @private
+     */
+    this.pointerType_;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -535,7 +542,7 @@ class Draw extends PointerInteraction {
       event.type === MapBrowserEventType.POINTERDOWN
     ) {
       pass = false;
-    } else if (move && this.getPointerCount() === 1) {
+    } else if (move && this.getPointerCount() < 2) {
       pass = event.type === MapBrowserEventType.POINTERMOVE;
       if (pass && this.freehand_) {
         this.handlePointerMove_(event);
@@ -646,6 +653,7 @@ class Draw extends PointerInteraction {
    * @private
    */
   handlePointerMove_(event) {
+    this.pointerType_ = event.originalEvent.pointerType;
     if (
       this.downPx_ &&
       ((!this.freehand_ && this.shouldHandle_) ||
@@ -887,14 +895,26 @@ class Draw extends PointerInteraction {
     if (this.mode_ === Mode.LINE_STRING) {
       coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
       coordinates.splice(-2, 1);
-      this.geometryFunction_(coordinates, geometry, projection);
       if (coordinates.length >= 2) {
         this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
+        if (this.pointerType_ !== 'mouse') {
+          const finishCoordinate = this.finishCoordinate_.slice();
+          coordinates.pop();
+          coordinates.push(finishCoordinate);
+          this.sketchPoint_.setGeometry(new Point(finishCoordinate));
+        }
       }
+      this.geometryFunction_(coordinates, geometry, projection);
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
       sketchLineGeom = this.sketchLine_.getGeometry();
+      if (this.pointerType_ !== 'mouse') {
+        const finishCoordinate = coordinates[coordinates.length - 2].slice();
+        coordinates.pop();
+        coordinates.push(finishCoordinate);
+        this.sketchPoint_.setGeometry(new Point(finishCoordinate));
+      }
       sketchLineGeom.setCoordinates(coordinates);
       this.geometryFunction_(this.sketchCoords_, geometry, projection);
     }
