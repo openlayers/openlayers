@@ -535,7 +535,7 @@ class Draw extends PointerInteraction {
       event.type === MapBrowserEventType.POINTERDOWN
     ) {
       pass = false;
-    } else if (move) {
+    } else if (move && this.getPointerCount() === 1) {
       pass = event.type === MapBrowserEventType.POINTERMOVE;
       if (pass && this.freehand_) {
         this.handlePointerMove_(event);
@@ -603,34 +603,37 @@ class Draw extends PointerInteraction {
   handleUpEvent(event) {
     let pass = true;
 
-    if (this.downTimeout_) {
-      clearTimeout(this.downTimeout_);
-      this.downTimeout_ = undefined;
-    }
-
-    this.handlePointerMove_(event);
-
-    const circleMode = this.mode_ === Mode.CIRCLE;
-
-    if (this.shouldHandle_) {
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
-        if (this.mode_ === Mode.POINT) {
-          this.finishDrawing();
-        }
-      } else if (this.freehand_ || circleMode) {
-        this.finishDrawing();
-      } else if (this.atFinish_(event)) {
-        if (this.finishCondition_(event)) {
-          this.finishDrawing();
-        }
-      } else {
-        this.addToDrawing_(event.coordinate);
+    if (this.getPointerCount() === 0) {
+      if (this.downTimeout_) {
+        clearTimeout(this.downTimeout_);
+        this.downTimeout_ = undefined;
       }
-      pass = false;
-    } else if (this.freehand_) {
-      this.abortDrawing();
+
+      this.handlePointerMove_(event);
+
+      const circleMode = this.mode_ === Mode.CIRCLE;
+
+      if (this.shouldHandle_) {
+        if (!this.finishCoordinate_) {
+          this.startDrawing_(event);
+          if (this.mode_ === Mode.POINT) {
+            this.finishDrawing();
+          }
+        } else if (this.freehand_ || circleMode) {
+          this.finishDrawing();
+        } else if (this.atFinish_(event)) {
+          if (this.finishCondition_(event)) {
+            this.finishDrawing();
+          }
+        } else {
+          this.addToDrawing_(event.coordinate);
+        }
+        pass = false;
+      } else if (this.freehand_) {
+        this.abortDrawing();
+      }
     }
+
     if (!pass && this.stopClick_) {
       event.stopPropagation();
     }
