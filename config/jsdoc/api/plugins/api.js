@@ -4,12 +4,11 @@
  */
 exports.defineTags = function (dictionary) {
   dictionary.defineTag('api', {
-    mustNotHaveValue: true,
     canHaveType: false,
     canHaveName: false,
     onTagged: function (doclet, tag) {
       includeTypes(doclet);
-      doclet.stability = 'stable';
+      doclet.stability = tag.text || 'stable';
     },
   });
 };
