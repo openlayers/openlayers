@@ -67,6 +67,7 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @fires import("../render/Event.js").RenderEvent
+ * @api experimental
  */
 class WebGLPointsLayer extends Layer {
   /**

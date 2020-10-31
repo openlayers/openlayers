@@ -15,6 +15,7 @@
  * @property {Object<string, number>} [variables] Style variables; each variable must hold a number.
  * Note: **this object is meant to be mutated**: changes to the values will immediately be visible on the rendered features
  * @property {LiteralSymbolStyle} [symbol] Symbol representation.
+ * @api experimental
  */
 
 /**
@@ -38,4 +39,5 @@ export const SymbolType = {
  * @property {Array<ExpressionValue, ExpressionValue>} [offset] Offset on X and Y axis for symbols. If not specified, the symbol will be centered.
  * @property {Array<ExpressionValue, ExpressionValue, ExpressionValue, ExpressionValue>} [textureCoord] Texture coordinates. If not specified, the whole texture will be used (range for 0 to 1 on both axes).
  * @property {boolean} [rotateWithView=false] Specify whether the symbol must rotate with the view or stay upwards.
+ * @api experimental
  */
