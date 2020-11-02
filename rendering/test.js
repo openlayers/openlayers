@@ -56,8 +56,7 @@ function notFound(req, res) {
 
 function serve(options) {
   const webpackHandler = webpackMiddleware(compiler, {
-    lazy: true,
-    logger: options.log,
+    writeToDisk: false,
   });
 
   return new Promise((resolve, reject) => {
