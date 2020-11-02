@@ -58,7 +58,6 @@ function serve(options) {
   const webpackHandler = webpackMiddleware(compiler, {
     lazy: true,
     logger: options.log,
-    stats: 'minimal',
   });
 
   return new Promise((resolve, reject) => {
