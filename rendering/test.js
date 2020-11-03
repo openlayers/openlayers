@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const webpack = require('webpack');
 const config = require('./webpack.config');
 const webpackMiddleware = require('webpack-dev-middleware');
-const http = require('http');
+const express = require('express');
 const path = require('path');
 const png = require('pngjs');
 const fs = require('fs');
@@ -60,7 +60,8 @@ function serve(options) {
   });
 
   return new Promise((resolve, reject) => {
-    const server = http.createServer((req, res) => {
+    const app = express();
+    app.use((req, res) => {
       if (req.url === '/favicon.ico') {
         res.writeHead(204);
         res.end();
@@ -76,7 +77,7 @@ function serve(options) {
       staticHandler(req, res, notFound(req, res));
     });
 
-    server.listen(options.port, options.host, (err) => {
+    const server = app.listen(options.port, options.host, (err) => {
       if (err) {
         return reject(err);
       }
