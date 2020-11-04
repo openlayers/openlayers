@@ -85,7 +85,7 @@ function serve(options) {
       options.log.info(
         `test server listening http://${address.address}:${address.port}/`
       );
-      resolve(() => server.close());
+      resolve(() => server.close(() => process.exit(0)));
     });
   });
 }
