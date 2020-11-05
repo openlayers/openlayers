@@ -1057,6 +1057,7 @@ class Draw extends PointerInteraction {
     const last = this.sketchCoords_[this.sketchCoords_.length - 1];
     this.finishCoordinate_ = last.slice();
     this.sketchCoords_.push(last.slice());
+    this.sketchPoint_ = new Feature(new Point(last));
     this.updateSketchFeatures_();
     this.dispatchEvent(
       new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_)
