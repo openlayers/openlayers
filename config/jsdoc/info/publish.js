@@ -1,6 +1,5 @@
 /**
- * @fileoverview Generates JSON output based on exportable symbols (those with
- * an api tag) and boolean defines (with a define tag and a default value).
+ * @fileoverview Generates JSON output based on exportable symbols.
  */
 const assert = require('assert');
 const path = require('path');
@@ -20,7 +19,7 @@ exports.publish = function (data, opts) {
     return types;
   }
 
-  // get all doclets with the "api" property or define (excluding events)
+  // get all doclets that have exports
   const classes = {};
   const docs = data(
     [
