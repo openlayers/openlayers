@@ -1,6 +1,5 @@
 /**
- * @fileoverview Generates JSON output based on exportable symbols (those with
- * an api tag) and boolean defines (with a define tag and a default value).
+ * @fileoverview Generates JSON output based on exportable symbols.
  */
 const assert = require('assert');
 const path = require('path');
@@ -20,26 +19,27 @@ exports.publish = function (data, opts) {
     return types;
   }
 
-  // get all doclets with the "api" property or define (excluding events)
+  // get all doclets that have exports
   const classes = {};
   const docs = data(
     [
       {define: {isObject: true}},
       function () {
         if (this.kind == 'class') {
-          if (!('extends' in this) || typeof this.api == 'boolean') {
-            classes[this.longname] = this;
-            return true;
-          }
+          classes[this.longname] = this;
+          return true;
         }
         return (
-          typeof this.api == 'boolean' ||
-          (this.meta && /[\\\/]externs$/.test(this.meta.path))
+          this.meta &&
+          this.meta.path &&
+          this.longname.indexOf('<anonymous>') !== 0 &&
+          this.longname !== 'module:ol'
         );
       },
     ],
     {kind: {'!is': 'file'}},
-    {kind: {'!is': 'event'}}
+    {kind: {'!is': 'event'}},
+    {kind: {'!is': 'module'}}
   ).get();
 
   // get symbols data, filter out those that are members of private classes
@@ -77,7 +77,7 @@ exports.publish = function (data, opts) {
           path: path.join(doc.meta.path, doc.meta.filename),
           default: doc.define.default,
         });
-      } else if (doc.kind == 'typedef' || doc.isEnum === true) {
+      } else if (doc.type && (doc.kind == 'typedef' || doc.isEnum === true)) {
         typedefs.push({
           name: doc.longname,
           types: getTypes(doc.type.names),
@@ -136,7 +136,7 @@ exports.publish = function (data, opts) {
           });
         }
 
-        const target = isExterns ? externs : doc.api ? symbols : base;
+        const target = isExterns ? externs : symbols;
         const existingSymbol = symbolsByName[symbol.name];
         if (existingSymbol) {
           const idx = target.indexOf(existingSymbol);
@@ -145,10 +145,9 @@ exports.publish = function (data, opts) {
         target.push(symbol);
         symbolsByName[symbol.name] = symbol;
 
-        if (doc.api && symbol.extends) {
+        if (symbol.extends) {
           while (
             symbol.extends in classes &&
-            !classes[symbol.extends].api &&
             classes[symbol.extends].augments
           ) {
             symbol.extends = classes[symbol.extends].augments[0];
