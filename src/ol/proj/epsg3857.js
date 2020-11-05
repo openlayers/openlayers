@@ -36,7 +36,7 @@ export const WORLD_EXTENT = [-180, -85, 180, 85];
  * @const
  * @type {number}
  */
-export const MAX_SAFE_Y = RADIUS * Math.log(Math.tan((Math.PI * 180) / 360));
+export const MAX_SAFE_Y = RADIUS * Math.log(Math.tan(Math.PI / 2));
 
 /**
  * @classdesc
