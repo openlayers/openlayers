@@ -11,6 +11,7 @@
     "GyroNorm": false,
     "jsPDF": false,
     "jsts": false,
+    "JSZip": false,
     "mapboxgl": false,
     "saveAs": false,
     "toastr": false,

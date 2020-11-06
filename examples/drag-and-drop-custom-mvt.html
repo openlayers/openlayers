@@ -1,0 +1,23 @@
+---
+layout: example.html
+title: Custom Drag-and-Drop (MVT preview)
+shortdesc: Example of using the drag-and-drop interaction with a custom format to preview MVT tiles.
+docs: >
+  Example of using the drag-and-drop interaction with a custom format to preview MVT tiles.
+  In addition to the formats used in the [Drag-and-Drop](drag-and-drop.html) example individual MVT tiles can be previewed.
+  There is no projection transform support, so this will only work with data in EPSG:4326 and EPSG:3857.
+tags: "drag-and-drop, mvt"
+---
+<div id="map" class="map"></div>
+<br />
+<div class="tileCoord">
+  <a id="download" download></a>
+  <span>Tile coordinate&nbsp;&nbsp;</span>
+  <span>&nbsp;z: <input type="number" id="tileCoordZ" value="6" /></span>
+  <span>&nbsp;x: <input type="number" id="tileCoordX" value="30" /></span>
+  <span>&nbsp;y: <input type="number" id="tileCoordY" value="20" /></span>
+  <span>&nbsp;&nbsp;</span>
+  <button id="download-mvt">Download sample</button>
+</div>
+<br />
+<div id="info">&nbsp;</div>

@@ -1,0 +1,22 @@
+---
+layout: example.html
+title: Custom Drag-and-Drop (KMZ)
+shortdesc: Example of using the drag-and-drop interaction with a custom format to handle KMZ files.
+docs: >
+  Example of using the drag-and-drop interaction with a custom format to handle KMZ files.
+  In addition to the formats used in the [Drag-and-Drop](drag-and-drop.html) example a custom format (subclassing KML) is used to handle KMZ files.
+  KML and icons must be extracted from the KMZ array buffer synchronously.
+  <a href="https://stuk.github.io/jszip/documentation/upgrade_guide.html" target="_blank">JSZip 2.x</a> is used as it has better browser compatibility and is simpler to code than the more recent <a href="https://github.com/ericvergnaud/jszip#readme" target="_blank">JSZip-sync</a>.
+  There is no projection transform support, so this will only work with data in EPSG:4326 and EPSG:3857.
+tags: "drag-and-drop, kml, kmz"
+resources:
+  - https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.1/jszip.min.js
+---
+<div id="map" class="map"></div>
+<br />
+<div>
+  <a id="download" download></a>
+  <button id="download-kmz">Download sample</button>
+</div>
+<br />
+<div id="info">&nbsp;</div>

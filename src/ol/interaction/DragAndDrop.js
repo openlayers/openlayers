@@ -5,6 +5,7 @@
 
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
+import FormatType from '../format/FormatType.js';
 import Interaction from './Interaction.js';
 import {TRUE} from '../functions.js';
 import {get as getProjection} from '../proj.js';
@@ -12,7 +13,8 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array<typeof import("../format/Feature.js").default>} [formatConstructors] Format constructors.
+ * @property {Array<typeof import("../format/Feature.js").default|import("../format/Feature.js").default>} [formatConstructors] Format constructors
+ * (and/or formats pre-constructed with options).
  * @property {import("../source/Vector.js").default} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
@@ -75,6 +77,11 @@ export class DragAndDropEvent extends Event {
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
+ *
+ * Note that the DragAndDrop interaction uses the TextDecoder() constructor if the supplied
+ * combinnation of formats read both text string and ArrayBuffer sources. Older browsers such
+ * as IE which do not support this will need a TextDecoder polyfill to be loaded before use.
+ *
  * @api
  *
  * @fires DragAndDropEvent
@@ -92,11 +99,27 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array<typeof import("../format/Feature.js").default>}
+     * @type {boolean}
      */
-    this.formatConstructors_ = options.formatConstructors
+    this.readAsBuffer_ = false;
+
+    /**
+     * @private
+     * @type {Array<import("../format/Feature.js").default>}
+     */
+    this.formats_ = [];
+    const formatConstructors = options.formatConstructors
       ? options.formatConstructors
       : [];
+    for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
+      let format = formatConstructors[i];
+      if (typeof format === 'function') {
+        format = new format();
+      }
+      this.formats_.push(format);
+      this.readAsBuffer_ =
+        this.readAsBuffer_ || format.getType() === FormatType.ARRAY_BUFFER;
+    }
 
     /**
      * @private
@@ -139,10 +162,18 @@ class DragAndDrop extends Interaction {
       projection = view.getProjection();
     }
 
-    const formatConstructors = this.formatConstructors_;
-    for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
-      const format = new formatConstructors[i]();
-      const features = this.tryReadFeatures_(format, result, {
+    let text;
+    const formats = this.formats_;
+    for (let i = 0, ii = formats.length; i < ii; ++i) {
+      const format = formats[i];
+      let input = result;
+      if (this.readAsBuffer_ && format.getType() !== FormatType.ARRAY_BUFFER) {
+        if (text === undefined) {
+          text = new TextDecoder().decode(result);
+        }
+        input = text;
+      }
+      const features = this.tryReadFeatures_(format, input, {
         featureProjection: projection,
       });
       if (features && features.length > 0) {
@@ -249,7 +280,11 @@ class DragAndDrop extends Interaction {
         EventType.LOAD,
         this.handleResult_.bind(this, file)
       );
-      reader.readAsText(file);
+      if (this.readAsBuffer_) {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsText(file);
+      }
     }
   }
 
