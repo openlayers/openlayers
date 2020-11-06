@@ -1117,7 +1117,8 @@ export function readFlatCoordinates(node) {
   const flatCoordinates = [];
   // The KML specification states that coordinate tuples should not include
   // spaces, but we tolerate them.
-  const re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*,\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s*,\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?))?\s*/i;
+  s = s.replace(/\s*,\s*/g, ',');
+  const re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?),([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|,|$)(?:([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|$))?\s*/i;
   let m;
   while ((m = re.exec(s))) {
     const x = parseFloat(m[1]);

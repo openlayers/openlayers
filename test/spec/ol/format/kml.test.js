@@ -468,6 +468,54 @@ describe('ol.format.KML', function () {
           expect(g.get('altitudeMode')).to.be('absolute');
         });
 
+        it('can read XY coordinates', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <LineString>' +
+            '      <coordinates>1,2 3,4</coordinates>' +
+            '      <extrude>0</extrude>' +
+            '      <tessellate>1</tessellate>' +
+            '      <altitudeMode>absolute</altitudeMode>' +
+            '    </LineString>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const g = f.getGeometry();
+          expect(g).to.be.an(LineString);
+          expect(g.getCoordinates()).to.eql([
+            [1, 2, 0],
+            [3, 4, 0],
+          ]);
+        });
+
+        it('can read empty Z coordinates', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <LineString>' +
+            '      <coordinates>1,2, 3,4,</coordinates>' +
+            '      <extrude>0</extrude>' +
+            '      <tessellate>1</tessellate>' +
+            '      <altitudeMode>absolute</altitudeMode>' +
+            '    </LineString>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const g = f.getGeometry();
+          expect(g).to.be.an(LineString);
+          expect(g.getCoordinates()).to.eql([
+            [1, 2, 0],
+            [3, 4, 0],
+          ]);
+        });
+
         it('can write XY LineString geometries', function () {
           const layout = 'XY';
           const lineString = new LineString(
