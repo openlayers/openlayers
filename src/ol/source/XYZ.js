@@ -42,7 +42,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * may be used instead of defining each one separately in the `urls` option.
  * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {number} [zDirection=0] Indicate which resolution should be used
  * by a renderer if the view resolution does not match any resolution of the tile source.
