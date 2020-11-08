@@ -34,6 +34,8 @@ export const ATTRIBUTION =
  *   imageTile.getImage().src = src;
  * };
  * ```
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [url='https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'] URL template.
  * Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
@@ -68,16 +70,17 @@ class OSM extends XYZ {
 
     super({
       attributions: attributions,
+      attributionsCollapsible: false,
       cacheSize: options.cacheSize,
       crossOrigin: crossOrigin,
       imageSmoothing: options.imageSmoothing,
-      opaque: options.opaque !== undefined ? options.opaque : true,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
+      opaque: options.opaque !== undefined ? options.opaque : true,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
+      transition: options.transition,
       url: url,
       wrapX: options.wrapX,
-      attributionsCollapsible: false,
     });
   }
 }

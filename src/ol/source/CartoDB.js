@@ -27,6 +27,8 @@ import {assign} from '../obj.js';
  * See http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/
  * for more detail.
  * @property {string} account If using named maps, this will be the name of the template to load.
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
  */
 
 /**
@@ -52,6 +54,7 @@ class CartoDB extends XYZ {
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
       minZoom: options.minZoom,
       projection: options.projection,
+      transition: options.transition,
       wrapX: options.wrapX,
     });
 
