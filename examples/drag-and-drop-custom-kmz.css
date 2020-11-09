@@ -1,0 +1,9 @@
+#info {
+  width: 100%;
+  height: 24rem;
+  overflow: scroll;
+  display: flex;
+  align-items: baseline;
+  border: 1px solid black;
+  justify-content: flex-start;
+}

@@ -9,7 +9,7 @@
 
   function fetchResource(resource) {
     return new Promise(function (resolve, reject) {
-      const isImage = /\.(png|jpe?g|gif|tiff|svg)$/.test(resource);
+      const isImage = /\.(png|jpe?g|gif|tiff|svg|kmz)$/.test(resource);
       if (isImage) {
         resolve ({
           isBinary: true,

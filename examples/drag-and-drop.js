@@ -1,16 +1,9 @@
+import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {
-  DragAndDrop,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {Vector as VectorSource, XYZ} from '../src/ol/source.js';
-
-const dragAndDropInteraction = new DragAndDrop({
-  formatConstructors: [GPX, GeoJSON, IGC, KML, TopoJSON],
-});
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -18,7 +11,6 @@ const attributions =
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const map = new Map({
-  interactions: defaultInteractions().extend([dragAndDropInteraction]),
   layers: [
     new TileLayer({
       source: new XYZ({
@@ -36,17 +28,39 @@ const map = new Map({
   }),
 });
 
-dragAndDropInteraction.on('addfeatures', function (event) {
-  const vectorSource = new VectorSource({
-    features: event.features,
+const extractStyles = document.getElementById('extractstyles');
+let dragAndDropInteraction;
+
+function setInteraction() {
+  if (dragAndDropInteraction) {
+    map.removeInteraction(dragAndDropInteraction);
+  }
+  dragAndDropInteraction = new DragAndDrop({
+    formatConstructors: [
+      GPX,
+      GeoJSON,
+      IGC,
+      // use constructed format to set options
+      new KML({extractStyles: extractStyles.checked}),
+      TopoJSON,
+    ],
   });
-  map.addLayer(
-    new VectorLayer({
-      source: vectorSource,
-    })
-  );
-  map.getView().fit(vectorSource.getExtent());
-});
+  dragAndDropInteraction.on('addfeatures', function (event) {
+    const vectorSource = new VectorSource({
+      features: event.features,
+    });
+    map.addLayer(
+      new VectorLayer({
+        source: vectorSource,
+      })
+    );
+    map.getView().fit(vectorSource.getExtent());
+  });
+  map.addInteraction(dragAndDropInteraction);
+}
+setInteraction();
+
+extractStyles.addEventListener('change', setInteraction);
 
 const displayFeatureInfo = function (pixel) {
   const features = [];
@@ -76,3 +90,48 @@ map.on('pointermove', function (evt) {
 map.on('click', function (evt) {
   displayFeatureInfo(evt.pixel);
 });
+
+// Sample data downloads
+
+const link = document.getElementById('download');
+
+function download(fullpath, filename) {
+  fetch(fullpath)
+    .then(function (response) {
+      return response.blob();
+    })
+    .then(function (blob) {
+      if (navigator.msSaveBlob) {
+        // link download attribuute does not work on MS browsers
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+      }
+    });
+}
+
+document.getElementById('download-gpx').addEventListener('click', function () {
+  download('data/gpx/fells_loop.gpx', 'fells_loop.gpx');
+});
+
+document
+  .getElementById('download-geojson')
+  .addEventListener('click', function () {
+    download('data/geojson/roads-seoul.geojson', 'roads-seoul.geojson');
+  });
+
+document.getElementById('download-igc').addEventListener('click', function () {
+  download('data/igc/Ulrich-Prinz.igc', 'Ulrich-Prinz.igc');
+});
+
+document.getElementById('download-kml').addEventListener('click', function () {
+  download('data/kml/states.kml', 'states.kml');
+});
+
+document
+  .getElementById('download-topojson')
+  .addEventListener('click', function () {
+    download('data/topojson/fr-departments.json', 'fr-departments.json');
+  });
