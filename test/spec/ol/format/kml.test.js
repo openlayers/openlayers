@@ -3477,6 +3477,41 @@ describe('ol.format.KML', function () {
           expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
         });
 
+        it('can use Styles in StyleMaps if # is missing', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <StyleMap id="fooMap">' +
+            '      <Pair>' +
+            '        <key>normal</key>' +
+            '        <styleUrl>foo</styleUrl>' +
+            '      </Pair>' +
+            '    </StyleMap>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>12345678</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <styleUrl>fooMap</styleUrl>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const s = styleArray[0];
+          expect(s).to.be.an(Style);
+          expect(s.getFill()).not.to.be(null);
+          expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+        });
+
         it('can use IconStyles in StyleMaps before they are defined (and set the crossOrigin option)', function () {
           format = new KML({crossOrigin: null});
           const text =
