@@ -126,7 +126,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
     'name': makeObjectPropertySetter(readString),
     'open': makeObjectPropertySetter(readBoolean),
     'phoneNumber': makeObjectPropertySetter(readString),
-    'styleUrl': makeObjectPropertySetter(readURI),
+    'styleUrl': makeObjectPropertySetter(readStyleURL),
     'visibility': makeObjectPropertySetter(readBoolean),
   },
   makeStructureNS(GX_NAMESPACE_URIS, {
@@ -1074,12 +1074,6 @@ function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
     return styleValue;
   } else if (typeof styleValue === 'string') {
-    // KML files in the wild occasionally forget the leading `#` on styleUrls
-    // defined in the same document.  Add a leading `#` if it enables to find
-    // a style.
-    if (!(styleValue in sharedStyles) && '#' + styleValue in sharedStyles) {
-      styleValue = '#' + styleValue;
-    }
     return findStyle(sharedStyles[styleValue], defaultStyle, sharedStyles);
   } else {
     return defaultStyle;
@@ -1139,6 +1133,28 @@ export function readFlatCoordinates(node) {
  */
 function readURI(node) {
   const s = getAllTextContent(node, false).trim();
+  let baseURI = node.baseURI;
+  if (!baseURI || baseURI == 'about:blank') {
+    baseURI = window.location.href;
+  }
+  if (baseURI) {
+    const url = new URL(s, baseURI);
+    return url.href;
+  } else {
+    return s;
+  }
+}
+
+/**
+ * @param {Node} node Node.
+ * @return {string} URI.
+ */
+function readStyleURL(node) {
+  // KML files in the wild occasionally forget the leading
+  // `#` on styleUrlsdefined in the same document.
+  const s = getAllTextContent(node, false)
+    .trim()
+    .replace(/^(?!.*#)/, '#');
   let baseURI = node.baseURI;
   if (!baseURI || baseURI == 'about:blank') {
     baseURI = window.location.href;
@@ -2021,7 +2037,7 @@ function regionParser(node, objectStack) {
 const PAIR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'Style': makeObjectPropertySetter(readStyle),
   'key': makeObjectPropertySetter(readString),
-  'styleUrl': makeObjectPropertySetter(readURI),
+  'styleUrl': makeObjectPropertySetter(readStyleURL),
 });
 
 /**
