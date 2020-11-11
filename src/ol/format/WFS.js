@@ -143,7 +143,8 @@ const TRANSACTION_SERIALIZERS = {
  * @property {number} [count] Number of features to retrieve when paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
  * Web Feature Services have repurposed `maxfeatures` instead.
- * @property {import("../extent.js").Extent} [bbox] Extent to use for the BBOX filter.
+ * @property {import("../extent.js").Extent} [bbox] Extent to use for the BBOX filter. The `geometryName`
+ * option must be set.
  * @property {import("./filter/Filter.js").default} [filter] Filter condition. See
  * {@link module:ol/format/Filter} for more information.
  * @property {string} [resultType] Indicates what response should be returned,
