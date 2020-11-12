@@ -1797,5 +1797,17 @@ describe('ol.format.EsriJSON', function () {
         );
       });
     });
+
+    it('does not add the projection inside the geometry when neither featurProjection nor dataProjection are set', function () {
+      const str = JSON.stringify(data);
+      const array = format.readFeatures(str);
+      const esrijson = format.writeFeaturesObject(array);
+      esrijson.features.forEach(function (feature, i) {
+        expect(feature.geometry.spatialReference).to.be(undefined);
+        expect(feature.geometry.paths[0]).to.eql(
+          array[i].getGeometry().getCoordinates()
+        );
+      });
+    });
   });
 });
