@@ -4,18 +4,16 @@ import GlTiledTextureAbstract from './GlTiledTextureAbstract.js'
  * @module ol/source/GlTiles
  */
 
-export default class GlTiledTextureNoise extends GlTiledTextureAbstract {
+export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   /**
-   * @param {Object=Uint8Array} arrayType Prototype of the TypedArray to use.
-   * @param {number=0} min Minimum value of the pseudorandom noise (inclusive).
-   * @param {number=256} max maximum value of the pseudorandom noise (exclusive).
+   * @param {XYZ} arrayType Instance of XYZ tile source for the
    *
-   * A wrapper of Math.random(). Returns tiles with pseudorandom noise within min/max values
+   * A wrapper over a XYZ tile source. Unpacks elevation data from Terrain-RGB-encoded
+   * tiles. Expects tiles to follow the Mapbox Terrain-RGB format, as per
+   * https://docs.mapbox.com/help/troubleshooting/access-elevation-data/
    */
-  constructor(arrayType = Uint8Array, min=0, max = 255 ) {
-    this.arrayType_ = arrayType;
-    this.min_ = min;
-    this.range_= max - min;
+  constructor(xyz) {
+    this.xyz = xyz;
   }
 
   /**

@@ -1,0 +1,28 @@
+---
+layout: example.html
+title: WebGL Shaded Relief
+shortdesc: WebGL shader for Terrain-RGB shaded relief
+docs: >
+  <p>
+    This example reimplements the <code>shaded-relief</code> example, but using
+    <code>ol/source/GlTiles</code> instead of <code>ol/source/Raster</code>,
+    and "Terrain-RGB" encoded tiles from MapTiler instead of a Mapbox-specific
+    dataset.
+  </p>
+tags: "raster, shaded relief, canvas, webgl, gltiles"
+---
+<div id="map" class="map"></div>
+<table class="controls">
+  <tr>
+    <td>vertical exaggeration: <span id="vertOut"></span>x</td>
+    <td><input id="vert" type="range" min="1" max="5" value="1"/></td>
+  </tr>
+  <tr>
+    <td>sun elevation: <span id="sunElOut"></span>°</td>
+    <td><input id="sunEl" type="range" min="0" max="90" value="45"/></td>
+  </tr>
+  <tr>
+    <td>sun azimuth: <span id="sunAzOut"></span>°</td>
+    <td><input id="sunAz" type="range" min="0" max="360" value="45"/></td>
+  </tr>
+</table>

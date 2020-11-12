@@ -128,15 +128,15 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
       let body = '';
 
       if (bits === 8 && format === 1) {
-        body = `return texel.x;`;
+        body = `return texel.x * 256.;`;
       } else if (bits === 8 && format === 2) {
         /// TODO: Check if .x > 128.0 and shift by -256.0??
-        body = `return texel.x;`;
+        body = `return texel.x * 256.;`;
       } else if (bits === 16 && format === 1) {
-        body = `return texel.x + texel.a * 256.0;`;
+        body = `return texel.x * 256. + texel.a * 65536.0;`;
       } else if (bits === 16 && format === 2) {
         /// TODO: Check if .y > 128.0 and shift by -256.0??
-        body = `return texel.x + texel.a * 256.0;`;
+        body = `return texel.x * 256. + texel.a * 65536.0;`;
       } else {
         if (format === 1) {
           console.warn(`GeoTIFF pixel format not yet implemented (${bits} bits, uint)`);

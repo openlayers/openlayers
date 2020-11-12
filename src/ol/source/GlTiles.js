@@ -72,13 +72,15 @@ class GlTile extends Tile {
 
       // Attach textures to the tile source's already-defined texture buffers
       for (const i in loadedTextures) {
-        if (loadedTextures[i] instanceof HTMLImageElement) {
+        if (loadedTextures[i] instanceof HTMLImageElement ||
+          loadedTextures[i] instanceof ImageData
+        ) {
           bindTextureImageData(gl, this.textures_[i], Number(i), loadedTextures[i]);
         } else if (loadedTextures[i].BYTES_PER_ELEMENT) {
           // This looks like a TypedArray, from GlTiledTexture
           bindTextureTypedArray(gl, this.textures_[i], Number(i), loadedTextures[i], tileSize[0], tileSize[1]);
         } else {
-          throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a GeoTiff slice');
+          throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a TypedArray');
         }
       }
 
@@ -147,13 +149,13 @@ class GlTiles extends XYZ {
      */
     const options = opt_options || {};
 
-    super({
+    super(Object.assign({},{
       opaque: false,
-      projection: options.projection,
-      tileGrid: options.tileGrid,
+//       projection: options.projection,
+//       tileGrid: options.tileGrid,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      zDirection: options.zDirection
-    });
+//       zDirection: options.zDirection,
+    }, options));
 
     this.fragmentShader = options.fragmentShader || 'void main(void) {gl_FragColor = vec4(0.2,0.2,0.2,1.0);}';
 
@@ -287,9 +289,6 @@ class GlTiles extends XYZ {
 
   // Takes as the only argument the texture fetch function definitions, an array of `String`s
   loadGLProgram_(defs) {
-
-    console.log("Loading GL program, func defs: ", defs);
-
     // Mostly copy-pasted from Leaflet.TileLayerGL's code.
     const gl = this._gl;
 
@@ -574,11 +573,16 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   const castArr = new Uint8Array(arr.buffer);
 //   console.log(arr);
 
-  if (arr instanceof Uint8Array) {
+  if (arr instanceof Uint8Array || arr instanceof Uint8ClampedArray) {
     // For 8-bit data:
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, w, h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, arr);
   } else if (arr instanceof Int16Array) {
+    /// FIXME: investigate negative values
+    // For 16-bit int data:
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, w, h, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, castArr);
+  } else if (arr instanceof Uint16Array) {
     // For 16-bit int data:
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, w, h, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, castArr);
