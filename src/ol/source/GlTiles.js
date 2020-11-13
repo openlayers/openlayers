@@ -511,12 +511,17 @@ class GlTiles extends XYZ {
   reRender() {
     // TODO: Add some mechanism to wait at least one frame before re-rendering.
 
+    let i=0;
+
     this.tileCache.forEach((tile, key)=>{
       // Not using tile.setState(), because rolling back the state of a tile
       // would throw an exception.
       tile.state = TileState.LOADING;
       tile.changed();
+      i++;
     });
+
+    console.log('Asked to re-render ' + i + ' tiles');
 
     this.tileCache.forEach((tile, key)=>{
       tile.render();

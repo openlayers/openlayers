@@ -69,14 +69,6 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   // height = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1)
   getFetchFunctionDef(uniformName){
     if (!this.fetchFuncName_) { return ""; }
-//     return Promise.resolve(`float ${this.fetchFuncName_}(vec2 texelCoords) {
-//       vec4 texel = texture2D(${uniformName}, texelCoords.st);
-//       return (
-//         texel.r  +
-//         texel.g * 2. +
-//         texel.b * 3.
-//       ) * 256.;
-//     }`);
     return Promise.resolve(`float ${this.fetchFuncName_}(vec2 texelCoords) {
       vec4 texel = texture2D(${uniformName}, texelCoords.st);
       return -10000. + (
