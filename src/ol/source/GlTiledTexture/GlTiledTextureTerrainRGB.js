@@ -75,7 +75,7 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
         texel.r * 65536. +
         texel.g * 256. +
         texel.b
-      ) * 25.6;
+      ) * 25.5;
     }`);
   }
 

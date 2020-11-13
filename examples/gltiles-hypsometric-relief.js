@@ -30,6 +30,8 @@ const float pi = 3.1415926535897932384626433832795;
 void main(void) {
   // Fetch data from texture source 0 using the named GLSL function
   // (which has been set up in the GlTiledTexture)
+  float elevation = getElevation(vTextureCoords.st);
+
   float elevationNorth = getElevation(vTextureCoords.st + vec2(0., pxSize));
   float elevationSouth = getElevation(vTextureCoords.st + vec2(0., -pxSize));
   float elevationEast = getElevation(vTextureCoords.st + vec2(pxSize, 0.));
@@ -49,15 +51,37 @@ void main(void) {
   // This would output a shaded relief grayscale raster
   //gl_FragColor = vec4(vec3(cosIncidence), 1.);
 
-  // ...but instead, let's fetch the OSM basemap and *modify* it
-  // (because modifying the base map looks better than overlaying
-  // a 0.3-opacity shaded relief)
-  // The modification is naïve: the RGB values of the OSM texture get
-  // multiplied by a factor that depends on the indicence on the pixel,
-  // and the "neutral" incidence (given by uSinSunElevation), so that
-  // "flat" pixels don't get modified at all.
-  vec4 osmTexel = texture2D(uTexture1, vTextureCoords.st) ;
-  gl_FragColor = vec4(osmTexel.rgb * (1. + cosIncidence - uSinSunElevation), osmTexel.a);
+  // The format of the data table for the colour stops is: R,G,B,elevation (in meters)
+  vec4 colours[6];
+  colours[0] = vec4(0., 0., 0., -10.);
+  colours[1] = vec4(.2, .2, .5, -.01);
+  colours[2] = vec4(.4, .55, .3, .01);
+  colours[3] = vec4(.9, .9, .6, 500.);
+  colours[4] = vec4(.6, .4, .3, 2000.);
+  colours[5] = vec4(1., 1., 1., 4000.);
+
+  vec4 tintColour = colours[0];
+  for (int i=0; i < 5; i++) {
+    // Do a smoothstep of the heights between steps. If the result is > 0
+    // (meaning "the height is higher than the lower bound of this step"),
+    // then replace the colour with a linear blend of the step.
+    // If the result is 1, this means that the real colour will be applied
+    // in a later loop.
+
+    tintColour.rgb = mix(
+      tintColour.rgb,
+      colours[i+1].rgb,
+      smoothstep( colours[i].a, colours[i+1].a, elevation )
+    );
+  }
+
+  gl_FragColor = vec4(tintColour.rgb * (1. + cosIncidence - uSinSunElevation), 1.);
+
+  // Special case for zero elevation, since GPUs seems to handle this particular
+  // colour differently when using mix(), for whatever low-level reason.
+  if (elevation > -.001 && elevation < .001) {
+    gl_FragColor = vec4(colours[1].rgb, 1.);
+  }
 }
 `;
 
@@ -65,7 +89,6 @@ var glSource = new GlTiles({
 	fragmentShader: reliefShader,
 	textureSources: [
     terrainTexture,
-    new OSM()
   ],
 	attributions: 'Terrain-RGB data by <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>',
 	uniforms: {
@@ -88,9 +111,9 @@ const map = new Map({
 	],
 	target: 'map',
   view: new View({
-    center: [-13615645, 4497969],
-    maxZoom: 12,
-    zoom: 7,
+    center: fromLonLat([-5, 40]),
+    maxZoom: 16,
+    zoom: 5,
   }),
 });
 
