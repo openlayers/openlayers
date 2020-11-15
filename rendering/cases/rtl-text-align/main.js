@@ -51,7 +51,6 @@ const vectorSource = new VectorSource({
     new Feature({
       geometry: new Point([10, -50]),
       text: 'عربى',
-      font: '24px Ubuntu',
       textAlign: 'end',
     }),
   ],
