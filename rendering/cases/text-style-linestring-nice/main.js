@@ -114,7 +114,7 @@ feature4.setStyle(
       text: 'negative offsetX',
       font: 'normal 400 10px/1 Ubuntu',
       offsetX: -10,
-      textAlign: 'start',
+      textAlign: 'end',
       textBaseline: 'top',
       placement: 'line',
     }),
@@ -133,7 +133,7 @@ feature5.setStyle(
       font: '10px Ubuntu',
       offsetY: 5,
       scale: 0.7,
-      textAlign: 'end',
+      textAlign: 'start',
       placement: 'line',
     }),
   })

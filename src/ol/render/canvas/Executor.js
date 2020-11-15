@@ -75,6 +75,30 @@ function getDeclutterBox(replayImageOrLabelArgs) {
   return replayImageOrLabelArgs[3].declutterBox;
 }
 
+const rtlRegEx = new RegExp(
+  /* eslint-disable prettier/prettier */
+  '[' +
+    String.fromCharCode(0x00591) + '-' + String.fromCharCode(0x008ff) +
+    String.fromCharCode(0x0fb1d) + '-' + String.fromCharCode(0x0fdff) +
+    String.fromCharCode(0x0fe70) + '-' + String.fromCharCode(0x0fefc) +
+    String.fromCharCode(0x10800) + '-' + String.fromCharCode(0x10fff) +
+    String.fromCharCode(0x1e800) + '-' + String.fromCharCode(0x1efff) +
+  ']'
+  /* eslint-enable prettier/prettier */
+);
+
+/**
+ * @param {string} text Text.
+ * @param {string} align Alignment.
+ * @return {number} Text alignment.
+ */
+function horizontalTextAlign(text, align) {
+  if ((align === 'start' || align === 'end') && !rtlRegEx.test(text)) {
+    align = align === 'start' ? 'left' : 'right';
+  }
+  return TEXT_ALIGN[align];
+}
+
 class Executor {
   /**
    * @param {number} resolution Resolution.
@@ -205,7 +229,10 @@ class Executor {
       textState.scale[0] * pixelRatio,
       textState.scale[1] * pixelRatio,
     ];
-    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const align = horizontalTextAlign(
+      text,
+      textState.textAlign || defaultTextAlign
+    );
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
@@ -541,7 +568,10 @@ class Executor {
 
     const strokeState = this.strokeStates[strokeKey];
     const pixelRatio = this.pixelRatio;
-    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const align = horizontalTextAlign(
+      text,
+      textState.textAlign || defaultTextAlign
+    );
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth =
       strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
