@@ -10,176 +10,79 @@ import VectorLayer from '../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import View from '../../../src/ol/View.js';
 
-const vectorSource = new VectorSource();
-let feature;
-
-// Latin - end (right)
-feature = new Feature({
-  geometry: new Point([-10, 50]),
-});
-feature.setStyle(
-  new Style({
-    text: new Text({
+const vectorSource = new VectorSource({
+  features: [
+    // Latin - end (right)
+    new Feature({
+      geometry: new Point([-10, 50]),
       text: 'Latin',
-      font: '24px Ubuntu',
       textAlign: 'end',
-      fill: new Fill({
-        color: 'black',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-      }),
     }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({
-        color: 'cyan',
-      }),
-    }),
-  })
-);
-vectorSource.addFeature(feature);
 
-// Hebrew - start (right)
-feature = new Feature({
-  geometry: new Point([-10, 0]),
-});
-feature.setStyle(
-  new Style({
-    text: new Text({
+    // Hebrew - start (right)
+    new Feature({
+      geometry: new Point([-10, 0]),
       text: 'עִברִית',
-      font: '24px Ubuntu',
       textAlign: 'start',
-      fill: new Fill({
-        color: 'black',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-      }),
     }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({
-        color: 'cyan',
-      }),
-    }),
-  })
-);
-vectorSource.addFeature(feature);
 
-// Arabic - start (right)
-feature = new Feature({
-  geometry: new Point([-10, -50]),
-});
-feature.setStyle(
-  new Style({
-    text: new Text({
+    // Arabic - start (right)
+    new Feature({
+      geometry: new Point([-10, -50]),
       text: 'عربى',
-      font: '24px Ubuntu',
       textAlign: 'start',
-      fill: new Fill({
-        color: 'black',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-      }),
     }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({
-        color: 'cyan',
-      }),
-    }),
-  })
-);
-vectorSource.addFeature(feature);
 
-// Latin - start (left)
-feature = new Feature({
-  geometry: new Point([10, 50]),
-});
-feature.setStyle(
-  new Style({
-    text: new Text({
+    // Latin - start (left)
+    new Feature({
+      geometry: new Point([10, 50]),
       text: 'Latin',
-      font: '24px Ubuntu',
       textAlign: 'start',
-      fill: new Fill({
-        color: 'black',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-      }),
     }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({
-        color: 'cyan',
-      }),
-    }),
-  })
-);
-vectorSource.addFeature(feature);
 
-// Hebrew - end (left)
-feature = new Feature({
-  geometry: new Point([10, 0]),
-});
-feature.setStyle(
-  new Style({
-    text: new Text({
+    // Hebrew - end (left)
+    new Feature({
+      geometry: new Point([10, 0]),
       text: 'עִברִית',
-      font: '24px Ubuntu',
       textAlign: 'end',
-      fill: new Fill({
-        color: 'black',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-      }),
     }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({
-        color: 'cyan',
-      }),
-    }),
-  })
-);
-vectorSource.addFeature(feature);
 
-// Arabic - end (left)
-feature = new Feature({
-  geometry: new Point([10, -50]),
-});
-feature.setStyle(
-  new Style({
-    text: new Text({
+    // Arabic - end (left)
+    new Feature({
+      geometry: new Point([10, -50]),
       text: 'عربى',
       font: '24px Ubuntu',
       textAlign: 'end',
-      fill: new Fill({
-        color: 'black',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-      }),
     }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({
-        color: 'cyan',
-      }),
-    }),
-  })
-);
-vectorSource.addFeature(feature);
+  ],
+});
 
 new Map({
   pixelRatio: 1,
   layers: [
     new VectorLayer({
       source: vectorSource,
+      style: function (feature) {
+        return new Style({
+          text: new Text({
+            text: feature.get('text'),
+            font: '24px Ubuntu',
+            textAlign: feature.get('textAlign'),
+            fill: new Fill({
+              color: 'black',
+            }),
+            stroke: new Stroke({
+              color: 'white',
+            }),
+          }),
+          image: new CircleStyle({
+            radius: 10,
+            fill: new Fill({
+              color: 'cyan',
+            }),
+          }),
+        });
+      },
     }),
   ],
   target: 'map',
