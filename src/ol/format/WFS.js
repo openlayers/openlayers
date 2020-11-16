@@ -473,42 +473,40 @@ class WFS extends XMLFeature {
     node.setAttribute('service', 'WFS');
     node.setAttribute('version', this.version_);
     let filter;
-    if (options) {
-      if (options.handle) {
-        node.setAttribute('handle', options.handle);
-      }
-      if (options.outputFormat) {
-        node.setAttribute('outputFormat', options.outputFormat);
-      }
-      if (options.maxFeatures !== undefined) {
-        node.setAttribute('maxFeatures', String(options.maxFeatures));
-      }
-      if (options.resultType) {
-        node.setAttribute('resultType', options.resultType);
-      }
-      if (options.startIndex !== undefined) {
-        node.setAttribute('startIndex', String(options.startIndex));
-      }
-      if (options.count !== undefined) {
-        node.setAttribute('count', String(options.count));
-      }
-      if (options.viewParams !== undefined) {
-        node.setAttribute('viewParams', options.viewParams);
-      }
-      filter = options.filter;
-      if (options.bbox) {
-        assert(options.geometryName, 12); // `options.geometryName` must also be provided when `options.bbox` is set
-        const bbox = bboxFilter(
-          /** @type {string} */ (options.geometryName),
-          options.bbox,
-          options.srsName
-        );
-        if (filter) {
-          // if bbox and filter are both set, combine the two into a single filter
-          filter = andFilter(filter, bbox);
-        } else {
-          filter = bbox;
-        }
+    if (options.handle) {
+      node.setAttribute('handle', options.handle);
+    }
+    if (options.outputFormat) {
+      node.setAttribute('outputFormat', options.outputFormat);
+    }
+    if (options.maxFeatures !== undefined) {
+      node.setAttribute('maxFeatures', String(options.maxFeatures));
+    }
+    if (options.resultType) {
+      node.setAttribute('resultType', options.resultType);
+    }
+    if (options.startIndex !== undefined) {
+      node.setAttribute('startIndex', String(options.startIndex));
+    }
+    if (options.count !== undefined) {
+      node.setAttribute('count', String(options.count));
+    }
+    if (options.viewParams !== undefined) {
+      node.setAttribute('viewParams', options.viewParams);
+    }
+    filter = options.filter;
+    if (options.bbox) {
+      assert(options.geometryName, 12); // `options.geometryName` must also be provided when `options.bbox` is set
+      const bbox = bboxFilter(
+        /** @type {string} */ (options.geometryName),
+        options.bbox,
+        options.srsName
+      );
+      if (filter) {
+        // if bbox and filter are both set, combine the two into a single filter
+        filter = andFilter(filter, bbox);
+      } else {
+        filter = bbox;
       }
     }
     node.setAttributeNS(
