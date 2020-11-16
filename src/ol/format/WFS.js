@@ -19,7 +19,7 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {and as andFilter, bbox as bboxFilter} from './filter.js';
+import {and as andFilterFn, bbox as bboxFilterFn} from './filter.js';
 import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -129,7 +129,9 @@ const TRANSACTION_SERIALIZERS = {
  * @typedef {Object} WriteGetFeatureOptions
  * @property {string} featureNS The namespace URI used for features.
  * @property {string} featurePrefix The prefix for the feature namespace.
- * @property {Array<string>} featureTypes The feature type names.
+ * @property {Array<string|FeatureType>} featureTypes The feature type names or FeatureType objects to
+ * define a unique bbox filter per feature type name (in this case, options `bbox` and `geometryName` are
+ * ignored.).
  * @property {string} [srsName] SRS name. No srsName attribute will be set on
  * geometries when this is not provided.
  * @property {string} [handle] Handle.
@@ -149,6 +151,13 @@ const TRANSACTION_SERIALIZERS = {
  * {@link module:ol/format/Filter} for more information.
  * @property {string} [resultType] Indicates what response should be returned,
  * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
+ */
+
+/**
+ * @typedef {Object} FeatureType
+ * @property {!string} name The feature type name.
+ * @property {!import("../extent.js").Extent} bbox Extent to use for the BBOX filter.
+ * @property {!string} geometryName Geometry name to use in the BBOX filter.
  */
 
 /**
@@ -472,7 +481,6 @@ class WFS extends XMLFeature {
     const node = createElementNS(WFSNS[this.version_], 'GetFeature');
     node.setAttribute('service', 'WFS');
     node.setAttribute('version', this.version_);
-    let filter;
     if (options.handle) {
       node.setAttribute('handle', options.handle);
     }
@@ -494,21 +502,6 @@ class WFS extends XMLFeature {
     if (options.viewParams !== undefined) {
       node.setAttribute('viewParams', options.viewParams);
     }
-    filter = options.filter;
-    if (options.bbox) {
-      assert(options.geometryName, 12); // `options.geometryName` must also be provided when `options.bbox` is set
-      const bbox = bboxFilter(
-        /** @type {string} */ (options.geometryName),
-        options.bbox,
-        options.srsName
-      );
-      if (filter) {
-        // if bbox and filter are both set, combine the two into a single filter
-        filter = andFilter(filter, bbox);
-      } else {
-        filter = bbox;
-      }
-    }
     node.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
       'xsi:schemaLocation',
@@ -523,18 +516,65 @@ class WFS extends XMLFeature {
       'srsName': options.srsName,
       'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
       'featurePrefix': options.featurePrefix,
-      'geometryName': options.geometryName,
-      'filter': filter,
       'propertyNames': options.propertyNames ? options.propertyNames : [],
     });
-
-    assert(Array.isArray(options.featureTypes), 11); // `options.featureTypes` should be an Array
-    writeGetFeature(
-      node,
-      /** @type {!Array<string>} */ (options.featureTypes),
-      [context]
-    );
+    assert(Array.isArray(options.featureTypes), 11); // `options.featureTypes` must be an Array
+    if (typeof options.featureTypes[0] === 'string') {
+      let filter = options.filter;
+      if (options.bbox) {
+        assert(options.geometryName, 12); // `options.geometryName` must also be provided when `options.bbox` is set
+        filter = this.combineBboxAndFilter(
+          options.geometryName,
+          options.bbox,
+          options.srsName,
+          filter
+        );
+      }
+      assign(context, {
+        'geometryName': options.geometryName,
+        'filter': filter,
+      });
+      writeGetFeature(
+        node,
+        /** @type {!Array<string>} */ (options.featureTypes),
+        [context]
+      );
+    } else {
+      // Write one query node per element in featuresType.
+      options.featureTypes.forEach((/** @type {FeatureType} */ featureType) => {
+        const completeFilter = this.combineBboxAndFilter(
+          featureType.geometryName,
+          featureType.bbox,
+          options.srsName,
+          options.filter
+        );
+        assign(context, {
+          'geometryName': featureType.geometryName,
+          'filter': completeFilter,
+        });
+        writeGetFeature(node, [featureType.name], [context]);
+      });
+    }
     return node;
+  }
+
+  /**
+   * Create a bbox filter and combine it with another optional filter.
+   *
+   * @param {!string} geometryName Geometry name to use.
+   * @param {!import("../extent.js").Extent} extent Extent.
+   * @param {string=} opt_srsName SRS name. No srsName attribute will be
+   *    set on geometries when this is not provided.
+   * @param {import("./filter/Filter.js").default=} opt_filter Filter condition.
+   * @return {import("./filter/Filter.js").default} The filter.
+   */
+  combineBboxAndFilter(geometryName, extent, opt_srsName, opt_filter) {
+    const bboxFilter = bboxFilterFn(geometryName, extent, opt_srsName);
+    if (opt_filter) {
+      // if bbox and filter are both set, combine the two into a single filter
+      return andFilterFn(opt_filter, bboxFilter);
+    }
+    return bboxFilter;
   }
 
   /**

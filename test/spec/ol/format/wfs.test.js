@@ -316,6 +316,59 @@ describe('ol.format.WFS', function () {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
+    it('creates one BBOX filter per feature type', function () {
+      const textQuery1 =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+        '    typeName="topp:states_1" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+        '    <ogc:BBOX>' +
+        '      <ogc:PropertyName>the_geom_1</ogc:PropertyName>' +
+        '      <gml:Envelope xmlns:gml="http://www.opengis.net/gml" ' +
+        '          srsName="urn:ogc:def:crs:EPSG::4326">' +
+        '        <gml:lowerCorner>1 2</gml:lowerCorner>' +
+        '        <gml:upperCorner>3 4</gml:upperCorner>' +
+        '      </gml:Envelope>' +
+        '    </ogc:BBOX>' +
+        '  </ogc:Filter>' +
+        '</wfs:Query>';
+      const textQuery2 =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+        '    typeName="topp:states_2" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+        '    <ogc:BBOX>' +
+        '      <ogc:PropertyName>the_geom_2</ogc:PropertyName>' +
+        '      <gml:Envelope xmlns:gml="http://www.opengis.net/gml" ' +
+        '          srsName="urn:ogc:def:crs:EPSG::4326">' +
+        '        <gml:lowerCorner>5 6</gml:lowerCorner>' +
+        '        <gml:upperCorner>7 8</gml:upperCorner>' +
+        '      </gml:Envelope>' +
+        '    </ogc:BBOX>' +
+        '  </ogc:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: [
+          {
+            name: 'states_1',
+            geometryName: 'the_geom_1',
+            bbox: [1, 2, 3, 4],
+          },
+          {
+            name: 'states_2',
+            geometryName: 'the_geom_2',
+            bbox: [5, 6, 7, 8],
+          },
+        ],
+      });
+      expect(serialized.children.length).to.equal(2);
+      expect(serialized.firstElementChild).to.xmleql(parse(textQuery1));
+      expect(serialized.lastElementChild).to.xmleql(parse(textQuery2));
+    });
+
     it('creates a property filter', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
