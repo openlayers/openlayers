@@ -47,7 +47,7 @@ The default `geometryFunction` can only handle `ol/geom/Point` geometries.
 
 ### 11
 
-`options.featureTypes` should be an Array.
+`options.featureTypes` must be an Array.
 
 ### 12
 
