@@ -48,7 +48,7 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * @property {number} [dragVertexDelay=500] Delay in milliseconds after pointerdown
  * before the current vertex can be dragged to its exact position.
  * @property {number} [snapTolerance=12] Pixel distance for snapping to the
- * drawing finish.
+ * drawing finish. Must be greater than `0`.
  * @property {boolean} [stopClick=false] Stop click, singleclick, and
  * doubleclick events from firing during drawing.
  * @property {number} [maxPoints] The number of points that can be drawn before
