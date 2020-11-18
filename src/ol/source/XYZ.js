@@ -57,15 +57,14 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Google grid where `x` 0 and `y` 0 are in the top left. Grids like
  * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
  * using the `{-y}` placeholder in the URL template, so long as the
- * source does not have a custom tile grid. In this case,
- * {@link module:ol/source/TileImage} can be used with a `tileUrlFunction`
- * such as:
- *
+ * source does not have a custom tile grid. In this case
+ * a `tileUrlFunction` can be used, such as:
+ * ```js
  *  tileUrlFunction: function(coordinate) {
  *    return 'http://mapserver.com/' + coordinate[0] + '/' +
- *        coordinate[1] + '/' + coordinate[2] + '.png';
- *    }
- *
+ *      coordinate[1] + '/' + (-coordinate[2] - 1) + '.png';
+ *  }
+ * ```
  * @api
  */
 class XYZ extends TileImage {
