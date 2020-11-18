@@ -62,7 +62,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * ```js
  *  tileUrlFunction: function(coordinate) {
  *    return 'http://mapserver.com/' + coordinate[0] + '/' +
- *      coordinate[1] + '/' + (-tileCoord[2] - 1) + '.png';
+ *      coordinate[1] + '/' + (-coordinate[2] - 1) + '.png';
  *  }
  * ```
  * @api
