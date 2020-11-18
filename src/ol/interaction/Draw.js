@@ -123,7 +123,6 @@ const Mode = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
-  CIRCLE: 'Circle',
 };
 
 /**
@@ -290,7 +289,12 @@ class Draw extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
+    this.maxPoints_ =
+      this.type_ === GeometryType.CIRCLE
+        ? 2
+        : options.maxPoints
+        ? options.maxPoints
+        : Infinity;
 
     /**
      * A function to decide if a potential finish coordinate is permissible
@@ -311,20 +315,25 @@ class Draw extends PointerInteraction {
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
         geometryFunction = function (coordinates, geometry, projection) {
-          const circle = geometry
-            ? /** @type {Circle} */ (geometry)
-            : new Circle([NaN, NaN]);
-          const center = fromUserCoordinate(coordinates[0], projection);
-          const squaredLength = squaredCoordinateDistance(
-            center,
-            fromUserCoordinate(coordinates[1], projection)
-          );
-          circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
-          const userProjection = getUserProjection();
-          if (userProjection) {
-            circle.transform(projection, userProjection);
+          if (coordinates.length) {
+            const circle = geometry
+              ? /** @type {Circle} */ (geometry)
+              : new Circle([NaN, NaN]);
+            const center = fromUserCoordinate(coordinates[0], projection);
+            const squaredLength = squaredCoordinateDistance(
+              center,
+              fromUserCoordinate(
+                coordinates[coordinates.length - 1],
+                projection
+              )
+            );
+            circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
+            const userProjection = getUserProjection();
+            if (userProjection) {
+              circle.transform(projection, userProjection);
+            }
+            return circle;
           }
-          return circle;
         };
       } else {
         let Constructor;
@@ -551,7 +560,7 @@ class Draw extends PointerInteraction {
           event.preventDefault();
         }
       } else if (
-        event.originalEvent.pointerType == 'mouse' ||
+        event.originalEvent.pointerType === 'mouse' ||
         (event.type === MapBrowserEventType.POINTERDRAG &&
           this.downTimeout_ === undefined)
       ) {
@@ -618,15 +627,13 @@ class Draw extends PointerInteraction {
 
       this.handlePointerMove_(event);
 
-      const circleMode = this.mode_ === Mode.CIRCLE;
-
       if (this.shouldHandle_) {
         if (!this.finishCoordinate_) {
           this.startDrawing_(event);
           if (this.mode_ === Mode.POINT) {
             this.finishDrawing();
           }
-        } else if (this.freehand_ || circleMode) {
+        } else if (this.freehand_) {
           this.finishDrawing();
         } else if (this.atFinish_(event)) {
           if (this.finishCondition_(event)) {
@@ -808,7 +815,7 @@ class Draw extends PointerInteraction {
     /** @type {LineString} */
     let sketchLineGeom;
     if (
-      geometry.getType() == GeometryType.POLYGON &&
+      geometry.getType() === GeometryType.POLYGON &&
       this.mode_ !== Mode.POLYGON
     ) {
       if (!this.sketchLine_) {
@@ -905,11 +912,23 @@ class Draw extends PointerInteraction {
         }
       }
       this.geometryFunction_(coordinates, geometry, projection);
+
+      if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
+        sketchLineGeom = this.sketchLine_.getGeometry();
+        if (sketchLineGeom) {
+          const ring = geometry.getLinearRing(0);
+          sketchLineGeom.setFlatCoordinates(
+            ring.getLayout(),
+            ring.getFlatCoordinates()
+          );
+          sketchLineGeom.changed();
+        }
+      }
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
       sketchLineGeom = this.sketchLine_.getGeometry();
-      if (this.pointerType_ !== 'mouse') {
+      if (coordinates.length >= 2 && this.pointerType_ !== 'mouse') {
         const finishCoordinate = coordinates[coordinates.length - 2].slice();
         coordinates.pop();
         coordinates.push(finishCoordinate);
@@ -940,7 +959,7 @@ class Draw extends PointerInteraction {
     let coordinates = this.sketchCoords_;
     const geometry = sketchFeature.getGeometry();
     const projection = this.getMap().getView().getProjection();
-    if (this.mode_ === Mode.LINE_STRING) {
+    if (this.mode_ === Mode.LINE_STRING && this.type_ !== GeometryType.CIRCLE) {
       // remove the redundant last point
       coordinates.pop();
       this.geometryFunction_(coordinates, geometry, projection);
@@ -1109,43 +1128,47 @@ function getDefaultStyleFunction() {
 
 /**
  * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
- * polygon with a user specified number of sides and start angle instead of an
+ * polygon with a user specified number of sides and start angle instead of a
  * `import("../geom/Circle.js").Circle` geometry.
- * @param {number=} opt_sides Number of sides of the regular polygon. Default is
- *     32.
- * @param {number=} opt_angle Angle of the first point in radians. 0 means East.
+ * @param {number=} opt_sides Number of sides of the regular polygon.
+ *     Default is 32.
+ * @param {number=} opt_angle Angle of the first point in counter-clockwise
+ *     radians. 0 means East.
  *     Default is the angle defined by the heading from the center of the
  *     regular polygon to the current pointer position.
- * @return {GeometryFunction} Function that draws a
- *     polygon.
+ * @return {GeometryFunction} Function that draws a polygon.
  * @api
  */
 export function createRegularPolygon(opt_sides, opt_angle) {
   return function (coordinates, opt_geometry, projection) {
-    const center = fromUserCoordinate(
-      /** @type {LineCoordType} */ (coordinates)[0],
-      projection
-    );
-    const end = fromUserCoordinate(
-      /** @type {LineCoordType} */ (coordinates)[1],
-      projection
-    );
-    const radius = Math.sqrt(squaredCoordinateDistance(center, end));
-    const geometry = opt_geometry
-      ? /** @type {Polygon} */ (opt_geometry)
-      : fromCircle(new Circle(center), opt_sides);
-    let angle = opt_angle;
-    if (!opt_angle) {
-      const x = end[0] - center[0];
-      const y = end[1] - center[1];
-      angle = Math.atan(y / x) - (x < 0 ? Math.PI : 0);
+    if (coordinates.length) {
+      const center = fromUserCoordinate(
+        /** @type {LineCoordType} */ (coordinates)[0],
+        projection
+      );
+      const end = fromUserCoordinate(
+        /** @type {LineCoordType} */ (coordinates)[coordinates.length - 1],
+        projection
+      );
+      const radius = Math.sqrt(squaredCoordinateDistance(center, end));
+      const geometry = opt_geometry
+        ? /** @type {Polygon} */ (opt_geometry)
+        : fromCircle(new Circle(center), opt_sides);
+
+      let angle = opt_angle;
+      if (!opt_angle && opt_angle !== 0) {
+        const x = end[0] - center[0];
+        const y = end[1] - center[1];
+        angle = Math.atan2(y, x);
+      }
+      makeRegular(geometry, center, radius, angle);
+
+      const userProjection = getUserProjection();
+      if (userProjection) {
+        geometry.transform(projection, userProjection);
+      }
+      return geometry;
     }
-    makeRegular(geometry, center, radius, angle);
-    const userProjection = getUserProjection();
-    if (userProjection) {
-      geometry.transform(projection, userProjection);
-    }
-    return geometry;
   };
 }
 
@@ -1158,31 +1181,36 @@ export function createRegularPolygon(opt_sides, opt_angle) {
  */
 export function createBox() {
   return function (coordinates, opt_geometry, projection) {
-    const extent = boundingExtent(
-      /** @type {LineCoordType} */ (coordinates).map(function (coordinate) {
-        return fromUserCoordinate(coordinate, projection);
-      })
-    );
-    const boxCoordinates = [
-      [
-        getBottomLeft(extent),
-        getBottomRight(extent),
-        getTopRight(extent),
-        getTopLeft(extent),
-        getBottomLeft(extent),
-      ],
-    ];
-    let geometry = opt_geometry;
-    if (geometry) {
-      geometry.setCoordinates(boxCoordinates);
-    } else {
-      geometry = new Polygon(boxCoordinates);
+    if (coordinates.length) {
+      const extent = boundingExtent(
+        /** @type {LineCoordType} */ ([
+          coordinates[0],
+          coordinates[coordinates.length - 1],
+        ]).map(function (coordinate) {
+          return fromUserCoordinate(coordinate, projection);
+        })
+      );
+      const boxCoordinates = [
+        [
+          getBottomLeft(extent),
+          getBottomRight(extent),
+          getTopRight(extent),
+          getTopLeft(extent),
+          getBottomLeft(extent),
+        ],
+      ];
+      let geometry = opt_geometry;
+      if (geometry) {
+        geometry.setCoordinates(boxCoordinates);
+      } else {
+        geometry = new Polygon(boxCoordinates);
+      }
+      const userProjection = getUserProjection();
+      if (userProjection) {
+        geometry.transform(projection, userProjection);
+      }
+      return geometry;
     }
-    const userProjection = getUserProjection();
-    if (userProjection) {
-      geometry.transform(projection, userProjection);
-    }
-    return geometry;
   };
 }
 
@@ -1198,7 +1226,8 @@ function getMode(type) {
     mode = Mode.POINT;
   } else if (
     type === GeometryType.LINE_STRING ||
-    type === GeometryType.MULTI_LINE_STRING
+    type === GeometryType.MULTI_LINE_STRING ||
+    type === GeometryType.CIRCLE
   ) {
     mode = Mode.LINE_STRING;
   } else if (
@@ -1206,8 +1235,6 @@ function getMode(type) {
     type === GeometryType.MULTI_POLYGON
   ) {
     mode = Mode.POLYGON;
-  } else if (type === GeometryType.CIRCLE) {
-    mode = Mode.CIRCLE;
   }
   return /** @type {!Mode} */ (mode);
 }
