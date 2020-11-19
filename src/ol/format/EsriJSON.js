@@ -207,16 +207,14 @@ class EsriJSON extends JSONFeature {
     const geometry = feature.getGeometry();
     if (geometry) {
       object['geometry'] = writeGeometry(geometry, opt_options);
-      if (opt_options && opt_options.featureProjection) {
+      const projection =
+        opt_options &&
+        (opt_options.dataProjection || opt_options.featureProjection);
+      if (projection) {
         object['geometry'][
           'spatialReference'
         ] = /** @type {EsriJSONSpatialReferenceWkid} */ ({
-          wkid: Number(
-            getProjection(opt_options.featureProjection)
-              .getCode()
-              .split(':')
-              .pop()
-          ),
+          wkid: Number(getProjection(projection).getCode().split(':').pop()),
         });
       }
       delete properties[feature.getGeometryName()];

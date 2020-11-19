@@ -15,9 +15,8 @@ import {fromLonLat} from '../src/ol/proj.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 
 const serviceUrl =
-  'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
-  'services/PDX_Pedestrian_Districts/FeatureServer/';
-const layer = '0';
+  'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/';
+const layer = '2';
 
 const esrijsonFormat = new EsriJSON();
 
@@ -102,8 +101,8 @@ const map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({
-    center: fromLonLat([-122.619, 45.512]),
-    zoom: 12,
+    center: fromLonLat([-110.875, 37.345]),
+    zoom: 5,
   }),
 });
 
@@ -123,13 +122,13 @@ const dirty = {};
 selected.on('add', function (evt) {
   const feature = evt.element;
   feature.on('change', function (evt) {
-    dirty[evt.target.getId()] = true;
+    dirty[evt.target.get('objectid')] = true;
   });
 });
 
 selected.on('remove', function (evt) {
   const feature = evt.element;
-  const fid = feature.getId();
+  const fid = feature.get('objectid');
   if (dirty[fid] === true) {
     const payload =
       '[' +
@@ -139,7 +138,7 @@ selected.on('remove', function (evt) {
       ']';
     const url = serviceUrl + layer + '/updateFeatures';
     $.post(url, {f: 'json', features: payload}).done(function (data) {
-      const result = JSON.parse(data);
+      const result = typeof data === 'string' ? JSON.parse(data) : data;
       if (result.updateResults && result.updateResults.length > 0) {
         if (result.updateResults[0].success !== true) {
           const error = result.updateResults[0].error;
@@ -162,11 +161,10 @@ draw.on('drawend', function (evt) {
     ']';
   const url = serviceUrl + layer + '/addFeatures';
   $.post(url, {f: 'json', features: payload}).done(function (data) {
-    const result = JSON.parse(data);
+    const result = typeof data === 'string' ? JSON.parse(data) : data;
     if (result.addResults && result.addResults.length > 0) {
       if (result.addResults[0].success === true) {
-        feature.setId(result.addResults[0]['objectId']);
-        vectorSource.clear();
+        feature.set('objectid', result.addResults[0]['objectId']);
       } else {
         const error = result.addResults[0].error;
         alert(error.description + ' (' + error.code + ')');

@@ -1763,15 +1763,50 @@ describe('ol.format.EsriJSON', function () {
       expect(esrijson.attributes).to.eql({});
     });
 
-    it('adds the projection inside the geometry correctly', function () {
+    it('adds the projection inside the geometry correctly when featureProjection is set', function () {
       const str = JSON.stringify(data);
       const array = format.readFeatures(str);
       const esrijson = format.writeFeaturesObject(array, {
-        featureProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
       });
-      esrijson.features.forEach(function (feature) {
+      esrijson.features.forEach(function (feature, i) {
+        const spatialReference = feature.geometry.spatialReference;
+        expect(Number(spatialReference.wkid)).to.equal(3857);
+        expect(feature.geometry.paths[0]).to.eql(
+          array[i].getGeometry().getCoordinates()
+        );
+      });
+    });
+
+    it('adds the projection inside the geometry correctly when dataProjection is set', function () {
+      const str = JSON.stringify(data);
+      const array = format.readFeatures(str);
+      const esrijson = format.writeFeaturesObject(array, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      });
+      esrijson.features.forEach(function (feature, i) {
         const spatialReference = feature.geometry.spatialReference;
         expect(Number(spatialReference.wkid)).to.equal(4326);
+        expect(feature.geometry.paths[0]).to.eql(
+          array[i]
+            .getGeometry()
+            .clone()
+            .transform('EPSG:3857', 'EPSG:4326')
+            .getCoordinates()
+        );
+      });
+    });
+
+    it('does not add the projection inside the geometry when neither featurProjection nor dataProjection are set', function () {
+      const str = JSON.stringify(data);
+      const array = format.readFeatures(str);
+      const esrijson = format.writeFeaturesObject(array);
+      esrijson.features.forEach(function (feature, i) {
+        expect(feature.geometry.spatialReference).to.be(undefined);
+        expect(feature.geometry.paths[0]).to.eql(
+          array[i].getGeometry().getCoordinates()
+        );
       });
     });
   });
