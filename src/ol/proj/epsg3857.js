@@ -32,6 +32,13 @@ export const EXTENT = [-HALF_SIZE, -HALF_SIZE, HALF_SIZE, HALF_SIZE];
 export const WORLD_EXTENT = [-180, -85, 180, 85];
 
 /**
+ * Maximum safe value in y direction
+ * @const
+ * @type {number}
+ */
+export const MAX_SAFE_Y = RADIUS * Math.log(Math.tan(Math.PI / 2));
+
+/**
  * @classdesc
  * Projection object for web/spherical Mercator (EPSG:3857).
  */
@@ -87,14 +94,13 @@ export function fromEPSG4326(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  const halfSize = HALF_SIZE;
   for (let i = 0; i < length; i += dimension) {
-    output[i] = (halfSize * input[i]) / 180;
+    output[i] = (HALF_SIZE * input[i]) / 180;
     let y = RADIUS * Math.log(Math.tan((Math.PI * (+input[i + 1] + 90)) / 360));
-    if (y > halfSize) {
-      y = halfSize;
-    } else if (y < -halfSize) {
-      y = -halfSize;
+    if (y > MAX_SAFE_Y) {
+      y = MAX_SAFE_Y;
+    } else if (y < -MAX_SAFE_Y) {
+      y = -MAX_SAFE_Y;
     }
     output[i + 1] = y;
   }
