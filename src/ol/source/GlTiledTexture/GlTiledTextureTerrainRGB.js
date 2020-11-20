@@ -9,7 +9,7 @@ import EventType from '../../events/EventType.js';
 
 export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   /**
-   * @param {XYZ} arrayType Instance of XYZ tile source for the
+   * @param {XYZ} xyz Instance of XYZ tile source for the Terrain-RGB tiles
    *
    * A wrapper over a XYZ tile source. Unpacks elevation data from Terrain-RGB-encoded
    * tiles. Expects tiles to follow the Mapbox Terrain-RGB format, as per

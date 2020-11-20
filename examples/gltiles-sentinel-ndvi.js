@@ -60,16 +60,6 @@ const b1  = new GlTiledTextureGeoTiff( geotiff60m, 0, 65535, "getB1" );
 const b9  = new GlTiledTextureGeoTiff( geotiff60m, 8, 65535, "getB9" );
 
 
-
-// proj4.defs("EPSG:3035","+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
-// register(proj4);
-//
-// var epsg3035 = new Projection({
-// 	code: 'EPSG:3035',
-// 	extent: [900000, 900000, 7400000, 5500000],
-// 	worldExtent: [-57, 2, 72, 60]	// WSEN
-// });
-
 const ndvwiShader = "#line 1                                    \n" +
 "void main(void) {                                              \n" +
 "	// Fetch texel values for different bands                     \n" +
@@ -96,7 +86,7 @@ var glSource = new GlTiles({
 		// even if the data isn't used in the shader.
 		b4, b8, b9
 	],
-	attributions: "Sentinel 2 data",
+	attributions: "<a href='https://s2maps.eu'>Sentinel-2 cloudless</a> by <a href='https://eox.at/'>EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2019)",
 	uniforms: {}
 });
 
