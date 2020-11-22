@@ -52,7 +52,7 @@ class Rotate extends Control {
     const compassClassName =
       options.compassClassName !== undefined
         ? options.compassClassName
-        : 'ol-comapss';
+        : 'ol-compass';
 
     /**
      * @type {HTMLElement}
