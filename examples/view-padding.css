@@ -1,0 +1,54 @@
+.mapcontainer {
+  position: relative;
+  margin-bottom: 20px;
+}
+.map {
+  width: 1000px;
+  height: 600px;
+}
+.map .ol-zoom {
+  top: 178px;
+  left: 158px;
+}
+.map .ol-rotate {
+  top: 178px;
+  right: 58px;
+}
+.map .ol-attribution,
+.map .ol-attribution.ol-uncollapsible {
+  bottom: 30px;
+  right: 50px;
+}
+.padding-top {
+  position: absolute;
+  top: 0;
+  left: 0px;
+  width: 1000px;
+  height: 170px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.padding-left {
+  position: absolute;
+  top: 170px;
+  left: 0;
+  width: 150px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.padding-right {
+  position: absolute;
+  top: 170px;
+  left: 950px;
+  width: 50px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.padding-bottom {
+  position: absolute;
+  top: 570px;
+  left: 0px;
+  width: 1000px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.5);
+}
+

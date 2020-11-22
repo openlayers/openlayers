@@ -175,6 +175,10 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * level used to calculate the initial resolution for the view.
  * @property {number} [zoomFactor=2] The zoom factor used to compute the
  * corresponding resolution.
+ * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in css pixels).
+ * If the map viewport is partially covered with other content (overlays) along
+ * its edges, this setting allows to shift the center of the viewport away from
+ * that content. The order of the values is top, right, bottom, left.
  */
 
 /**
@@ -393,6 +397,17 @@ class View extends BaseObject {
      * @type {Array<number>|undefined}
      */
     this.resolutions_ = options.resolutions;
+
+    /**
+     * Padding (in css pixels).
+     * If the map viewport is partially covered with other content (overlays) along
+     * its edges, this setting allows to shift the center of the viewport away from that
+     * content. The order of the values in the array is top, right, bottom, left.
+     * The default is no padding, which is equivalent to `[0, 0, 0, 0]`.
+     * @type {Array<number>|undefined}
+     * @api
+     */
+    this.padding = options.padding;
 
     /**
      * @private
@@ -901,8 +916,8 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided, the size of the
-   * first map that uses this view will be used.
+   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided,
+   * the map's last known viewport size will be used.
    * @return {import("./extent.js").Extent} Extent.
    */
   calculateExtentInternal(opt_size) {
@@ -1099,10 +1114,35 @@ class View extends BaseObject {
   }
 
   /**
+   * Returns the size of the viewport minus padding.
+   * @private
+   * @return {import("./size.js").Size} Viewport size reduced by the padding.
+   */
+  getViewportSizeMinusPadding_() {
+    let size = this.getViewportSize_();
+    const padding = this.padding;
+    if (padding) {
+      size = [
+        size[0] - padding[1] - padding[3],
+        size[1] - padding[0] - padding[2],
+      ];
+    }
+    return size;
+  }
+
+  /**
    * @return {State} View state.
    */
   getState() {
-    const center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
+    let center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
+    const padding = this.padding;
+    if (padding) {
+      const reducedSize = this.getViewportSizeMinusPadding_();
+      center = this.calculateShiftedCenter(center, this.getViewportSize_(), [
+        reducedSize[0] / 2 + padding[3],
+        reducedSize[1] / 2 + padding[0],
+      ]);
+    }
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
     const rotation = this.getRotation();
@@ -1196,8 +1236,6 @@ class View extends BaseObject {
    * @api
    */
   fit(geometryOrExtent, opt_options) {
-    const options = assign({size: this.getViewportSize_()}, opt_options || {});
-
     /** @type {import("./geom/SimpleGeometry.js").default} */
     let geometry;
     assert(
@@ -1228,7 +1266,7 @@ class View extends BaseObject {
       }
     }
 
-    this.fitInternal(geometry, options);
+    this.fitInternal(geometry, opt_options);
   }
 
   /**
@@ -1239,7 +1277,7 @@ class View extends BaseObject {
     const options = opt_options || {};
     let size = options.size;
     if (!size) {
-      size = this.getViewportSize_();
+      size = this.getViewportSizeMinusPadding_();
     }
     const padding =
       options.padding !== undefined ? options.padding : [0, 0, 0, 0];
@@ -1332,6 +1370,18 @@ class View extends BaseObject {
    * @param {import("./pixel.js").Pixel} position Position on the view to center on.
    */
   centerOnInternal(coordinate, size, position) {
+    this.setCenterInternal(
+      this.calculateShiftedCenter(coordinate, size, position)
+    );
+  }
+
+  /**
+   * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("./size.js").Size} size Box pixel size.
+   * @param {import("./pixel.js").Pixel} position Position on the view to center on.
+   * @return {import("./coordinate.js").Coordinate} Shifted center.
+   */
+  calculateShiftedCenter(coordinate, size, position) {
     // calculate rotated position
     const rotation = this.getRotation();
     const cosAngle = Math.cos(-rotation);
@@ -1347,7 +1397,7 @@ class View extends BaseObject {
     const centerX = rotX * cosAngle - rotY * sinAngle;
     const centerY = rotY * cosAngle + rotX * sinAngle;
 
-    this.setCenterInternal([centerX, centerY]);
+    return [centerX, centerY];
   }
 
   /**
