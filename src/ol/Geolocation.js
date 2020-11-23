@@ -34,7 +34,7 @@ const Property = {
  */
 class GeolocationError extends BaseEvent {
   /**
-   * @param {PositionError} error error object.
+   * @param {GeolocationPositionError} error error object.
    */
   constructor(error) {
     super(EventType.ERROR);
@@ -176,7 +176,7 @@ class Geolocation extends BaseObject {
 
   /**
    * @private
-   * @param {Position} position position event.
+   * @param {GeolocationPosition} position position event.
    */
   positionChange_(position) {
     const coords = position.coords;
@@ -210,7 +210,7 @@ class Geolocation extends BaseObject {
 
   /**
    * @private
-   * @param {PositionError} error error object.
+   * @param {GeolocationPositionError} error error object.
    */
   positionError_(error) {
     this.dispatchEvent(new GeolocationError(error));
