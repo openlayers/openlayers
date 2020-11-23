@@ -470,7 +470,7 @@ export function fromExtent(extent) {
  * @param {import("./Circle.js").default} circle Circle geometry.
  * @param {number=} opt_sides Number of sides of the polygon. Default is 32.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
- *     radians. Default is 0.
+ *     counter-clockwise radians. 0 means East. Default is 0.
  * @return {Polygon} Polygon geometry.
  * @api
  */
@@ -500,7 +500,7 @@ export function fromCircle(circle, opt_sides, opt_angle) {
  * @param {import("../coordinate.js").Coordinate} center Center of the regular polygon.
  * @param {number} radius Radius of the regular polygon.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
- *     radians. Default is 0.
+ *     counter-clockwise radians. 0 means East. Default is 0.
  */
 export function makeRegular(polygon, center, radius, opt_angle) {
   const flatCoordinates = polygon.getFlatCoordinates();
