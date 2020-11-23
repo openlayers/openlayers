@@ -1116,10 +1116,11 @@ class View extends BaseObject {
   /**
    * Returns the size of the viewport minus padding.
    * @private
+   * @param {number=} opt_rotation Take into account the rotation of the viewport when giving the size
    * @return {import("./size.js").Size} Viewport size reduced by the padding.
    */
-  getViewportSizeMinusPadding_() {
-    let size = this.getViewportSize_();
+  getViewportSizeMinusPadding_(opt_rotation) {
+    let size = this.getViewportSize_(opt_rotation);
     const padding = this.padding;
     if (padding) {
       size = [
@@ -1134,18 +1135,21 @@ class View extends BaseObject {
    * @return {State} View state.
    */
   getState() {
+    const projection = this.getProjection();
+    const resolution = /** @type {number} */ (this.getResolution());
+    const rotation = this.getRotation();
     let center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
     const padding = this.padding;
     if (padding) {
       const reducedSize = this.getViewportSizeMinusPadding_();
-      center = this.calculateShiftedCenter(center, this.getViewportSize_(), [
-        reducedSize[0] / 2 + padding[3],
-        reducedSize[1] / 2 + padding[0],
-      ]);
+      center = calculateCenterOn(
+        center,
+        this.getViewportSize_(),
+        [reducedSize[0] / 2 + padding[3], reducedSize[1] / 2 + padding[0]],
+        resolution,
+        rotation
+      );
     }
-    const projection = this.getProjection();
-    const resolution = /** @type {number} */ (this.getResolution());
-    const rotation = this.getRotation();
     return {
       center: center.slice(0),
       projection: projection !== undefined ? projection : null,
@@ -1371,33 +1375,42 @@ class View extends BaseObject {
    */
   centerOnInternal(coordinate, size, position) {
     this.setCenterInternal(
-      this.calculateShiftedCenter(coordinate, size, position)
+      calculateCenterOn(
+        coordinate,
+        size,
+        position,
+        this.getResolution(),
+        this.getRotation()
+      )
     );
   }
 
   /**
-   * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("./size.js").Size} size Box pixel size.
-   * @param {import("./pixel.js").Pixel} position Position on the view to center on.
-   * @return {import("./coordinate.js").Coordinate} Shifted center.
+   * Calculates the shift between map and viewport center.
+   * @param {import("./coordinate.js").Coordinate} center Center.
+   * @param {number} resolution Resolution.
+   * @param {number} rotation Rotation.
+   * @param {import("./size.js").Size} size Size.
+   * @return {Array<number>|undefined} Center shift.
    */
-  calculateShiftedCenter(coordinate, size, position) {
-    // calculate rotated position
-    const rotation = this.getRotation();
-    const cosAngle = Math.cos(-rotation);
-    let sinAngle = Math.sin(-rotation);
-    let rotX = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
-    let rotY = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
-    const resolution = this.getResolution();
-    rotX += (size[0] / 2 - position[0]) * resolution;
-    rotY += (position[1] - size[1] / 2) * resolution;
-
-    // go back to original angle
-    sinAngle = -sinAngle; // go back to original rotation
-    const centerX = rotX * cosAngle - rotY * sinAngle;
-    const centerY = rotY * cosAngle + rotX * sinAngle;
-
-    return [centerX, centerY];
+  calculateCenterShift(center, resolution, rotation, size) {
+    let centerShift;
+    const padding = this.padding;
+    if (padding && center) {
+      const reducedSize = this.getViewportSizeMinusPadding_(-rotation);
+      const shiftedCenter = calculateCenterOn(
+        center,
+        size,
+        [reducedSize[0] / 2 + padding[3], reducedSize[1] / 2 + padding[0]],
+        resolution,
+        rotation
+      );
+      centerShift = [
+        center[0] - shiftedCenter[0],
+        center[1] - shiftedCenter[1],
+      ];
+    }
+    return centerShift;
   }
 
   /**
@@ -1600,7 +1613,13 @@ class View extends BaseObject {
       this.targetCenter_,
       newResolution,
       size,
-      isMoving
+      isMoving,
+      this.calculateCenterShift(
+        this.targetCenter_,
+        newResolution,
+        newRotation,
+        size
+      )
     );
 
     if (this.get(ViewProperty.ROTATION) !== newRotation) {
@@ -1645,7 +1664,14 @@ class View extends BaseObject {
     const newCenter = this.constraints_.center(
       this.targetCenter_,
       newResolution,
-      size
+      size,
+      false,
+      this.calculateCenterShift(
+        this.targetCenter_,
+        newResolution,
+        newRotation,
+        size
+      )
     );
 
     if (duration === 0 && !this.cancelAnchor_) {
@@ -1984,6 +2010,31 @@ export function isNoopAnimation(animation) {
     return false;
   }
   return true;
+}
+
+/**
+ * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
+ * @param {import("./size.js").Size} size Box pixel size.
+ * @param {import("./pixel.js").Pixel} position Position on the view to center on.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @return {import("./coordinate.js").Coordinate} Shifted center.
+ */
+function calculateCenterOn(coordinate, size, position, resolution, rotation) {
+  // calculate rotated position
+  const cosAngle = Math.cos(-rotation);
+  let sinAngle = Math.sin(-rotation);
+  let rotX = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+  let rotY = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+  rotX += (size[0] / 2 - position[0]) * resolution;
+  rotY += (position[1] - size[1] / 2) * resolution;
+
+  // go back to original angle
+  sinAngle = -sinAngle; // go back to original rotation
+  const centerX = rotX * cosAngle - rotY * sinAngle;
+  const centerY = rotY * cosAngle + rotX * sinAngle;
+
+  return [centerX, centerY];
 }
 
 export default View;

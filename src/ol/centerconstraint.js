@@ -4,7 +4,7 @@
 import {clamp} from './math.js';
 
 /**
- * @typedef {function((import("./coordinate.js").Coordinate|undefined), number, import("./size.js").Size, boolean=): (import("./coordinate.js").Coordinate|undefined)} Type
+ * @typedef {function((import("./coordinate.js").Coordinate|undefined), number, import("./size.js").Size, boolean=, Array<number>=): (import("./coordinate.js").Coordinate|undefined)} Type
  */
 
 /**
@@ -21,16 +21,19 @@ export function createExtent(extent, onlyCenter, smooth) {
      * @param {number} resolution Resolution.
      * @param {import("./size.js").Size} size Viewport size; unused if `onlyCenter` was specified.
      * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
+     * @param {Array<number>=} opt_centerShift Shift between map center and viewport center.
      * @return {import("./coordinate.js").Coordinate|undefined} Center.
      */
-    function (center, resolution, size, opt_isMoving) {
+    function (center, resolution, size, opt_isMoving, opt_centerShift) {
       if (center) {
         const viewWidth = onlyCenter ? 0 : size[0] * resolution;
         const viewHeight = onlyCenter ? 0 : size[1] * resolution;
-        let minX = extent[0] + viewWidth / 2;
-        let maxX = extent[2] - viewWidth / 2;
-        let minY = extent[1] + viewHeight / 2;
-        let maxY = extent[3] - viewHeight / 2;
+        const shiftX = opt_centerShift ? opt_centerShift[0] : 0;
+        const shiftY = opt_centerShift ? opt_centerShift[1] : 0;
+        let minX = extent[0] + viewWidth / 2 + shiftX;
+        let maxX = extent[2] - viewWidth / 2 + shiftX;
+        let minY = extent[1] + viewHeight / 2 + shiftY;
+        let maxY = extent[3] - viewHeight / 2 + shiftY;
 
         // note: when zooming out of bounds, min and max values for x and y may
         // end up inverted (min > max); this has to be accounted for
