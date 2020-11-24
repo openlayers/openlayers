@@ -227,7 +227,7 @@ class Circle extends SimpleGeometry {
   /**
    * Rotate the geometry around a given coordinate. This modifies the geometry
    * coordinates in place.
-   * @param {number} angle Rotation angle in radians.
+   * @param {number} angle Rotation angle in counter-clockwise radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
