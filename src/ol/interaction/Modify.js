@@ -111,11 +111,14 @@ const ModifyEventType = {
  * Style used for the features being modified. By default the default edit
  * style is used (see {@link module:ol/style}).
  * @property {VectorSource} [source] The vector source with
- * features to modify.  If a vector source is not provided, a feature collection
- * must be provided with the features option.
+ * features to modify.  If a vector source is not provided, a layer or feature collection
+ * must be provided with the `layer` or `features` option.
+ * @property {import("../layer/BaseVector").default} [layer] The layer with
+ * features to modify.  If a layer is not provided, a vector source or feature collection
+ * must be provided with the `source` or `features` option.
  * @property {Collection<Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
- * provided, a vector source must be provided with the source option.
+ * provided, a layer or vector source must be provided with the `layer` or `source` option.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
  */
@@ -159,7 +162,15 @@ export class ModifyEvent extends Event {
  * `source` option.  If you want to modify features in a collection (for example,
  * the collection used by a select interaction), construct the interaction with
  * the `features` option.  The interaction must be constructed with either a
- * `source` or `features` option.
+ * `source`, `features` or `layer` option.
+ *
+ * When configured with a `source` or `features`, the modification object (for
+ * point geometries the point, for linestring or polygon geometries an existing
+ * vertex or a new vertex along a segment) is determined by geometric proximity to
+ * the pointer location. When configured with a `layer`, hit detection will be
+ * used to determine the feature that will be modified. This is the preferred way
+ * when the visual representation of the features subject to modification is much
+ * different from their geometry (e.g. icons with an offset).
  *
  * By default, the interaction will allow deletion of vertices when the `alt`
  * key is pressed.  To configure the interaction with a different condition
@@ -314,6 +325,11 @@ class Modify extends PointerInteraction {
      */
     this.source_ = null;
 
+    /**
+     * @type {import("../layer/BaseVector").default}
+     */
+    this.layer_ = null;
+
     let features;
     if (options.source) {
       this.source_ = options.source;
@@ -326,15 +342,20 @@ class Modify extends PointerInteraction {
         VectorEventType.REMOVEFEATURE,
         this.handleSourceRemove_.bind(this)
       );
-    } else {
+    } else if (options.features) {
       features = options.features;
+    } else if (options.layer) {
+      features = new Collection();
+      this.layer_ = options.layer;
     }
     if (!features) {
-      throw new Error('The modify interaction requires features or a source');
+      throw new Error(
+        'The modify interaction requires features, a source or a layer'
+      );
     }
 
     /**
-     * @type {Collection<Feature>}
+     * @type {Collection<import("../Feature.js").FeatureLike>}
      * @private
      */
     this.features_ = features;
@@ -354,6 +375,12 @@ class Modify extends PointerInteraction {
      * @private
      */
     this.lastPointerEvent_ = null;
+
+    /**
+     * Delta (x, y in map units) between matched rtree vertex and pointer vertex.
+     * @type {Array<number>}
+     */
+    this.delta_ = [0, 0];
   }
 
   /**
@@ -786,7 +813,10 @@ class Modify extends PointerInteraction {
     this.ignoreNextSingleClick_ = false;
     this.willModifyFeatures_(evt);
 
-    const vertex = evt.coordinate;
+    const vertex = [
+      evt.coordinate[0] + this.delta_[0],
+      evt.coordinate[1] + this.delta_[1],
+    ];
     for (let i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
       const dragSegment = this.dragSegments_[i];
       const segmentData = dragSegment[0];
@@ -1048,32 +1078,68 @@ class Modify extends PointerInteraction {
       );
     };
 
-    const viewExtent = fromUserExtent(
-      createExtent(pixelCoordinate, tempExtent),
-      projection
-    );
-    const buffer = map.getView().getResolution() * this.pixelTolerance_;
-    const box = toUserExtent(
-      bufferExtent(viewExtent, buffer, tempExtent),
-      projection
-    );
-
     const rBush = this.rBush_;
-    const nodes = rBush.getInExtent(box);
-    if (nodes.length > 0) {
+    /** @type {import("../geom/SimpleGeometry").default} */
+    let geometry;
+    let point = false;
+    let nodes;
+    if (this.layer_) {
+      const feature = map.forEachFeatureAtPixel(
+        pixel,
+        (feature, layer, geom) => {
+          geometry = geom || feature.getGeometry();
+          return feature;
+        },
+        {
+          layerFilter: (layer) => layer === this.layer_,
+          hitTolerance: this.pixelTolerance_,
+        }
+      );
+      if (feature && feature !== this.features_.item(0)) {
+        this.features_.setAt(0, feature);
+      }
+      if (!feature) {
+        this.features_.clear();
+      }
+      if (geometry) {
+        nodes = rBush.getInExtent(geometry.getExtent());
+        const type = geometry.getType();
+        if (type === GeometryType.POINT || type === GeometryType.MULTI_POINT) {
+          point = true;
+        }
+      }
+    } else {
+      const viewExtent = fromUserExtent(
+        createExtent(pixelCoordinate, tempExtent),
+        projection
+      );
+      const buffer = map.getView().getResolution() * this.pixelTolerance_;
+      const box = toUserExtent(
+        bufferExtent(viewExtent, buffer, tempExtent),
+        projection
+      );
+      nodes = rBush.getInExtent(box);
+    }
+
+    if (nodes && nodes.length > 0) {
       nodes.sort(sortByDistance);
       const node = nodes[0];
+      if (!geometry) {
+        geometry = node.geometry;
+      }
       const closestSegment = node.segment;
       let vertex = closestOnSegmentData(pixelCoordinate, node, projection);
       const vertexPixel = map.getPixelFromCoordinate(vertex);
       let dist = coordinateDistance(pixel, vertexPixel);
-      if (dist <= this.pixelTolerance_) {
+      if (point || dist <= this.pixelTolerance_) {
         /** @type {Object<string, boolean>} */
         const vertexSegments = {};
         vertexSegments[getUid(closestSegment)] = true;
 
+        this.delta_[0] = point ? vertex[0] - pixelCoordinate[0] : 0;
+        this.delta_[1] = point ? vertex[1] - pixelCoordinate[1] : 0;
         if (
-          node.geometry.getType() === GeometryType.CIRCLE &&
+          geometry.getType() === GeometryType.CIRCLE &&
           node.index === CIRCLE_CIRCUMFERENCE_INDEX
         ) {
           this.snappedToVertex_ = true;
@@ -1093,7 +1159,7 @@ class Modify extends PointerInteraction {
           }
           this.createOrUpdateVertexFeature_(vertex);
           const geometries = {};
-          geometries[getUid(node.geometry)] = true;
+          geometries[getUid(geometry)] = true;
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (
