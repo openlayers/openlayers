@@ -562,6 +562,7 @@ describe('ol.interaction.Modify', function () {
     let modify, feature, events;
 
     beforeEach(function () {
+      features.push(new Feature(new Point([12, 34])));
       modify = new Modify({
         features: new Collection(features),
       });

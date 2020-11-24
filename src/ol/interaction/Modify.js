@@ -248,10 +248,10 @@ class Modify extends PointerInteraction {
     this.ignoreNextSingleClick_ = false;
 
     /**
-     * @type {boolean}
+     * @type {Array<Feature>}
      * @private
      */
-    this.modified_ = false;
+    this.featuresBeingModified_ = null;
 
     /**
      * Segment RTree for each layer
@@ -403,14 +403,27 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../MapBrowserEvent.js").default} evt Map browser event
+   * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
+   * @param {Array<Array<SegmentData>>} segments The segments subject to modification.
    * @private
    */
-  willModifyFeatures_(evt) {
-    if (!this.modified_) {
-      this.modified_ = true;
+  willModifyFeatures_(evt, segments) {
+    if (!this.featuresBeingModified_) {
+      this.featuresBeingModified_ = [];
+      const features = this.featuresBeingModified_;
+      for (let i = 0, ii = segments.length; i < ii; ++i) {
+        const feature = segments[i][0].feature;
+        if (features.indexOf(feature) === -1) {
+          features.push(feature);
+        }
+      }
+
       this.dispatchEvent(
-        new ModifyEvent(ModifyEventType.MODIFYSTART, this.features_, evt)
+        new ModifyEvent(
+          ModifyEventType.MODIFYSTART,
+          new Collection(features),
+          evt
+        )
       );
     }
   }
@@ -811,7 +824,7 @@ class Modify extends PointerInteraction {
    */
   handleDragEvent(evt) {
     this.ignoreNextSingleClick_ = false;
-    this.willModifyFeatures_(evt);
+    this.willModifyFeatures_(evt, this.dragSegments_);
 
     const vertex = [
       evt.coordinate[0] + this.delta_[0],
@@ -914,7 +927,7 @@ class Modify extends PointerInteraction {
     const pixelCoordinate = evt.coordinate;
     this.handlePointerAtPixel_(evt.pixel, evt.map, pixelCoordinate);
     this.dragSegments_.length = 0;
-    this.modified_ = false;
+    this.featuresBeingModified_ = null;
     const vertexFeature = this.vertexFeature_;
     if (vertexFeature) {
       const projection = evt.map.getView().getProjection();
@@ -995,7 +1008,7 @@ class Modify extends PointerInteraction {
       }
 
       if (insertVertices.length) {
-        this.willModifyFeatures_(evt);
+        this.willModifyFeatures_(evt, [insertVertices]);
       }
 
       for (let j = insertVertices.length - 1; j >= 0; --j) {
@@ -1044,11 +1057,15 @@ class Modify extends PointerInteraction {
         this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
       }
     }
-    if (this.modified_) {
+    if (this.featuresBeingModified_) {
       this.dispatchEvent(
-        new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt)
+        new ModifyEvent(
+          ModifyEventType.MODIFYEND,
+          new Collection(this.featuresBeingModified_),
+          evt
+        )
       );
-      this.modified_ = false;
+      this.featuresBeingModified_ = null;
     }
     return false;
   }
@@ -1269,12 +1286,16 @@ class Modify extends PointerInteraction {
       this.lastPointerEvent_.type != MapBrowserEventType.POINTERDRAG
     ) {
       const evt = this.lastPointerEvent_;
-      this.willModifyFeatures_(evt);
+      this.willModifyFeatures_(evt, this.dragSegments_);
       const removed = this.removeVertex_();
       this.dispatchEvent(
-        new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt)
+        new ModifyEvent(
+          ModifyEventType.MODIFYEND,
+          new Collection(this.featuresBeingModified_),
+          evt
+        )
       );
-      this.modified_ = false;
+      this.featuresBeingModified_ = null;
       return removed;
     }
     return false;
