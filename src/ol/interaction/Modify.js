@@ -108,8 +108,11 @@ const ModifyEventType = {
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style.js").StyleLike} [style]
- * Style used for the features being modified. By default the default edit
- * style is used (see {@link module:ol/style}).
+ * Style used for the modification point. For linestrings and polygons, this will
+ * be the affected vertex, for circles a point along the circle, and for points the actual
+ * point. If not configured, the default edit style is used (see {@link module:ol/style}).
+ * When using a style function, the point feature passed to the function will have a `features`
+ * property - an array whose entries are the features that are being modified.
  * @property {VectorSource} [source] The vector source with
  * features to modify.  If a vector source is not provided, a layer or feature collection
  * must be provided with the `layer` or `features` option.
@@ -765,10 +768,11 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
+   * @param {Array<Feature>} features The features being modified.
    * @return {Feature} Vertex feature.
    * @private
    */
-  createOrUpdateVertexFeature_(coordinates) {
+  createOrUpdateVertexFeature_(coordinates, features) {
     let vertexFeature = this.vertexFeature_;
     if (!vertexFeature) {
       vertexFeature = new Feature(new Point(coordinates));
@@ -778,6 +782,7 @@ class Modify extends PointerInteraction {
       const geometry = vertexFeature.getGeometry();
       geometry.setCoordinates(coordinates);
     }
+    vertexFeature.set('features', features);
     return vertexFeature;
   }
 
@@ -830,9 +835,14 @@ class Modify extends PointerInteraction {
       evt.coordinate[0] + this.delta_[0],
       evt.coordinate[1] + this.delta_[1],
     ];
+    const features = [];
     for (let i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
       const dragSegment = this.dragSegments_[i];
       const segmentData = dragSegment[0];
+      const feature = segmentData.feature;
+      if (features.indexOf(feature) === -1) {
+        features.push(feature);
+      }
       const depth = segmentData.depth;
       const geometry = segmentData.geometry;
       let coordinates;
@@ -912,7 +922,7 @@ class Modify extends PointerInteraction {
         this.setGeometryCoordinates_(geometry, coordinates);
       }
     }
-    this.createOrUpdateVertexFeature_(vertex);
+    this.createOrUpdateVertexFeature_(vertex, features);
   }
 
   /**
@@ -1160,7 +1170,7 @@ class Modify extends PointerInteraction {
           node.index === CIRCLE_CIRCUMFERENCE_INDEX
         ) {
           this.snappedToVertex_ = true;
-          this.createOrUpdateVertexFeature_(vertex);
+          this.createOrUpdateVertexFeature_(vertex, [node.feature]);
         } else {
           const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
           const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
@@ -1174,7 +1184,7 @@ class Modify extends PointerInteraction {
                 ? closestSegment[1]
                 : closestSegment[0];
           }
-          this.createOrUpdateVertexFeature_(vertex);
+          this.createOrUpdateVertexFeature_(vertex, [node.feature]);
           const geometries = {};
           geometries[getUid(geometry)] = true;
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
