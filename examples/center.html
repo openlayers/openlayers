@@ -11,6 +11,11 @@ docs: >
   view's <code>centerOn</code> method is used to position a coordinate (Lausanne)
   at a specific pixel location (the center of the black box).
   <p>Use <code>Alt+Shift+Drag</code> to rotate the map.</p>
+  <p><b>Note:</b> This example does not shift the view center. So the zoom 
+  controls and rotating the map will still use the center of the viewport as anchor.
+  To shift the whole view based on a padding, use the `padding` option on the view,
+  as shown in the <a href="view-padding.html">view-padding.html</a> example.
+  </p>
 tags: "center, rotation, openstreetmap"
 ---
 <div class="mapcontainer">
