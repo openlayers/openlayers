@@ -743,6 +743,31 @@ class Draw extends PointerInteraction {
   }
 
   /**
+   * @param {import("../geom/Polygon.js").default} geometry Polygon geometry.
+   * @private
+   */
+  createOrUpdateCustomSketchLine_(geometry) {
+    if (!this.sketchLine_) {
+      this.sketchLine_ = new Feature();
+    }
+    const ring = geometry.getLinearRing(0);
+    let sketchLineGeom = this.sketchLine_.getGeometry();
+    if (!sketchLineGeom) {
+      sketchLineGeom = new LineString(
+        ring.getFlatCoordinates(),
+        ring.getLayout()
+      );
+      this.sketchLine_.setGeometry(sketchLineGeom);
+    } else {
+      sketchLineGeom.setFlatCoordinates(
+        ring.getLayout(),
+        ring.getFlatCoordinates()
+      );
+      sketchLineGeom.changed();
+    }
+  }
+
+  /**
    * Start the drawing.
    * @param {import("../MapBrowserEvent.js").default} event Event.
    * @private
@@ -812,32 +837,15 @@ class Draw extends PointerInteraction {
       const sketchPointGeom = this.sketchPoint_.getGeometry();
       sketchPointGeom.setCoordinates(coordinate);
     }
-    /** @type {LineString} */
-    let sketchLineGeom;
     if (
       geometry.getType() === GeometryType.POLYGON &&
       this.mode_ !== Mode.POLYGON
     ) {
-      if (!this.sketchLine_) {
-        this.sketchLine_ = new Feature();
-      }
-      const ring = geometry.getLinearRing(0);
-      sketchLineGeom = this.sketchLine_.getGeometry();
-      if (!sketchLineGeom) {
-        sketchLineGeom = new LineString(
-          ring.getFlatCoordinates(),
-          ring.getLayout()
-        );
-        this.sketchLine_.setGeometry(sketchLineGeom);
-      } else {
-        sketchLineGeom.setFlatCoordinates(
-          ring.getLayout(),
-          ring.getFlatCoordinates()
-        );
-        sketchLineGeom.changed();
-      }
+      this.createOrUpdateCustomSketchLine_(
+        /** @type {Polygon} */ (geometry)
+      );
     } else if (this.sketchLineCoords_) {
-      sketchLineGeom = this.sketchLine_.getGeometry();
+      const sketchLineGeom = this.sketchLine_.getGeometry();
       sketchLineGeom.setCoordinates(this.sketchLineCoords_);
     }
     this.updateSketchFeatures_();
@@ -897,8 +905,6 @@ class Draw extends PointerInteraction {
     const geometry = this.sketchFeature_.getGeometry();
     const projection = this.getMap().getView().getProjection();
     let coordinates;
-    /** @type {LineString} */
-    let sketchLineGeom;
     if (this.mode_ === Mode.LINE_STRING) {
       coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
       coordinates.splice(-2, 1);
@@ -912,22 +918,15 @@ class Draw extends PointerInteraction {
         }
       }
       this.geometryFunction_(coordinates, geometry, projection);
-
       if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
-        sketchLineGeom = this.sketchLine_.getGeometry();
-        if (sketchLineGeom) {
-          const ring = geometry.getLinearRing(0);
-          sketchLineGeom.setFlatCoordinates(
-            ring.getLayout(),
-            ring.getFlatCoordinates()
-          );
-          sketchLineGeom.changed();
-        }
+        this.createOrUpdateCustomSketchLine_(
+          /** @type {Polygon} */ (geometry)
+        );
       }
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
-      sketchLineGeom = this.sketchLine_.getGeometry();
+      const sketchLineGeom = this.sketchLine_.getGeometry();
       if (coordinates.length >= 2 && this.pointerType_ !== 'mouse') {
         const finishCoordinate = coordinates[coordinates.length - 2].slice();
         coordinates.pop();
