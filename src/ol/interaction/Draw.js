@@ -841,9 +841,7 @@ class Draw extends PointerInteraction {
       geometry.getType() === GeometryType.POLYGON &&
       this.mode_ !== Mode.POLYGON
     ) {
-      this.createOrUpdateCustomSketchLine_(
-        /** @type {Polygon} */ (geometry)
-      );
+      this.createOrUpdateCustomSketchLine_(/** @type {Polygon} */ (geometry));
     } else if (this.sketchLineCoords_) {
       const sketchLineGeom = this.sketchLine_.getGeometry();
       sketchLineGeom.setCoordinates(this.sketchLineCoords_);
@@ -919,9 +917,7 @@ class Draw extends PointerInteraction {
       }
       this.geometryFunction_(coordinates, geometry, projection);
       if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
-        this.createOrUpdateCustomSketchLine_(
-          /** @type {Polygon} */ (geometry)
-        );
+        this.createOrUpdateCustomSketchLine_(/** @type {Polygon} */ (geometry));
       }
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
