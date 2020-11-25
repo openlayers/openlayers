@@ -9,18 +9,19 @@ docs: >
   achieved by using `type: 'Circle'` type with a `geometryFunction` that creates
   a 4-sided regular polygon instead of a circle. Box drawing uses `type: 'Circle'`
   with a `geometryFunction` that creates a box-shaped polygon instead of a
-  circle.  Star drawing uses a custom geometry function that coverts a circle
-  into a start using the center and radius provided by the draw interaction.
+  circle. Star drawing uses a custom geometry function that converts a circle
+  into a star using the center and radius provided by the draw interaction.
 tags: "draw, edit, freehand, vector"
 ---
 <div id="map" class="map"></div>
 <form class="form-inline">
-  <label for="type">Shape type &nbsp;</label>
-  <select id="type">
+  <label for="type">Shape type: &nbsp;</label>
+  <select class="form-control mr-2 mb-2 mt-2" id="type">
     <option value="Circle">Circle</option>
     <option value="Square">Square</option>
     <option value="Box">Box</option>
     <option value="Star">Star</option>
     <option value="None">None</option>
   </select>
+  <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
 </form>

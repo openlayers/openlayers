@@ -1349,6 +1349,33 @@ describe('ol.interaction.Draw', function () {
       const draw = new Draw({
         source: source,
         type: 'Circle',
+        geometryFunction: createRegularPolygon(4),
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      const features = source.getFeatures();
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+      const coordinates = geometry.getCoordinates();
+      expect(coordinates[0].length).to.eql(5);
+      expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
+      expect(coordinates[0][0][1]).to.roughlyEqual(-20, 1e-9);
+    });
+
+    it('creates a regular polygon at specified angle', function () {
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
         geometryFunction: createRegularPolygon(4, Math.PI / 4),
       });
       map.addInteraction(draw);
@@ -1370,6 +1397,33 @@ describe('ol.interaction.Draw', function () {
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('creates a regular polygon at specified 0 angle', function () {
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: createRegularPolygon(4, 0),
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      const features = source.getFeatures();
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+      const coordinates = geometry.getCoordinates();
+      expect(coordinates[0].length).to.eql(5);
+      expect(coordinates[0][0][0]).to.roughlyEqual(28.2842712474619, 1e-9);
+      expect(coordinates[0][0][1]).to.roughlyEqual(0, 1e-9);
     });
 
     it('creates a regular polygon in Circle mode in a user projection', function () {
