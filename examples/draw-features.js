@@ -29,9 +29,17 @@ let draw; // global so we can remove it later
 function addInteraction() {
   const value = typeSelect.value;
   if (value !== 'None') {
+    let maxPoints;
+    if (value === 'MultiPoint') {
+      // By default MultiPoint drawing casts a single Point
+      // as a MultiPoint geometry. Override this to allow
+      // the user to choose when to finish drawing.
+      maxPoints = Infinity;
+    }
     draw = new Draw({
       source: source,
       type: typeSelect.value,
+      maxPoints: maxPoints,
     });
     map.addInteraction(draw);
   }

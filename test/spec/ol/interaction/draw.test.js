@@ -297,6 +297,73 @@ describe('ol.interaction.Draw', function () {
     });
   });
 
+  describe('drawing multipoints with more than one point', function () {
+    let draw;
+
+    beforeEach(function () {
+      draw = new Draw({
+        source: source,
+        type: 'MultiPoint',
+        maxPoints: 3,
+      });
+      map.addInteraction(draw);
+    });
+
+    it('finishes on first point', function () {
+      simulateEvent('pointermove', 30, 15);
+      simulateEvent('pointerdown', 30, 15);
+      simulateEvent('pointerup', 30, 15);
+      simulateEvent('pointerdown', 30, 15);
+      simulateEvent('pointerup', 30, 15);
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(MultiPoint);
+      expect(geometry.getCoordinates()).to.eql([[30, -15]]);
+    });
+
+    it('finishes on a subsequent point', function () {
+      simulateEvent('pointermove', 30, 15);
+      simulateEvent('pointerdown', 30, 15);
+      simulateEvent('pointerup', 30, 15);
+      simulateEvent('pointermove', 15, 30);
+      simulateEvent('pointerdown', 15, 30);
+      simulateEvent('pointerup', 15, 30);
+      simulateEvent('pointerdown', 15, 30);
+      simulateEvent('pointerup', 15, 30);
+      simulateEvent('pointermove', 30, 30);
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(MultiPoint);
+      expect(geometry.getCoordinates()).to.eql([
+        [30, -15],
+        [15, -30],
+      ]);
+    });
+
+    it('finishes at maximum point', function () {
+      simulateEvent('pointermove', 30, 15);
+      simulateEvent('pointerdown', 30, 15);
+      simulateEvent('pointerup', 30, 15);
+      simulateEvent('pointermove', 15, 30);
+      simulateEvent('pointerdown', 15, 30);
+      simulateEvent('pointerup', 15, 30);
+      simulateEvent('pointermove', 30, 30);
+      simulateEvent('pointerdown', 30, 30);
+      simulateEvent('pointerup', 30, 30);
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(MultiPoint);
+      expect(geometry.getCoordinates()).to.eql([
+        [30, -15],
+        [15, -30],
+        [30, -30],
+      ]);
+    });
+  });
+
   describe('drawing linestrings', function () {
     let draw;
 

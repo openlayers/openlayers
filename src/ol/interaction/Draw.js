@@ -52,11 +52,13 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * @property {boolean} [stopClick=false] Stop click, singleclick, and
  * doubleclick events from firing during drawing.
  * @property {number} [maxPoints] The number of points that can be drawn before
- * a polygon ring or line string is finished. By default there is no
- * restriction.
+ * a polygon ring, line string or multi-point geometry is finished. By default there
+ * is no restriction for polygon rings or line strings. The default is `1` for
+ * multi-point geometries.
  * @property {number} [minPoints] The number of points that must be drawn
- * before a polygon ring or line string can be finished. Default is `3` for
- * polygon rings and `2` for line strings.
+ * before a polygon ring, line string or multi-point geometry can be finished.
+ * Default is `3` for polygon rings, `2` for line strings, and `1` for
+ * multi-point geometries.
  * @property {import("../events/condition.js").Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished.
@@ -271,21 +273,24 @@ class Draw extends PointerInteraction {
     this.stopClick_ = !!options.stopClick;
 
     /**
-     * The number of points that must be drawn before a polygon ring or line
-     * string can be finished.  The default is 3 for polygon rings and 2 for
-     * line strings.
+     * The number of points that must be drawn before a polygon ring, line
+     * string or multi-point geometry can be finished.  The default is 3 for
+     * polygon rings, 2 for line strings, and 1 for multi-point geometries.
      * @type {number}
      * @private
      */
     this.minPoints_ = options.minPoints
       ? options.minPoints
+      : this.type_ === GeometryType.MULTI_POINT
+      ? 1
       : this.mode_ === Mode.POLYGON
       ? 3
       : 2;
 
     /**
-     * The number of points that can be drawn before a polygon ring or line string
-     * is finished. The default is no restriction.
+     * The number of points that can be drawn before a polygon ring, line string
+     * or multi-point geometry is finished. The default is no restriction for
+     * polygon rings or line strings. The default is 1 for multi-point geometries.
      * @type {number}
      * @private
      */
@@ -294,6 +299,8 @@ class Draw extends PointerInteraction {
         ? 2
         : options.maxPoints
         ? options.maxPoints
+        : this.type_ === GeometryType.MULTI_POINT
+        ? 1
         : Infinity;
 
     /**
@@ -341,7 +348,11 @@ class Draw extends PointerInteraction {
         if (mode === Mode.POINT) {
           Constructor = Point;
         } else if (mode === Mode.LINE_STRING) {
-          Constructor = LineString;
+          if (this.type_ === GeometryType.MULTI_POINT) {
+            Constructor = MultiPoint;
+          } else {
+            Constructor = LineString;
+          }
         } else if (mode === Mode.POLYGON) {
           Constructor = Polygon;
         }
@@ -630,7 +641,7 @@ class Draw extends PointerInteraction {
       if (this.shouldHandle_) {
         if (!this.finishCoordinate_) {
           this.startDrawing_(event);
-          if (this.mode_ === Mode.POINT) {
+          if (this.mode_ === Mode.POINT || this.maxPoints_ < 2) {
             this.finishDrawing();
           }
         } else if (this.freehand_) {
@@ -966,11 +977,7 @@ class Draw extends PointerInteraction {
     }
 
     // cast multi-part geometries
-    if (this.type_ === GeometryType.MULTI_POINT) {
-      sketchFeature.setGeometry(
-        new MultiPoint([/** @type {PointCoordType} */ (coordinates)])
-      );
-    } else if (this.type_ === GeometryType.MULTI_LINE_STRING) {
+    if (this.type_ === GeometryType.MULTI_LINE_STRING) {
       sketchFeature.setGeometry(
         new MultiLineString([/** @type {LineCoordType} */ (coordinates)])
       );
@@ -1217,9 +1224,10 @@ export function createBox() {
  */
 function getMode(type) {
   let mode;
-  if (type === GeometryType.POINT || type === GeometryType.MULTI_POINT) {
+  if (type === GeometryType.POINT) {
     mode = Mode.POINT;
   } else if (
+    type === GeometryType.MULTI_POINT ||
     type === GeometryType.LINE_STRING ||
     type === GeometryType.MULTI_LINE_STRING ||
     type === GeometryType.CIRCLE
