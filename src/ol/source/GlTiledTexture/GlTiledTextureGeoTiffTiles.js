@@ -41,7 +41,7 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
     const urlTileCoord = this.xyz_.getTileCoordForTileUrlFunction(tileCoord/*, projection*/);
 //     const url = this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     const url = this.xyz_.tileUrlFunction(urlTileCoord);
-console.info(url);
+
     return this.factory_(url).then(tiff=>tiff.getImage()).then(img=>{
       this.resolveAnyTile_(img);
       const bbox = img.getBoundingBox();
