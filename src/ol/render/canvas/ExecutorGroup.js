@@ -161,7 +161,7 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../../Feature.js").FeatureLike): T} callback Feature callback.
+   * @param {import("./Executor.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
@@ -225,9 +225,10 @@ class ExecutorGroup {
 
     /**
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
+     * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
      * @return {?} Callback result.
      */
-    function featureCallback(feature) {
+    function featureCallback(feature, geometry) {
       const imageData = context.getImageData(0, 0, contextSize, contextSize)
         .data;
       for (let i = 0; i < contextSize; i++) {
@@ -243,7 +244,7 @@ class ExecutorGroup {
                 ) ||
                 declutteredFeatures.indexOf(feature) !== -1
               ) {
-                result = callback(feature);
+                result = callback(feature, geometry);
               }
               if (result) {
                 return result;

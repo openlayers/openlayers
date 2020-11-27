@@ -406,7 +406,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
+   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @return {T|void} Callback result.
    * @template T
    */
@@ -423,13 +423,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
       /**
        * @param {import("../../Feature.js").FeatureLike} feature Feature.
+       * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
        * @return {?} Callback result.
        */
-      const featureCallback = function (feature) {
+      const featureCallback = function (feature, geometry) {
         const key = getUid(feature);
         if (!(key in features)) {
           features[key] = true;
-          return callback(feature, layer);
+          return callback(feature, layer, geometry);
         }
       };
 

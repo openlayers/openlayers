@@ -7,6 +7,11 @@ import ImageState from '../ImageState.js';
 import {getUid} from '../util.js';
 
 /**
+ * @template T
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default, import("../geom/SimpleGeometry.js").default): T} FeatureCallback
+ */
+
+/**
  * Tolerance for geometry simplification in device pixels.
  * @type {number}
  */

@@ -597,7 +597,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
+   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @return {T|void} Callback result.
    * @template T
    */
@@ -621,7 +621,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const source = this.getLayer().getSource();
     const feature = source.getFeatureByUid(uid);
     if (feature) {
-      return callback(feature, this.getLayer());
+      return callback(feature, this.getLayer(), null);
     }
   }
 

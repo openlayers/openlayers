@@ -64,8 +64,7 @@ class MapRenderer extends Disposable {
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {boolean} checkWrapped Check for wrapped geometries.
-   * @param {function(this: S, import("../Feature.js").FeatureLike,
-   *     import("../layer/Layer.js").default): T} callback Feature callback.
+   * @param {import("./vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
@@ -92,10 +91,11 @@ class MapRenderer extends Disposable {
      * @param {boolean} managed Managed layer.
      * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
+     * @param {import("../geom/Geometry.js").default} geometry Geometry.
      * @return {?} Callback result.
      */
-    function forEachFeatureAtCoordinate(managed, feature, layer) {
-      return callback.call(thisArg, feature, managed ? layer : null);
+    function forEachFeatureAtCoordinate(managed, feature, layer, geometry) {
+      return callback.call(thisArg, feature, managed ? layer : null, geometry);
     }
 
     const projection = viewState.projection;
