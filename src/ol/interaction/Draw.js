@@ -123,6 +123,7 @@ const Mode = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
+  CIRCLE: 'Circle',
 };
 
 /**
@@ -290,7 +291,7 @@ class Draw extends PointerInteraction {
      * @private
      */
     this.maxPoints_ =
-      this.type_ === GeometryType.CIRCLE
+      this.mode_ === Mode.CIRCLE
         ? 2
         : options.maxPoints
         ? options.maxPoints
@@ -307,7 +308,8 @@ class Draw extends PointerInteraction {
 
     let geometryFunction = options.geometryFunction;
     if (!geometryFunction) {
-      if (this.type_ === GeometryType.CIRCLE) {
+      const mode = this.mode_;
+      if (mode === Mode.CIRCLE) {
         /**
          * @param {!LineCoordType} coordinates The coordinates.
          * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
@@ -337,7 +339,6 @@ class Draw extends PointerInteraction {
         };
       } else {
         let Constructor;
-        const mode = this.mode_;
         if (mode === Mode.POINT) {
           Constructor = Point;
         } else if (mode === Mode.LINE_STRING) {
@@ -697,9 +698,10 @@ class Draw extends PointerInteraction {
     if (this.sketchFeature_) {
       let potentiallyDone = false;
       let potentiallyFinishCoordinates = [this.finishCoordinate_];
-      if (this.mode_ === Mode.LINE_STRING) {
+      const mode = this.mode_;
+      if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
         potentiallyDone = this.sketchCoords_.length > this.minPoints_;
-      } else if (this.mode_ === Mode.POLYGON) {
+      } else if (mode === Mode.POLYGON) {
         const sketchCoords = /** @type {PolyCoordType} */ (this.sketchCoords_);
         potentiallyDone = sketchCoords[0].length > this.minPoints_;
         potentiallyFinishCoordinates = [
@@ -859,7 +861,8 @@ class Draw extends PointerInteraction {
     const projection = this.getMap().getView().getProjection();
     let done;
     let coordinates;
-    if (this.mode_ === Mode.LINE_STRING) {
+    const mode = this.mode_;
+    if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
       this.finishCoordinate_ = coordinate.slice();
       coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
       if (coordinates.length >= this.maxPoints_) {
@@ -871,7 +874,7 @@ class Draw extends PointerInteraction {
       }
       coordinates.push(coordinate.slice());
       this.geometryFunction_(coordinates, geometry, projection);
-    } else if (this.mode_ === Mode.POLYGON) {
+    } else if (mode === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       if (coordinates.length >= this.maxPoints_) {
         if (this.freehand_) {
@@ -903,7 +906,8 @@ class Draw extends PointerInteraction {
     const geometry = this.sketchFeature_.getGeometry();
     const projection = this.getMap().getView().getProjection();
     let coordinates;
-    if (this.mode_ === Mode.LINE_STRING) {
+    const mode = this.mode_;
+    if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
       coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
       coordinates.splice(-2, 1);
       if (coordinates.length >= 2) {
@@ -919,7 +923,7 @@ class Draw extends PointerInteraction {
       if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
         this.createOrUpdateCustomSketchLine_(/** @type {Polygon} */ (geometry));
       }
-    } else if (this.mode_ === Mode.POLYGON) {
+    } else if (mode === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
       const sketchLineGeom = this.sketchLine_.getGeometry();
@@ -954,7 +958,7 @@ class Draw extends PointerInteraction {
     let coordinates = this.sketchCoords_;
     const geometry = sketchFeature.getGeometry();
     const projection = this.getMap().getView().getProjection();
-    if (this.mode_ === Mode.LINE_STRING && this.type_ !== GeometryType.CIRCLE) {
+    if (this.mode_ === Mode.LINE_STRING) {
       // remove the redundant last point
       coordinates.pop();
       this.geometryFunction_(coordinates, geometry, projection);
@@ -1030,7 +1034,7 @@ class Draw extends PointerInteraction {
   appendCoordinates(coordinates) {
     const mode = this.mode_;
     let sketchCoords = [];
-    if (mode === Mode.LINE_STRING) {
+    if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
       sketchCoords = /** @type {LineCoordType} */ this.sketchCoords_;
     } else if (mode === Mode.POLYGON) {
       sketchCoords =
@@ -1221,8 +1225,7 @@ function getMode(type) {
     mode = Mode.POINT;
   } else if (
     type === GeometryType.LINE_STRING ||
-    type === GeometryType.MULTI_LINE_STRING ||
-    type === GeometryType.CIRCLE
+    type === GeometryType.MULTI_LINE_STRING
   ) {
     mode = Mode.LINE_STRING;
   } else if (
@@ -1230,6 +1233,8 @@ function getMode(type) {
     type === GeometryType.MULTI_POLYGON
   ) {
     mode = Mode.POLYGON;
+  } else if (type === GeometryType.CIRCLE) {
+    mode = Mode.CIRCLE;
   }
   return /** @type {!Mode} */ (mode);
 }
