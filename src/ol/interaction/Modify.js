@@ -170,13 +170,15 @@ export class ModifyEvent extends Event {
  * the `features` option.  The interaction must be constructed with either a
  * `source`, `features` or `layer` option.
  *
- * When configured with a `source` or `features`, the modification object (for
- * point geometries the point, for linestring or polygon geometries an existing
- * vertex or a new vertex along a segment) is determined by geometric proximity to
- * the pointer location. When configured with a `layer`, hit detection will be
- * used to determine the feature that will be modified. This is the preferred way
- * when the visual representation of the features subject to modification is much
- * different from their geometry (e.g. icons with an offset).
+ * When configured with a `source` or `features`, Cartesian distance from the
+ * pointer is used to determine all features that will be modified. This is the
+ * preferred mode for modifying polygons or linestrings with shared edges or
+ * vertices that have to be modified together to maintain topology.
+ *
+ * When configured with a `layer`, pointer hit detection is used to determine the
+ * topmost feature that will be modified. This is the preferred mode for modifying
+ * points when the visual representation is much different from
+ * their geometry (e.g. large icons or icons with an offset).
  *
  * By default, the interaction will allow deletion of vertices when the `alt`
  * key is pressed.  To configure the interaction with a different condition
