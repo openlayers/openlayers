@@ -230,8 +230,12 @@ class ExecutorGroup {
     function featureCallback(feature) {
       const imageData = context.getImageData(0, 0, contextSize, contextSize)
         .data;
-      for (let i = 0; i < contextSize; i++) {
-        for (let j = 0; j < contextSize; j++) {
+      for (let ci = 0; ci < contextSize; ci++) {
+        const i =
+          ci % 2 ? (hitTolerance - 0.5 * ci) | 0 : hitTolerance + 0.5 * ci;
+        for (let cj = 0; cj < contextSize; cj++) {
+          const j =
+            cj % 2 ? (hitTolerance - 0.5 * cj) | 0 : hitTolerance + 0.5 * cj;
           if (mask[i][j]) {
             if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
               let result;
