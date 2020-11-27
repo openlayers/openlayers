@@ -219,7 +219,7 @@ class ExecutorGroup {
       );
     }
 
-    const mask = getCircleArray(hitTolerance);
+    const indexes = getPixelIndexArray(hitTolerance);
 
     let builderType;
 
@@ -231,31 +231,24 @@ class ExecutorGroup {
     function featureCallback(feature, geometry) {
       const imageData = context.getImageData(0, 0, contextSize, contextSize)
         .data;
-      for (let i = 0; i < contextSize; i++) {
-        for (let j = 0; j < contextSize; j++) {
-          if (mask[i][j]) {
-            if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-              let result;
-              if (
-                !(
-                  declutteredFeatures &&
-                  (builderType == BuilderType.IMAGE ||
-                    builderType == BuilderType.TEXT)
-                ) ||
-                declutteredFeatures.indexOf(feature) !== -1
-              ) {
-                result = callback(feature, geometry);
-              }
-              if (result) {
-                return result;
-              } else {
-                context.clearRect(0, 0, contextSize, contextSize);
-                return undefined;
-              }
+      for (let i = 0, ii = indexes.length; i < ii; i++) {
+        if (imageData[indexes[i]] > 0) {
+          if (
+            !declutteredFeatures ||
+            (builderType !== BuilderType.IMAGE &&
+              builderType !== BuilderType.TEXT) ||
+            declutteredFeatures.indexOf(feature) !== -1
+          ) {
+            const result = callback(feature, geometry);
+            if (result) {
+              return result;
             }
           }
+          context.clearRect(0, 0, contextSize, contextSize);
+          break;
         }
       }
+      return undefined;
     }
 
     /** @type {Array<number>} */
@@ -372,78 +365,61 @@ class ExecutorGroup {
 }
 
 /**
- * This cache is used for storing calculated pixel circles for increasing performance.
+ * This cache is used to store arrays of indexes for calculated pixel circles
+ * to increase performance.
  * It is a static property to allow each Replaygroup to access it.
- * @type {Object<number, Array<Array<(boolean|undefined)>>>}
+ * @type {Object<number, Array<number>>}
  */
-const circleArrayCache = {
-  0: [[true]],
-};
+const circlePixelIndexArrayCache = {};
 
 /**
- * This method fills a row in the array from the given coordinate to the
- * middle with `true`.
- * @param {Array<Array<(boolean|undefined)>>} array The array that will be altered.
- * @param {number} x X coordinate.
- * @param {number} y Y coordinate.
- */
-function fillCircleArrayRowToMiddle(array, x, y) {
-  let i;
-  const radius = Math.floor(array.length / 2);
-  if (x >= radius) {
-    for (i = radius; i < x; i++) {
-      array[i][y] = true;
-    }
-  } else if (x < radius) {
-    for (i = x + 1; i < radius; i++) {
-      array[i][y] = true;
-    }
-  }
-}
-
-/**
- * This methods creates a circle inside a fitting array. Points inside the
- * circle are marked by true, points on the outside are undefined.
- * It uses the midpoint circle algorithm.
+ * This methods creates an array with indexes of all pixels within a circle,
+ * ordered by how close they are to the center.
  * A cache is used to increase performance.
  * @param {number} radius Radius.
- * @returns {Array<Array<(boolean|undefined)>>} An array with marked circle points.
+ * @returns {Array<number>} An array with indexes within a circle.
  */
-export function getCircleArray(radius) {
-  if (circleArrayCache[radius] !== undefined) {
-    return circleArrayCache[radius];
+export function getPixelIndexArray(radius) {
+  if (circlePixelIndexArrayCache[radius] !== undefined) {
+    return circlePixelIndexArrayCache[radius];
   }
 
-  const arraySize = radius * 2 + 1;
-  const arr = new Array(arraySize);
-  for (let i = 0; i < arraySize; i++) {
-    arr[i] = new Array(arraySize);
-  }
-
-  let x = radius;
-  let y = 0;
-  let error = 0;
-
-  while (x >= y) {
-    fillCircleArrayRowToMiddle(arr, radius + x, radius + y);
-    fillCircleArrayRowToMiddle(arr, radius + y, radius + x);
-    fillCircleArrayRowToMiddle(arr, radius - y, radius + x);
-    fillCircleArrayRowToMiddle(arr, radius - x, radius + y);
-    fillCircleArrayRowToMiddle(arr, radius - x, radius - y);
-    fillCircleArrayRowToMiddle(arr, radius - y, radius - x);
-    fillCircleArrayRowToMiddle(arr, radius + y, radius - x);
-    fillCircleArrayRowToMiddle(arr, radius + x, radius - y);
-
-    y++;
-    error += 1 + 2 * y;
-    if (2 * (error - x) + 1 > 0) {
-      x -= 1;
-      error += 1 - 2 * x;
+  const size = radius * 2 + 1;
+  const maxDistanceSq = radius * radius;
+  const distances = new Array(maxDistanceSq + 1);
+  for (let i = 0; i <= radius; ++i) {
+    for (let j = 0; j <= radius; ++j) {
+      const distanceSq = i * i + j * j;
+      if (distanceSq > maxDistanceSq) {
+        break;
+      }
+      let distance = distances[distanceSq];
+      if (!distance) {
+        distance = [];
+        distances[distanceSq] = distance;
+      }
+      distance.push(((radius + i) * size + (radius + j)) * 4 + 3);
+      if (i > 0) {
+        distance.push(((radius - i) * size + (radius + j)) * 4 + 3);
+      }
+      if (j > 0) {
+        distance.push(((radius + i) * size + (radius - j)) * 4 + 3);
+        if (i > 0) {
+          distance.push(((radius - i) * size + (radius - j)) * 4 + 3);
+        }
+      }
     }
   }
 
-  circleArrayCache[radius] = arr;
-  return arr;
+  const pixelIndex = [];
+  for (let i = 0, ii = distances.length; i < ii; ++i) {
+    if (distances[i]) {
+      pixelIndex.push(...distances[i]);
+    }
+  }
+
+  circlePixelIndexArrayCache[radius] = pixelIndex;
+  return pixelIndex;
 }
 
 export default ExecutorGroup;
