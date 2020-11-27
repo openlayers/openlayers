@@ -1,5 +1,20 @@
 ## Upgrade notes
 
+### Next version
+
+#### Units of the `hitTolerance` option fixed
+
+Previously, the `hitTolerance` option of the map's `getFeaturesAtPixel()`, `forEachFeatureAtPixel()` and `hasFeatureAtPixel()` methods behaved differntly depending on the `devicePixelRatio` (or the `pixelRatio` of the map). Now this is fixed, the `hitTolerance`'s units are css pixels.
+
+If your application adjusts for that with code like
+```js
+{ hitTolerance: 10 / devicePixelRatio, }
+```
+you'll have to change that code to
+```js
+{ hitTolerance: 10, }
+```
+
 ### v6.4.0
 
 #### Pointer events polyfill removed
