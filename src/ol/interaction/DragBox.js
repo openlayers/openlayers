@@ -53,6 +53,13 @@ const DragBoxEventType = {
    * @api
    */
   BOXEND: 'boxend',
+
+  /**
+   * Triggered upon drag box canceled.
+   * @event DragBoxEvent#boxcancel
+   * @api
+   */
+  BOXCANCEL: 'boxcancel',
 };
 
 /**
@@ -192,22 +199,21 @@ class DragBox extends PointerInteraction {
   handleUpEvent(mapBrowserEvent) {
     this.box_.setMap(null);
 
-    if (
-      this.boxEndCondition_(
-        mapBrowserEvent,
-        this.startPixel_,
-        mapBrowserEvent.pixel
-      )
-    ) {
+    const completeBox = this.boxEndCondition_(
+      mapBrowserEvent,
+      this.startPixel_,
+      mapBrowserEvent.pixel
+    );
+    if (completeBox) {
       this.onBoxEnd(mapBrowserEvent);
-      this.dispatchEvent(
-        new DragBoxEvent(
-          DragBoxEventType.BOXEND,
-          mapBrowserEvent.coordinate,
-          mapBrowserEvent
-        )
-      );
     }
+    this.dispatchEvent(
+      new DragBoxEvent(
+        completeBox ? DragBoxEventType.BOXEND : DragBoxEventType.BOXCANCEL,
+        mapBrowserEvent.coordinate,
+        mapBrowserEvent
+      )
+    );
     return false;
   }
 
