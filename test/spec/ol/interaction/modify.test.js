@@ -8,11 +8,12 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../src/ol/geom/Polygon.js';
+import Polygon, {fromExtent} from '../../../../src/ol/geom/Polygon.js';
 import Snap from '../../../../src/ol/interaction/Snap.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import {MultiPoint} from '../../../../src/ol/geom.js';
 import {
   clearUserProjection,
   setUserProjection,
@@ -943,9 +944,10 @@ describe('ol.interaction.Modify', function () {
   });
 
   describe('Vertex feature', function () {
-    it('tracks features and removes the vertexFeature on deactivation', function () {
+    it('tracks features and geometries and removes the vertexFeature on deactivation', function () {
+      const collection = new Collection(features);
       const modify = new Modify({
-        features: new Collection(features),
+        features: collection,
       });
       map.addInteraction(modify);
       expect(modify.vertexFeature_).to.be(null);
@@ -953,9 +955,49 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointermove', 10, -20, null, 0);
       expect(modify.vertexFeature_).to.not.be(null);
       expect(modify.vertexFeature_.get('features').length).to.be(1);
+      expect(modify.vertexFeature_.get('geometries').length).to.be(1);
 
       modify.setActive(false);
       expect(modify.vertexFeature_).to.be(null);
+      map.removeInteraction(modify);
+    });
+
+    it('tracks features and geometries - multi geometry', function () {
+      const collection = new Collection();
+      const modify = new Modify({
+        features: collection,
+      });
+      map.addInteraction(modify);
+      const feature = new Feature(
+        new MultiPoint([
+          [10, 10],
+          [10, 20],
+        ])
+      );
+      collection.push(feature);
+      simulateEvent('pointermove', 10, -20, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
+      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+        feature.getGeometry()
+      );
+      map.removeInteraction(modify);
+    });
+
+    it('tracks features and geometries - geometry collection', function () {
+      const collection = new Collection();
+      const modify = new Modify({
+        features: collection,
+      });
+      map.addInteraction(modify);
+      const feature = new Feature(
+        new GeometryCollection([fromExtent([0, 0, 10, 10]), new Point([5, 5])])
+      );
+      collection.push(feature);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
+      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+        feature.getGeometry().getGeometriesArray()[1]
+      );
     });
   });
 
