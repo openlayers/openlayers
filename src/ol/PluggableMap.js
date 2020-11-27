@@ -75,7 +75,7 @@ import {removeNode} from './dom.js';
  * {@link module:ol/layer/Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
  * will be tested for features. By default, all visible layers will be tested.
- * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels. Pixels
+ * @property {number} [hitTolerance=0] Hit-detection tolerance in css pixels. Pixels
  * inside the radius around the given position will be checked for features.
  * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for for wrapped geometries inside the range of
  *   +/- 1 world width. Works only if a projection is used that can be wrapped.
@@ -559,9 +559,7 @@ class PluggableMap extends BaseObject {
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
     opt_options = opt_options !== undefined ? opt_options : {};
     const hitTolerance =
-      opt_options.hitTolerance !== undefined
-        ? opt_options.hitTolerance * this.frameState_.pixelRatio
-        : 0;
+      opt_options.hitTolerance !== undefined ? opt_options.hitTolerance : 0;
     const layerFilter =
       opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
     const checkWrapped = opt_options.checkWrapped !== false;
@@ -624,9 +622,7 @@ class PluggableMap extends BaseObject {
     }
     const options = opt_options || {};
     const hitTolerance =
-      options.hitTolerance !== undefined
-        ? options.hitTolerance * this.frameState_.pixelRatio
-        : 0;
+      options.hitTolerance !== undefined ? options.hitTolerance : 0;
     const layerFilter = options.layerFilter || TRUE;
     return this.renderer_.forEachLayerAtPixel(
       pixel,
@@ -654,9 +650,7 @@ class PluggableMap extends BaseObject {
     const layerFilter =
       opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
     const hitTolerance =
-      opt_options.hitTolerance !== undefined
-        ? opt_options.hitTolerance * this.frameState_.pixelRatio
-        : 0;
+      opt_options.hitTolerance !== undefined ? opt_options.hitTolerance : 0;
     const checkWrapped = opt_options.checkWrapped !== false;
     return this.renderer_.hasFeatureAtCoordinate(
       coordinate,
