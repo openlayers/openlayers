@@ -41,7 +41,7 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
     const urlTileCoord = this.xyz_.getTileCoordForTileUrlFunction(tileCoord/*, projection*/);
 //     const url = this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     const url = this.xyz_.tileUrlFunction(urlTileCoord);
-
+console.info(url);
     return this.factory_(url).then(tiff=>tiff.getImage()).then(img=>{
       this.resolveAnyTile_(img);
       const bbox = img.getBoundingBox();
@@ -58,7 +58,7 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
       }).then(rasters=>{
 //         console.log(rasters[0]);
 //         console.warn(img, bbox, tileSize, rasters);
-        console.warn(img, bbox, tileSize, tileGrid);
+//         console.warn(img, bbox, tileSize, tileGrid);
         return rasters[0]
       });
     });

@@ -14,18 +14,32 @@ import {defaults as defaultControls} from '../src/ol/control';
 
 // These non-square GeoTIFF tiles need a custom tilegrid - forcing level 0 for
 // the top-level 512x256px tile, and limiting the number of available zoom levels.
+// var tileGrid = new TileGrid({
+//   extent: [-180, 90, 180, -90],
+// //   origin: [-180, 90],
+//   resolutions: [360/512, 180/512, 90/512, 45/512, 22.5/512],
+//   tileSizes: [[512, 256], [1024, 512], [1024, 1024], [1024, 1024], [1024, 1024]],
+// //   resolutions: [180/512, 90/512, 45/512],
+// //   tileSize: [512, 256],
+//   minZoom: 1
+// });
+
 var tileGrid = new TileGrid({
   extent: [-180, -90, 180, 90],
-  resolutions: [360/512, 180/512, 90/512, 45/512],
+  origin: [-180, 90],
+//   resolutions: [360/512, 180/512, 90/512, 45/512, 22.5/512],
+  resolutions: [360/512, 180/512, 90/512, 45/512  , 22.5/512],
+  tileSizes: [[512, 256], [1024, 512], [1024, 1024], [1024, 1024], [1024, 1024]],
 //   resolutions: [180/512, 90/512, 45/512],
-  tileSize: [512, 256],
-  minZoom: 1
+//   tileSize: [1024, 1024],
+//   minZoom: 2
 });
 
 const tiffTiles = new XYZ({
   url: 'https://s2downloads.eox.at/demo/EOxCloudless/2019/rgbnir_16bit/{z}/{y}/{x}.tif',
-  tileSize: [512,256],
-  tileGrid: tileGrid
+//   tileSize: [1024, 1024],
+  tileGrid: tileGrid,
+  projection: 'EPSG:4326',
 });
 
 // tcr, tcg, tcb = True Colour Red/Green/Blue
@@ -48,7 +62,7 @@ const rgbnirShader = "#line 1                                   \n" +
 "	float tcb = getTCB(vTextureCoords.st);                        \n" +
 "	float nir = getNIR(vTextureCoords.st);                        \n" +
 "                                                               \n" +
-" if (tcr < 30.) { gl_FragColor = vec4(0.); } else              \n" +
+" if (tcr < 30.) { gl_FragColor = vec4(0.0); } else              \n" +
 " {                                                             \n" +
 "	gl_FragColor = vec4(                                          \n" +
 "    tcr / 4000.,                                               \n" +
@@ -58,15 +72,23 @@ const rgbnirShader = "#line 1                                   \n" +
 " }                                                             \n" +
 "}                                                              \n";
 
+// const rgbnirShader = `#line 1
+// void main(void) {
+// 	gl_FragColor = vec4(
+//     vec3((vTextureCoords.s + vTextureCoords.t) / 2.),
+//     .5);
+// }
+// `;
+
 var glSource = new GlTiles({
-// 	projection: epsg8357,
 	fragmentShader: rgbnirShader,
 	textureSources: [ tcr, tcg, tcb, nir ],
 	attributions: "<a href='https://s2maps.eu'>Sentinel-2 cloudless</a> by <a href='https://eox.at/'>EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2019)",
 	uniforms: {},
-  tileSize: [512,256],
+//   tileSize: [1024, 1024],
+// 	projection: epsg8357,
+  projection: 'EPSG:4326',
   tileGrid: tileGrid
-
 });
 
 
@@ -80,11 +102,13 @@ const map = new Map({
         'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
         'TILED': true,
       },
-    }),}),
+    }),
+    opacity: 0.5
+  }),
 
 		new TileLayer({
 			source: glSource,
-      tileSize: [512,256],
+      tileSize: [1024, 1024],
       tileGrid: tileGrid
 		}),
 	],

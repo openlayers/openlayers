@@ -13,6 +13,10 @@ import {getKeyZXY} from '../tilecoord.js';
 import EventType from '../events/EventType.js';
 import {listenOnce} from '../events.js';
 
+// For debugging purposes onle
+// e.g. imageOutput(glContext, console);
+// import imageOutput from 'image-output';
+
 class GlTile extends Tile {
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
@@ -62,6 +66,7 @@ class GlTile extends Tile {
 
   // (re-)renders the tile
   render() {
+
     const gl = this.gl;
     const tileSize = this.tileSize_;
 
@@ -87,8 +92,16 @@ class GlTile extends Tile {
       // TODO: copy-paste code from Leaflet.TileLayerGL's render() method
       // to update the per-tile attributes, if those are needed/wanted
 
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-      gl.clearColor(0.5, 0.5, 0.5, 0);
+      // Use only the top-left part of the canvas as the GL viewport
+      // (for TileGrids with more than one TileSize).
+      // Note that GL inverts the Y coordinate here.
+      gl.viewport(
+        0,
+        gl.drawingBufferHeight - tileSize[1],
+        tileSize[0],
+        tileSize[1]
+      );
+      gl.clearColor(0.5, 0.5, 0.5, 0.5);
       gl.enable(gl.BLEND);
 
       // Trigger draw call. Magic happens here.
@@ -164,23 +177,29 @@ class GlTiles extends XYZ {
     this.texSources = options.textureSources || [];
 
 
-    /// FIXME. This is a hack.
     /// Check whether the tileGrid has one tile size, or multiple tile sizes (one per
-    /// zoom level, as per some WMTS implementations). In the later case, error out.
-    /// The rationale is that having several tile sizes complicates the logic for
-    /// the <canvas> element used for the WebGL context. It should be possible
-    /// to handle a dynamic tile size (knowing the maximum tile area, then rendering
-    /// only in the needed area for the given zoom level), but that's left as a TODO.
+    /// zoom level, as per some WMTS implementations and some hand-tweaked GeoTIFF
+    /// tilesets). The temp canvas to do the GL render must be large enough to
+    /// accommodate all tileSizes.
 
-    if (!this.tileGrid.tileSize_) {
-      throw new Error('GlTiles can not work on a tileGrid with multiple tile sizes.');
+    let tileSize = [0, 0];
+    if (this.tileGrid.tileSize_) {
+      // Only one TileSize for all zoom levels of the TileGrid
+      tileSize = toSize(this.tileGrid.getTileSize());
+    } else {
+      // Several tileSizes for this TileGrid; find the largest dimensions
+      this.tileGrid.tileSizes_.forEach((s)=>{
+        const size = toSize(s);
+        if (size[0] > tileSize[0]) { tileSize[0] = size[0]; }
+        if (size[1] > tileSize[1]) { tileSize[1] = size[1]; }
+      });
     }
+
+    console.log("biggest tileSize: ", tileSize);
 
     this._programReady = new Promise((res)=>{
       this._markProgramAsReady = res;
     });
-
-    const tileSize = toSize(this.tileGrid.getTileSize());
 
     // Init WebGL context. Mostly copy-pasted from Leaflet.TileLayerGL.
     this._renderer = document.createElement('canvas');
@@ -231,7 +250,7 @@ class GlTiles extends XYZ {
     if (this.tileCache.containsKey(tileCoordKey)) {
       return /** @type {!LabeledTile} */ (this.tileCache.get(tileCoordKey));
     } else {
-      const tileSize = toSize(this.tileGrid.getTileSize());
+      const tileSize = toSize(this.tileGrid.getTileSize(z));
       const tileCoord = [z, x, y];
 
       // Get the projected coords for the tile

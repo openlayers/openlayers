@@ -44,6 +44,7 @@
     "url": "https://opencollective.com/openlayers"
   },
   "dependencies": {
+    "image-output": "^2.4.2",
     "ol-mapbox-style": "^6.1.1",
     "pbf": "3.2.1",
     "rbush": "^3.0.1"
