@@ -120,8 +120,10 @@ const ModifyEventType = {
  * features to modify.  If a vector source is not provided, a layer or feature collection
  * must be provided with the `layer` or `features` option.
  * @property {import("../layer/BaseVector").default} [layer] The layer with
- * features to modify.  If a layer is not provided, a vector source or feature collection
- * must be provided with the `source` or `features` option.
+ * features to modify.  When provided, point features will considered for modification based on
+ * their visual appearance on this layer, instead of being within the `pixelTolerance` from the
+ * pointer location.  When no `source` or `features` are configured, this layer's source will
+ * be used as source for modification candidates.
  * @property {Collection<Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
  * provided, a layer or vector source must be provided with the `layer` or `source` option.
@@ -170,15 +172,12 @@ export class ModifyEvent extends Event {
  * the `features` option.  The interaction must be constructed with either a
  * `source`, `features` or `layer` option.
  *
- * When configured with a `source` or `features`, Cartesian distance from the
- * pointer is used to determine all features that will be modified. This is the
- * preferred mode for modifying polygons or linestrings with shared edges or
- * vertices that have to be modified together to maintain topology.
- *
- * When configured with a `layer`, pointer hit detection is used to determine the
- * topmost feature that will be modified. This is the preferred mode for modifying
- * points when the visual representation is much different from
- * their geometry (e.g. large icons or icons with an offset).
+ * Cartesian distance from the pointer is used to determine the features that
+ * will be modified. This means that geometries will only be considered for
+ * modification when they are within the configured `pixelTolerane`. For point
+ * geometries, hit detection can be used to match their visual appearance. To
+ * enable hit detection, the interaction has to be configured with the `layer`
+ * that contains the points.
  *
  * By default, the interaction will allow deletion of vertices when the `alt`
  * key is pressed.  To configure the interaction with a different condition
@@ -339,21 +338,28 @@ class Modify extends PointerInteraction {
     this.layer_ = null;
 
     let features;
-    if (options.source) {
-      this.source_ = options.source;
-      features = new Collection(this.source_.getFeatures());
-      this.source_.addEventListener(
-        VectorEventType.ADDFEATURE,
-        this.handleSourceAdd_.bind(this)
-      );
-      this.source_.addEventListener(
-        VectorEventType.REMOVEFEATURE,
-        this.handleSourceRemove_.bind(this)
-      );
-    } else if (options.features) {
+    if (options.features) {
       features = options.features;
-    } else if (options.layer) {
-      features = new Collection();
+    } else {
+      const source = options.source
+        ? options.source
+        : options.layer
+        ? options.layer.getSource()
+        : undefined;
+      if (source) {
+        this.source_ = source;
+        features = new Collection(this.source_.getFeatures());
+        this.source_.addEventListener(
+          VectorEventType.ADDFEATURE,
+          this.handleSourceAdd_.bind(this)
+        );
+        this.source_.addEventListener(
+          VectorEventType.REMOVEFEATURE,
+          this.handleSourceRemove_.bind(this)
+        );
+      }
+    }
+    if (options.layer) {
       this.layer_ = options.layer;
     }
     if (!features) {
@@ -1116,68 +1122,51 @@ class Modify extends PointerInteraction {
       );
     };
 
-    const rBush = this.rBush_;
-    /** @type {import("../geom/SimpleGeometry").default} */
-    let geometry;
-    let point = false;
-    let nodes;
+    let box, hitPointGeometry;
     if (this.layer_) {
-      const feature = map.forEachFeatureAtPixel(
+      map.forEachFeatureAtPixel(
         pixel,
-        (feature, layer, geom) => {
-          geometry = geom || feature.getGeometry();
-          return feature;
+        (feature, layer, geometry) => {
+          geometry = geometry || feature.getGeometry();
+          if (geometry.getType() === GeometryType.POINT) {
+            hitPointGeometry = geometry;
+            box = hitPointGeometry.getExtent();
+          }
+          return true;
         },
         {
           layerFilter: (layer) => layer === this.layer_,
-          hitTolerance: this.pixelTolerance_,
         }
       );
-      if (feature && feature !== this.features_.item(0)) {
-        this.features_.setAt(0, feature);
-      }
-      if (!feature) {
-        this.features_.clear();
-      }
-      if (geometry) {
-        nodes = rBush.getInExtent(geometry.getExtent());
-        const type = geometry.getType();
-        if (type === GeometryType.POINT || type === GeometryType.MULTI_POINT) {
-          point = true;
-        }
-      }
-    } else {
+    }
+    if (!box) {
       const viewExtent = fromUserExtent(
         createExtent(pixelCoordinate, tempExtent),
         projection
       );
       const buffer = map.getView().getResolution() * this.pixelTolerance_;
-      const box = toUserExtent(
+      box = toUserExtent(
         bufferExtent(viewExtent, buffer, tempExtent),
         projection
       );
-      nodes = rBush.getInExtent(box);
     }
+    const nodes = this.rBush_.getInExtent(box);
 
     if (nodes && nodes.length > 0) {
-      nodes.sort(sortByDistance);
-      const node = nodes[0];
-      if (!geometry) {
-        geometry = node.geometry;
-      }
+      const node = nodes.sort(sortByDistance)[0];
       const closestSegment = node.segment;
       let vertex = closestOnSegmentData(pixelCoordinate, node, projection);
       const vertexPixel = map.getPixelFromCoordinate(vertex);
       let dist = coordinateDistance(pixel, vertexPixel);
-      if (point || dist <= this.pixelTolerance_) {
+      if (hitPointGeometry || dist <= this.pixelTolerance_) {
         /** @type {Object<string, boolean>} */
         const vertexSegments = {};
         vertexSegments[getUid(closestSegment)] = true;
 
-        this.delta_[0] = point ? vertex[0] - pixelCoordinate[0] : 0;
-        this.delta_[1] = point ? vertex[1] - pixelCoordinate[1] : 0;
+        this.delta_[0] = hitPointGeometry ? vertex[0] - pixelCoordinate[0] : 0;
+        this.delta_[1] = hitPointGeometry ? vertex[1] - pixelCoordinate[1] : 0;
         if (
-          geometry.getType() === GeometryType.CIRCLE &&
+          node.geometry.getType() === GeometryType.CIRCLE &&
           node.index === CIRCLE_CIRCUMFERENCE_INDEX
         ) {
           this.snappedToVertex_ = true;
@@ -1205,7 +1194,7 @@ class Modify extends PointerInteraction {
             [node.geometry]
           );
           const geometries = {};
-          geometries[getUid(geometry)] = true;
+          geometries[getUid(node.geometry)] = true;
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (

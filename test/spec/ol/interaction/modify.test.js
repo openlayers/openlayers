@@ -195,6 +195,55 @@ describe('ol.interaction.Modify', function () {
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
     });
+
+    it('accepts a layer for modification features', function () {
+      const feature = new Feature(new Point([0, 0]));
+      const source = new VectorSource({features: [feature]});
+      const layer = new VectorLayer({source: source});
+      const modify = new Modify({layer: layer});
+      const rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(1);
+      expect(rbushEntries[0].feature).to.be(feature);
+      expect(modify.layer_).to.be(layer);
+    });
+
+    it('accepts a layer in addition to a features collection', function () {
+      const feature = new Feature(new Point([0, 0]));
+      const source = new VectorSource({features: [feature]});
+      const layer = new VectorLayer({source: source});
+      const features = new Collection([new Feature(new Point([1, 1]))]);
+      const modify = new Modify({layer: layer, features: features});
+      const rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(1);
+      expect(rbushEntries[0].feature).to.be(features.item(0));
+      expect(modify.layer_).to.be(layer);
+    });
+
+    it('accepts a layer in addition to a features collection', function () {
+      const feature = new Feature(new Point([0, 0]));
+      const source = new VectorSource({features: [feature]});
+      const layer = new VectorLayer({source: source});
+      const features = new Collection([new Feature(new Point([1, 1]))]);
+      const modify = new Modify({layer: layer, features: features});
+      const rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(1);
+      expect(rbushEntries[0].feature).to.be(features.item(0));
+      expect(modify.layer_).to.be(layer);
+    });
+
+    it('accepts a layer in addition to a source', function () {
+      const feature = new Feature(new Point([0, 0]));
+      const source = new VectorSource({features: [feature]});
+      const layer = new VectorLayer({source: source});
+      const candidateSource = new VectorSource({
+        features: [new Feature(new Point([1, 1]))],
+      });
+      const modify = new Modify({layer: layer, source: candidateSource});
+      const rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(1);
+      expect(rbushEntries[0].feature).to.be(candidateSource.getFeatures()[0]);
+      expect(modify.layer_).to.be(layer);
+    });
   });
 
   describe('vertex deletion', function () {
