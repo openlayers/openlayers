@@ -19,8 +19,8 @@ import {
   translate as translateTransform,
 } from '../../transform.js';
 import {
+  boundingExtent,
   buffer,
-  containsCoordinate,
   containsExtent,
   equals,
   getIntersection,
@@ -393,6 +393,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tileGrid = source.getTileGridForProjection(
       frameState.viewState.projection
     );
+
+    const hitExtent = boundingExtent([coordinate]);
+    buffer(hitExtent, resolution * hitTolerance, hitExtent);
+
     /** @type {!Object<string, boolean>} */
     const features = {};
 
@@ -404,7 +408,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
       const tile = renderedTiles[i];
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-      if (!containsCoordinate(tileExtent, coordinate)) {
+      if (!intersects(tileExtent, hitExtent)) {
         continue;
       }
       const layerUid = getUid(layer);
