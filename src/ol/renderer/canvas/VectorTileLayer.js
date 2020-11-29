@@ -381,10 +381,17 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @return {T|void} Callback result.
+   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @return {T|undefined} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    matches
+  ) {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
@@ -397,55 +404,82 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const hitExtent = boundingExtent([coordinate]);
     buffer(hitExtent, resolution * hitTolerance, hitExtent);
 
-    /** @type {!Object<string, boolean>} */
+    /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
     const features = {};
+
+    /**
+     * @param {import("../../Feature.js").FeatureLike} feature Feature.
+     * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+     * @param {number} distanceSq The squared distance to the click position.
+     * @return {T|undefined} Callback result.
+     */
+    const featureCallback = function (feature, geometry, distanceSq) {
+      let key = feature.getId();
+      if (key === undefined) {
+        key = getUid(feature);
+      }
+      const match = features[key];
+      if (!match) {
+        if (distanceSq === 0) {
+          features[key] = true;
+          return callback(feature, layer, geometry);
+        }
+        matches.push(
+          (features[key] = {
+            feature: feature,
+            layer: layer,
+            geometry: geometry,
+            distanceSq: distanceSq,
+            callback: callback,
+          })
+        );
+      } else if (match !== true && distanceSq < match.distanceSq) {
+        if (distanceSq === 0) {
+          features[key] = true;
+          matches.splice(matches.lastIndexOf(match), 1);
+          return callback(feature, layer, geometry);
+        }
+        match.geometry = geometry;
+        match.distanceSq = distanceSq;
+      }
+      return undefined;
+    };
 
     const renderedTiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this
       .renderedTiles);
 
     let found;
-    let i, ii;
-    for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
+    for (let i = 0, ii = renderedTiles.length; !found && i < ii; ++i) {
       const tile = renderedTiles[i];
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       if (!intersects(tileExtent, hitExtent)) {
         continue;
       }
+
       const layerUid = getUid(layer);
       const executorGroups = [tile.executorGroups[layerUid]];
       const declutterExecutorGroups = tile.declutterExecutorGroups[layerUid];
       if (declutterExecutorGroups) {
         executorGroups.push(declutterExecutorGroups);
       }
-      executorGroups.forEach((executorGroups) => {
+      executorGroups.some((executorGroups) => {
+        const declutteredFeatures =
+          executorGroups === declutterExecutorGroups
+            ? frameState.declutterTree.all().map((item) => item.value)
+            : null;
         for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
           const executorGroup = executorGroups[t];
-          found =
-            found ||
-            executorGroup.forEachFeatureAtCoordinate(
-              coordinate,
-              resolution,
-              rotation,
-              hitTolerance,
-              /**
-               * @param {import("../../Feature.js").FeatureLike} feature Feature.
-               * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
-               * @return {?} Callback result.
-               */
-              function (feature, geometry) {
-                let key = feature.getId();
-                if (key === undefined) {
-                  key = getUid(feature);
-                }
-                if (!(key in features)) {
-                  features[key] = true;
-                  return callback(feature, layer, geometry);
-                }
-              },
-              executorGroups === declutterExecutorGroups
-                ? frameState.declutterTree.all().map((item) => item.value)
-                : null
-            );
+          found = executorGroup.forEachFeatureAtCoordinate(
+            coordinate,
+            resolution,
+            rotation,
+            hitTolerance,
+            featureCallback,
+            declutteredFeatures
+          );
+          if (found) {
+            return true;
+          }
         }
       });
     }

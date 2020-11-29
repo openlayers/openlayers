@@ -161,7 +161,7 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {import("./Executor.js").FeatureCallback<T>} callback Feature callback.
+   * @param {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default, number): T} callback Feature callback.
    * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
@@ -187,7 +187,8 @@ class ExecutorGroup {
       -coordinate[1]
     );
 
-    if (!this.hitDetectionContext_) {
+    const newContext = !this.hitDetectionContext_;
+    if (newContext) {
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
         contextSize
@@ -201,7 +202,7 @@ class ExecutorGroup {
     ) {
       context.canvas.width = contextSize;
       context.canvas.height = contextSize;
-    } else {
+    } else if (!newContext) {
       context.clearRect(0, 0, contextSize, contextSize);
     }
 
@@ -226,7 +227,7 @@ class ExecutorGroup {
     /**
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
-     * @return {?} Callback result.
+     * @return {T|undefined} Callback result.
      */
     function featureCallback(feature, geometry) {
       const imageData = context.getImageData(0, 0, contextSize, contextSize)
@@ -239,7 +240,10 @@ class ExecutorGroup {
               builderType !== BuilderType.TEXT) ||
             declutteredFeatures.indexOf(feature) !== -1
           ) {
-            const result = callback(feature, geometry);
+            const idx = (indexes[i] - 3) / 4;
+            const x = hitTolerance - (idx % contextSize);
+            const y = hitTolerance - ((idx / contextSize) | 0);
+            const result = callback(feature, geometry, x * x + y * y);
             if (result) {
               return result;
             }

@@ -598,13 +598,20 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @return {T|void} Callback result.
+   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @return {T|undefined} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    matches
+  ) {
     assert(this.hitDetectionEnabled_, 66);
     if (!this.hitRenderInstructions_) {
-      return;
+      return undefined;
     }
 
     const pixel = applyTransform(
@@ -623,6 +630,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (feature) {
       return callback(feature, this.getLayer(), null);
     }
+    return undefined;
   }
 
   /**
