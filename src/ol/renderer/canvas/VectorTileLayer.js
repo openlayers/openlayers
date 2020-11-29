@@ -389,7 +389,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const layer = this.getLayer();
-    const declutter = layer.getDeclutter();
     const source = layer.getSource();
     const tileGrid = source.getTileGridForProjection(
       frameState.viewState.projection
@@ -405,14 +404,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
       const tile = renderedTiles[i];
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-      const tileContainsCoordinate = containsCoordinate(tileExtent, coordinate);
-
-      if (!declutter) {
-        // When not decluttering, we only need to consider the tile that contains the given
-        // coordinate, because each feature will be rendered for each tile that contains it.
-        if (!tileContainsCoordinate) {
-          continue;
-        }
+      if (!containsCoordinate(tileExtent, coordinate)) {
+        continue;
       }
       const layerUid = getUid(layer);
       const executorGroups = [tile.executorGroups[layerUid]];
@@ -436,15 +429,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
                * @return {?} Callback result.
                */
               function (feature, geometry) {
-                if (tileContainsCoordinate) {
-                  let key = feature.getId();
-                  if (key === undefined) {
-                    key = getUid(feature);
-                  }
-                  if (!(key in features)) {
-                    features[key] = true;
-                    return callback(feature, layer, geometry);
-                  }
+                let key = feature.getId();
+                if (key === undefined) {
+                  key = getUid(feature);
+                }
+                if (!(key in features)) {
+                  features[key] = true;
+                  return callback(feature, layer, geometry);
                 }
               },
               executorGroups === declutterExecutorGroups
