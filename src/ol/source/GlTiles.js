@@ -37,18 +37,28 @@ class GlTile extends Tile {
     */
     this.tileSize_ = tileSize;
 
+    this.ctx2d_ = createCanvasContext2D(tileSize[0], tileSize[1]);
+
     /**
     * @private
     * @type {HTMLCanvasElement}
     */
-    this.canvas_ = null;
+    this.canvas_ = this.ctx2d_.canvas;
 
     this.gl = gl;
 
-    this.texFetches_ = texFetches;
+    // Placeholder for the raster data for this tile.
+    this.fetchedTexts_ = false;
+
     this.textures_ = textures;
 
-    this.render();
+    Promise.all(texFetches).then(fetchedTexts =>{
+      this.fetchedTexts_ = fetchedTexts;
+      this.render();
+      this.setState(TileState.LOADED);
+    }).catch(()=>{
+      this.setState(TileState.ERROR);
+    });
   }
 
   /**
@@ -65,58 +75,50 @@ class GlTile extends Tile {
   load() {}
 
   // (re-)renders the tile
+  // This is a synchronous operation, which assumes that the texture fetches
+  // have been completed already.
   render() {
+    if (!this.fetchedTexts_) { return; }
 
     const gl = this.gl;
     const tileSize = this.tileSize_;
 
-    return Promise.all(this.texFetches_).then(loadedTextures =>{
-      if (this.state === TileState.LOADED) {
-        return;
+    // Attach textures to the tile source's already-defined texture buffers
+    for (const i in this.fetchedTexts_) {
+      if (this.fetchedTexts_[i] instanceof HTMLImageElement ||
+        this.fetchedTexts_[i] instanceof ImageData
+      ) {
+        bindTextureImageData(gl, this.textures_[i], Number(i), this.fetchedTexts_[i]);
+      } else if (this.fetchedTexts_[i].BYTES_PER_ELEMENT) {
+        // This looks like a TypedArray, from GlTiledTexture
+        bindTextureTypedArray(gl, this.textures_[i], Number(i), this.fetchedTexts_[i], tileSize[0], tileSize[1]);
+      } else {
+        throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a TypedArray');
       }
+    }
 
-      // Attach textures to the tile source's already-defined texture buffers
-      for (const i in loadedTextures) {
-        if (loadedTextures[i] instanceof HTMLImageElement ||
-          loadedTextures[i] instanceof ImageData
-        ) {
-          bindTextureImageData(gl, this.textures_[i], Number(i), loadedTextures[i]);
-        } else if (loadedTextures[i].BYTES_PER_ELEMENT) {
-          // This looks like a TypedArray, from GlTiledTexture
-          bindTextureTypedArray(gl, this.textures_[i], Number(i), loadedTextures[i], tileSize[0], tileSize[1]);
-        } else {
-          throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a TypedArray');
-        }
-      }
+    // TODO: copy-paste code from Leaflet.TileLayerGL's render() method
+    // to update the per-tile attributes, if those are needed/wanted
 
-      // TODO: copy-paste code from Leaflet.TileLayerGL's render() method
-      // to update the per-tile attributes, if those are needed/wanted
+    // Use only the top-left part of the canvas as the GL viewport
+    // (for TileGrids with more than one TileSize).
+    // Note that GL inverts the Y coordinate here.
+    gl.viewport(
+      0,
+      gl.drawingBufferHeight - tileSize[1],
+      tileSize[0],
+      tileSize[1]
+    );
+    gl.clearColor(0.5, 0.5, 0.5, 0.5);
+    gl.enable(gl.BLEND);
 
-      // Use only the top-left part of the canvas as the GL viewport
-      // (for TileGrids with more than one TileSize).
-      // Note that GL inverts the Y coordinate here.
-      gl.viewport(
-        0,
-        gl.drawingBufferHeight - tileSize[1],
-        tileSize[0],
-        tileSize[1]
-      );
-      gl.clearColor(0.5, 0.5, 0.5, 0.5);
-      gl.enable(gl.BLEND);
+    // Trigger draw call. Magic happens here.
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-      // Trigger draw call. Magic happens here.
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    /// Copy gl canvas over tile's canvas
+    this.ctx2d_.drawImage(gl.canvas, 0, 0);
 
-      const context2d = createCanvasContext2D(tileSize[0], tileSize[1]);
-
-      /// Copy gl canvas over tile's canvas
-      context2d.drawImage(gl.canvas, 0, 0);
-      this.canvas_ = context2d.canvas;
-
-      this.setState(TileState.LOADED);
-
-      return context2d.canvas;
-    });
+    return this.canvas_;
   }
 }
 
@@ -298,8 +300,6 @@ class GlTiles extends XYZ {
       // changed in order to trigger a redraw
       tile.addEventListener(EventType.CHANGE, this.changed.bind(this));
 
-      /// TODO: How to set caches of fetched tile textures? Right now the strategy is
-      /// to cache the already-rendered tiles.
       this.tileCache.set(tileCoordKey, tile);
       return tile;
     }
@@ -528,23 +528,29 @@ class GlTiles extends XYZ {
 
   // Triggers a re-render of all tiles in this GlTiles source
   reRender() {
-    // TODO: Add some mechanism to wait at least one frame before re-rendering.
+    // TODO: Do not render tiles currently not visible (out of bounds),
+    // try flushing them from cache instead.
+
+    if (this.isReRendering_) {
+      console.log("Delaying rerender");
+      window.cancelAnimationFrame(this.reRenderAnimFrame_);
+      return this.reRenderAnimFrame_ = window.requestAnimationFrame(()=>this.reRender());
+    }
+
+    console.time("gltiles re-render");
+    this.isReRendering_ = true;
 
     let i=0;
 
-    this.tileCache.forEach((tile, key)=>{
-      // Not using tile.setState(), because rolling back the state of a tile
-      // would throw an exception.
-      tile.state = TileState.LOADING;
-      tile.changed();
-      i++;
-    });
-
-    console.log('Asked to re-render ' + i + ' tiles');
+    const pending = [];
 
     this.tileCache.forEach((tile, key)=>{
       tile.render();
     });
+
+    this.changed();
+
+    this.isReRendering_ = false;
   }
 }
 
@@ -589,13 +595,12 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   //   void texImage2D(target, level, internalformat, width, height, border, format, type, pixels)
   //   void texImage2D(gl.TEXTURE_2D, 0, internalformat, width, height, border, format, type, pixels)
 
-  // The only possible `internalformat` is 8-bit: « If pixels is non-null, the type of pixels must match the type of the data to be read. If it is UNSIGNED_BYTE, a Uint8Array or Uint8ClampedArray must be supplied; if it is UNSIGNED_SHORT_5_6_5, UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If the types do not match, an INVALID_OPERATION error is generated.»
+  // The only possible `internalformat` is 8-bit: «If pixels is non-null, the type of pixels must match the type of the data to be read. If it is UNSIGNED_BYTE, a Uint8Array or Uint8ClampedArray must be supplied; if it is UNSIGNED_SHORT_5_6_5, UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If the types do not match, an INVALID_OPERATION error is generated.»
 
   gl.activeTexture(gl.TEXTURE0 + index);
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   const castArr = new Uint8Array(arr.buffer);
-//   console.log(arr);
 
   if (arr instanceof Uint8Array || arr instanceof Uint8ClampedArray) {
     // For 8-bit data:
@@ -614,18 +619,10 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
     console.warn("Unimplemented datatype for dumping data into texture, ", arr);
   }
 
-
-  //   void gl.texImage2D(target, level, internalformat, width, height, border, format, type, ArrayBufferView? pixels);
-
-  //   // For 16-bit data:
-  //   gl.pixelStorei(gl.UNPACK_ALIGNMENT,2);
-  //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, gl.LUMINANCE_ALPHA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
-  //
   //   // For 32-bit data:
   //   gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
   //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
 
-  //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
