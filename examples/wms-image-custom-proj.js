@@ -42,8 +42,8 @@ const layers = [
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions:
-        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-        'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
+        '© <a href="https://shop.swisstopo.admin.ch/en/products/maps/national/lk1000"' +
+        'target="_blank">Pixelmap 1:1000000 / geo.admin.ch</a>',
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg',
@@ -57,9 +57,9 @@ const layers = [
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions:
-        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-        'en/home.html">National parks / geo.admin.ch</a>',
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+        '© <a href="https://www.hydrodaten.admin.ch/en/notes-on-the-flood-alert-maps.html"' +
+        'target="_blank">Flood Alert / geo.admin.ch</a>',
+      params: {'LAYERS': 'ch.bafu.hydroweb-warnkarte_national'},
       serverType: 'mapserver',
     }),
   }),
