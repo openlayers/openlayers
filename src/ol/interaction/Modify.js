@@ -253,7 +253,7 @@ class Modify extends PointerInteraction {
     this.ignoreNextSingleClick_ = false;
 
     /**
-     * @type {Array<Feature>}
+     * @type {Collection<Feature>}
      * @private
      */
     this.featuresBeingModified_ = null;
@@ -414,12 +414,12 @@ class Modify extends PointerInteraction {
    */
   willModifyFeatures_(evt, segments) {
     if (!this.featuresBeingModified_) {
-      this.featuresBeingModified_ = [];
-      const features = this.featuresBeingModified_;
+      this.featuresBeingModified_ = new Collection();
+      const features = this.featuresBeingModified_.getArray();
       for (let i = 0, ii = segments.length; i < ii; ++i) {
         const feature = segments[i][0].feature;
         if (features.indexOf(feature) === -1) {
-          features.push(feature);
+          this.featuresBeingModified_.push(feature);
         }
       }
 
@@ -1079,7 +1079,7 @@ class Modify extends PointerInteraction {
       this.dispatchEvent(
         new ModifyEvent(
           ModifyEventType.MODIFYEND,
-          new Collection(this.featuresBeingModified_),
+          this.featuresBeingModified_,
           evt
         )
       );
@@ -1302,7 +1302,7 @@ class Modify extends PointerInteraction {
       this.dispatchEvent(
         new ModifyEvent(
           ModifyEventType.MODIFYEND,
-          new Collection(this.featuresBeingModified_),
+          this.featuresBeingModified_,
           evt
         )
       );
