@@ -1,4 +1,5 @@
 import Circle from '../../../../src/ol/geom/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Collection from '../../../../src/ol/Collection.js';
 import Event from '../../../../src/ol/events/Event.js';
 import Feature from '../../../../src/ol/Feature.js';
@@ -13,6 +14,7 @@ import Snap from '../../../../src/ol/interaction/Snap.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import {Fill, Style} from '../../../../src/ol/style.js';
 import {MultiPoint} from '../../../../src/ol/geom.js';
 import {
   clearUserProjection,
@@ -22,7 +24,7 @@ import {doubleClick} from '../../../../src/ol/events/condition.js';
 import {getValues} from '../../../../src/ol/obj.js';
 
 describe('ol.interaction.Modify', function () {
-  let target, map, source, features;
+  let target, map, layer, source, features;
 
   const width = 360;
   const height = 180;
@@ -56,7 +58,7 @@ describe('ol.interaction.Modify', function () {
       features: features,
     });
 
-    const layer = new VectorLayer({source: source});
+    layer = new VectorLayer({source: source});
 
     map = new Map({
       target: target,
@@ -196,53 +198,15 @@ describe('ol.interaction.Modify', function () {
       expect(rbushEntries[0].feature).to.be(feature);
     });
 
-    it('accepts a layer for modification features', function () {
+    it('accepts a hitDetection option', function () {
       const feature = new Feature(new Point([0, 0]));
       const source = new VectorSource({features: [feature]});
       const layer = new VectorLayer({source: source});
-      const modify = new Modify({layer: layer});
+      const modify = new Modify({hitDetection: layer, source: source});
       const rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
-      expect(modify.layer_).to.be(layer);
-    });
-
-    it('accepts a layer in addition to a features collection', function () {
-      const feature = new Feature(new Point([0, 0]));
-      const source = new VectorSource({features: [feature]});
-      const layer = new VectorLayer({source: source});
-      const features = new Collection([new Feature(new Point([1, 1]))]);
-      const modify = new Modify({layer: layer, features: features});
-      const rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(features.item(0));
-      expect(modify.layer_).to.be(layer);
-    });
-
-    it('accepts a layer in addition to a features collection', function () {
-      const feature = new Feature(new Point([0, 0]));
-      const source = new VectorSource({features: [feature]});
-      const layer = new VectorLayer({source: source});
-      const features = new Collection([new Feature(new Point([1, 1]))]);
-      const modify = new Modify({layer: layer, features: features});
-      const rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(features.item(0));
-      expect(modify.layer_).to.be(layer);
-    });
-
-    it('accepts a layer in addition to a source', function () {
-      const feature = new Feature(new Point([0, 0]));
-      const source = new VectorSource({features: [feature]});
-      const layer = new VectorLayer({source: source});
-      const candidateSource = new VectorSource({
-        features: [new Feature(new Point([1, 1]))],
-      });
-      const modify = new Modify({layer: layer, source: candidateSource});
-      const rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(candidateSource.getFeatures()[0]);
-      expect(modify.layer_).to.be(layer);
+      expect(modify.hitDetection_).to.be(layer);
     });
   });
 
@@ -1046,6 +1010,33 @@ describe('ol.interaction.Modify', function () {
       expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
       expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
         feature.getGeometry().getGeometriesArray()[1]
+      );
+    });
+
+    it('works with hit detection of point features', function () {
+      const modify = new Modify({
+        hitDetection: layer,
+        source: source,
+      });
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([0, 0]));
+      source.addFeature(pointFeature);
+      layer.setStyle(
+        new Style({
+          image: new CircleStyle({
+            radius: 30,
+            fill: new Fill({
+              color: 'fuchsia',
+            }),
+          }),
+        })
+      );
+      map.renderSync();
+      simulateEvent('pointermove', 10, -10, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
+      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+        pointFeature.getGeometry()
       );
     });
   });

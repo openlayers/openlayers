@@ -117,16 +117,15 @@ const ModifyEventType = {
  * in the same order. The `geometries` are only useful when modifying geometry collections, where
  * the geometry will be the particular geometry from the collection that is being modified.
  * @property {VectorSource} [source] The vector source with
- * features to modify.  If a vector source is not provided, a layer or feature collection
- * must be provided with the `layer` or `features` option.
- * @property {import("../layer/BaseVector").default} [layer] The layer with
- * features to modify.  When provided, point features will considered for modification based on
- * their visual appearance on this layer, instead of being within the `pixelTolerance` from the
- * pointer location.  When no `source` or `features` are configured, this layer's source will
- * be used as source for modification candidates.
+ * features to modify.  If a vector source is not provided, a feature collection
+ * must be provided with the `features` option.
+ * @property {boolean|import("../layer/BaseVector").default} [hitDetection] When configured, point
+ * features will considered for modification based on their visual appearance, instead of being within
+ * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector} is
+ * provided, only the rendered representation of the features on that layer will be considered.
  * @property {Collection<Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
- * provided, a layer or vector source must be provided with the `layer` or `source` option.
+ * provided, a vector source must be provided with the `source` option.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
  */
@@ -170,14 +169,13 @@ export class ModifyEvent extends Event {
  * `source` option.  If you want to modify features in a collection (for example,
  * the collection used by a select interaction), construct the interaction with
  * the `features` option.  The interaction must be constructed with either a
- * `source`, `features` or `layer` option.
+ * `source` or `features` option.
  *
  * Cartesian distance from the pointer is used to determine the features that
  * will be modified. This means that geometries will only be considered for
  * modification when they are within the configured `pixelTolerane`. For point
- * geometries, hit detection can be used to match their visual appearance. To
- * enable hit detection, the interaction has to be configured with the `layer`
- * that contains the points.
+ * geometries, the `hitDetection` option can be used to match their visual
+ * appearance.
  *
  * By default, the interaction will allow deletion of vertices when the `alt`
  * key is pressed.  To configure the interaction with a different condition
@@ -333,39 +331,32 @@ class Modify extends PointerInteraction {
     this.source_ = null;
 
     /**
-     * @type {import("../layer/BaseVector").default}
+     * @type {boolean|import("../layer/BaseVector").default}
      */
-    this.layer_ = null;
+    this.hitDetection_ = null;
 
     let features;
     if (options.features) {
       features = options.features;
-    } else {
-      const source = options.source
-        ? options.source
-        : options.layer
-        ? options.layer.getSource()
-        : undefined;
-      if (source) {
-        this.source_ = source;
-        features = new Collection(this.source_.getFeatures());
-        this.source_.addEventListener(
-          VectorEventType.ADDFEATURE,
-          this.handleSourceAdd_.bind(this)
-        );
-        this.source_.addEventListener(
-          VectorEventType.REMOVEFEATURE,
-          this.handleSourceRemove_.bind(this)
-        );
-      }
-    }
-    if (options.layer) {
-      this.layer_ = options.layer;
+    } else if (options.source) {
+      this.source_ = options.source;
+      features = new Collection(this.source_.getFeatures());
+      this.source_.addEventListener(
+        VectorEventType.ADDFEATURE,
+        this.handleSourceAdd_.bind(this)
+      );
+      this.source_.addEventListener(
+        VectorEventType.REMOVEFEATURE,
+        this.handleSourceRemove_.bind(this)
+      );
     }
     if (!features) {
       throw new Error(
         'The modify interaction requires features, a source or a layer'
       );
+    }
+    if (options.hitDetection) {
+      this.hitDetection_ = options.hitDetection;
     }
 
     /**
@@ -1123,7 +1114,11 @@ class Modify extends PointerInteraction {
     };
 
     let box, hitPointGeometry;
-    if (this.layer_) {
+    if (this.hitDetection_) {
+      const layerFilter =
+        typeof this.hitDetection_ === 'object'
+          ? (layer) => layer === this.hitDetection_
+          : undefined;
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
@@ -1134,9 +1129,7 @@ class Modify extends PointerInteraction {
           }
           return true;
         },
-        {
-          layerFilter: (layer) => layer === this.layer_,
-        }
+        {layerFilter}
       );
     }
     if (!box) {

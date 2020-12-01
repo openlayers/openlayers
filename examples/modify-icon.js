@@ -52,8 +52,8 @@ const map = new Map({
 });
 
 const modify = new Modify({
-  layer: vectorLayer,
-  style: function () {}, // do not render the modification vertex
+  hitDetection: vectorLayer,
+  source: vectorSource,
 });
 modify.on(['modifystart', 'modifyend'], function (evt) {
   target.style.cursor = evt.type === 'modifystart' ? 'grabbing' : 'pointer';
