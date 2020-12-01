@@ -54,6 +54,11 @@ import {transform2D} from '../../geom/flat/transform.js';
  */
 
 /**
+ * @template T
+ * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default): T=} FeatureCallback
+ */
+
+/**
  * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
@@ -597,7 +602,7 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {function(import("../../Feature.js").FeatureLike): T|undefined} featureCallback Feature callback.
+   * @param {FeatureCallback<T>|undefined} featureCallback Feature callback.
    * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
    * @param {import("rbush").default=} opt_declutterTree Declutter tree.
@@ -668,18 +673,19 @@ class Executor {
     const batchSize =
       this.instructions != instructions || this.overlaps ? 0 : 200;
     let /** @type {import("../../Feature.js").FeatureLike} */ feature;
-    let x, y;
+    let x, y, currentGeometry;
     while (i < ii) {
       const instruction = instructions[i];
       const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
+          currentGeometry = instruction[3];
           if (!feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (
             opt_hitExtent !== undefined &&
-            !intersects(opt_hitExtent, instruction[3])
+            !intersects(opt_hitExtent, currentGeometry.getExtent())
           ) {
             i = /** @type {number} */ (instruction[2]) + 1;
           } else {
@@ -1048,7 +1054,7 @@ class Executor {
         case CanvasInstruction.END_GEOMETRY:
           if (featureCallback !== undefined) {
             feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
-            const result = featureCallback(feature);
+            const result = featureCallback(feature, currentGeometry);
             if (result) {
               return result;
             }
@@ -1168,7 +1174,7 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {function(import("../../Feature.js").FeatureLike): T=} opt_featureCallback
+   * @param {FeatureCallback<T>} opt_featureCallback
    *     Feature callback.
    * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.

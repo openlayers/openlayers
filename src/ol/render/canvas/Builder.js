@@ -355,19 +355,18 @@ class CanvasBuilder extends VectorContext {
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   beginGeometry(geometry, feature) {
-    const extent = geometry.getExtent();
     this.beginGeometryInstruction1_ = [
       CanvasInstruction.BEGIN_GEOMETRY,
       feature,
       0,
-      extent,
+      geometry,
     ];
     this.instructions.push(this.beginGeometryInstruction1_);
     this.beginGeometryInstruction2_ = [
       CanvasInstruction.BEGIN_GEOMETRY,
       feature,
       0,
-      extent,
+      geometry,
     ];
     this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
   }

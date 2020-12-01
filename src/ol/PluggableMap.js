@@ -538,8 +538,7 @@ class PluggableMap extends BaseObject {
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `opt_options`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(this: S, import("./Feature.js").FeatureLike,
-   *     import("./layer/Layer.js").default): T} callback Feature callback. The callback will be
+   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
    *     {@link module:ol/Feature feature} or
    *     {@link module:ol/render/Feature render feature} at the pixel, the second is
