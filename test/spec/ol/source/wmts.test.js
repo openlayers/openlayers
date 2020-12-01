@@ -2,8 +2,8 @@ import Projection from '../../../../src/ol/proj/Projection.js';
 import WMTS, {optionsFromCapabilities} from '../../../../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../../../../src/ol/format/WMTSCapabilities.js';
 import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
+import {addProjection, get as getProjection} from '../../../../src/ol/proj.js';
 import {getBottomLeft, getTopRight} from '../../../../src/ol/extent.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
 
 describe('ol.source.WMTS', function () {
   describe('when creating options from capabilities', function () {
@@ -516,6 +516,91 @@ describe('ol.source.WMTS', function () {
       expectDelta(extent[1], 15);
       expectDelta(extent[2], 43);
       expectDelta(extent[3], 90);
+    });
+  });
+
+  describe('when creating options from Ordnance Survey capabilities', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText('spec/ol/format/wmts/os.xml', function (xml) {
+        try {
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates a new projection with full tile matrix extent if projection has no extent', function () {
+      const proj27700 = new Projection({
+        code: 'EPSG:27700',
+        units: 'm',
+      });
+      addProjection(proj27700);
+
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'Road_27700',
+        matrixSet: 'EPSG:27700',
+      });
+
+      // calculated grid extent: [-238375, -229375.99974714452, 908504.9998193888, 1376256]
+
+      const gridExtent = options.tileGrid.getExtent();
+      const gridBottomLeft = getBottomLeft(gridExtent);
+      const gridTopRight = getTopRight(gridExtent);
+      expect(Math.round(gridBottomLeft[0])).to.be.eql(-238375);
+      expect(Math.round(gridBottomLeft[1])).to.be.eql(-229376);
+      expect(Math.round(gridTopRight[0])).to.be.eql(908505);
+      expect(Math.round(gridTopRight[1])).to.be.eql(1376256);
+
+      expect(proj27700.getCode()).to.be.eql('EPSG:27700');
+      expect(proj27700.getExtent()).to.be(null);
+
+      expect(options.projection.getCode()).to.be.eql('EPSG:27700');
+      const projExtent = options.projection.getExtent();
+      const projBottomLeft = getBottomLeft(projExtent);
+      const projTopRight = getTopRight(projExtent);
+      expect(Math.round(projBottomLeft[0])).to.be.eql(-238375);
+      expect(Math.round(projBottomLeft[1])).to.be.eql(-229376);
+      expect(Math.round(projTopRight[0])).to.be.eql(908505);
+      expect(Math.round(projTopRight[1])).to.be.eql(1376256);
+    });
+
+    it('creates a new projection with limited tile matrix extent if projection has no extent', function () {
+      const proj27700 = new Projection({
+        code: 'EPSG:27700',
+        units: 'm',
+      });
+      addProjection(proj27700);
+
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'Leisure_27700',
+        matrixSet: 'EPSG:27700',
+      });
+
+      // calculated limited grid extent: [-238375, -447.99978319602087, 900440.9998206589, 1376256]
+
+      const gridExtent = options.tileGrid.getExtent();
+      const gridBottomLeft = getBottomLeft(gridExtent);
+      const gridTopRight = getTopRight(gridExtent);
+      expect(Math.round(gridBottomLeft[0])).to.be.eql(-238375);
+      expect(Math.round(gridBottomLeft[1])).to.be.eql(-448);
+      expect(Math.round(gridTopRight[0])).to.be.eql(900441);
+      expect(Math.round(gridTopRight[1])).to.be.eql(1376256);
+
+      expect(proj27700.getCode()).to.be.eql('EPSG:27700');
+      expect(proj27700.getExtent()).to.be(null);
+
+      expect(options.projection.getCode()).to.be.eql('EPSG:27700');
+      const projExtent = options.projection.getExtent();
+      const projBottomLeft = getBottomLeft(projExtent);
+      const projTopRight = getTopRight(projExtent);
+      expect(Math.round(projBottomLeft[0])).to.be.eql(-238375);
+      expect(Math.round(projBottomLeft[1])).to.be.eql(-448);
+      expect(Math.round(projTopRight[0])).to.be.eql(900441);
+      expect(Math.round(projTopRight[1])).to.be.eql(1376256);
     });
   });
 

@@ -2,6 +2,7 @@
  * @module ol/source/WMTS
  */
 
+import Projection from '../proj/Projection.js';
 import TileImage from './TileImage.js';
 import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {appendParams} from '../uri.js';
@@ -502,15 +503,26 @@ export function optionsFromCapabilities(wmtsCap, config) {
       wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
   }
 
-  if (projection.getExtent() === null) {
-    projection.setExtent(extent);
-  }
-
   const tileGrid = createFromCapabilitiesMatrixSet(
     matrixSetObj,
     extent,
     matrixLimits
   );
+
+  // if projection has no extent do not change it,
+  // use a new projection with the matrix extent
+  if (projection.getExtent() === null) {
+    projection = new Projection({
+      code: projection.getCode(),
+      units: projection.getUnits(),
+      extent: extent,
+      axisOrientation: projection.getAxisOrientation(),
+      global: projection.isGlobal(),
+      metersPerUnit: projection.getMetersPerUnit(),
+      worldExtent: projection.getWorldExtent(),
+      getPointResolution: projection.getPointResolutionFunc(),
+    });
+  }
 
   /** @type {!Array<string>} */
   const urls = [];

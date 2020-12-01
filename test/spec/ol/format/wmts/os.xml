@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities
+	xmlns="http://www.opengis.net/wmts/1.0"
+	xmlns:ows="http://www.opengis.net/ows/1.1"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:gml="http://www.opengis.net/gml"
+              xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd"
+              version="1.0.0">
+	<ows:ServiceIdentification>
+		<ows:Title>OS Maps API</ows:Title>
+		<ows:ServiceType>OGC WMTS</ows:ServiceType>
+		<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+		<!-- TODO: Set Abstract, Fees and AccessConstraints -->
+		<ows:Abstract>
+            The OS Maps API (WMTS) provides access to backdrop mapping from an overview of Great Britain down to street level.
+            The mapping is available in Leisure, Light, Outdoor and Road styles.
+            Leisure mapping is available in EPSG:27700 (British National Grid) projection and accepts KVP requests.
+            Light, Outdoor and Road mapping is available in both EPSG:3857 (WGS84 Web Mercator) and EPSG:27700 (British National Grid) projections and accepts KVP requests.
+        </ows:Abstract>
+		<ows:Fees>NONE</ows:Fees>
+		<ows:AccessConstraints>NONE</ows:AccessConstraints>
+	</ows:ServiceIdentification>
+	<ows:ServiceProvider >
+		<ows:ProviderName>Ordnance Survey</ows:ProviderName>
+		<ows:ProviderSite xlink:href="https://osdatahub.os.uk"/>
+		<ows:ServiceContact>
+			<ows:ContactInfo>
+				<ows:Phone>
+					<ows:Voice>+44 (0)3456 050505</ows:Voice>
+					<ows:Facsimile />
+				</ows:Phone>
+				<ows:Address>
+					<ows:DeliveryPoint>4 Adanac Drive</ows:DeliveryPoint>
+					<ows:City>Southampton</ows:City>
+					<ows:AdministrativeArea>Hampshire</ows:AdministrativeArea>
+					<ows:PostalCode>SO16 0AS</ows:PostalCode>
+					<ows:Country>Great Britain</ows:Country>
+					<ows:ElectronicMailAddress>Businessenquiries@os.uk</ows:ElectronicMailAddress>
+				</ows:Address>
+			</ows:ContactInfo>
+		</ows:ServiceContact>
+	</ows:ServiceProvider>
+	<ows:OperationsMetadata>
+		<ows:Operation name="GetCapabilities">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="https://api.os.uk/maps/raster/v1/wmts?">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>KVP</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+		<ows:Operation name="GetTile">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="https://api.os.uk/maps/raster/v1/wmts?">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>KVP</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+	</ows:OperationsMetadata>
+	<Contents>
+		<Layer>
+			<ows:Title>Light_27700</ows:Title>
+			<ows:Identifier>Light_27700</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::27700">
+				<ows:LowerCorner>-238375.0000149319 0.0</ows:LowerCorner>
+				<ows:UpperCorner>900000.00000057 1376256.0000176653</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.8342841886 49.38802038505334</ows:LowerCorner>
+				<ows:UpperCorner>7.551552493184295 62.2662683043619</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:27700</TileMatrixSet>
+			</TileMatrixSetLink>
+		</Layer>
+		<Layer>
+			<ows:Title>Light_3857</ows:Title>
+			<ows:Identifier>Light_3857</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+				<ows:LowerCorner>-1198263.0364071354 6365004.037965424</ows:LowerCorner>
+				<ows:UpperCorner>213000.0 8702260.01</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.764179999999964 49.52842300000003</ows:LowerCorner>
+				<ows:UpperCorner>1.9134115552 61.3311510086</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:3857</TileMatrixSet>
+				<TileMatrixSetLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:7</TileMatrix>
+						<MinTileRow>35</MinTileRow>
+						<MaxTileRow>43</MaxTileRow>
+						<MinTileCol>60</MinTileCol>
+						<MaxTileCol>64</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:8</TileMatrix>
+						<MinTileRow>71</MinTileRow>
+						<MaxTileRow>87</MaxTileRow>
+						<MinTileCol>120</MinTileCol>
+						<MaxTileCol>129</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:9</TileMatrix>
+						<MinTileRow>143</MinTileRow>
+						<MaxTileRow>174</MaxTileRow>
+						<MinTileCol>240</MinTileCol>
+						<MaxTileCol>259</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:10</TileMatrix>
+						<MinTileRow>286</MinTileRow>
+						<MaxTileRow>349</MaxTileRow>
+						<MinTileCol>481</MinTileCol>
+						<MaxTileCol>518</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:11</TileMatrix>
+						<MinTileRow>573</MinTileRow>
+						<MaxTileRow>698</MaxTileRow>
+						<MinTileCol>962</MinTileCol>
+						<MaxTileCol>1036</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:12</TileMatrix>
+						<MinTileRow>1146</MinTileRow>
+						<MaxTileRow>1397</MaxTileRow>
+						<MinTileCol>1925</MinTileCol>
+						<MaxTileCol>2072</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:13</TileMatrix>
+						<MinTileRow>2292</MinTileRow>
+						<MaxTileRow>2794</MaxTileRow>
+						<MinTileCol>3851</MinTileCol>
+						<MaxTileCol>4144</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:14</TileMatrix>
+						<MinTileRow>4584</MinTileRow>
+						<MaxTileRow>5589</MaxTileRow>
+						<MinTileCol>7702</MinTileCol>
+						<MaxTileCol>8289</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:15</TileMatrix>
+						<MinTileRow>9169</MinTileRow>
+						<MaxTileRow>11179</MaxTileRow>
+						<MinTileCol>15404</MinTileCol>
+						<MaxTileCol>16579</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:16</TileMatrix>
+						<MinTileRow>18338</MinTileRow>
+						<MaxTileRow>22359</MaxTileRow>
+						<MinTileCol>30808</MinTileCol>
+						<MaxTileCol>33158</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:17</TileMatrix>
+						<MinTileRow>36676</MinTileRow>
+						<MaxTileRow>44718</MaxTileRow>
+						<MinTileCol>61616</MinTileCol>
+						<MaxTileCol>66316</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:18</TileMatrix>
+						<MinTileRow>73353</MinTileRow>
+						<MaxTileRow>89436</MaxTileRow>
+						<MinTileCol>123233</MinTileCol>
+						<MaxTileCol>132633</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:19</TileMatrix>
+						<MinTileRow>146706</MinTileRow>
+						<MaxTileRow>178872</MaxTileRow>
+						<MinTileCol>246467</MinTileCol>
+						<MaxTileCol>265266</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:20</TileMatrix>
+						<MinTileRow>293412</MinTileRow>
+						<MaxTileRow>357745</MaxTileRow>
+						<MinTileCol>492935</MinTileCol>
+						<MaxTileCol>530532</MaxTileCol>
+					</TileMatrixLimits>
+				</TileMatrixSetLimits>
+			</TileMatrixSetLink>
+		</Layer>
+		<Layer>
+			<ows:Title>Outdoor_27700</ows:Title>
+			<ows:Identifier>Outdoor_27700</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::27700">
+				<ows:LowerCorner>-238375.0000149319 0.0</ows:LowerCorner>
+				<ows:UpperCorner>900000.00000057 1376256.0000176653</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.8342841886 49.38802038505334</ows:LowerCorner>
+				<ows:UpperCorner>7.551552493184295 62.2662683043619</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:27700</TileMatrixSet>
+			</TileMatrixSetLink>
+		</Layer>
+		<Layer>
+			<ows:Title>Outdoor_3857</ows:Title>
+			<ows:Identifier>Outdoor_3857</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+				<ows:LowerCorner>-1198263.0364071354 6365004.037965424</ows:LowerCorner>
+				<ows:UpperCorner>213000.0 8702260.01</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.764179999999964 49.52842300000003</ows:LowerCorner>
+				<ows:UpperCorner>1.9134115552 61.3311510086</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:3857</TileMatrixSet>
+				<TileMatrixSetLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:7</TileMatrix>
+						<MinTileRow>35</MinTileRow>
+						<MaxTileRow>43</MaxTileRow>
+						<MinTileCol>60</MinTileCol>
+						<MaxTileCol>64</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:8</TileMatrix>
+						<MinTileRow>71</MinTileRow>
+						<MaxTileRow>87</MaxTileRow>
+						<MinTileCol>120</MinTileCol>
+						<MaxTileCol>129</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:9</TileMatrix>
+						<MinTileRow>143</MinTileRow>
+						<MaxTileRow>174</MaxTileRow>
+						<MinTileCol>240</MinTileCol>
+						<MaxTileCol>259</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:10</TileMatrix>
+						<MinTileRow>286</MinTileRow>
+						<MaxTileRow>349</MaxTileRow>
+						<MinTileCol>481</MinTileCol>
+						<MaxTileCol>518</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:11</TileMatrix>
+						<MinTileRow>573</MinTileRow>
+						<MaxTileRow>698</MaxTileRow>
+						<MinTileCol>962</MinTileCol>
+						<MaxTileCol>1036</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:12</TileMatrix>
+						<MinTileRow>1146</MinTileRow>
+						<MaxTileRow>1397</MaxTileRow>
+						<MinTileCol>1925</MinTileCol>
+						<MaxTileCol>2072</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:13</TileMatrix>
+						<MinTileRow>2292</MinTileRow>
+						<MaxTileRow>2794</MaxTileRow>
+						<MinTileCol>3851</MinTileCol>
+						<MaxTileCol>4144</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:14</TileMatrix>
+						<MinTileRow>4584</MinTileRow>
+						<MaxTileRow>5589</MaxTileRow>
+						<MinTileCol>7702</MinTileCol>
+						<MaxTileCol>8289</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:15</TileMatrix>
+						<MinTileRow>9169</MinTileRow>
+						<MaxTileRow>11179</MaxTileRow>
+						<MinTileCol>15404</MinTileCol>
+						<MaxTileCol>16579</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:16</TileMatrix>
+						<MinTileRow>18338</MinTileRow>
+						<MaxTileRow>22359</MaxTileRow>
+						<MinTileCol>30808</MinTileCol>
+						<MaxTileCol>33158</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:17</TileMatrix>
+						<MinTileRow>36676</MinTileRow>
+						<MaxTileRow>44718</MaxTileRow>
+						<MinTileCol>61616</MinTileCol>
+						<MaxTileCol>66316</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:18</TileMatrix>
+						<MinTileRow>73353</MinTileRow>
+						<MaxTileRow>89436</MaxTileRow>
+						<MinTileCol>123233</MinTileCol>
+						<MaxTileCol>132633</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:19</TileMatrix>
+						<MinTileRow>146706</MinTileRow>
+						<MaxTileRow>178872</MaxTileRow>
+						<MinTileCol>246467</MinTileCol>
+						<MaxTileCol>265266</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:20</TileMatrix>
+						<MinTileRow>293412</MinTileRow>
+						<MaxTileRow>357745</MaxTileRow>
+						<MinTileCol>492935</MinTileCol>
+						<MaxTileCol>530532</MaxTileCol>
+					</TileMatrixLimits>
+				</TileMatrixSetLimits>
+			</TileMatrixSetLink>
+		</Layer>
+		<Layer>
+			<ows:Title>Road_27700</ows:Title>
+			<ows:Identifier>Road_27700</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::27700">
+				<ows:LowerCorner>-238375.0000149319 0.0</ows:LowerCorner>
+				<ows:UpperCorner>900000.00000057 1376256.0000176653</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.8342841886 49.38802038505334</ows:LowerCorner>
+				<ows:UpperCorner>7.551552493184295 62.2662683043619</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:27700</TileMatrixSet>
+			</TileMatrixSetLink>
+		</Layer>
+		<Layer>
+			<ows:Title>Road_3857</ows:Title>
+			<ows:Identifier>Road_3857</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+				<ows:LowerCorner>-1198263.0364071354 6365004.037965424</ows:LowerCorner>
+				<ows:UpperCorner>213000.0 8702260.01</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.764179999999964 49.52842300000003</ows:LowerCorner>
+				<ows:UpperCorner>1.9134115552 61.3311510086</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:3857</TileMatrixSet>
+				<TileMatrixSetLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:7</TileMatrix>
+						<MinTileRow>35</MinTileRow>
+						<MaxTileRow>43</MaxTileRow>
+						<MinTileCol>60</MinTileCol>
+						<MaxTileCol>64</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:8</TileMatrix>
+						<MinTileRow>71</MinTileRow>
+						<MaxTileRow>87</MaxTileRow>
+						<MinTileCol>120</MinTileCol>
+						<MaxTileCol>129</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:9</TileMatrix>
+						<MinTileRow>143</MinTileRow>
+						<MaxTileRow>174</MaxTileRow>
+						<MinTileCol>240</MinTileCol>
+						<MaxTileCol>259</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:10</TileMatrix>
+						<MinTileRow>286</MinTileRow>
+						<MaxTileRow>349</MaxTileRow>
+						<MinTileCol>481</MinTileCol>
+						<MaxTileCol>518</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:11</TileMatrix>
+						<MinTileRow>573</MinTileRow>
+						<MaxTileRow>698</MaxTileRow>
+						<MinTileCol>962</MinTileCol>
+						<MaxTileCol>1036</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:12</TileMatrix>
+						<MinTileRow>1146</MinTileRow>
+						<MaxTileRow>1397</MaxTileRow>
+						<MinTileCol>1925</MinTileCol>
+						<MaxTileCol>2072</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:13</TileMatrix>
+						<MinTileRow>2292</MinTileRow>
+						<MaxTileRow>2794</MaxTileRow>
+						<MinTileCol>3851</MinTileCol>
+						<MaxTileCol>4144</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:14</TileMatrix>
+						<MinTileRow>4584</MinTileRow>
+						<MaxTileRow>5589</MaxTileRow>
+						<MinTileCol>7702</MinTileCol>
+						<MaxTileCol>8289</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:15</TileMatrix>
+						<MinTileRow>9169</MinTileRow>
+						<MaxTileRow>11179</MaxTileRow>
+						<MinTileCol>15404</MinTileCol>
+						<MaxTileCol>16579</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:16</TileMatrix>
+						<MinTileRow>18338</MinTileRow>
+						<MaxTileRow>22359</MaxTileRow>
+						<MinTileCol>30808</MinTileCol>
+						<MaxTileCol>33158</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:17</TileMatrix>
+						<MinTileRow>36676</MinTileRow>
+						<MaxTileRow>44718</MaxTileRow>
+						<MinTileCol>61616</MinTileCol>
+						<MaxTileCol>66316</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:18</TileMatrix>
+						<MinTileRow>73353</MinTileRow>
+						<MaxTileRow>89436</MaxTileRow>
+						<MinTileCol>123233</MinTileCol>
+						<MaxTileCol>132633</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:19</TileMatrix>
+						<MinTileRow>146706</MinTileRow>
+						<MaxTileRow>178872</MaxTileRow>
+						<MinTileCol>246467</MinTileCol>
+						<MaxTileCol>265266</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:3857:20</TileMatrix>
+						<MinTileRow>293412</MinTileRow>
+						<MaxTileRow>357745</MaxTileRow>
+						<MinTileCol>492935</MinTileCol>
+						<MaxTileCol>530532</MaxTileCol>
+					</TileMatrixLimits>
+				</TileMatrixSetLimits>
+			</TileMatrixSetLink>
+		</Layer>
+		<Layer>
+			<ows:Title>Leisure_27700</ows:Title>
+			<ows:Identifier>Leisure_27700</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::27700">
+				<ows:LowerCorner>-238375.0000149319 0.0</ows:LowerCorner>
+				<ows:UpperCorner>900000.00000057 1376256.0000176653</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>-10.8342841886 49.38802038505334</ows:LowerCorner>
+				<ows:UpperCorner>7.551552493184295 62.2662683043619</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>EPSG:27700</TileMatrixSet>
+				<TileMatrixSetLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:0</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>6</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>4</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:1</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>12</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>9</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:2</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>24</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>19</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:3</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>48</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>39</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:4</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>96</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>79</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:5</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>192</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>158</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:6</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>384</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>317</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:7</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>768</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>635</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:8</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>1536</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>1270</MaxTileCol>
+					</TileMatrixLimits>
+					<TileMatrixLimits>
+						<TileMatrix>EPSG:27700:9</TileMatrix>
+						<MinTileRow>0</MinTileRow>
+						<MaxTileRow>3072</MaxTileRow>
+						<MinTileCol>0</MinTileCol>
+						<MaxTileCol>2541</MaxTileCol>
+					</TileMatrixLimits>
+				</TileMatrixSetLimits>
+			</TileMatrixSetLink>
+		</Layer>
+		<TileMatrixSet>
+			<ows:Title>TileMatrix for EPSG:27700 using 0.28mm</ows:Title>
+			<ows:Abstract>The tile matrix set that has scale values calculated based on the dpi defined by OGC specification (dpi assumes 0.28mm as the physical distance of a pixel).</ows:Abstract>
+			<ows:Identifier>EPSG:27700</ows:Identifier>
+			<ows:SupportedCRS>urn:ogc:def:crs:EPSG::27700</ows:SupportedCRS>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::27700">
+				<ows:LowerCorner>-238375.0000149319 0.0</ows:LowerCorner>
+				<ows:UpperCorner>900000.00000057 1376256.0000176653</ows:UpperCorner>
+			</ows:BoundingBox>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:0</ows:Identifier>
+				<ScaleDenominator>3199999.999496063</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>5</MatrixWidth>
+				<MatrixHeight>7</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:1</ows:Identifier>
+				<ScaleDenominator>1599999.9997480316</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>10</MatrixWidth>
+				<MatrixHeight>13</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:2</ows:Identifier>
+				<ScaleDenominator>799999.9998740158</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>20</MatrixWidth>
+				<MatrixHeight>25</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:3</ows:Identifier>
+				<ScaleDenominator>399999.9999370079</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>40</MatrixWidth>
+				<MatrixHeight>49</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:4</ows:Identifier>
+				<ScaleDenominator>199999.99996850395</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>80</MatrixWidth>
+				<MatrixHeight>98</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:5</ows:Identifier>
+				<ScaleDenominator>99999.99998425198</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>159</MatrixWidth>
+				<MatrixHeight>195</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:6</ows:Identifier>
+				<ScaleDenominator>49999.99999212599</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>318</MatrixWidth>
+				<MatrixHeight>390</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:7</ows:Identifier>
+				<ScaleDenominator>24999.999996062994</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>636</MatrixWidth>
+				<MatrixHeight>779</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:8</ows:Identifier>
+				<ScaleDenominator>12499.999998031497</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>1271</MatrixWidth>
+				<MatrixHeight>1558</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:9</ows:Identifier>
+				<ScaleDenominator>6249.9999990157485</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>2542</MatrixWidth>
+				<MatrixHeight>3116</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:10</ows:Identifier>
+				<ScaleDenominator>3124.9999995078742</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>5083</MatrixWidth>
+				<MatrixHeight>6232</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:11</ows:Identifier>
+				<ScaleDenominator>1562.4999997539371</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>10165</MatrixWidth>
+				<MatrixHeight>12463</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:12</ows:Identifier>
+				<ScaleDenominator>781.2499998769686</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>20329</MatrixWidth>
+				<MatrixHeight>24925</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:27700:13</ows:Identifier>
+				<ScaleDenominator>390.6249999384843</ScaleDenominator>
+				<TopLeftCorner>-238375.0 1376256.0</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>40657</MatrixWidth>
+				<MatrixHeight>49849</MatrixHeight>
+			</TileMatrix>
+		</TileMatrixSet>
+		<TileMatrixSet>
+			<ows:Title>TileMatrix for EPSG:3857 using 0.28mm</ows:Title>
+			<ows:Abstract>The tile matrix set that has scale values calculated based on the dpi defined by OGC specification (dpi assumes 0.28mm as the physical distance of a pixel).</ows:Abstract>
+			<ows:Identifier>EPSG:3857</ows:Identifier>
+			<ows:SupportedCRS>urn:ogc:def:crs:EPSG::3857</ows:SupportedCRS>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+				<ows:LowerCorner>-1198263.0364071354 6365004.037965424</ows:LowerCorner>
+				<ows:UpperCorner>213000.0 8702260.01</ows:UpperCorner>
+			</ows:BoundingBox>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:7</ows:Identifier>
+				<ScaleDenominator>4367830.1870353315</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>65</MatrixWidth>
+				<MatrixHeight>44</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:8</ows:Identifier>
+				<ScaleDenominator>2183915.0935181477</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>130</MatrixWidth>
+				<MatrixHeight>88</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:9</ows:Identifier>
+				<ScaleDenominator>1091957.5467586026</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>260</MatrixWidth>
+				<MatrixHeight>175</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:10</ows:Identifier>
+				<ScaleDenominator>545978.7733797727</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>519</MatrixWidth>
+				<MatrixHeight>350</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:11</ows:Identifier>
+				<ScaleDenominator>272989.3866894138</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>1037</MatrixWidth>
+				<MatrixHeight>699</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:12</ows:Identifier>
+				<ScaleDenominator>136494.6933447069</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>2073</MatrixWidth>
+				<MatrixHeight>1398</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:13</ows:Identifier>
+				<ScaleDenominator>68247.34667235345</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>4145</MatrixWidth>
+				<MatrixHeight>2795</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:14</ows:Identifier>
+				<ScaleDenominator>34123.673336176726</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>8290</MatrixWidth>
+				<MatrixHeight>5590</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:15</ows:Identifier>
+				<ScaleDenominator>17061.836668560845</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>16580</MatrixWidth>
+				<MatrixHeight>11180</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:16</ows:Identifier>
+				<ScaleDenominator>8530.918334280406</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>33159</MatrixWidth>
+				<MatrixHeight>22360</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:17</ows:Identifier>
+				<ScaleDenominator>4265.459166667739</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>66317</MatrixWidth>
+				<MatrixHeight>44719</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:18</ows:Identifier>
+				<ScaleDenominator>2132.7295838063405</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>132634</MatrixWidth>
+				<MatrixHeight>89437</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:19</ows:Identifier>
+				<ScaleDenominator>1066.3647914307007</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>265267</MatrixWidth>
+				<MatrixHeight>178873</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>EPSG:3857:20</ows:Identifier>
+				<ScaleDenominator>533.1823957153497</ScaleDenominator>
+				<TopLeftCorner>-2.0037508342787E7 2.0037508342787E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>530533</MatrixWidth>
+				<MatrixHeight>357746</MatrixHeight>
+			</TileMatrix>
+		</TileMatrixSet>
+	</Contents>
+	<ServiceMetadataURL xlink:href="https://api.os.uk/maps/raster/v1/wmts?REQUEST=GetCapabilities&amp;VERSION=1.0.0" />
+</Capabilities>
