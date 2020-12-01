@@ -92,8 +92,8 @@ layers['wms4326'] = new TileLayer({
 layers['wms21781'] = new TileLayer({
   source: new TileWMS({
     attributions:
-      '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-      'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
+      '© <a href="https://shop.swisstopo.admin.ch/en/products/maps/national/lk1000"' +
+      'target="_blank">Pixelmap 1:1000000 / geo.admin.ch</a>',
     crossOrigin: 'anonymous',
     params: {
       'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
