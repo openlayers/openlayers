@@ -443,7 +443,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   const wrapX = false;
-  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
+  const switchOriginXY = (projection.getAxisOrientation() || 'neu').substr(0, 2) === 'ne';
 
   let matrix = matrixSetObj.TileMatrix[0];
 
