@@ -426,7 +426,7 @@ class Modify extends PointerInteraction {
       this.dispatchEvent(
         new ModifyEvent(
           ModifyEventType.MODIFYSTART,
-          new Collection(features),
+          this.featuresBeingModified_,
           evt
         )
       );
