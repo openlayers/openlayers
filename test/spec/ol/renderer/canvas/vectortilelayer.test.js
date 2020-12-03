@@ -114,7 +114,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
     it('creates a new instance', function () {
       const renderer = new CanvasVectorTileLayerRenderer(layer);
       expect(renderer).to.be.a(CanvasVectorTileLayerRenderer);
-      expect(renderer.getLayer()).to.equal(layer);
+      expect(renderer.getLayer()).to.be(layer);
     });
 
     it('does not render replays for pure image rendering', function () {
@@ -321,7 +321,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    let layer, renderer, executorGroup, source;
+    /** @type {VectorTileLayer] */ let layer;
+    /** @type {CanvasVectorTileLayerRenderer} */ let renderer;
+    /** @type {VectorTileSource} */ let source;
+    let executorGroup;
     class TileClass extends VectorRenderTile {
       constructor() {
         super(...arguments);
@@ -339,6 +342,18 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
       });
       source.sourceTileCache.set('0/0/0.mvt', sourceTile);
       executorGroup = {};
+      executorGroup.forEachFeatureAtCoordinate = function (
+        coordinate,
+        resolution,
+        rotation,
+        hitTolerance,
+        callback
+      ) {
+        const feature = new Feature(new Point([0, 0]));
+        const distanceSq = 0;
+        callback(feature, feature.getGeometry(), distanceSq);
+        callback(feature, feature.getGeometry(), distanceSq);
+      };
       source.getTile = function () {
         const tile = VectorTileSource.prototype.getTile.apply(
           source,
@@ -352,22 +367,12 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
         source: source,
       });
       renderer = new CanvasVectorTileLayerRenderer(layer);
-      executorGroup.forEachFeatureAtCoordinate = function (
-        coordinate,
-        resolution,
-        rotation,
-        hitTolerance,
-        callback
-      ) {
-        const feature = new Feature();
-        callback(feature);
-        callback(feature);
-      };
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
       const spy = sinon.spy();
       const coordinate = [0, 0];
+      const matches = [];
       const frameState = {
         layerStatesArray: [{}],
         viewState: {
@@ -384,10 +389,11 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
         frameState,
         0,
         spy,
-        undefined
+        matches
       );
       expect(spy.callCount).to.be(1);
-      expect(spy.getCall(0).args[1]).to.equal(layer);
+      expect(spy.getCall(0).args[1]).to.be(layer);
+      expect(matches).to.be.empty();
     });
 
     it('does not give false positives when overzoomed', function (done) {

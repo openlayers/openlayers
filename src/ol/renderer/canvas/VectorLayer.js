@@ -407,55 +407,81 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @return {T|void} Callback result.
+   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @return {T|undefined} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    matches
+  ) {
     if (!this.replayGroup_) {
       return undefined;
-    } else {
-      const resolution = frameState.viewState.resolution;
-      const rotation = frameState.viewState.rotation;
-      const layer = this.getLayer();
+    }
+    const resolution = frameState.viewState.resolution;
+    const rotation = frameState.viewState.rotation;
+    const layer = this.getLayer();
 
-      /** @type {!Object<string, boolean>} */
-      const features = {};
+    /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
+    const features = {};
 
-      /**
-       * @param {import("../../Feature.js").FeatureLike} feature Feature.
-       * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
-       * @return {?} Callback result.
-       */
-      const featureCallback = function (feature, geometry) {
-        const key = getUid(feature);
-        if (!(key in features)) {
+    /**
+     * @param {import("../../Feature.js").FeatureLike} feature Feature.
+     * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+     * @param {number} distanceSq The squared distance to the click position
+     * @return {T|undefined} Callback result.
+     */
+    const featureCallback = function (feature, geometry, distanceSq) {
+      const key = getUid(feature);
+      const match = features[key];
+      if (!match) {
+        if (distanceSq === 0) {
           features[key] = true;
           return callback(feature, layer, geometry);
         }
-      };
-
-      let result;
-      const executorGroups = [this.replayGroup_];
-      if (this.declutterExecutorGroup) {
-        executorGroups.push(this.declutterExecutorGroup);
+        matches.push(
+          (features[key] = {
+            feature: feature,
+            layer: layer,
+            geometry: geometry,
+            distanceSq: distanceSq,
+            callback: callback,
+          })
+        );
+      } else if (match !== true && distanceSq < match.distanceSq) {
+        if (distanceSq === 0) {
+          features[key] = true;
+          matches.splice(matches.lastIndexOf(match), 1);
+          return callback(feature, layer, geometry);
+        }
+        match.geometry = geometry;
+        match.distanceSq = distanceSq;
       }
-      executorGroups.forEach((executorGroup) => {
-        result =
-          result ||
-          executorGroup.forEachFeatureAtCoordinate(
-            coordinate,
-            resolution,
-            rotation,
-            hitTolerance,
-            featureCallback,
-            executorGroup === this.declutterExecutorGroup
-              ? frameState.declutterTree.all().map((item) => item.value)
-              : null
-          );
-      });
+      return undefined;
+    };
 
-      return result;
+    let result;
+    const executorGroups = [this.replayGroup_];
+    if (this.declutterExecutorGroup) {
+      executorGroups.push(this.declutterExecutorGroup);
     }
+    executorGroups.some((executorGroup) => {
+      return (result = executorGroup.forEachFeatureAtCoordinate(
+        coordinate,
+        resolution,
+        rotation,
+        hitTolerance,
+        featureCallback,
+        executorGroup === this.declutterExecutorGroup
+          ? frameState.declutterTree.all().map((item) => item.value)
+          : null
+      ));
+    });
+
+    return result;
   }
 
   /**

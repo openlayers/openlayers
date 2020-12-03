@@ -55,7 +55,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @template T
- * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default): T=} FeatureCallback
+ * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default): T} FeatureCallback
  */
 
 /**
@@ -602,9 +602,9 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {FeatureCallback<T>|undefined} featureCallback Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
-   *     extent.
+   * @param {FeatureCallback<T>=} opt_featureCallback Feature callback.
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check
+   *     features that intersect this extent.
    * @param {import("rbush").default=} opt_declutterTree Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
@@ -615,7 +615,7 @@ class Executor {
     transform,
     instructions,
     snapToPixel,
-    featureCallback,
+    opt_featureCallback,
     opt_hitExtent,
     opt_declutterTree
   ) {
@@ -1052,9 +1052,9 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.END_GEOMETRY:
-          if (featureCallback !== undefined) {
+          if (opt_featureCallback !== undefined) {
             feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
-            const result = featureCallback(feature, currentGeometry);
+            const result = opt_featureCallback(feature, currentGeometry);
             if (result) {
               return result;
             }
@@ -1174,10 +1174,9 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {FeatureCallback<T>} opt_featureCallback
-   *     Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
-   *     extent.
+   * @param {FeatureCallback<T>=} opt_featureCallback Feature callback.
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check
+   *     features that intersect this extent.
    * @return {T|undefined} Callback result.
    * @template T
    */

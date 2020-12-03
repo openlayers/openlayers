@@ -11,6 +11,16 @@ import {inView} from '../layer/Layer.js';
 import {wrapX} from '../coordinate.js';
 
 /**
+ * @typedef HitMatch
+ * @property {import("../Feature.js").FeatureLike} feature
+ * @property {import("../layer/Layer.js").default} layer
+ * @property {import("../geom/SimpleGeometry.js").default} geometry
+ * @property {number} distanceSq
+ * @property {import("./vector.js").FeatureCallback<T>} callback
+ * @template T
+ */
+
+/**
  * @abstract
  */
 class MapRenderer extends Disposable {
@@ -92,7 +102,7 @@ class MapRenderer extends Disposable {
      * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @param {import("../geom/Geometry.js").default} geometry Geometry.
-     * @return {?} Callback result.
+     * @return {T|undefined} Callback result.
      */
     function forEachFeatureAtCoordinate(managed, feature, layer, geometry) {
       return callback.call(thisArg, feature, managed ? layer : null, geometry);
@@ -111,11 +121,12 @@ class MapRenderer extends Disposable {
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
 
+    const matches = /** @type {Array<HitMatch<T>>} */ ([]);
     const tmpCoord = [];
     for (let i = 0; i < offsets.length; i++) {
       for (let j = numLayers - 1; j >= 0; --j) {
         const layerState = layerStates[j];
-        const layer = /** @type {import("../layer/Layer.js").default} */ (layerState.layer);
+        const layer = layerState.layer;
         if (
           layer.hasRenderer() &&
           inView(layerState, viewState) &&
@@ -137,7 +148,8 @@ class MapRenderer extends Disposable {
               tmpCoord,
               frameState,
               hitTolerance,
-              callback
+              callback,
+              matches
             );
           }
           if (result) {
@@ -146,7 +158,16 @@ class MapRenderer extends Disposable {
         }
       }
     }
-    return undefined;
+    if (matches.length === 0) {
+      return undefined;
+    }
+    const order = 1 / matches.length;
+    matches.forEach((m, i) => (m.distanceSq += i * order));
+    matches.sort((a, b) => a.distanceSq - b.distanceSq);
+    matches.some((m) => {
+      return (result = m.callback(m.feature, m.layer, m.geometry));
+    });
+    return result;
   }
 
   /**
