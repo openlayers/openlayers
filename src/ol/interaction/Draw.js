@@ -585,7 +585,7 @@ class Draw extends PointerInteraction {
     if (this.freehand_) {
       this.downPx_ = event.pixel;
       if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
+        this.startDrawing_(event.coordinate);
       }
       return true;
     } else if (this.condition_(event)) {
@@ -630,7 +630,7 @@ class Draw extends PointerInteraction {
 
       if (this.shouldHandle_) {
         if (!this.finishCoordinate_) {
-          this.startDrawing_(event);
+          this.startDrawing_(event.coordinate);
           if (this.mode_ === Mode.POINT) {
             this.finishDrawing();
           }
@@ -771,12 +771,11 @@ class Draw extends PointerInteraction {
 
   /**
    * Start the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../coordinate.js").Coordinate} start Start coordinate.
    * @private
    */
-  startDrawing_(event) {
-    const start = event.coordinate;
-    const projection = event.map.getView().getProjection();
+  startDrawing_(start) {
+    const projection = this.getMap().getView().getProjection();
     this.finishCoordinate_ = start;
     if (this.mode_ === Mode.POINT) {
       this.sketchCoords_ = start.slice();
@@ -937,7 +936,7 @@ class Draw extends PointerInteraction {
       this.geometryFunction_(this.sketchCoords_, geometry, projection);
     }
 
-    if (coordinates.length === 0) {
+    if (coordinates.length === 1) {
       this.abortDrawing();
     }
 
@@ -1026,21 +1025,32 @@ class Draw extends PointerInteraction {
    * Append coordinates to the end of the geometry that is currently being drawn.
    * This can be used when drawing LineStrings or Polygons. Coordinates will
    * either be appended to the current LineString or the outer ring of the current
-   * Polygon.
-   * @param {!LineCoordType} coordinates Linear coordinates to be appended into
+   * Polygon. If no geometry is being drawn, a new one will be created.
+   * @param {!LineCoordType} coordinates Linear coordinates to be appended to
    * the coordinate array.
    * @api
    */
   appendCoordinates(coordinates) {
     const mode = this.mode_;
-    let sketchCoords = [];
+    const newDrawing = !this.sketchFeature_;
+    if (newDrawing) {
+      this.startDrawing_(coordinates[0]);
+    }
+    /** @type {LineCoordType} */
+    let sketchCoords;
     if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
-      sketchCoords = /** @type {LineCoordType} */ this.sketchCoords_;
+      sketchCoords = /** @type {LineCoordType} */ (this.sketchCoords_);
     } else if (mode === Mode.POLYGON) {
       sketchCoords =
         this.sketchCoords_ && this.sketchCoords_.length
           ? /** @type {PolyCoordType} */ (this.sketchCoords_)[0]
           : [];
+    } else {
+      return;
+    }
+
+    if (newDrawing) {
+      sketchCoords.shift();
     }
 
     // Remove last coordinate from sketch drawing (this coordinate follows cursor position)
