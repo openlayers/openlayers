@@ -59,7 +59,8 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * polygon rings and `2` for line strings.
  * @property {import("../events/condition.js").Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
- * boolean to indicate whether the drawing can be finished.
+ * boolean to indicate whether the drawing can be finished. Not used when drawing
+ * POINT or MULTI_POINT geometries.
  * @property {import("../style/Style.js").StyleLike} [style]
  * Style for sketch features.
  * @property {GeometryFunction} [geometryFunction]
@@ -317,25 +318,20 @@ class Draw extends PointerInteraction {
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
         geometryFunction = function (coordinates, geometry, projection) {
-          if (coordinates.length) {
-            const circle = geometry
-              ? /** @type {Circle} */ (geometry)
-              : new Circle([NaN, NaN]);
-            const center = fromUserCoordinate(coordinates[0], projection);
-            const squaredLength = squaredCoordinateDistance(
-              center,
-              fromUserCoordinate(
-                coordinates[coordinates.length - 1],
-                projection
-              )
-            );
-            circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
-            const userProjection = getUserProjection();
-            if (userProjection) {
-              circle.transform(projection, userProjection);
-            }
-            return circle;
+          const circle = geometry
+            ? /** @type {Circle} */ (geometry)
+            : new Circle([NaN, NaN]);
+          const center = fromUserCoordinate(coordinates[0], projection);
+          const squaredLength = squaredCoordinateDistance(
+            center,
+            fromUserCoordinate(coordinates[coordinates.length - 1], projection)
+          );
+          circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
+          const userProjection = getUserProjection();
+          if (userProjection) {
+            circle.transform(projection, userProjection);
           }
+          return circle;
         };
       } else {
         let Constructor;
@@ -895,7 +891,8 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Remove last point of the feature currently being drawn.
+   * Remove last point of the feature currently being drawn. Does not do anything when
+   * drawing POINT or MULTI_POINT geometries.
    * @api
    */
   removeLastPoint() {
@@ -1150,34 +1147,32 @@ function getDefaultStyleFunction() {
  */
 export function createRegularPolygon(opt_sides, opt_angle) {
   return function (coordinates, opt_geometry, projection) {
-    if (coordinates.length) {
-      const center = fromUserCoordinate(
-        /** @type {LineCoordType} */ (coordinates)[0],
-        projection
-      );
-      const end = fromUserCoordinate(
-        /** @type {LineCoordType} */ (coordinates)[coordinates.length - 1],
-        projection
-      );
-      const radius = Math.sqrt(squaredCoordinateDistance(center, end));
-      const geometry = opt_geometry
-        ? /** @type {Polygon} */ (opt_geometry)
-        : fromCircle(new Circle(center), opt_sides);
+    const center = fromUserCoordinate(
+      /** @type {LineCoordType} */ (coordinates)[0],
+      projection
+    );
+    const end = fromUserCoordinate(
+      /** @type {LineCoordType} */ (coordinates)[coordinates.length - 1],
+      projection
+    );
+    const radius = Math.sqrt(squaredCoordinateDistance(center, end));
+    const geometry = opt_geometry
+      ? /** @type {Polygon} */ (opt_geometry)
+      : fromCircle(new Circle(center), opt_sides);
 
-      let angle = opt_angle;
-      if (!opt_angle && opt_angle !== 0) {
-        const x = end[0] - center[0];
-        const y = end[1] - center[1];
-        angle = Math.atan2(y, x);
-      }
-      makeRegular(geometry, center, radius, angle);
-
-      const userProjection = getUserProjection();
-      if (userProjection) {
-        geometry.transform(projection, userProjection);
-      }
-      return geometry;
+    let angle = opt_angle;
+    if (!opt_angle && opt_angle !== 0) {
+      const x = end[0] - center[0];
+      const y = end[1] - center[1];
+      angle = Math.atan2(y, x);
     }
+    makeRegular(geometry, center, radius, angle);
+
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      geometry.transform(projection, userProjection);
+    }
+    return geometry;
   };
 }
 
@@ -1190,36 +1185,34 @@ export function createRegularPolygon(opt_sides, opt_angle) {
  */
 export function createBox() {
   return function (coordinates, opt_geometry, projection) {
-    if (coordinates.length) {
-      const extent = boundingExtent(
-        /** @type {LineCoordType} */ ([
-          coordinates[0],
-          coordinates[coordinates.length - 1],
-        ]).map(function (coordinate) {
-          return fromUserCoordinate(coordinate, projection);
-        })
-      );
-      const boxCoordinates = [
-        [
-          getBottomLeft(extent),
-          getBottomRight(extent),
-          getTopRight(extent),
-          getTopLeft(extent),
-          getBottomLeft(extent),
-        ],
-      ];
-      let geometry = opt_geometry;
-      if (geometry) {
-        geometry.setCoordinates(boxCoordinates);
-      } else {
-        geometry = new Polygon(boxCoordinates);
-      }
-      const userProjection = getUserProjection();
-      if (userProjection) {
-        geometry.transform(projection, userProjection);
-      }
-      return geometry;
+    const extent = boundingExtent(
+      /** @type {LineCoordType} */ ([
+        coordinates[0],
+        coordinates[coordinates.length - 1],
+      ]).map(function (coordinate) {
+        return fromUserCoordinate(coordinate, projection);
+      })
+    );
+    const boxCoordinates = [
+      [
+        getBottomLeft(extent),
+        getBottomRight(extent),
+        getTopRight(extent),
+        getTopLeft(extent),
+        getBottomLeft(extent),
+      ],
+    ];
+    let geometry = opt_geometry;
+    if (geometry) {
+      geometry.setCoordinates(boxCoordinates);
+    } else {
+      geometry = new Polygon(boxCoordinates);
     }
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      geometry.transform(projection, userProjection);
+    }
+    return geometry;
   };
 }
 
