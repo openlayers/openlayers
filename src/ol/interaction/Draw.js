@@ -632,7 +632,7 @@ class Draw extends PointerInteraction {
           }
         } else if (this.freehand_) {
           this.finishDrawing();
-        } else if (this.atFinish_(event)) {
+        } else if (this.atFinish_(event.pixel)) {
           if (this.finishCondition_(event)) {
             this.finishDrawing();
           }
@@ -648,6 +648,7 @@ class Draw extends PointerInteraction {
     if (!pass && this.stopClick_) {
       event.stopPropagation();
     }
+    this.downPx_ = null;
     return pass;
   }
 
@@ -677,7 +678,7 @@ class Draw extends PointerInteraction {
     }
 
     if (this.finishCoordinate_) {
-      this.modifyDrawing_(event);
+      this.modifyDrawing_(event.coordinate);
     } else {
       this.createOrUpdateSketchPoint_(event);
     }
@@ -685,11 +686,11 @@ class Draw extends PointerInteraction {
 
   /**
    * Determine if an event is within the snapping tolerance of the start coord.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {boolean} The event is within the snapping tolerance of the start.
    * @private
    */
-  atFinish_(event) {
+  atFinish_(pixel) {
     let at = false;
     if (this.sketchFeature_) {
       let potentiallyDone = false;
@@ -706,11 +707,10 @@ class Draw extends PointerInteraction {
         ];
       }
       if (potentiallyDone) {
-        const map = event.map;
+        const map = this.getMap();
         for (let i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
           const finishCoordinate = potentiallyFinishCoordinates[i];
           const finishPixel = map.getPixelFromCoordinate(finishCoordinate);
-          const pixel = event.pixel;
           const dx = pixel[0] - finishPixel[0];
           const dy = pixel[1] - finishPixel[1];
           const snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
@@ -802,20 +802,20 @@ class Draw extends PointerInteraction {
 
   /**
    * Modify the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @private
    */
-  modifyDrawing_(event) {
-    let coordinate = event.coordinate;
+  modifyDrawing_(coordinate) {
+    const map = this.getMap();
     const geometry = this.sketchFeature_.getGeometry();
-    const projection = event.map.getView().getProjection();
+    const projection = map.getView().getProjection();
     let coordinates, last;
     if (this.mode_ === Mode.POINT) {
       last = this.sketchCoords_;
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       last = coordinates[coordinates.length - 1];
-      if (this.atFinish_(event)) {
+      if (this.atFinish_(map.getPixelFromCoordinate(coordinate))) {
         // snap to finish
         coordinate = this.finishCoordinate_.slice();
       }
@@ -908,12 +908,9 @@ class Draw extends PointerInteraction {
       coordinates.splice(-2, 1);
       if (coordinates.length >= 2) {
         this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
-        if (this.pointerType_ !== 'mouse') {
-          const finishCoordinate = this.finishCoordinate_.slice();
-          coordinates.pop();
-          coordinates.push(finishCoordinate);
-          this.sketchPoint_.setGeometry(new Point(finishCoordinate));
-        }
+        const finishCoordinate = this.finishCoordinate_.slice();
+        coordinates[coordinates.length - 1] = finishCoordinate;
+        this.sketchPoint_.setGeometry(new Point(finishCoordinate));
       }
       this.geometryFunction_(coordinates, geometry, projection);
       if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
@@ -923,10 +920,9 @@ class Draw extends PointerInteraction {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
       const sketchLineGeom = this.sketchLine_.getGeometry();
-      if (coordinates.length >= 2 && this.pointerType_ !== 'mouse') {
+      if (coordinates.length >= 2) {
         const finishCoordinate = coordinates[coordinates.length - 2].slice();
-        coordinates.pop();
-        coordinates.push(finishCoordinate);
+        coordinates[coordinates.length - 1] = finishCoordinate;
         this.sketchPoint_.setGeometry(new Point(finishCoordinate));
       }
       sketchLineGeom.setCoordinates(coordinates);
@@ -1060,6 +1056,9 @@ class Draw extends PointerInteraction {
 
     // Duplicate last coordinate for sketch drawing
     this.addToDrawing_(ending);
+    this.modifyDrawing_(
+      this.downPx_ ? this.getMap().getCoordinateFromPixel(this.downPx_) : ending
+    );
   }
 
   /**
