@@ -134,13 +134,13 @@ class GlTile extends Tile {
  * resolution will be used. If 1, the nearest lower resolution will be used. If -1, the
  * nearest higher resolution will be used.
  *
- * @property {textureSources} An array of texture sources, each element being
+ * @property {array} textureSources An array of texture sources, each element being
  * either a `TileImage` source, or a `GlTiledTexture`.
- * @property {fragmentShader} A string representing the GLSL fragment shader
+ * @property {string} fragmentShader A string representing the GLSL fragment shader
  * to be run. This must NOT include defining the variants, nor the texture uniforms,
  * nor user-defined uniforms.
  *
- * @property {uniforms} A plain object containing a map of uniform names and their
+ * @property {object} uniforms A plain object containing a map of uniform names and their
  * initial values. Values must be a `Number` or an `Array` of up to four `Number`s.
  */
 
@@ -196,8 +196,6 @@ class GlTiles extends XYZ {
         if (size[1] > tileSize[1]) { tileSize[1] = size[1]; }
       });
     }
-
-    console.log("biggest tileSize: ", tileSize);
 
     this._programReady = new Promise((res)=>{
       this._markProgramAsReady = res;
@@ -502,8 +500,13 @@ class GlTiles extends XYZ {
     }
   }
 
-  // Sets the value(s) for a uniform.
-  setUniform(name, value) {
+  /**
+   * Sets the value for a GL uniform.
+   * @param {string} name Name of the GL uniform to update
+   * @param {number} value New value for the GL uniform
+   * @param {boolean} rerender Whether updating triggers a re-render of all tiles (default true)
+   */
+  setUniform(name, value, rerender = true) {
     switch (this._uniformSizes[name]) {
       case 0:
         this._gl.uniform1f(this._uniformLocations[name], value);
@@ -523,10 +526,14 @@ class GlTiles extends XYZ {
       default:
         throw new Error('Value for setUniform() must be a Number or an Array of up to 4 Numbers');
     }
-    this.reRender();
+    if (rerender) {
+      this.reRender();
+    }
   }
 
-  // Triggers a re-render of all tiles in this GlTiles source
+  /**
+   * Triggers a re-render of all tiles.
+   */
   reRender() {
     // TODO: Do not render tiles currently not visible (out of bounds),
     // try flushing them from cache instead.
@@ -619,8 +626,9 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
     console.warn("Unimplemented datatype for dumping data into texture, ", arr);
   }
 
+  // TODO: int32, uint32, float32
+
   //   // For 32-bit data:
-  //   gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
   //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);

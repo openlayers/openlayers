@@ -12,6 +12,14 @@ import MousePosition from '../src/ol/control/MousePosition';
 import {createStringXY} from '../src/ol/coordinate';
 import {defaults as defaultControls} from '../src/ol/control';
 
+import { Worker } from "threads"
+
+// Creating a GeoTIFF worker Pool is not needed, but makes decoding feel faster
+const pool = new GeoTIFF.Pool(
+  navigator.hardwareConcurrency,
+  new Worker('https://unpkg.com/geotiff@1.0.0-beta.16/dist-browser/decoder.worker.1936c0d9.js')
+);
+
 // These non-square GeoTIFF tiles need a custom tilegrid - forcing level 0 for
 // the top-level 512x256px tile, and limiting the number of available zoom levels.
 
@@ -31,10 +39,10 @@ const tiffTiles = new XYZ({
 // tcr, tcg, tcb = True Colour Red/Green/Blue
 // nir = Near InfraRed
 // These tiles are 16-bit 4-sample RGB+NIR geotiff
-const tcr = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 0, -999, "getTCR" );
-const tcg = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 1, -999, "getTCG" );
-const tcb = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 2, -999, "getTCB" );
-const nir = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 3, -999, "getNIR" );
+const tcr = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 0, -999, "getTCR", pool);
+const tcg = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 1, -999, "getTCG", pool);
+const tcb = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 2, -999, "getTCB", pool);
+const nir = new GlTiledTextureGeoTiffTiles( tiffTiles, GeoTIFF.fromUrl, 3, -999, "getNIR", pool);
 
 const rgbnirShader = "#line 1                                   \n" +
 "void main(void) {                                              \n" +

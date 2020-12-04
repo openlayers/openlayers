@@ -25,7 +25,6 @@ const terrainTexture = new GlTiledTextureTerrainRGB(elevation, "getElevation");
 
 const reliefShader = `
 const float pxSize = 1./512.;
-const float pi = 3.1415926535897932384626433832795;
 
 void main(void) {
   // Fetch data from texture source 0 using the named GLSL function
@@ -104,7 +103,7 @@ sliderExaggeration.addEventListener('input', function(){
 
 const sliderSunEl = document.getElementById('sunEl');
 sliderSunEl.addEventListener('input', function(){
-  glSource.setUniform('uSinSunElevation', Math.sin(sliderSunEl.value * Math.PI / 180));
+  glSource.setUniform('uSinSunElevation', Math.sin(sliderSunEl.value * Math.PI / 180), false);
   glSource.setUniform('uCosSunElevation', Math.cos(sliderSunEl.value * Math.PI / 180));
   document.getElementById('sunElOut').innerText = sliderSunEl.value;
 });

@@ -11,14 +11,16 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
    * compatibility, only one channel per instance is allowed.
    * @param {number=-999} fillValue Value to be used for pixels with no data.
    * @param {string=undefined} fetchFuncName
+   * @param {Pool=undefined} pool a GeoTIFF.js worker pool
    *
    * A wrapper of GeoTIFF.js functionality. Extracts data from *one* GeoTIFF file
    * in such a way that can be fed to a GlTiles source.
    */
-  constructor(tiff, sample=0, fillValue = -999, fetchFuncName = undefined ) {
+  constructor(tiff, sample=0, fillValue = -999, fetchFuncName = undefined, pool = undefined ) {
     super(fetchFuncName);
     this.sample_ = sample;
     this.fillValue_ = fillValue;
+    this.pool_ = pool;
 
     if (!("getImage" in tiff)) {
       // A Promise to a GeoTIFF was passed
@@ -94,16 +96,16 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
         // Out of bounds, return all zeroes
         return this.emptyData_;
       }
-
       return img.readRasters({
         window: [x2, this.height_ - y1, x1, this.height_ - y2].map(i=>Math.round(i)),
         width: tileSize[0],
         height: tileSize[1],
         resampleMethod: 'nearest',
         samples: [this.sample_],
-        fillValue: this.fillValue_
+        fillValue: this.fillValue_,
+        pool: this.pool_
       }).then(rasters=>{
-//         console.log(rasters[0]);
+        //console.log(rasters[0]);
         return rasters[0]
       });
     });

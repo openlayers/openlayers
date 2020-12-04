@@ -1,5 +1,14 @@
 import GlTiledTextureAbstract from './GlTiledTextureAbstract.js'
 
+import LRUCache from '../../structs/LRUCache.js';
+
+// Define a LRU cache for instances of GeoTIFF. A typical use case is to try to
+// instantiate several GeoTIFFs based on the same URL, when there are several
+// GlTiledTextureGeoTiffTiles for the same tile source. This happens when
+// fetching several samples ("channels") from the same tileset.
+const geotiffCache = new LRUCache(16);
+
+
 /**
  * @module ol/source/GlTiles
  */
@@ -12,16 +21,18 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
    * compatibility, only one channel per instance is allowed.
    * @param {number=-999} fillValue Value to be used for pixels with no data.
    * @param {string=undefined} fetchFuncName
+   * @param {Pool=undefined} pool a GeoTIFF.js worker pool
    *
    * A wrapper of GeoTIFF.js functionality. Extracts data from *one* GeoTIFF file
    * in such a way that can be fed to a GlTiles source.
    */
-  constructor(xyz, geotiffFactory, sample=0, fillValue = -999, fetchFuncName = undefined ) {
+  constructor(xyz, geotiffFactory, sample=0, fillValue = -999, fetchFuncName = undefined, pool = undefined) {
     super(fetchFuncName);
     this.sample_ = sample;
     this.fillValue_ = fillValue;
     this.factory_ = geotiffFactory;
     this.xyz_ = xyz;
+    this.pool_ = pool;
 
     this.anyTile_ = new Promise((res, rej)=>{
       this.resolveAnyTile_ = res;
@@ -42,7 +53,18 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
 //     const url = this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     const url = this.xyz_.tileUrlFunction(urlTileCoord);
 
-    return this.factory_(url).then(tiff=>tiff.getImage()).then(img=>{
+    let instance;
+    if (geotiffCache.containsKey(url)) {
+      instance = geotiffCache.get(url);
+    } else {
+      instance = this.factory_(url);
+      geotiffCache.set(url, instance);
+      if (geotiffCache.canExpireCache()) {
+        geotiffCache.pop();
+      }
+    }
+
+    return instance.then(tiff=>tiff.getImage()).then(img=>{
       this.resolveAnyTile_(img);
       const bbox = img.getBoundingBox();
 
@@ -54,7 +76,8 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
         width: tileSize[0],
         height: tileSize[1],
         samples: [this.sample_],
-        fillValue: this.fillValue_
+        fillValue: this.fillValue_,
+        pool: this.pool_
       }).then(rasters=>{
 //         console.log(rasters[0]);
 //         console.warn(img, bbox, tileSize, rasters);

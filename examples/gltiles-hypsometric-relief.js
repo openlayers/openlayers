@@ -127,7 +127,7 @@ sliderExaggeration.addEventListener('input', function(){
 
 const sliderSunEl = document.getElementById('sunEl');
 sliderSunEl.addEventListener('input', function(){
-  glSource.setUniform('uSinSunElevation', Math.sin(sliderSunEl.value * Math.PI / 180));
+  glSource.setUniform('uSinSunElevation', Math.sin(sliderSunEl.value * Math.PI / 180), false);
   glSource.setUniform('uCosSunElevation', Math.cos(sliderSunEl.value * Math.PI / 180));
   document.getElementById('sunElOut').innerText = sliderSunEl.value;
 });

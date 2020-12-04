@@ -11,8 +11,13 @@ import MousePosition from '../src/ol/control/MousePosition';
 import {createStringXY} from '../src/ol/coordinate';
 import {defaults as defaultControls} from '../src/ol/control';
 
-// import proj4 from 'proj4';
+import { Worker } from "threads"
 
+// Creating a GeoTIFF worker Pool is not needed, but makes decoding feel faster
+const pool = new GeoTIFF.Pool(
+  navigator.hardwareConcurrency,
+  new Worker('https://unpkg.com/geotiff@1.0.0-beta.16/dist-browser/decoder.worker.1936c0d9.js')
+);
 
 // Create geotiff.js instances
 // See https://s2downloads.eox.at/demo/Sentinel-2/README.txt for info about procedence of the data
@@ -32,32 +37,32 @@ const geotiff10m = GeoTIFF.fromUrl('https://s2downloads.eox.at/demo/Sentinel-2/3
 
 // tcr, tcg, tcb = True Colour Red/Green/Blue
 // This is a 8-bit 3-sample RGB geotiff
-const tcr = new GlTiledTextureGeoTiff( geotiffTCI, 0, 0, "getTCR" );
-const tcg = new GlTiledTextureGeoTiff( geotiffTCI, 1, 0, "getTCG" );
-const tcb = new GlTiledTextureGeoTiff( geotiffTCI, 2, 0, "getTCB" );
+const tcr = new GlTiledTextureGeoTiff( geotiffTCI, 0, 0, "getTCR", pool );
+const tcg = new GlTiledTextureGeoTiff( geotiffTCI, 1, 0, "getTCG", pool );
+const tcb = new GlTiledTextureGeoTiff( geotiffTCI, 2, 0, "getTCB", pool );
 
 // Bands from the 10m GeoTIFF file
 // This is a Uint16, 4-sample file (b2,b3,b4,b8); pixels with no data get the value 65535.
-const b2  = new GlTiledTextureGeoTiff( geotiff10m, 0, 65535, "getB2" );
-const b3  = new GlTiledTextureGeoTiff( geotiff10m, 1, 65535, "getB3" );
-const b4  = new GlTiledTextureGeoTiff( geotiff10m, 2, 65535, "getB4" );
-const b8  = new GlTiledTextureGeoTiff( geotiff10m, 3, 65535, "getB8" );
+const b2  = new GlTiledTextureGeoTiff( geotiff10m, 0, 65535, "getB2", pool );
+const b3  = new GlTiledTextureGeoTiff( geotiff10m, 1, 65535, "getB3", pool );
+const b4  = new GlTiledTextureGeoTiff( geotiff10m, 2, 65535, "getB4", pool );
+const b8  = new GlTiledTextureGeoTiff( geotiff10m, 3, 65535, "getB8", pool );
 
 // Bands from the 20m GeoTIFF file
 // This is a Uint16, 10-sample file (b2,b3,b4,b5,b6,b7,b8,b11,b12,b8a);
 // pixels with no data get the value 65535.
-const b5  = new GlTiledTextureGeoTiff( geotiff20m, 3, 65535, "getB5" );
-const b6  = new GlTiledTextureGeoTiff( geotiff20m, 4, 65535, "getB6" );
-const b7  = new GlTiledTextureGeoTiff( geotiff20m, 5, 65535, "getB7" );
-const b11 = new GlTiledTextureGeoTiff( geotiff20m, 7, 65535, "getB11" );
-const b12 = new GlTiledTextureGeoTiff( geotiff20m, 8, 65535, "getB12" );
-const b8a = new GlTiledTextureGeoTiff( geotiff20m, 9, 65535, "getB8A" );
+const b5  = new GlTiledTextureGeoTiff( geotiff20m, 3, 65535, "getB5", pool );
+const b6  = new GlTiledTextureGeoTiff( geotiff20m, 4, 65535, "getB6", pool );
+const b7  = new GlTiledTextureGeoTiff( geotiff20m, 5, 65535, "getB7", pool );
+const b11 = new GlTiledTextureGeoTiff( geotiff20m, 7, 65535, "getB11", pool );
+const b12 = new GlTiledTextureGeoTiff( geotiff20m, 8, 65535, "getB12", pool );
+const b8a = new GlTiledTextureGeoTiff( geotiff20m, 9, 65535, "getB8A", pool );
 
 // Bands from the 60m GeoTIFF file
 // This is a Uint16, 12-sample file (b1,b2,b3,b4,b5,b6,b7,b8,b9,b11,b12,b8a);
 // pixels with no data get the value 65535.
-const b1  = new GlTiledTextureGeoTiff( geotiff60m, 0, 65535, "getB1" );
-const b9  = new GlTiledTextureGeoTiff( geotiff60m, 8, 65535, "getB9" );
+const b1  = new GlTiledTextureGeoTiff( geotiff60m, 0, 65535, "getB1", pool );
+const b9  = new GlTiledTextureGeoTiff( geotiff60m, 8, 65535, "getB9", pool );
 
 
 const ndvwiShader = "#line 1                                    \n" +
