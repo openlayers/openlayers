@@ -120,7 +120,7 @@ const ModifyEventType = {
  * features to modify.  If a vector source is not provided, a feature collection
  * must be provided with the `features` option.
  * @property {boolean|import("../layer/BaseVector").default} [hitDetection] When configured, point
- * features will considered for modification based on their visual appearance, instead of being within
+ * features will be considered for modification based on their visual appearance, instead of being within
  * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector} is
  * provided, only the rendered representation of the features on that layer will be considered.
  * @property {Collection<Feature>} [features]
