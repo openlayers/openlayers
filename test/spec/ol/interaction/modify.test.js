@@ -498,7 +498,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(25);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 0.1);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis
@@ -508,7 +508,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -35, null, 0);
       simulateEvent('pointerup', 5, -35, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(30);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(30, 0.1);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
     });
 
@@ -553,7 +553,7 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 0.1);
       expect(geometry2.getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis
@@ -567,7 +567,7 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 0.1);
       expect(geometry3.getCenter()).to.eql([5, 5]);
     });
   });
@@ -1084,7 +1084,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(25);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 1e9);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis

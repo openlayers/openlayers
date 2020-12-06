@@ -1163,8 +1163,8 @@ class Modify extends PointerInteraction {
         const vertexSegments = {};
         vertexSegments[getUid(closestSegment)] = true;
 
-        this.delta_[0] = hitPointGeometry ? vertex[0] - pixelCoordinate[0] : 0;
-        this.delta_[1] = hitPointGeometry ? vertex[1] - pixelCoordinate[1] : 0;
+        this.delta_[0] = vertex[0] - pixelCoordinate[0];
+        this.delta_[1] = vertex[1] - pixelCoordinate[1];
         if (
           node.geometry.getType() === GeometryType.CIRCLE &&
           node.index === CIRCLE_CIRCUMFERENCE_INDEX
