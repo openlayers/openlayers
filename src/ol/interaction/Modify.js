@@ -1113,7 +1113,7 @@ class Modify extends PointerInteraction {
       );
     };
 
-    let box, hitPointGeometry;
+    let nodes, hitPointGeometry;
     if (this.hitDetection_) {
       const layerFilter =
         typeof this.hitDetection_ === 'object'
@@ -1125,25 +1125,32 @@ class Modify extends PointerInteraction {
           geometry = geometry || feature.getGeometry();
           if (geometry.getType() === GeometryType.POINT) {
             hitPointGeometry = geometry;
-            box = hitPointGeometry.getExtent();
+            const coordinate = geometry.getCoordinates();
+            nodes = [
+              {
+                feature,
+                geometry,
+                segment: [coordinate, coordinate],
+              },
+            ];
           }
           return true;
         },
         {layerFilter}
       );
     }
-    if (!box) {
+    if (!nodes) {
       const viewExtent = fromUserExtent(
         createExtent(pixelCoordinate, tempExtent),
         projection
       );
       const buffer = map.getView().getResolution() * this.pixelTolerance_;
-      box = toUserExtent(
+      const box = toUserExtent(
         bufferExtent(viewExtent, buffer, tempExtent),
         projection
       );
+      nodes = this.rBush_.getInExtent(box);
     }
-    const nodes = this.rBush_.getInExtent(box);
 
     if (nodes && nodes.length > 0) {
       const node = nodes.sort(sortByDistance)[0];
