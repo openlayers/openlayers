@@ -58,10 +58,9 @@ const modify = new Modify({
 modify.on(['modifystart', 'modifyend'], function (evt) {
   target.style.cursor = evt.type === 'modifystart' ? 'grabbing' : 'pointer';
 });
-map.on('pointermove', function (evt) {
-  if (!evt.dragging) {
-    target.style.cursor = map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
-  }
+const overlaySource = modify.getOverlay().getSource();
+overlaySource.on(['addfeature', 'removefeature'], function (evt) {
+  target.style.cursor = evt.type === 'addfeature' ? 'pointer' : '';
 });
 
 map.addInteraction(modify);

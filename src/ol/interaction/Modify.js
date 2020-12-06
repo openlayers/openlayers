@@ -108,7 +108,7 @@ const ModifyEventType = {
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style.js").StyleLike} [style]
- * Style used for the modification point. For linestrings and polygons, this will
+ * Style used for the modification point or vertex. For linestrings and polygons, this will
  * be the affected vertex, for circles a point along the circle, and for points the actual
  * point. If not configured, the default edit style is used (see {@link module:ol/style}).
  * When using a style function, the point feature passed to the function will have a `features`
@@ -505,7 +505,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * Get the overlay layer that this interaction renders sketch features to.
+   * Get the overlay layer that this interaction renders the modification point or vertex to.
    * @return {VectorLayer} Overlay layer.
    * @api
    */
