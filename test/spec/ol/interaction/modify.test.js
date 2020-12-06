@@ -1084,7 +1084,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 1e9);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 1e-9);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis
