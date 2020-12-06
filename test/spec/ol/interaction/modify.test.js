@@ -423,6 +423,37 @@ describe('ol.interaction.Modify', function () {
 
       expect(lineFeature.getGeometry().getCoordinates().length).to.equal(5);
     });
+    it('inserts one vertex into both linestrings with duplicate segments each', function () {
+      const lineFeature1 = new Feature(
+        new LineString([
+          [-10, -10],
+          [10, 10],
+          [-10, -10],
+        ])
+      );
+      const lineFeature2 = new Feature(
+        new LineString([
+          [10, 10],
+          [-10, -10],
+          [10, 10],
+        ])
+      );
+      features.length = 0;
+      features.push(lineFeature1, lineFeature2);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      // Click on line
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointerup', 0, 0, null, 0);
+
+      expect(lineFeature1.getGeometry().getCoordinates().length).to.be(4);
+      expect(lineFeature2.getGeometry().getCoordinates().length).to.be(4);
+    });
   });
 
   describe('circle modification', function () {
