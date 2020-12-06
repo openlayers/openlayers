@@ -1097,14 +1097,16 @@ class Modify extends PointerInteraction {
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (
-              ((coordinatesEqual(closestSegment[0], segment[0]) &&
+              (coordinatesEqual(closestSegment[0], segment[0]) &&
                 coordinatesEqual(closestSegment[1], segment[1])) ||
-                (coordinatesEqual(closestSegment[0], segment[1]) &&
-                  coordinatesEqual(closestSegment[1], segment[0]))) &&
-              !(getUid(nodes[i].geometry) in geometries)
+              (coordinatesEqual(closestSegment[0], segment[1]) &&
+                coordinatesEqual(closestSegment[1], segment[0]))
             ) {
-              geometries[getUid(nodes[i].geometry)] = true;
-              vertexSegments[getUid(segment)] = true;
+              const geometryUid = getUid(nodes[i].geometry);
+              if (!(geometryUid in geometries)) {
+                geometries[geometryUid] = true;
+                vertexSegments[getUid(segment)] = true;
+              }
             } else {
               break;
             }
