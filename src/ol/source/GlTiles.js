@@ -13,10 +13,6 @@ import {getKeyZXY} from '../tilecoord.js';
 import EventType from '../events/EventType.js';
 import {listenOnce} from '../events.js';
 
-// For debugging purposes onle
-// e.g. imageOutput(glContext, console);
-// import imageOutput from 'image-output';
-
 class GlTile extends Tile {
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
@@ -74,9 +70,12 @@ class GlTile extends Tile {
   */
   load() {}
 
-  // (re-)renders the tile
-  // This is a synchronous operation, which assumes that the texture fetches
-  // have been completed already.
+  /**
+   * (Re-)renders the tile, using the GlTiles context.
+   * This is a synchronous operation, which assumes that the texture fetches
+   * for thsi tile have been completed already.
+   * @return {HTMLCanvasElement} Image.
+   */
   render() {
     if (!this.fetchedTexts_) { return; }
 
@@ -147,11 +146,8 @@ class GlTile extends Tile {
 
 /**
  * @classdesc
- * A pseudo tile source, which does not fetch tiles from a server, but renders
- * a grid outline for the tile grid/projection along with the coordinates for
- * each tile. Each tile is rendered after a random delay.
+ * A pseudo tile source which runs a WebGL1 shader on its defined GlTiledTextures.
  *
- * Uses Canvas context2d, so requires Canvas support.
  * @api
  */
 class GlTiles extends XYZ {
@@ -166,10 +162,7 @@ class GlTiles extends XYZ {
 
     super(Object.assign({},{
       opaque: false,
-//       projection: options.projection,
-//       tileGrid: options.tileGrid,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-//       zDirection: options.zDirection,
     }, options));
 
     this.fragmentShader = options.fragmentShader || 'void main(void) {gl_FragColor = vec4(0.2,0.2,0.2,1.0);}';
@@ -219,16 +212,22 @@ class GlTiles extends XYZ {
 
     this._maxTextures = this._gl.getParameter(this._gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
     if (this.texSources.length > this._maxTextures) {
+      // This might show up when running on a browser+GPU configuration allowing for
+      // a maximum of 8 textures, but loading 9 or more, e.g. all samples from a Sentinel-2
+      // imagery granule.
       console.warn(`This WebGL implementation allows for a maximum of ${this._maxTextures}, but ${this.texSources.length} are being used. Some textures SHALL be dropped.`);
     }
 
     // A `Promise` that resolves when all the `GlTiledTexture`s have reported their
-    // fetchFunc definition.
+    // fetchFunc definition. This is needed to know the fetch function definitions of
+    // all GlTiledTextures, which might need some information from the network (e.g.
+    // GeoTIFF headers) to be known.
     this._fetchFuncDefs = Promise.all(this.texSources.map((glTex, i)=>{
       if (glTex instanceof GlTiledTextureAbstract) {
         return glTex.getFetchFunctionDef(`uTexture${i}`);
       } else {
-        // Any other image-based tile source, e.g. XYZ image tiles
+        // Any other image-based tile source, e.g. XYZ image tiles, do not have
+        // a fetch function
         return "";
       }
     }));
@@ -237,7 +236,6 @@ class GlTiles extends XYZ {
     this.textures_ = [];
     for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
       this.textures_[i] = this._gl.createTexture();
-//       gl.uniform1i(gl.getUniformLocation(this._glProgram, 'uTexture' + i), i); // Done later
     }
     this._fetchFuncDefs.then((defs)=>this.loadGLProgram_(defs));
   }
@@ -305,6 +303,7 @@ class GlTiles extends XYZ {
 
 
   // Takes as the only argument the texture fetch function definitions, an array of `String`s
+  // Compils the shaders and (re-)attaches the attribute+uniform locations
   loadGLProgram_(defs) {
     // Mostly copy-pasted from Leaflet.TileLayerGL's code.
     const gl = this._gl;
@@ -377,18 +376,6 @@ class GlTiles extends XYZ {
 
     this.initUniforms_(this._glProgram);
 
-    // If the shader is time-dependent (i.e. animated), or has custom uniforms,
-    // init the texture cache
-    /// FIXME
-    // 		if (this._isReRenderable) {
-    // 			this._fetchedTextures = {};
-    // 			this._2dContexts = {};
-    // 		}
-
-    // 		console.log('Tex position: ', this._aTexPosition);
-    // 		console.log('CRS position: ', this._aCRSPosition);
-    // 		console.log("uNow position: ", this._uNowPosition);
-
     // Create four data buffer with 8 elements each - the (easting,northing)
     // CRS coords, idem for LatLng coords, the (s,t) texture coords and
     // the (x,y) viewport coords for each of the 4 vertices
@@ -444,7 +431,7 @@ class GlTiles extends XYZ {
       gl.uniform1i(gl.getUniformLocation(this._glProgram, 'uTexture' + i), i);
     }
 
-    console.log("Marking program as ready");
+    //console.log("Marking program as ready");
     this._markProgramAsReady();
   }
 
@@ -597,10 +584,8 @@ function bindTextureImageData(gl, texture, index, imageData) {
   * @return {undefined}
   */
 function bindTextureTypedArray(gl, texture, index, arr, w, h) {
-
-  //   void texImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels) (OpenGL ES 2.0 §3.7.1, man page)
-  //   void texImage2D(target, level, internalformat, width, height, border, format, type, pixels)
-  //   void texImage2D(gl.TEXTURE_2D, 0, internalformat, width, height, border, format, type, pixels)
+  // TODO: refactor this somehow, so this functionality is paired with the
+  // texture fetch function definitions of GlTiledTextures.
 
   // The only possible `internalformat` is 8-bit: «If pixels is non-null, the type of pixels must match the type of the data to be read. If it is UNSIGNED_BYTE, a Uint8Array or Uint8ClampedArray must be supplied; if it is UNSIGNED_SHORT_5_6_5, UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If the types do not match, an INVALID_OPERATION error is generated.»
 
@@ -627,9 +612,6 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   }
 
   // TODO: int32, uint32, float32
-
-  //   // For 32-bit data:
-  //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, w, h, 0, gl.UNSIGNED_BYTE, imageData);
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
