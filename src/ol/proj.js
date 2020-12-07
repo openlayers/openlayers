@@ -212,20 +212,25 @@ export function getPointResolution(projection, resolution, point, opt_units) {
         projection,
         get('EPSG:4326')
       );
-      let vertices = [
-        point[0] - resolution / 2,
-        point[1],
-        point[0] + resolution / 2,
-        point[1],
-        point[0],
-        point[1] - resolution / 2,
-        point[0],
-        point[1] + resolution / 2,
-      ];
-      vertices = toEPSG4326(vertices, vertices, 2);
-      const width = getDistance(vertices.slice(0, 2), vertices.slice(2, 4));
-      const height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
-      pointResolution = (width + height) / 2;
+      if (toEPSG4326 === identityTransform && units !== Units.DEGREES) {
+        // no transform is available
+        pointResolution = resolution * projection.getMetersPerUnit();
+      } else {
+        let vertices = [
+          point[0] - resolution / 2,
+          point[1],
+          point[0] + resolution / 2,
+          point[1],
+          point[0],
+          point[1] - resolution / 2,
+          point[0],
+          point[1] + resolution / 2,
+        ];
+        vertices = toEPSG4326(vertices, vertices, 2);
+        const width = getDistance(vertices.slice(0, 2), vertices.slice(2, 4));
+        const height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
+        pointResolution = (width + height) / 2;
+      }
       const metersPerUnit = opt_units
         ? METERS_PER_UNIT[opt_units]
         : projection.getMetersPerUnit();
