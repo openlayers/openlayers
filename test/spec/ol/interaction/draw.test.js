@@ -75,9 +75,10 @@ describe('ol.interaction.Draw', function () {
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
    * @param {boolean=} opt_shiftKey Shift key is pressed.
+   * @param {boolean=} opt_pointerId Pointer id.
    * @return {module:ol/MapBrowserEvent} The simulated event.
    */
-  function simulateEvent(type, x, y, opt_shiftKey) {
+  function simulateEvent(type, x, y, opt_shiftKey, opt_pointerId = 0) {
     const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
@@ -90,7 +91,7 @@ describe('ol.interaction.Draw', function () {
     event.shiftKey = shiftKey;
     event.preventDefault = function () {};
     event.pointerType = 'mouse';
-    event.pointerId = 0;
+    event.pointerId = opt_pointerId;
     const simulatedEvent = new MapBrowserEvent(type, map, event);
     map.handleMapBrowserEvent(simulatedEvent);
     return simulatedEvent;
@@ -215,6 +216,17 @@ describe('ol.interaction.Draw', function () {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20, true);
       simulateEvent('pointerup', 10, 20);
+      const features = source.getFeatures();
+      expect(features).to.have.length(0);
+    });
+
+    it('does not draw a point when multiple pointers are involved', function () {
+      simulateEvent('pointerdown', 10, 20, false, 1);
+      simulateEvent('pointerdown', 10, 20, false, 2);
+      simulateEvent('pointermove', 10, 30, false, 1);
+      simulateEvent('pointermove', 10, 10, false, 2);
+      simulateEvent('pointerup', 10, 30, false, 1);
+      simulateEvent('pointerup', 10, 10, false, 2);
       const features = source.getFeatures();
       expect(features).to.have.length(0);
     });
