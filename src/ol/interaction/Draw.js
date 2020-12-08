@@ -1047,18 +1047,17 @@ class Draw extends PointerInteraction {
     }
 
     // Remove last coordinate from sketch drawing (this coordinate follows cursor position)
-    const ending = sketchCoords.pop();
+    sketchCoords.pop();
 
     // Append coordinate list
     for (let i = 0; i < coordinates.length; i++) {
       this.addToDrawing_(coordinates[i]);
     }
 
-    // Duplicate last coordinate for sketch drawing
+    const ending = coordinates[coordinates.length - 1];
+    // Duplicate last coordinate for sketch drawing (cursor position)
     this.addToDrawing_(ending);
-    this.modifyDrawing_(
-      this.downPx_ ? this.getMap().getCoordinateFromPixel(this.downPx_) : ending
-    );
+    this.modifyDrawing_(ending);
   }
 
   /**
