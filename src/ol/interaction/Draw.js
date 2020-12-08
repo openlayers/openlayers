@@ -59,7 +59,8 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * polygon rings and `2` for line strings.
  * @property {import("../events/condition.js").Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
- * boolean to indicate whether the drawing can be finished.
+ * boolean to indicate whether the drawing can be finished. Not used when drawing
+ * POINT or MULTI_POINT geometries.
  * @property {import("../style/Style.js").StyleLike} [style]
  * Style for sketch features.
  * @property {GeometryFunction} [geometryFunction]
@@ -317,25 +318,20 @@ class Draw extends PointerInteraction {
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
         geometryFunction = function (coordinates, geometry, projection) {
-          if (coordinates.length) {
-            const circle = geometry
-              ? /** @type {Circle} */ (geometry)
-              : new Circle([NaN, NaN]);
-            const center = fromUserCoordinate(coordinates[0], projection);
-            const squaredLength = squaredCoordinateDistance(
-              center,
-              fromUserCoordinate(
-                coordinates[coordinates.length - 1],
-                projection
-              )
-            );
-            circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
-            const userProjection = getUserProjection();
-            if (userProjection) {
-              circle.transform(projection, userProjection);
-            }
-            return circle;
+          const circle = geometry
+            ? /** @type {Circle} */ (geometry)
+            : new Circle([NaN, NaN]);
+          const center = fromUserCoordinate(coordinates[0], projection);
+          const squaredLength = squaredCoordinateDistance(
+            center,
+            fromUserCoordinate(coordinates[coordinates.length - 1], projection)
+          );
+          circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
+          const userProjection = getUserProjection();
+          if (userProjection) {
+            circle.transform(projection, userProjection);
           }
+          return circle;
         };
       } else {
         let Constructor;
@@ -585,7 +581,7 @@ class Draw extends PointerInteraction {
     if (this.freehand_) {
       this.downPx_ = event.pixel;
       if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
+        this.startDrawing_(event.coordinate);
       }
       return true;
     } else if (this.condition_(event)) {
@@ -630,13 +626,13 @@ class Draw extends PointerInteraction {
 
       if (this.shouldHandle_) {
         if (!this.finishCoordinate_) {
-          this.startDrawing_(event);
+          this.startDrawing_(event.coordinate);
           if (this.mode_ === Mode.POINT) {
             this.finishDrawing();
           }
         } else if (this.freehand_) {
           this.finishDrawing();
-        } else if (this.atFinish_(event)) {
+        } else if (this.atFinish_(event.pixel)) {
           if (this.finishCondition_(event)) {
             this.finishDrawing();
           }
@@ -652,6 +648,7 @@ class Draw extends PointerInteraction {
     if (!pass && this.stopClick_) {
       event.stopPropagation();
     }
+    this.downPx_ = null;
     return pass;
   }
 
@@ -681,7 +678,7 @@ class Draw extends PointerInteraction {
     }
 
     if (this.finishCoordinate_) {
-      this.modifyDrawing_(event);
+      this.modifyDrawing_(event.coordinate);
     } else {
       this.createOrUpdateSketchPoint_(event);
     }
@@ -689,11 +686,11 @@ class Draw extends PointerInteraction {
 
   /**
    * Determine if an event is within the snapping tolerance of the start coord.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {boolean} The event is within the snapping tolerance of the start.
    * @private
    */
-  atFinish_(event) {
+  atFinish_(pixel) {
     let at = false;
     if (this.sketchFeature_) {
       let potentiallyDone = false;
@@ -710,11 +707,10 @@ class Draw extends PointerInteraction {
         ];
       }
       if (potentiallyDone) {
-        const map = event.map;
+        const map = this.getMap();
         for (let i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
           const finishCoordinate = potentiallyFinishCoordinates[i];
           const finishPixel = map.getPixelFromCoordinate(finishCoordinate);
-          const pixel = event.pixel;
           const dx = pixel[0] - finishPixel[0];
           const dy = pixel[1] - finishPixel[1];
           const snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
@@ -771,12 +767,11 @@ class Draw extends PointerInteraction {
 
   /**
    * Start the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../coordinate.js").Coordinate} start Start coordinate.
    * @private
    */
-  startDrawing_(event) {
-    const start = event.coordinate;
-    const projection = event.map.getView().getProjection();
+  startDrawing_(start) {
+    const projection = this.getMap().getView().getProjection();
     this.finishCoordinate_ = start;
     if (this.mode_ === Mode.POINT) {
       this.sketchCoords_ = start.slice();
@@ -807,20 +802,20 @@ class Draw extends PointerInteraction {
 
   /**
    * Modify the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @private
    */
-  modifyDrawing_(event) {
-    let coordinate = event.coordinate;
+  modifyDrawing_(coordinate) {
+    const map = this.getMap();
     const geometry = this.sketchFeature_.getGeometry();
-    const projection = event.map.getView().getProjection();
+    const projection = map.getView().getProjection();
     let coordinates, last;
     if (this.mode_ === Mode.POINT) {
       last = this.sketchCoords_;
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       last = coordinates[coordinates.length - 1];
-      if (this.atFinish_(event)) {
+      if (this.atFinish_(map.getPixelFromCoordinate(coordinate))) {
         // snap to finish
         coordinate = this.finishCoordinate_.slice();
       }
@@ -896,7 +891,8 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Remove last point of the feature currently being drawn.
+   * Remove last point of the feature currently being drawn. Does not do anything when
+   * drawing POINT or MULTI_POINT geometries.
    * @api
    */
   removeLastPoint() {
@@ -912,12 +908,9 @@ class Draw extends PointerInteraction {
       coordinates.splice(-2, 1);
       if (coordinates.length >= 2) {
         this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
-        if (this.pointerType_ !== 'mouse') {
-          const finishCoordinate = this.finishCoordinate_.slice();
-          coordinates.pop();
-          coordinates.push(finishCoordinate);
-          this.sketchPoint_.setGeometry(new Point(finishCoordinate));
-        }
+        const finishCoordinate = this.finishCoordinate_.slice();
+        coordinates[coordinates.length - 1] = finishCoordinate;
+        this.sketchPoint_.setGeometry(new Point(finishCoordinate));
       }
       this.geometryFunction_(coordinates, geometry, projection);
       if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
@@ -927,17 +920,16 @@ class Draw extends PointerInteraction {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
       const sketchLineGeom = this.sketchLine_.getGeometry();
-      if (coordinates.length >= 2 && this.pointerType_ !== 'mouse') {
+      if (coordinates.length >= 2) {
         const finishCoordinate = coordinates[coordinates.length - 2].slice();
-        coordinates.pop();
-        coordinates.push(finishCoordinate);
+        coordinates[coordinates.length - 1] = finishCoordinate;
         this.sketchPoint_.setGeometry(new Point(finishCoordinate));
       }
       sketchLineGeom.setCoordinates(coordinates);
       this.geometryFunction_(this.sketchCoords_, geometry, projection);
     }
 
-    if (coordinates.length === 0) {
+    if (coordinates.length === 1) {
       this.abortDrawing();
     }
 
@@ -1026,33 +1018,46 @@ class Draw extends PointerInteraction {
    * Append coordinates to the end of the geometry that is currently being drawn.
    * This can be used when drawing LineStrings or Polygons. Coordinates will
    * either be appended to the current LineString or the outer ring of the current
-   * Polygon.
-   * @param {!LineCoordType} coordinates Linear coordinates to be appended into
+   * Polygon. If no geometry is being drawn, a new one will be created.
+   * @param {!LineCoordType} coordinates Linear coordinates to be appended to
    * the coordinate array.
    * @api
    */
   appendCoordinates(coordinates) {
     const mode = this.mode_;
-    let sketchCoords = [];
+    const newDrawing = !this.sketchFeature_;
+    if (newDrawing) {
+      this.startDrawing_(coordinates[0]);
+    }
+    /** @type {LineCoordType} */
+    let sketchCoords;
     if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
-      sketchCoords = /** @type {LineCoordType} */ this.sketchCoords_;
+      sketchCoords = /** @type {LineCoordType} */ (this.sketchCoords_);
     } else if (mode === Mode.POLYGON) {
       sketchCoords =
         this.sketchCoords_ && this.sketchCoords_.length
           ? /** @type {PolyCoordType} */ (this.sketchCoords_)[0]
           : [];
+    } else {
+      return;
+    }
+
+    if (newDrawing) {
+      sketchCoords.shift();
     }
 
     // Remove last coordinate from sketch drawing (this coordinate follows cursor position)
-    const ending = sketchCoords.pop();
+    sketchCoords.pop();
 
     // Append coordinate list
     for (let i = 0; i < coordinates.length; i++) {
       this.addToDrawing_(coordinates[i]);
     }
 
-    // Duplicate last coordinate for sketch drawing
+    const ending = coordinates[coordinates.length - 1];
+    // Duplicate last coordinate for sketch drawing (cursor position)
     this.addToDrawing_(ending);
+    this.modifyDrawing_(ending);
   }
 
   /**
@@ -1140,34 +1145,32 @@ function getDefaultStyleFunction() {
  */
 export function createRegularPolygon(opt_sides, opt_angle) {
   return function (coordinates, opt_geometry, projection) {
-    if (coordinates.length) {
-      const center = fromUserCoordinate(
-        /** @type {LineCoordType} */ (coordinates)[0],
-        projection
-      );
-      const end = fromUserCoordinate(
-        /** @type {LineCoordType} */ (coordinates)[coordinates.length - 1],
-        projection
-      );
-      const radius = Math.sqrt(squaredCoordinateDistance(center, end));
-      const geometry = opt_geometry
-        ? /** @type {Polygon} */ (opt_geometry)
-        : fromCircle(new Circle(center), opt_sides);
+    const center = fromUserCoordinate(
+      /** @type {LineCoordType} */ (coordinates)[0],
+      projection
+    );
+    const end = fromUserCoordinate(
+      /** @type {LineCoordType} */ (coordinates)[coordinates.length - 1],
+      projection
+    );
+    const radius = Math.sqrt(squaredCoordinateDistance(center, end));
+    const geometry = opt_geometry
+      ? /** @type {Polygon} */ (opt_geometry)
+      : fromCircle(new Circle(center), opt_sides);
 
-      let angle = opt_angle;
-      if (!opt_angle && opt_angle !== 0) {
-        const x = end[0] - center[0];
-        const y = end[1] - center[1];
-        angle = Math.atan2(y, x);
-      }
-      makeRegular(geometry, center, radius, angle);
-
-      const userProjection = getUserProjection();
-      if (userProjection) {
-        geometry.transform(projection, userProjection);
-      }
-      return geometry;
+    let angle = opt_angle;
+    if (!opt_angle && opt_angle !== 0) {
+      const x = end[0] - center[0];
+      const y = end[1] - center[1];
+      angle = Math.atan2(y, x);
     }
+    makeRegular(geometry, center, radius, angle);
+
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      geometry.transform(projection, userProjection);
+    }
+    return geometry;
   };
 }
 
@@ -1180,36 +1183,34 @@ export function createRegularPolygon(opt_sides, opt_angle) {
  */
 export function createBox() {
   return function (coordinates, opt_geometry, projection) {
-    if (coordinates.length) {
-      const extent = boundingExtent(
-        /** @type {LineCoordType} */ ([
-          coordinates[0],
-          coordinates[coordinates.length - 1],
-        ]).map(function (coordinate) {
-          return fromUserCoordinate(coordinate, projection);
-        })
-      );
-      const boxCoordinates = [
-        [
-          getBottomLeft(extent),
-          getBottomRight(extent),
-          getTopRight(extent),
-          getTopLeft(extent),
-          getBottomLeft(extent),
-        ],
-      ];
-      let geometry = opt_geometry;
-      if (geometry) {
-        geometry.setCoordinates(boxCoordinates);
-      } else {
-        geometry = new Polygon(boxCoordinates);
-      }
-      const userProjection = getUserProjection();
-      if (userProjection) {
-        geometry.transform(projection, userProjection);
-      }
-      return geometry;
+    const extent = boundingExtent(
+      /** @type {LineCoordType} */ ([
+        coordinates[0],
+        coordinates[coordinates.length - 1],
+      ]).map(function (coordinate) {
+        return fromUserCoordinate(coordinate, projection);
+      })
+    );
+    const boxCoordinates = [
+      [
+        getBottomLeft(extent),
+        getBottomRight(extent),
+        getTopRight(extent),
+        getTopLeft(extent),
+        getBottomLeft(extent),
+      ],
+    ];
+    let geometry = opt_geometry;
+    if (geometry) {
+      geometry.setCoordinates(boxCoordinates);
+    } else {
+      geometry = new Polygon(boxCoordinates);
     }
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      geometry.transform(projection, userProjection);
+    }
+    return geometry;
   };
 }
 
