@@ -9,8 +9,8 @@ import {listenOnce} from '../../events.js';
 
 export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   /**
-   * @param {XYZ} xyz Instance of XYZ tile source for the Terrain-RGB tiles
-   * @param {string=undefined} fetchFuncName Name of the texture fetch function to be defined in the fragment shader code
+   * @param {import("../XYZ.js").default} xyz Instance of XYZ tile source for the Terrain-RGB tiles
+   * @param {string} [fetchFuncName] Name of the texture fetch function to be defined in the fragment shader code
    *
    * A wrapper over a XYZ tile source. Unpacks elevation data from Terrain-RGB-encoded
    * tiles. Expects tiles to follow the Mapbox Terrain-RGB format, as per
@@ -31,10 +31,10 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   }
 
   /**
-   * @param {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate (for the given TileGrid).
-   * @param {import("../size.js").Size} tileSize Tile size.
-   * @param {import("../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
+   * @param {import("../../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
+   * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate (for the given TileGrid).
+   * @param {import("../../size.js").Size} tileSize Tile size.
+   * @param {import("../../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
    *
    * @return {Promise<Uint8ClampedArray>} Decoded elevation data for the requested tile
    */

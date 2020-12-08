@@ -6,12 +6,12 @@ import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 
 export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
   /**
-   * @param {GeoTIFF|Promise<GeoTIFF>} tiff A GeoTIFF.js instance, or a Promise to such.
-   * @param {number=0} sample Which sample (AKA channel) to query (zero-indexed). For WebGL1
+   * @param {import("geotiff").default|Promise<import("geotiff").default>} tiff A GeoTIFF.js instance, or a Promise to such.
+   * @param {number} [sample=0] Which sample (AKA channel) to query (zero-indexed). For WebGL1
    * compatibility, only one channel per instance is allowed.
-   * @param {number=-999} fillValue Value to be used for pixels with no data.
-   * @param {string=undefined} fetchFuncName Name of the texture fetch function to be defined in the fragment shader code
-   * @param {Pool=undefined} pool a GeoTIFF.js worker pool
+   * @param {number} [fillValue=-999] Value to be used for pixels with no data.
+   * @param {string} [fetchFuncName] Name of the texture fetch function to be defined in the fragment shader code
+   * @param {import("geotiff").Pool} [pool] a GeoTIFF.js worker pool
    *
    * A wrapper of GeoTIFF.js functionality. Extracts data from *one* GeoTIFF file
    * in such a way that can be fed to a GlTiles source.
@@ -84,10 +84,10 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
   }
 
   /**
-   * @param {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate (for the given TileGrid).
-   * @param {import("../size.js").Size} tileSize Tile size.
-   * @param {import("../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
+   * @param {import("../../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
+   * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate (for the given TileGrid).
+   * @param {import("../../size.js").Size} tileSize Tile size.
+   * @param {import("../../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
    *
    * @return {Promise<TypedArray>} Data for the requested tile
    */

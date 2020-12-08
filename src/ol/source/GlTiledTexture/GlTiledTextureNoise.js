@@ -6,10 +6,10 @@ import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 
 export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   /**
-   * @param {Object=Uint8Array} arrayType Prototype for the desired TypedArray
-   * @param {Number=0} min Minimum value for the noise
-   * @param {Number=255} max Maximum value for the noise
-   * @param {string=undefined} fetchFuncName Name of the texture fetch function to be defined in the fragment shader code
+   * @param {Object} [arrayType=Uint8Array] Prototype for the desired TypedArray
+   * @param {number} [min=0] Minimum value for the noise
+   * @param {number} [max=255] Maximum value for the noise
+   * @param {string} [fetchFuncName] Name of the texture fetch function to be defined in the fragment shader code
    *
    * A noise generator. Constructor must receive the prototype of a TypedArray
    * (e.g. "Uint8Array" itself, and not an existing typed array). Each tile will

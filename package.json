@@ -68,6 +68,7 @@
     "express": "^4.17.1",
     "front-matter": "^4.0.0",
     "fs-extra": "^9.0.0",
+    "geotiff": "^1.0.0-beta.16",
     "glob": "^7.1.5",
     "globby": "^11.0.0",
     "handlebars": "4.7.6",
