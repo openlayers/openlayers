@@ -2,16 +2,16 @@
  * @module ol/source/GlTiles
  */
 
-import Tile from '../Tile.js';
-import TileState from '../TileState.js';
-import {createCanvasContext2D} from '../dom.js';
-import {toSize} from '../size.js';
-import XYZ from './XYZ.js';
-import TileImage from './TileImage.js';
-import GlTiledTextureAbstract from './GlTiledTexture/GlTiledTextureAbstract.js';
-import {getKeyZXY} from '../tilecoord.js';
 import EventType from '../events/EventType.js';
+import GlTiledTextureAbstract from './GlTiledTexture/GlTiledTextureAbstract.js';
+import Tile from '../Tile.js';
+import TileImage from './TileImage.js';
+import TileState from '../TileState.js';
+import XYZ from './XYZ.js';
+import {createCanvasContext2D} from '../dom.js';
+import {getKeyZXY} from '../tilecoord.js';
 import {listenOnce} from '../events.js';
+import {toSize} from '../size.js';
 
 class GlTile extends Tile {
   /**
@@ -23,22 +23,28 @@ class GlTile extends Tile {
    * @param {Promise[]} texFetches An array of `Promise`s for each of the textures to be fetched for this tile.
    * @param {WbGLTexture[]} textures An array of already-instantiated `WebGLTexture`s
    */
-  constructor(tileCoord, tileSize, tileExtent, gl, texFetches = [], textures = []) {
-
+  constructor(
+    tileCoord,
+    tileSize,
+    tileExtent,
+    gl,
+    texFetches = [],
+    textures = []
+  ) {
     super(tileCoord, TileState.LOADING);
 
     /**
-    * @private
-    * @type {import("../size.js").Size}
-    */
+     * @private
+     * @type {import("../size.js").Size}
+     */
     this.tileSize_ = tileSize;
 
     this.ctx2d_ = createCanvasContext2D(tileSize[0], tileSize[1]);
 
     /**
-    * @private
-    * @type {HTMLCanvasElement}
-    */
+     * @private
+     * @type {HTMLCanvasElement}
+     */
     this.canvas_ = this.ctx2d_.canvas;
 
     this.gl = gl;
@@ -48,26 +54,28 @@ class GlTile extends Tile {
 
     this.textures_ = textures;
 
-    Promise.all(texFetches).then(fetchedTexts =>{
-      this.fetchedTexts_ = fetchedTexts;
-      this.render();
-      this.setState(TileState.LOADED);
-    }).catch(()=>{
-      this.setState(TileState.ERROR);
-    });
+    Promise.all(texFetches)
+      .then((fetchedTexts) => {
+        this.fetchedTexts_ = fetchedTexts;
+        this.render();
+        this.setState(TileState.LOADED);
+      })
+      .catch(() => {
+        this.setState(TileState.ERROR);
+      });
   }
 
   /**
-  * Get the image element for this tile.
-  * @return {HTMLCanvasElement} Image.
-  */
+   * Get the image element for this tile.
+   * @return {HTMLCanvasElement} Image.
+   */
   getImage() {
     return this.canvas_;
   }
 
   /**
-  * @override
-  */
+   * @override
+   */
   load() {}
 
   /**
@@ -77,22 +85,41 @@ class GlTile extends Tile {
    * @return {HTMLCanvasElement} Image.
    */
   render() {
-    if (!this.fetchedTexts_) { return; }
+    if (!this.fetchedTexts_) {
+      return;
+    }
 
     const gl = this.gl;
     const tileSize = this.tileSize_;
 
     // Attach textures to the tile source's already-defined texture buffers
     for (const i in this.fetchedTexts_) {
-      if (this.fetchedTexts_[i] instanceof HTMLImageElement ||
+      if (
+        this.fetchedTexts_[i] instanceof HTMLImageElement ||
         this.fetchedTexts_[i] instanceof ImageData
       ) {
-        bindTextureImageData(gl, this.textures_[i], Number(i), this.fetchedTexts_[i]);
+        bindTextureImageData(
+          gl,
+          this.textures_[i],
+          Number(i),
+          this.fetchedTexts_[i]
+        );
       } else if (this.fetchedTexts_[i].BYTES_PER_ELEMENT) {
         // This looks like a TypedArray, from GlTiledTexture
-        bindTextureTypedArray(gl, this.textures_[i], Number(i), this.fetchedTexts_[i], tileSize[0], tileSize[1]);
+        bindTextureTypedArray(
+          gl,
+          this.textures_[i],
+          Number(i),
+          this.fetchedTexts_[i],
+          tileSize[0],
+          tileSize[1]
+        );
       } else {
-        throw new Error('Could not attach texture ' + i + ': not an HTMLImageElement or a TypedArray');
+        throw new Error(
+          'Could not attach texture ' +
+            i +
+            ': not an HTMLImageElement or a TypedArray'
+        );
       }
     }
 
@@ -121,7 +148,6 @@ class GlTile extends Tile {
   }
 }
 
-
 /**
  * @typedef {Object} Options
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Optional projection.
@@ -143,7 +169,6 @@ class GlTile extends Tile {
  * initial values. Values must be a `Number` or an `Array` of up to four `Number`s.
  */
 
-
 /**
  * @classdesc
  * A pseudo tile source which runs a WebGL1 shader on its defined GlTiledTextures.
@@ -160,17 +185,24 @@ class GlTiles extends XYZ {
      */
     const options = opt_options || {};
 
-    super(Object.assign({},{
-      opaque: false,
-      wrapX: options.wrapX !== undefined ? options.wrapX : true,
-    }, options));
+    super(
+      Object.assign(
+        {},
+        {
+          opaque: false,
+          wrapX: options.wrapX !== undefined ? options.wrapX : true,
+        },
+        options
+      )
+    );
 
-    this.fragmentShader = options.fragmentShader || 'void main(void) {gl_FragColor = vec4(0.2,0.2,0.2,1.0);}';
+    this.fragmentShader =
+      options.fragmentShader ||
+      'void main(void) {gl_FragColor = vec4(0.2,0.2,0.2,1.0);}';
 
     this.uniforms = options.uniforms || {};
 
     this.texSources = options.textureSources || [];
-
 
     /// Check whether the tileGrid has one tile size, or multiple tile sizes (one per
     /// zoom level, as per some WMTS implementations and some hand-tweaked GeoTIFF
@@ -183,14 +215,18 @@ class GlTiles extends XYZ {
       tileSize = toSize(this.tileGrid.getTileSize());
     } else {
       // Several tileSizes for this TileGrid; find the largest dimensions
-      this.tileGrid.tileSizes_.forEach((s)=>{
+      this.tileGrid.tileSizes_.forEach((s) => {
         const size = toSize(s);
-        if (size[0] > tileSize[0]) { tileSize[0] = size[0]; }
-        if (size[1] > tileSize[1]) { tileSize[1] = size[1]; }
+        if (size[0] > tileSize[0]) {
+          tileSize[0] = size[0];
+        }
+        if (size[1] > tileSize[1]) {
+          tileSize[1] = size[1];
+        }
       });
     }
 
-    this._programReady = new Promise((res)=>{
+    this._programReady = new Promise((res) => {
       this._markProgramAsReady = res;
     });
 
@@ -202,47 +238,54 @@ class GlTiles extends XYZ {
 
     this._gl =
       this._renderer.getContext('webgl', {
-        premultipliedAlpha: false
+        premultipliedAlpha: false,
       }) ||
       this._renderer.getContext('experimental-webgl', {
-        premultipliedAlpha: false
+        premultipliedAlpha: false,
       });
     this._gl.viewportWidth = tileSize[0];
     this._gl.viewportHeight = tileSize[1];
 
-    this._maxTextures = this._gl.getParameter(this._gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+    this._maxTextures = this._gl.getParameter(
+      this._gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS
+    );
     if (this.texSources.length > this._maxTextures) {
       // This might show up when running on a browser+GPU configuration allowing for
       // a maximum of 8 textures, but loading 9 or more, e.g. all samples from a Sentinel-2
       // imagery granule.
-      console.warn(`This WebGL implementation allows for a maximum of ${this._maxTextures}, but ${this.texSources.length} are being used. Some textures SHALL be dropped.`);
+      /* eslint-disable-next-line no-console */
+      console.warn(
+        `This WebGL implementation allows for a maximum of ${this._maxTextures}, but ${this.texSources.length} are being used. Some textures SHALL be dropped.`
+      );
     }
 
     // A `Promise` that resolves when all the `GlTiledTexture`s have reported their
     // fetchFunc definition. This is needed to know the fetch function definitions of
     // all GlTiledTextures, which might need some information from the network (e.g.
     // GeoTIFF headers) to be known.
-    this._fetchFuncDefs = Promise.all(this.texSources.map((glTex, i)=>{
-      if (glTex instanceof GlTiledTextureAbstract) {
-        return glTex.getFetchFunctionDef(`uTexture${i}`);
-      } else {
-        // Any other image-based tile source, e.g. XYZ image tiles, do not have
-        // a fetch function
-        return "";
-      }
-    }));
+    this._fetchFuncDefs = Promise.all(
+      this.texSources.map((glTex, i) => {
+        if (glTex instanceof GlTiledTextureAbstract) {
+          return glTex.getFetchFunctionDef(`uTexture${i}`);
+        } else {
+          // Any other image-based tile source, e.g. XYZ image tiles, do not have
+          // a fetch function
+          return '';
+        }
+      })
+    );
 
     // Init texture units (before program load) so that early tiles can access them.
     this.textures_ = [];
     for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
       this.textures_[i] = this._gl.createTexture();
     }
-    this._fetchFuncDefs.then((defs)=>this.loadGLProgram_(defs));
+    this._fetchFuncDefs.then((defs) => this.loadGLProgram_(defs));
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   getTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {
@@ -252,25 +295,26 @@ class GlTiles extends XYZ {
       const tileCoord = [z, x, y];
 
       // Get the projected coords for the tile
-      const tileExtent = this.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent_);
+      const tileExtent = this.getTileGrid().getTileCoordExtent(
+        tileCoord,
+        this.tmpExtent_
+      );
       const texFetches = [];
 
       for (const i in this.texSources) {
         if (this.texSources[i] instanceof TileImage) {
           // For image-based tile sources, wrap the load/error events into a promise
-          texFetches[i] = new Promise((res, rej)=>{
+          texFetches[i] = new Promise((res, rej) => {
             const tile = this.texSources[i].getTile(z, x, y);
 
-            listenOnce(tile.getImage(), EventType.LOAD, (ev)=>{
+            listenOnce(tile.getImage(), EventType.LOAD, (ev) => {
               // For whatever reason, some browsers (e.g. Chromium) do not follow the
               // DOM events standard and do not have the ev.target property. Fall back
               // to ev.path[0] in that case.
               res(ev.target || ev.path[0]);
-              // console.log('texture source tile loaded: ',ev);
             });
-            listenOnce(tile.getImage(), EventType.ERROR, (ev)=>{
+            listenOnce(tile.getImage(), EventType.ERROR, (ev) => {
               rej(ev.target || ev.path[0]);
-              // console.log('texture source errored: ',ev);
             });
 
             tile.load();
@@ -278,19 +322,33 @@ class GlTiles extends XYZ {
         } else if (this.texSources[i] instanceof GlTiledTextureAbstract) {
           // For GeoTIFFs (and the like), the specific class shall return a Promise
           // to a TypedArray.
-          texFetches[i] = this.texSources[i].getTiledData(this.getTileGrid(),tileCoord,tileSize,tileExtent);
+          texFetches[i] = this.texSources[i].getTiledData(
+            this.getTileGrid(),
+            tileCoord,
+            tileSize,
+            tileExtent
+          );
         } else {
-          throw new Error('GLTiles expected a TileImage source or a GlTiledTexture (e.g. GeoTIFF), got:' + this.texSources[i]);
+          throw new Error(
+            'GLTiles expected a TileImage source or a GlTiledTexture (e.g. GeoTIFF), got:' +
+              this.texSources[i]
+          );
         }
         // Delay all texture fetching until the fetch function defs are resolved
         const tmp = texFetches[i];
-        texFetches[i] = this._programReady.then(()=>tmp);
+        texFetches[i] = this._programReady.then(() => tmp);
       }
-
 
       // Instantiate tile, pass an array of texfetches for this particular tile,
       // and the instances of WebGLTexture (so they can be re-put into the texture units)
-      const tile = new GlTile(tileCoord, tileSize, this.projection_, this._gl, texFetches, this.textures_);
+      const tile = new GlTile(
+        tileCoord,
+        tileSize,
+        this.projection_,
+        this._gl,
+        texFetches,
+        this.textures_
+      );
 
       // Listen to the tile when it has finished loading, mark the tile layer as
       // changed in order to trigger a redraw
@@ -300,7 +358,6 @@ class GlTiles extends XYZ {
       return tile;
     }
   }
-
 
   // Takes as the only argument the texture fetch function definitions, an array of `String`s
   // Compils the shaders and (re-)attaches the attribute+uniform locations
@@ -340,7 +397,7 @@ class GlTiles extends XYZ {
     }
 
     fragmentShaderHeader += this.getUniformSizes_();
-    fragmentShaderHeader += defs.join("\n");
+    fragmentShaderHeader += defs.join('\n');
     fragmentShaderHeader += '\n#line 1\n';
 
     this._glProgram = gl.createProgram();
@@ -369,10 +426,19 @@ class GlTiles extends XYZ {
 
     // There will be four vec2 vertex attributes per vertex - aCRSCoords and
     // aTextureCoords
-    this._aVertexPosition = gl.getAttribLocation(this._glProgram, 'aVertexCoords');
-    this._aTexPosition = gl.getAttribLocation(this._glProgram, 'aTextureCoords');
+    this._aVertexPosition = gl.getAttribLocation(
+      this._glProgram,
+      'aVertexCoords'
+    );
+    this._aTexPosition = gl.getAttribLocation(
+      this._glProgram,
+      'aTextureCoords'
+    );
     this._aCRSPosition = gl.getAttribLocation(this._glProgram, 'aCRSCoords');
-    this._aLatLngPosition = gl.getAttribLocation(this._glProgram, 'aLatLngCoords');
+    this._aLatLngPosition = gl.getAttribLocation(
+      this._glProgram,
+      'aLatLngCoords'
+    );
 
     this.initUniforms_(this._glProgram);
 
@@ -400,12 +466,11 @@ class GlTiles extends XYZ {
     this._TexCoordsBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this._TexCoordsBuffer);
 
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      1.0, 0.0,
-      0.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0
-    ]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0]),
+      gl.STATIC_DRAW
+    );
     if (this._aTexPosition !== -1) {
       gl.enableVertexAttribArray(this._aTexPosition);
       gl.vertexAttribPointer(this._aTexPosition, 2, gl.FLOAT, false, 8, 0);
@@ -414,12 +479,11 @@ class GlTiles extends XYZ {
     this._VertexCoordsBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this._VertexCoordsBuffer);
 
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      1, 1,
-      -1, 1,
-      1, -1,
-      -1, -1
-    ]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([1, 1, -1, 1, 1, -1, -1, -1]),
+      gl.STATIC_DRAW
+    );
     if (this._aVertexPosition !== -1) {
       gl.enableVertexAttribArray(this._aVertexPosition);
       gl.vertexAttribPointer(this._aVertexPosition, 2, gl.FLOAT, false, 8, 0);
@@ -427,14 +491,12 @@ class GlTiles extends XYZ {
 
     // Init textures
     for (let i = 0; i < this.texSources.length && i < this._maxTextures; i++) {
-//       this.textures_[i] = gl.createTexture();  // Done earlier
+      //       this.textures_[i] = gl.createTexture();  // Done earlier
       gl.uniform1i(gl.getUniformLocation(this._glProgram, 'uTexture' + i), i);
     }
 
-    //console.log("Marking program as ready");
     this._markProgramAsReady();
   }
-
 
   // Looks at the size of the default values given for the uniforms.
   // Returns a string valid for defining the uniforms in the header of the
@@ -455,7 +517,8 @@ class GlTiles extends XYZ {
         if (defaultValue.length === 1) {
           defs += 'uniform float ' + uniformName + ';\n';
         } else {
-          defs += 'uniform vec' + defaultValue.length + ' ' + uniformName + ';\n';
+          defs +=
+            'uniform vec' + defaultValue.length + ' ' + uniformName + ';\n';
         }
       } else {
         throw new Error(
@@ -465,7 +528,6 @@ class GlTiles extends XYZ {
     }
     return defs;
   }
-
 
   // Inits the uNow uniform, and the user-provided uniforms, given the current GL program.
   // TODO: Sets the _isReRenderable property if there are any set uniforms.
@@ -481,7 +543,10 @@ class GlTiles extends XYZ {
 
     this._uniformLocations = {};
     for (const uniformName in this.uniforms) {
-      this._uniformLocations[uniformName] = gl.getUniformLocation(this._glProgram, uniformName);
+      this._uniformLocations[uniformName] = gl.getUniformLocation(
+        this._glProgram,
+        uniformName
+      );
       this.setUniform(uniformName, this.uniforms[uniformName]);
       // this._isReRenderable = true;
     }
@@ -511,7 +576,9 @@ class GlTiles extends XYZ {
         this._gl.uniform4fv(this._uniformLocations[name], value);
         break;
       default:
-        throw new Error('Value for setUniform() must be a Number or an Array of up to 4 Numbers');
+        throw new Error(
+          'Value for setUniform() must be a Number or an Array of up to 4 Numbers'
+        );
     }
     if (rerender) {
       this.reRender();
@@ -526,63 +593,67 @@ class GlTiles extends XYZ {
     // try flushing them from cache instead.
 
     if (this.isReRendering_) {
-      console.log("Delaying rerender");
       window.cancelAnimationFrame(this.reRenderAnimFrame_);
-      return this.reRenderAnimFrame_ = window.requestAnimationFrame(()=>this.reRender());
+      this.reRenderAnimFrame_ = window.requestAnimationFrame(() =>
+        this.reRender()
+      );
+    } else {
+      this.isReRendering_ = true;
+
+      this.tileCache.forEach((tile, key) => {
+        tile.render();
+      });
+
+      this.changed();
+      this.isReRendering_ = false;
     }
-
-    console.time("gltiles re-render");
-    this.isReRendering_ = true;
-
-    let i=0;
-
-    const pending = [];
-
-    this.tileCache.forEach((tile, key)=>{
-      tile.render();
-    });
-
-    this.changed();
-
-    this.isReRendering_ = false;
   }
 }
 
-
 /**
-  * Helper function. Binds a ImageData (HTMLImageElement, HTMLCanvasElement or
-  * ImageBitmap) to a texture, given its index (0 to 7).
-  * @param {WebGLContext} gl The GL context to work in
-  * @param {WebGLTexture} texture The 0-indexed texture index
-  * @param {number} index The 0-indexed texture index
-  * @param {ImageData} imageData An instance of ImageData with the 8-bit RGBA data
-  * @return {undefined}
-  */
+ * Helper function. Binds a ImageData (HTMLImageElement, HTMLCanvasElement or
+ * ImageBitmap) to a texture, given its index (0 to 7).
+ * @param {WebGLContext} gl The GL context to work in
+ * @param {WebGLTexture} texture The 0-indexed texture index
+ * @param {number} index The 0-indexed texture index
+ * @param {ImageData} imageData An instance of ImageData with the 8-bit RGBA data
+ * @return {undefined}
+ */
 function bindTextureImageData(gl, texture, index, imageData) {
   gl.activeTexture(gl.TEXTURE0 + index);
   gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    imageData
+  );
+  gl.texParameteri(
+    gl.TEXTURE_2D,
+    gl.TEXTURE_MIN_FILTER,
+    gl.LINEAR_MIPMAP_NEAREST
+  );
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.generateMipmap(gl.TEXTURE_2D);
 }
 
-
 /**
-  * Helper function. Binds a TypedArray to a texture, given its index (0 to 7).
-  *
-  * See https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.14.8
-  *
-  * @param {WebGLContext} gl The GL context to work in
-  * @param {WebGLTexture} texture The 0-indexed texture index
-  * @param {number} index The 0-indexed texture index
-  * @param {TypedArray} arr A TypedArray with 8-bit, 16-bit or 32-bit data
-  * @param {number} w Width of the texture
-  * @param {number} h Height of the texture
-  * @return {undefined}
-  */
+ * Helper function. Binds a TypedArray to a texture, given its index (0 to 7).
+ *
+ * See https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.14.8
+ *
+ * @param {WebGLContext} gl The GL context to work in
+ * @param {WebGLTexture} texture The 0-indexed texture index
+ * @param {number} index The 0-indexed texture index
+ * @param {TypedArray} arr A TypedArray with 8-bit, 16-bit or 32-bit data
+ * @param {number} w Width of the texture
+ * @param {number} h Height of the texture
+ * @return {undefined}
+ */
 function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   // TODO: refactor this somehow, so this functionality is paired with the
   // texture fetch function definitions of GlTiledTextures.
@@ -597,18 +668,51 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   if (arr instanceof Uint8Array || arr instanceof Uint8ClampedArray) {
     // For 8-bit data:
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, w, h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, arr);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.LUMINANCE,
+      w,
+      h,
+      0,
+      gl.LUMINANCE,
+      gl.UNSIGNED_BYTE,
+      arr
+    );
   } else if (arr instanceof Int16Array) {
     /// FIXME: investigate negative values
     // For 16-bit int data:
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, w, h, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, castArr);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.LUMINANCE_ALPHA,
+      w,
+      h,
+      0,
+      gl.LUMINANCE_ALPHA,
+      gl.UNSIGNED_BYTE,
+      castArr
+    );
   } else if (arr instanceof Uint16Array) {
     // For 16-bit int data:
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, w, h, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, castArr);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.LUMINANCE_ALPHA,
+      w,
+      h,
+      0,
+      gl.LUMINANCE_ALPHA,
+      gl.UNSIGNED_BYTE,
+      castArr
+    );
   } else {
-    console.warn("Unimplemented datatype for dumping data into texture, ", arr);
+    throw new Error(
+      'Unimplemented datatype for dumping data into texture, ',
+      arr
+    );
   }
 
   // TODO: int32, uint32, float32
@@ -619,6 +723,5 @@ function bindTextureTypedArray(gl, texture, index, arr, w, h) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.generateMipmap(gl.TEXTURE_2D);
 }
-
 
 export default GlTiles;

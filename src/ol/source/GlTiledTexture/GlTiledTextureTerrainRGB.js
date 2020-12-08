@@ -1,7 +1,7 @@
-import GlTiledTextureAbstract from './GlTiledTextureAbstract.js'
+import EventType from '../../events/EventType.js';
+import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listenOnce} from '../../events.js';
-import EventType from '../../events/EventType.js';
 
 /**
  * @module ol/source/GlTiles
@@ -10,6 +10,7 @@ import EventType from '../../events/EventType.js';
 export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   /**
    * @param {XYZ} xyz Instance of XYZ tile source for the Terrain-RGB tiles
+   * @param {string=undefined} fetchFuncName Name of the texture fetch function to be defined in the fragment shader code
    *
    * A wrapper over a XYZ tile source. Unpacks elevation data from Terrain-RGB-encoded
    * tiles. Expects tiles to follow the Mapbox Terrain-RGB format, as per
@@ -23,7 +24,7 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
     // Create a canvas context the size of the XYZ tile source, just to be able
     // to run getImageData() to fetch pixel values.
     let tileSize = xyz.tileGrid.tileSize_;
-    if (typeof tileSize === "number") {
+    if (typeof tileSize === 'number') {
       tileSize = [tileSize, tileSize];
     }
     this.ctx_ = createCanvasContext2D(tileSize[0], tileSize[1]);
@@ -35,11 +36,10 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
    * @param {import("../size.js").Size} tileSize Tile size.
    * @param {import("../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
    *
-   * @return {Promise<Uint8ClampedArray>}
+   * @return {Promise<Uint8ClampedArray>} Decoded elevation data for the requested tile
    */
   getTiledData(tileGrid, tileCoord, tileSize, tileExtent) {
-
-    return new Promise((res, rej)=>{
+    return new Promise((res, rej) => {
       /**
        * TODO: Sanity checks on tileGrid, tileSize; they should match those of the XYZ
        * tile source.
@@ -47,16 +47,29 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
 
       const tile = this.xyz.getTile(tileCoord[0], tileCoord[1], tileCoord[2]);
 
-      listenOnce(tile.getImage(), EventType.LOAD, (ev)=>{
+      listenOnce(tile.getImage(), EventType.LOAD, (ev) => {
         const img = ev.target || ev.path[0];
 
-        this.ctx_.drawImage(img,
-                            0, 0, tileSize[0], tileSize[1],
-                            0, 0, tileSize[0], tileSize[1]);
-        const imageData = this.ctx_.getImageData(0, 0, tileSize[0], tileSize[1]);
+        this.ctx_.drawImage(
+          img,
+          0,
+          0,
+          tileSize[0],
+          tileSize[1],
+          0,
+          0,
+          tileSize[0],
+          tileSize[1]
+        );
+        const imageData = this.ctx_.getImageData(
+          0,
+          0,
+          tileSize[0],
+          tileSize[1]
+        );
         res(imageData);
       });
-      listenOnce(tile.getImage(), EventType.ERROR, (ev)=>{
+      listenOnce(tile.getImage(), EventType.ERROR, (ev) => {
         rej(ev.target || ev.path[0]);
       });
 
@@ -67,8 +80,10 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   // Returns the GLSL implementation of the Mapbox Terrain-RGB decode implementation,
   // also taking into account normalization of byte values (0..255 to 0..1)
   // height = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1)
-  getFetchFunctionDef(uniformName){
-    if (!this.fetchFuncName_) { return ""; }
+  getFetchFunctionDef(uniformName) {
+    if (!this.fetchFuncName_) {
+      return '';
+    }
     return Promise.resolve(`float ${this.fetchFuncName_}(vec2 texelCoords) {
       vec4 texel = texture2D(${uniformName}, texelCoords.st);
       return -10000. + (
@@ -78,5 +93,4 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
       ) * 25.5;
     }`);
   }
-
 }

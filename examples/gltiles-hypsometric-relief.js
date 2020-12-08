@@ -1,14 +1,8 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {OSM, GlTiles, XYZ} from '../src/ol/source.js';
 import GlTiledTextureTerrainRGB from '../src/ol/source/GlTiledTexture/GlTiledTextureTerrainRGB.js';
-
-import Projection from '../src/ol/proj/Projection.js';
-import {register} from '../src/ol/proj/proj4.js';
-import MousePosition from '../src/ol/control/MousePosition';
-import {createStringXY} from '../src/ol/coordinate';
-import {defaults as defaultControls} from '../src/ol/control';
+import Map from '../src/ol/Map.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import View from '../src/ol/View.js';
+import {GlTiles, XYZ} from '../src/ol/source.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 // This MapTiler API key is only valid for the OpenLayers examples page
@@ -21,7 +15,7 @@ const elevation = new XYZ({
   tileSize: 512,
 });
 
-const terrainTexture = new GlTiledTextureTerrainRGB(elevation, "getElevation");
+const terrainTexture = new GlTiledTextureTerrainRGB(elevation, 'getElevation');
 
 const reliefShader = `
 const float pxSize = 1./512.;
@@ -85,31 +79,29 @@ void main(void) {
 }
 `;
 
-var glSource = new GlTiles({
-	fragmentShader: reliefShader,
-	textureSources: [
-    terrainTexture,
-  ],
-	attributions: 'Terrain-RGB data by <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>',
-	uniforms: {
+const glSource = new GlTiles({
+  fragmentShader: reliefShader,
+  textureSources: [terrainTexture],
+  attributions:
+    'Terrain-RGB data by <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>',
+  uniforms: {
     uVerticalExaggeration: 1,
-//     uSunElevation: 45,
-    uSinSunElevation: Math.sin( 45 * Math.PI / 180),
-    uCosSunElevation: Math.cos( 45 * Math.PI / 180),
-    uSunAzimuth: 45 * Math.PI / 180
+    //     uSunElevation: 45,
+    uSinSunElevation: Math.sin((45 * Math.PI) / 180),
+    uCosSunElevation: Math.cos((45 * Math.PI) / 180),
+    uSunAzimuth: (45 * Math.PI) / 180,
   },
   tileSize: 512,
-  maxZoom: 10
+  maxZoom: 10,
 });
 
-
 const map = new Map({
-	layers: [
-		new TileLayer({
-			source: glSource,
-		})
-	],
-	target: 'map',
+  layers: [
+    new TileLayer({
+      source: glSource,
+    }),
+  ],
+  target: 'map',
   view: new View({
     center: fromLonLat([-5, 40]),
     maxZoom: 16,
@@ -117,27 +109,28 @@ const map = new Map({
   }),
 });
 
-
-
 const sliderExaggeration = document.getElementById('vert');
-sliderExaggeration.addEventListener('input', function(){
+sliderExaggeration.addEventListener('input', function () {
   glSource.setUniform('uVerticalExaggeration', sliderExaggeration.value);
   document.getElementById('vertOut').innerText = sliderExaggeration.value;
 });
 
 const sliderSunEl = document.getElementById('sunEl');
-sliderSunEl.addEventListener('input', function(){
-  glSource.setUniform('uSinSunElevation', Math.sin(sliderSunEl.value * Math.PI / 180), false);
-  glSource.setUniform('uCosSunElevation', Math.cos(sliderSunEl.value * Math.PI / 180));
+sliderSunEl.addEventListener('input', function () {
+  glSource.setUniform(
+    'uSinSunElevation',
+    Math.sin((sliderSunEl.value * Math.PI) / 180),
+    false
+  );
+  glSource.setUniform(
+    'uCosSunElevation',
+    Math.cos((sliderSunEl.value * Math.PI) / 180)
+  );
   document.getElementById('sunElOut').innerText = sliderSunEl.value;
 });
 
 const sliderSunAz = document.getElementById('sunAz');
-sliderSunAz.addEventListener('input', function(){
-  glSource.setUniform('uSunAzimuth', sliderSunAz.value * Math.PI / 180);
+sliderSunAz.addEventListener('input', function () {
+  glSource.setUniform('uSunAzimuth', (sliderSunAz.value * Math.PI) / 180);
   document.getElementById('sunAzOut').innerText = sliderSunAz.value;
 });
-
-
-
-
