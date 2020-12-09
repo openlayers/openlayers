@@ -52,7 +52,7 @@ class DoubleClickZoom extends Interaction {
       const delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
       const view = map.getView();
       zoomByDelta(view, delta, anchor, this.duration_);
-      mapBrowserEvent.preventDefault();
+      browserEvent.preventDefault();
       stopEvent = true;
     }
     return !stopEvent;

@@ -178,10 +178,9 @@ class MouseWheelZoom extends Interaction {
       return true;
     }
 
-    mapBrowserEvent.preventDefault();
-
     const map = mapBrowserEvent.map;
     const wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
+    wheelEvent.preventDefault();
 
     if (this.useAnchor_) {
       this.lastAnchor_ = mapBrowserEvent.coordinate;
