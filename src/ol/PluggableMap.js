@@ -1029,7 +1029,7 @@ class PluggableMap extends BaseObject {
           continue;
         }
         const cont = interaction.handleEvent(mapBrowserEvent);
-        if (!cont) {
+        if (!cont || mapBrowserEvent.propagationStopped) {
           break;
         }
       }

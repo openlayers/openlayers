@@ -12,6 +12,7 @@ import MapEvent from '../../../src/ol/MapEvent.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
+import Select from '../../../src/ol/interaction/Select.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import TileLayerRenderer from '../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
@@ -1092,6 +1093,24 @@ describe('ol.Map', function () {
       expect(callCount).to.be(1);
       expect(spy.callCount).to.be(0);
       spy.restore();
+    });
+
+    it('does not call handleEvent on interaction when MapBrowserEvent propagation stopped', function () {
+      const select = new Select();
+      const selectStub = sinon.stub(select, 'handleEvent');
+      selectStub.callsFake(function (e) {
+        e.stopPropagation();
+        return true;
+      });
+      map.addInteraction(select);
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(spy.callCount).to.be(0);
+      expect(selectStub.callCount).to.be(1);
+      spy.restore();
+      selectStub.restore();
     });
   });
 });

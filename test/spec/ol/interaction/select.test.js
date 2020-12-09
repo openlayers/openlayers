@@ -105,6 +105,9 @@ describe('ol.interaction.Select', function () {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey,
+      stopPropagation: () => {
+        event.propagationStopped = true;
+      },
     };
     map.handleMapBrowserEvent(new MapBrowserEvent(type, map, event));
   }
@@ -456,6 +459,57 @@ describe('ol.interaction.Select', function () {
         simulateEvent('singleclick', 10, -20, false);
 
         expect(listenerSpy.callCount).to.be(1);
+      });
+    });
+  });
+
+  describe('supports stop propagation', function () {
+    let firstInteraction, secondInteraction;
+
+    beforeEach(function () {
+      firstInteraction = new Select();
+      secondInteraction = new Select();
+
+      map.addInteraction(firstInteraction);
+      // note second interaction added to map last
+      map.addInteraction(secondInteraction);
+    });
+
+    afterEach(function () {
+      map.removeInteraction(firstInteraction);
+      map.removeInteraction(secondInteraction);
+    });
+
+    //base case sanity check
+    describe('without stop propagation', function () {
+      it('both interactions dispatch select', function () {
+        const firstSelectSpy = sinon.spy();
+        firstInteraction.on('select', firstSelectSpy);
+
+        const secondSelectSpy = sinon.spy();
+        secondInteraction.on('select', secondSelectSpy);
+
+        simulateEvent('singleclick', 10, -20);
+
+        expect(firstSelectSpy.callCount).to.be(1);
+        expect(secondSelectSpy.callCount).to.be(1);
+      });
+    });
+
+    describe('calling stop propagation', function () {
+      it('only "last" added interaction dispatches select', function () {
+        const firstSelectSpy = sinon.spy();
+        firstInteraction.on('select', firstSelectSpy);
+
+        const secondSelectSpy = sinon.spy(function (e) {
+          e.mapBrowserEvent.stopPropagation();
+        });
+        secondInteraction.on('select', secondSelectSpy);
+
+        simulateEvent('singleclick', 10, -20);
+
+        expect(firstSelectSpy.callCount).to.be(0);
+        expect(secondSelectSpy.callCount).to.be(1);
       });
     });
   });
