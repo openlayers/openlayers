@@ -415,18 +415,9 @@ describe('ol.proj', function () {
         code: 'foo',
         units: 'ft',
       });
-      let pointResolution = getPointResolution(
-        projection,
-        2,
-        [0, 0]
-      );
+      let pointResolution = getPointResolution(projection, 2, [0, 0]);
       expect(pointResolution).to.be(2);
-      pointResolution = getPointResolution(
-        projection,
-        2,
-        [0, 0],
-        'm'
-      );
+      pointResolution = getPointResolution(projection, 2, [0, 0], 'm');
       expect(pointResolution).to.be(0.6096);
     });
   });
