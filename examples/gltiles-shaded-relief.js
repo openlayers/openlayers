@@ -8,13 +8,15 @@ import {GlTiles, OSM, XYZ} from '../src/ol/source.js';
 // Get your own!!
 const key = 'F0p8KPTwWvEEc5jKmckC';
 
-const elevation = new XYZ({
-  url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-  crossOrigin: 'anonymous',
-  tileSize: 512,
+const terrainTexture = new GlTiledTextureTerrainRGB({
+  xyz: new XYZ({
+    url:
+      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+    crossOrigin: 'anonymous',
+    tileSize: 512,
+  }),
+  fetchFuncName: 'getElevation',
 });
-
-const terrainTexture = new GlTiledTextureTerrainRGB(elevation, 'getElevation');
 
 const reliefShader = `
 const float pxSize = 1./512.;
@@ -25,6 +27,7 @@ void main(void) {
   float elevationNorth = getElevation(vTextureCoords.st + vec2(0., pxSize));
   float elevationSouth = getElevation(vTextureCoords.st + vec2(0., -pxSize));
   float elevationEast = getElevation(vTextureCoords.st + vec2(pxSize, 0.));
+  // Note that this shader fetches data from neighboring pixels
   float elevationWest = getElevation(vTextureCoords.st + vec2(-pxSize, 0.));
 
   float deltaSN = (elevationNorth - elevationSouth) * uVerticalExaggeration * pxSize;

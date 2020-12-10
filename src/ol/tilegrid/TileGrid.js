@@ -568,6 +568,31 @@ class TileGrid {
   }
 
   /**
+   * Returns a `import("../size.js").Size` large enough to accommodate the
+   * largest tile size found in this grid.
+   * @return {number|import("../size.js").Size} Tile size.
+   * @api
+   */
+  getLargestTileSize() {
+    if (this.tileSize_) {
+      return toSize(this.tileSize_);
+    } else {
+      const maxSize = [0, 0];
+
+      this.tileSizes_.forEach((s) => {
+        const size = toSize(s);
+        if (size[0] > maxSize[0]) {
+          maxSize[0] = size[0];
+        }
+        if (size[1] > maxSize[1]) {
+          maxSize[1] = size[1];
+        }
+      });
+      return toSize(maxSize);
+    }
+  }
+
+  /**
    * @param {number} z Zoom level.
    * @return {import("../TileRange.js").default} Extent tile range for the specified zoom level.
    */

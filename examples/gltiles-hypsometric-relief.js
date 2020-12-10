@@ -9,21 +9,23 @@ import {fromLonLat} from '../src/ol/proj.js';
 // Get your own!!
 const key = 'F0p8KPTwWvEEc5jKmckC';
 
-const elevation = new XYZ({
-  url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-  crossOrigin: 'anonymous',
-  tileSize: 512,
+const terrainTexture = new GlTiledTextureTerrainRGB({
+  xyz: new XYZ({
+    url:
+      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+    crossOrigin: 'anonymous',
+    tileSize: 512,
+  }),
+  fetchFuncName: 'getElevation',
 });
-
-const terrainTexture = new GlTiledTextureTerrainRGB(elevation, 'getElevation');
 
 const reliefShader = `
 const float pxSize = 1./512.;
-const float pi = 3.1415926535897932384626433832795;
 
 void main(void) {
   // Fetch data from texture source 0 using the named GLSL function
   // (which has been set up in the GlTiledTexture)
+  // Note that this shader fetches data from neighboring pixels
   float elevation = getElevation(vTextureCoords.st);
 
   float elevationNorth = getElevation(vTextureCoords.st + vec2(0., pxSize));
@@ -111,7 +113,10 @@ const map = new Map({
 
 const sliderExaggeration = document.getElementById('vert');
 sliderExaggeration.addEventListener('input', function () {
-  glSource.setUniform('uVerticalExaggeration', sliderExaggeration.value);
+  glSource.setUniform(
+    'uVerticalExaggeration',
+    Number(sliderExaggeration.value)
+  );
   document.getElementById('vertOut').innerText = sliderExaggeration.value;
 });
 

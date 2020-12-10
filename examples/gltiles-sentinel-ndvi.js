@@ -39,39 +39,128 @@ const geotiff10m = GeoTIFF.fromUrl(
 
 /* eslint-disable no-unused-vars */
 // Create GlTiledTextureGeoTiff instances from each geotiff - one per sample ("image channel")
-// Second parameter is the (0-indexed) sample number. The meaning of each sample depends on how
-//  the GeoTIFF was built.
-// Third parameter is the value for the "no data" pixels"
-// Fourth parameter is the name of a GLSL function to fetch the data
+// Constructor options for each include the GeoTIFF (promised) instance,
+// sample (channel) index (0-indexed), value to be used where there's no
+// data, a GLSL function name to be created, and a GeoTIFF worker pool.
 
 // tcr, tcg, tcb = True Colour Red/Green/Blue
 // This is a 8-bit 3-sample RGB geotiff
-const tcr = new GlTiledTextureGeoTiff(geotiffTCI, 0, 0, 'getTCR', pool);
-const tcg = new GlTiledTextureGeoTiff(geotiffTCI, 1, 0, 'getTCG', pool);
-const tcb = new GlTiledTextureGeoTiff(geotiffTCI, 2, 0, 'getTCB', pool);
+const tcr = new GlTiledTextureGeoTiff({
+  tiff: geotiffTCI,
+  sample: 0,
+  fillValue: 0,
+  fetchFuncName: 'getTCR',
+  pool: pool,
+});
+const tcg = new GlTiledTextureGeoTiff({
+  tiff: geotiffTCI,
+  sample: 1,
+  fillValue: 0,
+  fetchFuncName: 'getTCG',
+  pool: pool,
+});
+const tcb = new GlTiledTextureGeoTiff({
+  tiff: geotiffTCI,
+  sample: 2,
+  fillValue: 0,
+  fetchFuncName: 'getTCB',
+  pool: pool,
+});
 
 // Bands from the 10m GeoTIFF file
 // This is a Uint16, 4-sample file (b2,b3,b4,b8); pixels with no data get the value 65535.
-const b2 = new GlTiledTextureGeoTiff(geotiff10m, 0, 65535, 'getB2', pool);
-const b3 = new GlTiledTextureGeoTiff(geotiff10m, 1, 65535, 'getB3', pool);
-const b4 = new GlTiledTextureGeoTiff(geotiff10m, 2, 65535, 'getB4', pool);
-const b8 = new GlTiledTextureGeoTiff(geotiff10m, 3, 65535, 'getB8', pool);
+const b2 = new GlTiledTextureGeoTiff({
+  tiff: geotiff10m,
+  sample: 0,
+  fillValue: 65535,
+  fetchFuncName: 'getB2',
+  pool: pool,
+});
+const b3 = new GlTiledTextureGeoTiff({
+  tiff: geotiff10m,
+  sample: 1,
+  fillValue: 65535,
+  fetchFuncName: 'getB3',
+  pool: pool,
+});
+const b4 = new GlTiledTextureGeoTiff({
+  tiff: geotiff10m,
+  sample: 2,
+  fillValue: 65535,
+  fetchFuncName: 'getB4',
+  pool: pool,
+});
+const b8 = new GlTiledTextureGeoTiff({
+  tiff: geotiff10m,
+  sample: 3,
+  fillValue: 65535,
+  fetchFuncName: 'getB8',
+  pool: pool,
+});
 
 // Bands from the 20m GeoTIFF file
 // This is a Uint16, 10-sample file (b2,b3,b4,b5,b6,b7,b8,b11,b12,b8a);
 // pixels with no data get the value 65535.
-const b5 = new GlTiledTextureGeoTiff(geotiff20m, 3, 65535, 'getB5', pool);
-const b6 = new GlTiledTextureGeoTiff(geotiff20m, 4, 65535, 'getB6', pool);
-const b7 = new GlTiledTextureGeoTiff(geotiff20m, 5, 65535, 'getB7', pool);
-const b11 = new GlTiledTextureGeoTiff(geotiff20m, 7, 65535, 'getB11', pool);
-const b12 = new GlTiledTextureGeoTiff(geotiff20m, 8, 65535, 'getB12', pool);
-const b8a = new GlTiledTextureGeoTiff(geotiff20m, 9, 65535, 'getB8A', pool);
+const b5 = new GlTiledTextureGeoTiff({
+  tiff: geotiff20m,
+  sample: 3,
+  fillValue: 65535,
+  fetchFuncName: 'getB5',
+  pool: pool,
+});
+const b6 = new GlTiledTextureGeoTiff({
+  tiff: geotiff20m,
+  sample: 4,
+  fillValue: 65535,
+  fetchFuncName: 'getB6',
+  pool: pool,
+});
+const b7 = new GlTiledTextureGeoTiff({
+  tiff: geotiff20m,
+  sample: 5,
+  fillValue: 65535,
+  fetchFuncName: 'getB7',
+  pool: pool,
+});
+const b11 = new GlTiledTextureGeoTiff({
+  tiff: geotiff20m,
+  sample: 7,
+  fillValue: 65535,
+  fetchFuncName: 'getB11',
+  pool: pool,
+});
+const b12 = new GlTiledTextureGeoTiff({
+  tiff: geotiff20m,
+  sample: 8,
+  fillValue: 65535,
+  fetchFuncName: 'getB12',
+  pool: pool,
+});
+const b8a = new GlTiledTextureGeoTiff({
+  tiff: geotiff20m,
+  sample: 9,
+  fillValue: 65535,
+  fetchFuncName: 'getB8A',
+  pool: pool,
+});
 
 // Bands from the 60m GeoTIFF file
 // This is a Uint16, 12-sample file (b1,b2,b3,b4,b5,b6,b7,b8,b9,b11,b12,b8a);
 // pixels with no data get the value 65535.
-const b1 = new GlTiledTextureGeoTiff(geotiff60m, 0, 65535, 'getB1', pool);
-const b9 = new GlTiledTextureGeoTiff(geotiff60m, 8, 65535, 'getB9', pool);
+const b1 = new GlTiledTextureGeoTiff({
+  tiff: geotiff60m,
+  sample: 0,
+  fillValue: 65535,
+  fetchFuncName: 'getB1',
+  pool: pool,
+});
+const b9 = new GlTiledTextureGeoTiff({
+  tiff: geotiff60m,
+  sample: 8,
+  fillValue: 65535,
+  fetchFuncName: 'getB9',
+  pool: pool,
+});
 
 /* eslint-enable no-unused-vars */
 

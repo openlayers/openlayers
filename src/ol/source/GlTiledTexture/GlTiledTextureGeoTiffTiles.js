@@ -12,27 +12,24 @@ const geotiffCache = new LRUCache(16);
  * @module ol/source/GlTiles
  */
 
+/**
+ * @typedef {Object} Options
+ * @param {import("../TileImage.js").default} xyz Instance of TileImage / XYZ tile source for the Terrain-RGB tiles
+ * @param {Function} geotiffFactory Factory function to create GeoTIFF instances from URLs. Should be `GeoTIFF.fromUrl`
+ * @param {number} [sample=0] Which sample (AKA channel) to query (zero-indexed). For WebGL1
+ * compatibility, only one channel per instance is allowed.
+ * @param {number} [fillValue=-999] Value to be used for pixels with no data.
+ * @param {string} [fetchFuncName] Name of the texture fetch function to be defined in the fragment shader code
+ * @param {import("geotiff").Pool} [pool] a GeoTIFF.js worker pool
+ */
+
 export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
   /**
-   * @param {import("../TileImage.js").default} xyz Instance of TileImage / XYZ tile source for the Terrain-RGB tiles
-   * @param {Function} geotiffFactory Factory function to create GeoTIFF instances from URLs. Should be `GeoTIFF.fromUrl`
-   * @param {number} [sample=0] Which sample (AKA channel) to query (zero-indexed). For WebGL1
-   * compatibility, only one channel per instance is allowed.
-   * @param {number} [fillValue=-999] Value to be used for pixels with no data.
-   * @param {string} [fetchFuncName] Name of the texture fetch function to be defined in the fragment shader code
-   * @param {import("geotiff").Pool} [pool] a GeoTIFF.js worker pool
-   *
+   * @param {Options=} options
    * A wrapper of GeoTIFF.js functionality. Extracts data from *one* GeoTIFF file
    * in such a way that can be fed to a GlTiles source.
    */
-  constructor(
-    xyz,
-    geotiffFactory,
-    sample = 0,
-    fillValue = -999,
-    fetchFuncName = undefined,
-    pool = undefined
-  ) {
+  constructor({xyz, geotiffFactory, fetchFuncName, sample, fillValue, pool}) {
     super(fetchFuncName);
     this.sample_ = sample;
     this.fillValue_ = fillValue;
@@ -46,14 +43,9 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
   }
 
   /**
-   * @param {import("../../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
-   * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate (for the given TileGrid).
-   * @param {import("../../size.js").Size} tileSize Tile size.
-   * @param {import("../../extent.js").Extent} tileExtent BBox of the tile, in the map's display CRS.
-   *
-   * @return {Promise<TypedArray>} Data for the requested tile
+   * @inheritDoc
    */
-  getTiledData(tileGrid, tileCoord, tileSize, tileExtent) {
+  getTiledData({tileGrid, tileCoord, tileSize, tileExtent}) {
     const urlTileCoord = this.xyz_.getTileCoordForTileUrlFunction(
       tileCoord /*, projection*/
     );

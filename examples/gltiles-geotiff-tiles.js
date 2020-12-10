@@ -47,38 +47,38 @@ const tiffTiles = new XYZ({
 // tcr, tcg, tcb = True Colour Red/Green/Blue
 // nir = Near InfraRed
 // These tiles are 16-bit 4-sample RGB+NIR geotiff
-const tcr = new GlTiledTextureGeoTiffTiles(
-  tiffTiles,
-  GeoTIFF.fromUrl,
-  0,
-  -999,
-  'getTCR',
-  pool
-);
-const tcg = new GlTiledTextureGeoTiffTiles(
-  tiffTiles,
-  GeoTIFF.fromUrl,
-  1,
-  -999,
-  'getTCG',
-  pool
-);
-const tcb = new GlTiledTextureGeoTiffTiles(
-  tiffTiles,
-  GeoTIFF.fromUrl,
-  2,
-  -999,
-  'getTCB',
-  pool
-);
-const nir = new GlTiledTextureGeoTiffTiles(
-  tiffTiles,
-  GeoTIFF.fromUrl,
-  3,
-  -999,
-  'getNIR',
-  pool
-);
+const tcr = new GlTiledTextureGeoTiffTiles({
+  xyz: tiffTiles,
+  geotiffFactory: GeoTIFF.fromUrl,
+  sample: 0,
+  fillValue: -999,
+  fetchFuncName: 'getTCR',
+  pool: pool,
+});
+const tcg = new GlTiledTextureGeoTiffTiles({
+  xyz: tiffTiles,
+  geotiffFactory: GeoTIFF.fromUrl,
+  sample: 1,
+  fillValue: -999,
+  fetchFuncName: 'getTCG',
+  pool: pool,
+});
+const tcb = new GlTiledTextureGeoTiffTiles({
+  xyz: tiffTiles,
+  geotiffFactory: GeoTIFF.fromUrl,
+  sample: 2,
+  fillValue: -999,
+  fetchFuncName: 'getTCB',
+  pool: pool,
+});
+const nir = new GlTiledTextureGeoTiffTiles({
+  xyz: tiffTiles,
+  geotiffFactory: GeoTIFF.fromUrl,
+  sample: 3,
+  fillValue: -999,
+  fetchFuncName: 'getNIR',
+  pool: pool,
+});
 
 const rgbnirShader =
   '#line 1                                   \n' +
