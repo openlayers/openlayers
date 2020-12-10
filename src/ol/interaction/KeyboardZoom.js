@@ -81,7 +81,7 @@ class KeyboardZoom extends Interaction {
           charCode == '+'.charCodeAt(0) ? this.delta_ : -this.delta_;
         const view = map.getView();
         zoomByDelta(view, delta, undefined, this.duration_);
-        mapBrowserEvent.preventDefault();
+        keyEvent.preventDefault();
         stopEvent = true;
       }
     }

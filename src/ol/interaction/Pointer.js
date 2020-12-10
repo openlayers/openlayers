@@ -139,7 +139,7 @@ class PointerInteraction extends Interaction {
       if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
         this.handleDragEvent(mapBrowserEvent);
         // prevent page scrolling during dragging
-        mapBrowserEvent.preventDefault();
+        mapBrowserEvent.originalEvent.preventDefault();
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
         const handledUp = this.handleUpEvent(mapBrowserEvent);
         this.handlingDownUpSequence =

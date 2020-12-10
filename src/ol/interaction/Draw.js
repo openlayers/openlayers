@@ -512,7 +512,7 @@ class Draw extends PointerInteraction {
   handleEvent(event) {
     if (event.originalEvent.type === EventType.CONTEXTMENU) {
       // Avoid context menu for long taps when drawing on mobile
-      event.preventDefault();
+      event.originalEvent.preventDefault();
     }
     this.freehand_ =
       this.mode_ !== Mode.POINT && this.freehandCondition_(event);
@@ -554,7 +554,7 @@ class Draw extends PointerInteraction {
         this.handlePointerMove_(event);
         if (this.shouldHandle_) {
           // Avoid page scrolling when freehand drawing on mobile
-          event.preventDefault();
+          event.originalEvent.preventDefault();
         }
       } else if (
         event.originalEvent.pointerType === 'mouse' ||
@@ -646,7 +646,7 @@ class Draw extends PointerInteraction {
     }
 
     if (!pass && this.stopClick_) {
-      event.stopPropagation();
+      event.originalEvent.stopPropagation();
     }
     return pass;
   }

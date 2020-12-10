@@ -112,7 +112,7 @@ class KeyboardPan extends Interaction {
         const delta = [deltaX, deltaY];
         rotateCoordinate(delta, view.getRotation());
         pan(view, delta, this.duration_);
-        mapBrowserEvent.preventDefault();
+        keyEvent.preventDefault();
         stopEvent = true;
       }
     }
