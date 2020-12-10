@@ -410,6 +410,25 @@ describe('ol.proj', function () {
       );
       expect(pointResolution).to.be(1);
     });
+    it('returns the nominal resolution for projections without transforms', function () {
+      const projection = new Projection({
+        code: 'foo',
+        units: 'ft',
+      });
+      let pointResolution = getPointResolution(
+        projection,
+        2,
+        [0, 0]
+      );
+      expect(pointResolution).to.be(2);
+      pointResolution = getPointResolution(
+        projection,
+        2,
+        [0, 0],
+        'm'
+      );
+      expect(pointResolution).to.be(0.6096);
+    });
   });
 
   describe('Proj4js integration', function () {
