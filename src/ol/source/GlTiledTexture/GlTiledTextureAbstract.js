@@ -1,5 +1,5 @@
 /**
- * @module ol/source/GlTiles
+ * @module ol/source/GlTiledTexture/GlTiledTextureAbstract
  */
 
 /**

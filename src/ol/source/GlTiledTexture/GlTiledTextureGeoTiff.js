@@ -1,7 +1,7 @@
 import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 
 /**
- * @module ol/source/GlTiles
+ * @module ol/source/GlTiledTexture/GlTiledTextureGeoTiff
  */
 
 /**

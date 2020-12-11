@@ -1,3 +1,7 @@
+/**
+ * @module ol/source/GlTiledTexture/GlTiledTextureGeoTiffTiles
+ */
+
 import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 
 import LRUCache from '../../structs/LRUCache.js';
@@ -7,10 +11,6 @@ import LRUCache from '../../structs/LRUCache.js';
 // GlTiledTextureGeoTiffTiles for the same tile source. This happens when
 // fetching several samples ("channels") from the same tileset.
 const geotiffCache = new LRUCache(16);
-
-/**
- * @module ol/source/GlTiles
- */
 
 /**
  * @typedef {Object} Options

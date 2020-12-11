@@ -1,8 +1,8 @@
-import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
-
 /**
- * @module ol/source/GlTiles
+ * @module ol/source/GlTiledTexture/GlTiledTextureNoise
  */
+
+import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 
 /**
  * @typedef {Object} Options

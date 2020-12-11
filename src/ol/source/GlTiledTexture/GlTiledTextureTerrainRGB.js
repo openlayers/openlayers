@@ -1,11 +1,11 @@
+/**
+ * @module ol/source/GlTiledTexture/GlTiledTextureTerrainRGB
+ */
+
 import EventType from '../../events/EventType.js';
 import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listenOnce} from '../../events.js';
-
-/**
- * @module ol/source/GlTiles
- */
 
 /**
  * @typedef {Object} Options
