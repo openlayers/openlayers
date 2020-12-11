@@ -15,10 +15,12 @@ import {listenOnce} from '../../events.js';
  * A wrapper over a XYZ tile source. Unpacks elevation data from Terrain-RGB-encoded
  * tiles. Expects tiles to follow the Mapbox Terrain-RGB format, as per
  * https://docs.mapbox.com/help/troubleshooting/access-elevation-data/
+ * @api
  */
 export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
   /**
    * @param {Options=} opt_options Terrain-RGB tiled texture options
+   * @api
    */
   constructor({xyz, fetchFuncName}) {
     /**
@@ -65,9 +67,14 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
     });
   }
 
-  // Returns the GLSL implementation of the Mapbox Terrain-RGB decode implementation,
-  // also taking into account normalization of byte values (0..255 to 0..1)
-  // height = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1)
+  /**
+   * @param {String} uniformName Name of the uniform bound to the texture unit which shall hold the data.
+   * @return {String | Promise<String>}
+   *
+   * Returns the GLSL implementation of the Mapbox Terrain-RGB decode implementation,
+   * also taking into account normalization of byte values (0..255 to 0..1)
+   * height = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1)
+   */
   getFetchFunctionDef(uniformName) {
     if (!this.fetchFuncName_) {
       return '';

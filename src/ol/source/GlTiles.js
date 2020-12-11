@@ -546,6 +546,7 @@ class GlTiles extends XYZ {
    * @param {string} name Name of the GL uniform to update
    * @param {Number | Array<Number> | Float32Array} value New value(s) for the GL uniform
    * @param {boolean} rerender Whether updating triggers a re-render of all tiles (default true)
+   * @api
    */
   setUniform(name, value, rerender = true) {
     if (typeof value === 'number') {
@@ -588,6 +589,7 @@ class GlTiles extends XYZ {
 
   /**
    * Triggers a re-render of all tiles.
+   * @api
    */
   reRender() {
     // TODO: Do not render tiles currently not visible (out of bounds),

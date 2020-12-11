@@ -12,6 +12,7 @@ import GlTiledTextureAbstract from './GlTiledTextureAbstract.js';
  * @param {number} [fillValue=-999] Value to be used for pixels with no data.
  * @param {string} [fetchFuncName] Name of the texture fetch function to be defined in the fragment shader code
  * @param {import("geotiff").Pool} [pool] a GeoTIFF.js worker pool
+ * @api
  */
 
 export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
@@ -19,6 +20,7 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
    * @param {Options=} options
    * A wrapper of GeoTIFF.js functionality. Extracts data from *one* GeoTIFF file
    * in such a way that can be fed to a GlTiles source.
+   * @api
    */
   constructor({tiff, fetchFuncName, sample, fillValue, pool}) {
     super(fetchFuncName);
@@ -121,7 +123,7 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
   }
 
   /**
-   * @param {String} uniformName BBox of the tile, in the map's display CRS.
+   * @param {String} uniformName Name of the uniform bound to the texture unit which shall hold the data.
    * @return {Promise<String>}
    *
    * Returns a string containing valid GLSL shader code, defining a function
@@ -129,6 +131,7 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
    * passed at run time.
    *
    * This wraps over any 16- or 32-bit data packed into the WebGL1 4x8-bit RGBA texture.
+   * @api
    */
   getFetchFunctionDef(uniformName) {
     return this.tiff_.then((img) => {
@@ -173,9 +176,5 @@ export default class GlTiledTextureGeoTiff extends GlTiledTextureAbstract {
         ${body}
       }`;
     });
-
-    //     return Promise.resolve(`float ${this.fetchFuncName_}(vec2 texelCoords) {
-    //       return ${uniformName}.x;
-    //     }`);
   }
 }

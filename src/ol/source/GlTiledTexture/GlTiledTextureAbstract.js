@@ -41,7 +41,7 @@ export default class GlTiledTextureAbstract {
   }
 
   /**
-   * @param {String} uniformName BBox of the tile, in the map's display CRS.
+   * @param {String} uniformName Name of the uniform bound to the texture unit which shall hold the data.
    * @return {String | Promise<String>}
    *
    * Must return a string containing valid GLSL shader code, defining a function
