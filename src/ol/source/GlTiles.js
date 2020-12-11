@@ -141,15 +141,47 @@ class GlTile extends Tile {
 
 /**
  * @typedef {Object} Options
- * @inheritDoc {import("../XYZ.js").default}
- * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Optional projection.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
+ * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {boolean} [opaque=false] Whether the layer is opaque.
+ * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
+ * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
+ * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * ```js
+ * function(imageTile, src) {
+ *   imageTile.getImage().src = src;
+ * };
+ * ```
+ * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
+ * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`.
+ * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * Not used if `tileGrid` is provided.
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get
+ * tile URL given a tile coordinate and the projection.
+ * Required if `url` or `urls` are not provided.
+ * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`,
+ * and `{z}` placeholders. A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`,
+ * may be used instead of defining each one separately in the `urls` option.
+ * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number} [zDirection=0] Set to `1` when debugging `VectorTile` sources with
- * a default configuration. Indicates which resolution should be used by a renderer if
- * the view resolution does not match any resolution of the tile source. If 0, the nearest
- * resolution will be used. If 1, the nearest lower resolution will be used. If -1, the
- * nearest higher resolution will be used.
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
+ * @property {number} [zDirection=0] Indicate which resolution should be used
+ * by a renderer if the view resolution does not match any resolution of the tile source.
+ * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
+ * will be used. If -1, the nearest higher resolution will be used.
  *
  * @property {array} textureSources An array of texture sources, each element being
  * either a `TileImage` source, or a `GlTiledTexture`.
@@ -157,7 +189,7 @@ class GlTile extends Tile {
  * to be run. This must NOT include defining the variants, nor the texture uniforms,
  * nor user-defined uniforms.
  *
- * @property {object} uniforms A plain object containing a map of uniform names and their
+ * @property {Object} uniforms A plain object containing a map of uniform names and their
  * initial values. Values must be a `Number` or an `Array` of up to four `Number`s.
  */
 
@@ -172,7 +204,7 @@ class GlTiles extends XYZ {
    * @param {Options=} opt_options GlTiles constructor options
    */
   constructor(opt_options) {
-    const options = opt_options || {};
+    const options = opt_options || /** @type {Options} */ ({});
 
     super(
       Object.assign(
