@@ -625,19 +625,22 @@ class Draw extends PointerInteraction {
       this.handlePointerMove_(event);
 
       if (this.shouldHandle_) {
-        if (!this.finishCoordinate_) {
-          this.startDrawing_(event.coordinate);
-          if (this.mode_ === Mode.POINT) {
+        switch (true) {
+          case !this.finishCoordinate_:
+            this.startDrawing_(event.coordinate);
+            if (this.mode_ !== Mode.POINT) {
+              break;
+            }
+          // eslint-disable-next-line no-fallthrough
+          case this.freehand_ ||
+            (this.atFinish_(event.pixel) && this.finishCondition_(event)):
             this.finishDrawing();
-          }
-        } else if (this.freehand_) {
-          this.finishDrawing();
-        } else if (this.atFinish_(event.pixel)) {
-          if (this.finishCondition_(event)) {
-            this.finishDrawing();
-          }
-        } else {
-          this.addToDrawing_(event.coordinate);
+            break;
+          case !this.freehand_:
+            this.addToDrawing_(event.coordinate);
+            break;
+          default:
+            break;
         }
         pass = false;
       } else if (this.freehand_) {
@@ -695,7 +698,11 @@ class Draw extends PointerInteraction {
       let potentiallyDone = false;
       let potentiallyFinishCoordinates = [this.finishCoordinate_];
       const mode = this.mode_;
-      if (mode === Mode.LINE_STRING || mode === Mode.CIRCLE) {
+      if (mode === Mode.POINT) {
+        at = true;
+      } else if (mode === Mode.CIRCLE) {
+        at = this.sketchCoords_.length === 2;
+      } else if (mode === Mode.LINE_STRING) {
         potentiallyDone = this.sketchCoords_.length > this.minPoints_;
       } else if (mode === Mode.POLYGON) {
         const sketchCoords = /** @type {PolyCoordType} */ (this.sketchCoords_);
