@@ -4,6 +4,7 @@ import Projection from '../src/ol/proj/Projection.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 
 const layers = [
   new TileLayer({
@@ -37,12 +38,18 @@ const layers = [
 // projection object. Requesting tiles only needs the code together with a
 // tile grid of Cartesian coordinates; it does not matter how those
 // coordinates relate to latitude or longitude.
+//
+// With no transforms available projection units must be assumed to represent
+// true distances. In the case of local projections this may be a sufficiently
+// close approximation for a meaningful (if not 100% accurate) ScaleLine control.
+
 const projection = new Projection({
   code: 'EPSG:21781',
   units: 'm',
 });
 
 const map = new Map({
+  controls: defaultControls().extend([new ScaleLine()]),
   layers: layers,
   target: 'map',
   view: new View({
