@@ -18,6 +18,7 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['time']` returns the time in seconds since the creation of the layer
  *   * `['zoom']` returns the current zoom level
  *   * `['resolution']` returns the current resolution
+ *   * `['in', 'keyword', 'input']` returns true if `input` contains `keyword`, otherwise returns false
  *
  * * Math operators:
  *   * `['*', value1, value2]` multiplies `value1` by `value2`
@@ -783,4 +784,56 @@ Operators['case'] = {
     }
     return result;
   },
+};
+Operators['in'] = {
+  getReturnType: function (args) {
+    return ValueTypes.BOOLEAN;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 2);
+
+    const haystack = [];
+    const needle = [];
+    let result;
+    if (getValueType(args[1]) & ValueTypes.NUMBER_ARRAY) {
+      const keyword = expressionToGlsl(context, args[0]);
+      const input = args[1];
+      let i = 0;
+      let inputArr = ['array'];
+      let keywordArr = ['array', keyword, keyword, keyword, keyword];
+      // @ts-ignore
+      input.forEach(element => {
+        inputArr.push(element);
+        i++;
+        if (i % 4 === 0) {
+          haystack.push(expressionToGlsl(context, inputArr));
+          needle.push(`vec4(${keyword})`);
+          inputArr = ['array'];
+        }
+      });
+      if (i % 4 === 1) {
+        inputArr.push(inputArr[1]);
+        haystack.push(expressionToGlsl(context, inputArr));
+        needle.push(`vec${inputArr.length - 1}(${keyword})`);
+      } else {
+        haystack.push(expressionToGlsl(context, inputArr));
+        needle.push(`vec${inputArr.length - 1}(${keyword})`);
+      }
+      const preliminary = []
+      for (i = 0; i < haystack.length; i++) {
+        preliminary.push([`any(equal(${haystack[i]}, ${needle[i]}))`])
+      }
+      result = preliminary.join(` || `);
+    } else if (getValueType(args[1]) & ValueTypes.STRING) {
+      const needle = expressionToGlsl(context, args[0])
+      const haystack = expressionToGlsl(context, args[1]);
+      if (haystack.includes(needle)) {
+        result = 'true';
+      } else {
+        result = 'false';
+      }
+    }
+
+    return `(${result})`;
+  }
 };

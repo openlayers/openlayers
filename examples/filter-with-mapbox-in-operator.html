@@ -1,0 +1,19 @@
+---
+layout: example.html
+title: Filtering features with WebGL 'in' operator
+shortdesc: Demonstrate the use of the WebGL 'in' operator.
+docs: >
+  This example modifies the example of Filtering Features with WebGL to demonstrate the use of the WebGL 'in' operator.
+
+  Adjusting the slider changes the decade of meteorite impacts shown by checking each impact to see if it is within the range of years within that decade. So if the slider is set to the 1980's, an impact in 1982 will be shown, since it is in the range 1980-1989.
+
+tags: "webgl, filter, mapbox"
+experimental: true
+---
+<div id="map" class="map"></div>
+<form>
+    <div id="status">Show impacts in the <span class="decade"></span>'s.</div>
+
+    <label>Decade:</label>
+    <input id="decade" type="range" min="1850" max="2010" step="10" value="1850"/>
+</form>
