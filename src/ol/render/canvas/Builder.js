@@ -345,6 +345,26 @@ class CanvasBuilder extends VectorContext {
         geometry,
         renderer,
       ]);
+    } else if (type == GeometryType.CIRCLE) {
+      const flatCoordinates = geometry.getFlatCoordinates();
+      this.appendFlatLineCoordinates(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        stride,
+        false,
+        false
+      );
+      builderEnd = this.coordinates.length;
+      this.instructions.push([
+        CanvasInstruction.CUSTOM,
+        builderBegin,
+        builderEnd,
+        geometry,
+        renderer,
+        undefined,
+        4,
+      ]);
     }
     this.endGeometry(feature);
   }
