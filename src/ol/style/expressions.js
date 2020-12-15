@@ -798,8 +798,10 @@ Operators['in'] = {
     if (getValueType(args[1]) & ValueTypes.NUMBER_ARRAY) {
       const keyword = expressionToGlsl(context, args[0]);
       const input = args[1];
+      assertNumbers(input);
       let i = 0;
       let inputArr = ['array'];
+      // @ts-ignore
       input.forEach((element) => {
         inputArr.push(element);
         i++;
