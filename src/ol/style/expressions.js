@@ -825,13 +825,16 @@ Operators['in'] = {
       }
       result = preliminary.join(` || `);
     } else if (getValueType(args[1]) & ValueTypes.STRING) {
-      const needle = expressionToGlsl(context, args[0]);
-      const haystack = expressionToGlsl(context, args[1]);
-      if (haystack.includes(needle)) {
-        result = 'true';
-      } else {
-        result = 'false';
-      }
+      const keyword = args[0];
+      const input = args[1];
+      assertString(input);
+      assertString(keyword);
+      // @ts-ignore
+      result = input.includes(keyword).toString();
+    } else {
+      throw new Error(
+        `Expected input to be an array of numbers or a string, got ${typeof args[1]} instead.`
+      );
     }
 
     return `(${result})`;
