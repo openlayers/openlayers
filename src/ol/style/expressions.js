@@ -802,10 +802,8 @@ Operators['in'] = {
       const input = args[1];
       let i = 0;
       let inputArr = ['array'];
-      let keywordArr = ['array', keyword, keyword, keyword, keyword];
-      // @ts-ignore
       input.forEach(element => {
-        inputArr.push(element);
+        inputArr.push((element));
         i++;
         if (i % 4 === 0) {
           haystack.push(expressionToGlsl(context, inputArr));
@@ -821,13 +819,13 @@ Operators['in'] = {
         haystack.push(expressionToGlsl(context, inputArr));
         needle.push(`vec${inputArr.length - 1}(${keyword})`);
       }
-      const preliminary = []
+      const preliminary = [];
       for (i = 0; i < haystack.length; i++) {
-        preliminary.push([`any(equal(${haystack[i]}, ${needle[i]}))`])
+        preliminary.push([`any(equal(${haystack[i]}, ${needle[i]}))`]);
       }
       result = preliminary.join(` || `);
     } else if (getValueType(args[1]) & ValueTypes.STRING) {
-      const needle = expressionToGlsl(context, args[0])
+      const needle = expressionToGlsl(context, args[0]);
       const haystack = expressionToGlsl(context, args[1]);
       if (haystack.includes(needle)) {
         result = 'true';
