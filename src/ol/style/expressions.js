@@ -802,8 +802,8 @@ Operators['in'] = {
       const input = args[1];
       let i = 0;
       let inputArr = ['array'];
-      input.forEach(element => {
-        inputArr.push((element));
+      input.forEach((element) => {
+        inputArr.push(element);
         i++;
         if (i % 4 === 0) {
           haystack.push(expressionToGlsl(context, inputArr));
@@ -835,5 +835,5 @@ Operators['in'] = {
     }
 
     return `(${result})`;
-  }
+  },
 };
