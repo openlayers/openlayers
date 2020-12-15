@@ -33,7 +33,7 @@ const animRatio = [
   0.5,
 ];
 
-let style = {
+const style = {
   variables: {
     decade: [1850, 1851, 1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859],
   },
@@ -109,7 +109,7 @@ function updateDecade() {
   const yearVal = parseInt(decadeInput.value);
   const yearArr = [yearVal];
   for (let i = 1; i < 10; i++) {
-    yearArr.push(yearVal + i)
+    yearArr.push(yearVal + i);
   }
   style.variables.decade = yearArr;
   style.filter = ['in', ['get', 'year'], yearArr];
@@ -128,7 +128,7 @@ updateStatusText();
 
 let pointsLayer;
 function refreshLayer() {
-  let previousLayer = pointsLayer;
+  const previousLayer = pointsLayer;
   pointsLayer = new WebGLPointsLayer({
     style: style,
     source: vectorSource,
