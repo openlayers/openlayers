@@ -801,7 +801,6 @@ Operators['in'] = {
       assertNumbers(input);
       let i = 0;
       let inputArr = ['array'];
-      // @ts-ignore
       input.forEach((element) => {
         inputArr.push(element);
         i++;
@@ -829,13 +828,14 @@ Operators['in'] = {
       const input = args[1];
       assertString(input);
       assertString(keyword);
-      // @ts-ignore
       result = input.includes(keyword).toString();
     } else {
       throw new Error(
         `Expected input to be an array of numbers or a string, got ${typeof args[1]} instead.`
       );
     }
+
+    console.log(result);
 
     return `(${result})`;
   },

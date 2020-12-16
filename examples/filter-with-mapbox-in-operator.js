@@ -117,7 +117,6 @@ function updateDecade() {
   updateStatusText();
 }
 function updateStatusText() {
-  // eslint-disable-next-line no-console
   const div = document.getElementById('status');
   div.querySelector('span.decade').textContent = decadeInput.value;
 }

@@ -1072,4 +1072,28 @@ describe('ol.style.expressions', function () {
       );
     });
   });
+
+  describe('in expressions', function () {
+    let context;
+
+    beforeEach(function () {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: [],
+      };
+    });
+
+    it('correctly parses an in expression that checks if an item exists within an array of numbers', function () {
+      const expression = ['in', 5, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]];
+      expect(expressionToGlsl(context, expression)).to.eql(
+        `(any(equal(vec4(1.0, 2.0, 3.0, 4.0), vec4(5.0))) || any(equal(vec4(5.0, 6.0, 7.0, 8.0), vec4(5.0))) || any(equal(vec2(9.0, 10.0), vec2(5.0))))`
+      );
+    });
+
+    it('correctly parses an in expression that checks if a string exists within another string', function () {
+      const expression = ['in', 'foo', 'foobar'];
+      expect(expressionToGlsl(context, expression)).to.eql('true');
+    });
+  });
 });
