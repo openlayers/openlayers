@@ -1093,7 +1093,7 @@ describe('ol.style.expressions', function () {
 
     it('correctly parses an in expression that checks if a string exists within another string', function () {
       const expression = ['in', 'foo', 'foobar'];
-      expect(expressionToGlsl(context, expression)).to.eql('true');
+      expect(expressionToGlsl(context, expression)).to.eql('(true)');
     });
   });
 });
