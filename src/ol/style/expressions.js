@@ -837,8 +837,6 @@ Operators['in'] = {
       );
     }
 
-    console.log(result);
-
     return `(${result})`;
   },
 };
