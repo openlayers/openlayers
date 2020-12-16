@@ -797,11 +797,10 @@ Operators['in'] = {
     let result;
     if (getValueType(args[1]) & ValueTypes.NUMBER_ARRAY) {
       const keyword = expressionToGlsl(context, args[0]);
-      const input = args[1];
-      assertNumbers(input);
+      const input = /** @type {Array<number>} */ (args[1]);
       let i = 0;
+      /** @type {Array<string|number>} */
       let inputArr = ['array'];
-      // @ts-ignore
       input.forEach((element) => {
         inputArr.push(element);
         i++;
@@ -825,11 +824,9 @@ Operators['in'] = {
       }
       result = preliminary.join(` || `);
     } else if (getValueType(args[1]) & ValueTypes.STRING) {
-      const keyword = args[0];
-      const input = args[1];
-      assertString(input);
-      assertString(keyword);
-      // @ts-ignore
+      assertString(args[0]);
+      const keyword = /** @type {string} */ (args[0]);
+      const input = /** @type {string} */ (args[1]);
       result = input.includes(keyword).toString();
     } else {
       throw new Error(
