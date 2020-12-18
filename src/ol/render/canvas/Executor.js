@@ -731,7 +731,6 @@ class Executor {
           const geometry = /** @type {import("../../geom/SimpleGeometry.js").default} */ (instruction[3]);
           const renderer = instruction[4];
           const fn = instruction.length == 6 ? instruction[5] : undefined;
-          const coordsLength = instruction.length >= 7 ? instruction[6] : 2;
           state.geometry = geometry;
           state.feature = feature;
           if (!(i in coordinateCache)) {
@@ -741,10 +740,9 @@ class Executor {
           if (fn) {
             fn(pixelCoordinates, d, dd, 2, coords);
           } else {
-            for (let index = 0; index < coordsLength; index++) {
-              coords[index] = pixelCoordinates[d + index];
-            }
-            coords.length = coordsLength;
+            coords[0] = pixelCoordinates[d];
+            coords[1] = pixelCoordinates[d + 1];
+            coords.length = 2;
           }
           renderer(coords, state);
           ++i;

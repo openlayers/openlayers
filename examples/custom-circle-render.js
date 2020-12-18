@@ -11,10 +11,10 @@ const circleFeature = new Feature({
 });
 circleFeature.setStyle(
   new Style({
-    renderer(coordinate, state) {
+    renderer(coordinates, state) {
       // eslint-disable-next-line no-console
       console.log('This circle is rendered by the code below.', Date.now());
-      const [x, y, x1, y1] = coordinate;
+      const [[x, y], [x1, y1]] = coordinates;
       const ctx = state.context;
       const dx = x1 - x;
       const dy = y1 - y;
