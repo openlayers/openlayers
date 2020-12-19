@@ -335,7 +335,7 @@ function assertArgsEven(args) {
 function assertArgsOdd(args) {
   if (args.length % 2 === 0) {
     throw new Error(
-      `An even amount of arguments was expected, got ${args} instead`
+      `An odd amount of arguments was expected, got ${args} instead`
     );
   }
 }
