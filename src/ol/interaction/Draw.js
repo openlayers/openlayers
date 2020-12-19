@@ -1227,23 +1227,21 @@ export function createBox() {
  * @return {Mode} Drawing mode.
  */
 function getMode(type) {
-  let mode;
-  if (type === GeometryType.POINT || type === GeometryType.MULTI_POINT) {
-    mode = Mode.POINT;
-  } else if (
-    type === GeometryType.LINE_STRING ||
-    type === GeometryType.MULTI_LINE_STRING
-  ) {
-    mode = Mode.LINE_STRING;
-  } else if (
-    type === GeometryType.POLYGON ||
-    type === GeometryType.MULTI_POLYGON
-  ) {
-    mode = Mode.POLYGON;
-  } else if (type === GeometryType.CIRCLE) {
-    mode = Mode.CIRCLE;
+  switch (type) {
+    case GeometryType.POINT:
+    case GeometryType.MULTI_POINT:
+      return Mode.POINT;
+    case GeometryType.LINE_STRING:
+    case GeometryType.MULTI_LINE_STRING:
+      return Mode.LINE_STRING;
+    case GeometryType.POLYGON:
+    case GeometryType.MULTI_POLYGON:
+      return Mode.POLYGON;
+    case GeometryType.CIRCLE:
+      return Mode.CIRCLE;
+    default:
+      throw new Error('Invalid type: ' + type);
   }
-  return /** @type {!Mode} */ (mode);
 }
 
 export default Draw;

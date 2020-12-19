@@ -1381,7 +1381,7 @@ describe('ol.interaction.Draw', function () {
 
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
-      const draw = new Draw({});
+      const draw = new Draw({type: 'Point'});
       expect(draw.getOverlay()).to.eql(draw.overlay_);
     });
   });
