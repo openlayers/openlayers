@@ -259,21 +259,23 @@ export function expressionToGlsl(context, value, typeHint) {
       );
     }
     return operator.toGlsl(context, value.slice(1), typeHint);
-  } else if ((getValueType(value) & ValueTypes.NUMBER) > 0) {
+  }
+  const valueType = getValueType(value);
+  if ((valueType & ValueTypes.NUMBER) > 0) {
     return numberToGlsl(/** @type {number} */ (value));
-  } else if ((getValueType(value) & ValueTypes.BOOLEAN) > 0) {
+  } else if ((valueType & ValueTypes.BOOLEAN) > 0) {
     return value.toString();
   } else if (
-    (getValueType(value) & ValueTypes.STRING) > 0 &&
+    (valueType & ValueTypes.STRING) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.STRING)
   ) {
     return stringToGlsl(context, value.toString());
   } else if (
-    (getValueType(value) & ValueTypes.COLOR) > 0 &&
+    (valueType & ValueTypes.COLOR) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.COLOR)
   ) {
     return colorToGlsl(/** @type {number[]|string} */ (value));
-  } else if ((getValueType(value) & ValueTypes.NUMBER_ARRAY) > 0) {
+  } else if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
     return arrayToGlsl(/** @type {number[]} */ (value));
   }
 }
@@ -335,7 +337,7 @@ function assertArgsEven(args) {
 function assertArgsOdd(args) {
   if (args.length % 2 === 0) {
     throw new Error(
-      `An even amount of arguments was expected, got ${args} instead`
+      `An odd amount of arguments was expected, got ${args} instead`
     );
   }
 }
