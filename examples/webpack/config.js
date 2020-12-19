@@ -6,20 +6,19 @@ const path = require('path');
 
 const src = path.join(__dirname, '..');
 
-const examples = fs
-  .readdirSync(src)
-  .filter((name) => /^(?!index).*\.html$/.test(name))
-  .map((name) => name.replace(/\.html$/, ''));
-
-const entry = {};
-examples.forEach((example) => {
-  entry[example] = `./${example}.js`;
-});
-
 module.exports = {
   context: src,
   target: 'web',
-  entry: entry,
+  entry: () => {
+    const entry = {};
+    fs.readdirSync(src)
+      .filter((name) => /^(?!index).*\.html$/.test(name))
+      .map((name) => name.replace(/\.html$/, ''))
+      .forEach((example) => {
+        entry[example] = `./${example}.js`;
+      });
+    return entry;
+  },
   stats: 'minimal',
   module: {
     rules: [
