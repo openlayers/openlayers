@@ -625,22 +625,23 @@ class Draw extends PointerInteraction {
       this.handlePointerMove_(event);
 
       if (this.shouldHandle_) {
-        switch (true) {
-          case !this.finishCoordinate_:
-            this.startDrawing_(event.coordinate);
-            if (this.mode_ !== Mode.POINT) {
-              break;
+        const startingToDraw = !this.finishCoordinate_;
+        if (startingToDraw) {
+          this.startDrawing_(event.coordinate);
+        }
+        if (!startingToDraw && this.freehand_) {
+          this.finishDrawing();
+        } else if (
+          !this.freehand_ &&
+          (!startingToDraw || this.mode_ === Mode.POINT)
+        ) {
+          if (this.atFinish_(event.pixel)) {
+            if (this.finishCondition_(event)) {
+              this.finishDrawing();
             }
-          // eslint-disable-next-line no-fallthrough
-          case this.freehand_ ||
-            (this.atFinish_(event.pixel) && this.finishCondition_(event)):
-            this.finishDrawing();
-            break;
-          case !this.freehand_:
+          } else {
             this.addToDrawing_(event.coordinate);
-            break;
-          default:
-            break;
+          }
         }
         pass = false;
       } else if (this.freehand_) {
