@@ -303,7 +303,10 @@ class CanvasBuilder extends VectorContext {
         renderer,
         inflateCoordinatesArray,
       ]);
-    } else if (type == GeometryType.LINE_STRING) {
+    } else if (
+      type == GeometryType.LINE_STRING ||
+      type == GeometryType.CIRCLE
+    ) {
       flatCoordinates = geometry.getFlatCoordinates();
       builderEnd = this.appendFlatLineCoordinates(
         flatCoordinates,
