@@ -9,7 +9,8 @@ const maptilerKey = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const terrainTexture = new GlTiledTextureTerrainRGB({
   xyz: new XYZ({
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + maptilerKey,
+      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' +
+      maptilerKey,
     crossOrigin: 'anonymous',
     tileSize: 512,
   }),
