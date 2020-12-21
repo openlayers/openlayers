@@ -4,14 +4,12 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {GlTiles, OSM, XYZ} from '../src/ol/source.js';
 
-// This MapTiler API key is only valid for the OpenLayers examples page
-// Get your own!!
-const key = 'F0p8KPTwWvEEc5jKmckC';
+const maptilerKey = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
 const terrainTexture = new GlTiledTextureTerrainRGB({
   xyz: new XYZ({
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + maptilerKey,
     crossOrigin: 'anonymous',
     tileSize: 512,
   }),
