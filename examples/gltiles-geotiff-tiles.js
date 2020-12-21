@@ -127,8 +127,6 @@ const map = new Map({
 
     new TileLayer({
       source: glSource,
-      tileSize: [1024, 1024],
-      tileGrid: tileGrid,
     }),
   ],
   target: 'map',
