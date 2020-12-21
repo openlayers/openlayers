@@ -1,5 +1,6 @@
 import Source from '../../../../src/ol/source/Source.js';
 import TileJSON from '../../../../src/ol/source/TileJSON.js';
+import {transformExtent} from '../../../../src/ol/proj.js';
 import {unByKey} from '../../../../src/ol/Observable.js';
 
 describe('ol.source.TileJSON', function () {
@@ -27,34 +28,34 @@ describe('ol.source.TileJSON', function () {
       });
     });
 
+    const tileJSON = {
+      attribution: 'TileMill',
+      bounds: [-180, -85.05112877980659, 180, 85.05112877980659],
+      center: [0, 0, 4],
+      created: 1322764050886,
+      description:
+        'One of the example maps that comes with TileMill - a bright & colorful world map that blends retro and high-tech with its folded paper texture and interactive flag tooltips. ',
+      download: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class.mbtiles',
+      embed: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class.html',
+      id: 'mapbox.geography-class',
+      mapbox_logo: true,
+      maxzoom: 8,
+      minzoom: 0,
+      name: 'Geography Class',
+      private: false,
+      scheme: 'xyz',
+      tilejson: '2.2.0',
+      tiles: [
+        'https://a.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+        'https://b.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+        'https://c.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+        'https://d.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+      ],
+      version: '1.0.0',
+      webpage: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class/page.html',
+    };
+
     it('parses inline TileJSON', function () {
-      const tileJSON = {
-        bounds: [-180, -85.05112877980659, 180, 85.05112877980659],
-        center: [0, 0, 4],
-        created: 1322764050886,
-        description:
-          'One of the example maps that comes with TileMill - a bright & colorful world map that blends retro and high-tech with its folded paper texture and interactive flag tooltips. ',
-        download:
-          'https://a.tiles.mapbox.com/v3/mapbox.geography-class.mbtiles',
-        embed: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class.html',
-        id: 'mapbox.geography-class',
-        mapbox_logo: true,
-        maxzoom: 8,
-        minzoom: 0,
-        name: 'Geography Class',
-        private: false,
-        scheme: 'xyz',
-        tilejson: '2.2.0',
-        tiles: [
-          'https://a.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
-          'https://b.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
-          'https://c.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
-          'https://d.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
-        ],
-        version: '1.0.0',
-        webpage:
-          'https://a.tiles.mapbox.com/v3/mapbox.geography-class/page.html',
-      };
       const source = new TileJSON({
         tileJSON: tileJSON,
       });
@@ -74,6 +75,59 @@ describe('ol.source.TileJSON', function () {
       expect(source.getTileUrlFunction()([1, 1, 1])).to.be(
         'https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png'
       );
+    });
+
+    it('returns attributions, but not when outside bounds', function () {
+      tileJSON.bounds = [
+        -10.764179999935878,
+        49.528423000201656,
+        1.9134115551745678,
+        61.3311509999582,
+      ];
+      const source = new TileJSON({
+        tileJSON: tileJSON,
+      });
+      expect(source.getState()).to.be('ready');
+      const attributions = source.getAttributions();
+      expect(attributions).to.not.be(null);
+      expect(typeof attributions).to.be('function');
+      const frameState = {};
+      frameState.extent = transformExtent(
+        [1, 51, 2, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.eql(['TileMill']);
+      frameState.extent = transformExtent(
+        [2, 51, 3, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.be(null);
+    });
+
+    it('attributions bounds default to the tilegrid extent', function () {
+      delete tileJSON.bounds;
+      const source = new TileJSON({
+        tileJSON: tileJSON,
+      });
+      expect(source.getState()).to.be('ready');
+      const attributions = source.getAttributions();
+      expect(attributions).to.not.be(null);
+      expect(typeof attributions).to.be('function');
+      const frameState = {};
+      frameState.extent = transformExtent(
+        [1, 51, 2, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.eql(['TileMill']);
+      frameState.extent = transformExtent(
+        [2, 51, 3, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.eql(['TileMill']);
     });
   });
 
