@@ -1,4 +1,3 @@
-import '../src/ol/ol.css'
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
