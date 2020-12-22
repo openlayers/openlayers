@@ -16,9 +16,9 @@ const regularStyle = {
       ['linear'],
       ['get', 'population'],
       40000,
-      8, 
+      8,
       2000000,
-      28
+      28,
     ],
     color: '#006688',
     rotateWithView: false,
@@ -30,11 +30,11 @@ const regularStyle = {
       40000,
       0.6,
       2000000,
-      0.92
-    ]
+      0.92,
+    ],
   },
 };
-// This highlight style uses a filter to show only the points in the provided 
+// This highlight style uses a filter to show only the points in the provided
 // array. The array will be provided based on user drag box interaction.
 const highlightStyle = {
   filter: ['in', ['get', 'population'], [0]],
@@ -60,7 +60,7 @@ const highlightStyle = {
       0.6,
       2000000,
       0.92,
-    ]
+    ],
   },
 };
 
@@ -104,7 +104,7 @@ const map = new Map({
 
 let selectedFeatures = [];
 
-// Use the list of points that fall within the box geometry to provide the 
+// Use the list of points that fall within the box geometry to provide the
 // reference array for the highlight layer filter.
 dragBox.on('boxend', function () {
   const extent = dragBox.getGeometry().getExtent();
