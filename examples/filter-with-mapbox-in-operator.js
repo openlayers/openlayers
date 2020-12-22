@@ -1,12 +1,13 @@
-import GeoJSON from 'ol/format/GeoJSON';
-import Map from 'ol/Map';
-import OSM from 'ol/source/OSM';
-import TileLayer from 'ol/layer/Tile';
-import Vector from 'ol/source/Vector';
-import View from 'ol/View';
-import WebGLPointsLayer from 'ol/layer/WebGLPoints';
-import {DragBox} from 'ol/interaction';
-import {platformModifierKeyOnly} from 'ol/events/condition';
+import '../src/ol/ol.css'
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Map from '../src/ol/Map.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import Vector from '../src/ol/source/Vector.js';
+import View from '../src/ol/View.js';
+import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
+import {DragBox} from '../src/ol/interaction.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 
 const regularStyle = {
   symbol: {
@@ -16,7 +17,8 @@ const regularStyle = {
       ['linear'],
       ['get', 'population'],
       40000,
-      8, 2000000,
+      8, 
+      2000000,
       28
     ],
     color: '#006688',
