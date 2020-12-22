@@ -1,99 +1,98 @@
-import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
-import Stamen from '../src/ol/source/Stamen.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import View from '../src/ol/View.js';
-import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
-import {Vector} from '../src/ol/source.js';
-import {fromLonLat} from '../src/ol/proj.js';
+import GeoJSON from 'ol/format/GeoJSON';
+import Map from 'ol/Map';
+import OSM from 'ol/source/OSM';
+import TileLayer from 'ol/layer/Tile';
+import Vector from 'ol/source/Vector';
+import View from 'ol/View';
+import WebGLPointsLayer from 'ol/layer/WebGLPoints';
+import {DragBox} from 'ol/interaction';
+import {platformModifierKeyOnly} from 'ol/events/condition';
 
-const vectorSource = new Vector({
-  attributions: 'NASA',
-});
-
-const oldColor = 'rgba(242,56,22,0.61)';
-const newColor = '#ffe52c';
-const period = 12; // animation period in seconds
-const animRatio = [
-  '^',
-  [
-    '/',
-    [
-      '%',
-      [
-        '+',
-        ['time'],
-        ['interpolate', ['linear'], ['get', 'year'], 1850, 0, 2015, period],
-      ],
-      period,
-    ],
-    period,
-  ],
-  0.5,
-];
-
-const style = {
-  variables: {
-    decade: [1850, 1851, 1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859],
-  },
-  filter: [
-    'in',
-    ['get', 'year'],
-    [1850, 1851, 1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859],
-  ],
+const regularStyle = {
   symbol: {
     symbolType: 'circle',
     size: [
-      '*',
-      ['interpolate', ['linear'], ['get', 'mass'], 0, 8, 200000, 26],
-      ['-', 1.75, ['*', animRatio, 0.75]],
+      'interpolate',
+      ['linear'],
+      ['get', 'population'],
+      40000,
+      8, 2000000,
+      28
     ],
-    color: ['interpolate', ['linear'], animRatio, 0, newColor, 1, oldColor],
-    opacity: ['-', 1.0, ['*', animRatio, 0.75]],
+    color: '#006688',
+    rotateWithView: false,
+    offset: [0, 0],
+    opacity: [
+      'interpolate',
+      ['linear'],
+      ['get', 'population'],
+      40000,
+      0.6,
+      2000000,
+      0.92
+    ]
+  },
+};
+// This highlight style uses a filter to show only the points in the provided 
+// array. The array will be provided based on user drag box interaction.
+const highlightStyle = {
+  filter: ['in', ['get', 'population'], [0]],
+  symbol: {
+    symbolType: 'circle',
+    size: [
+      'interpolate',
+      ['linear'],
+      ['get', 'population'],
+      40000,
+      8,
+      2000000,
+      28,
+    ],
+    color: '#886600',
+    rotateWithView: false,
+    offset: [0, 0],
+    opacity: [
+      'interpolate',
+      ['linear'],
+      ['get', 'population'],
+      40000,
+      0.6,
+      2000000,
+      0.92,
+    ]
   },
 };
 
-// load data
-const client = new XMLHttpRequest();
-client.open('GET', 'data/csv/meteorite_landings.csv');
-client.onload = function () {
-  const csv = client.responseText;
-  const features = [];
+const dragBox = new DragBox({
+  condition: platformModifierKeyOnly,
+});
 
-  let prevIndex = csv.indexOf('\n') + 1; // scan past the header line
+const vectorSource = new Vector({
+  url: 'data/geojson/world-cities.geojson',
+  format: new GeoJSON(),
+});
 
-  let curIndex;
-  while ((curIndex = csv.indexOf('\n', prevIndex)) != -1) {
-    const line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
-    prevIndex = curIndex + 1;
-
-    const coords = fromLonLat([parseFloat(line[4]), parseFloat(line[3])]);
-    if (isNaN(coords[0]) || isNaN(coords[1])) {
-      // guard against bad data
-      continue;
-    }
-
-    features.push(
-      new Feature({
-        mass: parseFloat(line[1]) || 0,
-        year: parseInt(line[2]) || 0,
-        geometry: new Point(coords),
-      })
-    );
-  }
-
-  vectorSource.addFeatures(features);
-};
-client.send();
+// Create two layers, one for the regular style, one for the highlighted style.
+// Both layers use the same source.
+const pointsLayer = new WebGLPointsLayer({
+  source: vectorSource,
+  style: regularStyle,
+  disableHitDetection: true,
+});
+const pointsHighlightLayer = new WebGLPointsLayer({
+  source: vectorSource,
+  style: highlightStyle,
+  disableHitDetection: true,
+});
 
 const map = new Map({
+  interactions: [dragBox],
   layers: [
     new TileLayer({
-      source: new Stamen({
-        layer: 'toner',
-      }),
+      source: new OSM(),
     }),
+    pointsLayer,
+    pointsHighlightLayer,
   ],
   target: document.getElementById('map'),
   view: new View({
@@ -102,48 +101,22 @@ const map = new Map({
   }),
 });
 
-// handle input values & events
-const decadeInput = document.getElementById('decade');
+let selectedFeatures = [];
 
-function updateDecade() {
-  const yearVal = parseInt(decadeInput.value);
-  const yearArr = [yearVal];
-  for (let i = 1; i < 10; i++) {
-    yearArr.push(yearVal + i);
-  }
-  style.variables.decade = yearArr;
-  style.filter = ['in', ['get', 'year'], yearArr];
-  refreshLayer();
-  updateStatusText();
-}
-function updateStatusText() {
-  const div = document.getElementById('status');
-  div.querySelector('span.decade').textContent = decadeInput.value;
-}
-
-decadeInput.addEventListener('input', updateDecade);
-decadeInput.addEventListener('change', updateDecade);
-updateStatusText();
-
-let pointsLayer;
-function refreshLayer() {
-  const previousLayer = pointsLayer;
-  pointsLayer = new WebGLPointsLayer({
-    style: style,
-    source: vectorSource,
-    disableHitDetection: true,
+// Use the list of points that fall within the box geometry to provide the 
+// reference array for the highlight layer filter.
+dragBox.on('boxend', function () {
+  const extent = dragBox.getGeometry().getExtent();
+  vectorSource.forEachFeatureIntersectingExtent(extent, function (feature) {
+    selectedFeatures.push(feature.get('population'));
   });
-  map.addLayer(pointsLayer);
+  highlightStyle.filter = ['in', ['get', 'population'], selectedFeatures];
+  pointsHighlightLayer.set('style', highlightStyle);
+});
+dragBox.on('boxstart', function () {
+  selectedFeatures = [];
+});
 
-  if (previousLayer) {
-    map.removeLayer(previousLayer);
-    previousLayer.dispose();
-  }
-}
-
-refreshLayer();
-
-// animate the map
 function animate() {
   map.render();
   window.requestAnimationFrame(animate);

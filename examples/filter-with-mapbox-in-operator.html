@@ -5,15 +5,11 @@ shortdesc: Demonstrate the use of the WebGL 'in' operator.
 docs: >
   This example modifies the example of Filtering Features with WebGL to demonstrate the use of the WebGL 'in' operator.
 
-  Adjusting the slider changes the decade of meteorite impacts shown by checking each impact to see if it is within the range of years within that decade. So if the slider is set to the 1980's, an impact in 1982 will be shown, since it is in the range 1980-1989.
+  The starting map shows cities with dots sized according to population, as demonstrated in another example. Use ctrl+drag to draw a box on the map. Any points contained within the box will be displayed in a different color.
+
+  When the box is drawn, the populations of each city within the box area are placed into an array, and that array is used as the input for the 'in' operator. The filter expression obtains the population of each point using 'get' and tests if that number is in the provided array of city populations. Populations are used because the 'in' operator can test if a string is within another string, or if a number is within an array of numbers, but it cannot test if a string is in an array of strings, so city names cannot be used as a reference.
 
 tags: "webgl, filter, mapbox"
 experimental: true
 ---
 <div id="map" class="map"></div>
-<form>
-    <div id="status">Show impacts in the <span class="decade"></span>'s.</div>
-
-    <label>Decade:</label>
-    <input id="decade" type="range" min="1850" max="2010" step="10" value="1850"/>
-</form>
