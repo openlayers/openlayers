@@ -1140,6 +1140,7 @@ class PluggableMap extends BaseObject {
     if (!targetElement) {
       if (this.renderer_) {
         clearTimeout(this.postRenderTimeoutHandle_);
+        this.postRenderTimeoutHandle_ = undefined;
         this.postRenderFunctions_.length = 0;
         this.renderer_.dispose();
         this.renderer_ = null;
@@ -1438,10 +1439,12 @@ class PluggableMap extends BaseObject {
 
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
-    this.postRenderTimeoutHandle_ = setTimeout(
-      this.handlePostRender.bind(this),
-      0
-    );
+    if (!this.postRenderTimeoutHandle_) {
+      this.postRenderTimeoutHandle_ = setTimeout(() => {
+        this.postRenderTimeoutHandle_ = undefined;
+        this.handlePostRender();
+      }, 0);
+    }
   }
 
   /**
