@@ -9,6 +9,7 @@ import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {Versions} from '../format/IIIFInfo.js';
 import {assert} from '../asserts.js';
 import {getTopLeft} from '../extent.js';
+import {includes} from '../array.js';
 import {toSize} from '../size.js';
 
 /**
@@ -111,11 +112,11 @@ class IIIF extends TileImage {
     const supportsArbitraryTiling =
       supports != undefined &&
       Array.isArray(supports) &&
-      (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
-      (supports.includes('sizeByWh') ||
-        supports.includes('sizeByH') ||
-        supports.includes('sizeByW') ||
-        supports.includes('sizeByPct'));
+      (includes(supports, 'regionByPx') || includes(supports, 'regionByPct')) &&
+      (includes(supports, 'sizeByWh') ||
+        includes(supports, 'sizeByH') ||
+        includes(supports, 'sizeByW') ||
+        includes(supports, 'sizeByPct'));
 
     let tileWidth, tileHeight, maxZoom;
 
@@ -270,10 +271,10 @@ class IIIF extends TileImage {
           regionParam = 'full';
         } else if (
           !supportsArbitraryTiling ||
-          supports.includes('regionByPx')
+          includes(supports, 'regionByPx')
         ) {
           regionParam = regionX + ',' + regionY + ',' + regionW + ',' + regionH;
-        } else if (supports.includes('regionByPct')) {
+        } else if (includes(supports, 'regionByPct')) {
           const pctX = formatPercentage((regionX / width) * 100),
             pctY = formatPercentage((regionY / height) * 100),
             pctW = formatPercentage((regionW / width) * 100),
@@ -282,16 +283,16 @@ class IIIF extends TileImage {
         }
         if (
           version == Versions.VERSION3 &&
-          (!supportsArbitraryTiling || supports.includes('sizeByWh'))
+          (!supportsArbitraryTiling || includes(supports, 'sizeByWh'))
         ) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (!supportsArbitraryTiling || supports.includes('sizeByW')) {
+        } else if (!supportsArbitraryTiling || includes(supports, 'sizeByW')) {
           sizeParam = sizeW + ',';
-        } else if (supports.includes('sizeByH')) {
+        } else if (includes(supports, 'sizeByH')) {
           sizeParam = ',' + sizeH;
-        } else if (supports.includes('sizeByWh')) {
+        } else if (includes(supports, 'sizeByWh')) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (supports.includes('sizeByPct')) {
+        } else if (includes(supports, 'sizeByPct')) {
           sizeParam = 'pct:' + formatPercentage(100 / scale);
         }
       } else {
