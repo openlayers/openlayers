@@ -117,6 +117,7 @@ For older browsers and platforms (Internet Explorer, Android 4.x, iOS v12 and ol
 * [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/#feat=classlist): Available from [polyfill.io](https://polyfill.io/).
 * [`URL` API](https://caniuse.com/#feat=url): Available from [polyfill.io](https://polyfill.io/).
 * [`TextDecoder`](https://caniuse.com/#feat=textencoder): Available from [polyfill.io](https://polyfill.io/).
+* [`Number.isInteger`](https://caniuse.com/#feat=isInteger): Available from [polyfill.io](https://polyfill.io/).
 * [Pointer events](https://caniuse.com/#feat=pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
 
 ## Documentation
