@@ -27,18 +27,31 @@ module.exports = {
         test: /^((?!es2015-)[\s\S])*\.js$/,
         use: {
           loader: 'buble-loader',
+          options: {
+            transforms: {
+              dangerousForOf: true,
+            },
+          },
         },
         include: [
           path.join(__dirname, '..', '..', 'src'),
           path.join(__dirname, '..'),
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            'node_modules',
+            '@mapbox',
+            'mapbox-gl-style-spec'
+          ),
         ],
       },
       {
         test: /\.js$/,
         use: {
-          loader: path.join(__dirname, './worker-loader.js'),
+          loader: path.join(__dirname, 'worker-loader.js'),
         },
-        include: [path.join(__dirname, '../../src/ol/worker')],
+        include: [path.join(__dirname, '..', '..', 'src', 'ol', 'worker')],
       },
     ],
   },
