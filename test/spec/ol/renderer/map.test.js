@@ -5,9 +5,10 @@ import MapRenderer from '../../../../src/ol/renderer/Map.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import {Circle, Fill, Style} from '../../../../src/ol/style.js';
+import {Circle, Fill, Stroke, Style} from '../../../../src/ol/style.js';
 import {
   GeometryCollection,
+  LineString,
   MultiPoint,
   Point,
 } from '../../../../src/ol/geom.js';
@@ -41,10 +42,12 @@ describe('ol.renderer.Map', function () {
         }),
       });
     });
+
     afterEach(function () {
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
     });
+
     it('calls callback with feature, layer and geometry', function () {
       let hit;
       const point = new Point([0, 0]);
@@ -86,6 +89,41 @@ describe('ol.renderer.Map', function () {
       }));
       expect(hit.feature).to.be(multiGeometry);
       expect(hit.geometry).to.be(multiPoint);
+    });
+
+    it('hits lines even if they are dashed', function () {
+      const geometry = new LineString([
+        [-1e6, 0],
+        [1e6, 0],
+      ]);
+      const feature = new Feature(geometry);
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
+        }),
+        style: new Style({
+          stroke: new Stroke({
+            color: 'black',
+            width: 8,
+            lineDash: [10, 20],
+          }),
+        }),
+      });
+      map.addLayer(layer);
+      map.renderSync();
+      const hit = map.forEachFeatureAtPixel(
+        [50, 50],
+        (feature, layer, geometry) => ({
+          feature,
+          layer,
+          geometry,
+        })
+      );
+
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
     });
   });
 

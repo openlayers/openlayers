@@ -74,6 +74,7 @@ export function createHitDetectionImageData(
       const stroke = style.getStroke();
       if (stroke) {
         stroke.setColor(color);
+        stroke.setLineDash(null);
       }
       style.setText(undefined);
       const image = originalStyle.getImage();
