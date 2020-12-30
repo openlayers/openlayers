@@ -1,8 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import ImageStyle from '../../../../src/ol/style/Image.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
 import Point from '../../../../src/ol/geom/Point.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style, {createDefaultStyle} from '../../../../src/ol/style/Style.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
@@ -120,9 +122,27 @@ describe('ol.layer.Vector', function () {
   });
 
   describe('#getFeatures()', function () {
-    let map, layer;
-
+    let map;
     beforeEach(function () {
+      const container = document.createElement('div');
+      container.style.width = '256px';
+      container.style.height = '256px';
+      document.body.appendChild(container);
+      map = new Map({
+        target: container,
+        view: new View({
+          zoom: 2,
+          center: [0, 0],
+        }),
+      });
+    });
+
+    afterEach(function () {
+      document.body.removeChild(map.getTargetElement());
+      map.setTarget(null);
+    });
+
+    it('detects features properly', function (done) {
       const source = new VectorSource({
         features: [
           new Feature({
@@ -158,36 +178,52 @@ describe('ol.layer.Vector', function () {
 
       source.addFeature(feature);
 
-      layer = new VectorLayer({
+      const layer = new VectorLayer({
         source,
       });
-      const container = document.createElement('div');
-      container.style.width = '256px';
-      container.style.height = '256px';
-      document.body.appendChild(container);
-      map = new Map({
-        target: container,
-        layers: [layer],
-        view: new View({
-          zoom: 2,
-          center: [0, 0],
-        }),
-      });
-    });
-
-    afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
-    });
-
-    it('detects features properly', function (done) {
+      map.addLayer(layer);
       map.renderSync();
+
       const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+
       layer.getFeatures(pixel).then(function (features) {
         expect(features.length).to.equal(1);
         expect(features[0].get('name')).to.be('feature1');
         done();
       });
+    });
+
+    it('hits lines even if they are dashed', function (done) {
+      const geometry = new LineString([
+        [-1e6, 0],
+        [1e6, 0],
+      ]);
+      const feature = new Feature(geometry);
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
+        }),
+        style: new Style({
+          stroke: new Stroke({
+            color: 'black',
+            width: 8,
+            lineDash: [10, 20],
+          }),
+        }),
+      });
+      map.addLayer(layer);
+      map.renderSync();
+
+      const pixel = map.getPixelFromCoordinate([0, 0]);
+
+      layer
+        .getFeatures(pixel)
+        .then(function (features) {
+          expect(features.length).to.equal(1);
+          expect(features[0]).to.be(feature);
+          done();
+        }, done)
+        .catch(done);
     });
   });
 });
