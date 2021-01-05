@@ -72,7 +72,8 @@ export class VectorSourceEvent extends Event {
  * @property {import("../featureloader.js").FeatureLoader} [loader]
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
- * feature loader.
+ * feature loader. The `'featuresloadstart'`, `'featuresloadend'` and `'featuresloaderror'` events
+ * will only fire if the `success` and `failure` callbacks are used.
  *
  * Example:
  *
@@ -83,7 +84,7 @@ export class VectorSourceEvent extends Event {
  *
  * var vectorSource = new Vector({
  *   format: new GeoJSON(),
- *   loader: function(extent, resolution, projection) {
+ *   loader: function(extent, resolution, projection, success, failure) {
  *      var proj = projection.getCode();
  *      var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
  *          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
@@ -93,12 +94,14 @@ export class VectorSourceEvent extends Event {
  *      xhr.open('GET', url);
  *      var onError = function() {
  *        vectorSource.removeLoadedExtent(extent);
+ *        failure();
  *      }
  *      xhr.onerror = onError;
  *      xhr.onload = function() {
  *        if (xhr.status == 200) {
- *          vectorSource.addFeatures(
- *              vectorSource.getFormat().readFeatures(xhr.responseText));
+ *          var features = vectorSource.getFormat().readFeatures(xhr.responseText);
+ *          vectorSource.addFeatures(features);
+ *          success(features);
  *        } else {
  *          onError();
  *        }
