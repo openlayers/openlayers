@@ -81,15 +81,6 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * Will return the last shader compilation errors. If no error happened, will return null;
-   * @return {string|null} Errors, or null if last compilation was successful
-   * @api
-   */
-  getShaderCompileErrors() {
-    return this.helper.getShaderCompileErrors();
-  }
-
-  /**
    * @param {import("../../render/EventType.js").default} type Event type.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @private
