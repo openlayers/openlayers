@@ -72,7 +72,7 @@ export class VectorSourceEvent extends Event {
  * @property {import("../featureloader.js").FeatureLoader} [loader]
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
- * feature loader. The `'featuresloadstart'`, `'featuresloadend'` and `'featuresloaderror'` events
+ * feature loader. The `'featuresloadend'` and `'featuresloaderror'` events
  * will only fire if the `success` and `failure` callbacks are used.
  *
  * Example:

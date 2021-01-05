@@ -56,7 +56,7 @@ const styleCache = {
 };
 
 const vectorSource = new VectorSource({
-  loader: function (extent, resolution, projection) {
+  loader: function (extent, resolution, projection, success, failure) {
     const url =
       serviceUrl +
       layer +
@@ -83,6 +83,7 @@ const vectorSource = new VectorSource({
           alert(
             response.error.message + '\n' + response.error.details.join('\n')
           );
+          failure();
         } else {
           // dataProjection will be read from document
           const features = esrijsonFormat.readFeatures(response, {
@@ -91,8 +92,10 @@ const vectorSource = new VectorSource({
           if (features.length > 0) {
             vectorSource.addFeatures(features);
           }
+          success(features);
         }
       },
+      error: failure,
     });
   },
   strategy: tileStrategy(
