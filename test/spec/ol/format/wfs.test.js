@@ -1458,31 +1458,31 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a WFS Filter', function () {
     const wfs1Filter =
-    '<Filter xmlns="http://www.opengis.net/ogc">' +
-    '  <And>' +
-    '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
-    '      <PropertyName>name</PropertyName>' +
-    '      <Literal>Mississippi*</Literal>' +
-    '    </PropertyIsLike>' +
-    '    <PropertyIsEqualTo>' +
-    '      <PropertyName>waterway</PropertyName>' +
-    '      <Literal>riverbank</Literal>' +
-    '    </PropertyIsEqualTo>' +
-    '  </And>' +
-    '</Filter>';
+      '<Filter xmlns="http://www.opengis.net/ogc">' +
+      '  <And>' +
+      '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+      '      <PropertyName>name</PropertyName>' +
+      '      <Literal>Mississippi*</Literal>' +
+      '    </PropertyIsLike>' +
+      '    <PropertyIsEqualTo>' +
+      '      <PropertyName>waterway</PropertyName>' +
+      '      <Literal>riverbank</Literal>' +
+      '    </PropertyIsEqualTo>' +
+      '  </And>' +
+      '</Filter>';
     const wfs2Filter =
-    '<Filter xmlns="http://www.opengis.net/fes/2.0">' +
-    '  <And>' +
-    '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
-    '      <ValueReference>name</ValueReference>' +
-    '      <Literal>Mississippi*</Literal>' +
-    '    </PropertyIsLike>' +
-    '    <PropertyIsEqualTo>' +
-    '      <ValueReference>waterway</ValueReference>' +
-    '      <Literal>riverbank</Literal>' +
-    '    </PropertyIsEqualTo>' +
-    '  </And>' +
-    '</Filter>';
+      '<Filter xmlns="http://www.opengis.net/fes/2.0">' +
+      '  <And>' +
+      '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+      '      <ValueReference>name</ValueReference>' +
+      '      <Literal>Mississippi*</Literal>' +
+      '    </PropertyIsLike>' +
+      '    <PropertyIsEqualTo>' +
+      '      <ValueReference>waterway</ValueReference>' +
+      '      <Literal>riverbank</Literal>' +
+      '    </PropertyIsEqualTo>' +
+      '  </And>' +
+      '</Filter>';
     it('creates a WFS 1.x.x filter', function () {
       const serialized = writeFilter(
         andFilter(
