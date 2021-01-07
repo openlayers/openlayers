@@ -1328,7 +1328,7 @@ function writeTimeInstant(node, time) {
  * @api
  */
 export function writeFilter(filter, version) {
-  const child = createElementNS(OGCNS[version], 'Filter');
+  const child = createElementNS(getFilterNS(version), 'Filter');
   const context = {
     node: child,
   };

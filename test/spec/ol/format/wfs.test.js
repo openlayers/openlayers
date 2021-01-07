@@ -1457,20 +1457,33 @@ describe('ol.format.WFS', function () {
   });
 
   describe('when writing out a WFS Filter', function () {
-    it('creates a filter', function () {
-      const text =
-        '<Filter xmlns="http://www.opengis.net/ogc">' +
-        '  <And>' +
-        '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
-        '      <PropertyName>name</PropertyName>' +
-        '      <Literal>Mississippi*</Literal>' +
-        '    </PropertyIsLike>' +
-        '    <PropertyIsEqualTo>' +
-        '      <PropertyName>waterway</PropertyName>' +
-        '      <Literal>riverbank</Literal>' +
-        '    </PropertyIsEqualTo>' +
-        '  </And>' +
-        '</Filter>';
+    const wfs1Filter =
+    '<Filter xmlns="http://www.opengis.net/ogc">' +
+    '  <And>' +
+    '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+    '      <PropertyName>name</PropertyName>' +
+    '      <Literal>Mississippi*</Literal>' +
+    '    </PropertyIsLike>' +
+    '    <PropertyIsEqualTo>' +
+    '      <PropertyName>waterway</PropertyName>' +
+    '      <Literal>riverbank</Literal>' +
+    '    </PropertyIsEqualTo>' +
+    '  </And>' +
+    '</Filter>';
+    const wfs2Filter =
+    '<Filter xmlns="http://www.opengis.net/fes/2.0">' +
+    '  <And>' +
+    '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+    '      <ValueReference>name</ValueReference>' +
+    '      <Literal>Mississippi*</Literal>' +
+    '    </PropertyIsLike>' +
+    '    <PropertyIsEqualTo>' +
+    '      <ValueReference>waterway</ValueReference>' +
+    '      <Literal>riverbank</Literal>' +
+    '    </PropertyIsEqualTo>' +
+    '  </And>' +
+    '</Filter>';
+    it('creates a WFS 1.x.x filter', function () {
       const serialized = writeFilter(
         andFilter(
           likeFilter('name', 'Mississippi*'),
@@ -1478,7 +1491,17 @@ describe('ol.format.WFS', function () {
         ),
         '1.1.0'
       );
-      expect(serialized).to.xmleql(parse(text));
+      expect(serialized).to.xmleql(parse(wfs1Filter));
+    });
+    it('creates a WFS 2.x.x filter', function () {
+      const serialized = writeFilter(
+        andFilter(
+          likeFilter('name', 'Mississippi*'),
+          equalToFilter('waterway', 'riverbank')
+        ),
+        '2.0.0'
+      );
+      expect(serialized).to.xmleql(parse(wfs2Filter));
     });
   });
 
