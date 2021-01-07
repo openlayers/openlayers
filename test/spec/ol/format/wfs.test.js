@@ -1493,6 +1493,15 @@ describe('ol.format.WFS', function () {
       );
       expect(serialized).to.xmleql(parse(wfs1Filter));
     });
+    it('defaults to creating a WFS 1.x.x filter if no version specified', function () {
+      const serialized = writeFilter(
+        andFilter(
+          likeFilter('name', 'Mississippi*'),
+          equalToFilter('waterway', 'riverbank')
+        )
+      );
+      expect(serialized).to.xmleql(parse(wfs1Filter));
+    });
     it('creates a WFS 2.x.x filter', function () {
       const serialized = writeFilter(
         andFilter(

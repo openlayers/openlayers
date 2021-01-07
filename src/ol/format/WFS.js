@@ -1323,11 +1323,12 @@ function writeTimeInstant(node, time) {
  * Encode filter as WFS `Filter` and return the Node.
  *
  * @param {import("./filter/Filter.js").default} filter Filter.
- * @param {string} version Version.
+ * @param {string} opt_version WFS version. If not provided defaults to '1.1.0'
  * @return {Node} Result.
  * @api
  */
-export function writeFilter(filter, version) {
+export function writeFilter(filter, opt_version) {
+  const version = opt_version || '1.1.0';
   const child = createElementNS(getFilterNS(version), 'Filter');
   const context = {
     node: child,
