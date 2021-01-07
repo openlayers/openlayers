@@ -649,7 +649,7 @@ class Draw extends PointerInteraction {
     }
 
     if (!pass && this.stopClick_) {
-      event.originalEvent.stopPropagation();
+      event.stopPropagation();
     }
     return pass;
   }

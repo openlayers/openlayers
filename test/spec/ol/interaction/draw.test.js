@@ -30,6 +30,7 @@ import {
 import {equals} from '../../../../src/ol/array.js';
 import {listen} from '../../../../src/ol/events.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import {unByKey} from '../../../../src/ol/Observable.js';
 
 describe('ol.interaction.Draw', function () {
   let target, map, source;
@@ -97,6 +98,17 @@ describe('ol.interaction.Draw', function () {
     return simulatedEvent;
   }
 
+  function simulateBrowserEvent(type, x, y) {
+    const viewport = map.getViewport();
+    // calculated in case body has top < 0 (test runner with small window)
+    const position = viewport.getBoundingClientRect();
+    const evt = new PointerEvent(type, {
+      clientX: position.left + x + width / 2,
+      clientY: position.top + y + height / 2,
+    });
+    (type === 'pointerup' ? document : map.getViewport()).dispatchEvent(evt);
+  }
+
   describe('constructor', function () {
     it('creates a new interaction', function () {
       const draw = new Draw({
@@ -130,6 +142,24 @@ describe('ol.interaction.Draw', function () {
         dragVertexDelay: 42,
       });
       expect(draw.dragVertexDelay_).to.be(42);
+    });
+
+    it('accepts a stopClick option', function () {
+      const draw = new Draw({
+        source: source,
+        type: 'Point',
+        stopClick: true,
+      });
+      map.addInteraction(draw);
+      let clicked = false;
+      const clickKey = map.on('click', () => (clicked = true));
+      simulateBrowserEvent('pointermove', 10, 20);
+      simulateBrowserEvent('pointerdown', 10, 20);
+      simulateBrowserEvent('pointerup', 10, 20);
+      //setTimeout(() => {
+      expect(clicked).to.be(false);
+      unByKey(clickKey);
+      //}, 300);
     });
   });
 
