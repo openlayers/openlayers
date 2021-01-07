@@ -709,8 +709,7 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Create a program for a vertex and fragment shader. The shaders compilation may have failed:
-   * use `WebGLHelper.getShaderCompileErrors()`to have details if any.
+   * Create a program for a vertex and fragment shader.  Throws if shader compilation fails.
    * @param {string} fragmentShaderSource Fragment shader source.
    * @param {string} vertexShaderSource Vertex shader source.
    * @return {WebGLProgram} Program
@@ -723,39 +722,41 @@ class WebGLHelper extends Disposable {
       fragmentShaderSource,
       gl.FRAGMENT_SHADER
     );
+
     const vertexShader = this.compileShader(
       vertexShaderSource,
       gl.VERTEX_SHADER
     );
-    this.shaderCompileErrors_ = null;
-
-    if (gl.getShaderInfoLog(fragmentShader)) {
-      this.shaderCompileErrors_ = `Fragment shader compilation failed:\n${gl.getShaderInfoLog(
-        fragmentShader
-      )}`;
-    }
-    if (gl.getShaderInfoLog(vertexShader)) {
-      this.shaderCompileErrors_ =
-        (this.shaderCompileErrors_ || '') +
-        `Vertex shader compilation failed:\n${gl.getShaderInfoLog(
-          vertexShader
-        )}`;
-    }
 
     const program = gl.createProgram();
     gl.attachShader(program, fragmentShader);
     gl.attachShader(program, vertexShader);
     gl.linkProgram(program);
-    return program;
-  }
 
-  /**
-   * Will return the last shader compilation errors. If no error happened, will return null;
-   * @return {string|null} Errors description, or null if last compilation was successful
-   * @api
-   */
-  getShaderCompileErrors() {
-    return this.shaderCompileErrors_;
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      const message = `Fragment shader compliation failed: ${gl.getShaderInfoLog(
+        fragmentShader
+      )}`;
+      throw new Error(message);
+    }
+    gl.deleteShader(fragmentShader);
+
+    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+      const message = `Vertex shader compilation failed: ${gl.getShaderInfoLog(
+        vertexShader
+      )}`;
+      throw new Error(message);
+    }
+    gl.deleteShader(vertexShader);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      const message = `GL program linking failed: ${gl.getShaderInfoLog(
+        vertexShader
+      )}`;
+      throw new Error(message);
+    }
+
+    return program;
   }
 
   /**
