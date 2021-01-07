@@ -15,10 +15,12 @@ let withCredentials = false;
  * {@link module:ol/source/Vector} sources use a function of this type to
  * load features.
  *
- * This function takes an {@link module:ol/extent~Extent} representing the area to be loaded,
- * a `{number}` representing the resolution (map units per pixel), an
- * {@link module:ol/proj/Projection} for the projection and success and failure callbacks as
- * arguments. `this` within the function is bound to the
+ * This function takes up to 5 arguments. These are an {@link module:ol/extent~Extent} representing
+ * the area to be loaded, a `{number}` representing the resolution (map units per pixel), an
+ * {@link module:ol/proj/Projection} for the projection, an optional success callback that should get
+ * the loaded features passed as an argument and an optional failure callback with no arguments. If
+ * the callbacks are not used, the corresponding vector source will not fire `'featuresloadend'` and
+ * `'featuresloaderror'` events. `this` within the function is bound to the
  * {@link module:ol/source/Vector} it's called from.
  *
  * The function is responsible for loading the features and adding them to the
