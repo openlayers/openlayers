@@ -219,6 +219,7 @@ class Style {
       geometry: geometry,
       fill: this.getFill() ? this.getFill().clone() : undefined,
       image: this.getImage() ? this.getImage().clone() : undefined,
+      renderer: this.getRenderer() ? this.getRenderer() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       text: this.getText() ? this.getText().clone() : undefined,
       zIndex: this.getZIndex(),
