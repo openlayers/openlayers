@@ -48,6 +48,10 @@ describe('ol.style.Style', function () {
         image: new CircleStyle({
           radius: 5,
         }),
+        renderer: function (pixelCoordinates, state) {
+          const geometry = state.geometry.clone();
+          geometry.setCoordinates(pixelCoordinates);
+        },
         stroke: new Stroke({
           color: '#319FD3',
         }),
@@ -63,6 +67,9 @@ describe('ol.style.Style', function () {
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
       expect(original.getImage().getRadius()).to.eql(
         clone.getImage().getRadius()
+      );
+      expect(original.getRenderer().toString()).to.eql(
+        clone.getRenderer().toString()
       );
       expect(original.getStroke().getColor()).to.eql(
         clone.getStroke().getColor()
@@ -80,6 +87,10 @@ describe('ol.style.Style', function () {
         image: new CircleStyle({
           radius: 5,
         }),
+        renderer: function (pixelCoordinates, state) {
+          const geometry = state.geometry.clone();
+          geometry.setCoordinates(pixelCoordinates);
+        },
         stroke: new Stroke({
           color: '#319FD3',
         }),
@@ -91,12 +102,16 @@ describe('ol.style.Style', function () {
       expect(original.getGeometry()).not.to.be(clone.getGeometry());
       expect(original.getFill()).not.to.be(clone.getFill());
       expect(original.getImage()).not.to.be(clone.getImage());
+      expect(original.getRenderer()).not.to.be(clone.getRenderer());
       expect(original.getStroke()).not.to.be(clone.getStroke());
       expect(original.getText()).not.to.be(clone.getText());
 
       clone.getGeometry().setCoordinates([1, 1, 1]);
       clone.getFill().setColor('#012345');
       clone.getImage().setScale(2);
+      clone.setRenderer(function (pixelCoordinates, state) {
+        return;
+      });
       clone.getStroke().setColor('#012345');
       clone.getText().setText('other');
       expect(original.getGeometry().getCoordinates()).not.to.eql(
@@ -107,6 +122,9 @@ describe('ol.style.Style', function () {
       );
       expect(original.getImage().getScale()).not.to.eql(
         clone.getImage().getScale()
+      );
+      expect(original.getRenderer().toString()).not.to.eql(
+        clone.getRenderer().toString()
       );
       expect(original.getStroke().getColor()).not.to.eql(
         clone.getStroke().getColor()
