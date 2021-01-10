@@ -110,9 +110,8 @@ class Executor {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions
-   * @param {import("../../size.js").Size} renderBuffer Render buffer (width/height) in pixels.
    */
-  constructor(resolution, pixelRatio, overlaps, instructions, renderBuffer) {
+  constructor(resolution, pixelRatio, overlaps, instructions) {
     /**
      * @protected
      * @type {boolean}
@@ -155,12 +154,6 @@ class Executor {
      * @type {!Object<number,import("../../coordinate.js").Coordinate|Array<import("../../coordinate.js").Coordinate>|Array<Array<import("../../coordinate.js").Coordinate>>>}
      */
     this.coordinateCache_ = {};
-
-    /**
-     * @private
-     * @type {import("../../size.js").Size}
-     */
-    this.renderBuffer_ = renderBuffer;
 
     /**
      * @private
