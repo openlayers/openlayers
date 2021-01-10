@@ -31,10 +31,10 @@ const tileGrid = new WMTSTileGrid({
 });
 
 // For more information about the IGN API key see
-// https://geoservices.ign.fr/blog/2017/06/28/geoportail_sans_compte.html
+// https://geoservices.ign.fr/blog/2018/09/06/acces_geoportail_sans_compte.html
 
 const ign_source = new WMTS({
-  url: 'https://wxs.ign.fr/pratique/geoportail/wmts',
+  url: 'https://wxs.ign.fr/choisirgeoportail/geoportail/wmts',
   layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
   matrixSet: 'PM',
   format: 'image/jpeg',
