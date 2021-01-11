@@ -282,17 +282,18 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         sourceTileCoord
       );
       const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
+      const builderExtent = buffer(
+        sharedExtent,
+        layer.getRenderBuffer() * resolution,
+        this.tmpExtent
+      );
       const bufferedExtent = equals(sourceTileExtent, sharedExtent)
         ? null
-        : buffer(
-            sharedExtent,
-            layer.getRenderBuffer() * resolution,
-            this.tmpExtent
-          );
+        : builderExtent;
       builderState.dirty = false;
       const builderGroup = new CanvasBuilderGroup(
         0,
-        sharedExtent,
+        builderExtent,
         resolution,
         pixelRatio
       );
