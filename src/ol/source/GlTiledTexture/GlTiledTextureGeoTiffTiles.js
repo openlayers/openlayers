@@ -137,4 +137,12 @@ export default class GlTiledTextureGeoTiffTiles extends GlTiledTextureAbstract {
       }`;
     });
   }
+
+  getTileGrid() {
+    return this.xyz_.tileGrid;
+  }
+
+  getProjection() {
+    return this.xyz_.getProjection();
+  }
 }

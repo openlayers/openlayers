@@ -108,8 +108,6 @@ const glSource = new GlTiles({
   attributions:
     "<a href='https://s2maps.eu'>Sentinel-2 cloudless</a> by <a href='https://eox.at/'>EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2019)",
   uniforms: {},
-  projection: 'EPSG:4326',
-  tileGrid: tileGrid,
 });
 
 const map = new Map({

@@ -59,4 +59,23 @@ export default class GlTiledTextureAbstract {
       return texture2D(${uniformName}, texelCoords.st).x;
     }`);
   }
+
+//   /**
+//    * @return {import("../../tilegrid/TileGrid.js").default}
+//    *
+//    * Returns the tilegrid for this tiled texture.
+//    */
+//   getTileGrid() {
+//     throw new Error("Abstract texture sources don't have a tilegrid.");
+//   }
+//
+//   /**
+//    * @return {import("../../proj.js").ProjectionLike}
+//    *
+//    * Returns the projectionfor this tiled texture.
+//    */
+//   getTileGrid() {
+//     throw new Error("Abstract texture sources don't have a projection.");
+//   }
+
 }

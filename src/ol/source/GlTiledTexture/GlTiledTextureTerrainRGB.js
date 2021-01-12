@@ -88,4 +88,12 @@ export default class GlTiledTextureTerrainRGB extends GlTiledTextureAbstract {
       ) * 25.5;
     }`);
   }
+
+  getTileGrid() {
+    return this.xyz.tileGrid;
+  }
+
+  getProjection() {
+    return this.xyz.getProjection();
+  }
 }

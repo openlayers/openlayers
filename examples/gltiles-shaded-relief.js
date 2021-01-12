@@ -87,7 +87,7 @@ const map = new Map({
 
 const sliderExaggeration = document.getElementById('vert');
 sliderExaggeration.addEventListener('input', function () {
-  glSource.setUniform('uVerticalExaggeration', sliderExaggeration.value);
+  glSource.setUniform('uVerticalExaggeration', Number(sliderExaggeration.value));
   document.getElementById('vertOut').innerText = sliderExaggeration.value;
 });
 

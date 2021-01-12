@@ -4,6 +4,7 @@ import View from '../src/ol/View.js';
 // import {OSM, TileDebugAsync} from '../src/ol/source.js';
 import GlTiledTextureGeoTiff from '../src/ol/source/GlTiledTexture/GlTiledTextureGeoTiff.js';
 import {GlTiles, OSM} from '../src/ol/source.js';
+import {createXYZ, extentFromProjection} from '../src/ol/tilegrid.js';
 
 import {Worker} from 'threads';
 
@@ -183,7 +184,17 @@ const ndvwiShader =
   '}                                                              \n';
 
 const glSource = new GlTiles({
-  // 	projection: epsg8357,
+  // Since this GLSource only uses texture sources that don't have projection
+  // and tilegrid (unlike TerrainRGB or TextureGeoTiffTiles), a projection and
+  // tile grid must be provided manually.
+  projection: 'EPSG:3857',
+  tileGrid: createXYZ({
+            extent: extentFromProjection('EPSG:3857'),
+            maxZoom: 20,
+            minZoom: 12,
+            tileSize: 256,
+          }),
+
   fragmentShader: ndvwiShader,
   textureSources: [
     // This GlTiles source shall use only three texture sources.
@@ -252,62 +263,3 @@ const map = new Map({
   }),
 });
 
-/*
-var fragmentCodeMirror = CodeMirror.fromTextArea(document.getElementById('fragmentShaderCode'), {
-	mode: "glsl",
-// 	mode: "javascript",
-	lineNumbers: true,
-	lineWrapping: true,
-	firstLineNumber: 1,
-	viewportMargin: 20,
-});
-
-fragmentCodeMirror.setValue( nvdiShader );
-fragmentCodeMirror.on('change', debounce(redo, 250));
-
-
-function debounce(callback, interval) {
-  let debounceTimeoutId;
-
-  return function(...args) {
-    clearTimeout(debounceTimeoutId);
-    debounceTimeoutId = setTimeout(() => callback.apply(this, args), interval);
-  };
-}
-
-
-function redo(){
-	console.warn("Recompiling shader");
-// 	document.getElementById('shader-display').value = glSource.fragmentShader;
-	glSource.fragmentShader = "#line 1\n" + fragmentCodeMirror.getValue();
-
-	glSource._fetchFuncDefs.then((defs)=>{
-		try {
-			glSource.loadGLProgram_(defs);
-		} catch(ex) {
-			document.getElementById('error-modal').innerHTML = ex;
-			document.getElementById('error-modal').style.display = 'block';
-			return;
-		}
-		document.getElementById('error-modal').style.display = 'none';
-		glSource.reRender();
-	});
-}
-
-
-
-import presetShaders from './shaders/index.js';
-
-const presetSelector = document.getElementById("presets");
-for (let name of Object.keys(presetShaders)) {
-	const option = document.createElement("option");
-	option.innerHTML = name;
-	option.value = name;
-	presetSelector.appendChild(option);
-}
-
-presetSelector.addEventListener('change', function(ev){
-	if (ev.target.value) {
-		fragmentCodeMirror.setValue( presetShaders[ev.target.value] );
-	}
-});*/
