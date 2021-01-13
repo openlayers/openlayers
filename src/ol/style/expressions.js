@@ -18,7 +18,7 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['time']` returns the time in seconds since the creation of the layer
  *   * `['zoom']` returns the current zoom level
  *   * `['resolution']` returns the current resolution
- *   * `['in', 'keyword', 'input']` returns true if `input` contains `keyword`, otherwise returns false
+ *   * `['in', keyword, input]` returns `true` if `input` contains `keyword`
  *
  * * Math operators:
  *   * `['*', value1, value2]` multiplies `value1` by `value2`
@@ -792,50 +792,34 @@ Operators['in'] = {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
-    assertArgsCount(args, 2);
+    assertArgsCount(2);
+    assertNumber(args[0]);
+    assertNumbers(args[1]);
 
-    const haystack = [];
-    const needle = [];
-    let result;
-    if (getValueType(args[1]) & ValueTypes.NUMBER_ARRAY) {
-      const keyword = expressionToGlsl(context, args[0]);
-      const input = /** @type {Array<number>} */ (args[1]);
-      let i = 0;
-      /** @type {Array<string|number>} */
-      let inputArr = ['array'];
-      input.forEach((element) => {
-        inputArr.push(element);
-        i++;
-        if (i % 4 === 0) {
-          haystack.push(expressionToGlsl(context, inputArr));
-          needle.push(`vec4(${keyword})`);
-          inputArr = ['array'];
-        }
-      });
-      if (i % 4 === 1) {
-        inputArr.push(inputArr[1]);
-        haystack.push(expressionToGlsl(context, inputArr));
-        needle.push(`vec${inputArr.length - 1}(${keyword})`);
-      } else {
-        haystack.push(expressionToGlsl(context, inputArr));
-        needle.push(`vec${inputArr.length - 1}(${keyword})`);
-      }
-      const preliminary = [];
-      for (i = 0; i < haystack.length; i++) {
-        preliminary.push([`any(equal(${haystack[i]}, ${needle[i]}))`]);
-      }
-      result = preliminary.join(` || `);
-    } else if (getValueType(args[1]) & ValueTypes.STRING) {
-      assertString(args[0]);
-      const keyword = /** @type {string} */ (args[0]);
-      const input = /** @type {string} */ (args[1]);
-      result = input.includes(keyword).toString();
+    /**
+     * If testing for the presence of a number in an array, produce a GLSL
+     * expression by evaluating the input as an array expression.
+     */
+    let keyword = expressionToGlsl(context, args[0]);
+    /** @type {Array<string|number>} */
+    let inputExpression;
+
+    if (getValueType(args[1][0]) & ValueTypes.STRING) {
+      inputExpression = /** @type {Array<string|number>} */ (args[1]);
     } else {
-      throw new Error(
-        `Expected input to be an array of numbers or a string, got ${typeof args[1]} instead.`
-      );
+      /** @type {Array<string|number>} */
+      const start = ['array'];
+      inputExpression = start.concat(/** @type {Array<string|number>} */ (args[1]));
     }
 
-    return `(${result})`;
+    /**
+     * The GLSL equal() function compares two vecs of the same size and returns
+     * a bvec. Wrap that bvec in an any() function so the expression evaluates
+     * to true if any of the values in the input vec equal the keyword number.
+     */
+    const inputLength = inputExpression.length - 1;
+    const input = expressionToGlsl(context, inputExpression);
+    keyword = `vec${inputLength}(${keyword})`;
+    return `any(equal(${keyword}, ${input}))`;
   },
 };

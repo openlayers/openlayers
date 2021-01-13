@@ -1084,16 +1084,25 @@ describe('ol.style.expressions', function () {
       };
     });
 
-    it('correctly parses an in expression that checks if an item exists within an array of numbers', function () {
-      const expression = ['in', 5, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]];
+    it('correctly parses an in expression that checks if an number exists within a literal number array', function () {
+      const expression = ['in', 3, [1, 2, 3, 4]];
       expect(expressionToGlsl(context, expression)).to.eql(
-        `(any(equal(vec4(1.0, 2.0, 3.0, 4.0), vec4(5.0))) || any(equal(vec4(5.0, 6.0, 7.0, 8.0), vec4(5.0))) || any(equal(vec2(9.0, 10.0), vec2(5.0))))`
+        'any(equal(vec4(3.0), vec4(1.0, 2.0, 3.0, 4.0)))'
       );
     });
 
-    it('correctly parses an in expression that checks if a string exists within another string', function () {
-      const expression = ['in', 'foo', 'foobar'];
-      expect(expressionToGlsl(context, expression)).to.eql('(true)');
+    it('correctly parses an in expression that checks if a number exists within a number array given by an array expression', function () {
+      const expression = ['in', 3, ['array', 1, 2, 3]];
+      expect(expressionToGlsl(context, expression)).to.eql(
+        'any(equal(vec3(3.0), vec3(1.0, 2.0, 3.0)))'
+      );
     });
+
+    it('correctly parses an in expression that uses an attribute as its keyword', function () {
+      const expression = ['in', ['get', 'foo'], ['array', 1, 2, 3]];
+      expect(expressionToGlsl(context, expression)).to.eql(
+        'any(equal(vec3(a_foo), vec3(1.0, 2.0, 3.0)))'
+      );
+    })
   });
 });
