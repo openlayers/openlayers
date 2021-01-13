@@ -361,7 +361,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       tile.executorGroups[layerUid].push(renderingReplayGroup);
       if (declutterBuilderGroup) {
         const declutterExecutorGroup = new CanvasExecutorGroup(
-          replayExtent,
+          null,
           resolution,
           pixelRatio,
           source.getOverlaps(),
