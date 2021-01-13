@@ -48,6 +48,10 @@ describe('ol.style.Style', function () {
         image: new CircleStyle({
           radius: 5,
         }),
+        renderer: function (pixelCoordinates, state) {
+          const geometry = state.geometry.clone();
+          geometry.setCoordinates(pixelCoordinates);
+        },
         stroke: new Stroke({
           color: '#319FD3',
         }),
@@ -64,6 +68,7 @@ describe('ol.style.Style', function () {
       expect(original.getImage().getRadius()).to.eql(
         clone.getImage().getRadius()
       );
+      expect(original.getRenderer()).to.eql(clone.getRenderer());
       expect(original.getStroke().getColor()).to.eql(
         clone.getStroke().getColor()
       );
@@ -80,6 +85,10 @@ describe('ol.style.Style', function () {
         image: new CircleStyle({
           radius: 5,
         }),
+        renderer: function (pixelCoordinates, state) {
+          const geometry = state.geometry.clone();
+          geometry.setCoordinates(pixelCoordinates);
+        },
         stroke: new Stroke({
           color: '#319FD3',
         }),
@@ -97,6 +106,9 @@ describe('ol.style.Style', function () {
       clone.getGeometry().setCoordinates([1, 1, 1]);
       clone.getFill().setColor('#012345');
       clone.getImage().setScale(2);
+      clone.setRenderer(function (pixelCoordinates, state) {
+        return;
+      });
       clone.getStroke().setColor('#012345');
       clone.getText().setText('other');
       expect(original.getGeometry().getCoordinates()).not.to.eql(
@@ -108,6 +120,7 @@ describe('ol.style.Style', function () {
       expect(original.getImage().getScale()).not.to.eql(
         clone.getImage().getScale()
       );
+      expect(original.getRenderer()).not.to.eql(clone.getRenderer());
       expect(original.getStroke().getColor()).not.to.eql(
         clone.getStroke().getColor()
       );
