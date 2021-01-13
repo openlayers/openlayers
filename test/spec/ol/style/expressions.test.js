@@ -1103,6 +1103,6 @@ describe('ol.style.expressions', function () {
       expect(expressionToGlsl(context, expression)).to.eql(
         'any(equal(vec3(a_foo), vec3(1.0, 2.0, 3.0)))'
       );
-    })
+    });
   });
 });

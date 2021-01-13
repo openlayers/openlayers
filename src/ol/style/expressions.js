@@ -794,32 +794,39 @@ Operators['in'] = {
   toGlsl: function (context, args) {
     assertArgsCount(2);
     assertNumber(args[0]);
-    assertNumbers(args[1]);
 
-    /**
-     * If testing for the presence of a number in an array, produce a GLSL
-     * expression by evaluating the input as an array expression.
-     */
-    let keyword = expressionToGlsl(context, args[0]);
-    /** @type {Array<string|number>} */
-    let inputExpression;
-
-    if (getValueType(args[1][0]) & ValueTypes.STRING) {
-      inputExpression = /** @type {Array<string|number>} */ (args[1]);
-    } else {
+    if (getValueType(args[1]) & ValueTypes.NUMBER_ARRAY) {
+      /**
+       * If testing for the presence of a number in an array, produce a GLSL
+       * expression by evaluating the input as an array expression.
+       */
+      let keyword = expressionToGlsl(context, args[0]);
       /** @type {Array<string|number>} */
-      const start = ['array'];
-      inputExpression = start.concat(/** @type {Array<string|number>} */ (args[1]));
-    }
+      let inputExpression;
 
-    /**
-     * The GLSL equal() function compares two vecs of the same size and returns
-     * a bvec. Wrap that bvec in an any() function so the expression evaluates
-     * to true if any of the values in the input vec equal the keyword number.
-     */
-    const inputLength = inputExpression.length - 1;
-    const input = expressionToGlsl(context, inputExpression);
-    keyword = `vec${inputLength}(${keyword})`;
-    return `any(equal(${keyword}, ${input}))`;
+      if (getValueType(args[1]) & ValueTypes.STRING) {
+        inputExpression = /** @type {Array<string|number>} */ (args[1]);
+      } else {
+        /** @type {Array<string|number>} */
+        const start = ['array'];
+        inputExpression = start.concat(
+          /** @type {Array<string|number>} */ (args[1])
+        );
+      }
+
+      /**
+       * The GLSL equal() function compares two vecs of the same size and returns
+       * a bvec. Wrap that bvec in an any() function so the expression evaluates
+       * to true if any of the values in the input vec equal the keyword number.
+       */
+      const inputLength = inputExpression.length - 1;
+      const input = expressionToGlsl(context, inputExpression);
+      keyword = `vec${inputLength}(${keyword})`;
+      return `any(equal(${keyword}, ${input}))`;
+    } else {
+      throw new Error(
+        `Invalid input for "in" operator: received ${JSON.stringify(args[1])}`
+      );
+    }
   },
 };
