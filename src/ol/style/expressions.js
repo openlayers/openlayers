@@ -804,7 +804,7 @@ Operators['in'] = {
       /** @type {Array<string|number>} */
       let inputExpression;
 
-      if (getValueType(args[1]) & ValueTypes.STRING) {
+      if (getValueType(args[1][0]) & ValueTypes.STRING) {
         inputExpression = /** @type {Array<string|number>} */ (args[1]);
       } else {
         /** @type {Array<string|number>} */
