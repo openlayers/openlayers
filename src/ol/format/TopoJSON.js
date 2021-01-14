@@ -368,18 +368,18 @@ function readFeatureFromGeometry(
   name,
   opt_options
 ) {
-  let geometry;
+  let geometry = null;
   const type = object.type;
-  const geometryReader = GEOMETRY_READERS[type];
-  if (type === 'Point' || type === 'MultiPoint') {
-    geometry = geometryReader(object, scale, translate);
-  } else {
-    geometry = geometryReader(object, arcs);
+  if (type) {
+    const geometryReader = GEOMETRY_READERS[type];
+    if (type === 'Point' || type === 'MultiPoint') {
+      geometry = geometryReader(object, scale, translate);
+    } else {
+      geometry = geometryReader(object, arcs);
+    }
+    geometry = transformGeometryWithOptions(geometry, false, opt_options);
   }
-  const feature = new Feature();
-  feature.setGeometry(
-    transformGeometryWithOptions(geometry, false, opt_options)
-  );
+  const feature = new Feature({geometry: geometry});
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
