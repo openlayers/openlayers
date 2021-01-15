@@ -171,10 +171,11 @@ class TileJSON extends TileImage {
       extent = applyTransform(tileJSON['bounds'], transform);
     }
 
+    const gridExtent = extentFromProjection(sourceProjection);
     const minZoom = tileJSON['minzoom'] || 0;
     const maxZoom = tileJSON['maxzoom'] || 22;
     const tileGrid = createXYZ({
-      extent: extentFromProjection(sourceProjection),
+      extent: gridExtent,
       maxZoom: maxZoom,
       minZoom: minZoom,
       tileSize: this.tileSize_,
@@ -184,9 +185,7 @@ class TileJSON extends TileImage {
     this.tileUrlFunction = createFromTemplates(tileJSON['tiles'], tileGrid);
 
     if (tileJSON['attribution'] !== undefined && !this.getAttributions()) {
-      const attributionExtent =
-        extent !== undefined ? extent : epsg4326Projection.getExtent();
-
+      const attributionExtent = extent !== undefined ? extent : gridExtent;
       this.setAttributions(function (frameState) {
         if (intersects(attributionExtent, frameState.extent)) {
           return [tileJSON['attribution']];
