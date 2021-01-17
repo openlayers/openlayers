@@ -850,14 +850,15 @@ class Executor {
             let imageArgs;
             let imageDeclutterBox;
             if (opt_declutterTree && declutterImageWithText) {
-              if (!declutterImageWithText[d]) {
+              const index = dd - d;
+              if (!declutterImageWithText[index]) {
                 // We now have the image for an image+text combination.
-                declutterImageWithText[d] = args;
+                declutterImageWithText[index] = args;
                 // Don't render anything for now, wait for the text.
                 continue;
               }
-              imageArgs = declutterImageWithText[d];
-              delete declutterImageWithText[d];
+              imageArgs = declutterImageWithText[index];
+              delete declutterImageWithText[index];
               imageDeclutterBox = getDeclutterBox(imageArgs);
               if (opt_declutterTree.collides(imageDeclutterBox)) {
                 continue;
