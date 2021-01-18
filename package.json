@@ -89,7 +89,7 @@
     "mocha": "8.2.1",
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
-    "proj4": "2.6.3",
+    "proj4": "2.7.0",
     "puppeteer": "5.5.0",
     "rollup": "^2.1.0",
     "rollup-plugin-babel": "^4.3.3",
