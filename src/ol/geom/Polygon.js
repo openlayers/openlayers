@@ -413,7 +413,7 @@ export default Polygon;
  * Create an approximation of a circle on the surface of a sphere.
  * @param {import("../coordinate.js").Coordinate} center Center (`[lon, lat]` in degrees).
  * @param {number} radius The great-circle distance from the center to
- *     the polygon vertices.
+ *     the polygon vertices in meters.
  * @param {number=} opt_n Optional number of vertices for the resulting
  *     polygon. Default is `32`.
  * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
