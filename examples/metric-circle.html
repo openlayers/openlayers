@@ -1,0 +1,17 @@
+---
+layout: example.html
+title: Metric Circle
+shortdesc: Example of a circular polygon with a radius specified in meters
+docs: >
+  A circular geometry created via `ol/geom/Circle`'s `Circle` constructor will use
+  the unit of the given coordinate reference system for the radius. For the default
+  Pseudo Mercator system these are "fake" meters much different from actual real-world
+  meters pretty much everywhere on the planet. A circle with a radius of 1500 of
+  these "fake" meters is shown in red.
+  
+  To create a circle more true to actual geodesic measurements, `ol/geom/Polygon`
+  provides the `circular` method to create a circle approximation in WGS84 coordinates.
+  A circle with a radius of 1500 actual meters is shown in blue.
+tags: "circle, projection, wgs84, vector, geometry, geographic, buffer"
+---
+<div id="map" class="map"></div>
