@@ -5,6 +5,10 @@ shortdesc: Example on how to use JSTS with OpenLayers.
 docs: >
   Example showing the integration of <a href="https://github.com/bjornharrtell/jsts">JSTS</a>
   with OpenLayers.
+
+  As JSTS operates in cartesian coordinate space, special attention has to be taken when
+  performing geometric calculations. In this example the local factor between meters and
+  map units is used to make sure the buffer radius is calculated correctly.
 tags: "vector, jsts, buffer"
 resources:
   - https://unpkg.com/jsts@2.3.0/dist/jsts.min.js
