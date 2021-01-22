@@ -1622,6 +1622,21 @@ describe('ol.View', function () {
       expect(extent[2]).to.roughlyEqual(51200, 1e-9);
       expect(extent[3]).to.roughlyEqual(25600, 1e-9);
     });
+    it('works with a view padding', function () {
+      const view = new View({
+        resolutions: [1],
+        zoom: 0,
+        center: [0, 0],
+        padding: [10, 20, 30, 40],
+      });
+
+      let extent = view.calculateExtent();
+      expect(extent).to.eql([-20, -30, 20, 30]);
+      view.padding = [0, 0, 0, 0];
+      view.setCenter([0, 0]);
+      extent = view.calculateExtent();
+      expect(extent).to.eql([-50, -50, 50, 50]);
+    });
   });
 
   describe('#getViewportSize_()', function () {

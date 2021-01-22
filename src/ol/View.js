@@ -921,7 +921,7 @@ class View extends BaseObject {
    * @return {import("./extent.js").Extent} Extent.
    */
   calculateExtentInternal(opt_size) {
-    const size = opt_size || this.getViewportSize_();
+    const size = opt_size || this.getViewportSizeMinusPadding_();
     const center = /** @type {!import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
     assert(center, 1); // The view center is not defined
     const resolution = /** @type {!number} */ (this.getResolution());
