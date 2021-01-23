@@ -28,7 +28,9 @@ import {
   transform,
   useGeographic,
 } from '../../../src/ol/proj.js';
+import {createXYZ} from '../../../src/ol/tilegrid.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
+import {tile as tileStrategy} from '../../../src/ol/loadingstrategy.js';
 
 describe('ol.Map', function () {
   describe('constructor', function () {
@@ -224,6 +226,13 @@ describe('ol.Map', function () {
             source: new VectorSource({
               url: 'spec/ol/data/point.json',
               format: new GeoJSON(),
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              url: 'spec/ol/data/point.json',
+              format: new GeoJSON(),
+              strategy: tileStrategy(createXYZ()),
             }),
           }),
           new VectorLayer({
