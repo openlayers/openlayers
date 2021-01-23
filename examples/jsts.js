@@ -17,6 +17,24 @@ import {fromLonLat, getPointResolution} from '../src/ol/proj.js';
 import {getCenter} from '../src/ol/extent.js';
 
 const source = new VectorSource();
+
+const vectorLayer = new VectorLayer({
+  source: source,
+});
+
+const rasterLayer = new TileLayer({
+  source: new OSM(),
+});
+
+const map = new Map({
+  layers: [rasterLayer, vectorLayer],
+  target: document.getElementById('map'),
+  view: new View({
+    center: fromLonLat([126.979293, 37.528787]),
+    zoom: 15,
+  }),
+});
+
 fetch('data/geojson/roads-seoul.geojson')
   .then(function (response) {
     return response.json();
@@ -61,19 +79,3 @@ fetch('data/geojson/roads-seoul.geojson')
 
     source.addFeatures(features);
   });
-const vectorLayer = new VectorLayer({
-  source: source,
-});
-
-const rasterLayer = new TileLayer({
-  source: new OSM(),
-});
-
-const map = new Map({
-  layers: [rasterLayer, vectorLayer],
-  target: document.getElementById('map'),
-  view: new View({
-    center: fromLonLat([126.979293, 37.528787]),
-    zoom: 15,
-  }),
-});
