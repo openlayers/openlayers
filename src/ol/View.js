@@ -399,15 +399,10 @@ class View extends BaseObject {
     this.resolutions_ = options.resolutions;
 
     /**
-     * Padding (in css pixels).
-     * If the map viewport is partially covered with other content (overlays) along
-     * its edges, this setting allows to shift the center of the viewport away from that
-     * content. The order of the values in the array is top, right, bottom, left.
-     * The default is no padding, which is equivalent to `[0, 0, 0, 0]`.
      * @type {Array<number>|undefined}
-     * @api
+     * @private
      */
-    this.padding = options.padding;
+    this.padding_ = options.padding;
 
     /**
      * @private
@@ -446,6 +441,36 @@ class View extends BaseObject {
      * @type {ViewOptions}
      */
     this.options_ = options;
+  }
+
+  /**
+   * Padding (in css pixels).
+   * If the map viewport is partially covered with other content (overlays) along
+   * its edges, this setting allows to shift the center of the viewport away from that
+   * content. The order of the values in the array is top, right, bottom, left.
+   * The default is no padding, which is equivalent to `[0, 0, 0, 0]`.
+   * @type {Array<number>|undefined}
+   * @api
+   */
+  get padding() {
+    return this.padding_;
+  }
+  set padding(padding) {
+    let oldPadding = this.padding_;
+    this.padding_ = padding;
+    const center = this.getCenter();
+    if (center) {
+      const newPadding = padding || [0, 0, 0, 0];
+      oldPadding = oldPadding || [0, 0, 0, 0];
+      const resolution = this.getResolution();
+      const offsetX =
+        (resolution / 2) *
+        (newPadding[3] - oldPadding[3] + oldPadding[1] - newPadding[1]);
+      const offsetY =
+        (resolution / 2) *
+        (newPadding[0] - oldPadding[0] + oldPadding[2] - newPadding[2]);
+      this.setCenterInternal([center[0] + offsetX, center[1] - offsetY]);
+    }
   }
 
   /**
@@ -1121,7 +1146,7 @@ class View extends BaseObject {
    */
   getViewportSizeMinusPadding_(opt_rotation) {
     let size = this.getViewportSize_(opt_rotation);
-    const padding = this.padding;
+    const padding = this.padding_;
     if (padding) {
       size = [
         size[0] - padding[1] - padding[3],
@@ -1139,7 +1164,7 @@ class View extends BaseObject {
     const resolution = /** @type {number} */ (this.getResolution());
     const rotation = this.getRotation();
     let center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
-    const padding = this.padding;
+    const padding = this.padding_;
     if (padding) {
       const reducedSize = this.getViewportSizeMinusPadding_();
       center = calculateCenterOn(
@@ -1395,7 +1420,7 @@ class View extends BaseObject {
    */
   calculateCenterShift(center, resolution, rotation, size) {
     let centerShift;
-    const padding = this.padding;
+    const padding = this.padding_;
     if (padding && center) {
       const reducedSize = this.getViewportSizeMinusPadding_(-rotation);
       const shiftedCenter = calculateCenterOn(

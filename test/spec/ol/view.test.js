@@ -1633,9 +1633,8 @@ describe('ol.View', function () {
       let extent = view.calculateExtent();
       expect(extent).to.eql([-20, -30, 20, 30]);
       view.padding = [0, 0, 0, 0];
-      view.setCenter([0, 0]);
       extent = view.calculateExtent();
-      expect(extent).to.eql([-50, -50, 50, 50]);
+      expect(extent).to.eql([-60, -60, 40, 40]);
     });
   });
 
@@ -2207,7 +2206,7 @@ describe('ol.View', function () {
     });
   });
 
-  describe('#getState', function () {
+  describe('#getCenter', function () {
     let view;
     beforeEach(function () {
       view = new View({
@@ -2219,8 +2218,7 @@ describe('ol.View', function () {
     });
     it('Correctly shifts the viewport center when a padding is set', function () {
       view.padding = [50, 0, 0, 50];
-      const state = view.getState();
-      expect(state.center).to.eql([-25, 25]);
+      expect(view.getCenter()).to.eql([25, -25]);
     });
   });
 });
