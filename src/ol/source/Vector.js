@@ -235,6 +235,12 @@ class VectorSource extends Source {
     this.loadedExtentsRtree_ = new RBush();
 
     /**
+     * @type {number}
+     * @private
+     */
+    this.loadingExtentsCount_ = 0;
+
+    /**
      * @private
      * @type {!Object<string, import("../Feature.js").default<Geometry>>}
      */
@@ -901,7 +907,6 @@ class VectorSource extends Source {
   loadFeatures(extent, resolution, projection) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
     const extentsToLoad = this.strategy_(extent, resolution);
-    this.loading = false;
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
       const alreadyLoaded = loadedExtentsRtree.forEachInExtent(
@@ -915,6 +920,7 @@ class VectorSource extends Source {
         }
       );
       if (!alreadyLoaded) {
+        ++this.loadingExtentsCount_;
         this.dispatchEvent(
           new VectorSourceEvent(VectorEventType.FEATURESLOADSTART)
         );
@@ -924,6 +930,7 @@ class VectorSource extends Source {
           resolution,
           projection,
           function (features) {
+            --this.loadingExtentsCount_;
             this.dispatchEvent(
               new VectorSourceEvent(
                 VectorEventType.FEATURESLOADEND,
@@ -933,15 +940,17 @@ class VectorSource extends Source {
             );
           }.bind(this),
           function () {
+            --this.loadingExtentsCount_;
             this.dispatchEvent(
               new VectorSourceEvent(VectorEventType.FEATURESLOADERROR)
             );
           }.bind(this)
         );
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
-        this.loading = this.loader_ !== VOID;
       }
     }
+    this.loading =
+      this.loader_ === VOID ? false : this.loadingExtentsCount_ > 0;
   }
 
   refresh() {
