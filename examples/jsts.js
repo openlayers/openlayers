@@ -13,8 +13,8 @@ import {
   Polygon,
 } from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {fromLonLat, getPointResolution} from 'ol/proj';
-import {getCenter} from 'ol/extent';
+import {fromLonLat, getPointResolution} from '../src/ol/proj';
+import {getCenter} from '../src/ol/extent';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson')
@@ -46,14 +46,14 @@ fetch('data/geojson/roads-seoul.geojson')
       // since JSTS operates with cartesian calculations and the
       // EPSG:3857 projection is highly distorted, an
       // approximation of meters vs. map units is calculated
-      var resolutionAtFeature = getPointResolution(
-        map.getView().getProjection(), 
-        1, 
+      const resolutionAtFeature = getPointResolution(
+        map.getView().getProjection(),
+        1,
         getCenter(feature.getGeometry().getExtent())
       );
 
       // create a buffer of about 40 meters around each line
-      var buffered = jstsGeom.buffer(40/resolutionAtFeature);
+      const buffered = jstsGeom.buffer(40 / resolutionAtFeature);
 
       // convert back from JSTS and replace the geometry on the feature
       feature.setGeometry(parser.write(buffered));
