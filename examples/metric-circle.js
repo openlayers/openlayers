@@ -1,5 +1,5 @@
 import '../src/ol/ol.css';
-import {circular} from '../src/ol/geom/Polygon.js';
+import circular from '../src/ol/geom/Polygon.js';
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
