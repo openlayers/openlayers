@@ -8,20 +8,20 @@ import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
-var circleFeature = new Feature({
+const circleFeature = new Feature({
   geometry: new Circle(
-    [945751.80, 7154116.68],  // coordinates in EPSG:3857
-    1500  // units of the layer, in this case "fake" Pseudo Mercator meters
+    [945751.80, 7154116.68], // coordinates in EPSG:3857
+    1500 // units of the layer, in this case "fake" Pseudo Mercator meters
     ),
 });
 
 // the metric circle is created in EPSG:4326
-var metricCircleFeature = new Feature({
+const metricCircleFeature = new Feature({
   geometry: new circular(
-    [8.495833, 53.915222],  // same location as lon lat
-    1500,  // meters
-    128  // vertices of the resulting circle
-    ).transform('EPSG:4326', 'EPSG:3857')
+    [8.495833, 53.915222], // same location as lon lat
+    1500, // meters
+    128 // vertices of the resulting circle
+    ).transform('EPSG:4326', 'EPSG:3857'),
 });
 
 circleFeature.setStyle(
@@ -57,11 +57,11 @@ new Map({
     new VectorLayer({
       source: new VectorSource({
         features: [
-          circleFeature,
-          metricCircleFeature
+          circleFeature, metricCircleFeature
         ],
       }),
-    }) ],
+    })
+  ],
   target: 'map',
   view: new View({
     center: [945753, 7154121],
