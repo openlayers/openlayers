@@ -1,12 +1,12 @@
-import 'ol/ol.css';
-import Feature from 'ol/Feature';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {Circle} from 'ol/geom';
-import {circular} from 'ol/geom/Polygon';
-import {OSM, Vector as VectorSource} from 'ol/source';
-import {Style, Stroke, Fill} from 'ol/style';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import '../src/ol/ol.css';
+import Feature from '../src/ol/Feature';
+import Map from '../src/ol/Map';
+import View from '../src/ol/View';
+import {Circle} from '../src/ol/geom';
+import {circular} from '../src/ol/geom/Polygon';
+import {OSM, Vector as VectorSource} from '../src/ol/source';
+import {Fill, Stroke, Style} from '../src/ol/style';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer';
 
 var circleFeature = new Feature({
   geometry: new Circle(
