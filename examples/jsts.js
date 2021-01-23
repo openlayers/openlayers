@@ -13,8 +13,8 @@ import {
   Polygon,
 } from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {fromLonLat, getPointResolution} from '../src/ol/proj';
-import {getCenter} from '../src/ol/extent';
+import {fromLonLat, getPointResolution} from '../src/ol/proj.js';
+import {getCenter} from '../src/ol/extent.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson')
