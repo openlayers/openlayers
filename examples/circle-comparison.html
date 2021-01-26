@@ -1,0 +1,21 @@
+---
+layout: example.html
+title: Circle Comparison
+shortdesc: Comparison of circle geomtry and a circular polygon
+docs: >
+  A circle geometry created via `ol/geom/Circle` will use the unit of the coordinate
+  reference system for the radius. Except for local projections projection units cannot
+  accurately represent true distances across the extent of a projection as the relative
+  scale or point resolution can vary considerably, especially for global projections such
+  as web mercator. A circle with a radius of 1000 km in projection units is shown in red,
+  and another with 1000 km radius adjusted for point resolution is shown in green.
+
+  Adjustment for point resolution is sufficient for a small radius, but with a larger
+  radius the point resolution can also vary within the radius, so a circle on the
+  Earth's surface will not be a circle geometry on a flat projection. To overcome this
+  `ol/geom/Polygon` provides the `circular` method to create a circle approximation
+  based on spherical geometry. A polygon with a geodesics great-circle radius of 1000 km
+  is shown in blue.
+tags: "circle, projection, scale, geometry, sphere"
+---
+<div id="map" class="map"></div>
