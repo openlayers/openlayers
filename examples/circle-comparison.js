@@ -6,7 +6,7 @@ import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {circular} from '../src/ol/geom/Polygon.js';
-import {fromLonLat, getPointResolution} from '../src/ol/proj.js'
+import {fromLonLat, getPointResolution} from '../src/ol/proj.js';
 
 const centerLonLat = [8.495833, 53.915222];
 const center3857 = fromLonLat(centerLonLat, 'EPSG:3857');
