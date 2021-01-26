@@ -1,9 +1,9 @@
 import '../src/ol/ol.css';
 import circular from '../src/ol/geom/Polygon.js';
+import Circle from '../src/ol/geom.js';
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Circle} from '../src/ol/geom.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
