@@ -1622,6 +1622,20 @@ describe('ol.View', function () {
       expect(extent[2]).to.roughlyEqual(51200, 1e-9);
       expect(extent[3]).to.roughlyEqual(25600, 1e-9);
     });
+    it('works with a view padding', function () {
+      const view = new View({
+        resolutions: [1],
+        zoom: 0,
+        center: [0, 0],
+        padding: [10, 20, 30, 40],
+      });
+
+      let extent = view.calculateExtent();
+      expect(extent).to.eql([-20, -30, 20, 30]);
+      view.padding = [0, 0, 0, 0];
+      extent = view.calculateExtent();
+      expect(extent).to.eql([-60, -60, 40, 40]);
+    });
   });
 
   describe('#getViewportSize_()', function () {
@@ -2192,7 +2206,7 @@ describe('ol.View', function () {
     });
   });
 
-  describe('#getState', function () {
+  describe('#getCenter', function () {
     let view;
     beforeEach(function () {
       view = new View({
@@ -2204,8 +2218,7 @@ describe('ol.View', function () {
     });
     it('Correctly shifts the viewport center when a padding is set', function () {
       view.padding = [50, 0, 0, 50];
-      const state = view.getState();
-      expect(state.center).to.eql([-25, 25]);
+      expect(view.getCenter()).to.eql([25, -25]);
     });
   });
 });
