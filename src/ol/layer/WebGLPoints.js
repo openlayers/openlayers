@@ -66,6 +66,8 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @template {import("../source/Vector.js").default} VectorSourceType
+ * @extends {Layer<VectorSourceType>}
  * @fires import("../render/Event.js").RenderEvent
  */
 class WebGLPointsLayer extends Layer {
