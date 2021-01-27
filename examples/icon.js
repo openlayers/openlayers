@@ -56,7 +56,6 @@ const popup = new Overlay({
   element: element,
   positioning: 'bottom-center',
   stopEvent: false,
-  offset: [0, -50],
 });
 map.addOverlay(popup);
 
@@ -66,8 +65,7 @@ map.on('click', function (evt) {
     return feature;
   });
   if (feature) {
-    const coordinates = feature.getGeometry().getCoordinates();
-    popup.setPosition(coordinates);
+    popup.setPosition(evt.coordinate);
     $(element).popover({
       placement: 'top',
       html: true,
