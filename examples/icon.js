@@ -79,11 +79,11 @@ map.on('click', function (evt) {
 
 // change mouse cursor when over marker
 map.on('pointermove', function (e) {
-  if (e.dragging) {
-    $(element).popover('dispose');
-    return;
-  }
   const pixel = map.getEventPixel(e.originalEvent);
   const hit = map.hasFeatureAtPixel(pixel);
   map.getTarget().style.cursor = hit ? 'pointer' : '';
+});
+// Close the popup when the map is moved
+map.on('movestart', function () {
+  $(element).popover('dispose');
 });
