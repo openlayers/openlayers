@@ -18,13 +18,13 @@ import {assign} from '../obj.js';
  * @property {number} [minZoom] Minimum zoom.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {Object} [config] If using anonymous maps, the CartoDB config to use. See
- * http://docs.cartodb.com/cartodb-platform/maps-api/anonymous-maps/
+ * https://carto.com/developers/maps-api/guides/anonymous-maps/
  * for more detail.
  * If using named maps, a key-value lookup with the template parameters.
- * See http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/
+ * See https://carto.com/developers/maps-api/guides/named-maps/
  * for more detail.
  * @property {string} [map] If using named maps, this will be the name of the template to load.
- * See http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/
+ * See https://carto.com/developers/maps-api/guides/named-maps/
  * for more detail.
  * @property {string} account If using named maps, this will be the name of the template to load.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
