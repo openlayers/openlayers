@@ -53,11 +53,15 @@ const Property = {
  *
  * A generic `change` event is triggered when the group/Collection changes.
  *
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
+ *
  * @api
  */
 class LayerGroup extends BaseLayer {
   /**
-   * @param {Options=} opt_options Layer options.
+   * @param {(Options & Object<string, *>)=} opt_options Layer options.
    */
   constructor(opt_options) {
     const options = opt_options || {};

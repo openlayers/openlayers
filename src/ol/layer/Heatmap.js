@@ -65,7 +65,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  */
 class Heatmap extends VectorLayer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {(Options & Object<string, *>)=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

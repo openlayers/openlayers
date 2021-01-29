@@ -79,6 +79,10 @@ import {listen, unlistenByKey} from '../events.js';
  * give false positives. To avoid this, apply different `className` properties to the
  * layers at creation time.
  *
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
+ *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
@@ -87,7 +91,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 class Layer extends BaseLayer {
   /**
-   * @param {Options} options Layer options.
+   * @param {(Options & Object<string, *>)=} options Layer options.
    */
   constructor(options) {
     const baseOptions = assign({}, options);

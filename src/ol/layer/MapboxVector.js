@@ -244,6 +244,10 @@ const SourceType = {
  * On configuration or loading error, the layer will trigger an `'error'` event.  Listeners
  * will receive an object with an `error` property that can be used to diagnose the problem.
  *
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
+ *
  * @param {Options} options Options.
  * @extends {VectorTileLayer}
  * @fires module:ol/events/Event~BaseEvent#event:error
@@ -251,7 +255,7 @@ const SourceType = {
  */
 class MapboxVectorLayer extends VectorTileLayer {
   /**
-   * @param {Options} options Layer options.  At a minimum, `styleUrl` and `accessToken`
+   * @param {Options & Object<string, *>} options Layer options.  At a minimum, `styleUrl` and `accessToken`
    * must be provided.
    */
   constructor(options) {

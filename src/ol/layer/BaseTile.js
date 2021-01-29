@@ -47,7 +47,7 @@ import {assign} from '../obj.js';
  */
 class BaseTileLayer extends Layer {
   /**
-   * @param {Options=} opt_options Tile layer options.
+   * @param {(Options & Object<string, *>)=} opt_options Tile layer options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

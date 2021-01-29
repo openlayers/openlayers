@@ -41,7 +41,7 @@ import {clamp} from '../math.js';
  */
 class BaseLayer extends BaseObject {
   /**
-   * @param {Options} options Layer options.
+   * @param {Options & Object<string, *>} options Layer options.
    */
   constructor(options) {
     super();

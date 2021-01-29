@@ -16,7 +16,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  */
 class VectorLayer extends BaseVectorLayer {
   /**
-   * @param {import("./BaseVector.js").Options=} opt_options Options.
+   * @param {(import("./BaseVector.js").Options & Object<string, *>)=} opt_options Options.
    */
   constructor(opt_options) {
     super(opt_options);

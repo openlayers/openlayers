@@ -170,13 +170,16 @@ const INTERVALS = [
  * @classdesc
  * Layer that renders a grid for a coordinate system (currently only EPSG:4326 is supported).
  * Note that the view projection must define both extent and worldExtent.
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
  *
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
 class Graticule extends VectorLayer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {(Options & Object<string, *>)=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

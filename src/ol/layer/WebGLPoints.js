@@ -70,7 +70,7 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  */
 class WebGLPointsLayer extends Layer {
   /**
-   * @param {Options} options Options.
+   * @param {(Options & Object<string, *>)} options Options.
    */
   constructor(options) {
     const baseOptions = assign({}, options);
