@@ -50,10 +50,13 @@ class CanvasLayer extends Layer {
     const scale = r / frameState.viewState.resolution;
 
     const center = toLonLat(getCenter(frameState.extent), projection);
+    const angle = (-frameState.viewState.rotation * 180) / Math.PI;
+
     d3Projection
       .scale(scale)
       .center(center)
-      .translate([width / 2, height / 2]);
+      .translate([width / 2, height / 2])
+      .angle(angle);
 
     d3Path = d3Path.projection(d3Projection);
     d3Path(this.features);
