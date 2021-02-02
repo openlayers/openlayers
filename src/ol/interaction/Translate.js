@@ -320,7 +320,7 @@ class Translate extends PointerInteraction {
 
   /**
    * Returns the Hit-detection tolerance.
-   * @returns {number} Hit tolerance in pixels.
+   * @return {number} Hit tolerance in pixels.
    * @api
    */
   getHitTolerance() {

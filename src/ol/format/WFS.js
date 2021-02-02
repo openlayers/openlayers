@@ -814,7 +814,7 @@ function writeOgcFidFilter(node, fid, objectStack) {
 /**
  * @param {string|undefined} featurePrefix The prefix of the feature.
  * @param {string} featureType The type of the feature.
- * @returns {string} The value of the typeName property.
+ * @return {string} The value of the typeName property.
  */
 function getTypeName(featurePrefix, featureType) {
   featurePrefix = featurePrefix ? featurePrefix : FEATURE_PREFIX;

@@ -6,7 +6,7 @@ import View from '../src/ol/View.js';
 /**
  * Renders a progress bar.
  * @param {HTMLElement} el The target element.
- * @constructor
+ * @class
  */
 function Progress(el) {
   this.el = el;

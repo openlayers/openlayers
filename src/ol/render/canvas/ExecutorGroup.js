@@ -379,7 +379,7 @@ const circlePixelIndexArrayCache = {};
  * ordered by how close they are to the center.
  * A cache is used to increase performance.
  * @param {number} radius Radius.
- * @returns {Array<number>} An array with indexes within a circle.
+ * @return {Array<number>} An array with indexes within a circle.
  */
 export function getPixelIndexArray(radius) {
   if (circlePixelIndexArrayCache[radius] !== undefined) {

@@ -277,7 +277,7 @@ class Select extends Interaction {
 
   /**
    * Returns the Hit-detection tolerance.
-   * @returns {number} Hit tolerance in pixels.
+   * @return {number} Hit tolerance in pixels.
    * @api
    */
   getHitTolerance() {

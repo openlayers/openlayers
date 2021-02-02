@@ -72,7 +72,7 @@ export function replaceNode(newNode, oldNode) {
 
 /**
  * @param {Node} node The node to remove.
- * @returns {Node} The node that was removed or null.
+ * @return {Node} The node that was removed or null.
  */
 export function removeNode(node) {
   return node && node.parentNode ? node.parentNode.removeChild(node) : null;

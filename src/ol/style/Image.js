@@ -160,10 +160,10 @@ class ImageStyle {
     return abstract();
   }
 
-  /*
+  /**
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
-   * */
+   */
   getPixelRatio(pixelRatio) {
     return 1;
   }

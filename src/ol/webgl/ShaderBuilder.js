@@ -223,35 +223,35 @@ export class ShaderBuilder {
   }
 
   /**
-   * @returns {string} Previously set size expression
+   * @return {string} Previously set size expression
    */
   getSizeExpression() {
     return this.sizeExpression;
   }
 
   /**
-   * @returns {string} Previously set symbol offset expression
+   * @return {string} Previously set symbol offset expression
    */
   getOffsetExpression() {
     return this.offsetExpression;
   }
 
   /**
-   * @returns {string} Previously set color expression
+   * @return {string} Previously set color expression
    */
   getColorExpression() {
     return this.colorExpression;
   }
 
   /**
-   * @returns {string} Previously set texture coordinate expression
+   * @return {string} Previously set texture coordinate expression
    */
   getTextureCoordinateExpression() {
     return this.texCoordExpression;
   }
 
   /**
-   * @returns {string} Previously set fragment discard expression
+   * @return {string} Previously set fragment discard expression
    */
   getFragmentDiscardExpression() {
     return this.discardExpression;
@@ -272,7 +272,7 @@ export class ShaderBuilder {
    *
    * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
    * (namely, hit color with encoded feature id).
-   * @returns {string} The full shader as a string.
+   * @return {string} The full shader as a string.
    */
   getSymbolVertexShader(forHitDetection) {
     const offsetMatrix = this.rotateWithView
@@ -363,7 +363,7 @@ ${varyings
    *
    * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
    * (namely, hit color with encoded feature id).
-   * @returns {string} The full shader as a string.
+   * @return {string} The full shader as a string.
    */
   getSymbolFragmentShader(forHitDetection) {
     const hitDetectionBypass = forHitDetection
@@ -421,7 +421,7 @@ ${hitDetectionBypass}
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
  * @param {import("../style/LiteralStyle").LiteralStyle} style Literal style.
- * @returns {StyleParseResult} Result containing shader params, attributes and uniforms.
+ * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style) {
   const symbStyle = style.symbol;

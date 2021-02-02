@@ -240,10 +240,10 @@ class RegularShape extends ImageStyle {
     return this.canvas_[pixelRatio || 1];
   }
 
-  /*
+  /**
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
-   * */
+   */
   getPixelRatio(pixelRatio) {
     return pixelRatio;
   }
@@ -339,7 +339,7 @@ class RegularShape extends ImageStyle {
   unlistenImageChange(listener) {}
 
   /**
-   * @returns {RenderOptions}  The render options
+   * @return {RenderOptions}  The render options
    * @protected
    */
   createRenderOptions() {

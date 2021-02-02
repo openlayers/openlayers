@@ -84,7 +84,7 @@ export function toContext(context, opt_options) {
 /**
  * Gets a vector context for drawing to the event's canvas.
  * @param {import("./render/Event.js").default} event Render event.
- * @returns {CanvasImmediateRenderer} Vector context.
+ * @return {CanvasImmediateRenderer} Vector context.
  * @api
  */
 export function getVectorContext(event) {
@@ -121,7 +121,7 @@ export function getVectorContext(event) {
  * @param {import("./render/Event.js").default} event Render event.
  * @param {import("./pixel.js").Pixel} pixel CSS pixel relative to the top-left
  * corner of the map viewport.
- * @returns {import("./pixel.js").Pixel} Pixel on the event's canvas context.
+ * @return {import("./pixel.js").Pixel} Pixel on the event's canvas context.
  * @api
  */
 export function getRenderPixel(event, pixel) {
