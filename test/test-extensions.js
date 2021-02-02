@@ -332,7 +332,7 @@
   }
 
   /**
-   * @typedef {Object} xmleqlOptions
+   * @typedef {Object} XMLEqlOptions
    * @property {boolean} [includeWhiteSpace]
    * @property {boolean} [ignoreElementOrder]
    */
@@ -340,7 +340,7 @@
   /**
    * Checks if the XML document sort of equals another XML document.
    * @param {Object} obj The other object.
-   * @param {xmleqlOptions} [options] The options.
+   * @param {XMLEqlOptions} [options] The options.
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.xmleql = function (obj, options) {
