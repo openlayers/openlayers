@@ -963,7 +963,7 @@ class WebGLHelper extends Disposable {
 /**
  * Compute a stride in bytes based on a list of attributes
  * @param {Array<AttributeDescription>} attributes Ordered list of attributes
- * @returns {number} Stride, ie amount of values for each vertex in the vertex buffer
+ * @return {number} Stride, ie amount of values for each vertex in the vertex buffer
  * @api
  */
 export function computeAttributesStride(attributes) {
@@ -978,7 +978,7 @@ export function computeAttributesStride(attributes) {
 /**
  * Computes the size in byte of an attribute type.
  * @param {AttributeType} type Attribute type
- * @returns {number} The size in bytes
+ * @return {number} The size in bytes
  */
 function getByteSizeFromType(type) {
   switch (type) {

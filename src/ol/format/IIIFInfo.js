@@ -327,7 +327,7 @@ class IIIFInfo {
   }
 
   /**
-   * @returns {Versions} Major IIIF version.
+   * @return {Versions} Major IIIF version.
    * @api
    */
   getImageApiVersion() {
@@ -364,7 +364,7 @@ class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @returns {string} Compliance level as it appears in the IIIF image information
+   * @return {string} Compliance level as it appears in the IIIF image information
    * response.
    */
   getComplianceLevelEntryFromProfile(version) {
@@ -407,7 +407,7 @@ class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @returns {string} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
+   * @return {string} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
    */
   getComplianceLevelFromProfile(version) {
     const complianceLevel = this.getComplianceLevelEntryFromProfile(version);
@@ -419,7 +419,7 @@ class IIIFInfo {
   }
 
   /**
-   * @returns {SupportedFeatures} Image formats, qualities and region / size calculation
+   * @return {SupportedFeatures} Image formats, qualities and region / size calculation
    * methods that are supported by the IIIF service.
    */
   getComplianceLevelSupportedFeatures() {
@@ -436,7 +436,7 @@ class IIIFInfo {
 
   /**
    * @param {PreferredOptions=} opt_preferredOptions Optional options for preferred format and quality.
-   * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   * @return {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
    * @api
    */
   getTileSourceOptions(opt_preferredOptions) {

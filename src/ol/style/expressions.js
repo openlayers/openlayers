@@ -110,7 +110,7 @@ export const Operators = {};
  * Returns the possible types for a given value (each type being a binary flag)
  * To test a value use e.g. `getValueType(v) & ValueTypes.BOOLEAN`
  * @param {ExpressionValue} value Value
- * @returns {ValueTypes|number} Type or types inferred from the value
+ * @return {ValueTypes|number} Type or types inferred from the value
  */
 export function getValueType(value) {
   if (typeof value === 'number') {
@@ -175,7 +175,7 @@ export function isTypeUnique(valueType) {
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
  * @param {number} v Numerical value.
- * @returns {string} The value as string.
+ * @return {string} The value as string.
  */
 export function numberToGlsl(v) {
   const s = v.toString();
@@ -185,7 +185,7 @@ export function numberToGlsl(v) {
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
  * @param {Array<number>} array Numerical values array.
- * @returns {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
+ * @return {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
  */
 export function arrayToGlsl(array) {
   if (array.length < 2 || array.length > 4) {
@@ -201,7 +201,7 @@ export function arrayToGlsl(array) {
  * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
  * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
  * Note that the final array will always have 4 components.
- * @returns {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
+ * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function colorToGlsl(color) {
   const array = asArray(color).slice();
@@ -219,7 +219,7 @@ export function colorToGlsl(color) {
  * Returns a stable equivalent number for the string literal.
  * @param {ParsingContext} context Parsing context
  * @param {string} string String literal value
- * @returns {number} Number equivalent
+ * @return {number} Number equivalent
  */
 export function getStringNumberEquivalent(context, string) {
   if (context.stringLiteralsMap[string] === undefined) {
@@ -235,7 +235,7 @@ export function getStringNumberEquivalent(context, string) {
  * converted to be a GLSL-compatible string.
  * @param {ParsingContext} context Parsing context
  * @param {string} string String literal value
- * @returns {string} GLSL-compatible string containing a number
+ * @return {string} GLSL-compatible string containing a number
  */
 export function stringToGlsl(context, string) {
   return numberToGlsl(getStringNumberEquivalent(context, string));
@@ -247,7 +247,7 @@ export function stringToGlsl(context, string) {
  * @param {ParsingContext} context Parsing context
  * @param {ExpressionValue} value Value
  * @param {ValueTypes|number} [typeHint] Hint for the expected final type (can be several types combined)
- * @returns {string} GLSL-compatible output
+ * @return {string} GLSL-compatible output
  */
 export function expressionToGlsl(context, value, typeHint) {
   // operator

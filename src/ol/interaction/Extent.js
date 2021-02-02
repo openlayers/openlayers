@@ -188,7 +188,7 @@ class Extent extends PointerInteraction {
   /**
    * @param {import("../pixel.js").Pixel} pixel cursor location
    * @param {import("../PluggableMap.js").default} map map
-   * @returns {import("../coordinate.js").Coordinate|null} snapped vertex on extent
+   * @return {import("../coordinate.js").Coordinate|null} snapped vertex on extent
    * @private
    */
   snapToVertex_(pixel, map) {
@@ -245,7 +245,7 @@ class Extent extends PointerInteraction {
 
   /**
    * @param {import("../extent.js").Extent} extent extent
-   * @returns {Feature} extent as featrue
+   * @return {Feature} extent as featrue
    * @private
    */
   createOrUpdateExtentFeature_(extent) {
@@ -271,7 +271,7 @@ class Extent extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} vertex location of feature
-   * @returns {Feature} vertex as feature
+   * @return {Feature} vertex as feature
    * @private
    */
   createOrUpdatePointerFeature_(vertex) {
@@ -471,7 +471,7 @@ function getDefaultPointerStyleFunction() {
 
 /**
  * @param {import("../coordinate.js").Coordinate} fixedPoint corner that will be unchanged in the new extent
- * @returns {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent} event handler
+ * @return {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent} event handler
  */
 function getPointHandler(fixedPoint) {
   return function (point) {
@@ -482,7 +482,7 @@ function getPointHandler(fixedPoint) {
 /**
  * @param {import("../coordinate.js").Coordinate} fixedP1 first corner that will be unchanged in the new extent
  * @param {import("../coordinate.js").Coordinate} fixedP2 second corner that will be unchanged in the new extent
- * @returns {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent|null} event handler
+ * @return {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent|null} event handler
  */
 function getEdgeHandler(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
@@ -500,7 +500,7 @@ function getEdgeHandler(fixedP1, fixedP2) {
 
 /**
  * @param {import("../extent.js").Extent} extent extent
- * @returns {Array<Array<import("../coordinate.js").Coordinate>>} extent line segments
+ * @return {Array<Array<import("../coordinate.js").Coordinate>>} extent line segments
  */
 function getSegments(extent) {
   return [

@@ -285,7 +285,7 @@ class WebGLPostProcessingPass {
   }
 
   /**
-   * @returns {WebGLFramebuffer} Frame buffer
+   * @return {WebGLFramebuffer} Frame buffer
    * @api
    */
   getFrameBuffer() {

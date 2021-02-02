@@ -23,7 +23,7 @@ class Filter {
 
   /**
    * The XML tag name for a filter.
-   * @returns {!string} Name.
+   * @return {!string} Name.
    */
   getTagName() {
     return this.tagName_;

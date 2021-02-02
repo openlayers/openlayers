@@ -6,7 +6,7 @@ import XYZ from '../src/ol/source/XYZ.js';
 /**
  * Renders a progress bar.
  * @param {HTMLElement} el The target element.
- * @constructor
+ * @class
  */
 function Progress(el) {
   this.el = el;

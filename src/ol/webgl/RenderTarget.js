@@ -125,7 +125,7 @@ class WebGLRenderTarget {
    * If x and/or y are outside of existing data, an array filled with 0 is returned.
    * @param {number} x Pixel coordinate
    * @param {number} y Pixel coordinate
-   * @returns {Uint8Array} Integer array with one color value (4 components)
+   * @return {Uint8Array} Integer array with one color value (4 components)
    * @api
    */
   readPixel(x, y) {

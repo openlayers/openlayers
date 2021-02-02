@@ -329,7 +329,7 @@ class ScaleLine extends Control {
    * @param {number} width The current width of the scalebar.
    * @param {number} scale The current scale.
    * @param {string} suffix The suffix to append to the scale text.
-   * @returns {string} The stringified HTML of the scalebar.
+   * @return {string} The stringified HTML of the scalebar.
    */
   createScaleBar(width, scale, suffix) {
     const mapScale =
@@ -400,9 +400,9 @@ class ScaleLine extends Control {
 
   /**
    * Creates a marker at given position
-   * @param {string} position - The position, absolute or relative
-   * @param {number} i - The iterator
-   * @returns {string} The stringified div containing the marker
+   * @param {string} position The position, absolute or relative
+   * @param {number} i The iterator
+   * @return {string} The stringified div containing the marker
    */
   createMarker(position, i) {
     const top = position === 'absolute' ? 3 : -10;
@@ -421,12 +421,12 @@ class ScaleLine extends Control {
 
   /**
    * Creates the label for a marker marker at given position
-   * @param {number} i - The iterator
-   * @param {number} width - The width the scalebar will currently use
-   * @param {boolean} isLast - Flag indicating if we add the last step text
-   * @param {number} scale - The current scale for the whole scalebar
-   * @param {string} suffix - The suffix for the scale
-   * @returns {string} The stringified div containing the step text
+   * @param {number} i The iterator
+   * @param {number} width The width the scalebar will currently use
+   * @param {boolean} isLast Flag indicating if we add the last step text
+   * @param {number} scale The current scale for the whole scalebar
+   * @param {string} suffix The suffix for the scale
+   * @return {string} The stringified div containing the step text
    */
   createStepText(i, width, isLast, scale, suffix) {
     const length =

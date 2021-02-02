@@ -356,7 +356,7 @@ class GML2 extends GMLBase {
 
   /**
    * @param {string} namespaceURI XML namespace.
-   * @returns {Element} coordinates node.
+   * @return {Element} coordinates node.
    * @private
    */
   createCoordinatesNode_(namespaceURI) {

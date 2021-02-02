@@ -560,7 +560,7 @@ export function clearUserProjection() {
  * Get the projection for coordinates supplied from and returned by API methods.
  * Note that this method is not yet a part of the stable API.  Support for user
  * projections is not yet complete and should be considered experimental.
- * @returns {?Projection} The user projection (or null if not set).
+ * @return {?Projection} The user projection (or null if not set).
  */
 export function getUserProjection() {
   return userProjection;
@@ -580,7 +580,7 @@ export function useGeographic() {
  * is set, the original coordinate is returned.
  * @param {Array<number>} coordinate Input coordinate.
  * @param {ProjectionLike} sourceProjection The input coordinate projection.
- * @returns {Array<number>} The input coordinate in the user projection.
+ * @return {Array<number>} The input coordinate in the user projection.
  */
 export function toUserCoordinate(coordinate, sourceProjection) {
   if (!userProjection) {
@@ -594,7 +594,7 @@ export function toUserCoordinate(coordinate, sourceProjection) {
  * is set, the original coordinate is returned.
  * @param {Array<number>} coordinate Input coordinate.
  * @param {ProjectionLike} destProjection The destination projection.
- * @returns {Array<number>} The input coordinate transformed.
+ * @return {Array<number>} The input coordinate transformed.
  */
 export function fromUserCoordinate(coordinate, destProjection) {
   if (!userProjection) {
@@ -608,7 +608,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
  * is set, the original extent is returned.
  * @param {import("./extent.js").Extent} extent Input extent.
  * @param {ProjectionLike} sourceProjection The input extent projection.
- * @returns {import("./extent.js").Extent} The input extent in the user projection.
+ * @return {import("./extent.js").Extent} The input extent in the user projection.
  */
 export function toUserExtent(extent, sourceProjection) {
   if (!userProjection) {
@@ -622,7 +622,7 @@ export function toUserExtent(extent, sourceProjection) {
  * is set, the original extent is returned.
  * @param {import("./extent.js").Extent} extent Input extent.
  * @param {ProjectionLike} destProjection The destination projection.
- * @returns {import("./extent.js").Extent} The input extent transformed.
+ * @return {import("./extent.js").Extent} The input extent transformed.
  */
 export function fromUserExtent(extent, destProjection) {
   if (!userProjection) {
