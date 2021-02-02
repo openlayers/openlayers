@@ -54,7 +54,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {string} fragmentShader Fragment shader source, mandatory.
  * @property {string} [hitVertexShader] Vertex shader source for hit detection rendering.
  * @property {string} [hitFragmentShader] Fragment shader source for hit detection rendering.
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */

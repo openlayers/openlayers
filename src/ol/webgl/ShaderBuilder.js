@@ -408,7 +408,7 @@ ${hitDetectionBypass}
 /**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {Object.<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
+ * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
  * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
  */
 
@@ -522,7 +522,7 @@ export function parseLiteralStyle(style) {
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
 
-  /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   // define one uniform per variable
