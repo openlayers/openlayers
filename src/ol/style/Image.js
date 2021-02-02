@@ -163,6 +163,7 @@ class ImageStyle {
   /**
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
+   * @return {number} Pixel ratio.
    */
   getPixelRatio(pixelRatio) {
     return 1;

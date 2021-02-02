@@ -64,8 +64,6 @@ function formatSymbolExport(symbol, namespaces, imports) {
 /**
  * Generate export code given a list symbol names.
  * @param {Array<Object>} symbols List of symbols.
- * @param {Object<string, string>} namespaces Already defined namespaces.
- * @param {Array<string>} imports List of all imports.
  * @return {string} Export code.
  */
 function generateExports(symbols) {
