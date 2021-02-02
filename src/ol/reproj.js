@@ -179,6 +179,12 @@ export function calculateSourceExtentResolution(
 }
 
 /**
+ * @typedef {Object} ImageExtent
+ * @property {import("./extent.js").Extent} extent
+ * @property {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image
+ */
+
+/**
  * Renders the source data into new canvas based on the triangulation.
  *
  * @param {number} width Width of the canvas.
@@ -188,11 +194,8 @@ export function calculateSourceExtentResolution(
  * @param {import("./extent.js").Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
  * @param {import("./extent.js").Extent} targetExtent Target extent.
- * @param {import("./reproj/Triangulation.js").default} triangulation
- * Calculated triangulation.
- * @param {Array<{extent: import("./extent.js").Extent,
- *                 image: (HTMLCanvasElement|HTMLImageElement|HTMLVideoElement)}>} sources
- * Array of sources.
+ * @param {import("./reproj/Triangulation.js").default} triangulation Calculated triangulation.
+ * @param {Array<ImageExtent>} sources Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  * @param {object=} opt_contextOptions Properties to set on the canvas context.
