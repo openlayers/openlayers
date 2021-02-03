@@ -10,8 +10,8 @@ import {getUid} from './util.js';
  * @param {string} url Request url. A 'callback' query parameter will be
  *     appended.
  * @param {Function} callback Callback on success.
- * @param {function()=} opt_errback Callback on error.
- * @param {string=} opt_callbackParam Custom query parameter for the JSONP
+ * @param {Function} [opt_errback] Callback on error.
+ * @param {string} [opt_callbackParam] Custom query parameter for the JSONP
  *     callback. Default is 'callback'.
  */
 export function jsonp(url, callback, opt_errback, opt_callbackParam) {

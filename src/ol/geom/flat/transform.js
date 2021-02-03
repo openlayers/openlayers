@@ -8,7 +8,7 @@
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {import("../../transform.js").Transform} transform Transform.
- * @param {Array<number>=} opt_dest Destination.
+ * @param {Array<number>} [opt_dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function transform2D(
@@ -40,7 +40,7 @@ export function transform2D(
  * @param {number} stride Stride.
  * @param {number} angle Angle.
  * @param {Array<number>} anchor Rotation anchor point.
- * @param {Array<number>=} opt_dest Destination.
+ * @param {Array<number>} [opt_dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function rotate(
@@ -82,7 +82,7 @@ export function rotate(
  * @param {number} sx Scale factor in the x-direction.
  * @param {number} sy Scale factor in the y-direction.
  * @param {Array<number>} anchor Scale anchor point.
- * @param {Array<number>=} opt_dest Destination.
+ * @param {Array<number>} [opt_dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function scale(
@@ -121,7 +121,7 @@ export function scale(
  * @param {number} stride Stride.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
- * @param {Array<number>=} opt_dest Destination.
+ * @param {Array<number>} [opt_dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function translate(

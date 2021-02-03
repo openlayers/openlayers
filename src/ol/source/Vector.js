@@ -39,8 +39,8 @@ import {xhr} from '../featureloader.js';
 export class VectorSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {import("../Feature.js").default<Geometry>=} opt_feature Feature.
-   * @param {Array<import("../Feature.js").default<Geometry>>=} opt_features Features.
+   * @param {import("../Feature.js").default<Geometry>} [opt_feature] Feature.
+   * @param {Array<import("../Feature.js").default<Geometry>>} [opt_features] Features.
    */
   constructor(type, opt_feature, opt_features) {
     super(type);
@@ -165,7 +165,7 @@ export class VectorSourceEvent extends Event {
  */
 class VectorSource extends Source {
   /**
-   * @param {Options=} opt_options Vector source options.
+   * @param {Options} [opt_options] Vector source options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -500,7 +500,7 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
    * @api
    */
   clear(opt_fast) {
@@ -712,7 +712,7 @@ class VectorSource extends Source {
    * This method is not available when the source is configured with
    * `useSpatialIndex` set to `false`.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {function(import("../Feature.js").default<Geometry>):boolean=} opt_filter Feature filter function.
+   * @param {function(import("../Feature.js").default<Geometry>):boolean} [opt_filter] Feature filter function.
    *     The filter function will receive one argument, the {@link module:ol/Feature feature}
    *     and it should return a boolean value. By default, no filtering is made.
    * @return {import("../Feature.js").default<Geometry>} Closest feature.
@@ -771,7 +771,7 @@ class VectorSource extends Source {
    *
    * This method is not available when the source is configured with
    * `useSpatialIndex` set to `false`.
-   * @param {import("../extent.js").Extent=} opt_extent Destination extent. If provided, no new extent
+   * @param {import("../extent.js").Extent} [opt_extent] Destination extent. If provided, no new extent
    *     will be created. Instead, that extent's coordinates will be overwritten.
    * @return {import("../extent.js").Extent} Extent.
    * @api

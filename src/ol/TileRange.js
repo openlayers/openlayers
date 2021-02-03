@@ -136,7 +136,7 @@ class TileRange {
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
- * @param {TileRange=} tileRange TileRange.
+ * @param {TileRange} [tileRange] TileRange.
  * @return {TileRange} Tile range.
  */
 export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {

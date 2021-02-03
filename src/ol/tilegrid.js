@@ -53,11 +53,11 @@ export function wrapX(tileGrid, tileCoord, projection) {
 
 /**
  * @param {import("./extent.js").Extent} extent Extent.
- * @param {number=} opt_maxZoom Maximum zoom level (default is
+ * @param {number} [opt_maxZoom] Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|import("./size.js").Size=} opt_tileSize Tile size (default uses
+ * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default=} opt_corner Extent corner (default is `'top-left'`).
+ * @param {import("./extent/Corner.js").default} [opt_corner] Extent corner (default is `'top-left'`).
  * @return {!TileGrid} TileGrid instance.
  */
 export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
@@ -87,7 +87,7 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
 
 /**
  * Creates a tile grid with a standard XYZ tiling scheme.
- * @param {XYZOptions=} opt_options Tile grid options.
+ * @param {XYZOptions} [opt_options] Tile grid options.
  * @return {!TileGrid} Tile grid instance.
  * @api
  */
@@ -113,11 +113,11 @@ export function createXYZ(opt_options) {
 /**
  * Create a resolutions array from an extent.  A zoom factor of 2 is assumed.
  * @param {import("./extent.js").Extent} extent Extent.
- * @param {number=} opt_maxZoom Maximum zoom level (default is
+ * @param {number} [opt_maxZoom] Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|import("./size.js").Size=} opt_tileSize Tile size (default uses
+ * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {number=} opt_maxResolution Resolution at level zero.
+ * @param {number} [opt_maxResolution] Resolution at level zero.
  * @return {!Array<number>} Resolutions array.
  */
 function resolutionsFromExtent(
@@ -149,11 +149,11 @@ function resolutionsFromExtent(
 
 /**
  * @param {import("./proj.js").ProjectionLike} projection Projection.
- * @param {number=} opt_maxZoom Maximum zoom level (default is
+ * @param {number} [opt_maxZoom] Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|import("./size.js").Size=} opt_tileSize Tile size (default uses
+ * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default=} opt_corner Extent corner (default is `'top-left'`).
+ * @param {import("./extent/Corner.js").default} [opt_corner] Extent corner (default is `'top-left'`).
  * @return {!TileGrid} TileGrid instance.
  */
 export function createForProjection(

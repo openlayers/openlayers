@@ -35,7 +35,7 @@ import {transformGeometryWithOptions} from './Feature.js';
  */
 class Polyline extends TextFeature {
   /**
-   * @param {Options=} opt_options Optional configuration object.
+   * @param {Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -65,7 +65,7 @@ class Polyline extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromText(text, opt_options) {
@@ -75,7 +75,7 @@ class Polyline extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -86,7 +86,7 @@ class Polyline extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
@@ -111,7 +111,7 @@ class Polyline extends TextFeature {
 
   /**
    * @param {import("../Feature.js").default} feature Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -127,7 +127,7 @@ class Polyline extends TextFeature {
 
   /**
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -137,7 +137,7 @@ class Polyline extends TextFeature {
 
   /**
    * @param {LineString} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -163,7 +163,7 @@ class Polyline extends TextFeature {
  *
  * @param {Array<number>} numbers A list of n-dimensional points.
  * @param {number} stride The number of dimension of the points in the list.
- * @param {number=} opt_factor The factor by which the numbers will be
+ * @param {number} [opt_factor] The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
@@ -197,7 +197,7 @@ export function encodeDeltas(numbers, stride, opt_factor) {
  * @param {string} encoded An encoded string.
  * @param {number} stride The number of dimension of the points in the
  *     encoded string.
- * @param {number=} opt_factor The factor by which the resulting numbers will
+ * @param {number} [opt_factor] The factor by which the resulting numbers will
  *     be divided. Default is `1e5`.
  * @return {Array<number>} A list of n-dimensional points.
  * @api
@@ -231,7 +231,7 @@ export function decodeDeltas(encoded, stride, opt_factor) {
  * Attention: This function will modify the passed array!
  *
  * @param {Array<number>} numbers A list of floating point numbers.
- * @param {number=} opt_factor The factor by which the numbers will be
+ * @param {number} [opt_factor] The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
@@ -250,7 +250,7 @@ export function encodeFloats(numbers, opt_factor) {
  * Decode a list of floating point numbers from an encoded string
  *
  * @param {string} encoded An encoded string.
- * @param {number=} opt_factor The factor by which the result will be divided.
+ * @param {number} [opt_factor] The factor by which the result will be divided.
  *     Default is `1e5`.
  * @return {Array<number>} A list of floating point numbers.
  * @api

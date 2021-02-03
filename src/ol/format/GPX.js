@@ -131,7 +131,7 @@ const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  */
 class GPX extends XMLFeature {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -170,7 +170,7 @@ class GPX extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
@@ -193,7 +193,7 @@ class GPX extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
@@ -221,7 +221,7 @@ class GPX extends XMLFeature {
    * as tracks (`<trk>`).
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
    * @return {Node} Node.
    * @api
    */
@@ -508,7 +508,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
 /**
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
@@ -557,7 +557,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  *
  * @param {LayoutOptions} layoutOptions Layout options.
  * @param {Array<number>} flatCoordinates Flat coordinates.
- * @param {Array<number>=} ends Ends.
+ * @param {Array<number>} [ends] Ends.
  * @return {import("../geom/GeometryLayout.js").default} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {

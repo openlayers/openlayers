@@ -140,7 +140,7 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @param {Array<import("./Layer.js").default>=} opt_array Array of layers (to be modified in place).
+   * @param {Array<import("./Layer.js").default>} [opt_array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
   getLayersArray(opt_array) {
@@ -150,7 +150,7 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @param {Array<import("./Layer.js").State>=} opt_states Optional list of layer states (to be modified in place).
+   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
   getLayerStatesArray(opt_states) {

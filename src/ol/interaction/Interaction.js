@@ -31,7 +31,7 @@ import {easeOut, linear} from '../easing.js';
  */
 class Interaction extends BaseObject {
   /**
-   * @param {InteractionOptions=} opt_options Options.
+   * @param {InteractionOptions} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -102,7 +102,7 @@ class Interaction extends BaseObject {
 /**
  * @param {import("../View.js").default} view View.
  * @param {import("../coordinate.js").Coordinate} delta Delta.
- * @param {number=} opt_duration Duration.
+ * @param {number} [opt_duration] Duration.
  */
 export function pan(view, delta, opt_duration) {
   const currentCenter = view.getCenterInternal();
@@ -119,8 +119,8 @@ export function pan(view, delta, opt_duration) {
 /**
  * @param {import("../View.js").default} view View.
  * @param {number} delta Delta from previous zoom level.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate in the user projection.
- * @param {number=} opt_duration Duration.
+ * @param {import("../coordinate.js").Coordinate} [opt_anchor] Anchor coordinate in the user projection.
+ * @param {number} [opt_duration] Duration.
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   const currentZoom = view.getZoom();

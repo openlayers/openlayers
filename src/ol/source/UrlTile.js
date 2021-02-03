@@ -162,7 +162,7 @@ class UrlTile extends TileSource {
   /**
    * Set the tile URL function of the source.
    * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
-   * @param {string=} key Optional new tile key for the source.
+   * @param {string} [key] Optional new tile key for the source.
    * @api
    */
   setTileUrlFunction(tileUrlFunction, key) {

@@ -93,7 +93,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  */
 class GMLBase extends XMLFeature {
   /**
-   * @param {Options=} opt_options Optional configuration object.
+   * @param {Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -532,7 +532,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @protected
    * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Geometry.
    */
@@ -546,7 +546,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {

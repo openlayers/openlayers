@@ -56,7 +56,7 @@ import {transformGeometryWithOptions} from './Feature.js';
  */
 class TopoJSON extends JSONFeature {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -85,7 +85,7 @@ class TopoJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -318,7 +318,7 @@ function readMultiPolygonGeometry(object, arcs) {
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
  * @return {Array<Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(
@@ -356,7 +356,7 @@ function readFeaturesFromGeometryCollection(
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
  * @return {Feature} Feature.
  */
 function readFeatureFromGeometry(

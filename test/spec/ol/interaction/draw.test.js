@@ -75,8 +75,8 @@ describe('ol.interaction.Draw', function () {
    * @param {string} type Event type.
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
-   * @param {boolean=} opt_shiftKey Shift key is pressed.
-   * @param {boolean=} opt_pointerId Pointer id.
+   * @param {boolean} [opt_shiftKey] Shift key is pressed.
+   * @param {boolean} [opt_pointerId] Pointer id.
    * @return {module:ol/MapBrowserEvent} The simulated event.
    */
   function simulateEvent(type, x, y, opt_shiftKey, opt_pointerId = 0) {

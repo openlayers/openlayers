@@ -138,7 +138,7 @@ export function multiArrayMaxSquaredDelta(
  * @param {number} y Y.
  * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array<number>=} opt_tmpPoint Temporary point object.
+ * @param {Array<number>} [opt_tmpPoint] Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestPoint(
@@ -251,7 +251,7 @@ export function assignClosestPoint(
  * @param {number} y Y.
  * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array<number>=} opt_tmpPoint Temporary point object.
+ * @param {Array<number>} [opt_tmpPoint] Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestArrayPoint(
@@ -299,7 +299,7 @@ export function assignClosestArrayPoint(
  * @param {number} y Y.
  * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array<number>=} opt_tmpPoint Temporary point object.
+ * @param {Array<number>} [opt_tmpPoint] Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestMultiArrayPoint(

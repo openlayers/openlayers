@@ -27,7 +27,7 @@ import {clear} from '../obj.js';
  */
 class Target extends Disposable {
   /**
-   * @param {*=} opt_target Default event target for dispatched events.
+   * @param {*} [opt_target] Default event target for dispatched events.
    */
   constructor(opt_target) {
     super();
@@ -147,7 +147,7 @@ class Target extends Disposable {
   }
 
   /**
-   * @param {string=} opt_type Type. If not provided,
+   * @param {string} [opt_type] Type. If not provided,
    *     `true` will be returned if this event target has any listeners.
    * @return {boolean} Has listeners.
    */

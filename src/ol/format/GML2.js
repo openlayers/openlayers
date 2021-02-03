@@ -49,7 +49,7 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  */
 class GML2 extends GMLBase {
   /**
-   * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
+   * @param {import("./GMLBase.js").Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     const options =
@@ -170,7 +170,7 @@ class GML2 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string=} opt_nodeName Node name.
+   * @param {string} [opt_nodeName] Node name.
    * @return {Element|undefined} Node.
    * @private
    */
@@ -434,7 +434,7 @@ class GML2 extends GMLBase {
   /**
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string=} opt_nodeName Node name.
+   * @param {string} [opt_nodeName] Node name.
    * @return {Node} Node.
    * @private
    */
@@ -476,8 +476,8 @@ class GML2 extends GMLBase {
 
   /**
    * @param {Array<number>} point Point geometry.
-   * @param {string=} opt_srsName Optional srsName
-   * @param {boolean=} opt_hasZ whether the geometry has a Z coordinate (is 3D) or not.
+   * @param {string} [opt_srsName] Optional srsName
+   * @param {boolean} [opt_hasZ] whether the geometry has a Z coordinate (is 3D) or not.
    * @return {string} The coords string.
    * @private
    */
@@ -636,7 +636,7 @@ class GML2 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string=} opt_nodeName Node name.
+   * @param {string} [opt_nodeName] Node name.
    * @return {Node|undefined} Node.
    * @private
    */

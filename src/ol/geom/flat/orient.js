@@ -38,7 +38,7 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
  * @param {number} offset Offset.
  * @param {Array<number>} ends Array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Test for right-hand orientation
+ * @param {boolean} [opt_right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -81,7 +81,7 @@ export function linearRingsAreOriented(
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Test for right-hand orientation
+ * @param {boolean} [opt_right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -116,7 +116,7 @@ export function linearRingssAreOriented(
  * @param {number} offset Offset.
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Follow the right-hand rule for orientation.
+ * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRings(
@@ -157,7 +157,7 @@ export function orientLinearRings(
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Follow the right-hand rule for orientation.
+ * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRingsArray(

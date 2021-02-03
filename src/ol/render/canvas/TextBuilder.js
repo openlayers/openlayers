@@ -484,7 +484,7 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
-   * @param {Object=} opt_sharedData Shared data.
+   * @param {Object} [opt_sharedData] Shared data.
    */
   setTextStyle(textStyle, opt_sharedData) {
     let textState, fillState, strokeState;

@@ -95,7 +95,7 @@ class BaseLayer extends BaseObject {
    * This method is not meant to be called by layers or layer renderers because the state
    * is incorrect if the layer is included in a layer group.
    *
-   * @param {boolean=} opt_managed Layer is managed.
+   * @param {boolean} [opt_managed] Layer is managed.
    * @return {import("./Layer.js").State} Layer state.
    */
   getLayerState(opt_managed) {
@@ -124,7 +124,7 @@ class BaseLayer extends BaseObject {
 
   /**
    * @abstract
-   * @param {Array<import("./Layer.js").default>=} opt_array Array of layers (to be
+   * @param {Array<import("./Layer.js").default>} [opt_array] Array of layers (to be
    *     modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
@@ -134,7 +134,7 @@ class BaseLayer extends BaseObject {
 
   /**
    * @abstract
-   * @param {Array<import("./Layer.js").State>=} opt_states Optional list of layer
+   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list of layer
    *     states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */

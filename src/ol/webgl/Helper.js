@@ -105,7 +105,7 @@ export const AttributeType = {
 /**
  * @typedef {Object} UniformInternalDescription
  * @property {string} name Name
- * @property {UniformValue=} value Value
+ * @property {UniformValue} [value] Value
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
@@ -238,7 +238,7 @@ export const AttributeType = {
  */
 class WebGLHelper extends Disposable {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();

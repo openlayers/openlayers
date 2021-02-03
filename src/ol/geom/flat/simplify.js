@@ -36,7 +36,7 @@ import {squaredDistance, squaredSegmentDistance} from '../../math.js';
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {boolean} highQuality Highest quality.
- * @param {Array<number>=} opt_simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} [opt_simplifiedFlatCoordinates] Simplified flat
  *     coordinates.
  * @return {Array<number>} Simplified line string.
  */

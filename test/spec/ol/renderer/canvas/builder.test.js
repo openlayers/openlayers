@@ -29,8 +29,8 @@ describe('ol.render.canvas.BuilderGroup', function () {
 
     /**
      * @param {BuilderGroup} builder The builder to get instructions from.
-     * @param {number=} pixelRatio The pixel ratio.
-     * @param {boolean=} overlaps Whether there is overlaps.
+     * @param {number} [pixelRatio] The pixel ratio.
+     * @param {boolean} [overlaps] Whether there is overlaps.
      */
     function execute(builder, pixelRatio, overlaps) {
       const executor = new ExecutorGroup(

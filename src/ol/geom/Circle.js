@@ -18,8 +18,8 @@ class Circle extends SimpleGeometry {
    * @param {!import("../coordinate.js").Coordinate} center Center.
    *     For internal use, flat coordinates in combination with `opt_layout` and no
    *     `opt_radius` are also accepted.
-   * @param {number=} opt_radius Radius.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {number} [opt_radius] Radius.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    */
   constructor(center, opt_radius, opt_layout) {
     super();
@@ -189,7 +189,7 @@ class Circle extends SimpleGeometry {
    * number) of the circle.
    * @param {!import("../coordinate.js").Coordinate} center Center.
    * @param {number} radius Radius.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    * @api
    */
   setCenterAndRadius(center, radius, opt_layout) {

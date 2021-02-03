@@ -595,10 +595,10 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {FeatureCallback<T>=} opt_featureCallback Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check
+   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
    *     features that intersect this extent.
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -1141,7 +1141,7 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
   execute(
     context,
@@ -1168,8 +1168,8 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {FeatureCallback<T>=} opt_featureCallback Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check
+   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
    *     features that intersect this extent.
    * @return {T|undefined} Callback result.
    * @template T

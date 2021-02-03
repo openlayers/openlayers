@@ -597,7 +597,7 @@ class RasterSource extends ImageSource {
   /**
    * Set the operation.
    * @param {Operation} operation New operation.
-   * @param {Object=} opt_lib Functions that will be available to operations run
+   * @param {Object} [opt_lib] Functions that will be available to operations run
    *     in a worker.
    * @api
    */

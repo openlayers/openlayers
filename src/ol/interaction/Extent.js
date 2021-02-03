@@ -85,7 +85,7 @@ export class ExtentEvent extends Event {
  */
 class Extent extends PointerInteraction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options || {};

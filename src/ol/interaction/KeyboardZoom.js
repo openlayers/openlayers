@@ -30,7 +30,7 @@ import {targetNotEditable} from '../events/condition.js';
  */
 class KeyboardZoom extends Interaction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();

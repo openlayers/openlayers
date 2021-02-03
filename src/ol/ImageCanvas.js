@@ -19,7 +19,7 @@ class ImageCanvas extends ImageBase {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {HTMLCanvasElement} canvas Canvas.
-   * @param {Loader=} opt_loader Optional loader function to
+   * @param {Loader} [opt_loader] Optional loader function to
    *     support asynchronous canvas drawing.
    */
   constructor(extent, resolution, pixelRatio, canvas, opt_loader) {
@@ -58,7 +58,7 @@ class ImageCanvas extends ImageBase {
 
   /**
    * Handle async drawing complete.
-   * @param {Error=} err Any error during drawing.
+   * @param {Error} [err] Any error during drawing.
    * @private
    */
   handleLoad_(err) {

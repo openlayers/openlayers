@@ -76,7 +76,7 @@ const Property = {
  */
 class BaseVectorLayer extends Layer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -241,7 +241,7 @@ class BaseVectorLayer extends Layer {
    * so only features that have their own styles will be rendered in the layer. Call
    * `setStyle()` without arguments to reset to the default style. See
    * {@link module:ol/style} for information on the default style.
-   * @param {(import("../style/Style.js").StyleLike|null)=} opt_style Layer style.
+   * @param {import("../style/Style.js").StyleLike|null} [opt_style] Layer style.
    * @api
    */
   setStyle(opt_style) {

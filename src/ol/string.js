@@ -5,7 +5,7 @@
 /**
  * @param {number} number Number to be formatted
  * @param {number} width The desired width
- * @param {number=} opt_precision Precision of the output string (i.e. number of decimal places)
+ * @param {number} [opt_precision] Precision of the output string (i.e. number of decimal places)
  * @return {string} Formatted string
  */
 export function padNumber(number, width, opt_precision) {

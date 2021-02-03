@@ -35,8 +35,8 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>|Polygon>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` and `opt_endss` are also accepted.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
-   * @param {Array<Array<number>>=} opt_endss Array of ends for internal use with flat coordinates.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {Array<Array<number>>} [opt_endss] Array of ends for internal use with flat coordinates.
    */
   constructor(coordinates, opt_layout, opt_endss) {
     super();
@@ -236,7 +236,7 @@ class MultiPolygon extends SimpleGeometry {
    * Get the coordinate array for this geometry.  This array has the structure
    * of a GeoJSON coordinate array for multi-polygons.
    *
-   * @param {boolean=} opt_right Orient coordinates according to the right-hand
+   * @param {boolean} [opt_right] Orient coordinates according to the right-hand
    *     rule (counter-clockwise for exterior and clockwise for interior rings).
    *     If `false`, coordinates will be oriented according to the left-hand rule
    *     (clockwise for exterior and counter-clockwise for interior rings).
@@ -449,7 +449,7 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * Set the coordinates of the multipolygon.
    * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

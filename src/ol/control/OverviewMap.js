@@ -74,7 +74,7 @@ class ControlledMap extends PluggableMap {
  */
 class OverviewMap extends Control {
   /**
-   * @param {Options=} opt_options OverviewMap options.
+   * @param {Options} [opt_options] OverviewMap options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

@@ -85,7 +85,7 @@ const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
 
 /**
  * @param {HTMLCanvasElement} canvas Canvas.
- * @param {Object=} opt_attributes Attributes.
+ * @param {Object} [opt_attributes] Attributes.
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 export function getContext(canvas, opt_attributes) {

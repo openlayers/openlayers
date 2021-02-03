@@ -29,7 +29,7 @@ export class CustomTile extends ImageTile {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("../Tile.js").Options=} opt_options Tile options.
+   * @param {import("../Tile.js").Options} [opt_options] Tile options.
    */
   constructor(
     tileSize,

@@ -409,7 +409,7 @@ class Overlay extends BaseObject {
   /**
    * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary).
-   * @param {PanIntoViewOptions=} opt_panIntoViewOptions Options for the pan action
+   * @param {PanIntoViewOptions} [opt_panIntoViewOptions] Options for the pan action
    * @api
    */
   panIntoView(opt_panIntoViewOptions) {
