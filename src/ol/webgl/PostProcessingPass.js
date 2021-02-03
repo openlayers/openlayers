@@ -37,7 +37,7 @@ const DEFAULT_FRAGMENT_SHADER = `
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
- * @property {Object.<string,import("./Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @property {Object<string,import("./Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**

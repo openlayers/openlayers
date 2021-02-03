@@ -52,7 +52,7 @@ class ZoomSlider extends Control {
     });
 
     /**
-     * @type {!Array.<import("../events.js").EventsKey>}
+     * @type {!Array<import("../events.js").EventsKey>}
      * @private
      */
     this.dragListenerKeys_ = [];

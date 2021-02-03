@@ -92,12 +92,12 @@ export const AttributeType = {
  * the main canvas which will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
- * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @property {Object<string,UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**
  * @typedef {Object} Options
- * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
+ * @property {Object<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -311,13 +311,13 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {Object.<string, WebGLUniformLocation>}
+     * @type {Object<string, WebGLUniformLocation>}
      */
     this.uniformLocations_ = {};
 
     /**
      * @private
-     * @type {Object.<string, number>}
+     * @type {Object<string, number>}
      */
     this.attribLocations_ = {};
 

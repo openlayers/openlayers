@@ -130,7 +130,7 @@ export class SelectEvent extends Event {
 
 /**
  * Original feature styles to reset to when features are no longer selected.
- * @type {Object.<number, import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
+ * @type {Object<number, import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
  */
 const originalFeatureStyles = {};
 
@@ -216,7 +216,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
+     * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
      */
     this.style_ =
       options.style !== undefined ? options.style : getDefaultStyleFunction();
