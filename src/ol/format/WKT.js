@@ -117,7 +117,7 @@ class Lexer {
 
   /**
    * @param {string} c Character.
-   * @param {boolean=} opt_decimal Whether the string number
+   * @param {boolean} [opt_decimal] Whether the string number
    *     contains a dot, i.e. is a decimal number.
    * @return {boolean} Whether the character is numeric.
    * @private
@@ -604,7 +604,7 @@ class Parser {
  */
 class WKT extends TextFeature {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -636,7 +636,7 @@ class WKT extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromText(text, opt_options) {
@@ -651,7 +651,7 @@ class WKT extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -677,7 +677,7 @@ class WKT extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
@@ -692,7 +692,7 @@ class WKT extends TextFeature {
 
   /**
    * @param {import("../Feature.js").default} feature Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -706,7 +706,7 @@ class WKT extends TextFeature {
 
   /**
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -724,7 +724,7 @@ class WKT extends TextFeature {
 
   /**
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
    */

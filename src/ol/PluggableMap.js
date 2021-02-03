@@ -545,7 +545,7 @@ class PluggableMap extends BaseObject {
    *     the {@link module:ol/layer/Layer layer} of the feature and will be null for
    *     unmanaged layers. To stop detection, callback functions can return a
    *     truthy value.
-   * @param {AtPixelOptions=} opt_options Optional options.
+   * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
    * @template S,T
@@ -577,7 +577,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get all features that intersect a pixel on the viewport.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {AtPixelOptions=} opt_options Optional options.
+   * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
    * an empty array if none were found.
    * @api
@@ -609,7 +609,7 @@ class PluggableMap extends BaseObject {
    *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
    *     that do not currently support this argument. To stop detection, callback
    *     functions can return a truthy value.
-   * @param {AtPixelOptions=} opt_options Configuration options.
+   * @param {AtPixelOptions} [opt_options] Configuration options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
    * @template S,T
@@ -636,7 +636,7 @@ class PluggableMap extends BaseObject {
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through `opt_layerFilter`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {AtPixelOptions=} opt_options Optional options.
+   * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {boolean} Is there a feature at the given pixel?
    * @api
    */
@@ -968,7 +968,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * @param {UIEvent} browserEvent Browser event.
-   * @param {string=} opt_type Type.
+   * @param {string} [opt_type] Type.
    */
   handleBrowserEvent(browserEvent, opt_type) {
     const type = opt_type || browserEvent.type;

@@ -75,7 +75,7 @@ export {default as Translate} from './interaction/Translate.js';
  * * {@link module:ol/interaction/MouseWheelZoom~MouseWheelZoom}
  * * {@link module:ol/interaction/DragZoom~DragZoom}
  *
- * @param {DefaultsOptions=} opt_options Defaults options.
+ * @param {DefaultsOptions} [opt_options] Defaults options.
  * @return {import("./Collection.js").default<import("./interaction/Interaction.js").default>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.

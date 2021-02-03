@@ -41,7 +41,7 @@ const Direction = {
  */
 class ZoomSlider extends Control {
   /**
-   * @param {Options=} opt_options Zoom slider options.
+   * @param {Options} [opt_options] Zoom slider options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

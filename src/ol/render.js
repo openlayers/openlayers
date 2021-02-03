@@ -61,7 +61,7 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {ToContextOptions=} opt_options Options.
+ * @param {ToContextOptions} [opt_options] Options.
  * @return {CanvasImmediateRenderer} Canvas Immediate.
  * @api
  */

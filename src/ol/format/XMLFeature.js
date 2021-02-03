@@ -37,7 +37,7 @@ class XMLFeature extends FeatureFormat {
    * Read a single feature.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
    */
@@ -62,7 +62,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Document} doc Document.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromDocument(doc, opt_options) {
@@ -76,7 +76,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
@@ -87,7 +87,7 @@ class XMLFeature extends FeatureFormat {
    * Read all features from a feature collection.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
@@ -112,7 +112,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Document} doc Document.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
@@ -133,7 +133,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
@@ -145,7 +145,7 @@ class XMLFeature extends FeatureFormat {
    * Read a single geometry from a source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometry(source, opt_options) {
@@ -169,7 +169,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Document} doc Document.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
@@ -179,7 +179,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
@@ -229,7 +229,7 @@ class XMLFeature extends FeatureFormat {
    * Encode a feature as string.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {string} Encoded feature.
    */
   writeFeature(feature, opt_options) {
@@ -239,7 +239,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
    * @protected
    * @return {Node} Node.
    */
@@ -251,7 +251,7 @@ class XMLFeature extends FeatureFormat {
    * Encode an array of features as string.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {string} Result.
    * @api
    */
@@ -262,7 +262,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
    * @return {Node} Node.
    */
   writeFeaturesNode(features, opt_options) {
@@ -273,7 +273,7 @@ class XMLFeature extends FeatureFormat {
    * Encode a geometry as string.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {string} Encoded geometry.
    */
   writeGeometry(geometry, opt_options) {
@@ -283,7 +283,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
    * @return {Node} Node.
    */
   writeGeometryNode(geometry, opt_options) {

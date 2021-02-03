@@ -1100,7 +1100,7 @@ class Modify extends PointerInteraction {
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../PluggableMap.js").default} map Map.
-   * @param {import("../coordinate.js").Coordinate=} opt_coordinate The pixel Coordinate.
+   * @param {import("../coordinate.js").Coordinate} [opt_coordinate] The pixel Coordinate.
    * @private
    */
   handlePointerAtPixel_(pixel, map, opt_coordinate) {

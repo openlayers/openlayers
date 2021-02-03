@@ -435,7 +435,7 @@ class IIIFInfo {
   }
 
   /**
-   * @param {PreferredOptions=} opt_preferredOptions Optional options for preferred format and quality.
+   * @param {PreferredOptions} [opt_preferredOptions] Optional options for preferred format and quality.
    * @return {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
    * @api
    */

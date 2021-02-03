@@ -39,9 +39,9 @@ import {clear} from './obj.js';
  * @param {import("./events/Target.js").EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {ListenerFunction} listener Listener.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ * @param {Object} [opt_this] Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
- * @param {boolean=} opt_once If true, add the listener as one-off listener.
+ * @param {boolean} [opt_once] If true, add the listener as one-off listener.
  * @return {EventsKey} Unique key for the listener.
  */
 export function listen(target, type, listener, opt_this, opt_once) {
@@ -80,7 +80,7 @@ export function listen(target, type, listener, opt_this, opt_once) {
  * @param {import("./events/Target.js").EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {ListenerFunction} listener Listener.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ * @param {Object} [opt_this] Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  * @return {EventsKey} Key for unlistenByKey.
  */

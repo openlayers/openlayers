@@ -35,8 +35,8 @@ class Polygon extends SimpleGeometry {
    *     an array of vertices' coordinates where the first coordinate and the last are
    *     equivalent. (For internal use, flat coordinates in combination with
    *     `opt_layout` and `opt_ends` are also accepted.)
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
-   * @param {Array<number>=} opt_ends Ends (for internal use with flat coordinates).
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {Array<number>} [opt_ends] Ends (for internal use with flat coordinates).
    */
   constructor(coordinates, opt_layout, opt_ends) {
     super();
@@ -198,7 +198,7 @@ class Polygon extends SimpleGeometry {
    * Get the coordinate array for this geometry.  This array has the structure
    * of a GeoJSON coordinate array for polygons.
    *
-   * @param {boolean=} opt_right Orient coordinates according to the right-hand
+   * @param {boolean} [opt_right] Orient coordinates according to the right-hand
    *     rule (counter-clockwise for exterior and clockwise for interior rings).
    *     If `false`, coordinates will be oriented according to the left-hand rule
    *     (clockwise for exterior and counter-clockwise for interior rings).
@@ -387,7 +387,7 @@ class Polygon extends SimpleGeometry {
   /**
    * Set the coordinates of the polygon.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {
@@ -414,9 +414,9 @@ export default Polygon;
  * @param {import("../coordinate.js").Coordinate} center Center (`[lon, lat]` in degrees).
  * @param {number} radius The great-circle distance from the center to
  *     the polygon vertices in meters.
- * @param {number=} opt_n Optional number of vertices for the resulting
+ * @param {number} [opt_n] Optional number of vertices for the resulting
  *     polygon. Default is `32`.
- * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
+ * @param {number} [opt_sphereRadius] Optional radius for the sphere (defaults to
  *     the Earth's mean radius using the WGS84 ellipsoid).
  * @return {Polygon} The "circular" polygon.
  * @api
@@ -468,8 +468,8 @@ export function fromExtent(extent) {
 /**
  * Create a regular polygon from a circle.
  * @param {import("./Circle.js").default} circle Circle geometry.
- * @param {number=} opt_sides Number of sides of the polygon. Default is 32.
- * @param {number=} opt_angle Start angle for the first vertex of the polygon in
+ * @param {number} [opt_sides] Number of sides of the polygon. Default is 32.
+ * @param {number} [opt_angle] Start angle for the first vertex of the polygon in
  *     counter-clockwise radians. 0 means East. Default is 0.
  * @return {Polygon} Polygon geometry.
  * @api
@@ -499,7 +499,7 @@ export function fromCircle(circle, opt_sides, opt_angle) {
  * @param {Polygon} polygon Polygon geometry.
  * @param {import("../coordinate.js").Coordinate} center Center of the regular polygon.
  * @param {number} radius Radius of the regular polygon.
- * @param {number=} opt_angle Start angle for the first vertex of the polygon in
+ * @param {number} [opt_angle] Start angle for the first vertex of the polygon in
  *     counter-clockwise radians. 0 means East. Default is 0.
  */
 export function makeRegular(polygon, center, radius, opt_angle) {

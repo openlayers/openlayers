@@ -77,7 +77,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  */
 class TileWMS extends TileImage {
   /**
-   * @param {Options=} [opt_options] Tile WMS options.
+   * @param {Options} [opt_options] Tile WMS options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : /** @type {Options} */ ({});

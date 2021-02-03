@@ -54,7 +54,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  */
 class MousePosition extends Control {
   /**
-   * @param {Options=} opt_options Mouse position options.
+   * @param {Options} [opt_options] Mouse position options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

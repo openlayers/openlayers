@@ -24,7 +24,7 @@ import {isEmpty} from '../obj.js';
  */
 class RBush {
   /**
-   * @param {number=} opt_maxEntries Max entries.
+   * @param {number} [opt_maxEntries] Max entries.
    */
   constructor(opt_maxEntries) {
     /**
@@ -198,7 +198,7 @@ class RBush {
   }
 
   /**
-   * @param {import("../extent.js").Extent=} opt_extent Extent.
+   * @param {import("../extent.js").Extent} [opt_extent] Extent.
    * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {

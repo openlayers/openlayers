@@ -197,8 +197,8 @@ export function calculateSourceExtentResolution(
  * @param {import("./reproj/Triangulation.js").default} triangulation Calculated triangulation.
  * @param {Array<ImageExtent>} sources Array of sources.
  * @param {number} gutter Gutter of the sources.
- * @param {boolean=} opt_renderEdges Render reprojection edges.
- * @param {object=} opt_contextOptions Properties to set on the canvas context.
+ * @param {boolean} [opt_renderEdges] Render reprojection edges.
+ * @param {object} [opt_contextOptions] Properties to set on the canvas context.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(

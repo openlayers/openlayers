@@ -62,7 +62,7 @@ describe('ol.interaction.Translate', function () {
    * @param {string} type Event type.
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
-   * @param {boolean=} opt_shiftKey Shift key is pressed.
+   * @param {boolean} [opt_shiftKey] Shift key is pressed.
    */
   function simulateEvent(type, x, y, opt_shiftKey) {
     const viewport = map.getViewport();

@@ -787,7 +787,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
-   * @param {import("../../render/canvas/BuilderGroup.js").default=} opt_declutterBuilderGroup Builder group for decluttering.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder group for decluttering.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(

@@ -156,7 +156,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {ExecutorGroup} executorGroup Executor group.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
   renderWorlds(executorGroup, frameState, opt_declutterTree) {
     const extent = frameState.extent;
@@ -716,8 +716,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
-   * @param {import("../../proj.js").TransformFunction=} opt_transform Transform from user to view projection.
-   * @param {import("../../render/canvas/BuilderGroup.js").default=} opt_declutterBuilderGroup Builder for decluttering.
+   * @param {import("../../proj.js").TransformFunction} [opt_transform] Transform from user to view projection.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(

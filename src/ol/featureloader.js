@@ -136,9 +136,9 @@ export function xhr(url, format) {
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {function(): void=} success Success
+   * @param {function(): void} [success] Success
    *      Function called when loading succeeded.
-   * @param {function(): void=} failure Failure
+   * @param {function(): void} [failure] Failure
    *      Function called when loading failed.
    * @this {import("./source/Vector").default}
    */

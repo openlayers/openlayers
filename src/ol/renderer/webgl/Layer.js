@@ -51,7 +51,7 @@ export const WebGLWorkerMessageType = {
 class WebGLLayerRenderer extends LayerRenderer {
   /**
    * @param {LayerType} layer Layer.
-   * @param {Options=} [opt_options] Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(layer, opt_options) {
     super(layer);

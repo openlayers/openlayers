@@ -43,7 +43,7 @@ export function deflateCoordinates(
  * @param {number} offset Offset.
  * @param {Array<Array<import("../../coordinate.js").Coordinate>>} coordinatess Coordinatess.
  * @param {number} stride Stride.
- * @param {Array<number>=} opt_ends Ends.
+ * @param {Array<number>} [opt_ends] Ends.
  * @return {Array<number>} Ends.
  */
 export function deflateCoordinatesArray(
@@ -74,7 +74,7 @@ export function deflateCoordinatesArray(
  * @param {number} offset Offset.
  * @param {Array<Array<Array<import("../../coordinate.js").Coordinate>>>} coordinatesss Coordinatesss.
  * @param {number} stride Stride.
- * @param {Array<Array<number>>=} opt_endss Endss.
+ * @param {Array<Array<number>>} [opt_endss] Endss.
  * @return {Array<Array<number>>} Endss.
  */
 export function deflateMultiCoordinatesArray(

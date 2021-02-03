@@ -38,7 +38,7 @@ class ExecutorGroup {
    * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
-   * @param {number=} opt_renderBuffer Optional rendering buffer.
+   * @param {number} [opt_renderBuffer] Optional rendering buffer.
    */
   constructor(
     maxExtent,
@@ -312,9 +312,9 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<import("./BuilderType.js").default>=} opt_builderTypes Ordered replay types to replay.
+   * @param {Array<import("./BuilderType.js").default>} [opt_builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
   execute(
     context,

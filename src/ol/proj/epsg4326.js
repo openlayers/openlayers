@@ -37,7 +37,7 @@ export const METERS_PER_UNIT = (Math.PI * RADIUS) / 180;
 class EPSG4326Projection extends Projection {
   /**
    * @param {string} code Code.
-   * @param {string=} opt_axisOrientation Axis orientation.
+   * @param {string} [opt_axisOrientation] Axis orientation.
    */
   constructor(code, opt_axisOrientation) {
     super({

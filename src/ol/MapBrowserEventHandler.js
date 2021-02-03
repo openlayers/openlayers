@@ -13,7 +13,7 @@ import {listen, unlistenByKey} from './events.js';
 class MapBrowserEventHandler extends EventTarget {
   /**
    * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
-   * @param {number=} moveTolerance The minimal distance the pointer must travel to trigger a move.
+   * @param {number} [moveTolerance] The minimal distance the pointer must travel to trigger a move.
    */
   constructor(map, moveTolerance) {
     super(map);

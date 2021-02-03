@@ -38,12 +38,12 @@ import {linearRingIsClockwise} from '../geom/flat/orient.js';
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @param {Options=} opt_options Options.
+ * @param {Options} [opt_options] Options.
  * @api
  */
 class MVT extends FeatureFormat {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -260,7 +260,7 @@ class MVT extends FeatureFormat {
    * Read all features.
    *
    * @param {ArrayBuffer} source Source.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    * @api
    */

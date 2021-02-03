@@ -95,7 +95,7 @@ const tempSegment = [];
  */
 class Snap extends PointerInteraction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -200,7 +200,7 @@ class Snap extends PointerInteraction {
   /**
    * Add a feature to the collection of features that we may snap to.
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {boolean=} opt_listen Whether to listen to the feature change or not
+   * @param {boolean} [opt_listen] Whether to listen to the feature change or not
    *     Defaults to `true`.
    * @api
    */
@@ -322,7 +322,7 @@ class Snap extends PointerInteraction {
   /**
    * Remove a feature from the collection of features that we may snap to.
    * @param {import("../Feature.js").default} feature Feature
-   * @param {boolean=} opt_unlisten Whether to unlisten to the feature change
+   * @param {boolean} [opt_unlisten] Whether to unlisten to the feature change
    *     or not. Defaults to `true`.
    * @api
    */

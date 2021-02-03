@@ -135,7 +135,7 @@ export function closestOnSegment(coordinate, segment) {
  *     var out = stringifyFunc(coord);
  *     // out is now '7.85, 47.98'
  *
- * @param {number=} opt_fractionDigits The number of digits to include
+ * @param {number} [opt_fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {CoordinateFormat} Coordinate format.
  * @api
@@ -155,7 +155,7 @@ export function createStringXY(opt_fractionDigits) {
 /**
  * @param {string} hemispheres Hemispheres.
  * @param {number} degrees Degrees.
- * @param {number=} opt_fractionDigits The number of digits to include
+ * @param {number} [opt_fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} String.
  */
@@ -219,7 +219,7 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
  * @param {Coordinate} coordinate Coordinate.
  * @param {string} template A template string with `{x}` and `{y}` placeholders
  *     that will be replaced by first and second coordinate values.
- * @param {number=} opt_fractionDigits The number of digits to include
+ * @param {number} [opt_fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Formatted coordinate.
  * @api
@@ -354,7 +354,7 @@ export function squaredDistanceToSegment(coordinate, segment) {
  *     // out is now '47° 58′ 60.0″ N 7° 50′ 60.0″ E'
  *
  * @param {Coordinate} coordinate Coordinate.
- * @param {number=} opt_fractionDigits The number of digits to include
+ * @param {number} [opt_fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Hemisphere, degrees, minutes and seconds.
  * @api
@@ -391,7 +391,7 @@ export function toStringHDMS(coordinate, opt_fractionDigits) {
  *     // out is now '7.8, 48.0'
  *
  * @param {Coordinate} coordinate Coordinate.
- * @param {number=} opt_fractionDigits The number of digits to include
+ * @param {number} [opt_fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} XY.
  * @api
@@ -422,7 +422,7 @@ export function wrapX(coordinate, projection) {
 /**
  * @param {Coordinate} coordinate Coordinate.
  * @param {import("./proj/Projection.js").default} projection Projection.
- * @param {number=} opt_sourceExtentWidth Width of the source extent.
+ * @param {number} [opt_sourceExtentWidth] Width of the source extent.
  * @return {number} Offset in world widths.
  */
 export function getWorldsAway(coordinate, projection, opt_sourceExtentWidth) {

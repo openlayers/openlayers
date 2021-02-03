@@ -291,7 +291,7 @@ class TileSource extends Source {
    * is outside the resolution and extent range of the tile grid, `null` will be
    * returned.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../proj/Projection.js").default=} opt_projection Projection.
+   * @param {import("../proj/Projection.js").default} [opt_projection] Projection.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate to be passed to the tileUrlFunction or
    *     null if no tile URL should be created for the passed `tileCoord`.
    */

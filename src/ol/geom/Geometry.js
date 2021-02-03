@@ -135,7 +135,7 @@ class Geometry extends BaseObject {
    * Return the closest point of the geometry to the passed point as
    * {@link module:ol/coordinate~Coordinate coordinate}.
    * @param {import("../coordinate.js").Coordinate} point Point.
-   * @param {import("../coordinate.js").Coordinate=} opt_closestPoint Closest point.
+   * @param {import("../coordinate.js").Coordinate} [opt_closestPoint] Closest point.
    * @return {import("../coordinate.js").Coordinate} Closest point.
    * @api
    */
@@ -168,7 +168,7 @@ class Geometry extends BaseObject {
 
   /**
    * Get the extent of the geometry.
-   * @param {import("../extent.js").Extent=} opt_extent Extent.
+   * @param {import("../extent.js").Extent} [opt_extent] Extent.
    * @return {import("../extent.js").Extent} extent Extent.
    * @api
    */
@@ -200,8 +200,8 @@ class Geometry extends BaseObject {
    * coordinates in place.
    * @abstract
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number=} opt_sy The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
+   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */

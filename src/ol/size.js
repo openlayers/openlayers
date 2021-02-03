@@ -12,7 +12,7 @@
  * Returns a buffered size.
  * @param {Size} size Size.
  * @param {number} num The amount by which to buffer.
- * @param {Size=} opt_size Optional reusable size array.
+ * @param {Size} [opt_size] Optional reusable size array.
  * @return {Size} The buffered size.
  */
 export function buffer(size, num, opt_size) {
@@ -37,7 +37,7 @@ export function hasArea(size) {
  * Returns a size scaled by a ratio. The result will be an array of integers.
  * @param {Size} size Size.
  * @param {number} ratio Ratio.
- * @param {Size=} opt_size Optional reusable size array.
+ * @param {Size} [opt_size] Optional reusable size array.
  * @return {Size} The scaled size.
  */
 export function scale(size, ratio, opt_size) {
@@ -54,7 +54,7 @@ export function scale(size, ratio, opt_size) {
  * `Size` array.
  * (meaning: non-square),
  * @param {number|Size} size Width and height.
- * @param {Size=} opt_size Optional reusable size array.
+ * @param {Size} [opt_size] Optional reusable size array.
  * @return {Size} Size.
  * @api
  */

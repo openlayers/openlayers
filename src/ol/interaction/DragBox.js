@@ -107,7 +107,7 @@ export class DragBoxEvent extends Event {
  */
 class DragBox extends PointerInteraction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();

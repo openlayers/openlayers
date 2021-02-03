@@ -50,7 +50,7 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  */
 class ImageArcGISRest extends ImageSource {
   /**
-   * @param {Options=} opt_options Image ArcGIS Rest Options.
+   * @param {Options} [opt_options] Image ArcGIS Rest Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

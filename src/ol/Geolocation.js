@@ -86,7 +86,7 @@ class GeolocationError extends BaseEvent {
  */
 class Geolocation extends BaseObject {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();

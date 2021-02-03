@@ -13,7 +13,7 @@ import {numberSafeCompareFunction} from '../../array.js';
  * @param {number} stride Stride.
  * @param {Array<number>} flatCenters Flat centers.
  * @param {number} flatCentersOffset Flat center offset.
- * @param {Array<number>=} opt_dest Destination.
+ * @param {Array<number>} [opt_dest] Destination.
  * @return {Array<number>} Destination point as XYM coordinate, where M is the
  * length of the horizontal intersection that the point belongs to.
  */

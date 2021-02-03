@@ -63,7 +63,7 @@ export function not(condition) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../extent.js").Extent} extent Extent.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Bbox} `<BBOX>` operator.
  * @api
@@ -78,7 +78,7 @@ export function bbox(geometryName, extent, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Contains} `<Contains>` operator.
  * @api
@@ -93,7 +93,7 @@ export function contains(geometryName, geometry, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Intersects} `<Intersects>` operator.
  * @api
@@ -108,7 +108,7 @@ export function intersects(geometryName, geometry, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Disjoint} `<Disjoint>` operator.
  * @api
@@ -123,7 +123,7 @@ export function disjoint(geometryName, geometry, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Within} `<Within>` operator.
  * @api
@@ -140,7 +140,7 @@ export function within(geometryName, geometry, opt_srsName) {
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
  * @param {!number} distance Distance.
  * @param {!string} unit Unit.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!DWithin} `<DWithin>` operator.
  * @api
@@ -154,7 +154,7 @@ export function dwithin(geometryName, geometry, distance, unit, opt_srsName) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
- * @param {boolean=} opt_matchCase Case-sensitive?
+ * @param {boolean} [opt_matchCase] Case-sensitive?
  * @return {!EqualTo} `<PropertyIsEqualTo>` operator.
  * @api
  */
@@ -167,7 +167,7 @@ export function equalTo(propertyName, expression, opt_matchCase) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
- * @param {boolean=} opt_matchCase Case-sensitive?
+ * @param {boolean} [opt_matchCase] Case-sensitive?
  * @return {!NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
@@ -255,13 +255,13 @@ export function between(propertyName, lowerBoundary, upperBoundary) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} pattern Text pattern.
- * @param {string=} opt_wildCard Pattern character which matches any sequence of
+ * @param {string} [opt_wildCard] Pattern character which matches any sequence of
  *    zero or more string characters. Default is '*'.
- * @param {string=} opt_singleChar pattern character which matches any single
+ * @param {string} [opt_singleChar] pattern character which matches any single
  *    string character. Default is '.'.
- * @param {string=} opt_escapeChar Escape character which can be used to escape
+ * @param {string} [opt_escapeChar] Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
- * @param {boolean=} opt_matchCase Case-sensitive?
+ * @param {boolean} [opt_matchCase] Case-sensitive?
  * @return {!IsLike} `<PropertyIsLike>` operator.
  * @api
  */

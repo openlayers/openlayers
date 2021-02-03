@@ -7,10 +7,10 @@ import Event from '../events/Event.js';
 class RenderEvent extends Event {
   /**
    * @param {import("./EventType.js").default} type Type.
-   * @param {import("../transform.js").Transform=} opt_inversePixelTransform Transform for
+   * @param {import("../transform.js").Transform} [opt_inversePixelTransform] Transform for
    *     CSS pixels to rendered pixels.
-   * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
-   * @param {?CanvasRenderingContext2D=} opt_context Context.
+   * @param {import("../PluggableMap.js").FrameState} [opt_frameState] Frame state.
+   * @param {?CanvasRenderingContext2D} [opt_context] Context.
    */
   constructor(type, opt_inversePixelTransform, opt_frameState, opt_context) {
     super(type);

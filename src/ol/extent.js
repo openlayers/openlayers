@@ -29,7 +29,7 @@ export function boundingExtent(coordinates) {
 /**
  * @param {Array<number>} xs Xs.
  * @param {Array<number>} ys Ys.
- * @param {Extent=} opt_extent Destination extent.
+ * @param {Extent} [opt_extent] Destination extent.
  * @private
  * @return {Extent} Extent.
  */
@@ -45,7 +45,7 @@ function _boundingExtentXYs(xs, ys, opt_extent) {
  * Return extent increased by the provided value.
  * @param {Extent} extent Extent.
  * @param {number} value The amount by which the extent should be buffered.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  * @api
  */
@@ -70,7 +70,7 @@ export function buffer(extent, value, opt_extent) {
  * Creates a clone of an extent.
  *
  * @param {Extent} extent Extent to clone.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} The clone.
  */
 export function clone(extent, opt_extent) {
@@ -202,7 +202,7 @@ export function createEmpty() {
  * @param {number} minY Minimum Y.
  * @param {number} maxX Maximum X.
  * @param {number} maxY Maximum Y.
- * @param {Extent=} opt_extent Destination extent.
+ * @param {Extent} [opt_extent] Destination extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdate(minX, minY, maxX, maxY, opt_extent) {
@@ -219,7 +219,7 @@ export function createOrUpdate(minX, minY, maxX, maxY, opt_extent) {
 
 /**
  * Create a new empty extent or make the provided one empty.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdateEmpty(opt_extent) {
@@ -228,7 +228,7 @@ export function createOrUpdateEmpty(opt_extent) {
 
 /**
  * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdateFromCoordinate(coordinate, opt_extent) {
@@ -239,7 +239,7 @@ export function createOrUpdateFromCoordinate(coordinate, opt_extent) {
 
 /**
  * @param {Array<import("./coordinate.js").Coordinate>} coordinates Coordinates.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdateFromCoordinates(coordinates, opt_extent) {
@@ -252,7 +252,7 @@ export function createOrUpdateFromCoordinates(coordinates, opt_extent) {
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdateFromFlatCoordinates(
@@ -268,7 +268,7 @@ export function createOrUpdateFromFlatCoordinates(
 
 /**
  * @param {Array<Array<import("./coordinate.js").Coordinate>>} rings Rings.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdateFromRings(rings, opt_extent) {
@@ -521,7 +521,7 @@ export function getEnlargedArea(extent1, extent2) {
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {import("./size.js").Size} size Size.
- * @param {Extent=} opt_extent Destination extent.
+ * @param {Extent} [opt_extent] Destination extent.
  * @return {Extent} Extent.
  */
 export function getForViewAndSize(
@@ -582,7 +582,7 @@ export function getIntersectionArea(extent1, extent2) {
  * Get the intersection of two extents.
  * @param {Extent} extent1 Extent 1.
  * @param {Extent} extent2 Extent 2.
- * @param {Extent=} opt_extent Optional extent to populate with intersection.
+ * @param {Extent} [opt_extent] Optional extent to populate with intersection.
  * @return {Extent} Intersecting extent.
  * @api
  */
@@ -691,7 +691,7 @@ export function isEmpty(extent) {
 
 /**
  * @param {Extent} extent Extent.
- * @param {Extent=} opt_extent Extent.
+ * @param {Extent} [opt_extent] Extent.
  * @return {Extent} Extent.
  */
 export function returnOrUpdate(extent, opt_extent) {
@@ -788,8 +788,8 @@ export function intersectsSegment(extent, start, end) {
  * @param {Extent} extent Extent.
  * @param {import("./proj.js").TransformFunction} transformFn Transform function.
  * Called with `[minX, minY, maxX, maxY]` extent coordinates.
- * @param {Extent=} opt_extent Destination extent.
- * @param {number=} opt_stops Number of stops per side used for the transform.
+ * @param {Extent} [opt_extent] Destination extent.
+ * @param {number} [opt_stops] Number of stops per side used for the transform.
  * By default only the corners are used.
  * @return {Extent} Extent.
  * @api

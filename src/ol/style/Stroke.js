@@ -27,7 +27,7 @@
  */
 class Stroke {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options || {};

@@ -266,7 +266,7 @@ const DEFAULT_VERSION = '1.1.0';
  */
 class WFS extends XMLFeature {
   /**
-   * @param {Options=} opt_options Optional configuration object.
+   * @param {Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -325,7 +325,7 @@ class WFS extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
@@ -563,9 +563,9 @@ class WFS extends XMLFeature {
    *
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../extent.js").Extent} extent Extent.
-   * @param {string=} opt_srsName SRS name. No srsName attribute will be
+   * @param {string} [opt_srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
-   * @param {import("./filter/Filter.js").default=} opt_filter Filter condition.
+   * @param {import("./filter/Filter.js").default} [opt_filter] Filter condition.
    * @return {import("./filter/Filter.js").default} The filter.
    */
   combineBboxAndFilter(geometryName, extent, opt_srsName, opt_filter) {
