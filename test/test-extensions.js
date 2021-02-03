@@ -63,8 +63,8 @@
 
   /**
    * Assert value is within some tolerance of a number.
-   * @param {Number} n Number.
-   * @param {Number} tol Tolerance.
+   * @param {number} n Number.
+   * @param {number} tol Tolerance.
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.roughlyEqual = function (n, tol) {
@@ -455,7 +455,7 @@
    * @param {ol.PluggableMap} map A map using the canvas renderer.
    * @param {string} referenceImage Path to the reference image.
    * @param {number} tolerance The accepted mismatch tolerance.
-   * @param {function} done A callback to indicate that the test is done.
+   * @param {Function} done A callback to indicate that the test is done.
    */
   global.expectResemble = function (map, referenceImage, tolerance, done) {
     map.render();

@@ -274,9 +274,9 @@ export function expressionToGlsl(context, value, typeHint) {
     (valueType & ValueTypes.COLOR) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.COLOR)
   ) {
-    return colorToGlsl(/** @type {number[]|string} */ (value));
+    return colorToGlsl(/** @type {Array<number> | string} */ (value));
   } else if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
-    return arrayToGlsl(/** @type {number[]} */ (value));
+    return arrayToGlsl(/** @type {Array<number>} */ (value));
   }
 }
 
@@ -652,7 +652,7 @@ Operators['color'] = {
     assertArgsMinCount(args, 3);
     assertArgsMaxCount(args, 4);
     assertNumbers(args);
-    const array = /** @type {number[]} */ (args);
+    const array = /** @type {Array<number>} */ (args);
     if (args.length === 3) {
       array.push(1);
     }
