@@ -128,6 +128,9 @@ const ModifyEventType = {
  * provided, a vector source must be provided with the `source` option.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
+ * @property {boolean} [snapToPointer=false] The vertex, point or segment being modified snaps to the
+ * pointer coordinate when clicked within the `pixelTolerance`. Setting this to `true` is recommended
+ * when the `Snap` interaction is used and the source geometry is not a snap target.
  */
 
 /**
@@ -386,6 +389,11 @@ class Modify extends PointerInteraction {
      * @type {Array<number>}
      */
     this.delta_ = [0, 0];
+
+    /**
+     * @private
+     */
+    this.snapToPointer_ = options.snapToPointer || false;
   }
 
   /**
@@ -1163,8 +1171,10 @@ class Modify extends PointerInteraction {
         const vertexSegments = {};
         vertexSegments[getUid(closestSegment)] = true;
 
-        this.delta_[0] = vertex[0] - pixelCoordinate[0];
-        this.delta_[1] = vertex[1] - pixelCoordinate[1];
+        if (!this.snapToPointer_) {
+          this.delta_[0] = vertex[0] - pixelCoordinate[0];
+          this.delta_[1] = vertex[1] - pixelCoordinate[1];
+        }
         if (
           node.geometry.getType() === GeometryType.CIRCLE &&
           node.index === CIRCLE_CIRCUMFERENCE_INDEX

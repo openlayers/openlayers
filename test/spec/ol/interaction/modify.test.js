@@ -208,6 +208,11 @@ describe('ol.interaction.Modify', function () {
       expect(rbushEntries[0].feature).to.be(feature);
       expect(modify.hitDetection_).to.be(layer);
     });
+
+    it('accepts a snapToPointer option', function () {
+      const modify = new Modify({source: source, snapToPointer: true});
+      expect(modify.snapToPointer_).to.be(true);
+    });
   });
 
   describe('vertex deletion', function () {
@@ -1038,6 +1043,37 @@ describe('ol.interaction.Modify', function () {
       expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
         pointFeature.getGeometry()
       );
+    });
+
+    it('snaps to pointer when snapToPointer is true', function () {
+      const modify = new Modify({
+        snapToPointer: true,
+        source: source,
+      });
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([0, 0]));
+      source.addFeature(pointFeature);
+      map.renderSync();
+      simulateEvent('pointerdown', 2, 2, null, 0);
+      simulateEvent('pointerdrag', 2, 2, null, 0);
+      simulateEvent('pointerup', 2, 2, null, 0);
+      expect(pointFeature.getGeometry().getCoordinates()).to.eql([2, -2]);
+    });
+
+    it('does not snap to pointer by default', function () {
+      const modify = new Modify({
+        source: source,
+      });
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([0, 0]));
+      source.addFeature(pointFeature);
+      map.renderSync();
+      simulateEvent('pointerdown', 2, 2, null, 0);
+      simulateEvent('pointerdrag', 2, 2, null, 0);
+      simulateEvent('pointerup', 2, 2, null, 0);
+      expect(pointFeature.getGeometry().getCoordinates()).to.eql([0, 0]);
     });
   });
 
