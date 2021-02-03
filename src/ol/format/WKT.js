@@ -69,6 +69,7 @@ const ZM = 'ZM';
  * @enum {number}
  */
 const TokenType = {
+  START: 0,
   TEXT: 1,
   LEFT_PAREN: 2,
   RIGHT_PAREN: 3,
@@ -146,7 +147,7 @@ class Lexer {
 
   /**
    * Fetch and return the next token.
-   * @return {!Token} Next string token.
+   * @return {Token} Next string token.
    */
   nextToken() {
     const c = this.nextChar_();
@@ -238,7 +239,10 @@ class Parser {
      * @type {Token}
      * @private
      */
-    this.token_;
+    this.token_ = {
+      position: 0,
+      type: TokenType.START,
+    };
 
     /**
      * @type {import("../geom/GeometryLayout.js").default}
@@ -261,8 +265,7 @@ class Parser {
    * @return {boolean} Whether the token matches the given type.
    */
   isTokenType(type) {
-    const isMatch = this.token_.type == type;
-    return isMatch;
+    return this.token_.type == type;
   }
 
   /**
@@ -284,8 +287,7 @@ class Parser {
    */
   parse() {
     this.consume_();
-    const geometry = this.parseGeometry_();
-    return geometry;
+    return this.parseGeometry_();
   }
 
   /**
@@ -313,7 +315,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<import("../geom/Geometry.js").default>} A collection of geometries.
+   * @return {Array<import("../geom/Geometry.js").default>} A collection of geometries.
    * @private
    */
   parseGeometryCollectionText_() {
@@ -325,8 +327,6 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return geometries;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return [];
     }
     throw new Error(this.formatErrorMessage_());
   }
@@ -341,14 +341,12 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return coordinates;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return null;
     }
     throw new Error(this.formatErrorMessage_());
   }
 
   /**
-   * @return {!Array<!Array<number>>} All points in a linestring.
+   * @return {Array<Array<number>>} All points in a linestring.
    * @private
    */
   parseLineStringText_() {
@@ -357,14 +355,12 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return coordinates;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return [];
     }
     throw new Error(this.formatErrorMessage_());
   }
 
   /**
-   * @return {!Array<!Array<!Array<number>>>} All points in a polygon.
+   * @return {Array<Array<Array<number>>>} All points in a polygon.
    * @private
    */
   parsePolygonText_() {
@@ -373,14 +369,12 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return coordinates;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return [];
     }
     throw new Error(this.formatErrorMessage_());
   }
 
   /**
-   * @return {!Array<!Array<number>>} All points in a multipoint.
+   * @return {Array<Array<number>>} All points in a multipoint.
    * @private
    */
   parseMultiPointText_() {
@@ -394,14 +388,12 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return coordinates;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return [];
     }
     throw new Error(this.formatErrorMessage_());
   }
 
   /**
-   * @return {!Array<!Array<!Array<number>>>} All linestring points
+   * @return {Array<Array<Array<number>>>} All linestring points
    *                                          in a multilinestring.
    * @private
    */
@@ -411,14 +403,12 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return coordinates;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return [];
     }
     throw new Error(this.formatErrorMessage_());
   }
 
   /**
-   * @return {!Array<!Array<!Array<!Array<number>>>>} All polygon points in a multipolygon.
+   * @return {Array<Array<Array<Array<number>>>>} All polygon points in a multipolygon.
    * @private
    */
   parseMultiPolygonText_() {
@@ -427,14 +417,12 @@ class Parser {
       if (this.match(TokenType.RIGHT_PAREN)) {
         return coordinates;
       }
-    } else if (this.isEmptyGeometry_()) {
-      return [];
     }
     throw new Error(this.formatErrorMessage_());
   }
 
   /**
-   * @return {!Array<number>} A point.
+   * @return {Array<number>} A point.
    * @private
    */
   parsePoint_() {
@@ -455,7 +443,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {Array<Array<number>>} An array of points.
    * @private
    */
   parsePointList_() {
@@ -467,7 +455,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {Array<Array<number>>} An array of points.
    * @private
    */
   parsePointTextList_() {
@@ -479,7 +467,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<!Array<number>>>} An array of points.
+   * @return {Array<Array<Array<number>>>} An array of points.
    * @private
    */
   parseLineStringTextList_() {
@@ -491,7 +479,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<!Array<!Array<number>>>>} An array of points.
+   * @return {Array<Array<Array<Array<number>>>>} An array of points.
    * @private
    */
   parsePolygonTextList_() {
@@ -533,15 +521,19 @@ class Parser {
   }
 
   /**
-   * @return {!import("../geom/Geometry.js").default} The geometry.
+   * @return {import("../geom/Geometry.js").default} The geometry.
    * @private
    */
   parseGeometry_() {
     const token = this.token_;
     if (this.match(TokenType.TEXT)) {
-      const geomType = token.value;
+      const geomType = /** @type {string} */ (token.value);
       this.layout_ = this.parseGeometryLayout_();
+      const isEmpty = this.isEmptyGeometry_();
       if (geomType == 'GEOMETRYCOLLECTION') {
+        if (isEmpty) {
+          return new GeometryCollection([]);
+        }
         const geometries = this.parseGeometryCollectionText_();
         return new GeometryCollection(geometries);
       } else {
@@ -551,43 +543,44 @@ class Parser {
         }
 
         let coordinates;
-        switch (geomType) {
-          case 'POINT': {
-            coordinates = this.parsePointText_();
-            break;
-          }
-          case 'LINESTRING': {
-            coordinates = this.parseLineStringText_();
-            break;
-          }
-          case 'POLYGON': {
-            coordinates = this.parsePolygonText_();
-            break;
-          }
-          case 'MULTIPOINT': {
-            coordinates = this.parseMultiPointText_();
-            break;
-          }
-          case 'MULTILINESTRING': {
-            coordinates = this.parseMultiLineStringText_();
-            break;
-          }
-          case 'MULTIPOLYGON': {
-            coordinates = this.parseMultiPolygonText_();
-            break;
-          }
-          default: {
-            throw new Error('Invalid geometry type: ' + geomType);
-          }
-        }
 
-        if (!coordinates) {
-          if (ctor === GeometryConstructor['POINT']) {
+        if (isEmpty) {
+          if (geomType == 'POINT') {
             coordinates = [NaN, NaN];
           } else {
             coordinates = [];
           }
+        } else {
+          switch (geomType) {
+            case 'POINT': {
+              coordinates = this.parsePointText_();
+              break;
+            }
+            case 'LINESTRING': {
+              coordinates = this.parseLineStringText_();
+              break;
+            }
+            case 'POLYGON': {
+              coordinates = this.parsePolygonText_();
+              break;
+            }
+            case 'MULTIPOINT': {
+              coordinates = this.parseMultiPointText_();
+              break;
+            }
+            case 'MULTILINESTRING': {
+              coordinates = this.parseMultiLineStringText_();
+              break;
+            }
+            case 'MULTIPOLYGON': {
+              coordinates = this.parseMultiPolygonText_();
+              break;
+            }
+            default:
+              break;
+          }
         }
+
         return new ctor(coordinates, this.layout_);
       }
     }
@@ -623,7 +616,7 @@ class WKT extends TextFeature {
   /**
    * Parse a WKT string.
    * @param {string} wkt WKT string.
-   * @return {import("../geom/Geometry.js").default|undefined}
+   * @return {import("../geom/Geometry.js").default}
    *     The geometry created.
    * @private
    */
@@ -641,12 +634,9 @@ class WKT extends TextFeature {
    */
   readFeatureFromText(text, opt_options) {
     const geom = this.readGeometryFromText(text, opt_options);
-    if (geom) {
-      const feature = new Feature();
-      feature.setGeometry(geom);
-      return feature;
-    }
-    return null;
+    const feature = new Feature();
+    feature.setGeometry(geom);
+    return feature;
   }
 
   /**
@@ -683,11 +673,7 @@ class WKT extends TextFeature {
    */
   readGeometryFromText(text, opt_options) {
     const geometry = this.parse_(text);
-    if (geometry) {
-      return transformGeometryWithOptions(geometry, false, opt_options);
-    } else {
-      return null;
-    }
+    return transformGeometryWithOptions(geometry, false, opt_options);
   }
 
   /**
@@ -855,7 +841,7 @@ const GeometryEncoder = {
 
 /**
  * Encode a geometry as WKT.
- * @param {!import("../geom/Geometry.js").default} geom The geometry to encode.
+ * @param {import("../geom/Geometry.js").default} geom The geometry to encode.
  * @return {string} WKT string for the geometry.
  */
 function encode(geom) {

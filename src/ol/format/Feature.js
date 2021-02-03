@@ -67,15 +67,15 @@ class FeatureFormat {
   constructor() {
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|undefined}
      */
-    this.dataProjection = null;
+    this.dataProjection = undefined;
 
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|undefined}
      */
-    this.defaultFeatureProjection = null;
+    this.defaultFeatureProjection = undefined;
   }
 
   /**
@@ -175,7 +175,7 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|undefined} Projection.
    */
   readProjection(source) {
     return abstract();
