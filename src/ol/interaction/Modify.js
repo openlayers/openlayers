@@ -81,12 +81,12 @@ const ModifyEventType = {
 
 /**
  * @typedef {Object} SegmentData
- * @property {Array<number>} [depth]
- * @property {Feature} feature
- * @property {import("../geom/SimpleGeometry.js").default} geometry
- * @property {number} [index]
- * @property {Array<import("../extent.js").Extent>} segment
- * @property {Array<SegmentData>} [featureSegments]
+ * @property {Array<number>} [depth] Depth.
+ * @property {Feature} feature Feature.
+ * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
+ * @property {number} [index] Index.
+ * @property {Array<import("../extent.js").Extent>} segment Segment.
+ * @property {Array<SegmentData>} [featureSegments] FeatureSegments.
  */
 
 /**

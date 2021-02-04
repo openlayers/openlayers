@@ -4,9 +4,9 @@
 
 /**
  * @typedef {Object} Item
- * @property {Item} [prev]
- * @property {Item} [next]
- * @property {?} data
+ * @property {Item} [prev] Previous.
+ * @property {Item} [next] Next.
+ * @property {?} data Data.
  */
 
 /**

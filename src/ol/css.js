@@ -4,13 +4,13 @@
 
 /**
  * @typedef {Object} FontParameters
- * @property {string} style
- * @property {string} variant
- * @property {string} weight
- * @property {string} size
- * @property {string} lineHeight
- * @property {string} family
- * @property {Array<string>} families
+ * @property {string} style Style.
+ * @property {string} variant Variant.
+ * @property {string} weight Weight.
+ * @property {string} size Size.
+ * @property {string} lineHeight LineHeight.
+ * @property {string} family Family.
+ * @property {Array<string>} families Families.
  */
 
 /**

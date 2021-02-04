@@ -26,11 +26,11 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {AttributionLike} [attributions]
+ * @property {AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {import("./State.js").default} [state='ready']
- * @property {boolean} [wrapX=false]
+ * @property {import("./State.js").default} [state='ready'] State.
+ * @property {boolean} [wrapX=false] WrapX.
  */
 
 /**

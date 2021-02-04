@@ -36,14 +36,14 @@ import {
 
 /**
  * @typedef {Object} RenderOptions
- * @property {import("../colorlike.js").ColorLike} [strokeStyle]
- * @property {number} strokeWidth
- * @property {number} size
- * @property {CanvasLineCap} lineCap
- * @property {Array<number>} lineDash
- * @property {number} lineDashOffset
- * @property {CanvasLineJoin} lineJoin
- * @property {number} miterLimit
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {number} strokeWidth StrokeWidth.
+ * @property {number} size Size.
+ * @property {CanvasLineCap} lineCap LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} lineDashOffset LineDashOffset.
+ * @property {CanvasLineJoin} lineJoin LineJoin.
+ * @property {number} miterLimit MiterLimit.
  */
 
 /**

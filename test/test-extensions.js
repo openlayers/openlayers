@@ -333,8 +333,8 @@
 
   /**
    * @typedef {Object} XMLEqlOptions
-   * @property {boolean} [includeWhiteSpace]
-   * @property {boolean} [ignoreElementOrder]
+   * @property {boolean} [includeWhiteSpace] IncludeWhiteSpace.
+   * @property {boolean} [ignoreElementOrder] IgnoreElementOrder.
    */
 
   /**

@@ -7,14 +7,14 @@ import {getUid} from './util.js';
 
 /**
  * @typedef {Object} ReplayState
- * @property {boolean} dirty
- * @property {null|import("./render.js").OrderFunction} renderedRenderOrder
- * @property {number} renderedTileRevision
- * @property {number} renderedResolution
- * @property {number} renderedRevision
- * @property {number} renderedZ
- * @property {number} renderedTileResolution
- * @property {number} renderedTileZ
+ * @property {boolean} dirty Dirty.
+ * @property {null|import("./render.js").OrderFunction} renderedRenderOrder RenderedRenderOrder.
+ * @property {number} renderedTileRevision RenderedTileRevision.
+ * @property {number} renderedResolution RenderedResolution.
+ * @property {number} renderedRevision RenderedRevision.
+ * @property {number} renderedZ RenderedZ.
+ * @property {number} renderedTileResolution RenderedTileResolution.
+ * @property {number} renderedTileZ RenderedTileZ.
  */
 
 /**

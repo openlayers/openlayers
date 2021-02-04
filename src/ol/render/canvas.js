@@ -11,60 +11,60 @@ import {toString} from '../transform.js';
 
 /**
  * @typedef {Object} FillState
- * @property {import("../colorlike.js").ColorLike} fillStyle
+ * @property {import("../colorlike.js").ColorLike} fillStyle FillStyle.
  */
 
 /**
  * @typedef Label
- * @property {number} width
- * @property {number} height
- * @property {Array<string|number>} contextInstructions
+ * @property {number} width Width.
+ * @property {number} height Height.
+ * @property {Array<string|number>} contextInstructions ContextInstructions.
  */
 
 /**
  * @typedef {Object} FillStrokeState
- * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
- * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
- * @property {CanvasLineCap} [currentLineCap]
- * @property {Array<number>} currentLineDash
- * @property {number} [currentLineDashOffset]
- * @property {CanvasLineJoin} [currentLineJoin]
- * @property {number} [currentLineWidth]
- * @property {number} [currentMiterLimit]
- * @property {number} [lastStroke]
- * @property {import("../colorlike.js").ColorLike} [fillStyle]
- * @property {import("../colorlike.js").ColorLike} [strokeStyle]
- * @property {CanvasLineCap} [lineCap]
- * @property {Array<number>} lineDash
- * @property {number} [lineDashOffset]
- * @property {CanvasLineJoin} [lineJoin]
- * @property {number} [lineWidth]
- * @property {number} [miterLimit]
+ * @property {import("../colorlike.js").ColorLike} [currentFillStyle] Current FillStyle.
+ * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle] Current StrokeStyle.
+ * @property {CanvasLineCap} [currentLineCap] Current LineCap.
+ * @property {Array<number>} currentLineDash Current LineDash.
+ * @property {number} [currentLineDashOffset] Current LineDashOffset.
+ * @property {CanvasLineJoin} [currentLineJoin] Current LineJoin.
+ * @property {number} [currentLineWidth] Current LineWidth.
+ * @property {number} [currentMiterLimit] Current MiterLimit.
+ * @property {number} [lastStroke] Last stroke.
+ * @property {import("../colorlike.js").ColorLike} [fillStyle] FillStyle.
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {CanvasLineCap} [lineCap] LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} [lineDashOffset] LineDashOffset.
+ * @property {CanvasLineJoin} [lineJoin] LineJoin.
+ * @property {number} [lineWidth] LineWidth.
+ * @property {number} [miterLimit] MiterLimit.
  */
 
 /**
  * @typedef {Object} StrokeState
- * @property {CanvasLineCap} lineCap
- * @property {Array<number>} lineDash
- * @property {number} lineDashOffset
- * @property {CanvasLineJoin} lineJoin
- * @property {number} lineWidth
- * @property {number} miterLimit
- * @property {import("../colorlike.js").ColorLike} strokeStyle
+ * @property {CanvasLineCap} lineCap LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} lineDashOffset LineDashOffset.
+ * @property {CanvasLineJoin} lineJoin LineJoin.
+ * @property {number} lineWidth LineWidth.
+ * @property {number} miterLimit MiterLimit.
+ * @property {import("../colorlike.js").ColorLike} strokeStyle StrokeStyle.
  */
 
 /**
  * @typedef {Object} TextState
- * @property {string} font
- * @property {string} [textAlign]
- * @property {string} textBaseline
- * @property {string} [placement]
- * @property {number} [maxAngle]
- * @property {boolean} [overflow]
- * @property {import("../style/Fill.js").default} [backgroundFill]
- * @property {import("../style/Stroke.js").default} [backgroundStroke]
- * @property {import("../size.js").Size} [scale]
- * @property {Array<number>} [padding]
+ * @property {string} font Font.
+ * @property {string} [textAlign] TextAlign.
+ * @property {string} textBaseline TextBaseline.
+ * @property {string} [placement] Placement.
+ * @property {number} [maxAngle] MaxAngle.
+ * @property {boolean} [overflow] Overflow.
+ * @property {import("../style/Fill.js").default} [backgroundFill] BackgroundFill.
+ * @property {import("../style/Stroke.js").default} [backgroundStroke] BackgroundStroke.
+ * @property {import("../size.js").Size} [scale] Scale.
+ * @property {Array<number>} [padding] Padding.
  */
 
 /**

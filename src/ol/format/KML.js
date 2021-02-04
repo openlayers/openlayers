@@ -56,17 +56,17 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} Vec2
- * @property {number} x
- * @property {import("../style/IconAnchorUnits").default} xunits
- * @property {number} y
- * @property {import("../style/IconAnchorUnits").default} yunits
- * @property {import("../style/IconOrigin.js").default} origin
+ * @property {number} x X coordinate.
+ * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
+ * @property {number} y Y coordinate.
+ * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
+ * @property {import("../style/IconOrigin.js").default} origin Origin.
  */
 
 /**
  * @typedef {Object} GxTrackObject
- * @property {Array<number>} flatCoordinates
- * @property {Array<number>} whens
+ * @property {Array<number>} flatCoordinates Flat coordinates.
+ * @property {Array<number>} whens Whens.
  */
 
 /**

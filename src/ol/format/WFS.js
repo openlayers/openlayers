@@ -178,17 +178,17 @@ const TRANSACTION_SERIALIZERS = {
 /**
  * Number of features; bounds/extent.
  * @typedef {Object} FeatureCollectionMetadata
- * @property {number} numberOfFeatures
- * @property {import("../extent.js").Extent} bounds
+ * @property {number} numberOfFeatures NumberOfFeatures.
+ * @property {import("../extent.js").Extent} bounds Bounds.
  */
 
 /**
  * Total deleted; total inserted; total updated; array of insert ids.
  * @typedef {Object} TransactionResponse
- * @property {number} totalDeleted
- * @property {number} totalInserted
- * @property {number} totalUpdated
- * @property {Array<string>} insertIds
+ * @property {number} totalDeleted TotalDeleted.
+ * @property {number} totalInserted TotalInserted.
+ * @property {number} totalUpdated TotalUpdated.
+ * @property {Array<string>} insertIds InsertIds.
  */
 
 /**

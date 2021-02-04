@@ -6,11 +6,11 @@ import {toSize} from '../size.js';
 
 /**
  * @typedef {Object} Options
- * @property {number} opacity
- * @property {boolean} rotateWithView
- * @property {number} rotation
- * @property {number|import("../size.js").Size} scale
- * @property {Array<number>} displacement
+ * @property {number} opacity Opacity.
+ * @property {boolean} rotateWithView If the image should get rotated with the view.
+ * @property {number} rotation Rotation.
+ * @property {number|import("../size.js").Size} scale Scale.
+ * @property {Array<number>} displacement Displacement.
  */
 
 /**

@@ -6,10 +6,10 @@ import {assert} from '../asserts.js';
 
 /**
  * @typedef {Object} Entry
- * @property {string} key_
- * @property {Object} newer
- * @property {Object} older
- * @property {*} value_
+ * @property {string} key_ Key.
+ * @property {Object} newer Newer.
+ * @property {Object} older Older.
+ * @property {*} value_ Value.
  */
 
 /**

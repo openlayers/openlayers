@@ -8,11 +8,11 @@ import {isEmpty} from '../obj.js';
 
 /**
  * @typedef {Object} Entry
- * @property {number} minX
- * @property {number} minY
- * @property {number} maxX
- * @property {number} maxY
- * @property {Object} [value]
+ * @property {number} minX MinX.
+ * @property {number} minY MinY.
+ * @property {number} maxX MaxX.
+ * @property {number} maxY MaxY.
+ * @property {Object} [value] Value.
  */
 
 /**
