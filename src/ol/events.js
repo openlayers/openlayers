@@ -6,9 +6,9 @@ import {clear} from './obj.js';
 /**
  * Key to use with {@link module:ol/Observable~Observable#unByKey}.
  * @typedef {Object} EventsKey
- * @property {ListenerFunction} listener
- * @property {import("./events/Target.js").EventTargetLike} target
- * @property {string} type
+ * @property {ListenerFunction} listener Listener.
+ * @property {import("./events/Target.js").EventTargetLike} target Target.
+ * @property {string} type Type.
  * @api
  */
 
@@ -22,7 +22,7 @@ import {clear} from './obj.js';
 
 /**
  * @typedef {Object} ListenerObject
- * @property {ListenerFunction} handleEvent
+ * @property {ListenerFunction} handleEvent HandleEvent listener function.
  */
 
 /**

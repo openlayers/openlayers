@@ -44,17 +44,17 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./Layer.js").default} layer
+ * @property {import("./Layer.js").default} layer Layer.
  * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
- * @property {import("../source/State.js").default} sourceState
- * @property {boolean} visible
- * @property {boolean} managed
- * @property {import("../extent.js").Extent} [extent]
- * @property {number} zIndex
- * @property {number} maxResolution
- * @property {number} minResolution
- * @property {number} minZoom
- * @property {number} maxZoom
+ * @property {import("../source/State.js").default} sourceState SourceState.
+ * @property {boolean} visible Visible.
+ * @property {boolean} managed Managed.
+ * @property {import("../extent.js").Extent} [extent] Extent.
+ * @property {number} zIndex ZIndex.
+ * @property {number} maxResolution Maximum resolution.
+ * @property {number} minResolution Minimum resolution.
+ * @property {number} minZoom Minimum zoom.
+ * @property {number} maxZoom Maximum zoom.
  */
 
 /**

@@ -104,7 +104,7 @@ export class CustomTile extends ImageTile {
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
- * @property {import("../size.js").Size} size
+ * @property {import("../size.js").Size} size Size.
  * @property {import("../extent.js").Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
  * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the

@@ -48,20 +48,20 @@ import {removeNode} from './dom.js';
  * @property {number} pixelRatio The pixel ratio of the frame.
  * @property {number} time The time when rendering of the frame was requested.
  * @property {import("./View.js").State} viewState The state of the current view.
- * @property {boolean} animate
- * @property {import("./transform.js").Transform} coordinateToPixelTransform
- * @property {import("rbush").default} declutterTree
- * @property {null|import("./extent.js").Extent} extent
- * @property {number} index
- * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
- * @property {number} layerIndex
- * @property {import("./transform.js").Transform} pixelToCoordinateTransform
- * @property {Array<PostRenderFunction>} postRenderFunctions
- * @property {import("./size.js").Size} size
- * @property {TileQueue} tileQueue
- * @property {!Object<string, Object<string, boolean>>} usedTiles
- * @property {Array<number>} viewHints
- * @property {!Object<string, Object<string, boolean>>} wantedTiles
+ * @property {boolean} animate Animate.
+ * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
+ * @property {import("rbush").default} declutterTree DeclutterTree.
+ * @property {null|import("./extent.js").Extent} extent Extent.
+ * @property {number} index Index.
+ * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
+ * @property {number} layerIndex LayerIndex.
+ * @property {import("./transform.js").Transform} pixelToCoordinateTransform PixelToCoordinateTransform.
+ * @property {Array<PostRenderFunction>} postRenderFunctions PostRenderFunctions.
+ * @property {import("./size.js").Size} size Size.
+ * @property {TileQueue} tileQueue TileQueue.
+ * @property {!Object<string, Object<string, boolean>>} usedTiles UsedTiles.
+ * @property {Array<number>} viewHints ViewHints.
+ * @property {!Object<string, Object<string, boolean>>} wantedTiles WantedTiles.
  */
 
 /**
@@ -83,11 +83,11 @@ import {removeNode} from './dom.js';
 
 /**
  * @typedef {Object} MapOptionsInternal
- * @property {Collection<import("./control/Control.js").default>} [controls]
- * @property {Collection<import("./interaction/Interaction.js").default>} [interactions]
- * @property {HTMLElement|Document} keyboardEventTarget
- * @property {Collection<import("./Overlay.js").default>} overlays
- * @property {Object<string, *>} values
+ * @property {Collection<import("./control/Control.js").default>} [controls] Controls.
+ * @property {Collection<import("./interaction/Interaction.js").default>} [interactions] Interactions.
+ * @property {HTMLElement|Document} keyboardEventTarget KeyboardEventTarget.
+ * @property {Collection<import("./Overlay.js").default>} overlays Overlays.
+ * @property {Object<string, *>} values Values.
  */
 
 /**

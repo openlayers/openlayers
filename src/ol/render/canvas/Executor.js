@@ -29,24 +29,24 @@ import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @typedef {Object} BBox
- * @property {number} minX
- * @property {number} minY
- * @property {number} maxX
- * @property {number} maxY
- * @property {*} value
+ * @property {number} minX Minimal x.
+ * @property {number} minY Minimal y.
+ * @property {number} maxX Maximal x.
+ * @property {number} maxY Maximal y
+ * @property {*} value Value.
  */
 
 /**
  * @typedef {Object} ImageOrLabelDimensions
- * @property {number} drawImageX
- * @property {number} drawImageY
- * @property {number} drawImageW
- * @property {number} drawImageH
- * @property {number} originX
- * @property {number} originY
- * @property {Array<number>} scale
- * @property {BBox} declutterBox
- * @property {import("../../transform.js").Transform} canvasTransform
+ * @property {number} drawImageX DrawImageX.
+ * @property {number} drawImageY DrawImageY.
+ * @property {number} drawImageW DrawImageW.
+ * @property {number} drawImageH DrawImageH.
+ * @property {number} originX OriginX.
+ * @property {number} originY OriginY.
+ * @property {Array<number>} scale Scale.
+ * @property {BBox} declutterBox DeclutterBox.
+ * @property {import("../../transform.js").Transform} canvasTransform CanvasTransform.
  */
 
 /**

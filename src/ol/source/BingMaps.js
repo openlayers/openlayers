@@ -78,7 +78,7 @@ const TOS_ATTRIBUTION =
 
 /**
  * @typedef {Object} ResourceSet
- * @property {Array<Resource>} resources
+ * @property {Array<Resource>} resources Resources.
  */
 
 /**

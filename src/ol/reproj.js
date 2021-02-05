@@ -180,8 +180,8 @@ export function calculateSourceExtentResolution(
 
 /**
  * @typedef {Object} ImageExtent
- * @property {import("./extent.js").Extent} extent
- * @property {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image
+ * @property {import("./extent.js").Extent} extent Extent.
+ * @property {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
  */
 
 /**

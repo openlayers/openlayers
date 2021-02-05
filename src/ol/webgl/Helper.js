@@ -27,8 +27,8 @@ import {includes} from '../array.js';
 
 /**
  * @typedef {Object} BufferCacheEntry
- * @property {import("./Buffer.js").default} buffer
- * @property {WebGLBuffer} webGlBuffer
+ * @property {import("./Buffer.js").default} buffer Buffer.
+ * @property {WebGLBuffer} webGlBuffer WebGlBuffer.
  */
 
 /**

@@ -54,25 +54,25 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * An animation configuration
  *
  * @typedef {Object} Animation
- * @property {import("./coordinate.js").Coordinate} [sourceCenter]
- * @property {import("./coordinate.js").Coordinate} [targetCenter]
- * @property {number} [sourceResolution]
- * @property {number} [targetResolution]
- * @property {number} [sourceRotation]
- * @property {number} [targetRotation]
- * @property {import("./coordinate.js").Coordinate} [anchor]
- * @property {number} start
- * @property {number} duration
- * @property {boolean} complete
- * @property {function(number):number} easing
- * @property {function(boolean):void} callback
+ * @property {import("./coordinate.js").Coordinate} [sourceCenter] Source center.
+ * @property {import("./coordinate.js").Coordinate} [targetCenter] Target center.
+ * @property {number} [sourceResolution] Source resolution.
+ * @property {number} [targetResolution] Target resolution.
+ * @property {number} [sourceRotation] Source rotation.
+ * @property {number} [targetRotation] Target rotation.
+ * @property {import("./coordinate.js").Coordinate} [anchor] Anchor.
+ * @property {number} start Start.
+ * @property {number} duration Duration.
+ * @property {boolean} complete Complete.
+ * @property {function(number):number} easing Easing.
+ * @property {function(boolean):void} callback Callback.
  */
 
 /**
  * @typedef {Object} Constraints
- * @property {import("./centerconstraint.js").Type} center
- * @property {import("./resolutionconstraint.js").Type} resolution
- * @property {import("./rotationconstraint.js").Type} rotation
+ * @property {import("./centerconstraint.js").Type} center Center.
+ * @property {import("./resolutionconstraint.js").Type} resolution Resolution.
+ * @property {import("./rotationconstraint.js").Type} rotation Rotation.
  */
 
 /**
@@ -203,11 +203,11 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./coordinate.js").Coordinate} center
- * @property {import("./proj/Projection.js").default} projection
- * @property {number} resolution
- * @property {number} rotation
- * @property {number} zoom
+ * @property {import("./coordinate.js").Coordinate} center Center.
+ * @property {import("./proj/Projection.js").default} projection Projection.
+ * @property {number} resolution Resolution.
+ * @property {number} rotation Rotation.
+ * @property {number} zoom Zoom.
  */
 
 /**

@@ -109,8 +109,8 @@ const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @typedef {Object} LayoutOptions
- * @property {boolean} [hasZ]
- * @property {boolean} [hasM]
+ * @property {boolean} [hasZ] HasZ.
+ * @property {boolean} [hasM] HasM.
  */
 
 /**

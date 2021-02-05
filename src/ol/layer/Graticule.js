@@ -72,8 +72,8 @@ const INTERVALS = [
 
 /**
  * @typedef {Object} GraticuleLabelDataType
- * @property {Point} geom
- * @property {string} text
+ * @property {Point} geom Geometry.
+ * @property {string} text Text.
  */
 
 /**

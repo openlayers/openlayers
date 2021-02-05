@@ -12,11 +12,11 @@ import {wrapX} from '../coordinate.js';
 
 /**
  * @typedef HitMatch
- * @property {import("../Feature.js").FeatureLike} feature
- * @property {import("../layer/Layer.js").default} layer
- * @property {import("../geom/SimpleGeometry.js").default} geometry
- * @property {number} distanceSq
- * @property {import("./vector.js").FeatureCallback<T>} callback
+ * @property {import("../Feature.js").FeatureLike} feature Feature.
+ * @property {import("../layer/Layer.js").default} layer Layer.
+ * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
+ * @property {number} distanceSq Squared distance.
+ * @property {import("./vector.js").FeatureCallback<T>} callback Callback.
  * @template T
  */
 

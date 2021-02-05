@@ -62,11 +62,11 @@ export class ImageSourceEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [imageSmoothing=true] Enable image smoothing.
- * @property {import("../proj.js").ProjectionLike} [projection]
- * @property {Array<number>} [resolutions]
- * @property {import("./State.js").default} [state]
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {Array<number>} [resolutions] Resolutions.
+ * @property {import("./State.js").default} [state] State.
  */
 
 /**

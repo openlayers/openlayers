@@ -28,15 +28,15 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Result
- * @property {boolean} snapped
- * @property {import("../coordinate.js").Coordinate|null} vertex
- * @property {import("../pixel.js").Pixel|null} vertexPixel
+ * @property {boolean} snapped Snapped.
+ * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
+ * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
  */
 
 /**
  * @typedef {Object} SegmentData
- * @property {import("../Feature.js").default} feature
- * @property {Array<import("../coordinate.js").Coordinate>} segment
+ * @property {import("../Feature.js").default} feature Feature.
+ * @property {Array<import("../coordinate.js").Coordinate>} segment Segment.
  */
 
 /**

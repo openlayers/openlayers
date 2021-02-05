@@ -35,9 +35,9 @@ const GeometryConstructor = {
 
 /**
  * @typedef {Object} Token
- * @property {number} type
- * @property {number|string} [value]
- * @property {number} position
+ * @property {number} type Type.
+ * @property {number|string} [value] Value.
+ * @property {number} position Position.
  */
 
 /**
