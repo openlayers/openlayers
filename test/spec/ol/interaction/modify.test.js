@@ -1045,9 +1045,8 @@ describe('ol.interaction.Modify', function () {
       );
     });
 
-    it('snaps to pointer when snapToPointer is true', function () {
+    it('snaps to pointer by default', function () {
       const modify = new Modify({
-        snapToPointer: true,
         source: source,
       });
       map.addInteraction(modify);
@@ -1061,9 +1060,10 @@ describe('ol.interaction.Modify', function () {
       expect(pointFeature.getGeometry().getCoordinates()).to.eql([2, -2]);
     });
 
-    it('does not snap to pointer by default', function () {
+    it('does not snap to pointer when snapToPointer is false', function () {
       const modify = new Modify({
         source: source,
+        snapToPointer: false,
       });
       map.addInteraction(modify);
       source.clear();
