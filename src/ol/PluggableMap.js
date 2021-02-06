@@ -1500,18 +1500,25 @@ class PluggableMap extends BaseObject {
       this.setSize(undefined);
     } else {
       const computedStyle = getComputedStyle(targetElement);
-      this.setSize([
+      const width =
         targetElement.offsetWidth -
-          parseFloat(computedStyle['borderLeftWidth']) -
-          parseFloat(computedStyle['paddingLeft']) -
-          parseFloat(computedStyle['paddingRight']) -
-          parseFloat(computedStyle['borderRightWidth']),
+        parseFloat(computedStyle['borderLeftWidth']) -
+        parseFloat(computedStyle['paddingLeft']) -
+        parseFloat(computedStyle['paddingRight']) -
+        parseFloat(computedStyle['borderRightWidth']);
+      const height =
         targetElement.offsetHeight -
-          parseFloat(computedStyle['borderTopWidth']) -
-          parseFloat(computedStyle['paddingTop']) -
-          parseFloat(computedStyle['paddingBottom']) -
-          parseFloat(computedStyle['borderBottomWidth']),
-      ]);
+        parseFloat(computedStyle['borderTopWidth']) -
+        parseFloat(computedStyle['paddingTop']) -
+        parseFloat(computedStyle['paddingBottom']) -
+        parseFloat(computedStyle['borderBottomWidth']);
+      if (height === 0 || width === 0) {
+        // eslint-disable-next-line
+        console.warn(
+          "No map visible because the map container's width or height are 0."
+        );
+      }
+      this.setSize([width, height]);
     }
 
     this.updateViewportSize_();
