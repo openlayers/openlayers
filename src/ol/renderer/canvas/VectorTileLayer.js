@@ -604,7 +604,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
-    this.getLayer().getOpacity();
+    const context = this.context;
+    const alpha = context.globalAlpha;
+    context.globalAlpha = this.getLayer().getOpacity();
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
@@ -629,6 +631,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
     }
+    context.globalAlpha = alpha;
   }
 
   getTileRenderTransform(tile, frameState) {
