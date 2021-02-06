@@ -604,6 +604,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
+    const context = this.context;
+    const alpha = context.globalAlpha;
+    context.globalAlpha = this.getLayer().getOpacity();
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
@@ -628,6 +631,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
     }
+    context.globalAlpha = alpha;
   }
 
   getTileRenderTransform(tile, frameState) {
@@ -696,6 +700,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
 
     const context = this.context;
+    const alpha = context.globalAlpha;
+    context.globalAlpha = layer.getOpacity();
     const replayTypes = VECTOR_REPLAYS[renderMode];
     const viewState = frameState.viewState;
     const rotation = viewState.rotation;
@@ -760,6 +766,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
     }
+    context.globalAlpha = alpha;
 
     return this.container;
   }
