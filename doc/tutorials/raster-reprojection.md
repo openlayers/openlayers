@@ -27,7 +27,7 @@ var map = new Map({
     new TileLayer({
       source: new TileWMS({
         projection: 'EPSG:4326', //HERE IS THE DATA SOURCE PROJECTION
-        url: 'http://demo.boundlessgeo.com/geoserver/wms',
+        url: 'https://ahocevar.com/geoserver/wms',
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
         }

@@ -160,7 +160,7 @@ describe('ol.structs.RBush', function () {
 
       it('can remove objects in random order', function () {
         let i, ii, j;
-        // http://en.wikipedia.org/wiki/Random_permutation
+        // https://en.wikipedia.org/wiki/Random_permutation
         const indexes = [];
         for (i = 0, ii = objs.length; i < ii; ++i) {
           j = Math.floor(Math.random() * (i + 1));

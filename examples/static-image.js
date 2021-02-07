@@ -19,7 +19,7 @@ const map = new Map({
   layers: [
     new ImageLayer({
       source: new Static({
-        attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
+        attributions: '© <a href="https://xkcd.com/license.html">xkcd</a>',
         url: 'https://imgs.xkcd.com/comics/online_communities.png',
         projection: projection,
         imageExtent: extent,

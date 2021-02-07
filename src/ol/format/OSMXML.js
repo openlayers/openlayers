@@ -43,7 +43,7 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
 /**
  * @classdesc
  * Feature format for reading data in the
- * [OSMXML format](http://wiki.openstreetmap.org/wiki/OSM_XML).
+ * [OSMXML format](https://wiki.openstreetmap.org/wiki/OSM_XML).
  *
  * @api
  */

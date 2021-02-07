@@ -25,7 +25,7 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
  * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
- * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
+ * {@link https://developers.arcgis.com/rest/services-reference/export-map.htm}
  * for further reference.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,

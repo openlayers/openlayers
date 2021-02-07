@@ -61,7 +61,7 @@ const FullScreenEventType = {
  * element introduced using this parameter will be displayed in full screen.
  *
  * When in full screen mode, a close button is shown to exit full screen mode.
- * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
+ * The [Fullscreen API](https://www.w3.org/TR/fullscreen/) is used to
  * toggle the map in full screen mode.
  *
  * @fires FullScreenEventType#enterfullscreen

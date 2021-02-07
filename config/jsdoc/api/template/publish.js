@@ -322,7 +322,7 @@ function buildNav(members) {
 }
 
 /**
- * @param {Object} taffyData See <http://taffydb.com/>.
+ * @param {Object} taffyData See {@link https://taffydb.com/}.
  * @param {Object} opts Options.
  * @param {Object} tutorials Tutorials.
  */

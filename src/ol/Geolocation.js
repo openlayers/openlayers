@@ -56,7 +56,7 @@ class GeolocationError extends BaseEvent {
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
  * @property {PositionOptions} [trackingOptions] Tracking options.
- * See http://www.w3.org/TR/geolocation-API/#position_options_interface.
+ * See https://www.w3.org/TR/geolocation-API/#position_options_interface.
  * @property {import("./proj.js").ProjectionLike} [projection] The projection the position
  * is reported in.
  */
@@ -64,7 +64,7 @@ class GeolocationError extends BaseEvent {
 /**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
- * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
+ * The [Geolocation API](https://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
  *
  * To get notified of position changes, register a listener for the generic
@@ -324,10 +324,10 @@ class Geolocation extends BaseObject {
 
   /**
    * Get the tracking options.
-   * See http://www.w3.org/TR/geolocation-API/#position-options.
+   * See https://www.w3.org/TR/geolocation-API/#position-options.
    * @return {PositionOptions|undefined} PositionOptions as defined by
    *     the [HTML5 Geolocation spec
-   *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
+   *     ](https://www.w3.org/TR/geolocation-API/#position_options_interface).
    * @observable
    * @api
    */

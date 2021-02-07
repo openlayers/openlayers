@@ -23,7 +23,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`,
  * and `IMAGESR` will be set dynamically. Set `LAYERS` to
  * override the default service layer visibility. See
- * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
+ * https://developers.arcgis.com/rest/services-reference/export-map.htm
  * for further reference.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
