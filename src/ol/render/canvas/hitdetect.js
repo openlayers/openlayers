@@ -6,6 +6,7 @@ import CanvasImmediateRenderer from './Immediate.js';
 import GeometryType from '../../geom/GeometryType.js';
 import IconAnchorUnits from '../../style/IconAnchorUnits.js';
 import {Icon} from '../../style.js';
+import {clamp} from '../../math.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
@@ -162,8 +163,13 @@ export function createHitDetectionImageData(
 export function hitDetect(pixel, features, imageData) {
   const resultFeatures = [];
   if (imageData) {
+    // The pixel coordinate is clamped down to the hit-detect canvas' size to account
+    // for browsers returning coordinates slightly larger than the actual canvas size
+    // due to a non-integer pixel ratio.
     const index =
-      (Math.round(pixel[0] / 2) + Math.round(pixel[1] / 2) * imageData.width) *
+      (clamp(Math.floor(Math.round(pixel[0]) / 2), 0, imageData.width - 1) +
+        clamp(Math.floor(Math.round(pixel[1]) / 2), 0, imageData.height - 1) *
+          imageData.width) *
       4;
     const r = imageData.data[index];
     const g = imageData.data[index + 1];
