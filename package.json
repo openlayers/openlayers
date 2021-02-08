@@ -83,7 +83,7 @@
     "karma-firefox-launcher": "^2.0.0",
     "karma-mocha": "2.0.1",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^4.0.0-rc.2",
+    "karma-webpack": "^5.0.0-alpha.4",
     "loglevelnext": "^4.0.1",
     "marked": "2.0.0",
     "mocha": "8.2.1",
