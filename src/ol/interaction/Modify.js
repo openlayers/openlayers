@@ -427,9 +427,12 @@ class Modify extends PointerInteraction {
       this.featuresBeingModified_ = new Collection();
       const features = this.featuresBeingModified_.getArray();
       for (let i = 0, ii = segments.length; i < ii; ++i) {
-        const feature = segments[i][0].feature;
-        if (features.indexOf(feature) === -1) {
-          this.featuresBeingModified_.push(feature);
+        const segment = segments[i];
+        for (let s = 0, ss = segment.length; s < ss; ++s) {
+          const feature = segment[s].feature;
+          if (feature && features.indexOf(feature) === -1) {
+            this.featuresBeingModified_.push(feature);
+          }
         }
       }
 
