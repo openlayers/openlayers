@@ -248,6 +248,8 @@ function createMeasureTooltip() {
     element: measureTooltipElement,
     offset: [0, -15],
     positioning: 'bottom-center',
+    stopEvent: false,
+    insertFirst: false,
   });
   map.addOverlay(measureTooltip);
 }
