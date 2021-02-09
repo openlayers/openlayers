@@ -4,7 +4,7 @@
 
 #### Deprecation of `image` render mode for vector tile layers
 
-`renderMode: 'image'` for vector tile layers has been deprecated. Appliacations continue to work, but a warning will be issued to the console. To get rid of the warning, simply remove the `renderMode` option.
+`renderMode: 'image'` for vector tile layers has been deprecated. Applications continue to work, but a warning will be issued to the console. To get rid of the warning, simply remove the `renderMode` option.
 
 ### v6.5.0
 
