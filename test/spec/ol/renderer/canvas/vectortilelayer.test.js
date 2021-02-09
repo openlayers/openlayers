@@ -117,23 +117,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
       expect(renderer.getLayer()).to.be(layer);
     });
 
-    it('does not render replays for pure image rendering', function () {
-      const testLayer = new VectorTileLayer({
-        renderMode: VectorTileRenderType.IMAGE,
-        source: source,
-        style: layerStyle,
-      });
-      map.removeLayer(layer);
-      map.addLayer(testLayer);
-      const spy = sinon.spy(
-        CanvasVectorTileLayerRenderer.prototype,
-        'getRenderTransform'
-      );
-      map.renderSync();
-      expect(spy.callCount).to.be(0);
-      spy.restore();
-    });
-
     it('does not render images for pure vector rendering', function () {
       const testLayer = new VectorTileLayer({
         renderMode: VectorTileRenderType.VECTOR,

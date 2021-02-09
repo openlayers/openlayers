@@ -60,7 +60,6 @@ const IMAGE_REPLAYS = {
  * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
  */
 const VECTOR_REPLAYS = {
-  'image': [ReplayType.DEFAULT],
   'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
   'vector': [
     ReplayType.POLYGON,
@@ -686,9 +685,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
-    if (renderMode === VectorTileRenderType.IMAGE) {
-      return this.container;
-    }
 
     const source = layer.getSource();
     // Unqueue tiles from the image queue when we don't need any more
