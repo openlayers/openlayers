@@ -114,7 +114,7 @@ export function createHitDetectionImageData(
           })
         );
       }
-      const zIndex = Number(style.getZIndex());
+      const zIndex = style.getZIndex() || 0;
       let byGeometryType = featuresByZIndex[zIndex];
       if (!byGeometryType) {
         byGeometryType = {};
