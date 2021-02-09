@@ -66,6 +66,7 @@ const TOS_ATTRIBUTION =
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {string} url customized url for bing map to avoid key pass around
  */
 
 /**
@@ -161,13 +162,13 @@ class BingMaps extends TileImage {
      */
     this.imagerySet_ = options.imagerySet;
 
-    const url =
-      'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+    const url = options.url ? options.url : 
+      ('https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       this.imagerySet_ +
       '?uriScheme=https&include=ImageryProviders&key=' +
       this.apiKey_ +
       '&c=' +
-      this.culture_;
+      this.culture_);
 
     requestJSONP(
       url,
