@@ -107,7 +107,7 @@ class TextFeature extends FeatureFormat {
    * Read the projection from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|undefined} Projection.
    * @api
    */
   readProjection(source) {
@@ -117,7 +117,7 @@ class TextFeature extends FeatureFormat {
   /**
    * @param {string} text Text.
    * @protected
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|undefined} Projection.
    */
   readProjectionFromText(text) {
     return this.dataProjection;
