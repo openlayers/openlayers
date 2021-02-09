@@ -162,13 +162,14 @@ class BingMaps extends TileImage {
      */
     this.imagerySet_ = options.imagerySet;
 
-    const url = options.url ? options.url : 
-      ('https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-      this.imagerySet_ +
-      '?uriScheme=https&include=ImageryProviders&key=' +
-      this.apiKey_ +
-      '&c=' +
-      this.culture_);
+    const url = options.url
+      ? options.url
+      : "https://dev.virtualearth.net/REST/v1/Imagery/Metadata/" +
+        this.imagerySet_ +
+        "?uriScheme=https&include=ImageryProviders&key=" +
+        this.apiKey_ +
+        "&c=" +
+        this.culture_;
 
     requestJSONP(
       url,
