@@ -81,7 +81,7 @@ export function createHitDetectionImageData(
       }
       style.setText(undefined);
       const image = originalStyle.getImage();
-      if (image) {
+      if (image && image.getOpacity() !== 0) {
         const imgSize = image.getImageSize();
         if (!imgSize) {
           continue;
@@ -106,8 +106,8 @@ export function createHitDetectionImageData(
             anchorXUnits: IconAnchorUnits.PIXELS,
             anchorYUnits: IconAnchorUnits.PIXELS,
             offset: image.getOrigin(),
+            opacity: 1,
             size: image.getSize(),
-            opacity: image.getOpacity(),
             scale: image.getScale(),
             rotation: image.getRotation(),
             rotateWithView: image.getRotateWithView(),
