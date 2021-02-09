@@ -87,17 +87,12 @@ export function createHitDetectionImageData(
           continue;
         }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = imgSize[0];
-        canvas.height = imgSize[1];
-        const imgContext = canvas.getContext('2d', {alpha: false});
+        const img = document.createElement('canvas');
+        img.width = imgSize[0];
+        img.height = imgSize[1];
+        const imgContext = img.getContext('2d', {alpha: false});
         imgContext.fillStyle = color;
-        const img = imgContext.canvas;
         imgContext.fillRect(0, 0, img.width, img.height);
-        const width = imgSize ? imgSize[0] : img.width;
-        const height = imgSize ? imgSize[1] : img.height;
-        const iconContext = createCanvasContext2D(width, height);
-        iconContext.drawImage(img, 0, 0);
         style.setImage(
           new Icon({
             img: img,
