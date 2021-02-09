@@ -11,6 +11,8 @@ import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
 
+export const HIT_DETECT_RESOLUTION = 0.5;
+
 /**
  * @param {import("../../size.js").Size} size Canvas size in css pixels.
  * @param {Array<import("../../transform.js").Transform>} transforms Transforms
@@ -34,14 +36,14 @@ export function createHitDetectionImageData(
   resolution,
   rotation
 ) {
-  const width = size[0] / 2;
-  const height = size[1] / 2;
+  const width = size[0] * HIT_DETECT_RESOLUTION;
+  const height = size[1] * HIT_DETECT_RESOLUTION;
   const context = createCanvasContext2D(width, height);
   context.imageSmoothingEnabled = false;
   const canvas = context.canvas;
   const renderer = new CanvasImmediateRenderer(
     context,
-    0.5,
+    HIT_DETECT_RESOLUTION,
     extent,
     null,
     rotation
@@ -163,13 +165,14 @@ export function createHitDetectionImageData(
 export function hitDetect(pixel, features, imageData) {
   const resultFeatures = [];
   if (imageData) {
+    const x = Math.floor(Math.round(pixel[0]) * HIT_DETECT_RESOLUTION);
+    const y = Math.floor(Math.round(pixel[1]) * HIT_DETECT_RESOLUTION);
     // The pixel coordinate is clamped down to the hit-detect canvas' size to account
     // for browsers returning coordinates slightly larger than the actual canvas size
     // due to a non-integer pixel ratio.
     const index =
-      (clamp(Math.floor(Math.round(pixel[0]) / 2), 0, imageData.width - 1) +
-        clamp(Math.floor(Math.round(pixel[1]) / 2), 0, imageData.height - 1) *
-          imageData.width) *
+      (clamp(x, 0, imageData.width - 1) +
+        clamp(y, 0, imageData.height - 1) * imageData.width) *
       4;
     const r = imageData.data[index];
     const g = imageData.data[index + 1];

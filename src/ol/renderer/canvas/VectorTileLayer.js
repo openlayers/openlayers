@@ -10,6 +10,11 @@ import TileState from '../../TileState.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ViewHint from '../../ViewHint.js';
 import {
+  HIT_DETECT_RESOLUTION,
+  createHitDetectionImageData,
+  hitDetect,
+} from '../../render/canvas/hitdetect.js';
+import {
   apply as applyTransform,
   create as createTransform,
   multiply,
@@ -28,10 +33,6 @@ import {
   intersects,
 } from '../../extent.js';
 import {clear} from '../../obj.js';
-import {
-  createHitDetectionImageData,
-  hitDetect,
-} from '../../render/canvas/hitdetect.js';
 import {
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
@@ -549,16 +550,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           const tileSize = toSize(
             tileGrid.getTileSize(tileGrid.getZForResolution(resolution))
           );
-          const size = [tileSize[0] / 2, tileSize[1] / 2];
           const rotation = this.renderedRotation_;
           const transforms = [
             this.getRenderTransform(
               tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
               resolution,
               0,
-              0.5,
-              size[0],
-              size[1],
+              HIT_DETECT_RESOLUTION,
+              tileSize[0] * HIT_DETECT_RESOLUTION,
+              tileSize[1] * HIT_DETECT_RESOLUTION,
               0
             ),
           ];

@@ -6,6 +6,11 @@ import CanvasLayerRenderer from './Layer.js';
 import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import ViewHint from '../../ViewHint.js';
 import {
+  HIT_DETECT_RESOLUTION,
+  createHitDetectionImageData,
+  hitDetect,
+} from '../../render/canvas/hitdetect.js';
+import {
   apply,
   makeInverse,
   makeScale,
@@ -19,10 +24,6 @@ import {
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
 } from '../../extent.js';
-import {
-  createHitDetectionImageData,
-  hitDetect,
-} from '../../render/canvas/hitdetect.js';
 import {
   defaultOrder as defaultRenderOrder,
   getTolerance as getRenderTolerance,
@@ -325,14 +326,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           const extent = this.renderedExtent_;
           const layer = this.getLayer();
           const transforms = [];
-          const width = size[0] / 2;
-          const height = size[1] / 2;
+          const width = size[0] * HIT_DETECT_RESOLUTION;
+          const height = size[1] * HIT_DETECT_RESOLUTION;
           transforms.push(
             this.getRenderTransform(
               center,
               resolution,
               rotation,
-              0.5,
+              HIT_DETECT_RESOLUTION,
               width,
               height,
               0
@@ -357,7 +358,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
                   center,
                   resolution,
                   rotation,
-                  0.5,
+                  HIT_DETECT_RESOLUTION,
                   width,
                   height,
                   offsetX
@@ -375,7 +376,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
                   center,
                   resolution,
                   rotation,
-                  0.5,
+                  HIT_DETECT_RESOLUTION,
                   width,
                   height,
                   offsetX
