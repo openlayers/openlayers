@@ -142,7 +142,7 @@ describe('ol.interaction.Modify', function () {
     const startevent = events[0];
     const endevent = events[events.length - 1];
 
-    // first event should be modifystary
+    // first event should be modifystart
     expect(startevent).to.be.a(ModifyEvent);
     expect(startevent.type).to.eql('modifystart');
 
@@ -463,15 +463,23 @@ describe('ol.interaction.Modify', function () {
       const modify = new Modify({
         features: new Collection(features),
       });
+      let modifiedFeatures;
+
+      const onModifyStart = function (evt) {
+        modifiedFeatures = evt.features;
+      };
       map.addInteraction(modify);
 
+      modify.on('modifystart', onModifyStart);
       // Click on line
       simulateEvent('pointermove', 0, 0, null, 0);
       simulateEvent('pointerdown', 0, 0, null, 0);
       simulateEvent('pointerup', 0, 0, null, 0);
+      modify.un('modifystart', onModifyStart);
 
       expect(lineFeature1.getGeometry().getCoordinates().length).to.be(4);
       expect(lineFeature2.getGeometry().getCoordinates().length).to.be(4);
+      expect(modifiedFeatures.getArray()).to.eql([lineFeature1, lineFeature2]);
     });
   });
 
