@@ -8,6 +8,7 @@ import SourceState from '../source/State.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
 import {applyStyle} from 'ol-mapbox-style';
+import {assign} from '../obj.js';
 
 const mapboxBaseUrl = 'https://api.mapbox.com';
 
@@ -257,26 +258,12 @@ class MapboxVectorLayer extends VectorTileLayer {
       format: new MVT(),
     });
 
-    super({
+    const opt = assign({}, options, {
       source: source,
       declutter: declutter,
-      className: options.className,
-      opacity: options.opacity,
-      visible: options.visible,
-      zIndex: options.zIndex,
-      minResolution: options.minResolution,
-      maxResolution: options.maxResolution,
-      minZoom: options.minZoom,
-      maxZoom: options.maxZoom,
-      renderOrder: options.renderOrder,
-      renderBuffer: options.renderBuffer,
-      renderMode: options.renderMode,
-      map: options.map,
-      updateWhileAnimating: options.updateWhileAnimating,
-      updateWhileInteracting: options.updateWhileInteracting,
-      preload: options.preload,
-      useInterimTilesOnError: options.useInterimTilesOnError,
     });
+
+    super(opt);
 
     this.sourceId = options.source;
     this.layers = options.layers;

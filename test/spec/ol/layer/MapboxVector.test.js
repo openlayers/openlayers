@@ -1,4 +1,4 @@
-import {
+import MapboxVector, {
   getMapboxPath,
   normalizeSourceUrl,
   normalizeSpriteUrl,
@@ -90,5 +90,18 @@ describe('ol/layer/MapboxVector', () => {
         expect(normalizeSourceUrl(c.url, token)).to.be(c.expected);
       });
     }
+  });
+
+  describe('constructor', () => {
+    const layer = new MapboxVector({
+      type: 'ol/layer/MapboxVector',
+      styleUrl: 'mapbox://styles/mapbox/light-v10',
+      accessToken: 'xxxx',
+      id: 'mapbox-gray',
+    });
+
+    it('constructor() accepts additional properties #12014', () => {
+      expect(layer.get('id')).to.be('mapbox-gray');
+    });
   });
 });
