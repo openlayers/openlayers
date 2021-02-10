@@ -26,7 +26,7 @@ import {assign} from '../obj.js';
  * @property {string} [map] If using named maps, this will be the name of the template to load.
  * See https://carto.com/developers/maps-api/guides/named-maps/
  * for more detail.
- * @property {string} account If using named maps, this will be the name of the template to load.
+ * @property {string} [account] Username as used to access public Carto dashboard at https://{username}.carto.com/.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  */
