@@ -415,8 +415,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         );
         if (clips && !inTransition) {
           context.restore();
+          this.renderedTiles.unshift(tile);
+        } else {
+          this.renderedTiles.push(tile);
         }
-        this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
     }
