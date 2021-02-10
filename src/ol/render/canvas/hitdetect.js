@@ -69,6 +69,10 @@ export function createHitDetectionImageData(
     const color = '#' + ('000000' + index.toString(16)).slice(-6);
     for (let j = 0, jj = styles.length; j < jj; ++j) {
       const originalStyle = styles[j];
+      const geometry = originalStyle.getGeometryFunction()(feature);
+      if (!geometry || !intersects(extent, geometry.getExtent())) {
+        continue;
+      }
       const style = originalStyle.clone();
       const fill = style.getFill();
       if (fill) {
@@ -119,13 +123,10 @@ export function createHitDetectionImageData(
         byGeometryType[GeometryType.LINE_STRING] = [];
         byGeometryType[GeometryType.POINT] = [];
       }
-      const geometry = style.getGeometryFunction()(feature);
-      if (geometry && intersects(extent, geometry.getExtent())) {
-        byGeometryType[geometry.getType().replace('Multi', '')].push(
-          geometry,
-          style
-        );
-      }
+      byGeometryType[geometry.getType().replace('Multi', '')].push(
+        geometry,
+        style
+      );
     }
   }
 
