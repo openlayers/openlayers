@@ -149,7 +149,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
     if (state === TileState.LOADED || state === TileState.ERROR) {
       this.updateExecutorGroup_(tile, pixelRatio, projection);
-      if (this.tileImageNeedsRender_(tile, pixelRatio, projection)) {
+      if (this.tileImageNeedsRender_(tile)) {
         render = true;
         if (queue) {
           this.renderTileImageQueue_[tileUid] = tile;
@@ -833,13 +833,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../../proj/Projection.js").default} projection Projection.
    * @return {boolean} A new tile image was rendered.
    * @private
    */
-  tileImageNeedsRender_(tile, pixelRatio, projection) {
+  tileImageNeedsRender_(tile) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    if (layer.getRenderMode() === VectorTileRenderType.VECTOR) {
+      return false;
+    }
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const sourceZ = tile.sourceZ;
