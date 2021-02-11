@@ -378,6 +378,15 @@ Operators['get'] = {
   },
 };
 
+/**
+ * Get the uniform name given a variable name.
+ * @param {string} variableName The variable name.
+ * @return {string} The uniform name.
+ */
+export function uniformNameForVariable(variableName) {
+  return 'u_var_' + variableName;
+}
+
 Operators['var'] = {
   getReturnType: function (args) {
     return ValueTypes.ANY;
@@ -389,7 +398,7 @@ Operators['var'] = {
     if (context.variables.indexOf(value) === -1) {
       context.variables.push(value);
     }
-    return `u_${value}`;
+    return uniformNameForVariable(value);
   },
 };
 

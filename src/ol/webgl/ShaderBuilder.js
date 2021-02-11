@@ -7,6 +7,7 @@ import {
   ValueTypes,
   expressionToGlsl,
   getStringNumberEquivalent,
+  uniformNameForVariable,
 } from '../style/expressions.js';
 
 /**
@@ -527,8 +528,9 @@ export function parseLiteralStyle(style) {
 
   // define one uniform per variable
   fragContext.variables.forEach(function (varName) {
-    builder.addUniform(`float u_${varName}`);
-    uniforms[`u_${varName}`] = function () {
+    const uniformName = uniformNameForVariable(varName);
+    builder.addUniform(`float ${uniformName}`);
+    uniforms[uniformName] = function () {
       if (!style.variables || style.variables[varName] === undefined) {
         throw new Error(
           `The following variable is missing from the style: ${varName}`

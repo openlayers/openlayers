@@ -7,6 +7,7 @@ import {
   isTypeUnique,
   numberToGlsl,
   stringToGlsl,
+  uniformNameForVariable,
 } from '../../../../src/ol/style/expressions.js';
 
 describe('ol.style.expressions', function () {
@@ -211,7 +212,9 @@ describe('ol.style.expressions', function () {
 
     it('correctly converts expressions to GLSL', function () {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('a_myAttr');
-      expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql('u_myValue');
+      expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql(
+        uniformNameForVariable('myValue')
+      );
       expect(expressionToGlsl(context, ['time'])).to.eql('u_time');
       expect(expressionToGlsl(context, ['zoom'])).to.eql('u_zoom');
       expect(expressionToGlsl(context, ['resolution'])).to.eql('u_resolution');
