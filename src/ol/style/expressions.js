@@ -260,24 +260,35 @@ export function expressionToGlsl(context, value, typeHint) {
     }
     return operator.toGlsl(context, value.slice(1), typeHint);
   }
+
   const valueType = getValueType(value);
   if ((valueType & ValueTypes.NUMBER) > 0) {
     return numberToGlsl(/** @type {number} */ (value));
-  } else if ((valueType & ValueTypes.BOOLEAN) > 0) {
+  }
+
+  if ((valueType & ValueTypes.BOOLEAN) > 0) {
     return value.toString();
-  } else if (
+  }
+
+  if (
     (valueType & ValueTypes.STRING) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.STRING)
   ) {
     return stringToGlsl(context, value.toString());
-  } else if (
+  }
+
+  if (
     (valueType & ValueTypes.COLOR) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.COLOR)
   ) {
     return colorToGlsl(/** @type {Array<number> | string} */ (value));
-  } else if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
+  }
+
+  if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
     return arrayToGlsl(/** @type {Array<number>} */ (value));
   }
+
+  throw new Error(`Unexpected expression ${value} (expected type ${typeHint})`);
 }
 
 function assertNumber(value) {
@@ -366,6 +377,7 @@ Operators['get'] = {
     return prefix + value;
   },
 };
+
 Operators['var'] = {
   getReturnType: function (args) {
     return ValueTypes.ANY;
@@ -380,6 +392,7 @@ Operators['var'] = {
     return `u_${value}`;
   },
 };
+
 Operators['time'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -389,6 +402,7 @@ Operators['time'] = {
     return 'u_time';
   },
 };
+
 Operators['zoom'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -398,6 +412,7 @@ Operators['zoom'] = {
     return 'u_zoom';
   },
 };
+
 Operators['resolution'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -421,6 +436,7 @@ Operators['*'] = {
     )})`;
   },
 };
+
 Operators['/'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -434,6 +450,7 @@ Operators['/'] = {
     )})`;
   },
 };
+
 Operators['+'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -447,6 +464,7 @@ Operators['+'] = {
     )})`;
   },
 };
+
 Operators['-'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -460,6 +478,7 @@ Operators['-'] = {
     )})`;
   },
 };
+
 Operators['clamp'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -472,6 +491,7 @@ Operators['clamp'] = {
     return `clamp(${expressionToGlsl(context, args[0])}, ${min}, ${max})`;
   },
 };
+
 Operators['%'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -485,6 +505,7 @@ Operators['%'] = {
     )})`;
   },
 };
+
 Operators['^'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -498,6 +519,7 @@ Operators['^'] = {
     )})`;
   },
 };
+
 Operators['>'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -511,6 +533,7 @@ Operators['>'] = {
     )})`;
   },
 };
+
 Operators['>='] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -524,6 +547,7 @@ Operators['>='] = {
     )})`;
   },
 };
+
 Operators['<'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -537,6 +561,7 @@ Operators['<'] = {
     )})`;
   },
 };
+
 Operators['<='] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -580,7 +605,9 @@ function getEqualOperator(operator) {
     },
   };
 }
+
 Operators['=='] = getEqualOperator('==');
+
 Operators['!='] = getEqualOperator('!=');
 
 Operators['!'] = {
@@ -615,7 +642,9 @@ function getDecisionOperator(operator) {
 }
 
 Operators['all'] = getDecisionOperator('&&');
+
 Operators['any'] = getDecisionOperator('||');
+
 Operators['between'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -644,6 +673,7 @@ Operators['array'] = {
     return `vec${args.length}(${parsedArgs.join(', ')})`;
   },
 };
+
 Operators['color'] = {
   getReturnType: function (args) {
     return ValueTypes.COLOR;
@@ -720,6 +750,7 @@ Operators['interpolate'] = {
     return result;
   },
 };
+
 Operators['match'] = {
   getReturnType: function (args) {
     let type = ValueTypes.ANY;
@@ -752,6 +783,7 @@ Operators['match'] = {
     return result;
   },
 };
+
 Operators['case'] = {
   getReturnType: function (args) {
     let type = ValueTypes.ANY;

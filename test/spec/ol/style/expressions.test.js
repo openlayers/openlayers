@@ -273,6 +273,13 @@ describe('ol.style.expressions', function () {
       ).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
     });
 
+    it('throws if the value does not match the type', function () {
+      const call = function () {
+        expressionToGlsl(context, '42', ValueTypes.NUMBER);
+      };
+      expect(call).to.throwException(/Unexpected expression/);
+    });
+
     it('correctly adapts output for fragment shaders', function () {
       context.inFragmentShader = true;
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('v_myAttr');
