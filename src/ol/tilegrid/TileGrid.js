@@ -180,6 +180,12 @@ class TileGrid {
      */
     this.tmpSize_ = [0, 0];
 
+    /**
+     * @private
+     * @type {import("../extent.js").Extent}
+     */
+    this.tmpExtent_ = [0, 0, 0, 0];
+
     if (options.sizes !== undefined) {
       this.fullTileRanges_ = options.sizes.map(function (size, z) {
         const tileRange = new TileRange(
@@ -340,7 +346,10 @@ class TileGrid {
           opt_tileRange
         );
       }
-      const tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+      const tileCoordExtent = this.getTileCoordExtent(
+        tileCoord,
+        opt_extent || this.tmpExtent_
+      );
       return this.getTileRangeForExtentAndZ(
         tileCoordExtent,
         tileCoord[0] + 1,
