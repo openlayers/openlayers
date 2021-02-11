@@ -410,8 +410,8 @@ class WebGLHelper extends Disposable {
     const gl = this.getGL();
     const bufferKey = getUid(buf);
     const bufferCacheEntry = this.bufferCache_[bufferKey];
-    if (!gl.isContextLost()) {
-      gl.deleteBuffer(bufferCacheEntry.buffer);
+    if (bufferCacheEntry && !gl.isContextLost()) {
+      gl.deleteBuffer(bufferCacheEntry.webGlBuffer);
     }
     delete this.bufferCache_[bufferKey];
   }

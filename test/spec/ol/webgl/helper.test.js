@@ -1,11 +1,13 @@
+import WebGLArrayBuffer from '../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper, {DefaultUniform} from '../../../../src/ol/webgl/Helper.js';
-import {FLOAT} from '../../../../src/ol/webgl.js';
+import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../src/ol/webgl.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../../../src/ol/transform.js';
+import {getUid} from '../../../../src/ol/util.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -237,6 +239,20 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(given.map((val) => val.toFixed(15))).to.eql(
           expected.map((val) => val.toFixed(15))
         );
+      });
+    });
+
+    describe('deleteBuffer()', function () {
+      it('can be called to free up buffer resources', function () {
+        const helper = new WebGLHelper();
+        const buffer = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
+        buffer.fromArray([0, 1, 2, 3]);
+        helper.flushBufferData(buffer);
+        const bufferKey = getUid(buffer);
+        expect(helper.bufferCache_).to.have.property(bufferKey);
+
+        helper.deleteBuffer(buffer);
+        expect(helper.bufferCache_).to.not.have.property(bufferKey);
       });
     });
 
