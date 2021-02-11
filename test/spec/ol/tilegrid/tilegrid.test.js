@@ -1179,4 +1179,57 @@ describe('ol.tilegrid.TileGrid', function () {
       expect(tileGrid.getZForResolution(50, -1)).to.eql(3);
     });
   });
+
+  describe('getTileRangeForTileCoordAndZ()', function () {
+    const tileGrid = createForExtent(
+      getProjection('EPSG:3857').getExtent(),
+      22
+    );
+
+    it('can be used to get the child tile range', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([0, 0, 0], 1);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(1);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(1);
+    });
+
+    it('can be used to get the range of a deeper level', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([0, 0, 0], 3);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(7);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(7);
+    });
+
+    it('can be used to get the parent tile range', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([1, 1, 0], 0);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(0);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(0);
+    });
+
+    it('can be used to get the range of a shallower level', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([3, 1, 6], 0);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(0);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(0);
+    });
+
+    const tileCoord = [15, 6239, 11751];
+    tileGrid.forEachTileCoordParentTileRange(tileCoord, function (
+      z,
+      tileRange
+    ) {
+      it(`works for level ${z}`, function () {
+        const range = tileGrid.getTileRangeForTileCoordAndZ(tileCoord, z);
+        expect(range.minX).to.be(tileRange.minX);
+        expect(range.maxX).to.be(tileRange.maxX);
+        expect(range.minY).to.be(tileRange.minY);
+        expect(range.maxY).to.be(tileRange.maxY);
+      });
+    });
+  });
 });
