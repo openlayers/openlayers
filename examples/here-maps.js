@@ -60,7 +60,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
           'Map Tiles &copy; ' +
           new Date().getFullYear() +
           ' ' +
-          '<a href="http://developer.here.com" target="_blank">HERE</a>',
+          '<a href="https://developer.here.com/" target="_blank">HERE</a>',
       }),
     })
   );

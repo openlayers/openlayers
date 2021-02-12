@@ -7,7 +7,7 @@ layout: doc.hbs
 
 Certain questions arise more often than others when users ask for help. This
 document tries to list some of the common questions that frequently get asked,
-e.g. on [Stack Overflow](http://stackoverflow.com/questions/tagged/openlayers).
+e.g. on [Stack Overflow](https://stackoverflow.com/questions/tagged/openlayers).
 
 If you think a question (and naturally its answer) should be added here, feel
 free to ping us or to send a pull request enhancing this document.
@@ -198,8 +198,8 @@ for English, `en`, as a mnemonic: East before North.
 So you want to center your map on a certain place on the earth and obviously you
 need to have its coordinates for this. Let's assume you want your map centered
 on Schladming, a beautiful place in Austria. Head over to the wikipedia
-page for [Schladming](http://en.wikipedia.org/wiki/Schladming). In the top-right
-corner there is a link to [GeoHack](http://tools.wmflabs.org/geohack/geohack.php?pagename=Schladming&params=47_23_39_N_13_41_21_E_type:city(4565)_region:AT-6),
+page for [Schladming](https://en.wikipedia.org/wiki/Schladming). In the top-right
+corner there is a link to [GeoHack](https://geohack.toolforge.org/geohack.php?pagename=Schladming&params=47_23_39_N_13_41_21_E_type:city(4565)_region:AT-6),
 which effectively tells you the coordinates are:
 
     WGS84:

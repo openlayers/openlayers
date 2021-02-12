@@ -37,7 +37,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * ignored. If you control the WMS service it is recommended to address
  * "artifacts at tile edges" issues by properly configuring the WMS service. For
  * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
- * this. See http://mapserver.org/output/tile_mode.html.
+ * this. See https://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.

@@ -674,7 +674,7 @@ describe('ol.tilegrid.TileGrid', function () {
     });
 
     it('returns the correct resolution at the equator', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       expect(tileGrid.getResolution(0)).to.roughlyEqual(156543.04, 1e-2);
       expect(tileGrid.getResolution(1)).to.roughlyEqual(78271.52, 1e-2);
       expect(tileGrid.getResolution(2)).to.roughlyEqual(39135.76, 1e-2);

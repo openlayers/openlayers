@@ -234,7 +234,7 @@ String.prototype.trunc =
     return this.length > n ? this.substr(0, n - 1) + '...' : this.substr(0);
   };
 
-// http://stackoverflow.com/questions/14484787/wrap-text-in-javascript
+// https://stackoverflow.com/questions/14484787/wrap-text-in-javascript
 function stringDivider(str, width, spaceReplacer) {
   if (str.length > width) {
     let p = width;

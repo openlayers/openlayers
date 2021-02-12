@@ -63,7 +63,7 @@ export const CLASS_CONTROL = 'ol-control';
 export const CLASS_COLLAPSED = 'ol-collapsed';
 
 /**
- * From http://stackoverflow.com/questions/10135697/regex-to-parse-any-css-font
+ * From https://stackoverflow.com/questions/10135697/regex-to-parse-any-css-font
  * @type {RegExp}
  */
 const fontRegEx = new RegExp(

@@ -14,8 +14,8 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @return {boolean} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
-  // http://tinyurl.com/clockwise-method
-  // https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
+  // https://stackoverflow.com/q/1165647/clockwise-method#1165943
+  // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrlinearring.cpp
   let edge = 0;
   let x1 = flatCoordinates[end - stride];
   let y1 = flatCoordinates[end - stride + 1];

@@ -1,7 +1,7 @@
 /**
  * Modified from JSDoc's plugins/markdown and lib/jsdoc/util/markdown modules
  * (see https://github.com/jsdoc3/jsdoc/), which are licensed under the Apache 2
- * license (see http://www.apache.org/licenses/LICENSE-2.0).
+ * license (see https://www.apache.org/licenses/LICENSE-2.0).
  *
  * This version does not protect http(s) urls from being turned into links, and
  * works around an issue with `~` characters in module paths by escaping them.

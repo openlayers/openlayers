@@ -273,7 +273,7 @@ describe('ol.proj', function () {
   });
 
   describe('transform from 4326 to 3857 (Alastaira)', function () {
-    // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
+    // https://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
     it('returns expected value using ol.proj.transform', function () {
       const point = transform(
@@ -297,7 +297,7 @@ describe('ol.proj', function () {
   });
 
   describe('transform from 3857 to 4326 (Alastaira)', function () {
-    // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
+    // https://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
     it('returns expected value using ol.proj.transform', function () {
       const point = transform(

@@ -51,7 +51,7 @@ const TOS_ATTRIBUTION =
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
  * @property {string} [culture='en-us'] Culture code.
- * @property {string} key Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
+ * @property {string} key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
  * @property {string} imagerySet Type of imagery.
  * @property {boolean} [imageSmoothing=true] Enable image smoothing.
  * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.

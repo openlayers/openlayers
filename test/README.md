@@ -22,7 +22,7 @@ This will run tests in Chrome.  If you do not have Chrome installed, you can run
 
     npm test -- --browsers Firefox
 
-To run tests in other browsers, you need to install [additional Karma launchers](http://karma-runner.github.io/1.0/config/browsers.html).
+To run tests in other browsers, you need to install [additional Karma launchers](https://karma-runner.github.io/1.0/config/browsers.html).
 
 To run the tests continuously:
 

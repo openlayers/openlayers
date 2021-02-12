@@ -57,7 +57,7 @@ describe('ol/proj/epsg3857', function () {
 
   describe('getPointResolution', function () {
     it('returns the correct point scale at the equator', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       const epsg3857 = getProjection('EPSG:3857');
       const resolution = 19.11;
       const point = [0, 0];
@@ -68,7 +68,7 @@ describe('ol/proj/epsg3857', function () {
     });
 
     it('returns the correct point scale at the latitude of Toronto', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       const epsg3857 = getProjection('EPSG:3857');
       const epsg4326 = getProjection('EPSG:4326');
       const resolution = 19.11;
@@ -80,7 +80,7 @@ describe('ol/proj/epsg3857', function () {
     });
 
     it('returns the correct point scale at various latitudes', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       const epsg3857 = getProjection('EPSG:3857');
       const epsg4326 = getProjection('EPSG:4326');
       const resolution = 19.11;
