@@ -1496,9 +1496,8 @@ class PluggableMap extends BaseObject {
   updateSize() {
     const targetElement = this.getTargetElement();
 
-    if (!targetElement) {
-      this.setSize(undefined);
-    } else {
+    let size = undefined;
+    if (targetElement) {
       const computedStyle = getComputedStyle(targetElement);
       const width =
         targetElement.offsetWidth -
@@ -1512,15 +1511,18 @@ class PluggableMap extends BaseObject {
         parseFloat(computedStyle['paddingTop']) -
         parseFloat(computedStyle['paddingBottom']) -
         parseFloat(computedStyle['borderBottomWidth']);
-      if (height === 0 || width === 0) {
-        // eslint-disable-next-line
-        console.warn(
-          "No map visible because the map container's width or height are 0."
-        );
+      if (!isNaN(width) && !isNaN(height)) {
+        size = [width, height];
+        if (!hasArea(size)) {
+          // eslint-disable-next-line
+          console.warn(
+            "No map visible because the map container's width or height are 0."
+          );
+        }
       }
-      this.setSize([width, height]);
     }
 
+    this.setSize(size);
     this.updateViewportSize_();
   }
 
