@@ -75,7 +75,7 @@ import {register} from 'ol/proj/proj4';
 import {get as getProjection} from 'ol/proj';
 
 // To use other projections, you have to register the projection in OpenLayers.
-// This can easily be done with [https://proj4js.org](proj4)
+// This can easily be done with [http://proj4js.org/](proj4)
 //
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
 // So we create a projection instance for EPSG:21781 and pass it to

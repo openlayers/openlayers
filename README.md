@@ -112,13 +112,13 @@ OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.wh
 
 For older browsers and platforms (Internet Explorer, Android 4.x, iOS v12 and older, Safari v12 and older), polyfills may be needed for the following browser features:
 
-* [`fetch`](https://caniuse.com/#feat=fetch): Available from [polyfill.io](https://polyfill.io/).
-* [`requestAnimationFrame`](https://caniuse.com/#feat=requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
-* [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/#feat=classlist): Available from [polyfill.io](https://polyfill.io/).
-* [`URL` API](https://caniuse.com/#feat=url): Available from [polyfill.io](https://polyfill.io/).
-* [`TextDecoder`](https://caniuse.com/#feat=textencoder): Available from [polyfill.io](https://polyfill.io/).
-* [`Number.isInteger`](https://caniuse.com/#feat=isInteger): Available from [polyfill.io](https://polyfill.io/).
-* [Pointer events](https://caniuse.com/#feat=pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
+* [`fetch`](https://caniuse.com/fetch): Available from [polyfill.io](https://polyfill.io/).
+* [`requestAnimationFrame`](https://caniuse.com/requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
+* [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/classlist): Available from [polyfill.io](https://polyfill.io/).
+* [`URL` API](https://caniuse.com/url): Available from [polyfill.io](https://polyfill.io/).
+* [`TextDecoder`](https://caniuse.com/textencoder): Available from [polyfill.io](https://polyfill.io/).
+* [`Number.isInteger`](https://caniuse.com/isInteger): Available from [polyfill.io](https://polyfill.io/).
+* [Pointer events](https://caniuse.com/pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
 
 ## Documentation
 
