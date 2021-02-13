@@ -129,7 +129,7 @@ export function getLength(geometry, opt_options) {
 /**
  * Returns the spherical area for a list of coordinates.
  *
- * [Reference](https://trs-new.jpl.nasa.gov/handle/2014/40409)
+ * [Reference](https://trs.jpl.nasa.gov/handle/2014/40409)
  * Robert. G. Chamberlain and William H. Duquette, "Some Algorithms for
  * Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
  * Laboratory, Pasadena, CA, June 2007
