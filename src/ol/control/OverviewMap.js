@@ -322,6 +322,11 @@ class OverviewMap extends Control {
       }
       const newView = this.getMap().getView();
       this.bindView_(newView);
+    } else if (
+      !this.ovmap_.isRendered() &&
+      (event.key === MapProperty.TARGET || event.key === MapProperty.SIZE)
+    ) {
+      this.ovmap_.updateSize();
     }
   }
 
