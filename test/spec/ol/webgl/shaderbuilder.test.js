@@ -6,6 +6,7 @@ import {
   arrayToGlsl,
   colorToGlsl,
   numberToGlsl,
+  uniformNameForVariable,
 } from '../../../../src/ol/style/expressions.js';
 
 describe('ol.webgl.ShaderBuilder', function () {
@@ -477,9 +478,11 @@ void main(void) {
         },
       });
 
+      const lowerUniformName = uniformNameForVariable('lower');
+      const higherUniformName = uniformNameForVariable('higher');
       expect(result.builder.uniforms).to.eql([
-        'float u_lower',
-        'float u_higher',
+        `float ${lowerUniformName}`,
+        `float ${higherUniformName}`,
       ]);
       expect(result.builder.attributes).to.eql(['float a_population']);
       expect(result.builder.varyings).to.eql([
@@ -493,7 +496,7 @@ void main(void) {
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
       );
       expect(result.builder.sizeExpression).to.eql(
-        'vec2(mix(4.0, 8.0, pow(clamp((a_population - u_lower) / (u_higher - u_lower), 0.0, 1.0), 1.0)))'
+        `vec2(mix(4.0, 8.0, pow(clamp((a_population - ${lowerUniformName}) / (${higherUniformName} - ${lowerUniformName}), 0.0, 1.0), 1.0)))`
       );
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql(
@@ -502,8 +505,8 @@ void main(void) {
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(1);
       expect(result.attributes[0].name).to.eql('population');
-      expect(result.uniforms).to.have.property('u_lower');
-      expect(result.uniforms).to.have.property('u_higher');
+      expect(result.uniforms).to.have.property(lowerUniformName);
+      expect(result.uniforms).to.have.property(higherUniformName);
     });
 
     it('parses a style with a filter', function () {
@@ -541,6 +544,8 @@ void main(void) {
     });
 
     it('parses a style with a color interpolation', function () {
+      const varName = 'ratio';
+      const uniformName = uniformNameForVariable(varName);
       const result = parseLiteralStyle({
         symbol: {
           symbolType: 'square',
@@ -548,7 +553,7 @@ void main(void) {
           color: [
             'interpolate',
             ['linear'],
-            ['var', 'ratio'],
+            ['var', varName],
             0,
             [255, 255, 0],
             1,
@@ -560,7 +565,7 @@ void main(void) {
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
       expect(result.builder.colorExpression).to.eql(
-        'vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((u_ratio - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((u_ratio - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).a * 1.0 * 1.0)'
+        `vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).a * 1.0 * 1.0)`
       );
       expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
       expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
@@ -569,7 +574,7 @@ void main(void) {
       );
       expect(result.builder.rotateWithView).to.eql(false);
       expect(result.attributes).to.eql([]);
-      expect(result.uniforms).to.have.property('u_ratio');
+      expect(result.uniforms).to.have.property(uniformName);
     });
 
     it('parses a style with a rotation expression using an attribute', function () {
@@ -587,32 +592,38 @@ void main(void) {
     });
 
     it('correctly adds string variables to the string literals mapping', function () {
+      const varName = 'mySize';
+      const uniformName = uniformNameForVariable(varName);
+
       const result = parseLiteralStyle({
         variables: {
           mySize: 'abcdef',
         },
         symbol: {
           symbolType: 'square',
-          size: ['match', ['var', 'mySize'], 'abc', 10, 'def', 20, 30],
+          size: ['match', ['var', varName], 'abc', 10, 'def', 20, 30],
           color: 'red',
         },
       });
 
-      expect(result.uniforms['u_mySize']()).to.be.greaterThan(0);
+      expect(result.uniforms[uniformName]()).to.be.greaterThan(0);
     });
 
     it('throws when a variable is requested but not present in the style', function (done) {
+      const varName = 'mySize';
+      const uniformName = uniformNameForVariable(varName);
+
       const result = parseLiteralStyle({
         variables: {},
         symbol: {
           symbolType: 'square',
-          size: ['var', 'mySize'],
+          size: ['var', varName],
           color: 'red',
         },
       });
 
       try {
-        result.uniforms['u_mySize']();
+        result.uniforms[uniformName]();
       } catch (e) {
         done();
       }
@@ -620,16 +631,18 @@ void main(void) {
     });
 
     it('throws when a variable is requested but the style does not have a variables dict', function (done) {
+      const variableName = 'mySize';
+      const uniformName = uniformNameForVariable(variableName);
       const result = parseLiteralStyle({
         symbol: {
           symbolType: 'square',
-          size: ['var', 'mySize'],
+          size: ['var', variableName],
           color: 'red',
         },
       });
 
       try {
-        result.uniforms['u_mySize']();
+        result.uniforms[uniformName]();
       } catch (e) {
         done();
       }
