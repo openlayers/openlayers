@@ -59,7 +59,7 @@
     "buble": "^0.20.0",
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
-    "clean-css-cli": "4.3.0",
+    "clean-css-cli": "5.1.0",
     "copy-webpack-plugin": "^6.0.1",
     "coveralls": "3.1.0",
     "eslint": "^7.2.0",
