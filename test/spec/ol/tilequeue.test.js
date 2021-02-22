@@ -45,8 +45,21 @@ describe('ol.TileQueue', function () {
       const q2 = new TileQueue(noop, noop);
 
       const numTiles = 20;
+      const maxLoading = numTiles / 2;
+
+      let processedTiles = 0;
       for (let i = 0; i < numTiles; ++i) {
         const tile = createImageTile();
+        tile.addEventListener('change', function processed() {
+          const state = tile.getState();
+          if (state === TileState.LOADED || state === TileState.ERROR) {
+            tile.removeEventListener('change', processed);
+            ++processedTiles;
+          }
+          if (processedTiles === numTiles) {
+            setTimeout(finish, 0);
+          }
+        });
         q1.enqueue([tile]);
         q2.enqueue([tile]);
       }
@@ -54,8 +67,6 @@ describe('ol.TileQueue', function () {
       // Initially, both have all tiles.
       expect(q1.getCount()).to.equal(numTiles);
       expect(q2.getCount()).to.equal(numTiles);
-
-      const maxLoading = numTiles / 2;
 
       // and nothing is loading
       expect(q1.getTilesLoading()).to.equal(0);
@@ -74,7 +85,7 @@ describe('ol.TileQueue', function () {
       expect(q2.getCount()).to.equal(0);
 
       // let all tiles load
-      setTimeout(function () {
+      function finish() {
         expect(q1.getTilesLoading()).to.equal(0);
         expect(q2.getTilesLoading()).to.equal(0);
 
@@ -86,7 +97,7 @@ describe('ol.TileQueue', function () {
         expect(q2.getCount()).to.equal(0);
 
         done();
-      }, 20);
+      }
     });
   });
 
