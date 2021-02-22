@@ -180,6 +180,12 @@ class TileGrid {
      */
     this.tmpSize_ = [0, 0];
 
+    /**
+     * @private
+     * @type {import("../extent.js").Extent}
+     */
+    this.tmpExtent_ = [0, 0, 0, 0];
+
     if (options.sizes !== undefined) {
       this.fullTileRanges_ = options.sizes.map(function (size, z) {
         const tileRange = new TileRange(
@@ -340,7 +346,10 @@ class TileGrid {
           opt_tileRange
         );
       }
-      const tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+      const tileCoordExtent = this.getTileCoordExtent(
+        tileCoord,
+        opt_extent || this.tmpExtent_
+      );
       return this.getTileRangeForExtentAndZ(
         tileCoordExtent,
         tileCoord[0] + 1,
@@ -348,6 +357,48 @@ class TileGrid {
       );
     }
     return null;
+  }
+
+  /**
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {number} z Integer zoom level.
+   * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
+   * @return {import("../TileRange.js").default} Tile range.
+   */
+  getTileRangeForTileCoordAndZ(tileCoord, z, opt_tileRange) {
+    if (z > this.maxZoom || z < this.minZoom) {
+      return null;
+    }
+
+    const tileCoordZ = tileCoord[0];
+    const tileCoordX = tileCoord[1];
+    const tileCoordY = tileCoord[2];
+
+    if (z === tileCoordZ) {
+      return createOrUpdateTileRange(
+        tileCoordX,
+        tileCoordY,
+        tileCoordX,
+        tileCoordY,
+        opt_tileRange
+      );
+    }
+
+    if (this.zoomFactor_) {
+      const factor = Math.pow(this.zoomFactor_, z - tileCoordZ);
+      const minX = Math.floor(tileCoordX * factor);
+      const minY = Math.floor(tileCoordY * factor);
+      if (z < tileCoordZ) {
+        return createOrUpdateTileRange(minX, minX, minY, minY, opt_tileRange);
+      }
+
+      const maxX = Math.floor(factor * (tileCoordX + 1)) - 1;
+      const maxY = Math.floor(factor * (tileCoordY + 1)) - 1;
+      return createOrUpdateTileRange(minX, maxX, minY, maxY, opt_tileRange);
+    }
+
+    const tileCoordExtent = this.getTileCoordExtent(tileCoord, this.tmpExtent_);
+    return this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
   }
 
   /**
