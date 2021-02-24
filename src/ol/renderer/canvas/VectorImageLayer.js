@@ -63,18 +63,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    * @return {Promise<Array<import("../../Feature").default>>} Promise that resolves with an array of features.
    */
   getFeatures(pixel) {
-    if (this.vectorRenderer_) {
-      const vectorPixel = apply(
-        this.coordinateToVectorPixelTransform_,
-        apply(this.renderedPixelToCoordinateTransform_, pixel.slice())
-      );
-      return this.vectorRenderer_.getFeatures(vectorPixel);
-    } else {
-      const promise = new Promise(function (resolve, reject) {
-        resolve([]);
-      });
-      return promise;
+    if (!this.vectorRenderer_) {
+      return new Promise((resolve) => resolve([]));
     }
+    const vectorPixel = apply(
+      this.coordinateToVectorPixelTransform_,
+      apply(this.renderedPixelToCoordinateTransform_, pixel.slice())
+    );
+    return this.vectorRenderer_.getFeatures(vectorPixel);
   }
 
   /**
