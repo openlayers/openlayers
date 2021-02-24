@@ -210,6 +210,9 @@ class Layer extends BaseLayer {
    * an array of features.
    */
   getFeatures(pixel) {
+    if (!this.renderer_) {
+      return new Promise((resolve) => resolve([]));
+    }
     return this.renderer_.getFeatures(pixel);
   }
 
