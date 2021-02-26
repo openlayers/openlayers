@@ -88,7 +88,9 @@ class VectorTileLayer extends BaseVectorLayer {
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
 
-    super(/** @type {import("./BaseVector.js").Options} */ (baseOptions));
+    super(
+      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (baseOptions)
+    );
 
     if (options.renderMode === VectorTileRenderType.IMAGE) {
       //FIXME deprecated - remove this check in v7.
