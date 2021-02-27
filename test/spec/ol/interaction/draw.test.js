@@ -4,6 +4,7 @@ import Draw, {
   createRegularPolygon,
 } from '../../../../src/ol/interaction/Draw.js';
 import Feature from '../../../../src/ol/Feature.js';
+import GeometryType from '../../../../src/ol/geom/GeometryType.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
@@ -609,22 +610,115 @@ describe('ol.interaction.Draw', function () {
     });
   });
 
+  describe('finishCondition called for each type', function () {
+    let draw;
+    function createDrawInteraction(type, finishCondition) {
+      draw = new Draw({
+        source: source,
+        type: type,
+        finishCondition: finishCondition,
+      });
+      draw.atFinish_ = sinon.spy(Draw.prototype.atFinish_);
+      draw.finishDrawing = sinon.spy(Draw.prototype.finishDrawing);
+      map.addInteraction(draw);
+    }
+
+    const testCoordinates = [
+      [0, 0],
+      [10, 0],
+      [10, 10],
+    ];
+
+    function drawType(type, amount, finishCondition) {
+      createDrawInteraction(type, finishCondition);
+
+      for (let i = 0; i < amount; ++i) {
+        const [x, y] = testCoordinates[i];
+        simulateEvent('pointermove', x, y);
+        simulateEvent('pointerdown', x, y);
+        simulateEvent('pointerup', x, y);
+      }
+      if (amount > 1 && type !== GeometryType.CIRCLE) {
+        const [x, y] = testCoordinates[amount - 1];
+        simulateEvent('pointerdown', x, y);
+        simulateEvent('pointerup', x, y);
+      }
+    }
+
+    function testFinishConditionTrue(type, amount) {
+      const finishCondition = sinon.spy(() => true);
+      drawType(type, amount, finishCondition);
+      expect(draw.atFinish_.called).to.be(true);
+      expect(finishCondition.callCount).to.be(1);
+      expect(draw.finishDrawing.callCount).to.be(1);
+      expect(source.getFeatures()).to.have.length(1);
+    }
+    it('calls finishCondition:true for POINT type', function () {
+      testFinishConditionTrue(GeometryType.POINT, 1);
+    });
+    it('calls finishCondition:true for MULTI_POINT type', function () {
+      testFinishConditionTrue(GeometryType.MULTI_POINT, 1);
+    });
+    it('calls finishCondition:true for LINE_STRING type', function () {
+      testFinishConditionTrue(GeometryType.LINE_STRING, 2);
+    });
+    it('calls finishCondition:true for MULTI_LINE_STRING type', function () {
+      testFinishConditionTrue(GeometryType.MULTI_LINE_STRING, 2);
+    });
+    it('calls finishCondition:true for CIRCLE type', function () {
+      testFinishConditionTrue(GeometryType.CIRCLE, 2);
+    });
+    it('calls finishCondition:true for POLYGON type', function () {
+      testFinishConditionTrue(GeometryType.POLYGON, 3);
+    });
+    it('calls finishCondition:true for MULTI_POLYGON type', function () {
+      testFinishConditionTrue(GeometryType.MULTI_POLYGON, 3);
+    });
+
+    function testFinishConditionFalse(type, amount) {
+      const finishCondition = sinon.spy(() => false);
+      drawType(type, amount, finishCondition);
+      expect(draw.atFinish_.called).to.be(true);
+      expect(finishCondition.callCount).to.be(1);
+      expect(draw.finishDrawing.called).to.be(false);
+      expect(source.getFeatures()).to.have.length(0);
+    }
+    it('calls finishCondition:false for POINT type', function () {
+      testFinishConditionFalse(GeometryType.POINT, 1);
+    });
+    it('calls finishCondition:false for MULTI_POINT type', function () {
+      testFinishConditionFalse(GeometryType.MULTI_POINT, 1);
+    });
+    it('calls finishCondition:false for LINE_STRING type', function () {
+      testFinishConditionFalse(GeometryType.LINE_STRING, 2);
+    });
+    it('calls finishCondition:false for MULTI_LINE_STRING type', function () {
+      testFinishConditionFalse(GeometryType.MULTI_LINE_STRING, 2);
+    });
+    it('calls finishCondition:false for CIRCLE type', function () {
+      testFinishConditionFalse(GeometryType.CIRCLE, 2);
+    });
+    it('calls finishCondition:false for POLYGON type', function () {
+      testFinishConditionFalse(GeometryType.POLYGON, 3);
+    });
+    it('calls finishCondition:false for MULTI_POLYGON type', function () {
+      testFinishConditionFalse(GeometryType.MULTI_POLYGON, 3);
+    });
+  });
+
   describe('drawing with a finishCondition', function () {
     beforeEach(function () {
       const draw = new Draw({
         source: source,
         type: 'LineString',
         finishCondition: function (event) {
-          if (equals(event.coordinate, [30, -20])) {
-            return true;
-          }
-          return false;
+          return equals(event.coordinate, [30, -20]);
         },
       });
       map.addInteraction(draw);
     });
 
-    it('draws a linestring failing to finish it first, the finishes it', function () {
+    it('draws a linestring failing to finish it first, then finishes it', function () {
       let features;
 
       // first point
@@ -1381,7 +1475,7 @@ describe('ol.interaction.Draw', function () {
 
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
-      const draw = new Draw({});
+      const draw = new Draw({type: 'Point'});
       expect(draw.getOverlay()).to.eql(draw.overlay_);
     });
   });

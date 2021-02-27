@@ -625,22 +625,23 @@ class Draw extends PointerInteraction {
       this.handlePointerMove_(event);
 
       if (this.shouldHandle_) {
-        switch (true) {
-          case !this.finishCoordinate_:
-            this.startDrawing_(event.coordinate);
-            if (this.mode_ !== Mode.POINT) {
-              break;
+        const startingToDraw = !this.finishCoordinate_;
+        if (startingToDraw) {
+          this.startDrawing_(event.coordinate);
+        }
+        if (!startingToDraw && this.freehand_) {
+          this.finishDrawing();
+        } else if (
+          !this.freehand_ &&
+          (!startingToDraw || this.mode_ === Mode.POINT)
+        ) {
+          if (this.atFinish_(event.pixel)) {
+            if (this.finishCondition_(event)) {
+              this.finishDrawing();
             }
-          // eslint-disable-next-line no-fallthrough
-          case this.freehand_ ||
-            (this.atFinish_(event.pixel) && this.finishCondition_(event)):
-            this.finishDrawing();
-            break;
-          case !this.freehand_:
+          } else {
             this.addToDrawing_(event.coordinate);
-            break;
-          default:
-            break;
+          }
         }
         pass = false;
       } else if (this.freehand_) {
@@ -1227,23 +1228,21 @@ export function createBox() {
  * @return {Mode} Drawing mode.
  */
 function getMode(type) {
-  let mode;
-  if (type === GeometryType.POINT || type === GeometryType.MULTI_POINT) {
-    mode = Mode.POINT;
-  } else if (
-    type === GeometryType.LINE_STRING ||
-    type === GeometryType.MULTI_LINE_STRING
-  ) {
-    mode = Mode.LINE_STRING;
-  } else if (
-    type === GeometryType.POLYGON ||
-    type === GeometryType.MULTI_POLYGON
-  ) {
-    mode = Mode.POLYGON;
-  } else if (type === GeometryType.CIRCLE) {
-    mode = Mode.CIRCLE;
+  switch (type) {
+    case GeometryType.POINT:
+    case GeometryType.MULTI_POINT:
+      return Mode.POINT;
+    case GeometryType.LINE_STRING:
+    case GeometryType.MULTI_LINE_STRING:
+      return Mode.LINE_STRING;
+    case GeometryType.POLYGON:
+    case GeometryType.MULTI_POLYGON:
+      return Mode.POLYGON;
+    case GeometryType.CIRCLE:
+      return Mode.CIRCLE;
+    default:
+      throw new Error('Invalid type: ' + type);
   }
-  return /** @type {!Mode} */ (mode);
 }
 
 export default Draw;
