@@ -19,7 +19,7 @@ const matrixIds = [];
 const proj3857 = getProjection('EPSG:3857');
 const maxResolution = getWidth(proj3857.getExtent()) / 256;
 
-for (let i = 0; i < 18; i++) {
+for (let i = 0; i < 20; i++) {
   matrixIds[i] = i.toString();
   resolutions[i] = maxResolution / Math.pow(2, i);
 }
@@ -31,13 +31,13 @@ const tileGrid = new WMTSTileGrid({
 });
 
 // For more information about the IGN API key see
-// https://geoservices.ign.fr/blog/2018/09/06/acces_geoportail_sans_compte.html
+// https://geoservices.ign.fr/blog/2021/01/29/Maj_Cles_Geoservices.html
 
 const ign_source = new WMTS({
   url: 'https://wxs.ign.fr/choisirgeoportail/geoportail/wmts',
-  layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+  layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
   matrixSet: 'PM',
-  format: 'image/jpeg',
+  format: 'image/png',
   projection: 'EPSG:3857',
   tileGrid: tileGrid,
   style: 'normal',
