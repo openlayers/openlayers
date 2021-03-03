@@ -7,7 +7,7 @@ import MapEvent from './MapEvent.js';
  * @classdesc
  * Events emitted as map browser events are instances of this type.
  * See {@link module:ol/PluggableMap~PluggableMap} for which events trigger a map browser event.
- * @template {UIEvent} EVENT
+ * @template {UIEvent|import("./MapBrowserEventHandler").PointerEventData} EVENT
  */
 class MapBrowserEvent extends MapEvent {
   /**
@@ -88,7 +88,9 @@ class MapBrowserEvent extends MapEvent {
    */
   preventDefault() {
     super.preventDefault();
-    this.originalEvent.preventDefault();
+    if ('preventDefault' in this.originalEvent) {
+      /** @type {UIEvent} */ (this.originalEvent).preventDefault();
+    }
   }
 
   /**
@@ -98,7 +100,9 @@ class MapBrowserEvent extends MapEvent {
    */
   stopPropagation() {
     super.stopPropagation();
-    this.originalEvent.stopPropagation();
+    if ('stopPropagation' in this.originalEvent) {
+      /** @type {UIEvent} */ (this.originalEvent).stopPropagation();
+    }
   }
 }
 
