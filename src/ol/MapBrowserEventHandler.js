@@ -336,9 +336,10 @@ class MapBrowserEventHandler extends EventTarget {
   handleTouchMove_(event) {
     // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
     // may not be initialized yet when we get here on a platform without native pointer events.
+    const originalEvent = this.originalPointerMoveEvent_;
     if (
-      !this.originalPointerMoveEvent_ ||
-      this.originalPointerMoveEvent_.defaultPrevented
+      (!originalEvent || originalEvent.defaultPrevented) &&
+      (typeof event.cancelable !== 'boolean' || event.cancelable === true)
     ) {
       event.preventDefault();
     }
