@@ -20,8 +20,13 @@ import {getUid} from '../util.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [distance=20] Distance within which features will be clustered
- * together.
+ * @property {number} [distance=20] Distance in pixels within which features will
+ * be clustered together.
+ * @property {number} [minDistance=0] Minimum distance in pixels between clusters.
+ * Will be capped at the configured distance.
+ * By default no minimum distance is guaranteed. This config can be used to avoid
+ * overlapping icons. As a tradoff, the cluster feature's position will no longer be
+ * the center of all its features.
  * @property {function(Feature):Point} [geometryFunction]
  * Function that takes an {@link module:ol/Feature} as argument and returns an
  * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
@@ -35,11 +40,6 @@ import {getUid} from '../util.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {number} [minDistance=0] Minimum distance between clusters. Will be capped
- * at the configured distance.
- * By default no minimum distance is guaranteed. This config can be used to avoid
- * overlapping icons. As a tradoff, the cluster feature's position will no longer be
- * the center of all its features.
  * @property {VectorSource} [source] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -156,10 +156,8 @@ class Cluster extends VectorSource {
   loadFeatures(extent, resolution, projection) {
     this.source.loadFeatures(extent, resolution, projection);
     if (resolution !== this.resolution) {
-      this.clear();
       this.resolution = resolution;
-      this.cluster();
-      this.addFeatures(this.features);
+      this.refresh();
     }
   }
 
@@ -184,7 +182,7 @@ class Cluster extends VectorSource {
 
   /**
    * The configured minimum distance between clusters.
-   * @return {number} The minimum distance.
+   * @return {number} The minimum distance in pixels.
    * @api
    */
   getMinDistance() {

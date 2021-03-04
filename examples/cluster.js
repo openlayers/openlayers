@@ -14,10 +14,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {boundingExtent} from '../src/ol/extent.js';
 
 const distanceInput = document.getElementById('distance');
-const distanceNode = document.getElementById('distance-info');
 const minDistanceInput = document.getElementById('min-distance');
-const minDistanceNode = document.getElementById('min-distance-info');
-const numClustersNode = document.getElementById('num-clusters');
 
 const count = 20000;
 const features = new Array(count);
@@ -36,11 +33,6 @@ const clusterSource = new Cluster({
   minDistance: parseInt(minDistanceInput.value, 10),
   source: source,
 });
-clusterSource.on('change', function (evt) {
-  numClustersNode.innerText = evt.target.features.length;
-});
-distanceNode.innerText = clusterSource.getDistance();
-minDistanceNode.innerText = clusterSource.getMinDistance();
 
 const styleCache = {};
 const clusters = new VectorLayer({
@@ -86,12 +78,10 @@ const map = new Map({
 });
 
 distanceInput.addEventListener('input', function () {
-  distanceNode.innerText = distanceInput.value;
   clusterSource.setDistance(parseInt(distanceInput.value, 10));
 });
 
 minDistanceInput.addEventListener('input', function () {
-  minDistanceNode.innerText = minDistanceInput.value;
   clusterSource.setMinDistance(parseInt(minDistanceInput.value, 10));
 });
 
