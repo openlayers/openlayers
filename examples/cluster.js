@@ -13,7 +13,8 @@ import {Cluster, OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {boundingExtent} from '../src/ol/extent.js';
 
-const distance = document.getElementById('distance');
+const distanceInput = document.getElementById('distance');
+const minDistanceInput = document.getElementById('min-distance');
 
 const count = 20000;
 const features = new Array(count);
@@ -28,7 +29,8 @@ const source = new VectorSource({
 });
 
 const clusterSource = new Cluster({
-  distance: parseInt(distance.value, 10),
+  distance: parseInt(distanceInput.value, 10),
+  minDistance: parseInt(minDistanceInput.value, 10),
   source: source,
 });
 
@@ -75,8 +77,12 @@ const map = new Map({
   }),
 });
 
-distance.addEventListener('input', function () {
-  clusterSource.setDistance(parseInt(distance.value, 10));
+distanceInput.addEventListener('input', function () {
+  clusterSource.setDistance(parseInt(distanceInput.value, 10));
+});
+
+minDistanceInput.addEventListener('input', function () {
+  clusterSource.setMinDistance(parseInt(minDistanceInput.value, 10));
 });
 
 map.on('click', (e) => {
