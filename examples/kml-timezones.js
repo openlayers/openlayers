@@ -82,11 +82,7 @@ const displayFeatureInfo = function (pixel) {
     return feature;
   });
   if (feature) {
-    info
-      .tooltip('hide')
-      .attr('data-original-title', feature.get('name'))
-      .tooltip('fixTitle')
-      .tooltip('show');
+    info.attr('data-original-title', feature.get('name')).tooltip('show');
   } else {
     info.tooltip('hide');
   }
