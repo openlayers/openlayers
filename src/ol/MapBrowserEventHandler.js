@@ -2,15 +2,23 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import PointerEventType from './pointer/EventType.js';
+import Target from './events/Target.js';
 import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {listen, unlistenByKey} from './events.js';
 
-class MapBrowserEventHandler extends EventTarget {
+/**
+ * @typedef {Object} PointerEventData
+ * @property {string} type
+ * @property {number} clientX
+ * @property {number} clientY
+ * @property {EventTarget} target
+ */
+
+class MapBrowserEventHandler extends Target {
   /**
    * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
    * @param {number} [moveTolerance] The minimal distance the pointer must travel to trigger a move.
@@ -60,7 +68,7 @@ class MapBrowserEventHandler extends EventTarget {
     /**
      * The most recent "down" type event (or null if none have occurred).
      * Set on pointerdown.
-     * @type {PointerEvent}
+     * @type {PointerEventData}
      * @private
      */
     this.down_ = null;
@@ -122,7 +130,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {PointerEvent} pointerEvent Pointer
+   * @param {PointerEventData} pointerEvent Pointer
    * event.
    * @private
    */
@@ -244,7 +252,12 @@ class MapBrowserEventHandler extends EventTarget {
     );
     this.dispatchEvent(newEvent);
 
-    this.down_ = pointerEvent;
+    this.down_ = {
+      type: pointerEvent.type,
+      clientX: pointerEvent.clientX,
+      clientY: pointerEvent.clientY,
+      target: pointerEvent.target,
+    };
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();

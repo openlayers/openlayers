@@ -682,7 +682,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
-   * @param {UIEvent} event Event.
+   * @param {UIEvent|import("./MapBrowserEventHandler").PointerEventData} event Event.
    * @return {import("./pixel.js").Pixel} Pixel.
    * @api
    */
@@ -944,9 +944,8 @@ class PluggableMap extends BaseObject {
    * @return {!Document} The document where the map is displayed.
    */
   getOwnerDocument() {
-    return this.getTargetElement()
-      ? this.getTargetElement().ownerDocument
-      : document;
+    const targetElement = this.getTargetElement();
+    return targetElement ? targetElement.ownerDocument : document;
   }
 
   /**
@@ -992,17 +991,7 @@ class PluggableMap extends BaseObject {
       eventType === EventType.WHEEL ||
       eventType === EventType.KEYDOWN
     ) {
-      const doc = this.getOwnerDocument();
-      const rootNode = this.viewport_.getRootNode
-        ? this.viewport_.getRootNode()
-        : doc;
-      const target =
-        'host' in rootNode // ShadowRoot
-          ? /** @type {ShadowRoot} */ (rootNode).elementFromPoint(
-              originalEvent.clientX,
-              originalEvent.clientY
-            )
-          : /** @type {Node} */ (originalEvent.target);
+      const target = /** @type {Node} */ (originalEvent.target);
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
         // to be handled by map interactions.
@@ -1011,7 +1000,7 @@ class PluggableMap extends BaseObject {
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        !(rootNode === doc ? doc.documentElement : rootNode).contains(target)
+        !this.getOwnerDocument().contains(target)
       ) {
         return;
       }

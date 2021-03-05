@@ -94,10 +94,16 @@ describe('ol/MapBrowserEventHandler', function () {
       expect(handler.down_).to.be(null);
     });
 
-    it('is an event after handlePointerDown_ has been called', function () {
+    it('is properly set after handlePointerDown_ has been called', function () {
       const event = new OlEvent('pointerdown');
+      event.clientX = 42;
+      event.clientY = 666;
+      event.target = 'foo';
       handler.handlePointerDown_(event);
-      expect(handler.down_).to.be(event);
+      expect(handler.down_.type).to.be('pointerdown');
+      expect(handler.down_.clientX).to.be(42);
+      expect(handler.down_.clientY).to.be(666);
+      expect(handler.down_.target).to.be('foo');
     });
   });
 
