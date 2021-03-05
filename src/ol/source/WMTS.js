@@ -451,7 +451,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let selectedMatrixLimit = {
     MinTileCol: 0,
     MinTileRow: 0,
-    // substract one to end up at tile top left
+    // subtract one to end up at tile top left
     MaxTileCol: matrix.MatrixWidth - 1,
     MaxTileRow: matrix.MatrixHeight - 1,
   };

@@ -1016,7 +1016,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Set whether the view shoud allow intermediary zoom levels.
+   * Set whether the view should allow intermediary zoom levels.
    * @param {boolean} enabled Whether the resolution is constrained.
    * @api
    */

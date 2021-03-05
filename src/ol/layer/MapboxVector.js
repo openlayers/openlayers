@@ -159,7 +159,7 @@ const SourceType = {
  * `source` property or the `layers` property to limit rendering to a single vector source.  The
  * `source` property corresponds to the id of a vector source in your Mapbox style.
  * @property {Array<string>} [layers] Limit rendering to the list of included layers.  All layers
- * must share the same vector soource.  If your style uses more than one source, you need to use
+ * must share the same vector source.  If your style uses more than one source, you need to use
  * either the `source` property or the `layers` property to limit rendering to a single vector
  * source.
  * @property {boolean} [declutter=true] Declutter images and text. Decluttering is applied to all

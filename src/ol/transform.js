@@ -203,7 +203,7 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
 /**
  * Creates a composite transform given an initial translation, scale, rotation, and
  * final translation (in that order only, not commutative). The resulting transform
- * string can be applied as `transform` porperty of an HTMLElement's style.
+ * string can be applied as `transform` property of an HTMLElement's style.
  * @param {number} dx1 Initial translation x.
  * @param {number} dy1 Initial translation y.
  * @param {number} sx Scale factor x.
