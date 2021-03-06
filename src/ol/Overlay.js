@@ -396,7 +396,7 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * Pan the map so that the overlay is entirely visisble in the current viewport
+   * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary) using the configured autoPan parameters
    * @protected
    */

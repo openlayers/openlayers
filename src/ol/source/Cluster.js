@@ -31,7 +31,7 @@ import {getUid} from '../util.js';
  * Function that takes an {@link module:ol/Feature} as argument and returns an
  * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
- * `null`. The default, which works when the underyling source contains point
+ * `null`. The default, which works when the underlying source contains point
  * features only, is
  * ```js
  * function(feature) {
@@ -216,7 +216,7 @@ class Cluster extends VectorSource {
 
   /**
    * Update the distances and refresh the source if necessary.
-   * @param {number} distance The new distnce.
+   * @param {number} distance The new distance.
    * @param {number} minDistance The new minimum distance.
    */
   updateDistance(distance, minDistance) {

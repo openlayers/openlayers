@@ -100,7 +100,7 @@ class LRUCache {
 
   /**
    * @param {string} key Key.
-   * @param {*} [opt_options] Options (reserverd for subclasses).
+   * @param {*} [opt_options] Options (reserved for subclasses).
    * @return {T} Value.
    */
   get(key, opt_options) {
