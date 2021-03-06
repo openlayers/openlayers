@@ -6,9 +6,10 @@ import TileImage from './TileImage.js';
 import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {appendParams} from '../uri.js';
 import {assign} from '../obj.js';
+import {containsExtent, getIntersection} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
-import {equivalent, get as getProjection} from '../proj.js';
+import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 import {find, findIndex, includes} from '../array.js';
 
 /**
@@ -442,9 +443,6 @@ export function optionsFromCapabilities(wmtsCap, config) {
     }
   }
 
-  const wrapX = false;
-  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
-
   let matrix = matrixSetObj.TileMatrix[0];
 
   // create default matrixLimit
@@ -471,6 +469,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     }
   }
 
+  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
   const resolution =
     (matrix.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
   const origin = switchOriginXY
@@ -479,7 +478,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   const tileSpanX = matrix.TileWidth * resolution;
   const tileSpanY = matrix.TileHeight * resolution;
 
-  const extent = [
+  const sourceExtent = [
     origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
     // add one to get proper bottom/right coordinate
     origin[1] - tileSpanY * (1 + selectedMatrixLimit.MaxTileRow),
@@ -488,12 +487,31 @@ export function optionsFromCapabilities(wmtsCap, config) {
   ];
 
   if (projection.getExtent() === null) {
-    projection.setExtent(extent);
+    projection.setExtent(sourceExtent);
+  }
+
+  const wgs84BoundingBox = l['WGS84BoundingBox'];
+  let wrapX = projection.canWrapX();
+  if (wgs84BoundingBox !== undefined) {
+    const wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
+    wrapX =
+      wrapX &&
+      wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
+      wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
+    const bbExtent = transformExtent(wgs84BoundingBox, 'EPSG:4326', projection);
+    const projectionExtent = projection.getExtent();
+    // If possible, do a sanity check on the bounding box extent - it should
+    // never be bigger than the validity extent of the projection of a matrix set.
+    if (!projectionExtent || containsExtent(projectionExtent, bbExtent)) {
+      if (containsExtent(sourceExtent, bbExtent)) {
+        getIntersection(bbExtent, sourceExtent, sourceExtent);
+      }
+    }
   }
 
   const tileGrid = createFromCapabilitiesMatrixSet(
     matrixSetObj,
-    extent,
+    sourceExtent,
     matrixLimits
   );
 
