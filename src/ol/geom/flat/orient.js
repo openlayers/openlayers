@@ -14,69 +14,19 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @return {boolean} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
-  // https://stackoverflow.com/a/1180256/2389327
-  // https://en.wikipedia.org/wiki/Curve_orientation#Orientation_of_a_simple_polygon
-
-  let firstVertexRepeated = true;
-  for (let i = 0; i < stride; ++i) {
-    if (flatCoordinates[offset + i] !== flatCoordinates[end - stride + i]) {
-      firstVertexRepeated = false;
-      break;
-    }
+  // https://stackoverflow.com/q/1165647/clockwise-method#1165943
+  // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrlinearring.cpp
+  let edge = 0;
+  let x1 = flatCoordinates[end - stride];
+  let y1 = flatCoordinates[end - stride + 1];
+  for (; offset < end; offset += stride) {
+    const x2 = flatCoordinates[offset];
+    const y2 = flatCoordinates[offset + 1];
+    edge += (x2 - x1) * (y2 + y1);
+    x1 = x2;
+    y1 = y2;
   }
-  if (firstVertexRepeated) {
-    end -= stride;
-  }
-  const iMinVertex = findCornerVertex(flatCoordinates, offset, end, stride);
-  // Orientation matrix:
-  //     [ 1  xa  ya ]
-  // O = | 1  xb  yb |
-  //     [ 1  xc  yc ]
-  let iPreviousVertex = iMinVertex - stride;
-  if (iPreviousVertex < offset) {
-    iPreviousVertex = end - stride;
-  }
-  let iNextVertex = iMinVertex + stride;
-  if (iNextVertex >= end) {
-    iNextVertex = offset;
-  }
-  const aX = flatCoordinates[iPreviousVertex];
-  const aY = flatCoordinates[iPreviousVertex + 1];
-  const bX = flatCoordinates[iMinVertex];
-  const bY = flatCoordinates[iMinVertex + 1];
-  const cX = flatCoordinates[iNextVertex];
-  const cY = flatCoordinates[iNextVertex + 1];
-  const determinant =
-    bX * cY + aX * bY + aY * cX - (aY * bX + bY * cX + aX * cY);
-
-  return determinant < 0;
-}
-
-// Find vertex along one edge of bounding box.
-// In this case, we find smallest y; in case of tie also smallest x.
-function findCornerVertex(flatCoordinates, offset, end, stride) {
-  let iMinVertex = -1;
-  let minY = Infinity;
-  let minXAtMinY = Infinity;
-  for (let i = offset; i < end; i += stride) {
-    const x = flatCoordinates[i];
-    const y = flatCoordinates[i + 1];
-    if (y > minY) {
-      continue;
-    }
-    if (y == minY) {
-      if (x >= minXAtMinY) {
-        continue;
-      }
-    }
-
-    // Minimum so far.
-    iMinVertex = i;
-    minY = y;
-    minXAtMinY = x;
-  }
-
-  return iMinVertex;
+  return edge === 0 ? undefined : edge > 0;
 }
 
 /**
@@ -88,7 +38,7 @@ function findCornerVertex(flatCoordinates, offset, end, stride) {
  * @param {number} offset Offset.
  * @param {Array<number>} ends Array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Test for right-hand orientation
+ * @param {boolean} [opt_right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -131,7 +81,7 @@ export function linearRingsAreOriented(
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Test for right-hand orientation
+ * @param {boolean} [opt_right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -166,7 +116,7 @@ export function linearRingssAreOriented(
  * @param {number} offset Offset.
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Follow the right-hand rule for orientation.
+ * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRings(
@@ -207,7 +157,7 @@ export function orientLinearRings(
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Follow the right-hand rule for orientation.
+ * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRingsArray(

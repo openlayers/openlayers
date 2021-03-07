@@ -78,7 +78,7 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
  */
 class EsriJSON extends JSONFeature {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -95,8 +95,8 @@ class EsriJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
-   * @param {string=} opt_idField Name of the field where to get the id from.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {string} [opt_idField] Name of the field where to get the id from.
    * @protected
    * @return {import("../Feature.js").default} Feature.
    */
@@ -120,7 +120,7 @@ class EsriJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -148,7 +148,7 @@ class EsriJSON extends JSONFeature {
 
   /**
    * @param {EsriJSONGeometry} object Object.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
@@ -180,7 +180,7 @@ class EsriJSON extends JSONFeature {
    * Encode a geometry as a EsriJSON object.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {EsriJSONGeometry} Object.
    * @api
    */
@@ -192,7 +192,7 @@ class EsriJSON extends JSONFeature {
    * Encode a feature as a esriJSON Feature object.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {Object} Object.
    * @api
    */
@@ -207,16 +207,14 @@ class EsriJSON extends JSONFeature {
     const geometry = feature.getGeometry();
     if (geometry) {
       object['geometry'] = writeGeometry(geometry, opt_options);
-      if (opt_options && opt_options.featureProjection) {
+      const projection =
+        opt_options &&
+        (opt_options.dataProjection || opt_options.featureProjection);
+      if (projection) {
         object['geometry'][
           'spatialReference'
         ] = /** @type {EsriJSONSpatialReferenceWkid} */ ({
-          wkid: Number(
-            getProjection(opt_options.featureProjection)
-              .getCode()
-              .split(':')
-              .pop()
-          ),
+          wkid: Number(getProjection(projection).getCode().split(':').pop()),
         });
       }
       delete properties[feature.getGeometryName()];
@@ -233,7 +231,7 @@ class EsriJSON extends JSONFeature {
    * Encode an array of features as a EsriJSON object.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {EsriJSONFeatureSet} EsriJSON Object.
    * @api
    */
@@ -251,7 +249,7 @@ class EsriJSON extends JSONFeature {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
  * @return {import("../geom/Geometry.js").default} Geometry.
  */
 function readGeometry(object, opt_options) {
@@ -431,7 +429,7 @@ function readPolygonGeometry(object) {
 
 /**
  * @param {import("../geom/Point.js").default} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONPoint} EsriJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
@@ -483,7 +481,7 @@ function getHasZM(geometry) {
 
 /**
  * @param {import("../geom/LineString.js").default} lineString Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 function writeLineStringGeometry(lineString, opt_options) {
@@ -499,7 +497,7 @@ function writeLineStringGeometry(lineString, opt_options) {
 
 /**
  * @param {import("../geom/Polygon.js").default} polygon Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writePolygonGeometry(polygon, opt_options) {
@@ -516,7 +514,7 @@ function writePolygonGeometry(polygon, opt_options) {
 
 /**
  * @param {import("../geom/MultiLineString.js").default} multiLineString Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 function writeMultiLineStringGeometry(multiLineString, opt_options) {
@@ -530,7 +528,7 @@ function writeMultiLineStringGeometry(multiLineString, opt_options) {
 
 /**
  * @param {import("../geom/MultiPoint.js").default} multiPoint Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
 function writeMultiPointGeometry(multiPoint, opt_options) {
@@ -544,7 +542,7 @@ function writeMultiPointGeometry(multiPoint, opt_options) {
 
 /**
  * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, opt_options) {
@@ -565,7 +563,7 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
+ * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {

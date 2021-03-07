@@ -18,8 +18,8 @@ class Circle extends SimpleGeometry {
    * @param {!import("../coordinate.js").Coordinate} center Center.
    *     For internal use, flat coordinates in combination with `opt_layout` and no
    *     `opt_radius` are also accepted.
-   * @param {number=} opt_radius Radius.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {number} [opt_radius] Radius.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    */
   constructor(center, opt_radius, opt_layout) {
     super();
@@ -37,7 +37,13 @@ class Circle extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new Circle(this.flatCoordinates.slice(), undefined, this.layout);
+    const circle = new Circle(
+      this.flatCoordinates.slice(),
+      undefined,
+      this.layout
+    );
+    circle.applyProperties(this);
+    return circle;
   }
 
   /**
@@ -183,7 +189,7 @@ class Circle extends SimpleGeometry {
    * number) of the circle.
    * @param {!import("../coordinate.js").Coordinate} center Center.
    * @param {number} radius Radius.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    * @api
    */
   setCenterAndRadius(center, radius, opt_layout) {
@@ -221,7 +227,7 @@ class Circle extends SimpleGeometry {
   /**
    * Rotate the geometry around a given coordinate. This modifies the geometry
    * coordinates in place.
-   * @param {number} angle Rotation angle in radians.
+   * @param {number} angle Rotation angle in counter-clockwise radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */

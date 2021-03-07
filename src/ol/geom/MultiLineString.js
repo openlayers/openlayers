@@ -28,8 +28,8 @@ class MultiLineString extends SimpleGeometry {
    * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
    *     combination with `opt_layout` and `opt_ends` are also accepted.)
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
-   * @param {Array<number>=} opt_ends Flat coordinate ends for internal use.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {Array<number>} [opt_ends] Flat coordinate ends for internal use.
    */
   constructor(coordinates, opt_layout, opt_ends) {
     super();
@@ -102,11 +102,13 @@ class MultiLineString extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new MultiLineString(
+    const multiLineString = new MultiLineString(
       this.flatCoordinates.slice(),
       this.layout,
       this.ends_.slice()
     );
+    multiLineString.applyProperties(this);
+    return multiLineString;
   }
 
   /**
@@ -163,8 +165,8 @@ class MultiLineString extends SimpleGeometry {
    * LineStrings.
    *
    * @param {number} m M.
-   * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
-   * @param {boolean=} opt_interpolate Interpolate. Default is `false`.
+   * @param {boolean} [opt_extrapolate] Extrapolate. Default is `false`.
+   * @param {boolean} [opt_interpolate] Interpolate. Default is `false`.
    * @return {import("../coordinate.js").Coordinate} Coordinate.
    * @api
    */
@@ -330,7 +332,7 @@ class MultiLineString extends SimpleGeometry {
   /**
    * Set the coordinates of the multilinestring.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-   * @param {GeometryLayout=} opt_layout Layout.
+   * @param {GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

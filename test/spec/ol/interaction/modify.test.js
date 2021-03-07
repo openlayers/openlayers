@@ -1,4 +1,5 @@
 import Circle from '../../../../src/ol/geom/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Collection from '../../../../src/ol/Collection.js';
 import Event from '../../../../src/ol/events/Event.js';
 import Feature from '../../../../src/ol/Feature.js';
@@ -8,11 +9,13 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../src/ol/geom/Polygon.js';
+import Polygon, {fromExtent} from '../../../../src/ol/geom/Polygon.js';
 import Snap from '../../../../src/ol/interaction/Snap.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import {Fill, Style} from '../../../../src/ol/style.js';
+import {MultiPoint} from '../../../../src/ol/geom.js';
 import {
   clearUserProjection,
   setUserProjection,
@@ -21,7 +24,7 @@ import {doubleClick} from '../../../../src/ol/events/condition.js';
 import {getValues} from '../../../../src/ol/obj.js';
 
 describe('ol.interaction.Modify', function () {
-  let target, map, source, features;
+  let target, map, layer, source, features;
 
   const width = 360;
   const height = 180;
@@ -55,7 +58,7 @@ describe('ol.interaction.Modify', function () {
       features: features,
     });
 
-    const layer = new VectorLayer({source: source});
+    layer = new VectorLayer({source: source});
 
     map = new Map({
       target: target,
@@ -139,7 +142,7 @@ describe('ol.interaction.Modify', function () {
     const startevent = events[0];
     const endevent = events[events.length - 1];
 
-    // first event should be modifystary
+    // first event should be modifystart
     expect(startevent).to.be.a(ModifyEvent);
     expect(startevent.type).to.eql('modifystart');
 
@@ -193,6 +196,22 @@ describe('ol.interaction.Modify', function () {
       const rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
+    });
+
+    it('accepts a hitDetection option', function () {
+      const feature = new Feature(new Point([0, 0]));
+      const source = new VectorSource({features: [feature]});
+      const layer = new VectorLayer({source: source});
+      const modify = new Modify({hitDetection: layer, source: source});
+      const rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(1);
+      expect(rbushEntries[0].feature).to.be(feature);
+      expect(modify.hitDetection_).to.be(layer);
+    });
+
+    it('accepts a snapToPointer option', function () {
+      const modify = new Modify({source: source, snapToPointer: true});
+      expect(modify.snapToPointer_).to.be(true);
     });
   });
 
@@ -398,6 +417,72 @@ describe('ol.interaction.Modify', function () {
     });
   });
 
+  describe('vertex insertion', function () {
+    it('only inserts one vertex per geometry', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [-10, -10],
+          [10, 10],
+          [-10, -10],
+          [10, 10],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      // Click on line
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointerup', 0, 0, null, 0);
+
+      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(5);
+    });
+    it('inserts one vertex into both linestrings with duplicate segments each', function () {
+      const lineFeature1 = new Feature(
+        new LineString([
+          [-10, -10],
+          [10, 10],
+          [-10, -10],
+        ])
+      );
+      const lineFeature2 = new Feature(
+        new LineString([
+          [10, 10],
+          [-10, -10],
+          [10, 10],
+        ])
+      );
+      features.length = 0;
+      features.push(lineFeature1, lineFeature2);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      let modifiedFeatures;
+
+      const onModifyStart = function (evt) {
+        modifiedFeatures = evt.features;
+      };
+      map.addInteraction(modify);
+
+      modify.on('modifystart', onModifyStart);
+      // Click on line
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointerup', 0, 0, null, 0);
+      modify.un('modifystart', onModifyStart);
+
+      expect(lineFeature1.getGeometry().getCoordinates().length).to.be(4);
+      expect(lineFeature2.getGeometry().getCoordinates().length).to.be(4);
+      expect(modifiedFeatures.getArray()).to.eql([lineFeature1, lineFeature2]);
+    });
+  });
+
   describe('circle modification', function () {
     it('changes the circle radius and center', function () {
       const circleFeature = new Feature(new Circle([10, 10], 20));
@@ -426,7 +511,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(25);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 0.1);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis
@@ -436,7 +521,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -35, null, 0);
       simulateEvent('pointerup', 5, -35, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(30);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(30, 0.1);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
     });
 
@@ -481,7 +566,7 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 0.1);
       expect(geometry2.getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis
@@ -495,7 +580,7 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 0.1);
       expect(geometry3.getCenter()).to.eql([5, 5]);
     });
   });
@@ -504,6 +589,7 @@ describe('ol.interaction.Modify', function () {
     let modify, feature, events;
 
     beforeEach(function () {
+      features.push(new Feature(new Point([12, 34])));
       modify = new Modify({
         features: new Collection(features),
       });
@@ -883,19 +969,119 @@ describe('ol.interaction.Modify', function () {
     });
   });
 
-  describe('#setActive', function () {
-    it('removes the vertexFeature of deactivation', function () {
+  describe('Vertex feature', function () {
+    it('tracks features and geometries and removes the vertexFeature on deactivation', function () {
+      const collection = new Collection(features);
       const modify = new Modify({
-        features: new Collection(features),
+        features: collection,
       });
       map.addInteraction(modify);
       expect(modify.vertexFeature_).to.be(null);
 
       simulateEvent('pointermove', 10, -20, null, 0);
       expect(modify.vertexFeature_).to.not.be(null);
+      expect(modify.vertexFeature_.get('features').length).to.be(1);
+      expect(modify.vertexFeature_.get('geometries').length).to.be(1);
 
       modify.setActive(false);
       expect(modify.vertexFeature_).to.be(null);
+      map.removeInteraction(modify);
+    });
+
+    it('tracks features and geometries - multi geometry', function () {
+      const collection = new Collection();
+      const modify = new Modify({
+        features: collection,
+      });
+      map.addInteraction(modify);
+      const feature = new Feature(
+        new MultiPoint([
+          [10, 10],
+          [10, 20],
+        ])
+      );
+      collection.push(feature);
+      simulateEvent('pointermove', 10, -20, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
+      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+        feature.getGeometry()
+      );
+      map.removeInteraction(modify);
+    });
+
+    it('tracks features and geometries - geometry collection', function () {
+      const collection = new Collection();
+      const modify = new Modify({
+        features: collection,
+      });
+      map.addInteraction(modify);
+      const feature = new Feature(
+        new GeometryCollection([fromExtent([0, 0, 10, 10]), new Point([5, 5])])
+      );
+      collection.push(feature);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
+      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+        feature.getGeometry().getGeometriesArray()[1]
+      );
+    });
+
+    it('works with hit detection of point features', function () {
+      const modify = new Modify({
+        hitDetection: layer,
+        source: source,
+      });
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([0, 0]));
+      source.addFeature(pointFeature);
+      layer.setStyle(
+        new Style({
+          image: new CircleStyle({
+            radius: 30,
+            fill: new Fill({
+              color: 'fuchsia',
+            }),
+          }),
+        })
+      );
+      map.renderSync();
+      simulateEvent('pointermove', 10, -10, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
+      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+        pointFeature.getGeometry()
+      );
+    });
+
+    it('snaps to pointer by default', function () {
+      const modify = new Modify({
+        source: source,
+      });
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([0, 0]));
+      source.addFeature(pointFeature);
+      map.renderSync();
+      simulateEvent('pointerdown', 2, 2, null, 0);
+      simulateEvent('pointerdrag', 2, 2, null, 0);
+      simulateEvent('pointerup', 2, 2, null, 0);
+      expect(pointFeature.getGeometry().getCoordinates()).to.eql([2, -2]);
+    });
+
+    it('does not snap to pointer when snapToPointer is false', function () {
+      const modify = new Modify({
+        source: source,
+        snapToPointer: false,
+      });
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([0, 0]));
+      source.addFeature(pointFeature);
+      map.renderSync();
+      simulateEvent('pointerdown', 2, 2, null, 0);
+      simulateEvent('pointerdrag', 2, 2, null, 0);
+      simulateEvent('pointerup', 2, 2, null, 0);
+      expect(pointFeature.getGeometry().getCoordinates()).to.eql([0, 0]);
     });
   });
 
@@ -942,7 +1128,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(25);
+      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 1e-9);
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis

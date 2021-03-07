@@ -1,0 +1,23 @@
+---
+layout: example.html
+title: View Padding
+shortdesc: This example demonstrates the use of the view's padding option.
+docs: >
+  This example demonstrates how a map's view can be configured to accommodate
+  for viewport space covered by other elements.
+  If the map viewport is partially covered with other content (overlays) along
+  its edges, the `padding` option allows to shift the center of the viewport away from
+  that content. The shifted viewport center will also be the anchor for zooming in and
+  out with the Zoom controls, and for rotating.
+  <p>Use <code>Alt+Shift+Drag</code> to rotate the map.</p>
+tags: "center, padding, view, shift"
+---
+<div class="mapcontainer">
+  <div id="map" class="map"></div>
+  <div class="padding-top"></div>
+  <div class="padding-left"></div>
+  <div class="padding-right"></div>
+  <div class="padding-bottom"></div>
+</div>
+<button id="zoomtoswitzerland">Zoom to Switzerland</button>
+<button id="centerlausanne">Center on Lausanne</button>

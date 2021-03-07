@@ -28,7 +28,7 @@ import {toSize} from '../size.js';
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
- * @property {import("../extent.js").Extent} [extent]
+ * @property {import("../extent.js").Extent} [extent] Extent.
  * @property {import("../format/Feature.js").default} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
@@ -528,11 +528,22 @@ export default VectorTile;
  * @param {string} url URL.
  */
 export function defaultLoadFunction(tile, url) {
-  const loader = loadFeaturesXhr(
-    url,
-    tile.getFormat(),
-    tile.onLoad.bind(tile),
-    tile.onError.bind(tile)
+  tile.setLoader(
+    /**
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @param {number} resolution Resolution.
+     * @param {import("../proj/Projection.js").default} projection Projection.
+     */
+    function (extent, resolution, projection) {
+      loadFeaturesXhr(
+        url,
+        tile.getFormat(),
+        extent,
+        resolution,
+        projection,
+        tile.onLoad.bind(tile),
+        tile.onError.bind(tile)
+      );
+    }
   );
-  tile.setLoader(loader);
 }

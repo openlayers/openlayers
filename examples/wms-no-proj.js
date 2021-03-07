@@ -4,13 +4,14 @@ import Projection from '../src/ol/proj/Projection.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 
 const layers = [
   new TileLayer({
     source: new TileWMS({
       attributions:
-        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-        'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
+        '© <a href="https://shop.swisstopo.admin.ch/en/products/maps/national/lk1000"' +
+        'target="_blank">Pixelmap 1:1000000 / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
@@ -22,10 +23,10 @@ const layers = [
   new ImageLayer({
     source: new ImageWMS({
       attributions:
-        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-        'en/home.html">National parks / geo.admin.ch</a>',
+        '© <a href="https://www.hydrodaten.admin.ch/en/notes-on-the-flood-alert-maps.html"' +
+        'target="_blank">Flood Alert / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      params: {'LAYERS': 'ch.bafu.hydroweb-warnkarte_national'},
       serverType: 'mapserver',
       url: 'https://wms.geo.admin.ch/',
     }),
@@ -37,12 +38,18 @@ const layers = [
 // projection object. Requesting tiles only needs the code together with a
 // tile grid of Cartesian coordinates; it does not matter how those
 // coordinates relate to latitude or longitude.
+//
+// With no transforms available projection units must be assumed to represent
+// true distances. In the case of local projections this may be a sufficiently
+// close approximation for a meaningful (if not 100% accurate) ScaleLine control.
+
 const projection = new Projection({
   code: 'EPSG:21781',
   units: 'm',
 });
 
 const map = new Map({
+  controls: defaultControls().extend([new ScaleLine()]),
   layers: layers,
   target: 'map',
   view: new View({

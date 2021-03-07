@@ -7,6 +7,7 @@ import {
   isTypeUnique,
   numberToGlsl,
   stringToGlsl,
+  uniformNameForVariable,
 } from '../../../../src/ol/style/expressions.js';
 
 describe('ol.style.expressions', function () {
@@ -211,7 +212,9 @@ describe('ol.style.expressions', function () {
 
     it('correctly converts expressions to GLSL', function () {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('a_myAttr');
-      expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql('u_myValue');
+      expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql(
+        uniformNameForVariable('myValue')
+      );
       expect(expressionToGlsl(context, ['time'])).to.eql('u_time');
       expect(expressionToGlsl(context, ['zoom'])).to.eql('u_zoom');
       expect(expressionToGlsl(context, ['resolution'])).to.eql('u_resolution');
@@ -271,6 +274,13 @@ describe('ol.style.expressions', function () {
       expect(
         expressionToGlsl(context, ['color', ['get', 'attr4'], 1, 2, 0.5])
       ).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
+    });
+
+    it('throws if the value does not match the type', function () {
+      const call = function () {
+        expressionToGlsl(context, '42', ValueTypes.NUMBER);
+      };
+      expect(call).to.throwException(/Unexpected expression/);
     });
 
     it('correctly adapts output for fragment shaders', function () {

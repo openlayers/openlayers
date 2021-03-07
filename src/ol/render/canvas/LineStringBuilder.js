@@ -6,6 +6,7 @@ import CanvasInstruction, {
   beginPathInstruction,
   strokeInstruction,
 } from './Instruction.js';
+import {defaultLineDash, defaultLineDashOffset} from '../canvas.js';
 
 class CanvasLineStringBuilder extends CanvasBuilder {
   /**
@@ -28,7 +29,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    */
   drawFlatCoordinates_(flatCoordinates, offset, end, stride) {
     const myBegin = this.coordinates.length;
-    const myEnd = this.appendFlatCoordinates(
+    const myEnd = this.appendFlatLineCoordinates(
       flatCoordinates,
       offset,
       end,
@@ -67,8 +68,8 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         state.lineCap,
         state.lineJoin,
         state.miterLimit,
-        state.lineDash,
-        state.lineDashOffset,
+        defaultLineDash,
+        defaultLineDashOffset,
       ],
       beginPathInstruction
     );
@@ -127,7 +128,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
+   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     const state = this.state;

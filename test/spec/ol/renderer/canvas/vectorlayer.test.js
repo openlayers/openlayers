@@ -189,7 +189,8 @@ describe('ol.renderer.canvas.VectorLayer', function () {
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    let layer, renderer;
+    /** @type {VectorLayer} */ let layer;
+    /** @type {CanvasVectorLayerRenderer} */ let renderer;
 
     beforeEach(function () {
       layer = new VectorLayer({
@@ -205,15 +206,17 @@ describe('ol.renderer.canvas.VectorLayer', function () {
         hitTolerance,
         callback
       ) {
-        const feature = new Feature();
-        callback(feature);
-        callback(feature);
+        const feature = new Feature(new Point([0, 0]));
+        const distanceSq = 0;
+        callback(feature, feature.getGeometry(), distanceSq);
+        callback(feature, feature.getGeometry(), distanceSq);
       };
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
       const spy = sinon.spy();
       const coordinate = [0, 0];
+      const matches = [];
       const frameState = {
         layerStatesArray: [{}],
         viewState: {
@@ -227,10 +230,11 @@ describe('ol.renderer.canvas.VectorLayer', function () {
         frameState,
         0,
         spy,
-        undefined
+        matches
       );
       expect(spy.callCount).to.be(1);
-      expect(spy.getCall(0).args[1]).to.equal(layer);
+      expect(spy.getCall(0).args[1]).to.be(layer);
+      expect(matches).to.be.empty();
     });
   });
 

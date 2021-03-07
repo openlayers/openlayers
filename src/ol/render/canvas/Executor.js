@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
-import RBush from 'rbush/rbush.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
@@ -11,13 +10,7 @@ import {
   create as createTransform,
   setFromArray as transformSetFromArray,
 } from '../../transform.js';
-import {
-  createEmpty,
-  createOrUpdate,
-  getHeight,
-  getWidth,
-  intersects,
-} from '../../extent.js';
+import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
 import {
   defaultPadding,
   defaultTextBaseline,
@@ -35,24 +28,40 @@ import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
 /**
- * @typedef {Object} SerializableInstructions
- * @property {Array<*>} instructions The rendering instructions.
- * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
- * @property {Array<number>} coordinates The array of all coordinates.
- * @property {!Object<string, import("../canvas.js").TextState>} textStates The text states (decluttering).
- * @property {!Object<string, import("../canvas.js").FillState>} fillStates The fill states (decluttering).
- * @property {!Object<string, import("../canvas.js").StrokeState>} strokeStates The stroke states (decluttering).
+ * @typedef {Object} BBox
+ * @property {number} minX Minimal x.
+ * @property {number} minY Minimal y.
+ * @property {number} maxX Maximal x.
+ * @property {number} maxY Maximal y
+ * @property {*} value Value.
+ */
+
+/**
+ * @typedef {Object} ImageOrLabelDimensions
+ * @property {number} drawImageX DrawImageX.
+ * @property {number} drawImageY DrawImageY.
+ * @property {number} drawImageW DrawImageW.
+ * @property {number} drawImageH DrawImageH.
+ * @property {number} originX OriginX.
+ * @property {number} originY OriginY.
+ * @property {Array<number>} scale Scale.
+ * @property {BBox} declutterBox DeclutterBox.
+ * @property {import("../../transform.js").Transform} canvasTransform CanvasTransform.
+ */
+
+/**
+ * @typedef {{0: CanvasRenderingContext2D, 1: number, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ */
+
+/**
+ * @template T
+ * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default): T} FeatureCallback
  */
 
 /**
  * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
-
-/**
- * @type {!import("../../transform.js").Transform}
- */
-const tmpTransform = createTransform();
 
 /** @type {import("../../coordinate.js").Coordinate} */
 const p1 = [];
@@ -63,15 +72,46 @@ const p3 = [];
 /** @type {import("../../coordinate.js").Coordinate} */
 const p4 = [];
 
+/**
+ * @param {ReplayImageOrLabelArgs} replayImageOrLabelArgs Arguments to replayImageOrLabel
+ * @return {BBox} Declutter bbox.
+ */
+function getDeclutterBox(replayImageOrLabelArgs) {
+  return replayImageOrLabelArgs[3].declutterBox;
+}
+
+const rtlRegEx = new RegExp(
+  /* eslint-disable prettier/prettier */
+  '[' +
+    String.fromCharCode(0x00591) + '-' + String.fromCharCode(0x008ff) +
+    String.fromCharCode(0x0fb1d) + '-' + String.fromCharCode(0x0fdff) +
+    String.fromCharCode(0x0fe70) + '-' + String.fromCharCode(0x0fefc) +
+    String.fromCharCode(0x10800) + '-' + String.fromCharCode(0x10fff) +
+    String.fromCharCode(0x1e800) + '-' + String.fromCharCode(0x1efff) +
+  ']'
+  /* eslint-enable prettier/prettier */
+);
+
+/**
+ * @param {string} text Text.
+ * @param {string} align Alignment.
+ * @return {number} Text alignment.
+ */
+function horizontalTextAlign(text, align) {
+  if ((align === 'start' || align === 'end') && !rtlRegEx.test(text)) {
+    align = align === 'start' ? 'left' : 'right';
+  }
+  return TEXT_ALIGN[align];
+}
+
 class Executor {
   /**
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
-   * @param {SerializableInstructions} instructions The serializable instructions
-   * @param {import("../../size.js").Size} renderBuffer Render buffer (width/height) in pixels.
+   * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions
    */
-  constructor(resolution, pixelRatio, overlaps, instructions, renderBuffer) {
+  constructor(resolution, pixelRatio, overlaps, instructions) {
     /**
      * @protected
      * @type {boolean}
@@ -98,11 +138,6 @@ class Executor {
     this.alignFill_;
 
     /**
-     * @type {Array<*>}
-     */
-    this.declutterItems = [];
-
-    /**
      * @protected
      * @type {Array<*>}
      */
@@ -119,12 +154,6 @@ class Executor {
      * @type {!Object<number,import("../../coordinate.js").Coordinate|Array<import("../../coordinate.js").Coordinate>|Array<Array<import("../../coordinate.js").Coordinate>>>}
      */
     this.coordinateCache_ = {};
-
-    /**
-     * @private
-     * @type {import("../../size.js").Size}
-     */
-    this.renderBuffer_ = renderBuffer;
 
     /**
      * @private
@@ -198,7 +227,10 @@ class Executor {
       textState.scale[0] * pixelRatio,
       textState.scale[1] * pixelRatio,
     ];
-    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const align = horizontalTextAlign(
+      text,
+      textState.textAlign || defaultTextAlign
+    );
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
@@ -274,7 +306,6 @@ class Executor {
    * @param {import("../../coordinate.js").Coordinate} p4 4th point of the background box.
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
-   * @param {boolean} declutter Declutter.
    */
   replayTextBackground_(
     context,
@@ -283,8 +314,7 @@ class Executor {
     p3,
     p4,
     fillInstruction,
-    strokeInstruction,
-    declutter
+    strokeInstruction
   ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
@@ -294,9 +324,6 @@ class Executor {
     context.lineTo.apply(context, p1);
     if (fillInstruction) {
       this.alignFill_ = /** @type {boolean} */ (fillInstruction[2]);
-      if (declutter) {
-        context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (fillInstruction[1]);
-      }
       this.fill_(context);
     }
     if (strokeInstruction) {
@@ -310,62 +337,49 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} contextScale Scale of the context.
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
+   * @param {number} sheetWidth Width of the sprite sheet.
+   * @param {number} sheetHeight Height of the sprite sheet.
+   * @param {number} centerX X.
+   * @param {number} centerY Y.
+   * @param {number} width Width.
+   * @param {number} height Height.
    * @param {number} anchorX Anchor X.
    * @param {number} anchorY Anchor Y.
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
-   * @param {number} height Height.
-   * @param {number} opacity Opacity.
    * @param {number} originX Origin X.
    * @param {number} originY Origin Y.
    * @param {number} rotation Rotation.
    * @param {import("../../size.js").Size} scale Scale.
    * @param {boolean} snapToPixel Snap to pixel.
-   * @param {number} width Width.
    * @param {Array<number>} padding Padding.
-   * @param {Array<*>} fillInstruction Fill instruction.
-   * @param {Array<*>} strokeInstruction Stroke instruction.
-   * @return {boolean} The image or label was rendered.
+   * @param {boolean} fillStroke Background fill or stroke.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @return {ImageOrLabelDimensions} Dimensions for positioning and decluttering the image or label.
    */
-  replayImageOrLabel_(
-    context,
-    contextScale,
-    x,
-    y,
-    imageOrLabel,
+  calculateImageOrLabelDimensions_(
+    sheetWidth,
+    sheetHeight,
+    centerX,
+    centerY,
+    width,
+    height,
     anchorX,
     anchorY,
-    declutterGroup,
-    height,
-    opacity,
     originX,
     originY,
     rotation,
     scale,
     snapToPixel,
-    width,
     padding,
-    fillInstruction,
-    strokeInstruction
+    fillStroke,
+    feature
   ) {
-    const fillStroke = fillInstruction || strokeInstruction;
     anchorX *= scale[0];
     anchorY *= scale[1];
-    x -= anchorX;
-    y -= anchorY;
+    let x = centerX - anchorX;
+    let y = centerY - anchorY;
 
-    const w =
-      width + originX > imageOrLabel.width
-        ? imageOrLabel.width - originX
-        : width;
-    const h =
-      height + originY > imageOrLabel.height
-        ? imageOrLabel.height - originY
-        : height;
+    const w = width + originX > sheetWidth ? sheetWidth - originX : width;
+    const h = height + originY > sheetHeight ? sheetHeight - originY : height;
     const boxW = padding[3] + w * scale[0] + padding[1];
     const boxH = padding[0] + h * scale[1] + padding[2];
     const boxX = x - padding[3];
@@ -382,12 +396,10 @@ class Executor {
       p4[1] = p3[1];
     }
 
-    let transform = null;
+    let transform;
     if (rotation !== 0) {
-      const centerX = x + anchorX;
-      const centerY = y + anchorY;
       transform = composeTransform(
-        tmpTransform,
+        createTransform(),
         centerX,
         centerY,
         1,
@@ -397,10 +409,10 @@ class Executor {
         -centerY
       );
 
-      applyTransform(tmpTransform, p1);
-      applyTransform(tmpTransform, p2);
-      applyTransform(tmpTransform, p3);
-      applyTransform(tmpTransform, p4);
+      applyTransform(transform, p1);
+      applyTransform(transform, p2);
+      applyTransform(transform, p3);
+      applyTransform(transform, p4);
       createOrUpdate(
         Math.min(p1[0], p2[0], p3[0], p4[0]),
         Math.min(p1[1], p2[1], p3[1], p4[1]),
@@ -409,68 +421,71 @@ class Executor {
         tmpExtent
       );
     } else {
-      createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
+      createOrUpdate(
+        Math.min(boxX, boxX + boxW),
+        Math.min(boxY, boxY + boxH),
+        Math.max(boxX, boxX + boxW),
+        Math.max(boxY, boxY + boxH),
+        tmpExtent
+      );
     }
-    let renderBufferX = 0;
-    let renderBufferY = 0;
-    if (declutterGroup) {
-      const renderBuffer = this.renderBuffer_;
-      renderBuffer[0] = Math.max(renderBuffer[0], getWidth(tmpExtent));
-      renderBufferX = renderBuffer[0];
-      renderBuffer[1] = Math.max(renderBuffer[1], getHeight(tmpExtent));
-      renderBufferY = renderBuffer[1];
-    }
-    const canvas = context.canvas;
-    const strokePadding = strokeInstruction
-      ? (strokeInstruction[2] * scale[0]) / 2
-      : 0;
-    const intersects =
-      tmpExtent[0] - strokePadding <=
-        (canvas.width + renderBufferX) / contextScale &&
-      tmpExtent[2] + strokePadding >= -renderBufferX / contextScale &&
-      tmpExtent[1] - strokePadding <=
-        (canvas.height + renderBufferY) / contextScale &&
-      tmpExtent[3] + strokePadding >= -renderBufferY / contextScale;
-
     if (snapToPixel) {
       x = Math.round(x);
       y = Math.round(y);
     }
+    return {
+      drawImageX: x,
+      drawImageY: y,
+      drawImageW: w,
+      drawImageH: h,
+      originX: originX,
+      originY: originY,
+      declutterBox: {
+        minX: tmpExtent[0],
+        minY: tmpExtent[1],
+        maxX: tmpExtent[2],
+        maxY: tmpExtent[3],
+        value: feature,
+      },
+      canvasTransform: transform,
+      scale: scale,
+    };
+  }
 
-    if (declutterGroup) {
-      if (!intersects && declutterGroup[0] == 1) {
-        return false;
-      }
-      const declutterArgs = intersects
-        ? [
-            context,
-            transform ? transform.slice(0) : null,
-            opacity,
-            imageOrLabel,
-            originX,
-            originY,
-            w,
-            h,
-            x,
-            y,
-            scale,
-            tmpExtent.slice(),
-          ]
-        : null;
-      if (declutterArgs) {
-        if (fillStroke) {
-          declutterArgs.push(
-            fillInstruction,
-            strokeInstruction,
-            p1.slice(0),
-            p2.slice(0),
-            p3.slice(0),
-            p4.slice(0)
-          );
-        }
-        declutterGroup.push(declutterArgs);
-      }
-    } else if (intersects) {
+  /**
+   * @private
+   * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} contextScale Scale of the context.
+   * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
+   * @param {ImageOrLabelDimensions} dimensions Dimensions.
+   * @param {number} opacity Opacity.
+   * @param {Array<*>} fillInstruction Fill instruction.
+   * @param {Array<*>} strokeInstruction Stroke instruction.
+   * @return {boolean} The image or label was rendered.
+   */
+  replayImageOrLabel_(
+    context,
+    contextScale,
+    imageOrLabel,
+    dimensions,
+    opacity,
+    fillInstruction,
+    strokeInstruction
+  ) {
+    const fillStroke = !!(fillInstruction || strokeInstruction);
+
+    const box = dimensions.declutterBox;
+    const canvas = context.canvas;
+    const strokePadding = strokeInstruction
+      ? (strokeInstruction[2] * dimensions.scale[0]) / 2
+      : 0;
+    const intersects =
+      box.minX - strokePadding <= canvas.width / contextScale &&
+      box.maxX + strokePadding >= 0 &&
+      box.minY - strokePadding <= canvas.height / contextScale &&
+      box.maxY + strokePadding >= 0;
+
+    if (intersects) {
       if (fillStroke) {
         this.replayTextBackground_(
           context,
@@ -479,22 +494,21 @@ class Executor {
           p3,
           p4,
           /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction),
-          false
+          /** @type {Array<*>} */ (strokeInstruction)
         );
       }
       drawImageOrLabel(
         context,
-        transform,
+        dimensions.canvasTransform,
         opacity,
         imageOrLabel,
-        originX,
-        originY,
-        w,
-        h,
-        x,
-        y,
-        scale
+        dimensions.originX,
+        dimensions.originY,
+        dimensions.drawImageW,
+        dimensions.drawImageH,
+        dimensions.drawImageX,
+        dimensions.drawImageY,
+        dimensions.scale
       );
     }
     return true;
@@ -524,7 +538,9 @@ class Executor {
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
-    context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+    context[
+      'strokeStyle'
+    ] = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
@@ -533,68 +549,6 @@ class Executor {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
       context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
     }
-  }
-
-  /**
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
-   * @param {import("../../Feature.js").FeatureLike} feature Feature.
-   * @param {number} opacity Layer opacity.
-   * @param {?} declutterTree Declutter tree.
-   * @return {?} Declutter tree.
-   */
-  renderDeclutter(declutterGroup, feature, opacity, declutterTree) {
-    /** @type {Array<import("../../structs/RBush.js").Entry>} */
-    const boxes = [];
-    for (let i = 1, ii = declutterGroup.length; i < ii; ++i) {
-      const declutterData = declutterGroup[i];
-      const box = declutterData[11];
-      boxes.push({
-        minX: box[0],
-        minY: box[1],
-        maxX: box[2],
-        maxY: box[3],
-        value: feature,
-      });
-    }
-    if (!declutterTree) {
-      declutterTree = new RBush(9);
-    }
-    let collides = false;
-    for (let i = 0, ii = boxes.length; i < ii; ++i) {
-      if (declutterTree.collides(boxes[i])) {
-        collides = true;
-        break;
-      }
-    }
-    if (!collides) {
-      declutterTree.load(boxes);
-      for (let j = 1, jj = declutterGroup.length; j < jj; ++j) {
-        const declutterData = /** @type {Array} */ (declutterGroup[j]);
-        const context = declutterData[0];
-        const currentAlpha = context.globalAlpha;
-        if (currentAlpha !== opacity) {
-          context.globalAlpha = opacity;
-        }
-        if (declutterData.length > 12) {
-          this.replayTextBackground_(
-            declutterData[0],
-            declutterData[14],
-            declutterData[15],
-            declutterData[16],
-            declutterData[17],
-            declutterData[12],
-            declutterData[13],
-            true
-          );
-        }
-        drawImageOrLabel.apply(undefined, declutterData);
-        if (currentAlpha !== opacity) {
-          context.globalAlpha = currentAlpha;
-        }
-      }
-    }
-    declutterGroup.length = 1;
-    return declutterTree;
   }
 
   /**
@@ -612,7 +566,10 @@ class Executor {
 
     const strokeState = this.strokeStates[strokeKey];
     const pixelRatio = this.pixelRatio;
-    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const align = horizontalTextAlign(
+      text,
+      textState.textAlign || defaultTextAlign
+    );
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth =
       strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
@@ -638,9 +595,10 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {function(import("../../Feature.js").FeatureLike): T|undefined} featureCallback Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
-   *     extent.
+   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
+   *     features that intersect this extent.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -650,10 +608,10 @@ class Executor {
     transform,
     instructions,
     snapToPixel,
-    featureCallback,
-    opt_hitExtent
+    opt_featureCallback,
+    opt_hitExtent,
+    opt_declutterTree
   ) {
-    this.declutterItems.length = 0;
     /** @type {Array<number>} */
     let pixelCoordinates;
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
@@ -682,12 +640,11 @@ class Executor {
       prevY,
       roundX,
       roundY,
-      declutterGroup,
-      declutterGroups,
       image,
       text,
-      textKey;
-    let strokeKey, fillKey;
+      textKey,
+      strokeKey,
+      fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
     let lastFillInstruction = null;
@@ -709,18 +666,19 @@ class Executor {
     const batchSize =
       this.instructions != instructions || this.overlaps ? 0 : 200;
     let /** @type {import("../../Feature.js").FeatureLike} */ feature;
-    let x, y;
+    let x, y, currentGeometry;
     while (i < ii) {
       const instruction = instructions[i];
       const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
+          currentGeometry = instruction[3];
           if (!feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (
             opt_hitExtent !== undefined &&
-            !intersects(opt_hitExtent, instruction[3])
+            !intersects(opt_hitExtent, currentGeometry.getExtent())
           ) {
             i = /** @type {number} */ (instruction[2]) + 1;
           } else {
@@ -790,15 +748,15 @@ class Executor {
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
-          declutterGroups = featureCallback ? null : instruction[6];
-          let height = /** @type {number} */ (instruction[7]);
-          const opacity = /** @type {number} */ (instruction[8]);
-          const originX = /** @type {number} */ (instruction[9]);
-          const originY = /** @type {number} */ (instruction[10]);
-          const rotateWithView = /** @type {boolean} */ (instruction[11]);
-          let rotation = /** @type {number} */ (instruction[12]);
-          const scale = /** @type {import("../../size.js").Size} */ (instruction[13]);
-          let width = /** @type {number} */ (instruction[14]);
+          let height = /** @type {number} */ (instruction[6]);
+          const opacity = /** @type {number} */ (instruction[7]);
+          const originX = /** @type {number} */ (instruction[8]);
+          const originY = /** @type {number} */ (instruction[9]);
+          const rotateWithView = /** @type {boolean} */ (instruction[10]);
+          let rotation = /** @type {number} */ (instruction[11]);
+          const scale = /** @type {import("../../size.js").Size} */ (instruction[12]);
+          let width = /** @type {number} */ (instruction[13]);
+          const declutterImageWithText = /** @type {import("../canvas.js").DeclutterImageWithText} */ (instruction[14]);
 
           if (!image && instruction.length >= 19) {
             // create label images
@@ -821,9 +779,9 @@ class Executor {
             anchorY = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
             instruction[5] = anchorY;
             height = image.height;
-            instruction[7] = height;
+            instruction[6] = height;
             width = image.width;
-            instruction[14] = width;
+            instruction[13] = width;
           }
 
           let geometryWidths;
@@ -850,7 +808,6 @@ class Executor {
             rotation -= viewRotation;
           }
           let widthIndex = 0;
-          let declutterGroupIndex = 0;
           for (; d < dd; d += 2) {
             if (
               geometryWidths &&
@@ -858,51 +815,73 @@ class Executor {
             ) {
               continue;
             }
-            if (declutterGroups) {
-              const index = Math.floor(declutterGroupIndex);
-              declutterGroup =
-                declutterGroups.length < index + 1
-                  ? [declutterGroups[0][0]]
-                  : declutterGroups[index];
-            }
-            const rendered = this.replayImageOrLabel_(
-              context,
-              contextScale,
+            const dimensions = this.calculateImageOrLabelDimensions_(
+              image.width,
+              image.height,
               pixelCoordinates[d],
               pixelCoordinates[d + 1],
-              image,
+              width,
+              height,
               anchorX,
               anchorY,
-              declutterGroup,
-              height,
-              opacity,
               originX,
               originY,
               rotation,
               scale,
               snapToPixel,
-              width,
               padding,
+              backgroundFill || backgroundStroke,
+              feature
+            );
+            /** @type {ReplayImageOrLabelArgs} */
+            const args = [
+              context,
+              contextScale,
+              image,
+              dimensions,
+              opacity,
               backgroundFill
                 ? /** @type {Array<*>} */ (lastFillInstruction)
                 : null,
               backgroundStroke
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
-                : null
-            );
-            if (
-              rendered &&
-              declutterGroup &&
-              declutterGroups[declutterGroups.length - 1] !== declutterGroup
-            ) {
-              declutterGroups.push(declutterGroup);
-            }
-            if (declutterGroup) {
-              if (declutterGroup.length - 1 === declutterGroup[0]) {
-                this.declutterItems.push(this, declutterGroup, feature);
+                : null,
+            ];
+            let imageArgs;
+            let imageDeclutterBox;
+            if (opt_declutterTree && declutterImageWithText) {
+              const index = dd - d;
+              if (!declutterImageWithText[index]) {
+                // We now have the image for an image+text combination.
+                declutterImageWithText[index] = args;
+                // Don't render anything for now, wait for the text.
+                continue;
               }
-              declutterGroupIndex += 1 / declutterGroup[0];
+              imageArgs = declutterImageWithText[index];
+              delete declutterImageWithText[index];
+              imageDeclutterBox = getDeclutterBox(imageArgs);
+              if (opt_declutterTree.collides(imageDeclutterBox)) {
+                continue;
+              }
             }
+            if (
+              opt_declutterTree &&
+              opt_declutterTree.collides(dimensions.declutterBox)
+            ) {
+              continue;
+            }
+            if (imageArgs) {
+              // We now have image and text for an image+text combination.
+              if (opt_declutterTree) {
+                opt_declutterTree.insert(imageDeclutterBox);
+              }
+              // Render the image before we render the text.
+              this.replayImageOrLabel_.apply(this, imageArgs);
+            }
+            if (opt_declutterTree) {
+              opt_declutterTree.insert(dimensions.declutterBox);
+            }
+            this.replayImageOrLabel_.apply(this, args);
           }
           ++i;
           break;
@@ -910,19 +889,18 @@ class Executor {
           const begin = /** @type {number} */ (instruction[1]);
           const end = /** @type {number} */ (instruction[2]);
           const baseline = /** @type {number} */ (instruction[3]);
-          declutterGroup = featureCallback ? null : instruction[4];
-          const overflow = /** @type {number} */ (instruction[5]);
-          fillKey = /** @type {string} */ (instruction[6]);
-          const maxAngle = /** @type {number} */ (instruction[7]);
-          const measurePixelRatio = /** @type {number} */ (instruction[8]);
-          const offsetY = /** @type {number} */ (instruction[9]);
-          strokeKey = /** @type {string} */ (instruction[10]);
-          const strokeWidth = /** @type {number} */ (instruction[11]);
-          text = /** @type {string} */ (instruction[12]);
-          textKey = /** @type {string} */ (instruction[13]);
+          const overflow = /** @type {number} */ (instruction[4]);
+          fillKey = /** @type {string} */ (instruction[5]);
+          const maxAngle = /** @type {number} */ (instruction[6]);
+          const measurePixelRatio = /** @type {number} */ (instruction[7]);
+          const offsetY = /** @type {number} */ (instruction[8]);
+          strokeKey = /** @type {string} */ (instruction[9]);
+          const strokeWidth = /** @type {number} */ (instruction[10]);
+          text = /** @type {string} */ (instruction[11]);
+          textKey = /** @type {string} */ (instruction[12]);
           const pixelRatioScale = [
-            /** @type {number} */ (instruction[14]),
-            /** @type {number} */ (instruction[14]),
+            /** @type {number} */ (instruction[13]),
+            /** @type {number} */ (instruction[13]),
           ];
 
           const textState = this.textStates[textKey];
@@ -961,42 +939,56 @@ class Executor {
               cachedWidths,
               viewRotationFromTransform ? 0 : this.viewRotation_
             );
-            if (parts) {
-              let rendered = false;
+            drawChars: if (parts) {
+              /** @type {Array<ReplayImageOrLabelArgs>} */
+              const replayImageOrLabelArgs = [];
               let c, cc, chars, label, part;
               if (strokeKey) {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
                   label = this.createLabel(chars, textKey, '', strokeKey);
-                  anchorX = /** @type {number} */ (part[2]) + strokeWidth;
+                  anchorX =
+                    /** @type {number} */ (part[2]) +
+                    (textScale[0] < 0 ? -strokeWidth : strokeWidth);
                   anchorY =
                     baseline * label.height +
                     ((0.5 - baseline) * 2 * strokeWidth * textScale[1]) /
                       textScale[0] -
                     offsetY;
-                  rendered =
-                    this.replayImageOrLabel_(
-                      context,
-                      contextScale,
-                      /** @type {number} */ (part[0]),
-                      /** @type {number} */ (part[1]),
-                      label,
-                      anchorX,
-                      anchorY,
-                      declutterGroup,
-                      label.height,
-                      1,
-                      0,
-                      0,
-                      /** @type {number} */ (part[3]),
-                      pixelRatioScale,
-                      false,
-                      label.width,
-                      defaultPadding,
-                      null,
-                      null
-                    ) || rendered;
+                  const dimensions = this.calculateImageOrLabelDimensions_(
+                    label.width,
+                    label.height,
+                    part[0],
+                    part[1],
+                    label.width,
+                    label.height,
+                    anchorX,
+                    anchorY,
+                    0,
+                    0,
+                    part[3],
+                    pixelRatioScale,
+                    false,
+                    defaultPadding,
+                    false,
+                    feature
+                  );
+                  if (
+                    opt_declutterTree &&
+                    opt_declutterTree.collides(dimensions.declutterBox)
+                  ) {
+                    break drawChars;
+                  }
+                  replayImageOrLabelArgs.push([
+                    context,
+                    contextScale,
+                    label,
+                    dimensions,
+                    1,
+                    null,
+                    null,
+                  ]);
                 }
               }
               if (fillKey) {
@@ -1006,41 +998,57 @@ class Executor {
                   label = this.createLabel(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
-                  rendered =
-                    this.replayImageOrLabel_(
-                      context,
-                      contextScale,
-                      /** @type {number} */ (part[0]),
-                      /** @type {number} */ (part[1]),
-                      label,
-                      anchorX,
-                      anchorY,
-                      declutterGroup,
-                      label.height,
-                      1,
-                      0,
-                      0,
-                      /** @type {number} */ (part[3]),
-                      pixelRatioScale,
-                      false,
-                      label.width,
-                      defaultPadding,
-                      null,
-                      null
-                    ) || rendered;
+                  const dimensions = this.calculateImageOrLabelDimensions_(
+                    label.width,
+                    label.height,
+                    part[0],
+                    part[1],
+                    label.width,
+                    label.height,
+                    anchorX,
+                    anchorY,
+                    0,
+                    0,
+                    part[3],
+                    pixelRatioScale,
+                    false,
+                    defaultPadding,
+                    false,
+                    feature
+                  );
+                  if (
+                    opt_declutterTree &&
+                    opt_declutterTree.collides(dimensions.declutterBox)
+                  ) {
+                    break drawChars;
+                  }
+                  replayImageOrLabelArgs.push([
+                    context,
+                    contextScale,
+                    label,
+                    dimensions,
+                    1,
+                    null,
+                    null,
+                  ]);
                 }
               }
-              if (rendered) {
-                this.declutterItems.push(this, declutterGroup, feature);
+              if (opt_declutterTree) {
+                opt_declutterTree.load(
+                  replayImageOrLabelArgs.map(getDeclutterBox)
+                );
+              }
+              for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {
+                this.replayImageOrLabel_.apply(this, replayImageOrLabelArgs[i]);
               }
             }
           }
           ++i;
           break;
         case CanvasInstruction.END_GEOMETRY:
-          if (featureCallback !== undefined) {
+          if (opt_featureCallback !== undefined) {
             feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
-            const result = featureCallback(feature);
+            const result = opt_featureCallback(feature, currentGeometry);
             if (result) {
               return result;
             }
@@ -1133,8 +1141,16 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
-  execute(context, contextScale, transform, viewRotation, snapToPixel) {
+  execute(
+    context,
+    contextScale,
+    transform,
+    viewRotation,
+    snapToPixel,
+    opt_declutterTree
+  ) {
     this.viewRotation_ = viewRotation;
     this.execute_(
       context,
@@ -1143,7 +1159,8 @@ class Executor {
       this.instructions,
       snapToPixel,
       undefined,
-      undefined
+      undefined,
+      opt_declutterTree
     );
   }
 
@@ -1151,10 +1168,9 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {function(import("../../Feature.js").FeatureLike): T=} opt_featureCallback
-   *     Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
-   *     extent.
+   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
+   *     features that intersect this extent.
    * @return {T|undefined} Callback result.
    * @template T
    */

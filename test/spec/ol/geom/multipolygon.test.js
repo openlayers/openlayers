@@ -276,8 +276,11 @@ describe('ol.geom.MultiPolygon', function () {
 
     describe('#clone()', function () {
       it('has the expected endss_', function () {
+        multiPolygon.setProperties({foo: 'bar', baz: null});
+
         const clone = multiPolygon.clone();
         expect(multiPolygon.endss_).to.eql(clone.endss_);
+        expect(clone.getProperties()).to.eql({foo: 'bar', baz: null});
       });
     });
 

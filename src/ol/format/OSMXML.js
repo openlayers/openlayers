@@ -43,7 +43,7 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
 /**
  * @classdesc
  * Feature format for reading data in the
- * [OSMXML format](http://wiki.openstreetmap.org/wiki/OSM_XML).
+ * [OSMXML format](https://wiki.openstreetmap.org/wiki/OSM_XML).
  *
  * @api
  */
@@ -60,7 +60,7 @@ class OSMXML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {

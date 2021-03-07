@@ -65,6 +65,15 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
       expect(geometry.getCoordinates()[1][0]).to.eql([4160, 3489]);
     });
 
+    it('avoids unnecessary reprojections of the ol.render.Feature', function () {
+      const format = new MVT({
+        layers: ['poi_label'],
+      });
+      const geometry = format.readFeatures(data)[0].getGeometry();
+      expect(geometry.getType()).to.be('Point');
+      expect(geometry.getFlatCoordinates()).to.eql([-1210, 2681]);
+    });
+
     it('parses id property', function () {
       // ol.Feature
       let format = new MVT({

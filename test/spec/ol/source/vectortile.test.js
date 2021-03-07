@@ -393,7 +393,7 @@ describe('ol.source.VectorTile', function () {
           );
           if (sourceTiles) {
             expect(sourceTiles[0].getKey()).to.be(
-              'spec/ol/data/14-8938-5680.vector.pbf?new'
+              'spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680'
             );
             unByKey(key);
             done();

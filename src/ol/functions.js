@@ -6,7 +6,7 @@ import {equals as arrayEquals} from './array.js';
 
 /**
  * Always returns true.
- * @returns {boolean} true.
+ * @return {boolean} true.
  */
 export function TRUE() {
   return true;
@@ -14,7 +14,7 @@ export function TRUE() {
 
 /**
  * Always returns false.
- * @returns {boolean} false.
+ * @return {boolean} false.
  */
 export function FALSE() {
   return false;

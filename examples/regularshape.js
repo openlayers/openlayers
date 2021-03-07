@@ -19,6 +19,17 @@ const styles = {
       angle: Math.PI / 4,
     }),
   }),
+  'rectangle': new Style({
+    image: new RegularShape({
+      fill: fill,
+      stroke: stroke,
+      radius: 10 / Math.SQRT2,
+      radius2: 10,
+      points: 4,
+      angle: 0,
+      scale: [1, 0.5],
+    }),
+  }),
   'triangle': new Style({
     image: new RegularShape({
       fill: fill,
@@ -82,14 +93,24 @@ const styles = {
   ],
 };
 
-const styleKeys = ['x', 'cross', 'star', 'triangle', 'square', 'stacked'];
+const styleKeys = [
+  'x',
+  'cross',
+  'star',
+  'triangle',
+  'square',
+  'rectangle',
+  'stacked',
+];
 const count = 250;
 const features = new Array(count);
 const e = 4500000;
 for (let i = 0; i < count; ++i) {
   const coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
   features[i] = new Feature(new Point(coordinates));
-  features[i].setStyle(styles[styleKeys[Math.floor(Math.random() * 6)]]);
+  features[i].setStyle(
+    styles[styleKeys[Math.floor(Math.random() * styleKeys.length)]]
+  );
 }
 
 const source = new VectorSource({

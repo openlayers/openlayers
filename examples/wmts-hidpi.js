@@ -5,8 +5,7 @@ import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 
-const capabilitiesUrl =
-  'https://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml';
+const capabilitiesUrl = 'https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml';
 
 // HiDPI support:
 // * Use 'bmaphidpi' layer (pixel ratio 2) for device pixel ratio > 1
@@ -35,6 +34,8 @@ fetch(capabilitiesUrl)
       style: 'normal',
     });
     options.tilePixelRatio = tilePixelRatio;
+    options.attributions =
+      'Grundkarte: <a target="_blank" href="https://basemap.at/">basemap.at</a>';
     map.addLayer(
       new TileLayer({
         source: new WMTS(options),

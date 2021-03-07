@@ -2,6 +2,8 @@
  * @module ol/renderer/webgl/Layer
  */
 import LayerRenderer from '../Layer.js';
+import RenderEvent from '../../render/Event.js';
+import RenderEventType from '../../render/EventType.js';
 import WebGLHelper from '../../webgl/Helper.js';
 
 /**
@@ -30,12 +32,13 @@ export const WebGLWorkerMessageType = {
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**
  * @typedef {Object} Options
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
+ * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
@@ -48,7 +51,7 @@ export const WebGLWorkerMessageType = {
 class WebGLLayerRenderer extends LayerRenderer {
   /**
    * @param {LayerType} layer Layer.
-   * @param {Options=} [opt_options] Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(layer, opt_options) {
     super(layer);
@@ -63,6 +66,10 @@ class WebGLLayerRenderer extends LayerRenderer {
       postProcesses: options.postProcesses,
       uniforms: options.uniforms,
     });
+
+    if (options.className !== undefined) {
+      this.helper.getCanvas().className = options.className;
+    }
   }
 
   /**
@@ -74,12 +81,33 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * Will return the last shader compilation errors. If no error happened, will return null;
-   * @return {string|null} Errors, or null if last compilation was successful
-   * @api
+   * @param {import("../../render/EventType.js").default} type Event type.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @private
    */
-  getShaderCompileErrors() {
-    return this.helper.getShaderCompileErrors();
+  dispatchRenderEvent_(type, frameState) {
+    const layer = this.getLayer();
+    if (layer.hasListener(type)) {
+      // RenderEvent does not get a context or an inversePixelTransform, because WebGL allows much less direct editing than Canvas2d does.
+      const event = new RenderEvent(type, null, frameState, null);
+      layer.dispatchEvent(event);
+    }
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  preRender(frameState) {
+    this.dispatchRenderEvent_(RenderEventType.PRERENDER, frameState);
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  postRender(frameState) {
+    this.dispatchRenderEvent_(RenderEventType.POSTRENDER, frameState);
   }
 }
 

@@ -32,6 +32,13 @@ export const EXTENT = [-HALF_SIZE, -HALF_SIZE, HALF_SIZE, HALF_SIZE];
 export const WORLD_EXTENT = [-180, -85, 180, 85];
 
 /**
+ * Maximum safe value in y direction
+ * @const
+ * @type {number}
+ */
+export const MAX_SAFE_Y = RADIUS * Math.log(Math.tan(Math.PI / 2));
+
+/**
  * @classdesc
  * Projection object for web/spherical Mercator (EPSG:3857).
  */
@@ -64,8 +71,6 @@ export const PROJECTIONS = [
   new EPSG3857Projection('EPSG:102100'),
   new EPSG3857Projection('EPSG:102113'),
   new EPSG3857Projection('EPSG:900913'),
-  new EPSG3857Projection('urn:ogc:def:crs:EPSG:6.18:3:3857'),
-  new EPSG3857Projection('urn:ogc:def:crs:EPSG::3857'),
   new EPSG3857Projection('http://www.opengis.net/gml/srs/epsg.xml#3857'),
 ];
 
@@ -73,8 +78,8 @@ export const PROJECTIONS = [
  * Transformation from EPSG:4326 to EPSG:3857.
  *
  * @param {Array<number>} input Input array of coordinate values.
- * @param {Array<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is `2`).
+ * @param {Array<number>} [opt_output] Output array of coordinate values.
+ * @param {number} [opt_dimension] Dimension (default is `2`).
  * @return {Array<number>} Output array of coordinate values.
  */
 export function fromEPSG4326(input, opt_output, opt_dimension) {
@@ -89,14 +94,13 @@ export function fromEPSG4326(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  const halfSize = HALF_SIZE;
   for (let i = 0; i < length; i += dimension) {
-    output[i] = (halfSize * input[i]) / 180;
+    output[i] = (HALF_SIZE * input[i]) / 180;
     let y = RADIUS * Math.log(Math.tan((Math.PI * (+input[i + 1] + 90)) / 360));
-    if (y > halfSize) {
-      y = halfSize;
-    } else if (y < -halfSize) {
-      y = -halfSize;
+    if (y > MAX_SAFE_Y) {
+      y = MAX_SAFE_Y;
+    } else if (y < -MAX_SAFE_Y) {
+      y = -MAX_SAFE_Y;
     }
     output[i + 1] = y;
   }
@@ -107,8 +111,8 @@ export function fromEPSG4326(input, opt_output, opt_dimension) {
  * Transformation from EPSG:3857 to EPSG:4326.
  *
  * @param {Array<number>} input Input array of coordinate values.
- * @param {Array<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is `2`).
+ * @param {Array<number>} [opt_output] Output array of coordinate values.
+ * @param {number} [opt_dimension] Dimension (default is `2`).
  * @return {Array<number>} Output array of coordinate values.
  */
 export function toEPSG4326(input, opt_output, opt_dimension) {

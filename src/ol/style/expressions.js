@@ -110,7 +110,7 @@ export const Operators = {};
  * Returns the possible types for a given value (each type being a binary flag)
  * To test a value use e.g. `getValueType(v) & ValueTypes.BOOLEAN`
  * @param {ExpressionValue} value Value
- * @returns {ValueTypes|number} Type or types inferred from the value
+ * @return {ValueTypes|number} Type or types inferred from the value
  */
 export function getValueType(value) {
   if (typeof value === 'number') {
@@ -175,7 +175,7 @@ export function isTypeUnique(valueType) {
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
  * @param {number} v Numerical value.
- * @returns {string} The value as string.
+ * @return {string} The value as string.
  */
 export function numberToGlsl(v) {
   const s = v.toString();
@@ -185,7 +185,7 @@ export function numberToGlsl(v) {
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
  * @param {Array<number>} array Numerical values array.
- * @returns {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
+ * @return {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
  */
 export function arrayToGlsl(array) {
   if (array.length < 2 || array.length > 4) {
@@ -201,7 +201,7 @@ export function arrayToGlsl(array) {
  * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
  * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
  * Note that the final array will always have 4 components.
- * @returns {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
+ * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function colorToGlsl(color) {
   const array = asArray(color).slice();
@@ -219,7 +219,7 @@ export function colorToGlsl(color) {
  * Returns a stable equivalent number for the string literal.
  * @param {ParsingContext} context Parsing context
  * @param {string} string String literal value
- * @returns {number} Number equivalent
+ * @return {number} Number equivalent
  */
 export function getStringNumberEquivalent(context, string) {
   if (context.stringLiteralsMap[string] === undefined) {
@@ -235,7 +235,7 @@ export function getStringNumberEquivalent(context, string) {
  * converted to be a GLSL-compatible string.
  * @param {ParsingContext} context Parsing context
  * @param {string} string String literal value
- * @returns {string} GLSL-compatible string containing a number
+ * @return {string} GLSL-compatible string containing a number
  */
 export function stringToGlsl(context, string) {
   return numberToGlsl(getStringNumberEquivalent(context, string));
@@ -247,7 +247,7 @@ export function stringToGlsl(context, string) {
  * @param {ParsingContext} context Parsing context
  * @param {ExpressionValue} value Value
  * @param {ValueTypes|number} [typeHint] Hint for the expected final type (can be several types combined)
- * @returns {string} GLSL-compatible output
+ * @return {string} GLSL-compatible output
  */
 export function expressionToGlsl(context, value, typeHint) {
   // operator
@@ -259,23 +259,36 @@ export function expressionToGlsl(context, value, typeHint) {
       );
     }
     return operator.toGlsl(context, value.slice(1), typeHint);
-  } else if ((getValueType(value) & ValueTypes.NUMBER) > 0) {
+  }
+
+  const valueType = getValueType(value);
+  if ((valueType & ValueTypes.NUMBER) > 0) {
     return numberToGlsl(/** @type {number} */ (value));
-  } else if ((getValueType(value) & ValueTypes.BOOLEAN) > 0) {
+  }
+
+  if ((valueType & ValueTypes.BOOLEAN) > 0) {
     return value.toString();
-  } else if (
-    (getValueType(value) & ValueTypes.STRING) > 0 &&
+  }
+
+  if (
+    (valueType & ValueTypes.STRING) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.STRING)
   ) {
     return stringToGlsl(context, value.toString());
-  } else if (
-    (getValueType(value) & ValueTypes.COLOR) > 0 &&
+  }
+
+  if (
+    (valueType & ValueTypes.COLOR) > 0 &&
     (typeHint === undefined || typeHint == ValueTypes.COLOR)
   ) {
-    return colorToGlsl(/** @type {number[]|string} */ (value));
-  } else if ((getValueType(value) & ValueTypes.NUMBER_ARRAY) > 0) {
-    return arrayToGlsl(/** @type {number[]} */ (value));
+    return colorToGlsl(/** @type {Array<number> | string} */ (value));
   }
+
+  if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
+    return arrayToGlsl(/** @type {Array<number>} */ (value));
+  }
+
+  throw new Error(`Unexpected expression ${value} (expected type ${typeHint})`);
 }
 
 function assertNumber(value) {
@@ -335,7 +348,7 @@ function assertArgsEven(args) {
 function assertArgsOdd(args) {
   if (args.length % 2 === 0) {
     throw new Error(
-      `An even amount of arguments was expected, got ${args} instead`
+      `An odd amount of arguments was expected, got ${args} instead`
     );
   }
 }
@@ -364,6 +377,16 @@ Operators['get'] = {
     return prefix + value;
   },
 };
+
+/**
+ * Get the uniform name given a variable name.
+ * @param {string} variableName The variable name.
+ * @return {string} The uniform name.
+ */
+export function uniformNameForVariable(variableName) {
+  return 'u_var_' + variableName;
+}
+
 Operators['var'] = {
   getReturnType: function (args) {
     return ValueTypes.ANY;
@@ -375,9 +398,10 @@ Operators['var'] = {
     if (context.variables.indexOf(value) === -1) {
       context.variables.push(value);
     }
-    return `u_${value}`;
+    return uniformNameForVariable(value);
   },
 };
+
 Operators['time'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -387,6 +411,7 @@ Operators['time'] = {
     return 'u_time';
   },
 };
+
 Operators['zoom'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -396,6 +421,7 @@ Operators['zoom'] = {
     return 'u_zoom';
   },
 };
+
 Operators['resolution'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -419,6 +445,7 @@ Operators['*'] = {
     )})`;
   },
 };
+
 Operators['/'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -432,6 +459,7 @@ Operators['/'] = {
     )})`;
   },
 };
+
 Operators['+'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -445,6 +473,7 @@ Operators['+'] = {
     )})`;
   },
 };
+
 Operators['-'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -458,6 +487,7 @@ Operators['-'] = {
     )})`;
   },
 };
+
 Operators['clamp'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -470,6 +500,7 @@ Operators['clamp'] = {
     return `clamp(${expressionToGlsl(context, args[0])}, ${min}, ${max})`;
   },
 };
+
 Operators['%'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -483,6 +514,7 @@ Operators['%'] = {
     )})`;
   },
 };
+
 Operators['^'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -496,6 +528,7 @@ Operators['^'] = {
     )})`;
   },
 };
+
 Operators['>'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -509,6 +542,7 @@ Operators['>'] = {
     )})`;
   },
 };
+
 Operators['>='] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -522,6 +556,7 @@ Operators['>='] = {
     )})`;
   },
 };
+
 Operators['<'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -535,6 +570,7 @@ Operators['<'] = {
     )})`;
   },
 };
+
 Operators['<='] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -578,7 +614,9 @@ function getEqualOperator(operator) {
     },
   };
 }
+
 Operators['=='] = getEqualOperator('==');
+
 Operators['!='] = getEqualOperator('!=');
 
 Operators['!'] = {
@@ -613,7 +651,9 @@ function getDecisionOperator(operator) {
 }
 
 Operators['all'] = getDecisionOperator('&&');
+
 Operators['any'] = getDecisionOperator('||');
+
 Operators['between'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -642,6 +682,7 @@ Operators['array'] = {
     return `vec${args.length}(${parsedArgs.join(', ')})`;
   },
 };
+
 Operators['color'] = {
   getReturnType: function (args) {
     return ValueTypes.COLOR;
@@ -650,7 +691,7 @@ Operators['color'] = {
     assertArgsMinCount(args, 3);
     assertArgsMaxCount(args, 4);
     assertNumbers(args);
-    const array = /** @type {number[]} */ (args);
+    const array = /** @type {Array<number>} */ (args);
     if (args.length === 3) {
       array.push(1);
     }
@@ -718,6 +759,7 @@ Operators['interpolate'] = {
     return result;
   },
 };
+
 Operators['match'] = {
   getReturnType: function (args) {
     let type = ValueTypes.ANY;
@@ -750,6 +792,7 @@ Operators['match'] = {
     return result;
   },
 };
+
 Operators['case'] = {
   getReturnType: function (args) {
     let type = ValueTypes.ANY;

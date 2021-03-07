@@ -82,7 +82,7 @@ export class ObjectEvent extends Event {
  */
 class BaseObject extends Observable {
   /**
-   * @param {Object<string, *>=} opt_values An object with key-value pairs.
+   * @param {Object<string, *>} [opt_values] An object with key-value pairs.
    */
   constructor(opt_values) {
     super();
@@ -159,7 +159,7 @@ class BaseObject extends Observable {
    * Sets a value.
    * @param {string} key Key name.
    * @param {*} value Value.
-   * @param {boolean=} opt_silent Update without triggering an event.
+   * @param {boolean} [opt_silent] Update without triggering an event.
    * @api
    */
   set(key, value, opt_silent) {
@@ -179,7 +179,7 @@ class BaseObject extends Observable {
    * Sets a collection of key-value pairs.  Note that this changes any existing
    * properties and adds new ones (it does not remove any existing properties).
    * @param {Object<string, *>} values Values.
-   * @param {boolean=} opt_silent Update without triggering an event.
+   * @param {boolean} [opt_silent] Update without triggering an event.
    * @api
    */
   setProperties(values, opt_silent) {
@@ -189,9 +189,21 @@ class BaseObject extends Observable {
   }
 
   /**
+   * Apply any properties from another object without triggering events.
+   * @param {BaseObject} source The source object.
+   * @protected
+   */
+  applyProperties(source) {
+    if (!source.values_) {
+      return;
+    }
+    assign(this.values_ || (this.values_ = {}), source.values_);
+  }
+
+  /**
    * Unsets a property.
    * @param {string} key Key name.
-   * @param {boolean=} opt_silent Unset without triggering an event.
+   * @param {boolean} [opt_silent] Unset without triggering an event.
    * @api
    */
   unset(key, opt_silent) {

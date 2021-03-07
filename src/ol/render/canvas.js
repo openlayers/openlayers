@@ -11,77 +11,74 @@ import {toString} from '../transform.js';
 
 /**
  * @typedef {Object} FillState
- * @property {import("../colorlike.js").ColorLike} fillStyle
+ * @property {import("../colorlike.js").ColorLike} fillStyle FillStyle.
  */
 
 /**
  * @typedef Label
- * @property {number} width
- * @property {number} height
- * @property {Array<string|number>} contextInstructions
+ * @property {number} width Width.
+ * @property {number} height Height.
+ * @property {Array<string|number>} contextInstructions ContextInstructions.
  */
 
 /**
  * @typedef {Object} FillStrokeState
- * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
- * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
- * @property {CanvasLineCap} [currentLineCap]
- * @property {Array<number>} currentLineDash
- * @property {number} [currentLineDashOffset]
- * @property {CanvasLineJoin} [currentLineJoin]
- * @property {number} [currentLineWidth]
- * @property {number} [currentMiterLimit]
- * @property {number} [lastStroke]
- * @property {import("../colorlike.js").ColorLike} [fillStyle]
- * @property {import("../colorlike.js").ColorLike} [strokeStyle]
- * @property {CanvasLineCap} [lineCap]
- * @property {Array<number>} lineDash
- * @property {number} [lineDashOffset]
- * @property {CanvasLineJoin} [lineJoin]
- * @property {number} [lineWidth]
- * @property {number} [miterLimit]
+ * @property {import("../colorlike.js").ColorLike} [currentFillStyle] Current FillStyle.
+ * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle] Current StrokeStyle.
+ * @property {CanvasLineCap} [currentLineCap] Current LineCap.
+ * @property {Array<number>} currentLineDash Current LineDash.
+ * @property {number} [currentLineDashOffset] Current LineDashOffset.
+ * @property {CanvasLineJoin} [currentLineJoin] Current LineJoin.
+ * @property {number} [currentLineWidth] Current LineWidth.
+ * @property {number} [currentMiterLimit] Current MiterLimit.
+ * @property {number} [lastStroke] Last stroke.
+ * @property {import("../colorlike.js").ColorLike} [fillStyle] FillStyle.
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {CanvasLineCap} [lineCap] LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} [lineDashOffset] LineDashOffset.
+ * @property {CanvasLineJoin} [lineJoin] LineJoin.
+ * @property {number} [lineWidth] LineWidth.
+ * @property {number} [miterLimit] MiterLimit.
  */
 
 /**
  * @typedef {Object} StrokeState
- * @property {CanvasLineCap} lineCap
- * @property {Array<number>} lineDash
- * @property {number} lineDashOffset
- * @property {CanvasLineJoin} lineJoin
- * @property {number} lineWidth
- * @property {number} miterLimit
- * @property {import("../colorlike.js").ColorLike} strokeStyle
+ * @property {CanvasLineCap} lineCap LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} lineDashOffset LineDashOffset.
+ * @property {CanvasLineJoin} lineJoin LineJoin.
+ * @property {number} lineWidth LineWidth.
+ * @property {number} miterLimit MiterLimit.
+ * @property {import("../colorlike.js").ColorLike} strokeStyle StrokeStyle.
  */
 
 /**
  * @typedef {Object} TextState
- * @property {string} font
- * @property {string} [textAlign]
- * @property {string} textBaseline
- * @property {string} [placement]
- * @property {number} [maxAngle]
- * @property {boolean} [overflow]
- * @property {import("../style/Fill.js").default} [backgroundFill]
- * @property {import("../style/Stroke.js").default} [backgroundStroke]
- * @property {import("../size.js").Size} [scale]
- * @property {Array<number>} [padding]
+ * @property {string} font Font.
+ * @property {string} [textAlign] TextAlign.
+ * @property {string} textBaseline TextBaseline.
+ * @property {string} [placement] Placement.
+ * @property {number} [maxAngle] MaxAngle.
+ * @property {boolean} [overflow] Overflow.
+ * @property {import("../style/Fill.js").default} [backgroundFill] BackgroundFill.
+ * @property {import("../style/Stroke.js").default} [backgroundStroke] BackgroundStroke.
+ * @property {import("../size.js").Size} [scale] Scale.
+ * @property {Array<number>} [padding] Padding.
  */
 
 /**
- * Container for decluttered replay instructions that need to be rendered or
- * omitted together, i.e. when styles render both an image and text, or for the
- * characters that form text along lines. The basic elements of this array are
- * `[minX, minY, maxX, maxY, count]`, where the first four entries are the
- * rendered extent of the group in pixel space. `count` is the number of styles
- * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
- * In addition to these four elements, declutter instruction arrays (i.e. the
- * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
- * @typedef {Array<*>} DeclutterGroup
+ * @typedef {Object} SerializableInstructions
+ * @property {Array<*>} instructions The rendering instructions.
+ * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
+ * @property {Array<number>} coordinates The array of all coordinates.
+ * @property {!Object<string, TextState>} [textStates] The text states (decluttering).
+ * @property {!Object<string, FillState>} [fillStates] The fill states (decluttering).
+ * @property {!Object<string, StrokeState>} [strokeStates] The stroke states (decluttering).
  */
 
 /**
- * Declutter groups for support of multi geometries.
- * @typedef {Array<DeclutterGroup>} DeclutterGroups
+ * @typedef {Object<number, import("./canvas/Executor.js").ReplayImageOrLabelArgs>} DeclutterImageWithText
  */
 
 /**
@@ -293,9 +290,8 @@ export const measureTextHeight = (function () {
    * @type {HTMLDivElement}
    */
   let div;
-  const heights = textHeights;
   return function (fontSpec) {
-    let height = heights[fontSpec];
+    let height = textHeights[fontSpec];
     if (height == undefined) {
       if (WORKER_OFFSCREEN_CANVAS) {
         const font = getFontParameters(fontSpec);
@@ -303,7 +299,7 @@ export const measureTextHeight = (function () {
         const lineHeight = isNaN(Number(font.lineHeight))
           ? 1.2
           : Number(font.lineHeight);
-        textHeights[fontSpec] =
+        height =
           lineHeight *
           (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
       } else {
@@ -318,9 +314,9 @@ export const measureTextHeight = (function () {
         div.style.font = fontSpec;
         document.body.appendChild(div);
         height = div.offsetHeight;
-        heights[fontSpec] = height;
         document.body.removeChild(div);
       }
+      textHeights[fontSpec] = height;
     }
     return height;
   };
@@ -356,7 +352,7 @@ export function measureTextWidth(font, text) {
  * @param {string} font The font.
  * @param {string} text The text to measure.
  * @param {Object<string, number>} cache A lookup of cached widths by text.
- * @returns {number} The text width.
+ * @return {number} The text width.
  */
 export function measureAndCacheTextWidth(font, text, cache) {
   if (text in cache) {

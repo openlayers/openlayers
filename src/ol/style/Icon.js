@@ -53,7 +53,7 @@ import {getUid} from '../util.js';
  */
 class Icon extends ImageStyle {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -323,7 +323,7 @@ class Icon extends ImageStyle {
   /**
    * Get the pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {number} The pixel ration of the image.
+   * @return {number} The pixel ratio of the image.
    * @api
    */
   getPixelRatio(pixelRatio) {

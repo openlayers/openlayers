@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd">
+<Service>
+  <Name>WMS</Name>
+  <Title>Acme Corp. Map Server</Title>
+  <Abstract>Map Server maintained by Acme Corporation.  Contact: webmaster@wmt.acme.com.  High-quality maps showing roadrunner nests and possible ambush locations.</Abstract>
+
+  <KeywordList>
+    <Keyword>bird</Keyword>
+    <Keyword>roadrunner</Keyword>
+    <Keyword>ambush</Keyword>
+  </KeywordList>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
+   xlink:href="http://hostname/" />
+
+
+  <ContactInformation>
+    <ContactPersonPrimary>
+      <ContactPerson>Jeff Smith</ContactPerson>
+      <ContactOrganization>NASA</ContactOrganization>
+    </ContactPersonPrimary>
+    <ContactPosition>Computer Scientist</ContactPosition>
+
+    <ContactAddress>
+      <AddressType>postal</AddressType>
+      <Address>NASA Goddard Space Flight Center</Address>
+      <City>Greenbelt</City>
+      <StateOrProvince>MD</StateOrProvince>
+      <PostCode>20771</PostCode>
+
+      <Country>USA</Country>
+    </ContactAddress>
+    <ContactVoiceTelephone>+1 301 555-1212</ContactVoiceTelephone>
+    <ContactElectronicMailAddress>user@host.com</ContactElectronicMailAddress>
+  </ContactInformation>
+
+  <Fees>none</Fees>
+
+  <AccessConstraints>none</AccessConstraints>
+  <LayerLimit>16</LayerLimit>
+  <MaxWidth>2048</MaxWidth>
+  <MaxHeight>2048</MaxHeight>
+</Service>
+<Capability>
+  <Request>
+    <GetCapabilities>
+
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+          </Get>
+          <Post>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+
+          </Post>
+        </HTTP>
+      </DCPType>
+    </GetCapabilities>
+    <GetMap>
+      <Format>image/gif</Format>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+
+      <DCPType>
+        <HTTP>
+          <Get>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+          </Get>
+        </HTTP>
+      </DCPType>
+    </GetMap>
+
+    <GetFeatureInfo>
+      <Format>text/xml</Format>
+      <Format>text/plain</Format>
+      <Format>text/html</Format>
+      <DCPType>
+        <HTTP>
+          <Get>
+
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+          </Get>
+        </HTTP>
+      </DCPType>
+    </GetFeatureInfo>
+  </Request>
+  <Exception>
+    <Format>XML</Format>
+
+    <Format>INIMAGE</Format>
+    <Format>BLANK</Format>
+  </Exception>
+  <Layer queryable="1">
+    <Name>ROADS_1M</Name>
+    <Title>Roads at 1:1M scale</Title>
+    <Abstract>Roads at a scale of 1 to 1 million.</Abstract>
+
+    <KeywordList>
+      <Keyword>road</Keyword>
+      <Keyword>transportation</Keyword>
+      <Keyword>atlas</Keyword>
+    </KeywordList>
+    <Identifier authority="DIF_ID">123456</Identifier>
+    <MetadataURL type="FGDC:1998">
+
+            <Format>text/plain</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:type="simple"
+              xlink:href="http://www.university.edu/metadata/roads.txt" />
+          </MetadataURL>
+    <MetadataURL type="ISO19115:2003">
+            <Format>text/xml</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+            xlink:type="simple"
+            xlink:href="http://www.university.edu/metadata/roads.xml" />
+          </MetadataURL>
+
+    <Style>
+      <Name>ATLAS</Name>
+      <Title>Road atlas style</Title>
+      <Abstract>Roads are shown in a style like that used in a commercial road atlas.</Abstract>
+    <LegendURL width="72" height="72">
+      <Format>image/gif</Format>
+      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+        xlink:type="simple"
+        xlink:href="http://www.university.edu/legends/atlas.gif" />
+
+    </LegendURL>
+    </Style>
+  </Layer>
+
+</Capability>
+</WMS_Capabilities>

@@ -93,7 +93,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  */
 class GMLBase extends XMLFeature {
   /**
-   * @param {Options=} opt_options Optional configuration object.
+   * @param {Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -150,7 +150,11 @@ class GMLBase extends XMLFeature {
         objectStack,
         this
       );
-    } else if (localName == 'featureMembers' || localName == 'featureMember') {
+    } else if (
+      localName == 'featureMembers' ||
+      localName == 'featureMember' ||
+      localName == 'member'
+    ) {
       const context = objectStack[0];
       let featureType = context['featureType'];
       let featureNS = context['featureNS'];
@@ -214,7 +218,7 @@ class GMLBase extends XMLFeature {
         }
         parsersNS[featureNS[p]] = parsers;
       }
-      if (localName == 'featureMember') {
+      if (localName == 'featureMember' || localName == 'member') {
         features = pushParseAndPop(undefined, parsersNS, node, objectStack);
       } else {
         features = pushParseAndPop([], parsersNS, node, objectStack);
@@ -528,7 +532,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @protected
    * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Geometry.
    */
@@ -542,7 +546,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {

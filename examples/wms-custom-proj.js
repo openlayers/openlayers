@@ -53,8 +53,8 @@ const layers = [
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions:
-        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-        'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
+        '© <a href="https://shop.swisstopo.admin.ch/en/products/maps/national/lk1000"' +
+        'target="_blank">Pixelmap 1:1000000 / geo.admin.ch</a>',
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg',
@@ -68,9 +68,9 @@ const layers = [
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions:
-        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
-        'en/home.html">National parks / geo.admin.ch</a>',
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+        '© <a href="https://www.hydrodaten.admin.ch/en/notes-on-the-flood-alert-maps.html"' +
+        'target="_blank">Flood Alert / geo.admin.ch</a>',
+      params: {'LAYERS': 'ch.bafu.hydroweb-warnkarte_national'},
       serverType: 'mapserver',
     }),
   }),
@@ -94,7 +94,7 @@ const map = new Map({
 
 /*
  * Swiss projection transform functions downloaded from
- * http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/skripts.html
+ * https://www.swisstopo.admin.ch/en/knowledge-facts/surveying-geodesy/reference-systems/map-projections.html
  */
 
 // Convert WGS lat/long (° dec) to CH y
@@ -107,7 +107,7 @@ function WGStoCHy(lat, lng) {
   lat = DEGtoSEC(lat);
   lng = DEGtoSEC(lng);
 
-  // Axiliary values (% Bern)
+  // Axillary values (% Bern)
   const lat_aux = (lat - 169028.66) / 10000;
   const lng_aux = (lng - 26782.5) / 10000;
 
@@ -132,7 +132,7 @@ function WGStoCHx(lat, lng) {
   lat = DEGtoSEC(lat);
   lng = DEGtoSEC(lng);
 
-  // Axiliary values (% Bern)
+  // Axillary values (% Bern)
   const lat_aux = (lat - 169028.66) / 10000;
   const lng_aux = (lng - 26782.5) / 10000;
 
@@ -150,8 +150,8 @@ function WGStoCHx(lat, lng) {
 
 // Convert CH y/x to WGS lat
 function CHtoWGSlat(y, x) {
-  // Converts militar to civil and  to unit = 1000km
-  // Axiliary values (% Bern)
+  // Converts military to civil and to unit = 1000km
+  // Axillary values (% Bern)
   const y_aux = (y - 600000) / 1000000;
   const x_aux = (x - 200000) / 1000000;
 
@@ -172,8 +172,8 @@ function CHtoWGSlat(y, x) {
 
 // Convert CH y/x to WGS long
 function CHtoWGSlng(y, x) {
-  // Converts militar to civil and  to unit = 1000km
-  // Axiliary values (% Bern)
+  // Converts military to civil and to unit = 1000km
+  // Axillary values (% Bern)
   const y_aux = (y - 600000) / 1000000;
   const x_aux = (x - 200000) / 1000000;
 

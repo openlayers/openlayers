@@ -100,7 +100,7 @@ const ProviderConfig = {
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.

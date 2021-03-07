@@ -63,8 +63,8 @@
 
   /**
    * Assert value is within some tolerance of a number.
-   * @param {Number} n Number.
-   * @param {Number} tol Tolerance.
+   * @param {number} n Number.
+   * @param {number} tol Tolerance.
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.roughlyEqual = function (n, tol) {
@@ -260,7 +260,7 @@
         // we do not care about the difference between an empty string and
         // null for namespaceURI some tests will fail in IE9 otherwise
         // see also
-        // http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
+        // https://docs.microsoft.com/en-us/openspecs/ie_standards/ms-dom2c/d6ad7f24-25f4-4ab0-a36b-32ddc08f413c
         if (
           (node1Attr[name].namespaceURI || null) !==
           (node2Attr[name].namespaceURI || null)
@@ -332,10 +332,15 @@
   }
 
   /**
+   * @typedef {Object} XMLEqlOptions
+   * @property {boolean} [includeWhiteSpace] IncludeWhiteSpace.
+   * @property {boolean} [ignoreElementOrder] IgnoreElementOrder.
+   */
+
+  /**
    * Checks if the XML document sort of equals another XML document.
    * @param {Object} obj The other object.
-   * @param {{includeWhiteSpace: (boolean|undefined),
-   *     ignoreElementOrder: (boolean|undefined)}=} options The options.
+   * @param {XMLEqlOptions} [options] The options.
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.xmleql = function (obj, options) {
@@ -450,7 +455,7 @@
    * @param {ol.PluggableMap} map A map using the canvas renderer.
    * @param {string} referenceImage Path to the reference image.
    * @param {number} tolerance The accepted mismatch tolerance.
-   * @param {function} done A callback to indicate that the test is done.
+   * @param {Function} done A callback to indicate that the test is done.
    */
   global.expectResemble = function (map, referenceImage, tolerance, done) {
     map.render();

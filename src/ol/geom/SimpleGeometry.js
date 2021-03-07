@@ -164,7 +164,7 @@ class SimpleGeometry extends Geometry {
   /**
    * @abstract
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    */
   setCoordinates(coordinates, opt_layout) {
     abstract();
@@ -217,7 +217,7 @@ class SimpleGeometry extends Geometry {
   /**
    * Rotate the geometry around a given coordinate. This modifies the geometry
    * coordinates in place.
-   * @param {number} angle Rotation angle in radians.
+   * @param {number} angle Rotation angle in counter-clockwise radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
@@ -242,8 +242,8 @@ class SimpleGeometry extends Geometry {
    * Scale the geometry (with an optional origin).  This modifies the geometry
    * coordinates in place.
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number=} opt_sy The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
+   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
@@ -333,7 +333,7 @@ export function getStrideForLayout(layout) {
 /**
  * @param {SimpleGeometry} simpleGeometry Simple geometry.
  * @param {import("../transform.js").Transform} transform Transform.
- * @param {Array<number>=} opt_dest Destination.
+ * @param {Array<number>} [opt_dest] Destination.
  * @return {Array<number>} Transformed flat coordinates.
  */
 export function transformGeom2D(simpleGeometry, transform, opt_dest) {

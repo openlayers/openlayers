@@ -9,13 +9,14 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {
+  containsCoordinate,
   getBottomLeft,
   getBottomRight,
   getTopLeft,
   getTopRight,
 } from '../../extent.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 
 /**
@@ -283,6 +284,20 @@ class CanvasLayerRenderer extends LayerRenderer {
       pixel.slice()
     );
     const context = this.context;
+
+    const layer = this.getLayer();
+    const layerExtent = layer.getExtent();
+    if (layerExtent) {
+      const renderCoordinate = applyTransform(
+        frameState.pixelToCoordinateTransform,
+        pixel.slice()
+      );
+
+      /** get only data inside of the layer extent */
+      if (!containsCoordinate(layerExtent, renderCoordinate)) {
+        return null;
+      }
+    }
 
     let data;
     try {

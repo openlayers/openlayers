@@ -44,6 +44,7 @@ import {listen, unlistenByKey} from '../../events.js';
 
 /**
  * @typedef {Object} Options
+ * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source and then
  * passed to the GPU. The `name` property of each attribute will serve as its identifier:
  *  * In the vertex shader as an `attribute` by prefixing it with `a_`
@@ -53,7 +54,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {string} fragmentShader Fragment shader source, mandatory.
  * @property {string} [hitVertexShader] Vertex shader source for hit detection rendering.
  * @property {string} [hitFragmentShader] Fragment shader source for hit detection rendering.
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -131,6 +132,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 
     super(layer, {
+      className: options.className,
       uniforms: uniforms,
       postProcesses: options.postProcesses,
     });
@@ -267,6 +269,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener(
       'message',
+      /**
+       * @param {*} event Event.
+       * @this {WebGLPointsLayerRenderer}
+       */
       function (event) {
         const received = event.data;
         if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
@@ -405,6 +411,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
+    this.preRender(frameState);
+
     const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
     this.helper.finalizeDraw(frameState);
@@ -420,6 +428,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.renderHitDetection(frameState);
       this.hitRenderTarget_.clearCachedData();
     }
+
+    this.postRender(frameState);
 
     return canvas;
   }
@@ -587,9 +597,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
-   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
-   * @return {T|void} Callback result.
+   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @return {T|undefined} Callback result.
    * @template T
    */
   forEachFeatureAtCoordinate(
@@ -597,11 +607,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     frameState,
     hitTolerance,
     callback,
-    declutteredFeatures
+    matches
   ) {
     assert(this.hitDetectionEnabled_, 66);
     if (!this.hitRenderInstructions_) {
-      return;
+      return undefined;
     }
 
     const pixel = applyTransform(
@@ -618,8 +628,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const source = this.getLayer().getSource();
     const feature = source.getFeatureByUid(uid);
     if (feature) {
-      return callback(feature, this.getLayer());
+      return callback(feature, this.getLayer(), null);
     }
+    return undefined;
   }
 
   /**

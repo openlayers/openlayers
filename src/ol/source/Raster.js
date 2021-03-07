@@ -223,7 +223,7 @@ export class Processor extends Disposable {
 
   /**
    * Run operation on input data.
-   * @param {Array.<Array|ImageData>} inputs Array of pixels or image data
+   * @param {Array<Array|ImageData>} inputs Array of pixels or image data
    *     (depending on the operation type).
    * @param {Object} meta A user data object.  This is passed to all operations
    *     and must be serializable.
@@ -283,7 +283,7 @@ export class Processor extends Disposable {
           const offset = i * segmentLength;
           const slices = [];
           for (let j = 0, jj = buffers.length; j < jj; ++j) {
-            slices.push(buffers[i].slice(offset, offset + segmentLength));
+            slices.push(buffers[j].slice(offset, offset + segmentLength));
           }
           this._workers[i].postMessage(
             {
@@ -549,6 +549,7 @@ class RasterSource extends ImageSource {
     this.frameState_ = {
       animate: false,
       coordinateToPixelTransform: createTransform(),
+      declutterTree: null,
       extent: null,
       index: 0,
       layerIndex: 0,
@@ -565,7 +566,6 @@ class RasterSource extends ImageSource {
       }),
       viewHints: [],
       wantedTiles: {},
-      declutterItems: [],
     };
 
     this.setAttributions(function (frameState) {
@@ -597,7 +597,7 @@ class RasterSource extends ImageSource {
   /**
    * Set the operation.
    * @param {Operation} operation New operation.
-   * @param {Object=} opt_lib Functions that will be available to operations run
+   * @param {Object} [opt_lib] Functions that will be available to operations run
    *     in a worker.
    * @api
    */
@@ -832,6 +832,9 @@ function getImageData(layer, frameState) {
   }
   const width = frameState.size[0];
   const height = frameState.size[1];
+  if (width === 0 || height === 0) {
+    return null;
+  }
   const container = renderer.renderFrame(frameState, null);
   let element;
   if (container) {

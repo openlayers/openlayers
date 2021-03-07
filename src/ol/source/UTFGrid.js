@@ -132,7 +132,7 @@ export class CustomTile extends Tile {
    * for given coordinate (or `null` if not yet loaded).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {function(*): void} callback Callback.
-   * @param {boolean=} opt_request If `true` the callback is always async.
+   * @param {boolean} [opt_request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    */
   forDataAtCoordinate(coordinate, callback, opt_request) {
@@ -378,7 +378,7 @@ class UTFGrid extends TileSource {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
    * @param {function(*): void} callback Callback.
-   * @param {boolean=} opt_request If `true` the callback is always async.
+   * @param {boolean} [opt_request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    * @api
    */
@@ -435,10 +435,11 @@ class UTFGrid extends TileSource {
       extent = applyTransform(tileJSON['bounds'], transform);
     }
 
+    const gridExtent = extentFromProjection(sourceProjection);
     const minZoom = tileJSON['minzoom'] || 0;
     const maxZoom = tileJSON['maxzoom'] || 22;
     const tileGrid = createXYZ({
-      extent: extentFromProjection(sourceProjection),
+      extent: gridExtent,
       maxZoom: maxZoom,
       minZoom: minZoom,
     });
@@ -455,9 +456,7 @@ class UTFGrid extends TileSource {
     this.tileUrlFunction_ = createFromTemplates(grids, tileGrid);
 
     if (tileJSON['attribution'] !== undefined) {
-      const attributionExtent =
-        extent !== undefined ? extent : epsg4326Projection.getExtent();
-
+      const attributionExtent = extent !== undefined ? extent : gridExtent;
       this.setAttributions(function (frameState) {
         if (intersects(attributionExtent, frameState.extent)) {
           return [tileJSON['attribution']];

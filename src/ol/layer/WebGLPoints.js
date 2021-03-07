@@ -66,6 +66,8 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @template {import("../source/Vector.js").default} VectorSourceType
+ * @extends {Layer<VectorSourceType>}
  * @fires import("../render/Event.js").RenderEvent
  */
 class WebGLPointsLayer extends Layer {
@@ -96,6 +98,7 @@ class WebGLPointsLayer extends Layer {
    */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
+      className: this.getClassName(),
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),
       fragmentShader: this.parseResult_.builder.getSymbolFragmentShader(),
       hitVertexShader:

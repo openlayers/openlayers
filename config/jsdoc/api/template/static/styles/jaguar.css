@@ -18,7 +18,7 @@
 }
 
 body {
-  padding-top: 55px;
+  padding-top: 54px;
 }
 .nameContainer .anchor {
   padding-top: 70px;
@@ -61,24 +61,43 @@ ol {
 li {
   list-style-type: none;
 }
-::-webkit-scrollbar {
-  width: 8px;
-  background-color: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  border-radius: 4px;
+#wrap {
+  display: flex;
+  flex-flow: row;
 }
 .navigation {
   background-color: #2a2a2a;
 }
-@media (max-width:768px) {
+.navigation-list {
+  padding: 0 15px 0 15px;
+}
+@supports (position: sticky) {
   .navigation {
-      max-height:220px;
-    }
-    .navigation-list{
-      height:140px;
-    }
+    position: sticky;
+    top: 54px;
+    height: calc(100vh - 54px);
+  }
+  .navigation-list {
+    overflow: auto;
+    /* 54px navbar height */
+    /* 4.25rem + 2px  searchbox height */
+    /* 25px navigation padding */
+    height: calc(100vh - 54px - 4.25rem - 2px - 25px);
+  }
+}
+@media (max-width: 768px) {
+  #wrap {
+    flex-flow: column;
+  }
+  .navigation {
+    height: inherit;
+    position: inherit;
+  }
+  .navigation-list {
+    overflow: auto;
+    max-height: 33vh;
+    height: inherit;
+  }
 }
 
 .navigation .applicationName {
@@ -107,10 +126,8 @@ li {
   color: #fff;
   border-color: #555;
 }
-.navigation .navigation-list {
-  padding: 10px 15px 0 15px;
-  position: relative;
-  overflow: auto;
+.navigation .navigation-list-wrapper {
+  padding: 10px 0 15px 0;
   width: 100%;
 }
 .navigation li.item {
@@ -318,8 +335,8 @@ span.type-signature.static {
 }
 .main .nameContainer {
   position: relative;
-  margin-top: 20px;
-  padding-top: 5px;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
   border-top: 2px solid #1F6B75;
 }
 .main .nameContainer .inherited {
@@ -337,7 +354,7 @@ span.type-signature.static {
 @media (min-width: 768px) {
   .main .nameContainer .tag-source {
     position: absolute;
-    top: 0.2rem;
+    top: 1.2rem;
     right: 0;
     font-size: 0.8rem;
   }

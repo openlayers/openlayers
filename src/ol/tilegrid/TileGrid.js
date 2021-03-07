@@ -180,6 +180,12 @@ class TileGrid {
      */
     this.tmpSize_ = [0, 0];
 
+    /**
+     * @private
+     * @type {import("../extent.js").Extent}
+     */
+    this.tmpExtent_ = [0, 0, 0, 0];
+
     if (options.sizes !== undefined) {
       this.fullTileRanges_ = options.sizes.map(function (size, z) {
         const tileRange = new TileRange(
@@ -188,6 +194,13 @@ class TileGrid {
           Math.min(0, size[1]),
           Math.max(size[1] - 1, -1)
         );
+        if (extent) {
+          const restrictedTileRange = this.getTileRangeForExtentAndZ(extent, z);
+          tileRange.minX = Math.max(restrictedTileRange.minX, tileRange.minX);
+          tileRange.maxX = Math.min(restrictedTileRange.maxX, tileRange.maxX);
+          tileRange.minY = Math.max(restrictedTileRange.minY, tileRange.minY);
+          tileRange.maxY = Math.min(restrictedTileRange.maxY, tileRange.maxY);
+        }
         return tileRange;
       }, this);
     } else if (extent) {
@@ -215,8 +228,8 @@ class TileGrid {
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {function(number, import("../TileRange.js").default): boolean} callback Callback.
-   * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
-   * @param {import("../extent.js").Extent=} opt_extent Temporary import("../extent.js").Extent object.
+   * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
+   * @param {import("../extent.js").Extent} [opt_extent] Temporary import("../extent.js").Extent object.
    * @return {boolean} Callback succeeded.
    */
   forEachTileCoordParentTileRange(
@@ -316,8 +329,8 @@ class TileGrid {
 
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
-   * @param {import("../extent.js").Extent=} opt_extent Temporary import("../extent.js").Extent object.
+   * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
+   * @param {import("../extent.js").Extent} [opt_extent] Temporary import("../extent.js").Extent object.
    * @return {import("../TileRange.js").default} Tile range.
    */
   getTileCoordChildTileRange(tileCoord, opt_tileRange, opt_extent) {
@@ -333,7 +346,10 @@ class TileGrid {
           opt_tileRange
         );
       }
-      const tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+      const tileCoordExtent = this.getTileCoordExtent(
+        tileCoord,
+        opt_extent || this.tmpExtent_
+      );
       return this.getTileRangeForExtentAndZ(
         tileCoordExtent,
         tileCoord[0] + 1,
@@ -344,10 +360,52 @@ class TileGrid {
   }
 
   /**
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {number} z Integer zoom level.
+   * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
+   * @return {import("../TileRange.js").default} Tile range.
+   */
+  getTileRangeForTileCoordAndZ(tileCoord, z, opt_tileRange) {
+    if (z > this.maxZoom || z < this.minZoom) {
+      return null;
+    }
+
+    const tileCoordZ = tileCoord[0];
+    const tileCoordX = tileCoord[1];
+    const tileCoordY = tileCoord[2];
+
+    if (z === tileCoordZ) {
+      return createOrUpdateTileRange(
+        tileCoordX,
+        tileCoordY,
+        tileCoordX,
+        tileCoordY,
+        opt_tileRange
+      );
+    }
+
+    if (this.zoomFactor_) {
+      const factor = Math.pow(this.zoomFactor_, z - tileCoordZ);
+      const minX = Math.floor(tileCoordX * factor);
+      const minY = Math.floor(tileCoordY * factor);
+      if (z < tileCoordZ) {
+        return createOrUpdateTileRange(minX, minX, minY, minY, opt_tileRange);
+      }
+
+      const maxX = Math.floor(factor * (tileCoordX + 1)) - 1;
+      const maxY = Math.floor(factor * (tileCoordY + 1)) - 1;
+      return createOrUpdateTileRange(minX, maxX, minY, maxY, opt_tileRange);
+    }
+
+    const tileCoordExtent = this.getTileCoordExtent(tileCoord, this.tmpExtent_);
+    return this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+  }
+
+  /**
    * Get the extent for a tile range.
    * @param {number} z Integer zoom level.
    * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {import("../extent.js").Extent=} opt_extent Temporary import("../extent.js").Extent object.
+   * @param {import("../extent.js").Extent} [opt_extent] Temporary import("../extent.js").Extent object.
    * @return {import("../extent.js").Extent} Extent.
    */
   getTileRangeExtent(z, tileRange, opt_extent) {
@@ -365,7 +423,7 @@ class TileGrid {
    * Get a tile range for the given extent and integer zoom level.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} z Integer zoom level.
-   * @param {import("../TileRange.js").default=} opt_tileRange Temporary tile range object.
+   * @param {import("../TileRange.js").default} [opt_tileRange] Temporary tile range object.
    * @return {import("../TileRange.js").default} Tile range.
    */
   getTileRangeForExtentAndZ(extent, z, opt_tileRange) {
@@ -401,7 +459,7 @@ class TileGrid {
    * Get the extent of a tile coordinate.
    *
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../extent.js").Extent=} opt_extent Temporary extent object.
+   * @param {import("../extent.js").Extent} [opt_extent] Temporary extent object.
    * @return {import("../extent.js").Extent} Extent.
    * @api
    */
@@ -423,7 +481,7 @@ class TileGrid {
    *
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {import("../tilecoord.js").TileCoord=} opt_tileCoord Destination import("../tilecoord.js").TileCoord object.
+   * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Destination import("../tilecoord.js").TileCoord object.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
    * @api
    */
@@ -446,7 +504,7 @@ class TileGrid {
    * @param {boolean} reverseIntersectionPolicy Instead of letting edge
    *     intersections go to the higher tile coordinate, let edge intersections
    *     go to the lower tile coordinate.
-   * @param {import("../tilecoord.js").TileCoord=} opt_tileCoord Temporary import("../tilecoord.js").TileCoord object.
+   * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Temporary import("../tilecoord.js").TileCoord object.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
    * @private
    */
@@ -491,7 +549,7 @@ class TileGrid {
    * @param {boolean} reverseIntersectionPolicy Instead of letting edge
    *     intersections go to the higher tile coordinate, let edge intersections
    *     go to the lower tile coordinate.
-   * @param {import("../tilecoord.js").TileCoord=} opt_tileCoord Temporary import("../tilecoord.js").TileCoord object.
+   * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Temporary import("../tilecoord.js").TileCoord object.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
    * @private
    */
@@ -522,7 +580,7 @@ class TileGrid {
    * Get a tile coordinate given a map coordinate and zoom level.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} z Zoom level.
-   * @param {import("../tilecoord.js").TileCoord=} opt_tileCoord Destination import("../tilecoord.js").TileCoord object.
+   * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Destination import("../tilecoord.js").TileCoord object.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
    * @api
    */
@@ -566,7 +624,9 @@ class TileGrid {
    */
   getFullTileRange(z) {
     if (!this.fullTileRanges_) {
-      return null;
+      return this.extent_
+        ? this.getTileRangeForExtentAndZ(this.extent_, z)
+        : null;
     } else {
       return this.fullTileRanges_[z];
     }
@@ -574,7 +634,7 @@ class TileGrid {
 
   /**
    * @param {number} resolution Resolution.
-   * @param {number=} opt_direction If 0, the nearest resolution will be used.
+   * @param {number} [opt_direction] If 0, the nearest resolution will be used.
    *     If 1, the nearest lower resolution will be used. If -1, the nearest
    *     higher resolution will be used. Default is 0.
    * @return {number} Z.

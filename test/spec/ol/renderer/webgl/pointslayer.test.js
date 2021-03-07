@@ -1,8 +1,10 @@
 import Feature from '../../../../../src/ol/Feature.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import ViewHint from '../../../../../src/ol/ViewHint.js';
+import WebGLPointsLayer from '../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../src/ol/renderer/webgl/PointsLayer.js';
 import {WebGLWorkerMessageType} from '../../../../../src/ol/renderer/webgl/Layer.js';
 import {
@@ -590,6 +592,88 @@ describe('ol.renderer.webgl.PointsLayer', function () {
       expect(getCache(features[0], renderer).properties['added']).to.be(
         features[0].get('added')
       );
+    });
+  });
+
+  describe('fires events', () => {
+    let layer, source, renderer, frameState;
+
+    beforeEach(function () {
+      source = new VectorSource({
+        features: new GeoJSON().readFeatures({
+          'type': 'FeatureCollection',
+          'features': [
+            {
+              'type': 'Feature',
+              'properties': {},
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [13, 52],
+              },
+            },
+          ],
+        }),
+      });
+
+      layer = new WebGLPointsLayer({
+        source,
+        style: {
+          symbol: {
+            symbolType: 'square',
+          },
+        },
+      });
+
+      renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+
+      frameState = {
+        viewHints: [],
+        viewState: {
+          projection: getProjection('EPSG:4326'),
+          resolution: 0.010986328125,
+          rotation: 0,
+          center: [15, 52],
+          zoom: 7,
+        },
+        extent: [
+          11.1932373046875,
+          46.429931640625,
+          18.8067626953125,
+          57.570068359375,
+        ],
+        size: [693, 1014],
+        layerIndex: 0,
+        layerStatesArray: [
+          {
+            layer: layer,
+            opacity: 1,
+            visible: true,
+            zIndex: 0,
+          },
+        ],
+      };
+    });
+
+    it('fires prerender and postrender events', function (done) {
+      let prerenderNotified = false;
+      let postrenderNotified = false;
+
+      layer.once('prerender', (evt) => {
+        prerenderNotified = true;
+      });
+
+      layer.once('postrender', (evt) => {
+        postrenderNotified = true;
+        expect(prerenderNotified).to.be(true);
+        expect(postrenderNotified).to.be(true);
+        done();
+      });
+
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
     });
   });
 });

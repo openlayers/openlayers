@@ -55,7 +55,7 @@ export function linearRingContainsXY(
   x,
   y
 ) {
-  // http://geomalgorithms.com/a03-_inclusion.html
+  // https://geomalgorithms.com/a03-_inclusion.html
   // Copyright 2000 softSurfer, 2012 Dan Sunday
   // This code may be freely used and modified for any purpose
   // providing that this copyright notice is included with it.

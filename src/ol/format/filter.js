@@ -4,6 +4,8 @@
 import And from './filter/And.js';
 import Bbox from './filter/Bbox.js';
 import Contains from './filter/Contains.js';
+import DWithin from './filter/DWithin.js';
+import Disjoint from './filter/Disjoint.js';
 import During from './filter/During.js';
 import EqualTo from './filter/EqualTo.js';
 import GreaterThan from './filter/GreaterThan.js';
@@ -17,13 +19,14 @@ import LessThanOrEqualTo from './filter/LessThanOrEqualTo.js';
 import Not from './filter/Not.js';
 import NotEqualTo from './filter/NotEqualTo.js';
 import Or from './filter/Or.js';
+import ResourceId from './filter/ResourceId.js';
 import Within from './filter/Within.js';
 
 /**
  * Create a logical `<And>` operator between two or more filter conditions.
  *
  * @param {...import("./filter/Filter.js").default} conditions Filter conditions.
- * @returns {!And} `<And>` operator.
+ * @return {!And} `<And>` operator.
  * @api
  */
 export function and(conditions) {
@@ -35,7 +38,7 @@ export function and(conditions) {
  * Create a logical `<Or>` operator between two or more filter conditions.
  *
  * @param {...import("./filter/Filter.js").default} conditions Filter conditions.
- * @returns {!Or} `<Or>` operator.
+ * @return {!Or} `<Or>` operator.
  * @api
  */
 export function or(conditions) {
@@ -47,7 +50,7 @@ export function or(conditions) {
  * Represents a logical `<Not>` operator for a filter condition.
  *
  * @param {!import("./filter/Filter.js").default} condition Filter condition.
- * @returns {!Not} `<Not>` operator.
+ * @return {!Not} `<Not>` operator.
  * @api
  */
 export function not(condition) {
@@ -60,9 +63,9 @@ export function not(condition) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../extent.js").Extent} extent Extent.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!Bbox} `<BBOX>` operator.
+ * @return {!Bbox} `<BBOX>` operator.
  * @api
  */
 export function bbox(geometryName, extent, opt_srsName) {
@@ -75,9 +78,9 @@ export function bbox(geometryName, extent, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!Contains} `<Contains>` operator.
+ * @return {!Contains} `<Contains>` operator.
  * @api
  */
 export function contains(geometryName, geometry, opt_srsName) {
@@ -90,13 +93,28 @@ export function contains(geometryName, geometry, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!Intersects} `<Intersects>` operator.
+ * @return {!Intersects} `<Intersects>` operator.
  * @api
  */
 export function intersects(geometryName, geometry, opt_srsName) {
   return new Intersects(geometryName, geometry, opt_srsName);
+}
+
+/**
+ * Create a `<Disjoint>` operator to test whether a geometry-valued property
+ * is disjoint to a given geometry.
+ *
+ * @param {!string} geometryName Geometry name to use.
+ * @param {!import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
+ *    set on geometries when this is not provided.
+ * @return {!Disjoint} `<Disjoint>` operator.
+ * @api
+ */
+export function disjoint(geometryName, geometry, opt_srsName) {
+  return new Disjoint(geometryName, geometry, opt_srsName);
 }
 
 /**
@@ -105,9 +123,9 @@ export function intersects(geometryName, geometry, opt_srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!Within} `<Within>` operator.
+ * @return {!Within} `<Within>` operator.
  * @api
  */
 export function within(geometryName, geometry, opt_srsName) {
@@ -115,12 +133,29 @@ export function within(geometryName, geometry, opt_srsName) {
 }
 
 /**
+ * Create a `<DWithin>` operator to test whether a geometry-valued property
+ * is within a distance to a given geometry.
+ *
+ * @param {!string} geometryName Geometry name to use.
+ * @param {!import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {!number} distance Distance.
+ * @param {!string} unit Unit.
+ * @param {string} [opt_srsName] SRS name. No srsName attribute will be
+ *    set on geometries when this is not provided.
+ * @return {!DWithin} `<DWithin>` operator.
+ * @api
+ */
+export function dwithin(geometryName, geometry, distance, unit, opt_srsName) {
+  return new DWithin(geometryName, geometry, distance, unit, opt_srsName);
+}
+
+/**
  * Creates a `<PropertyIsEqualTo>` comparison operator.
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
- * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!EqualTo} `<PropertyIsEqualTo>` operator.
+ * @param {boolean} [opt_matchCase] Case-sensitive?
+ * @return {!EqualTo} `<PropertyIsEqualTo>` operator.
  * @api
  */
 export function equalTo(propertyName, expression, opt_matchCase) {
@@ -132,8 +167,8 @@ export function equalTo(propertyName, expression, opt_matchCase) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
- * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!NotEqualTo} `<PropertyIsNotEqualTo>` operator.
+ * @param {boolean} [opt_matchCase] Case-sensitive?
+ * @return {!NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
 export function notEqualTo(propertyName, expression, opt_matchCase) {
@@ -145,7 +180,7 @@ export function notEqualTo(propertyName, expression, opt_matchCase) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!LessThan} `<PropertyIsLessThan>` operator.
+ * @return {!LessThan} `<PropertyIsLessThan>` operator.
  * @api
  */
 export function lessThan(propertyName, expression) {
@@ -157,7 +192,7 @@ export function lessThan(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
+ * @return {!LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
  * @api
  */
 export function lessThanOrEqualTo(propertyName, expression) {
@@ -169,7 +204,7 @@ export function lessThanOrEqualTo(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!GreaterThan} `<PropertyIsGreaterThan>` operator.
+ * @return {!GreaterThan} `<PropertyIsGreaterThan>` operator.
  * @api
  */
 export function greaterThan(propertyName, expression) {
@@ -181,7 +216,7 @@ export function greaterThan(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
+ * @return {!GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
  * @api
  */
 export function greaterThanOrEqualTo(propertyName, expression) {
@@ -193,7 +228,7 @@ export function greaterThanOrEqualTo(propertyName, expression) {
  * is null.
  *
  * @param {!string} propertyName Name of the context property to compare.
- * @returns {!IsNull} `<PropertyIsNull>` operator.
+ * @return {!IsNull} `<PropertyIsNull>` operator.
  * @api
  */
 export function isNull(propertyName) {
@@ -207,7 +242,7 @@ export function isNull(propertyName) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} lowerBoundary The lower bound of the range.
  * @param {!number} upperBoundary The upper bound of the range.
- * @returns {!IsBetween} `<PropertyIsBetween>` operator.
+ * @return {!IsBetween} `<PropertyIsBetween>` operator.
  * @api
  */
 export function between(propertyName, lowerBoundary, upperBoundary) {
@@ -220,14 +255,14 @@ export function between(propertyName, lowerBoundary, upperBoundary) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} pattern Text pattern.
- * @param {string=} opt_wildCard Pattern character which matches any sequence of
+ * @param {string} [opt_wildCard] Pattern character which matches any sequence of
  *    zero or more string characters. Default is '*'.
- * @param {string=} opt_singleChar pattern character which matches any single
+ * @param {string} [opt_singleChar] pattern character which matches any single
  *    string character. Default is '.'.
- * @param {string=} opt_escapeChar Escape character which can be used to escape
+ * @param {string} [opt_escapeChar] Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
- * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!IsLike} `<PropertyIsLike>` operator.
+ * @param {boolean} [opt_matchCase] Case-sensitive?
+ * @return {!IsLike} `<PropertyIsLike>` operator.
  * @api
  */
 export function like(
@@ -254,9 +289,13 @@ export function like(
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} begin The begin date in ISO-8601 format.
  * @param {!string} end The end date in ISO-8601 format.
- * @returns {!During} `<During>` operator.
+ * @return {!During} `<During>` operator.
  * @api
  */
 export function during(propertyName, begin, end) {
   return new During(propertyName, begin, end);
+}
+
+export function resourceId(rid) {
+  return new ResourceId(rid);
 }

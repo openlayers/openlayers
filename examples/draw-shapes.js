@@ -44,7 +44,7 @@ function addInteraction() {
       value = 'Circle';
       geometryFunction = function (coordinates, geometry) {
         const center = coordinates[0];
-        const last = coordinates[1];
+        const last = coordinates[coordinates.length - 1];
         const dx = center[0] - last[0];
         const dy = center[1] - last[1];
         const radius = Math.sqrt(dx * dx + dy * dy);
@@ -83,5 +83,9 @@ typeSelect.onchange = function () {
   map.removeInteraction(draw);
   addInteraction();
 };
+
+document.getElementById('undo').addEventListener('click', function () {
+  draw.removeLastPoint();
+});
 
 addInteraction();

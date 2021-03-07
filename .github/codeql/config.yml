@@ -1,0 +1,4 @@
+name: "OpenLayers CodeQL Config"
+
+paths:
+  - src

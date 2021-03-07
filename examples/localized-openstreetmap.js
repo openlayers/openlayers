@@ -18,7 +18,7 @@ const openCycleMapLayer = new TileLayer({
 const openSeaMapLayer = new TileLayer({
   source: new OSM({
     attributions: [
-      'All maps © <a href="http://www.openseamap.org/">OpenSeaMap</a>',
+      'All maps © <a href="https://www.openseamap.org/">OpenSeaMap</a>',
       ATTRIBUTION,
     ],
     opaque: false,

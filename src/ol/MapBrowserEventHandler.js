@@ -2,18 +2,26 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import PointerEventType from './pointer/EventType.js';
+import Target from './events/Target.js';
 import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {listen, unlistenByKey} from './events.js';
 
-class MapBrowserEventHandler extends EventTarget {
+/**
+ * @typedef {Object} PointerEventData
+ * @property {string} type
+ * @property {number} clientX
+ * @property {number} clientY
+ * @property {EventTarget} target
+ */
+
+class MapBrowserEventHandler extends Target {
   /**
    * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
-   * @param {number=} moveTolerance The minimal distance the pointer must travel to trigger a move.
+   * @param {number} [moveTolerance] The minimal distance the pointer must travel to trigger a move.
    */
   constructor(map, moveTolerance) {
     super(map);
@@ -30,6 +38,12 @@ class MapBrowserEventHandler extends EventTarget {
      * @private
      */
     this.clickTimeoutId_;
+
+    /**
+     * Emulate dblclick and singleclick. Will be true when only one pointer is active.
+     * @type {boolean}
+     */
+    this.emulateClicks_ = false;
 
     /**
      * @type {boolean}
@@ -54,7 +68,7 @@ class MapBrowserEventHandler extends EventTarget {
     /**
      * The most recent "down" type event (or null if none have occurred).
      * Set on pointerdown.
-     * @type {PointerEvent}
+     * @type {PointerEventData}
      * @private
      */
     this.down_ = null;
@@ -116,7 +130,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {PointerEvent} pointerEvent Pointer
+   * @param {PointerEventData} pointerEvent Pointer
    * event.
    * @private
    */
@@ -140,6 +154,7 @@ class MapBrowserEventHandler extends EventTarget {
     } else {
       // click
       this.clickTimeoutId_ = setTimeout(
+        /** @this {MapBrowserEventHandler} */
         function () {
           this.clickTimeoutId_ = undefined;
           const newEvent = new MapBrowserEvent(
@@ -196,6 +211,7 @@ class MapBrowserEventHandler extends EventTarget {
     // We only fire click, singleclick, and doubleclick if nobody has called
     // event.stopPropagation() or event.preventDefault().
     if (
+      this.emulateClicks_ &&
       !newEvent.propagationStopped &&
       !this.dragging_ &&
       this.isMouseActionButton_(pointerEvent)
@@ -227,6 +243,7 @@ class MapBrowserEventHandler extends EventTarget {
    * @private
    */
   handlePointerDown_(pointerEvent) {
+    this.emulateClicks_ = this.activePointers_ === 0;
     this.updateActivePointers_(pointerEvent);
     const newEvent = new MapBrowserEvent(
       MapBrowserEventType.POINTERDOWN,
@@ -235,22 +252,23 @@ class MapBrowserEventHandler extends EventTarget {
     );
     this.dispatchEvent(newEvent);
 
-    this.down_ = pointerEvent;
+    this.down_ = {
+      type: pointerEvent.type,
+      clientX: pointerEvent.clientX,
+      clientY: pointerEvent.clientY,
+      target: pointerEvent.target,
+    };
 
     if (this.dragListenerKeys_.length === 0) {
+      const doc = this.map_.getOwnerDocument();
       this.dragListenerKeys_.push(
         listen(
-          document,
+          doc,
           MapBrowserEventType.POINTERMOVE,
           this.handlePointerMove_,
           this
         ),
-        listen(
-          document,
-          MapBrowserEventType.POINTERUP,
-          this.handlePointerUp_,
-          this
-        ),
+        listen(doc, MapBrowserEventType.POINTERUP, this.handlePointerUp_, this),
         /* Note that the listener for `pointercancel is set up on
          * `pointerEventHandler_` and not `documentPointerEventHandler_` like
          * the `pointerup` and `pointermove` listeners.
@@ -271,10 +289,7 @@ class MapBrowserEventHandler extends EventTarget {
           this
         )
       );
-      if (
-        this.element_.getRootNode &&
-        this.element_.getRootNode() !== document
-      ) {
+      if (this.element_.getRootNode && this.element_.getRootNode() !== doc) {
         this.dragListenerKeys_.push(
           listen(
             this.element_.getRootNode(),
@@ -334,9 +349,10 @@ class MapBrowserEventHandler extends EventTarget {
   handleTouchMove_(event) {
     // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
     // may not be initialized yet when we get here on a platform without native pointer events.
+    const originalEvent = this.originalPointerMoveEvent_;
     if (
-      !this.originalPointerMoveEvent_ ||
-      this.originalPointerMoveEvent_.defaultPrevented
+      (!originalEvent || originalEvent.defaultPrevented) &&
+      (typeof event.cancelable !== 'boolean' || event.cancelable === true)
     ) {
       event.preventDefault();
     }

@@ -42,12 +42,13 @@ import {assign} from '../obj.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @extends {Layer<import("../source/Tile.js").default>}
+ * @template {import("../source/Tile.js").default} TileSourceType
+ * @extends {Layer<TileSourceType>}
  * @api
  */
 class BaseTileLayer extends Layer {
   /**
-   * @param {Options=} opt_options Tile layer options.
+   * @param {Options} [opt_options] Tile layer options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

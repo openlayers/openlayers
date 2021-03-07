@@ -4,6 +4,7 @@ import Draw, {
   createRegularPolygon,
 } from '../../../../src/ol/interaction/Draw.js';
 import Feature from '../../../../src/ol/Feature.js';
+import GeometryType from '../../../../src/ol/geom/GeometryType.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
@@ -30,6 +31,7 @@ import {
 import {equals} from '../../../../src/ol/array.js';
 import {listen} from '../../../../src/ol/events.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import {unByKey} from '../../../../src/ol/Observable.js';
 
 describe('ol.interaction.Draw', function () {
   let target, map, source;
@@ -74,10 +76,11 @@ describe('ol.interaction.Draw', function () {
    * @param {string} type Event type.
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
-   * @param {boolean=} opt_shiftKey Shift key is pressed.
+   * @param {boolean} [opt_shiftKey] Shift key is pressed.
+   * @param {boolean} [opt_pointerId] Pointer id.
    * @return {module:ol/MapBrowserEvent} The simulated event.
    */
-  function simulateEvent(type, x, y, opt_shiftKey) {
+  function simulateEvent(type, x, y, opt_shiftKey, opt_pointerId = 0) {
     const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
@@ -90,10 +93,21 @@ describe('ol.interaction.Draw', function () {
     event.shiftKey = shiftKey;
     event.preventDefault = function () {};
     event.pointerType = 'mouse';
-    event.pointerId = 0;
+    event.pointerId = opt_pointerId;
     const simulatedEvent = new MapBrowserEvent(type, map, event);
     map.handleMapBrowserEvent(simulatedEvent);
     return simulatedEvent;
+  }
+
+  function simulateBrowserEvent(type, x, y) {
+    const viewport = map.getViewport();
+    // calculated in case body has top < 0 (test runner with small window)
+    const position = viewport.getBoundingClientRect();
+    const evt = new PointerEvent(type, {
+      clientX: position.left + x + width / 2,
+      clientY: position.top + y + height / 2,
+    });
+    (type === 'pointerup' ? document : map.getViewport()).dispatchEvent(evt);
   }
 
   describe('constructor', function () {
@@ -129,6 +143,24 @@ describe('ol.interaction.Draw', function () {
         dragVertexDelay: 42,
       });
       expect(draw.dragVertexDelay_).to.be(42);
+    });
+
+    it('accepts a stopClick option', function () {
+      const draw = new Draw({
+        source: source,
+        type: 'Point',
+        stopClick: true,
+      });
+      map.addInteraction(draw);
+      let clicked = false;
+      const clickKey = map.on('click', () => (clicked = true));
+      simulateBrowserEvent('pointermove', 10, 20);
+      simulateBrowserEvent('pointerdown', 10, 20);
+      simulateBrowserEvent('pointerup', 10, 20);
+      //setTimeout(() => {
+      expect(clicked).to.be(false);
+      unByKey(clickKey);
+      //}, 300);
     });
   });
 
@@ -215,6 +247,17 @@ describe('ol.interaction.Draw', function () {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20, true);
       simulateEvent('pointerup', 10, 20);
+      const features = source.getFeatures();
+      expect(features).to.have.length(0);
+    });
+
+    it('does not draw a point when multiple pointers are involved', function () {
+      simulateEvent('pointerdown', 10, 20, false, 1);
+      simulateEvent('pointerdown', 10, 20, false, 2);
+      simulateEvent('pointermove', 10, 30, false, 1);
+      simulateEvent('pointermove', 10, 10, false, 2);
+      simulateEvent('pointerup', 10, 30, false, 1);
+      simulateEvent('pointerup', 10, 10, false, 2);
       const features = source.getFeatures();
       expect(features).to.have.length(0);
     });
@@ -567,22 +610,115 @@ describe('ol.interaction.Draw', function () {
     });
   });
 
+  describe('finishCondition called for each type', function () {
+    let draw;
+    function createDrawInteraction(type, finishCondition) {
+      draw = new Draw({
+        source: source,
+        type: type,
+        finishCondition: finishCondition,
+      });
+      draw.atFinish_ = sinon.spy(Draw.prototype.atFinish_);
+      draw.finishDrawing = sinon.spy(Draw.prototype.finishDrawing);
+      map.addInteraction(draw);
+    }
+
+    const testCoordinates = [
+      [0, 0],
+      [10, 0],
+      [10, 10],
+    ];
+
+    function drawType(type, amount, finishCondition) {
+      createDrawInteraction(type, finishCondition);
+
+      for (let i = 0; i < amount; ++i) {
+        const [x, y] = testCoordinates[i];
+        simulateEvent('pointermove', x, y);
+        simulateEvent('pointerdown', x, y);
+        simulateEvent('pointerup', x, y);
+      }
+      if (amount > 1 && type !== GeometryType.CIRCLE) {
+        const [x, y] = testCoordinates[amount - 1];
+        simulateEvent('pointerdown', x, y);
+        simulateEvent('pointerup', x, y);
+      }
+    }
+
+    function testFinishConditionTrue(type, amount) {
+      const finishCondition = sinon.spy(() => true);
+      drawType(type, amount, finishCondition);
+      expect(draw.atFinish_.called).to.be(true);
+      expect(finishCondition.callCount).to.be(1);
+      expect(draw.finishDrawing.callCount).to.be(1);
+      expect(source.getFeatures()).to.have.length(1);
+    }
+    it('calls finishCondition:true for POINT type', function () {
+      testFinishConditionTrue(GeometryType.POINT, 1);
+    });
+    it('calls finishCondition:true for MULTI_POINT type', function () {
+      testFinishConditionTrue(GeometryType.MULTI_POINT, 1);
+    });
+    it('calls finishCondition:true for LINE_STRING type', function () {
+      testFinishConditionTrue(GeometryType.LINE_STRING, 2);
+    });
+    it('calls finishCondition:true for MULTI_LINE_STRING type', function () {
+      testFinishConditionTrue(GeometryType.MULTI_LINE_STRING, 2);
+    });
+    it('calls finishCondition:true for CIRCLE type', function () {
+      testFinishConditionTrue(GeometryType.CIRCLE, 2);
+    });
+    it('calls finishCondition:true for POLYGON type', function () {
+      testFinishConditionTrue(GeometryType.POLYGON, 3);
+    });
+    it('calls finishCondition:true for MULTI_POLYGON type', function () {
+      testFinishConditionTrue(GeometryType.MULTI_POLYGON, 3);
+    });
+
+    function testFinishConditionFalse(type, amount) {
+      const finishCondition = sinon.spy(() => false);
+      drawType(type, amount, finishCondition);
+      expect(draw.atFinish_.called).to.be(true);
+      expect(finishCondition.callCount).to.be(1);
+      expect(draw.finishDrawing.called).to.be(false);
+      expect(source.getFeatures()).to.have.length(0);
+    }
+    it('calls finishCondition:false for POINT type', function () {
+      testFinishConditionFalse(GeometryType.POINT, 1);
+    });
+    it('calls finishCondition:false for MULTI_POINT type', function () {
+      testFinishConditionFalse(GeometryType.MULTI_POINT, 1);
+    });
+    it('calls finishCondition:false for LINE_STRING type', function () {
+      testFinishConditionFalse(GeometryType.LINE_STRING, 2);
+    });
+    it('calls finishCondition:false for MULTI_LINE_STRING type', function () {
+      testFinishConditionFalse(GeometryType.MULTI_LINE_STRING, 2);
+    });
+    it('calls finishCondition:false for CIRCLE type', function () {
+      testFinishConditionFalse(GeometryType.CIRCLE, 2);
+    });
+    it('calls finishCondition:false for POLYGON type', function () {
+      testFinishConditionFalse(GeometryType.POLYGON, 3);
+    });
+    it('calls finishCondition:false for MULTI_POLYGON type', function () {
+      testFinishConditionFalse(GeometryType.MULTI_POLYGON, 3);
+    });
+  });
+
   describe('drawing with a finishCondition', function () {
     beforeEach(function () {
       const draw = new Draw({
         source: source,
         type: 'LineString',
         finishCondition: function (event) {
-          if (equals(event.coordinate, [30, -20])) {
-            return true;
-          }
-          return false;
+          return equals(event.coordinate, [30, -20]);
         },
       });
       map.addInteraction(draw);
     });
 
-    it('draws a linestring failing to finish it first, the finishes it', function () {
+    it('draws a linestring failing to finish it first, then finishes it', function () {
       let features;
 
       // first point
@@ -1339,13 +1475,40 @@ describe('ol.interaction.Draw', function () {
 
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
-      const draw = new Draw({});
+      const draw = new Draw({type: 'Point'});
       expect(draw.getOverlay()).to.eql(draw.overlay_);
     });
   });
 
   describe('createRegularPolygon', function () {
     it('creates a regular polygon in Circle mode', function () {
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: createRegularPolygon(4),
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      const features = source.getFeatures();
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+      const coordinates = geometry.getCoordinates();
+      expect(coordinates[0].length).to.eql(5);
+      expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
+      expect(coordinates[0][0][1]).to.roughlyEqual(-20, 1e-9);
+    });
+
+    it('creates a regular polygon at specified angle', function () {
       const draw = new Draw({
         source: source,
         type: 'Circle',
@@ -1370,6 +1533,33 @@ describe('ol.interaction.Draw', function () {
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('creates a regular polygon at specified 0 angle', function () {
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: createRegularPolygon(4, 0),
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      const features = source.getFeatures();
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Polygon);
+      const coordinates = geometry.getCoordinates();
+      expect(coordinates[0].length).to.eql(5);
+      expect(coordinates[0][0][0]).to.roughlyEqual(28.2842712474619, 1e-9);
+      expect(coordinates[0][0][1]).to.roughlyEqual(0, 1e-9);
     });
 
     it('creates a regular polygon in Circle mode in a user projection', function () {

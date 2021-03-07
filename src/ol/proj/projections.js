@@ -20,7 +20,11 @@ export function clear() {
  * @return {import("./Projection.js").default} The projection (if cached).
  */
 export function get(code) {
-  return cache[code] || null;
+  return (
+    cache[code] ||
+    cache[code.replace(/urn:(x-)?ogc:def:crs:EPSG:(.*:)?(\w+)$/, 'EPSG:$3')] ||
+    null
+  );
 }
 
 /**

@@ -36,7 +36,7 @@ $(function () {
       }
       // If everything else is equal, prefer shorter names, and prefer classes over modules
       let weight = 10000 + matchedItem.dataset.longname.length - name.length * 100;
-      if (name.match(re.begin)) {
+      if (re.begin.test(name)) {
         weight += 10000;
         if (re.baseName.test(name)) {
           weight += 10000;
@@ -79,6 +79,7 @@ $(function () {
       $currentItem: currentItem ? $(currentItem) : undefined,
       lastSearchTerm: undefined,
       lastState: {},
+      lastClasses: undefined,
       getClassList: function () {
         return $classItems || ($classItems = $navList.find('li.item'));
       },
@@ -143,9 +144,9 @@ $(function () {
       if (state === 'search-empty' && search.$currentItem) {
         search.manualToggle(search.$currentItem, true);
       }
+      search.lastClasses = undefined;
     } else {
       search.changeStateClass('searching');
-      searchTerm = searchTerm.toLowerCase();
       const beginOnly = searchTerm.length < minInputForFullText;
       const getSearchWeight = getWeightFunction(searchTerm, allowRegex);
       const re = constructRegex(searchTerm, function (searchTerm) {
@@ -197,13 +198,14 @@ $(function () {
           li.classList.add('match');
         }
       });
+      classes.sort(function (a, b) {
+        return b.weight - a.weight;
+      });
       clearOldMatches(search.lastState, searchState);
       search.lastState = searchState;
+      search.lastClasses = classes;
 
-      classes.sort(function (a, b) {
-        return a.weight - b.weight;
-      });
-      for (let i = classes.length - 1; i >= 0; --i) {
+      for (let i = 0, ii = classes.length; i < ii; ++i) {
         navList.appendChild(classes[i].item);
       }
     }
@@ -217,15 +219,24 @@ $(function () {
       key = setTimeout(function () {
         key = undefined;
 
-        const searchTerm = searchInput.value;
-        doSearch(searchTerm);
+        doSearch(searchInput.value);
       }, 0);
     }
   }
 
   // Search Items
   searchInput.addEventListener('input', queueSearch);
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      doSearch(searchInput.value);
+      const first = search.lastClasses ? search.lastClasses[0].item : null;
+      if (first) {
+        window.location.href = first.querySelector('.title a').href;
+      }
+    }
+  });
   doSearch(searchInput.value);
+  searchInput.focus();
 
   // Toggle when click an item element
   search.$navList.on('click', '.toggle', function (e) {
@@ -237,33 +248,8 @@ $(function () {
     search.manualToggle(clsItem, show);
   });
 
-//  Auto resizing on navigation
-  var _onResize = function () {
-    var height_w = $(window).height();
-    var height_s = $('section').height();
-    var $el = $('.navigation');
-    var dif_h = height_w - height_s;
-    if (window.matchMedia("(min-width: 768px)").matches) {
-      if (dif_h >=0){
-         $('.navigation').height(height_s+dif_h+74);
-         $('.navigation-list').height(height_s+dif_h)
-      }
-      else {
-         $('.navigation').height(height_s+74);
-         $('.navigation-list').height(height_s-60);
-      }
-    }
-    else{
-      $('.navigation').height(220);
-      $('.navigation-list').height(140);
-    }
-  }
-  $(window).on('resize', _onResize);
-  _onResize();
-
-  var currentVersion = document.getElementById('package-version').innerHTML;
-
   // warn about outdated version
+  var currentVersion = document.getElementById('package-version').innerHTML;
   var packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
   fetch(packageUrl).then(function(response) {
     return response.json();
@@ -287,16 +273,5 @@ $(function () {
         document.cookie = cookieText;
       }
     }
-  });
-
-  // create source code links to github
-  var srcLinks = $('div.tag-source');
-  srcLinks.each(function(i, el) {
-    var textParts = el.innerHTML.trim().split(', ');
-    var link = 'https://github.com/openlayers/openlayers/blob/v' + currentVersion + '/src/ol/' +
-      textParts[0];
-    el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
-      '<a href="' + link + textParts[1].replace('line ', '#L') + '">' +
-      textParts[1] + '</a>';
   });
 });

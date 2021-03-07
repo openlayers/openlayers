@@ -159,6 +159,15 @@ describe('ol.source.TileWMS', function () {
   });
 
   describe('#tileUrlFunction', function () {
+    it('can be used when obtained through #getTileUrlFunction', function () {
+      options.extent = [-80, -40, -50, -10];
+      const source = new TileWMS(options);
+      const tileCoord = [3, 2, 2];
+      expect(function () {
+        source.getTileUrlFunction()(tileCoord, 1, getProjection('EPSG:4326'));
+      }).to.not.throwException();
+    });
+
     it('returns a tile if it is contained within layers extent', function () {
       options.extent = [-80, -40, -50, -10];
       const source = new TileWMS(options);

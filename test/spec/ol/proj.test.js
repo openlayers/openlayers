@@ -1,4 +1,5 @@
 import Projection from '../../../src/ol/proj/Projection.js';
+import Units from '../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
 import {
   METERS_PER_UNIT,
@@ -215,12 +216,13 @@ describe('ol.proj', function () {
     });
 
     it(
-      'gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
-        'equivalent',
+      'gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326, ' +
+        'urn:x-ogc:def:crs:EPSG:6.6:4326 are equivalent',
       function () {
         _testAllEquivalent([
           'CRS:84',
           'urn:ogc:def:crs:EPSG:6.6:4326',
+          'urn:x-ogc:def:crs:EPSG:6.6:4326',
           'EPSG:4326',
         ]);
       }
@@ -271,7 +273,7 @@ describe('ol.proj', function () {
   });
 
   describe('transform from 4326 to 3857 (Alastaira)', function () {
-    // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
+    // https://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
     it('returns expected value using ol.proj.transform', function () {
       const point = transform(
@@ -295,7 +297,7 @@ describe('ol.proj', function () {
   });
 
   describe('transform from 3857 to 4326 (Alastaira)', function () {
-    // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
+    // https://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
     it('returns expected value using ol.proj.transform', function () {
       const point = transform(
@@ -408,6 +410,16 @@ describe('ol.proj', function () {
       );
       expect(pointResolution).to.be(1);
     });
+    it('returns the nominal resolution for projections without transforms', function () {
+      const projection = new Projection({
+        code: 'foo',
+        units: 'ft',
+      });
+      let pointResolution = getPointResolution(projection, 2, [0, 0]);
+      expect(pointResolution).to.be(2);
+      pointResolution = getPointResolution(projection, 2, [0, 0], 'm');
+      expect(pointResolution).to.be(0.6096);
+    });
   });
 
   describe('Proj4js integration', function () {
@@ -445,6 +457,20 @@ describe('ol.proj', function () {
       expect(proj.getMetersPerUnit()).to.eql(1200 / 3937);
 
       delete proj4.defs['EPSG:3739'];
+    });
+
+    it('creates ol.proj.Projection instance from EPSG:4258', function () {
+      proj4.defs(
+        'EPSG:4258',
+        '+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs'
+      );
+      register(proj4);
+      const proj = getProjection('EPSG:4258');
+      expect(proj.getCode()).to.eql('EPSG:4258');
+      expect(proj.getUnits()).to.eql('degrees');
+      expect(proj.getMetersPerUnit()).to.eql(METERS_PER_UNIT[Units.DEGREES]);
+
+      delete proj4.defs['EPSG:4258'];
     });
 
     it('allows Proj4js projections to be used transparently', function () {

@@ -1,4 +1,8 @@
-import {HALF_SIZE, fromEPSG4326} from '../../../../src/ol/proj/epsg3857.js';
+import {
+  HALF_SIZE,
+  MAX_SAFE_Y,
+  fromEPSG4326,
+} from '../../../../src/ol/proj/epsg3857.js';
 import {
   addCommon,
   clearAllProjections,
@@ -24,11 +28,11 @@ describe('ol/proj/epsg3857', function () {
         },
         {
           g: [-180, -90],
-          m: [-HALF_SIZE, -HALF_SIZE],
+          m: [-HALF_SIZE, -MAX_SAFE_Y],
         },
         {
           g: [180, 90],
-          m: [HALF_SIZE, HALF_SIZE],
+          m: [HALF_SIZE, MAX_SAFE_Y],
         },
         {
           g: [-111.0429, 45.677],
@@ -47,13 +51,13 @@ describe('ol/proj/epsg3857', function () {
     it('does not produce unexpected results for string coordinates', function () {
       const transformed = fromEPSG4326(['180', '90']);
       expect(transformed[0]).to.roughlyEqual(HALF_SIZE, 1e-5);
-      expect(transformed[1]).to.roughlyEqual(HALF_SIZE, 1e-5);
+      expect(transformed[1]).to.roughlyEqual(MAX_SAFE_Y, 1e-5);
     });
   });
 
   describe('getPointResolution', function () {
     it('returns the correct point scale at the equator', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       const epsg3857 = getProjection('EPSG:3857');
       const resolution = 19.11;
       const point = [0, 0];
@@ -64,7 +68,7 @@ describe('ol/proj/epsg3857', function () {
     });
 
     it('returns the correct point scale at the latitude of Toronto', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       const epsg3857 = getProjection('EPSG:3857');
       const epsg4326 = getProjection('EPSG:4326');
       const resolution = 19.11;
@@ -76,7 +80,7 @@ describe('ol/proj/epsg3857', function () {
     });
 
     it('returns the correct point scale at various latitudes', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       const epsg3857 = getProjection('EPSG:3857');
       const epsg4326 = getProjection('EPSG:4326');
       const resolution = 19.11;

@@ -23,3 +23,13 @@ fs.writeFileSync(
   JSON.stringify(pkg, null, 2),
   'utf-8'
 );
+
+// copy in readme and license files
+fs.copyFileSync(
+  path.resolve(__dirname, '../README.md'),
+  path.join(buildDir, 'README.md')
+);
+fs.copyFileSync(
+  path.resolve(__dirname, '../LICENSE.md'),
+  path.join(buildDir, 'LICENSE.md')
+);

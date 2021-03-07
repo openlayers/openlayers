@@ -25,7 +25,7 @@ class LineString extends SimpleGeometry {
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    */
   constructor(coordinates, opt_layout) {
     super();
@@ -87,7 +87,12 @@ class LineString extends SimpleGeometry {
    * @api
    */
   clone() {
-    return new LineString(this.flatCoordinates.slice(), this.layout);
+    const lineString = new LineString(
+      this.flatCoordinates.slice(),
+      this.layout
+    );
+    lineString.applyProperties(this);
+    return lineString;
   }
 
   /**
@@ -158,7 +163,7 @@ class LineString extends SimpleGeometry {
    * return the last coordinate.
    *
    * @param {number} m M.
-   * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
+   * @param {boolean} [opt_extrapolate] Extrapolate. Default is `false`.
    * @return {import("../coordinate.js").Coordinate} Coordinate.
    * @api
    */
@@ -199,7 +204,7 @@ class LineString extends SimpleGeometry {
    * The `fraction` is a number between 0 and 1, where 0 is the start of the
    * linestring and 1 is the end.
    * @param {number} fraction Fraction.
-   * @param {import("../coordinate.js").Coordinate=} opt_dest Optional coordinate whose values will
+   * @param {import("../coordinate.js").Coordinate} [opt_dest] Optional coordinate whose values will
    *     be modified. If not provided, a new coordinate will be returned.
    * @return {import("../coordinate.js").Coordinate} Coordinate of the interpolated point.
    * @api
@@ -288,7 +293,7 @@ class LineString extends SimpleGeometry {
   /**
    * Set the coordinates of the linestring.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

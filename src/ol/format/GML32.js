@@ -1,6 +1,7 @@
 /**
  * @module ol/format/GML32
  */
+import GML2 from './GML2.js';
 import GML3 from './GML3.js';
 import GMLBase from './GMLBase.js';
 import {makeArrayPusher, makeChildAppender, makeReplacer} from '../xml.js';
@@ -13,7 +14,7 @@ import {writeStringTextNode} from '../format/xsd.js';
  */
 class GML32 extends GML3 {
   /**
-   * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
+   * @param {import("./GMLBase.js").Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     const options = /** @type {import("./GMLBase.js").Options} */ (opt_options
@@ -41,6 +42,7 @@ GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'pos': makeReplacer(GML3.prototype.readFlatPos),
     'posList': makeReplacer(GML3.prototype.readFlatPosList),
+    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates),
   },
 };
 

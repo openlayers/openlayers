@@ -26,14 +26,15 @@ const tileGrid = new WMTSTileGrid({
 const scalgoToken = 'CC5BF28A7D96B320C7DFBFD1236B5BEB';
 
 const wmtsSource = new WMTS({
-  url: 'http://ts2.scalgo.com/olpatch/wmts?token=' + scalgoToken,
+  url: 'https://ts2.scalgo.com/olpatch/wmts?token=' + scalgoToken,
   layer: 'SRTM_4_1:SRTM_4_1_flooded_sealevels',
   format: 'image/png',
   matrixSet: 'EPSG:3857',
   attributions: [
-    '<a href="http://scalgo.com">SCALGO</a>',
+    '<a href="https://scalgo.com" target="_blank">SCALGO</a>',
     '<a href="https://cgiarcsi.community/data/' +
-      'srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>',
+      'srtm-90m-digital-elevation-database-v4-1"' +
+      ' target="_blank">CGIAR-CSI SRTM</a>',
   ],
   tileGrid: tileGrid,
   style: 'default',

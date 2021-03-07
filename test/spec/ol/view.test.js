@@ -1622,6 +1622,20 @@ describe('ol.View', function () {
       expect(extent[2]).to.roughlyEqual(51200, 1e-9);
       expect(extent[3]).to.roughlyEqual(25600, 1e-9);
     });
+    it('works with a view padding', function () {
+      const view = new View({
+        resolutions: [1],
+        zoom: 0,
+        center: [0, 0],
+        padding: [10, 20, 30, 40],
+      });
+
+      let extent = view.calculateExtent();
+      expect(extent).to.eql([-20, -30, 20, 30]);
+      view.padding = [0, 0, 0, 0];
+      extent = view.calculateExtent();
+      expect(extent).to.eql([-60, -60, 40, 40]);
+    });
   });
 
   describe('#getViewportSize_()', function () {
@@ -1657,6 +1671,32 @@ describe('ol.View', function () {
       size = map.getView().getViewportSize_(Math.PI);
       expect(size[0]).to.roughlyEqual(200, 1e-9);
       expect(size[1]).to.roughlyEqual(150, 1e-9);
+    });
+  });
+
+  describe('#getViewportSizeMinusPadding_()', function () {
+    let map, target;
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '200px';
+      target.style.height = '150px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+      });
+    });
+    afterEach(function () {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+    it('same as getViewportSize_ when no padding is set', function () {
+      const size = map.getView().getViewportSizeMinusPadding_();
+      expect(size).to.eql(map.getView().getViewportSize_());
+    });
+    it('correctly updates when the padding is changed', function () {
+      map.getView().padding = [1, 2, 3, 4];
+      const size = map.getView().getViewportSizeMinusPadding_();
+      expect(size).to.eql([194, 146]);
     });
   });
 
@@ -1775,6 +1815,20 @@ describe('ol.View', function () {
       expect(view.getResolution()).to.be(5);
       expect(view.getCenter()[0]).to.be(1500);
       expect(view.getCenter()[1]).to.be(1500);
+    });
+    it('fits correctly to the extent when a padding is configured', function () {
+      view.padding = [100, 0, 0, 100];
+      view.setViewportSize([200, 200]);
+      view.fit([1000, 1000, 2000, 2000]);
+      expect(view.getResolution()).to.be(10);
+      expect(view.getCenter()[0]).to.be(1500);
+      expect(view.getCenter()[1]).to.be(1500);
+    });
+    it('fits correctly to the extent when a view extent is configured', function () {
+      view.options_.extent = [1500, 0, 2500, 10000];
+      view.applyOptions_(view.options_);
+      view.fit([1000, 1000, 2000, 2000]);
+      expect(view.calculateExtent()).eql([1500, 1000, 2500, 2000]);
     });
     it('throws on invalid geometry/extent value', function () {
       expect(function () {
@@ -2149,6 +2203,22 @@ describe('ol.View', function () {
       center = view.getCenter();
       expect(center[0]).to.roughlyEqual(0, 1e-10);
       expect(center[1]).to.roughlyEqual(0, 1e-10);
+    });
+  });
+
+  describe('#getCenter', function () {
+    let view;
+    beforeEach(function () {
+      view = new View({
+        center: [0, 0],
+        resolutions: [1],
+        zoom: 0,
+      });
+      view.setViewportSize([100, 100]);
+    });
+    it('Correctly shifts the viewport center when a padding is set', function () {
+      view.padding = [50, 0, 0, 50];
+      expect(view.getCenter()).to.eql([25, -25]);
     });
   });
 });

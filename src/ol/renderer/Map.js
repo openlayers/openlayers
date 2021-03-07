@@ -8,8 +8,17 @@ import {compose as composeTransform, makeInverse} from '../transform.js';
 import {getWidth} from '../extent.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {inView} from '../layer/Layer.js';
-import {renderDeclutterItems} from '../render.js';
 import {wrapX} from '../coordinate.js';
+
+/**
+ * @typedef HitMatch
+ * @property {import("../Feature.js").FeatureLike} feature Feature.
+ * @property {import("../layer/Layer.js").default} layer Layer.
+ * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
+ * @property {number} distanceSq Squared distance.
+ * @property {import("./vector.js").FeatureCallback<T>} callback Callback.
+ * @template T
+ */
 
 /**
  * @abstract
@@ -26,11 +35,6 @@ class MapRenderer extends Disposable {
      * @type {import("../PluggableMap.js").default}
      */
     this.map_ = map;
-
-    /**
-     * @private
-     */
-    this.declutterTree_ = null;
   }
 
   /**
@@ -70,8 +74,7 @@ class MapRenderer extends Disposable {
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {boolean} checkWrapped Check for wrapped geometries.
-   * @param {function(this: S, import("../Feature.js").FeatureLike,
-   *     import("../layer/Layer.js").default): T} callback Feature callback.
+   * @param {import("./vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
@@ -98,10 +101,11 @@ class MapRenderer extends Disposable {
      * @param {boolean} managed Managed layer.
      * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
-     * @return {?} Callback result.
+     * @param {import("../geom/Geometry.js").default} geometry Geometry.
+     * @return {T|undefined} Callback result.
      */
-    function forEachFeatureAtCoordinate(managed, feature, layer) {
-      return callback.call(thisArg, feature, managed ? layer : null);
+    function forEachFeatureAtCoordinate(managed, feature, layer, geometry) {
+      return callback.call(thisArg, feature, managed ? layer : null, geometry);
     }
 
     const projection = viewState.projection;
@@ -116,18 +120,13 @@ class MapRenderer extends Disposable {
 
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
-    let declutteredFeatures;
-    if (this.declutterTree_) {
-      declutteredFeatures = this.declutterTree_.all().map(function (entry) {
-        return entry.value;
-      });
-    }
 
+    const matches = /** @type {Array<HitMatch<T>>} */ ([]);
     const tmpCoord = [];
     for (let i = 0; i < offsets.length; i++) {
       for (let j = numLayers - 1; j >= 0; --j) {
         const layerState = layerStates[j];
-        const layer = /** @type {import("../layer/Layer.js").default} */ (layerState.layer);
+        const layer = layerState.layer;
         if (
           layer.hasRenderer() &&
           inView(layerState, viewState) &&
@@ -150,7 +149,7 @@ class MapRenderer extends Disposable {
               frameState,
               hitTolerance,
               callback,
-              declutteredFeatures
+              matches
             );
           }
           if (result) {
@@ -159,7 +158,16 @@ class MapRenderer extends Disposable {
         }
       }
     }
-    return undefined;
+    if (matches.length === 0) {
+      return undefined;
+    }
+    const order = 1 / matches.length;
+    matches.forEach((m, i) => (m.distanceSq += i * order));
+    matches.sort((a, b) => a.distanceSq - b.distanceSq);
+    matches.some((m) => {
+      return (result = m.callback(m.feature, m.layer, m.geometry));
+    });
+    return result;
   }
 
   /**
@@ -224,10 +232,11 @@ class MapRenderer extends Disposable {
 
   /**
    * Render.
+   * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
-    this.declutterTree_ = renderDeclutterItems(frameState, this.declutterTree_);
+    abstract();
   }
 
   /**

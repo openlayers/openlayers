@@ -10,7 +10,7 @@ import {Control, defaults as defaultControls} from '../src/ol/control.js';
 
 class RotateNorthControl extends Control {
   /**
-   * @param {Object=} opt_options Control options.
+   * @param {Object} [opt_options] Control options.
    */
   constructor(opt_options) {
     const options = opt_options || {};

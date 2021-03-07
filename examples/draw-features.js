@@ -45,4 +45,8 @@ typeSelect.onchange = function () {
   addInteraction();
 };
 
+document.getElementById('undo').addEventListener('click', function () {
+  draw.removeLastPoint();
+});
+
 addInteraction();

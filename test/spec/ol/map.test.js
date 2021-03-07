@@ -7,10 +7,12 @@ import ImageState from '../../../src/ol/ImageState.js';
 import ImageStatic from '../../../src/ol/source/ImageStatic.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import Map from '../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../src/ol/MapBrowserEvent.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
+import Select from '../../../src/ol/interaction/Select.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import TileLayerRenderer from '../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
@@ -26,7 +28,9 @@ import {
   transform,
   useGeographic,
 } from '../../../src/ol/proj.js';
+import {createXYZ} from '../../../src/ol/tilegrid.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
+import {tile as tileStrategy} from '../../../src/ol/loadingstrategy.js';
 
 describe('ol.Map', function () {
   describe('constructor', function () {
@@ -222,6 +226,13 @@ describe('ol.Map', function () {
             source: new VectorSource({
               url: 'spec/ol/data/point.json',
               format: new GeoJSON(),
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              url: 'spec/ol/data/point.json',
+              format: new GeoJSON(),
+              strategy: tileStrategy(createXYZ()),
             }),
           }),
           new VectorLayer({
@@ -1021,6 +1032,94 @@ describe('ol.Map', function () {
         expect(pixel).to.eql(screenCenter);
         done();
       });
+    });
+  });
+
+  describe('#handleMapBrowserEvent()', function () {
+    let map, target, dragpan;
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      dragpan = new DragPan();
+      map = new Map({
+        target: target,
+        interactions: [dragpan],
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+            }),
+          }),
+        ],
+        view: new View({
+          zoom: 0,
+          center: [0, 0],
+        }),
+      });
+      map.renderSync();
+    });
+
+    afterEach(function () {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('calls handleEvent on interaction', function () {
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(spy.callCount).to.be(1);
+      spy.restore();
+    });
+
+    it('does not call handleEvent on interaction when map has no target', function () {
+      map.setTarget(null);
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+    it('does not call handleEvent on interaction that has been removed', function () {
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      let callCount = 0;
+      const interaction = new Interaction({
+        handleEvent: function () {
+          ++callCount;
+          map.removeInteraction(dragpan);
+          return true;
+        },
+      });
+      map.addInteraction(interaction);
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(callCount).to.be(1);
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+    it('does not call handleEvent on interaction when MapBrowserEvent propagation stopped', function () {
+      const select = new Select();
+      const selectStub = sinon.stub(select, 'handleEvent');
+      selectStub.callsFake(function (e) {
+        e.stopPropagation();
+        return true;
+      });
+      map.addInteraction(select);
+      const spy = sinon.spy(dragpan, 'handleEvent');
+      map.handleMapBrowserEvent(
+        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+      );
+      expect(spy.callCount).to.be(0);
+      expect(selectStub.callCount).to.be(1);
+      spy.restore();
+      selectStub.restore();
     });
   });
 });

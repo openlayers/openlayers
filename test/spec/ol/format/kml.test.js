@@ -468,6 +468,54 @@ describe('ol.format.KML', function () {
           expect(g.get('altitudeMode')).to.be('absolute');
         });
 
+        it('can read XY coordinates', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <LineString>' +
+            '      <coordinates>1,2 3,4</coordinates>' +
+            '      <extrude>0</extrude>' +
+            '      <tessellate>1</tessellate>' +
+            '      <altitudeMode>absolute</altitudeMode>' +
+            '    </LineString>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const g = f.getGeometry();
+          expect(g).to.be.an(LineString);
+          expect(g.getCoordinates()).to.eql([
+            [1, 2, 0],
+            [3, 4, 0],
+          ]);
+        });
+
+        it('can read empty Z coordinates', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <LineString>' +
+            '      <coordinates>1,2, 3,4,</coordinates>' +
+            '      <extrude>0</extrude>' +
+            '      <tessellate>1</tessellate>' +
+            '      <altitudeMode>absolute</altitudeMode>' +
+            '    </LineString>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const g = f.getGeometry();
+          expect(g).to.be.an(LineString);
+          expect(g.getCoordinates()).to.eql([
+            [1, 2, 0],
+            [3, 4, 0],
+          ]);
+        });
+
         it('can write XY LineString geometries', function () {
           const layout = 'XY';
           const lineString = new LineString(
@@ -2154,6 +2202,52 @@ describe('ol.format.KML', function () {
           expect(style.getZIndex()).to.be(undefined);
         });
 
+        it("can read a feature's IconStyle and apply an iconUrlFunction", function () {
+          format = new KML({
+            iconUrlFunction: function (href) {
+              return href.replace(/^http:/, 'https:');
+            },
+          });
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <Style>' +
+            '      <IconStyle>' +
+            '        <Icon>' +
+            '          <href>http://foo.png</href>' +
+            '        </Icon>' +
+            '      </IconStyle>' +
+            '    </Style>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const style = styleArray[0];
+          expect(style).to.be.an(Style);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          const imageStyle = style.getImage();
+          expect(imageStyle).to.be.an(Icon);
+          expect(new URL(imageStyle.getSrc()).href).to.eql(
+            new URL('https://foo.png').href
+          );
+          expect(imageStyle.getAnchor()).to.be(null);
+          expect(imageStyle.getOrigin()).to.be(null);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(imageStyle.getSize()).to.be(null);
+          expect(imageStyle.getScale()).to.be(1);
+          expect(imageStyle.getImage().crossOrigin).to.eql('anonymous');
+          expect(style.getText()).to.be(getDefaultTextStyle());
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
         it("can read a IconStyle's hotspot", function () {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -3365,6 +3459,41 @@ describe('ol.format.KML', function () {
             '    </Style>' +
             '    <Placemark>' +
             '      <styleUrl>#fooMap</styleUrl>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          const styleArray = styleFunction(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          const s = styleArray[0];
+          expect(s).to.be.an(Style);
+          expect(s.getFill()).not.to.be(null);
+          expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+        });
+
+        it('can use Styles in StyleMaps if # is missing', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <StyleMap id="fooMap">' +
+            '      <Pair>' +
+            '        <key>normal</key>' +
+            '        <styleUrl>foo</styleUrl>' +
+            '      </Pair>' +
+            '    </StyleMap>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>12345678</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <styleUrl>fooMap</styleUrl>' +
             '    </Placemark>' +
             '  </Document>' +
             '</kml>';

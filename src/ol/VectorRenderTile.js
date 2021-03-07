@@ -7,14 +7,14 @@ import {getUid} from './util.js';
 
 /**
  * @typedef {Object} ReplayState
- * @property {boolean} dirty
- * @property {null|import("./render.js").OrderFunction} renderedRenderOrder
- * @property {number} renderedTileRevision
- * @property {number} renderedResolution
- * @property {number} renderedRevision
- * @property {number} renderedZ
- * @property {number} renderedTileResolution
- * @property {number} renderedTileZ
+ * @property {boolean} dirty Dirty.
+ * @property {null|import("./render.js").OrderFunction} renderedRenderOrder RenderedRenderOrder.
+ * @property {number} renderedTileRevision RenderedTileRevision.
+ * @property {number} renderedResolution RenderedResolution.
+ * @property {number} renderedRevision RenderedRevision.
+ * @property {number} renderedZ RenderedZ.
+ * @property {number} renderedTileResolution RenderedTileResolution.
+ * @property {number} renderedTileZ RenderedTileZ.
  */
 
 /**
@@ -44,6 +44,12 @@ class VectorRenderTile extends Tile {
      * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
      */
     this.executorGroups = {};
+
+    /**
+     * Executor groups for decluttering, by layer uid. Entries are read/written by the renderer.
+     * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
+     */
+    this.declutterExecutorGroups = {};
 
     /**
      * Number of loading source tiles. Read/written by the source.
@@ -164,6 +170,7 @@ class VectorRenderTile extends Tile {
   release() {
     for (const key in this.context_) {
       canvasPool.push(this.context_[key].canvas);
+      delete this.context_[key];
     }
     super.release();
   }

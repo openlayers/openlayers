@@ -3,11 +3,15 @@ layout: example.html
 title: Moveend Event
 shortdesc: Use of the moveend event.
 docs: >
-  <p>In this example, a listener is registered for the map's <code>moveend</code> event.  Whenever this listener is called, it updates the inputs below with the map extent in decimal degrees.</p>
+  <p>
+    In this example, a listener is registered for the map's
+    <code>moveend</code> event.  Whenever this listener is called,
+    it updates the inputs below with the map extent in decimal degrees.
+  </p>
 tags: "moveend, map, event"
 ---
 <div id="map" class="map"></div>
-<label>top</label><input type="text" id="top">
-<label>right</label><input type="text" id="right"><br>
-<label>bottom</label><input type="text" id="bottom">
-<label>left</label><input type="text" id="left">
+<label>left: <input readonly="readonly" type="text" id="left"></label>
+<label>right: <input readonly="readonly" type="text" id="right"></label>
+<label>bottom: <input readonly="readonly" type="text" id="bottom"></label>
+<label>top: <input readonly="readonly" type="text" id="top"></label>

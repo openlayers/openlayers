@@ -8,7 +8,7 @@ import {extend} from './array.js';
  * {@link module:ol/xml~makeSimpleNodeFactory}, the top `objectStack` item needs
  * to have this structure.
  * @typedef {Object} NodeStackItem
- * @property {Node} node
+ * @property {Node} node Node.
  */
 
 /**
@@ -106,7 +106,7 @@ export function parse(xml) {
  * Make an array extender function for extending the array at the top of the
  * object stack.
  * @param {function(this: T, Node, Array<*>): (Array<*>|undefined)} valueReader Value reader.
- * @param {T=} opt_this The object to use as `this` in `valueReader`.
+ * @param {T} [opt_this] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
@@ -136,7 +136,7 @@ export function makeArrayExtender(valueReader, opt_this) {
  * Make an array pusher function for pushing to the array at the top of the
  * object stack.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
- * @param {T=} opt_this The object to use as `this` in `valueReader`.
+ * @param {T} [opt_this] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
@@ -166,7 +166,7 @@ export function makeArrayPusher(valueReader, opt_this) {
  * Make an object stack replacer function for replacing the object at the
  * top of the stack.
  * @param {function(this: T, Node, Array<*>): *} valueReader Value reader.
- * @param {T=} opt_this The object to use as `this` in `valueReader`.
+ * @param {T} [opt_this] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
@@ -193,8 +193,8 @@ export function makeReplacer(valueReader, opt_this) {
  * Make an object property pusher function for adding a property to the
  * object at the top of the stack.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
- * @param {string=} opt_property Property.
- * @param {T=} opt_this The object to use as `this` in `valueReader`.
+ * @param {string} [opt_property] Property.
+ * @param {T} [opt_this] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
@@ -232,8 +232,8 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
 /**
  * Make an object property setter function.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
- * @param {string=} opt_property Property.
- * @param {T=} opt_this The object to use as `this` in `valueReader`.
+ * @param {string} [opt_property] Property.
+ * @param {T} [opt_this] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
@@ -266,7 +266,7 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
  * designated parent. The parent is the `node` of the
  * {@link module:ol/xml~NodeStackItem} at the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array<*>): void} nodeWriter Node writer.
- * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
+ * @param {T} [opt_this] The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V
  */
@@ -294,7 +294,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
  * geometry writer, which could be reused for writing MultiLineString
  * geometries.
  * @param {function(this: T, Element, V, Array<*>): void} nodeWriter Node writer.
- * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
+ * @param {T} [opt_this] The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V
  */
@@ -317,10 +317,10 @@ export function makeArraySerializer(nodeWriter, opt_this) {
  * {@link module:ol/xml~serialize} or {@link module:ol/xml~pushSerializeAndPop} as node names,
  * or a fixed node name. The namespace of the created nodes can either be fixed,
  * or the parent namespace will be used.
- * @param {string=} opt_nodeName Fixed node name which will be used for all
+ * @param {string} [opt_nodeName] Fixed node name which will be used for all
  *     created nodes. If not provided, the 3rd argument to the resulting node
  *     factory needs to be provided and will be the nodeName.
- * @param {string=} opt_namespaceURI Fixed namespace URI which will be used for
+ * @param {string} [opt_namespaceURI] Fixed namespace URI which will be used for
  *     all created nodes. If not provided, the namespace of the parent node will
  *     be used.
  * @return {function(*, Array<*>, string=): (Node|undefined)} Node factory.
@@ -331,7 +331,7 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
     /**
      * @param {*} value Value.
      * @param {Array<*>} objectStack Object stack.
-     * @param {string=} opt_nodeName Node name.
+     * @param {string} [opt_nodeName] Node name.
      * @return {Node} Node.
      */
     function (value, objectStack, opt_nodeName) {
@@ -386,7 +386,7 @@ export function makeSequence(object, orderedKeys) {
  * values are version specific.
  * @param {Array<string>} namespaceURIs Namespace URIs.
  * @param {T} structure Structure.
- * @param {Object<string, T>=} opt_structureNS Namespaced structure to add to.
+ * @param {Object<string, T>} [opt_structureNS] Namespaced structure to add to.
  * @return {Object<string, T>} Namespaced structure.
  * @template T
  */
@@ -408,7 +408,7 @@ export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
  *     Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @param {*=} opt_this The object to use as `this`.
+ * @param {*} [opt_this] The object to use as `this`.
  */
 export function parseNode(parsersNS, node, objectStack, opt_this) {
   let n;
@@ -430,7 +430,7 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
  *     Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @param {*=} opt_this The object to use as `this`.
+ * @param {*} [opt_this] The object to use as `this`.
  * @return {T} Object.
  * @template T
  */
@@ -459,12 +459,12 @@ export function pushParseAndPop(
  * @param {Array<*>} values Values to serialize. An example would be an array
  *     of {@link module:ol/Feature~Feature} instances.
  * @param {Array<*>} objectStack Node stack.
- * @param {Array<string>=} opt_keys Keys of the `values`. Will be passed to the
+ * @param {Array<string>} [opt_keys] Keys of the `values`. Will be passed to the
  *     `nodeFactory`. This is used for serializing object literals where the
  *     node name relates to the property key. The array length of `opt_keys` has
  *     to match the length of `values`. For serializing a sequence, `opt_keys`
  *     determines the order of the sequence.
- * @param {T=} opt_this The object to use as `this` for the node factory and
+ * @param {T} [opt_this] The object to use as `this` for the node factory and
  *     serializers.
  * @template T
  */
@@ -512,12 +512,12 @@ export function serialize(
  * @param {Array<*>} values Values to serialize. An example would be an array
  *     of {@link module:ol/Feature~Feature} instances.
  * @param {Array<*>} objectStack Node stack.
- * @param {Array<string>=} opt_keys Keys of the `values`. Will be passed to the
+ * @param {Array<string>} [opt_keys] Keys of the `values`. Will be passed to the
  *     `nodeFactory`. This is used for serializing object literals where the
  *     node name relates to the property key. The array length of `opt_keys` has
  *     to match the length of `values`. For serializing a sequence, `opt_keys`
  *     determines the order of the sequence.
- * @param {T=} opt_this The object to use as `this` for the node factory and
+ * @param {T} [opt_this] The object to use as `this` for the node factory and
  *     serializers.
  * @return {O|undefined} Object.
  * @template O, T

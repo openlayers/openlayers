@@ -28,7 +28,7 @@ describe('ol.geom.flat.drawTextOnPath', function () {
       '',
       {}
     );
-    expect(instructions).to.eql([[40, 0, 5, 0, 'foo']]);
+    expect(instructions).to.eql([[50, 0, 15, 0, 'foo']]);
   });
 
   it('left-aligns text on a horizontal line', function () {
@@ -45,7 +45,7 @@ describe('ol.geom.flat.drawTextOnPath', function () {
       '',
       {}
     );
-    expect(instructions).to.eql([[5, 0, 5, 0, 'foo']]);
+    expect(instructions).to.eql([[15, 0, 15, 0, 'foo']]);
   });
 
   it('right-aligns text on a horizontal line', function () {
@@ -63,7 +63,7 @@ describe('ol.geom.flat.drawTextOnPath', function () {
       '',
       {}
     );
-    expect(instructions).to.eql([[75, 0, 5, 0, 'foo']]);
+    expect(instructions).to.eql([[85, 0, 15, 0, 'foo']]);
   });
 
   it('draws text on a vertical line', function () {
@@ -82,7 +82,7 @@ describe('ol.geom.flat.drawTextOnPath', function () {
       {}
     );
     const a = (90 * Math.PI) / 180;
-    expect(instructions).to.eql([[0, 40, 5, a, 'foo']]);
+    expect(instructions).to.eql([[0, 50, 15, a, 'foo']]);
   });
 
   it('draws text on a diagonal line', function () {
@@ -138,19 +138,19 @@ describe('ol.geom.flat.drawTextOnPath', function () {
       '',
       {}
     );
-    expect(instructions[0]).to.eql([-20, 0, 5, 0, 'foo-foo-foo-foo']);
+    expect(instructions[0]).to.eql([50, 0, 75, 0, 'foo-foo-foo-foo']);
     expect(instructions.length).to.be(1);
   });
 
   it('renders angled text', function () {
     const length = lineStringLength(angled, 0, angled.length, 2);
-    const startM = length / 2 - 15;
+    const startM = length / 2 - 20;
     const instructions = drawTextOnPath(
       angled,
       0,
       angled.length,
       2,
-      'foo',
+      'fooo',
       startM,
       Infinity,
       1,
@@ -159,11 +159,9 @@ describe('ol.geom.flat.drawTextOnPath', function () {
       {}
     );
     expect(instructions[0][3]).to.eql((45 * Math.PI) / 180);
-    expect(instructions[0][4]).to.be('f');
-    expect(instructions[1][3]).to.eql((45 * Math.PI) / 180);
-    expect(instructions[1][4]).to.be('o');
-    expect(instructions[2][3]).to.eql((-45 * Math.PI) / 180);
-    expect(instructions[2][4]).to.be('o');
+    expect(instructions[0][4]).to.be('fo');
+    expect(instructions[1][3]).to.eql((-45 * Math.PI) / 180);
+    expect(instructions[1][4]).to.be('oo');
   });
 
   it('respects maxAngle', function () {

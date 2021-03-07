@@ -47,7 +47,7 @@ The default `geometryFunction` can only handle `ol/geom/Point` geometries.
 
 ### 11
 
-`options.featureTypes` should be an Array.
+`options.featureTypes` must be an Array.
 
 ### 12
 
@@ -111,7 +111,7 @@ Features for `updates` must have an id set by the feature reader or `ol.Feature#
 
 ### 28
 
-`renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
+`renderMode` must be `'hybrid'` or `'vector'`.
 
 ### 29
 
@@ -249,3 +249,7 @@ This is done by providing adequate shaders using the `hitVertexShader` and `hitF
 ### 67
 
 A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.
+
+### 68
+
+Data from this source can only be rendered if it has a projection compatible with the view projection.

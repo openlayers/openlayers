@@ -40,7 +40,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     for (let i = 0; i < numEnds; ++i) {
       const end = ends[i];
       const myBegin = this.coordinates.length;
-      const myEnd = this.appendFlatCoordinates(
+      const myEnd = this.appendFlatLineCoordinates(
         flatCoordinates,
         offset,
         end,
@@ -57,7 +57,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       this.hitDetectionInstructions.push(moveToLineToInstruction);
       if (stroke) {
         // Performance optimization: only call closePath() when we have a stroke.
-        // Otherwise the ring is closed already (see appendFlatCoordinates above).
+        // Otherwise the ring is closed already (see appendFlatLineCoordinates above).
         this.instructions.push(closePathInstruction);
         this.hitDetectionInstructions.push(closePathInstruction);
       }
@@ -108,7 +108,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const flatCoordinates = circleGeometry.getFlatCoordinates();
     const stride = circleGeometry.getStride();
     const myBegin = this.coordinates.length;
-    this.appendFlatCoordinates(
+    this.appendFlatLineCoordinates(
       flatCoordinates,
       0,
       flatCoordinates.length,
@@ -220,7 +220,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   }
 
   /**
-   * @return {import("./Builder.js").SerializableInstructions} the serializable instructions.
+   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
    */
   finish() {
     this.reverseHitDetectionInstructions();

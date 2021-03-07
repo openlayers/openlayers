@@ -15,8 +15,8 @@ import {
  * A function returning the canvas element (`{HTMLCanvasElement}`)
  * used by the source as an image. The arguments passed to the function are:
  * {@link module:ol/extent~Extent} the image extent, `{number}` the image resolution,
- * `{number}` the device pixel ratio, {@link module:ol/size~Size} the image size, and
- * {@link module:ol/proj/Projection} the image projection. The canvas returned by
+ * `{number}` the pixel ratio of the map, {@link module:ol/size~Size} the image size,
+ * and {@link module:ol/proj/Projection} the image projection. The canvas returned by
  * this function is cached by the source. The this keyword inside the function
  * references the {@link module:ol/source/ImageCanvas}.
  *
@@ -30,8 +30,8 @@ import {
  * @property {FunctionType} [canvasFunction] Canvas function.
  * The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{import("../extent.js").Extent}` the
- * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{import("../size.js").Size}` the image size, and `{import("../proj/Projection.js").Projection}` the image
+ * image extent, `{number}` the image resolution, `{number}` the pixel ratio of the map,
+ * `{import("../size.js").Size}` the image size, and `{import("../proj/Projection.js").Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `changed` should be called on the source for the source to
@@ -52,7 +52,7 @@ import {
  */
 class ImageCanvasSource extends ImageSource {
   /**
-   * @param {Options=} opt_options ImageCanvas options.
+   * @param {Options} [opt_options] ImageCanvas options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

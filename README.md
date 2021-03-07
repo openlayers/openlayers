@@ -108,14 +108,17 @@ TypeScript users may want to use a [third-party types package](https://github.co
 
 ## Supported Browsers
 
-OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge.
+OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](https://262.ecma-international.org/5.1/). This includes Chrome, Firefox, Safari and Edge.
 
 For older browsers and platforms (Internet Explorer, Android 4.x, iOS v12 and older, Safari v12 and older), polyfills may be needed for the following browser features:
 
-* [`requestAnimationFrame`](https://caniuse.com/#feat=requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
-* [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/#feat=classlist): Available from [polyfill.io](https://polyfill.io/).
-* [`URL` API](https://caniuse.com/#feat=url): Available from [polyfill.io](https://polyfill.io/).
-* [Pointer events](https://caniuse.com/#feat=pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [@openlayers/pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
+* [`fetch`](https://caniuse.com/fetch): Available from [polyfill.io](https://polyfill.io/).
+* [`requestAnimationFrame`](https://caniuse.com/requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
+* [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/classlist): Available from [polyfill.io](https://polyfill.io/).
+* [`URL` API](https://caniuse.com/url): Available from [polyfill.io](https://polyfill.io/).
+* [`TextDecoder`](https://caniuse.com/textencoder): Available from [polyfill.io](https://polyfill.io/).
+* [`Number.isInteger`](https://caniuse.com/isInteger): Available from [polyfill.io](https://polyfill.io/).
+* [Pointer events](https://caniuse.com/pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
 
 ## Documentation
 
@@ -131,7 +134,7 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 
 ## Community
 
-- Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
+- Need help? Find it on [Stack Overflow using the tag 'openlayers'](https://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 
 ![Test Status](https://github.com/openlayers/openlayers/workflows/Test/badge.svg)

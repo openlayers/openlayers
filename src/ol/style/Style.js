@@ -147,7 +147,7 @@ import {assert} from '../asserts.js';
  */
 class Style {
   /**
-   * @param {Options=} opt_options Style options.
+   * @param {Options} [opt_options] Style options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -219,6 +219,7 @@ class Style {
       geometry: geometry,
       fill: this.getFill() ? this.getFill().clone() : undefined,
       image: this.getImage() ? this.getImage().clone() : undefined,
+      renderer: this.getRenderer(),
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       text: this.getText() ? this.getText().clone() : undefined,
       zIndex: this.getZIndex(),

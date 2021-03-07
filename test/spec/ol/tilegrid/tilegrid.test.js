@@ -210,6 +210,26 @@ describe('ol.tilegrid.TileGrid', function () {
     });
   });
 
+  describe('create with sizes', function () {
+    let tileGrid;
+    beforeEach(function () {
+      tileGrid = new TileGrid({
+        origin: [10, 40],
+        sizes: [[3, 3]],
+        tileSize: 10,
+        resolutions: [1],
+      });
+    });
+
+    it('calculates full tile ranges from sizes', function () {
+      const fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minX).to.equal(0);
+      expect(fullTileRange.maxX).to.equal(2);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(2);
+    });
+  });
+
   describe('create with extent and sizes', function () {
     let tileGrid;
     beforeEach(function () {
@@ -225,12 +245,31 @@ describe('ol.tilegrid.TileGrid', function () {
       expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
     });
 
-    it('calculates full tile ranges from sizes', function () {
+    it('calculates full tile ranges from sizes, further limited by extent', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
       expect(fullTileRange.minX).to.equal(0);
-      expect(fullTileRange.maxX).to.equal(2);
+      expect(fullTileRange.maxX).to.equal(1);
       expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(2);
+      expect(fullTileRange.maxY).to.equal(1);
+    });
+  });
+
+  describe('create with extent', function () {
+    let tileGrid;
+    beforeEach(function () {
+      tileGrid = new TileGrid({
+        extent: [10, 20, 30, 40],
+        tileSize: 10,
+        resolutions: [1],
+      });
+    });
+
+    it('calculates full tile ranges from extent', function () {
+      const fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minX).to.equal(0);
+      expect(fullTileRange.maxX).to.equal(1);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(1);
     });
   });
 
@@ -280,6 +319,66 @@ describe('ol.tilegrid.TileGrid', function () {
       });
       expect(tileGrid.getOrigin()).to.eql([0, 0]);
       expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+    });
+  });
+
+  describe('create with complex configuration', function () {
+    let tileGrid;
+    beforeEach(function () {
+      tileGrid = new TileGrid({
+        extent: [
+          343870.8496458133,
+          5809157.009546259,
+          1905238.0275122682,
+          7515502.7821859205,
+        ],
+        sizes: [
+          [1, 2],
+          [2, 4],
+          [2, 4],
+          [11, 16],
+        ],
+        resolutions: [
+          4174.778550445067,
+          2087.3892752225333,
+          1043.6946376112667,
+          521.8473188056333,
+        ],
+        tileSizes: [
+          [374, 204],
+          [374, 204],
+          [748, 409],
+          [272, 204],
+        ],
+      });
+    });
+
+    it('creates correct tile ranges', function () {
+      const tileRanges = [
+        {minX: 0, maxX: 0, minY: 0, maxY: 1},
+        {minX: 0, maxX: 1, minY: 0, maxY: 3},
+        {minX: 0, maxX: 1, minY: 0, maxY: 3},
+        {minX: 0, maxX: 10, minY: 0, maxY: 15},
+      ];
+      for (let z = 0; z <= 3; ++z) {
+        const zTileRange = tileGrid.getFullTileRange(z);
+        for (const property in tileRanges[z]) {
+          expect(zTileRange[property]).to.be(tileRanges[z][property]);
+        }
+      }
+    });
+
+    it('returns correct withinExtentAndZ results with containsXY', function () {
+      const outOfRangeTileCoords = [
+        [1, 2, 0],
+        [1, 2, 1],
+        [1, 2, 2],
+        [1, 2, 3],
+      ];
+      outOfRangeTileCoords.forEach(function (tileCoord) {
+        const tileRange = tileGrid.getFullTileRange(tileCoord[0]);
+        expect(tileRange.containsXY(tileCoord[1], tileCoord[2])).to.be(false);
+      });
     });
   });
 
@@ -575,7 +674,7 @@ describe('ol.tilegrid.TileGrid', function () {
     });
 
     it('returns the correct resolution at the equator', function () {
-      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
       expect(tileGrid.getResolution(0)).to.roughlyEqual(156543.04, 1e-2);
       expect(tileGrid.getResolution(1)).to.roughlyEqual(78271.52, 1e-2);
       expect(tileGrid.getResolution(2)).to.roughlyEqual(39135.76, 1e-2);
@@ -1078,6 +1177,59 @@ describe('ol.tilegrid.TileGrid', function () {
       expect(tileGrid.getZForResolution(125, -1)).to.eql(3);
       expect(tileGrid.getZForResolution(100, -1)).to.eql(3);
       expect(tileGrid.getZForResolution(50, -1)).to.eql(3);
+    });
+  });
+
+  describe('getTileRangeForTileCoordAndZ()', function () {
+    const tileGrid = createForExtent(
+      getProjection('EPSG:3857').getExtent(),
+      22
+    );
+
+    it('can be used to get the child tile range', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([0, 0, 0], 1);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(1);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(1);
+    });
+
+    it('can be used to get the range of a deeper level', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([0, 0, 0], 3);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(7);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(7);
+    });
+
+    it('can be used to get the parent tile range', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([1, 1, 0], 0);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(0);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(0);
+    });
+
+    it('can be used to get the range of a shallower level', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([3, 1, 6], 0);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(0);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(0);
+    });
+
+    const tileCoord = [15, 6239, 11751];
+    tileGrid.forEachTileCoordParentTileRange(tileCoord, function (
+      z,
+      tileRange
+    ) {
+      it(`works for level ${z}`, function () {
+        const range = tileGrid.getTileRangeForTileCoordAndZ(tileCoord, z);
+        expect(range.minX).to.be(tileRange.minX);
+        expect(range.maxX).to.be(tileRange.maxX);
+        expect(range.minY).to.be(tileRange.minY);
+        expect(range.maxY).to.be(tileRange.maxY);
+      });
     });
   });
 });

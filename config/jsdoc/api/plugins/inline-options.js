@@ -1,5 +1,5 @@
 /**
- * @filedesc
+ * @fileoverview
  * Inlines option params from typedefs
  */
 

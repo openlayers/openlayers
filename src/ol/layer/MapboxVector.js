@@ -159,7 +159,7 @@ const SourceType = {
  * `source` property or the `layers` property to limit rendering to a single vector source.  The
  * `source` property corresponds to the id of a vector source in your Mapbox style.
  * @property {Array<string>} [layers] Limit rendering to the list of included layers.  All layers
- * must share the same vector soource.  If your style uses more than one source, you need to use
+ * must share the same vector source.  If your style uses more than one source, you need to use
  * either the `source` property or the `layers` property to limit rendering to a single vector
  * source.
  * @property {boolean} [declutter=true] Declutter images and text. Decluttering is applied to all
@@ -193,10 +193,6 @@ const SourceType = {
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
  * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
- *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
- *    are always rotated with the view and pixels are scaled during zoom animations. When `declutter`
- *    is set to `true`, the decluttering is done per tile resulting in labels and point symbols getting
- *    cut off at tile boundaries.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.

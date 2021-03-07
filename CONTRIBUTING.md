@@ -4,7 +4,7 @@ Thanks for your interest in contributing to OpenLayers.  Please see the project'
 
 ## Asking Questions
 
-Please ask questions about using the library on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers).
+Please ask questions about using the library on [Stack Overflow using the tag 'openlayers'](https://stackoverflow.com/questions/tagged/openlayers).
 
 When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/openlayers-dev).
 
@@ -68,12 +68,12 @@ easily-understandable chunks.  Any individual commit should not add more than
 one new class or one new function.  Do not submit commits that change thousands
 of lines or that contain more than one distinct logical change.  Trivial
 commits, e.g. to fix lint errors, should be merged into the commit that
-introduced the error.  See the [Atomic Commit Convention on Wikipedia](http://en.wikipedia.org/wiki/Atomic_commit#Atomic_Commit_Convention) for more detail.
+introduced the error.  See the [Atomic Commit Convention on Wikipedia](https://en.wikipedia.org/wiki/Atomic_commit#Atomic_Commit_Convention) for more detail.
 
 `git apply --patch` and `git rebase` can help you create a clean commit
 history.
-[Reviewboard.org](http://www.reviewboard.org/docs/codebase/dev/git/clean-commits/)
-and [Pro GIT](http://git-scm.com/book/en/Git-Tools-Rewriting-History) have
+[Reviewboard.org](https://www.reviewboard.org/docs/codebase/dev/git/clean-commits/)
+and [Pro GIT](https://git-scm.com/book/en/Git-Tools-Rewriting-History) have
 explain how to use them.
 
 
@@ -81,7 +81,7 @@ explain how to use them.
 
 Commit messages should be short, begin with a verb in the imperative, and
 contain no trailing punctuation. We follow
-http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 for the formatting of commit messages.
 
 Git commit message should look like:

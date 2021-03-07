@@ -56,17 +56,17 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} Vec2
- * @property {number} x
- * @property {import("../style/IconAnchorUnits").default} xunits
- * @property {number} y
- * @property {import("../style/IconAnchorUnits").default} yunits
- * @property {import("../style/IconOrigin.js").default} origin
+ * @property {number} x X coordinate.
+ * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
+ * @property {number} y Y coordinate.
+ * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
+ * @property {import("../style/IconOrigin.js").default} origin Origin.
  */
 
 /**
  * @typedef {Object} GxTrackObject
- * @property {Array<number>} flatCoordinates
- * @property {Array<number>} whens
+ * @property {Array<number>} flatCoordinates Flat coordinates.
+ * @property {Array<number>} whens Whens.
  */
 
 /**
@@ -126,7 +126,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
     'name': makeObjectPropertySetter(readString),
     'open': makeObjectPropertySetter(readBoolean),
     'phoneNumber': makeObjectPropertySetter(readString),
-    'styleUrl': makeObjectPropertySetter(readURI),
+    'styleUrl': makeObjectPropertySetter(readStyleURL),
     'visibility': makeObjectPropertySetter(readBoolean),
   },
   makeStructureNS(GX_NAMESPACE_URIS, {
@@ -379,6 +379,24 @@ function createStyleDefaults() {
 let TEXTAREA;
 
 /**
+ * A function that takes a url `{string}` and returns a url `{string}`.
+ * Might be used to change an icon path or to substitute a
+ * data url obtained from a KMZ array buffer.
+ *
+ * @typedef {function(string):string} IconUrlFunction
+ * @api
+ */
+
+/**
+ * Function that returns a url unchanged.
+ * @param {string} href Input url.
+ * @return {string} Output url.
+ */
+function defaultIconUrlFunction(href) {
+  return href;
+}
+
+/**
  * @typedef {Object} Options
  * @property {boolean} [extractStyles=true] Extract styles from the KML.
  * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
@@ -387,6 +405,8 @@ let TEXTAREA;
  * @property {boolean} [writeStyles=true] Write styles into KML.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * @property {IconUrlFunction} [iconUrlFunction] Function that takes a url string and returns a url string.
+ * Might be used to change an icon path or to substitute a data url obtained from a KMZ array buffer.
  */
 
 /**
@@ -407,7 +427,7 @@ let TEXTAREA;
  */
 class KML extends XMLFeature {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -462,6 +482,13 @@ class KML extends XMLFeature {
      */
     this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous';
+
+    /**
+     * @type {IconUrlFunction}
+     */
+    this.iconUrlFunction_ = options.iconUrlFunction
+      ? options.iconUrlFunction
+      : defaultIconUrlFunction;
   }
 
   /**
@@ -597,7 +624,7 @@ class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
@@ -617,7 +644,7 @@ class KML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
@@ -859,7 +886,7 @@ class KML extends XMLFeature {
    * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
    * @return {Node} Node.
    * @api
    */
@@ -1047,12 +1074,6 @@ function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
     return styleValue;
   } else if (typeof styleValue === 'string') {
-    // KML files in the wild occasionally forget the leading `#` on styleUrls
-    // defined in the same document.  Add a leading `#` if it enables to find
-    // a style.
-    if (!(styleValue in sharedStyles) && '#' + styleValue in sharedStyles) {
-      styleValue = '#' + styleValue;
-    }
     return findStyle(sharedStyles[styleValue], defaultStyle, sharedStyles);
   } else {
     return defaultStyle;
@@ -1090,7 +1111,8 @@ export function readFlatCoordinates(node) {
   const flatCoordinates = [];
   // The KML specification states that coordinate tuples should not include
   // spaces, but we tolerate them.
-  const re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*,\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s*,\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?))?\s*/i;
+  s = s.replace(/\s*,\s*/g, ',');
+  const re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?),([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|,|$)(?:([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|$))?\s*/i;
   let m;
   while ((m = re.exec(s))) {
     const x = parseFloat(m[1]);
@@ -1111,6 +1133,28 @@ export function readFlatCoordinates(node) {
  */
 function readURI(node) {
   const s = getAllTextContent(node, false).trim();
+  let baseURI = node.baseURI;
+  if (!baseURI || baseURI == 'about:blank') {
+    baseURI = window.location.href;
+  }
+  if (baseURI) {
+    const url = new URL(s, baseURI);
+    return url.href;
+  } else {
+    return s;
+  }
+}
+
+/**
+ * @param {Node} node Node.
+ * @return {string} URI.
+ */
+function readStyleURL(node) {
+  // KML files in the wild occasionally forget the leading
+  // `#` on styleUrlsdefined in the same document.
+  const s = getAllTextContent(node, false)
+    .trim()
+    .replace(/^(?!.*#)/, '#');
   let baseURI = node.baseURI;
   if (!baseURI || baseURI == 'about:blank') {
     baseURI = window.location.href;
@@ -1282,7 +1326,7 @@ function iconStyleParser(node, objectStack) {
       rotation: rotation,
       scale: scale,
       size: size,
-      src: src,
+      src: this.iconUrlFunction_(src),
       color: color,
     });
     styleObject['imageStyle'] = imageStyle;
@@ -1993,7 +2037,7 @@ function regionParser(node, objectStack) {
 const PAIR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'Style': makeObjectPropertySetter(readStyle),
   'key': makeObjectPropertySetter(readString),
-  'styleUrl': makeObjectPropertySetter(readURI),
+  'styleUrl': makeObjectPropertySetter(readStyleURL),
 });
 
 /**
@@ -2359,7 +2403,7 @@ const DOCUMENT_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const DOCUMENT_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
@@ -2448,7 +2492,7 @@ const ICON_SERIALIZERS = makeStructureNS(
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const GX_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
@@ -2687,7 +2731,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const GEOMETRY_NODE_FACTORY = function (value, objectStack, opt_nodeName) {

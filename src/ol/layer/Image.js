@@ -12,11 +12,13 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @template {import("../source/Image.js").default} ImageSourceType
+ * @extends {BaseImageLayer<ImageSourceType>}
  * @api
  */
 class ImageLayer extends BaseImageLayer {
   /**
-   * @param {import("./BaseImage.js").Options=} opt_options Layer options.
+   * @param {import("./BaseImage.js").Options} [opt_options] Layer options.
    */
   constructor(opt_options) {
     super(opt_options);

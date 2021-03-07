@@ -30,18 +30,20 @@ import {
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
+ * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
+ * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2`.
  */
 
 /**
  * @typedef {Object} RenderOptions
- * @property {import("../colorlike.js").ColorLike} [strokeStyle]
- * @property {number} strokeWidth
- * @property {number} size
- * @property {CanvasLineCap} lineCap
- * @property {Array<number>} lineDash
- * @property {number} lineDashOffset
- * @property {CanvasLineJoin} lineJoin
- * @property {number} miterLimit
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {number} strokeWidth StrokeWidth.
+ * @property {number} size Size.
+ * @property {CanvasLineCap} lineCap LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} lineDashOffset LineDashOffset.
+ * @property {CanvasLineJoin} lineJoin LineJoin.
+ * @property {number} miterLimit MiterLimit.
  */
 
 /**
@@ -66,7 +68,7 @@ class RegularShape extends ImageStyle {
       opacity: 1,
       rotateWithView: rotateWithView,
       rotation: options.rotation !== undefined ? options.rotation : 0,
-      scale: 1,
+      scale: options.scale !== undefined ? options.scale : 1,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
     });
@@ -159,6 +161,7 @@ class RegularShape extends ImageStyle {
    * @api
    */
   clone() {
+    const scale = this.getScale();
     const style = new RegularShape({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       points: this.getPoints(),
@@ -168,10 +171,10 @@ class RegularShape extends ImageStyle {
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
       displacement: this.getDisplacement().slice(),
     });
     style.setOpacity(this.getOpacity());
-    style.setScale(this.getScale());
     return style;
   }
 
@@ -237,10 +240,11 @@ class RegularShape extends ImageStyle {
     return this.canvas_[pixelRatio || 1];
   }
 
-  /*
+  /**
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
-   * */
+   * @return {number} Pixel ratio.
+   */
   getPixelRatio(pixelRatio) {
     return pixelRatio;
   }
@@ -336,7 +340,7 @@ class RegularShape extends ImageStyle {
   unlistenImageChange(listener) {}
 
   /**
-   * @returns {RenderOptions}  The render options
+   * @return {RenderOptions}  The render options
    * @protected
    */
   createRenderOptions() {
@@ -401,6 +405,7 @@ class RegularShape extends ImageStyle {
 
     this.draw_(renderOptions, context, 0, 0, 1);
 
+    this.canvas_ = {};
     this.canvas_[1] = context.canvas;
 
     // canvas.width and height are rounded to the closest integer

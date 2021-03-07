@@ -53,6 +53,13 @@ const DragBoxEventType = {
    * @api
    */
   BOXEND: 'boxend',
+
+  /**
+   * Triggered upon drag box canceled.
+   * @event DragBoxEvent#boxcancel
+   * @api
+   */
+  BOXCANCEL: 'boxcancel',
 };
 
 /**
@@ -60,7 +67,7 @@ const DragBoxEventType = {
  * Events emitted by {@link module:ol/interaction/DragBox~DragBox} instances are instances of
  * this type.
  */
-class DragBoxEvent extends Event {
+export class DragBoxEvent extends Event {
   /**
    * @param {string} type The event type.
    * @param {import("../coordinate.js").Coordinate} coordinate The event coordinate.
@@ -100,7 +107,7 @@ class DragBoxEvent extends Event {
  */
 class DragBox extends PointerInteraction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -192,22 +199,21 @@ class DragBox extends PointerInteraction {
   handleUpEvent(mapBrowserEvent) {
     this.box_.setMap(null);
 
-    if (
-      this.boxEndCondition_(
-        mapBrowserEvent,
-        this.startPixel_,
-        mapBrowserEvent.pixel
-      )
-    ) {
+    const completeBox = this.boxEndCondition_(
+      mapBrowserEvent,
+      this.startPixel_,
+      mapBrowserEvent.pixel
+    );
+    if (completeBox) {
       this.onBoxEnd(mapBrowserEvent);
-      this.dispatchEvent(
-        new DragBoxEvent(
-          DragBoxEventType.BOXEND,
-          mapBrowserEvent.coordinate,
-          mapBrowserEvent
-        )
-      );
     }
+    this.dispatchEvent(
+      new DragBoxEvent(
+        completeBox ? DragBoxEventType.BOXEND : DragBoxEventType.BOXCANCEL,
+        mapBrowserEvent.coordinate,
+        mapBrowserEvent
+      )
+    );
     return false;
   }
 

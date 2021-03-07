@@ -8,11 +8,35 @@
  * @enum {string}
  */
 const Units = {
+  /**
+   * Degrees
+   * @api
+   */
   DEGREES: 'degrees',
+  /**
+   * Feet
+   * @api
+   */
   FEET: 'ft',
+  /**
+   * Meters
+   * @api
+   */
   METERS: 'm',
+  /**
+   * Pixels
+   * @api
+   */
   PIXELS: 'pixels',
+  /**
+   * Tile Pixels
+   * @api
+   */
   TILE_PIXELS: 'tile-pixels',
+  /**
+   * US Feet
+   * @api
+   */
   USFEET: 'us-ft',
 };
 

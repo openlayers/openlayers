@@ -594,6 +594,23 @@ where('Uint8ClampedArray').describe('Processor', function () {
         done();
       }, 1000);
     });
+
+    it('can run on multiple threads', function (done) {
+      const processor = new Processor({
+        threads: 2,
+        operation: identity,
+      });
+
+      const input = newImageData(new Uint8ClampedArray([1, 2, 3, 4]), 1, 1);
+      processor.process([input], {}, function (err) {
+        if (err) {
+          done(err);
+        }
+      });
+
+      processor.dispose();
+      setTimeout(done, 20);
+    });
   });
 
   describe('#process() - faux worker', function () {

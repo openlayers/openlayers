@@ -124,7 +124,7 @@ In the above there are many common operations, like setting the property of the 
 
 ### Putting it all together
 
-With the above, you should be able to read through the [source code to `ol/format/GPX`](https://github.com/openlayers/openlayers/blob/main/src/ol/format/gpxformat.js) and get a feel for how it works. Start from the bottom of the file and work upwards. It's also useful to have [an example GPX file](http://www.topografix.com/fells_loop.gpx) and [the GPX specification](http://www.topografix.com/GPX/1/1/) to hand.
+With the above, you should be able to read through the [source code to `ol/format/GPX`](https://github.com/openlayers/openlayers/blob/main/src/ol/format/GPX.js) and get a feel for how it works. Start from the bottom of the file and work upwards. It's also useful to have [an example GPX file](https://openlayers.org/en/latest/examples/data/fells_loop.gpx) and [the GPX specification](https://www.topografix.com/GPX/1/1/) to hand.
 
 ### Handling errors
 

@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const webpack = require('webpack');
 const config = require('./webpack.config');
 const webpackMiddleware = require('webpack-dev-middleware');
-const http = require('http');
+const express = require('express');
 const path = require('path');
 const png = require('pngjs');
 const fs = require('fs');
@@ -56,13 +56,12 @@ function notFound(req, res) {
 
 function serve(options) {
   const webpackHandler = webpackMiddleware(compiler, {
-    lazy: true,
-    logger: options.log,
-    stats: 'minimal',
+    writeToDisk: false,
   });
 
   return new Promise((resolve, reject) => {
-    const server = http.createServer((req, res) => {
+    const app = express();
+    app.use((req, res) => {
       if (req.url === '/favicon.ico') {
         res.writeHead(204);
         res.end();
@@ -78,7 +77,7 @@ function serve(options) {
       staticHandler(req, res, notFound(req, res));
     });
 
-    server.listen(options.port, options.host, (err) => {
+    const server = app.listen(options.port, options.host, (err) => {
       if (err) {
         return reject(err);
       }
@@ -86,7 +85,7 @@ function serve(options) {
       options.log.info(
         `test server listening http://${address.address}:${address.port}/`
       );
-      resolve(() => server.close());
+      resolve(() => server.close(() => process.exit(0)));
     });
   });
 }

@@ -37,12 +37,13 @@ import Layer from './Layer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @extends {Layer<import("../source/Image.js").default>}
+ * @template {import("../source/Image.js").default} ImageSourceType
+ * @extends {Layer<ImageSourceType>}
  * @api
  */
 class BaseImageLayer extends Layer {
   /**
-   * @param {Options=} opt_options Layer options.
+   * @param {Options} [opt_options] Layer options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

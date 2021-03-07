@@ -3,6 +3,7 @@
  */
 
 import {assert} from '../asserts.js';
+import {includes} from '../array.js';
 
 /**
  * @typedef {Object} PreferredOptions
@@ -245,10 +246,10 @@ function generateVersion3Options(iiifInfo) {
       iiifInfo.imageInfo.preferredFormats.length > 0
         ? iiifInfo.imageInfo.preferredFormats
             .filter(function (format) {
-              return ['jpg', 'png', 'gif'].includes(format);
+              return includes(['jpg', 'png', 'gif'], format);
             })
             .reduce(function (acc, format) {
-              return acc === undefined && formats.includes(format)
+              return acc === undefined && includes(formats, format)
                 ? format
                 : acc;
             }, undefined)
@@ -326,7 +327,7 @@ class IIIFInfo {
   }
 
   /**
-   * @returns {Versions} Major IIIF version.
+   * @return {Versions} Major IIIF version.
    * @api
    */
   getImageApiVersion() {
@@ -363,7 +364,7 @@ class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @returns {string} Compliance level as it appears in the IIIF image information
+   * @return {string} Compliance level as it appears in the IIIF image information
    * response.
    */
   getComplianceLevelEntryFromProfile(version) {
@@ -406,7 +407,7 @@ class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @returns {string} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
+   * @return {string} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
    */
   getComplianceLevelFromProfile(version) {
     const complianceLevel = this.getComplianceLevelEntryFromProfile(version);
@@ -418,7 +419,7 @@ class IIIFInfo {
   }
 
   /**
-   * @returns {SupportedFeatures} Image formats, qualities and region / size calculation
+   * @return {SupportedFeatures} Image formats, qualities and region / size calculation
    * methods that are supported by the IIIF service.
    */
   getComplianceLevelSupportedFeatures() {
@@ -434,8 +435,8 @@ class IIIFInfo {
   }
 
   /**
-   * @param {PreferredOptions=} opt_preferredOptions Optional options for preferred format and quality.
-   * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   * @param {PreferredOptions} [opt_preferredOptions] Optional options for preferred format and quality.
+   * @return {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
    * @api
    */
   getTileSourceOptions(opt_preferredOptions) {
@@ -456,16 +457,16 @@ class IIIFInfo {
       sizes: imageOptions.sizes,
       format:
         options.format !== undefined &&
-        imageOptions.formats.includes(options.format)
+        includes(imageOptions.formats, options.format)
           ? options.format
           : imageOptions.preferredFormat !== undefined
           ? imageOptions.preferredFormat
           : 'jpg',
       supports: imageOptions.supports,
       quality:
-        options.quality && imageOptions.qualities.includes(options.quality)
+        options.quality && includes(imageOptions.qualities, options.quality)
           ? options.quality
-          : imageOptions.qualities.includes('native')
+          : includes(imageOptions.qualities, 'native')
           ? 'native'
           : 'default',
       resolutions: Array.isArray(imageOptions.resolutions)

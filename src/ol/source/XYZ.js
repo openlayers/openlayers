@@ -42,7 +42,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * may be used instead of defining each one separately in the `urls` option.
  * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {number} [zDirection=0] Indicate which resolution should be used
  * by a renderer if the view resolution does not match any resolution of the tile source.
@@ -57,20 +57,19 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Google grid where `x` 0 and `y` 0 are in the top left. Grids like
  * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
  * using the `{-y}` placeholder in the URL template, so long as the
- * source does not have a custom tile grid. In this case,
- * {@link module:ol/source/TileImage} can be used with a `tileUrlFunction`
- * such as:
- *
+ * source does not have a custom tile grid. In this case
+ * a `tileUrlFunction` can be used, such as:
+ * ```js
  *  tileUrlFunction: function(coordinate) {
  *    return 'http://mapserver.com/' + coordinate[0] + '/' +
- *        coordinate[1] + '/' + coordinate[2] + '.png';
- *    }
- *
+ *      coordinate[1] + '/' + (-coordinate[2] - 1) + '.png';
+ *  }
+ * ```
  * @api
  */
 class XYZ extends TileImage {
   /**
-   * @param {Options=} opt_options XYZ options.
+   * @param {Options} [opt_options] XYZ options.
    */
   constructor(opt_options) {
     const options = opt_options || {};

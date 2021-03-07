@@ -41,7 +41,7 @@ rome.setStyle(
 london.setStyle(
   new Style({
     image: new Icon({
-      color: '#4271AE',
+      color: 'rgba(255, 0, 0, .5)',
       crossOrigin: 'anonymous',
       src: 'data/bigdot.png',
       scale: 0.2,

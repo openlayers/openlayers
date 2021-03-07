@@ -20,7 +20,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 class GeometryCollection extends Geometry {
   /**
-   * @param {Array<Geometry>=} opt_geometries Geometries.
+   * @param {Array<Geometry>} [opt_geometries] Geometries.
    */
   constructor(opt_geometries) {
     super();
@@ -69,6 +69,7 @@ class GeometryCollection extends Geometry {
   clone() {
     const geometryCollection = new GeometryCollection(null);
     geometryCollection.setGeometries(this.geometries_);
+    geometryCollection.applyProperties(this);
     return geometryCollection;
   }
 
@@ -254,8 +255,8 @@ class GeometryCollection extends Geometry {
    * coordinates in place.
    * @abstract
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number=} opt_sy The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
+   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */

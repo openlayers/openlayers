@@ -30,7 +30,7 @@ import {targetNotEditable} from '../events/condition.js';
  */
 class KeyboardZoom extends Interaction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -81,7 +81,7 @@ class KeyboardZoom extends Interaction {
           charCode == '+'.charCodeAt(0) ? this.delta_ : -this.delta_;
         const view = map.getView();
         zoomByDelta(view, delta, undefined, this.duration_);
-        mapBrowserEvent.preventDefault();
+        keyEvent.preventDefault();
         stopEvent = true;
       }
     }

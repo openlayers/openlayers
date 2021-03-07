@@ -9,7 +9,7 @@ describe('ol.format.WKT', function () {
   describe('#readProjectionFromText', function () {
     it('returns the default projection', function () {
       const projection = format.readProjectionFromText('POINT(1 2)');
-      expect(projection).to.be(null);
+      expect(projection).to.be(undefined);
     });
   });
 

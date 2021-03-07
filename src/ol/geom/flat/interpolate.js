@@ -10,8 +10,8 @@ import {lerp} from '../../math.js';
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} fraction Fraction.
- * @param {Array<number>=} opt_dest Destination.
- * @param {number=} opt_dimension Destination dimension (default is `2`)
+ * @param {Array<number>} [opt_dest] Destination.
+ * @param {number} [opt_dimension] Destination dimension (default is `2`)
  * @return {Array<number>} Destination.
  */
 export function interpolatePoint(

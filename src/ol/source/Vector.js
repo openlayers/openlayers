@@ -39,17 +39,25 @@ import {xhr} from '../featureloader.js';
 export class VectorSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {import("../Feature.js").default<Geometry>=} opt_feature Feature.
+   * @param {import("../Feature.js").default<Geometry>} [opt_feature] Feature.
+   * @param {Array<import("../Feature.js").default<Geometry>>} [opt_features] Features.
    */
-  constructor(type, opt_feature) {
+  constructor(type, opt_feature, opt_features) {
     super(type);
 
     /**
-     * The feature being added or removed.
+     * The added or removed feature for the `ADDFEATURE` and `REMOVEFEATURE` events, `undefined` otherwise.
      * @type {import("../Feature.js").default<Geometry>|undefined}
      * @api
      */
     this.feature = opt_feature;
+
+    /**
+     * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
+     * @type {Array<import("../Feature.js").default<Geometry>>|undefined}
+     * @api
+     */
+    this.features = opt_features;
   }
 }
 
@@ -64,7 +72,8 @@ export class VectorSourceEvent extends Event {
  * @property {import("../featureloader.js").FeatureLoader} [loader]
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
- * feature loader.
+ * feature loader. The `'featuresloadend'` and `'featuresloaderror'` events
+ * will only fire if the `success` and `failure` callbacks are used.
  *
  * Example:
  *
@@ -75,7 +84,7 @@ export class VectorSourceEvent extends Event {
  *
  * var vectorSource = new Vector({
  *   format: new GeoJSON(),
- *   loader: function(extent, resolution, projection) {
+ *   loader: function(extent, resolution, projection, success, failure) {
  *      var proj = projection.getCode();
  *      var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
  *          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
@@ -85,12 +94,14 @@ export class VectorSourceEvent extends Event {
  *      xhr.open('GET', url);
  *      var onError = function() {
  *        vectorSource.removeLoadedExtent(extent);
+ *        failure();
  *      }
  *      xhr.onerror = onError;
  *      xhr.onload = function() {
  *        if (xhr.status == 200) {
- *          vectorSource.addFeatures(
- *              vectorSource.getFormat().readFeatures(xhr.responseText));
+ *          var features = vectorSource.getFormat().readFeatures(xhr.responseText);
+ *          vectorSource.addFeatures(features);
+ *          success(features);
  *        } else {
  *          onError();
  *        }
@@ -154,7 +165,7 @@ export class VectorSourceEvent extends Event {
  */
 class VectorSource extends Source {
   /**
-   * @param {Options=} opt_options Vector source options.
+   * @param {Options} [opt_options] Vector source options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -222,6 +233,12 @@ class VectorSource extends Source {
      * @type {RBush<{extent: import("../extent.js").Extent}>}
      */
     this.loadedExtentsRtree_ = new RBush();
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.loadingExtentsCount_ = 0;
 
     /**
      * @private
@@ -483,7 +500,7 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
    * @api
    */
   clear(opt_fast) {
@@ -695,7 +712,7 @@ class VectorSource extends Source {
    * This method is not available when the source is configured with
    * `useSpatialIndex` set to `false`.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {function(import("../Feature.js").default<Geometry>):boolean=} opt_filter Feature filter function.
+   * @param {function(import("../Feature.js").default<Geometry>):boolean} [opt_filter] Feature filter function.
    *     The filter function will receive one argument, the {@link module:ol/Feature feature}
    *     and it should return a boolean value. By default, no filtering is made.
    * @return {import("../Feature.js").default<Geometry>} Closest feature.
@@ -754,7 +771,7 @@ class VectorSource extends Source {
    *
    * This method is not available when the source is configured with
    * `useSpatialIndex` set to `false`.
-   * @param {import("../extent.js").Extent=} opt_extent Destination extent. If provided, no new extent
+   * @param {import("../extent.js").Extent} [opt_extent] Destination extent. If provided, no new extent
    *     will be created. Instead, that extent's coordinates will be overwritten.
    * @return {import("../extent.js").Extent} Extent.
    * @api
@@ -890,7 +907,6 @@ class VectorSource extends Source {
   loadFeatures(extent, resolution, projection) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
     const extentsToLoad = this.strategy_(extent, resolution);
-    this.loading = false;
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
       const alreadyLoaded = loadedExtentsRtree.forEachInExtent(
@@ -904,11 +920,37 @@ class VectorSource extends Source {
         }
       );
       if (!alreadyLoaded) {
-        this.loader_.call(this, extentToLoad, resolution, projection);
+        ++this.loadingExtentsCount_;
+        this.dispatchEvent(
+          new VectorSourceEvent(VectorEventType.FEATURESLOADSTART)
+        );
+        this.loader_.call(
+          this,
+          extentToLoad,
+          resolution,
+          projection,
+          function (features) {
+            --this.loadingExtentsCount_;
+            this.dispatchEvent(
+              new VectorSourceEvent(
+                VectorEventType.FEATURESLOADEND,
+                undefined,
+                features
+              )
+            );
+          }.bind(this),
+          function () {
+            --this.loadingExtentsCount_;
+            this.dispatchEvent(
+              new VectorSourceEvent(VectorEventType.FEATURESLOADERROR)
+            );
+          }.bind(this)
+        );
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
-        this.loading = this.loader_ !== VOID;
       }
     }
+    this.loading =
+      this.loader_ === VOID ? false : this.loadingExtentsCount_ > 0;
   }
 
   refresh() {

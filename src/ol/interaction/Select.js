@@ -94,7 +94,7 @@ const SelectEventType = {
  * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
  * this type.
  */
-class SelectEvent extends Event {
+export class SelectEvent extends Event {
   /**
    * @param {SelectEventType} type The event type.
    * @param {Array<import("../Feature.js").default>} selected Selected features.
@@ -130,7 +130,7 @@ class SelectEvent extends Event {
 
 /**
  * Original feature styles to reset to when features are no longer selected.
- * @type {Object.<number, import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
+ * @type {Object<number, import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
  */
 const originalFeatureStyles = {};
 
@@ -151,7 +151,7 @@ const originalFeatureStyles = {};
  */
 class Select extends Interaction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -216,7 +216,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
+     * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
      */
     this.style_ =
       options.style !== undefined ? options.style : getDefaultStyleFunction();
@@ -277,7 +277,7 @@ class Select extends Interaction {
 
   /**
    * Returns the Hit-detection tolerance.
-   * @returns {number} Hit tolerance in pixels.
+   * @return {number} Hit tolerance in pixels.
    * @api
    */
   getHitTolerance() {
@@ -391,25 +391,23 @@ class Select extends Interaction {
    * @private
    */
   restorePreviousStyle_(feature) {
-    const key = getUid(feature);
-    const selectInteractions = /** @type {Array<Select>} */ (this.getMap()
-      .getInteractions()
-      .getArray()
-      .filter(function (interaction) {
-        return (
-          interaction instanceof Select &&
-          interaction.getStyle() &&
-          interaction.getFeatures().getArray().indexOf(feature) !== -1
-        );
-      }));
-    if (selectInteractions.length > 0) {
-      feature.setStyle(
-        selectInteractions[selectInteractions.length - 1].getStyle()
-      );
-    } else {
-      feature.setStyle(originalFeatureStyles[key]);
-      delete originalFeatureStyles[key];
+    const interactions = this.getMap().getInteractions().getArray();
+    for (let i = interactions.length - 1; i >= 0; --i) {
+      const interaction = interactions[i];
+      if (
+        interaction !== this &&
+        interaction instanceof Select &&
+        interaction.getStyle() &&
+        interaction.getFeatures().getArray().lastIndexOf(feature) !== -1
+      ) {
+        feature.setStyle(interaction.getStyle());
+        return;
+      }
     }
+
+    const key = getUid(feature);
+    feature.setStyle(originalFeatureStyles[key]);
+    delete originalFeatureStyles[key];
   }
 
   /**

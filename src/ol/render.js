@@ -15,8 +15,8 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
 /**
  * @typedef {Object} State
  * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
- * @property {import("./Feature.js").FeatureLike} feature
- * @property {import("./geom/SimpleGeometry.js").default} geometry
+ * @property {import("./Feature.js").FeatureLike} feature Feature.
+ * @property {import("./geom/SimpleGeometry.js").default} geometry Geometry.
  * @property {number} pixelRatio Pixel ratio used by the layer renderer.
  * @property {number} resolution Resolution that the render batch was created and optimized for.
  * This is not the view's resolution that is being rendered.
@@ -61,7 +61,7 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {ToContextOptions=} opt_options Options.
+ * @param {ToContextOptions} [opt_options] Options.
  * @return {CanvasImmediateRenderer} Canvas Immediate.
  * @api
  */
@@ -84,7 +84,7 @@ export function toContext(context, opt_options) {
 /**
  * Gets a vector context for drawing to the event's canvas.
  * @param {import("./render/Event.js").default} event Render event.
- * @returns {CanvasImmediateRenderer} Vector context.
+ * @return {CanvasImmediateRenderer} Vector context.
  * @api
  */
 export function getVectorContext(event) {
@@ -121,37 +121,11 @@ export function getVectorContext(event) {
  * @param {import("./render/Event.js").default} event Render event.
  * @param {import("./pixel.js").Pixel} pixel CSS pixel relative to the top-left
  * corner of the map viewport.
- * @returns {import("./pixel.js").Pixel} Pixel on the event's canvas context.
+ * @return {import("./pixel.js").Pixel} Pixel on the event's canvas context.
  * @api
  */
 export function getRenderPixel(event, pixel) {
   const result = pixel.slice(0);
   applyTransform(event.inversePixelTransform.slice(), result);
   return result;
-}
-
-/**
- * @param {import("./PluggableMap.js").FrameState} frameState Frame state.
- * @param {?} declutterTree Declutter tree.
- * @returns {?} Declutter tree.
- */
-export function renderDeclutterItems(frameState, declutterTree) {
-  if (declutterTree) {
-    declutterTree.clear();
-  }
-  const items = frameState.declutterItems;
-  for (let z = items.length - 1; z >= 0; --z) {
-    const item = items[z];
-    const zIndexItems = item.items;
-    for (let i = 0, ii = zIndexItems.length; i < ii; i += 3) {
-      declutterTree = zIndexItems[i].renderDeclutter(
-        zIndexItems[i + 1],
-        zIndexItems[i + 2],
-        item.opacity,
-        declutterTree
-      );
-    }
-  }
-  items.length = 0;
-  return declutterTree;
 }

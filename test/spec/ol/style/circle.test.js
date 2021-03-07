@@ -71,17 +71,25 @@ describe('ol.style.Circle', function () {
           color: '#319FD3',
         }),
         radius: 5,
+        scale: [1.5, 1],
+        rotation: 2,
+        rotateWithView: true,
+        displacement: [10, 20],
       });
       original.setOpacity(0.5);
-      original.setScale(1.5);
       const clone = original.clone();
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRadius()).to.eql(clone.getRadius());
-      expect(original.getScale()).to.eql(clone.getScale());
+      expect(original.getRotation()).to.eql(clone.getRotation());
+      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
+      expect(original.getScale()[0]).to.eql(clone.getScale()[0]);
+      expect(original.getScale()[1]).to.eql(clone.getScale()[1]);
       expect(original.getStroke().getColor()).to.eql(
         clone.getStroke().getColor()
       );
+      expect(original.getDisplacement()[0]).to.eql(clone.getDisplacement()[0]);
+      expect(original.getDisplacement()[1]).to.eql(clone.getDisplacement()[1]);
     });
 
     it('the clone does not reference the same objects as the original', function () {
@@ -92,10 +100,14 @@ describe('ol.style.Circle', function () {
         stroke: new Stroke({
           color: '#319FD3',
         }),
+        scale: [1.5, 1],
+        displacement: [0, 5],
       });
       const clone = original.clone();
       expect(original.getFill()).to.not.be(clone.getFill());
       expect(original.getStroke()).to.not.be(clone.getStroke());
+      expect(original.getScale()).to.not.be(clone.getScale());
+      expect(original.getDisplacement()).to.not.be(clone.getDisplacement());
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');

@@ -6,7 +6,6 @@ import stringify from 'json-stringify-safe';
 import styleFunction from 'ol-mapbox-style/dist/stylefunction.js';
 import {Projection} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
-import {renderDeclutterItems} from '../src/ol/render.js';
 import {getTilePriority as tilePriorityFunction} from '../src/ol/TileQueue.js';
 
 /** @type {any} */
@@ -145,7 +144,7 @@ worker.addEventListener('message', (event) => {
       renderer.renderFrame(frameState, canvas);
     }
   });
-  renderDeclutterItems(frameState, null);
+  layers.forEach((layer) => layer.renderDeclutter(frameState));
   if (tileQueue.getTilesLoading() < maxTotalLoading) {
     tileQueue.reprioritize();
     tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);

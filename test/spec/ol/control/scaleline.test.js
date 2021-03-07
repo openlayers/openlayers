@@ -596,4 +596,49 @@ describe('ol.control.ScaleLine', function () {
       }
     });
   });
+
+  describe('scalebar text', function () {
+    it('it corresponds to the resolution', function () {
+      const ctrl = new ScaleLine({
+        bar: true,
+        text: true,
+      });
+      ctrl.setMap(map);
+      map.setView(
+        new View({
+          center: [0, 0],
+          zoom: 2,
+          multiWorld: true,
+        })
+      );
+      map.renderSync();
+      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      expect(element).to.not.be(null);
+      expect(element).to.be.a(HTMLDivElement);
+      const text = element.innerText;
+      expect(text.slice(0, 4)).to.be('1 : ');
+      expect(text.replace(/^1|\D/g, '')).to.eql(139770566);
+    });
+    it('it changes with latitude', function () {
+      const ctrl = new ScaleLine({
+        bar: true,
+        text: true,
+      });
+      ctrl.setMap(map);
+      map.setView(
+        new View({
+          center: fromLonLat([0, 60]),
+          zoom: 2,
+          multiWorld: true,
+        })
+      );
+      map.renderSync();
+      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      expect(element).to.not.be(null);
+      expect(element).to.be.a(HTMLDivElement);
+      const text = element.innerText;
+      expect(text.slice(0, 4)).to.be('1 : ');
+      expect(text.replace(/^1|\D/g, '')).to.eql(69885283);
+    });
+  });
 });

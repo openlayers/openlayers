@@ -160,3 +160,40 @@ describe('ol.format.WMSCapabilities', function () {
     });
   });
 });
+
+describe('ol.format.WMSCapabilities', function () {
+  describe('when parsing singlelayer.xml', function () {
+    const parser = new WMSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText('spec/ol/format/wms/singlelayer.xml', function (xml) {
+        try {
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('can read version', function () {
+      expect(capabilities.version).to.eql('1.3.0');
+    });
+
+    it('can read Service section', function () {
+      // FIXME not all fields are tested
+      const service = capabilities.Service;
+
+      expect(service.Name).to.eql('WMS');
+      expect(service.Title).to.eql('Acme Corp. Map Server');
+    });
+
+    it('can read Capability.Layer', function () {
+      const layer = capabilities.Capability.Layer;
+
+      expect(layer.Title).to.eql('Roads at 1:1M scale');
+      expect(layer.Name).to.be('ROADS_1M');
+      expect(layer.queryable).to.be(true);
+    });
+  });
+});

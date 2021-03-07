@@ -396,7 +396,7 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * Pan the map so that the overlay is entirely visisble in the current viewport
+   * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary) using the configured autoPan parameters
    * @protected
    */
@@ -409,7 +409,7 @@ class Overlay extends BaseObject {
   /**
    * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary).
-   * @param {PanIntoViewOptions=} opt_panIntoViewOptions Options for the pan action
+   * @param {PanIntoViewOptions} [opt_panIntoViewOptions] Options for the pan action
    * @api
    */
   panIntoView(opt_panIntoViewOptions) {
@@ -458,6 +458,9 @@ class Overlay extends BaseObject {
           .getView()
           .getCenterInternal());
         const centerPx = map.getPixelFromCoordinateInternal(center);
+        if (!centerPx) {
+          return;
+        }
         const newCenterPx = [centerPx[0] + delta[0], centerPx[1] + delta[1]];
 
         const panOptions = panIntoViewOptions.animation || {};

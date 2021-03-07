@@ -45,7 +45,7 @@ import {getValues} from '../obj.js';
  */
 class PointerInteraction extends Interaction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -139,7 +139,7 @@ class PointerInteraction extends Interaction {
       if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
         this.handleDragEvent(mapBrowserEvent);
         // prevent page scrolling during dragging
-        mapBrowserEvent.preventDefault();
+        mapBrowserEvent.originalEvent.preventDefault();
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
         const handledUp = this.handleUpEvent(mapBrowserEvent);
         this.handlingDownUpSequence =

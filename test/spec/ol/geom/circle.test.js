@@ -9,11 +9,14 @@ describe('ol.geom.Circle', function () {
 
     describe('#clone', function () {
       it('returns a clone', function () {
+        circle.setProperties({foo: 'bar', baz: null});
+
         const clone = circle.clone();
         expect(clone).to.be.an(Circle);
         expect(clone.getCenter()).to.eql(circle.getCenter());
         expect(clone.getCenter()).not.to.be(circle.getCenter());
         expect(clone.getRadius()).to.be(circle.getRadius());
+        expect(clone.getProperties()).to.eql({foo: 'bar', baz: null});
       });
     });
 

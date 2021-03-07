@@ -26,21 +26,8 @@ class BuilderGroup {
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} declutter Decluttering enabled.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, declutter) {
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.declutter_ = declutter;
-
-    /**
-     * @type {import("../canvas.js").DeclutterGroups}
-     * @private
-     */
-    this.declutterGroups_ = null;
-
+  constructor(tolerance, maxExtent, resolution, pixelRatio) {
     /**
      * @private
      * @type {number}
@@ -70,25 +57,6 @@ class BuilderGroup {
      * @type {!Object<string, !Object<import("./BuilderType").default, Builder>>}
      */
     this.buildersByZIndex_ = {};
-  }
-
-  /**
-   * @param {boolean} group Group with previous builder.
-   * @return {import("../canvas").DeclutterGroups} The resulting instruction groups.
-   */
-  addDeclutter(group) {
-    /** @type {Array<*>} */
-    let declutter = null;
-    if (this.declutter_) {
-      if (group) {
-        declutter = this.declutterGroups_;
-        /** @type {number} */ (declutter[0][0])++;
-      } else {
-        declutter = [[1]];
-        this.declutterGroups_ = declutter;
-      }
-    }
-    return declutter;
   }
 
   /**

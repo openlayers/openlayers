@@ -34,7 +34,7 @@ const flightsSource = new VectorSource({
   wrapX: false,
   attributions:
     'Flight data by ' +
-    '<a href="http://openflights.org/data.html">OpenFlights</a>,',
+    '<a href="https://openflights.org/data.html">OpenFlights</a>,',
   loader: function () {
     const url = 'data/openflights/flights.json';
     fetch(url)

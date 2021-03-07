@@ -23,9 +23,13 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {string} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string} [expandClassName=className + '-expand'] CSS class name for the
+ * collapsed attributions button.
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string} [collapseClassName=className + '-collapse'] CSS class name for the
+ * expanded attributions button.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
@@ -42,7 +46,7 @@ import {removeChildren, replaceNode} from '../dom.js';
  */
 class Attribution extends Control {
   /**
-   * @param {Options=} opt_options Attribution options.
+   * @param {Options} [opt_options] Attribution options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -70,6 +74,12 @@ class Attribution extends Control {
      * @private
      * @type {boolean}
      */
+    this.userCollapsed_ = this.collapsed_;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.overrideCollapsible_ = options.collapsible !== undefined;
 
     /**
@@ -89,8 +99,18 @@ class Attribution extends Control {
     const tipLabel =
       options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
 
+    const expandClassName =
+      options.expandClassName !== undefined
+        ? options.expandClassName
+        : className + '-expand';
+
     const collapseLabel =
       options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
+
+    const collapseClassName =
+      options.collapseClassName !== undefined
+        ? options.collapseClassName
+        : className + '-collpase';
 
     if (typeof collapseLabel === 'string') {
       /**
@@ -99,6 +119,7 @@ class Attribution extends Control {
        */
       this.collapseLabel_ = document.createElement('span');
       this.collapseLabel_.textContent = collapseLabel;
+      this.collapseLabel_.className = collapseClassName;
     } else {
       this.collapseLabel_ = collapseLabel;
     }
@@ -112,6 +133,7 @@ class Attribution extends Control {
        */
       this.label_ = document.createElement('span');
       this.label_.textContent = label;
+      this.label_.className = expandClassName;
     } else {
       this.label_ = label;
     }
@@ -175,6 +197,7 @@ class Attribution extends Control {
      */
     const visibleAttributions = [];
 
+    let collapsible = true;
     const layerStatesArray = frameState.layerStatesArray;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
@@ -197,12 +220,8 @@ class Attribution extends Control {
         continue;
       }
 
-      if (
-        !this.overrideCollapsible_ &&
-        source.getAttributionsCollapsible() === false
-      ) {
-        this.setCollapsible(false);
-      }
+      collapsible =
+        collapsible && source.getAttributionsCollapsible() !== false;
 
       if (Array.isArray(attributions)) {
         for (let j = 0, jj = attributions.length; j < jj; ++j) {
@@ -217,6 +236,9 @@ class Attribution extends Control {
           lookup[attributions] = true;
         }
       }
+    }
+    if (!this.overrideCollapsible_) {
+      this.setCollapsible(collapsible);
     }
     return visibleAttributions;
   }
@@ -265,6 +287,7 @@ class Attribution extends Control {
   handleClick_(event) {
     event.preventDefault();
     this.handleToggle_();
+    this.userCollapsed_ = this.collapsed_;
   }
 
   /**
@@ -300,7 +323,7 @@ class Attribution extends Control {
     }
     this.collapsible_ = collapsible;
     this.element.classList.toggle('ol-uncollapsible');
-    if (!collapsible && this.collapsed_) {
+    if (this.userCollapsed_) {
       this.handleToggle_();
     }
   }
@@ -313,6 +336,7 @@ class Attribution extends Control {
    * @api
    */
   setCollapsed(collapsed) {
+    this.userCollapsed_ = collapsed;
     if (!this.collapsible_ || this.collapsed_ === collapsed) {
       return;
     }

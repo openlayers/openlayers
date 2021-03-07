@@ -2,6 +2,7 @@
  * @module ol/layer/BaseVector
  */
 import Layer from './Layer.js';
+import RBush from 'rbush';
 import {assign} from '../obj.js';
 import {
   createDefaultStyle,
@@ -75,7 +76,7 @@ const Property = {
  */
 class BaseVectorLayer extends Layer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -215,6 +216,17 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
+   * Render declutter items for this layer
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  renderDeclutter(frameState) {
+    if (!frameState.declutterTree) {
+      frameState.declutterTree = new RBush(9);
+    }
+    /** @type {*} */ (this.getRenderer()).renderDeclutter(frameState);
+  }
+
+  /**
    * @param {import("../render.js").OrderFunction|null|undefined} renderOrder
    *     Render order.
    */
@@ -229,7 +241,7 @@ class BaseVectorLayer extends Layer {
    * so only features that have their own styles will be rendered in the layer. Call
    * `setStyle()` without arguments to reset to the default style. See
    * {@link module:ol/style} for information on the default style.
-   * @param {(import("../style/Style.js").StyleLike|null)=} opt_style Layer style.
+   * @param {import("../style/Style.js").StyleLike|null} [opt_style] Layer style.
    * @api
    */
   setStyle(opt_style) {

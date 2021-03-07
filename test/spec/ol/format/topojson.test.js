@@ -48,6 +48,19 @@ const zeroId = {
   },
 };
 
+const nullGeometry = {
+  type: 'Topology',
+  objects: {
+    foobar: {
+      type: null,
+      properties: {
+        prop0: 'value0',
+      },
+      id: 533,
+    },
+  },
+};
+
 describe('ol.format.TopoJSON', function () {
   let format;
   before(function () {
@@ -92,6 +105,17 @@ describe('ol.format.TopoJSON', function () {
       const feature = features[0];
       expect(feature).to.be.a(Feature);
       expect(feature.getId()).to.be(0);
+    });
+
+    it('can read a feature with null geometry', function () {
+      const features = format.readFeaturesFromObject(nullGeometry);
+      expect(features).to.have.length(1);
+
+      const feature = features[0];
+      expect(feature).to.be.a(Feature);
+      expect(feature.getGeometry()).to.be(null);
+      expect(feature.getId()).to.be(533);
+      expect(feature.get('prop0')).to.be('value0');
     });
   });
 

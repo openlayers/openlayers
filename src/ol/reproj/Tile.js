@@ -37,9 +37,9 @@ class ReprojTile extends Tile {
    * @param {number} gutter Gutter of the source tiles.
    * @param {FunctionType} getTileFunction
    *     Function returning source tiles (z, x, y, pixelRatio).
-   * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
-   * @param {boolean=} opt_renderEdges Render reprojection edges.
-   * @param {object=} opt_contextOptions Properties to set on the canvas context.
+   * @param {number} [opt_errorThreshold] Acceptable reprojection error (in px).
+   * @param {boolean} [opt_renderEdges] Render reprojection edges.
+   * @param {object} [opt_contextOptions] Properties to set on the canvas context.
    */
   constructor(
     sourceProj,

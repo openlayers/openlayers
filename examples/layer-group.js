@@ -49,19 +49,21 @@ function bindInputs(layerid, layer) {
   visibilityInput.prop('checked', layer.getVisible());
 
   const opacityInput = $(layerid + ' input.opacity');
-  opacityInput.on('input change', function () {
+  opacityInput.on('input', function () {
     layer.setOpacity(parseFloat(this.value));
   });
   opacityInput.val(String(layer.getOpacity()));
 }
-map.getLayers().forEach(function (layer, i) {
-  bindInputs('#layer' + i, layer);
-  if (layer instanceof LayerGroup) {
-    layer.getLayers().forEach(function (sublayer, j) {
-      bindInputs('#layer' + i + j, sublayer);
-    });
-  }
-});
+function setup(id, group) {
+  group.getLayers().forEach(function (layer, i) {
+    const layerid = id + i;
+    bindInputs(layerid, layer);
+    if (layer instanceof LayerGroup) {
+      setup(layerid, layer);
+    }
+  });
+}
+setup('#layer', map.getLayerGroup());
 
 $('#layertree li > span')
   .click(function () {

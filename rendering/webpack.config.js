@@ -23,6 +23,7 @@ module.exports = {
   target: 'web',
   entry: entry,
   devtool: 'source-map',
+  stats: 'minimal',
   module: {
     rules: [
       {

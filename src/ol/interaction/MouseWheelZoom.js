@@ -41,7 +41,7 @@ export const Mode = {
  */
 class MouseWheelZoom extends Interaction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -178,10 +178,9 @@ class MouseWheelZoom extends Interaction {
       return true;
     }
 
-    mapBrowserEvent.preventDefault();
-
     const map = mapBrowserEvent.map;
     const wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
+    wheelEvent.preventDefault();
 
     if (this.useAnchor_) {
       this.lastAnchor_ = mapBrowserEvent.coordinate;

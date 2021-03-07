@@ -34,7 +34,7 @@ const Property = {
  */
 class GeolocationError extends BaseEvent {
   /**
-   * @param {PositionError} error error object.
+   * @param {GeolocationPositionError} error error object.
    */
   constructor(error) {
     super(EventType.ERROR);
@@ -56,7 +56,7 @@ class GeolocationError extends BaseEvent {
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
  * @property {PositionOptions} [trackingOptions] Tracking options.
- * See http://www.w3.org/TR/geolocation-API/#position_options_interface.
+ * See https://www.w3.org/TR/geolocation-API/#position_options_interface.
  * @property {import("./proj.js").ProjectionLike} [projection] The projection the position
  * is reported in.
  */
@@ -64,7 +64,7 @@ class GeolocationError extends BaseEvent {
 /**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
- * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
+ * The [Geolocation API](https://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
  *
  * To get notified of position changes, register a listener for the generic
@@ -86,7 +86,7 @@ class GeolocationError extends BaseEvent {
  */
 class Geolocation extends BaseObject {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -176,7 +176,7 @@ class Geolocation extends BaseObject {
 
   /**
    * @private
-   * @param {Position} position position event.
+   * @param {GeolocationPosition} position position event.
    */
   positionChange_(position) {
     const coords = position.coords;
@@ -210,7 +210,7 @@ class Geolocation extends BaseObject {
 
   /**
    * @private
-   * @param {PositionError} error error object.
+   * @param {GeolocationPositionError} error error object.
    */
   positionError_(error) {
     this.dispatchEvent(new GeolocationError(error));
@@ -324,10 +324,10 @@ class Geolocation extends BaseObject {
 
   /**
    * Get the tracking options.
-   * See http://www.w3.org/TR/geolocation-API/#position-options.
+   * See https://www.w3.org/TR/geolocation-API/#position-options.
    * @return {PositionOptions|undefined} PositionOptions as defined by
    *     the [HTML5 Geolocation spec
-   *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
+   *     ](https://www.w3.org/TR/geolocation-API/#position_options_interface).
    * @observable
    * @api
    */

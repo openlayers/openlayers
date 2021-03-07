@@ -16,7 +16,7 @@ tags: "geojson, vector, openstreetmap, label"
   <input id="refresh-points" type="button" value="Refresh" />
   <h2>Points</h2>
   <div class="edit-form-elem">
-    <label>Text: </label>
+    <label for="points-text">Text: </label>
     <select id="points-text">
       <option value="hide">Hide</option>
       <option value="normal">Normal</option>
@@ -24,7 +24,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="wrap">Wrap</option>
     </select>
     <br />
-    <label title="Max Resolution Denominator">MaxReso.:</label>
+    <label for="points-maxreso" title="Max Resolution Denominator">MaxReso.: </label>
     <select id="points-maxreso">
       <option value="38400">38,400</option>
       <option value="19200">19,200</option>
@@ -41,7 +41,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="8">8</option>
     </select>
     <br />
-    <label>Align: </label>
+    <label for="points-align">Align: </label>
     <select id="points-align">
       <option value="center" selected="selected">Center</option>
       <option value="end">End</option>
@@ -50,7 +50,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="start">Start</option>
     </select>
     <br />
-    <label>Baseline: </label>
+    <label for="points-baseline">Baseline: </label>
     <select id="points-baseline">
       <option value="alphabetic">Alphabetic</option>
       <option value="bottom">Bottom</option>
@@ -60,14 +60,14 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="top">Top</option>
     </select>
     <br />
-    <label>Rotation: </label>
+    <label for="points-rotation">Rotation: </label>
     <select id="points-rotation">
       <option value="0">0°</option>
       <option value="0.785398164">45°</option>
       <option value="1.570796327">90°</option>
     </select>
     <br />
-    <label>Font: </label>
+    <label for="points-font">Font: </label>
     <select id="points-font">
       <option value="Arial" selected="selected">Arial</option>
       <option value="'Courier New'">Courier New</option>
@@ -75,50 +75,50 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="Verdana">Verdana</option>
     </select>
     <br />
-    <label>Weight: </label>
+    <label for="points-weight">Weight: </label>
     <select id="points-weight">
       <option value="bold">Bold</option>
       <option value="normal" selected="selected">Normal</option>
     </select>
     <br />
-    <label>Placement: </label>
+    <label for="points-placement">Placement: </label>
     <select disabled id="points-placement">
       <option value="line">Line</option>
       <option value="point" selected="selected">Point</option>
     </select>
     <br />
-    <label>Max Angle: </label>
+    <label for="points-maxangle">Max Angle: </label>
     <select disabled id="points-maxangle">
       <option value="0.7853981633974483" selected="selected">45°</option>
       <option value="2.0943951023931953">120°</option>
       <option value="6.283185307179586">360°</option>
     </select>
     <br />
-    <label>Exceed Len: </label>
+    <label for="points-overflow">Exceed Len: </label>
     <select disabled id="points-overflow">
       <option value="true">True</option>
       <option value="false" selected="selected">False</option>
     </select>
     <br />
-    <label>Size: </label>
+    <label for="points-size">Size: </label>
     <input type="text" value="12px" id="points-size" />
     <br />
-    <label>Line height: </label>
+    <label for="points-height">Line height: </label>
     <input type="text" value="1" id="points-height" />
     <br />
-    <label>Offset X:</label>
+    <label for="points-offset-x">Offset X: </label>
     <input type="text" value="0" id="points-offset-x" />
     <br />
-    <label>Offset Y:</label>
+    <label for="points-offset-y">Offset Y: </label>
     <input type="text" value="0" id="points-offset-y" />
     <br />
-    <label>Color :</label>
+    <label for="points-color">Color: </label>
     <input type="text" value="#aa3300" id="points-color" />
     <br />
-    <label title="Outline Color">O. Color:</label>
+    <label for="points-outline" title="Outline Color">O. Color: </label>
     <input type="text" value="#ffffff" id="points-outline" />
     <br />
-    <label title="Outline Width">O. Width :</label>
+    <label for="points-outline-width" title="Outline Width">O. Width: </label>
     <input type="text" value="3" id="points-outline-width" />
   </div>
 </div>
@@ -127,7 +127,7 @@ tags: "geojson, vector, openstreetmap, label"
   <input id="refresh-lines" type="button" value="Refresh" />
   <h2>Lines</h2>
   <div class="edit-form-elem">
-    <label>Text: </label>
+    <label for="lines-text">Text: </label>
     <select id="lines-text">
       <option value="hide">Hide</option>
       <option value="normal">Normal</option>
@@ -135,7 +135,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="wrap" selected="selected">Wrap</option>
     </select>
     <br />
-    <label title="Max Resolution Denominator">MaxReso.:</label>
+    <label for="lines-maxreso" title="Max Resolution Denominator">MaxReso.: </label>
     <select id="lines-maxreso">
       <option value="38400">38,400</option>
       <option value="19200">19,200</option>
@@ -152,7 +152,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="8">8</option>
     </select>
     <br />
-    <label>Align: </label>
+    <label for="lines-align">Align: </label>
     <select id="lines-align">
       <option value="" selected="selected"></option>
       <option value="center">Center</option>
@@ -162,7 +162,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="start">Start</option>
     </select>
     <br />
-    <label>Baseline: </label>
+    <label for="lines-baseline">Baseline: </label>
     <select id="lines-baseline">
       <option value="alphabetic">Alphabetic</option>
       <option value="bottom">Bottom</option>
@@ -172,14 +172,14 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="top">Top</option>
     </select>
     <br />
-    <label>Rotation: </label>
+    <label for="lines-rotation">Rotation: </label>
     <select id="lines-rotation">
       <option value="0">0°</option>
       <option value="0.785398164">45°</option>
       <option value="1.570796327">90°</option>
     </select>
     <br />
-    <label>Font: </label>
+    <label for="lines-font">Font: </label>
     <select id="lines-font">
       <option value="Arial">Arial</option>
       <option value="'Courier New'" selected="selected">Courier New</option>
@@ -187,50 +187,50 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="Verdana">Verdana</option>
     </select>
     <br />
-    <label>Weight: </label>
+    <label for="lines-weight">Weight: </label>
     <select id="lines-weight">
       <option value="bold" selected="selected">Bold</option>
       <option value="normal">Normal</option>
     </select>
     <br />
-    <label>Placement: </label>
+    <label for="lines-placement">Placement: </label>
     <select id="lines-placement">
       <option value="line">Line</option>
       <option value="point" selected="selected">Point</option>
     </select>
     <br />
-    <label>Max Angle: </label>
+    <label for="lines-maxangle">Max Angle: </label>
     <select id="lines-maxangle">
       <option value="0.7853981633974483" selected="selected">45°</option>
       <option value="2.0943951023931953">120°</option>
       <option value="6.283185307179586">360°</option>
     </select>
     <br />
-    <label>Exceed Len: </label>
+    <label for="lines-overflow">Exceed Len: </label>
     <select id="lines-overflow">
       <option value="true">True</option>
       <option value="false" selected="selected">False</option>
     </select>
     <br />
-    <label>Size: </label>
+    <label for="lines-size">Size: </label>
     <input type="text" value="12px" id="lines-size" />
     <br />
-    <label>Line height: </label>
+    <label for="lines-height">Line height: </label>
     <input type="text" value="1.2" id="lines-height" />
     <br />
-    <label>Offset X:</label>
+    <label for="lines-offset-x">Offset X: </label>
     <input type="text" value="0" id="lines-offset-x" />
     <br />
-    <label>Offset Y:</label>
+    <label for="lines-offset-y">Offset Y: </label>
     <input type="text" value="0" id="lines-offset-y" />
     <br />
-    <label>Color :</label>
+    <label for="lines-color">Color: </label>
     <input type="text" value="green" id="lines-color" />
     <br />
-    <label title="Outline Color">O. Color:</label>
+    <label for="lines-outline" title="Outline Color">O. Color: </label>
     <input type="text" value="#ffffff" id="lines-outline" />
     <br />
-    <label title="Outline Width">O. Width :</label>
+    <label for="lines-outline-width" title="Outline Width">O. Width: </label>
     <input type="text" value="3" id="lines-outline-width" />
   </div>
 </div>
@@ -239,7 +239,7 @@ tags: "geojson, vector, openstreetmap, label"
   <input id="refresh-polygons" type="button" value="Refresh" />
   <h2>Polygons</h2>
   <div class="edit-form-elem">
-    <label>Text: </label>
+    <label for="polygons-text">Text: </label>
     <select id="polygons-text">
       <option value="hide">Hide</option>
       <option value="normal" selected="selected">Normal</option>
@@ -247,7 +247,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="wrap">Wrap</option>
     </select>
     <br />
-    <label title="Max Resolution Denominator">MaxReso.:</label>
+    <label for="polygons-maxreso" title="Max Resolution Denominator">MaxReso.: </label>
     <select id="polygons-maxreso">
       <option value="38400">38,400</option>
       <option value="19200">19,200</option>
@@ -264,7 +264,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="8">8</option>
     </select>
     <br />
-    <label>Align: </label>
+    <label for="polygons-align">Align: </label>
     <select id="polygons-align">
       <option value="" selected="selected"></option>
       <option value="center">Center</option>
@@ -274,7 +274,7 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="start">Start</option>
     </select>
     <br />
-    <label>Baseline: </label>
+    <label for="polygons-baseline">Baseline: </label>
     <select id="polygons-baseline">
       <option value="alphabetic">Alphabetic</option>
       <option value="bottom">Bottom</option>
@@ -284,14 +284,14 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="top">Top</option>
     </select>
     <br />
-    <label>Rotation: </label>
+    <label for="polygons-rotation">Rotation: </label>
     <select id="polygons-rotation">
       <option value="0">0°</option>
       <option value="0.785398164">45°</option>
       <option value="1.570796327">90°</option>
     </select>
     <br />
-    <label>Font: </label>
+    <label for="polygons-font">Font: </label>
     <select id="polygons-font">
       <option value="Arial">Arial</option>
       <option value="'Courier New'">Courier New</option>
@@ -299,51 +299,50 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="Verdana" selected="selected">Verdana</option>
     </select>
     <br />
-    <label>Weight: </label>
+    <label for="polygons-weight">Weight: </label>
     <select id="polygons-weight">
       <option value="bold" selected="selected">Bold</option>
       <option value="normal">Normal</option>
     </select>
     <br />
-    <label>Placement: </label>
+    <label for="polygons-placement">Placement: </label>
     <select id="polygons-placement">
       <option value="line">Line</option>
       <option value="point" selected="selected">Point</option>
     </select>
     <br />
-    <label>Max Angle: </label>
+    <label for="polygons-maxangle">Max Angle: </label>
     <select id="polygons-maxangle">
       <option value="0.7853981633974483" selected="selected">45°</option>
       <option value="2.0943951023931953">120°</option>
       <option value="6.283185307179586">360°</option>
     </select>
     <br />
-    <label>Exceed Len: </label>
+    <label for="polygons-overflow">Exceed Len: </label>
     <select id="polygons-overflow">
       <option value="true">True</option>
       <option value="false" selected="selected">False</option>
     </select>
     <br />
-    <label>Size: </label>
+    <label for="polygons-size">Size: </label>
     <input type="text" value="10px" id="polygons-size" />
     <br />
-    <label>Line height: </label>
+    <label for="polygons-height">Line height: </label>
     <input type="text" value="1" id="polygons-height" />
     <br />
-    <label>Offset X:</label>
+    <label for="polygons-offset-x">Offset X: </label>
     <input type="text" value="0" id="polygons-offset-x" />
     <br />
-    <label>Offset Y:</label>
+    <label for="polygons-offset-y">Offset Y: </label>
     <input type="text" value="0" id="polygons-offset-y" />
     <br />
-    <label>Color :</label>
+    <label for="polygons-color">Color: </label>
     <input type="text" value="blue" id="polygons-color" />
     <br />
-    <label title="Outline Color">O. Color:</label>
+    <label for="polygons-outline" title="Outline Color">O. Color: </label>
     <input type="text" value="#ffffff" id="polygons-outline" />
     <br />
-    <label title="Outline Width">O. Width :</label>
+    <label for="polygons-outline-width" title="Outline Width">O. Width: </label>
     <input type="text" value="3" id="polygons-outline-width" />
   </div>
 </div>
-<div class="clearall"></div>

@@ -9,18 +9,19 @@ import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {Versions} from '../format/IIIFInfo.js';
 import {assert} from '../asserts.js';
 import {getTopLeft} from '../extent.js';
+import {includes} from '../array.js';
 import {toSize} from '../size.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize]
- * @property {null|string} [crossOrigin]
- * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]]
+ * @property {number} [cacheSize] Size of the cache.
+ * @property {null|string} [crossOrigin] The value for the crossOrigin option of the request.
+ * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]] The extent.
  * @property {string} [format='jpg'] Requested image format.
  * @property {boolean} [imageSmoothing=true] Enable image smoothing.
- * @property {import("../proj.js").ProjectionLike} [projection]
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {string} [quality] Requested IIIF image quality. Default is 'native'
  * for version 1, 'default' for versions 2 and 3.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -32,13 +33,13 @@ import {toSize} from '../size.js';
  * @property {import("./State.js").default} [state] Source state.
  * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation
  * features.
- * @property {number} [tilePixelRatio]
+ * @property {number} [tilePixelRatio] Tile pixel ratio.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Same tile size is used for all zoom levels. If tile size is a number,
  * a square tile is assumed. If the IIIF image service supports arbitrary
  * tiling (sizeByH, sizeByW, sizeByWh or sizeByPct as well as regionByPx or regionByPct
  * are supported), the default tilesize is 256.
- * @property {number} [transition]
+ * @property {number} [transition] Transition.
  * @property {string} [url] Base URL of the IIIF Image service.
  * This should be the same as the IIIF Image ID.
  * @property {import("../format/IIIFInfo.js").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
@@ -59,7 +60,7 @@ function formatPercentage(percentage) {
  */
 class IIIF extends TileImage {
   /**
-   * @param {Options=} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
+   * @param {Options} [opt_options] Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
    * to parse Image API service information responses into constructor options.
    * @api
    */
@@ -111,11 +112,11 @@ class IIIF extends TileImage {
     const supportsArbitraryTiling =
       supports != undefined &&
       Array.isArray(supports) &&
-      (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
-      (supports.includes('sizeByWh') ||
-        supports.includes('sizeByH') ||
-        supports.includes('sizeByW') ||
-        supports.includes('sizeByPct'));
+      (includes(supports, 'regionByPx') || includes(supports, 'regionByPct')) &&
+      (includes(supports, 'sizeByWh') ||
+        includes(supports, 'sizeByH') ||
+        includes(supports, 'sizeByW') ||
+        includes(supports, 'sizeByPct'));
 
     let tileWidth, tileHeight, maxZoom;
 
@@ -270,10 +271,10 @@ class IIIF extends TileImage {
           regionParam = 'full';
         } else if (
           !supportsArbitraryTiling ||
-          supports.includes('regionByPx')
+          includes(supports, 'regionByPx')
         ) {
           regionParam = regionX + ',' + regionY + ',' + regionW + ',' + regionH;
-        } else if (supports.includes('regionByPct')) {
+        } else if (includes(supports, 'regionByPct')) {
           const pctX = formatPercentage((regionX / width) * 100),
             pctY = formatPercentage((regionY / height) * 100),
             pctW = formatPercentage((regionW / width) * 100),
@@ -282,16 +283,16 @@ class IIIF extends TileImage {
         }
         if (
           version == Versions.VERSION3 &&
-          (!supportsArbitraryTiling || supports.includes('sizeByWh'))
+          (!supportsArbitraryTiling || includes(supports, 'sizeByWh'))
         ) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (!supportsArbitraryTiling || supports.includes('sizeByW')) {
+        } else if (!supportsArbitraryTiling || includes(supports, 'sizeByW')) {
           sizeParam = sizeW + ',';
-        } else if (supports.includes('sizeByH')) {
+        } else if (includes(supports, 'sizeByH')) {
           sizeParam = ',' + sizeH;
-        } else if (supports.includes('sizeByWh')) {
+        } else if (includes(supports, 'sizeByWh')) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (supports.includes('sizeByPct')) {
+        } else if (includes(supports, 'sizeByPct')) {
           sizeParam = 'pct:' + formatPercentage(100 / scale);
         }
       } else {

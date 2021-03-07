@@ -41,7 +41,7 @@ const Direction = {
  */
 class ZoomSlider extends Control {
   /**
-   * @param {Options=} opt_options Zoom slider options.
+   * @param {Options} [opt_options] Zoom slider options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -52,7 +52,7 @@ class ZoomSlider extends Control {
     });
 
     /**
-     * @type {!Array.<import("../events.js").EventsKey>}
+     * @type {!Array<import("../events.js").EventsKey>}
      * @private
      */
     this.dragListenerKeys_ = [];
@@ -250,9 +250,10 @@ class ZoomSlider extends Control {
       if (this.dragListenerKeys_.length === 0) {
         const drag = this.handleDraggerDrag_;
         const end = this.handleDraggerEnd_;
+        const doc = this.getMap().getOwnerDocument();
         this.dragListenerKeys_.push(
-          listen(document, PointerEventType.POINTERMOVE, drag, this),
-          listen(document, PointerEventType.POINTERUP, end, this)
+          listen(doc, PointerEventType.POINTERMOVE, drag, this),
+          listen(doc, PointerEventType.POINTERUP, end, this)
         );
       }
     }

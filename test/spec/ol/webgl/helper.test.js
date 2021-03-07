@@ -1,11 +1,13 @@
+import WebGLArrayBuffer from '../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper, {DefaultUniform} from '../../../../src/ol/webgl/Helper.js';
-import {FLOAT} from '../../../../src/ol/webgl.js';
+import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../src/ol/webgl.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../../../src/ol/transform.js';
+import {getUid} from '../../../../src/ol/util.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -46,7 +48,14 @@ const FRAGMENT_SHADER = `
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   }`;
 
-describe('ol.webgl.WebGLHelper', function () {
+const INVALID_FRAGMENT_SHADER = `
+  precision mediump float;
+
+  void main(void) {
+    gl_FragColor = vec4(oops, 1.0, 1.0, 1.0);
+  }`;
+
+describe('ol/webgl/WebGLHelper', function () {
   describe('constructor', function () {
     describe('without an argument', function () {
       let h;
@@ -177,25 +186,22 @@ describe('ol.webgl.WebGLHelper', function () {
     });
 
     describe('invalid shader compiling', function () {
-      let h;
-      let p;
-      beforeEach(function () {
-        h = new WebGLHelper();
-
-        p = h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER);
-        h.useProgram(p);
+      it('throws for an invalid vertex shader', function () {
+        const helper = new WebGLHelper();
+        expect(() =>
+          helper.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER)
+        ).to.throwException(
+          /Vertex shader compilation failed: ERROR: 0:10: 'bla' : syntax error/
+        );
       });
 
-      it('has saved the program', function () {
-        expect(h.currentProgram_).to.eql(p);
-      });
-
-      it('has shader compilation errors', function () {
-        expect(h.shaderCompileErrors_).to.not.eql(null);
-      });
-
-      it('cannot find the uniform location', function () {
-        expect(h.getUniformLocation('u_test')).to.eql(null);
+      it('throws for an invalid fragment shader', function () {
+        const helper = new WebGLHelper();
+        expect(() =>
+          helper.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER)
+        ).to.throwException(
+          /Fragment shader compliation failed: ERROR: 0:5: 'oops' : undeclared identifier/
+        );
       });
     });
 
@@ -233,6 +239,20 @@ describe('ol.webgl.WebGLHelper', function () {
         expect(given.map((val) => val.toFixed(15))).to.eql(
           expected.map((val) => val.toFixed(15))
         );
+      });
+    });
+
+    describe('deleteBuffer()', function () {
+      it('can be called to free up buffer resources', function () {
+        const helper = new WebGLHelper();
+        const buffer = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
+        buffer.fromArray([0, 1, 2, 3]);
+        helper.flushBufferData(buffer);
+        const bufferKey = getUid(buffer);
+        expect(helper.bufferCache_).to.have.property(bufferKey);
+
+        helper.deleteBuffer(buffer);
+        expect(helper.bufferCache_).to.not.have.property(bufferKey);
       });
     });
 
@@ -354,7 +374,7 @@ describe('ol.webgl.WebGLHelper', function () {
         uniform float u_test;
 
         void main(void) {
-          gl_Position = vec4(u_test, a_test, 0.0, 1.0);
+          gl_Position = vec4(u_test, attr3, 0.0, 1.0);
         }`
         )
       );
