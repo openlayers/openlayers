@@ -73,7 +73,7 @@
     "handlebars": "4.7.7",
     "istanbul": "0.4.5",
     "istanbul-instrumenter-loader": "^3.0.1",
-    "jquery": "3.5.1",
+    "jquery": "3.6.0",
     "jsdoc": "3.6.6",
     "jsdoc-plugin-typescript": "^2.0.5",
     "json-stringify-safe": "^5.0.1",
