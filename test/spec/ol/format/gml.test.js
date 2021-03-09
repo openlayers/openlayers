@@ -1663,19 +1663,20 @@ describe('ol.format.GML3', function () {
   describe('when parsing multiple feature types', function () {
     let features;
     before(function (done) {
-      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function (
-        xml
-      ) {
-        try {
-          features = new GML({
-            featureNS: 'http://localhost:8080/official',
-            featureType: ['planet_osm_polygon', 'planet_osm_line'],
-          }).readFeatures(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/gml/multiple-typenames.xml',
+        function (xml) {
+          try {
+            features = new GML({
+              featureNS: 'http://localhost:8080/official',
+              featureType: ['planet_osm_polygon', 'planet_osm_line'],
+            }).readFeatures(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('reads all features', function () {
@@ -1686,16 +1687,17 @@ describe('ol.format.GML3', function () {
   describe('when parsing multiple feature types', function () {
     let features;
     before(function (done) {
-      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function (
-        xml
-      ) {
-        try {
-          features = new GML().readFeatures(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/gml/multiple-typenames.xml',
+        function (xml) {
+          try {
+            features = new GML().readFeatures(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('reads all features with autoconfigure', function () {
@@ -1750,20 +1752,21 @@ describe('ol.format.GML3', function () {
   describe('when parsing srsDimension from WFS (Geoserver)', function () {
     let features, feature;
     before(function (done) {
-      afterLoadText('spec/ol/format/gml/geoserver3DFeatures.xml', function (
-        xml
-      ) {
-        try {
-          const config = {
-            'featureNS': 'http://www.opengeospatial.net/cite',
-            'featureType': 'geoserver_layer',
-          };
-          features = new GML(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/gml/geoserver3DFeatures.xml',
+        function (xml) {
+          try {
+            const config = {
+              'featureNS': 'http://www.opengeospatial.net/cite',
+              'featureType': 'geoserver_layer',
+            };
+            features = new GML(config).readFeatures(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('creates 3 features', function () {

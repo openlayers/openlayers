@@ -616,21 +616,21 @@ describe('ol.tilegrid.TileGrid', function () {
       const tileCoord = [5, 11, 21];
       const zs = [];
       const tileRanges = [];
-      tileGrid.forEachTileCoordParentTileRange(tileCoord, function (
-        z,
-        tileRange
-      ) {
-        zs.push(z);
-        tileRanges.push(
-          new TileRange(
-            tileRange.minX,
-            tileRange.maxX,
-            tileRange.minY,
-            tileRange.maxY
-          )
-        );
-        return false;
-      });
+      tileGrid.forEachTileCoordParentTileRange(
+        tileCoord,
+        function (z, tileRange) {
+          zs.push(z);
+          tileRanges.push(
+            new TileRange(
+              tileRange.minX,
+              tileRange.maxX,
+              tileRange.minY,
+              tileRange.maxY
+            )
+          );
+          return false;
+        }
+      );
 
       expect(zs.length).to.eql(5);
       expect(tileRanges.length).to.eql(5);
@@ -1061,14 +1061,14 @@ describe('ol.tilegrid.TileGrid', function () {
       const zs = [];
       const tileRanges = [];
 
-      tileGrid.forEachTileCoordParentTileRange([3, 7, 3], function (
-        z,
-        tileRange
-      ) {
-        zs.push(z);
-        tileRanges.push(tileRange);
-        return false;
-      });
+      tileGrid.forEachTileCoordParentTileRange(
+        [3, 7, 3],
+        function (z, tileRange) {
+          zs.push(z);
+          tileRanges.push(tileRange);
+          return false;
+        }
+      );
 
       expect(zs.length).to.eql(3);
       expect(tileRanges.length).to.eql(3);
@@ -1219,17 +1219,17 @@ describe('ol.tilegrid.TileGrid', function () {
     });
 
     const tileCoord = [15, 6239, 11751];
-    tileGrid.forEachTileCoordParentTileRange(tileCoord, function (
-      z,
-      tileRange
-    ) {
-      it(`works for level ${z}`, function () {
-        const range = tileGrid.getTileRangeForTileCoordAndZ(tileCoord, z);
-        expect(range.minX).to.be(tileRange.minX);
-        expect(range.maxX).to.be(tileRange.maxX);
-        expect(range.minY).to.be(tileRange.minY);
-        expect(range.maxY).to.be(tileRange.maxY);
-      });
-    });
+    tileGrid.forEachTileCoordParentTileRange(
+      tileCoord,
+      function (z, tileRange) {
+        it(`works for level ${z}`, function () {
+          const range = tileGrid.getTileRangeForTileCoordAndZ(tileCoord, z);
+          expect(range.minX).to.be(tileRange.minX);
+          expect(range.maxX).to.be(tileRange.maxX);
+          expect(range.minY).to.be(tileRange.minY);
+          expect(range.maxY).to.be(tileRange.maxY);
+        });
+      }
+    );
   });
 });

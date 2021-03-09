@@ -152,12 +152,13 @@ describe('ol.format.WFS', function () {
   describe('when parsing FeatureCollection', function () {
     let xml;
     before(function (done) {
-      afterLoadText('spec/ol/format/wfs/EmptyFeatureCollection.xml', function (
-        _xml
-      ) {
-        xml = _xml;
-        done();
-      });
+      afterLoadText(
+        'spec/ol/format/wfs/EmptyFeatureCollection.xml',
+        function (_xml) {
+          xml = _xml;
+          done();
+        }
+      );
     });
     it('returns an empty array of features when none exist', function () {
       const result = new WFS().readFeatures(xml);
@@ -215,16 +216,17 @@ describe('ol.format.WFS', function () {
   describe('when parsing TransactionResponse', function () {
     let response;
     before(function (done) {
-      afterLoadText('spec/ol/format/wfs/TransactionResponse.xml', function (
-        xml
-      ) {
-        try {
-          response = new WFS().readTransactionResponse(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/wfs/TransactionResponse.xml',
+        function (xml) {
+          try {
+            response = new WFS().readTransactionResponse(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
     it('returns the correct TransactionResponse object', function () {
       expect(response.transactionSummary.totalDeleted).to.equal(0);
@@ -1241,12 +1243,13 @@ describe('ol.format.WFS', function () {
   describe('when writing out a Transaction request', function () {
     let text;
     before(function (done) {
-      afterLoadText('spec/ol/format/wfs/TransactionMulti_3D.xml', function (
-        xml
-      ) {
-        text = xml;
-        done();
-      });
+      afterLoadText(
+        'spec/ol/format/wfs/TransactionMulti_3D.xml',
+        function (xml) {
+          text = xml;
+          done();
+        }
+      );
     });
 
     it('handles 3D in WFS 1.1.0', function () {
@@ -1283,12 +1286,13 @@ describe('ol.format.WFS', function () {
   describe('when writing out a GetFeature request', function () {
     let text;
     before(function (done) {
-      afterLoadText('spec/ol/format/wfs/GetFeatureMultiple.xml', function (
-        xml
-      ) {
-        text = xml;
-        done();
-      });
+      afterLoadText(
+        'spec/ol/format/wfs/GetFeatureMultiple.xml',
+        function (xml) {
+          text = xml;
+          done();
+        }
+      );
     });
 
     it('handles writing multiple Query elements', function () {
@@ -1335,19 +1339,20 @@ describe('ol.format.WFS', function () {
   describe('when parsing multiple feature types', function () {
     let features;
     before(function (done) {
-      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function (
-        xml
-      ) {
-        try {
-          features = new WFS({
-            featureNS: 'http://localhost:8080/official',
-            featureType: ['planet_osm_polygon', 'planet_osm_line'],
-          }).readFeatures(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/gml/multiple-typenames.xml',
+        function (xml) {
+          try {
+            features = new WFS({
+              featureNS: 'http://localhost:8080/official',
+              featureType: ['planet_osm_polygon', 'planet_osm_line'],
+            }).readFeatures(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('reads all features', function () {
@@ -1358,23 +1363,24 @@ describe('ol.format.WFS', function () {
   describe('when parsing multiple feature types separately', function () {
     let lineFeatures, polygonFeatures;
     before(function (done) {
-      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function (
-        xml
-      ) {
-        try {
-          lineFeatures = new WFS({
-            featureNS: 'http://localhost:8080/official',
-            featureType: ['planet_osm_line'],
-          }).readFeatures(xml);
-          polygonFeatures = new WFS({
-            featureNS: 'http://localhost:8080/official',
-            featureType: ['planet_osm_polygon'],
-          }).readFeatures(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/gml/multiple-typenames.xml',
+        function (xml) {
+          try {
+            lineFeatures = new WFS({
+              featureNS: 'http://localhost:8080/official',
+              featureType: ['planet_osm_line'],
+            }).readFeatures(xml);
+            polygonFeatures = new WFS({
+              featureNS: 'http://localhost:8080/official',
+              featureType: ['planet_osm_polygon'],
+            }).readFeatures(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('reads all features', function () {
@@ -1386,16 +1392,17 @@ describe('ol.format.WFS', function () {
   describe('when parsing multiple feature types', function () {
     let features;
     before(function (done) {
-      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function (
-        xml
-      ) {
-        try {
-          features = new WFS().readFeatures(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/gml/multiple-typenames.xml',
+        function (xml) {
+          try {
+            features = new WFS().readFeatures(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('reads all features with autoconfigure', function () {
