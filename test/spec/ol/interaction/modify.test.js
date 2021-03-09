@@ -885,11 +885,12 @@ describe('ol.interaction.Modify', function () {
 
       let firstSegmentData;
 
-      firstSegmentData = modify.rBush_.forEachInExtent([0, 0, 5, 5], function (
-        node
-      ) {
-        return node;
-      });
+      firstSegmentData = modify.rBush_.forEachInExtent(
+        [0, 0, 5, 5],
+        function (node) {
+          return node;
+        }
+      );
       expect(firstSegmentData.segment[0]).to.eql([10, 10]);
       expect(firstSegmentData.segment[1]).to.eql([10, 10]);
 
@@ -898,11 +899,12 @@ describe('ol.interaction.Modify', function () {
       center[1] = 1;
       feature.getGeometry().setCenter(center);
 
-      firstSegmentData = modify.rBush_.forEachInExtent([0, 0, 5, 5], function (
-        node
-      ) {
-        return node;
-      });
+      firstSegmentData = modify.rBush_.forEachInExtent(
+        [0, 0, 5, 5],
+        function (node) {
+          return node;
+        }
+      );
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([1, 1]);
 
@@ -924,11 +926,12 @@ describe('ol.interaction.Modify', function () {
 
       let firstSegmentData;
 
-      firstSegmentData = modify.rBush_.forEachInExtent([0, 0, 5, 5], function (
-        node
-      ) {
-        return node;
-      });
+      firstSegmentData = modify.rBush_.forEachInExtent(
+        [0, 0, 5, 5],
+        function (node) {
+          return node;
+        }
+      );
       expect(firstSegmentData.segment[0]).to.eql([0, 0]);
       expect(firstSegmentData.segment[1]).to.eql([10, 20]);
 
@@ -938,11 +941,12 @@ describe('ol.interaction.Modify', function () {
       firstVertex[1] = 1;
       feature.getGeometry().setCoordinates(coordinates);
 
-      firstSegmentData = modify.rBush_.forEachInExtent([0, 0, 5, 5], function (
-        node
-      ) {
-        return node;
-      });
+      firstSegmentData = modify.rBush_.forEachInExtent(
+        [0, 0, 5, 5],
+        function (node) {
+          return node;
+        }
+      );
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([10, 20]);
 

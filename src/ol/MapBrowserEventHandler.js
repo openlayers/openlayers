@@ -12,10 +12,10 @@ import {listen, unlistenByKey} from './events.js';
 
 /**
  * @typedef {Object} PointerEventData
- * @property {string} type
- * @property {number} clientX
- * @property {number} clientY
- * @property {EventTarget} target
+ * @property {string} type The type of the pointer event.
+ * @property {number} clientX ClientX.
+ * @property {number} clientY ClientY.
+ * @property {EventTarget} target The target of the event.
  */
 
 class MapBrowserEventHandler extends Target {
