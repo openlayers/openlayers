@@ -362,7 +362,7 @@ class TileGrid {
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {number} z Integer zoom level.
-   * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
+   * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
    * @return {import("../TileRange.js").default} Tile range.
    */
   getTileRangeForTileCoordAndZ(tileCoord, z, opt_tileRange) {

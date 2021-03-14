@@ -1473,19 +1473,20 @@ class Modify extends PointerInteraction {
    * @private
    */
   updateSegmentIndices_(geometry, index, depth, delta) {
-    this.rBush_.forEachInExtent(geometry.getExtent(), function (
-      segmentDataMatch
-    ) {
-      if (
-        segmentDataMatch.geometry === geometry &&
-        (depth === undefined ||
-          segmentDataMatch.depth === undefined ||
-          equals(segmentDataMatch.depth, depth)) &&
-        segmentDataMatch.index > index
-      ) {
-        segmentDataMatch.index += delta;
+    this.rBush_.forEachInExtent(
+      geometry.getExtent(),
+      function (segmentDataMatch) {
+        if (
+          segmentDataMatch.geometry === geometry &&
+          (depth === undefined ||
+            segmentDataMatch.depth === undefined ||
+            equals(segmentDataMatch.depth, depth)) &&
+          segmentDataMatch.index > index
+        ) {
+          segmentDataMatch.index += delta;
+        }
       }
-    });
+    );
   }
 }
 

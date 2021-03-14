@@ -342,43 +342,44 @@ describe('ol.format.GeoJSON', function () {
     });
 
     it('parses countries.geojson', function (done) {
-      afterLoadText('spec/ol/format/geojson/countries.geojson', function (
-        text
-      ) {
-        const result = format.readFeatures(text);
-        expect(result.length).to.be(179);
+      afterLoadText(
+        'spec/ol/format/geojson/countries.geojson',
+        function (text) {
+          const result = format.readFeatures(text);
+          expect(result.length).to.be(179);
 
-        const first = result[0];
-        expect(first).to.be.a(Feature);
-        expect(first.get('name')).to.be('Afghanistan');
-        expect(first.getId()).to.be('AFG');
-        const firstGeom = first.getGeometry();
-        expect(firstGeom).to.be.a(Polygon);
-        expect(
-          equals(firstGeom.getExtent(), [
-            60.52843,
-            29.318572,
-            75.158028,
-            38.486282,
-          ])
-        ).to.be(true);
+          const first = result[0];
+          expect(first).to.be.a(Feature);
+          expect(first.get('name')).to.be('Afghanistan');
+          expect(first.getId()).to.be('AFG');
+          const firstGeom = first.getGeometry();
+          expect(firstGeom).to.be.a(Polygon);
+          expect(
+            equals(firstGeom.getExtent(), [
+              60.52843,
+              29.318572,
+              75.158028,
+              38.486282,
+            ])
+          ).to.be(true);
 
-        const last = result[178];
-        expect(last).to.be.a(Feature);
-        expect(last.get('name')).to.be('Zimbabwe');
-        expect(last.getId()).to.be('ZWE');
-        const lastGeom = last.getGeometry();
-        expect(lastGeom).to.be.a(Polygon);
-        expect(
-          equals(lastGeom.getExtent(), [
-            25.264226,
-            -22.271612,
-            32.849861,
-            -15.507787,
-          ])
-        ).to.be(true);
-        done();
-      });
+          const last = result[178];
+          expect(last).to.be.a(Feature);
+          expect(last.get('name')).to.be('Zimbabwe');
+          expect(last.getId()).to.be('ZWE');
+          const lastGeom = last.getGeometry();
+          expect(lastGeom).to.be.a(Polygon);
+          expect(
+            equals(lastGeom.getExtent(), [
+              25.264226,
+              -22.271612,
+              32.849861,
+              -15.507787,
+            ])
+          ).to.be(true);
+          done();
+        }
+      );
     });
 
     it('generates an array of features for Feature', function () {

@@ -354,16 +354,17 @@ describe('ol.source.WMTS', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
     before(function (done) {
-      afterLoadText('spec/ol/format/wmts/capabilities_wgs84.xml', function (
-        xml
-      ) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_wgs84.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
         }
-        done();
-      });
+      );
     });
 
     it('returns correct bounding box', function () {
