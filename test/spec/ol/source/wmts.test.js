@@ -3,12 +3,7 @@ import WMTS, {optionsFromCapabilities} from '../../../../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../../../../src/ol/format/WMTSCapabilities.js';
 import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
 import {getBottomLeft, getTopRight} from '../../../../src/ol/extent.js';
-import {
-  get as getProjection,
-  fromLonLat,
-  toLonLat,
-  transformExtent,
-} from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 
 describe('ol.source.WMTS', function () {
   describe('when creating options from capabilities', function () {
@@ -359,17 +354,16 @@ describe('ol.source.WMTS', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
     before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_wgs84.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
+      afterLoadText('spec/ol/format/wmts/capabilities_wgs84.xml', function (
+        xml
+      ) {
+        try {
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
         }
-      );
+        done();
+      });
     });
 
     it('returns correct bounding box', function () {
