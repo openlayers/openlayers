@@ -3,7 +3,12 @@ import WMTS, {optionsFromCapabilities} from '../../../../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../../../../src/ol/format/WMTSCapabilities.js';
 import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
 import {getBottomLeft, getTopRight} from '../../../../src/ol/extent.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
+import {
+  get as getProjection,
+  fromLonLat,
+  toLonLat,
+  transformExtent,
+} from '../../../../src/ol/proj.js';
 
 describe('ol.source.WMTS', function () {
   describe('when creating options from capabilities', function () {
@@ -406,7 +411,56 @@ describe('ol.source.WMTS', function () {
       expectDelta(extent[3], 90);
     });
   });
+  describe('when creating options from wgs84 capabilities with BoundingBox', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_wgs84_with_boundingbox.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        }
+      );
+    });
 
+    it('returns correct bounding box when the layer has BoundingBox', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'bmaphidpi',
+        matrixSet: 'google3857',
+        style: 'normal',
+      });
+
+      expect(options.layer).to.be.eql('bmaphidpi');
+
+      expect(options.matrixSet).to.be.eql('google3857');
+
+      expect(options.format).to.be.eql('image/jpeg');
+
+      expect(options.requestEncoding).to.be.eql('REST');
+
+      expect(options.tileGrid).to.be.a(WMTSTileGrid);
+      expect(options.style).to.be.eql('normal');
+
+      expect(options.projection).to.be.a(Projection);
+      expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
+
+      const expectedMatrixSetExtend = [977650, 5838030, 1913530, 6281290];
+      const extent = options.tileGrid.getExtent();
+
+      // compare with delta, due to rounding not the exact bounding box is returned...
+      const expectDelta = (value, expected) =>
+        expect(Math.abs(value - expected)).to.below(1e-1);
+      expectDelta(extent[0], expectedMatrixSetExtend[0]);
+      expectDelta(extent[1], expectedMatrixSetExtend[1]);
+      expectDelta(extent[2], expectedMatrixSetExtend[2]);
+      expectDelta(extent[3], expectedMatrixSetExtend[3]);
+    });
+  });
   describe('when creating options from capabilities with TileMatrixSetLink', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
