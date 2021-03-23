@@ -109,28 +109,6 @@ function createWordIndex(exampleData) {
 }
 
 /**
- * Gets the source for the chunk that matches the jsPath
- * @param {Object} chunk Chunk.
- * @param {string} jsName Name of the file.
- * @return {string} The source.
- */
-function getJsSource(chunk, jsName) {
-  let jsSource;
-  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
-    const module = chunk.modules[i];
-    if (module.modules) {
-      jsSource = getJsSource(module, jsName);
-      if (jsSource) {
-        return jsSource;
-      }
-    }
-    if (module.identifier.endsWith(jsName) && module.source) {
-      return module.source;
-    }
-  }
-}
-
-/**
  * Gets dependencies from the js source.
  * @param {string} jsSource Source.
  * @return {Object<string, string>} dependencies
@@ -170,6 +148,7 @@ class ExampleBuilder {
    * common chunk.
    */
   constructor(config) {
+    this.name = 'ExampleBuilder';
     this.templates = config.templates;
     this.common = config.common;
   }
@@ -179,73 +158,94 @@ class ExampleBuilder {
    * @param {Object} compiler The webpack compiler.
    */
   apply(compiler) {
-    compiler.hooks.emit.tapPromise('ExampleBuilder', async (compilation) => {
-      const chunks = compilation
-        .getStats()
-        .toJson()
-        .chunks.filter((chunk) => chunk.names[0] !== this.common);
-
-      const exampleData = [];
-      await Promise.all(
-        chunks.map(async (chunk) => {
-          const data = await this.readHtml(compiler.context, chunk);
-          exampleData.push(data);
-        })
-      );
-      const examples = exampleData.map((data) => {
-        return {
-          link: data.filename,
-          title: data.title,
-          shortdesc: data.shortdesc,
-          tags: data.tags,
-        };
+    compiler.hooks.compilation.tap(this.name, (compilation) => {
+      compilation.hooks.additionalAssets.tapPromise(this.name, async () => {
+        await this.addAssets(compilation.assets, compiler.context);
       });
-
-      examples.sort((a, b) =>
-        a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
-      );
-      const tagIndex = createTagIndex(examples);
-      const info = {
-        examples: examples,
-        // Tags for main page... TODO: implement index tag links
-        // tagIndex: sortObjectByKey(tagIndex),
-        wordIndex: sortObjectByKey(createWordIndex(examples)),
-      };
-      exampleData.forEach((data) => {
-        data.tags = data.tags.map((tag) => {
-          const tagExamples = tagIndex[tag.toLowerCase()];
-          return {
-            tag: tag,
-            examples: tagExamples.map((exampleIdx) => {
-              const example = examples[exampleIdx];
-              return {
-                link: example.link,
-                title: example.title,
-                isCurrent: data.filename === example.link,
-              };
-            }),
-          };
-        });
-      });
-
-      await Promise.all(
-        exampleData.map(async (data) => {
-          const assets = await this.render(data, data.chunk);
-          for (const file in assets) {
-            compilation.assets[file] = new RawSource(assets[file]);
-          }
-        })
-      );
-      const indexSource = `const info = ${JSON.stringify(info)};`;
-      compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }
 
-  async readHtml(dir, chunk) {
-    const name = chunk.names[0];
+  async addAssets(assets, dir) {
+    const jsAssetRE = new RegExp(/^(\w|-)+\.js$/);
+    const names = [];
+    for (const filename in assets) {
+      if (!jsAssetRE.test(filename)) {
+        continue;
+      }
+
+      const name = filename.replace(/\.js$/, '');
+      if (name === this.common) {
+        continue;
+      }
+
+      names.push(name);
+    }
+
+    if (names.length === 0) {
+      return;
+    }
+
+    const exampleData = await Promise.all(
+      names.map(async (name) => await this.parseExample(dir, name))
+    );
+
+    const examples = exampleData.map((data) => {
+      return {
+        link: data.filename,
+        title: data.title,
+        shortdesc: data.shortdesc,
+        tags: data.tags,
+      };
+    });
+
+    examples.sort((a, b) =>
+      a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
+    );
+    const tagIndex = createTagIndex(examples);
+    const info = {
+      examples: examples,
+      // Tags for main page... TODO: implement index tag links
+      // tagIndex: sortObjectByKey(tagIndex),
+      wordIndex: sortObjectByKey(createWordIndex(examples)),
+    };
+    exampleData.forEach((data) => {
+      data.tags = data.tags.map((tag) => {
+        const tagExamples = tagIndex[tag.toLowerCase()];
+        return {
+          tag: tag,
+          examples: tagExamples.map((exampleIdx) => {
+            const example = examples[exampleIdx];
+            return {
+              link: example.link,
+              title: example.title,
+              isCurrent: data.filename === example.link,
+            };
+          }),
+        };
+      });
+    });
+
+    await Promise.all(
+      exampleData.map(async (data) => {
+        const newAssets = await this.render(data);
+        for (const file in newAssets) {
+          assets[file] = new RawSource(newAssets[file]);
+        }
+      })
+    );
+
+    const indexSource = `const info = ${JSON.stringify(info)};`;
+    assets['examples-info.js'] = new RawSource(indexSource);
+  }
+
+  async parseExample(dir, name) {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
     const htmlSource = await readFile(htmlPath, {encoding: 'utf8'});
+
+    const jsName = `${name}.js`;
+    const jsPath = path.join(dir, jsName);
+    const jsSource = await readFile(jsPath, {encoding: 'utf8'});
 
     const {attributes, body} = frontMatter(htmlSource);
     assert(!!attributes.layout, `missing layout in ${htmlPath}`);
@@ -254,7 +254,8 @@ class ExampleBuilder {
     data.olVersion = pkg.version;
     data.filename = htmlName;
     data.dir = dir;
-    data.chunk = chunk;
+    data.name = name;
+    data.jsSource = jsSource;
 
     // process tags
     if (data.tags) {
@@ -265,20 +266,15 @@ class ExampleBuilder {
     return data;
   }
 
-  async render(data, chunk) {
-    const name = chunk.names[0];
-
+  async render(data) {
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 
     // add in script tag
-    const jsName = `${name}.js`;
-    let jsSource = getJsSource(chunk, path.join('.', jsName));
-    if (!jsSource) {
-      throw new Error(`No .js source for ${jsName}`);
-    }
+    const jsName = `${data.name}.js`;
+
     // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
-    jsSource = jsSource.replace(/'\.\.\/src\//g, "'");
+    let jsSource = data.jsSource.replace(/'\.\.\/src\//g, "'");
     jsSource = jsSource.replace(/\.js';/g, "';");
     if (data.cloak) {
       for (const entry of data.cloak) {
@@ -299,7 +295,7 @@ class ExampleBuilder {
     };
 
     // check for worker js
-    const workerName = `${name}.worker.js`;
+    const workerName = `${data.name}.worker.js`;
     const workerPath = path.join(data.dir, workerName);
     let workerSource;
     try {
@@ -327,7 +323,7 @@ class ExampleBuilder {
 
     data.pkgJson = JSON.stringify(
       {
-        name: name,
+        name: data.name,
         dependencies: getDependencies(
           jsSource + (workerSource ? `\n${workerSource}` : '')
         ),
@@ -344,7 +340,7 @@ class ExampleBuilder {
     );
 
     // check for example css
-    const cssName = `${name}.css`;
+    const cssName = `${data.name}.css`;
     const cssPath = path.join(data.dir, cssName);
     let cssSource;
     try {

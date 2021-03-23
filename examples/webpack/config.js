@@ -58,7 +58,6 @@ module.exports = {
   optimization: {
     minimizer: [
       new TerserPlugin({
-        sourceMap: true,
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/],
         extractComments: false,
@@ -94,10 +93,10 @@ module.exports = {
     filename: '[name].js',
     path: path.join(__dirname, '..', '..', 'build', 'examples'),
   },
-  node: {
-    fs: 'empty', // required by ol-mapbox-stlye
-  },
   resolve: {
+    fallback: {
+      fs: false,
+    },
     alias: {
       // allow imports from 'ol/module' instead of specifiying the source path
       ol: path.join(__dirname, '..', '..', 'src', 'ol'),

@@ -1,7 +1,7 @@
 const path = require('path');
-const babel = require('rollup-plugin-babel');
-const resolve = require('rollup-plugin-node-resolve');
-const common = require('rollup-plugin-commonjs');
+const babel = require('@rollup/plugin-babel').babel;
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve;
+const common = require('@rollup/plugin-commonjs');
 const rollup = require('rollup');
 const terser = require('rollup-plugin-terser').terser;
 const fse = require('fs-extra');
@@ -20,8 +20,8 @@ async function build(input, {minify = true} = {}) {
     common(),
     resolve(),
     babel({
-      'externalHelpers': true,
-      'presets': [
+      babelHelpers: 'bundled',
+      presets: [
         [
           '@babel/preset-env',
           {
