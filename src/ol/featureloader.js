@@ -156,10 +156,10 @@ export function xhr(url, format) {
        * projection.
        */
       function (features, dataProjection) {
+        source.addFeatures(features);
         if (success !== undefined) {
           success(features);
         }
-        source.addFeatures(features);
       },
       /* FIXME handle error */ failure ? failure : VOID
     );

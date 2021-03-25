@@ -571,6 +571,24 @@ describe('ol.source.Vector', function () {
       );
     });
 
+    it('fires the FEATURESLOADEND event after the features are added', function (done) {
+      const source = new VectorSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/source/vectorsource/single-feature.json',
+      });
+      source.on('featuresloadend', function () {
+        const features = source.getFeatures();
+        expect(features).to.be.an('array');
+        expect(features.length).to.be(1);
+        done();
+      });
+      source.loadFeatures(
+        [-10000, -10000, 10000, 10000],
+        1,
+        getProjection('EPSG:3857')
+      );
+    });
+
     it('fires the FEATURESLOADEND event if the default load function is used', function (done) {
       const source = new VectorSource({
         format: new GeoJSON(),
