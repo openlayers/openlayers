@@ -682,7 +682,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
-   * @param {UIEvent|import("./MapBrowserEventHandler").PointerEventData} event Event.
+   * @param {UIEvent} event Event.
    * @return {import("./pixel.js").Pixel} Pixel.
    * @api
    */

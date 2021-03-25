@@ -10,14 +10,6 @@ import Target from './events/Target.js';
 import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {listen, unlistenByKey} from './events.js';
 
-/**
- * @typedef {Object} PointerEventData
- * @property {string} type The type of the pointer event.
- * @property {number} clientX ClientX.
- * @property {number} clientY ClientY.
- * @property {EventTarget} target The target of the event.
- */
-
 class MapBrowserEventHandler extends Target {
   /**
    * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
@@ -68,7 +60,7 @@ class MapBrowserEventHandler extends Target {
     /**
      * The most recent "down" type event (or null if none have occurred).
      * Set on pointerdown.
-     * @type {PointerEventData}
+     * @type {PointerEvent}
      * @private
      */
     this.down_ = null;
@@ -130,7 +122,7 @@ class MapBrowserEventHandler extends Target {
   }
 
   /**
-   * @param {PointerEventData} pointerEvent Pointer
+   * @param {PointerEvent} pointerEvent Pointer
    * event.
    * @private
    */
@@ -252,12 +244,11 @@ class MapBrowserEventHandler extends Target {
     );
     this.dispatchEvent(newEvent);
 
-    this.down_ = {
-      type: pointerEvent.type,
-      clientX: pointerEvent.clientX,
-      clientY: pointerEvent.clientY,
-      target: pointerEvent.target,
-    };
+    this.down_ = new PointerEvent(pointerEvent.type, pointerEvent);
+    Object.defineProperty(this.down_, 'target', {
+      writable: false,
+      value: pointerEvent.target,
+    });
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();
