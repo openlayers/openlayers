@@ -18,11 +18,7 @@ import RenderEventType from './render/EventType.js';
 import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
 import ViewHint from './ViewHint.js';
-import {
-  DEVICE_PIXEL_RATIO,
-  IMAGE_DECODE,
-  PASSIVE_EVENT_LISTENERS,
-} from './has.js';
+import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {TRUE} from './functions.js';
 import {
   apply as applyTransform,
@@ -1047,8 +1043,7 @@ class PluggableMap extends BaseObject {
       if (frameState) {
         const hints = frameState.viewHints;
         if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
-          const lowOnFrameBudget =
-            !IMAGE_DECODE && Date.now() - frameState.time > 8;
+          const lowOnFrameBudget = Date.now() - frameState.time > 8;
           maxTotalLoading = lowOnFrameBudget ? 0 : 8;
           maxNewLoads = lowOnFrameBudget ? 0 : 2;
         }
