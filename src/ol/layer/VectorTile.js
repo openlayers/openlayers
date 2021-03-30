@@ -89,16 +89,15 @@ class VectorTileLayer extends BaseVectorLayer {
 
     super(/** @type {import("./BaseVector.js").Options} */ (baseOptions));
 
-    let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
-    if (renderMode === VectorTileRenderType.IMAGE) {
+    if (options.renderMode === VectorTileRenderType.IMAGE) {
       //FIXME deprecated - remove this check in v7.
       //eslint-disable-next-line
       console.warn('renderMode: "image" is deprecated. Option ignored.')
-      renderMode = undefined;
+      options.renderMode = undefined;
     }
+    const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(
-      renderMode == undefined ||
-        renderMode == VectorTileRenderType.HYBRID ||
+      renderMode == VectorTileRenderType.HYBRID ||
         renderMode == VectorTileRenderType.VECTOR,
       28
     ); // `renderMode` must be `'hybrid'` or `'vector'`.
