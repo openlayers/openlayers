@@ -51,7 +51,7 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 > We love Openlayers and it forms a core part of our platform.
 > https://pozi.com/ https://app.pozi.com/
 
-See our [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) page if you too are interested in becoming a regular sponsor.
+See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
 ## IntelliSense support and type checking for VS Code
 
