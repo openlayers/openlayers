@@ -653,14 +653,15 @@ class VectorSource extends Source {
   }
 
   /**
-   * Get all features on the source in random order.
+   * Get all snapshot of the features currently on the source in random order. The returned array
+   * is a copy, the features are references to the features in the source.
    * @return {Array<import("../Feature.js").default<Geometry>>} Features.
    * @api
    */
   getFeatures() {
     let features;
     if (this.featuresCollection_) {
-      features = this.featuresCollection_.getArray();
+      features = this.featuresCollection_.getArray().slice(0);
     } else if (this.featuresRtree_) {
       features = this.featuresRtree_.getAll();
       if (!isEmpty(this.nullGeometryFeatures_)) {
@@ -700,7 +701,7 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       return this.featuresRtree_.getInExtent(extent);
     } else if (this.featuresCollection_) {
-      return this.featuresCollection_.getArray();
+      return this.featuresCollection_.getArray().slice(0);
     } else {
       return [];
     }
