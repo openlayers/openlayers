@@ -346,7 +346,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       // no need to clip when the render tile is covered by a single source tile
       const replayExtent =
         layer.getRenderMode() !== VectorTileRenderType.VECTOR &&
-        declutter &&
         sourceTiles.length === 1
           ? null
           : sharedExtent;
