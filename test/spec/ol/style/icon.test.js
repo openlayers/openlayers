@@ -173,6 +173,32 @@ describe('ol.style.Icon', function () {
       });
       expect(iconStyle.getAnchor()).to.eql([27, 12]);
     });
+
+    it('uses a top right anchor origin + displacement', function () {
+      const iconStyle = new Icon({
+        src: 'test.png',
+        size: size,
+        anchor: fractionAnchor,
+        anchorOrigin: 'top-right',
+        displacement: [20, 10],
+      });
+      expect(iconStyle.getAnchor()).to.eql([
+        size[0] * (1 - fractionAnchor[0]) - 20,
+        size[1] * fractionAnchor[1] + 10,
+      ]);
+    });
+
+    it('uses displacement', function () {
+      const iconStyle = new Icon({
+        src: 'test.png',
+        size: size,
+        displacement: [20, 10],
+      });
+      expect(iconStyle.getAnchor()).to.eql([
+        size[0] / 2 - 20,
+        size[1] / 2 + 10,
+      ]);
+    });
   });
 
   describe('#setAnchor', function () {
@@ -233,18 +259,6 @@ describe('ol.style.Icon', function () {
       });
       iconStyle.iconImage_.size_ = imageSize;
       expect(iconStyle.getOrigin()).to.eql([92, 20]);
-    });
-
-    it('uses a top right offset origin + displacement', function () {
-      const iconStyle = new Icon({
-        src: 'test.png',
-        size: size,
-        offset: offset,
-        offsetOrigin: 'top-right',
-        displacement: [20, 10],
-      });
-      iconStyle.iconImage_.size_ = imageSize;
-      expect(iconStyle.getOrigin()).to.eql([92 + 20, 20 + 10]);
     });
   });
 
