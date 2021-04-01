@@ -348,7 +348,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         layer.getRenderMode() !== VectorTileRenderType.VECTOR &&
         sourceTiles.length === 1
           ? null
-          : sharedExtent;
+          : bufferedExtent;
       const renderingReplayGroup = new CanvasExecutorGroup(
         replayExtent,
         resolution,
