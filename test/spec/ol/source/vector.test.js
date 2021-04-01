@@ -143,6 +143,18 @@ describe('ol.source.Vector', function () {
         expect(feature).to.be(features[0]);
       });
     });
+
+    describe('#getFeatures', function () {
+      it('does not return the internal array when useSpatialIndex is false', function () {
+        const noSpatialIndexSource = new VectorSource({
+          useSpatialIndex: false,
+          features: vectorSource.getFeatures(),
+        });
+        expect(noSpatialIndexSource.getFeatures()).to.not.be(
+          noSpatialIndexSource.getFeaturesCollection().getArray()
+        );
+      });
+    });
   });
 
   describe('clear and refresh', function () {
