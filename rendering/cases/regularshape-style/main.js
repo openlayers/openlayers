@@ -8,6 +8,7 @@ import Style from '../../../src/ol/style/Style.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import View from '../../../src/ol/View.js';
+import {Icon} from '../../../src/ol/style.js';
 
 const vectorSource = new VectorSource();
 function createFeatures(stroke, fill, offSet = [0, 0]) {
@@ -16,7 +17,7 @@ function createFeatures(stroke, fill, offSet = [0, 0]) {
     geometry: new Point([offSet[0], offSet[1]]),
   });
   // square with offset
-  feature.setStyle(
+  feature.setStyle([
     new Style({
       image: new RegularShape({
         fill: fill,
@@ -26,8 +27,18 @@ function createFeatures(stroke, fill, offSet = [0, 0]) {
         angle: Math.PI / 4,
         displacement: [-15, 15],
       }),
-    })
-  );
+    }),
+    new Style({
+      image: new Icon({
+        src: '/data/cross.svg',
+        size: [20, 20],
+        anchor: [0.5, 0.5],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        displacement: [-15, 15],
+      }),
+    }),
+  ]);
   vectorSource.addFeature(feature);
 
   feature = new Feature({
