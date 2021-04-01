@@ -653,7 +653,7 @@ class VectorSource extends Source {
   }
 
   /**
-   * Get all snapshot of the features currently on the source in random order. The returned array
+   * Get a snapshot of the features currently on the source in random order. The returned array
    * is a copy, the features are references to the features in the source.
    * @return {Array<import("../Feature.js").default<Geometry>>} Features.
    * @api
