@@ -60,6 +60,10 @@ module.exports = {
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/],
         extractComments: false,
+        terserOptions: {
+          // Mangle private members convention with underscore suffix
+          mangle: {properties: {regex: /_$/}},
+        },
       }),
     ],
     runtimeChunk: {
