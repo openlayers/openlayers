@@ -687,6 +687,7 @@ describe('ol.Map', function () {
   });
 
   describe('#setTarget', function () {
+    /** @type {Map|undefined} */
     let map;
 
     beforeEach(function () {
@@ -694,6 +695,12 @@ describe('ol.Map', function () {
         target: document.createElement('div'),
       });
       expect(map.handleResize_).to.be.ok();
+    });
+
+    describe('map with target not attached to dom', function () {
+      it('has undefined as size with target not in document', function () {
+        expect(map.getSize()).to.be(undefined);
+      });
     });
 
     describe('call setTarget with null', function () {

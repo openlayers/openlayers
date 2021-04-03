@@ -306,6 +306,10 @@ class OverviewMap extends Control {
           this.resetExtent_();
         }
       }
+
+      if (!this.ovmap_.isRendered()) {
+        this.updateBoxAfterOvmapIsRendered_();
+      }
     }
   }
 
@@ -322,6 +326,11 @@ class OverviewMap extends Control {
       }
       const newView = this.getMap().getView();
       this.bindView_(newView);
+    } else if (
+      !this.ovmap_.isRendered() &&
+      (event.key === MapProperty.TARGET || event.key === MapProperty.SIZE)
+    ) {
+      this.ovmap_.updateSize();
     }
   }
 
@@ -515,6 +524,24 @@ class OverviewMap extends Control {
   }
 
   /**
+   * @private
+   */
+  updateBoxAfterOvmapIsRendered_() {
+    if (this.ovmapPostrenderKey_) {
+      return;
+    }
+    this.ovmapPostrenderKey_ = listenOnce(
+      this.ovmap_,
+      MapEventType.POSTRENDER,
+      function (event) {
+        delete this.ovmapPostrenderKey_;
+        this.updateBox_();
+      },
+      this
+    );
+  }
+
+  /**
    * @param {MouseEvent} event The event to handle
    * @private
    */
@@ -546,14 +573,7 @@ class OverviewMap extends Control {
       }
       ovmap.updateSize();
       this.resetExtent_();
-      listenOnce(
-        ovmap,
-        MapEventType.POSTRENDER,
-        function (event) {
-          this.updateBox_();
-        },
-        this
-      );
+      this.updateBoxAfterOvmapIsRendered_();
     }
   }
 
