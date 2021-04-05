@@ -3,6 +3,7 @@ module.exports = {
   entry: './build/index.js',
   devtool: 'source-map',
   mode: 'production',
+  target: ['web', 'es5'],
   module: {
     rules: [
       {
