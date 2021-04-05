@@ -8,7 +8,7 @@ const src = path.join(__dirname, '..');
 
 module.exports = {
   context: src,
-  target: 'web',
+  target: ['web', 'es5'],
   entry: () => {
     const entry = {};
     fs.readdirSync(src)
