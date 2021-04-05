@@ -23,6 +23,11 @@ class BaseEvent {
     this.propagationStopped;
 
     /**
+     * @type {boolean}
+     */
+    this.defaultPrevented;
+
+    /**
      * The event type.
      * @type {string}
      * @api
@@ -38,11 +43,12 @@ class BaseEvent {
   }
 
   /**
-   * Stop event propagation.
+   * Prevent default. This means that no emulated `click`, `singleclick` or `doubleclick` events
+   * will be fired.
    * @api
    */
   preventDefault() {
-    this.propagationStopped = true;
+    this.defaultPrevented = true;
   }
 
   /**

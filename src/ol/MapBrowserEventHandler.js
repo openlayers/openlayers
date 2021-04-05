@@ -204,7 +204,7 @@ class MapBrowserEventHandler extends Target {
     // event.stopPropagation() or event.preventDefault().
     if (
       this.emulateClicks_ &&
-      !newEvent.propagationStopped &&
+      !newEvent.defaultPrevented &&
       !this.dragging_ &&
       this.isMouseActionButton_(pointerEvent)
     ) {

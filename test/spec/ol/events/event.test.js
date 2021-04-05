@@ -16,10 +16,10 @@ describe('ol.events.Event', function () {
   });
 
   describe('#preventDefault', function () {
-    it('sets the propagationStopped flag', function () {
+    it('sets the defaultPrevented flag', function () {
       const event = new Event('foo');
       event.preventDefault();
-      expect(event.propagationStopped).to.be(true);
+      expect(event.defaultPrevented).to.be(true);
     });
     it('does the same as #stopPropagation', function () {
       const event = new Event('foo');
