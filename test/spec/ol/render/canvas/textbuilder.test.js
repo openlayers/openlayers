@@ -320,4 +320,50 @@ describe('ol.render.canvas.TextBuilder', function () {
     expect(builder.instructions.length).to.be(3);
     executeInstructions(builder, 1, 2);
   });
+
+  it('generates a matching geometry widths array for multipolygons', function () {
+    const feature = new Feature(
+      new MultiPolygon([
+        [
+          [
+            [-180, -90],
+            [-180, 90],
+            [-50, 90],
+            [-50, -90],
+            [-180, -90],
+          ],
+        ],
+        [
+          [
+            [-50, -90],
+            [-50, 90],
+            [70, 90],
+            [70, -90],
+            [-50, -90],
+          ],
+        ],
+        [
+          [
+            [70, -90],
+            [70, 90],
+            [180, 90],
+            [180, -90],
+            [70, -90],
+          ],
+        ],
+      ])
+    );
+    const builder = new TextBuilder(1, [-50, -90, 70, 90], 1, 1);
+    builder.setTextStyle(
+      new Text({
+        text: 'text',
+      })
+    );
+    builder.drawText(feature.getGeometry(), feature);
+    expect(builder.coordinates).to.have.length(2);
+    expect(builder.instructions).to.have.length(3);
+    const geometryWidths = builder.instructions[1][24];
+    expect(geometryWidths).to.have.length(1);
+    expect(geometryWidths[0]).to.be(120);
+  });
 });
