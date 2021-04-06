@@ -201,7 +201,7 @@ class MapBrowserEventHandler extends Target {
     // to 0).
     // See http://www.w3.org/TR/pointerevents/#button-states
     // We only fire click, singleclick, and doubleclick if nobody has called
-    // event.stopPropagation() or event.preventDefault().
+    // event.preventDefault().
     if (
       this.emulateClicks_ &&
       !newEvent.defaultPrevented &&
