@@ -63,7 +63,7 @@ class WkbReader {
     this.hasZ = false;
     this.hasM = false;
     /** @type {number} */
-    this.SRID = null;
+    this.srid = null;
 
     this.layout = GeometryLayout.XY;
   }
@@ -168,7 +168,7 @@ class WkbReader {
     const typeId = (wkbType & 0x0fffffff) % 1000; // Assume 1000 is an upper limit for type ID
     const layout = ['XY', hasZ ? 'Z' : '', hasM ? 'M' : ''].join('');
 
-    const SRID = hasSRID ? this.readUint32(isLittleEndian) : null;
+    const srid = hasSRID ? this.readUint32(isLittleEndian) : null;
 
     if (expectedTypeId !== undefined && expectedTypeId !== typeId) {
       throw new Error('Unexpected WKB geometry type ' + typeId);
@@ -182,7 +182,7 @@ class WkbReader {
       if (this.layout !== layout) {
         throw new Error('Inconsistent geometry layout');
       }
-      if (SRID && this.SRID !== SRID) {
+      if (srid && this.srid !== srid) {
         throw new Error('Inconsistent coordinate system (SRID)');
       }
     } else {
@@ -190,7 +190,7 @@ class WkbReader {
       this.hasZ = hasZ;
       this.hasM = hasM;
       this.layout = layout;
-      this.SRID = SRID;
+      this.srid = srid;
       this.initialized = true;
     }
 
@@ -448,9 +448,9 @@ class WkbWriter {
 
   /**
    * @param {number} wkbType WKB Type ID
-   * @param {number} [SRID] SRID
+   * @param {number} [srid] SRID
    */
-  writeWkbHeader(wkbType, SRID) {
+  writeWkbHeader(wkbType, srid) {
     wkbType %= 1000; // Assume 1000 is an upper limit for type ID
     if (this.layout.indexOf('Z') >= 0) {
       wkbType += this.isEWKB ? 0x80000000 : 1000;
@@ -458,14 +458,14 @@ class WkbWriter {
     if (this.layout.indexOf('M') >= 0) {
       wkbType += this.isEWKB ? 0x40000000 : 2000;
     }
-    if (this.isEWKB && Number.isInteger(SRID)) {
+    if (this.isEWKB && Number.isInteger(srid)) {
       wkbType |= 0x20000000;
     }
 
     this.writeUint8(this.isLittleEndian ? 1 : 0);
     this.writeUint32(wkbType);
-    if (this.isEWKB && Number.isInteger(SRID)) {
-      this.writeUint32(SRID);
+    if (this.isEWKB && Number.isInteger(srid)) {
+      this.writeUint32(srid);
     }
   }
 
@@ -561,9 +561,9 @@ class WkbWriter {
 
   /**
    * @param {import("../geom/Geometry.js").default} geom geometry
-   * @param {number} [SRID] SRID
+   * @param {number} [srid] SRID
    */
-  writeGeometry(geom, SRID) {
+  writeGeometry(geom, srid) {
     const wkblut = {
       [GeometryType.POINT]: WKBGeometryType.POINT,
       [GeometryType.LINE_STRING]: WKBGeometryType.LINE_STRING,
@@ -585,7 +585,7 @@ class WkbWriter {
       this.layout = this.findMinimumLayout(geom);
     }
 
-    this.writeWkbHeader(typeId, SRID);
+    this.writeWkbHeader(typeId, srid);
 
     if (geom instanceof SimpleGeometry) {
       const writerLUT = {
@@ -639,7 +639,7 @@ class WkbWriter {
  * @property {import("../geom/GeometryLayout").default} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
  * @property {number} [nodataZ=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of Z.
  * @property {number} [nodataM=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of M.
- * @property {number|boolean} [SRID=true] SRID for output. Specify integer value to enforce the value as a SRID. Specify `true` to extract from `dataProjection`. `false` to suppress the output. This option only takes effect when `ewkb` is `true`.
+ * @property {number|boolean} [srid=true] SRID for output. Specify integer value to enforce the value as a SRID. Specify `true` to extract from `dataProjection`. `false` to suppress the output. This option only takes effect when `ewkb` is `true`.
  */
 
 /**
@@ -670,7 +670,7 @@ class WKB extends FeatureFormat {
     this.nodataZ = options.nodataZ || 0;
     this.nodataM = options.nodataM || 0;
 
-    this.SRID = options.SRID;
+    this.srid = options.srid;
   }
 
   /**
@@ -753,7 +753,7 @@ class WKB extends FeatureFormat {
     const reader = new WkbReader(view);
     reader.readWkbHeader();
 
-    return (reader.SRID && getProjection('EPSG:' + reader.SRID)) || undefined;
+    return (reader.srid && getProjection('EPSG:' + reader.srid)) || undefined;
   }
 
   /**
@@ -806,21 +806,21 @@ class WKB extends FeatureFormat {
     });
 
     // extract SRID from `dataProjection`
-    let SRID = Number.isInteger(this.SRID) ? Number(this.SRID) : null;
-    if (this.SRID !== false && !Number.isInteger(this.SRID)) {
+    let srid = Number.isInteger(this.srid) ? Number(this.srid) : null;
+    if (this.srid !== false && !Number.isInteger(this.srid)) {
       const dataProjection =
         options.dataProjection && getProjection(options.dataProjection);
       if (dataProjection) {
         const code = dataProjection.getCode();
         if (code.indexOf('EPSG:') === 0) {
-          SRID = Number(code.substring(5));
+          srid = Number(code.substring(5));
         }
       }
     }
 
     writer.writeGeometry(
       transformGeometryWithOptions(geometry, true, options),
-      SRID
+      srid
     );
     const buffer = writer.getBuffer();
 
