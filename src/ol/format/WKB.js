@@ -55,24 +55,24 @@ class WkbReader {
    * @param {DataView} view source to read
    */
   constructor(view) {
-    this.view = view;
-    this.pos = 0;
+    this.view_ = view;
+    this.pos_ = 0;
 
-    this.initialized = false;
-    this.isLittleEndian = false;
-    this.hasZ = false;
-    this.hasM = false;
+    this.initialized_ = false;
+    this.isLittleEndian_ = false;
+    this.hasZ_ = false;
+    this.hasM_ = false;
     /** @type {number} */
-    this.srid = null;
+    this.srid_ = null;
 
-    this.layout = GeometryLayout.XY;
+    this.layout_ = GeometryLayout.XY;
   }
 
   /**
    * @return {number} value
    */
   readUint8() {
-    return this.view.getUint8(this.pos++);
+    return this.view_.getUint8(this.pos_++);
   }
 
   /**
@@ -80,9 +80,9 @@ class WkbReader {
    * @return {number} value
    */
   readUint32(isLittleEndian) {
-    return this.view.getUint32(
-      (this.pos += 4) - 4,
-      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian
+    return this.view_.getUint32(
+      (this.pos_ += 4) - 4,
+      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian_
     );
   }
 
@@ -91,9 +91,9 @@ class WkbReader {
    * @return {number} value
    */
   readDouble(isLittleEndian) {
-    return this.view.getFloat64(
-      (this.pos += 8) - 8,
-      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian
+    return this.view_.getFloat64(
+      (this.pos_ += 8) - 8,
+      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian_
     );
   }
 
@@ -106,10 +106,10 @@ class WkbReader {
 
     coords.push(this.readDouble());
     coords.push(this.readDouble());
-    if (this.hasZ) {
+    if (this.hasZ_) {
       coords.push(this.readDouble());
     }
-    if (this.hasM) {
+    if (this.hasM_) {
       coords.push(this.readDouble());
     }
 
@@ -174,24 +174,24 @@ class WkbReader {
       throw new Error('Unexpected WKB geometry type ' + typeId);
     }
 
-    if (this.initialized) {
+    if (this.initialized_) {
       // sanity checks
-      if (this.isLittleEndian !== isLittleEndian) {
+      if (this.isLittleEndian_ !== isLittleEndian) {
         throw new Error('Inconsistent endian');
       }
-      if (this.layout !== layout) {
+      if (this.layout_ !== layout) {
         throw new Error('Inconsistent geometry layout');
       }
-      if (srid && this.srid !== srid) {
+      if (srid && this.srid_ !== srid) {
         throw new Error('Inconsistent coordinate system (SRID)');
       }
     } else {
-      this.isLittleEndian = isLittleEndian;
-      this.hasZ = hasZ;
-      this.hasM = hasM;
-      this.layout = layout;
-      this.srid = srid;
-      this.initialized = true;
+      this.isLittleEndian_ = isLittleEndian;
+      this.hasZ_ = hasZ;
+      this.hasM_ = hasM;
+      this.layout_ = layout;
+      this.srid_ = srid;
+      this.initialized_ = true;
     }
 
     return typeId;
@@ -303,32 +303,32 @@ class WkbReader {
       case WKBGeometryType.POINT:
         return new Point(
           /** @type {import('../coordinate.js').Coordinate} */ (result),
-          this.layout
+          this.layout_
         );
 
       case WKBGeometryType.LINE_STRING:
         return new LineString(
           /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
-          this.layout
+          this.layout_
         );
 
       case WKBGeometryType.POLYGON:
       case WKBGeometryType.TRIANGLE:
         return new Polygon(
           /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (result),
-          this.layout
+          this.layout_
         );
 
       case WKBGeometryType.MULTI_POINT:
         return new MultiPoint(
           /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
-          this.layout
+          this.layout_
         );
 
       case WKBGeometryType.MULTI_LINE_STRING:
         return new MultiLineString(
           /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (result),
-          this.layout
+          this.layout_
         );
 
       case WKBGeometryType.MULTI_POLYGON:
@@ -336,7 +336,7 @@ class WkbReader {
       case WKBGeometryType.TIN:
         return new MultiPolygon(
           /** @type {Array<Array<Array<import('../coordinate.js').Coordinate>>>} */ (result),
-          this.layout
+          this.layout_
         );
 
       case WKBGeometryType.GEOMETRY_COLLECTION:
@@ -347,6 +347,13 @@ class WkbReader {
       default:
         return null;
     }
+  }
+
+  /**
+   * @return {number} SRID in the EWKB. `null` if not defined.
+   */
+  getSrid() {
+    return this.srid_;
   }
 }
 
@@ -363,13 +370,13 @@ class WkbWriter {
     opts = opts || {};
 
     /** @type {string} */
-    this.layout = opts.layout;
-    this.isLittleEndian = opts.littleEndian !== false;
+    this.layout_ = opts.layout;
+    this.isLittleEndian_ = opts.littleEndian !== false;
 
-    this.isEWKB = opts.ewkb !== false;
+    this.isEWKB_ = opts.ewkb !== false;
 
     /** @type {Array<Array<number>>} */
-    this.writeQueue = [];
+    this.writeQueue_ = [];
 
     /**
      * @type {object}
@@ -378,28 +385,28 @@ class WkbWriter {
      * @property {number} Z NoData value for Z
      * @property {number} M NoData value for M
      */
-    this.nodata = assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
+    this.nodata_ = assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
   }
 
   /**
    * @param {number} value value
    */
   writeUint8(value) {
-    this.writeQueue.push([1, value]);
+    this.writeQueue_.push([1, value]);
   }
 
   /**
    * @param {number} value value
    */
   writeUint32(value) {
-    this.writeQueue.push([4, value]);
+    this.writeQueue_.push([4, value]);
   }
 
   /**
    * @param {number} value value
    */
   writeDouble(value) {
-    this.writeQueue.push([8, value]);
+    this.writeQueue_.push([8, value]);
   }
 
   /**
@@ -419,8 +426,10 @@ class WkbWriter {
       layout.split('').map((axis, idx) => ({[axis]: coords[idx]}))
     );
 
-    for (const axis of this.layout) {
-      this.writeDouble(axis in coordsObj ? coordsObj[axis] : this.nodata[axis]);
+    for (const axis of this.layout_) {
+      this.writeDouble(
+        axis in coordsObj ? coordsObj[axis] : this.nodata_[axis]
+      );
     }
   }
 
@@ -452,19 +461,19 @@ class WkbWriter {
    */
   writeWkbHeader(wkbType, srid) {
     wkbType %= 1000; // Assume 1000 is an upper limit for type ID
-    if (this.layout.indexOf('Z') >= 0) {
-      wkbType += this.isEWKB ? 0x80000000 : 1000;
+    if (this.layout_.indexOf('Z') >= 0) {
+      wkbType += this.isEWKB_ ? 0x80000000 : 1000;
     }
-    if (this.layout.indexOf('M') >= 0) {
-      wkbType += this.isEWKB ? 0x40000000 : 2000;
+    if (this.layout_.indexOf('M') >= 0) {
+      wkbType += this.isEWKB_ ? 0x40000000 : 2000;
     }
-    if (this.isEWKB && Number.isInteger(srid)) {
+    if (this.isEWKB_ && Number.isInteger(srid)) {
       wkbType |= 0x20000000;
     }
 
-    this.writeUint8(this.isLittleEndian ? 1 : 0);
+    this.writeUint8(this.isLittleEndian_ ? 1 : 0);
     this.writeUint32(wkbType);
-    if (this.isEWKB && Number.isInteger(srid)) {
+    if (this.isEWKB_ && Number.isInteger(srid)) {
       this.writeUint32(srid);
     }
   }
@@ -581,8 +590,8 @@ class WkbWriter {
     }
 
     // first call of writeGeometry() traverse whole geometries to determine its output layout if not specified on constructor.
-    if (!this.layout) {
-      this.layout = this.findMinimumLayout(geom);
+    if (!this.layout_) {
+      this.layout_ = this.findMinimumLayout(geom);
     }
 
     this.writeWkbHeader(typeId, srid);
@@ -603,21 +612,21 @@ class WkbWriter {
   }
 
   getBuffer() {
-    const byteLength = this.writeQueue.reduce((acc, item) => acc + item[0], 0);
+    const byteLength = this.writeQueue_.reduce((acc, item) => acc + item[0], 0);
     const buffer = new ArrayBuffer(byteLength);
     const view = new DataView(buffer);
 
     let pos = 0;
-    this.writeQueue.forEach((item) => {
+    this.writeQueue_.forEach((item) => {
       switch (item[0]) {
         case 1:
           view.setUint8(pos, item[1]);
           break;
         case 4:
-          view.setUint32(pos, item[1], this.isLittleEndian);
+          view.setUint32(pos, item[1], this.isLittleEndian_);
           break;
         case 8:
-          view.setFloat64(pos, item[1], this.isLittleEndian);
+          view.setFloat64(pos, item[1], this.isLittleEndian_);
           break;
         default:
           break;
@@ -662,22 +671,22 @@ class WKB extends FeatureFormat {
 
     this.viewCache_ = null;
 
-    this.hex = options.hex !== false;
-    this.littleEndian = options.littleEndian !== false;
-    this.ewkb = options.ewkb !== false;
+    this.hex_ = options.hex !== false;
+    this.littleEndian_ = options.littleEndian !== false;
+    this.ewkb_ = options.ewkb !== false;
 
-    this.layout = options.geometryLayout; // null for auto detect
-    this.nodataZ = options.nodataZ || 0;
-    this.nodataM = options.nodataM || 0;
+    this.layout_ = options.geometryLayout; // null for auto detect
+    this.nodataZ_ = options.nodataZ || 0;
+    this.nodataM_ = options.nodataM || 0;
 
-    this.srid = options.srid;
+    this.srid_ = options.srid;
   }
 
   /**
    * @return {import("./FormatType.js").default} Format.
    */
   getType() {
-    return this.hex ? FormatType.TEXT : FormatType.ARRAY_BUFFER;
+    return this.hex_ ? FormatType.TEXT : FormatType.ARRAY_BUFFER;
   }
 
   /**
@@ -753,7 +762,10 @@ class WKB extends FeatureFormat {
     const reader = new WkbReader(view);
     reader.readWkbHeader();
 
-    return (reader.srid && getProjection('EPSG:' + reader.srid)) || undefined;
+    return (
+      (reader.getSrid() && getProjection('EPSG:' + reader.getSrid())) ||
+      undefined
+    );
   }
 
   /**
@@ -795,19 +807,19 @@ class WKB extends FeatureFormat {
     const options = this.adaptOptions(opt_options);
 
     const writer = new WkbWriter({
-      layout: this.layout,
-      littleEndian: this.littleEndian,
-      ewkb: this.ewkb,
+      layout: this.layout_,
+      littleEndian: this.littleEndian_,
+      ewkb: this.ewkb_,
 
       nodata: {
-        Z: this.nodataZ,
-        M: this.nodataM,
+        Z: this.nodataZ_,
+        M: this.nodataM_,
       },
     });
 
     // extract SRID from `dataProjection`
-    let srid = Number.isInteger(this.srid) ? Number(this.srid) : null;
-    if (this.srid !== false && !Number.isInteger(this.srid)) {
+    let srid = Number.isInteger(this.srid_) ? Number(this.srid_) : null;
+    if (this.srid_ !== false && !Number.isInteger(this.srid_)) {
       const dataProjection =
         options.dataProjection && getProjection(options.dataProjection);
       if (dataProjection) {
@@ -824,7 +836,7 @@ class WKB extends FeatureFormat {
     );
     const buffer = writer.getBuffer();
 
-    return this.hex ? encodeHexString(buffer) : buffer;
+    return this.hex_ ? encodeHexString(buffer) : buffer;
   }
 }
 
