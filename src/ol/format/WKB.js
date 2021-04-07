@@ -642,7 +642,7 @@ class WkbWriter {
 /**
  * @typedef {Object} Options
  * @property {boolean} [splitCollection=false] Whether to split GeometryCollections into multiple features on reading.
- * @property {boolean} [hex=true] Returns hex string instead of ArrayBuffer for output.
+ * @property {boolean} [hex=true] Returns hex string instead of ArrayBuffer for output. This also is used as a hint internally whether it should load contents as text or ArrayBuffer on reading.
  * @property {boolean} [littleEndian=true] Use littleEndian for output.
  * @property {boolean} [ewkb=true] Use EWKB format for output.
  * @property {import("../geom/GeometryLayout").default} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
