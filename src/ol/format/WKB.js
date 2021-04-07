@@ -817,7 +817,7 @@ class WKB extends FeatureFormat {
     );
     const buffer = writer.getBuffer();
 
-    return this.hex !== false ? encodeHexString(buffer) : buffer;
+    return this.hex ? encodeHexString(buffer) : buffer;
   }
 }
 
