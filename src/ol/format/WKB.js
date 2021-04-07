@@ -686,6 +686,7 @@ class WKB extends FeatureFormat {
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
+   * @api
    */
   readFeature(source, opt_options) {
     return new Feature({
@@ -699,6 +700,7 @@ class WKB extends FeatureFormat {
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @api
    */
   readFeatures(source, opt_options) {
     let geometries = [];
@@ -717,6 +719,7 @@ class WKB extends FeatureFormat {
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
+   * @api
    */
   readGeometry(source, opt_options) {
     const view = getDataView(source);
@@ -739,6 +742,7 @@ class WKB extends FeatureFormat {
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @return {import("../proj/Projection.js").default|undefined} Projection.
+   * @api
    */
   readProjection(source) {
     const view = this.viewCache_ || getDataView(source);
@@ -758,6 +762,7 @@ class WKB extends FeatureFormat {
    * @param {import("../Feature.js").default} feature Feature.
    * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {string|ArrayBuffer} Result.
+   * @api
    */
   writeFeature(feature, opt_options) {
     return this.writeGeometry(feature.getGeometry(), opt_options);
@@ -769,6 +774,7 @@ class WKB extends FeatureFormat {
    * @param {Array<import("../Feature.js").default>} features Features.
    * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {string|ArrayBuffer} Result.
+   * @api
    */
   writeFeatures(features, opt_options) {
     return this.writeGeometry(
@@ -783,6 +789,7 @@ class WKB extends FeatureFormat {
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @return {string|ArrayBuffer} Result.
+   * @api
    */
   writeGeometry(geometry, opt_options) {
     const options = this.adaptOptions(opt_options);
