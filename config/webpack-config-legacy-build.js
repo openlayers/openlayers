@@ -1,8 +1,11 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+
 module.exports = {
   entry: './build/index.js',
   devtool: 'source-map',
   mode: 'production',
+  target: ['web', 'es5'],
   module: {
     rules: [
       {
@@ -29,6 +32,16 @@ module.exports = {
     alias: {
       ol: path.resolve('./build/ol'),
     },
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          // Mangle private members convention with underscore suffix
+          mangle: {properties: {regex: /_$/}},
+        },
+      }),
+    ],
   },
   output: {
     path: path.resolve('./build/legacy'),

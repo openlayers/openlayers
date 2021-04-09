@@ -245,7 +245,7 @@
 }
 .ol-overviewmap .ol-overviewmap-map,
 .ol-overviewmap button {
-  display: inline-block;
+  display: block;
 }
 .ol-overviewmap .ol-overviewmap-map {
   border: 1px solid #7b98bc;
@@ -253,8 +253,8 @@
   margin: 2px;
   width: 150px;
 }
-.ol-overviewmap:not(.ol-collapsed) button{
-  bottom: 1px;
+.ol-overviewmap:not(.ol-collapsed) button {
+  bottom: 2px;
   left: 2px;
   position: absolute;
 }

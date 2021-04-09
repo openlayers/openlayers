@@ -105,10 +105,10 @@ describe('ol.events.EventTarget', function () {
       eventTarget.dispatchEvent('foo');
       expect(called).to.eql([1, 2]);
     });
-    it('stops propagation when listeners call preventDefault()', function () {
+    it('stops propagation when listeners call stopPropagation()', function () {
       eventTarget.addEventListener('foo', function (evt) {
         spy2();
-        evt.preventDefault();
+        evt.stopPropagation();
       });
       eventTarget.addEventListener('foo', spy1);
       eventTarget.dispatchEvent('foo');

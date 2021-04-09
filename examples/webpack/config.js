@@ -6,20 +6,19 @@ const path = require('path');
 
 const src = path.join(__dirname, '..');
 
-const examples = fs
-  .readdirSync(src)
-  .filter((name) => /^(?!index).*\.html$/.test(name))
-  .map((name) => name.replace(/\.html$/, ''));
-
-const entry = {};
-examples.forEach((example) => {
-  entry[example] = `./${example}.js`;
-});
-
 module.exports = {
   context: src,
-  target: 'web',
-  entry: entry,
+  target: ['web', 'es5'],
+  entry: () => {
+    const entry = {};
+    fs.readdirSync(src)
+      .filter((name) => /^(?!index).*\.html$/.test(name))
+      .map((name) => name.replace(/\.html$/, ''))
+      .forEach((example) => {
+        entry[example] = `./${example}.js`;
+      });
+    return entry;
+  },
   stats: 'minimal',
   module: {
     rules: [
@@ -61,6 +60,10 @@ module.exports = {
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/],
         extractComments: false,
+        terserOptions: {
+          // Mangle private members convention with underscore suffix
+          mangle: {properties: {regex: /_$/}},
+        },
       }),
     ],
     runtimeChunk: {

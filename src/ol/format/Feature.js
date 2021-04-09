@@ -187,7 +187,7 @@ class FeatureFormat {
    * @abstract
    * @param {import("../Feature.js").default} feature Feature.
    * @param {WriteOptions} [opt_options] Write options.
-   * @return {string} Result.
+   * @return {string|ArrayBuffer} Result.
    */
   writeFeature(feature, opt_options) {
     return abstract();
@@ -199,7 +199,7 @@ class FeatureFormat {
    * @abstract
    * @param {Array<import("../Feature.js").default>} features Features.
    * @param {WriteOptions} [opt_options] Write options.
-   * @return {string} Result.
+   * @return {string|ArrayBuffer} Result.
    */
   writeFeatures(features, opt_options) {
     return abstract();
@@ -211,7 +211,7 @@ class FeatureFormat {
    * @abstract
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {WriteOptions} [opt_options] Write options.
-   * @return {string} Result.
+   * @return {string|ArrayBuffer} Result.
    */
   writeGeometry(geometry, opt_options) {
     return abstract();
