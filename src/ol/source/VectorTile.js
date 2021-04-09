@@ -471,16 +471,20 @@ class VectorTile extends UrlTile {
     const code = projection.getCode();
     let tileGrid = this.tileGrids_[code];
     if (!tileGrid) {
-      // A tile grid that matches the tile size of the source tile grid is more
-      // likely to have 1:1 relationships between source tiles and rendered tiles.
-      const sourceTileGrid = this.tileGrid;
-      tileGrid = createForProjection(
-        projection,
-        undefined,
-        sourceTileGrid
-          ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom())
-          : undefined
-      );
+      if (!projection.getDefaultTileGrid()) {
+        // A tile grid that matches the tile size of the source tile grid is more
+        // likely to have 1:1 relationships between source tiles and rendered tiles.
+        const sourceTileGrid = this.tileGrid;
+        tileGrid = createForProjection(
+          projection,
+          undefined,
+          sourceTileGrid
+            ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom())
+            : undefined
+        );
+      } else {
+        tileGrid = projection.getDefaultTileGrid();
+      }
       this.tileGrids_[code] = tileGrid;
     }
     return tileGrid;
