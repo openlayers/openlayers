@@ -280,7 +280,7 @@ class CanvasImmediateRenderer extends VectorContext {
       flatCoordinates,
       offset,
       end,
-      2,
+      stride,
       this.transform_,
       this.pixelCoordinates_
     );
