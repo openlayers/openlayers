@@ -166,7 +166,7 @@ class ExampleBuilder {
   }
 
   async addAssets(assets, dir) {
-    const jsAssetRE = new RegExp(/^(\w|-)+\.js$/);
+    const jsAssetRE = /^[\w-]+\.js$/;
     const names = [];
     for (const filename in assets) {
       if (!jsAssetRE.test(filename)) {
@@ -174,7 +174,7 @@ class ExampleBuilder {
       }
 
       const name = filename.replace(/\.js$/, '');
-      if (name === this.common) {
+      if (name === 'index' || name === this.common) {
         continue;
       }
 
