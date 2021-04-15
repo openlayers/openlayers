@@ -85,7 +85,6 @@ module.exports = {
         {from: '../src/ol/ol.css', to: 'css'},
         {from: 'data', to: 'data'},
         {from: 'resources', to: 'resources'},
-        {from: 'Jugl.js', to: 'Jugl.js'},
         {from: 'index.html', to: 'index.html'},
         {from: 'index.js', to: 'index.js'},
       ],
