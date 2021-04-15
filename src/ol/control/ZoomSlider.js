@@ -183,22 +183,29 @@ class ZoomSlider extends Control {
    */
   initSlider_() {
     const container = this.element;
-    const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
+    let containerWidth = container.offsetWidth;
+    let containerHeight = container.offsetHeight;
     if (containerWidth === 0 && containerHeight === 0) {
       return (this.sliderInitialized_ = false);
     }
 
+    const containerStyle = getComputedStyle(container);
+    containerWidth -=
+      parseFloat(containerStyle['paddingRight']) +
+      parseFloat(containerStyle['paddingLeft']);
+    containerHeight -=
+      parseFloat(containerStyle['paddingTop']) +
+      parseFloat(containerStyle['paddingBottom']);
     const thumb = /** @type {HTMLElement} */ (container.firstElementChild);
-    const computedStyle = getComputedStyle(thumb);
+    const thumbStyle = getComputedStyle(thumb);
     const thumbWidth =
       thumb.offsetWidth +
-      parseFloat(computedStyle['marginRight']) +
-      parseFloat(computedStyle['marginLeft']);
+      parseFloat(thumbStyle['marginRight']) +
+      parseFloat(thumbStyle['marginLeft']);
     const thumbHeight =
       thumb.offsetHeight +
-      parseFloat(computedStyle['marginTop']) +
-      parseFloat(computedStyle['marginBottom']);
+      parseFloat(thumbStyle['marginTop']) +
+      parseFloat(thumbStyle['marginBottom']);
     this.thumbSize_ = [thumbWidth, thumbHeight];
 
     if (containerWidth > containerHeight) {
