@@ -987,6 +987,10 @@ class PluggableMap extends BaseObject {
       eventType === EventType.WHEEL ||
       eventType === EventType.KEYDOWN
     ) {
+      const doc = this.getOwnerDocument();
+      const rootNode = this.viewport_.getRootNode
+        ? this.viewport_.getRootNode()
+        : doc;
       const target = /** @type {Node} */ (originalEvent.target);
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
@@ -996,7 +1000,7 @@ class PluggableMap extends BaseObject {
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        !this.getOwnerDocument().contains(target)
+        !(rootNode === doc ? doc.documentElement : rootNode).contains(target)
       ) {
         return;
       }
