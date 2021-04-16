@@ -289,7 +289,7 @@ export const measureTextHeight = (function () {
   /**
    * @type {HTMLDivElement}
    */
-  let div;
+  let measureElement;
   return function (fontSpec) {
     let height = textHeights[fontSpec];
     if (height == undefined) {
@@ -303,18 +303,22 @@ export const measureTextHeight = (function () {
           lineHeight *
           (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
       } else {
-        if (!div) {
-          div = document.createElement('div');
-          div.innerHTML = 'M';
-          div.style.margin = '0 !important';
-          div.style.padding = '0 !important';
-          div.style.position = 'absolute !important';
-          div.style.left = '-99999px !important';
+        if (!measureElement) {
+          measureElement = document.createElement('div');
+          measureElement.innerHTML = 'M';
+          measureElement.style.minHeight = '0';
+          measureElement.style.maxHeight = 'none';
+          measureElement.style.height = 'auto';
+          measureElement.style.padding = '0';
+          measureElement.style.border = 'none';
+          measureElement.style.position = 'absolute';
+          measureElement.style.display = 'block';
+          measureElement.style.left = '-99999px';
         }
-        div.style.font = fontSpec;
-        document.body.appendChild(div);
-        height = div.offsetHeight;
-        document.body.removeChild(div);
+        measureElement.style.font = fontSpec;
+        document.body.appendChild(measureElement);
+        height = measureElement.offsetHeight;
+        document.body.removeChild(measureElement);
       }
       textHeights[fontSpec] = height;
     }
