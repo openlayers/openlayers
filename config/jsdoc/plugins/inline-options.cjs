@@ -32,7 +32,11 @@ exports.handlers = {
         for (let j = 0, jj = params.length; j < jj; ++j) {
           const param = params[j];
           if (param.type && param.type.names) {
-            const type = param.type.names[0];
+            let type = param.type.names[0];
+            const genericMatches = type.match(/(^.*?)\.?<.*>/);
+            if (genericMatches) {
+              type = genericMatches[1];
+            }
             if (type in properties) {
               param.type.names[0] = type;
               params.push.apply(
