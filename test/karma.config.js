@@ -98,7 +98,7 @@ module.exports = function (karma) {
           {
             test: /\.js$/,
             use: {
-              loader: 'istanbul-instrumenter-loader',
+              loader: 'coverage-istanbul-loader',
               options: {
                 esModules: true,
               },
