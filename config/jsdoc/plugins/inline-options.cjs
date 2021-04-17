@@ -5,7 +5,7 @@
  * Inlines option params from typedefs
  */
 
-const docletInfos = {};
+const properties = {};
 
 /**
  * This parses the comment for `@template` annotations and returns an object with name / type pairs for all template
@@ -25,22 +25,22 @@ function parseCommentForTemplates(comment) {
 
     remainingText = templateMatch[1];
 
-    let type = '*';
-
-    if (remainingText[0] === '{') {
-      let index = 1;
-      let openParenthesis = 1;
-      while (openParenthesis > 0) {
-        if (remainingText[index] === '{') {
-          openParenthesis++;
-        } else if (remainingText[index] === '}') {
-          openParenthesis--;
-        }
-        index++;
-      }
-      type = remainingText.slice(1, index - 1);
-      remainingText = remainingText.slice(index);
+    if (remainingText[0] !== '{') {
+      continue;
     }
+
+    let index = 1;
+    let openParenthesis = 1;
+    while (openParenthesis > 0) {
+      if (remainingText[index] === '{') {
+        openParenthesis++;
+      } else if (remainingText[index] === '}') {
+        openParenthesis--;
+      }
+      index++;
+    }
+    const type = remainingText.slice(1, index - 1);
+    remainingText = remainingText.slice(index);
 
     const name = remainingText.match(/\s*(\S*)/)[1];
 
@@ -55,9 +55,7 @@ exports.handlers = {
    */
   newDoclet: function (e) {
     if (e.doclet.kind == 'typedef' && e.doclet.properties) {
-      docletInfos[e.doclet.longname] = {
-        properties: e.doclet.properties,
-      };
+      properties[e.doclet.longname] = e.doclet.properties;
     }
   },
 
@@ -69,15 +67,6 @@ exports.handlers = {
   parseComplete: function (e) {
     const doclets = e.doclets;
 
-    // gather type information
-    for (let i = 0, ii = doclets.length; i < ii; ++i) {
-      const doclet = doclets[i];
-      if (doclet.longname in docletInfos) {
-        docletInfos[doclet.longname].type = doclet.type;
-      }
-    }
-
-    // inline options
     for (let i = 0, ii = doclets.length; i < ii; ++i) {
       const doclet = doclets[i];
       if (doclet.params) {
@@ -90,12 +79,11 @@ exports.handlers = {
             if (genericMatches) {
               type = genericMatches[1];
             }
-            if (type in docletInfos) {
+            if (type in properties) {
               const templateInfo = parseCommentForTemplates(doclet.comment);
-              param.type = docletInfos[type].type;
               params.push.apply(
                 params,
-                docletInfos[type].properties.map((p) => {
+                properties[type].map((p) => {
                   const property = Object.assign({}, p);
                   property.name = `${param.name}.${property.name}`;
                   if (property.type.names[0] in templateInfo) {
