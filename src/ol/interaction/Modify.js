@@ -33,7 +33,7 @@ import {
   squaredDistanceToSegment,
 } from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
-import {equals} from '../array.js';
+import {equals, includes} from '../array.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {
   fromUserCoordinate,
@@ -1126,7 +1126,9 @@ class Modify extends PointerInteraction {
       );
     };
 
-    let nodes, hitPointGeometry;
+    /** @type {Array<SegmentData>|undefined} */
+    let nodes;
+    let hitPointGeometry;
     if (this.hitDetection_) {
       const layerFilter =
         typeof this.hitDetection_ === 'object'
@@ -1136,12 +1138,16 @@ class Modify extends PointerInteraction {
         pixel,
         (feature, layer, geometry) => {
           geometry = geometry || feature.getGeometry();
-          if (geometry.getType() === GeometryType.POINT) {
+          if (
+            geometry.getType() === GeometryType.POINT &&
+            geometry.getCoordinates && // Skip RenderFeature
+            includes(this.features_.getArray(), feature)
+          ) {
             hitPointGeometry = geometry;
             const coordinate = geometry.getCoordinates();
             nodes = [
               {
-                feature,
+                feature: /** @type {Feature} */ (feature),
                 geometry,
                 segment: [coordinate, coordinate],
               },
