@@ -22,7 +22,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 14
+          - 16
 
     steps:
       - name: Clone Repository
@@ -62,7 +62,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 14
+          - 16
 
     steps:
       - name: Clone Repository
@@ -102,7 +102,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 14
+          - 16
 
     steps:
       - name: Clone Repository
@@ -142,7 +142,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 14
+          - 16
 
     steps:
       - name: Clone Repository
