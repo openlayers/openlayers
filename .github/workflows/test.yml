@@ -13,16 +13,11 @@ env:
 
 jobs:
   pretest:
-    name: Pre-Test (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Pre-Test
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 16
 
     steps:
       - name: Clone Repository
@@ -31,7 +26,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
@@ -53,16 +48,11 @@ jobs:
         run: npm run pretest
 
   spec:
-    name: Spec (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Spec
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 16
 
     steps:
       - name: Clone Repository
@@ -71,7 +61,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
@@ -93,16 +83,11 @@ jobs:
         run: npm run test-spec
 
   build:
-    name: Build (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Build (Node 16 / ubuntu-latest
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 16
 
     steps:
       - name: Clone Repository
@@ -111,7 +96,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
@@ -133,16 +118,11 @@ jobs:
         run: npm run build-package
 
   rendering:
-    name: Rendering (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Rendering
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 16
 
     steps:
       - name: Clone Repository
@@ -151,7 +131,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
