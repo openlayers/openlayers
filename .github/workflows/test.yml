@@ -157,4 +157,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: rendering-tests
-          path: rendering/cases/**/actual.png
+          path: test/rendering/cases/**/actual.png
