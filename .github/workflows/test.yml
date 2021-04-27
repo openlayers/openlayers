@@ -83,7 +83,7 @@ jobs:
         run: npm run test-spec
 
   build:
-    name: Build (Node 16 / ubuntu-latest
+    name: Build
     runs-on: ubuntu-latest
 
     strategy:
