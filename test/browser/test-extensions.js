@@ -2,17 +2,6 @@
 // since these extensions are global, instanceof checks fail with modules
 
 (function (global) {
-  // show generated maps for rendering tests
-  const showMap = global.location.search.indexOf('generate') >= 0;
-
-  // show a diff when rendering tests fail
-  const showDiff = global.location.search.indexOf('showdiff') >= 0;
-
-  /**
-   * The default tolerance for image comparisons.
-   */
-  global.IMAGE_TOLERANCE = 1.5;
-
   function afterLoad(type, path, next) {
     const client = new XMLHttpRequest();
     client.open('GET', path, true);
@@ -399,77 +388,6 @@
       target.parentNode.removeChild(target);
     }
     map.dispose();
-  };
-
-  function resembleCanvas(canvas, referenceImage, tolerance, done) {
-    if (showMap) {
-      const wrapper = document.createElement('div');
-      wrapper.style.width = canvas.width + 'px';
-      wrapper.style.height = canvas.height + 'px';
-      wrapper.appendChild(canvas);
-      document.body.appendChild(wrapper);
-      document.body.appendChild(document.createTextNode(referenceImage));
-    }
-    const width = canvas.width;
-    const height = canvas.height;
-    const image = new Image();
-    image.addEventListener('load', function () {
-      expect(image.width).to.be(width);
-      expect(image.height).to.be(height);
-      const referenceCanvas = document.createElement('canvas');
-      referenceCanvas.width = image.width;
-      referenceCanvas.height = image.height;
-      const referenceContext = referenceCanvas.getContext('2d');
-      referenceContext.drawImage(image, 0, 0, image.width, image.height);
-      const context = canvas.getContext('2d');
-      const output = context.createImageData(canvas.width, canvas.height);
-      const mismatchPx = pixelmatch(
-        context.getImageData(0, 0, width, height).data,
-        referenceContext.getImageData(0, 0, width, height).data,
-        output.data,
-        width,
-        height
-      );
-      const mismatchPct = (mismatchPx / (width * height)) * 100;
-      if (showDiff && mismatchPct > tolerance) {
-        const diffCanvas = document.createElement('canvas');
-        diffCanvas.width = width;
-        diffCanvas.height = height;
-        diffCanvas.getContext('2d').putImageData(output, 0, 0);
-        document.body.appendChild(diffCanvas);
-      }
-      expect(mismatchPct).to.be.below(tolerance);
-      done();
-    });
-    image.addEventListener('error', function () {
-      expect().fail('Reference image could not be loaded');
-      done();
-    });
-    image.src = referenceImage;
-  }
-  global.resembleCanvas = resembleCanvas;
-
-  /**
-   * Assert that the given map resembles a reference image.
-   *
-   * @param {ol.PluggableMap} map A map using the canvas renderer.
-   * @param {string} referenceImage Path to the reference image.
-   * @param {number} tolerance The accepted mismatch tolerance.
-   * @param {Function} done A callback to indicate that the test is done.
-   */
-  global.expectResemble = function (map, referenceImage, tolerance, done) {
-    map.render();
-    map.on('postcompose', function (event) {
-      if (event.frameState.animate) {
-        // make sure the tile-queue is empty
-        return;
-      }
-
-      const canvas = event.context.canvas;
-      expect(canvas).to.be.a(HTMLCanvasElement);
-
-      resembleCanvas(canvas, referenceImage, tolerance, done);
-    });
   };
 
   const features = {

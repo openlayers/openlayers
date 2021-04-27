@@ -3,15 +3,11 @@
     "mocha": true
   },
   "globals": {
-    "IMAGE_TOLERANCE": false,
     "afterLoadText": false,
     "createMapDiv": true,
     "disposeMap": true,
     "expect": false,
-    "expectResemble": false,
     "proj4": false,
-    "pixelmatch": false,
-    "resembleCanvas": false,
     "sinon": false,
     "where": false
   }

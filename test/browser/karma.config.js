@@ -20,10 +20,6 @@ module.exports = function (karma) {
         watched: false,
       },
       {
-        pattern: 'module-global.js',
-        watched: false,
-      },
-      {
         pattern: path.resolve(
           __dirname,
           require.resolve('jquery/dist/jquery.js')
@@ -42,13 +38,6 @@ module.exports = function (karma) {
         pattern: path.resolve(
           __dirname,
           require.resolve('proj4/dist/proj4.js')
-        ),
-        watched: false,
-      },
-      {
-        pattern: path.resolve(
-          __dirname,
-          require.resolve('pixelmatch/index.js')
         ),
         watched: false,
       },
