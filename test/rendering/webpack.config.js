@@ -38,4 +38,10 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    alias: {
+      // ol-mapbox-style imports ol/style/Style etc
+      ol: path.join(__dirname, '..', '..', 'src', 'ol'),
+    },
+  },
 };
