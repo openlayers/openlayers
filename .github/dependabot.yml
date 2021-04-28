@@ -6,19 +6,3 @@ updates:
     interval: weekly
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
-  ignore:
-  - dependency-name: karma
-    versions:
-    - 6.3.2
-  - dependency-name: webpack
-    versions:
-    - 5.27.1
-    - 5.27.2
-    - 5.28.0
-    - 5.30.0
-  - dependency-name: rollup
-    versions:
-    - 2.43.1
-  - dependency-name: karma-webpack
-    versions:
-    - 5.0.0-alpha.4
