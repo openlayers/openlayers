@@ -1,0 +1,14 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "globals": {
+    "afterLoadText": false,
+    "createMapDiv": true,
+    "disposeMap": true,
+    "expect": false,
+    "proj4": false,
+    "sinon": false,
+    "where": false
+  }
+}

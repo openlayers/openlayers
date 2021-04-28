@@ -1,11 +1,8 @@
 ## Included in this directory
 
-- index.html - the web page used to run the test suite.
+- browser - Unit/integration tests run in a browser
 
-- spec - includes the OpenLayers test/spec files.
-
-- test-extensions.js - includes OpenLayers-specific extensions to the
-  testing frameworks.
+- rendering - Tests that make assertions about rendered map output
 
 
 ## Run the test suite
