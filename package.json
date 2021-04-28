@@ -62,7 +62,7 @@
     "buble": "^0.20.0",
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
-    "clean-css-cli": "5.2.2",
+    "clean-css-cli": "5.3.0",
     "copy-webpack-plugin": "^8.0.0",
     "coverage-istanbul-loader": "^3.0.5",
     "coveralls": "3.1.0",
