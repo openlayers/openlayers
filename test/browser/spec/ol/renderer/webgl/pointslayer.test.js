@@ -335,10 +335,6 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         },
         baseFrameState
       );
-      let found;
-      const cb = function (feature) {
-        found = feature;
-      };
 
       renderer.prepareFrame(frameState);
       renderer.worker_.addEventListener('message', function () {
@@ -349,9 +345,23 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         renderer.renderFrame(frameState);
 
         function checkHit(x, y, expected) {
-          found = null;
-          renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
-          expect(found).to.be(expected);
+          let called = false;
+          renderer.forEachFeatureAtCoordinate(
+            [x, y],
+            frameState,
+            0,
+            function (feature) {
+              expect(feature).to.be(expected);
+              called = true;
+            },
+            null
+          );
+
+          if (expected) {
+            expect(called).to.be(true);
+          } else {
+            expect(called).to.be(false);
+          }
         }
 
         checkHit(0, 0, feature);
