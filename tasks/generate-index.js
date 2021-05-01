@@ -1,6 +1,9 @@
-const fse = require('fs-extra');
-const path = require('path');
-const generateInfo = require('./generate-info');
+import esMain from 'es-main';
+import fse from 'fs-extra';
+import generateInfo from './generate-info.js';
+import path from 'path';
+import {dirname} from 'path';
+import {fileURLToPath} from 'url';
 
 /**
  * Read the symbols from info file.
@@ -21,11 +24,11 @@ function getImport(symbol, member) {
   const defaultExport = symbol.name.split('~');
   const namedExport = symbol.name.split('.');
   if (defaultExport.length > 1 && defaultExport[0].indexOf('.') === -1) {
-    const from = defaultExport[0].replace(/^module\:/, './');
+    const from = defaultExport[0].replace(/^module\:/, './') + '.js';
     const importName = from.replace(/[.\/]+/g, '$');
     return `import ${importName} from '${from}';`;
   } else if (namedExport.length > 1 && member) {
-    const from = namedExport[0].replace(/^module\:/, './');
+    const from = namedExport[0].replace(/^module\:/, './') + '.js';
     const importName = from.replace(/[.\/]+/g, '_');
     return `import {${member} as ${importName}$${member}} from '${from}';`;
   }
@@ -97,7 +100,7 @@ function generateExports(symbols) {
  * Generate the exports code.
  * @return {Promise<string>} Resolves with the exports code.
  */
-async function main() {
+export default async function main() {
   const symbols = await getSymbols();
   return generateExports(symbols);
 }
@@ -106,18 +109,15 @@ async function main() {
  * If running this module directly, read the config file, call the main
  * function, and write the output file.
  */
-if (require.main === module) {
+if (esMain(import.meta)) {
+  const baseDir = dirname(fileURLToPath(import.meta.url));
+
   main()
     .then(async (code) => {
-      const filepath = path.join(__dirname, '..', 'build', 'index.js');
+      const filepath = path.join(baseDir, '..', 'build', 'index.js');
       await fse.outputFile(filepath, code);
     })
     .catch((err) => {
       process.stderr.write(`${err.message}\n`, () => process.exit(1));
     });
 }
-
-/**
- * Export main function.
- */
-module.exports = main;

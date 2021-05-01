@@ -47,8 +47,8 @@ jobs:
       - name: Run Tests
         run: npm run pretest
 
-  spec:
-    name: Spec
+  browser:
+    name: Browser
     runs-on: ubuntu-latest
 
     strategy:
@@ -80,7 +80,42 @@ jobs:
         run: npm ci
 
       - name: Run Tests
-        run: npm run test-spec
+        run: npm run test-browser
+
+  node:
+    name: Node
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Determine Cache Directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Configure Job Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm run test-node
 
   build:
     name: Build

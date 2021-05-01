@@ -11,8 +11,8 @@
     },
     "plugins": [
         "jsdoc-plugin-typescript",
-        "config/jsdoc/info/define-plugin",
-        "config/jsdoc/info/virtual-plugin"
+        "config/jsdoc/info/define-plugin.cjs",
+        "config/jsdoc/info/virtual-plugin.cjs"
     ],
     "typescript": {
       "moduleRoot": "src"

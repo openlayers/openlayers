@@ -1,7 +1,7 @@
 ## Included in this directory
 
 - browser - Unit/integration tests run in a browser
-
+- node - Unit tests run with Node.js
 - rendering - Tests that make assertions about rendered map output
 
 

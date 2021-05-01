@@ -1,7 +1,10 @@
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
+import TerserPlugin from 'terser-webpack-plugin';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 
-module.exports = {
+const baseDir = dirname(fileURLToPath(import.meta.url));
+
+export default {
   entry: './build/index.js',
   devtool: 'source-map',
   mode: 'production',
@@ -18,7 +21,7 @@ module.exports = {
         },
         include: [
           path.join(
-            __dirname,
+            baseDir,
             '..',
             'node_modules',
             '@mapbox',

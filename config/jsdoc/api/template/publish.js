@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs */
+
 /*global env: true */
 
 const hasOwnProp = Object.prototype.hasOwnProperty;

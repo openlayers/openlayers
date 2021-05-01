@@ -1,19 +1,31 @@
-const assert = require('assert');
-const frontMatter = require('front-matter');
-const fs = require('fs');
-const handlebars = require('handlebars');
-const marked = require('marked');
-const path = require('path');
-const pkg = require('../../package.json');
-const promisify = require('util').promisify;
-const RawSource = require('webpack-sources').RawSource;
+import assert from 'assert';
+import frontMatter from 'front-matter';
+import fse from 'fs-extra';
+import handlebars from 'handlebars';
+import marked from 'marked';
+import path, {dirname} from 'path';
+import sources from 'webpack-sources';
+import {fileURLToPath} from 'url';
 
-const readFile = promisify(fs.readFile);
+const RawSource = sources.RawSource;
+const baseDir = dirname(fileURLToPath(import.meta.url));
+
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
 const importRegEx = /^import .* from '(.*)';$/;
 const isTemplateJs = /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
 const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
+
+let cachedPackageInfo = null;
+async function getPackageInfo() {
+  if (cachedPackageInfo) {
+    return cachedPackageInfo;
+  }
+  cachedPackageInfo = await fse.readJSON(
+    path.resolve(baseDir, '../../package.json')
+  );
+  return cachedPackageInfo;
+}
 
 handlebars.registerHelper(
   'md',
@@ -111,9 +123,10 @@ function createWordIndex(exampleData) {
 /**
  * Gets dependencies from the js source.
  * @param {string} jsSource Source.
+ * @param {Object} pkg Package info.
  * @return {Object<string, string>} dependencies
  */
-function getDependencies(jsSource) {
+function getDependencies(jsSource, pkg) {
   const lines = jsSource.split('\n');
   const dependencies = {
     ol: pkg.version,
@@ -140,7 +153,7 @@ function getDependencies(jsSource) {
   return dependencies;
 }
 
-class ExampleBuilder {
+export default class ExampleBuilder {
   /**
    * A webpack plugin that builds the html files for our examples.
    * @param {Object} config Plugin configuration.  Requires a `templates` property
@@ -241,16 +254,17 @@ class ExampleBuilder {
   async parseExample(dir, name) {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
-    const htmlSource = await readFile(htmlPath, {encoding: 'utf8'});
+    const htmlSource = await fse.readFile(htmlPath, {encoding: 'utf8'});
 
     const jsName = `${name}.js`;
     const jsPath = path.join(dir, jsName);
-    const jsSource = await readFile(jsPath, {encoding: 'utf8'});
+    const jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
 
     const {attributes, body} = frontMatter(htmlSource);
     assert(!!attributes.layout, `missing layout in ${htmlPath}`);
     const data = Object.assign(attributes, {contents: body});
 
+    const pkg = await getPackageInfo();
     data.olVersion = pkg.version;
     data.filename = htmlName;
     data.dir = dir;
@@ -299,7 +313,7 @@ class ExampleBuilder {
     const workerPath = path.join(data.dir, workerName);
     let workerSource;
     try {
-      workerSource = await readFile(workerPath, readOptions);
+      workerSource = await fse.readFile(workerPath, readOptions);
     } catch (err) {
       // pass
     }
@@ -321,11 +335,14 @@ class ExampleBuilder {
       assets[workerName] = workerSource;
     }
 
+    const pkg = await getPackageInfo();
+
     data.pkgJson = JSON.stringify(
       {
         name: data.name,
         dependencies: getDependencies(
-          jsSource + (workerSource ? `\n${workerSource}` : '')
+          jsSource + (workerSource ? `\n${workerSource}` : ''),
+          pkg
         ),
         devDependencies: {
           parcel: '^2.0.0-beta.1',
@@ -344,7 +361,7 @@ class ExampleBuilder {
     const cssPath = path.join(data.dir, cssName);
     let cssSource;
     try {
-      cssSource = await readFile(cssPath, readOptions);
+      cssSource = await fse.readFile(cssPath, readOptions);
     } catch (err) {
       // pass
     }
@@ -358,6 +375,7 @@ class ExampleBuilder {
 
     // add additional resources
     if (data.resources) {
+      const pkg = await getPackageInfo();
       const localResources = [];
       const remoteResources = [];
       data.resources.forEach((resource) => {
@@ -389,11 +407,9 @@ class ExampleBuilder {
     }
 
     const templatePath = path.join(this.templates, data.layout);
-    const templateSource = await readFile(templatePath, readOptions);
+    const templateSource = await fse.readFile(templatePath, readOptions);
 
     assets[data.filename] = handlebars.compile(templateSource)(data);
     return assets;
   }
 }
-
-module.exports = ExampleBuilder;

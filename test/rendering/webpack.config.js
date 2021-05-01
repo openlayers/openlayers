@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 
-const cases = path.join(__dirname, 'cases');
+const baseDir = dirname(fileURLToPath(import.meta.url));
+
+const cases = path.join(baseDir, 'cases');
 
 const caseDirs = fs.readdirSync(cases).filter((name) => {
   let exists = true;
@@ -18,8 +21,8 @@ caseDirs.forEach((c) => {
   entry[`cases/${c}/main`] = `./cases/${c}/main.js`;
 });
 
-module.exports = {
-  context: __dirname,
+export default {
+  context: baseDir,
   target: 'web',
   entry: entry,
   devtool: 'source-map',
@@ -30,18 +33,18 @@ module.exports = {
         test: /\.js$/,
         use: {
           loader: path.join(
-            __dirname,
-            '../../examples/webpack/worker-loader.js'
+            baseDir,
+            '../../examples/webpack/worker-loader.cjs'
           ),
         },
-        include: [path.join(__dirname, '../../src/ol/worker')],
+        include: [path.join(baseDir, '../../src/ol/worker')],
       },
     ],
   },
   resolve: {
     alias: {
       // ol-mapbox-style imports ol/style/Style etc
-      ol: path.join(__dirname, '..', '..', 'src', 'ol'),
+      ol: path.join(baseDir, '..', '..', 'src', 'ol'),
     },
   },
 };
