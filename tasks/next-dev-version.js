@@ -1,11 +1,15 @@
 import esMain from 'es-main';
+import fse from 'fs-extra';
 import process from 'process';
 import semver from 'semver';
-import {promises as fs} from 'fs';
+import {dirname, join} from 'path';
+import {fileURLToPath} from 'url';
+
+const baseDir = dirname(fileURLToPath(import.meta.url));
 
 async function nextVersion() {
-  const pkg = await fs.readFile('../package.json', {encoding: 'utf8'});
-  const version = JSON.parse(pkg).version;
+  const pkg = await fse.readJSON(join(baseDir, '../package.json'));
+  const version = pkg.version;
   const s = semver.parse(version);
   if (!s) {
     throw new Error(`Invalid version ${version}`);
