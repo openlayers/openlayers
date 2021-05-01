@@ -502,10 +502,6 @@ export function optionsFromCapabilities(wmtsCap, config) {
       wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
   }
 
-  if (projection.getExtent() === null) {
-    projection.setExtent(extent);
-  }
-
   const tileGrid = createFromCapabilitiesMatrixSet(
     matrixSetObj,
     extent,
