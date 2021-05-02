@@ -1,22 +1,24 @@
-import Circle from '../../../../../src/ol/geom/Circle.js';
-import Feature from '../../../../../src/ol/Feature.js';
-import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
-import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
-import LinearRing from '../../../../../src/ol/geom/LinearRing.js';
-import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
+import Feature from '../../../../src/ol/Feature.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
+import expect from '../../expect.js';
+import fse from 'fs-extra';
 import {
   Projection,
   fromLonLat,
   get as getProjection,
   toLonLat,
   transform,
-} from '../../../../../src/ol/proj.js';
-import {equals} from '../../../../../src/ol/extent.js';
+} from '../../../../src/ol/proj.js';
+import {equals} from '../../../../src/ol/extent.js';
 
-describe('ol.format.GeoJSON', function () {
+describe('ol/format/GeoJSON.js', function () {
   let format;
   beforeEach(function () {
     format = new GeoJSON();
@@ -341,45 +343,43 @@ describe('ol.format.GeoJSON', function () {
       expect(geometry).to.be.an(Polygon);
     });
 
-    it('parses countries.geojson', function (done) {
-      afterLoadText(
-        'spec/ol/format/geojson/countries.geojson',
-        function (text) {
-          const result = format.readFeatures(text);
-          expect(result.length).to.be(179);
-
-          const first = result[0];
-          expect(first).to.be.a(Feature);
-          expect(first.get('name')).to.be('Afghanistan');
-          expect(first.getId()).to.be('AFG');
-          const firstGeom = first.getGeometry();
-          expect(firstGeom).to.be.a(Polygon);
-          expect(
-            equals(firstGeom.getExtent(), [
-              60.52843,
-              29.318572,
-              75.158028,
-              38.486282,
-            ])
-          ).to.be(true);
-
-          const last = result[178];
-          expect(last).to.be.a(Feature);
-          expect(last.get('name')).to.be('Zimbabwe');
-          expect(last.getId()).to.be('ZWE');
-          const lastGeom = last.getGeometry();
-          expect(lastGeom).to.be.a(Polygon);
-          expect(
-            equals(lastGeom.getExtent(), [
-              25.264226,
-              -22.271612,
-              32.849861,
-              -15.507787,
-            ])
-          ).to.be(true);
-          done();
-        }
+    it('parses countries.geojson', async () => {
+      const text = await fse.readFile(
+        'test/node/ol/format/GeoJSON/countries.geojson',
+        {encoding: 'utf8'}
       );
+      const result = format.readFeatures(text);
+      expect(result.length).to.be(179);
+
+      const first = result[0];
+      expect(first).to.be.a(Feature);
+      expect(first.get('name')).to.be('Afghanistan');
+      expect(first.getId()).to.be('AFG');
+      const firstGeom = first.getGeometry();
+      expect(firstGeom).to.be.a(Polygon);
+      expect(
+        equals(firstGeom.getExtent(), [
+          60.52843,
+          29.318572,
+          75.158028,
+          38.486282,
+        ])
+      ).to.be(true);
+
+      const last = result[178];
+      expect(last).to.be.a(Feature);
+      expect(last.get('name')).to.be('Zimbabwe');
+      expect(last.getId()).to.be('ZWE');
+      const lastGeom = last.getGeometry();
+      expect(lastGeom).to.be.a(Polygon);
+      expect(
+        equals(lastGeom.getExtent(), [
+          25.264226,
+          -22.271612,
+          32.849861,
+          -15.507787,
+        ])
+      ).to.be(true);
     });
 
     it('generates an array of features for Feature', function () {

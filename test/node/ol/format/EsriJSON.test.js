@@ -1,16 +1,18 @@
-import EsriJSON from '../../../../../src/ol/format/EsriJSON.js';
-import Feature from '../../../../../src/ol/Feature.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
-import LinearRing from '../../../../../src/ol/geom/LinearRing.js';
-import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
-import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
-import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import {equals} from '../../../../../src/ol/extent.js';
-import {get as getProjection, transform} from '../../../../../src/ol/proj.js';
+import EsriJSON from '../../../../src/ol/format/EsriJSON.js';
+import Feature from '../../../../src/ol/Feature.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
+import expect from '../../expect.js';
+import fse from 'fs-extra';
+import {equals} from '../../../../src/ol/extent.js';
+import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
-describe('ol.format.EsriJSON', function () {
+describe('ol/format/EsriJSON.js', function () {
   let format;
   beforeEach(function () {
     format = new EsriJSON();
@@ -374,42 +376,43 @@ describe('ol.format.EsriJSON', function () {
       expect(secondGeom).to.be.a(LineString);
     });
 
-    it('parses ksfields.geojson', function (done) {
-      afterLoadText('spec/ol/format/esrijson/ksfields.json', function (text) {
-        const result = format.readFeatures(text);
-        expect(result.length).to.be(9);
+    it('parses ksfields.geojson', async () => {
+      const text = await fse.readFile(
+        'test/node/ol/format/EsriJSON/ksfields.json',
+        {encoding: 'utf8'}
+      );
+      const result = format.readFeatures(text);
+      expect(result.length).to.be(9);
 
-        const first = result[0];
-        expect(first).to.be.a(Feature);
-        expect(first.get('field_name')).to.be('EUDORA');
-        expect(first.getId()).to.be(6406);
-        const firstGeom = first.getGeometry();
-        expect(firstGeom).to.be.a(Polygon);
-        expect(
-          equals(firstGeom.getExtent(), [
-            -10585772.743554419,
-            4712365.161160459,
-            -10579560.16462974,
-            4716567.373073828,
-          ])
-        ).to.be(true);
+      const first = result[0];
+      expect(first).to.be.a(Feature);
+      expect(first.get('field_name')).to.be('EUDORA');
+      expect(first.getId()).to.be(6406);
+      const firstGeom = first.getGeometry();
+      expect(firstGeom).to.be.a(Polygon);
+      expect(
+        equals(firstGeom.getExtent(), [
+          -10585772.743554419,
+          4712365.161160459,
+          -10579560.16462974,
+          4716567.373073828,
+        ])
+      ).to.be(true);
 
-        const last = result[8];
-        expect(last).to.be.a(Feature);
-        expect(last.get('field_name')).to.be('FEAGINS');
-        expect(last.getId()).to.be(6030);
-        const lastGeom = last.getGeometry();
-        expect(lastGeom).to.be.a(Polygon);
-        expect(
-          equals(lastGeom.getExtent(), [
-            -10555714.026858449,
-            4576511.565880965,
-            -10553671.199322715,
-            4578554.9934867555,
-          ])
-        ).to.be(true);
-        done();
-      });
+      const last = result[8];
+      expect(last).to.be.a(Feature);
+      expect(last.get('field_name')).to.be('FEAGINS');
+      expect(last.getId()).to.be(6030);
+      const lastGeom = last.getGeometry();
+      expect(lastGeom).to.be.a(Polygon);
+      expect(
+        equals(lastGeom.getExtent(), [
+          -10555714.026858449,
+          4576511.565880965,
+          -10553671.199322715,
+          4578554.9934867555,
+        ])
+      ).to.be(true);
     });
   });
 

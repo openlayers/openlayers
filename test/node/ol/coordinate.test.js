@@ -17,7 +17,7 @@ import {
 } from '../../../src/ol/coordinate.js';
 import {get} from '../../../src/ol/proj.js';
 
-describe('ol.coordinate', function () {
+describe('ol/coordinate.js', function () {
   describe('#add', function () {
     let coordinate, delta;
 
