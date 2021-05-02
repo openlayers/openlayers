@@ -22,15 +22,20 @@ async function getSymbols() {
  */
 function getImport(symbol, member) {
   const defaultExport = symbol.name.split('~');
-  const namedExport = symbol.name.split('.');
-  if (defaultExport.length > 1 && defaultExport[0].indexOf('.') === -1) {
-    const from = defaultExport[0].replace(/^module\:/, './') + '.js';
+  if (symbol.isDefaultExport) {
+    const from = defaultExport[0].replace(/^module\:/, './');
     const importName = from.replace(/[.\/]+/g, '$');
-    return `import ${importName} from '${from}';`;
-  } else if (namedExport.length > 1 && member) {
-    const from = namedExport[0].replace(/^module\:/, './') + '.js';
+    return `import ${importName} from '${from}.js';`;
+  }
+  const namedExport = symbol.name.split('.');
+  if (
+    member &&
+    namedExport.length > 1 &&
+    (defaultExport.length <= 1 || defaultExport[0].indexOf('.') !== -1)
+  ) {
+    const from = namedExport[0].replace(/^module\:/, './');
     const importName = from.replace(/[.\/]+/g, '_');
-    return `import {${member} as ${importName}$${member}} from '${from}';`;
+    return `import {${member} as ${importName}$${member}} from '${from}.js';`;
   }
 }
 
@@ -44,24 +49,24 @@ function getImport(symbol, member) {
 function formatSymbolExport(symbol, namespaces, imports) {
   const name = symbol.name;
   const parts = name.split('~');
-  const isNamed = parts[0].indexOf('.') !== -1;
   const nsParts = parts[0].replace(/^module\:/, '').split(/[\/\.]/);
   const last = nsParts.length - 1;
-  const importName = isNamed
-    ? '_' + nsParts.slice(0, last).join('_') + '$' + nsParts[last]
-    : '$' + nsParts.join('$');
-  let line = nsParts[0];
-  for (let i = 1, ii = nsParts.length; i < ii; ++i) {
-    line += `.${nsParts[i]}`;
-    namespaces[line] =
-      (line in namespaces ? namespaces[line] : true) && i < ii - 1;
-  }
-  line += ` = ${importName} || {};`;
-  const imp = getImport(symbol, nsParts.pop());
+  const imp = getImport(symbol, nsParts[last]);
   if (imp) {
+    const isNamed = parts[0].indexOf('.') !== -1;
+    const importName = isNamed
+      ? '_' + nsParts.slice(0, last).join('_') + '$' + nsParts[last]
+      : '$' + nsParts.join('$');
+    let line = nsParts[0];
+    for (let i = 1, ii = nsParts.length; i < ii; ++i) {
+      line += `.${nsParts[i]}`;
+      namespaces[line] =
+        (line in namespaces ? namespaces[line] : true) && i < ii - 1;
+    }
+    line += ` = ${importName};`;
     imports[imp] = true;
+    return line;
   }
-  return line;
 }
 
 /**
@@ -71,7 +76,7 @@ function formatSymbolExport(symbol, namespaces, imports) {
  */
 function generateExports(symbols) {
   const namespaces = {};
-  const imports = [];
+  const imports = {};
   const blocks = [];
   symbols.forEach(function (symbol) {
     const name = symbol.name;
@@ -80,7 +85,10 @@ function generateExports(symbols) {
       if (imp) {
         imports[imp] = true;
       }
-      blocks.push(formatSymbolExport(symbol, namespaces, imports));
+      const line = formatSymbolExport(symbol, namespaces, imports);
+      if (line) {
+        blocks.push(line);
+      }
     }
   });
   const nsdefs = [];
