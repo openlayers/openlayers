@@ -21,16 +21,37 @@ async function getSymbols() {
  * @return {string} An import statement.
  */
 function getImport(symbol, member) {
-  const defaultExport = symbol.name.split('~');
-  const namedExport = symbol.name.split('.');
-  if (defaultExport.length > 1 && defaultExport[0].indexOf('.') === -1) {
-    const from = defaultExport[0].replace(/^module\:/, './') + '.js';
-    const importName = from.replace(/[.\/]+/g, '$');
-    return `import ${importName} from '${from}';`;
-  } else if (namedExport.length > 1 && member) {
-    const from = namedExport[0].replace(/^module\:/, './') + '.js';
+  const tildeSeparatedParts = symbol.name.split('~');
+  if (
+    tildeSeparatedParts.length == 2 &&
+    tildeSeparatedParts[1].match(/^\w+$/)
+  ) {
+    const potentialDefaultExport = tildeSeparatedParts[1];
+    const moduleName = tildeSeparatedParts[0].split('/').pop();
+    // This is very fragile, but JSDoc names symbols in a way that doesn't allow us to differentiate
+    // default from named exports.  Our convention is to only have a default export for modules that
+    // export a constructor, and to name the module like the internal name of the constructor, and to start
+    // constructor names with an uppercase letter.  There are many modules that are not named exactly like the
+    // internal name of the constructor (e.g. ol/layer/Tile.js and TileLayer), but both should use uppercase.
+    if (moduleName.match(/^[A-Z]/) && potentialDefaultExport.match(/^[A-Z]/)) {
+      const from = tildeSeparatedParts[0].replace(/^module\:/, './');
+      const importName = from.replace(/[.\/]+/g, '$');
+      return `import ${importName} from '${from}.js';`;
+    }
+  }
+
+  if (
+    tildeSeparatedParts.length > 1 &&
+    tildeSeparatedParts.indexOf('.') === -1
+  ) {
+    return;
+  }
+
+  const dotSeparatedParts = symbol.name.split('.');
+  if (dotSeparatedParts.length > 1 && member) {
+    const from = dotSeparatedParts[0].replace(/^module\:/, './');
     const importName = from.replace(/[.\/]+/g, '_');
-    return `import {${member} as ${importName}$${member}} from '${from}';`;
+    return `import {${member} as ${importName}$${member}} from '${from}.js';`;
   }
 }
 
@@ -39,9 +60,10 @@ function getImport(symbol, member) {
  * @param {Object} symbol Symbol.
  * @param {Object<string, string>} namespaces Already defined namespaces.
  * @param {Object} imports Imports.
+ * @param {Object} exportedNames Already exported names.
  * @return {string} Export code.
  */
-function formatSymbolExport(symbol, namespaces, imports) {
+function formatSymbolExport(symbol, namespaces, imports, exportedNames) {
   const name = symbol.name;
   const parts = name.split('~');
   const isNamed = parts[0].indexOf('.') !== -1;
@@ -56,10 +78,17 @@ function formatSymbolExport(symbol, namespaces, imports) {
     namespaces[line] =
       (line in namespaces ? namespaces[line] : true) && i < ii - 1;
   }
-  line += ` = ${importName} || {};`;
+  if (line in exportedNames) {
+    return '';
+  } else {
+    exportedNames[line] = true;
+  }
   const imp = getImport(symbol, nsParts.pop());
   if (imp) {
     imports[imp] = true;
+    line += ` = ${importName};`;
+  } else {
+    line += ` = {};`;
   }
   return line;
 }
@@ -73,6 +102,7 @@ function generateExports(symbols) {
   const namespaces = {};
   const imports = [];
   const blocks = [];
+  const exportedNames = {};
   symbols.forEach(function (symbol) {
     const name = symbol.name;
     if (name.indexOf('#') == -1) {
@@ -80,7 +110,9 @@ function generateExports(symbols) {
       if (imp) {
         imports[imp] = true;
       }
-      blocks.push(formatSymbolExport(symbol, namespaces, imports));
+      blocks.push(
+        formatSymbolExport(symbol, namespaces, imports, exportedNames)
+      );
     }
   });
   const nsdefs = [];

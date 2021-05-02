@@ -149,8 +149,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Tests
+      - name: Build the Package
         run: npm run build-package
+
+      - name: Generate the Legacy Build
+        run: npm run build-legacy
 
   rendering:
     name: Rendering

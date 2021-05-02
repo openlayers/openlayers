@@ -1,5 +1,5 @@
 /**
- * @module ol/format/XLink
+ * @module ol/format/xlink
  */
 
 /**
