@@ -1,9 +1,10 @@
-import Feature from '../../../../../src/ol/Feature.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
-import Polyline, * as polyline from '../../../../../src/ol/format/Polyline.js';
-import {get as getProjection, transform} from '../../../../../src/ol/proj.js';
+import Feature from '../../../../src/ol/Feature.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import Polyline, * as polyline from '../../../../src/ol/format/Polyline.js';
+import expect from '../../expect.js';
+import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
-describe('ol.format.Polyline', function () {
+describe('ol/format/Polyline.js', function () {
   let format;
   let points;
   let flatPoints, encodedFlatPoints, flippedFlatPoints;

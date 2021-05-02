@@ -1,9 +1,10 @@
-import Feature from '../../../../../src/ol/Feature.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import WKT from '../../../../../src/ol/format/WKT.js';
-import {transform} from '../../../../../src/ol/proj.js';
+import Feature from '../../../../src/ol/Feature.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import WKT from '../../../../src/ol/format/WKT.js';
+import expect from '../../expect.js';
+import {transform} from '../../../../src/ol/proj.js';
 
-describe('ol.format.WKT', function () {
+describe('ol/format/WKT.js', function () {
   let format = new WKT();
 
   describe('#readProjectionFromText', function () {

@@ -1,10 +1,11 @@
-import Feature from '../../../../../src/ol/Feature.js';
-import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import SimpleGeometry from '../../../../../src/ol/geom/SimpleGeometry.js';
-import WKB from '../../../../../src/ol/format/WKB.js';
-import WKT from '../../../../../src/ol/format/WKT.js';
-import {transform} from '../../../../../src/ol/proj.js';
+import Feature from '../../../../src/ol/Feature.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import SimpleGeometry from '../../../../src/ol/geom/SimpleGeometry.js';
+import WKB from '../../../../src/ol/format/WKB.js';
+import WKT from '../../../../src/ol/format/WKT.js';
+import expect from '../../expect.js';
+import {transform} from '../../../../src/ol/proj.js';
 
 const patterns = [
   [
@@ -957,7 +958,7 @@ const patterns = [
   ],
 ];
 
-describe('ol.format.WKB', function () {
+describe('ol/format/WKB.js', function () {
   const format = new WKB();
 
   describe('#readProjection(string)', function () {
