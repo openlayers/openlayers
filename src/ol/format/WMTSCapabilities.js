@@ -12,7 +12,7 @@ import {
   pushParseAndPop,
 } from '../xml.js';
 import {readDecimal, readNonNegativeInteger, readString} from './xsd.js';
-import {readHref} from './XLink.js';
+import {readHref} from './xlink.js';
 
 /**
  * @const
