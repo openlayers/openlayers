@@ -17,7 +17,7 @@ import {
   readNonNegativeIntegerString,
   readString,
 } from './xsd.js';
-import {readHref} from './XLink.js';
+import {readHref} from './xlink.js';
 
 /**
  * @const

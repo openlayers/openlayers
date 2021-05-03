@@ -1,7 +1,7 @@
 /**
- * Literal Style objects differ from standard styles in that they cannot
+ * Literal style objects differ from standard styles in that they cannot
  * be functions and are made up of simple objects instead of classes.
- * @module ol/style/LiteralStyle
+ * @module ol/style/literal
  */
 
 /**
