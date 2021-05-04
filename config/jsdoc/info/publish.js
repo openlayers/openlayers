@@ -137,6 +137,9 @@ exports.publish = function (data, opts) {
             return true;
           });
         }
+        if (doc.isDefaultExport) {
+          symbol.isDefaultExport = true;
+        }
 
         const target = isExterns ? externs : symbols;
         const existingSymbol = symbolsByName[symbol.name];
