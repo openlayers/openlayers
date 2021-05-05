@@ -153,7 +153,7 @@ jobs:
         run: npm run build-package
 
       - name: Generate the Legacy Build
-        run: npm run build-legacy
+        run: npm run build-legacy && npx eslint --fix build/index.js
 
   rendering:
     name: Rendering
