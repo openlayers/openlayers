@@ -90,9 +90,9 @@ export default WMTSTileGrid;
  * optional TileMatrixSetLimits.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
- * @param {import("../extent.js").Extent=} opt_extent An optional extent to restrict the tile
+ * @param {import("../extent.js").Extent} [opt_extent] An optional extent to restrict the tile
  *     ranges the server provides.
- * @param {Array<Object>=} opt_matrixLimits An optional object representing
+ * @param {Array<Object>} [opt_matrixLimits] An optional object representing
  *     the available matrices for tileGrid.
  * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api

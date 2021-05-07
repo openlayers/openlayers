@@ -13,16 +13,11 @@ env:
 
 jobs:
   pretest:
-    name: Pre-Test (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Pre-Test
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 14
 
     steps:
       - name: Clone Repository
@@ -31,7 +26,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
@@ -52,17 +47,12 @@ jobs:
       - name: Run Tests
         run: npm run pretest
 
-  spec:
-    name: Spec (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+  browser:
+    name: Browser
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 14
 
     steps:
       - name: Clone Repository
@@ -71,7 +61,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
@@ -90,19 +80,14 @@ jobs:
         run: npm ci
 
       - name: Run Tests
-        run: npm run test-spec
+        run: npm run test-browser
 
-  rendering:
-    name: Rendering (Node ${{ matrix.node }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+  node:
+    name: Node
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 14
 
     steps:
       - name: Clone Repository
@@ -111,7 +96,80 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
+
+      - name: Determine Cache Directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Configure Job Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm run test-node
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Determine Cache Directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Configure Job Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build the Package
+        run: npm run build-package
+
+      - name: Generate the Legacy Build
+        run: npm run build-legacy && npx eslint --fix build/index.js
+
+  rendering:
+    name: Rendering
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
 
       - name: Determine Cache Directory
         id: npm-cache
@@ -137,4 +195,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: rendering-tests
-          path: rendering/cases/**/actual.png
+          path: test/rendering/cases/**/actual.png

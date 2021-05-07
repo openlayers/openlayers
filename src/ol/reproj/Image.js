@@ -32,7 +32,7 @@ class ReprojImage extends ImageBase {
    * @param {number} pixelRatio Pixel ratio.
    * @param {FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
-   * @param {object=} opt_contextOptions Properties to set on the canvas context.
+   * @param {object} [opt_contextOptions] Properties to set on the canvas context.
    */
   constructor(
     sourceProj,

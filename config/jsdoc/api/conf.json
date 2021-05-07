@@ -14,12 +14,13 @@
     ]
   },
   "plugins": [
-    "config/jsdoc/api/plugins/markdown",
+    "config/jsdoc/plugins/markdown.cjs",
     "jsdoc-plugin-typescript",
-    "config/jsdoc/api/plugins/inline-options",
-    "config/jsdoc/api/plugins/events",
-    "config/jsdoc/api/plugins/observable",
-    "config/jsdoc/api/plugins/api"
+    "config/jsdoc/plugins/inline-options.cjs",
+    "config/jsdoc/plugins/events.cjs",
+    "config/jsdoc/plugins/observable.cjs",
+    "config/jsdoc/plugins/api.cjs",
+    "config/jsdoc/plugins/default-export.cjs"
   ],
   "typescript": {
     "moduleRoot": "src"

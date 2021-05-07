@@ -248,7 +248,7 @@ export const mouseOnly = function (mapBrowserEvent) {
   const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
     .originalEvent;
   assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
-  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvent.pointerType == 'mouse';
 };
 
@@ -263,7 +263,7 @@ export const touchOnly = function (mapBrowserEvent) {
   const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
     .originalEvent;
   assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
-  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'touch';
 };
 
@@ -278,14 +278,14 @@ export const penOnly = function (mapBrowserEvent) {
   const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (mapBrowserEvent)
     .originalEvent;
   assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
-  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'pen';
 };
 
 /**
  * Return `true` if the event originates from a primary pointer in
  * contact with the surface or if the left mouse button is pressed.
- * See http://www.w3.org/TR/pointerevents/#button-states.
+ * See https://www.w3.org/TR/pointerevents/#button-states.
  *
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a primary pointer.

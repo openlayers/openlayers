@@ -29,24 +29,24 @@ import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @typedef {Object} BBox
- * @property {number} minX
- * @property {number} minY
- * @property {number} maxX
- * @property {number} maxY
- * @property {*} value
+ * @property {number} minX Minimal x.
+ * @property {number} minY Minimal y.
+ * @property {number} maxX Maximal x.
+ * @property {number} maxY Maximal y
+ * @property {*} value Value.
  */
 
 /**
  * @typedef {Object} ImageOrLabelDimensions
- * @property {number} drawImageX
- * @property {number} drawImageY
- * @property {number} drawImageW
- * @property {number} drawImageH
- * @property {number} originX
- * @property {number} originY
- * @property {Array<number>} scale
- * @property {BBox} declutterBox
- * @property {import("../../transform.js").Transform} canvasTransform
+ * @property {number} drawImageX DrawImageX.
+ * @property {number} drawImageY DrawImageY.
+ * @property {number} drawImageW DrawImageW.
+ * @property {number} drawImageH DrawImageH.
+ * @property {number} originX OriginX.
+ * @property {number} originY OriginY.
+ * @property {Array<number>} scale Scale.
+ * @property {BBox} declutterBox DeclutterBox.
+ * @property {import("../../transform.js").Transform} canvasTransform CanvasTransform.
  */
 
 /**
@@ -110,9 +110,8 @@ class Executor {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions
-   * @param {import("../../size.js").Size} renderBuffer Render buffer (width/height) in pixels.
    */
-  constructor(resolution, pixelRatio, overlaps, instructions, renderBuffer) {
+  constructor(resolution, pixelRatio, overlaps, instructions) {
     /**
      * @protected
      * @type {boolean}
@@ -155,12 +154,6 @@ class Executor {
      * @type {!Object<number,import("../../coordinate.js").Coordinate|Array<import("../../coordinate.js").Coordinate>|Array<Array<import("../../coordinate.js").Coordinate>>>}
      */
     this.coordinateCache_ = {};
-
-    /**
-     * @private
-     * @type {import("../../size.js").Size}
-     */
-    this.renderBuffer_ = renderBuffer;
 
     /**
      * @private
@@ -602,10 +595,10 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {FeatureCallback<T>=} opt_featureCallback Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check
+   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
    *     features that intersect this extent.
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -857,14 +850,15 @@ class Executor {
             let imageArgs;
             let imageDeclutterBox;
             if (opt_declutterTree && declutterImageWithText) {
-              if (!declutterImageWithText[d]) {
+              const index = dd - d;
+              if (!declutterImageWithText[index]) {
                 // We now have the image for an image+text combination.
-                declutterImageWithText[d] = args;
+                declutterImageWithText[index] = args;
                 // Don't render anything for now, wait for the text.
                 continue;
               }
-              imageArgs = declutterImageWithText[d];
-              delete declutterImageWithText[d];
+              imageArgs = declutterImageWithText[index];
+              delete declutterImageWithText[index];
               imageDeclutterBox = getDeclutterBox(imageArgs);
               if (opt_declutterTree.collides(imageDeclutterBox)) {
                 continue;
@@ -1147,7 +1141,7 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
   execute(
     context,
@@ -1174,8 +1168,8 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {FeatureCallback<T>=} opt_featureCallback Feature callback.
-   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check
+   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
    *     features that intersect this extent.
    * @return {T|undefined} Callback result.
    * @template T

@@ -6,6 +6,7 @@ import CanvasInstruction, {
   beginPathInstruction,
   strokeInstruction,
 } from './Instruction.js';
+import {defaultLineDash, defaultLineDashOffset} from '../canvas.js';
 
 class CanvasLineStringBuilder extends CanvasBuilder {
   /**
@@ -67,8 +68,8 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         state.lineCap,
         state.lineJoin,
         state.miterLimit,
-        state.lineDash,
-        state.lineDashOffset,
+        defaultLineDash,
+        defaultLineDashOffset,
       ],
       beginPathInstruction
     );

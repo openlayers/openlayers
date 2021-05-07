@@ -130,7 +130,7 @@ export class SelectEvent extends Event {
 
 /**
  * Original feature styles to reset to when features are no longer selected.
- * @type {Object.<number, import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
+ * @type {Object<number, import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
  */
 const originalFeatureStyles = {};
 
@@ -151,7 +151,7 @@ const originalFeatureStyles = {};
  */
 class Select extends Interaction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -216,7 +216,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {import("../style/Style.js").default|Array.<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
+     * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
      */
     this.style_ =
       options.style !== undefined ? options.style : getDefaultStyleFunction();
@@ -277,7 +277,7 @@ class Select extends Interaction {
 
   /**
    * Returns the Hit-detection tolerance.
-   * @returns {number} Hit tolerance in pixels.
+   * @return {number} Hit tolerance in pixels.
    * @api
    */
   getHitTolerance() {

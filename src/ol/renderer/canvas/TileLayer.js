@@ -415,8 +415,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         );
         if (clips && !inTransition) {
           context.restore();
+          this.renderedTiles.unshift(tile);
+        } else {
+          this.renderedTiles.push(tile);
         }
-        this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
     }
@@ -576,7 +578,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../extent.js").Extent} extent Extent.
    * @param {number} currentZ Current Z.
    * @param {number} preload Load low resolution tiles up to 'preload' levels.
-   * @param {function(import("../../Tile.js").default)=} opt_tileCallback Tile callback.
+   * @param {function(import("../../Tile.js").default):void} [opt_tileCallback] Tile callback.
    * @protected
    */
   manageTilePyramid(

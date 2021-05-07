@@ -3,56 +3,49 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
-const appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
-const appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';
+const apiKey = 'x13yMxvFSo8FIKFDDTnQaJ57Gakt11ZaIyqIctoSD3Y';
 const hereLayers = [
   {
     base: 'base',
     type: 'maptile',
     scheme: 'normal.day',
-    app_id: appId,
-    app_code: appCode,
+    apiKey: apiKey,
   },
   {
     base: 'base',
     type: 'maptile',
     scheme: 'normal.day.transit',
-    app_id: appId,
-    app_code: appCode,
+    apiKey: apiKey,
   },
   {
     base: 'base',
     type: 'maptile',
     scheme: 'pedestrian.day',
-    app_id: appId,
-    app_code: appCode,
+    apiKey: apiKey,
   },
   {
     base: 'aerial',
     type: 'maptile',
     scheme: 'terrain.day',
-    app_id: appId,
-    app_code: appCode,
+    apiKey: apiKey,
   },
   {
     base: 'aerial',
     type: 'maptile',
     scheme: 'satellite.day',
-    app_id: appId,
-    app_code: appCode,
+    apiKey: apiKey,
   },
   {
     base: 'aerial',
     type: 'maptile',
     scheme: 'hybrid.day',
-    app_id: appId,
-    app_code: appCode,
+    apiKey: apiKey,
   },
 ];
 const urlTpl =
-  'https://{1-4}.{base}.maps.cit.api.here.com' +
+  'https://{1-4}.{base}.maps.ls.hereapi.com' +
   '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
-  '?app_id={app_id}&app_code={app_code}';
+  '?apiKey={apiKey}';
 const layers = [];
 let i, ii;
 for (i = 0, ii = hereLayers.length; i < ii; ++i) {
@@ -67,7 +60,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
           'Map Tiles &copy; ' +
           new Date().getFullYear() +
           ' ' +
-          '<a href="http://developer.here.com">HERE</a>',
+          '<a href="https://developer.here.com/" target="_blank">HERE</a>',
       }),
     })
   );
@@ -87,8 +80,7 @@ function createUrl(tpl, layerDesc) {
     .replace('{base}', layerDesc.base)
     .replace('{type}', layerDesc.type)
     .replace('{scheme}', layerDesc.scheme)
-    .replace('{app_id}', layerDesc.app_id)
-    .replace('{app_code}', layerDesc.app_code);
+    .replace('{apiKey}', layerDesc.apiKey);
 }
 
 const select = document.getElementById('layer-select');

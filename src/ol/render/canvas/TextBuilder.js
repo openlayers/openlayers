@@ -232,7 +232,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       }
       this.endGeometry(feature);
     } else {
-      const geometryWidths = textState.overflow ? null : [];
+      let geometryWidths = textState.overflow ? null : [];
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
@@ -274,6 +274,21 @@ class CanvasTextBuilder extends CanvasBuilder {
       const end = this.appendFlatPointCoordinates(flatCoordinates, stride);
       if (end === begin) {
         return;
+      }
+      if (
+        geometryWidths &&
+        (end - begin) / 2 !== flatCoordinates.length / stride
+      ) {
+        let beg = begin / 2;
+        geometryWidths = geometryWidths.filter((w, i) => {
+          const keep =
+            coordinates[(beg + i) * 2] === flatCoordinates[i * stride] &&
+            coordinates[(beg + i) * 2 + 1] === flatCoordinates[i * stride + 1];
+          if (!keep) {
+            --beg;
+          }
+          return keep;
+        });
       }
 
       this.saveTextStates_();
@@ -484,7 +499,7 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
-   * @param {Object=} opt_sharedData Shared data.
+   * @param {Object} [opt_sharedData] Shared data.
    */
   setTextStyle(textStyle, opt_sharedData) {
     let textState, fillState, strokeState;

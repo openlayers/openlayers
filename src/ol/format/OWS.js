@@ -8,7 +8,7 @@ import {
   makeStructureNS,
   pushParseAndPop,
 } from '../xml.js';
-import {readHref} from './XLink.js';
+import {readHref} from './xlink.js';
 import {readString} from './xsd.js';
 
 /**

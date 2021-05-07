@@ -19,7 +19,7 @@ const matrixIds = [];
 const proj3857 = getProjection('EPSG:3857');
 const maxResolution = getWidth(proj3857.getExtent()) / 256;
 
-for (let i = 0; i < 18; i++) {
+for (let i = 0; i < 20; i++) {
   matrixIds[i] = i.toString();
   resolutions[i] = maxResolution / Math.pow(2, i);
 }
@@ -31,18 +31,18 @@ const tileGrid = new WMTSTileGrid({
 });
 
 // For more information about the IGN API key see
-// https://geoservices.ign.fr/blog/2017/06/28/geoportail_sans_compte.html
+// https://geoservices.ign.fr/blog/2021/01/29/Maj_Cles_Geoservices.html
 
 const ign_source = new WMTS({
-  url: 'https://wxs.ign.fr/pratique/geoportail/wmts',
-  layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+  url: 'https://wxs.ign.fr/choisirgeoportail/geoportail/wmts',
+  layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
   matrixSet: 'PM',
-  format: 'image/jpeg',
+  format: 'image/png',
   projection: 'EPSG:3857',
   tileGrid: tileGrid,
   style: 'normal',
   attributions:
-    '<a href="http://www.ign.fr" target="_blank">' +
+    '<a href="https://www.ign.fr/" target="_blank">' +
     '<img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" title="Institut national de l\'' +
     'information géographique et forestière" alt="IGN"></a>',
 });

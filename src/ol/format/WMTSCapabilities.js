@@ -12,7 +12,7 @@ import {
   pushParseAndPop,
 } from '../xml.js';
 import {readDecimal, readNonNegativeInteger, readString} from './xsd.js';
-import {readHref} from './XLink.js';
+import {readHref} from './xlink.js';
 
 /**
  * @const
@@ -103,7 +103,7 @@ const LAYER_PARSERS = makeStructureNS(
   makeStructureNS(OWS_NAMESPACE_URIS, {
     'Title': makeObjectPropertySetter(readString),
     'Abstract': makeObjectPropertySetter(readString),
-    'WGS84BoundingBox': makeObjectPropertySetter(readWgs84BoundingBox),
+    'WGS84BoundingBox': makeObjectPropertySetter(readBoundingBox),
     'Identifier': makeObjectPropertySetter(readString),
   })
 );
@@ -196,6 +196,7 @@ const TMS_PARSERS = makeStructureNS(
   makeStructureNS(OWS_NAMESPACE_URIS, {
     'SupportedCRS': makeObjectPropertySetter(readString),
     'Identifier': makeObjectPropertySetter(readString),
+    'BoundingBox': makeObjectPropertySetter(readBoundingBox),
   })
 );
 
@@ -304,9 +305,9 @@ function readResourceUrl(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Object|undefined} WGS84 BBox object.
+ * @return {Object|undefined} BBox object.
  */
-function readWgs84BoundingBox(node, objectStack) {
+function readBoundingBox(node, objectStack) {
   const coordinates = pushParseAndPop(
     [],
     WGS84_BBOX_READERS,

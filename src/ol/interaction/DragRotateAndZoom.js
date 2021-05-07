@@ -26,7 +26,7 @@ import {mouseOnly, shiftKeyOnly} from '../events/condition.js';
  */
 class DragRotateAndZoom extends PointerInteraction {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

@@ -10,22 +10,22 @@ import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize]
+ * @property {number} [cacheSize] Cache size.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("../proj.js").ProjectionLike} [projection]
- * @property {import("./State.js").default} [state]
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
- * @property {import("../Tile.js").LoadFunction} tileLoadFunction
- * @property {number} [tilePixelRatio]
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction]
- * @property {string} [url]
- * @property {Array<string>} [urls]
- * @property {boolean} [wrapX=true]
- * @property {number} [transition]
- * @property {string} [key]
- * @property {number} [zDirection=0]
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {import("./State.js").default} [state] State.
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
+ * @property {import("../Tile.js").LoadFunction} tileLoadFunction TileLoadFunction.
+ * @property {number} [tilePixelRatio] TilePixelRatio.
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] TileUrlFunction.
+ * @property {string} [url] Url.
+ * @property {Array<string>} [urls] Urls.
+ * @property {boolean} [wrapX=true] WrapX.
+ * @property {number} [transition] Transition.
+ * @property {string} [key] Key.
+ * @property {number} [zDirection=0] ZDirection.
  */
 
 /**
@@ -162,7 +162,7 @@ class UrlTile extends TileSource {
   /**
    * Set the tile URL function of the source.
    * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
-   * @param {string=} key Optional new tile key for the source.
+   * @param {string} [key] Optional new tile key for the source.
    * @api
    */
   setTileUrlFunction(tileUrlFunction, key) {

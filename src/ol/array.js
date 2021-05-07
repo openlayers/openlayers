@@ -8,7 +8,7 @@
  *
  * @param {Array<*>} haystack Items to search through.
  * @param {*} needle The item to look for.
- * @param {Function=} opt_comparator Comparator function.
+ * @param {Function} [opt_comparator] Comparator function.
  * @return {number} The index of the item if found, -1 if not.
  */
 export function binarySearch(haystack, needle, opt_comparator) {
@@ -222,8 +222,8 @@ export function findIndex(arr, func) {
 
 /**
  * @param {Array<*>} arr The array to test.
- * @param {Function=} opt_func Comparison function.
- * @param {boolean=} opt_strict Strictly sorted (default false).
+ * @param {Function} [opt_func] Comparison function.
+ * @param {boolean} [opt_strict] Strictly sorted (default false).
  * @return {boolean} Return index.
  */
 export function isSorted(arr, opt_func, opt_strict) {

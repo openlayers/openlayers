@@ -74,7 +74,7 @@ const styles = {
 
 const vectorSource = new VectorSource({
   format: new OSMXML(),
-  loader: function (extent, resolution, projection) {
+  loader: function (extent, resolution, projection, success, failure) {
     const epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');
     const client = new XMLHttpRequest();
     client.open('POST', 'https://overpass-api.de/api/interpreter');
@@ -83,7 +83,9 @@ const vectorSource = new VectorSource({
         featureProjection: map.getView().getProjection(),
       });
       vectorSource.addFeatures(features);
+      success(features);
     });
+    client.addEventListener('error', failure);
     const query =
       '(node(' +
       epsg4326Extent[1] +

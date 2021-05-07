@@ -1,5 +1,5 @@
 /**
- * A worker that responds to messages by posting a message with the version identifer.
+ * A worker that responds to messages by posting a message with the version identifier.
  * @module ol/worker/version
  */
 import {VERSION} from '../util.js';

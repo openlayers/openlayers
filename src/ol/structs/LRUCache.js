@@ -6,10 +6,10 @@ import {assert} from '../asserts.js';
 
 /**
  * @typedef {Object} Entry
- * @property {string} key_
- * @property {Object} newer
- * @property {Object} older
- * @property {*} value_
+ * @property {string} key_ Key.
+ * @property {Object} newer Newer.
+ * @property {Object} older Older.
+ * @property {*} value_ Value.
  */
 
 /**
@@ -23,7 +23,7 @@ import {assert} from '../asserts.js';
  */
 class LRUCache {
   /**
-   * @param {number=} opt_highWaterMark High water mark.
+   * @param {number} [opt_highWaterMark] High water mark.
    */
   constructor(opt_highWaterMark) {
     /**
@@ -100,7 +100,7 @@ class LRUCache {
 
   /**
    * @param {string} key Key.
-   * @param {*=} opt_options Options (reserverd for subclasses).
+   * @param {*} [opt_options] Options (reserved for subclasses).
    * @return {T} Value.
    */
   get(key, opt_options) {

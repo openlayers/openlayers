@@ -13,7 +13,7 @@
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {TileCoord=} opt_tileCoord Tile coordinate.
+ * @param {TileCoord} [opt_tileCoord] Tile coordinate.
  * @return {TileCoord} Tile coordinate.
  */
 export function createOrUpdate(z, x, y, opt_tileCoord) {

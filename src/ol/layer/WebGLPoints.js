@@ -8,7 +8,7 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
 
 /**
  * @typedef {Object} Options
- * @property {import('../style/LiteralStyle.js').LiteralStyle} style Literal style to apply to the layer features.
+ * @property {import('../style/literal.js').LiteralStyle} style Literal style to apply to the layer features.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -66,6 +66,8 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @template {import("../source/Vector.js").default} VectorSourceType
+ * @extends {Layer<VectorSourceType>}
  * @fires import("../render/Event.js").RenderEvent
  */
 class WebGLPointsLayer extends Layer {

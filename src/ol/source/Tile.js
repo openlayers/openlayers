@@ -17,18 +17,18 @@ import {scale as scaleSize, toSize} from '../size.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize]
+ * @property {number} [cacheSize] CacheSize.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {number} [tilePixelRatio]
- * @property {import("../proj.js").ProjectionLike} [projection]
- * @property {import("./State.js").default} [state]
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
- * @property {boolean} [wrapX=true]
- * @property {number} [transition]
- * @property {string} [key]
- * @property {number} [zDirection=0]
+ * @property {number} [tilePixelRatio] TilePixelRatio.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {import("./State.js").default} [state] State.
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
+ * @property {boolean} [wrapX=true] WrapX.
+ * @property {number} [transition] Transition.
+ * @property {string} [key] Key.
+ * @property {number} [zDirection=0] ZDirection.
  */
 
 /**
@@ -291,7 +291,7 @@ class TileSource extends Source {
    * is outside the resolution and extent range of the tile grid, `null` will be
    * returned.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../proj/Projection.js").default=} opt_projection Projection.
+   * @param {import("../proj/Projection.js").default} [opt_projection] Projection.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate to be passed to the tileUrlFunction or
    *     null if no tile URL should be created for the passed `tileCoord`.
    */

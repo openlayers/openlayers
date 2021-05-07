@@ -67,21 +67,21 @@ class FeatureFormat {
   constructor() {
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|undefined}
      */
-    this.dataProjection = null;
+    this.dataProjection = undefined;
 
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|undefined}
      */
-    this.defaultFeatureProjection = null;
+    this.defaultFeatureProjection = undefined;
   }
 
   /**
    * Adds the data projection to the read options.
    * @param {Document|Element|Object|string} source Source.
-   * @param {ReadOptions=} opt_options Options.
+   * @param {ReadOptions} [opt_options] Options.
    * @return {ReadOptions|undefined} Options.
    * @protected
    */
@@ -139,7 +139,7 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @param {ReadOptions=} opt_options Read options.
+   * @param {ReadOptions} [opt_options] Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
    */
   readFeature(source, opt_options) {
@@ -151,7 +151,7 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
-   * @param {ReadOptions=} opt_options Read options.
+   * @param {ReadOptions} [opt_options] Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
   readFeatures(source, opt_options) {
@@ -163,7 +163,7 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @param {ReadOptions=} opt_options Read options.
+   * @param {ReadOptions} [opt_options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometry(source, opt_options) {
@@ -175,7 +175,7 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|undefined} Projection.
    */
   readProjection(source) {
     return abstract();
@@ -186,8 +186,8 @@ class FeatureFormat {
    *
    * @abstract
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {WriteOptions=} opt_options Write options.
-   * @return {string} Result.
+   * @param {WriteOptions} [opt_options] Write options.
+   * @return {string|ArrayBuffer} Result.
    */
   writeFeature(feature, opt_options) {
     return abstract();
@@ -198,8 +198,8 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {WriteOptions=} opt_options Write options.
-   * @return {string} Result.
+   * @param {WriteOptions} [opt_options] Write options.
+   * @return {string|ArrayBuffer} Result.
    */
   writeFeatures(features, opt_options) {
     return abstract();
@@ -210,8 +210,8 @@ class FeatureFormat {
    *
    * @abstract
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {WriteOptions=} opt_options Write options.
-   * @return {string} Result.
+   * @param {WriteOptions} [opt_options] Write options.
+   * @return {string|ArrayBuffer} Result.
    */
   writeGeometry(geometry, opt_options) {
     return abstract();
@@ -223,7 +223,7 @@ export default FeatureFormat;
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
- * @param {(WriteOptions|ReadOptions)=} opt_options Options.
+ * @param {WriteOptions|ReadOptions} [opt_options] Options.
  * @return {import("../geom/Geometry.js").default} Transformed geometry.
  */
 export function transformGeometryWithOptions(geometry, write, opt_options) {
@@ -277,7 +277,7 @@ export function transformGeometryWithOptions(geometry, write, opt_options) {
 
 /**
  * @param {import("../extent.js").Extent} extent Extent.
- * @param {ReadOptions=} opt_options Read options.
+ * @param {ReadOptions} [opt_options] Read options.
  * @return {import("../extent.js").Extent} Transformed extent.
  */
 export function transformExtentWithOptions(extent, opt_options) {

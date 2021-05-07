@@ -46,8 +46,8 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {import("../../extent.js").Extent} extent Extent.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {number=} opt_squaredTolerance Optional squared tolerance for simplification.
-   * @param {import("../../proj.js").TransformFunction=} opt_userTransform Transform from user to view projection.
+   * @param {number} [opt_squaredTolerance] Optional squared tolerance for simplification.
+   * @param {import("../../proj.js").TransformFunction} [opt_userTransform] Transform from user to view projection.
    */
   constructor(
     context,

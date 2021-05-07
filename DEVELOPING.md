@@ -10,7 +10,7 @@ You will obviously start by
 The minimum requirements are:
 
 * Git
-* [Node.js](http://nodejs.org/) (version 8 and above)
+* [Node.js](https://nodejs.org/) (version 8 and above)
 
 The executables `git` and `node` should be in your `PATH`.
 

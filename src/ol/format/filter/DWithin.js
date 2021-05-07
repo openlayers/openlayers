@@ -15,7 +15,7 @@ class DWithin extends Spatial {
    * @param {!import("../../geom/Geometry.js").default} geometry Geometry.
    * @param {!number} distance Distance.
    * @param {!string} unit Unit.
-   * @param {string=} opt_srsName SRS name. No srsName attribute will be
+   * @param {string} [opt_srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    */
   constructor(geometryName, geometry, distance, unit, opt_srsName) {

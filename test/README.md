@@ -1,11 +1,8 @@
 ## Included in this directory
 
-- index.html - the web page used to run the test suite.
-
-- spec - includes the OpenLayers test/spec files.
-
-- test-extensions.js - includes OpenLayers-specific extensions to the
-  testing frameworks.
+- browser - Unit/integration tests run in a browser
+- node - Unit tests run with Node.js
+- rendering - Tests that make assertions about rendered map output
 
 
 ## Run the test suite
@@ -22,7 +19,7 @@ This will run tests in Chrome.  If you do not have Chrome installed, you can run
 
     npm test -- --browsers Firefox
 
-To run tests in other browsers, you need to install [additional Karma launchers](http://karma-runner.github.io/1.0/config/browsers.html).
+To run tests in other browsers, you need to install [additional Karma launchers](https://karma-runner.github.io/1.0/config/browsers.html).
 
 To run the tests continuously:
 

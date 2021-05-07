@@ -1,0 +1,25 @@
+---
+layout: example.html
+title: Draw and Modify Geodesic Circles
+shortdesc: Example of using Draw and Modify interactions for geodesic circles.
+docs: >
+  Example of using the `ol/interaction/Draw` interaction with a custom geometry function together with the `ol/interaction/Modify` interaction
+  to draw and modify geodesic circles (a `ol/geom/Polygon#circular` polygon representing a circle on the surface of the Earth's sphere).
+  The polygon is placed in a `ol/geom/GeometryCollection` together with a `ol/geom/Point` which allows the Modify interaction to adjust the
+  circle center as well as the radius. Custom style functions ensure the correct final geometry is displayed throughout.
+  `ol/geom/Circle` projected (planar) geometries can also be drawn and modified. The difference between geodesic and projected circles can be
+  seen when their centers are moved between northern and southern latitudes in the Web Mercator projection.
+  The `ol/interaction/Snap` interaction can be used to create concentric circles.
+tags: "draw, edit, modify, vector, circle, sphere, geodesic"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label for="type">Geometry type &nbsp;</label>
+  <select id="type">
+    <option value="Point">Point</option>
+    <option value="LineString">LineString</option>
+    <option value="Polygon">Polygon</option>
+    <option value="Circle">Circle Geometry</option>
+    <option value="Geodesic" selected>Geodesic Circle</option>
+  </select>
+</form>

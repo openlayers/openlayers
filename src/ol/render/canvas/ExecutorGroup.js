@@ -30,15 +30,15 @@ const ORDER = [
 class ExecutorGroup {
   /**
    * @param {import("../../extent.js").Extent} maxExtent Max extent for clipping. When a
-   * `maxExtent` was set on the Buillder for this executor group, the same `maxExtent`
-   * should be set here, unless the target context does not exceet that extent (which
+   * `maxExtent` was set on the Builder for this executor group, the same `maxExtent`
+   * should be set here, unless the target context does not exceed that extent (which
    * can be the case when rendering to tiles).
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
-   * @param {number=} opt_renderBuffer Optional rendering buffer.
+   * @param {number} [opt_renderBuffer] Optional rendering buffer.
    */
   constructor(
     maxExtent,
@@ -126,15 +126,13 @@ class ExecutorGroup {
         this.executorsByZIndex_[zIndex] = executors;
       }
       const instructionByZindex = allInstructions[zIndex];
-      const renderBuffer = [this.renderBuffer_ || 0, this.renderBuffer_ || 0];
       for (const builderType in instructionByZindex) {
         const instructions = instructionByZindex[builderType];
         executors[builderType] = new Executor(
           this.resolution_,
           this.pixelRatio_,
           this.overlaps_,
-          instructions,
-          renderBuffer
+          instructions
         );
       }
     }
@@ -314,9 +312,9 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<import("./BuilderType.js").default>=} opt_builderTypes Ordered replay types to replay.
+   * @param {Array<import("./BuilderType.js").default>} [opt_builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {import("rbush").default=} opt_declutterTree Declutter tree.
+   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
   execute(
     context,
@@ -381,7 +379,7 @@ const circlePixelIndexArrayCache = {};
  * ordered by how close they are to the center.
  * A cache is used to increase performance.
  * @param {number} radius Radius.
- * @returns {Array<number>} An array with indexes within a circle.
+ * @return {Array<number>} An array with indexes within a circle.
  */
 export function getPixelIndexArray(radius) {
   if (circlePixelIndexArrayCache[radius] !== undefined) {

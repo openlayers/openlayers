@@ -19,8 +19,8 @@ import {log2, modulo} from '../math.js';
 /**
  * Single triangle; consists of 3 source points and 3 target points.
  * @typedef {Object} Triangle
- * @property {Array<import("../coordinate.js").Coordinate>} source
- * @property {Array<import("../coordinate.js").Coordinate>} target
+ * @property {Array<import("../coordinate.js").Coordinate>} source Source.
+ * @property {Array<import("../coordinate.js").Coordinate>} target Target.
  */
 
 /**

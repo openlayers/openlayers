@@ -9,18 +9,29 @@ import Point from '../geom/Point.js';
 import VectorSource from './Vector.js';
 import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
 import {assert} from '../asserts.js';
-import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
+import {
+  buffer,
+  createEmpty,
+  createOrUpdateFromCoordinate,
+  getCenter,
+} from '../extent.js';
 import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [distance=20] Minimum distance in pixels between clusters.
+ * @property {number} [distance=20] Distance in pixels within which features will
+ * be clustered together.
+ * @property {number} [minDistance=0] Minimum distance in pixels between clusters.
+ * Will be capped at the configured distance.
+ * By default no minimum distance is guaranteed. This config can be used to avoid
+ * overlapping icons. As a tradoff, the cluster feature's position will no longer be
+ * the center of all its features.
  * @property {function(Feature):Point} [geometryFunction]
  * Function that takes an {@link module:ol/Feature} as argument and returns an
  * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
- * `null`. The default, which works when the underyling source contains point
+ * `null`. The default, which works when the underlying source contains point
  * features only, is
  * ```js
  * function(feature) {
@@ -67,6 +78,18 @@ class Cluster extends VectorSource {
     this.distance = options.distance !== undefined ? options.distance : 20;
 
     /**
+     * @type {number}
+     * @protected
+     */
+    this.minDistance = options.minDistance || 0;
+
+    /**
+     * @type {number}
+     * @protected
+     */
+    this.interpolationRatio = 0;
+
+    /**
      * @type {Array<Feature>}
      * @protected
      */
@@ -85,14 +108,21 @@ class Cluster extends VectorSource {
         return geometry;
       };
 
+    /**
+     * @type {VectorSource}
+     * @protected
+     */
+    this.source = null;
+
     this.boundRefresh_ = this.refresh.bind(this);
 
+    this.updateDistance(this.distance, this.minDistance);
     this.setSource(options.source || null);
   }
 
   /**
    * Remove all features from the source.
-   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
    * @api
    */
   clear(opt_fast) {
@@ -126,21 +156,37 @@ class Cluster extends VectorSource {
   loadFeatures(extent, resolution, projection) {
     this.source.loadFeatures(extent, resolution, projection);
     if (resolution !== this.resolution) {
-      this.clear();
       this.resolution = resolution;
-      this.cluster();
-      this.addFeatures(this.features);
+      this.refresh();
     }
   }
 
   /**
-   * Set the distance in pixels between clusters.
+   * Set the distance within which features will be clusterd together.
    * @param {number} distance The distance in pixels.
    * @api
    */
   setDistance(distance) {
-    this.distance = distance;
-    this.refresh();
+    this.updateDistance(distance, this.minDistance);
+  }
+
+  /**
+   * Set the minimum distance between clusters. Will be capped at the
+   * configured distance.
+   * @param {number} minDistance The minimum distance in pixels.
+   * @api
+   */
+  setMinDistance(minDistance) {
+    this.updateDistance(this.distance, minDistance);
+  }
+
+  /**
+   * The configured minimum distance between clusters.
+   * @return {number} The minimum distance in pixels.
+   * @api
+   */
+  getMinDistance() {
+    return this.minDistance;
   }
 
   /**
@@ -169,6 +215,24 @@ class Cluster extends VectorSource {
   }
 
   /**
+   * Update the distances and refresh the source if necessary.
+   * @param {number} distance The new distance.
+   * @param {number} minDistance The new minimum distance.
+   */
+  updateDistance(distance, minDistance) {
+    const ratio =
+      distance === 0 ? 0 : Math.min(minDistance, distance) / distance;
+    const changed =
+      distance !== this.distance || this.interpolationRatio !== ratio;
+    this.distance = distance;
+    this.minDistance = minDistance;
+    this.interpolationRatio = ratio;
+    if (changed) {
+      this.refresh();
+    }
+  }
+
+  /**
    * @protected
    */
   cluster() {
@@ -179,9 +243,7 @@ class Cluster extends VectorSource {
     const mapDistance = this.distance * this.resolution;
     const features = this.source.getFeatures();
 
-    /**
-     * @type {!Object<string, boolean>}
-     */
+    /** @type {Object<string, true>} */
     const clustered = {};
 
     for (let i = 0, ii = features.length; i < ii; i++) {
@@ -193,17 +255,17 @@ class Cluster extends VectorSource {
           createOrUpdateFromCoordinate(coordinates, extent);
           buffer(extent, mapDistance, extent);
 
-          let neighbors = this.source.getFeaturesInExtent(extent);
-          neighbors = neighbors.filter(function (neighbor) {
-            const uid = getUid(neighbor);
-            if (!(uid in clustered)) {
+          const neighbors = this.source
+            .getFeaturesInExtent(extent)
+            .filter(function (neighbor) {
+              const uid = getUid(neighbor);
+              if (uid in clustered) {
+                return false;
+              }
               clustered[uid] = true;
               return true;
-            } else {
-              return false;
-            }
-          });
-          this.features.push(this.createCluster(neighbors));
+            });
+          this.features.push(this.createCluster(neighbors, extent));
         }
       }
     }
@@ -211,10 +273,11 @@ class Cluster extends VectorSource {
 
   /**
    * @param {Array<Feature>} features Features
+   * @param {import("../extent.js").Extent} extent The searched extent for these features.
    * @return {Feature} The cluster feature.
    * @protected
    */
-  createCluster(features) {
+  createCluster(features, extent) {
     const centroid = [0, 0];
     for (let i = features.length - 1; i >= 0; --i) {
       const geometry = this.geometryFunction(features[i]);
@@ -225,9 +288,14 @@ class Cluster extends VectorSource {
       }
     }
     scaleCoordinate(centroid, 1 / features.length);
-
-    const cluster = new Feature(new Point(centroid));
-    cluster.set('features', features);
+    const searchCenter = getCenter(extent);
+    const ratio = this.interpolationRatio;
+    const geometry = new Point([
+      centroid[0] * (1 - ratio) + searchCenter[0] * ratio,
+      centroid[1] * (1 - ratio) + searchCenter[1] * ratio,
+    ]);
+    const cluster = new Feature(geometry);
+    cluster.set('features', features, true);
     return cluster;
   }
 }

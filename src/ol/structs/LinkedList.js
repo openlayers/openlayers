@@ -4,9 +4,9 @@
 
 /**
  * @typedef {Object} Item
- * @property {Item} [prev]
- * @property {Item} [next]
- * @property {?} data
+ * @property {Item} [prev] Previous.
+ * @property {Item} [next] Next.
+ * @property {?} data Data.
  */
 
 /**
@@ -15,7 +15,7 @@
  */
 class LinkedList {
   /**
-   * @param {boolean=} opt_circular The last item is connected to the first one,
+   * @param {boolean} [opt_circular] The last item is connected to the first one,
    * and the first item to the last one. Default is true.
    */
   constructor(opt_circular) {

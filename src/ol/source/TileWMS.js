@@ -20,6 +20,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
@@ -37,7 +38,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * ignored. If you control the WMS service it is recommended to address
  * "artifacts at tile edges" issues by properly configuring the WMS service. For
  * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
- * this. See http://mapserver.org/output/tile_mode.html.
+ * this. See https://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
@@ -77,7 +78,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  */
 class TileWMS extends TileImage {
   /**
-   * @param {Options=} [opt_options] Tile WMS options.
+   * @param {Options} [opt_options] Tile WMS options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : /** @type {Options} */ ({});
@@ -88,6 +89,7 @@ class TileWMS extends TileImage {
 
     super({
       attributions: options.attributions,
+      attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       imageSmoothing: options.imageSmoothing,

@@ -46,7 +46,7 @@ import {removeChildren, replaceNode} from '../dom.js';
  */
 class Attribution extends Control {
   /**
-   * @param {Options=} opt_options Attribution options.
+   * @param {Options} [opt_options] Attribution options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

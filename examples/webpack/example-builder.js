@@ -1,19 +1,31 @@
-const assert = require('assert');
-const frontMatter = require('front-matter');
-const fs = require('fs');
-const handlebars = require('handlebars');
-const marked = require('marked');
-const path = require('path');
-const pkg = require('../../package.json');
-const promisify = require('util').promisify;
-const RawSource = require('webpack-sources').RawSource;
+import assert from 'assert';
+import frontMatter from 'front-matter';
+import fse from 'fs-extra';
+import handlebars from 'handlebars';
+import marked from 'marked';
+import path, {dirname} from 'path';
+import sources from 'webpack-sources';
+import {fileURLToPath} from 'url';
 
-const readFile = promisify(fs.readFile);
+const RawSource = sources.RawSource;
+const baseDir = dirname(fileURLToPath(import.meta.url));
+
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
 const importRegEx = /^import .* from '(.*)';$/;
 const isTemplateJs = /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
 const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
+
+let cachedPackageInfo = null;
+async function getPackageInfo() {
+  if (cachedPackageInfo) {
+    return cachedPackageInfo;
+  }
+  cachedPackageInfo = await fse.readJSON(
+    path.resolve(baseDir, '../../package.json')
+  );
+  return cachedPackageInfo;
+}
 
 handlebars.registerHelper(
   'md',
@@ -109,33 +121,12 @@ function createWordIndex(exampleData) {
 }
 
 /**
- * Gets the source for the chunk that matches the jsPath
- * @param {Object} chunk Chunk.
- * @param {string} jsName Name of the file.
- * @return {string} The source.
- */
-function getJsSource(chunk, jsName) {
-  let jsSource;
-  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
-    const module = chunk.modules[i];
-    if (module.modules) {
-      jsSource = getJsSource(module, jsName);
-      if (jsSource) {
-        return jsSource;
-      }
-    }
-    if (module.identifier.endsWith(jsName) && module.source) {
-      return module.source;
-    }
-  }
-}
-
-/**
  * Gets dependencies from the js source.
  * @param {string} jsSource Source.
+ * @param {Object} pkg Package info.
  * @return {Object<string, string>} dependencies
  */
-function getDependencies(jsSource) {
+function getDependencies(jsSource, pkg) {
   const lines = jsSource.split('\n');
   const dependencies = {
     ol: pkg.version,
@@ -162,7 +153,7 @@ function getDependencies(jsSource) {
   return dependencies;
 }
 
-class ExampleBuilder {
+export default class ExampleBuilder {
   /**
    * A webpack plugin that builds the html files for our examples.
    * @param {Object} config Plugin configuration.  Requires a `templates` property
@@ -170,6 +161,7 @@ class ExampleBuilder {
    * common chunk.
    */
   constructor(config) {
+    this.name = 'ExampleBuilder';
     this.templates = config.templates;
     this.common = config.common;
   }
@@ -179,82 +171,105 @@ class ExampleBuilder {
    * @param {Object} compiler The webpack compiler.
    */
   apply(compiler) {
-    compiler.hooks.emit.tapPromise('ExampleBuilder', async (compilation) => {
-      const chunks = compilation
-        .getStats()
-        .toJson()
-        .chunks.filter((chunk) => chunk.names[0] !== this.common);
-
-      const exampleData = [];
-      await Promise.all(
-        chunks.map(async (chunk) => {
-          const data = await this.readHtml(compiler.context, chunk);
-          exampleData.push(data);
-        })
-      );
-      const examples = exampleData.map((data) => {
-        return {
-          link: data.filename,
-          title: data.title,
-          shortdesc: data.shortdesc,
-          tags: data.tags,
-        };
+    compiler.hooks.compilation.tap(this.name, (compilation) => {
+      compilation.hooks.additionalAssets.tapPromise(this.name, async () => {
+        await this.addAssets(compilation.assets, compiler.context);
       });
-
-      examples.sort((a, b) =>
-        a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
-      );
-      const tagIndex = createTagIndex(examples);
-      const info = {
-        examples: examples,
-        // Tags for main page... TODO: implement index tag links
-        // tagIndex: sortObjectByKey(tagIndex),
-        wordIndex: sortObjectByKey(createWordIndex(examples)),
-      };
-      exampleData.forEach((data) => {
-        data.tags = data.tags.map((tag) => {
-          const tagExamples = tagIndex[tag.toLowerCase()];
-          return {
-            tag: tag,
-            examples: tagExamples.map((exampleIdx) => {
-              const example = examples[exampleIdx];
-              return {
-                link: example.link,
-                title: example.title,
-                isCurrent: data.filename === example.link,
-              };
-            }),
-          };
-        });
-      });
-
-      await Promise.all(
-        exampleData.map(async (data) => {
-          const assets = await this.render(data, data.chunk);
-          for (const file in assets) {
-            compilation.assets[file] = new RawSource(assets[file]);
-          }
-        })
-      );
-      const indexSource = `const info = ${JSON.stringify(info)};`;
-      compilation.assets['examples-info.js'] = new RawSource(indexSource);
     });
   }
 
-  async readHtml(dir, chunk) {
-    const name = chunk.names[0];
+  async addAssets(assets, dir) {
+    const jsAssetRE = /^[\w-]+\.js$/;
+    const names = [];
+    for (const filename in assets) {
+      if (!jsAssetRE.test(filename)) {
+        continue;
+      }
+
+      const name = filename.replace(/\.js$/, '');
+      if (name === 'index' || name === this.common) {
+        continue;
+      }
+
+      names.push(name);
+    }
+
+    if (names.length === 0) {
+      return;
+    }
+
+    const exampleData = await Promise.all(
+      names.map(async (name) => await this.parseExample(dir, name))
+    );
+
+    const examples = exampleData.map((data) => {
+      return {
+        link: data.filename,
+        title: data.title,
+        shortdesc: data.shortdesc,
+        tags: data.tags,
+      };
+    });
+
+    examples.sort((a, b) =>
+      a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
+    );
+    const tagIndex = createTagIndex(examples);
+    const info = {
+      examples: examples,
+      // Tags for main page... TODO: implement index tag links
+      // tagIndex: sortObjectByKey(tagIndex),
+      wordIndex: sortObjectByKey(createWordIndex(examples)),
+    };
+    exampleData.forEach((data) => {
+      data.tags = data.tags.map((tag) => {
+        const tagExamples = tagIndex[tag.toLowerCase()];
+        return {
+          tag: tag,
+          examples: tagExamples.map((exampleIdx) => {
+            const example = examples[exampleIdx];
+            return {
+              link: example.link,
+              title: example.title,
+              isCurrent: data.filename === example.link,
+            };
+          }),
+        };
+      });
+    });
+
+    await Promise.all(
+      exampleData.map(async (data) => {
+        const newAssets = await this.render(data);
+        for (const file in newAssets) {
+          assets[file] = new RawSource(newAssets[file]);
+        }
+      })
+    );
+
+    const indexSource = `const info = ${JSON.stringify(info)};`;
+    assets['examples-info.js'] = new RawSource(indexSource);
+  }
+
+  async parseExample(dir, name) {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
-    const htmlSource = await readFile(htmlPath, {encoding: 'utf8'});
+    const htmlSource = await fse.readFile(htmlPath, {encoding: 'utf8'});
+
+    const jsName = `${name}.js`;
+    const jsPath = path.join(dir, jsName);
+    const jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
 
     const {attributes, body} = frontMatter(htmlSource);
     assert(!!attributes.layout, `missing layout in ${htmlPath}`);
     const data = Object.assign(attributes, {contents: body});
 
+    const pkg = await getPackageInfo();
     data.olVersion = pkg.version;
     data.filename = htmlName;
     data.dir = dir;
-    data.chunk = chunk;
+    data.name = name;
+    data.jsSource = jsSource;
 
     // process tags
     if (data.tags) {
@@ -265,20 +280,15 @@ class ExampleBuilder {
     return data;
   }
 
-  async render(data, chunk) {
-    const name = chunk.names[0];
-
+  async render(data) {
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 
     // add in script tag
-    const jsName = `${name}.js`;
-    let jsSource = getJsSource(chunk, path.join('.', jsName));
-    if (!jsSource) {
-      throw new Error(`No .js source for ${jsName}`);
-    }
+    const jsName = `${data.name}.js`;
+
     // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
-    jsSource = jsSource.replace(/'\.\.\/src\//g, "'");
+    let jsSource = data.jsSource.replace(/'\.\.\/src\//g, "'");
     jsSource = jsSource.replace(/\.js';/g, "';");
     if (data.cloak) {
       for (const entry of data.cloak) {
@@ -299,11 +309,11 @@ class ExampleBuilder {
     };
 
     // check for worker js
-    const workerName = `${name}.worker.js`;
+    const workerName = `${data.name}.worker.js`;
     const workerPath = path.join(data.dir, workerName);
     let workerSource;
     try {
-      workerSource = await readFile(workerPath, readOptions);
+      workerSource = await fse.readFile(workerPath, readOptions);
     } catch (err) {
       // pass
     }
@@ -325,11 +335,14 @@ class ExampleBuilder {
       assets[workerName] = workerSource;
     }
 
+    const pkg = await getPackageInfo();
+
     data.pkgJson = JSON.stringify(
       {
-        name: name,
+        name: data.name,
         dependencies: getDependencies(
-          jsSource + (workerSource ? `\n${workerSource}` : '')
+          jsSource + (workerSource ? `\n${workerSource}` : ''),
+          pkg
         ),
         devDependencies: {
           parcel: '^2.0.0-beta.1',
@@ -344,11 +357,11 @@ class ExampleBuilder {
     );
 
     // check for example css
-    const cssName = `${name}.css`;
+    const cssName = `${data.name}.css`;
     const cssPath = path.join(data.dir, cssName);
     let cssSource;
     try {
-      cssSource = await readFile(cssPath, readOptions);
+      cssSource = await fse.readFile(cssPath, readOptions);
     } catch (err) {
       // pass
     }
@@ -362,6 +375,7 @@ class ExampleBuilder {
 
     // add additional resources
     if (data.resources) {
+      const pkg = await getPackageInfo();
       const localResources = [];
       const remoteResources = [];
       data.resources.forEach((resource) => {
@@ -393,11 +407,9 @@ class ExampleBuilder {
     }
 
     const templatePath = path.join(this.templates, data.layout);
-    const templateSource = await readFile(templatePath, readOptions);
+    const templateSource = await fse.readFile(templatePath, readOptions);
 
     assets[data.filename] = handlebars.compile(templateSource)(data);
     return assets;
   }
 }
-
-module.exports = ExampleBuilder;

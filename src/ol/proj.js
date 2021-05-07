@@ -99,8 +99,8 @@ export {Projection};
 
 /**
  * @param {Array<number>} input Input coordinate array.
- * @param {Array<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension.
+ * @param {Array<number>} [opt_output] Output array of coordinate values.
+ * @param {number} [opt_dimension] Dimension.
  * @return {Array<number>} Output coordinate array (new array, same coordinate
  *     values).
  */
@@ -119,8 +119,8 @@ export function cloneTransform(input, opt_output, opt_dimension) {
 
 /**
  * @param {Array<number>} input Input coordinate array.
- * @param {Array<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension.
+ * @param {Array<number>} [opt_output] Output array of coordinate values.
+ * @param {number} [opt_dimension] Dimension.
  * @return {Array<number>} Input coordinate array (same array as input).
  */
 export function identityTransform(input, opt_output, opt_dimension) {
@@ -182,7 +182,7 @@ export function get(projectionLike) {
  * @param {ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {import("./coordinate.js").Coordinate} point Point to find adjusted resolution at.
- * @param {import("./proj/Units.js").default=} opt_units Units to get the point resolution in.
+ * @param {import("./proj/Units.js").default} [opt_units] Units to get the point resolution in.
  * Default is the projection's units.
  * @return {number} Point resolution.
  * @api
@@ -321,8 +321,8 @@ export function createTransformFromCoordinateTransform(coordTransform) {
   return (
     /**
      * @param {Array<number>} input Input.
-     * @param {Array<number>=} opt_output Output.
-     * @param {number=} opt_dimension Dimension.
+     * @param {Array<number>} [opt_output] Output.
+     * @param {number} [opt_dimension] Dimension.
      * @return {Array<number>} Output.
      */
     function (input, opt_output, opt_dimension) {
@@ -380,7 +380,7 @@ export function addCoordinateTransforms(source, destination, forward, inverse) {
  * Transforms a coordinate from longitude/latitude to a different projection.
  * @param {import("./coordinate.js").Coordinate} coordinate Coordinate as longitude and latitude, i.e.
  *     an array with longitude as 1st and latitude as 2nd element.
- * @param {ProjectionLike=} opt_projection Target projection. The
+ * @param {ProjectionLike} [opt_projection] Target projection. The
  *     default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {import("./coordinate.js").Coordinate} Coordinate projected to the target projection.
  * @api
@@ -396,7 +396,7 @@ export function fromLonLat(coordinate, opt_projection) {
 /**
  * Transforms a coordinate to longitude/latitude.
  * @param {import("./coordinate.js").Coordinate} coordinate Projected coordinate.
- * @param {ProjectionLike=} opt_projection Projection of the coordinate.
+ * @param {ProjectionLike} [opt_projection] Projection of the coordinate.
  *     The default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {import("./coordinate.js").Coordinate} Coordinate as longitude and latitude, i.e. an array
  *     with longitude as 1st and latitude as 2nd element.
@@ -502,7 +502,7 @@ export function transform(coordinate, source, destination) {
  * @param {import("./extent.js").Extent} extent The extent to transform.
  * @param {ProjectionLike} source Source projection-like.
  * @param {ProjectionLike} destination Destination projection-like.
- * @param {number=} opt_stops Number of stops per side used for the transform.
+ * @param {number} [opt_stops] Number of stops per side used for the transform.
  * By default only the corners are used.
  * @return {import("./extent.js").Extent} The transformed extent.
  * @api
@@ -560,7 +560,7 @@ export function clearUserProjection() {
  * Get the projection for coordinates supplied from and returned by API methods.
  * Note that this method is not yet a part of the stable API.  Support for user
  * projections is not yet complete and should be considered experimental.
- * @returns {?Projection} The user projection (or null if not set).
+ * @return {?Projection} The user projection (or null if not set).
  */
 export function getUserProjection() {
   return userProjection;
@@ -580,7 +580,7 @@ export function useGeographic() {
  * is set, the original coordinate is returned.
  * @param {Array<number>} coordinate Input coordinate.
  * @param {ProjectionLike} sourceProjection The input coordinate projection.
- * @returns {Array<number>} The input coordinate in the user projection.
+ * @return {Array<number>} The input coordinate in the user projection.
  */
 export function toUserCoordinate(coordinate, sourceProjection) {
   if (!userProjection) {
@@ -594,7 +594,7 @@ export function toUserCoordinate(coordinate, sourceProjection) {
  * is set, the original coordinate is returned.
  * @param {Array<number>} coordinate Input coordinate.
  * @param {ProjectionLike} destProjection The destination projection.
- * @returns {Array<number>} The input coordinate transformed.
+ * @return {Array<number>} The input coordinate transformed.
  */
 export function fromUserCoordinate(coordinate, destProjection) {
   if (!userProjection) {
@@ -608,7 +608,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
  * is set, the original extent is returned.
  * @param {import("./extent.js").Extent} extent Input extent.
  * @param {ProjectionLike} sourceProjection The input extent projection.
- * @returns {import("./extent.js").Extent} The input extent in the user projection.
+ * @return {import("./extent.js").Extent} The input extent in the user projection.
  */
 export function toUserExtent(extent, sourceProjection) {
   if (!userProjection) {
@@ -622,7 +622,7 @@ export function toUserExtent(extent, sourceProjection) {
  * is set, the original extent is returned.
  * @param {import("./extent.js").Extent} extent Input extent.
  * @param {ProjectionLike} destProjection The destination projection.
- * @returns {import("./extent.js").Extent} The input extent transformed.
+ * @return {import("./extent.js").Extent} The input extent transformed.
  */
 export function fromUserExtent(extent, destProjection) {
   if (!userProjection) {

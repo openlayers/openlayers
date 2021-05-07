@@ -144,7 +144,9 @@ worker.addEventListener('message', (event) => {
       renderer.renderFrame(frameState, canvas);
     }
   });
-  layers.forEach((layer) => layer.renderDeclutter(frameState));
+  layers.forEach(
+    (layer) => layer.getRenderer().context && layer.renderDeclutter(frameState)
+  );
   if (tileQueue.getTilesLoading() < maxTotalLoading) {
     tileQueue.reprioritize();
     tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);

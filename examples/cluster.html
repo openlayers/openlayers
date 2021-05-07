@@ -8,6 +8,18 @@ tags: "cluster, vector"
 ---
 <div id="map" class="map"></div>
 <form>
-  <label for="distance">cluster distance</label>
-  <input id="distance" type="range" min="0" max="100" step="1" value="40"/>
+  <div class="form-group">
+    <label for="distance" class="col-form-label">Cluster distance</label>
+    <input id="distance" class="form-control-range" type="range" min="0" max="200" step="1" value="40"/>
+    <small class="form-text text-muted">
+      The distance within which features will be clustered together.
+    </small>
+  </div>
+  <div class="form-group">
+    <label for="min-distance" class="col-form-label">Minimum distance</label>
+    <input id="min-distance" class="form-control-range" type="range" min="0" max="200" step="1" value="20"/>
+    <small class="form-text text-muted">
+      The minimum distance between clusters. Can't be larger than the configured distance.
+    </small>
+  </div>
 </form>

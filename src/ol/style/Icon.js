@@ -53,7 +53,7 @@ import {getUid} from '../util.js';
  */
 class Icon extends ImageStyle {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -285,6 +285,10 @@ class Icon extends ImageStyle {
         anchor[1] = -anchor[1] + size[1];
       }
     }
+    const displacement = this.getDisplacement();
+    anchor[0] -= displacement[0];
+    anchor[1] += displacement[1];
+
     this.normalizedAnchor_ = anchor;
     return this.normalizedAnchor_;
   }
@@ -323,7 +327,7 @@ class Icon extends ImageStyle {
   /**
    * Get the pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {number} The pixel ration of the image.
+   * @return {number} The pixel ratio of the image.
    * @api
    */
   getPixelRatio(pixelRatio) {
@@ -368,7 +372,6 @@ class Icon extends ImageStyle {
       return this.origin_;
     }
     let offset = this.offset_;
-    const displacement = this.getDisplacement();
 
     if (this.offsetOrigin_ != IconOrigin.TOP_LEFT) {
       const size = this.getSize();
@@ -390,8 +393,6 @@ class Icon extends ImageStyle {
         offset[1] = iconImageSize[1] - size[1] - offset[1];
       }
     }
-    offset[0] += displacement[0];
-    offset[1] += displacement[1];
     this.origin_ = offset;
     return this.origin_;
   }

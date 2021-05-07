@@ -61,7 +61,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {Geometry|Object<string, *>=} opt_geometryOrProperties
+   * @param {Geometry|Object<string, *>} [opt_geometryOrProperties]
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
@@ -240,7 +240,7 @@ class Feature extends BaseObject {
    * single style object, an array of styles, or a function that takes a
    * resolution and returns an array of styles. To unset the feature style, call
    * `setStyle()` without arguments or a falsey value.
-   * @param {import("./style/Style.js").StyleLike=} opt_style Style for this feature.
+   * @param {import("./style/Style.js").StyleLike} [opt_style] Style for this feature.
    * @api
    * @fires module:ol/events/Event~BaseEvent#event:change
    */

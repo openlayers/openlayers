@@ -20,8 +20,8 @@ export function createExtent(extent, onlyCenter, smooth) {
      * @param {import("./coordinate.js").Coordinate|undefined} center Center.
      * @param {number} resolution Resolution.
      * @param {import("./size.js").Size} size Viewport size; unused if `onlyCenter` was specified.
-     * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
-     * @param {Array<number>=} opt_centerShift Shift between map center and viewport center.
+     * @param {boolean} [opt_isMoving] True if an interaction or animation is in progress.
+     * @param {Array<number>} [opt_centerShift] Shift between map center and viewport center.
      * @return {import("./coordinate.js").Coordinate|undefined} Center.
      */
     function (center, resolution, size, opt_isMoving, opt_centerShift) {
@@ -69,7 +69,7 @@ export function createExtent(extent, onlyCenter, smooth) {
 }
 
 /**
- * @param {import("./coordinate.js").Coordinate=} center Center.
+ * @param {import("./coordinate.js").Coordinate} [center] Center.
  * @return {import("./coordinate.js").Coordinate|undefined} Center.
  */
 export function none(center) {

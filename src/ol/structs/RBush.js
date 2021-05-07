@@ -8,11 +8,11 @@ import {isEmpty} from '../obj.js';
 
 /**
  * @typedef {Object} Entry
- * @property {number} minX
- * @property {number} minY
- * @property {number} maxX
- * @property {number} maxY
- * @property {Object} [value]
+ * @property {number} minX MinX.
+ * @property {number} minY MinY.
+ * @property {number} maxX MaxX.
+ * @property {number} maxY MaxY.
+ * @property {Object} [value] Value.
  */
 
 /**
@@ -24,7 +24,7 @@ import {isEmpty} from '../obj.js';
  */
 class RBush {
   /**
-   * @param {number=} opt_maxEntries Max entries.
+   * @param {number} [opt_maxEntries] Max entries.
    */
   constructor(opt_maxEntries) {
     /**
@@ -198,7 +198,7 @@ class RBush {
   }
 
   /**
-   * @param {import("../extent.js").Extent=} opt_extent Extent.
+   * @param {import("../extent.js").Extent} [opt_extent] Extent.
    * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {

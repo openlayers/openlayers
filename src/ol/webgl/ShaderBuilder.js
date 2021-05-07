@@ -7,6 +7,7 @@ import {
   ValueTypes,
   expressionToGlsl,
   getStringNumberEquivalent,
+  uniformNameForVariable,
 } from '../style/expressions.js';
 
 /**
@@ -223,35 +224,35 @@ export class ShaderBuilder {
   }
 
   /**
-   * @returns {string} Previously set size expression
+   * @return {string} Previously set size expression
    */
   getSizeExpression() {
     return this.sizeExpression;
   }
 
   /**
-   * @returns {string} Previously set symbol offset expression
+   * @return {string} Previously set symbol offset expression
    */
   getOffsetExpression() {
     return this.offsetExpression;
   }
 
   /**
-   * @returns {string} Previously set color expression
+   * @return {string} Previously set color expression
    */
   getColorExpression() {
     return this.colorExpression;
   }
 
   /**
-   * @returns {string} Previously set texture coordinate expression
+   * @return {string} Previously set texture coordinate expression
    */
   getTextureCoordinateExpression() {
     return this.texCoordExpression;
   }
 
   /**
-   * @returns {string} Previously set fragment discard expression
+   * @return {string} Previously set fragment discard expression
    */
   getFragmentDiscardExpression() {
     return this.discardExpression;
@@ -272,7 +273,7 @@ export class ShaderBuilder {
    *
    * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
    * (namely, hit color with encoded feature id).
-   * @returns {string} The full shader as a string.
+   * @return {string} The full shader as a string.
    */
   getSymbolVertexShader(forHitDetection) {
     const offsetMatrix = this.rotateWithView
@@ -363,7 +364,7 @@ ${varyings
    *
    * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
    * (namely, hit color with encoded feature id).
-   * @returns {string} The full shader as a string.
+   * @return {string} The full shader as a string.
    */
   getSymbolFragmentShader(forHitDetection) {
     const hitDetectionBypass = forHitDetection
@@ -408,20 +409,20 @@ ${hitDetectionBypass}
 /**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {Object.<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
+ * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
  * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
  */
 
 /**
- * Parses a {@link import("../style/LiteralStyle").LiteralStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../style/literal").LiteralStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/LiteralStyle").LiteralStyle} style Literal style.
- * @returns {StyleParseResult} Result containing shader params, attributes and uniforms.
+ * @param {import("../style/literal").LiteralStyle} style Literal style.
+ * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style) {
   const symbStyle = style.symbol;
@@ -522,13 +523,14 @@ export function parseLiteralStyle(style) {
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
 
-  /** @type {Object.<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   // define one uniform per variable
   fragContext.variables.forEach(function (varName) {
-    builder.addUniform(`float u_${varName}`);
-    uniforms[`u_${varName}`] = function () {
+    const uniformName = uniformNameForVariable(varName);
+    builder.addUniform(`float ${uniformName}`);
+    uniforms[uniformName] = function () {
       if (!style.variables || style.variables[varName] === undefined) {
         throw new Error(
           `The following variable is missing from the style: ${varName}`

@@ -6,6 +6,7 @@ import TileImage from './TileImage.js';
 import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {appendParams} from '../uri.js';
 import {assign} from '../obj.js';
+import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {equivalent, get as getProjection} from '../proj.js';
@@ -14,6 +15,7 @@ import {find, findIndex, includes} from '../array.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
@@ -82,6 +84,7 @@ class WMTS extends TileImage {
 
     super({
       attributions: options.attributions,
+      attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       imageSmoothing: options.imageSmoothing,
@@ -442,7 +445,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     }
   }
 
-  const wrapX = false;
+  let wrapX = false;
   const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
   let matrix = matrixSetObj.TileMatrix[0];
@@ -451,7 +454,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let selectedMatrixLimit = {
     MinTileCol: 0,
     MinTileRow: 0,
-    // substract one to end up at tile top left
+    // subtract one to end up at tile top left
     MaxTileCol: matrix.MatrixWidth - 1,
     MaxTileRow: matrix.MatrixHeight - 1,
   };
@@ -478,8 +481,8 @@ export function optionsFromCapabilities(wmtsCap, config) {
     : matrix.TopLeftCorner;
   const tileSpanX = matrix.TileWidth * resolution;
   const tileSpanY = matrix.TileHeight * resolution;
-
-  const extent = [
+  const matrixSetExtent = matrixSetObj['BoundingBox'];
+  let extent = [
     origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
     // add one to get proper bottom/right coordinate
     origin[1] - tileSpanY * (1 + selectedMatrixLimit.MaxTileRow),
@@ -487,8 +490,16 @@ export function optionsFromCapabilities(wmtsCap, config) {
     origin[1] - tileSpanY * selectedMatrixLimit.MinTileRow,
   ];
 
-  if (projection.getExtent() === null) {
-    projection.setExtent(extent);
+  if (
+    matrixSetExtent !== undefined &&
+    !containsExtent(matrixSetExtent, extent)
+  ) {
+    const wgs84BoundingBox = l['WGS84BoundingBox'];
+    const wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
+    extent = matrixSetExtent;
+    wrapX =
+      wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
+      wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
   }
 
   const tileGrid = createFromCapabilitiesMatrixSet(

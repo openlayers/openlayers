@@ -58,7 +58,7 @@ const map3857 = new Map({
 const radius = 800000;
 let x, y;
 for (x = -180; x < 180; x += 30) {
-  for (y = -90; y < 90; y += 30) {
+  for (y = -90; y <= 90; y += 30) {
     const circle4326 = circularPolygon([x, y], radius, 64);
     const circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
     vectorLayer4326.getSource().addFeature(new Feature(circle4326));

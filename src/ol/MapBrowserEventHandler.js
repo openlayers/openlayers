@@ -2,18 +2,18 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import PointerEventType from './pointer/EventType.js';
+import Target from './events/Target.js';
 import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {listen, unlistenByKey} from './events.js';
 
-class MapBrowserEventHandler extends EventTarget {
+class MapBrowserEventHandler extends Target {
   /**
    * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
-   * @param {number=} moveTolerance The minimal distance the pointer must travel to trigger a move.
+   * @param {number} [moveTolerance] The minimal distance the pointer must travel to trigger a move.
    */
   constructor(map, moveTolerance) {
     super(map);
@@ -201,10 +201,10 @@ class MapBrowserEventHandler extends EventTarget {
     // to 0).
     // See http://www.w3.org/TR/pointerevents/#button-states
     // We only fire click, singleclick, and doubleclick if nobody has called
-    // event.stopPropagation() or event.preventDefault().
+    // event.preventDefault().
     if (
       this.emulateClicks_ &&
-      !newEvent.propagationStopped &&
+      !newEvent.defaultPrevented &&
       !this.dragging_ &&
       this.isMouseActionButton_(pointerEvent)
     ) {
@@ -244,7 +244,11 @@ class MapBrowserEventHandler extends EventTarget {
     );
     this.dispatchEvent(newEvent);
 
-    this.down_ = pointerEvent;
+    this.down_ = new PointerEvent(pointerEvent.type, pointerEvent);
+    Object.defineProperty(this.down_, 'target', {
+      writable: false,
+      value: pointerEvent.target,
+    });
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();
@@ -336,9 +340,10 @@ class MapBrowserEventHandler extends EventTarget {
   handleTouchMove_(event) {
     // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
     // may not be initialized yet when we get here on a platform without native pointer events.
+    const originalEvent = this.originalPointerMoveEvent_;
     if (
-      !this.originalPointerMoveEvent_ ||
-      this.originalPointerMoveEvent_.defaultPrevented
+      (!originalEvent || originalEvent.defaultPrevented) &&
+      (typeof event.cancelable !== 'boolean' || event.cancelable === true)
     ) {
       event.preventDefault();
     }

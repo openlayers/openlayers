@@ -6,9 +6,12 @@ import CanvasImmediateRenderer from './Immediate.js';
 import GeometryType from '../../geom/GeometryType.js';
 import IconAnchorUnits from '../../style/IconAnchorUnits.js';
 import {Icon} from '../../style.js';
+import {clamp} from '../../math.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
+
+export const HIT_DETECT_RESOLUTION = 0.5;
 
 /**
  * @param {import("../../size.js").Size} size Canvas size in css pixels.
@@ -33,14 +36,14 @@ export function createHitDetectionImageData(
   resolution,
   rotation
 ) {
-  const width = size[0] / 2;
-  const height = size[1] / 2;
+  const width = size[0] * HIT_DETECT_RESOLUTION;
+  const height = size[1] * HIT_DETECT_RESOLUTION;
   const context = createCanvasContext2D(width, height);
   context.imageSmoothingEnabled = false;
   const canvas = context.canvas;
   const renderer = new CanvasImmediateRenderer(
     context,
-    0.5,
+    HIT_DETECT_RESOLUTION,
     extent,
     null,
     rotation
@@ -66,6 +69,10 @@ export function createHitDetectionImageData(
     const color = '#' + ('000000' + index.toString(16)).slice(-6);
     for (let j = 0, jj = styles.length; j < jj; ++j) {
       const originalStyle = styles[j];
+      const geometry = originalStyle.getGeometryFunction()(feature);
+      if (!geometry || !intersects(extent, geometry.getExtent())) {
+        continue;
+      }
       const style = originalStyle.clone();
       const fill = style.getFill();
       if (fill) {
@@ -74,26 +81,22 @@ export function createHitDetectionImageData(
       const stroke = style.getStroke();
       if (stroke) {
         stroke.setColor(color);
+        stroke.setLineDash(null);
       }
       style.setText(undefined);
       const image = originalStyle.getImage();
-      if (image) {
+      if (image && image.getOpacity() !== 0) {
         const imgSize = image.getImageSize();
         if (!imgSize) {
           continue;
         }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = imgSize[0];
-        canvas.height = imgSize[1];
-        const imgContext = canvas.getContext('2d', {alpha: false});
+        const img = document.createElement('canvas');
+        img.width = imgSize[0];
+        img.height = imgSize[1];
+        const imgContext = img.getContext('2d', {alpha: false});
         imgContext.fillStyle = color;
-        const img = imgContext.canvas;
         imgContext.fillRect(0, 0, img.width, img.height);
-        const width = imgSize ? imgSize[0] : img.width;
-        const height = imgSize ? imgSize[1] : img.height;
-        const iconContext = createCanvasContext2D(width, height);
-        iconContext.drawImage(img, 0, 0);
         style.setImage(
           new Icon({
             img: img,
@@ -102,15 +105,15 @@ export function createHitDetectionImageData(
             anchorXUnits: IconAnchorUnits.PIXELS,
             anchorYUnits: IconAnchorUnits.PIXELS,
             offset: image.getOrigin(),
+            opacity: 1,
             size: image.getSize(),
-            opacity: image.getOpacity(),
             scale: image.getScale(),
             rotation: image.getRotation(),
             rotateWithView: image.getRotateWithView(),
           })
         );
       }
-      const zIndex = Number(style.getZIndex());
+      const zIndex = style.getZIndex() || 0;
       let byGeometryType = featuresByZIndex[zIndex];
       if (!byGeometryType) {
         byGeometryType = {};
@@ -120,13 +123,10 @@ export function createHitDetectionImageData(
         byGeometryType[GeometryType.LINE_STRING] = [];
         byGeometryType[GeometryType.POINT] = [];
       }
-      const geometry = style.getGeometryFunction()(feature);
-      if (geometry && intersects(extent, geometry.getExtent())) {
-        byGeometryType[geometry.getType().replace('Multi', '')].push(
-          geometry,
-          style
-        );
-      }
+      byGeometryType[geometry.getType().replace('Multi', '')].push(
+        geometry,
+        style
+      );
     }
   }
 
@@ -161,8 +161,14 @@ export function createHitDetectionImageData(
 export function hitDetect(pixel, features, imageData) {
   const resultFeatures = [];
   if (imageData) {
+    const x = Math.floor(Math.round(pixel[0]) * HIT_DETECT_RESOLUTION);
+    const y = Math.floor(Math.round(pixel[1]) * HIT_DETECT_RESOLUTION);
+    // The pixel coordinate is clamped down to the hit-detect canvas' size to account
+    // for browsers returning coordinates slightly larger than the actual canvas size
+    // due to a non-integer pixel ratio.
     const index =
-      (Math.round(pixel[0] / 2) + Math.round(pixel[1] / 2) * imageData.width) *
+      (clamp(x, 0, imageData.width - 1) +
+        clamp(y, 0, imageData.height - 1) * imageData.width) *
       4;
     const r = imageData.data[index];
     const g = imageData.data[index + 1];

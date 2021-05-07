@@ -36,10 +36,6 @@ import {assign} from '../obj.js';
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
  * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
- *  * `'image'`: Vector tiles are rendered as images. Only available when `declutter` is set to `false` (default).
- *    Otherwise, `'hybrid'` mode will used instead. Great performance, but point symbols and texts
- *    are always rotated with the view and pixels are scaled during zoom animations. Labels and point symbols will
- *    get cut off at tile boundaries.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
@@ -76,13 +72,13 @@ import {assign} from '../obj.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @param {Options=} opt_options Options.
+ * @param {Options} [opt_options] Options.
  * @extends {BaseVectorLayer<import("../source/VectorTile.js").default>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -93,14 +89,18 @@ class VectorTileLayer extends BaseVectorLayer {
 
     super(/** @type {import("./BaseVector.js").Options} */ (baseOptions));
 
+    if (options.renderMode === VectorTileRenderType.IMAGE) {
+      //FIXME deprecated - remove this check in v7.
+      //eslint-disable-next-line
+      console.warn('renderMode: "image" is deprecated. Option ignored.')
+      options.renderMode = undefined;
+    }
     const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(
-      renderMode == undefined ||
-        renderMode == VectorTileRenderType.IMAGE ||
-        renderMode == VectorTileRenderType.HYBRID ||
+      renderMode == VectorTileRenderType.HYBRID ||
         renderMode == VectorTileRenderType.VECTOR,
       28
-    ); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
+    ); // `renderMode` must be `'hybrid'` or `'vector'`.
 
     /**
      * @private

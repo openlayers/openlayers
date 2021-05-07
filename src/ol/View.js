@@ -54,25 +54,25 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * An animation configuration
  *
  * @typedef {Object} Animation
- * @property {import("./coordinate.js").Coordinate} [sourceCenter]
- * @property {import("./coordinate.js").Coordinate} [targetCenter]
- * @property {number} [sourceResolution]
- * @property {number} [targetResolution]
- * @property {number} [sourceRotation]
- * @property {number} [targetRotation]
- * @property {import("./coordinate.js").Coordinate} [anchor]
- * @property {number} start
- * @property {number} duration
- * @property {boolean} complete
- * @property {function(number):number} easing
- * @property {function(boolean):void} callback
+ * @property {import("./coordinate.js").Coordinate} [sourceCenter] Source center.
+ * @property {import("./coordinate.js").Coordinate} [targetCenter] Target center.
+ * @property {number} [sourceResolution] Source resolution.
+ * @property {number} [targetResolution] Target resolution.
+ * @property {number} [sourceRotation] Source rotation.
+ * @property {number} [targetRotation] Target rotation.
+ * @property {import("./coordinate.js").Coordinate} [anchor] Anchor.
+ * @property {number} start Start.
+ * @property {number} duration Duration.
+ * @property {boolean} complete Complete.
+ * @property {function(number):number} easing Easing.
+ * @property {function(boolean):void} callback Callback.
  */
 
 /**
  * @typedef {Object} Constraints
- * @property {import("./centerconstraint.js").Type} center
- * @property {import("./resolutionconstraint.js").Type} resolution
- * @property {import("./rotationconstraint.js").Type} rotation
+ * @property {import("./centerconstraint.js").Type} center Center.
+ * @property {import("./resolutionconstraint.js").Type} resolution Resolution.
+ * @property {import("./rotationconstraint.js").Type} rotation Rotation.
  */
 
 /**
@@ -203,11 +203,11 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./coordinate.js").Coordinate} center
- * @property {import("./proj/Projection.js").default} projection
- * @property {number} resolution
- * @property {number} rotation
- * @property {number} zoom
+ * @property {import("./coordinate.js").Coordinate} center Center.
+ * @property {import("./proj/Projection.js").default} projection Projection.
+ * @property {number} resolution Resolution.
+ * @property {number} rotation Rotation.
+ * @property {number} zoom Zoom.
  */
 
 /**
@@ -290,7 +290,7 @@ const DEFAULT_MIN_ZOOM = 0;
  */
 class View extends BaseObject {
   /**
-   * @param {ViewOptions=} opt_options View options.
+   * @param {ViewOptions} [opt_options] View options.
    */
   constructor(opt_options) {
     super();
@@ -399,15 +399,10 @@ class View extends BaseObject {
     this.resolutions_ = options.resolutions;
 
     /**
-     * Padding (in css pixels).
-     * If the map viewport is partially covered with other content (overlays) along
-     * its edges, this setting allows to shift the center of the viewport away from that
-     * content. The order of the values in the array is top, right, bottom, left.
-     * The default is no padding, which is equivalent to `[0, 0, 0, 0]`.
      * @type {Array<number>|undefined}
-     * @api
+     * @private
      */
-    this.padding = options.padding;
+    this.padding_ = options.padding;
 
     /**
      * @private
@@ -446,6 +441,36 @@ class View extends BaseObject {
      * @type {ViewOptions}
      */
     this.options_ = options;
+  }
+
+  /**
+   * Padding (in css pixels).
+   * If the map viewport is partially covered with other content (overlays) along
+   * its edges, this setting allows to shift the center of the viewport away from that
+   * content. The order of the values in the array is top, right, bottom, left.
+   * The default is no padding, which is equivalent to `[0, 0, 0, 0]`.
+   * @type {Array<number>|undefined}
+   * @api
+   */
+  get padding() {
+    return this.padding_;
+  }
+  set padding(padding) {
+    let oldPadding = this.padding_;
+    this.padding_ = padding;
+    const center = this.getCenter();
+    if (center) {
+      const newPadding = padding || [0, 0, 0, 0];
+      oldPadding = oldPadding || [0, 0, 0, 0];
+      const resolution = this.getResolution();
+      const offsetX =
+        (resolution / 2) *
+        (newPadding[3] - oldPadding[3] + oldPadding[1] - newPadding[1]);
+      const offsetY =
+        (resolution / 2) *
+        (newPadding[0] - oldPadding[0] + oldPadding[2] - newPadding[2]);
+      this.setCenterInternal([center[0] + offsetX, center[1] - offsetY]);
+    }
   }
 
   /**
@@ -813,7 +838,7 @@ class View extends BaseObject {
   /**
    * Returns the current viewport size.
    * @private
-   * @param {number=} opt_rotation Take into account the rotation of the viewport when giving the size
+   * @param {number} [opt_rotation] Take into account the rotation of the viewport when giving the size
    * @return {import("./size.js").Size} Viewport size or `[100, 100]` when no viewport is found.
    */
   getViewportSize_(opt_rotation) {
@@ -837,7 +862,7 @@ class View extends BaseObject {
    * to avoid performance hit and layout reflow.
    * This should be done on map size change.
    * Note: the constraints are not resolved during an animation to avoid stopping it
-   * @param {import("./size.js").Size=} opt_size Viewport size; if undefined, [100, 100] is assumed
+   * @param {import("./size.js").Size} [opt_size] Viewport size; if undefined, [100, 100] is assumed
    */
   setViewportSize(opt_size) {
     this.viewportSize_ = Array.isArray(opt_size)
@@ -887,7 +912,7 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {Array<number>=} opt_hints Destination array.
+   * @param {Array<number>} [opt_hints] Destination array.
    * @return {Array<number>} Hint.
    */
   getHints(opt_hints) {
@@ -905,7 +930,7 @@ class View extends BaseObject {
    * The size is the pixel dimensions of the box into which the calculated extent
    * should fit. In most cases you want to get the extent of the entire map,
    * that is `map.getSize()`.
-   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided, the size
+   * @param {import("./size.js").Size} [opt_size] Box pixel size. If not provided, the size
    * of the map that uses this view will be used.
    * @return {import("./extent.js").Extent} Extent.
    * @api
@@ -916,12 +941,12 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided,
+   * @param {import("./size.js").Size} [opt_size] Box pixel size. If not provided,
    * the map's last known viewport size will be used.
    * @return {import("./extent.js").Extent} Extent.
    */
   calculateExtentInternal(opt_size) {
-    const size = opt_size || this.getViewportSize_();
+    const size = opt_size || this.getViewportSizeMinusPadding_();
     const center = /** @type {!import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
     assert(center, 1); // The view center is not defined
     const resolution = /** @type {!number} */ (this.getResolution());
@@ -991,7 +1016,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Set whether the view shoud allow intermediary zoom levels.
+   * Set whether the view should allow intermediary zoom levels.
    * @param {boolean} enabled Whether the resolution is constrained.
    * @api
    */
@@ -1031,7 +1056,7 @@ class View extends BaseObject {
   /**
    * Get the resolution for a provided extent (in map units) and size (in pixels).
    * @param {import("./extent.js").Extent} extent Extent.
-   * @param {import("./size.js").Size=} opt_size Box pixel size.
+   * @param {import("./size.js").Size} [opt_size] Box pixel size.
    * @return {number} The resolution at which the provided extent will render at
    *     the given size.
    * @api
@@ -1046,7 +1071,7 @@ class View extends BaseObject {
   /**
    * Get the resolution for a provided extent (in map units) and size (in pixels).
    * @param {import("./extent.js").Extent} extent Extent.
-   * @param {import("./size.js").Size=} opt_size Box pixel size.
+   * @param {import("./size.js").Size} [opt_size] Box pixel size.
    * @return {number} The resolution at which the provided extent will render at
    *     the given size.
    */
@@ -1060,7 +1085,7 @@ class View extends BaseObject {
   /**
    * Return a function that returns a value between 0 and 1 for a
    * resolution. Exponential scaling is assumed.
-   * @param {number=} opt_power Power.
+   * @param {number} [opt_power] Power.
    * @return {function(number): number} Resolution for value function.
    */
   getResolutionForValueFunction(opt_power) {
@@ -1093,7 +1118,7 @@ class View extends BaseObject {
   /**
    * Return a function that returns a resolution for a value between
    * 0 and 1. Exponential scaling is assumed.
-   * @param {number=} opt_power Power.
+   * @param {number} [opt_power] Power.
    * @return {function(number): number} Value for resolution function.
    */
   getValueForResolutionFunction(opt_power) {
@@ -1116,12 +1141,12 @@ class View extends BaseObject {
   /**
    * Returns the size of the viewport minus padding.
    * @private
-   * @param {number=} opt_rotation Take into account the rotation of the viewport when giving the size
+   * @param {number} [opt_rotation] Take into account the rotation of the viewport when giving the size
    * @return {import("./size.js").Size} Viewport size reduced by the padding.
    */
   getViewportSizeMinusPadding_(opt_rotation) {
     let size = this.getViewportSize_(opt_rotation);
-    const padding = this.padding;
+    const padding = this.padding_;
     if (padding) {
       size = [
         size[0] - padding[1] - padding[3],
@@ -1139,7 +1164,7 @@ class View extends BaseObject {
     const resolution = /** @type {number} */ (this.getResolution());
     const rotation = this.getRotation();
     let center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
-    const padding = this.padding;
+    const padding = this.padding_;
     if (padding) {
       const reducedSize = this.getViewportSizeMinusPadding_();
       center = calculateCenterOn(
@@ -1236,7 +1261,7 @@ class View extends BaseObject {
    * Takes care of the map angle.
    * @param {import("./geom/SimpleGeometry.js").default|import("./extent.js").Extent} geometryOrExtent The geometry or
    *     extent to fit the view to.
-   * @param {FitOptions=} opt_options Options.
+   * @param {FitOptions} [opt_options] Options.
    * @api
    */
   fit(geometryOrExtent, opt_options) {
@@ -1275,7 +1300,7 @@ class View extends BaseObject {
 
   /**
    * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
-   * @param {FitOptions=} opt_options Options.
+   * @param {FitOptions} [opt_options] Options.
    */
   fitInternal(geometry, opt_options) {
     const options = opt_options || {};
@@ -1395,7 +1420,7 @@ class View extends BaseObject {
    */
   calculateCenterShift(center, resolution, rotation, size) {
     let centerShift;
-    const padding = this.padding;
+    const padding = this.padding_;
     if (padding && center) {
       const reducedSize = this.getViewportSizeMinusPadding_(-rotation);
       const shiftedCenter = calculateCenterOn(
@@ -1449,7 +1474,7 @@ class View extends BaseObject {
    * Multiply the view resolution by a ratio, optionally using an anchor. Any resolution
    * constraint will apply.
    * @param {number} ratio The ratio to apply on the view resolution.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The origin of the transformation.
    * @api
    */
   adjustResolution(ratio, opt_anchor) {
@@ -1462,7 +1487,7 @@ class View extends BaseObject {
    * Multiply the view resolution by a ratio, optionally using an anchor. Any resolution
    * constraint will apply.
    * @param {number} ratio The ratio to apply on the view resolution.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The origin of the transformation.
    */
   adjustResolutionInternal(ratio, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
@@ -1486,7 +1511,7 @@ class View extends BaseObject {
    * Adds a value to the view zoom level, optionally using an anchor. Any resolution
    * constraint will apply.
    * @param {number} delta Relative value to add to the zoom level.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The origin of the transformation.
    * @api
    */
   adjustZoom(delta, opt_anchor) {
@@ -1497,7 +1522,7 @@ class View extends BaseObject {
    * Adds a value to the view rotation, optionally using an anchor. Any rotation
    * constraint will apply.
    * @param {number} delta Relative value to add to the zoom rotation, in radians.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The rotation center.
    * @api
    */
   adjustRotation(delta, opt_anchor) {
@@ -1509,7 +1534,7 @@ class View extends BaseObject {
 
   /**
    * @param {number} delta Relative value to add to the zoom rotation, in radians.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The rotation center.
    */
   adjustRotationInternal(delta, opt_anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
@@ -1589,8 +1614,8 @@ class View extends BaseObject {
    * Recompute rotation/resolution/center based on target values.
    * Note: we have to compute rotation first, then resolution and center considering that
    * parameters can influence one another in case a view extent constraint is present.
-   * @param {boolean=} opt_doNotCancelAnims Do not cancel animations.
-   * @param {boolean=} opt_forceMoving Apply constraints as if the view is moving.
+   * @param {boolean} [opt_doNotCancelAnims] Do not cancel animations.
+   * @param {boolean} [opt_forceMoving] Apply constraints as if the view is moving.
    * @private
    */
   applyTargetState_(opt_doNotCancelAnims, opt_forceMoving) {
@@ -1646,9 +1671,9 @@ class View extends BaseObject {
    * This is typically done on interaction end.
    * Note: calling this with a duration of 0 will apply the constrained values straight away,
    * without animation.
-   * @param {number=} opt_duration The animation duration in ms.
-   * @param {number=} opt_resolutionDirection Which direction to zoom.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @param {number} [opt_duration] The animation duration in ms.
+   * @param {number} [opt_resolutionDirection] Which direction to zoom.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The origin of the transformation.
    */
   resolveConstraints(opt_duration, opt_resolutionDirection, opt_anchor) {
     const duration = opt_duration !== undefined ? opt_duration : 200;
@@ -1722,9 +1747,9 @@ class View extends BaseObject {
   /**
    * Notify the View that an interaction has ended. The view state will be resolved
    * to a stable one if needed (depending on its constraints).
-   * @param {number=} opt_duration Animation duration in ms.
-   * @param {number=} opt_resolutionDirection Which direction to zoom.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @param {number} [opt_duration] Animation duration in ms.
+   * @param {number} [opt_resolutionDirection] Which direction to zoom.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The origin of the transformation.
    * @api
    */
   endInteraction(opt_duration, opt_resolutionDirection, opt_anchor) {
@@ -1736,9 +1761,9 @@ class View extends BaseObject {
   /**
    * Notify the View that an interaction has ended. The view state will be resolved
    * to a stable one if needed (depending on its constraints).
-   * @param {number=} opt_duration Animation duration in ms.
-   * @param {number=} opt_resolutionDirection Which direction to zoom.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @param {number} [opt_duration] Animation duration in ms.
+   * @param {number} [opt_resolutionDirection] Which direction to zoom.
+   * @param {import("./coordinate.js").Coordinate} [opt_anchor] The origin of the transformation.
    */
   endInteractionInternal(opt_duration, opt_resolutionDirection, opt_anchor) {
     this.setHint(ViewHint.INTERACTING, -1);
@@ -1749,7 +1774,7 @@ class View extends BaseObject {
   /**
    * Get a valid position for the view center according to the current constraints.
    * @param {import("./coordinate.js").Coordinate|undefined} targetCenter Target center position.
-   * @param {number=} opt_targetResolution Target resolution. If not supplied, the current one will be used.
+   * @param {number} [opt_targetResolution] Target resolution. If not supplied, the current one will be used.
    * This is useful to guess a valid center position at a different zoom level.
    * @return {import("./coordinate.js").Coordinate|undefined} Valid center position.
    */
@@ -1765,7 +1790,7 @@ class View extends BaseObject {
   /**
    * Get a valid zoom level according to the current view constraints.
    * @param {number|undefined} targetZoom Target zoom.
-   * @param {number=} [opt_direction=0] Indicate which resolution should be used
+   * @param {number} [opt_direction=0] Indicate which resolution should be used
    * by a renderer if the view resolution does not match any resolution of the tile source.
    * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
    * will be used. If -1, the nearest higher resolution will be used.
@@ -1781,7 +1806,7 @@ class View extends BaseObject {
   /**
    * Get a valid resolution according to the current view constraints.
    * @param {number|undefined} targetResolution Target resolution.
-   * @param {number=} [opt_direction=0] Indicate which resolution should be used
+   * @param {number} [opt_direction=0] Indicate which resolution should be used
    * by a renderer if the view resolution does not match any resolution of the tile source.
    * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
    * will be used. If -1, the nearest higher resolution will be used.

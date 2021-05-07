@@ -3,11 +3,17 @@
  * zoom-out buttons.
  */
 #map2 .ol-zoom .ol-zoom-out {
-  margin-top: 204px;
+  margin-top: 200px;
 }
 #map2 .ol-zoomslider {
   background-color: transparent;
-  top: 2.3em;
+  /*
+  Zoom control top: 0.5em
+  Zoom control padding: 2px
+  Zoom in button margin top: 1px
+  Zoom in button height: font size 1.14em * 1.375 height
+  */
+  top: calc(0.5em + 2px + 1px + 1.14 * 1.375em);
 }
 
 #map2 .ol-touch .ol-zoom .ol-zoom-out {
@@ -40,7 +46,7 @@
   height: 15px;
   padding: 0;
   box-shadow: 0 0 5px rgb(255,69,0);
-  border-radius: 20px;
+  border-radius: 7.5px;
 }
 
 #map3 .ol-zoomslider:hover {
@@ -53,7 +59,7 @@
   margin: 0;
   filter: none;
   background-color: rgba(255,69,0,0.6);
-  border-radius: 20px;
+  border-radius: 7.5px;
 }
 #map3 a.ol-zoomslider-handle:hover {
   background-color: rgba(255,69,0,0.7);

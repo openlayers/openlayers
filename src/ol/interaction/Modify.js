@@ -81,12 +81,12 @@ const ModifyEventType = {
 
 /**
  * @typedef {Object} SegmentData
- * @property {Array<number>} [depth]
- * @property {Feature} feature
- * @property {import("../geom/SimpleGeometry.js").default} geometry
- * @property {number} [index]
- * @property {Array<import("../extent.js").Extent>} segment
- * @property {Array<SegmentData>} [featureSegments]
+ * @property {Array<number>} [depth] Depth.
+ * @property {Feature} feature Feature.
+ * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
+ * @property {number} [index] Index.
+ * @property {Array<import("../extent.js").Extent>} segment Segment.
+ * @property {Array<SegmentData>} [featureSegments] FeatureSegments.
  */
 
 /**
@@ -128,6 +128,8 @@ const ModifyEventType = {
  * provided, a vector source must be provided with the `source` option.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
+ * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
+ * pointer coordinate when clicked within the `pixelTolerance`.
  */
 
 /**
@@ -386,6 +388,14 @@ class Modify extends PointerInteraction {
      * @type {Array<number>}
      */
     this.delta_ = [0, 0];
+
+    /**
+     * @private
+     */
+    this.snapToPointer_ =
+      options.snapToPointer === undefined
+        ? !this.hitDetection_
+        : options.snapToPointer;
   }
 
   /**
@@ -417,9 +427,12 @@ class Modify extends PointerInteraction {
       this.featuresBeingModified_ = new Collection();
       const features = this.featuresBeingModified_.getArray();
       for (let i = 0, ii = segments.length; i < ii; ++i) {
-        const feature = segments[i][0].feature;
-        if (features.indexOf(feature) === -1) {
-          this.featuresBeingModified_.push(feature);
+        const segment = segments[i];
+        for (let s = 0, ss = segment.length; s < ss; ++s) {
+          const feature = segment[s].feature;
+          if (feature && features.indexOf(feature) === -1) {
+            this.featuresBeingModified_.push(feature);
+          }
         }
       }
 
@@ -1100,7 +1113,7 @@ class Modify extends PointerInteraction {
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../PluggableMap.js").default} map Map.
-   * @param {import("../coordinate.js").Coordinate=} opt_coordinate The pixel Coordinate.
+   * @param {import("../coordinate.js").Coordinate} [opt_coordinate] The pixel Coordinate.
    * @private
    */
   handlePointerAtPixel_(pixel, map, opt_coordinate) {
@@ -1163,8 +1176,10 @@ class Modify extends PointerInteraction {
         const vertexSegments = {};
         vertexSegments[getUid(closestSegment)] = true;
 
-        this.delta_[0] = vertex[0] - pixelCoordinate[0];
-        this.delta_[1] = vertex[1] - pixelCoordinate[1];
+        if (!this.snapToPointer_) {
+          this.delta_[0] = vertex[0] - pixelCoordinate[0];
+          this.delta_[1] = vertex[1] - pixelCoordinate[1];
+        }
         if (
           node.geometry.getType() === GeometryType.CIRCLE &&
           node.index === CIRCLE_CIRCUMFERENCE_INDEX
@@ -1458,19 +1473,20 @@ class Modify extends PointerInteraction {
    * @private
    */
   updateSegmentIndices_(geometry, index, depth, delta) {
-    this.rBush_.forEachInExtent(geometry.getExtent(), function (
-      segmentDataMatch
-    ) {
-      if (
-        segmentDataMatch.geometry === geometry &&
-        (depth === undefined ||
-          segmentDataMatch.depth === undefined ||
-          equals(segmentDataMatch.depth, depth)) &&
-        segmentDataMatch.index > index
-      ) {
-        segmentDataMatch.index += delta;
+    this.rBush_.forEachInExtent(
+      geometry.getExtent(),
+      function (segmentDataMatch) {
+        if (
+          segmentDataMatch.geometry === geometry &&
+          (depth === undefined ||
+            segmentDataMatch.depth === undefined ||
+            equals(segmentDataMatch.depth, depth)) &&
+          segmentDataMatch.index > index
+        ) {
+          segmentDataMatch.index += delta;
+        }
       }
-    });
+    );
   }
 }
 

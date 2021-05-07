@@ -94,7 +94,7 @@ const map = new Map({
 
 /*
  * Swiss projection transform functions downloaded from
- * http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/skripts.html
+ * https://www.swisstopo.admin.ch/en/knowledge-facts/surveying-geodesy/reference-systems/map-projections.html
  */
 
 // Convert WGS lat/long (° dec) to CH y
@@ -107,7 +107,7 @@ function WGStoCHy(lat, lng) {
   lat = DEGtoSEC(lat);
   lng = DEGtoSEC(lng);
 
-  // Axiliary values (% Bern)
+  // Axillary values (% Bern)
   const lat_aux = (lat - 169028.66) / 10000;
   const lng_aux = (lng - 26782.5) / 10000;
 
@@ -132,7 +132,7 @@ function WGStoCHx(lat, lng) {
   lat = DEGtoSEC(lat);
   lng = DEGtoSEC(lng);
 
-  // Axiliary values (% Bern)
+  // Axillary values (% Bern)
   const lat_aux = (lat - 169028.66) / 10000;
   const lng_aux = (lng - 26782.5) / 10000;
 
@@ -150,8 +150,8 @@ function WGStoCHx(lat, lng) {
 
 // Convert CH y/x to WGS lat
 function CHtoWGSlat(y, x) {
-  // Converts militar to civil and  to unit = 1000km
-  // Axiliary values (% Bern)
+  // Converts military to civil and to unit = 1000km
+  // Axillary values (% Bern)
   const y_aux = (y - 600000) / 1000000;
   const x_aux = (x - 200000) / 1000000;
 
@@ -172,8 +172,8 @@ function CHtoWGSlat(y, x) {
 
 // Convert CH y/x to WGS long
 function CHtoWGSlng(y, x) {
-  // Converts militar to civil and  to unit = 1000km
-  // Axiliary values (% Bern)
+  // Converts military to civil and to unit = 1000km
+  // Axillary values (% Bern)
   const y_aux = (y - 600000) / 1000000;
   const x_aux = (x - 200000) / 1000000;
 

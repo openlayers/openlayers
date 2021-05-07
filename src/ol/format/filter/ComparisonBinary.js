@@ -15,7 +15,7 @@ class ComparisonBinary extends Comparison {
    * @param {!string} tagName The XML tag name for this filter.
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!(string|number)} expression The value to compare.
-   * @param {boolean=} opt_matchCase Case-sensitive?
+   * @param {boolean} [opt_matchCase] Case-sensitive?
    */
   constructor(tagName, propertyName, expression, opt_matchCase) {
     super(tagName, propertyName);

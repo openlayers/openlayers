@@ -2,9 +2,15 @@
 
 ### Next version
 
+#### Deprecation of `image` render mode for vector tile layers
+
+`renderMode: 'image'` for vector tile layers has been deprecated. Applications continue to work, but a warning will be issued to the console. To get rid of the warning, simply remove the `renderMode` option.
+
+### v6.5.0
+
 #### Units of the `hitTolerance` option fixed
 
-Previously, the `hitTolerance` option of the map's `getFeaturesAtPixel()`, `forEachFeatureAtPixel()` and `hasFeatureAtPixel()` methods behaved differntly depending on the `devicePixelRatio` (or the `pixelRatio` of the map), because the original value was internally multiplied by the device pixel ratio twice instead of just once. Now this is fixed. **Note**: The `hitTolerance`'s units are css pixels. The documentation was updated to reflect this.
+Previously, the `hitTolerance` option of the map's `getFeaturesAtPixel()`, `forEachFeatureAtPixel()` and `hasFeatureAtPixel()` methods behaved differently depending on the `devicePixelRatio` (or the `pixelRatio` of the map), because the original value was internally multiplied by the device pixel ratio twice instead of just once. Now this is fixed. **Note**: The `hitTolerance`'s units are css pixels. The documentation was updated to reflect this.
 
 If your application adjusts for that with code like
 ```js

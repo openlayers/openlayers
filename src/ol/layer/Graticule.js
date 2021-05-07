@@ -72,8 +72,8 @@ const INTERVALS = [
 
 /**
  * @typedef {Object} GraticuleLabelDataType
- * @property {Point} geom
- * @property {string} text
+ * @property {Point} geom Geometry.
+ * @property {string} text Text.
  */
 
 /**
@@ -172,11 +172,12 @@ const INTERVALS = [
  * Note that the view projection must define both extent and worldExtent.
  *
  * @fires import("../render/Event.js").RenderEvent
+ * @extends {VectorLayer<import("../source/Vector.js").default>}
  * @api
  */
 class Graticule extends VectorLayer {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

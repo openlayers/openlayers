@@ -18,11 +18,7 @@ import RenderEventType from './render/EventType.js';
 import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
 import ViewHint from './ViewHint.js';
-import {
-  DEVICE_PIXEL_RATIO,
-  IMAGE_DECODE,
-  PASSIVE_EVENT_LISTENERS,
-} from './has.js';
+import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {TRUE} from './functions.js';
 import {
   apply as applyTransform,
@@ -48,20 +44,20 @@ import {removeNode} from './dom.js';
  * @property {number} pixelRatio The pixel ratio of the frame.
  * @property {number} time The time when rendering of the frame was requested.
  * @property {import("./View.js").State} viewState The state of the current view.
- * @property {boolean} animate
- * @property {import("./transform.js").Transform} coordinateToPixelTransform
- * @property {import("rbush").default} declutterTree
- * @property {null|import("./extent.js").Extent} extent
- * @property {number} index
- * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
- * @property {number} layerIndex
- * @property {import("./transform.js").Transform} pixelToCoordinateTransform
- * @property {Array<PostRenderFunction>} postRenderFunctions
- * @property {import("./size.js").Size} size
- * @property {TileQueue} tileQueue
- * @property {!Object<string, Object<string, boolean>>} usedTiles
- * @property {Array<number>} viewHints
- * @property {!Object<string, Object<string, boolean>>} wantedTiles
+ * @property {boolean} animate Animate.
+ * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
+ * @property {import("rbush").default} declutterTree DeclutterTree.
+ * @property {null|import("./extent.js").Extent} extent Extent.
+ * @property {number} index Index.
+ * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
+ * @property {number} layerIndex LayerIndex.
+ * @property {import("./transform.js").Transform} pixelToCoordinateTransform PixelToCoordinateTransform.
+ * @property {Array<PostRenderFunction>} postRenderFunctions PostRenderFunctions.
+ * @property {import("./size.js").Size} size Size.
+ * @property {TileQueue} tileQueue TileQueue.
+ * @property {!Object<string, Object<string, boolean>>} usedTiles UsedTiles.
+ * @property {Array<number>} viewHints ViewHints.
+ * @property {!Object<string, Object<string, boolean>>} wantedTiles WantedTiles.
  */
 
 /**
@@ -83,11 +79,11 @@ import {removeNode} from './dom.js';
 
 /**
  * @typedef {Object} MapOptionsInternal
- * @property {Collection<import("./control/Control.js").default>} [controls]
- * @property {Collection<import("./interaction/Interaction.js").default>} [interactions]
- * @property {HTMLElement|Document} keyboardEventTarget
- * @property {Collection<import("./Overlay.js").default>} overlays
- * @property {Object<string, *>} values
+ * @property {Collection<import("./control/Control.js").default>} [controls] Controls.
+ * @property {Collection<import("./interaction/Interaction.js").default>} [interactions] Interactions.
+ * @property {HTMLElement|Document} keyboardEventTarget KeyboardEventTarget.
+ * @property {Collection<import("./Overlay.js").default>} overlays Overlays.
+ * @property {Object<string, *>} values Values.
  */
 
 /**
@@ -545,7 +541,7 @@ class PluggableMap extends BaseObject {
    *     the {@link module:ol/layer/Layer layer} of the feature and will be null for
    *     unmanaged layers. To stop detection, callback functions can return a
    *     truthy value.
-   * @param {AtPixelOptions=} opt_options Optional options.
+   * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
    * @template S,T
@@ -577,7 +573,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get all features that intersect a pixel on the viewport.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {AtPixelOptions=} opt_options Optional options.
+   * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
    * an empty array if none were found.
    * @api
@@ -609,7 +605,7 @@ class PluggableMap extends BaseObject {
    *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
    *     that do not currently support this argument. To stop detection, callback
    *     functions can return a truthy value.
-   * @param {AtPixelOptions=} opt_options Configuration options.
+   * @param {AtPixelOptions} [opt_options] Configuration options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
    * @template S,T
@@ -636,7 +632,7 @@ class PluggableMap extends BaseObject {
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through `opt_layerFilter`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {AtPixelOptions=} opt_options Optional options.
+   * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {boolean} Is there a feature at the given pixel?
    * @api
    */
@@ -944,9 +940,8 @@ class PluggableMap extends BaseObject {
    * @return {!Document} The document where the map is displayed.
    */
   getOwnerDocument() {
-    return this.getTargetElement()
-      ? this.getTargetElement().ownerDocument
-      : document;
+    const targetElement = this.getTargetElement();
+    return targetElement ? targetElement.ownerDocument : document;
   }
 
   /**
@@ -968,7 +963,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * @param {UIEvent} browserEvent Browser event.
-   * @param {string=} opt_type Type.
+   * @param {string} [opt_type] Type.
    */
   handleBrowserEvent(browserEvent, opt_type) {
     const type = opt_type || browserEvent.type;
@@ -996,13 +991,7 @@ class PluggableMap extends BaseObject {
       const rootNode = this.viewport_.getRootNode
         ? this.viewport_.getRootNode()
         : doc;
-      const target =
-        'host' in rootNode // ShadowRoot
-          ? /** @type {ShadowRoot} */ (rootNode).elementFromPoint(
-              originalEvent.clientX,
-              originalEvent.clientY
-            )
-          : /** @type {Node} */ (originalEvent.target);
+      const target = /** @type {Node} */ (originalEvent.target);
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
         // to be handled by map interactions.
@@ -1058,8 +1047,7 @@ class PluggableMap extends BaseObject {
       if (frameState) {
         const hints = frameState.viewHints;
         if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
-          const lowOnFrameBudget =
-            !IMAGE_DECODE && Date.now() - frameState.time > 8;
+          const lowOnFrameBudget = Date.now() - frameState.time > 8;
           maxTotalLoading = lowOnFrameBudget ? 0 : 8;
           maxNewLoads = lowOnFrameBudget ? 0 : 2;
         }
@@ -1496,24 +1484,33 @@ class PluggableMap extends BaseObject {
   updateSize() {
     const targetElement = this.getTargetElement();
 
-    if (!targetElement) {
-      this.setSize(undefined);
-    } else {
+    let size = undefined;
+    if (targetElement) {
       const computedStyle = getComputedStyle(targetElement);
-      this.setSize([
+      const width =
         targetElement.offsetWidth -
-          parseFloat(computedStyle['borderLeftWidth']) -
-          parseFloat(computedStyle['paddingLeft']) -
-          parseFloat(computedStyle['paddingRight']) -
-          parseFloat(computedStyle['borderRightWidth']),
+        parseFloat(computedStyle['borderLeftWidth']) -
+        parseFloat(computedStyle['paddingLeft']) -
+        parseFloat(computedStyle['paddingRight']) -
+        parseFloat(computedStyle['borderRightWidth']);
+      const height =
         targetElement.offsetHeight -
-          parseFloat(computedStyle['borderTopWidth']) -
-          parseFloat(computedStyle['paddingTop']) -
-          parseFloat(computedStyle['paddingBottom']) -
-          parseFloat(computedStyle['borderBottomWidth']),
-      ]);
+        parseFloat(computedStyle['borderTopWidth']) -
+        parseFloat(computedStyle['paddingTop']) -
+        parseFloat(computedStyle['paddingBottom']) -
+        parseFloat(computedStyle['borderBottomWidth']);
+      if (!isNaN(width) && !isNaN(height)) {
+        size = [width, height];
+        if (!hasArea(size)) {
+          // eslint-disable-next-line
+          console.warn(
+            "No map visible because the map container's width or height are 0."
+          );
+        }
+      }
     }
 
+    this.setSize(size);
     this.updateViewportSize_();
   }
 

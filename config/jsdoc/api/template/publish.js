@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs */
+
 /*global env: true */
 
 const hasOwnProp = Object.prototype.hasOwnProperty;
@@ -190,9 +192,9 @@ function generateSourceFiles(sourceFiles) {
  * for display purposes. This function mutates the original arrays.
  *
  * @private
- * @param {Array<module:jsdoc/doclet.Doclet>} doclets - The array of classes and functions to
+ * @param {Array<module:jsdoc/doclet.Doclet>} doclets The array of classes and functions to
  * check.
- * @param {Array<module:jsdoc/doclet.Doclet>} modules - The array of module doclets to search.
+ * @param {Array<module:jsdoc/doclet.Doclet>} modules The array of module doclets to search.
  */
 function attachModuleSymbols(doclets, modules) {
   const symbols = {};
@@ -322,7 +324,7 @@ function buildNav(members) {
 }
 
 /**
- * @param {Object} taffyData See <http://taffydb.com/>.
+ * @param {Object} taffyData See {@link https://taffydb.com/}.
  * @param {Object} opts Options.
  * @param {Object} tutorials Tutorials.
  */

@@ -56,17 +56,17 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} Vec2
- * @property {number} x
- * @property {import("../style/IconAnchorUnits").default} xunits
- * @property {number} y
- * @property {import("../style/IconAnchorUnits").default} yunits
- * @property {import("../style/IconOrigin.js").default} origin
+ * @property {number} x X coordinate.
+ * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
+ * @property {number} y Y coordinate.
+ * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
+ * @property {import("../style/IconOrigin.js").default} origin Origin.
  */
 
 /**
  * @typedef {Object} GxTrackObject
- * @property {Array<number>} flatCoordinates
- * @property {Array<number>} whens
+ * @property {Array<number>} flatCoordinates Flat coordinates.
+ * @property {Array<number>} whens Whens.
  */
 
 /**
@@ -427,7 +427,7 @@ function defaultIconUrlFunction(href) {
  */
 class KML extends XMLFeature {
   /**
-   * @param {Options=} opt_options Options.
+   * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
@@ -624,7 +624,7 @@ class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
@@ -644,7 +644,7 @@ class KML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
@@ -886,7 +886,7 @@ class KML extends XMLFeature {
    * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
    * @return {Node} Node.
    * @api
    */
@@ -2403,7 +2403,7 @@ const DOCUMENT_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const DOCUMENT_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
@@ -2492,7 +2492,7 @@ const ICON_SERIALIZERS = makeStructureNS(
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const GX_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
@@ -2731,7 +2731,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
+ * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const GEOMETRY_NODE_FACTORY = function (value, objectStack, opt_nodeName) {

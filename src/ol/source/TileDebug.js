@@ -101,7 +101,7 @@ class LabeledTile extends Tile {
  */
 class TileDebug extends XYZ {
   /**
-   * @param {Options=} opt_options Debug tile options.
+   * @param {Options} [opt_options] Debug tile options.
    */
   constructor(opt_options) {
     /**

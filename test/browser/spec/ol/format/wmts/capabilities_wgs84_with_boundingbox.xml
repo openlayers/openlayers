@@ -1,0 +1,626 @@
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+  <ows:ServiceIdentification>
+    <ows:Title>basemap.at</ows:Title>
+    <ows:Abstract>basemap.at ist eine Rasterkarte in Form eines vorgenerierten Kachel-Caches, in der Web Mercator Auxiliary Sphere und damit kompatibel zu den gängigen weltweiten Basiskarten wie beispielsweise jenen von OpenStreetMap, Google Maps und Bing Maps.</ows:Abstract>
+    <ows:ServiceType>OGC WMTS</ows:ServiceType>
+    <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+    <ows:Fees>none</ows:Fees>
+    <ows:AccessConstraints>https://www.basemap.at</ows:AccessConstraints>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    <ows:ProviderName>City of Vienna</ows:ProviderName>
+    <ows:ProviderSite xlink:href="https://www.wien.gv.at/viennagis" />
+    <ows:ServiceContact>
+      <ows:ContactInfo>
+        <ows:Address>
+          <ows:City>Vienna</ows:City>
+          <ows:Country>Austria</ows:Country>
+          <ows:ElectronicMailAddress>viennagis@post.wien.gv.at</ows:ElectronicMailAddress>
+        </ows:Address>
+      </ows:ContactInfo>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata>
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="https://maps.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps1.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps2.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps3.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps4.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="GetTile">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="https://maps.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps1.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps2.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps3.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Get xlink:href="https://maps4.wien.gv.at/basemap">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>RESTful</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+  </ows:OperationsMetadata>
+  <Contents>
+    <Layer>
+      <ows:Title>Geoland Basemap</ows:Title>
+      <ows:Abstract>Basemap von Österreich in Farbe</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>geolandbasemap</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>normal</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" template="https://maps1.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps2.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps3.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps4.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+    </Layer>
+    <Layer>
+      <ows:Title>Geoland Basemap Overlay</ows:Title>
+      <ows:Abstract>Basemap von Österreich nur Beschriftung als transparenter Layer</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bmapoverlay</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>normal</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" template="https://maps1.wien.gv.at/basemap/bmapoverlay/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps2.wien.gv.at/basemap/bmapoverlay/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps3.wien.gv.at/basemap/bmapoverlay/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps4.wien.gv.at/basemap/bmapoverlay/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps.wien.gv.at/basemap/bmapoverlay/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+    </Layer>
+    <Layer>
+      <ows:Title>Geoland Basemap Grau</ows:Title>
+      <ows:Abstract>Basemap von Österreich in Grau</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bmapgrau</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>normal</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" template="https://maps1.wien.gv.at/basemap/bmapgrau/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps2.wien.gv.at/basemap/bmapgrau/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps3.wien.gv.at/basemap/bmapgrau/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps4.wien.gv.at/basemap/bmapgrau/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+      <ResourceURL format="image/png" template="https://maps.wien.gv.at/basemap/bmapgrau/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" resourceType="tile" />
+    </Layer>
+    <Layer>
+      <ows:Title>Basemap High DPI</ows:Title>
+      <ows:Abstract>Basemap mit 512x512px Kacheln für Unterstützung von User Endgeräten mit high dpi Displays (iPad retina, smartphones mit HD Auflösung)</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bmaphidpi</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>normal</ows:Identifier>
+      </Style>
+      <Format>image/jpeg</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/jpeg" template="https://maps1.wien.gv.at/basemap/bmaphidpi/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps2.wien.gv.at/basemap/bmaphidpi/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps3.wien.gv.at/basemap/bmaphidpi/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps4.wien.gv.at/basemap/bmaphidpi/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps.wien.gv.at/basemap/bmaphidpi/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+    </Layer>
+    <Layer>
+      <ows:Title>Geoland Basemap Orthofoto</ows:Title>
+      <ows:Abstract>Basemap als farbiges Orthofoto</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bmaporthofoto30cm</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>normal</ows:Identifier>
+      </Style>
+      <Format>image/jpeg</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/jpeg" template="https://maps1.wien.gv.at/basemap/bmaporthofoto30cm/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps2.wien.gv.at/basemap/bmaporthofoto30cm/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps3.wien.gv.at/basemap/bmaporthofoto30cm/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps4.wien.gv.at/basemap/bmaporthofoto30cm/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps.wien.gv.at/basemap/bmaporthofoto30cm/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+    </Layer>
+    <Layer>
+      <ows:Title>Geoland Basemap Gelände</ows:Title>
+      <ows:Abstract>Basemap Geländedarstellung von Österreich in Grau</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bmapgelaende</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>grau</ows:Identifier>
+      </Style>
+      <Format>image/jpeg</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857_0-17</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/jpeg" template="https://maps1.wien.gv.at/basemap/bmapgelaende/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps2.wien.gv.at/basemap/bmapgelaende/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps3.wien.gv.at/basemap/bmapgelaende/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps4.wien.gv.at/basemap/bmapgelaende/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps.wien.gv.at/basemap/bmapgelaende/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+    </Layer>
+    <Layer>
+      <ows:Title>Geoland Basemap Oberfläche</ows:Title>
+      <ows:Abstract>Basemap Oberflächendarstellung von Österreich in Grau</ows:Abstract>
+      <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+        <ows:LowerCorner>8.782379 46.358770</ows:LowerCorner>
+        <ows:UpperCorner>17.5 49.037872</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bmapoberflaeche</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Identifier>grau</ows:Identifier>
+      </Style>
+      <Format>image/jpeg</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>google3857_0-17</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/jpeg" template="https://maps1.wien.gv.at/basemap/bmapoberflaeche/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps2.wien.gv.at/basemap/bmapoberflaeche/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps3.wien.gv.at/basemap/bmapoberflaeche/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps4.wien.gv.at/basemap/bmapoberflaeche/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+      <ResourceURL format="image/jpeg" template="https://maps.wien.gv.at/basemap/bmapoberflaeche/{Style}/google3857/{TileMatrix}/{TileRow}/{TileCol}.jpeg" resourceType="tile" />
+    </Layer>
+    <TileMatrixSet>
+      <ows:Identifier>google3857</ows:Identifier>
+      <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.18.3:3857">
+        <ows:LowerCorner>977650 5838030</ows:LowerCorner>
+        <ows:UpperCorner>1913530 6281290</ows:UpperCorner>
+      </ows:BoundingBox>
+      <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18.3:3857</ows:SupportedCRS>
+      <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.029</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>1</ows:Identifier>
+        <ScaleDenominator>279541132.015</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2</MatrixWidth>
+        <MatrixHeight>2</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>2</ows:Identifier>
+        <ScaleDenominator>139770566.007</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4</MatrixWidth>
+        <MatrixHeight>4</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>3</ows:Identifier>
+        <ScaleDenominator>69885283.0036</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8</MatrixWidth>
+        <MatrixHeight>8</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>4</ows:Identifier>
+        <ScaleDenominator>34942641.5018</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16</MatrixWidth>
+        <MatrixHeight>16</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>5</ows:Identifier>
+        <ScaleDenominator>17471320.7509</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32</MatrixWidth>
+        <MatrixHeight>32</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>6</ows:Identifier>
+        <ScaleDenominator>8735660.37545</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>64</MatrixWidth>
+        <MatrixHeight>64</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>7</ows:Identifier>
+        <ScaleDenominator>4367830.18773</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>128</MatrixWidth>
+        <MatrixHeight>128</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>8</ows:Identifier>
+        <ScaleDenominator>2183915.09386</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>256</MatrixWidth>
+        <MatrixHeight>256</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>9</ows:Identifier>
+        <ScaleDenominator>1091957.54693</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>512</MatrixWidth>
+        <MatrixHeight>512</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>10</ows:Identifier>
+        <ScaleDenominator>545978.773466</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1024</MatrixWidth>
+        <MatrixHeight>1024</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>11</ows:Identifier>
+        <ScaleDenominator>272989.386733</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2048</MatrixWidth>
+        <MatrixHeight>2048</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>12</ows:Identifier>
+        <ScaleDenominator>136494.693366</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4096</MatrixWidth>
+        <MatrixHeight>4096</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>13</ows:Identifier>
+        <ScaleDenominator>68247.3466832</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8192</MatrixWidth>
+        <MatrixHeight>8192</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>14</ows:Identifier>
+        <ScaleDenominator>34123.6733416</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16384</MatrixWidth>
+        <MatrixHeight>16384</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>15</ows:Identifier>
+        <ScaleDenominator>17061.8366708</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32768</MatrixWidth>
+        <MatrixHeight>32768</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>16</ows:Identifier>
+        <ScaleDenominator>8530.91833540</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>65536</MatrixWidth>
+        <MatrixHeight>65536</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>17</ows:Identifier>
+        <ScaleDenominator>4265.45916770</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>131072</MatrixWidth>
+        <MatrixHeight>131072</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>18</ows:Identifier>
+        <ScaleDenominator>2132.72958385</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>262144</MatrixWidth>
+        <MatrixHeight>262144</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>19</ows:Identifier>
+        <ScaleDenominator>1066.36479193</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>524288</MatrixWidth>
+        <MatrixHeight>524288</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>20</ows:Identifier>
+        <ScaleDenominator>533.18239597</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1048576</MatrixWidth>
+        <MatrixHeight>1048576</MatrixHeight>
+      </TileMatrix>
+    </TileMatrixSet>
+    <TileMatrixSet>
+      <ows:Identifier>google3857_0-17</ows:Identifier>
+      <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.18.3:3857">
+        <ows:LowerCorner>977650 5838030</ows:LowerCorner>
+        <ows:UpperCorner>1913530 6281290</ows:UpperCorner>
+      </ows:BoundingBox>
+      <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18.3:3857</ows:SupportedCRS>
+      <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.029</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>1</ows:Identifier>
+        <ScaleDenominator>279541132.015</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2</MatrixWidth>
+        <MatrixHeight>2</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>2</ows:Identifier>
+        <ScaleDenominator>139770566.007</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4</MatrixWidth>
+        <MatrixHeight>4</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>3</ows:Identifier>
+        <ScaleDenominator>69885283.0036</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8</MatrixWidth>
+        <MatrixHeight>8</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>4</ows:Identifier>
+        <ScaleDenominator>34942641.5018</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16</MatrixWidth>
+        <MatrixHeight>16</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>5</ows:Identifier>
+        <ScaleDenominator>17471320.7509</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32</MatrixWidth>
+        <MatrixHeight>32</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>6</ows:Identifier>
+        <ScaleDenominator>8735660.37545</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>64</MatrixWidth>
+        <MatrixHeight>64</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>7</ows:Identifier>
+        <ScaleDenominator>4367830.18773</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>128</MatrixWidth>
+        <MatrixHeight>128</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>8</ows:Identifier>
+        <ScaleDenominator>2183915.09386</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>256</MatrixWidth>
+        <MatrixHeight>256</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>9</ows:Identifier>
+        <ScaleDenominator>1091957.54693</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>512</MatrixWidth>
+        <MatrixHeight>512</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>10</ows:Identifier>
+        <ScaleDenominator>545978.773466</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1024</MatrixWidth>
+        <MatrixHeight>1024</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>11</ows:Identifier>
+        <ScaleDenominator>272989.386733</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2048</MatrixWidth>
+        <MatrixHeight>2048</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>12</ows:Identifier>
+        <ScaleDenominator>136494.693366</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4096</MatrixWidth>
+        <MatrixHeight>4096</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>13</ows:Identifier>
+        <ScaleDenominator>68247.3466832</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8192</MatrixWidth>
+        <MatrixHeight>8192</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>14</ows:Identifier>
+        <ScaleDenominator>34123.6733416</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16384</MatrixWidth>
+        <MatrixHeight>16384</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>15</ows:Identifier>
+        <ScaleDenominator>17061.8366708</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32768</MatrixWidth>
+        <MatrixHeight>32768</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>16</ows:Identifier>
+        <ScaleDenominator>8530.91833540</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>65536</MatrixWidth>
+        <MatrixHeight>65536</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>17</ows:Identifier>
+        <ScaleDenominator>4265.45916770</ScaleDenominator>
+        <TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>131072</MatrixWidth>
+        <MatrixHeight>131072</MatrixHeight>
+      </TileMatrix>
+    </TileMatrixSet>
+  </Contents>
+  <ServiceMetadataURL xlink:href="https://maps.wien.gv.at/basemap/1.0.0/WMTSCapabilities.xml" />
+</Capabilities>

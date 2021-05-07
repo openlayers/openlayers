@@ -7,8 +7,8 @@
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {Array<number>=} opt_dest Destination.
- * @param {number=} opt_destOffset Destination offset.
+ * @param {Array<number>} [opt_dest] Destination.
+ * @param {number} [opt_destOffset] Destination offset.
  * @return {Array<number>} Flat coordinates.
  */
 export function flipXY(

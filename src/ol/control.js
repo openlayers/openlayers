@@ -41,7 +41,7 @@ export {default as ZoomToExtent} from './control/ZoomToExtent.js';
  * * {@link module:ol/control/Rotate~Rotate}
  * * {@link module:ol/control/Attribution~Attribution}
  *
- * @param {DefaultsOptions=} opt_options
+ * @param {DefaultsOptions} [opt_options]
  * Defaults options.
  * @return {Collection<import("./control/Control.js").default>}
  * Controls.

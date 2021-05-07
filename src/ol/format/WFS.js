@@ -178,17 +178,17 @@ const TRANSACTION_SERIALIZERS = {
 /**
  * Number of features; bounds/extent.
  * @typedef {Object} FeatureCollectionMetadata
- * @property {number} numberOfFeatures
- * @property {import("../extent.js").Extent} bounds
+ * @property {number} numberOfFeatures NumberOfFeatures.
+ * @property {import("../extent.js").Extent} bounds Bounds.
  */
 
 /**
  * Total deleted; total inserted; total updated; array of insert ids.
  * @typedef {Object} TransactionResponse
- * @property {number} totalDeleted
- * @property {number} totalInserted
- * @property {number} totalUpdated
- * @property {Array<string>} insertIds
+ * @property {number} totalDeleted TotalDeleted.
+ * @property {number} totalInserted TotalInserted.
+ * @property {number} totalUpdated TotalUpdated.
+ * @property {Array<string>} insertIds InsertIds.
  */
 
 /**
@@ -266,7 +266,7 @@ const DEFAULT_VERSION = '1.1.0';
  */
 class WFS extends XMLFeature {
   /**
-   * @param {Options=} opt_options Optional configuration object.
+   * @param {Options} [opt_options] Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -325,7 +325,7 @@ class WFS extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
@@ -563,9 +563,9 @@ class WFS extends XMLFeature {
    *
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../extent.js").Extent} extent Extent.
-   * @param {string=} opt_srsName SRS name. No srsName attribute will be
+   * @param {string} [opt_srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
-   * @param {import("./filter/Filter.js").default=} opt_filter Filter condition.
+   * @param {import("./filter/Filter.js").default} [opt_filter] Filter condition.
    * @return {import("./filter/Filter.js").default} The filter.
    */
   combineBboxAndFilter(geometryName, extent, opt_srsName, opt_filter) {
@@ -814,7 +814,7 @@ function writeOgcFidFilter(node, fid, objectStack) {
 /**
  * @param {string|undefined} featurePrefix The prefix of the feature.
  * @param {string} featureType The type of the feature.
- * @returns {string} The value of the typeName property.
+ * @return {string} The value of the typeName property.
  */
 function getTypeName(featurePrefix, featureType) {
   featurePrefix = featurePrefix ? featurePrefix : FEATURE_PREFIX;
@@ -1323,12 +1323,13 @@ function writeTimeInstant(node, time) {
  * Encode filter as WFS `Filter` and return the Node.
  *
  * @param {import("./filter/Filter.js").default} filter Filter.
- * @param {string} version Version.
+ * @param {string} opt_version WFS version. If not provided defaults to '1.1.0'
  * @return {Node} Result.
  * @api
  */
-export function writeFilter(filter, version) {
-  const child = createElementNS(OGCNS[version], 'Filter');
+export function writeFilter(filter, opt_version) {
+  const version = opt_version || '1.1.0';
+  const child = createElementNS(getFilterNS(version), 'Filter');
   const context = {
     node: child,
   };

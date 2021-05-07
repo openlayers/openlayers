@@ -36,14 +36,14 @@ import {
 
 /**
  * @typedef {Object} RenderOptions
- * @property {import("../colorlike.js").ColorLike} [strokeStyle]
- * @property {number} strokeWidth
- * @property {number} size
- * @property {CanvasLineCap} lineCap
- * @property {Array<number>} lineDash
- * @property {number} lineDashOffset
- * @property {CanvasLineJoin} lineJoin
- * @property {number} miterLimit
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {number} strokeWidth StrokeWidth.
+ * @property {number} size Size.
+ * @property {CanvasLineCap} lineCap LineCap.
+ * @property {Array<number>} lineDash LineDash.
+ * @property {number} lineDashOffset LineDashOffset.
+ * @property {CanvasLineJoin} lineJoin LineJoin.
+ * @property {number} miterLimit MiterLimit.
  */
 
 /**
@@ -240,10 +240,11 @@ class RegularShape extends ImageStyle {
     return this.canvas_[pixelRatio || 1];
   }
 
-  /*
+  /**
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
-   * */
+   * @return {number} Pixel ratio.
+   */
   getPixelRatio(pixelRatio) {
     return pixelRatio;
   }
@@ -339,7 +340,7 @@ class RegularShape extends ImageStyle {
   unlistenImageChange(listener) {}
 
   /**
-   * @returns {RenderOptions}  The render options
+   * @return {RenderOptions}  The render options
    * @protected
    */
   createRenderOptions() {

@@ -5,8 +5,8 @@
 /**
  * @param {number} number Number to be formatted
  * @param {number} width The desired width
- * @param {number=} opt_precision Precision of the output string (i.e. number of decimal places)
- * @returns {string} Formatted string
+ * @param {number} [opt_precision] Precision of the output string (i.e. number of decimal places)
+ * @return {string} Formatted string
  */
 export function padNumber(number, width, opt_precision) {
   const numberString =
@@ -22,7 +22,7 @@ export function padNumber(number, width, opt_precision) {
  * Adapted from https://github.com/omichelsen/compare-versions/blob/master/index.js
  * @param {string|number} v1 First version
  * @param {string|number} v2 Second version
- * @returns {number} Value
+ * @return {number} Value
  */
 export function compareVersions(v1, v2) {
   const s1 = ('' + v1).split('.');

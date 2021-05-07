@@ -69,7 +69,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 class XYZ extends TileImage {
   /**
-   * @param {Options=} opt_options XYZ options.
+   * @param {Options} [opt_options] XYZ options.
    */
   constructor(opt_options) {
     const options = opt_options || {};

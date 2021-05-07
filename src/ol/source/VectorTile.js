@@ -28,7 +28,7 @@ import {toSize} from '../size.js';
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
- * @property {import("../extent.js").Extent} [extent]
+ * @property {import("../extent.js").Extent} [extent] Extent.
  * @property {import("../format/Feature.js").default} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative

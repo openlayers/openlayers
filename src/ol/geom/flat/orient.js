@@ -14,8 +14,8 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @return {boolean} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
-  // http://tinyurl.com/clockwise-method
-  // https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
+  // https://stackoverflow.com/q/1165647/clockwise-method#1165943
+  // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrlinearring.cpp
   let edge = 0;
   let x1 = flatCoordinates[end - stride];
   let y1 = flatCoordinates[end - stride + 1];
@@ -38,7 +38,7 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
  * @param {number} offset Offset.
  * @param {Array<number>} ends Array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Test for right-hand orientation
+ * @param {boolean} [opt_right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -81,7 +81,7 @@ export function linearRingsAreOriented(
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Test for right-hand orientation
+ * @param {boolean} [opt_right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -116,7 +116,7 @@ export function linearRingssAreOriented(
  * @param {number} offset Offset.
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Follow the right-hand rule for orientation.
+ * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRings(
@@ -157,7 +157,7 @@ export function orientLinearRings(
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean=} opt_right Follow the right-hand rule for orientation.
+ * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRingsArray(

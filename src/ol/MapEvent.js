@@ -12,7 +12,7 @@ class MapEvent extends Event {
   /**
    * @param {string} type Event type.
    * @param {import("./PluggableMap.js").default} map Map.
-   * @param {?import("./PluggableMap.js").FrameState=} opt_frameState Frame state.
+   * @param {?import("./PluggableMap.js").FrameState} [opt_frameState] Frame state.
    */
   constructor(type, map, opt_frameState) {
     super(type);

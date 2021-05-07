@@ -223,7 +223,7 @@ export class Processor extends Disposable {
 
   /**
    * Run operation on input data.
-   * @param {Array.<Array|ImageData>} inputs Array of pixels or image data
+   * @param {Array<Array|ImageData>} inputs Array of pixels or image data
    *     (depending on the operation type).
    * @param {Object} meta A user data object.  This is passed to all operations
    *     and must be serializable.
@@ -597,7 +597,7 @@ class RasterSource extends ImageSource {
   /**
    * Set the operation.
    * @param {Operation} operation New operation.
-   * @param {Object=} opt_lib Functions that will be available to operations run
+   * @param {Object} [opt_lib] Functions that will be available to operations run
    *     in a worker.
    * @api
    */
