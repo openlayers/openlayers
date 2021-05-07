@@ -5,11 +5,11 @@ import DragBox from './DragBox.js';
 import {
   createOrUpdateFromCoordinates,
   getBottomLeft,
-  getCenter,
   getTopRight,
   scaleFromCenter,
 } from '../extent.js';
 import {easeOut} from '../easing.js';
+import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import {shiftKeyOnly} from '../events/condition.js';
 
 /**
@@ -71,10 +71,10 @@ class DragZoom extends DragBox {
   onBoxEnd(event) {
     const map = this.getMap();
     const view = /** @type {!import("../View.js").default} */ (map.getView());
-    const size = /** @type {!import("../size.js").Size} */ (map.getSize());
     let extent = this.getGeometry().getExtent();
 
     if (this.out_) {
+      const size = /** @type {!import("../size.js").Size} */ (map.getSize());
       const mapExtent = view.calculateExtentInternal(size);
       const boxPixelExtent = createOrUpdateFromCoordinates([
         map.getPixelFromCoordinateInternal(getBottomLeft(extent)),
@@ -86,14 +86,7 @@ class DragZoom extends DragBox {
       extent = mapExtent;
     }
 
-    const resolution = view.getConstrainedResolution(
-      view.getResolutionForExtentInternal(extent, size)
-    );
-    const center = view.getConstrainedCenter(getCenter(extent), resolution);
-
-    view.animateInternal({
-      resolution: resolution,
-      center: center,
+    view.fitInternal(polygonFromExtent(extent), {
       duration: this.duration_,
       easing: easeOut,
     });
