@@ -79,6 +79,27 @@ describe('ol.interaction.DragZoom', function () {
       }, 50);
     });
 
+    it('centers the view with padding on the box geometry', function (done) {
+      map.getView().padding = [0, 180, 0, 0];
+
+      const interaction = new DragZoom({
+        duration: 10,
+      });
+      map.addInteraction(interaction);
+
+      const box = new RenderBox();
+      const extent = [-180, -90, 0, 90];
+      box.geometry_ = polygonFromExtent(extent);
+      interaction.box_ = box;
+
+      interaction.onBoxEnd();
+      setTimeout(function () {
+        const view = map.getView();
+        expect(view.getResolution()).to.be(1);
+        expect(view.calculateExtentInternal()).to.eql([-180, -90, 180, 90]);
+        done();
+      }, 50);
+    });
     it('sets new resolution while zooming out', function (done) {
       const interaction = new DragZoom({
         duration: 10,
