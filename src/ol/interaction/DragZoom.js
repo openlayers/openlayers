@@ -2,14 +2,7 @@
  * @module ol/interaction/DragZoom
  */
 import DragBox from './DragBox.js';
-import {
-  createOrUpdateFromCoordinates,
-  getBottomLeft,
-  getTopRight,
-  scaleFromCenter,
-} from '../extent.js';
 import {easeOut} from '../easing.js';
-import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import {shiftKeyOnly} from '../events/condition.js';
 
 /**
@@ -71,22 +64,17 @@ class DragZoom extends DragBox {
   onBoxEnd(event) {
     const map = this.getMap();
     const view = /** @type {!import("../View.js").default} */ (map.getView());
-    let extent = this.getGeometry().getExtent();
+    let geometry = this.getGeometry();
 
     if (this.out_) {
-      const size = /** @type {!import("../size.js").Size} */ (map.getSize());
-      const mapExtent = view.calculateExtentInternal(size);
-      const boxPixelExtent = createOrUpdateFromCoordinates([
-        map.getPixelFromCoordinateInternal(getBottomLeft(extent)),
-        map.getPixelFromCoordinateInternal(getTopRight(extent)),
-      ]);
-      const factor = view.getResolutionForExtentInternal(boxPixelExtent, size);
-
-      scaleFromCenter(mapExtent, 1 / factor);
-      extent = mapExtent;
+      const rotatedExtent = view.rotatedExtentForGeometry(geometry);
+      const resolution = view.getResolutionForExtentInternal(rotatedExtent);
+      const factor = view.getResolution() / resolution;
+      geometry = geometry.clone();
+      geometry.scale(factor * factor);
     }
 
-    view.fitInternal(polygonFromExtent(extent), {
+    view.fitInternal(geometry, {
       duration: this.duration_,
       easing: easeOut,
     });
