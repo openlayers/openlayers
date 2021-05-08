@@ -96,7 +96,7 @@ describe('ol.interaction.DragZoom', function () {
       setTimeout(function () {
         const view = map.getView();
         expect(view.getResolution()).to.be(1);
-        expect(view.calculateExtentInternal()).to.eql([-180, -90, 180, 90]);
+        expect(view.calculateExtentInternal()).to.eql(extent);
         done();
       }, 50);
     });
