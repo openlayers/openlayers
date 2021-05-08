@@ -56,7 +56,7 @@ describe('ol.layer.Layer', function () {
         managed: true,
         sourceState: 'ready',
         extent: undefined,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,

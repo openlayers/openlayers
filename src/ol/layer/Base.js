@@ -111,8 +111,7 @@ class BaseLayer extends BaseObject {
     state.sourceState = this.getSourceState();
     state.visible = this.getVisible();
     state.extent = this.getExtent();
-    state.zIndex =
-      zIndex !== undefined ? zIndex : state.managed === false ? Infinity : 0;
+    state.zIndex = zIndex === undefined && !state.managed ? Infinity : zIndex;
     state.maxResolution = this.getMaxResolution();
     state.minResolution = Math.max(this.getMinResolution(), 0);
     state.minZoom = this.getMinZoom();
