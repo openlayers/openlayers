@@ -45,11 +45,17 @@ See the following examples for more detail on bundling OpenLayers with your appl
 
 OpenLayers appreciates contributions of all kinds.  We especially want to thank our fiscal sponsors who contribute to ongoing project maintenance.
 
-![Pozi logo](./sponsor-logos/pozi.png)
+[![Pozi logo](./sponsor-logos/pozi.png)](https://pozi.com/)
 
 > Pozi helps connect communities through spatial thinking.
 > We love Openlayers and it forms a core part of our platform.
 > https://pozi.com/ https://app.pozi.com/
+
+[![yey'maps logo](./sponsor-logos/yeymaps.png)](https://www.yeymaps.io/)
+
+> yey'maps is a scalable cloud GIS suite that is developed with the
+> powerful Openlayers API and the GDAL library.
+> https://www.yeymaps.io/
 
 See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
