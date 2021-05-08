@@ -7,7 +7,15 @@ import {getIntersection} from '../../../../../src/ol/extent.js';
 import {getUid} from '../../../../../src/ol/util.js';
 
 describe('ol.layer.Group', function () {
+  function disposeHierarchy(layer) {
+    if (layer instanceof LayerGroup) {
+      layer.getLayers().forEach((l) => disposeHierarchy(l));
+    }
+    layer.dispose();
+  }
+
   describe('constructor (defaults)', function () {
+    /** @type {LayerGroup} */
     let group;
 
     beforeEach(function () {
@@ -67,8 +75,7 @@ describe('ol.layer.Group', function () {
     });
 
     afterEach(function () {
-      group.dispose();
-      layer.dispose();
+      disposeHierarchy(group);
     });
 
     it('is dispatched by the group when layer opacity changes', function () {
@@ -104,8 +111,7 @@ describe('ol.layer.Group', function () {
     });
 
     afterEach(function () {
-      group.dispose();
-      layer.dispose();
+      disposeHierarchy(group);
     });
 
     it('is dispatched by the group when group opacity changes', function () {
@@ -167,8 +173,7 @@ describe('ol.layer.Group', function () {
       expect(group.getLayers().getLength()).to.be(1);
       expect(group.getLayers().item(0)).to.be(layer);
 
-      layer.dispose();
-      group.dispose();
+      disposeHierarchy(group);
     });
 
     it('accepts an extent option', function () {
@@ -210,8 +215,7 @@ describe('ol.layer.Group', function () {
       expect(group.getLayers().getLength()).to.be(1);
       expect(group.getLayers().item(0)).to.be(layer);
 
-      layer.dispose();
-      group.dispose();
+      disposeHierarchy(group);
     });
   });
 
@@ -223,7 +227,7 @@ describe('ol.layer.Group', function () {
     });
 
     afterEach(function () {
-      group.dispose();
+      disposeHierarchy(group);
     });
 
     it('returns a layerState from the properties values', function () {
@@ -323,9 +327,7 @@ describe('ol.layer.Group', function () {
       group.setLayers(layers);
       expect(group.getLayers()).to.be(layers);
 
-      group.dispose();
-      layer.dispose();
-      layers.dispose();
+      disposeHierarchy(group);
     });
   });
 
