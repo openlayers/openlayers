@@ -91,7 +91,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @property {number} [duration] The duration of the animation in milliseconds.
  * By default, there is no animation to the target extent.
  * @property {function(number):number} [easing] The easing function used during
- * the animation (defaults to {@link module:ol/easing~inAndOut}).
+ * the animation (defaults to {@link module:ol/easing.inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.
@@ -197,7 +197,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used
- * during the animation (defaults to {@link module:ol/easing~inAndOut}).
+ * during the animation (defaults to {@link module:ol/easing.inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.

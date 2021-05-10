@@ -26,7 +26,7 @@ import {toUserExtent} from '../proj.js';
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * Default is {@link module:ol/events/condition~always}.
+ * Default is {@link module:ol/events/condition.always}.
  * @property {import("../extent.js").Extent} [extent] Initial extent. Defaults to no
  * initial extent.
  * @property {import("../style/Style.js").StyleLike} [boxStyle]

@@ -70,7 +70,7 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * By default {@link module:ol/events/condition~noModifierKeys}, i.e. a click,
+ * By default {@link module:ol/events/condition.noModifierKeys}, i.e. a click,
  * adds a vertex or deactivates freehand drawing.
  * @property {boolean} [freehand=false] Operate in freehand mode for lines,
  * polygons, and circles.  This makes the interaction always operate in freehand
@@ -79,7 +79,7 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * Condition that activates freehand drawing for lines and polygons. This
  * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether that event should be handled. The
- * default is {@link module:ol/events/condition~shiftKeyOnly}, meaning that the
+ * default is {@link module:ol/events/condition.shiftKeyOnly}, meaning that the
  * Shift key activates freehand drawing.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.

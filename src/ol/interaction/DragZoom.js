@@ -12,7 +12,7 @@ import {shiftKeyOnly} from '../events/condition.js';
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * Default is {@link module:ol/events/condition~shiftKeyOnly}.
+ * Default is {@link module:ol/events/condition.shiftKeyOnly}.
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {boolean} [out=false] Use interaction for zooming out.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the parent default

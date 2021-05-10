@@ -30,7 +30,7 @@ import {METERS_PER_UNIT} from './Units.js';
  * and options use {@link module:ol/proj~ProjectionLike} which means the simple string
  * code will suffice.
  *
- * You can use {@link module:ol/proj~get} to retrieve the object for a particular
+ * You can use {@link module:ol/proj.get} to retrieve the object for a particular
  * projection.
  *
  * The library includes definitions for `EPSG:4326` and `EPSG:3857`, together
@@ -45,7 +45,7 @@ import {METERS_PER_UNIT} from './Units.js';
  *
  * If you use [proj4js](https://github.com/proj4js/proj4js), aliases can
  * be added using `proj4.defs()`. After all required projection definitions are
- * added, call the {@link module:ol/proj/proj4~register} function.
+ * added, call the {@link module:ol/proj/proj4.register} function.
  *
  * @api
  */
@@ -249,7 +249,7 @@ class Projection {
   }
 
   /**
-   * Set the getPointResolution function (see {@link module:ol/proj~getPointResolution}
+   * Set the getPointResolution function (see {@link module:ol/proj.getPointResolution}
    * for this projection.
    * @param {function(number, import("../coordinate.js").Coordinate):number} func Function
    * @api
