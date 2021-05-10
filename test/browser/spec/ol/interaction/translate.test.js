@@ -256,7 +256,7 @@ describe('ol.interaction.Translate', function () {
       expect(events).to.be.empty();
     });
   });
-  
+
   describe('moving features, with condition option', function () {
     let translate;
 
