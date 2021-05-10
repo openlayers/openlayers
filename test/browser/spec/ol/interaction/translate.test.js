@@ -290,7 +290,7 @@ describe('ol.interaction.Translate', function () {
     });
   });
 
-    describe('changes css cursor', function () {
+  describe('changes css cursor', function () {
     let element, translate;
 
     beforeEach(function () {
