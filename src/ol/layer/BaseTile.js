@@ -31,7 +31,7 @@ import {assign} from '../obj.js';
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link module:ol/Map#addLayer}.
+ * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
