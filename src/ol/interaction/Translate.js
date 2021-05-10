@@ -47,7 +47,7 @@ const TranslateEventType = {
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * Default is {@link module:ol/events/condition~always}.
+ * Default is {@link module:ol/events/condition.always}.
  * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
  * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default): boolean} [layers] A list of layers from which features should be
