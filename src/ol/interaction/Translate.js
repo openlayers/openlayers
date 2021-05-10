@@ -6,6 +6,7 @@ import Event from '../events/Event.js';
 import InteractionProperty from './Property.js';
 import PointerInteraction from './Pointer.js';
 import {TRUE} from '../functions.js';
+import {always} from '../events/condition.js';
 import {getChangeEventType} from '../Object.js';
 import {includes} from '../array.js';
 
@@ -43,6 +44,10 @@ const TranslateEventType = {
 
 /**
  * @typedef {Object} Options
+ * @property {import("../events/condition.js").Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled.
+ * Default is {@link module:ol/events/condition~always}.
  * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
  * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default): boolean} [layers] A list of layers from which features should be
@@ -176,6 +181,12 @@ class Translate extends PointerInteraction {
     this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
     /**
+     * @private
+     * @type {import("../events/condition.js").Condition}
+     */
+    this.condition_ = options.condition ? options.condition : always;
+
+    /**
      * @type {import("../Feature.js").default}
      * @private
      */
@@ -193,6 +204,9 @@ class Translate extends PointerInteraction {
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(event) {
+    if (!event.originalEvent || !this.condition_(event)) {
+      return false;
+    }
     this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
     if (!this.lastCoordinate_ && this.lastFeature_) {
       this.startCoordinate_ = event.coordinate;
