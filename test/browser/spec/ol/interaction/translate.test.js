@@ -10,6 +10,7 @@ import Translate, {
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
+import {shiftKeyOnly} from '../../../../../src/ol/events/condition.js';
 
 describe('ol.interaction.Translate', function () {
   let target, map, source, features;
@@ -255,8 +256,41 @@ describe('ol.interaction.Translate', function () {
       expect(events).to.be.empty();
     });
   });
+  
+  describe('moving features, with condition option', function () {
+    let translate;
 
-  describe('changes css cursor', function () {
+    beforeEach(function () {
+      translate = new Translate({condition: shiftKeyOnly});
+      map.addInteraction(translate);
+    });
+
+    it('moves targeted feature when condition is met', function () {
+      const events = trackEvents(features[0], translate);
+
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20, true);
+      simulateEvent('pointerdrag', 50, -40);
+      simulateEvent('pointerup', 50, -40);
+      expect(features[0].getGeometry().getCoordinates()).to.eql([50, 40]);
+
+      validateEvents(events, [features[0]]);
+    });
+
+    it('does not move feature when condition is not met', function () {
+      const events = trackEvents(features[0], translate);
+
+      simulateEvent('pointermove', 20, 30);
+      simulateEvent('pointerdown', 20, 30);
+      simulateEvent('pointerdrag', 50, -40);
+      simulateEvent('pointerup', 50, -40);
+      expect(features[1].getGeometry().getCoordinates()).to.eql([20, -30]);
+
+      expect(events).to.be.empty();
+    });
+  });
+
+    describe('changes css cursor', function () {
     let element, translate;
 
     beforeEach(function () {
