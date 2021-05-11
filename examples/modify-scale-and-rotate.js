@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {Draw, Modify, Translate} from '../src/ol/interaction.js';
-import {MultiPoint, Point} from '../src/ol/geom';
+import {MultiPoint, Point} from '../src/ol/geom.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {getCenter, getHeight, getWidth} from '../src/ol/extent.js';
@@ -125,7 +125,7 @@ const vector = new VectorLayer({
       }
     }
     return styles;
-  }
+  },
 });
 
 const map = new Map({
@@ -133,8 +133,8 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [-11000000, 4600000],
-    zoom: 4
-  })
+    zoom: 4,
+  }),
 });
 
 const defaultStyle = new Modify({source: source})
@@ -150,7 +150,7 @@ const modify = new Modify({
   insertVertexCondition: never,
   style: function (feature) {
     feature.get('features').forEach(function (modifyFeature) {
-      let modifyGeometry = modifyFeature.get('modifyGeometry');
+      const modifyGeometry = modifyFeature.get('modifyGeometry');
       if (modifyGeometry) {
         const point = feature.getGeometry().getCoordinates();
         let modifyPoint = modifyGeometry.point;
@@ -187,7 +187,7 @@ const modify = new Modify({
       }
     });
     return defaultStyle(feature);
-  }
+  },
 });
 
 modify.on('modifystart', function (event) {
