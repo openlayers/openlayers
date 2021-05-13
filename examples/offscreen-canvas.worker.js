@@ -111,7 +111,6 @@ function loadStyles() {
 }
 
 // Minimal map-like functionality for rendering
-
 const tileQueue = new TileQueue(
   (tile, tileSourceKey, tileCenter, tileResolution) =>
     tilePriorityFunction(
@@ -128,6 +127,23 @@ const maxTotalLoading = 8;
 const maxNewLoads = 2;
 
 worker.addEventListener('message', (event) => {
+  if (event.data.action === 'requestFeatures') {
+    const layersInView = layers.filter((l) =>
+      inView(l.getLayerState(), frameState.viewState)
+    );
+    const observables = layersInView.map((l) =>
+      l.getFeatures(event.data.pixel)
+    );
+    Promise.all(observables).then((res) => {
+      const features = res.flat();
+      worker.postMessage({
+        action: 'getFeatures',
+        features: JSON.parse(stringify(features.map((e) => e.getProperties()))),
+      });
+    });
+    return;
+  }
+
   if (event.data.action !== 'render') {
     return;
   }
