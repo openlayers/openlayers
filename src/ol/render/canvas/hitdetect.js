@@ -91,10 +91,13 @@ export function createHitDetectionImageData(
           continue;
         }
 
-        const img = document.createElement('canvas');
-        img.width = imgSize[0];
-        img.height = imgSize[1];
-        const imgContext = img.getContext('2d', {alpha: false});
+        const imgContext = createCanvasContext2D(
+          imgSize[0],
+          imgSize[1],
+          undefined,
+          {alpha: false}
+        );
+        const img = imgContext.canvas;
         imgContext.fillStyle = color;
         imgContext.fillRect(0, 0, img.width, img.height);
         style.setImage(
