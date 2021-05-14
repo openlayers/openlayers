@@ -147,7 +147,7 @@ class Attribution extends Control {
      */
     this.toggleButton_ = document.createElement('button');
     this.toggleButton_.setAttribute('type', 'button');
-    this.toggleButton_.setAttribute('aria-expanded', String(false));
+    this.toggleButton_.setAttribute('aria-expanded', String(!this.collapsed_));
     this.toggleButton_.title = tipLabel;
     this.toggleButton_.appendChild(activeLabel);
 
