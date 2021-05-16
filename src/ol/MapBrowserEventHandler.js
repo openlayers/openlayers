@@ -253,7 +253,7 @@ class MapBrowserEventHandler extends Target {
     } catch (error) {
       // fallback for IE11
       this.down_ = document.createEvent('PointerEvent');
-      this.down_.initPointerEvent(
+      this.down_['initPointerEvent'](
         pointerEvent.type,
         pointerEvent.bubbles,
         pointerEvent.cancelable,
@@ -279,7 +279,7 @@ class MapBrowserEventHandler extends Target {
         pointerEvent.tiltY,
         pointerEvent.pointerId,
         pointerEvent.pointerType,
-        pointerEvent.hwTimestamp,
+        pointerEvent['hwTimestamp'],
         pointerEvent.isPrimary
       );
       Object.defineProperty(this.down_, 'tangentialPressure', {
