@@ -252,7 +252,7 @@ class MapBrowserEventHandler extends Target {
       });
     } catch (error) {
       // fallback for IE11
-      this.down_ = document.createEvent("PointerEvent");
+      this.down_ = document.createEvent('PointerEvent');
       this.down_.initPointerEvent(
         pointerEvent.type,
         pointerEvent.bubbles,
