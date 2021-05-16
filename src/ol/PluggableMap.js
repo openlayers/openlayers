@@ -991,7 +991,8 @@ class PluggableMap extends BaseObject {
       const rootNode = this.viewport_.getRootNode
         ? this.viewport_.getRootNode()
         : doc;
-      const target = /** @type {Node} */ (originalEvent.target || originalEvent.target_);
+      const target = /** @type {Node} */ (originalEvent.target ||
+        originalEvent.target_);
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
         // to be handled by map interactions.
