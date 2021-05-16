@@ -244,11 +244,53 @@ class MapBrowserEventHandler extends Target {
     );
     this.dispatchEvent(newEvent);
 
-    this.down_ = new PointerEvent(pointerEvent.type, pointerEvent);
-    Object.defineProperty(this.down_, 'target', {
-      writable: false,
-      value: pointerEvent.target,
-    });
+    try {
+      this.down_ = new PointerEvent(pointerEvent.type, pointerEvent);
+      Object.defineProperty(this.down_, 'target', {
+        writable: false,
+        value: pointerEvent.target,
+      });
+    } catch (error) {
+      // fallback for IE11
+      this.down_ = document.createEvent("PointerEvent");
+      this.down_.initPointerEvent(
+        pointerEvent.type,
+        pointerEvent.bubbles,
+        pointerEvent.cancelable,
+        pointerEvent.view,
+        pointerEvent.detail,
+        pointerEvent.screenX,
+        pointerEvent.screenY,
+        pointerEvent.clientX,
+        pointerEvent.clientY,
+        pointerEvent.ctrlKey,
+        pointerEvent.altKey,
+        pointerEvent.shiftKey,
+        pointerEvent.metaKey,
+        pointerEvent.button,
+        pointerEvent.relatedTarget,
+        pointerEvent.offsetX,
+        pointerEvent.offsetY,
+        pointerEvent.width,
+        pointerEvent.height,
+        pointerEvent.pressure,
+        pointerEvent.twist,
+        pointerEvent.tiltX,
+        pointerEvent.tiltY,
+        pointerEvent.pointerId,
+        pointerEvent.pointerType,
+        pointerEvent.hwTimestamp,
+        pointerEvent.isPrimary
+      );
+      Object.defineProperty(this.down_, 'tangentialPressure', {
+        writable: false,
+        value: pointerEvent.tangentialPressure,
+      });
+      Object.defineProperty(this.down_, 'target_', {
+        writable: false,
+        value: pointerEvent.target,
+      });
+    }
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();
