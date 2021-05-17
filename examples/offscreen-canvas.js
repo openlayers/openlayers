@@ -6,8 +6,8 @@ import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disabl
 import stringify from 'json-stringify-safe';
 import {FullScreen} from '../src/ol/control.js';
 import {compose, create} from '../src/ol/transform.js';
-import {createTransformString} from '../src/ol/render/canvas.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
+import {toString as toTransformString} from '../src/ol/transform.js';
 
 const worker = new Worker();
 
@@ -45,7 +45,7 @@ function updateContainerTransform() {
         0
       );
     }
-    transformContainer.style.transform = createTransformString(transform);
+    transformContainer.style.transform = toTransformString(transform);
   }
 }
 

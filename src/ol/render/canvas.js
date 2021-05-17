@@ -7,7 +7,6 @@ import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {clear} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getFontParameters} from '../css.js';
-import {toString} from '../transform.js';
 
 /**
  * @typedef {Object} FillState
@@ -487,27 +486,5 @@ function executeLabelInstructions(label, context) {
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];
     }
-  }
-}
-
-/**
- * @type {HTMLCanvasElement}
- * @private
- */
-let createTransformStringCanvas = null;
-
-/**
- * @param {import("../transform.js").Transform} transform Transform.
- * @return {string} CSS transform.
- */
-export function createTransformString(transform) {
-  if (WORKER_OFFSCREEN_CANVAS) {
-    return toString(transform);
-  } else {
-    if (!createTransformStringCanvas) {
-      createTransformStringCanvas = createCanvasContext2D(1, 1).canvas;
-    }
-    createTransformStringCanvas.style.transform = toString(transform);
-    return createTransformStringCanvas.style.transform;
   }
 }

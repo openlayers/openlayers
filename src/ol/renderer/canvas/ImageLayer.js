@@ -7,9 +7,9 @@ import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {assign} from '../../obj.js';
 import {compose as composeTransform, makeInverse} from '../../transform.js';
 import {containsExtent, intersects} from '../../extent.js';
-import {createTransformString} from '../../render/canvas.js';
 import {fromUserExtent} from '../../proj.js';
 import {getIntersection, isEmpty} from '../../extent.js';
+import {toString as toTransformString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -132,7 +132,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     );
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
-    const canvasTransform = createTransformString(this.pixelTransform);
+    const canvasTransform = toTransformString(this.pixelTransform);
 
     this.useContainer(target, canvasTransform, layerState.opacity);
 
