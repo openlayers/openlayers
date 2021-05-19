@@ -229,7 +229,7 @@ const SourceType = {
  *         zoom: 1
  *       }),
  *       layers: [
- *         new MapboxVector({
+ *         new MapboxVectorLayer({
  *           styleUrl: 'mapbox://styles/mapbox/bright-v9',
  *           accessToken: 'your-mapbox-access-token-here'
  *         })
