@@ -4,7 +4,7 @@ import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import stringify from 'json-stringify-safe';
 import styleFunction from 'ol-mapbox-style/dist/stylefunction.js';
-import {Projection} from '../src/ol/proj.js';
+import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
 import {getTilePriority as tilePriorityFunction} from '../src/ol/TileQueue.js';
 
@@ -153,7 +153,7 @@ worker.addEventListener('message', (event) => {
     loadStyles();
   }
   frameState.tileQueue = tileQueue;
-  frameState.viewState.projection.__proto__ = Projection.prototype;
+  frameState.viewState.projection = get('EPSG:3857');
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
       const renderer = layer.getRenderer();
