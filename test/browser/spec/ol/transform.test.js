@@ -11,6 +11,7 @@ import {
   scale,
   set,
   setFromArray,
+  toString,
   translate,
 } from '../../../../src/ol/transform.js';
 
@@ -175,6 +176,14 @@ describe('ol.transform', function () {
       const point = [1, 2];
       expect(apply(transform, point)).to.eql([3, 5]);
       expect(point).to.eql([3, 5]);
+    });
+  });
+  describe('toString()', function () {
+    it('compares with value read back from node', function () {
+      const mat = [1 / 3, 0, 0, 1 / 3, 0, 0];
+      const node = document.createElement('div');
+      node.style.transform = 'matrix(' + mat.join(',') + ')';
+      expect(toString(mat)).to.be(node.style.transform);
     });
   });
 });

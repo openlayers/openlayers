@@ -16,10 +16,10 @@ import {
   getIntersection,
   getTopLeft,
 } from '../../extent.js';
-import {createTransformString} from '../../render/canvas.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
+import {toString as toTransformString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -280,7 +280,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -height / 2
     );
 
-    const canvasTransform = createTransformString(this.pixelTransform);
+    const canvasTransform = toTransformString(this.pixelTransform);
 
     this.useContainer(target, canvasTransform, layerState.opacity);
     const context = this.context;
