@@ -29,6 +29,7 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * @property {import("../source/Vector.js").default} [source] Source.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**

@@ -40,6 +40,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {import("../PluggableMap.js").default} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**

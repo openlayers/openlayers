@@ -27,6 +27,7 @@ import {clamp} from '../math.js';
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -50,6 +51,10 @@ class BaseLayer extends BaseObject {
      * @type {Object<string, *>}
      */
     const properties = assign({}, options);
+    if (typeof options.properties === 'object') {
+      delete properties.properties;
+      assign(properties, options.properties);
+    }
 
     properties[LayerProperty.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;

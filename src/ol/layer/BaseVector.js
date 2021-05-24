@@ -53,6 +53,7 @@ import {
  * batches will be recreated when no animation is active.
  * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will
  * be recreated during interactions. See also `updateWhileAnimating`.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**

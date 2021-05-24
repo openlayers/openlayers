@@ -35,6 +35,7 @@ import {getChangeEventType} from '../Object.js';
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
  * @property {import("../source/Vector.js").default} [source] Source.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**

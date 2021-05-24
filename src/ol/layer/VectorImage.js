@@ -42,6 +42,7 @@ import {assign} from '../obj.js';
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**

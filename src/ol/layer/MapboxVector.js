@@ -212,6 +212,7 @@ const SourceType = {
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -276,6 +277,7 @@ class MapboxVectorLayer extends VectorTileLayer {
       updateWhileInteracting: options.updateWhileInteracting,
       preload: options.preload,
       useInterimTilesOnError: options.useInterimTilesOnError,
+      properties: options.properties,
     });
 
     this.sourceId = options.source;
