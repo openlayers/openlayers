@@ -115,6 +115,15 @@ describe('ol.layer.Layer', function () {
       expect(o.get('properties')).to.be(undefined);
     });
 
+    it('can have a `properties` property', function () {
+      const o = new Layer({
+        properties: {
+          properties: {foo: 'bar'},
+        },
+      });
+      expect(o.get('properties')).to.eql({foo: 'bar'});
+    });
+
     it('throws on non-numeric opacity', function () {
       function create() {
         new Layer({
