@@ -166,9 +166,11 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * alternative to setting this is to set `zoom`. Layer sources will not be
  * fetched if neither this nor `zoom` are defined, but they can be set later
  * with {@link #setZoom} or {@link #setResolution}.
- * @property {Array<number>} [resolutions] Resolutions to determine the
- * resolution constraint. If set the `maxResolution`, `minResolution`,
- * `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
+ * @property {Array<number>} [resolutions] Resolutions that determine the
+ * zoom levels if specified. The index in the array corresponds to the zoom level,
+ * therefore the resolution values have to be in descending order. It also constrains
+ * the resolution by the minimum and maximum value. If set the `maxResolution`,
+ * `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
  * @property {number} [rotation=0] The initial rotation for the view in radians
  * (positive rotation clockwise, 0 means North).
  * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
