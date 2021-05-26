@@ -46,7 +46,7 @@ function shade(inputs, data) {
     // In this case the format used is
     // red + green * 2 + blue * 3
     //
-    // Other freqquently used methods include the Mapbox format
+    // Other frequently used methods include the Mapbox format
     // (red * 256 * 256 + green * 256 + blue) * 0.1 - 10000
     // and the Terrarium format
     // (red * 256 + green + blue / 256) - 32768
