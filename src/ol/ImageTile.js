@@ -73,6 +73,22 @@ class ImageTile extends Tile {
   }
 
   /**
+   * Sets an HTML image element for this tile (may be a Canvas or preloaded Image).
+   * @param {HTMLCanvasElement|HTMLImageElement} element Element.
+   * @api
+   */
+  setImage(element) {
+    // asynchronous to accomodate reprojection listeners
+    const tile = this;
+    setTimeout(function () {
+      tile.image_ = element;
+      tile.state = TileState.LOADED;
+      tile.unlistenImage_();
+      tile.changed();
+    }, 0);
+  }
+
+  /**
    * Tracks loading or read errors.
    *
    * @private
