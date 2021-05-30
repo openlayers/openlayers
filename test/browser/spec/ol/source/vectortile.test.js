@@ -305,7 +305,7 @@ describe('ol.source.VectorTile', function () {
     let count = 0;
     let tile = source.getTile(0, 0, 0, 1, map.getView().getProjection());
     tile.addEventListener('change', function onTileChange(e) {
-      if (e.target.getState() !== TileState.LOADED && !e.target.hifi) {
+      if (e.target.getState() !== TileState.LOADED) {
         return;
       }
       e.target.removeEventListener('change', onTileChange);

@@ -82,7 +82,7 @@ class TileQueue extends PriorityQueue {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);
     const state = tile.getState();
     if (
-      (tile.hifi && state === TileState.LOADED) ||
+      state === TileState.LOADED ||
       state === TileState.ERROR ||
       state === TileState.EMPTY
     ) {
