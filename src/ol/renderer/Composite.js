@@ -128,7 +128,9 @@ class CompositeMapRenderer extends MapRenderer {
         previousElement = element;
       }
       if ('getDeclutter' in layer) {
-        declutterLayers.push(layer);
+        declutterLayers.push(
+          /** @type {import("../layer/BaseVector.js").default} */ (layer)
+        );
       }
     }
     for (let i = declutterLayers.length - 1; i >= 0; --i) {
