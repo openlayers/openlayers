@@ -60,7 +60,7 @@ import {transformGeometryWithOptions} from './Feature.js';
  * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
  * @property {number} y Y coordinate.
  * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
- * @property {import("../style/IconOrigin.js").default} origin Origin.
+ * @property {import("../style/IconOrigin.js").default} [origin] Origin.
  */
 
 /**
