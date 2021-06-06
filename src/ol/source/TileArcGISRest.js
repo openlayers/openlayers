@@ -154,7 +154,10 @@ class TileArcGISRest extends TileImage {
     // ArcGIS Server only wants the numeric portion of the projection ID.
     // (if there is no numeric portion the entire projection code must
     // form a valid ArcGIS SpatialReference definition).
-    const srid = projection.getCode().split(/:(?=\d+$)/).pop();
+    const srid = projection
+      .getCode()
+      .split(/:(?=\d+$)/)
+      .pop();
 
     params['SIZE'] = tileSize[0] + ',' + tileSize[1];
     params['BBOX'] = tileExtent.join(',');
