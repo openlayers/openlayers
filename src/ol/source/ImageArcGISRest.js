@@ -242,7 +242,7 @@ class ImageArcGISRest extends ImageSource {
     // ArcGIS Server only wants the numeric portion of the projection ID.
     // (if there is no numeric portion the entire projection code must
     // form a valid ArcGIS SpatialReference definition).
-    const srid = projection.getCode().split(/:(?=\d+$)/)).pop();
+    const srid = projection.getCode().split(/:(?=\d+$)/).pop();
 
     params['SIZE'] = size[0] + ',' + size[1];
     params['BBOX'] = extent.join(',');
