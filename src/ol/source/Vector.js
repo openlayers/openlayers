@@ -1054,6 +1054,7 @@ class VectorSource extends Source {
    */
   setUrl(url) {
     assert(this.format_, 7); // `format` must be set when `url` is set
+    this.url_ = url;
     this.setLoader(xhr(url, this.format_));
   }
 }
