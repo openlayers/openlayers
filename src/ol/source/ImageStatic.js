@@ -135,10 +135,19 @@ class Static extends ImageSource {
         imageWidth = image.width;
         imageHeight = image.height;
       }
-      const resolution = getHeight(imageExtent) / imageHeight;
-      const targetWidth = Math.ceil(getWidth(imageExtent) / resolution);
-      if (targetWidth != imageWidth) {
-        const context = createCanvasContext2D(targetWidth, imageHeight);
+      const extentWidth = getWidth(imageExtent);
+      const extentHeight = getHeight(imageExtent);
+      const xResolution = extentWidth / imageWidth;
+      const yResolution = extentHeight / imageHeight;
+      let targetWidth = imageWidth;
+      let targetHeight = imageHeight;
+      if (xResolution > yResolution) {
+        targetWidth = Math.round(extentWidth / yResolution);
+      } else {
+        targetHeight = Math.round(extentHeight / xResolution);
+      }
+      if (targetWidth !== imageWidth || targetHeight !== imageHeight) {
+        const context = createCanvasContext2D(targetWidth, targetHeight);
         assign(context, this.getContextOptions());
         const canvas = context.canvas;
         context.drawImage(
