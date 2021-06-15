@@ -183,6 +183,48 @@ describe('ol.source.VectorTile', function () {
       });
       tile.load();
     });
+    it('triggers events and loads source tile properly for wrapX counterpart', function (done) {
+      const tile1 = source.getTile(
+        14,
+        8938,
+        5680,
+        1,
+        getProjection('EPSG:3857')
+      );
+      const tile2 = source.getTile(
+        14,
+        8938 + Math.pow(2, 14),
+        5680,
+        1,
+        getProjection('EPSG:3857')
+      );
+      expect(tile2.wrappedTileCoord).to.eql([14, 8938, 5680]);
+      let loadstart = 0;
+      source.on('tileloadstart', function () {
+        ++loadstart;
+      });
+      let loadend = 0;
+      source.on('tileloadend', function (e) {
+        ++loadend;
+      });
+      let loaded = 0;
+      [tile1, tile2].forEach((tile) => {
+        tile.addEventListener('change', (e) => {
+          if (e.target.getState() === TileState.LOADED) {
+            const sourceTiles = e.target.getSourceTiles();
+            expect(sourceTiles.length).to.be(1);
+            expect(sourceTiles[0].getState()).to.be(TileState.LOADED);
+            ++loaded;
+            if (loaded === 2) {
+              expect(loadstart).to.be(1);
+              expect(loadend).to.be(1);
+              done();
+            }
+          }
+        });
+        tile.load();
+      });
+    });
   });
 
   describe('different source and render tile grids', function () {
