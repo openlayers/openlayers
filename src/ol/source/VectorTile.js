@@ -471,6 +471,9 @@ class VectorTile extends UrlTile {
    */
   updateCacheSize(tileCount, projection) {
     super.updateCacheSize(tileCount * 2, projection);
+    this.sourceTileCache.highWaterMark = this.getTileCacheForProjection(
+      projection
+    ).highWaterMark;
   }
 }
 

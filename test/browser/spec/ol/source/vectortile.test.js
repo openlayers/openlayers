@@ -309,6 +309,18 @@ describe('ol.source.VectorTile', function () {
         done();
       }, 0);
     });
+
+    it('adjusts the tile cache size', function (done) {
+      map.renderSync();
+      setTimeout(function () {
+        expect(
+          source.getTileCacheForProjection(map.getView().getProjection())
+            .highWaterMark
+        ).to.be(2);
+        expect(source.sourceTileCache.highWaterMark).to.be(2);
+        done();
+      }, 0);
+    });
   });
 
   it('does not fill up the tile queue', function (done) {
