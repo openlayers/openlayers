@@ -292,15 +292,7 @@ class VectorTile extends UrlTile {
             );
         tile.sourceTiles.push(sourceTile);
         const sourceTileState = sourceTile.getState();
-        if (sourceTileState === TileState.IDLE) {
-          sourceTile.extent = sourceTileGrid.getTileCoordExtent(
-            sourceTileCoord
-          );
-          sourceTile.projection = projection;
-          sourceTile.resolution = sourceTileGrid.getResolution(
-            sourceTileCoord[0]
-          );
-          this.sourceTileCache.set(tileUrl, sourceTile);
+        if (sourceTileState < TileState.LOADED) {
           const listenChange = (event) => {
             this.handleTileChange(event);
             const state = sourceTile.getState();
@@ -329,6 +321,16 @@ class VectorTile extends UrlTile {
           };
           sourceTile.addEventListener(EventType.CHANGE, listenChange);
           tile.loadingSourceTiles++;
+        }
+        if (sourceTileState === TileState.IDLE) {
+          sourceTile.extent = sourceTileGrid.getTileCoordExtent(
+            sourceTileCoord
+          );
+          sourceTile.projection = projection;
+          sourceTile.resolution = sourceTileGrid.getResolution(
+            sourceTileCoord[0]
+          );
+          this.sourceTileCache.set(tileUrl, sourceTile);
           sourceTile.load();
         }
       });
