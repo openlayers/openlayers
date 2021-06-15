@@ -18,7 +18,7 @@ import {
   createXYZ,
   extentFromProjection,
 } from '../tilegrid.js';
-import {fromKey, getKeyZXY} from '../tilecoord.js';
+import {fromKey, getCacheKeyForTileKey, getKeyZXY} from '../tilecoord.js';
 import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
 import {toSize} from '../size.js';
@@ -237,8 +237,19 @@ class VectorTile extends UrlTile {
    * @param {!Object<string, boolean>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
+    const tileCache = this.getTileCacheForProjection(projection);
+    const usedSourceTiles = Object.keys(usedTiles).reduce((acc, key) => {
+      const cacheKey = getCacheKeyForTileKey(key);
+      if (tileCache.containsKey(cacheKey)) {
+        const sourceTiles = tileCache.get(cacheKey).sourceTiles;
+        for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+          acc[sourceTiles[i].getKey()] = true;
+        }
+      }
+      return acc;
+    }, {});
     super.expireCache(projection, usedTiles);
-    this.sourceTileCache.expireCache({});
+    this.sourceTileCache.expireCache(usedSourceTiles);
   }
 
   /**
