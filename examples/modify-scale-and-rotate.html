@@ -1,0 +1,29 @@
+---
+layout: example.html
+title: Scale and Rotate using Modify Interaction
+shortdesc: Example of using the Modify interaction to scale and rotate geometries.
+docs: >
+  Example of using the `ol/interaction/Modify` interaction to scale and rotate geometries. Custom style functions produce and display
+  a scaled and rotated version of the original geometry based on the position of a vertex being modified.
+  This is set as the final geometry at the end of the interaction.
+  By default the `ol/geom/Geometry` scale and rotate methods use the center of the geometry extent as anchor.
+  For irregular shapes the extent changes as the geometry is rotated and using its center as anchor could produce different results
+  if rotation was stopped and resumed. To avoid that an anchor point which is fixed relative to the geometry is used
+  - for `ol/geom/Polygon` the centroid of the vertices, and the midpoint for `ol/geom/LineString`.
+  Only outer vertices (more than 1/3 the maximum distance from the anchor) are used to scale and rotate as precise scaling close to
+  the anchor would be difficult. For the convenience of the user the style function highlights the anchor and available vertices.
+  The `ol/interaction/Translate` interaction is also available to reposition geometries.
+  The Modify and Translate interactions have mutually exclusive `condition` options set so they can be available together.
+  Use `Ctrl+Drag` (`Command+Drag` on Mac) to use the Translate interaction.
+tags: "draw, edit, modify, vector, scale, rotate"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label for="type">Geometry type &nbsp;</label>
+  <select id="type">
+    <option value="Point">Point</option>
+    <option value="LineString">LineString</option>
+    <option value="Polygon" selected>Polygon</option>
+    <option value="Circle">Circle</option>
+  </select>
+</form>
