@@ -33,6 +33,8 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * The projection code must contain a numeric end portion separated by :
+ * or the entire code must form a valid ArcGIS SpatialReference definition.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL.
@@ -150,7 +152,12 @@ class TileArcGISRest extends TileImage {
     }
 
     // ArcGIS Server only wants the numeric portion of the projection ID.
-    const srid = projection.getCode().split(':').pop();
+    // (if there is no numeric portion the entire projection code must
+    // form a valid ArcGIS SpatialReference definition).
+    const srid = projection
+      .getCode()
+      .split(/:(?=\d+$)/)
+      .pop();
 
     params['SIZE'] = tileSize[0] + ',' + tileSize[1];
     params['BBOX'] = tileExtent.join(',');

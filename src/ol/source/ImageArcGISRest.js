@@ -28,6 +28,8 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  * https://developers.arcgis.com/rest/services-reference/export-map.htm
  * for further reference.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * The projection code must contain a numeric end portion separated by :
+ * or the entire code must form a valid ArcGIS SpatialReference definition.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
  * @property {Array<number>} [resolutions] Resolutions. If specified, requests will be made for
@@ -238,7 +240,12 @@ class ImageArcGISRest extends ImageSource {
    */
   getRequestUrl_(extent, size, pixelRatio, projection, params) {
     // ArcGIS Server only wants the numeric portion of the projection ID.
-    const srid = projection.getCode().split(':').pop();
+    // (if there is no numeric portion the entire projection code must
+    // form a valid ArcGIS SpatialReference definition).
+    const srid = projection
+      .getCode()
+      .split(/:(?=\d+$)/)
+      .pop();
 
     params['SIZE'] = size[0] + ',' + size[1];
     params['BBOX'] = extent.join(',');
