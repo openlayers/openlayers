@@ -164,6 +164,7 @@ const INTERVALS = [
  * [30, 10]
  * ```
  * @property {boolean} [wrapX=true] Whether to repeat the graticule horizontally.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
