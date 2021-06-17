@@ -20,7 +20,7 @@ import {
   clearUserProjection,
   setUserProjection,
 } from '../../../../../src/ol/proj.js';
-import {doubleClick} from '../../../../../src/ol/events/condition.js';
+import {doubleClick, never} from '../../../../../src/ol/events/condition.js';
 import {getValues} from '../../../../../src/ol/obj.js';
 
 describe('ol.interaction.Modify', function () {
@@ -852,6 +852,33 @@ describe('ol.interaction.Modify', function () {
 
       expect(listenerSpy.callCount).to.be(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+    });
+
+    it('does not fire `modifystart` when nothing is modified', function (done) {
+      const modify = new Modify({
+        features: new Collection(features),
+        insertVertexCondition: never,
+      });
+      map.addInteraction(modify);
+
+      let modifystart = false;
+      modify.on('modifystart', function () {
+        modifystart = true;
+      });
+
+      // try to add vertex
+      simulateEvent('pointermove', 40, -20, null, 0);
+      simulateEvent('pointerdown', 40, -20, null, 0);
+      simulateEvent('pointermove', 42, -30, null, 0);
+      simulateEvent('pointerdrag', 42, -30, null, 0);
+      simulateEvent('pointerup', 42, -30, null, 0);
+      simulateEvent('click', 42, -30, null, 0);
+      simulateEvent('singleclick', 42, -30, null, 0);
+
+      setTimeout(function () {
+        expect(modifystart).to.be(false);
+        done();
+      }, 0);
     });
   });
 
