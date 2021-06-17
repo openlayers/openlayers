@@ -498,8 +498,9 @@ export function optionsFromCapabilities(wmtsCap, config) {
     const wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
     extent = matrixSetExtent;
     wrapX =
-      wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
-      wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
+      !wgs84BoundingBox ||
+      (wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
+        wgs84BoundingBox[2] === wgs84ProjectionExtent[2]);
   }
 
   const tileGrid = createFromCapabilitiesMatrixSet(
