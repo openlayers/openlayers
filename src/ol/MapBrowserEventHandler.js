@@ -7,7 +7,7 @@ import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import PointerEventType from './pointer/EventType.js';
 import Target from './events/Target.js';
-import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
+import {PASSIVE_EVENT_LISTENERS} from './has.js';
 import {VOID} from './functions.js';
 import {listen, unlistenByKey} from './events.js';
 
@@ -54,9 +54,7 @@ class MapBrowserEventHandler extends Target {
      * @type {number}
      * @private
      */
-    this.moveTolerance_ = moveTolerance
-      ? moveTolerance * DEVICE_PIXEL_RATIO
-      : DEVICE_PIXEL_RATIO;
+    this.moveTolerance_ = moveTolerance === undefined ? 1 : moveTolerance;
 
     /**
      * The most recent "down" type event (or null if none have occurred).
