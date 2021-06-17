@@ -1078,7 +1078,7 @@ class View extends BaseObject {
    *     the given size.
    */
   getResolutionForExtentInternal(extent, opt_size) {
-    const size = opt_size || this.getViewportSize_();
+    const size = opt_size || this.getViewportSizeMinusPadding_();
     const xResolution = getWidth(extent) / size[0];
     const yResolution = getHeight(extent) / size[1];
     return Math.max(xResolution, yResolution);
@@ -1301,6 +1301,32 @@ class View extends BaseObject {
   }
 
   /**
+   * Calculate rotated extent
+   * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
+   * @return {import("./extent").Extent} The rotated extent for the geometry.
+   */
+  rotatedExtentForGeometry(geometry) {
+    const rotation = this.getRotation();
+    const cosAngle = Math.cos(rotation);
+    const sinAngle = Math.sin(-rotation);
+    const coords = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    let minRotX = +Infinity;
+    let minRotY = +Infinity;
+    let maxRotX = -Infinity;
+    let maxRotY = -Infinity;
+    for (let i = 0, ii = coords.length; i < ii; i += stride) {
+      const rotX = coords[i] * cosAngle - coords[i + 1] * sinAngle;
+      const rotY = coords[i] * sinAngle + coords[i + 1] * cosAngle;
+      minRotX = Math.min(minRotX, rotX);
+      minRotY = Math.min(minRotY, rotY);
+      maxRotX = Math.max(maxRotX, rotX);
+      maxRotY = Math.max(maxRotY, rotY);
+    }
+    return [minRotX, minRotY, maxRotX, maxRotY];
+  }
+
+  /**
    * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
    * @param {FitOptions} [opt_options] Options.
    */
@@ -1321,44 +1347,28 @@ class View extends BaseObject {
     } else {
       minResolution = 0;
     }
-    const coords = geometry.getFlatCoordinates();
 
-    // calculate rotated extent
-    const rotation = this.getRotation();
-    const cosAngle = Math.cos(-rotation);
-    let sinAngle = Math.sin(-rotation);
-    let minRotX = +Infinity;
-    let minRotY = +Infinity;
-    let maxRotX = -Infinity;
-    let maxRotY = -Infinity;
-    const stride = geometry.getStride();
-    for (let i = 0, ii = coords.length; i < ii; i += stride) {
-      const rotX = coords[i] * cosAngle - coords[i + 1] * sinAngle;
-      const rotY = coords[i] * sinAngle + coords[i + 1] * cosAngle;
-      minRotX = Math.min(minRotX, rotX);
-      minRotY = Math.min(minRotY, rotY);
-      maxRotX = Math.max(maxRotX, rotX);
-      maxRotY = Math.max(maxRotY, rotY);
-    }
+    const rotatedExtent = this.rotatedExtentForGeometry(geometry);
 
     // calculate resolution
-    let resolution = this.getResolutionForExtentInternal(
-      [minRotX, minRotY, maxRotX, maxRotY],
-      [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]
-    );
+    let resolution = this.getResolutionForExtentInternal(rotatedExtent, [
+      size[0] - padding[1] - padding[3],
+      size[1] - padding[0] - padding[2],
+    ]);
     resolution = isNaN(resolution)
       ? minResolution
       : Math.max(resolution, minResolution);
     resolution = this.getConstrainedResolution(resolution, nearest ? 0 : 1);
 
     // calculate center
-    sinAngle = -sinAngle; // go back to original rotation
-    let centerRotX = (minRotX + maxRotX) / 2;
-    let centerRotY = (minRotY + maxRotY) / 2;
-    centerRotX += ((padding[1] - padding[3]) / 2) * resolution;
-    centerRotY += ((padding[0] - padding[2]) / 2) * resolution;
-    const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
-    const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
+    const rotation = this.getRotation();
+    const sinAngle = Math.sin(rotation);
+    const cosAngle = Math.cos(rotation);
+    const centerRot = getCenter(rotatedExtent);
+    centerRot[0] += ((padding[1] - padding[3]) / 2) * resolution;
+    centerRot[1] += ((padding[0] - padding[2]) / 2) * resolution;
+    const centerX = centerRot[0] * cosAngle - centerRot[1] * sinAngle;
+    const centerY = centerRot[1] * cosAngle + centerRot[0] * sinAngle;
     const center = this.getConstrainedCenter([centerX, centerY], resolution);
     const callback = options.callback ? options.callback : VOID;
 
