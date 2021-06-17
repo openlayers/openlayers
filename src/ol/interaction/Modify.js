@@ -85,7 +85,7 @@ const ModifyEventType = {
  * @property {Feature} feature Feature.
  * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @property {number} [index] Index.
- * @property {Array<import("../extent.js").Extent>} segment Segment.
+ * @property {Array<Array<number>>} segment Segment.
  * @property {Array<SegmentData>} [featureSegments] FeatureSegments.
  */
 
