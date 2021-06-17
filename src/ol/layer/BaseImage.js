@@ -4,6 +4,7 @@
 import Layer from './Layer.js';
 
 /**
+ * @template {import("../source/Image.js").default} ImageSourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -26,7 +27,7 @@ import Layer from './Layer.js';
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map#addLayer}.
- * @property {import("../source/Image.js").default} [source] Source for this layer.
+ * @property {ImageSourceType} [source] Source for this layer.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -44,7 +45,7 @@ import Layer from './Layer.js';
  */
 class BaseImageLayer extends Layer {
   /**
-   * @param {Options} [opt_options] Layer options.
+   * @param {Options<ImageSourceType>} [opt_options] Layer options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

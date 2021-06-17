@@ -16,6 +16,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
+ * @template {import("../source/Source.js").default} SourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -34,7 +35,7 @@ import {listen, unlistenByKey} from '../events.js';
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {import("../source/Source.js").default} [source] Source for this layer.  If not provided to the constructor,
+ * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer#setSource layer.setSource(source)} after
  * construction.
  * @property {import("../PluggableMap.js").default} [map] Map.
@@ -88,7 +89,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 class Layer extends BaseLayer {
   /**
-   * @param {Options} options Layer options.
+   * @param {Options<SourceType>} options Layer options.
    */
   constructor(options) {
     const baseOptions = assign({}, options);
