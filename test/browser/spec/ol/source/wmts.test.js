@@ -458,6 +458,56 @@ describe('ol.source.WMTS', function () {
       expectDelta(extent[3], expectedMatrixSetExtend[3]);
     });
   });
+  describe('set wrap x by bounding box if available', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_wrapx.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        }
+      );
+    });
+
+    it('sets wrapx when no bounding box is set', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'no-bb',
+        matrixSet: 'EPSG:3857',
+        crossOrigin: 'anonymous',
+      });
+      expect(options.wrapX).to.be(true);
+    });
+    it('sets wrapx when only wgs 84 bb is set', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'only-wgs84-bb',
+        matrixSet: 'EPSG:3857',
+        crossOrigin: 'anonymous',
+      });
+      expect(options.wrapX).to.be(true);
+    });
+    it('does not set wrapx when wgs84 bb is set', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'no-wrap-wgs84-bb',
+        matrixSet: 'EPSG:3857',
+        crossOrigin: 'anonymous',
+      });
+      expect(options.wrapX).to.be(false);
+    });
+    it('does not set wrapx when tile matrix does not wrap', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'no-wrap-tm',
+        matrixSet: 'EPSG:3857',
+        crossOrigin: 'anonymous',
+      });
+      expect(options.wrapX).to.be(false);
+    });
+  });
   describe('when creating options from capabilities with TileMatrixSetLink', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
