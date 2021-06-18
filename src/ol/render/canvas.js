@@ -159,7 +159,7 @@ export const checkedFonts = new BaseObject();
 
 /**
  * The label cache for text rendering. To change the default cache size of 2048
- * entries, use {@link module:ol/structs/LRUCache#setSize}.
+ * entries, use {@link module:ol/structs/LRUCache~LRUCache#setSize cache.setSize()}.
  * Deprecated - there is no label cache any more.
  * @type {?}
  * @api

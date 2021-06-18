@@ -4,8 +4,8 @@
 import {extend} from './array.js';
 
 /**
- * When using {@link module:ol/xml~makeChildAppender} or
- * {@link module:ol/xml~makeSimpleNodeFactory}, the top `objectStack` item needs
+ * When using {@link module:ol/xml.makeChildAppender} or
+ * {@link module:ol/xml.makeSimpleNodeFactory}, the top `objectStack` item needs
  * to have this structure.
  * @typedef {Object} NodeStackItem
  * @property {Node} node Node.
@@ -288,7 +288,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
 
 /**
  * Create a serializer that calls the provided `nodeWriter` from
- * {@link module:ol/xml~serialize}. This can be used by the parent writer to have the
+ * {@link module:ol/xml.serialize}. This can be used by the parent writer to have the
  * 'nodeWriter' called with an array of values when the `nodeWriter` was
  * designed to serialize a single item. An example would be a LineString
  * geometry writer, which could be reused for writing MultiLineString
@@ -314,7 +314,7 @@ export function makeArraySerializer(nodeWriter, opt_this) {
 
 /**
  * Create a node factory which can use the `opt_keys` passed to
- * {@link module:ol/xml~serialize} or {@link module:ol/xml~pushSerializeAndPop} as node names,
+ * {@link module:ol/xml.serialize} or {@link module:ol/xml.pushSerializeAndPop} as node names,
  * or a fixed node name. The namespace of the created nodes can either be fixed,
  * or the parent namespace will be used.
  * @param {string} [opt_nodeName] Fixed node name which will be used for all
@@ -353,16 +353,16 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
 
 /**
  * A node factory that creates a node using the parent's `namespaceURI` and the
- * `nodeName` passed by {@link module:ol/xml~serialize} or
- * {@link module:ol/xml~pushSerializeAndPop} to the node factory.
+ * `nodeName` passed by {@link module:ol/xml.serialize} or
+ * {@link module:ol/xml.pushSerializeAndPop} to the node factory.
  * @const
  * @type {function(*, Array<*>, string=): (Node|undefined)}
  */
 export const OBJECT_PROPERTY_NODE_FACTORY = makeSimpleNodeFactory();
 
 /**
- * Create an array of `values` to be used with {@link module:ol/xml~serialize} or
- * {@link module:ol/xml~pushSerializeAndPop}, where `orderedKeys` has to be provided as
+ * Create an array of `values` to be used with {@link module:ol/xml.serialize} or
+ * {@link module:ol/xml.pushSerializeAndPop}, where `orderedKeys` has to be provided as
  * `opt_key` argument.
  * @param {Object<string, *>} object Key-value pairs for the sequence. Keys can
  *     be a subset of the `orderedKeys`.

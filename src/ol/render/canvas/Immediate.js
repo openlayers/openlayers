@@ -32,11 +32,11 @@ import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 
 /**
  * @classdesc
- * A concrete subclass of {@link module:ol/render/VectorContext} that implements
+ * A concrete subclass of {@link module:ol/render/VectorContext VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the
- * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
+ * {@link module:ol/render/Event~RenderEvent RenderEvent} object associated with postcompose, precompose and
  * render events emitted by layers and maps.
  */
 class CanvasImmediateRenderer extends VectorContext {
@@ -541,7 +541,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
   /**
    * Render a geometry into the canvas.  Call
-   * {@link module:ol/render/canvas/Immediate#setStyle} first to set the rendering style.
+   * {@link module:ol/render/canvas/Immediate~CanvasImmediateRenderer#setStyle renderer.setStyle()} first to set the rendering style.
    *
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry to render.
    * @api
@@ -597,7 +597,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a feature into the canvas.  Note that any `zIndex` on the provided
    * style will be ignored - features are rendered immediately in the order that
    * this method is called.  If you need `zIndex` support, you should be using an
-   * {@link module:ol/layer/Vector~VectorLayer} instead.
+   * {@link module:ol/layer/Vector~VectorLayer VectorLayer} instead.
    *
    * @param {import("../../Feature.js").default} feature Feature.
    * @param {import("../../style/Style.js").default} style Style.

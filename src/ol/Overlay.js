@@ -61,7 +61,7 @@ import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
  * milliseconds.
  * @property {function(number):number} [easing] The easing function to use. Can
  * be one from {@link module:ol/easing} or a custom function.
- * Default is {@link module:ol/easing~inAndOut}.
+ * Default is {@link module:ol/easing.inAndOut}.
  */
 
 /**

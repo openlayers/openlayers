@@ -35,12 +35,13 @@ import {assign} from '../obj.js';
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link module:ol/Map#addLayer}.
+ * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
  * @property {boolean} [declutter=false] Declutter images and text on this layer. The priority is defined
  * by the `zIndex` of the style and the render order of features. Higher z-index means higher priority.
  * Within the same z-index, a feature rendered before another has higher priority.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
- * {@link module:ol/style} for default style which will be used if this is not defined.
+ * {@link import("../style/Style.js").default the style docs} for the default style that will be used if
+ * this is not defined.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.

@@ -46,14 +46,15 @@ import {assign} from '../obj.js';
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link module:ol/Map#addLayer}.
+ * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
- * {@link module:ol/style} for default style which will be used if this is not defined.
+ * {@link import("../style/Style.js").default the style docs} for the default style that will be used if
+ * this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
  * will have a performance impact for large amounts of vector data. When set to `false`, batches
@@ -69,7 +70,7 @@ import {assign} from '../obj.js';
 /**
  * @classdesc
  * Layer for vector tile data that is rendered client-side.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
@@ -134,7 +135,7 @@ class VectorTileLayer extends BaseVectorLayer {
    * when a hit was detected, or it will be empty.
    *
    * The hit detection algorithm used for this method is optimized for performance, but is less
-   * accurate than the one used in {@link import("../PluggableMap.js").default#getFeaturesAtPixel}: Text
+   * accurate than the one used in {@link import("../PluggableMap.js").default#getFeaturesAtPixel map.getFeaturesAtPixel()}: Text
    * is not considered, and icons are only represented by their bounding box instead of the exact
    * image.
    *

@@ -42,15 +42,15 @@
  * `get('EPSG:1234').setExtent(extent)`.
  *
  * In addition to Proj4js support, any transform functions can be added with
- * {@link module:ol/proj~addCoordinateTransforms}. To use this, you must first create
+ * {@link module:ol/proj.addCoordinateTransforms}. To use this, you must first create
  * a {@link module:ol/proj/Projection} object for the new projection and add it with
- * {@link module:ol/proj~addProjection}. You can then add the forward and inverse
- * functions with {@link module:ol/proj~addCoordinateTransforms}. See
+ * {@link module:ol/proj.addProjection}. You can then add the forward and inverse
+ * functions with {@link module:ol/proj.addCoordinateTransforms}. See
  * examples/wms-custom-proj for an example of this.
  *
  * Note that if no transforms are needed and you only need to define the
  * projection, just add a {@link module:ol/proj/Projection} with
- * {@link module:ol/proj~addProjection}. See examples/wms-no-proj for an example of
+ * {@link module:ol/proj.addProjection}. See examples/wms-no-proj for an example of
  * this.
  */
 import Projection from './proj/Projection.js';
@@ -480,7 +480,7 @@ export function getTransform(source, destination) {
  * Transforms a coordinate from source projection to destination projection.
  * This returns a new coordinate (and does not modify the original).
  *
- * See {@link module:ol/proj~transformExtent} for extent transformation.
+ * See {@link module:ol/proj.transformExtent} for extent transformation.
  * See the transform method of {@link module:ol/geom/Geometry~Geometry} and its
  * subclasses for geometry transforms.
  *
