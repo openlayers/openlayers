@@ -280,7 +280,7 @@ class CanvasImmediateRenderer extends VectorContext {
       flatCoordinates,
       offset,
       end,
-      2,
+      stride,
       this.transform_,
       this.pixelCoordinates_
     );
@@ -982,24 +982,30 @@ class CanvasImmediateRenderer extends VectorContext {
       const strokeStyleLineJoin = strokeStyle.getLineJoin();
       const strokeStyleWidth = strokeStyle.getWidth();
       const strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+      const lineDash = strokeStyleLineDash
+        ? strokeStyleLineDash
+        : defaultLineDash;
       this.strokeState_ = {
         lineCap:
           strokeStyleLineCap !== undefined
             ? strokeStyleLineCap
             : defaultLineCap,
-        lineDash: strokeStyleLineDash ? strokeStyleLineDash : defaultLineDash,
-        lineDashOffset: strokeStyleLineDashOffset
-          ? strokeStyleLineDashOffset
-          : defaultLineDashOffset,
+        lineDash:
+          this.pixelRatio_ === 1
+            ? lineDash
+            : lineDash.map((n) => n * this.pixelRatio_),
+        lineDashOffset:
+          (strokeStyleLineDashOffset
+            ? strokeStyleLineDashOffset
+            : defaultLineDashOffset) * this.pixelRatio_,
         lineJoin:
           strokeStyleLineJoin !== undefined
             ? strokeStyleLineJoin
             : defaultLineJoin,
         lineWidth:
-          this.pixelRatio_ *
           (strokeStyleWidth !== undefined
             ? strokeStyleWidth
-            : defaultLineWidth),
+            : defaultLineWidth) * this.pixelRatio_,
         miterLimit:
           strokeStyleMiterLimit !== undefined
             ? strokeStyleMiterLimit
