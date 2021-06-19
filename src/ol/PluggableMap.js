@@ -1,7 +1,7 @@
 /**
  * @module ol/PluggableMap
  */
-import BaseObject, {getChangeEventType} from './Object.js';
+import BaseObject from './Object.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import EventType from './events/EventType.js';
@@ -345,22 +345,13 @@ class PluggableMap extends BaseObject {
       this.handleTileChange_.bind(this)
     );
 
-    this.addEventListener(
-      getChangeEventType(MapProperty.LAYERGROUP),
+    this.addChangeListener(
+      MapProperty.LAYERGROUP,
       this.handleLayerGroupChanged_
     );
-    this.addEventListener(
-      getChangeEventType(MapProperty.VIEW),
-      this.handleViewChanged_
-    );
-    this.addEventListener(
-      getChangeEventType(MapProperty.SIZE),
-      this.handleSizeChanged_
-    );
-    this.addEventListener(
-      getChangeEventType(MapProperty.TARGET),
-      this.handleTargetChanged_
-    );
+    this.addChangeListener(MapProperty.VIEW, this.handleViewChanged_);
+    this.addChangeListener(MapProperty.SIZE, this.handleSizeChanged_);
+    this.addChangeListener(MapProperty.TARGET, this.handleTargetChanged_);
 
     // setProperties will trigger the rendering of the map if the map
     // is "defined" already.

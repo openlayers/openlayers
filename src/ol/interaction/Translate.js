@@ -7,7 +7,6 @@ import InteractionProperty from './Property.js';
 import PointerInteraction from './Pointer.js';
 import {TRUE} from '../functions.js';
 import {always} from '../events/condition.js';
-import {getChangeEventType} from '../Object.js';
 import {includes} from '../array.js';
 
 /**
@@ -192,8 +191,8 @@ class Translate extends PointerInteraction {
      */
     this.lastFeature_ = null;
 
-    this.addEventListener(
-      getChangeEventType(InteractionProperty.ACTIVE),
+    this.addChangeListener(
+      InteractionProperty.ACTIVE,
       this.handleActiveChanged_
     );
   }

@@ -4,7 +4,6 @@
 
 import Control from './Control.js';
 import EventType from '../pointer/EventType.js';
-import {getChangeEventType} from '../Object.js';
 import {
   get as getProjection,
   getTransformFromProjections,
@@ -69,10 +68,7 @@ class MousePosition extends Control {
       target: options.target,
     });
 
-    this.addEventListener(
-      getChangeEventType(PROJECTION),
-      this.handleProjectionChanged_
-    );
+    this.addChangeListener(PROJECTION, this.handleProjectionChanged_);
 
     if (options.coordinateFormat) {
       this.setCoordinateFormat(options.coordinateFormat);

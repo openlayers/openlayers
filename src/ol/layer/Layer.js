@@ -8,7 +8,6 @@ import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
-import {getChangeEventType} from '../Object.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
@@ -130,8 +129,8 @@ class Layer extends BaseLayer {
       this.setMap(options.map);
     }
 
-    this.addEventListener(
-      getChangeEventType(LayerProperty.SOURCE),
+    this.addChangeListener(
+      LayerProperty.SOURCE,
       this.handleSourcePropertyChange_
     );
 
