@@ -66,6 +66,7 @@ const FullScreenEventType = {
  *
  * @fires FullScreenEventType#enterfullscreen
  * @fires FullScreenEventType#leavefullscreen
+ * @extends Control<'enterfullscreen'|'leavefullscreen'>
  * @api
  */
 class FullScreen extends Control {

@@ -40,6 +40,8 @@ import {get as getProjection} from '../proj.js';
  * Base class for {@link module:ol/layer/Layer~Layer} sources.
  *
  * A generic `change` event is triggered when the state of the source changes.
+ * @template {string} EventTypes
+ * @extends BaseObject<EventTypes>
  * @abstract
  * @api
  */

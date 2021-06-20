@@ -58,6 +58,7 @@ import {listen, unlistenByKey} from './events.js';
  *
  * @api
  * @template {import("./geom/Geometry.js").default} Geometry
+ * @extends BaseObject<'change:geometry'>
  */
 class Feature extends BaseObject {
   /**

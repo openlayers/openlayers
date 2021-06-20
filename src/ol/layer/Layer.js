@@ -85,6 +85,8 @@ import {listen, unlistenByKey} from '../events.js';
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
  * @template {import("../source/Source.js").default} SourceType
+ * @template {string} EventTypes
+ * @extends BaseLayer<EventTypes|'postrender'|'prerender'>
  * @api
  */
 class Layer extends BaseLayer {

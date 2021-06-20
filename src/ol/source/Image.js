@@ -76,6 +76,7 @@ export class ImageSourceEvent extends Event {
  * Base class for sources providing a single image.
  * @abstract
  * @fires module:ol/source/Image.ImageSourceEvent
+ * @extends Source<'imageloadend'|'imageloaderror'|'imageloadstart'>
  * @api
  */
 class ImageSource extends Source {
