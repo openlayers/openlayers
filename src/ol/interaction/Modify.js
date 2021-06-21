@@ -33,7 +33,7 @@ import {
   squaredDistanceToSegment,
 } from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
-import {equals} from '../array.js';
+import {equals, includes} from '../array.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {
   fromUserCoordinate,
@@ -82,10 +82,10 @@ const ModifyEventType = {
 /**
  * @typedef {Object} SegmentData
  * @property {Array<number>} [depth] Depth.
- * @property {Feature} feature Feature.
+ * @property {import("../Feature").FeatureLike} feature Feature.
  * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @property {number} [index] Index.
- * @property {Array<import("../extent.js").Extent>} segment Segment.
+ * @property {Array<Array<number>>} segment Segment.
  * @property {Array<SegmentData>} [featureSegments] FeatureSegments.
  */
 
@@ -140,7 +140,7 @@ const ModifyEventType = {
 export class ModifyEvent extends Event {
   /**
    * @param {ModifyEventType} type Type.
-   * @param {Collection<Feature>} features
+   * @param {Collection<import("../Feature").FeatureLike>} features
    * The features modified.
    * @param {import("../MapBrowserEvent.js").default} MapBrowserEvent
    * Associated {@link module:ol/MapBrowserEvent}.
@@ -150,7 +150,7 @@ export class ModifyEvent extends Event {
 
     /**
      * The features being modified.
-     * @type {Collection<Feature>}
+     * @type {Collection<import("../Feature").FeatureLike>}
      * @api
      */
     this.features = features;
@@ -256,7 +256,7 @@ class Modify extends PointerInteraction {
     this.ignoreNextSingleClick_ = false;
 
     /**
-     * @type {Collection<Feature>}
+     * @type {Collection<import("../Feature").FeatureLike>}
      * @private
      */
     this.featuresBeingModified_ = null;
@@ -787,7 +787,7 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
-   * @param {Array<Feature>} features The features being modified.
+   * @param {Array<import("../Feature").FeatureLike>} features The features being modified.
    * @param {Array<import("../geom/SimpleGeometry.js").default>} geometries The geometries being modified.
    * @return {Feature} Vertex feature.
    * @private
@@ -1130,7 +1130,9 @@ class Modify extends PointerInteraction {
       );
     };
 
-    let nodes, hitPointGeometry;
+    /** @type {Array<SegmentData>|undefined} */
+    let nodes;
+    let hitPointGeometry;
     if (this.hitDetection_) {
       const layerFilter =
         typeof this.hitDetection_ === 'object'
@@ -1140,9 +1142,12 @@ class Modify extends PointerInteraction {
         pixel,
         (feature, layer, geometry) => {
           geometry = geometry || feature.getGeometry();
-          if (geometry.getType() === GeometryType.POINT) {
+          if (
+            geometry.getType() === GeometryType.POINT &&
+            includes(this.features_.getArray(), feature)
+          ) {
             hitPointGeometry = geometry;
-            const coordinate = geometry.getCoordinates();
+            const coordinate = geometry.getFlatCoordinates().slice(0, 2);
             nodes = [
               {
                 feature,
