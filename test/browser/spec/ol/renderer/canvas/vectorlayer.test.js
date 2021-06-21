@@ -239,7 +239,12 @@ describe('ol.renderer.canvas.VectorLayer', function () {
   });
 
   describe('#prepareFrame and #compose', function () {
-    let frameState, projExtent, renderer, worldWidth, buffer, loadExtents;
+    /** @type {import("../../../../../../src/ol/PluggableMap").FrameState*/ let frameState;
+    /** @type {import("../../../../../../src/ol/extent").Extent*/ let projExtent;
+    /** @type {CanvasVectorLayerRenderer} */ let renderer;
+    /** @type {number} */ let worldWidth;
+    /** @type {number} */ let buffer;
+    /** @type {Array<import("../../../../../../src/ol/extent").Extent>*/ let loadExtents;
 
     function loader(extent) {
       loadExtents.push(extent);
@@ -260,6 +265,7 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       buffer = layer.getRenderBuffer();
       loadExtents = [];
       frameState = {
+        pixelRatio: 1,
         viewHints: [],
         viewState: {
           projection: projection,
@@ -412,9 +418,8 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       });
       frameState.layerStatesArray = [layer.getLayerState()];
       frameState.layerIndex = 0;
-      frameState.extent = [-10000, -10000, 10000, 10000];
       frameState.size = [100, 100];
-      frameState.viewState.center = [0, 0];
+      setExtent([-10000, -10000, 10000, 10000]);
       let rendered = false;
       if (renderer.prepareFrame(frameState)) {
         rendered = true;
@@ -636,6 +641,62 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       expect(res.extent[0]).to.be(7.5);
 
       document.body.removeChild(target);
+    });
+    it('invalidates hitdetection image when map is moved horizontally', function (done) {
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          wrapX: true,
+        }),
+      });
+      const renderer = new CanvasVectorLayerRenderer(layer);
+      const projection = getProjection('EPSG:3857');
+      const projExtent = projection.getExtent();
+      const worldWidth = getWidth(projExtent);
+      /** @type {import("../../../../../../src/ol/PluggableMap").FrameState*/
+      const frameState = {
+        viewHints: [],
+        pixelRatio: 1,
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        size: [100, 100],
+        viewState: {
+          projection: projection,
+          resolution: 1,
+          rotation: 0,
+        },
+      };
+
+      function setExtent(extent) {
+        frameState.extent = extent;
+        frameState.viewState.center = getCenter(extent);
+      }
+
+      layer.getSource().addFeature(new Feature(new Point([0, 0])));
+      setExtent([-10000 - worldWidth, -10000, 10000 - worldWidth, 10000]);
+      if (renderer.prepareFrame(frameState)) {
+        renderer.renderFrame(frameState, null);
+        renderer.getFeatures([50, 50]).then((features) => {
+          const imageData = renderer.hitDetectionImageData_;
+          expect(imageData).to.be.an(ImageData);
+          expect(features).to.have.length(1);
+
+          setExtent([
+            5e8 - worldWidth,
+            -10000,
+            5e8 + 20000 - worldWidth,
+            10000,
+          ]);
+          if (renderer.prepareFrame(frameState)) {
+            renderer.renderFrame(frameState);
+            renderer.getFeatures([50, 50]).then((features) => {
+              expect(renderer.hitDetectionImageData_).to.be.an(ImageData);
+              expect(renderer.hitDetectionImageData_ !== imageData).to.be(true);
+              expect(features).to.have.length(0);
+              done();
+            });
+          }
+        });
+      }
     });
   });
 });

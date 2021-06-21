@@ -30,6 +30,7 @@ import {
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
 } from '../vector.js';
+import {equals} from '../../array.js';
 import {
   fromUserExtent,
   getTransformFromProjections,
@@ -92,6 +93,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {import("../../extent.js").Extent}
      */
     this.renderedExtent_ = createEmpty();
+
+    /**
+     * @private
+     * @type {import("../../extent.js").Extent}
+     */
+    this.wrappedRenderedExtent_ = createEmpty();
 
     /**
      * @private
@@ -323,7 +330,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           const resolution = this.renderedResolution_;
           const rotation = this.renderedRotation_;
           const projection = this.renderedProjection_;
-          const extent = this.renderedExtent_;
+          const extent = this.wrappedRenderedExtent_;
           const layer = this.getLayer();
           const transforms = [];
           const width = size[0] * HIT_DETECT_RESOLUTION;
@@ -548,6 +555,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       frameStateExtent,
       vectorLayerRenderBuffer * resolution
     );
+    const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
 
@@ -596,8 +604,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      containsExtent(this.renderedExtent_, extent)
+      containsExtent(this.wrappedRenderedExtent_, extent)
     ) {
+      if (!equals(this.renderedExtent_, renderedExtent)) {
+        this.hitDetectionImageData_ = null;
+        this.renderedExtent_ = renderedExtent;
+      }
+      this.renderedCenter_ = center;
       this.replayGroupChanged = false;
       return true;
     }
@@ -702,7 +715,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
-    this.renderedExtent_ = extent;
+    this.renderedExtent_ = renderedExtent;
+    this.wrappedRenderedExtent_ = extent;
     this.renderedCenter_ = center;
     this.renderedProjection_ = projection;
     this.replayGroup_ = executorGroup;
