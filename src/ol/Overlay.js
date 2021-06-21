@@ -101,6 +101,7 @@ const Property = {
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);
  *
+ * @extends BaseObject<'change:element'|'change:map'|'change:offset'|'change:position'|'change:positioning'>
  * @api
  */
 class Overlay extends BaseObject {

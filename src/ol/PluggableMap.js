@@ -132,6 +132,7 @@ import {removeNode} from './dom.js';
  * @fires import("./render/Event.js").default#precompose
  * @fires import("./render/Event.js").default#postcompose
  * @fires import("./render/Event.js").default#rendercomplete
+ * @extends BaseObject<'change:layergroup'|'change:size'|'change:target'|'change:view'|'precompose'|'singleclick'|'click'|'dblclick'|'pointerdrag'|'pointermove'|'postrender'|'movestart'|'moveend'|'postcompose'|'rendercomplete'>
  * @api
  */
 class PluggableMap extends BaseObject {

@@ -177,6 +177,7 @@ export class DrawEvent extends Event {
  * Interaction for drawing feature geometries.
  *
  * @fires DrawEvent
+ * @extends PointerInteraction<'drawabort'|'drawend'|'drawstart'>
  * @api
  */
 class Draw extends PointerInteraction {
