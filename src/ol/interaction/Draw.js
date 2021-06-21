@@ -29,7 +29,6 @@ import {
 } from '../extent.js';
 import {createEditingStyle} from '../style/Style.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
-import {getChangeEventType} from '../Object.js';
 import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 
 /**
@@ -477,10 +476,7 @@ class Draw extends PointerInteraction {
         : shiftKeyOnly;
     }
 
-    this.addEventListener(
-      getChangeEventType(InteractionProperty.ACTIVE),
-      this.updateState_
-    );
+    this.addChangeListener(InteractionProperty.ACTIVE, this.updateState_);
   }
 
   /**

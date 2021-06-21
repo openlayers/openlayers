@@ -20,7 +20,6 @@ import {
   getTopLeft,
   scaleFromCenter,
 } from '../extent.js';
-import {getChangeEventType} from '../Object.js';
 import {listen, listenOnce} from '../events.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import {replaceNode} from '../dom.js';
@@ -348,8 +347,8 @@ class OverviewMap extends Control {
       this.ovmap_.setView(newView);
     }
 
-    view.addEventListener(
-      getChangeEventType(ViewProperty.ROTATION),
+    view.addChangeListener(
+      ViewProperty.ROTATION,
       this.boundHandleRotationChanged_
     );
     // Sync once with the new view
@@ -362,8 +361,8 @@ class OverviewMap extends Control {
    * @private
    */
   unbindView_(view) {
-    view.removeEventListener(
-      getChangeEventType(ViewProperty.ROTATION),
+    view.removeChangeListener(
+      ViewProperty.ROTATION,
       this.boundHandleRotationChanged_
     );
   }

@@ -6,7 +6,6 @@ import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 import {createCanvasContext2D} from '../dom.js';
-import {getChangeEventType} from '../Object.js';
 
 /**
  * @typedef {Object} Options
@@ -86,10 +85,7 @@ class Heatmap extends VectorLayer {
      */
     this.gradient_ = null;
 
-    this.addEventListener(
-      getChangeEventType(Property.GRADIENT),
-      this.handleGradientChanged_
-    );
+    this.addChangeListener(Property.GRADIENT, this.handleGradientChanged_);
 
     this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
 

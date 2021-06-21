@@ -1,7 +1,7 @@
 /**
  * @module ol/Overlay
  */
-import BaseObject, {getChangeEventType} from './Object.js';
+import BaseObject from './Object.js';
 import MapEventType from './MapEventType.js';
 import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
@@ -176,26 +176,11 @@ class Overlay extends BaseObject {
      */
     this.mapPostrenderListenerKey = null;
 
-    this.addEventListener(
-      getChangeEventType(Property.ELEMENT),
-      this.handleElementChanged
-    );
-    this.addEventListener(
-      getChangeEventType(Property.MAP),
-      this.handleMapChanged
-    );
-    this.addEventListener(
-      getChangeEventType(Property.OFFSET),
-      this.handleOffsetChanged
-    );
-    this.addEventListener(
-      getChangeEventType(Property.POSITION),
-      this.handlePositionChanged
-    );
-    this.addEventListener(
-      getChangeEventType(Property.POSITIONING),
-      this.handlePositioningChanged
-    );
+    this.addChangeListener(Property.ELEMENT, this.handleElementChanged);
+    this.addChangeListener(Property.MAP, this.handleMapChanged);
+    this.addChangeListener(Property.OFFSET, this.handleOffsetChanged);
+    this.addChangeListener(Property.POSITION, this.handlePositionChanged);
+    this.addChangeListener(Property.POSITIONING, this.handlePositioningChanged);
 
     if (options.element !== undefined) {
       this.setElement(options.element);

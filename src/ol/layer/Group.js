@@ -9,7 +9,6 @@ import ObjectEventType from '../ObjectEventType.js';
 import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
 import {assign, clear} from '../obj.js';
-import {getChangeEventType} from '../Object.js';
 import {getIntersection} from '../extent.js';
 import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -77,10 +76,7 @@ class LayerGroup extends BaseLayer {
      */
     this.listenerKeys_ = {};
 
-    this.addEventListener(
-      getChangeEventType(Property.LAYERS),
-      this.handleLayersChanged_
-    );
+    this.addChangeListener(Property.LAYERS, this.handleLayersChanged_);
 
     if (layers) {
       if (Array.isArray(layers)) {
