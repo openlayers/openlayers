@@ -435,14 +435,17 @@ class Modify extends PointerInteraction {
           }
         }
       }
-
-      this.dispatchEvent(
-        new ModifyEvent(
-          ModifyEventType.MODIFYSTART,
-          this.featuresBeingModified_,
-          evt
-        )
-      );
+      if (this.featuresBeingModified_.getLength() === 0) {
+        this.featuresBeingModified_ = null;
+      } else {
+        this.dispatchEvent(
+          new ModifyEvent(
+            ModifyEventType.MODIFYSTART,
+            this.featuresBeingModified_,
+            evt
+          )
+        );
+      }
     }
   }
 
