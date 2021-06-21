@@ -1603,9 +1603,11 @@ describe('ol.format.KML', function () {
             '      <when>2014-01-06T19:38:55Z</when>' +
             '      <when>2014-01-06T19:39:03Z</when>' +
             '      <when>2014-01-06T19:39:10Z</when>' +
+            '      <when>2014-01-06T19:39:17Z</when>' +
             '      <gx:coord>8.1 46.1 1909.9</gx:coord>' +
             '      <gx:coord>8.2 46.2 1925.2</gx:coord>' +
             '      <gx:coord>8.3 46.3 1926.2</gx:coord>' +
+            '      <gx:coord/>' +
             '    </gx:Track>' +
             '  </Placemark>' +
             '</kml>';
