@@ -183,7 +183,6 @@ export class ModifyEvent extends Event {
  * key is pressed.  To configure the interaction with a different condition
  * for deletion, use the `deleteCondition` option.
  * @fires ModifyEvent
- * @extends PointerInteraction<'modifyend'|'modifystart'>
  * @api
  */
 class Modify extends PointerInteraction {

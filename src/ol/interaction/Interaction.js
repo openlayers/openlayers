@@ -27,9 +27,6 @@ import {easeOut, linear} from '../easing.js';
  * by a keyboard event not a button element event.
  * Although interactions do not have a DOM element, some of them do render
  * vectors and so are visible on the screen.
- *
- * @template {string} EventTypes
- * @extends BaseObject<EventTypes|'change:active'>
  * @api
  */
 class Interaction extends BaseObject {

@@ -288,7 +288,6 @@ const DEFAULT_MIN_ZOOM = 0;
  * the snap angle is 0), an animation will be triggered at the interaction end to
  * put back the view to a stable state;
  *
- * @extends BaseObject<'change:center'|'change:resolution'|'change:rotation'>
  * @api
  */
 class View extends BaseObject {

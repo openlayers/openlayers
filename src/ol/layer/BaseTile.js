@@ -45,7 +45,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Tile.js").default} TileSourceType
- * @extends Layer<TileSourceType,'preload'|'useInterimTilesOnError'>
+ * @extends {Layer<TileSourceType>}
  * @api
  */
 class BaseTileLayer extends Layer {

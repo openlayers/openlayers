@@ -6,11 +6,6 @@ import EventType from './events/EventType.js';
 import {listen, listenOnce, unlistenByKey} from './events.js';
 
 /**
- * @template ChildTypes
- * @typedef {ChildTypes|'change'|'error'|Array<ChildTypes|'change'|'error'>} EventTypes
- */
-
-/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -19,7 +14,6 @@ import {listen, listenOnce, unlistenByKey} from './events.js';
  * {@link module:ol/Observable~Observable#changed}.
  *
  * @fires import("./events/Event.js").default
- * @template {string} ChildTypes
  * @api
  */
 class Observable extends EventTarget {
@@ -54,7 +48,7 @@ class Observable extends EventTarget {
 
   /**
    * Listen for a certain type of event.
-   * @param {EventTypes<ChildTypes>} type The event type or array of event types.
+   * @param {string|Array<string>} type The event type or array of event types.
    * @param {function(?): ?} listener The listener function.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
@@ -76,7 +70,7 @@ class Observable extends EventTarget {
 
   /**
    * Listen once for a certain type of event.
-   * @param {EventTypes<ChildTypes>} type The event type or array of event types.
+   * @param {string|Array<string>} type The event type or array of event types.
    * @param {function(?): ?} listener The listener function.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
@@ -100,7 +94,7 @@ class Observable extends EventTarget {
 
   /**
    * Unlisten for a certain type of event.
-   * @param {EventTypes<ChildTypes>} type The event type or array of event types.
+   * @param {string|Array<string>} type The event type or array of event types.
    * @param {function(?): ?} listener The listener function.
    * @api
    */

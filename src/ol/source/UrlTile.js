@@ -33,7 +33,6 @@ import {getUid} from '../util.js';
  * Base class for sources providing tiles divided into a tile grid over http.
  *
  * @fires import("./Tile.js").TileSourceEvent
- * @extends TileSource<'tileloadend'|'tileloaderror'|'tileloadstart'>
  */
 class UrlTile extends TileSource {
   /**

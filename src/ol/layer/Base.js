@@ -38,8 +38,6 @@ import {clamp} from '../math.js';
  * the options is set as a {@link module:ol/Object} property on the layer object, so
  * is observable, and has get/set accessors.
  *
- * @template {string} EventTypes
- * @extends BaseObject<EventTypes|'change:extent'|'change:maxResolution'|'change:maxZoom'|'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'>
  * @api
  */
 class BaseLayer extends BaseObject {

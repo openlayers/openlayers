@@ -115,7 +115,6 @@ export class TranslateEvent extends Event {
  * Interaction for translating (moving) features.
  *
  * @fires TranslateEvent
- * @extends PointerInteraction<'translateend'|'translatestart'|'translating'>
  * @api
  */
 class Translate extends PointerInteraction {

@@ -36,8 +36,6 @@ import {scale as scaleSize, toSize} from '../size.js';
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing images divided into a tile grid.
- * @template {string} EventTypes
- * @extends Source<EventTypes>
  * @abstract
  * @api
  */

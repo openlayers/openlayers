@@ -49,7 +49,6 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * On touch devices, which usually do not have a mouse cursor, the coordinates
  * of the currently touched position are shown.
  *
- * @extends Control<'change:coordinaetFormat'|'change:projection'>
  * @api
  */
 class MousePosition extends Control {

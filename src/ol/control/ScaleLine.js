@@ -68,7 +68,6 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * When specifying `bar` as `true`, a scalebar will be rendered instead
  * of a scaleline.
  *
- * @extends Control<'change:units'>
  * @api
  */
 class ScaleLine extends Control {

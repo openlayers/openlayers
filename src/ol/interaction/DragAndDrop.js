@@ -82,7 +82,6 @@ export class DragAndDropEvent extends Event {
  * combinnation of formats read both text string and ArrayBuffer sources. Older browsers such
  * as IE which do not support this will need a TextDecoder polyfill to be loaded before use.
  *
- * @extends Interaction<'addfeatures'>
  * @api
  *
  * @fires DragAndDropEvent

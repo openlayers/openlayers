@@ -147,7 +147,6 @@ const originalFeatureStyles = {};
  * Selected features are added to an internal unmanaged layer.
  *
  * @fires SelectEvent
- * @extends Interaction<'select'>
  * @api
  */
 class Select extends Interaction {

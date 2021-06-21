@@ -78,8 +78,6 @@ export class ObjectEvent extends Event {
  * object.unset('foo').
  *
  * @fires ObjectEvent
- * @template {string} EventTypes
- * @extends Observable<'propertychange'|EventTypes>
  * @api
  */
 class BaseObject extends Observable {

@@ -82,7 +82,6 @@ class GeolocationError extends BaseEvent {
  *     });
  *
  * @fires module:ol/events/Event~BaseEvent#event:error
- * @extends BaseObject<'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|'change:trackingOptions'>
  * @api
  */
 class Geolocation extends BaseObject {

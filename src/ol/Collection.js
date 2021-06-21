@@ -59,7 +59,7 @@ export class CollectionEvent extends Event {
  * Collection as a whole.
  *
  * @fires CollectionEvent
- * @extends BaseObject<'add'|'remove'|'change:length'>
+ *
  * @template T
  * @api
  */

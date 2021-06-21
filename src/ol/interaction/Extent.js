@@ -81,7 +81,6 @@ export class ExtentEvent extends Event {
  * This interaction is only supported for mouse devices.
  *
  * @fires ExtentEvent
- * @extends PointerInteraction<'extentchanged'>
  * @api
  */
 class Extent extends PointerInteraction {
