@@ -9,7 +9,7 @@ import {assign} from '../obj.js';
 import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
-import {equivalent, get as getProjection} from '../proj.js';
+import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 import {find, findIndex, includes} from '../array.js';
 
 /**
@@ -497,9 +497,21 @@ export function optionsFromCapabilities(wmtsCap, config) {
     const wgs84BoundingBox = l['WGS84BoundingBox'];
     const wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
     extent = matrixSetExtent;
-    wrapX =
-      wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
-      wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
+    if (wgs84BoundingBox) {
+      wrapX =
+        wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
+        wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
+    } else {
+      const wgs84MatrixSetExtent = transformExtent(
+        matrixSetExtent,
+        matrixSetObj['SupportedCRS'],
+        'EPSG:4326'
+      );
+      // Ignore slight deviation from the correct x limits
+      wrapX =
+        wgs84MatrixSetExtent[0] - 1e-10 <= wgs84ProjectionExtent[0] &&
+        wgs84MatrixSetExtent[2] + 1e-10 >= wgs84ProjectionExtent[2];
+    }
   }
 
   const tileGrid = createFromCapabilitiesMatrixSet(
