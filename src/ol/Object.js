@@ -87,6 +87,12 @@ class BaseObject extends Observable {
   constructor(opt_values) {
     super();
 
+    /***
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent>}
+     */
+    this.on;
+
     // Call {@link module:ol/util.getUid} to ensure that the order of objects' ids is
     // the same as the order in which they were created.  This also helps to
     // ensure that object properties are always added in the same order, which

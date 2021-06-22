@@ -13,3 +13,7 @@ export default {
    */
   PROPERTYCHANGE: 'propertychange',
 };
+
+/**
+ * @typedef {'propertychange'} Types
+ */
