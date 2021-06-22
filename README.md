@@ -59,9 +59,13 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
-## IntelliSense support and type checking for VS Code
+## ES Modules
 
-The ol package contains a src/ folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a [`jsconfig.json`](https://gist.github.com/ahocevar/9a7253cb4712e8bf38d75d8ac898e36c#file-jsconfig-json) (when authoring in JavaScript) or [`tsconfig.json`](https://gist.github.com/ahocevar/ad7b52a2fa0f6c5495193cd695ab3780#file-tsconfig-json) (when authoring in TypeScript) config file in the project root:
+The `ol` package contains a `src/` folder with the sources, authored as [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). To use these untranspiled sources, either import modules from `ol/src` instead of `ol`, or configure your bundler with an alias pointing to `ol/src` for the `ol` package.
+
+## IntelliSense (VS Code) support
+
+The untranspiled sources in the `src/` folder are JSDoc type annotated. For applications authored in JavaScript, VS Code can get type definitions from these sources with a properly configured `jsconfig.json` in the project root:
 
 <details><summary>jsconfig.json</summary>
 
@@ -84,33 +88,22 @@ The ol package contains a src/ folder with JSDoc annotated sources. TypeScript c
   }
 }
 ```
-
 </details>
-<details><summary>tsconfig.json</summary>
 
-```json
+## TypeScript support
+
+When authoring in TypeScript, we recommend you try out the types that are included in the `ol` package. To use these types, make sure you have the following entry for `@types/ol` in your `package.json`'s `devDependencies` section:
+```
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "baseUrl": "./",
-    "paths": {
-      "ol": ["node_modules/ol/src"],
-      "ol/*": ["node_modules/ol/src/*"]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "node_modules/ol/**/*"
-  ],
-  "typeAcquisition": {
-    "exclude": ["ol"]
+  ...
+  "devDependencies": {
+    ...
+    "@types/ol": "file:node_modules/ol/types",
+    ...
   }
 }
 ```
-
-</details>
-
-TypeScript users may want to use a [third-party types package](https://github.com/hanreev/types-ol) instead.
+These are auto-generated with the TypeScript compiler, and will be the default in future versions. Alternatively, you can use third-party types from [Definitely Typed](https://definitelytyped.org) (`npm install @types/ol`) or from [hanreev/types-ol](https://github.com/hanreev/types-ol).
 
 ## Supported Browsers
 
