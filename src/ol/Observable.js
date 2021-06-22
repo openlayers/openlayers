@@ -5,6 +5,13 @@ import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 import {listen, listenOnce, unlistenByKey} from './events.js';
 
+
+/***
+ * @template {string} Type
+ * @template {Event|import("./events/Event.js").default} EventClass
+ * @typedef {(type: Type|Type[], listener: (event: EventClass) => (void|boolean)) => import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} OnSignature
+ */
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -53,7 +60,7 @@ class Observable extends EventTarget {
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
    *     will be an array of keys.
-   * @api
+   * @protected
    */
   on(type, listener) {
     if (Array.isArray(type)) {
