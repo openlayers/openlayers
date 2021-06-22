@@ -20,7 +20,7 @@ export const Mode = {
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
- * {@link module:ol/events/condition~always}.
+ * {@link module:ol/events/condition.always}.
  * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
  * the interaction will only handle events when the map has the focus.
  * @property {number} [maxDelta=1] Maximum mouse wheel delta.

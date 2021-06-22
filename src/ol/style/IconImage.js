@@ -239,7 +239,7 @@ class IconImage extends EventTarget {
     // a solid color image with the shape of the icon.
     if (ctx.globalCompositeOperation === 'multiply' || this.isTainted_()) {
       ctx.fillStyle = asString(this.color_);
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
 
       ctx.globalCompositeOperation = 'destination-in';
       ctx.drawImage(this.image_, 0, 0);

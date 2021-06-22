@@ -2,13 +2,6 @@
  * @module ol/interaction/DragZoom
  */
 import DragBox from './DragBox.js';
-import {
-  createOrUpdateFromCoordinates,
-  getBottomLeft,
-  getCenter,
-  getTopRight,
-  scaleFromCenter,
-} from '../extent.js';
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
 
@@ -19,7 +12,7 @@ import {shiftKeyOnly} from '../events/condition.js';
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * Default is {@link module:ol/events/condition~shiftKeyOnly}.
+ * Default is {@link module:ol/events/condition.shiftKeyOnly}.
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {boolean} [out=false] Use interaction for zooming out.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the parent default
@@ -71,29 +64,17 @@ class DragZoom extends DragBox {
   onBoxEnd(event) {
     const map = this.getMap();
     const view = /** @type {!import("../View.js").default} */ (map.getView());
-    const size = /** @type {!import("../size.js").Size} */ (map.getSize());
-    let extent = this.getGeometry().getExtent();
+    let geometry = this.getGeometry();
 
     if (this.out_) {
-      const mapExtent = view.calculateExtentInternal(size);
-      const boxPixelExtent = createOrUpdateFromCoordinates([
-        map.getPixelFromCoordinateInternal(getBottomLeft(extent)),
-        map.getPixelFromCoordinateInternal(getTopRight(extent)),
-      ]);
-      const factor = view.getResolutionForExtentInternal(boxPixelExtent, size);
-
-      scaleFromCenter(mapExtent, 1 / factor);
-      extent = mapExtent;
+      const rotatedExtent = view.rotatedExtentForGeometry(geometry);
+      const resolution = view.getResolutionForExtentInternal(rotatedExtent);
+      const factor = view.getResolution() / resolution;
+      geometry = geometry.clone();
+      geometry.scale(factor * factor);
     }
 
-    const resolution = view.getConstrainedResolution(
-      view.getResolutionForExtentInternal(extent, size)
-    );
-    const center = view.getConstrainedCenter(getCenter(extent), resolution);
-
-    view.animateInternal({
-      resolution: resolution,
-      center: center,
+    view.fitInternal(geometry, {
       duration: this.duration_,
       easing: easeOut,
     });

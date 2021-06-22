@@ -56,7 +56,7 @@ describe('ol.layer.Layer', function () {
         managed: true,
         sourceState: 'ready',
         extent: undefined,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
@@ -103,6 +103,25 @@ describe('ol.layer.Layer', function () {
       });
 
       layer.dispose();
+    });
+
+    it('assigns key-value pairs of `properties` to the object', function () {
+      const o = new Layer({
+        properties: {
+          foo: 'bar',
+        },
+      });
+      expect(o.get('foo')).to.be('bar');
+      expect(o.get('properties')).to.be(undefined);
+    });
+
+    it('can have a `properties` property', function () {
+      const o = new Layer({
+        properties: {
+          properties: {foo: 'bar'},
+        },
+      });
+      expect(o.get('properties')).to.eql({foo: 'bar'});
     });
 
     it('throws on non-numeric opacity', function () {

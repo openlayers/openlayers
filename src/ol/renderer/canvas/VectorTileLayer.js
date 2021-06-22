@@ -141,8 +141,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tileUid = getUid(tile);
     const state = tile.getState();
     if (
-      ((state === TileState.LOADED && tile.hifi) ||
-        state === TileState.ERROR) &&
+      (state === TileState.LOADED || state === TileState.ERROR) &&
       tileUid in this.tileListenerKeys_
     ) {
       unlistenByKey(this.tileListenerKeys_[tileUid]);
@@ -253,8 +252,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       !builderState.dirty &&
       builderState.renderedResolution === resolution &&
       builderState.renderedRevision == revision &&
-      builderState.renderedRenderOrder == renderOrder &&
-      builderState.renderedZ === tile.sourceZ
+      builderState.renderedRenderOrder == renderOrder
     ) {
       return;
     }
@@ -372,7 +370,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     builderState.renderedRevision = revision;
-    builderState.renderedZ = tile.sourceZ;
     builderState.renderedRenderOrder = renderOrder;
     builderState.renderedResolution = resolution;
   }
@@ -516,7 +513,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             tileCoord.toString() === this.renderedTiles[i].tileCoord.toString()
           ) {
             tile = this.renderedTiles[i];
-            if (tile.getState() === TileState.LOADED && tile.hifi) {
+            if (tile.getState() === TileState.LOADED) {
               const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
               if (
                 source.getWrapX() &&
@@ -843,12 +840,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
-    const sourceZ = tile.sourceZ;
     const resolution = tile.wantedResolution;
     return (
       replayState.renderedTileResolution !== resolution ||
-      replayState.renderedTileRevision !== revision ||
-      replayState.renderedTileZ !== sourceZ
+      replayState.renderedTileRevision !== revision
     );
   }
 
@@ -863,7 +858,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const revision = layer.getRevision();
     const executorGroups = tile.executorGroups[getUid(layer)];
     replayState.renderedTileRevision = revision;
-    replayState.renderedTileZ = tile.sourceZ;
 
     const tileCoord = tile.wrappedTileCoord;
     const z = tileCoord[0];

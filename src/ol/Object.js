@@ -78,6 +78,8 @@ export class ObjectEvent extends Event {
  * object.unset('foo').
  *
  * @fires ObjectEvent
+ * @template {string} EventTypes
+ * @extends Observable<'propertychange'|EventTypes>
  * @api
  */
 class BaseObject extends Observable {
@@ -87,7 +89,7 @@ class BaseObject extends Observable {
   constructor(opt_values) {
     super();
 
-    // Call {@link module:ol/util~getUid} to ensure that the order of objects' ids is
+    // Call {@link module:ol/util.getUid} to ensure that the order of objects' ids is
     // the same as the order in which they were created.  This also helps to
     // ensure that object properties are always added in the same order, which
     // helps many JavaScript engines generate faster code.
@@ -149,10 +151,26 @@ class BaseObject extends Observable {
    */
   notify(key, oldValue) {
     let eventType;
-    eventType = getChangeEventType(key);
+    eventType = `change:${key}`;
     this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
     eventType = ObjectEventType.PROPERTYCHANGE;
     this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
+  }
+
+  /**
+   * @param {string} key Key name.
+   * @param {import("./events.js").Listener} listener Listener.
+   */
+  addChangeListener(key, listener) {
+    this.addEventListener(`change:${key}`, listener);
+  }
+
+  /**
+   * @param {string} key Key name.
+   * @param {import("./events.js").Listener} listener Listener.
+   */
+  removeChangeListener(key, listener) {
+    this.removeEventListener(`change:${key}`, listener);
   }
 
   /**
@@ -218,21 +236,6 @@ class BaseObject extends Observable {
       }
     }
   }
-}
-
-/**
- * @type {Object<string, string>}
- */
-const changeEventTypeCache = {};
-
-/**
- * @param {string} key Key name.
- * @return {string} Change name.
- */
-export function getChangeEventType(key) {
-  return changeEventTypeCache.hasOwnProperty(key)
-    ? changeEventTypeCache[key]
-    : (changeEventTypeCache[key] = 'change:' + key);
 }
 
 export default BaseObject;

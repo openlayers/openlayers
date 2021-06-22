@@ -103,14 +103,6 @@ class Tile extends EventTarget {
     this.interimTile = null;
 
     /**
-     * The tile is available at the highest possible resolution. Subclasses can
-     * set this to `false` initially. Tile load listeners will not be
-     * unregistered before this is set to `true` and a `#changed()` is called.
-     * @type {boolean}
-     */
-    this.hifi = true;
-
-    /**
      * A key assigned to the tile. This is used by the tile source to determine
      * if this tile can effectively be used, or if a new tile should be created
      * and this one be used as an interim tile for this new tile.

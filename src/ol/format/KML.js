@@ -60,12 +60,12 @@ import {transformGeometryWithOptions} from './Feature.js';
  * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
  * @property {number} y Y coordinate.
  * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
- * @property {import("../style/IconOrigin.js").default} origin Origin.
+ * @property {import("../style/IconOrigin.js").default} [origin] Origin.
  */
 
 /**
  * @typedef {Object} GxTrackObject
- * @property {Array<number>} flatCoordinates Flat coordinates.
+ * @property {Array<Array<number>>} coordinates Coordinates.
  * @property {Array<number>} whens Whens.
  */
 
@@ -1466,7 +1466,7 @@ function gxCoordParser(node, objectStack) {
   const gxTrackObject =
     /** @type {GxTrackObject} */
     (objectStack[objectStack.length - 1]);
-  const flatCoordinates = gxTrackObject.flatCoordinates;
+  const coordinates = gxTrackObject.coordinates;
   const s = getAllTextContent(node, false);
   const re = /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s*$/i;
   const m = re.exec(s);
@@ -1474,9 +1474,9 @@ function gxCoordParser(node, objectStack) {
     const x = parseFloat(m[1]);
     const y = parseFloat(m[2]);
     const z = parseFloat(m[3]);
-    flatCoordinates.push(x, y, z, 0);
+    coordinates.push([x, y, z]);
   } else {
-    flatCoordinates.push(0, 0, 0, 0);
+    coordinates.push([]);
   }
 }
 
@@ -1530,7 +1530,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
 function readGxTrack(node, objectStack) {
   const gxTrackObject = pushParseAndPop(
     /** @type {GxTrackObject} */ ({
-      flatCoordinates: [],
+      coordinates: [],
       whens: [],
     }),
     GX_TRACK_PARSERS,
@@ -1540,14 +1540,22 @@ function readGxTrack(node, objectStack) {
   if (!gxTrackObject) {
     return undefined;
   }
-  const flatCoordinates = gxTrackObject.flatCoordinates;
+  const flatCoordinates = [];
+  const coordinates = gxTrackObject.coordinates;
   const whens = gxTrackObject.whens;
   for (
-    let i = 0, ii = Math.min(flatCoordinates.length, whens.length);
+    let i = 0, ii = Math.min(coordinates.length, whens.length);
     i < ii;
     ++i
   ) {
-    flatCoordinates[4 * i + 3] = whens[i];
+    if (coordinates[i].length == 3) {
+      flatCoordinates.push(
+        coordinates[i][0],
+        coordinates[i][1],
+        coordinates[i][2],
+        whens[i]
+      );
+    }
   }
   return new LineString(flatCoordinates, GeometryLayout.XYZM);
 }

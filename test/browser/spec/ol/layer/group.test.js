@@ -7,38 +7,46 @@ import {getIntersection} from '../../../../../src/ol/extent.js';
 import {getUid} from '../../../../../src/ol/util.js';
 
 describe('ol.layer.Group', function () {
+  function disposeHierarchy(layer) {
+    if (layer instanceof LayerGroup) {
+      layer.getLayers().forEach((l) => disposeHierarchy(l));
+    }
+    layer.dispose();
+  }
+
   describe('constructor (defaults)', function () {
-    let layerGroup;
+    /** @type {LayerGroup} */
+    let group;
 
     beforeEach(function () {
-      layerGroup = new LayerGroup();
+      group = new LayerGroup();
     });
 
     afterEach(function () {
-      layerGroup.dispose();
+      group.dispose();
     });
 
     it('creates an instance', function () {
-      expect(layerGroup).to.be.a(LayerGroup);
+      expect(group).to.be.a(LayerGroup);
     });
 
     it('provides default opacity', function () {
-      expect(layerGroup.getOpacity()).to.be(1);
+      expect(group.getOpacity()).to.be(1);
     });
 
     it('provides default visibility', function () {
-      expect(layerGroup.getVisible()).to.be(true);
+      expect(group.getVisible()).to.be(true);
     });
 
     it('provides default layerState', function () {
-      expect(layerGroup.getLayerState()).to.eql({
-        layer: layerGroup,
+      expect(group.getLayerState()).to.eql({
+        layer: group,
         opacity: 1,
         visible: true,
         managed: true,
         sourceState: 'ready',
         extent: undefined,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
@@ -47,8 +55,8 @@ describe('ol.layer.Group', function () {
     });
 
     it('provides default empty layers collection', function () {
-      expect(layerGroup.getLayers()).to.be.a(Collection);
-      expect(layerGroup.getLayers().getLength()).to.be(0);
+      expect(group.getLayers()).to.be.a(Collection);
+      expect(group.getLayers().getLength()).to.be(0);
     });
   });
 
@@ -67,8 +75,7 @@ describe('ol.layer.Group', function () {
     });
 
     afterEach(function () {
-      group.dispose();
-      layer.dispose();
+      disposeHierarchy(group);
     });
 
     it('is dispatched by the group when layer opacity changes', function () {
@@ -104,8 +111,7 @@ describe('ol.layer.Group', function () {
     });
 
     afterEach(function () {
-      group.dispose();
-      layer.dispose();
+      disposeHierarchy(group);
     });
 
     it('is dispatched by the group when group opacity changes', function () {
@@ -133,7 +139,7 @@ describe('ol.layer.Group', function () {
           projection: 'EPSG:4326',
         }),
       });
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         layers: [layer],
         opacity: 0.5,
         visible: false,
@@ -144,14 +150,14 @@ describe('ol.layer.Group', function () {
         maxZoom: 10,
       });
 
-      expect(layerGroup.getOpacity()).to.be(0.5);
-      expect(layerGroup.getVisible()).to.be(false);
-      expect(layerGroup.getMaxResolution()).to.be(500);
-      expect(layerGroup.getMinResolution()).to.be(0.25);
-      expect(layerGroup.getMinZoom()).to.be(1);
-      expect(layerGroup.getMaxZoom()).to.be(10);
-      expect(layerGroup.getLayerState()).to.eql({
-        layer: layerGroup,
+      expect(group.getOpacity()).to.be(0.5);
+      expect(group.getVisible()).to.be(false);
+      expect(group.getMaxResolution()).to.be(500);
+      expect(group.getMinResolution()).to.be(0.25);
+      expect(group.getMinZoom()).to.be(1);
+      expect(group.getMaxZoom()).to.be(10);
+      expect(group.getLayerState()).to.eql({
+        layer: group,
         opacity: 0.5,
         visible: false,
         managed: true,
@@ -163,12 +169,11 @@ describe('ol.layer.Group', function () {
         minZoom: 1,
         maxZoom: 10,
       });
-      expect(layerGroup.getLayers()).to.be.a(Collection);
-      expect(layerGroup.getLayers().getLength()).to.be(1);
-      expect(layerGroup.getLayers().item(0)).to.be(layer);
+      expect(group.getLayers()).to.be.a(Collection);
+      expect(group.getLayers().getLength()).to.be(1);
+      expect(group.getLayers().item(0)).to.be(layer);
 
-      layer.dispose();
-      layerGroup.dispose();
+      disposeHierarchy(group);
     });
 
     it('accepts an extent option', function () {
@@ -179,7 +184,7 @@ describe('ol.layer.Group', function () {
       });
 
       const groupExtent = [-10, -5, 10, 5];
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         layers: [layer],
         opacity: 0.5,
         visible: false,
@@ -188,56 +193,55 @@ describe('ol.layer.Group', function () {
         minResolution: 0.25,
       });
 
-      expect(layerGroup.getOpacity()).to.be(0.5);
-      expect(layerGroup.getVisible()).to.be(false);
-      expect(layerGroup.getExtent()).to.eql(groupExtent);
-      expect(layerGroup.getMaxResolution()).to.be(500);
-      expect(layerGroup.getMinResolution()).to.be(0.25);
-      expect(layerGroup.getLayerState()).to.eql({
-        layer: layerGroup,
+      expect(group.getOpacity()).to.be(0.5);
+      expect(group.getVisible()).to.be(false);
+      expect(group.getExtent()).to.eql(groupExtent);
+      expect(group.getMaxResolution()).to.be(500);
+      expect(group.getMinResolution()).to.be(0.25);
+      expect(group.getLayerState()).to.eql({
+        layer: group,
         opacity: 0.5,
         visible: false,
         managed: true,
         sourceState: 'ready',
         extent: groupExtent,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: 500,
         minResolution: 0.25,
         minZoom: -Infinity,
         maxZoom: Infinity,
       });
-      expect(layerGroup.getLayers()).to.be.a(Collection);
-      expect(layerGroup.getLayers().getLength()).to.be(1);
-      expect(layerGroup.getLayers().item(0)).to.be(layer);
+      expect(group.getLayers()).to.be.a(Collection);
+      expect(group.getLayers().getLength()).to.be(1);
+      expect(group.getLayers().item(0)).to.be(layer);
 
-      layer.dispose();
-      layerGroup.dispose();
+      disposeHierarchy(group);
     });
   });
 
   describe('#getLayerState', function () {
-    let layerGroup;
+    let group;
 
     beforeEach(function () {
-      layerGroup = new LayerGroup();
+      group = new LayerGroup();
     });
 
     afterEach(function () {
-      layerGroup.dispose();
+      disposeHierarchy(group);
     });
 
     it('returns a layerState from the properties values', function () {
-      layerGroup.setOpacity(0.3);
-      layerGroup.setVisible(false);
-      layerGroup.setZIndex(10);
+      group.setOpacity(0.3);
+      group.setVisible(false);
+      group.setZIndex(10);
       const groupExtent = [-100, 50, 100, 50];
-      layerGroup.setExtent(groupExtent);
-      layerGroup.setMaxResolution(500);
-      layerGroup.setMinResolution(0.25);
-      layerGroup.setMinZoom(5);
-      layerGroup.setMaxZoom(10);
-      expect(layerGroup.getLayerState()).to.eql({
-        layer: layerGroup,
+      group.setExtent(groupExtent);
+      group.setMaxResolution(500);
+      group.setMinResolution(0.25);
+      group.setMinZoom(5);
+      group.setMaxZoom(10);
+      expect(group.getLayerState()).to.eql({
+        layer: group,
         opacity: 0.3,
         visible: false,
         managed: true,
@@ -252,32 +256,32 @@ describe('ol.layer.Group', function () {
     });
 
     it('returns a layerState with clamped values', function () {
-      layerGroup.setOpacity(-1.5);
-      layerGroup.setVisible(false);
-      expect(layerGroup.getLayerState()).to.eql({
-        layer: layerGroup,
+      group.setOpacity(-1.5);
+      group.setVisible(false);
+      expect(group.getLayerState()).to.eql({
+        layer: group,
         opacity: 0,
         visible: false,
         managed: true,
         sourceState: 'ready',
         extent: undefined,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
         maxZoom: Infinity,
       });
 
-      layerGroup.setOpacity(3);
-      layerGroup.setVisible(true);
-      expect(layerGroup.getLayerState()).to.eql({
-        layer: layerGroup,
+      group.setOpacity(3);
+      group.setVisible(true);
+      expect(group.getLayerState()).to.eql({
+        layer: group,
         opacity: 1,
         visible: true,
         managed: true,
         sourceState: 'ready',
         extent: undefined,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: Infinity,
         minResolution: 0,
         minZoom: -Infinity,
@@ -289,22 +293,22 @@ describe('ol.layer.Group', function () {
   describe('layers events', function () {
     it('listen / unlisten for layers added to the collection', function () {
       const layers = new Collection();
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         layers: layers,
       });
-      expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(0);
+      expect(Object.keys(group.listenerKeys_).length).to.eql(0);
       const layer = new Layer({});
       layers.push(layer);
-      expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(1);
+      expect(Object.keys(group.listenerKeys_).length).to.eql(1);
 
-      const listeners = layerGroup.listenerKeys_[getUid(layer)];
+      const listeners = group.listenerKeys_[getUid(layer)];
       expect(listeners.length).to.eql(2);
       expect(typeof listeners[0]).to.be('object');
       expect(typeof listeners[1]).to.be('object');
 
       // remove the layer from the group
       layers.pop();
-      expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(0);
+      expect(Object.keys(group.listenerKeys_).length).to.eql(0);
       expect(listeners[0].listener).to.be(undefined);
       expect(listeners[1].listener).to.be(undefined);
     });
@@ -318,14 +322,12 @@ describe('ol.layer.Group', function () {
         }),
       });
       const layers = new Collection([layer]);
-      const layerGroup = new LayerGroup();
+      const group = new LayerGroup();
 
-      layerGroup.setLayers(layers);
-      expect(layerGroup.getLayers()).to.be(layers);
+      group.setLayers(layers);
+      expect(group.getLayers()).to.be(layers);
 
-      layerGroup.dispose();
-      layer.dispose();
-      layers.dispose();
+      disposeHierarchy(group);
     });
   });
 
@@ -361,21 +363,21 @@ describe('ol.layer.Group', function () {
     });
 
     it('returns an empty array if no layer', function () {
-      const layerGroup = new LayerGroup();
+      const group = new LayerGroup();
 
-      const layerStatesArray = layerGroup.getLayerStatesArray();
+      const layerStatesArray = group.getLayerStatesArray();
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(0);
 
-      layerGroup.dispose();
+      group.dispose();
     });
 
     it('does not transform layerStates by default', function () {
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         layers: [layer1, layer2],
       });
 
-      const layerStatesArray = layerGroup.getLayerStatesArray();
+      const layerStatesArray = group.getLayerStatesArray();
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(2);
       expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
@@ -383,41 +385,41 @@ describe('ol.layer.Group', function () {
       // layer state should match except for layer reference
       const layerState = assign({}, layerStatesArray[0]);
       delete layerState.layer;
-      const groupState = assign({}, layerGroup.getLayerState());
+      const groupState = assign({}, group.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
       expect(layerStatesArray[1]).to.eql(layer2.getLayerState());
 
-      layerGroup.dispose();
+      group.dispose();
     });
 
     it('uses the layer group extent if layer has no extent', function () {
       const groupExtent = [-10, -5, 10, 5];
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         extent: groupExtent,
         layers: [layer1],
       });
-      const layerStatesArray = layerGroup.getLayerStatesArray();
+      const layerStatesArray = group.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(groupExtent);
-      layerGroup.dispose();
+      group.dispose();
     });
 
     it('uses the intersection of group and child extent', function () {
       const groupExtent = [-10, -5, 10, 5];
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         extent: groupExtent,
         layers: [layer3],
       });
-      const layerStatesArray = layerGroup.getLayerStatesArray();
+      const layerStatesArray = group.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(
         getIntersection(layer3.getExtent(), groupExtent)
       );
-      layerGroup.dispose();
+      group.dispose();
     });
 
     it('transforms layerStates correctly', function () {
-      const layerGroup = new LayerGroup({
+      const group = new LayerGroup({
         layers: [layer1, layer2],
         opacity: 0.5,
         visible: false,
@@ -425,14 +427,14 @@ describe('ol.layer.Group', function () {
         minResolution: 0.2,
       });
 
-      const layerStatesArray = layerGroup.getLayerStatesArray();
+      const layerStatesArray = group.getLayerStatesArray([]);
 
       // compare layer state to group state
 
       // layer state should match except for layer reference
       let layerState = assign({}, layerStatesArray[0]);
       delete layerState.layer;
-      const groupState = assign({}, layerGroup.getLayerState());
+      const groupState = assign({}, group.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
@@ -445,14 +447,14 @@ describe('ol.layer.Group', function () {
         managed: true,
         sourceState: 'ready',
         extent: undefined,
-        zIndex: 0,
+        zIndex: undefined,
         maxResolution: 150,
         minResolution: 0.25,
         minZoom: -Infinity,
         maxZoom: Infinity,
       });
 
-      layerGroup.dispose();
+      group.dispose();
     });
 
     it('returns max minZoom', function () {
@@ -475,6 +477,8 @@ describe('ol.layer.Group', function () {
 
       expect(group.getLayerStatesArray()[0].minZoom).to.be(5);
       expect(group.getLayerStatesArray()[1].minZoom).to.be(10);
+
+      disposeHierarchy(group);
     });
 
     it('returns min maxZoom of layers', function () {
@@ -497,6 +501,74 @@ describe('ol.layer.Group', function () {
 
       expect(group.getLayerStatesArray()[0].maxZoom).to.be(5);
       expect(group.getLayerStatesArray()[1].maxZoom).to.be(2);
+
+      disposeHierarchy(group);
+    });
+
+    it('uses the layer group zIndex if layer has no zIndex', function () {
+      const layerM1 = new Layer({
+        zIndex: -1,
+        source: new Source({}),
+      });
+      const layerUndefined = new Layer({
+        source: new Source({}),
+      });
+      const layer0 = new Layer({
+        zIndex: 0,
+        source: new Source({}),
+      });
+      const group = new LayerGroup({
+        zIndex: 2,
+        layers: [layerM1, layerUndefined, layer0],
+      });
+
+      const layerStatesArray = group.getLayerStatesArray();
+      expect(layerStatesArray[0].zIndex).to.be(-1);
+      expect(layerStatesArray[1].zIndex).to.be(2);
+      expect(layerStatesArray[2].zIndex).to.be(0);
+
+      disposeHierarchy(group);
+    });
+
+    it('uses the deepest nested group with zIndex as default', function () {
+      const group = new LayerGroup({
+        zIndex: 1,
+        layers: [
+          new LayerGroup({
+            zIndex: 5,
+            layers: [
+              new Layer({
+                source: new Source({}),
+              }),
+            ],
+          }),
+        ],
+      });
+
+      const layerStatesArray = group.getLayerStatesArray();
+      expect(layerStatesArray[0].zIndex).to.be(5);
+
+      disposeHierarchy(group);
+    });
+
+    it('uses zIndex of closest parent group where it is not undefined', function () {
+      const group = new LayerGroup({
+        zIndex: 1,
+        layers: [
+          new LayerGroup({
+            layers: [
+              new Layer({
+                source: new Source({}),
+              }),
+            ],
+          }),
+        ],
+      });
+
+      const layerStatesArray = group.getLayerStatesArray();
+      expect(layerStatesArray[0].zIndex).to.be(1);
+
+      disposeHierarchy(group);
     });
   });
 });

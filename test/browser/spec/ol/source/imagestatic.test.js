@@ -16,7 +16,7 @@ describe('ol.source.ImageStatic', function () {
   });
 
   describe('#getImage', function () {
-    it('scales image to fit imageExtent', function (done) {
+    it('scales image height to fit imageExtent', function (done) {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
@@ -31,7 +31,30 @@ describe('ol.source.ImageStatic', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function (event) {
-        expect(image.getImage().width).to.be(128);
+        expect(image.getImage().width).to.be(256);
+        expect(image.getImage().height).to.be(512);
+        done();
+      });
+
+      image.load();
+    });
+
+    it('scales image width to fit imageExtent', function (done) {
+      const source = new Static({
+        url: 'spec/ol/source/images/12-655-1583.png',
+        imageExtent: [
+          -13629027.891360067,
+          4539747.983913189,
+          -13609460.012119063,
+          4549531.923533691,
+        ],
+        projection: projection,
+      });
+
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
+
+      source.on('imageloadend', function (event) {
+        expect(image.getImage().width).to.be(512);
         expect(image.getImage().height).to.be(256);
         done();
       });
@@ -55,8 +78,8 @@ describe('ol.source.ImageStatic', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function (event) {
-        expect(image.getImage().width).to.be(127);
-        expect(image.getImage().height).to.be(254);
+        expect(image.getImage().width).to.be(254);
+        expect(image.getImage().height).to.be(508);
         done();
       });
 

@@ -116,12 +116,12 @@ export class VectorSourceEvent extends Event {
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
  * @property {LoadingStrategy} [strategy] The loading strategy to use.
- * By default an {@link module:ol/loadingstrategy~all}
+ * By default an {@link module:ol/loadingstrategy.all}
  * strategy is used, a one-off strategy which loads all features at once.
  * @property {string|import("../featureloader.js").FeatureUrlFunction} [url]
  * Setting this option instructs the source to load features using an XHR loader
- * (see {@link module:ol/featureloader~xhr}). Use a `string` and an
- * {@link module:ol/loadingstrategy~all} for a one-off download of all features from
+ * (see {@link module:ol/featureloader.xhr}). Use a `string` and an
+ * {@link module:ol/loadingstrategy.all} for a one-off download of all features from
  * the given URL. Use a {@link module:ol/featureloader~FeatureUrlFunction} to generate the url with
  * other loading strategies.
  * Requires `format` to be set as well.
@@ -500,7 +500,7 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#event:removefeature removefeature} events.
    * @api
    */
   clear(opt_fast) {
@@ -1054,6 +1054,7 @@ class VectorSource extends Source {
    */
   setUrl(url) {
     assert(this.format_, 7); // `format` must be set when `url` is set
+    this.url_ = url;
     this.setLoader(xhr(url, this.format_));
   }
 }

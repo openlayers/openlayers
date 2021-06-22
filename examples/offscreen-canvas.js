@@ -6,8 +6,8 @@ import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disabl
 import stringify from 'json-stringify-safe';
 import {FullScreen} from '../src/ol/control.js';
 import {compose, create} from '../src/ol/transform.js';
-import {createTransformString} from '../src/ol/render/canvas.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
+import {toString as toTransformString} from '../src/ol/transform.js';
 
 const worker = new Worker();
 
@@ -45,7 +45,7 @@ function updateContainerTransform() {
         0
       );
     }
-    transformContainer.style.transform = createTransformString(transform);
+    transformContainer.style.transform = toTransformString(transform);
   }
 }
 
@@ -99,6 +99,17 @@ const map = new Map({
 });
 map.addControl(new FullScreen());
 
+map.on('pointermove', function (evt) {
+  if (evt.dragging) {
+    return;
+  }
+  const pixel = map.getEventPixel(evt.originalEvent);
+  worker.postMessage({
+    action: 'requestFeatures',
+    pixel: pixel,
+  });
+});
+
 // Worker messaging and actions
 worker.addEventListener('message', (message) => {
   if (message.data.action === 'loadImage') {
@@ -119,7 +130,9 @@ worker.addEventListener('message', (message) => {
         }
       );
     });
-    image.src = event.data.src;
+    image.src = message.data.src;
+  } else if (message.data.action === 'getFeatures') {
+    showInfo(message.data.features);
   } else if (message.data.action === 'requestRender') {
     // Worker requested a new render frame
     map.render();
@@ -137,3 +150,19 @@ worker.addEventListener('message', (message) => {
     rendering = false;
   }
 });
+
+const info = document.getElementById('info');
+function showInfo(propertiesFromFeatures) {
+  if (propertiesFromFeatures.length == 0) {
+    info.innerText = '';
+    info.style.opacity = 0;
+    return;
+  }
+  const properties = propertiesFromFeatures.map((e) =>
+    Object.keys(e)
+      .filter((key) => !key.includes(':'))
+      .reduce((newObj, currKey) => ((newObj[currKey] = e[currKey]), newObj), {})
+  );
+  info.innerText = JSON.stringify(properties, null, 2);
+  info.style.opacity = 1;
+}

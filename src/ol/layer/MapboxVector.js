@@ -202,7 +202,7 @@ const SourceType = {
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link module:ol/Map#addLayer}.
+ * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
  * will have a performance impact for large amounts of vector data. When set to `false`, batches
@@ -212,6 +212,7 @@ const SourceType = {
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -229,7 +230,7 @@ const SourceType = {
  *         zoom: 1
  *       }),
  *       layers: [
- *         new MapboxVector({
+ *         new MapboxVectorLayer({
  *           styleUrl: 'mapbox://styles/mapbox/bright-v9',
  *           accessToken: 'your-mapbox-access-token-here'
  *         })
@@ -276,6 +277,7 @@ class MapboxVectorLayer extends VectorTileLayer {
       updateWhileInteracting: options.updateWhileInteracting,
       preload: options.preload,
       useInterimTilesOnError: options.useInterimTilesOnError,
+      properties: options.properties,
     });
 
     this.sourceId = options.source;

@@ -1,7 +1,7 @@
 /**
  * @module ol/Feature
  */
-import BaseObject, {getChangeEventType} from './Object.js';
+import BaseObject from './Object.js';
 import EventType from './events/EventType.js';
 import {assert} from './asserts.js';
 import {listen, unlistenByKey} from './events.js';
@@ -58,6 +58,7 @@ import {listen, unlistenByKey} from './events.js';
  *
  * @api
  * @template {import("./geom/Geometry.js").default} Geometry
+ * @extends BaseObject<'change:geometry'>
  */
 class Feature extends BaseObject {
   /**
@@ -100,10 +101,7 @@ class Feature extends BaseObject {
      */
     this.geometryChangeKey_ = null;
 
-    this.addEventListener(
-      getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_
-    );
+    this.addChangeListener(this.geometryName_, this.handleGeometryChanged_);
 
     if (opt_geometryOrProperties) {
       if (
@@ -274,15 +272,9 @@ class Feature extends BaseObject {
    * @api
    */
   setGeometryName(name) {
-    this.removeEventListener(
-      getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_
-    );
+    this.removeChangeListener(this.geometryName_, this.handleGeometryChanged_);
     this.geometryName_ = name;
-    this.addEventListener(
-      getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_
-    );
+    this.addChangeListener(this.geometryName_, this.handleGeometryChanged_);
     this.handleGeometryChanged_();
   }
 }

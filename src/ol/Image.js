@@ -136,6 +136,7 @@ class ImageWrapper extends ImageBase {
    */
   setImage(image) {
     this.image_ = image;
+    this.resolution = getHeight(this.extent) / this.image_.height;
   }
 
   /**

@@ -12,7 +12,6 @@ import {getUid} from './util.js';
  * @property {number} renderedTileRevision RenderedTileRevision.
  * @property {number} renderedResolution RenderedResolution.
  * @property {number} renderedRevision RenderedRevision.
- * @property {number} renderedZ RenderedZ.
  * @property {number} renderedTileResolution RenderedTileResolution.
  * @property {number} renderedTileZ RenderedTileZ.
  */
@@ -58,12 +57,6 @@ class VectorRenderTile extends Tile {
     this.loadingSourceTiles = 0;
 
     /**
-     * Tile keys of error source tiles. Read/written by the source.
-     * @type {Object<string, boolean>}
-     */
-    this.errorSourceTileKeys = {};
-
-    /**
      * @type {Object<number, ImageData>}
      */
     this.hitDetectionImageData = {};
@@ -77,7 +70,12 @@ class VectorRenderTile extends Tile {
     /**
      * @type {Array<import("./VectorTile.js").default>}
      */
-    this.sourceTiles = null;
+    this.sourceTiles = [];
+
+    /**
+     * @type {Object<string, boolean>}
+     */
+    this.errorTileKeys = {};
 
     /**
      * @type {number}
@@ -88,18 +86,6 @@ class VectorRenderTile extends Tile {
      * @type {!function():Array<import("./VectorTile.js").default>}
      */
     this.getSourceTiles = getSourceTiles.bind(undefined, this);
-
-    /**
-     * z of the source tiles of the last getSourceTiles call.
-     * @type {number}
-     */
-    this.sourceZ = -1;
-
-    /**
-     * True when all tiles for this tile's nominal resolution are available.
-     * @type {boolean}
-     */
-    this.hifi = false;
 
     /**
      * @type {import("./tilecoord.js").TileCoord}
@@ -150,7 +136,6 @@ class VectorRenderTile extends Tile {
         renderedRevision: -1,
         renderedTileResolution: NaN,
         renderedTileRevision: -1,
-        renderedZ: -1,
         renderedTileZ: -1,
       };
     }

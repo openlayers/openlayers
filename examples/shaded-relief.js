@@ -41,6 +41,18 @@ function shade(inputs, data) {
     aspect,
     cosIncidence,
     scaled;
+  function calculateElevation(pixel) {
+    // The method used to extract elevations from the DEM.
+    // In this case the format used is
+    // red + green * 2 + blue * 3
+    //
+    // Other frequently used methods include the Mapbox format
+    // (red * 256 * 256 + green * 256 + blue) * 0.1 - 10000
+    // and the Terrarium format
+    // (red * 256 + green + blue / 256) - 32768
+    //
+    return pixel[0] + pixel[1] * 2 + pixel[2] * 3;
+  }
   for (pixelY = 0; pixelY <= maxY; ++pixelY) {
     y0 = pixelY === 0 ? 0 : pixelY - 1;
     y1 = pixelY === maxY ? maxY : pixelY + 1;
@@ -54,7 +66,7 @@ function shade(inputs, data) {
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z0 = data.vert * (pixel[0] + pixel[1] * 2 + pixel[2] * 3);
+      z0 = data.vert * calculateElevation(pixel);
 
       // determine elevation for (x1, pixelY)
       offset = (pixelY * width + x1) * 4;
@@ -62,7 +74,7 @@ function shade(inputs, data) {
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z1 = data.vert * (pixel[0] + pixel[1] * 2 + pixel[2] * 3);
+      z1 = data.vert * calculateElevation(pixel);
 
       dzdx = (z1 - z0) / dp;
 
@@ -72,7 +84,7 @@ function shade(inputs, data) {
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z0 = data.vert * (pixel[0] + pixel[1] * 2 + pixel[2] * 3);
+      z0 = data.vert * calculateElevation(pixel);
 
       // determine elevation for (pixelX, y1)
       offset = (y1 * width + pixelX) * 4;
@@ -80,7 +92,7 @@ function shade(inputs, data) {
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z1 = data.vert * (pixel[0] + pixel[1] * 2 + pixel[2] * 3);
+      z1 = data.vert * calculateElevation(pixel);
 
       dzdy = (z1 - z0) / dp;
 

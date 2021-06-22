@@ -178,11 +178,13 @@
   bottom: .5em;
   right: .5em;
   max-width: calc(100% - 1.3em);
+  display: flex;
+  flex-flow: row-reverse;
+  align-items: flex-end;
 }
-
 .ol-attribution ul {
   margin: 0;
-  padding: 0 .5em;
+  padding: 1px .5em;
   color: #000;
   text-shadow: 0 0 2px #fff;
 }
@@ -198,8 +200,8 @@
   max-width: inherit;
   vertical-align: middle;
 }
-.ol-attribution ul, .ol-attribution button {
-  display: inline-block;
+.ol-attribution button {
+  flex-shrink: 0;
 }
 .ol-attribution.ol-collapsed ul {
   display: none;

@@ -50,24 +50,26 @@ const map = new Map({
   view: view,
 });
 
-const zoomtoswitzerland = document.getElementById('zoomtoswitzerland');
-zoomtoswitzerland.addEventListener(
-  'click',
-  function () {
-    const feature = source.getFeatures()[0];
-    const polygon = feature.getGeometry();
-    view.fit(polygon);
-  },
-  false
-);
+vectorLayer.getSource().on('featuresloadend', function () {
+  const zoomtoswitzerland = document.getElementById('zoomtoswitzerland');
+  zoomtoswitzerland.addEventListener(
+    'click',
+    function () {
+      const feature = source.getFeatures()[0];
+      const polygon = feature.getGeometry();
+      view.fit(polygon);
+    },
+    false
+  );
 
-const centerlausanne = document.getElementById('centerlausanne');
-centerlausanne.addEventListener(
-  'click',
-  function () {
-    const feature = source.getFeatures()[1];
-    const point = feature.getGeometry();
-    view.setCenter(point.getCoordinates());
-  },
-  false
-);
+  const centerlausanne = document.getElementById('centerlausanne');
+  centerlausanne.addEventListener(
+    'click',
+    function () {
+      const feature = source.getFeatures()[1];
+      const point = feature.getGeometry();
+      view.setCenter(point.getCoordinates());
+    },
+    false
+  );
+});

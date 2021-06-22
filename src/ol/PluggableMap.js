@@ -1,7 +1,7 @@
 /**
  * @module ol/PluggableMap
  */
-import BaseObject, {getChangeEventType} from './Object.js';
+import BaseObject from './Object.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import EventType from './events/EventType.js';
@@ -91,12 +91,12 @@ import {removeNode} from './dom.js';
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control~defaults} is used.
+ * {@link module:ol/control.defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
- * {@link module:ol/interaction~defaults} is used.
+ * {@link module:ol/interaction.defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -132,6 +132,7 @@ import {removeNode} from './dom.js';
  * @fires import("./render/Event.js").default#precompose
  * @fires import("./render/Event.js").default#postcompose
  * @fires import("./render/Event.js").default#rendercomplete
+ * @extends BaseObject<'change:layergroup'|'change:size'|'change:target'|'change:view'|'precompose'|'singleclick'|'click'|'dblclick'|'pointerdrag'|'pointermove'|'postrender'|'movestart'|'moveend'|'postcompose'|'rendercomplete'>
  * @api
  */
 class PluggableMap extends BaseObject {
@@ -345,22 +346,13 @@ class PluggableMap extends BaseObject {
       this.handleTileChange_.bind(this)
     );
 
-    this.addEventListener(
-      getChangeEventType(MapProperty.LAYERGROUP),
+    this.addChangeListener(
+      MapProperty.LAYERGROUP,
       this.handleLayerGroupChanged_
     );
-    this.addEventListener(
-      getChangeEventType(MapProperty.VIEW),
-      this.handleViewChanged_
-    );
-    this.addEventListener(
-      getChangeEventType(MapProperty.SIZE),
-      this.handleSizeChanged_
-    );
-    this.addEventListener(
-      getChangeEventType(MapProperty.TARGET),
-      this.handleTargetChanged_
-    );
+    this.addChangeListener(MapProperty.VIEW, this.handleViewChanged_);
+    this.addChangeListener(MapProperty.SIZE, this.handleSizeChanged_);
+    this.addChangeListener(MapProperty.TARGET, this.handleTargetChanged_);
 
     // setProperties will trigger the rendering of the map if the map
     // is "defined" already.

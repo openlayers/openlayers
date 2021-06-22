@@ -91,7 +91,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @property {number} [duration] The duration of the animation in milliseconds.
  * By default, there is no animation to the target extent.
  * @property {function(number):number} [easing] The easing function used during
- * the animation (defaults to {@link module:ol/easing~inAndOut}).
+ * the animation (defaults to {@link module:ol/easing.inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.
@@ -166,9 +166,11 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * alternative to setting this is to set `zoom`. Layer sources will not be
  * fetched if neither this nor `zoom` are defined, but they can be set later
  * with {@link #setZoom} or {@link #setResolution}.
- * @property {Array<number>} [resolutions] Resolutions to determine the
- * resolution constraint. If set the `maxResolution`, `minResolution`,
- * `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
+ * @property {Array<number>} [resolutions] Resolutions that determine the
+ * zoom levels if specified. The index in the array corresponds to the zoom level,
+ * therefore the resolution values have to be in descending order. It also constrains
+ * the resolution by the minimum and maximum value. If set the `maxResolution`,
+ * `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
  * @property {number} [rotation=0] The initial rotation for the view in radians
  * (positive rotation clockwise, 0 means North).
  * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
@@ -195,7 +197,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used
- * during the animation (defaults to {@link module:ol/easing~inAndOut}).
+ * during the animation (defaults to {@link module:ol/easing.inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.
@@ -286,6 +288,7 @@ const DEFAULT_MIN_ZOOM = 0;
  * the snap angle is 0), an animation will be triggered at the interaction end to
  * put back the view to a stable state;
  *
+ * @extends BaseObject<'change:center'|'change:resolution'|'change:rotation'>
  * @api
  */
 class View extends BaseObject {
@@ -1076,7 +1079,7 @@ class View extends BaseObject {
    *     the given size.
    */
   getResolutionForExtentInternal(extent, opt_size) {
-    const size = opt_size || this.getViewportSize_();
+    const size = opt_size || this.getViewportSizeMinusPadding_();
     const xResolution = getWidth(extent) / size[0];
     const yResolution = getHeight(extent) / size[1];
     return Math.max(xResolution, yResolution);
@@ -1299,6 +1302,32 @@ class View extends BaseObject {
   }
 
   /**
+   * Calculate rotated extent
+   * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
+   * @return {import("./extent").Extent} The rotated extent for the geometry.
+   */
+  rotatedExtentForGeometry(geometry) {
+    const rotation = this.getRotation();
+    const cosAngle = Math.cos(rotation);
+    const sinAngle = Math.sin(-rotation);
+    const coords = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    let minRotX = +Infinity;
+    let minRotY = +Infinity;
+    let maxRotX = -Infinity;
+    let maxRotY = -Infinity;
+    for (let i = 0, ii = coords.length; i < ii; i += stride) {
+      const rotX = coords[i] * cosAngle - coords[i + 1] * sinAngle;
+      const rotY = coords[i] * sinAngle + coords[i + 1] * cosAngle;
+      minRotX = Math.min(minRotX, rotX);
+      minRotY = Math.min(minRotY, rotY);
+      maxRotX = Math.max(maxRotX, rotX);
+      maxRotY = Math.max(maxRotY, rotY);
+    }
+    return [minRotX, minRotY, maxRotX, maxRotY];
+  }
+
+  /**
    * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
    * @param {FitOptions} [opt_options] Options.
    */
@@ -1319,44 +1348,28 @@ class View extends BaseObject {
     } else {
       minResolution = 0;
     }
-    const coords = geometry.getFlatCoordinates();
 
-    // calculate rotated extent
-    const rotation = this.getRotation();
-    const cosAngle = Math.cos(-rotation);
-    let sinAngle = Math.sin(-rotation);
-    let minRotX = +Infinity;
-    let minRotY = +Infinity;
-    let maxRotX = -Infinity;
-    let maxRotY = -Infinity;
-    const stride = geometry.getStride();
-    for (let i = 0, ii = coords.length; i < ii; i += stride) {
-      const rotX = coords[i] * cosAngle - coords[i + 1] * sinAngle;
-      const rotY = coords[i] * sinAngle + coords[i + 1] * cosAngle;
-      minRotX = Math.min(minRotX, rotX);
-      minRotY = Math.min(minRotY, rotY);
-      maxRotX = Math.max(maxRotX, rotX);
-      maxRotY = Math.max(maxRotY, rotY);
-    }
+    const rotatedExtent = this.rotatedExtentForGeometry(geometry);
 
     // calculate resolution
-    let resolution = this.getResolutionForExtentInternal(
-      [minRotX, minRotY, maxRotX, maxRotY],
-      [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]
-    );
+    let resolution = this.getResolutionForExtentInternal(rotatedExtent, [
+      size[0] - padding[1] - padding[3],
+      size[1] - padding[0] - padding[2],
+    ]);
     resolution = isNaN(resolution)
       ? minResolution
       : Math.max(resolution, minResolution);
     resolution = this.getConstrainedResolution(resolution, nearest ? 0 : 1);
 
     // calculate center
-    sinAngle = -sinAngle; // go back to original rotation
-    let centerRotX = (minRotX + maxRotX) / 2;
-    let centerRotY = (minRotY + maxRotY) / 2;
-    centerRotX += ((padding[1] - padding[3]) / 2) * resolution;
-    centerRotY += ((padding[0] - padding[2]) / 2) * resolution;
-    const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
-    const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
+    const rotation = this.getRotation();
+    const sinAngle = Math.sin(rotation);
+    const cosAngle = Math.cos(rotation);
+    const centerRot = getCenter(rotatedExtent);
+    centerRot[0] += ((padding[1] - padding[3]) / 2) * resolution;
+    centerRot[1] += ((padding[0] - padding[2]) / 2) * resolution;
+    const centerX = centerRot[0] * cosAngle - centerRot[1] * sinAngle;
+    const centerY = centerRot[1] * cosAngle + centerRot[0] * sinAngle;
     const center = this.getConstrainedCenter([centerX, centerY], resolution);
     const callback = options.callback ? options.callback : VOID;
 

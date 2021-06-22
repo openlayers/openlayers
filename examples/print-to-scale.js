@@ -68,12 +68,13 @@ const dims = {
   a5: [210, 148],
 };
 
-// export options for html-to-image.
-// See: https://github.com/bubkoo/html-to-image#options
+// export options for html2canvase.
+// See: https://html2canvas.hertzen.com/configuration
 const exportOptions = {
-  filter: function (element) {
+  useCORS: true,
+  ignoreElements: function (element) {
     const className = element.className || '';
-    return (
+    return !(
       className.indexOf('ol-control') === -1 ||
       className.indexOf('ol-scale') > -1 ||
       (className.indexOf('ol-attribution') > -1 &&
@@ -108,21 +109,26 @@ exportButton.addEventListener(
     map.once('rendercomplete', function () {
       exportOptions.width = width;
       exportOptions.height = height;
-      domtoimage
-        .toJpeg(map.getViewport(), exportOptions)
-        .then(function (dataUrl) {
-          const pdf = new jsPDF('landscape', undefined, format);
-          pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
-          pdf.save('map.pdf');
-          // Reset original map size
-          scaleLine.setDpi();
-          map.getTargetElement().style.width = '';
-          map.getTargetElement().style.height = '';
-          map.updateSize();
-          map.getView().setResolution(viewResolution);
-          exportButton.disabled = false;
-          document.body.style.cursor = 'auto';
-        });
+      html2canvas(map.getViewport(), exportOptions).then(function (canvas) {
+        const pdf = new jspdf.jsPDF('landscape', undefined, format);
+        pdf.addImage(
+          canvas.toDataURL('image/jpeg'),
+          'JPEG',
+          0,
+          0,
+          dim[0],
+          dim[1]
+        );
+        pdf.save('map.pdf');
+        // Reset original map size
+        scaleLine.setDpi();
+        map.getTargetElement().style.width = '';
+        map.getTargetElement().style.height = '';
+        map.updateSize();
+        map.getView().setResolution(viewResolution);
+        exportButton.disabled = false;
+        document.body.style.cursor = 'auto';
+      });
     });
 
     // Set print size

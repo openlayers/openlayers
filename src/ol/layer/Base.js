@@ -27,6 +27,7 @@ import {clamp} from '../math.js';
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -37,6 +38,8 @@ import {clamp} from '../math.js';
  * the options is set as a {@link module:ol/Object} property on the layer object, so
  * is observable, and has get/set accessors.
  *
+ * @template {string} EventTypes
+ * @extends BaseObject<EventTypes|'change:extent'|'change:maxResolution'|'change:maxZoom'|'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'>
  * @api
  */
 class BaseLayer extends BaseObject {
@@ -50,6 +53,10 @@ class BaseLayer extends BaseObject {
      * @type {Object<string, *>}
      */
     const properties = assign({}, options);
+    if (typeof options.properties === 'object') {
+      delete properties.properties;
+      assign(properties, options.properties);
+    }
 
     properties[LayerProperty.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;
@@ -111,8 +118,7 @@ class BaseLayer extends BaseObject {
     state.sourceState = this.getSourceState();
     state.visible = this.getVisible();
     state.extent = this.getExtent();
-    state.zIndex =
-      zIndex !== undefined ? zIndex : state.managed === false ? Infinity : 0;
+    state.zIndex = zIndex === undefined && !state.managed ? Infinity : zIndex;
     state.maxResolution = this.getMaxResolution();
     state.minResolution = Math.max(this.getMinResolution(), 0);
     state.minZoom = this.getMinZoom();

@@ -6,6 +6,7 @@ import TileProperty from './TileProperty.js';
 import {assign} from '../obj.js';
 
 /**
+ * @template {import("../source/Tile.js").default} TileSourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -26,12 +27,13 @@ import {assign} from '../obj.js';
  * be visible.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {import("../source/Tile.js").default} [source] Source for this layer.
+ * @property {TileSourceType} [source] Source for this layer.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link module:ol/Map#addLayer}.
+ * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -43,12 +45,12 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Tile.js").default} TileSourceType
- * @extends {Layer<TileSourceType>}
+ * @extends Layer<TileSourceType,'preload'|'useInterimTilesOnError'>
  * @api
  */
 class BaseTileLayer extends Layer {
   /**
-   * @param {Options} [opt_options] Tile layer options.
+   * @param {Options<TileSourceType>} [opt_options] Tile layer options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

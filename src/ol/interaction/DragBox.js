@@ -103,6 +103,7 @@ export class DragBoxEvent extends Event {
  * {@link module:ol/interaction/DragRotateAndZoom}).
  *
  * @fires DragBoxEvent
+ * @extends PointerInteraction<'boxcancel'|'boxdrag'|'boxend'>
  * @api
  */
 class DragBox extends PointerInteraction {

@@ -2,7 +2,7 @@
  * @module ol/Geolocation
  */
 import BaseEvent from './events/Event.js';
-import BaseObject, {getChangeEventType} from './Object.js';
+import BaseObject from './Object.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
 import {
@@ -82,6 +82,7 @@ class GeolocationError extends BaseEvent {
  *     });
  *
  * @fires module:ol/events/Event~BaseEvent#event:error
+ * @extends BaseObject<'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|'change:trackingOptions'>
  * @api
  */
 class Geolocation extends BaseObject {
@@ -112,14 +113,8 @@ class Geolocation extends BaseObject {
      */
     this.watchId_ = undefined;
 
-    this.addEventListener(
-      getChangeEventType(Property.PROJECTION),
-      this.handleProjectionChanged_
-    );
-    this.addEventListener(
-      getChangeEventType(Property.TRACKING),
-      this.handleTrackingChanged_
-    );
+    this.addChangeListener(Property.PROJECTION, this.handleProjectionChanged_);
+    this.addChangeListener(Property.TRACKING, this.handleTrackingChanged_);
 
     if (options.projection !== undefined) {
       this.setProjection(options.projection);

@@ -7,7 +7,8 @@ import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import PointerEventType from './pointer/EventType.js';
 import Target from './events/Target.js';
-import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
+import {PASSIVE_EVENT_LISTENERS} from './has.js';
+import {VOID} from './functions.js';
 import {listen, unlistenByKey} from './events.js';
 
 class MapBrowserEventHandler extends Target {
@@ -53,9 +54,7 @@ class MapBrowserEventHandler extends Target {
      * @type {number}
      * @private
      */
-    this.moveTolerance_ = moveTolerance
-      ? moveTolerance * DEVICE_PIXEL_RATIO
-      : DEVICE_PIXEL_RATIO;
+    this.moveTolerance_ = moveTolerance === undefined ? 1 : moveTolerance;
 
     /**
      * The most recent "down" type event (or null if none have occurred).
@@ -244,11 +243,12 @@ class MapBrowserEventHandler extends Target {
     );
     this.dispatchEvent(newEvent);
 
-    this.down_ = new PointerEvent(pointerEvent.type, pointerEvent);
-    Object.defineProperty(this.down_, 'target', {
-      writable: false,
-      value: pointerEvent.target,
-    });
+    // Store a copy of the down event
+    this.down_ = /** @type {PointerEvent} */ ({});
+    for (const property in pointerEvent) {
+      const value = pointerEvent[property];
+      this.down_[property] = typeof value === 'function' ? VOID : value;
+    }
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();

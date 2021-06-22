@@ -7,7 +7,6 @@ import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {clear} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getFontParameters} from '../css.js';
-import {toString} from '../transform.js';
 
 /**
  * @typedef {Object} FillState
@@ -160,7 +159,7 @@ export const checkedFonts = new BaseObject();
 
 /**
  * The label cache for text rendering. To change the default cache size of 2048
- * entries, use {@link module:ol/structs/LRUCache#setSize}.
+ * entries, use {@link module:ol/structs/LRUCache~LRUCache#setSize cache.setSize()}.
  * Deprecated - there is no label cache any more.
  * @type {?}
  * @api
@@ -487,27 +486,5 @@ function executeLabelInstructions(label, context) {
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];
     }
-  }
-}
-
-/**
- * @type {HTMLCanvasElement}
- * @private
- */
-let createTransformStringCanvas = null;
-
-/**
- * @param {import("../transform.js").Transform} transform Transform.
- * @return {string} CSS transform.
- */
-export function createTransformString(transform) {
-  if (WORKER_OFFSCREEN_CANVAS) {
-    return toString(transform);
-  } else {
-    if (!createTransformStringCanvas) {
-      createTransformStringCanvas = createCanvasContext2D(1, 1).canvas;
-    }
-    createTransformStringCanvas.style.transform = toString(transform);
-    return createTransformStringCanvas.style.transform;
   }
 }

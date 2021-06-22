@@ -38,13 +38,13 @@ const SelectEventType = {
  * @property {import("../events/condition.js").Condition} [addCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * By default, this is {@link module:ol/events/condition~never}. Use this if you
+ * By default, this is {@link module:ol/events/condition.never}. Use this if you
  * want to use different events for add and remove instead of `toggle`.
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. This is the event
  * for the selected features as a whole. By default, this is
- * {@link module:ol/events/condition~singleClick}. Clicking on a feature selects that
+ * {@link module:ol/events/condition.singleClick}. Clicking on a feature selects that
  * feature and removes any that were in the selection. Clicking outside any
  * feature removes all from the selection.
  * See `toggle`, `add`, `remove` options for adding/removing extra features to/
@@ -63,13 +63,13 @@ const SelectEventType = {
  * @property {import("../events/condition.js").Condition} [removeCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
- * By default, this is {@link module:ol/events/condition~never}. Use this if you
+ * By default, this is {@link module:ol/events/condition.never}. Use this if you
  * want to use different events for add and remove instead of `toggle`.
  * @property {import("../events/condition.js").Condition} [toggleCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. This is in addition
  * to the `condition` event. By default,
- * {@link module:ol/events/condition~shiftKeyOnly}, i.e. pressing `shift` as
+ * {@link module:ol/events/condition.shiftKeyOnly}, i.e. pressing `shift` as
  * well as the `condition` event, adds that feature to the current selection if
  * it is not currently selected, and removes it if it is. See `add` and `remove`
  * if you want to use different events instead of a toggle.
@@ -147,6 +147,7 @@ const originalFeatureStyles = {};
  * Selected features are added to an internal unmanaged layer.
  *
  * @fires SelectEvent
+ * @extends Interaction<'select'>
  * @api
  */
 class Select extends Interaction {

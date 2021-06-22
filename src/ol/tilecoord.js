@@ -47,6 +47,19 @@ export function getKey(tileCoord) {
 }
 
 /**
+ * Get the tile cache key for a tile key obtained through `tile.getKey()`.
+ * @param {string} tileKey The tile key.
+ * @return {string} The cache key.
+ */
+export function getCacheKeyForTileKey(tileKey) {
+  const [z, x, y] = tileKey
+    .substring(tileKey.lastIndexOf('/') + 1, tileKey.length)
+    .split(',')
+    .map(Number);
+  return getKeyZXY(z, x, y);
+}
+
+/**
  * Get a tile coord given a key.
  * @param {string} key The tile coord key.
  * @return {TileCoord} The tile coord.

@@ -7,8 +7,8 @@ import {abstract} from '../util.js';
 import {get as getProjection} from '../proj.js';
 
 /**
- * A function that returns a string or an array of strings representing source
- * attributions.
+ * A function that takes a {@link module:ol/PluggableMap~FrameState} and returns a string or
+ * an array of strings representing source attributions.
  *
  * @typedef {function(import("../PluggableMap.js").FrameState): (string|Array<string>)} Attribution
  */
@@ -40,6 +40,8 @@ import {get as getProjection} from '../proj.js';
  * Base class for {@link module:ol/layer/Layer~Layer} sources.
  *
  * A generic `change` event is triggered when the state of the source changes.
+ * @template {string} EventTypes
+ * @extends BaseObject<EventTypes>
  * @abstract
  * @api
  */

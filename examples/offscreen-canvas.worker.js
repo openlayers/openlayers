@@ -4,7 +4,7 @@ import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import stringify from 'json-stringify-safe';
 import styleFunction from 'ol-mapbox-style/dist/stylefunction.js';
-import {Projection} from '../src/ol/proj.js';
+import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
 import {getTilePriority as tilePriorityFunction} from '../src/ol/TileQueue.js';
 
@@ -111,7 +111,6 @@ function loadStyles() {
 }
 
 // Minimal map-like functionality for rendering
-
 const tileQueue = new TileQueue(
   (tile, tileSourceKey, tileCenter, tileResolution) =>
     tilePriorityFunction(
@@ -128,6 +127,23 @@ const maxTotalLoading = 8;
 const maxNewLoads = 2;
 
 worker.addEventListener('message', (event) => {
+  if (event.data.action === 'requestFeatures') {
+    const layersInView = layers.filter((l) =>
+      inView(l.getLayerState(), frameState.viewState)
+    );
+    const observables = layersInView.map((l) =>
+      l.getFeatures(event.data.pixel)
+    );
+    Promise.all(observables).then((res) => {
+      const features = res.flat();
+      worker.postMessage({
+        action: 'getFeatures',
+        features: JSON.parse(stringify(features.map((e) => e.getProperties()))),
+      });
+    });
+    return;
+  }
+
   if (event.data.action !== 'render') {
     return;
   }
@@ -137,7 +153,7 @@ worker.addEventListener('message', (event) => {
     loadStyles();
   }
   frameState.tileQueue = tileQueue;
-  frameState.viewState.projection.__proto__ = Projection.prototype;
+  frameState.viewState.projection = get('EPSG:3857');
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
       const renderer = layer.getRenderer();

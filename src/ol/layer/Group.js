@@ -9,7 +9,6 @@ import ObjectEventType from '../ObjectEventType.js';
 import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
 import {assign, clear} from '../obj.js';
-import {getChangeEventType} from '../Object.js';
 import {getIntersection} from '../extent.js';
 import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -33,6 +32,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {Array<import("./Base.js").default>|import("../Collection.js").default<import("./Base.js").default>} [layers] Child layers.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -76,10 +76,7 @@ class LayerGroup extends BaseLayer {
      */
     this.listenerKeys_ = {};
 
-    this.addEventListener(
-      getChangeEventType(Property.LAYERS),
-      this.handleLayersChanged_
-    );
+    this.addChangeListener(Property.LAYERS, this.handleLayersChanged_);
 
     if (layers) {
       if (Array.isArray(layers)) {
@@ -205,12 +202,16 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list of layer states (to be modified in place).
+   * Get the layer states list and use this groups z-index as the default
+   * for all layers in this and nested groups, if it is unset at this point.
+   * If opt_states is not provided and this group's z-index is undefined
+   * 0 is used a the default z-index.
+   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list
+   * of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
   getLayerStatesArray(opt_states) {
     const states = opt_states !== undefined ? opt_states : [];
-
     const pos = states.length;
 
     this.getLayers().forEach(function (layer) {
@@ -218,6 +219,10 @@ class LayerGroup extends BaseLayer {
     });
 
     const ownLayerState = this.getLayerState();
+    let defaultZIndex = ownLayerState.zIndex;
+    if (!opt_states && ownLayerState.zIndex === undefined) {
+      defaultZIndex = 0;
+    }
     for (let i = pos, ii = states.length; i < ii; i++) {
       const layerState = states[i];
       layerState.opacity *= ownLayerState.opacity;
@@ -241,6 +246,9 @@ class LayerGroup extends BaseLayer {
         } else {
           layerState.extent = ownLayerState.extent;
         }
+      }
+      if (layerState.zIndex === undefined) {
+        layerState.zIndex = defaultZIndex;
       }
     }
 

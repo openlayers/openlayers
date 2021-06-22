@@ -4,7 +4,6 @@
 
 import Control from './Control.js';
 import EventType from '../pointer/EventType.js';
-import {getChangeEventType} from '../Object.js';
 import {
   get as getProjection,
   getTransformFromProjections,
@@ -50,6 +49,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * On touch devices, which usually do not have a mouse cursor, the coordinates
  * of the currently touched position are shown.
  *
+ * @extends Control<'change:coordinaetFormat'|'change:projection'>
  * @api
  */
 class MousePosition extends Control {
@@ -69,10 +69,7 @@ class MousePosition extends Control {
       target: options.target,
     });
 
-    this.addEventListener(
-      getChangeEventType(PROJECTION),
-      this.handleProjectionChanged_
-    );
+    this.addChangeListener(PROJECTION, this.handleProjectionChanged_);
 
     if (options.coordinateFormat) {
       this.setCoordinateFormat(options.coordinateFormat);

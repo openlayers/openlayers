@@ -6,7 +6,6 @@ import ProjUnits from '../proj/Units.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {METERS_PER_UNIT, getPointResolution} from '../proj.js';
 import {assert} from '../asserts.js';
-import {getChangeEventType} from '../Object.js';
 
 /**
  * @type {string}
@@ -69,6 +68,7 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * When specifying `bar` as `true`, a scalebar will be rendered instead
  * of a scaleline.
  *
+ * @extends Control<'change:units'>
  * @api
  */
 class ScaleLine extends Control {
@@ -131,10 +131,7 @@ class ScaleLine extends Control {
      */
     this.renderedHTML_ = '';
 
-    this.addEventListener(
-      getChangeEventType(UNITS_PROP),
-      this.handleUnitsChanged_
-    );
+    this.addChangeListener(UNITS_PROP, this.handleUnitsChanged_);
 
     this.setUnits(options.units || Units.METRIC);
 

@@ -325,7 +325,7 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]).transform('EPSG:4326', 'EPSG:3857');
 
-      canvas.drawMultiPolygon(multiPolygonGeometry, null);
+      canvas.drawMultiPolygon(multiPolygonGeometry);
 
       const expected = [
         // first polygon

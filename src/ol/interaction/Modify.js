@@ -33,7 +33,7 @@ import {
   squaredDistanceToSegment,
 } from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
-import {equals} from '../array.js';
+import {equals, includes} from '../array.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {
   fromUserCoordinate,
@@ -82,10 +82,10 @@ const ModifyEventType = {
 /**
  * @typedef {Object} SegmentData
  * @property {Array<number>} [depth] Depth.
- * @property {Feature} feature Feature.
+ * @property {import("../Feature").FeatureLike} feature Feature.
  * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @property {number} [index] Index.
- * @property {Array<import("../extent.js").Extent>} segment Segment.
+ * @property {Array<Array<number>>} segment Segment.
  * @property {Array<SegmentData>} [featureSegments] FeatureSegments.
  */
 
@@ -95,16 +95,16 @@ const ModifyEventType = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event will be considered to add or move a
  * vertex to the sketch. Default is
- * {@link module:ol/events/condition~primaryAction}.
+ * {@link module:ol/events/condition.primaryAction}.
  * @property {import("../events/condition.js").Condition} [deleteCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. By default,
- * {@link module:ol/events/condition~singleClick} with
- * {@link module:ol/events/condition~altKeyOnly} results in a vertex deletion.
+ * {@link module:ol/events/condition.singleClick} with
+ * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
  * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
  * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
- * features. Default is {@link module:ol/events/condition~always}.
+ * features. Default is {@link module:ol/events/condition.always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style.js").StyleLike} [style]
@@ -140,7 +140,7 @@ const ModifyEventType = {
 export class ModifyEvent extends Event {
   /**
    * @param {ModifyEventType} type Type.
-   * @param {Collection<Feature>} features
+   * @param {Collection<import("../Feature").FeatureLike>} features
    * The features modified.
    * @param {import("../MapBrowserEvent.js").default} MapBrowserEvent
    * Associated {@link module:ol/MapBrowserEvent}.
@@ -150,7 +150,7 @@ export class ModifyEvent extends Event {
 
     /**
      * The features being modified.
-     * @type {Collection<Feature>}
+     * @type {Collection<import("../Feature").FeatureLike>}
      * @api
      */
     this.features = features;
@@ -183,6 +183,7 @@ export class ModifyEvent extends Event {
  * key is pressed.  To configure the interaction with a different condition
  * for deletion, use the `deleteCondition` option.
  * @fires ModifyEvent
+ * @extends PointerInteraction<'modifyend'|'modifystart'>
  * @api
  */
 class Modify extends PointerInteraction {
@@ -255,7 +256,7 @@ class Modify extends PointerInteraction {
     this.ignoreNextSingleClick_ = false;
 
     /**
-     * @type {Collection<Feature>}
+     * @type {Collection<import("../Feature").FeatureLike>}
      * @private
      */
     this.featuresBeingModified_ = null;
@@ -435,14 +436,17 @@ class Modify extends PointerInteraction {
           }
         }
       }
-
-      this.dispatchEvent(
-        new ModifyEvent(
-          ModifyEventType.MODIFYSTART,
-          this.featuresBeingModified_,
-          evt
-        )
-      );
+      if (this.featuresBeingModified_.getLength() === 0) {
+        this.featuresBeingModified_ = null;
+      } else {
+        this.dispatchEvent(
+          new ModifyEvent(
+            ModifyEventType.MODIFYSTART,
+            this.featuresBeingModified_,
+            evt
+          )
+        );
+      }
     }
   }
 
@@ -783,7 +787,7 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
-   * @param {Array<Feature>} features The features being modified.
+   * @param {Array<import("../Feature").FeatureLike>} features The features being modified.
    * @param {Array<import("../geom/SimpleGeometry.js").default>} geometries The geometries being modified.
    * @return {Feature} Vertex feature.
    * @private
@@ -1126,7 +1130,9 @@ class Modify extends PointerInteraction {
       );
     };
 
-    let nodes, hitPointGeometry;
+    /** @type {Array<SegmentData>|undefined} */
+    let nodes;
+    let hitPointGeometry;
     if (this.hitDetection_) {
       const layerFilter =
         typeof this.hitDetection_ === 'object'
@@ -1136,9 +1142,12 @@ class Modify extends PointerInteraction {
         pixel,
         (feature, layer, geometry) => {
           geometry = geometry || feature.getGeometry();
-          if (geometry.getType() === GeometryType.POINT) {
+          if (
+            geometry.getType() === GeometryType.POINT &&
+            includes(this.features_.getArray(), feature)
+          ) {
             hitPointGeometry = geometry;
-            const coordinate = geometry.getCoordinates();
+            const coordinate = geometry.getFlatCoordinates().slice(0, 2);
             nodes = [
               {
                 feature,
