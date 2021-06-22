@@ -59,13 +59,13 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
-## Building ES6
+## ES Modules
 
-The `ol` package contains a `src/` folder with the sources, authored in ES6. To use these untranspiled sources, either import modules from `ol/src` instead of `ol`, or configure your bundler with an alias pointing to `ol/src` for the `ol` package.
+The `ol` package contains a `src/` folder with the sources, authored as [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). To use these untranspiled sources, either import modules from `ol/src` instead of `ol`, or configure your bundler with an alias pointing to `ol/src` for the `ol` package.
 
 ## IntelliSense (VS Code) support
 
-The untranspiled sources in the `src/` are JSDoc type annotated. For applications authored in JavaScript, VS Code can get type definitions from these sources with a properly configured `jsconfig.json` in the project root:
+The untranspiled sources in the `src/` folder are JSDoc type annotated. For applications authored in JavaScript, VS Code can get type definitions from these sources with a properly configured `jsconfig.json` in the project root:
 
 <details><summary>jsconfig.json</summary>
 
@@ -103,7 +103,7 @@ When authoring in TypeScript, we recommend you try out the types that are includ
   }
 }
 ```
-These are auto-generated with the TypeScript compiler, and will be the default in future versions. Alternatively, you can use third-party types from [Definitely Typed](https://definitelytyped.org) (`npm install @types/ol`).
+These are auto-generated with the TypeScript compiler, and will be the default in future versions. Alternatively, you can use third-party types from [Definitely Typed](https://definitelytyped.org) (`npm install @types/ol`) or from [hanreev/types-ol](https://github.com/hanreev/types-ol).
 
 ## Supported Browsers
 
