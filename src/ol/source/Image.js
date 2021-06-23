@@ -39,6 +39,10 @@ export const ImageSourceEventType = {
 };
 
 /**
+ * @typedef {'imageloadend'|'imageloaderror'|'imageloadstart'} ImageSourceEventTypes
+ */
+
+/**
  * @classdesc
  * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
  * type.
@@ -88,6 +92,13 @@ class ImageSource extends Source {
       projection: options.projection,
       state: options.state,
     });
+
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent>}
+     */
+    this.on;
 
     /**
      * @private

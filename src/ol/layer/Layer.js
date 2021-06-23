@@ -96,6 +96,14 @@ class Layer extends BaseLayer {
 
     super(baseOptions);
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+     *     'change:source', import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default>}
+     */
+    this.on;
+
     /**
      * @private
      * @type {?import("../events.js").EventsKey}

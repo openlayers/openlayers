@@ -9,6 +9,11 @@ import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 
 /**
+ * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
+ *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
+ */
+
+/**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -46,6 +51,12 @@ class BaseLayer extends BaseObject {
    */
   constructor(options) {
     super();
+
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent>}
+     */
+    this.on;
 
     /**
      * @type {Object<string, *>}

@@ -61,6 +61,14 @@ class BaseTileLayer extends Layer {
     delete baseOptions.useInterimTilesOnError;
     super(baseOptions);
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+     *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default>}
+     */
+    this.on;
+
     this.setPreload(options.preload !== undefined ? options.preload : 0);
     this.setUseInterimTilesOnError(
       options.useInterimTilesOnError !== undefined

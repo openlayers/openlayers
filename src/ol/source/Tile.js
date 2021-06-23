@@ -52,6 +52,13 @@ class TileSource extends Source {
       wrapX: options.wrapX,
     });
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent>}
+     */
+    this.on;
+
     /**
      * @private
      * @type {boolean}

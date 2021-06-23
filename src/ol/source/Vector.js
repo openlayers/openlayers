@@ -177,6 +177,13 @@ class VectorSource extends Source {
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
     });
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent>}
+     */
+    this.on;
+
     /**
      * @private
      * @type {import("../featureloader.js").FeatureLoader}

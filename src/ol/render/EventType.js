@@ -51,5 +51,5 @@ export default {
  */
 
 /**
- * @typedef {MapRenderEventTypes|'prerender'} RenderEventTypes
+ * @typedef {'postrender'|'prerender'} LayerRenderEventTypes
  */
