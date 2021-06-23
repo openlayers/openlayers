@@ -110,6 +110,15 @@ export class TranslateEvent extends Event {
   }
 }
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'translateend'|'translatestart'|'translating'>} TranslateOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for translating (moving) features.
@@ -127,14 +136,14 @@ class Translate extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-     *     'change:active'|'translateend'|'translatestart'|'translating'>}
+     * @type {TranslateOnSignature}
      */
     this.on;
+
+    /***
+     * @type {TranslateOnSignature}
+     */
+    this.once;
 
     /**
      * The last position we translated to.

@@ -164,6 +164,15 @@ export class ModifyEvent extends Event {
   }
 }
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'modifyend'|'modifystart'>} ModifyOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for modifying feature geometries.  To modify features that have
@@ -193,14 +202,14 @@ class Modify extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-     *     'change:active'|'modifyend'|'modifystart'>}
+     * @type {ModifyOnSignature}
      */
     this.on;
+
+    /***
+     * @type {ModifyOnSignature}
+     */
+    this.once;
 
     /** @private */
     this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);

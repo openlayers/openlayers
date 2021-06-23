@@ -134,6 +134,15 @@ export class SelectEvent extends Event {
  */
 const originalFeatureStyles = {};
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<'select', SelectEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'select'>} SelectOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for selecting vector features. By default, selected features are
@@ -157,14 +166,14 @@ class Select extends Interaction {
     super();
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'select', SelectEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-     *     'change:active'|'select'>}
+     * @type {SelectOnSignature}
      */
     this.on;
+
+    /***
+     * @type {SelectOnSignature}
+     */
+    this.once;
 
     const options = opt_options ? opt_options : {};
 

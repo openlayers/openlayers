@@ -5,6 +5,15 @@ import Layer from './Layer.js';
 import TileProperty from './TileProperty.js';
 import {assign} from '../obj.js';
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+ *   'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes>} BaseTileLayerOnSignature
+ */
+
 /**
  * @template {import("../source/Tile.js").default} TileSourceType
  * @typedef {Object} Options
@@ -62,14 +71,14 @@ class BaseTileLayer extends Layer {
     super(baseOptions);
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
-     *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
-     *   'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes>}
+     * @type {BaseTileLayerOnSignature}
      */
     this.on;
+
+    /***
+     * @type {BaseTileLayerOnSignature}
+     */
+    this.once;
 
     this.setPreload(options.preload !== undefined ? options.preload : 0);
     this.setUseInterimTilesOnError(

@@ -22,6 +22,14 @@ const PROJECTION = 'projection';
  */
 const COORDINATE_FORMAT = 'coordinateFormat';
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:coordinateFormat'|'change:projection'>} MousePositionOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-mouse-position'] CSS class name.
@@ -69,13 +77,14 @@ class MousePosition extends Control {
     });
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-     *     'change:coordinateFormat'|'change:projection'>}
+     * @type {MousePositionOnSignature}
      */
     this.on;
+
+    /***
+     * @type {MousePositionOnSignature}
+     */
+    this.once;
 
     this.addChangeListener(PROJECTION, this.handleProjectionChanged_);
 

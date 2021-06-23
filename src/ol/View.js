@@ -222,6 +222,12 @@ const DEFAULT_MIN_ZOOM = 0;
  * @typedef {import("./ObjectEventType").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
  */
 
+/***
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+ *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes>} ViewOnSignature
+ */
+
 /**
  * @classdesc
  * A View object represents a simple 2D view of the map.
@@ -302,11 +308,14 @@ class View extends BaseObject {
     super();
 
     /***
-     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent> &
-     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes>}
+     * @type {ViewOnSignature}
      */
     this.on;
+
+    /***
+     * @type {ViewOnSignature}
+     */
+    this.once;
 
     const options = assign({}, opt_options);
 

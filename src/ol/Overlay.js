@@ -88,6 +88,12 @@ const Property = {
  *   'change:positioning'} OverlayObjectEventTypes
  */
 
+/***
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+ *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes>} OverlayOnSignature
+ */
+
 /**
  * @classdesc
  * An element to be displayed over the map and attached to a single map
@@ -116,11 +122,14 @@ class Overlay extends BaseObject {
     super();
 
     /***
-     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent> &
-     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes>}
+     * @type {OverlayOnSignature}
      */
     this.on;
+
+    /***
+     * @type {OverlayOnSignature}
+     */
+    this.once;
 
     /**
      * @protected

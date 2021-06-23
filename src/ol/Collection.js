@@ -44,6 +44,14 @@ export class CollectionEvent extends Event {
   }
 }
 
+/***
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+ *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent> &
+ *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|
+ *     'change:length'|'add'|'remove'>} CollectionOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {boolean} [unique=false] Disallow the same item from being added to
@@ -72,12 +80,14 @@ class Collection extends BaseObject {
     super();
 
     /***
-     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent> &
-     *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent> &
-     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|'change:length'|'add'|'remove'>}
+     * @type {CollectionOnSignature}
      */
     this.on;
+
+    /***
+     * @type {CollectionOnSignature}
+     */
+    this.once;
 
     const options = opt_options || {};
 

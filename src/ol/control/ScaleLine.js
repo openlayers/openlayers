@@ -37,6 +37,14 @@ const LEADING_DIGITS = [1, 2, 5];
  */
 const DEFAULT_DPI = 25.4 / 0.28;
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:units', import("../Object").ObjectEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+ *     |'change:units'>} ScaleLineOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-scale-line'] CSS Class name.
@@ -91,12 +99,14 @@ class ScaleLine extends Control {
     });
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:units', import("../Object").ObjectEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|'change:units'>}
+     * @type {ScaleLineOnSignature}
      */
     this.on;
+
+    /***
+     * @type {ScaleLineOnSignature}
+     */
+    this.once;
 
     /**
      * @private

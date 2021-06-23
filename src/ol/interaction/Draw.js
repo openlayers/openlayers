@@ -172,6 +172,15 @@ export class DrawEvent extends Event {
   }
 }
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'drawabort'|'drawend'|'drawstart'>} DrawOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for drawing feature geometries.
@@ -194,14 +203,14 @@ class Draw extends PointerInteraction {
     super(pointerOptions);
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-     *     'change:active'|'drawabort'|'drawend'|'drawstart'>}
+     * @type {DrawOnSignature}
      */
     this.on;
+
+    /***
+     * @type {DrawOnSignature}
+     */
+    this.once;
 
     /**
      * @type {boolean}

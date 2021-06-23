@@ -14,6 +14,15 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
  */
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     'change:source', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:source'|
+ *     import("../render/EventType").LayerRenderEventTypes>} LayerOnSignature
+ */
+
 /**
  * @template {import("../source/Source.js").default} SourceType
  * @typedef {Object} Options
@@ -97,14 +106,14 @@ class Layer extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
-     *     'change:source', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:source'|
-     *     import("../render/EventType").LayerRenderEventTypes>}
+     * @type {LayerOnSignature}
      */
     this.on;
+
+    /***
+     * @type {LayerOnSignature}
+     */
+    this.once;
 
     /**
      * @private

@@ -93,6 +93,15 @@ export class DragBoxEvent extends Event {
   }
 }
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend', DragBoxEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'boxcancel'|'boxdrag'|'boxend'>} DragBoxOnSignature
+ */
+
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
@@ -113,14 +122,14 @@ class DragBox extends PointerInteraction {
     super();
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend', DragBoxEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-     *     'change:active'|'boxcancel'|'boxdrag'|'boxend'>}
+     * @type {DragBoxOnSignature}
      */
     this.on;
+
+    /***
+     * @type {DragBoxOnSignature}
+     */
+    this.once;
 
     const options = opt_options ? opt_options : {};
 

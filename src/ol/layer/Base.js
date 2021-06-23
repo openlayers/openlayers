@@ -13,6 +13,12 @@ import {clamp} from '../math.js';
  *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
  */
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes>} BaseLayerOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -53,11 +59,14 @@ class BaseLayer extends BaseObject {
     super();
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes>}
+     * @type {BaseLayerOnSignature}
      */
     this.on;
+
+    /***
+     * @type {BaseLayerOnSignature}
+     */
+    this.once;
 
     /**
      * @type {Object<string, *>}

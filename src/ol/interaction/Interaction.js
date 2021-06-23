@@ -5,6 +5,14 @@ import BaseObject from '../Object.js';
 import InteractionProperty from './Property.js';
 import {easeOut, linear} from '../easing.js';
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'>} InteractionOnSignature
+ */
+
 /**
  * Object literal with config options for interactions.
  * @typedef {Object} InteractionOptions
@@ -37,12 +45,14 @@ class Interaction extends BaseObject {
     super();
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|'change:active'>}
+     * @type {InteractionOnSignature}
      */
     this.on;
+
+    /***
+     * @type {InteractionOnSignature}
+     */
+    this.once;
 
     if (opt_options && opt_options.handleEvent) {
       this.handleEvent = opt_options.handleEvent;

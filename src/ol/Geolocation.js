@@ -67,6 +67,14 @@ class GeolocationError extends BaseEvent {
  *    'change:trackingOptions'} GeolocationObjectEventTypes
  */
 
+/***
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+ *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent> &
+ *   import("./Observable").OnSignature<'error', GeolocationError> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes|
+ *     'error'>} GeolocationOnSignature
+ */
+
 /**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
@@ -98,12 +106,14 @@ class Geolocation extends BaseObject {
     super();
 
     /***
-     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent> &
-     *   import("./Observable").OnSignature<'error', GeolocationError> &
-     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes|'error'>}
+     * @type {GeolocationOnSignature}
      */
     this.on;
+
+    /***
+     * @type {GeolocationOnSignature}
+     */
+    this.once;
 
     const options = opt_options || {};
 

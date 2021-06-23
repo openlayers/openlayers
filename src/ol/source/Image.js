@@ -64,6 +64,14 @@ export class ImageSourceEvent extends Event {
   }
 }
 
+/***
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
+ *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+ *     |ImageSourceEventTypes>} ImageSourceOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
@@ -94,12 +102,14 @@ class ImageSource extends Source {
     });
 
     /***
-     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent> &
-     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|ImageSourceEventTypes>}
+     * @type {ImageSourceOnSignature}
      */
     this.on;
+
+    /***
+     * @type {ImageSourceOnSignature}
+     */
+    this.once;
 
     /**
      * @private
