@@ -297,6 +297,13 @@ class View extends BaseObject {
   constructor(opt_options) {
     super();
 
+    /***
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|
+     *     'change:center'|'change:resolution'|'change:rotation', import("./Object").ObjectEvent>}
+     */
+    this.on;
+
     const options = assign({}, opt_options);
 
     /**

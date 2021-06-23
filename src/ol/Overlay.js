@@ -110,6 +110,13 @@ class Overlay extends BaseObject {
   constructor(options) {
     super();
 
+    /***
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|
+     *     'change:element'|'change:map'|'change:offset'|'change:position'|'change:positioning', import("./Object").ObjectEvent>}
+     */
+    this.on;
+
     /**
      * @protected
      * @type {Options}

@@ -91,6 +91,14 @@ class Geolocation extends BaseObject {
   constructor(opt_options) {
     super();
 
+    /***
+     * @type {import("./Observable").OnSignature<import("./ObjectEventType").Types|
+     *     'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|'change:altitudeAccuracy'|'change:heading'|
+     *     'change:position'|'change:projection'|'change:speed'|'change:tracking'|'change:trackingOptions', import("./Object").ObjectEvent> &
+     *   import("./Observable").OnSignature<'error', GeolocationError>}
+     */
+    this.on;
+
     const options = opt_options || {};
 
     /**
