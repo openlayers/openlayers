@@ -74,7 +74,8 @@ class Collection extends BaseObject {
     /***
      * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
      *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent> &
-     *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent>}
+     *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent> &
+     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|'change:length'|'add'|'remove'>}
      */
     this.on;
 

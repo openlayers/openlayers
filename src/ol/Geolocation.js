@@ -62,6 +62,12 @@ class GeolocationError extends BaseEvent {
  */
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|
+ *    'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|
+ *    'change:trackingOptions'} GeolocationObjectEventTypes
+ */
+
+/**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
  * The [Geolocation API](https://www.w3.org/TR/geolocation-API/)
@@ -92,10 +98,10 @@ class Geolocation extends BaseObject {
     super();
 
     /***
-     * @type {import("./Observable").OnSignature<import("./ObjectEventType").Types|
-     *     'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|'change:altitudeAccuracy'|'change:heading'|
-     *     'change:position'|'change:projection'|'change:speed'|'change:tracking'|'change:trackingOptions', import("./Object").ObjectEvent> &
-     *   import("./Observable").OnSignature<'error', GeolocationError>}
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent> &
+     *   import("./Observable").OnSignature<'error', GeolocationError> &
+     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes|'error'>}
      */
     this.on;
 

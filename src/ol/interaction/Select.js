@@ -160,7 +160,9 @@ class Select extends Interaction {
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
      *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'select', SelectEvent>}
+     *   import("../Observable").OnSignature<'select', SelectEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+     *     'change:active'|'select'>}
      */
     this.on;
 

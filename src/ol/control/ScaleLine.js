@@ -93,7 +93,8 @@ class ScaleLine extends Control {
     /***
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:units', import("../Object").ObjectEvent>}
+     *     'change:units', import("../Object").ObjectEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|'change:units'>}
      */
     this.on;
 

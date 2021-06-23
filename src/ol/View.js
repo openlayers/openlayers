@@ -219,6 +219,10 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 const DEFAULT_MIN_ZOOM = 0;
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
+ */
+
+/**
  * @classdesc
  * A View object represents a simple 2D view of the map.
  *
@@ -299,8 +303,8 @@ class View extends BaseObject {
 
     /***
      * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|
-     *     'change:center'|'change:resolution'|'change:rotation', import("./Object").ObjectEvent>}
+     *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent> &
+     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes>}
      */
     this.on;
 

@@ -55,7 +55,9 @@ class TileSource extends Source {
     /***
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent>}
+     *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+     *     import("./TileEventType").TileSourceEventTypes>}
      */
     this.on;
 

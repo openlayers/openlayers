@@ -96,7 +96,9 @@ class Extent extends PointerInteraction {
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
      *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'extentchanged', ExtentEvent>}
+     *   import("../Observable").OnSignature<'extentchanged', ExtentEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+     *     'change:active'|'extentchanged'>}
      */
     this.on;
 

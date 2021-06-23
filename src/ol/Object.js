@@ -89,7 +89,8 @@ class BaseObject extends Observable {
 
     /***
      * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent>}
+     *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent> &
+     *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types>}
      */
     this.on;
 

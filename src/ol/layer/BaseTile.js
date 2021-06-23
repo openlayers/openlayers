@@ -65,7 +65,9 @@ class BaseTileLayer extends Layer {
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
      *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default>}
+     *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+     *   'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes>}
      */
     this.on;
 

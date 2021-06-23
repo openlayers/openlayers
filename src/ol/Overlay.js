@@ -84,6 +84,11 @@ const Property = {
 };
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:element'|'change:map'|'change:offset'|'change:position'|
+ *   'change:positioning'} OverlayObjectEventTypes
+ */
+
+/**
  * @classdesc
  * An element to be displayed over the map and attached to a single map
  * location.  Like {@link module:ol/control/Control~Control}, Overlays are
@@ -112,8 +117,8 @@ class Overlay extends BaseObject {
 
     /***
      * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|
-     *     'change:element'|'change:map'|'change:offset'|'change:position'|'change:positioning', import("./Object").ObjectEvent>}
+     *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent> &
+     *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes>}
      */
     this.on;
 

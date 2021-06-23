@@ -130,7 +130,9 @@ class Translate extends PointerInteraction {
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
      *     'change:active', import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent>}
+     *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+     *     'change:active'|'translateend'|'translatestart'|'translating'>}
      */
     this.on;
 

@@ -71,7 +71,9 @@ class MousePosition extends Control {
     /***
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-     *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent>}
+     *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+     *     'change:coordinateFormat'|'change:projection'>}
      */
     this.on;
 

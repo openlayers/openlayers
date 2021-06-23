@@ -54,7 +54,8 @@ class BaseLayer extends BaseObject {
 
     /***
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
-     *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent>}
+     *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes>}
      */
     this.on;
 

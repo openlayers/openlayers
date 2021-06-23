@@ -87,6 +87,10 @@ import {removeNode} from './dom.js';
  */
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:layergroup'|'change:size'|'change:target'|'change:view'} MapObjectEventTypes
+ */
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
@@ -138,11 +142,12 @@ class PluggableMap extends BaseObject {
 
     /***
      * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
-     *    import("./Observable").OnSignature<import("./ObjectEventType").Types|
-     *      'change:layergroup'|'change:size'|'change:target'|'change:view', import("./Object").ObjectEvent> &
+     *    import("./Observable").OnSignature<MapObjectEventTypes, import("./Object").ObjectEvent> &
      *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default> &
      *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default> &
-     *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default>}
+     *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default> &
+     *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|MapObjectEventTypes|
+     *      import("./MapBrowserEventType").Types|import("./MapEventType").Types|import("./render/EventType").MapRenderEventTypes>}
      */
     this.on;
 

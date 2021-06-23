@@ -96,7 +96,8 @@ class ImageSource extends Source {
     /***
      * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
      *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
-     *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent>}
+     *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent> &
+     *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|ImageSourceEventTypes>}
      */
     this.on;
 

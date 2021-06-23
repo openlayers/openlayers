@@ -7,7 +7,7 @@ import {listen, listenOnce, unlistenByKey} from './events.js';
 
 /***
  * @template {string} Type
- * @template {import("./events/Event.js").default} EventClass
+ * @template {Event|import("./events/Event.js").default} EventClass
  * @typedef {(type: Type|Type[], listener: (event: EventClass) => (void|boolean)) => import("./events").EventsKey|Array<import("./events").EventsKey>} OnSignature
  */
 
