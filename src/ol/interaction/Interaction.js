@@ -36,6 +36,13 @@ class Interaction extends BaseObject {
   constructor(opt_options) {
     super();
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+     *     'change:active', import("../Object").ObjectEvent>}
+     */
+    this.on;
+
     if (opt_options && opt_options.handleEvent) {
       this.handleEvent = opt_options.handleEvent;
     }

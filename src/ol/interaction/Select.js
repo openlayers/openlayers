@@ -156,6 +156,14 @@ class Select extends Interaction {
   constructor(opt_options) {
     super();
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+     *     'change:active', import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<'select', SelectEvent>}
+     */
+    this.on;
+
     const options = opt_options ? opt_options : {};
 
     /**

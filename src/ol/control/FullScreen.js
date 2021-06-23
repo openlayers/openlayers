@@ -80,6 +80,13 @@ class FullScreen extends Control {
       target: options.target,
     });
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes|
+     *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent>}
+     */
+    this.on;
+
     /**
      * @private
      * @type {string}

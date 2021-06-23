@@ -112,6 +112,14 @@ class DragBox extends PointerInteraction {
   constructor(opt_options) {
     super();
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+     *     'change:active', import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend', DragBoxEvent>}
+     */
+    this.on;
+
     const options = opt_options ? opt_options : {};
 
     /**

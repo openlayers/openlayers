@@ -126,6 +126,14 @@ class Translate extends PointerInteraction {
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+     *     'change:active', import("../Object").ObjectEvent> &
+     *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent>}
+     */
+    this.on;
+
     /**
      * The last position we translated to.
      * @type {import("../coordinate.js").Coordinate}

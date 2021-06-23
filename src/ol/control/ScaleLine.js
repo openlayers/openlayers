@@ -90,6 +90,13 @@ class ScaleLine extends Control {
       target: options.target,
     });
 
+    /***
+     * @type {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+     *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+     *     'change:units', import("../Object").ObjectEvent>}
+     */
+    this.on;
+
     /**
      * @private
      * @type {HTMLElement}
