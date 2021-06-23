@@ -127,11 +127,6 @@ import {removeNode} from './dom.js';
  */
 
 /**
- * @fires import("./MapBrowserEvent.js").MapBrowserEvent
- * @fires import("./MapEvent.js").MapEvent
- * @fires import("./render/Event.js").default#precompose
- * @fires import("./render/Event.js").default#postcompose
- * @fires import("./render/Event.js").default#rendercomplete
  * @api
  */
 class PluggableMap extends BaseObject {
@@ -140,6 +135,16 @@ class PluggableMap extends BaseObject {
    */
   constructor(options) {
     super();
+
+    /***
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *    import("./Observable").OnSignature<import("./ObjectEventType").Types|
+     *      'change:layergroup'|'change:size'|'change:target'|'change:view', import("./Object").ObjectEvent> &
+     *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default> &
+     *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default> &
+     *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default>}
+     */
+    this.on;
 
     const optionsInternal = createOptionsInternal(options);
 

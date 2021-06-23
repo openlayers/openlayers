@@ -45,3 +45,11 @@ export default {
    */
   RENDERCOMPLETE: 'rendercomplete',
 };
+
+/**
+ * @typedef {'postrender'|'precompose'|'postcompose'|'rendercomplete'} MapRenderEventTypes
+ */
+
+/**
+ * @typedef {MapRenderEventTypes|'prerender'} RenderEventTypes
+ */
