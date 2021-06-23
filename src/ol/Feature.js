@@ -69,6 +69,12 @@ class Feature extends BaseObject {
   constructor(opt_geometryOrProperties) {
     super();
 
+    /***
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:geometry', import("./Object").ObjectEvent>}
+     */
+    this.on;
+
     /**
      * @private
      * @type {number|string|undefined}

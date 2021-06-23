@@ -71,6 +71,13 @@ class Collection extends BaseObject {
   constructor(opt_array, opt_options) {
     super();
 
+    /***
+     * @type {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
+     *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent> &
+     *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent>}
+     */
+    this.on;
+
     const options = opt_options || {};
 
     /**
