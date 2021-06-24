@@ -77,7 +77,6 @@ class Observable extends EventTarget {
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
    */
-  // the jsdoc api annotation follows below the class declaration.
   onInternal(type, listener) {
     if (Array.isArray(type)) {
       const len = type.length;
@@ -97,7 +96,6 @@ class Observable extends EventTarget {
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
    */
-  // the jsdoc api annotation follows below the class declaration.
   onceInternal(type, listener) {
     let key;
     if (Array.isArray(type)) {
