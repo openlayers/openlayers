@@ -135,12 +135,13 @@ export class SelectEvent extends Event {
 const originalFeatureStyles = {};
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<'select', SelectEvent> &
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'select', SelectEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     'change:active'|'select'>} SelectOnSignature
+ *     'change:active'|'select', Return>} SelectOnSignature
  */
 
 /**
@@ -166,14 +167,19 @@ class Select extends Interaction {
     super();
 
     /***
-     * @type {SelectOnSignature}
+     * @type {SelectOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {SelectOnSignature}
+     * @type {SelectOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {SelectOnSignature<void>}
+     */
+    this.un;
 
     const options = opt_options ? opt_options : {};
 

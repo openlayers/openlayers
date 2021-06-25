@@ -173,12 +173,13 @@ export class DrawEvent extends Event {
 }
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent> &
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     'change:active'|'drawabort'|'drawend'|'drawstart'>} DrawOnSignature
+ *     'change:active'|'drawabort'|'drawend'|'drawstart', Return>} DrawOnSignature
  */
 
 /**
@@ -203,14 +204,19 @@ class Draw extends PointerInteraction {
     super(pointerOptions);
 
     /***
-     * @type {DrawOnSignature}
+     * @type {DrawOnSignature<import("../Observable").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {DrawOnSignature}
+     * @type {DrawOnSignature<import("../Observable").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {DrawOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @type {boolean}

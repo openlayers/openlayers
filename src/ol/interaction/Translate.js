@@ -111,12 +111,13 @@ export class TranslateEvent extends Event {
 }
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent> &
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     'change:active'|'translateend'|'translatestart'|'translating'>} TranslateOnSignature
+ *     'change:active'|'translateend'|'translatestart'|'translating', Return>} TranslateOnSignature
  */
 
 /**
@@ -136,14 +137,19 @@ class Translate extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {TranslateOnSignature}
+     * @type {TranslateOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {TranslateOnSignature}
+     * @type {TranslateOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {TranslateOnSignature<void>}
+     */
+    this.un;
 
     /**
      * The last position we translated to.

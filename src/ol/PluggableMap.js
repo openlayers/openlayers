@@ -91,14 +91,15 @@ import {removeNode} from './dom.js';
  */
 
 /***
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
- *    import("./Observable").OnSignature<MapObjectEventTypes, import("./Object").ObjectEvent> &
- *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default> &
- *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default> &
- *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default> &
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *    import("./Observable").OnSignature<MapObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default, Return> &
+ *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default, Return> &
+ *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default, Return> &
  *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|MapObjectEventTypes|
  *      import("./MapBrowserEventType").Types|import("./MapEventType").Types|
- *      import("./render/EventType").MapRenderEventTypes>} PluggableMapOnSignature
+ *      import("./render/EventType").MapRenderEventTypes, Return>} PluggableMapOnSignature
  */
 
 /**
@@ -152,14 +153,19 @@ class PluggableMap extends BaseObject {
     super();
 
     /***
-     * @type {PluggableMapOnSignature}
+     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {PluggableMapOnSignature}
+     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {PluggableMapOnSignature<void>}
+     */
+    this.un;
 
     const optionsInternal = createOptionsInternal(options);
 

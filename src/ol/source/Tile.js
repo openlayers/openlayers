@@ -16,11 +16,12 @@ import {
 import {scale as scaleSize, toSize} from '../size.js';
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     import("./TileEventType").TileSourceEventTypes>} TileSourceOnSignature
+ *     import("./TileEventType").TileSourceEventTypes, Return>} TileSourceOnSignature
  */
 
 /**
@@ -61,14 +62,19 @@ class TileSource extends Source {
     });
 
     /***
-     * @type {TileSourceOnSignature}
+     * @type {TileSourceOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {TileSourceOnSignature}
+     * @type {TileSourceOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {TileSourceOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

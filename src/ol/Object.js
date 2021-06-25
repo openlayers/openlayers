@@ -38,9 +38,10 @@ export class ObjectEvent extends Event {
 }
 
 /***
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
- *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent> &
- *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types>} ObjectOnSignature
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent, Return> &
+ *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types, Return>} ObjectOnSignature
  */
 
 /**
@@ -94,14 +95,19 @@ class BaseObject extends Observable {
     super();
 
     /***
-     * @type {ObjectOnSignature}
+     * @type {ObjectOnSignature<import("./Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {ObjectOnSignature}
+     * @type {ObjectOnSignature<import("./Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {ObjectOnSignature<void>}
+     */
+    this.un;
 
     // Call {@link module:ol/util.getUid} to ensure that the order of objects' ids is
     // the same as the order in which they were created.  This also helps to

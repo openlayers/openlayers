@@ -89,9 +89,10 @@ const Property = {
  */
 
 /***
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
- *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes>} OverlayOnSignature
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes, Return>} OverlayOnSignature
  */
 
 /**
@@ -122,14 +123,19 @@ class Overlay extends BaseObject {
     super();
 
     /***
-     * @type {OverlayOnSignature}
+     * @type {OverlayOnSignature<import("./Observable").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {OverlayOnSignature}
+     * @type {OverlayOnSignature<import("./Observable").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {OverlayOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @protected

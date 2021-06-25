@@ -68,11 +68,12 @@ class GeolocationError extends BaseEvent {
  */
 
 /***
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
- *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent> &
- *   import("./Observable").OnSignature<'error', GeolocationError> &
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").OnSignature<'error', GeolocationError, Return> &
  *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes|
- *     'error'>} GeolocationOnSignature
+ *     'error', Return>} GeolocationOnSignature
  */
 
 /**
@@ -106,14 +107,19 @@ class Geolocation extends BaseObject {
     super();
 
     /***
-     * @type {GeolocationOnSignature}
+     * @type {GeolocationOnSignature<import("./Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {GeolocationOnSignature}
+     * @type {GeolocationOnSignature<import("./Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {GeolocationOnSignature<void>}
+     */
+    this.un;
 
     const options = opt_options || {};
 

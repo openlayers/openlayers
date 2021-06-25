@@ -14,9 +14,10 @@ import {clamp} from '../math.js';
  */
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
- *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes>} BaseLayerOnSignature
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
  */
 
 /**
@@ -59,14 +60,19 @@ class BaseLayer extends BaseObject {
     super();
 
     /***
-     * @type {BaseLayerOnSignature}
+     * @type {BaseLayerOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {BaseLayerOnSignature}
+     * @type {BaseLayerOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {BaseLayerOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @type {Object<string, *>}

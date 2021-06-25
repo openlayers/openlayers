@@ -8,12 +8,18 @@ import {listen, listenOnce, unlistenByKey} from './events.js';
 /***
  * @template {string} Type
  * @template {Event|import("./events/Event.js").default} EventClass
- * @typedef {(type: Type|Type[], listener: (event: EventClass) => (void|boolean)) => import("./events").EventsKey|Array<import("./events").EventsKey>} OnSignature
+ * @template Return
+ * @typedef {(type: Type|Type[], listener: (event: EventClass) => (void|boolean)) => Return} OnSignature
  */
 
 /***
  * @template {string} Type
- * @typedef {(type: Type[], listener: (event: Event|import("./events/Event").default) => (void|boolean)) => import("./events").EventsKey|Array<import("./events").EventsKey>} CombinedOnSignature
+ * @template Return
+ * @typedef {(type: Type[], listener: (event: Event|import("./events/Event").default) => (void|boolean)) => Return} CombinedOnSignature
+ */
+
+/***
+ * @typedef {import("./events").EventsKey|Array<import("./events").EventsKey>} OnReturn
  */
 
 /**
@@ -36,14 +42,19 @@ class Observable extends EventTarget {
     super();
 
     /***
-     * @type {OnSignature<EventTypes, import("./events/Event.js").default>}
+     * @type {OnSignature<EventTypes, import("./events/Event.js").default, OnReturn>}
      */
     this.on = this.onInternal;
 
     /***
-     * @type {OnSignature<EventTypes, import("./events/Event.js").default>}
+     * @type {OnSignature<EventTypes, import("./events/Event.js").default, OnReturn>}
      */
     this.once = this.onceInternal;
+
+    /***
+     * @type {OnSignature<EventTypes, import("./events/Event.js").default, void>}
+     */
+    this.un = this.unInternal;
 
     /**
      * @private
@@ -113,11 +124,11 @@ class Observable extends EventTarget {
 
   /**
    * Unlisten for a certain type of event.
-   * @param {string|Array<string>} type The event type or array of event types.
-   * @param {function((Event|import("./events/Event").default)): (void|boolean)} listener The listener function.
-   * @api
+   * @param {string|Array<string>} type Type.
+   * @param {function(?): (void|boolean)} listener Listener.
+   * @protected
    */
-  un(type, listener) {
+  unInternal(type, listener) {
     const key = /** @type {Object} */ (listener).ol_key;
     if (key) {
       unByKey(key);
@@ -154,6 +165,15 @@ Observable.prototype.on;
  * @api
  */
 Observable.prototype.once;
+
+/**
+ * Unlisten for a certain type of event.
+ * @function
+ * @param {string|Array<string>} type The event type or array of event types.
+ * @param {function((Event|import("./events/Event").default)): (void|boolean)} listener The listener function.
+ * @api
+ */
+Observable.prototype.un;
 
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.

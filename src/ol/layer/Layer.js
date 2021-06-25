@@ -15,12 +15,13 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     'change:source', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
+ *     'change:source', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:source'|
- *     import("../render/EventType").LayerRenderEventTypes>} LayerOnSignature
+ *     import("../render/EventType").LayerRenderEventTypes, Return>} LayerOnSignature
  */
 
 /**
@@ -106,14 +107,19 @@ class Layer extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {LayerOnSignature}
+     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {LayerOnSignature}
+     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {LayerOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

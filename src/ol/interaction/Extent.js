@@ -75,12 +75,13 @@ export class ExtentEvent extends Event {
 }
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<'extentchanged', ExtentEvent> &
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'extentchanged', ExtentEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     'change:active'|'extentchanged'>} ExtentOnSignature
+ *     'change:active'|'extentchanged', Return>} ExtentOnSignature
  */
 
 /**
@@ -102,14 +103,19 @@ class Extent extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {ExtentOnSignature}
+     * @type {ExtentOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {ExtentOnSignature}
+     * @type {ExtentOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {ExtentOnSignature<void>}
+     */
+    this.un;
 
     /**
      * Condition

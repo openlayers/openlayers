@@ -165,12 +165,13 @@ export class ModifyEvent extends Event {
 }
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent> &
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     'change:active'|'modifyend'|'modifystart'>} ModifyOnSignature
+ *     'change:active'|'modifyend'|'modifystart', Return>} ModifyOnSignature
  */
 
 /**
@@ -202,14 +203,19 @@ class Modify extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {ModifyOnSignature}
+     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {ModifyOnSignature}
+     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {ModifyOnSignature<void>}
+     */
+    this.un;
 
     /** @private */
     this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);

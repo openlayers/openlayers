@@ -38,11 +38,12 @@ const LEADING_DIGITS = [1, 2, 5];
 const DEFAULT_DPI = 25.4 / 0.28;
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:units', import("../Object").ObjectEvent> &
+ *     'change:units', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
- *     |'change:units'>} ScaleLineOnSignature
+ *     |'change:units', Return>} ScaleLineOnSignature
  */
 
 /**
@@ -99,14 +100,19 @@ class ScaleLine extends Control {
     });
 
     /***
-     * @type {ScaleLineOnSignature}
+     * @type {ScaleLineOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {ScaleLineOnSignature}
+     * @type {ScaleLineOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {ScaleLineOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

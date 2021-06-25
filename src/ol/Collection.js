@@ -45,11 +45,12 @@ export class CollectionEvent extends Event {
 }
 
 /***
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
- *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent> &
- *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent> &
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent, Return> &
  *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|
- *     'change:length'|'add'|'remove'>} CollectionOnSignature
+ *     'change:length'|'add'|'remove',Return>} CollectionOnSignature
  */
 
 /**
@@ -80,14 +81,19 @@ class Collection extends BaseObject {
     super();
 
     /***
-     * @type {CollectionOnSignature}
+     * @type {CollectionOnSignature<import("./Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {CollectionOnSignature}
+     * @type {CollectionOnSignature<import("./Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {CollectionOnSignature<void>}
+     */
+    this.un;
 
     const options = opt_options || {};
 

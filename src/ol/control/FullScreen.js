@@ -33,11 +33,12 @@ const FullScreenEventType = {
 };
 
 /***
+ * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes|
- *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent> &
+ *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|
- *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType").Types>} FullScreenOnSignature
+ *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType").Types, Return>} FullScreenOnSignature
  */
 
 /**
@@ -89,14 +90,19 @@ class FullScreen extends Control {
     });
 
     /***
-     * @type {FullScreenOnSignature}
+     * @type {FullScreenOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {FullScreenOnSignature}
+     * @type {FullScreenOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {FullScreenOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

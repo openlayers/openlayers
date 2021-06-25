@@ -9,12 +9,13 @@ import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
 
 /***
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default> &
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent> &
- *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default> &
+ *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
- *     'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes>} VectorTileLayerOnSignature
+ *     'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
  */
 
 /**
@@ -105,14 +106,19 @@ class VectorTileLayer extends BaseVectorLayer {
     );
 
     /***
-     * @type {VectorTileLayerOnSignature}
+     * @type {VectorTileLayerOnSignature<import("../Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {VectorTileLayerOnSignature}
+     * @type {VectorTileLayerOnSignature<import("../Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {VectorTileLayerOnSignature<void>}
+     */
+    this.un;
 
     if (options.renderMode === VectorTileRenderType.IMAGE) {
       //FIXME deprecated - remove this check in v7.

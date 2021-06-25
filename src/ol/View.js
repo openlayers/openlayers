@@ -223,9 +223,10 @@ const DEFAULT_MIN_ZOOM = 0;
  */
 
 /***
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default> &
- *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes>} ViewOnSignature
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
  */
 
 /**
@@ -308,14 +309,19 @@ class View extends BaseObject {
     super();
 
     /***
-     * @type {ViewOnSignature}
+     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
      */
     this.on;
 
     /***
-     * @type {ViewOnSignature}
+     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
      */
     this.once;
+
+    /***
+     * @type {ViewOnSignature<void>}
+     */
+    this.un;
 
     const options = assign({}, opt_options);
 
