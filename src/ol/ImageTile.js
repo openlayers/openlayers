@@ -78,14 +78,10 @@ class ImageTile extends Tile {
    * @api
    */
   setImage(element) {
-    // asynchronous to accomodate reprojection listeners
-    const tile = this;
-    setTimeout(function () {
-      tile.image_ = element;
-      tile.state = TileState.LOADED;
-      tile.unlistenImage_();
-      tile.changed();
-    }, 0);
+    this.image_ = element;
+    this.state = TileState.LOADED;
+    this.unlistenImage_();
+    this.changed();
   }
 
   /**
