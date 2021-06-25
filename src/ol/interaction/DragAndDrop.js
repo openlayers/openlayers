@@ -74,6 +74,16 @@ export class DragAndDropEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'addfeatures', DragAndDropEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'addfeatures', Return>} DragAndDropOnSignature
+ */
+
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
@@ -96,6 +106,21 @@ class DragAndDrop extends Interaction {
     super({
       handleEvent: TRUE,
     });
+
+    /***
+     * @type {DragAndDropOnSignature<import("../Observable").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {DragAndDropOnSignature<import("../Observable").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {DragAndDropOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private
