@@ -53,7 +53,7 @@ document.getElementById('export-png').addEventListener('click', function () {
       }
     );
     if (navigator.msSaveBlob) {
-      // link download attribuute does not work on MS browsers
+      // link download attribute does not work on MS browsers
       navigator.msSaveBlob(mapCanvas.msToBlob(), 'map.png');
     } else {
       const link = document.getElementById('image-download');

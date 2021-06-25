@@ -102,7 +102,7 @@ function download(fullpath, filename) {
     })
     .then(function (blob) {
       if (navigator.msSaveBlob) {
-        // link download attribuute does not work on MS browsers
+        // link download attribute does not work on MS browsers
         navigator.msSaveBlob(blob, filename);
       } else {
         link.href = URL.createObjectURL(blob);
