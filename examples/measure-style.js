@@ -158,6 +158,8 @@ const source = new VectorSource();
 
 const modify = new Modify({source: source, style: modifyStyle});
 
+let tipPoint;
+
 function styleFunction(feature, segments, drawType, tip) {
   const styles = [style];
   const geometry = feature.getGeometry();
@@ -199,6 +201,7 @@ function styleFunction(feature, segments, drawType, tip) {
     type === 'Point' &&
     !modify.getOverlay().getSource().getFeatures().length
   ) {
+    tipPoint = geometry;
     tipStyle.getText().setText(tip);
     styles.push(tipStyle);
   }
@@ -247,7 +250,11 @@ function addInteraction() {
     tip = activeTip;
   });
   draw.on('drawend', function () {
+    modifyStyle.setGeometry(tipPoint);
     modify.setActive(true);
+    map.once('pointermove', function () {
+      modifyStyle.setGeometry();
+    });
     tip = idleTip;
   });
   modify.setActive(true);
@@ -263,4 +270,5 @@ addInteraction();
 
 showSegments.onchange = function () {
   vector.changed();
+  draw.getOverlay().changed();
 };
