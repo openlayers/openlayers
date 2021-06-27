@@ -6,7 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {assign} from '../../obj.js';
 import {compose as composeTransform, makeInverse} from '../../transform.js';
-import {containsExtent, intersects} from '../../extent.js';
+import {containsExtent, intersects as intersectsExtent} from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import {toString as toTransformString} from '../../transform.js';
@@ -148,14 +148,14 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     // clipped rendering if layer extent is set
     let clipped = false;
+    let render = true;
     if (layerState.extent) {
       const layerExtent = fromUserExtent(
         layerState.extent,
         viewState.projection
       );
-      clipped =
-        !containsExtent(layerExtent, frameState.extent) &&
-        intersects(layerExtent, frameState.extent);
+      render = intersectsExtent(layerExtent, frameState.extent);
+      clipped = render && !containsExtent(layerExtent, frameState.extent);
       if (clipped) {
         this.clipUnrotated(context, frameState, layerExtent);
       }
@@ -176,14 +176,14 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     this.renderedResolution = (imageResolution * pixelRatio) / imagePixelRatio;
 
-    const dx = transform[4];
-    const dy = transform[5];
     const dw = img.width * transform[0];
     const dh = img.height * transform[3];
 
     assign(context, this.getLayer().getSource().getContextOptions());
     this.preRender(context, frameState);
-    if (dw >= 0.5 && dh >= 0.5) {
+    if (render && dw >= 0.5 && dh >= 0.5) {
+      const dx = transform[4];
+      const dy = transform[5];
       const opacity = layerState.opacity;
       let previousAlpha;
       if (opacity !== 1) {

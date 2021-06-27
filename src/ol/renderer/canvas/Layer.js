@@ -17,7 +17,6 @@ import {
   getTopRight,
 } from '../../extent.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {rotateAtOffset} from '../../render/canvas.js';
 
 /**
  * @abstract
@@ -128,38 +127,6 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container = container;
       this.context = context;
     }
-  }
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../extent.js").Extent} extent Clip extent.
-   * @protected
-   */
-  clip(context, frameState, extent) {
-    const pixelRatio = frameState.pixelRatio;
-    const halfWidth = (frameState.size[0] * pixelRatio) / 2;
-    const halfHeight = (frameState.size[1] * pixelRatio) / 2;
-    const rotation = frameState.viewState.rotation;
-    const topLeft = getTopLeft(extent);
-    const topRight = getTopRight(extent);
-    const bottomRight = getBottomRight(extent);
-    const bottomLeft = getBottomLeft(extent);
-
-    applyTransform(frameState.coordinateToPixelTransform, topLeft);
-    applyTransform(frameState.coordinateToPixelTransform, topRight);
-    applyTransform(frameState.coordinateToPixelTransform, bottomRight);
-    applyTransform(frameState.coordinateToPixelTransform, bottomLeft);
-
-    context.save();
-    rotateAtOffset(context, -rotation, halfWidth, halfHeight);
-    context.beginPath();
-    context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
-    context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
-    context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
-    context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
-    context.clip();
-    rotateAtOffset(context, rotation, halfWidth, halfHeight);
   }
 
   /**

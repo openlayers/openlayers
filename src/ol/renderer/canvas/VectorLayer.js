@@ -280,17 +280,19 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     // clipped rendering if layer extent is set
     let clipped = false;
+    let render = true;
     if (layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
-      clipped =
-        !containsExtent(layerExtent, frameState.extent) &&
-        intersectsExtent(layerExtent, frameState.extent);
+      render = intersectsExtent(layerExtent, frameState.extent);
+      clipped = render && !containsExtent(layerExtent, frameState.extent);
       if (clipped) {
         this.clipUnrotated(context, frameState, layerExtent);
       }
     }
 
-    this.renderWorlds(replayGroup, frameState);
+    if (render) {
+      this.renderWorlds(replayGroup, frameState);
+    }
 
     if (clipped) {
       context.restore();
