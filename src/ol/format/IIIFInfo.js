@@ -146,9 +146,12 @@ IIIF_PROFILE_VALUES['none'] = {
   },
 };
 
-const COMPLIANCE_VERSION1 = /^https?:\/\/library\.stanford\.edu\/iiif\/image-api\/(?:1\.1\/)?compliance\.html#level[0-2]$/;
-const COMPLIANCE_VERSION2 = /^https?:\/\/iiif\.io\/api\/image\/2\/level[0-2](?:\.json)?$/;
-const COMPLIANCE_VERSION3 = /(^https?:\/\/iiif\.io\/api\/image\/3\/level[0-2](?:\.json)?$)|(^level[0-2]$)/;
+const COMPLIANCE_VERSION1 =
+  /^https?:\/\/library\.stanford\.edu\/iiif\/image-api\/(?:1\.1\/)?compliance\.html#level[0-2]$/;
+const COMPLIANCE_VERSION2 =
+  /^https?:\/\/iiif\.io\/api\/image\/2\/level[0-2](?:\.json)?$/;
+const COMPLIANCE_VERSION3 =
+  /(^https?:\/\/iiif\.io\/api\/image\/3\/level[0-2](?:\.json)?$)|(^level[0-2]$)/;
 
 function generateVersion1Options(iiifInfo) {
   let levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();

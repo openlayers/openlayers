@@ -100,7 +100,9 @@ class Snap extends PointerInteraction {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
+      options
+    );
 
     if (!pointerOptions.handleDownEvent) {
       pointerOptions.handleDownEvent = TRUE;
@@ -358,7 +360,9 @@ class Snap extends PointerInteraction {
   setMap(map) {
     const currentMap = this.getMap();
     const keys = this.featuresListenerKeys_;
-    const features = /** @type {Array<import("../Feature.js").default>} */ (this.getFeatures_());
+    const features = /** @type {Array<import("../Feature.js").default>} */ (
+      this.getFeatures_()
+    );
 
     if (currentMap) {
       keys.forEach(unlistenByKey);
@@ -548,9 +552,9 @@ class Snap extends PointerInteraction {
     let circleGeometry = geometry;
     const userProjection = getUserProjection();
     if (userProjection) {
-      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (circleGeometry
-        .clone()
-        .transform(userProjection, projection));
+      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
+        circleGeometry.clone().transform(userProjection, projection)
+      );
     }
     const polygon = fromCircle(circleGeometry);
     if (userProjection) {

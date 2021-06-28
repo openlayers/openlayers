@@ -222,9 +222,9 @@ export class CustomTile extends Tile {
     if (!client.status || (client.status >= 200 && client.status < 300)) {
       let response;
       try {
-        response = /** @type {!UTFGridJSON} */ (JSON.parse(
-          client.responseText
-        ));
+        response = /** @type {!UTFGridJSON} */ (
+          JSON.parse(client.responseText)
+        );
       } catch (err) {
         this.handleError_();
         return;
@@ -341,9 +341,9 @@ class UTFGrid extends TileSource {
     if (!client.status || (client.status >= 200 && client.status < 300)) {
       let response;
       try {
-        response = /** @type {import("./TileJSON.js").Config} */ (JSON.parse(
-          client.responseText
-        ));
+        response = /** @type {import("./TileJSON.js").Config} */ (
+          JSON.parse(client.responseText)
+        );
       } catch (err) {
         this.handleTileJSONError();
         return;
@@ -391,13 +391,15 @@ class UTFGrid extends TileSource {
     if (this.tileGrid) {
       const z = this.tileGrid.getZForResolution(resolution, this.zDirection);
       const tileCoord = this.tileGrid.getTileCoordForCoordAndZ(coordinate, z);
-      const tile = /** @type {!CustomTile} */ (this.getTile(
-        tileCoord[0],
-        tileCoord[1],
-        tileCoord[2],
-        1,
-        this.getProjection()
-      ));
+      const tile = /** @type {!CustomTile} */ (
+        this.getTile(
+          tileCoord[0],
+          tileCoord[1],
+          tileCoord[2],
+          1,
+          this.getProjection()
+        )
+      );
       tile.forDataAtCoordinate(coordinate, callback, opt_request);
     } else {
       if (opt_request === true) {

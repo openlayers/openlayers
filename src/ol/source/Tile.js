@@ -153,9 +153,9 @@ class TileSource extends Source {
         tileCoordKey = getKeyZXY(z, x, y);
         loaded = false;
         if (tileCache.containsKey(tileCoordKey)) {
-          tile = /** @type {!import("../Tile.js").default} */ (tileCache.get(
-            tileCoordKey
-          ));
+          tile = /** @type {!import("../Tile.js").default} */ (
+            tileCache.get(tileCoordKey)
+          );
           loaded = tile.getState() === TileState.LOADED;
           if (loaded) {
             loaded = callback(tile) !== false;

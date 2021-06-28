@@ -123,9 +123,9 @@ export function makeArrayExtender(valueReader, opt_this) {
         objectStack
       );
       if (value !== undefined) {
-        const array = /** @type {Array<*>} */ (objectStack[
-          objectStack.length - 1
-        ]);
+        const array = /** @type {Array<*>} */ (
+          objectStack[objectStack.length - 1]
+        );
         extend(array, value);
       }
     }
@@ -153,9 +153,9 @@ export function makeArrayPusher(valueReader, opt_this) {
         objectStack
       );
       if (value !== undefined) {
-        const array = /** @type {Array<*>} */ (objectStack[
-          objectStack.length - 1
-        ]);
+        const array = /** @type {Array<*>} */ (
+          objectStack[objectStack.length - 1]
+        );
         array.push(value);
       }
     }
@@ -211,9 +211,9 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
         objectStack
       );
       if (value !== undefined) {
-        const object = /** @type {!Object} */ (objectStack[
-          objectStack.length - 1
-        ]);
+        const object = /** @type {!Object} */ (
+          objectStack[objectStack.length - 1]
+        );
         const property =
           opt_property !== undefined ? opt_property : node.localName;
         let array;
@@ -250,9 +250,9 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
         objectStack
       );
       if (value !== undefined) {
-        const object = /** @type {!Object} */ (objectStack[
-          objectStack.length - 1
-        ]);
+        const object = /** @type {!Object} */ (
+          objectStack[objectStack.length - 1]
+        );
         const property =
           opt_property !== undefined ? opt_property : node.localName;
         object[property] = value;
@@ -278,9 +278,9 @@ export function makeChildAppender(nodeWriter, opt_this) {
       value,
       objectStack
     );
-    const parent = /** @type {NodeStackItem} */ (objectStack[
-      objectStack.length - 1
-    ]);
+    const parent = /** @type {NodeStackItem} */ (
+      objectStack[objectStack.length - 1]
+    );
     const parentNode = parent.node;
     parentNode.appendChild(node);
   };
@@ -335,9 +335,9 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
      * @return {Node} Node.
      */
     function (value, objectStack, opt_nodeName) {
-      const context = /** @type {NodeStackItem} */ (objectStack[
-        objectStack.length - 1
-      ]);
+      const context = /** @type {NodeStackItem} */ (
+        objectStack[objectStack.length - 1]
+      );
       const node = context.node;
       let nodeName = fixedNodeName;
       if (nodeName === undefined) {

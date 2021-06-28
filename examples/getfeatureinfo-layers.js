@@ -14,14 +14,12 @@ fetch('data/wmsgetfeatureinfo/osm-restaurant-hotel.xml')
     const hotelFeatures = new WMSGetFeatureInfo({
       layers: ['hotel'],
     }).readFeatures(response);
-    document.getElementById(
-      'hotel'
-    ).innerText = hotelFeatures.length.toString();
+    document.getElementById('hotel').innerText =
+      hotelFeatures.length.toString();
 
     const restaurantFeatures = new WMSGetFeatureInfo({
       layers: ['restaurant'],
     }).readFeatures(response);
-    document.getElementById(
-      'restaurant'
-    ).innerText = restaurantFeatures.length.toString();
+    document.getElementById('restaurant').innerText =
+      restaurantFeatures.length.toString();
   });

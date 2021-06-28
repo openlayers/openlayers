@@ -79,9 +79,7 @@ describe('ol.source.TileJSON', function () {
 
     it('returns attributions, but not when outside bounds', function () {
       tileJSON.bounds = [
-        -10.764179999935878,
-        49.528423000201656,
-        1.9134115551745678,
+        -10.764179999935878, 49.528423000201656, 1.9134115551745678,
         61.3311509999582,
       ];
       const source = new TileJSON({

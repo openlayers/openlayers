@@ -256,9 +256,15 @@ class CanvasBuilder extends VectorContext {
     let flatCoordinates, builderEnd, builderEnds, builderEndss;
     let offset;
     if (type == GeometryType.MULTI_POLYGON) {
-      flatCoordinates = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getOrientedFlatCoordinates();
+      flatCoordinates =
+        /** @type {import("../../geom/MultiPolygon.js").default} */ (
+          geometry
+        ).getOrientedFlatCoordinates();
       builderEndss = [];
-      const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
+      const endss =
+        /** @type {import("../../geom/MultiPolygon.js").default} */ (
+          geometry
+        ).getEndss();
       offset = 0;
       for (let i = 0, ii = endss.length; i < ii; ++i) {
         const myEnds = [];
@@ -286,12 +292,16 @@ class CanvasBuilder extends VectorContext {
       builderEnds = [];
       flatCoordinates =
         type == GeometryType.POLYGON
-          ? /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates()
+          ? /** @type {import("../../geom/Polygon.js").default} */ (
+              geometry
+            ).getOrientedFlatCoordinates()
           : geometry.getFlatCoordinates();
       offset = this.drawCustomCoordinates_(
         flatCoordinates,
         0,
-        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (geometry).getEnds(),
+        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (
+          geometry
+        ).getEnds(),
         stride,
         builderEnds
       );

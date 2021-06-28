@@ -443,7 +443,9 @@ export function drawImageOrLabel(
     context.translate(x, y);
     context.scale(scale[0], scale[1]);
     context.drawImage(
-      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage),
+      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (
+        labelOrImage
+      ),
       originX,
       originY,
       w,
@@ -456,7 +458,9 @@ export function drawImageOrLabel(
   } else {
     // if image not flipped translate and scale can be avoided
     context.drawImage(
-      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (labelOrImage),
+      /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */ (
+        labelOrImage
+      ),
       originX,
       originY,
       w,

@@ -757,7 +757,9 @@ class Modify extends PointerInteraction {
     centerSegmentData.featureSegments = featureSegments;
     circumferenceSegmentData.featureSegments = featureSegments;
     this.rBush_.insert(createExtent(coordinates), centerSegmentData);
-    let circleGeometry = /** @type {import("../geom/Geometry.js").default} */ (geometry);
+    let circleGeometry = /** @type {import("../geom/Geometry.js").default} */ (
+      geometry
+    );
     const userProjection = getUserProjection();
     if (userProjection && this.getMap()) {
       const projection = this.getMap().getView().getProjection();
@@ -1526,14 +1528,16 @@ function projectedDistanceToSegmentDataSquared(
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE) {
-    let circleGeometry = /** @type {import("../geom/Circle.js").default} */ (geometry);
+    let circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
+      geometry
+    );
 
     if (segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
       const userProjection = getUserProjection();
       if (userProjection) {
-        circleGeometry = /** @type {import("../geom/Circle.js").default} */ (circleGeometry
-          .clone()
-          .transform(userProjection, projection));
+        circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
+          circleGeometry.clone().transform(userProjection, projection)
+        );
       }
       const distanceToCenterSquared = squaredCoordinateDistance(
         circleGeometry.getCenter(),
@@ -1568,12 +1572,14 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
     geometry.getType() === GeometryType.CIRCLE &&
     segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX
   ) {
-    let circleGeometry = /** @type {import("../geom/Circle.js").default} */ (geometry);
+    let circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
+      geometry
+    );
     const userProjection = getUserProjection();
     if (userProjection) {
-      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (circleGeometry
-        .clone()
-        .transform(userProjection, projection));
+      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
+        circleGeometry.clone().transform(userProjection, projection)
+      );
     }
     return toUserCoordinate(
       circleGeometry.getClosestPoint(

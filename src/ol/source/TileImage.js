@@ -251,9 +251,8 @@ class TileImage extends UrlTile {
     } else {
       const projKey = getUid(projection);
       if (!(projKey in this.tileGridForProjection)) {
-        this.tileGridForProjection[projKey] = getTileGridForProjection(
-          projection
-        );
+        this.tileGridForProjection[projKey] =
+          getTileGridForProjection(projection);
       }
       return this.tileGridForProjection[projKey];
     }
@@ -472,7 +471,8 @@ class TileImage extends UrlTile {
  * @param {string} src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {
-  /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src = src;
+  /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
+    src;
 }
 
 export default TileImage;

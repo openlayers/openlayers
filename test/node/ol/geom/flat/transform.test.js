@@ -32,11 +32,7 @@ describe('ol/geom/flat/transform.js', function () {
         ],
       ]).transform('EPSG:4326', 'EPSG:3857');
       const transform = [
-        0.0004088332670837288,
-        0,
-        0,
-        -0.0004088332670837288,
-        4480.991370439071,
+        0.0004088332670837288, 0, 0, -0.0004088332670837288, 4480.991370439071,
         1529.5752568707105,
       ];
       const pixelCoordinates = transformGeom2D(
@@ -112,36 +108,8 @@ describe('ol/geom/flat/transform.js', function () {
         flatCoordinates
       );
       expect(flatCoordinates).to.eql([
-        1,
-        2,
-        2,
-        1,
-        3,
-        2,
-        2,
-        3,
-        2,
-        2,
-        2,
-        2,
-        1,
-        2,
-        2,
-        3,
-        4,
-        3,
-        3,
-        5,
-        3,
-        4,
-        5,
-        3,
-        4,
-        4,
-        3,
-        3,
-        4,
-        3,
+        1, 2, 2, 1, 3, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2, 3, 4, 3, 3, 5, 3, 4, 5, 3,
+        4, 4, 3, 3, 4, 3,
       ]);
     });
   });

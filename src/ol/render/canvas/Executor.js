@@ -538,9 +538,8 @@ class Executor {
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
-    context[
-      'strokeStyle'
-    ] = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+    context['strokeStyle'] =
+      /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
@@ -669,10 +668,14 @@ class Executor {
     let x, y, currentGeometry;
     while (i < ii) {
       const instruction = instructions[i];
-      const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      const type = /** @type {import("./Instruction.js").default} */ (
+        instruction[0]
+      );
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
-          feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
+          feature = /** @type {import("../../Feature.js").FeatureLike} */ (
+            instruction[1]
+          );
           currentGeometry = instruction[3];
           if (!feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
@@ -721,7 +724,10 @@ class Executor {
         case CanvasInstruction.CUSTOM:
           d = /** @type {number} */ (instruction[1]);
           dd = instruction[2];
-          const geometry = /** @type {import("../../geom/SimpleGeometry.js").default} */ (instruction[3]);
+          const geometry =
+            /** @type {import("../../geom/SimpleGeometry.js").default} */ (
+              instruction[3]
+            );
           const renderer = instruction[4];
           const fn = instruction.length == 6 ? instruction[5] : undefined;
           state.geometry = geometry;
@@ -743,7 +749,10 @@ class Executor {
         case CanvasInstruction.DRAW_IMAGE:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
-          image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */ (instruction[3]);
+          image =
+            /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */ (
+              instruction[3]
+            );
 
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
@@ -754,9 +763,14 @@ class Executor {
           const originY = /** @type {number} */ (instruction[9]);
           const rotateWithView = /** @type {boolean} */ (instruction[10]);
           let rotation = /** @type {number} */ (instruction[11]);
-          const scale = /** @type {import("../../size.js").Size} */ (instruction[12]);
+          const scale = /** @type {import("../../size.js").Size} */ (
+            instruction[12]
+          );
           let width = /** @type {number} */ (instruction[13]);
-          const declutterImageWithText = /** @type {import("../canvas.js").DeclutterImageWithText} */ (instruction[14]);
+          const declutterImageWithText =
+            /** @type {import("../canvas.js").DeclutterImageWithText} */ (
+              instruction[14]
+            );
 
           if (!image && instruction.length >= 19) {
             // create label images
@@ -1047,7 +1061,9 @@ class Executor {
           break;
         case CanvasInstruction.END_GEOMETRY:
           if (opt_featureCallback !== undefined) {
-            feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
+            feature = /** @type {import("../../Feature.js").FeatureLike} */ (
+              instruction[1]
+            );
             const result = opt_featureCallback(feature, currentGeometry);
             if (result) {
               return result;
@@ -1101,7 +1117,10 @@ class Executor {
             }
           }
 
-          context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+          context.fillStyle =
+            /** @type {import("../../colorlike.js").ColorLike} */ (
+              instruction[1]
+            );
           ++i;
           break;
         case CanvasInstruction.SET_STROKE_STYLE:

@@ -330,8 +330,7 @@ describe('ol.layer.Layer', function () {
         inView: true,
       },
       {
-        when:
-          'view resolution is greater than minResolution (with maxResolution)',
+        when: 'view resolution is greater than minResolution (with maxResolution)',
         minResolution: 2,
         maxResolution: 4,
         view: {
@@ -369,8 +368,7 @@ describe('ol.layer.Layer', function () {
         inView: false,
       },
       {
-        when:
-          'view resolution is greater than maxResolution (with minResolution)',
+        when: 'view resolution is greater than maxResolution (with minResolution)',
         minResolution: 2,
         maxResolution: 4,
         view: {

@@ -228,8 +228,12 @@ class ExecutorGroup {
      * @return {T|undefined} Callback result.
      */
     function featureCallback(feature, geometry) {
-      const imageData = context.getImageData(0, 0, contextSize, contextSize)
-        .data;
+      const imageData = context.getImageData(
+        0,
+        0,
+        contextSize,
+        contextSize
+      ).data;
       for (let i = 0, ii = indexes.length; i < ii; i++) {
         if (imageData[indexes[i]] > 0) {
           if (

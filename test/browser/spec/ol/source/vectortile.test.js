@@ -247,9 +247,7 @@ describe('ol.source.VectorTile', function () {
       }
 
       const extent = [
-        665584.2026596286,
-        7033250.839875697,
-        667162.0221431496,
+        665584.2026596286, 7033250.839875697, 667162.0221431496,
         7035280.378636755,
       ];
 
@@ -257,20 +255,7 @@ describe('ol.source.VectorTile', function () {
         tileGrid: new TileGrid({
           origin: [218128, 6126002],
           resolutions: [
-            4096,
-            2048,
-            1024,
-            512,
-            256,
-            128,
-            64,
-            32,
-            16,
-            8,
-            4,
-            2,
-            1,
-            0.5,
+            4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5,
           ],
         }),
         tileUrlFunction: tileUrlFunction,
@@ -391,9 +376,7 @@ describe('ol.source.VectorTile', function () {
       target.style.height = '100px';
       document.body.appendChild(target);
       const extent = [
-        1824704.739223726,
-        6141868.096770482,
-        1827150.7241288517,
+        1824704.739223726, 6141868.096770482, 1827150.7241288517,
         6144314.081675608,
       ];
       source = new VectorTileSource({

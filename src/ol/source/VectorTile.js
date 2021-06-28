@@ -323,9 +323,8 @@ class VectorTile extends UrlTile {
           tile.loadingSourceTiles++;
         }
         if (sourceTileState === TileState.IDLE) {
-          sourceTile.extent = sourceTileGrid.getTileCoordExtent(
-            sourceTileCoord
-          );
+          sourceTile.extent =
+            sourceTileGrid.getTileCoordExtent(sourceTileCoord);
           sourceTile.projection = projection;
           sourceTile.resolution = sourceTileGrid.getResolution(
             sourceTileCoord[0]
@@ -471,9 +470,8 @@ class VectorTile extends UrlTile {
    */
   updateCacheSize(tileCount, projection) {
     super.updateCacheSize(tileCount * 2, projection);
-    this.sourceTileCache.highWaterMark = this.getTileCacheForProjection(
-      projection
-    ).highWaterMark;
+    this.sourceTileCache.highWaterMark =
+      this.getTileCacheForProjection(projection).highWaterMark;
   }
 }
 

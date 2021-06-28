@@ -797,9 +797,9 @@ class GML3 extends GMLBase {
    * @param {Array<*>} objectStack Node stack.
    */
   writeGeometryElement(node, geometry, objectStack) {
-    const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[
-      objectStack.length - 1
-    ]);
+    const context = /** @type {import("./Feature.js").WriteOptions} */ (
+      objectStack[objectStack.length - 1]
+    );
     const item = assign({}, context);
     item['node'] = node;
     let value;
@@ -866,9 +866,8 @@ class GML3 extends GMLBase {
             }
           } else {
             if (!(key in context.serializers[featureNS])) {
-              context.serializers[featureNS][key] = makeChildAppender(
-                writeStringTextNode
-              );
+              context.serializers[featureNS][key] =
+                makeChildAppender(writeStringTextNode);
             }
           }
         }
@@ -948,7 +947,9 @@ class GML3 extends GMLBase {
     const multiCurve = context['multiCurve'];
     let nodeName;
     if (!Array.isArray(value)) {
-      nodeName = /** @type {import("../geom/Geometry.js").default} */ (value).getType();
+      nodeName = /** @type {import("../geom/Geometry.js").default} */ (
+        value
+      ).getType();
       if (nodeName === 'MultiPolygon' && multiSurface === true) {
         nodeName = 'MultiSurface';
       } else if (nodeName === 'Polygon' && surface === true) {

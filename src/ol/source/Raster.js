@@ -626,15 +626,13 @@ class RasterSource extends ImageSource {
    * @private
    */
   updateFrameState_(extent, resolution, projection) {
-    const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (assign(
-      {},
-      this.frameState_
-    ));
+    const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (
+      assign({}, this.frameState_)
+    );
 
-    frameState.viewState = /** @type {import("../View.js").State} */ (assign(
-      {},
-      frameState.viewState
-    ));
+    frameState.viewState = /** @type {import("../View.js").State} */ (
+      assign({}, frameState.viewState)
+    );
 
     const center = getCenter(extent);
 

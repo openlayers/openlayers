@@ -70,9 +70,7 @@ describe('ol.source.TileWMS', function () {
       const queryData = uri.searchParams;
       const bbox = queryData.get('BBOX').split(',');
       const expected = [
-        -10331840.239250705,
-        -15341217.324948018,
-        -4696291.017841229,
+        -10331840.239250705, -15341217.324948018, -4696291.017841229,
         -9705668.103538541,
       ];
       for (let i = 0, ii = bbox.length; i < ii; ++i) {

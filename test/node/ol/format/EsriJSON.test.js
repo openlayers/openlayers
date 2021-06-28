@@ -391,12 +391,13 @@ describe('ol/format/EsriJSON.js', function () {
       const firstGeom = first.getGeometry();
       expect(firstGeom).to.be.a(Polygon);
       expect(
-        equals(firstGeom.getExtent(), [
-          -10585772.743554419,
-          4712365.161160459,
-          -10579560.16462974,
-          4716567.373073828,
-        ])
+        equals(
+          firstGeom.getExtent(),
+          [
+            -10585772.743554419, 4712365.161160459, -10579560.16462974,
+            4716567.373073828,
+          ]
+        )
       ).to.be(true);
 
       const last = result[8];
@@ -406,12 +407,13 @@ describe('ol/format/EsriJSON.js', function () {
       const lastGeom = last.getGeometry();
       expect(lastGeom).to.be.a(Polygon);
       expect(
-        equals(lastGeom.getExtent(), [
-          -10555714.026858449,
-          4576511.565880965,
-          -10553671.199322715,
-          4578554.9934867555,
-        ])
+        equals(
+          lastGeom.getExtent(),
+          [
+            -10555714.026858449, 4576511.565880965, -10553671.199322715,
+            4578554.9934867555,
+          ]
+        )
       ).to.be(true);
     });
   });

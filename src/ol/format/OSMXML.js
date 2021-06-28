@@ -122,7 +122,9 @@ const NODE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function readNode(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+    objectStack[0]
+  );
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const id = node.getAttribute('id');
   /** @type {import("../coordinate.js").Coordinate} */

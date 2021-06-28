@@ -652,7 +652,9 @@ class WKT extends TextFeature {
       this.splitCollection_ &&
       geometry.getType() == GeometryType.GEOMETRY_COLLECTION
     ) {
-      geometries = /** @type {GeometryCollection} */ (geometry).getGeometriesArray();
+      geometries = /** @type {GeometryCollection} */ (
+        geometry
+      ).getGeometriesArray();
     } else {
       geometries = [geometry];
     }

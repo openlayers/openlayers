@@ -6,9 +6,11 @@
  * @return {?} Any return.
  */
 export function abstract() {
-  return /** @type {?} */ ((function () {
-    throw new Error('Unimplemented abstract method.');
-  })());
+  return /** @type {?} */ (
+    (function () {
+      throw new Error('Unimplemented abstract method.');
+    })()
+  );
 }
 
 /**

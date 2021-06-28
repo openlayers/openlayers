@@ -96,9 +96,9 @@ class BaseTileLayer extends Layer {
    * @api
    */
   getUseInterimTilesOnError() {
-    return /** @type {boolean} */ (this.get(
-      TileProperty.USE_INTERIM_TILES_ON_ERROR
-    ));
+    return /** @type {boolean} */ (
+      this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR)
+    );
   }
 
   /**

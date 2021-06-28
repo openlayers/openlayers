@@ -571,7 +571,9 @@ class CanvasImmediateRenderer extends VectorContext {
         break;
       case GeometryType.MULTI_LINE_STRING:
         this.drawMultiLineString(
-          /** @type {import("../../geom/MultiLineString.js").default} */ (geometry)
+          /** @type {import("../../geom/MultiLineString.js").default} */ (
+            geometry
+          )
         );
         break;
       case GeometryType.MULTI_POLYGON:
@@ -581,7 +583,9 @@ class CanvasImmediateRenderer extends VectorContext {
         break;
       case GeometryType.GEOMETRY_COLLECTION:
         this.drawGeometryCollection(
-          /** @type {import("../../geom/GeometryCollection.js").default} */ (geometry)
+          /** @type {import("../../geom/GeometryCollection.js").default} */ (
+            geometry
+          )
         );
         break;
       case GeometryType.CIRCLE:
@@ -633,10 +637,12 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawPoint(geometry) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/Point.js").default} */ (geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      ));
+      geometry = /** @type {import("../../geom/Point.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
     }
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
@@ -656,10 +662,12 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawMultiPoint(geometry) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/MultiPoint.js").default} */ (geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      ));
+      geometry = /** @type {import("../../geom/MultiPoint.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
     }
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
@@ -679,10 +687,12 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawLineString(geometry) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/LineString.js").default} */ (geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      ));
+      geometry = /** @type {import("../../geom/LineString.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
     }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
@@ -715,10 +725,13 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawMultiLineString(geometry) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      ));
+      geometry =
+        /** @type {import("../../geom/MultiLineString.js").default} */ (
+          geometry.simplifyTransformed(
+            this.squaredTolerance_,
+            this.userTransform_
+          )
+        );
     }
     const geometryExtent = geometry.getExtent();
     if (!intersects(this.extent_, geometryExtent)) {
@@ -757,10 +770,12 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawPolygon(geometry) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/Polygon.js").default} */ (geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      ));
+      geometry = /** @type {import("../../geom/Polygon.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
     }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
@@ -800,10 +815,12 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawMultiPolygon(geometry) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      ));
+      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
     }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
@@ -932,7 +949,9 @@ class CanvasImmediateRenderer extends VectorContext {
     if (!contextTextState) {
       context.font = textState.font;
       context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
-      context.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
+      context.textBaseline = /** @type {CanvasTextBaseline} */ (
+        textState.textBaseline
+      );
       this.contextTextState_ = {
         font: textState.font,
         textAlign: textAlign,
@@ -948,8 +967,12 @@ class CanvasImmediateRenderer extends VectorContext {
         context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
       }
       if (contextTextState.textBaseline != textState.textBaseline) {
-        contextTextState.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
-        context.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
+        contextTextState.textBaseline = /** @type {CanvasTextBaseline} */ (
+          textState.textBaseline
+        );
+        context.textBaseline = /** @type {CanvasTextBaseline} */ (
+          textState.textBaseline
+        );
       }
     }
   }
@@ -1082,7 +1105,8 @@ class CanvasImmediateRenderer extends VectorContext {
         const textStrokeStyleColor = textStrokeStyle.getColor();
         const textStrokeStyleLineCap = textStrokeStyle.getLineCap();
         const textStrokeStyleLineDash = textStrokeStyle.getLineDash();
-        const textStrokeStyleLineDashOffset = textStrokeStyle.getLineDashOffset();
+        const textStrokeStyleLineDashOffset =
+          textStrokeStyle.getLineDashOffset();
         const textStrokeStyleLineJoin = textStrokeStyle.getLineJoin();
         const textStrokeStyleWidth = textStrokeStyle.getWidth();
         const textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();

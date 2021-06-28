@@ -264,7 +264,8 @@ class Layer extends BaseLayer {
         map,
         RenderEventType.PRECOMPOSE,
         function (evt) {
-          const renderEvent = /** @type {import("../render/Event.js").default} */ (evt);
+          const renderEvent =
+            /** @type {import("../render/Event.js").default} */ (evt);
           const layerStatesArray = renderEvent.frameState.layerStatesArray;
           const layerState = this.getLayerState(false);
           // A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.

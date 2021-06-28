@@ -113,7 +113,10 @@ class ImageWMS extends ImageSource {
      * @private
      * @type {import("./WMSServerType.js").default|undefined}
      */
-    this.serverType_ = /** @type {import("./WMSServerType.js").default|undefined} */ (options.serverType);
+    this.serverType_ =
+      /** @type {import("./WMSServerType.js").default|undefined} */ (
+        options.serverType
+      );
 
     /**
      * @private

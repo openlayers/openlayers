@@ -156,9 +156,9 @@ class BaseLayer extends BaseObject {
    * @api
    */
   getExtent() {
-    return /** @type {import("../extent.js").Extent|undefined} */ (this.get(
-      LayerProperty.EXTENT
-    ));
+    return /** @type {import("../extent.js").Extent|undefined} */ (
+      this.get(LayerProperty.EXTENT)
+    );
   }
 
   /**

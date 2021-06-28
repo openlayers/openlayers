@@ -13,8 +13,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new BingMaps({
-        key:
-          'ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp ',
+        key: 'ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp ',
         imagerySet: 'RoadOnDemand',
       }),
     }),

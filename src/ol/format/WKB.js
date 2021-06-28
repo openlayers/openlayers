@@ -315,7 +315,9 @@ class WkbReader {
       case WKBGeometryType.POLYGON:
       case WKBGeometryType.TRIANGLE:
         return new Polygon(
-          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (result),
+          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (
+            result
+          ),
           this.layout_
         );
 
@@ -327,7 +329,9 @@ class WkbReader {
 
       case WKBGeometryType.MULTI_LINE_STRING:
         return new MultiLineString(
-          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (result),
+          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (
+            result
+          ),
           this.layout_
         );
 
@@ -335,7 +339,9 @@ class WkbReader {
       case WKBGeometryType.POLYHEDRAL_SURFACE:
       case WKBGeometryType.TIN:
         return new MultiPolygon(
-          /** @type {Array<Array<Array<import('../coordinate.js').Coordinate>>>} */ (result),
+          /** @type {Array<Array<Array<import('../coordinate.js').Coordinate>>>} */ (
+            result
+          ),
           this.layout_
         );
 

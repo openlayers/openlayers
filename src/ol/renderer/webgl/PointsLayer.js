@@ -526,7 +526,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     let hitColor;
     for (const featureUid in this.featureCache_) {
       featureCache = this.featureCache_[featureUid];
-      geometry = /** @type {import("../../geom").Point} */ (featureCache.geometry);
+      geometry = /** @type {import("../../geom").Point} */ (
+        featureCache.geometry
+      );
       if (!geometry || geometry.getType() !== GeometryType.POINT) {
         continue;
       }

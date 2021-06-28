@@ -192,13 +192,18 @@ class CanvasTextBuilder extends CanvasBuilder {
       if (geometryType == GeometryType.LINE_STRING) {
         ends = [flatCoordinates.length];
       } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
-        ends = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getEnds();
+        ends = /** @type {import("../../geom/MultiLineString.js").default} */ (
+          geometry
+        ).getEnds();
       } else if (geometryType == GeometryType.POLYGON) {
         ends = /** @type {import("../../geom/Polygon.js").default} */ (geometry)
           .getEnds()
           .slice(0, 1);
       } else if (geometryType == GeometryType.MULTI_POLYGON) {
-        const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getEndss();
+        const endss =
+          /** @type {import("../../geom/MultiPolygon.js").default} */ (
+            geometry
+          ).getEndss();
         ends = [];
         for (let i = 0, ii = endss.length; i < ii; ++i) {
           ends.push(endss[i][0]);
@@ -236,27 +241,45 @@ class CanvasTextBuilder extends CanvasBuilder {
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
-          flatCoordinates = /** @type {import("../../geom/MultiPoint.js").default} */ (geometry).getFlatCoordinates();
+          flatCoordinates =
+            /** @type {import("../../geom/MultiPoint.js").default} */ (
+              geometry
+            ).getFlatCoordinates();
           break;
         case GeometryType.LINE_STRING:
-          flatCoordinates = /** @type {import("../../geom/LineString.js").default} */ (geometry).getFlatMidpoint();
+          flatCoordinates =
+            /** @type {import("../../geom/LineString.js").default} */ (
+              geometry
+            ).getFlatMidpoint();
           break;
         case GeometryType.CIRCLE:
-          flatCoordinates = /** @type {import("../../geom/Circle.js").default} */ (geometry).getCenter();
+          flatCoordinates =
+            /** @type {import("../../geom/Circle.js").default} */ (
+              geometry
+            ).getCenter();
           break;
         case GeometryType.MULTI_LINE_STRING:
-          flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
+          flatCoordinates =
+            /** @type {import("../../geom/MultiLineString.js").default} */ (
+              geometry
+            ).getFlatMidpoints();
           stride = 2;
           break;
         case GeometryType.POLYGON:
-          flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
+          flatCoordinates =
+            /** @type {import("../../geom/Polygon.js").default} */ (
+              geometry
+            ).getFlatInteriorPoint();
           if (!textState.overflow) {
             geometryWidths.push(flatCoordinates[2] / this.resolution);
           }
           stride = 3;
           break;
         case GeometryType.MULTI_POLYGON:
-          const interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
+          const interiorPoints =
+            /** @type {import("../../geom/MultiPolygon.js").default} */ (
+              geometry
+            ).getFlatInteriorPoints();
           flatCoordinates = [];
           for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
             if (!textState.overflow) {

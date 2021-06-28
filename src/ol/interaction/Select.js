@@ -295,8 +295,9 @@ class Select extends Interaction {
    * @api
    */
   getLayer(feature) {
-    return /** @type {import('../layer/Vector.js').default} */ (this
-      .featureLayerAssociation_[getUid(feature)]);
+    return /** @type {import('../layer/Vector.js').default} */ (
+      this.featureLayerAssociation_[getUid(feature)]
+    );
   }
 
   /**

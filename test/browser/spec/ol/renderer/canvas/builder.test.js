@@ -353,14 +353,7 @@ describe('ol.render.canvas.Builder', function () {
       const flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
       replay.appendFlatLineCoordinates(flat, 0, flat.length, 2, true, true);
       expect(replay.coordinates).to.eql([
-        110,
-        45,
-        110,
-        -45,
-        -110,
-        -45,
-        -110,
-        45,
+        110, 45, 110, -45, -110, -45, -110, 45,
       ]);
     });
 

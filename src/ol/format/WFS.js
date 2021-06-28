@@ -1034,10 +1034,9 @@ function writeQuery(node, featureType, objectStack) {
   if (featureNS) {
     node.setAttributeNS(XMLNS, 'xmlns:' + featurePrefix, featureNS);
   }
-  const item = /** @type {import("../xml.js").NodeStackItem} */ (assign(
-    {},
-    context
-  ));
+  const item = /** @type {import("../xml.js").NodeStackItem} */ (
+    assign({}, context)
+  );
   item.node = node;
   pushSerializeAndPop(
     item,
@@ -1348,10 +1347,9 @@ export function writeFilter(filter, opt_version) {
  */
 function writeGetFeature(node, featureTypes, objectStack) {
   const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const item = /** @type {import("../xml.js").NodeStackItem} */ (assign(
-    {},
-    context
-  ));
+  const item = /** @type {import("../xml.js").NodeStackItem} */ (
+    assign({}, context)
+  );
   item.node = node;
   pushSerializeAndPop(
     item,

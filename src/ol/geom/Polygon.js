@@ -91,7 +91,9 @@ class Polygon extends SimpleGeometry {
       this.ends_ = opt_ends;
     } else {
       this.setCoordinates(
-        /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates),
+        /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (
+          coordinates
+        ),
         opt_layout
       );
     }

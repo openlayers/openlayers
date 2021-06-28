@@ -185,7 +185,9 @@ class Draw extends PointerInteraction {
    * @param {Options} options Options.
    */
   constructor(options) {
-    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
+      options
+    );
     if (!pointerOptions.stopDown) {
       pointerOptions.stopDown = FALSE;
     }
@@ -255,7 +257,9 @@ class Draw extends PointerInteraction {
      * @type {import("../geom/GeometryType.js").default}
      * @private
      */
-    this.type_ = /** @type {import("../geom/GeometryType.js").default} */ (options.type);
+    this.type_ = /** @type {import("../geom/GeometryType.js").default} */ (
+      options.type
+    );
 
     /**
      * Drawing mode (derived from geometry type.

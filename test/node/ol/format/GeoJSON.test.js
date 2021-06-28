@@ -358,12 +358,10 @@ describe('ol/format/GeoJSON.js', function () {
       const firstGeom = first.getGeometry();
       expect(firstGeom).to.be.a(Polygon);
       expect(
-        equals(firstGeom.getExtent(), [
-          60.52843,
-          29.318572,
-          75.158028,
-          38.486282,
-        ])
+        equals(
+          firstGeom.getExtent(),
+          [60.52843, 29.318572, 75.158028, 38.486282]
+        )
       ).to.be(true);
 
       const last = result[178];
@@ -373,12 +371,10 @@ describe('ol/format/GeoJSON.js', function () {
       const lastGeom = last.getGeometry();
       expect(lastGeom).to.be.a(Polygon);
       expect(
-        equals(lastGeom.getExtent(), [
-          25.264226,
-          -22.271612,
-          32.849861,
-          -15.507787,
-        ])
+        equals(
+          lastGeom.getExtent(),
+          [25.264226, -22.271612, 32.849861, -15.507787]
+        )
       ).to.be(true);
     });
 

@@ -15,8 +15,7 @@ describe('ol.VectorTile', function () {
     const loader = tile.loader_;
     listen(tile, 'change', function (e) {
       expect(tile.getFeatures()[0].getGeometry().getFlatCoordinates()).to.eql([
-        -9724792.346778862,
-        4164041.638405114,
+        -9724792.346778862, 4164041.638405114,
       ]);
       done();
     });

@@ -138,7 +138,9 @@ class GeoJSON extends JSONFeature {
     /** @type {Array<import("../Feature.js").default>} */
     let features = null;
     if (geoJSONObject['type'] === 'FeatureCollection') {
-      const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
+      const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (
+        object
+      );
       features = [];
       const geoJSONFeatures = geoJSONFeatureCollection['features'];
       for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {

@@ -474,7 +474,9 @@ class VectorSource extends Source {
         if (!modifyingCollection) {
           modifyingCollection = true;
           this.addFeature(
-            /** @type {import("../Feature.js").default<Geometry>} */ (evt.element)
+            /** @type {import("../Feature.js").default<Geometry>} */ (
+              evt.element
+            )
           );
           modifyingCollection = false;
         }
@@ -489,7 +491,9 @@ class VectorSource extends Source {
         if (!modifyingCollection) {
           modifyingCollection = true;
           this.removeFeature(
-            /** @type {import("../Feature.js").default<Geometry>} */ (evt.element)
+            /** @type {import("../Feature.js").default<Geometry>} */ (
+              evt.element
+            )
           );
           modifyingCollection = false;
         }
@@ -668,7 +672,9 @@ class VectorSource extends Source {
         extend(features, getValues(this.nullGeometryFeatures_));
       }
     }
-    return /** @type {Array<import("../Feature.js").default<Geometry>>} */ (features);
+    return /** @type {Array<import("../Feature.js").default<Geometry>>} */ (
+      features
+    );
   }
 
   /**
@@ -838,7 +844,9 @@ class VectorSource extends Source {
    * @private
    */
   handleFeatureChange_(event) {
-    const feature = /** @type {import("../Feature.js").default<Geometry>} */ (event.target);
+    const feature = /** @type {import("../Feature.js").default<Geometry>} */ (
+      event.target
+    );
     const featureKey = getUid(feature);
     const geometry = feature.getGeometry();
     if (!geometry) {

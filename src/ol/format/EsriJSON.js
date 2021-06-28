@@ -166,9 +166,9 @@ class EsriJSON extends JSONFeature {
       object['spatialReference'] &&
       object['spatialReference']['wkid'] !== undefined
     ) {
-      const spatialReference = /** @type {EsriJSONSpatialReferenceWkid} */ (object[
-        'spatialReference'
-      ]);
+      const spatialReference = /** @type {EsriJSONSpatialReferenceWkid} */ (
+        object['spatialReference']
+      );
       const crs = spatialReference.wkid;
       return getProjection('EPSG:' + crs);
     } else {
@@ -211,11 +211,10 @@ class EsriJSON extends JSONFeature {
         opt_options &&
         (opt_options.dataProjection || opt_options.featureProjection);
       if (projection) {
-        object['geometry'][
-          'spatialReference'
-        ] = /** @type {EsriJSONSpatialReferenceWkid} */ ({
-          wkid: Number(getProjection(projection).getCode().split(':').pop()),
-        });
+        object['geometry']['spatialReference'] =
+          /** @type {EsriJSONSpatialReferenceWkid} */ ({
+            wkid: Number(getProjection(projection).getCode().split(':').pop()),
+          });
       }
       delete properties[feature.getGeometryName()];
     }
@@ -506,9 +505,9 @@ function writePolygonGeometry(polygon, opt_options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    rings: /** @type {Array<Array<EsriJSONPosition>>} */ (polygon.getCoordinates(
-      false
-    )),
+    rings: /** @type {Array<Array<EsriJSONPosition>>} */ (
+      polygon.getCoordinates(false)
+    ),
   };
 }
 
@@ -522,7 +521,9 @@ function writeMultiLineStringGeometry(multiLineString, opt_options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    paths: /** @type {Array<Array<EsriJSONPosition>>} */ (multiLineString.getCoordinates()),
+    paths: /** @type {Array<Array<EsriJSONPosition>>} */ (
+      multiLineString.getCoordinates()
+    ),
   };
 }
 
@@ -536,7 +537,9 @@ function writeMultiPointGeometry(multiPoint, opt_options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    points: /** @type {Array<EsriJSONPosition>} */ (multiPoint.getCoordinates()),
+    points: /** @type {Array<EsriJSONPosition>} */ (
+      multiPoint.getCoordinates()
+    ),
   };
 }
 

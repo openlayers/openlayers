@@ -117,9 +117,8 @@ class SimpleGeometry extends Geometry {
       return this;
     }
 
-    const simplifiedGeometry = this.getSimplifiedGeometryInternal(
-      squaredTolerance
-    );
+    const simplifiedGeometry =
+      this.getSimplifiedGeometryInternal(squaredTolerance);
     const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
     if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
       return simplifiedGeometry;

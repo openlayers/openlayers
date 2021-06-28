@@ -247,8 +247,9 @@ class ZoomSlider extends Control {
    */
   handleDraggerStart_(event) {
     if (!this.dragging_ && event.target === this.element.firstElementChild) {
-      const element = /** @type {HTMLElement} */ (this.element
-        .firstElementChild);
+      const element = /** @type {HTMLElement} */ (
+        this.element.firstElementChild
+      );
       this.getMap().getView().beginInteraction();
       this.startX_ = event.clientX - parseFloat(element.style.left);
       this.startY_ = event.clientY - parseFloat(element.style.top);
@@ -277,9 +278,8 @@ class ZoomSlider extends Control {
       const deltaX = event.clientX - this.startX_;
       const deltaY = event.clientY - this.startY_;
       const relativePosition = this.getRelativePosition_(deltaX, deltaY);
-      this.currentResolution_ = this.getResolutionForPosition_(
-        relativePosition
-      );
+      this.currentResolution_ =
+        this.getResolutionForPosition_(relativePosition);
       this.getMap().getView().setResolution(this.currentResolution_);
     }
   }

@@ -1018,9 +1018,8 @@ describe('ol.Map', function () {
 
       it('gets coordinates in view projection', function (done) {
         map.renderSync();
-        const coordinateMercator = map.getCoordinateFromPixelInternal(
-          screenCenter
-        );
+        const coordinateMercator =
+          map.getCoordinateFromPixelInternal(screenCenter);
         expect(coordinateMercator[0]).to.roughlyEqual(centerMercator[0], 1e-5);
         expect(coordinateMercator[1]).to.roughlyEqual(centerMercator[1], 1e-5);
         done();

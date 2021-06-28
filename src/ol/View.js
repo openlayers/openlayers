@@ -895,9 +895,9 @@ class View extends BaseObject {
    * @return {import("./coordinate.js").Coordinate|undefined} The center of the view.
    */
   getCenterInternal() {
-    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(
-      ViewProperty.CENTER
-    ));
+    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (
+      this.get(ViewProperty.CENTER)
+    );
   }
 
   /**
@@ -950,7 +950,9 @@ class View extends BaseObject {
    */
   calculateExtentInternal(opt_size) {
     const size = opt_size || this.getViewportSizeMinusPadding_();
-    const center = /** @type {!import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
+    const center = /** @type {!import("./coordinate.js").Coordinate} */ (
+      this.getCenterInternal()
+    );
     assert(center, 1); // The view center is not defined
     const resolution = /** @type {!number} */ (this.getResolution());
     assert(resolution !== undefined, 2); // The view resolution is not defined
@@ -984,9 +986,9 @@ class View extends BaseObject {
    * @api
    */
   getMaxZoom() {
-    return /** @type {number} */ (this.getZoomForResolution(
-      this.minResolution_
-    ));
+    return /** @type {number} */ (
+      this.getZoomForResolution(this.minResolution_)
+    );
   }
 
   /**
@@ -1004,9 +1006,9 @@ class View extends BaseObject {
    * @api
    */
   getMinZoom() {
-    return /** @type {number} */ (this.getZoomForResolution(
-      this.maxResolution_
-    ));
+    return /** @type {number} */ (
+      this.getZoomForResolution(this.maxResolution_)
+    );
   }
 
   /**
@@ -1166,7 +1168,9 @@ class View extends BaseObject {
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
     const rotation = this.getRotation();
-    let center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenterInternal());
+    let center = /** @type {import("./coordinate.js").Coordinate} */ (
+      this.getCenterInternal()
+    );
     const padding = this.padding_;
     if (padding) {
       const reducedSize = this.getViewportSizeMinusPadding_();
@@ -1290,9 +1294,11 @@ class View extends BaseObject {
     } else {
       const userProjection = getUserProjection();
       if (userProjection) {
-        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometryOrExtent
-          .clone()
-          .transform(userProjection, this.getProjection()));
+        geometry = /** @type {import("./geom/SimpleGeometry.js").default} */ (
+          geometryOrExtent
+            .clone()
+            .transform(userProjection, this.getProjection())
+        );
       } else {
         geometry = geometryOrExtent;
       }

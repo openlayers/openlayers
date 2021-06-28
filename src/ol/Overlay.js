@@ -191,7 +191,9 @@ class Overlay extends BaseObject {
 
     this.setPositioning(
       options.positioning !== undefined
-        ? /** @type {import("./OverlayPositioning.js").default} */ (options.positioning)
+        ? /** @type {import("./OverlayPositioning.js").default} */ (
+            options.positioning
+          )
         : OverlayPositioning.TOP_LEFT
     );
 
@@ -227,9 +229,9 @@ class Overlay extends BaseObject {
    * @api
    */
   getMap() {
-    return /** @type {import("./PluggableMap.js").default|undefined} */ (this.get(
-      Property.MAP
-    ));
+    return /** @type {import("./PluggableMap.js").default|undefined} */ (
+      this.get(Property.MAP)
+    );
   }
 
   /**
@@ -250,9 +252,9 @@ class Overlay extends BaseObject {
    * @api
    */
   getPosition() {
-    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(
-      Property.POSITION
-    ));
+    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (
+      this.get(Property.POSITION)
+    );
   }
 
   /**
@@ -263,9 +265,9 @@ class Overlay extends BaseObject {
    * @api
    */
   getPositioning() {
-    return /** @type {import("./OverlayPositioning.js").default} */ (this.get(
-      Property.POSITIONING
-    ));
+    return /** @type {import("./OverlayPositioning.js").default} */ (
+      this.get(Property.POSITIONING)
+    );
   }
 
   /**
@@ -440,9 +442,9 @@ class Overlay extends BaseObject {
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
-        const center = /** @type {import("./coordinate.js").Coordinate} */ (map
-          .getView()
-          .getCenterInternal());
+        const center = /** @type {import("./coordinate.js").Coordinate} */ (
+          map.getView().getCenterInternal()
+        );
         const centerPx = map.getPixelFromCoordinateInternal(center);
         if (!centerPx) {
           return;

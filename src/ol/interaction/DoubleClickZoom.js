@@ -46,7 +46,9 @@ class DoubleClickZoom extends Interaction {
   handleEvent(mapBrowserEvent) {
     let stopEvent = false;
     if (mapBrowserEvent.type == MapBrowserEventType.DBLCLICK) {
-      const browserEvent = /** @type {MouseEvent} */ (mapBrowserEvent.originalEvent);
+      const browserEvent = /** @type {MouseEvent} */ (
+        mapBrowserEvent.originalEvent
+      );
       const map = mapBrowserEvent.map;
       const anchor = mapBrowserEvent.coordinate;
       const delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;

@@ -157,9 +157,9 @@ class CartoDB extends XYZ {
     if (!client.status || (client.status >= 200 && client.status < 300)) {
       let response;
       try {
-        response = /** @type {CartoDBLayerInfo} */ (JSON.parse(
-          client.responseText
-        ));
+        response = /** @type {CartoDBLayerInfo} */ (
+          JSON.parse(client.responseText)
+        );
       } catch (err) {
         this.setState(SourceState.ERROR);
         return;
