@@ -94,41 +94,11 @@ describe('ol/geom/flat/reverse.js', function () {
 
       it('can reverse four flat coordinates', function () {
         const flatCoordinates = [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
         ];
         reverseCoordinates(flatCoordinates, 0, flatCoordinates.length, 4);
         expect(flatCoordinates).to.eql([
-          13,
-          14,
-          15,
-          16,
-          9,
-          10,
-          11,
-          12,
-          5,
-          6,
-          7,
-          8,
-          1,
-          2,
-          3,
-          4,
+          13, 14, 15, 16, 9, 10, 11, 12, 5, 6, 7, 8, 1, 2, 3, 4,
         ]);
       });
     });

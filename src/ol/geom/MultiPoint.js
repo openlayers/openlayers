@@ -31,7 +31,9 @@ class MultiPoint extends SimpleGeometry {
       );
     } else {
       this.setCoordinates(
-        /** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates),
+        /** @type {Array<import("../coordinate.js").Coordinate>} */ (
+          coordinates
+        ),
         opt_layout
       );
     }

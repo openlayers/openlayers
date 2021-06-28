@@ -90,20 +90,26 @@ export function getLength(geometry, opt_options) {
     }
     case GeometryType.LINE_STRING:
     case GeometryType.LINEAR_RING: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
+      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
+        geometry
+      ).getCoordinates();
       length = getLengthInternal(coordinates, radius);
       break;
     }
     case GeometryType.MULTI_LINE_STRING:
     case GeometryType.POLYGON: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
+      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
+        geometry
+      ).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         length += getLengthInternal(coordinates[i], radius);
       }
       break;
     }
     case GeometryType.MULTI_POLYGON: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
+      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
+        geometry
+      ).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
         for (j = 0, jj = coords.length; j < jj; ++j) {
@@ -113,7 +119,10 @@ export function getLength(geometry, opt_options) {
       break;
     }
     case GeometryType.GEOMETRY_COLLECTION: {
-      const geometries = /** @type {import("./geom/GeometryCollection.js").default} */ (geometry).getGeometries();
+      const geometries =
+        /** @type {import("./geom/GeometryCollection.js").default} */ (
+          geometry
+        ).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         length += getLength(geometries[i], opt_options);
       }
@@ -186,7 +195,9 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.POLYGON: {
-      coordinates = /** @type {import("./geom/Polygon.js").default} */ (geometry).getCoordinates();
+      coordinates = /** @type {import("./geom/Polygon.js").default} */ (
+        geometry
+      ).getCoordinates();
       area = Math.abs(getAreaInternal(coordinates[0], radius));
       for (i = 1, ii = coordinates.length; i < ii; ++i) {
         area -= Math.abs(getAreaInternal(coordinates[i], radius));
@@ -194,7 +205,9 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.MULTI_POLYGON: {
-      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (geometry).getCoordinates();
+      coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
+        geometry
+      ).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
         area += Math.abs(getAreaInternal(coords[0], radius));
@@ -205,7 +218,10 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.GEOMETRY_COLLECTION: {
-      const geometries = /** @type {import("./geom/GeometryCollection.js").default} */ (geometry).getGeometries();
+      const geometries =
+        /** @type {import("./geom/GeometryCollection.js").default} */ (
+          geometry
+        ).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         area += getArea(geometries[i], opt_options);
       }

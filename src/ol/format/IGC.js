@@ -22,7 +22,8 @@ const IGCZ = {
  * @const
  * @type {RegExp}
  */
-const B_RECORD_RE = /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
+const B_RECORD_RE =
+  /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
 /**
  * @const

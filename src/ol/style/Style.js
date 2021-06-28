@@ -213,7 +213,9 @@ class Style {
   clone() {
     let geometry = this.getGeometry();
     if (geometry && typeof geometry === 'object') {
-      geometry = /** @type {import("../geom/Geometry.js").default} */ (geometry).clone();
+      geometry = /** @type {import("../geom/Geometry.js").default} */ (
+        geometry
+      ).clone();
     }
     return new Style({
       geometry: geometry,
@@ -361,9 +363,9 @@ class Style {
       this.geometryFunction_ = geometry;
     } else if (typeof geometry === 'string') {
       this.geometryFunction_ = function (feature) {
-        return /** @type {import("../geom/Geometry.js").default} */ (feature.get(
-          geometry
-        ));
+        return /** @type {import("../geom/Geometry.js").default} */ (
+          feature.get(geometry)
+        );
       };
     } else if (!geometry) {
       this.geometryFunction_ = defaultGeometryFunction;

@@ -139,10 +139,7 @@ describe('ol.format.WFS', function () {
       expect(feature.getId()).to.equal('1');
       expect(feature.get('name')).to.equal('My Polygon with hole');
       expect(feature.get('boundedBy')).to.eql([
-        47.003018,
-        -0.768746,
-        47.925567,
-        0.532597,
+        47.003018, -0.768746, 47.925567, 0.532597,
       ]);
       expect(feature.getGeometry()).to.be.an(MultiPolygon);
       expect(feature.getGeometry().getFlatCoordinates()).to.have.length(60);
@@ -205,10 +202,7 @@ describe('ol.format.WFS', function () {
     });
     it('returns the correct bounds', function () {
       expect(response.bounds).to.eql([
-        3197.88,
-        306457.313,
-        280339.156,
-        613850.438,
+        3197.88, 306457.313, 280339.156, 613850.438,
       ]);
     });
   });

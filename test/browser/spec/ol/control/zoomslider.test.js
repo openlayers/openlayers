@@ -47,9 +47,8 @@ describe('ol.control.ZoomSlider', function () {
       const zoomSliderContainer = zoomSliderContainers[0];
       expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
-      let hasUnselectableCls = zoomSliderContainer.classList.contains(
-        'ol-unselectable'
-      );
+      let hasUnselectableCls =
+        zoomSliderContainer.classList.contains('ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
 
       const zoomSliderThumbs = zoomSliderContainer.querySelectorAll(
@@ -60,9 +59,8 @@ describe('ol.control.ZoomSlider', function () {
       const zoomSliderThumb = zoomSliderThumbs[0];
       expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
 
-      hasUnselectableCls = zoomSliderThumb.classList.contains(
-        'ol-unselectable'
-      );
+      hasUnselectableCls =
+        zoomSliderThumb.classList.contains('ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
     });
   });

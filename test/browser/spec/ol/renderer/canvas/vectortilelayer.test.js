@@ -385,9 +385,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
       target.style.height = '100px';
       document.body.appendChild(target);
       const extent = [
-        1824704.739223726,
-        6141868.096770482,
-        1827150.7241288517,
+        1824704.739223726, 6141868.096770482, 1827150.7241288517,
         6144314.081675608,
       ];
       const source = new VectorTileSource({

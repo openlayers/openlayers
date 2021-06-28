@@ -86,7 +86,9 @@ class KeyboardPan extends Interaction {
   handleEvent(mapBrowserEvent) {
     let stopEvent = false;
     if (mapBrowserEvent.type == EventType.KEYDOWN) {
-      const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
+      const keyEvent = /** @type {KeyboardEvent} */ (
+        mapBrowserEvent.originalEvent
+      );
       const keyCode = keyEvent.keyCode;
       if (
         this.condition_(mapBrowserEvent) &&

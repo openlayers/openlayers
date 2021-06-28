@@ -195,7 +195,10 @@ function renderFeatureInternal(
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
   if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-    const geometries = /** @type {import("../geom/GeometryCollection.js").default} */ (geometry).getGeometries();
+    const geometries =
+      /** @type {import("../geom/GeometryCollection.js").default} */ (
+        geometry
+      ).getGeometries();
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       renderGeometry(replayGroup, geometries[i], style, feature);
     }

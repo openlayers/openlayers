@@ -19,9 +19,7 @@ describe('ol.layer.Graticule', function () {
     it('creates a graticule without labels', function () {
       createGraticule();
       const extent = [
-        -25614353.926475704,
-        -7827151.696402049,
-        25614353.926475704,
+        -25614353.926475704, -7827151.696402049, 25614353.926475704,
         7827151.696402049,
       ];
       const projection = getProjection('EPSG:3857');
@@ -45,9 +43,7 @@ describe('ol.layer.Graticule', function () {
         layers: [graticule],
       });
       const extent = [
-        -25614353.926475704,
-        -7827151.696402049,
-        25614353.926475704,
+        -25614353.926475704, -7827151.696402049, 25614353.926475704,
         7827151.696402049,
       ];
       const projection = getProjection('EPSG:3857');
@@ -97,9 +93,7 @@ describe('ol.layer.Graticule', function () {
         layers: [graticule],
       });
       const extent = [
-        -25614353.926475704,
-        -7827151.696402049,
-        25614353.926475704,
+        -25614353.926475704, -7827151.696402049, 25614353.926475704,
         7827151.696402049,
       ];
       const projection = getProjection('EPSG:3857');
@@ -183,9 +177,7 @@ describe('ol.layer.Graticule', function () {
         latLabelStyle: latLabelStyle,
       });
       const extent = [
-        -25614353.926475704,
-        -7827151.696402049,
-        25614353.926475704,
+        -25614353.926475704, -7827151.696402049, 25614353.926475704,
         7827151.696402049,
       ];
       const projection = getProjection('EPSG:3857');
@@ -224,9 +216,7 @@ describe('ol.layer.Graticule', function () {
         layers: [graticule],
       });
       const extent = [
-        -25614353.926475704,
-        -7827151.696402049,
-        25614353.926475704,
+        -25614353.926475704, -7827151.696402049, 25614353.926475704,
         7827151.696402049,
       ];
       const projection = getProjection('EPSG:3857');

@@ -70,7 +70,9 @@ class KeyboardZoom extends Interaction {
       mapBrowserEvent.type == EventType.KEYDOWN ||
       mapBrowserEvent.type == EventType.KEYPRESS
     ) {
-      const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
+      const keyEvent = /** @type {KeyboardEvent} */ (
+        mapBrowserEvent.originalEvent
+      );
       const charCode = keyEvent.charCode;
       if (
         this.condition_(mapBrowserEvent) &&

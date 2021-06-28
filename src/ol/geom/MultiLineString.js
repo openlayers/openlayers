@@ -54,7 +54,9 @@ class MultiLineString extends SimpleGeometry {
 
     if (Array.isArray(coordinates[0])) {
       this.setCoordinates(
-        /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates),
+        /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (
+          coordinates
+        ),
         opt_layout
       );
     } else if (opt_layout !== undefined && opt_ends) {

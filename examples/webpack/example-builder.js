@@ -13,7 +13,8 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
 const importRegEx = /^import .* from '(.*)';$/;
-const isTemplateJs = /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
+const isTemplateJs =
+  /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
 const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
 
 let cachedPackageInfo = null;

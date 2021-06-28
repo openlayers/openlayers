@@ -138,7 +138,9 @@ class LayerGroup extends BaseLayer {
    * @private
    */
   handleLayersAdd_(collectionEvent) {
-    const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
+    const layer = /** @type {import("./Base.js").default} */ (
+      collectionEvent.element
+    );
     this.listenerKeys_[getUid(layer)] = [
       listen(
         layer,
@@ -156,7 +158,9 @@ class LayerGroup extends BaseLayer {
    * @private
    */
   handleLayersRemove_(collectionEvent) {
-    const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
+    const layer = /** @type {import("./Base.js").default} */ (
+      collectionEvent.element
+    );
     const key = getUid(layer);
     this.listenerKeys_[key].forEach(unlistenByKey);
     delete this.listenerKeys_[key];
@@ -172,9 +176,9 @@ class LayerGroup extends BaseLayer {
    * @api
    */
   getLayers() {
-    return /** @type {!import("../Collection.js").default<import("./Base.js").default>} */ (this.get(
-      Property.LAYERS
-    ));
+    return /** @type {!import("../Collection.js").default<import("./Base.js").default>} */ (
+      this.get(Property.LAYERS)
+    );
   }
 
   /**

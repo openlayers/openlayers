@@ -14,8 +14,7 @@ const map = new Map({
     new VectorTileLayer({
       source: new VectorTileSource({
         format: new MVT(),
-        url:
-          'https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap/VectorTileServer/tile/{z}/{y}/{x}.pbf',
+        url: 'https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap/VectorTileServer/tile/{z}/{y}/{x}.pbf',
       }),
     }),
   ],

@@ -21,21 +21,18 @@ const sources = {
   landcover: new VectorTileSource({
     maxZoom: 9,
     format: new MVT(),
-    url:
-      'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
   }),
   contours: new VectorTileSource({
     minZoom: 9,
     maxZoom: 14,
     format: new MVT(),
-    url:
-      'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
   }),
   openmaptiles: new VectorTileSource({
     format: new MVT(),
     maxZoom: 14,
-    url:
-      'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
   }),
 };
 const layers = [];

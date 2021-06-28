@@ -126,22 +126,8 @@ describe('ol/array.js', function () {
 
     describe('default comparison on array of Number(s)', function () {
       const d = [
-        -897123.9,
-        -321434.58758,
-        -1321.3124,
-        -324,
-        -9,
-        -3,
-        0,
-        0,
-        0,
-        0.31255,
-        5,
-        142.88888708,
-        334,
-        342,
-        453,
-        54254,
+        -897123.9, -321434.58758, -1321.3124, -324, -9, -3, 0, 0, 0, 0.31255, 5,
+        142.88888708, 334, 342, 453, 54254,
       ];
       it('should find -897123.9 at index 0', function () {
         expect(binarySearch(d, -897123.9)).to.be(0);
@@ -187,22 +173,8 @@ describe('ol/array.js', function () {
 
     describe('custom comparison function, which reverse orders numbers', function () {
       const e = [
-        54254,
-        453,
-        342,
-        334,
-        142.88888708,
-        5,
-        0.31255,
-        0,
-        0,
-        0,
-        -3,
-        -9,
-        -324,
-        -1321.3124,
-        -321434.58758,
-        -897123.9,
+        54254, 453, 342, 334, 142.88888708, 5, 0.31255, 0, 0, 0, -3, -9, -324,
+        -1321.3124, -321434.58758, -897123.9,
       ];
       it('should find 54254 at index 0', function () {
         const pos = binarySearch(e, 54254, revNumCompare);

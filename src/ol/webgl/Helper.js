@@ -248,9 +248,8 @@ class WebGLHelper extends Disposable {
     this.boundHandleWebGLContextLost_ = this.handleWebGLContextLost.bind(this);
 
     /** @private */
-    this.boundHandleWebGLContextRestored_ = this.handleWebGLContextRestored.bind(
-      this
-    );
+    this.boundHandleWebGLContextRestored_ =
+      this.handleWebGLContextRestored.bind(this);
 
     /**
      * @private

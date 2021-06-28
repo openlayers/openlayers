@@ -70,7 +70,9 @@ class WMTS extends TileImage {
 
     const requestEncoding =
       options.requestEncoding !== undefined
-        ? /** @type {import("./WMTSRequestEncoding.js").default} */ (options.requestEncoding)
+        ? /** @type {import("./WMTSRequestEncoding.js").default} */ (
+            options.requestEncoding
+          )
         : WMTSRequestEncoding.KVP;
 
     // FIXME: should we create a default tileGrid?
@@ -293,8 +295,9 @@ class WMTS extends TileImage {
             return p.toLowerCase() in context ? context[p.toLowerCase()] : m;
           });
 
-    const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (this
-      .tileGrid);
+    const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (
+      this.tileGrid
+    );
     const dimensions = this.dimensions_;
 
     return (

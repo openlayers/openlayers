@@ -144,11 +144,13 @@ class Polyline extends TextFeature {
   writeGeometryText(geometry, opt_options) {
     geometry =
       /** @type {LineString} */
-      (transformGeometryWithOptions(
-        geometry,
-        true,
-        this.adaptOptions(opt_options)
-      ));
+      (
+        transformGeometryWithOptions(
+          geometry,
+          true,
+          this.adaptOptions(opt_options)
+        )
+      );
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);

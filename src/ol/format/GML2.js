@@ -77,7 +77,9 @@ class GML2 extends GMLBase {
    */
   readFlatCoordinates(node, objectStack) {
     const s = getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
-    const context = /** @type {import("../xml.js").NodeStackItem} */ (objectStack[0]);
+    const context = /** @type {import("../xml.js").NodeStackItem} */ (
+      objectStack[0]
+    );
     const containerSrs = context['srsName'];
     let axisOrientation = 'enu';
     if (containerSrs) {
@@ -181,7 +183,9 @@ class GML2 extends GMLBase {
     const multiCurve = context['multiCurve'];
     let nodeName;
     if (!Array.isArray(value)) {
-      nodeName = /** @type {import("../geom/Geometry.js").default} */ (value).getType();
+      nodeName = /** @type {import("../geom/Geometry.js").default} */ (
+        value
+      ).getType();
       if (nodeName === 'MultiPolygon' && multiSurface === true) {
         nodeName = 'MultiSurface';
       } else if (nodeName === 'Polygon' && surface === true) {
@@ -234,9 +238,8 @@ class GML2 extends GMLBase {
             }
           } else {
             if (!(key in context.serializers[featureNS])) {
-              context.serializers[featureNS][key] = makeChildAppender(
-                writeStringTextNode
-              );
+              context.serializers[featureNS][key] =
+                makeChildAppender(writeStringTextNode);
             }
           }
         }
@@ -324,9 +327,9 @@ class GML2 extends GMLBase {
    * @param {Array<*>} objectStack Node stack.
    */
   writeGeometryElement(node, geometry, objectStack) {
-    const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[
-      objectStack.length - 1
-    ]);
+    const context = /** @type {import("./Feature.js").WriteOptions} */ (
+      objectStack[objectStack.length - 1]
+    );
     const item = assign({}, context);
     item['node'] = node;
     let value;

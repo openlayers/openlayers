@@ -114,9 +114,9 @@ class TopoJSON extends JSONFeature {
           continue;
         }
         if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
-          feature = /** @type {TopoJSONGeometryCollection} */ (topoJSONFeatures[
-            objectName
-          ]);
+          feature = /** @type {TopoJSONGeometryCollection} */ (
+            topoJSONFeatures[objectName]
+          );
           features.push.apply(
             features,
             readFeaturesFromGeometryCollection(
@@ -130,9 +130,9 @@ class TopoJSON extends JSONFeature {
             )
           );
         } else {
-          feature = /** @type {TopoJSONGeometry} */ (topoJSONFeatures[
-            objectName
-          ]);
+          feature = /** @type {TopoJSONGeometry} */ (
+            topoJSONFeatures[objectName]
+          );
           features.push(
             readFeatureFromGeometry(
               feature,

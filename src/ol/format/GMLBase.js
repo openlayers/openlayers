@@ -238,9 +238,8 @@ class GMLBase extends XMLFeature {
   readGeometryElement(node, objectStack) {
     const context = /** @type {Object} */ (objectStack[0]);
     context['srsName'] = node.firstElementChild.getAttribute('srsName');
-    context['srsDimension'] = node.firstElementChild.getAttribute(
-      'srsDimension'
-    );
+    context['srsDimension'] =
+      node.firstElementChild.getAttribute('srsDimension');
     const geometry = pushParseAndPop(
       null,
       this.GEOMETRY_PARSERS,

@@ -5,9 +5,7 @@ describe('ol.source.ImageStatic', function () {
   let extent, pixelRatio, projection, resolution;
   beforeEach(function () {
     extent = [
-      -13637278.73946974,
-      4543799.13271362,
-      -13617443.330629736,
+      -13637278.73946974, 4543799.13271362, -13617443.330629736,
       4553927.038961405,
     ];
     pixelRatio = 1;
@@ -20,9 +18,7 @@ describe('ol.source.ImageStatic', function () {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067,
-          4539747.983913189,
-          -13619243.951739565,
+          -13629027.891360067, 4539747.983913189, -13619243.951739565,
           4559315.863154193,
         ],
         projection: projection,
@@ -43,9 +39,7 @@ describe('ol.source.ImageStatic', function () {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067,
-          4539747.983913189,
-          -13609460.012119063,
+          -13629027.891360067, 4539747.983913189, -13609460.012119063,
           4549531.923533691,
         ],
         projection: projection,
@@ -66,9 +60,7 @@ describe('ol.source.ImageStatic', function () {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067,
-          4539747.983913189,
-          -13619243.951739565,
+          -13629027.891360067, 4539747.983913189, -13619243.951739565,
           4559315.863154193,
         ],
         imageSize: [254, 254],
@@ -90,9 +82,7 @@ describe('ol.source.ImageStatic', function () {
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067,
-          4539747.983913189,
-          -13619243.951739565,
+          -13629027.891360067, 4539747.983913189, -13619243.951739565,
           4549531.923533691,
         ],
         projection: projection,

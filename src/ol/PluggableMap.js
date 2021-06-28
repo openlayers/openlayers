@@ -438,7 +438,9 @@ class PluggableMap extends BaseObject {
        * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
        */
       function (event) {
-        const overlay = /** @type {import("./Overlay.js").default} */ (event.element);
+        const overlay = /** @type {import("./Overlay.js").default} */ (
+          event.element
+        );
         const id = overlay.getId();
         if (id !== undefined) {
           delete this.overlayIdIndex_[id.toString()];
@@ -698,9 +700,9 @@ class PluggableMap extends BaseObject {
    * @api
    */
   getTarget() {
-    return /** @type {HTMLElement|string|undefined} */ (this.get(
-      MapProperty.TARGET
-    ));
+    return /** @type {HTMLElement|string|undefined} */ (
+      this.get(MapProperty.TARGET)
+    );
   }
 
   /**
@@ -825,7 +827,9 @@ class PluggableMap extends BaseObject {
     const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layer = layerStatesArray[i].layer;
-      const source = /** @type {import("./layer/Layer.js").default} */ (layer).getSource();
+      const source = /** @type {import("./layer/Layer.js").default} */ (
+        layer
+      ).getSource();
       if (source && source.loading) {
         return true;
       }
@@ -881,9 +885,9 @@ class PluggableMap extends BaseObject {
    * @api
    */
   getSize() {
-    return /** @type {import("./size.js").Size|undefined} */ (this.get(
-      MapProperty.SIZE
-    ));
+    return /** @type {import("./size.js").Size|undefined} */ (
+      this.get(MapProperty.SIZE)
+    );
   }
 
   /**
@@ -972,7 +976,9 @@ class PluggableMap extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    const originalEvent = /** @type {PointerEvent} */ (mapBrowserEvent.originalEvent);
+    const originalEvent = /** @type {PointerEvent} */ (
+      mapBrowserEvent.originalEvent
+    );
     const eventType = originalEvent.type;
     if (
       eventType === PointerEventType.POINTERDOWN ||

@@ -242,7 +242,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   updateExecutorGroup_(tile, pixelRatio, projection) {
-    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
+      this.getLayer()
+    );
     const revision = layer.getRevision();
     const renderOrder = layer.getRenderOrder() || null;
 
@@ -276,9 +278,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         continue;
       }
       const sourceTileCoord = sourceTile.tileCoord;
-      const sourceTileExtent = sourceTileGrid.getTileCoordExtent(
-        sourceTileCoord
-      );
+      const sourceTileExtent =
+        sourceTileGrid.getTileCoordExtent(sourceTileCoord);
       const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
       const builderExtent = buffer(
         sharedExtent,
@@ -443,8 +444,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       return undefined;
     };
 
-    const renderedTiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this
-      .renderedTiles);
+    const renderedTiles =
+      /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
+        this.renderedTiles
+      );
 
     let found;
     for (let i = 0, ii = renderedTiles.length; !found && i < ii; ++i) {
@@ -492,7 +495,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getFeatures(pixel) {
     return new Promise(
       function (resolve, reject) {
-        const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+        const layer =
+          /** @type {import("../../layer/VectorTile.js").default} */ (
+            this.getLayer()
+          );
         const layerUid = getUid(layer);
         const source = layer.getSource();
         const projection = this.renderedProjection;
@@ -607,8 +613,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
-    const tiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this
-      .renderedTiles);
+    const tiles =
+      /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
+        this.renderedTiles
+      );
     for (let i = 0, ii = tiles.length; i < ii; ++i) {
       const tile = tiles[i];
       const declutterExecutorGroups =
@@ -677,10 +685,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     this.renderQueuedTileImages_(hifi, frameState);
 
     super.renderFrame(frameState, target);
-    this.renderedPixelToCoordinateTransform_ = frameState.pixelToCoordinateTransform.slice();
+    this.renderedPixelToCoordinateTransform_ =
+      frameState.pixelToCoordinateTransform.slice();
     this.renderedRotation_ = frameState.viewState.rotation;
 
-    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
+      this.getLayer()
+    );
     const renderMode = layer.getRenderMode();
 
     const source = layer.getSource();
@@ -703,9 +714,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const clips = [];
     const clipZs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
-      const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[
-        i
-      ]);
+      const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
+        tiles[i]
+      );
       const transform = this.getTileRenderTransform(tile, frameState);
       const executorGroups = tile.executorGroups[getUid(layer)];
       let clipped = false;
@@ -834,7 +845,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   tileImageNeedsRender_(tile) {
-    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
+      this.getLayer()
+    );
     if (layer.getRenderMode() === VectorTileRenderType.VECTOR) {
       return false;
     }
@@ -853,7 +866,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   renderTileImage_(tile, frameState) {
-    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
+      this.getLayer()
+    );
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const executorGroups = tile.executorGroups[getUid(layer)];

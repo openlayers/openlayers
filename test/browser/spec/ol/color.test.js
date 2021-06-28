@@ -86,19 +86,13 @@ describe('ol.color', function () {
       expect(fromString('rgba(255, 255, 0, 0.0)')).to.eql([255, 255, 0, 0]);
       // opacity 0.0000000000000000 (float with 16 digits)
       expect(fromString('rgba(255, 255, 0, 0.0000000000000000)')).to.eql([
-        255,
-        255,
-        0,
-        0,
+        255, 255, 0, 0,
       ]);
       // opacity 0.1 (simple float)
       expect(fromString('rgba(255, 255, 0, 0.1)')).to.eql([255, 255, 0, 0.1]);
       // opacity 0.1111111111111111 (float with 16 digits)
       expect(fromString('rgba(255, 255, 0, 0.1111111111111111)')).to.eql([
-        255,
-        255,
-        0,
-        0.1111111111111111,
+        255, 255, 0, 0.1111111111111111,
       ]);
       // opacity 1
       expect(fromString('rgba(255, 255, 0, 1)')).to.eql([255, 255, 0, 1]);
@@ -106,10 +100,7 @@ describe('ol.color', function () {
       expect(fromString('rgba(255, 255, 0, 1.0)')).to.eql([255, 255, 0, 1]);
       // opacity 1.0000000000000000
       expect(fromString('rgba(255, 255, 0, 1.0000000000000000)')).to.eql([
-        255,
-        255,
-        0,
-        1,
+        255, 255, 0, 1,
       ]);
       // with 30 decimal digits
       expect(
@@ -118,9 +109,9 @@ describe('ol.color', function () {
     });
 
     it('ignores whitespace before, between & after numbers (rgba)', function () {
-      expect(
-        fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')
-      ).to.eql([0, 0, 255, 0.4711]);
+      expect(fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')).to.eql(
+        [0, 0, 255, 0.4711]
+      );
     });
 
     it('throws an error on invalid colors', function () {

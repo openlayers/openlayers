@@ -623,15 +623,15 @@ function parseExtensions(node, objectStack) {
 function parseRtePt(node, objectStack) {
   const values = pushParseAndPop({}, RTEPT_PARSERS, node, objectStack);
   if (values) {
-    const rteValues = /** @type {!Object} */ (objectStack[
-      objectStack.length - 1
-    ]);
-    const flatCoordinates = /** @type {Array<number>} */ (rteValues[
-      'flatCoordinates'
-    ]);
-    const layoutOptions = /** @type {LayoutOptions} */ (rteValues[
-      'layoutOptions'
-    ]);
+    const rteValues = /** @type {!Object} */ (
+      objectStack[objectStack.length - 1]
+    );
+    const flatCoordinates = /** @type {Array<number>} */ (
+      rteValues['flatCoordinates']
+    );
+    const layoutOptions = /** @type {LayoutOptions} */ (
+      rteValues['layoutOptions']
+    );
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -643,15 +643,15 @@ function parseRtePt(node, objectStack) {
 function parseTrkPt(node, objectStack) {
   const values = pushParseAndPop({}, TRKPT_PARSERS, node, objectStack);
   if (values) {
-    const trkValues = /** @type {!Object} */ (objectStack[
-      objectStack.length - 1
-    ]);
-    const flatCoordinates = /** @type {Array<number>} */ (trkValues[
-      'flatCoordinates'
-    ]);
-    const layoutOptions = /** @type {LayoutOptions} */ (trkValues[
-      'layoutOptions'
-    ]);
+    const trkValues = /** @type {!Object} */ (
+      objectStack[objectStack.length - 1]
+    );
+    const flatCoordinates = /** @type {Array<number>} */ (
+      trkValues['flatCoordinates']
+    );
+    const layoutOptions = /** @type {LayoutOptions} */ (
+      trkValues['layoutOptions']
+    );
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -676,7 +676,9 @@ function parseTrkSeg(node, objectStack) {
  * @return {Feature|undefined} Track.
  */
 function readRte(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+    objectStack[0]
+  );
   const values = pushParseAndPop(
     {
       'flatCoordinates': [],
@@ -709,7 +711,9 @@ function readRte(node, objectStack) {
  * @return {Feature|undefined} Track.
  */
 function readTrk(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+    objectStack[0]
+  );
   const values = pushParseAndPop(
     {
       'flatCoordinates': [],
@@ -745,7 +749,9 @@ function readTrk(node, objectStack) {
  * @return {Feature|undefined} Waypoint.
  */
 function readWpt(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+    objectStack[0]
+  );
   const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
@@ -835,17 +841,17 @@ function writeWptType(node, coordinate, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeRte(node, feature, objectStack) {
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+    objectStack[0]
+  );
   const properties = feature.getProperties();
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
   if (geometry.getType() == GeometryType.LINE_STRING) {
-    const lineString = /** @type {LineString} */ (transformGeometryWithOptions(
-      geometry,
-      true,
-      options
-    ));
+    const lineString = /** @type {LineString} */ (
+      transformGeometryWithOptions(geometry, true, options)
+    );
     context['geometryLayout'] = lineString.getLayout();
     properties['rtept'] = lineString.getCoordinates();
   }
@@ -868,18 +874,18 @@ function writeRte(node, feature, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeTrk(node, feature, objectStack) {
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+    objectStack[0]
+  );
   const properties = feature.getProperties();
   /** @type {import("../xml.js").NodeStackItem} */
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
   if (geometry.getType() == GeometryType.MULTI_LINE_STRING) {
-    const multiLineString = /** @type {MultiLineString} */ (transformGeometryWithOptions(
-      geometry,
-      true,
-      options
-    ));
+    const multiLineString = /** @type {MultiLineString} */ (
+      transformGeometryWithOptions(geometry, true, options)
+    );
     properties['trkseg'] = multiLineString.getLineStrings();
   }
   const parentNode = objectStack[objectStack.length - 1].node;
@@ -920,16 +926,16 @@ function writeTrkSeg(node, lineString, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeWpt(node, feature, objectStack) {
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+    objectStack[0]
+  );
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   const geometry = feature.getGeometry();
   if (geometry.getType() == GeometryType.POINT) {
-    const point = /** @type {Point} */ (transformGeometryWithOptions(
-      geometry,
-      true,
-      options
-    ));
+    const point = /** @type {Point} */ (
+      transformGeometryWithOptions(geometry, true, options)
+    );
     context['geometryLayout'] = point.getLayout();
     writeWptType(node, point.getCoordinates(), objectStack);
   }

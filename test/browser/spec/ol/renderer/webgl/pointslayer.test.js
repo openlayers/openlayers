@@ -593,8 +593,7 @@ describe('ol.renderer.webgl.PointsLayer', function () {
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry.getCoordinates()).to.eql([
-        10,
-        20,
+        10, 20,
       ]);
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test')
@@ -649,10 +648,7 @@ describe('ol.renderer.webgl.PointsLayer', function () {
           zoom: 7,
         },
         extent: [
-          11.1932373046875,
-          46.429931640625,
-          18.8067626953125,
-          57.570068359375,
+          11.1932373046875, 46.429931640625, 18.8067626953125, 57.570068359375,
         ],
         size: [693, 1014],
         layerIndex: 0,

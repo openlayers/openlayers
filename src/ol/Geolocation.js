@@ -229,9 +229,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getAccuracyGeometry() {
-    return /** @type {?import("./geom/Polygon.js").default} */ (this.get(
-      Property.ACCURACY_GEOMETRY
-    ) || null);
+    return /** @type {?import("./geom/Polygon.js").default} */ (
+      this.get(Property.ACCURACY_GEOMETRY) || null
+    );
   }
 
   /**
@@ -253,9 +253,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getAltitudeAccuracy() {
-    return /** @type {number|undefined} */ (this.get(
-      Property.ALTITUDE_ACCURACY
-    ));
+    return /** @type {number|undefined} */ (
+      this.get(Property.ALTITUDE_ACCURACY)
+    );
   }
 
   /**
@@ -278,9 +278,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getPosition() {
-    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(
-      Property.POSITION
-    ));
+    return /** @type {import("./coordinate.js").Coordinate|undefined} */ (
+      this.get(Property.POSITION)
+    );
   }
 
   /**
@@ -291,9 +291,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getProjection() {
-    return /** @type {import("./proj/Projection.js").default|undefined} */ (this.get(
-      Property.PROJECTION
-    ));
+    return /** @type {import("./proj/Projection.js").default|undefined} */ (
+      this.get(Property.PROJECTION)
+    );
   }
 
   /**
@@ -327,9 +327,9 @@ class Geolocation extends BaseObject {
    * @api
    */
   getTrackingOptions() {
-    return /** @type {PositionOptions|undefined} */ (this.get(
-      Property.TRACKING_OPTIONS
-    ));
+    return /** @type {PositionOptions|undefined} */ (
+      this.get(Property.TRACKING_OPTIONS)
+    );
   }
 
   /**

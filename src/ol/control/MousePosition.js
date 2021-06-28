@@ -126,9 +126,9 @@ class MousePosition extends Control {
    * @api
    */
   getCoordinateFormat() {
-    return /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (this.get(
-      COORDINATE_FORMAT
-    ));
+    return /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (
+      this.get(COORDINATE_FORMAT)
+    );
   }
 
   /**
@@ -139,9 +139,9 @@ class MousePosition extends Control {
    * @api
    */
   getProjection() {
-    return /** @type {import("../proj/Projection.js").default|undefined} */ (this.get(
-      PROJECTION
-    ));
+    return /** @type {import("../proj/Projection.js").default|undefined} */ (
+      this.get(PROJECTION)
+    );
   }
 
   /**

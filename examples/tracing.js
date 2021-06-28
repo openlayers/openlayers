@@ -114,8 +114,7 @@ const raster = new TileLayer({
 const baseVector = new VectorLayer({
   source: new VectorSource({
     format: new GeoJSON(),
-    url:
-      "https://ahocevar.com/geoserver/wfs?service=wfs&request=getfeature&typename=topp:states&cql_filter=STATE_NAME='Idaho'&outputformat=application/json",
+    url: "https://ahocevar.com/geoserver/wfs?service=wfs&request=getfeature&typename=topp:states&cql_filter=STATE_NAME='Idaho'&outputformat=application/json",
   }),
 });
 

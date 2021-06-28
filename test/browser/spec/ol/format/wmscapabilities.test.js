@@ -117,10 +117,7 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
       expect(layer.Layer[0].EX_GeographicBoundingBox).to.eql([
-        -71.63,
-        41.75,
-        -70.78,
-        42.9,
+        -71.63, 41.75, -70.78, 42.9,
       ]);
       expect(layer.Layer[0].Style).to.eql([
         {

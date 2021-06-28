@@ -32,10 +32,9 @@ export function createCanvasContext2D(
     canvas.height = opt_height;
   }
   //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-  return /** @type {CanvasRenderingContext2D} */ (canvas.getContext(
-    '2d',
-    opt_Context2DSettings
-  ));
+  return /** @type {CanvasRenderingContext2D} */ (
+    canvas.getContext('2d', opt_Context2DSettings)
+  );
 }
 
 /**

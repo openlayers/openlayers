@@ -183,7 +183,10 @@ document.getElementById('time').addEventListener('input', function () {
   const value = parseInt(this.value, 10) / 100;
   const m = time.start + time.duration * value;
   vectorSource.forEachFeature(function (feature) {
-    const geometry = /** @type {import("../src/ol/geom/LineString.js").default} */ (feature.getGeometry());
+    const geometry =
+      /** @type {import("../src/ol/geom/LineString.js").default} */ (
+        feature.getGeometry()
+      );
     const coordinate = geometry.getCoordinateAtM(m, true);
     let highlight = feature.get('highlight');
     if (highlight === undefined) {

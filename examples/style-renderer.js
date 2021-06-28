@@ -45,8 +45,7 @@ const style = new Style({
 
 const vectorLayer = new VectorLayer({
   source: new VectorSource({
-    url:
-      'https://openlayersbook.github.io/openlayers_book_samples/assets/data/countries.geojson',
+    url: 'https://openlayersbook.github.io/openlayers_book_samples/assets/data/countries.geojson',
     format: new GeoJSON(),
   }),
   style: style,

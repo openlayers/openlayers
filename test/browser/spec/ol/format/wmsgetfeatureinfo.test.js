@@ -55,10 +55,7 @@ describe('ol.format.WMSGetFeatureInfo', function () {
         const feature = features[0];
         expect(feature.getGeometry()).to.be(undefined);
         expect(feature.get('boundedBy')).to.eql([
-          -531138.686422,
-          5386348.414671,
-          -117252.819653,
-          6144475.186022,
+          -531138.686422, 5386348.414671, -117252.819653, 6144475.186022,
         ]);
       });
 

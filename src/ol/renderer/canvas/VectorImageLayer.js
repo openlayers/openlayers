@@ -107,22 +107,19 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     ) {
       vectorRenderer.useContainer(null, null, 1);
       const context = vectorRenderer.context;
-      const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign(
-        {},
-        frameState,
-        {
-          declutterTree: new RBush(9),
-          extent: renderedExtent,
-          size: [width, height],
-          viewState: /** @type {import("../../View.js").State} */ (assign(
-            {},
-            frameState.viewState,
-            {
-              rotation: 0,
-            }
-          )),
-        }
-      ));
+      const imageFrameState =
+        /** @type {import("../../PluggableMap.js").FrameState} */ (
+          assign({}, frameState, {
+            declutterTree: new RBush(9),
+            extent: renderedExtent,
+            size: [width, height],
+            viewState: /** @type {import("../../View.js").State} */ (
+              assign({}, frameState.viewState, {
+                rotation: 0,
+              })
+            ),
+          })
+        );
       const image = new ImageCanvas(
         renderedExtent,
         viewResolution,
@@ -168,7 +165,8 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
 
     if (this.image_) {
-      this.renderedPixelToCoordinateTransform_ = frameState.pixelToCoordinateTransform.slice();
+      this.renderedPixelToCoordinateTransform_ =
+        frameState.pixelToCoordinateTransform.slice();
     }
 
     return !!this.image_;

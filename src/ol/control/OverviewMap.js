@@ -319,7 +319,9 @@ class OverviewMap extends Control {
    */
   handleMapPropertyChange_(event) {
     if (event.key === MapProperty.VIEW) {
-      const oldView = /** @type {import("../View.js").default} */ (event.oldValue);
+      const oldView = /** @type {import("../View.js").default} */ (
+        event.oldValue
+      );
       if (oldView) {
         this.unbindView_(oldView);
       }
@@ -407,7 +409,9 @@ class OverviewMap extends Control {
     }
     this.viewExtent_ = extent;
 
-    const ovmapSize = /** @type {import("../size.js").Size} */ (ovmap.getSize());
+    const ovmapSize = /** @type {import("../size.js").Size} */ (
+      ovmap.getSize()
+    );
 
     const ovview = ovmap.getView();
     const ovextent = ovview.calculateExtentInternal(ovmapSize);

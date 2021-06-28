@@ -151,9 +151,9 @@ class GeometryCollection extends Geometry {
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       if (geometries[i].getType() === this.getType()) {
         geometriesArray = geometriesArray.concat(
-          /** @type {GeometryCollection} */ (geometries[
-            i
-          ]).getGeometriesArrayRecursive()
+          /** @type {GeometryCollection} */ (
+            geometries[i]
+          ).getGeometriesArrayRecursive()
         );
       } else {
         geometriesArray.push(geometries[i]);
@@ -185,9 +185,8 @@ class GeometryCollection extends Geometry {
     let simplified = false;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       const geometry = geometries[i];
-      const simplifiedGeometry = geometry.getSimplifiedGeometry(
-        squaredTolerance
-      );
+      const simplifiedGeometry =
+        geometry.getSimplifiedGeometry(squaredTolerance);
       simplifiedGeometries.push(simplifiedGeometry);
       if (simplifiedGeometry !== geometry) {
         simplified = true;

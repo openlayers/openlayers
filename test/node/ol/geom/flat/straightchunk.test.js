@@ -35,24 +35,7 @@ describe('ol/geom/flat/straightchunk.js', function () {
 
     describe('longer line string', function () {
       const flatCoords = [
-        0,
-        0,
-        1,
-        0,
-        1,
-        1,
-        0,
-        1,
-        0,
-        -1,
-        -1,
-        -1,
-        -1,
-        0,
-        -1,
-        2,
-        -2,
-        4,
+        0, 0, 1, 0, 1, 1, 0, 1, 0, -1, -1, -1, -1, 0, -1, 2, -2, 4,
       ];
       const stride = 2;
 

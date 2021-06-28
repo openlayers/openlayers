@@ -538,7 +538,9 @@ class KML extends XMLFeature {
     if (id !== null) {
       feature.setId(id);
     }
-    const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
+    const options = /** @type {import("./Feature.js").ReadOptions} */ (
+      objectStack[0]
+    );
 
     const geometry = object['geometry'];
     if (geometry) {
@@ -1112,7 +1114,8 @@ export function readFlatCoordinates(node) {
   // The KML specification states that coordinate tuples should not include
   // spaces, but we tolerate them.
   s = s.replace(/\s*,\s*/g, ',');
-  const re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?),([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|,|$)(?:([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|$))?\s*/i;
+  const re =
+    /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?),([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|,|$)(?:([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s+|$))?\s*/i;
   let m;
   while ((m = re.exec(s))) {
     const x = parseFloat(m[1]);
@@ -1253,9 +1256,9 @@ function iconStyleParser(node, objectStack) {
   if (!object) {
     return;
   }
-  const styleObject = /** @type {Object} */ (objectStack[
-    objectStack.length - 1
-  ]);
+  const styleObject = /** @type {Object} */ (
+    objectStack[objectStack.length - 1]
+  );
   const IconObject = 'Icon' in object ? object['Icon'] : {};
   const drawIcon = !('Icon' in object) || Object.keys(IconObject).length > 0;
   let src;
@@ -1468,7 +1471,8 @@ function gxCoordParser(node, objectStack) {
     (objectStack[objectStack.length - 1]);
   const coordinates = gxTrackObject.coordinates;
   const s = getAllTextContent(node, false);
-  const re = /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s*$/i;
+  const re =
+    /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s*$/i;
   const m = re.exec(s);
   if (m) {
     const x = parseFloat(m[1]);
@@ -1840,9 +1844,9 @@ function readStyle(node, objectStack) {
   }
   let fillStyle =
     /** @type {Fill} */
-    ('fillStyle' in styleObject
-      ? styleObject['fillStyle']
-      : DEFAULT_FILL_STYLE);
+    (
+      'fillStyle' in styleObject ? styleObject['fillStyle'] : DEFAULT_FILL_STYLE
+    );
   const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
   if (fill !== undefined && !fill) {
     fillStyle = null;
@@ -1857,14 +1861,16 @@ function readStyle(node, objectStack) {
   }
   const textStyle =
     /** @type {Text} */
-    ('textStyle' in styleObject
-      ? styleObject['textStyle']
-      : DEFAULT_TEXT_STYLE);
+    (
+      'textStyle' in styleObject ? styleObject['textStyle'] : DEFAULT_TEXT_STYLE
+    );
   const strokeStyle =
     /** @type {Stroke} */
-    ('strokeStyle' in styleObject
-      ? styleObject['strokeStyle']
-      : DEFAULT_STROKE_STYLE);
+    (
+      'strokeStyle' in styleObject
+        ? styleObject['strokeStyle']
+        : DEFAULT_STROKE_STYLE
+    );
   const outline = /** @type {boolean|undefined} */ (styleObject['outline']);
   if (outline !== undefined && !outline) {
     // if the polystyle specifies no outline two styles are needed,
@@ -1992,9 +1998,9 @@ const DATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 function dataParser(node, objectStack) {
   const name = node.getAttribute('name');
   parseNode(DATA_PARSERS, node, objectStack);
-  const featureObject = /** @type {Object} */ (objectStack[
-    objectStack.length - 1
-  ]);
+  const featureObject = /** @type {Object} */ (
+    objectStack[objectStack.length - 1]
+  );
   if (name && featureObject.displayName) {
     featureObject[name] = {
       value: featureObject.value,
@@ -2115,9 +2121,9 @@ function simpleDataParser(node, objectStack) {
   const name = node.getAttribute('name');
   if (name !== null) {
     const data = readString(node);
-    const featureObject = /** @type {Object} */ (objectStack[
-      objectStack.length - 1
-    ]);
+    const featureObject = /** @type {Object} */ (
+      objectStack[objectStack.length - 1]
+    );
     featureObject[name] = data;
   }
 }
@@ -2151,9 +2157,9 @@ function latLonAltBoxParser(node, objectStack) {
   if (!object) {
     return;
   }
-  const regionObject = /** @type {Object} */ (objectStack[
-    objectStack.length - 1
-  ]);
+  const regionObject = /** @type {Object} */ (
+    objectStack[objectStack.length - 1]
+  );
   const extent = [
     parseFloat(object['west']),
     parseFloat(object['south']),
@@ -3078,7 +3084,9 @@ function writePlacemark(node, feature, objectStack) {
   }
 
   // serialize geometry
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+    objectStack[0]
+  );
   let geometry = feature.getGeometry();
   if (geometry) {
     geometry = transformGeometryWithOptions(geometry, true, options);

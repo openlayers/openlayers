@@ -113,7 +113,9 @@ class MultiPolygon extends SimpleGeometry {
       this.endss_ = opt_endss;
     } else {
       this.setCoordinates(
-        /** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (coordinates),
+        /** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (
+          coordinates
+        ),
         opt_layout
       );
     }

@@ -102,10 +102,12 @@ export function loadFeaturesXhr(
       if (source) {
         success(
           /** @type {Array<import("./Feature.js").default>} */
-          (format.readFeatures(source, {
-            extent: extent,
-            featureProjection: projection,
-          })),
+          (
+            format.readFeatures(source, {
+              extent: extent,
+              featureProjection: projection,
+            })
+          ),
           format.readProjection(source)
         );
       } else {

@@ -178,9 +178,9 @@ class BaseVectorLayer extends Layer {
    *     order.
    */
   getRenderOrder() {
-    return /** @type {import("../render.js").OrderFunction|null|undefined} */ (this.get(
-      Property.RENDER_ORDER
-    ));
+    return /** @type {import("../render.js").OrderFunction|null|undefined} */ (
+      this.get(Property.RENDER_ORDER)
+    );
   }
 
   /**

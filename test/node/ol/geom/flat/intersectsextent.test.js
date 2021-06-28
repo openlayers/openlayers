@@ -144,32 +144,8 @@ describe('ol/geom/flat/intersectsextent.js', function () {
     let ends;
     beforeEach(function () {
       flatCoordinates = [
-        0,
-        0,
-        0,
-        10,
-        10,
-        10,
-        10,
-        0,
-        0,
-        0,
-        /*hole*/ 2,
-        2,
-        8,
-        2,
-        8,
-        4,
-        5,
-        5,
-        8,
-        6,
-        8,
-        8,
-        2,
-        8,
-        2,
-        2,
+        0, 0, 0, 10, 10, 10, 10, 0, 0, 0, /*hole*/ 2, 2, 8, 2, 8, 4, 5, 5, 8, 6,
+        8, 8, 2, 8, 2, 2,
       ];
       ends = [10, flatCoordinates.length];
     });

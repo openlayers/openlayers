@@ -234,8 +234,9 @@ class MVT extends FeatureFormat {
             ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends)
             : null;
       }
-      const ctor = /** @type {typeof import("../Feature.js").default} */ (this
-        .featureClass_);
+      const ctor = /** @type {typeof import("../Feature.js").default} */ (
+        this.featureClass_
+      );
       feature = new ctor();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
@@ -266,9 +267,9 @@ class MVT extends FeatureFormat {
    */
   readFeatures(source, opt_options) {
     const layers = this.layers_;
-    const options = /** @type {import("./Feature.js").ReadOptions} */ (this.adaptOptions(
-      opt_options
-    ));
+    const options = /** @type {import("./Feature.js").ReadOptions} */ (
+      this.adaptOptions(opt_options)
+    );
     const dataProjection = get(options.dataProjection);
     dataProjection.setWorldExtent(options.extent);
     options.dataProjection = dataProjection;

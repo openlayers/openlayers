@@ -356,9 +356,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         tilePixelRatio * tileSource.getGutterForProjection(projection);
       const tilesToDraw = tilesToDrawByZ[currentZ];
       for (const tileCoordKey in tilesToDraw) {
-        const tile = /** @type {import("../../ImageTile.js").default} */ (tilesToDraw[
-          tileCoordKey
-        ]);
+        const tile = /** @type {import("../../ImageTile.js").default} */ (
+          tilesToDraw[tileCoordKey]
+        );
         const tileCoord = tile.tileCoord;
 
         // Calculate integer positions and sizes so that tiles align
@@ -543,7 +543,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }.bind(null, tileSource);
 
       frameState.postRenderFunctions.push(
-        /** @type {import("../../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
+        /** @type {import("../../PluggableMap.js").PostRenderFunction} */ (
+          postRenderFunction
+        )
       );
     }
   }

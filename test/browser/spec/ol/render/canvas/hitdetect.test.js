@@ -39,9 +39,7 @@ describe('hitdetect', function () {
       0
     );
     expect(Array.prototype.slice.call(imageData.data, 0, 3)).to.eql([
-      255,
-      255,
-      252,
+      255, 255, 252,
     ]);
   });
   it('detects hit at the correct position', function () {

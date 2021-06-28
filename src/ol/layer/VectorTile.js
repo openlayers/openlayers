@@ -90,7 +90,9 @@ class VectorTileLayer extends BaseVectorLayer {
     delete baseOptions.useInterimTilesOnError;
 
     super(
-      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (baseOptions)
+      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (
+        baseOptions
+      )
     );
 
     if (options.renderMode === VectorTileRenderType.IMAGE) {
@@ -171,9 +173,9 @@ class VectorTileLayer extends BaseVectorLayer {
    * @api
    */
   getUseInterimTilesOnError() {
-    return /** @type {boolean} */ (this.get(
-      TileProperty.USE_INTERIM_TILES_ON_ERROR
-    ));
+    return /** @type {boolean} */ (
+      this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR)
+    );
   }
 
   /**

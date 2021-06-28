@@ -93,9 +93,7 @@ describe('ol/format/TopoJSON.js', function () {
       expect(feature.get('prop0')).to.be('value0');
 
       expect(geometry.getExtent()).to.eql([
-        -70.08100810081008,
-        12.417091709170947,
-        -69.9009900990099,
+        -70.08100810081008, 12.417091709170947, -69.9009900990099,
         12.608069195591469,
       ]);
     });
@@ -138,29 +136,13 @@ describe('ol/format/TopoJSON.js', function () {
       const line = features[1].getGeometry();
       expect(line.getType()).to.be('LineString');
       expect(line.getFlatCoordinates()).to.eql([
-        102,
-        0,
-        103,
-        1,
-        104,
-        0,
-        105,
-        1,
+        102, 0, 103, 1, 104, 0, 105, 1,
       ]);
 
       const polygon = features[2].getGeometry();
       expect(polygon.getType()).to.be('Polygon');
       expect(polygon.getFlatCoordinates()).to.eql([
-        100,
-        0,
-        100,
-        1,
-        101,
-        1,
-        101,
-        0,
-        100,
-        0,
+        100, 0, 100, 1, 101, 1, 101, 0, 100, 0,
       ]);
     });
 
@@ -216,10 +198,7 @@ describe('ol/format/TopoJSON.js', function () {
       const firstGeom = first.getGeometry();
       expect(firstGeom).to.be.a(MultiPolygon);
       expect(firstGeom.getExtent()).to.eql([
-        -180,
-        -85.60903777459777,
-        180,
-        83.64513000000002,
+        -180, -85.60903777459777, 180, 83.64513000000002,
       ]);
 
       const last = features[177];
@@ -227,9 +206,7 @@ describe('ol/format/TopoJSON.js', function () {
       const lastGeom = last.getGeometry();
       expect(lastGeom).to.be.a(Polygon);
       expect(lastGeom.getExtent()).to.eql([
-        25.26325263252633,
-        -22.271802279310577,
-        32.848528485284874,
+        25.26325263252633, -22.271802279310577, 32.848528485284874,
         -15.50833810039586,
       ]);
     });
