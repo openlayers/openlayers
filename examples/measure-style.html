@@ -1,0 +1,33 @@
+---
+layout: example.html
+title: Measure using vector styles
+shortdesc: Example of measuring lengths and areas using vector styles.
+docs: >
+  <p>Using vector styles instead of overlays makes it easy to set up, then modify and
+  clear a measure.  Additional information such as the lengths of individual segments
+  or sides can be included as required.</p>
+  <p>The <code>getLength()</code> and <code>getArea()</code>
+  functions calculate spherical lengths and areas for geometries.  Lengths are
+  calculated by assuming great circle segments between geometry coordinates.
+  Areas are calculated as if edges of polygons were great circle segments.</p>
+  <p>Note that the <code>geometry.getLength()</code> and <code>geometry.getArea()</code>
+  methods return measures of projected (planar) geometries.  These can be very
+  different than on-the-ground measures in certain situations — in northern
+  and southern latitudes using Web Mercator for example.  For better results,
+  use the functions in the <code>ol/sphere</code> module.</p>
+tags: "draw, edit, measure, modify, style, vector"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label for="type">Measurement type &nbsp;</label>
+  <select id="type">
+    <option value="LineString">Length (LineString)</option>
+    <option value="Polygon">Area (Polygon)</option>
+  </select>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="segments">Show segment lengths:&nbsp;</label>
+  <input type="checkbox" id="segments" checked />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="clear">Clear previous measure:&nbsp;</label>
+  <input type="checkbox" id="clear" checked />
+</form>
