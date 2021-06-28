@@ -125,6 +125,7 @@
       "@openlayers"
     ],
     "rules": {
+      "jsdoc/no-bad-blocks": "off",
       "import/no-commonjs": "error",
       "@openlayers/no-exclusive-tests": [
         "error",
