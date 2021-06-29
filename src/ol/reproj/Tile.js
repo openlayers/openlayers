@@ -334,15 +334,15 @@ class ReprojTile extends Tile {
         }.bind(this)
       );
 
-      this.sourceTiles_.forEach(function (tile, i, arr) {
-        const state = tile.getState();
-        if (state == TileState.IDLE) {
-          tile.load();
-        }
-      });
-
       if (leftToLoad === 0) {
         setTimeout(this.reproject_.bind(this), 0);
+      } else {
+        this.sourceTiles_.forEach(function (tile, i, arr) {
+          const state = tile.getState();
+          if (state == TileState.IDLE) {
+            tile.load();
+          }
+        });
       }
     }
   }

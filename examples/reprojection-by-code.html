@@ -10,18 +10,24 @@ tags: "reprojection, projection, proj4js, epsg.io, graticule"
 ---
 <div id="map" class="map"></div>
 <form class="form-inline">
-  <label for="epsg-query">Search projection:</label>
+  <label for="epsg-query">Search projection:&nbsp</label>
   <input type="text" id="epsg-query" placeholder="4326, 27700, 3031, US National Atlas, Swiss, France, ..." class="form-control" size="50" />
   <button id="epsg-search" class="btn">Search</button>
   <span id="epsg-result"></span>
-  <div>
-    <label for="render-edges">
-      Render reprojection edges
-      <input type="checkbox" id="render-edges">
-    </label>
-    <label for="show-graticule">
-      &nbsp;&nbsp;&nbsp;Show graticule
-      <input type="checkbox" id="show-graticule" />
-    </label>
-  </div>
+</form>
+<form class="form-inline">
+  <label for="render-edges">
+    Render reprojection edges:&nbsp;
+    <input type="checkbox" id="render-edges" />
+  </label>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="show-tiles">
+    Show tile coordinates:&nbsp;
+    <input type="checkbox" id="show-tiles" />
+  </label>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="show-graticule">
+    Show graticule:&nbsp;
+    <input type="checkbox" id="show-graticule" />
+  </label>
 </form>
