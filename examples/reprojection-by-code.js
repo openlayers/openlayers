@@ -2,13 +2,23 @@ import Graticule from '../src/ol/layer/Graticule.js';
 import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import Stroke from '../src/ol/style/Stroke.js';
-import TileImage from '../src/ol/source/TileImage.js';
+import TileDebug from '../src/ol/source/TileDebug.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import proj4 from 'proj4';
 import {applyTransform} from '../src/ol/extent.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
+
+const osmSource = new OSM();
+
+const debugLayer = new TileLayer({
+  source: new TileDebug({
+    tileGrid: osmSource.getTileGrid(),
+    projection: osmSource.getProjection(),
+  }),
+  visible: false,
+});
 
 const graticule = new Graticule({
   // the style to use for the lines, optional.
@@ -25,8 +35,9 @@ const graticule = new Graticule({
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new OSM(),
+      source: osmSource,
     }),
+    debugLayer,
     graticule,
   ],
   target: 'map',
@@ -41,6 +52,7 @@ const queryInput = document.getElementById('epsg-query');
 const searchButton = document.getElementById('epsg-search');
 const resultSpan = document.getElementById('epsg-result');
 const renderEdgesCheckbox = document.getElementById('render-edges');
+const showTilesCheckbox = document.getElementById('show-tiles');
 const showGraticuleCheckbox = document.getElementById('show-graticule');
 
 function setProjection(code, name, proj4def, bbox) {
@@ -125,22 +137,14 @@ searchButton.onclick = function (event) {
 };
 
 /**
- * Handle checkbox change event.
+ * Handle checkbox change events.
  */
 renderEdgesCheckbox.onchange = function () {
-  map.getLayers().forEach(function (layer) {
-    if (layer instanceof TileLayer) {
-      const source = layer.getSource();
-      if (source instanceof TileImage) {
-        source.setRenderReprojectionEdges(renderEdgesCheckbox.checked);
-      }
-    }
-  });
+  osmSource.setRenderReprojectionEdges(renderEdgesCheckbox.checked);
 };
-
-/**
- * Handle checkbox change event.
- */
+showTilesCheckbox.onchange = function () {
+  debugLayer.setVisible(showTilesCheckbox.checked);
+};
 showGraticuleCheckbox.onchange = function () {
   graticule.setVisible(showGraticuleCheckbox.checked);
 };
