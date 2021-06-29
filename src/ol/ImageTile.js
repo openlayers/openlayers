@@ -75,7 +75,6 @@ class ImageTile extends Tile {
   /**
    * Sets an HTML image element for this tile (may be a Canvas or preloaded Image).
    * @param {HTMLCanvasElement|HTMLImageElement} element Element.
-   * @api
    */
   setImage(element) {
     this.image_ = element;
