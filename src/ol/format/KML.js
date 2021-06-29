@@ -2206,7 +2206,9 @@ function lodParser(node, objectStack) {
  */
 // @ts-ignore
 const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
-  'LinearRing': makeReplacer(readFlatLinearRing),
+  // KML spec only allows one LinearRing  per innerBoundaryIs, but Google Earth
+  // allows multiple, so we parse multiple here too.
+  'LinearRing': makeArrayPusher(readFlatLinearRing),
 });
 
 /**
@@ -2214,18 +2216,17 @@ const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function innerBoundaryIsParser(node, objectStack) {
-  /** @type {Array<number>|undefined} */
-  const flatLinearRing = pushParseAndPop(
-    undefined,
+  const innerBoundaryFlatLinearRings = pushParseAndPop(
+    /** @type {Array<Array<number>>} */ ([]),
     INNER_BOUNDARY_IS_PARSERS,
     node,
     objectStack
   );
-  if (flatLinearRing) {
+  if (innerBoundaryFlatLinearRings.length > 0) {
     const flatLinearRings =
       /** @type {Array<Array<number>>} */
       (objectStack[objectStack.length - 1]);
-    flatLinearRings.push(flatLinearRing);
+    flatLinearRings.push(...innerBoundaryFlatLinearRings);
   }
 }
 

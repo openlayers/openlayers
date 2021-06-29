@@ -980,6 +980,55 @@ describe('ol.format.KML', function () {
           ]);
         });
 
+        it('can read multiple LinearRings from one innerBoundaryIs', function () {
+          const text = `
+            <kml xmlns="http://earth.google.com/kml/2.2">
+              <Placemark>
+                <Polygon>
+                  <innerBoundaryIs>
+                    <LinearRing>
+                      <coordinates>1,1,0 1,2,0 2,2,0 2,1,0</coordinates>
+                    </LinearRing>
+                    <LinearRing>
+                      <coordinates>3,3,0 3,4,0 4,4,0 4,3,0</coordinates>
+                    </LinearRing>
+                  </innerBoundaryIs>
+                  <outerBoundaryIs>
+                    <LinearRing>
+                      <coordinates>0,0,1 0,5,1 5,5,2 5,0,3</coordinates>
+                    </LinearRing>
+                  </outerBoundaryIs>
+                </Polygon>
+              </Placemark>
+            </kml>`;
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const g = f.getGeometry();
+          expect(g).to.be.an(Polygon);
+          expect(g.getCoordinates()).to.eql([
+            [
+              [0, 0, 1],
+              [0, 5, 1],
+              [5, 5, 2],
+              [5, 0, 3],
+            ],
+            [
+              [1, 1, 0],
+              [1, 2, 0],
+              [2, 2, 0],
+              [2, 1, 0],
+            ],
+            [
+              [3, 3, 0],
+              [3, 4, 0],
+              [4, 4, 0],
+              [4, 3, 0],
+            ],
+          ]);
+        });
+
         it('can write complex Polygon geometries', function () {
           const layout = 'XYZ';
           const polygon = new Polygon(
