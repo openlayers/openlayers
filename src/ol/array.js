@@ -60,11 +60,26 @@ export function includes(arr, obj) {
 }
 
 /**
- * @param {Array<number>} arr Array.
+ * {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution} can use a function
+ * of this type to determine which nearest resolution to use.
+ *
+ * This function takes a `{number}` representing a value between two array entries,
+ * a `{number}` representing the value of the nearest higher entry and
+ * a `{number}` representing the value of the nearest lower entry
+ * as arguments and returns a `{number}`. If a negative number or zero is returned
+ * the lower value will be used, if a positive number is returned the higher value
+ * will be used.
+ * @typedef {function(number, number, number): number} NearestDirectionFunction
+ * @api
+ */
+
+/**
+ * @param {Array<number>} arr Array in desccending order.
  * @param {number} target Target.
- * @param {number} direction 0 means return the nearest, > 0
- *    means return the largest nearest, < 0 means return the
- *    smallest nearest.
+ * @param {number|NearestDirectionFunction} direction
+ *    0 means return the nearest,
+ *    > 0 means return the largest nearest,
+ *    < 0 means return the smallest nearest.
  * @return {number} Index.
  */
 export function linearFindNearest(arr, target, direction) {
@@ -92,7 +107,13 @@ export function linearFindNearest(arr, target, direction) {
         if (arr[i] == target) {
           return i;
         } else if (arr[i] < target) {
-          if (arr[i - 1] - target < target - arr[i]) {
+          if (typeof direction === 'function') {
+            if (direction(target, arr[i - 1], arr[i]) > 0) {
+              return i - 1;
+            } else {
+              return i;
+            }
+          } else if (arr[i - 1] - target < target - arr[i]) {
             return i - 1;
           } else {
             return i;
