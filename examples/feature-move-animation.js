@@ -142,7 +142,7 @@ fetch('data/polyline/route.json').then(function (response) {
         stopAnimation(false);
       } else {
         animating = true;
-        startTime = new Date().getTime();
+        startTime = Date.now();
         speed = speedInput.value;
         startButton.textContent = 'Cancel Animation';
         // hide geoMarker

@@ -120,7 +120,7 @@ function animateFlights(event) {
 
 function addLater(feature, timeout) {
   window.setTimeout(function () {
-    feature.set('start', new Date().getTime());
+    feature.set('start', Date.now());
     flightsSource.addFeature(feature);
   }, timeout);
 }

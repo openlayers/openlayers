@@ -43,7 +43,7 @@ function addRandomFeature() {
 
 const duration = 3000;
 function flash(feature) {
-  const start = new Date().getTime();
+  const start = Date.now();
   const flashGeom = feature.getGeometry().clone();
   const listenerKey = tileLayer.on('postrender', animate);
 
