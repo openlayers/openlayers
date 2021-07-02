@@ -53,10 +53,9 @@ import {getUid} from '../util.js';
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [key] Optional tile key for proper cache fetching
- * @property {number} [zDirection=0] Indicate which resolution should be used
- * by a renderer if the view resolution does not match any resolution of the tile source.
- * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
- * will be used. If -1, the nearest higher resolution will be used.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**

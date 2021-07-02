@@ -43,10 +43,9 @@ import {toSize} from '../size.js';
  * @property {string} [url] Base URL of the IIIF Image service.
  * This should be the same as the IIIF Image ID.
  * @property {import("../format/IIIFInfo.js").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
- * @property {number} [zDirection=0] Indicate which resolution should be used
- * by a renderer if the view resolution does not match any resolution of the tile source.
- * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
- * will be used. If -1, the nearest higher resolution will be used.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 function formatPercentage(percentage) {
@@ -346,7 +345,7 @@ class IIIF extends TileImage {
     });
 
     /**
-     * @type {number}
+     * @type {number|import("../array.js").NearestDirectionFunction}
      */
     this.zDirection = options.zDirection;
   }
