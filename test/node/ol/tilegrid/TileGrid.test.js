@@ -1177,6 +1177,64 @@ describe('ol/tilegrid/TileGrid.js', function () {
     });
   });
 
+  describe('getZForResolution (NearestDirectionFunction)', function () {
+    it('returns the expected z value', function () {
+      const tileGrid = new TileGrid({
+        resolutions: resolutions,
+        origin: origin,
+        tileSize: tileSize,
+      });
+
+      expect(
+        tileGrid.getZForResolution(626, function (value, high, low) {
+          return value - (low + (high - low) * 0.25);
+        })
+      ).to.eql(0);
+
+      expect(
+        tileGrid.getZForResolution(625, function (value, high, low) {
+          return value - (low + (high - low) * 0.25);
+        })
+      ).to.eql(1);
+
+      expect(
+        tileGrid.getZForResolution(476, function (value, high, low) {
+          return value - (low + (high - low) * 0.9);
+        })
+      ).to.eql(1);
+
+      expect(
+        tileGrid.getZForResolution(475, function (value, high, low) {
+          return value - (low + (high - low) * 0.9);
+        })
+      ).to.eql(2);
+
+      expect(
+        tileGrid.getZForResolution(201, function (value, high, low) {
+          return value - (low + (high - low) * 0.666666667);
+        })
+      ).to.eql(2);
+
+      expect(
+        tileGrid.getZForResolution(200, function (value, high, low) {
+          return value - (low + (high - low) * 0.666666667);
+        })
+      ).to.eql(3);
+
+      expect(
+        tileGrid.getZForResolution(126, function (value, high, low) {
+          return value - (low + (high - low) * 0.166666667);
+        })
+      ).to.eql(2);
+
+      expect(
+        tileGrid.getZForResolution(125, function (value, high, low) {
+          return value - (low + (high - low) * 0.166666667);
+        })
+      ).to.eql(3);
+    });
+  });
+
   describe('getTileRangeForTileCoordAndZ()', function () {
     const tileGrid = createForExtent(
       getProjection('EPSG:3857').getExtent(),

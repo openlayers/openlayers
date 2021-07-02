@@ -475,33 +475,93 @@ describe('ol/array.js', function () {
       expect(linearFindNearest(arr, 1000, 1)).to.eql(0);
       expect(linearFindNearest(arr, 1000, -1)).to.eql(0);
 
+      expect(linearFindNearest(arr, 999, -1)).to.eql(1);
+
+      expect(
+        linearFindNearest(arr, 901, function (value, high, low) {
+          return value - (low + (high - low) * 0.8);
+        })
+      ).to.eql(0);
+
+      expect(
+        linearFindNearest(arr, 900, function (value, high, low) {
+          return value - (low + (high - low) * 0.8);
+        })
+      ).to.eql(1);
+
       expect(linearFindNearest(arr, 900, 0)).to.eql(0);
       expect(linearFindNearest(arr, 900, 1)).to.eql(0);
       expect(linearFindNearest(arr, 900, -1)).to.eql(1);
+
+      expect(linearFindNearest(arr, 751, 0)).to.eql(0);
 
       expect(linearFindNearest(arr, 750, 0)).to.eql(1);
       expect(linearFindNearest(arr, 750, 1)).to.eql(0);
       expect(linearFindNearest(arr, 750, -1)).to.eql(1);
 
+      expect(
+        linearFindNearest(arr, 551, function (value, high, low) {
+          return value - (low + (high - low) * 0.1);
+        })
+      ).to.eql(0);
+
+      expect(
+        linearFindNearest(arr, 550, function (value, high, low) {
+          return value - (low + (high - low) * 0.1);
+        })
+      ).to.eql(1);
+
       expect(linearFindNearest(arr, 550, 0)).to.eql(1);
       expect(linearFindNearest(arr, 550, 1)).to.eql(0);
       expect(linearFindNearest(arr, 550, -1)).to.eql(1);
+
+      expect(linearFindNearest(arr, 501, 1)).to.eql(0);
 
       expect(linearFindNearest(arr, 500, 0)).to.eql(1);
       expect(linearFindNearest(arr, 500, 1)).to.eql(1);
       expect(linearFindNearest(arr, 500, -1)).to.eql(1);
 
+      expect(linearFindNearest(arr, 499, -1)).to.eql(2);
+
+      expect(
+        linearFindNearest(arr, 451, function (value, high, low) {
+          return value - (low + (high - low) * 0.875);
+        })
+      ).to.eql(1);
+
+      expect(
+        linearFindNearest(arr, 450, function (value, high, low) {
+          return value - (low + (high - low) * 0.875);
+        })
+      ).to.eql(2);
+
       expect(linearFindNearest(arr, 450, 0)).to.eql(1);
       expect(linearFindNearest(arr, 450, 1)).to.eql(1);
       expect(linearFindNearest(arr, 450, -1)).to.eql(2);
+
+      expect(linearFindNearest(arr, 301, 0)).to.eql(1);
 
       expect(linearFindNearest(arr, 300, 0)).to.eql(2);
       expect(linearFindNearest(arr, 300, 1)).to.eql(1);
       expect(linearFindNearest(arr, 300, -1)).to.eql(2);
 
+      expect(
+        linearFindNearest(arr, 201, function (value, high, low) {
+          return value - (low + (high - low) * 0.25);
+        })
+      ).to.eql(1);
+
+      expect(
+        linearFindNearest(arr, 200, function (value, high, low) {
+          return value - (low + (high - low) * 0.25);
+        })
+      ).to.eql(2);
+
       expect(linearFindNearest(arr, 200, 0)).to.eql(2);
       expect(linearFindNearest(arr, 200, 1)).to.eql(1);
       expect(linearFindNearest(arr, 200, -1)).to.eql(2);
+
+      expect(linearFindNearest(arr, 101, 1)).to.eql(1);
 
       expect(linearFindNearest(arr, 100, 0)).to.eql(2);
       expect(linearFindNearest(arr, 100, 1)).to.eql(2);
