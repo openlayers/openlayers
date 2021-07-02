@@ -634,9 +634,18 @@ class TileGrid {
 
   /**
    * @param {number} resolution Resolution.
-   * @param {number} [opt_direction] If 0, the nearest resolution will be used.
-   *     If 1, the nearest lower resolution will be used. If -1, the nearest
-   *     higher resolution will be used. Default is 0.
+   * @param {number|import("../array.js").NearestDirectionFunction} [opt_direction]
+   *     If 0, the nearest resolution will be used.
+   *     If 1, the nearest higher resolution (lower Z) will be used. If -1, the
+   *     nearest lower resolution (higher Z) will be used. Default is 0.
+   *     Use a {@link module:ol/array~NearestDirectionFunction} for more precise control.
+   *
+   * For example to change tile Z at the midpoint of zoom levels
+   * ```js
+   * function(value, high, low) {
+   *   return value - low * Math.sqrt(high / low);
+   * }
+   * ```
    * @return {number} Z.
    * @api
    */
