@@ -51,6 +51,9 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * transition, pass `transition: 0`.
  * @property {Array<string>} [urls] ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS
  * Service supports multiple urls for export requests.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -82,6 +85,7 @@ class TileArcGISRest extends TileImage {
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition,
+      zDirection: options.zDirection,
     });
 
     /**

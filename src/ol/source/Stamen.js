@@ -104,6 +104,9 @@ const ProviderConfig = {
  * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -145,6 +148,7 @@ class Stamen extends XYZ {
       transition: options.transition,
       url: url,
       wrapX: options.wrapX,
+      zDirection: options.zDirection,
     });
   }
 }

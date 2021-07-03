@@ -66,6 +66,9 @@ const TOS_ATTRIBUTION =
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -129,6 +132,7 @@ class BingMaps extends TileImage {
       tilePixelRatio: hidpi ? 2 : 1,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition,
+      zDirection: options.zDirection,
     });
 
     /**
