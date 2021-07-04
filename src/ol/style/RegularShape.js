@@ -225,19 +225,19 @@ class RegularShape extends ImageStyle {
    * @api
    */
   getImage(pixelRatio) {
-    if (!this.canvas_[pixelRatio || 1]) {
+    let image = this.canvas_[pixelRatio];
+    if (!image) {
       const renderOptions = this.createRenderOptions();
-
       const context = createCanvasContext2D(
-        renderOptions.size * pixelRatio || 1,
-        renderOptions.size * pixelRatio || 1
+        renderOptions.size * pixelRatio,
+        renderOptions.size * pixelRatio
       );
+      this.draw_(renderOptions, context, pixelRatio);
 
-      this.draw_(renderOptions, context, pixelRatio || 1);
-
-      this.canvas_[pixelRatio || 1] = context.canvas;
+      image = context.canvas;
+      this.canvas_[pixelRatio] = image;
     }
-    return this.canvas_[pixelRatio || 1];
+    return image;
   }
 
   /**
