@@ -57,17 +57,18 @@ fetch('data/polyline/route.json').then(function (response) {
       type: 'route',
       geometry: route,
     });
-    const geoMarker = new Feature({
-      type: 'geoMarker',
-      geometry: new Point(route.getCoordinateAt(0)),
-    });
     const startMarker = new Feature({
       type: 'icon',
-      geometry: new Point(route.getCoordinateAt(0)),
+      geometry: new Point(route.getFirstCoordinate()),
     });
     const endMarker = new Feature({
       type: 'icon',
-      geometry: new Point(route.getCoordinateAt(1)),
+      geometry: new Point(route.getLastCoordinate()),
+    });
+    const position = startMarker.getGeometry().clone();
+    const geoMarker = new Feature({
+      type: 'geoMarker',
+      geometry: position,
     });
 
     const styles = {
@@ -95,76 +96,65 @@ fetch('data/polyline/route.json').then(function (response) {
       }),
     };
 
-    let animating = false;
-
     const vectorLayer = new VectorLayer({
       source: new VectorSource({
         features: [routeFeature, geoMarker, startMarker, endMarker],
       }),
       style: function (feature) {
-        // hide geoMarker if animation is active
-        if (animating && feature.get('type') === 'geoMarker') {
-          return null;
-        }
         return styles[feature.get('type')];
       },
     });
 
     map.addLayer(vectorLayer);
 
-    let speed, startTime;
     const speedInput = document.getElementById('speed');
     const startButton = document.getElementById('start-animation');
+    let animating = false;
+    let distance = 0;
+    let lastTime;
 
     function moveFeature(event) {
+      const speed = Number(speedInput.value);
+      const time = event.frameState.time;
+      const elapsedTime = time - lastTime;
+      distance = (distance + (speed * elapsedTime) / 1e6) % 2;
+      lastTime = time;
+
+      const currentCoordinate = route.getCoordinateAt(
+        distance > 1 ? 2 - distance : distance
+      );
+      position.setCoordinates(currentCoordinate);
       const vectorContext = getVectorContext(event);
-      const frameState = event.frameState;
-
-      if (animating) {
-        const elapsedTime = frameState.time - startTime;
-        const distance = (speed * elapsedTime) / 1e6;
-
-        if (distance >= 1) {
-          stopAnimation(true);
-          return;
-        }
-
-        const currentPoint = new Point(route.getCoordinateAt(distance));
-        const feature = new Feature(currentPoint);
-        vectorContext.drawFeature(feature, styles.geoMarker);
-      }
+      vectorContext.setStyle(styles.geoMarker);
+      vectorContext.drawGeometry(position);
       // tell OpenLayers to continue the postrender animation
       map.render();
     }
 
     function startAnimation() {
-      if (animating) {
-        stopAnimation(false);
-      } else {
-        animating = true;
-        startTime = new Date().getTime();
-        speed = speedInput.value;
-        startButton.textContent = 'Cancel Animation';
-        // hide geoMarker
-        geoMarker.changed();
-        // just in case you pan somewhere else
-        map.getView().setCenter(center);
-        vectorLayer.on('postrender', moveFeature);
-        map.render();
-      }
+      animating = true;
+      lastTime = Date.now();
+      startButton.textContent = 'Stop Animation';
+      vectorLayer.on('postrender', moveFeature);
+      // hide geoMarker and trigger map render through change event
+      geoMarker.setGeometry(null);
     }
 
-    function stopAnimation(ended) {
+    function stopAnimation() {
       animating = false;
       startButton.textContent = 'Start Animation';
 
-      // if animation cancelled set the marker at the beginning
-      const coord = route.getCoordinateAt(ended ? 1 : 0);
-      geoMarker.getGeometry().setCoordinates(coord);
-      // remove listener
+      // Keep marker at current animation position
+      geoMarker.setGeometry(position);
       vectorLayer.un('postrender', moveFeature);
     }
 
-    startButton.addEventListener('click', startAnimation, false);
+    startButton.addEventListener('click', function () {
+      if (animating) {
+        stopAnimation();
+      } else {
+        startAnimation();
+      }
+    });
   });
 });

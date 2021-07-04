@@ -16,8 +16,15 @@ const tileLayer = new TileLayer({
   }),
 });
 
+const source = new VectorSource({
+  wrapX: false,
+});
+const vector = new VectorLayer({
+  source: source,
+});
+
 const map = new Map({
-  layers: [tileLayer],
+  layers: [tileLayer, vector],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -26,17 +33,9 @@ const map = new Map({
   }),
 });
 
-const source = new VectorSource({
-  wrapX: false,
-});
-const vector = new VectorLayer({
-  source: source,
-});
-map.addLayer(vector);
-
 function addRandomFeature() {
   const x = Math.random() * 360 - 180;
-  const y = Math.random() * 180 - 90;
+  const y = Math.random() * 170 - 85;
   const geom = new Point(fromLonLat([x, y]));
   const feature = new Feature(geom);
   source.addFeature(feature);
@@ -44,14 +43,18 @@ function addRandomFeature() {
 
 const duration = 3000;
 function flash(feature) {
-  const start = new Date().getTime();
+  const start = Date.now();
+  const flashGeom = feature.getGeometry().clone();
   const listenerKey = tileLayer.on('postrender', animate);
 
   function animate(event) {
-    const vectorContext = getVectorContext(event);
     const frameState = event.frameState;
-    const flashGeom = feature.getGeometry().clone();
     const elapsed = frameState.time - start;
+    if (elapsed >= duration) {
+      unByKey(listenerKey);
+      return;
+    }
+    const vectorContext = getVectorContext(event);
     const elapsedRatio = elapsed / duration;
     // radius will be 5 at start and 30 at end.
     const radius = easeOut(elapsedRatio) * 25 + 5;
@@ -69,10 +72,6 @@ function flash(feature) {
 
     vectorContext.setStyle(style);
     vectorContext.drawGeometry(flashGeom);
-    if (elapsed > duration) {
-      unByKey(listenerKey);
-      return;
-    }
     // tell OpenLayers to continue postrender animation
     map.render();
   }
