@@ -88,6 +88,8 @@ export function toContext(context, opt_options) {
  * @api
  */
 export function getVectorContext(event) {
+  // canvas may be at a different pixel ratio than frameState.pixelRatio
+  const canvasPixelRatio = event.inversePixelTransform[0];
   const frameState = event.frameState;
   const transform = multiplyTransform(
     event.inversePixelTransform.slice(),
@@ -95,7 +97,7 @@ export function getVectorContext(event) {
   );
   const squaredTolerance = getSquaredTolerance(
     frameState.viewState.resolution,
-    frameState.pixelRatio
+    canvasPixelRatio
   );
   let userTransform;
   const userProjection = getUserProjection();
@@ -107,7 +109,7 @@ export function getVectorContext(event) {
   }
   return new CanvasImmediateRenderer(
     event.context,
-    frameState.pixelRatio,
+    canvasPixelRatio,
     frameState.extent,
     transform,
     frameState.viewState.rotation,
