@@ -77,7 +77,7 @@ class RegularShape extends ImageStyle {
      * @private
      * @type {Object<number, HTMLCanvasElement>}
      */
-    this.canvas_ = {};
+    this.canvas_ = undefined;
 
     /**
      * @private
@@ -489,28 +489,13 @@ class RegularShape extends ImageStyle {
    */
   render() {
     const renderOptions = this.createRenderOptions();
-
-    const context = createCanvasContext2D(
-      renderOptions.size,
-      renderOptions.size
-    );
-
-    this.draw_(renderOptions, context, 1);
-
-    this.canvas_ = {};
-    this.canvas_[1] = context.canvas;
-
-    // canvas.width and height are rounded to the closest integer
-    const size = context.canvas.width;
-    const imageSize = size;
+    const size = renderOptions.size;
     const displacement = this.getDisplacement();
-
-    this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
-    this.createHitDetectionCanvas_(renderOptions);
-
+    this.canvas_ = {};
     this.anchor_ = [size / 2 - displacement[0], size / 2 + displacement[1]];
     this.size_ = [size, size];
-    this.imageSize_ = [imageSize, imageSize];
+    this.imageSize_ = [size, size];
+    this.hitDetectionImageSize_ = [size, size];
   }
 
   /**
