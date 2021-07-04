@@ -340,6 +340,96 @@ class RegularShape extends ImageStyle {
   unlistenImageChange(listener) {}
 
   /**
+   * Calculate additional canvas size needed for the miter.
+   * @param {string} lineJoin Line join
+   * @param {number} strokeWidth Stroke width
+   * @param {number} miterLimit Miter limit
+   * @return {number} Additional canvas size needed
+   * @private
+   */
+  calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit) {
+    if (
+      strokeWidth === 0 ||
+      this.points_ === Infinity ||
+      (lineJoin !== 'bevel' && lineJoin !== 'miter')
+    ) {
+      return strokeWidth;
+    }
+    // m  | ^
+    // i  | |\                  .
+    // t >|  #\
+    // e  | |\ \              .
+    // r      \s\
+    //      |  \t\          .                 .
+    //          \r\                      .   .
+    //      |    \o\      .          .  . . .
+    //          e \k\            .  .    . .
+    //      |      \e\  .    .  .       . .
+    //       d      \ \  .  .          . .
+    //      | _ _a_ _\#  .            . .
+    //   r1          / `             . .
+    //      |                       . .
+    //       b     /               . .
+    //      |                     . .
+    //           / r2            . .
+    //      |                        .   .
+    //         /                           .   .
+    //      |α                                   .   .
+    //       /                                         .   .
+    //      ° center
+    let r1 = this.radius_;
+    let r2 = this.radius2_ === undefined ? r1 : this.radius2_;
+    if (r1 < r2) {
+      const tmp = r1;
+      r1 = r2;
+      r2 = tmp;
+    }
+    const points =
+      this.radius2_ === undefined ? this.points_ : this.points_ * 2;
+    const alpha = (2 * Math.PI) / points;
+    const a = r2 * Math.sin(alpha);
+    const b = Math.sqrt(r2 * r2 - a * a);
+    const d = r1 - b;
+    const e = Math.sqrt(a * a + d * d);
+    const miterRatio = e / a;
+    if (lineJoin === 'miter' && miterRatio <= miterLimit) {
+      return miterRatio * strokeWidth;
+    }
+    // Calculate the distnce from center to the stroke corner where
+    // it was cut short because of the miter limit.
+    //              l
+    //        ----+---- <= distance from center to here is maxr
+    //       /####|k ##\
+    //      /#####^#####\
+    //     /#### /+\# s #\
+    //    /### h/+++\# t #\
+    //   /### t/+++++\# r #\
+    //  /### a/+++++++\# o #\
+    // /### p/++ fill +\# k #\
+    ///#### /+++++^+++++\# e #\
+    //#####/+++++/+\+++++\#####\
+    const k = strokeWidth / 2 / miterRatio;
+    const l = (strokeWidth / 2) * (d / e);
+    const maxr = Math.sqrt((r1 + k) * (r1 + k) + l * l);
+    const bevelAdd = maxr - r1;
+    if (this.radius2_ === undefined || lineJoin === 'bevel') {
+      return bevelAdd * 2;
+    }
+    // If outer miter is over the miter limit the inner miter may reach through the
+    // center and be longer than the bevel, same calculation as above but swap r1 / r2.
+    const aa = r1 * Math.sin(alpha);
+    const bb = Math.sqrt(r1 * r1 - aa * aa);
+    const dd = r2 - bb;
+    const ee = Math.sqrt(aa * aa + dd * dd);
+    const innerMiterRatio = ee / aa;
+    if (innerMiterRatio <= miterLimit) {
+      const innerLength = (innerMiterRatio * strokeWidth) / 2 - r2 - r1;
+      return 2 * Math.max(bevelAdd, innerLength);
+    }
+    return bevelAdd * 2;
+  }
+
+  /**
    * @return {RenderOptions}  The render options
    * @protected
    */
@@ -378,8 +468,9 @@ class RegularShape extends ImageStyle {
       }
     }
 
+    const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
     const maxRadius = Math.max(this.radius_, this.radius2_ || 0);
-    const size = 2 * (maxRadius + strokeWidth) + 1;
+    const size = Math.ceil(2 * maxRadius + add);
 
     return {
       strokeStyle: strokeStyle,

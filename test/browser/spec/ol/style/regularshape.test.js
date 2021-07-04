@@ -33,14 +33,14 @@ describe('ol.style.RegularShape', function () {
     it('creates a canvas (no fill-style)', function () {
       const style = new RegularShape({radius: 10});
       expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([21, 21]);
+      expect(style.getSize()).to.eql([20, 20]);
+      expect(style.getImageSize()).to.eql([20, 20]);
       expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
+      expect(style.getAnchor()).to.eql([10, 10]);
       // no hit-detection image is created, because no fill style is set
       expect(style.getImage(1)).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+      expect(style.getHitDetectionImageSize()).to.eql([20, 20]);
     });
 
     it('creates a canvas (transparent fill-style)', function () {
@@ -51,18 +51,18 @@ describe('ol.style.RegularShape', function () {
         }),
       });
       expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getImage(1).width).to.be(21);
-      expect(style.getImage(2).width).to.be(42);
+      expect(style.getImage(1).width).to.be(20);
+      expect(style.getImage(2).width).to.be(40);
       expect(style.getPixelRatio(2)).to.be(2);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([21, 21]);
+      expect(style.getSize()).to.eql([20, 20]);
+      expect(style.getImageSize()).to.eql([20, 20]);
       expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
+      expect(style.getAnchor()).to.eql([10, 10]);
       // hit-detection image is created, because transparent fill style is set
       expect(style.getImage(1)).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
-      expect(style.getHitDetectionImage().width).to.be(21);
+      expect(style.getHitDetectionImageSize()).to.eql([20, 20]);
+      expect(style.getHitDetectionImage().width).to.be(20);
     });
 
     it('creates a canvas (non-transparent fill-style)', function () {
@@ -73,14 +73,14 @@ describe('ol.style.RegularShape', function () {
         }),
       });
       expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([21, 21]);
+      expect(style.getSize()).to.eql([20, 20]);
+      expect(style.getImageSize()).to.eql([20, 20]);
       expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
+      expect(style.getAnchor()).to.eql([10, 10]);
       // no hit-detection image is created, because non-transparent fill style is set
       expect(style.getImage(1)).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+      expect(style.getHitDetectionImageSize()).to.eql([20, 20]);
     });
 
     it('sets default displacement [0, 0]', function () {
@@ -226,6 +226,69 @@ describe('ol.style.RegularShape', function () {
       expect(canvas.arc.callCount).to.be(0);
       expect(canvas.lineTo.callCount).to.be(8);
       expect(canvas.closePath.callCount).to.be(1);
+    });
+  });
+
+  describe('#calculateLineJoinSize_', function () {
+    function create({
+      radius = 10,
+      radius2,
+      points = 4,
+      strokeWidth = 10,
+      lineJoin = 'miter',
+      miterLimit = 10,
+    }) {
+      return new RegularShape({
+        radius,
+        radius2,
+        points,
+        stroke: new Stroke({
+          color: 'red',
+          width: strokeWidth,
+          lineJoin,
+          miterLimit,
+        }),
+      });
+    }
+    describe('polygon', function () {
+      it('sets size to diameter', function () {
+        const style = create({strokeWidth: 0});
+        expect(style.getSize()).to.eql([20, 20]);
+      });
+      it('sets size to diameter rounded up', function () {
+        const style = create({radius: 9.9, strokeWidth: 0});
+        expect(style.getSize()).to.eql([20, 20]);
+      });
+      it('sets size to diameter plus miter', function () {
+        const style = create({});
+        expect(style.getSize()).to.eql([35, 35]);
+      });
+      it('sets size to diameter plus miter with miter limit', function () {
+        const style = create({miterLimit: 0});
+        expect(style.getSize()).to.eql([28, 28]);
+      });
+      it('sets size to diameter plus bevel', function () {
+        const style = create({lineJoin: 'bevel'});
+        expect(style.getSize()).to.eql([28, 28]);
+      });
+      it('sets size to diameter plus stroke width with round line join', function () {
+        const style = create({lineJoin: 'round'});
+        expect(style.getSize()).to.eql([30, 30]);
+      });
+    });
+    describe('star', function () {
+      it('sets size to diameter plus miter r1 > r2', function () {
+        const style = create({radius2: 1, miterLimit: 100});
+        expect(style.getSize()).to.eql([152, 152]);
+      });
+      it('sets size to diameter plus miter r1 < r2', function () {
+        const style = create({radius2: 2, points: 7, miterLimit: 100});
+        expect(style.getSize()).to.eql([116, 116]);
+      });
+      it('sets size with spokes through center and outer bevel', function () {
+        const style = create({radius2: 80, points: 9, strokeWidth: 90});
+        expect(style.getSize()).to.eql([213, 213]);
+      });
     });
   });
 });
