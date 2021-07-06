@@ -5,7 +5,6 @@ import express from 'express';
 import fs from 'fs';
 import fse from 'fs-extra';
 import globby from 'globby';
-import log from 'loglevelnext';
 import path from 'path';
 import pixelmatch from 'pixelmatch';
 import png from 'pngjs';
@@ -14,6 +13,7 @@ import serveStatic from 'serve-static';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import yargs from 'yargs';
+import {LogLevel} from 'loglevelnext/dist/LogLevel.js';
 import {dirname} from 'path';
 import {fileURLToPath} from 'url';
 import {hideBin} from 'yargs/helpers';
@@ -403,7 +403,7 @@ if (esMain(import.meta)) {
 
   const entries = Object.keys(config.entry).map((key) => config.entry[key]);
 
-  options.log = log.create({name: 'rendering', level: options.logLevel});
+  options.log = new LogLevel({name: 'rendering', level: options.logLevel});
 
   main(entries, options).catch((err) => {
     options.log.error(err.message);
