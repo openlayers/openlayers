@@ -91,6 +91,18 @@ describe('ol.style.RegularShape', function () {
       expect(style.getDisplacement()[0]).to.eql(0);
       expect(style.getDisplacement()[1]).to.eql(0);
     });
+    it('will use the larger radius to calculate the size', function () {
+      let style = new RegularShape({
+        radius: 10,
+        radius2: 5,
+      });
+      expect(style.getSize()).to.eql([20, 20]);
+      style = new RegularShape({
+        radius: 5,
+        radius2: 10,
+      });
+      expect(style.getSize()).to.eql([20, 20]);
+    });
 
     it('can use offset', function () {
       const style = new RegularShape({
@@ -171,6 +183,49 @@ describe('ol.style.RegularShape', function () {
       expect(original.getStroke().getColor()).to.not.eql(
         clone.getStroke().getColor()
       );
+    });
+  });
+
+  describe('#createPath_', function () {
+    let canvas;
+    beforeEach(function () {
+      canvas = {
+        arc: sinon.spy(),
+        lineTo: sinon.spy(),
+        closePath: sinon.spy(),
+      };
+    });
+    it('does not double the points without radius2', function () {
+      const style = new RegularShape({
+        radius: 10,
+        points: 4,
+      });
+      style.createPath_(canvas);
+      expect(canvas.arc.callCount).to.be(0);
+      expect(canvas.lineTo.callCount).to.be(4);
+      expect(canvas.closePath.callCount).to.be(1);
+    });
+    it('doubles the points with radius2', function () {
+      const style = new RegularShape({
+        radius: 10,
+        radius2: 12,
+        points: 4,
+      });
+      style.createPath_(canvas);
+      expect(canvas.arc.callCount).to.be(0);
+      expect(canvas.lineTo.callCount).to.be(8);
+      expect(canvas.closePath.callCount).to.be(1);
+    });
+    it('doubles the points when radius2 equals radius', function () {
+      const style = new RegularShape({
+        radius: 10,
+        radius2: 10,
+        points: 4,
+      });
+      style.createPath_(canvas);
+      expect(canvas.arc.callCount).to.be(0);
+      expect(canvas.lineTo.callCount).to.be(8);
+      expect(canvas.closePath.callCount).to.be(1);
     });
   });
 });

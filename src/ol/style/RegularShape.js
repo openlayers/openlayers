@@ -23,8 +23,8 @@ import {
  * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
  * @property {number} [radius] Radius of a regular polygon.
- * @property {number} [radius1] Outer radius of a star.
- * @property {number} [radius2] Inner radius of a star.
+ * @property {number} [radius1] First radius of a star. Ignored if radius is set.
+ * @property {number} [radius2] Second radius of a star.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
  * @property {Array<number>} [displacement=[0,0]] Displacement of the shape
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
@@ -378,7 +378,8 @@ class RegularShape extends ImageStyle {
       }
     }
 
-    const size = 2 * (this.radius_ + strokeWidth) + 1;
+    const maxRadius = Math.max(this.radius_, this.radius2_ || 0);
+    const size = 2 * (maxRadius + strokeWidth) + 1;
 
     return {
       strokeStyle: strokeStyle,
@@ -501,8 +502,8 @@ class RegularShape extends ImageStyle {
     if (points === Infinity) {
       context.arc(0, 0, radius, 0, 2 * Math.PI);
     } else {
-      const radius2 = this.radius2_ !== undefined ? this.radius2_ : radius;
-      if (radius2 !== radius) {
+      const radius2 = this.radius2_ === undefined ? radius : this.radius2_;
+      if (this.radius2_ !== undefined) {
         points *= 2;
       }
       const startAngle = this.angle_ - Math.PI / 2;
