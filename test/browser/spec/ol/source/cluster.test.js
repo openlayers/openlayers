@@ -75,6 +75,23 @@ describe('ol.source.Cluster', function () {
       expect(source.getFeatures().length).to.be(1);
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
+    it('hydrates cluster feature with additional fields', function () {
+      const feature1 = new Feature(new Point([0, 0]));
+      const feature2 = new Feature(new Point([0, 0]));
+      feature1.set('value', 1);
+      feature2.set('value', 2);
+      const source = new Cluster({
+        source: new VectorSource({
+          features: [feature1, feature2],
+        }),
+        hydrate: function (clusterFeature, features) {
+          clusterFeature.set('sum', 3);
+        },
+      });
+      source.loadFeatures(extent, 1, projection);
+      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures()[0].get('sum')).to.be(3);
+    });
   });
 
   describe('#setDistance', function () {

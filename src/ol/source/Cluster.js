@@ -38,6 +38,8 @@ import {getUid} from '../util.js';
  *   return feature.getGeometry();
  * }
  * ```
+ * @property {function(Feature, Array<Feature>):any} [hydrate] Function called after creating
+ * cluster feature
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
  * @property {VectorSource} [source] Source.
@@ -107,6 +109,12 @@ class Cluster extends VectorSource {
         assert(geometry.getType() == GeometryType.POINT, 10); // The default `geometryFunction` can only handle `Point` geometries
         return geometry;
       };
+
+    /**
+     * @type {function(Feature, Array<Feature>):any}
+     * @protected
+     */
+    this.hydrate = options.hydrate;
 
     /**
      * @type {VectorSource}
@@ -295,6 +303,9 @@ class Cluster extends VectorSource {
       centroid[1] * (1 - ratio) + searchCenter[1] * ratio,
     ]);
     const cluster = new Feature(geometry);
+    if (this.hydrate) {
+      this.hydrate(cluster, features);
+    }
     cluster.set('features', features, true);
     return cluster;
   }
