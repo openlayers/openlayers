@@ -25,7 +25,7 @@ import {getUid} from '../util.js';
  * @property {boolean} [wrapX=true] WrapX.
  * @property {number} [transition] Transition.
  * @property {string} [key] Key.
- * @property {number} [zDirection=0] ZDirection.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0] ZDirection.
  */
 
 /**

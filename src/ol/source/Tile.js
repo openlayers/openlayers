@@ -28,7 +28,7 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {boolean} [wrapX=true] WrapX.
  * @property {number} [transition] Transition.
  * @property {string} [key] Key.
- * @property {number} [zDirection=0] ZDirection.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0] ZDirection.
  */
 
 /**
@@ -108,7 +108,7 @@ class TileSource extends Source {
      * by a renderer if the views resolution does not match any resolution of the tile source.
      * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
      * will be used. If -1, the nearest higher resolution will be used.
-     * @type {number}
+     * @type {number|import("../array.js").NearestDirectionFunction}
      */
     this.zDirection = options.zDirection ? options.zDirection : 0;
   }
