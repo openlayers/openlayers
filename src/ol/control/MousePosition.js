@@ -35,8 +35,8 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @property {string} [undefinedHTML='&#160;'] Markup to show when coordinates are not
  * available (e.g. when the pointer leaves the map viewport).  By default, the last position
  * will be replaced with `'&#160;'` (`&nbsp;`) when the pointer leaves the viewport.  To
- * retain the last rendered position, set this option to something falsey (like an empty
- * string `''`).
+ * retain the last rendered position, set this option to something falsey. An exception is an
+ * empty string `''`. It does not count as falsey in this case.
  */
 
 /**
@@ -89,7 +89,8 @@ class MousePosition extends Control {
      * @private
      * @type {boolean}
      */
-    this.renderOnMouseOut_ = !!this.undefinedHTML_;
+    this.renderOnMouseOut_ =
+      this.undefinedHTML_ === '' || !!this.undefinedHTML_;
 
     /**
      * @private
