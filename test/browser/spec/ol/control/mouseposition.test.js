@@ -105,7 +105,30 @@ describe('ol/control/MousePosition', function () {
         expect(element.innerHTML).to.be('&nbsp;');
       });
 
-      it('retains the mouse position when undefinedHTML is falsey and mouse moves outside the viewport', function () {
+      it('retains the mouse position when undefinedHTML is false and mouse moves outside the viewport', function () {
+        const ctrl = new MousePosition({
+          undefinedHTML: false,
+        });
+        ctrl.setMap(map);
+        map.renderSync();
+
+        const element = document.querySelector(
+          '.ol-mouse-position',
+          map.getTarget()
+        );
+
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
+        expect(element.innerHTML).to.be('');
+
+        target.dispatchEvent(new PointerEvent('pointermove'));
+        simulateEvent(EventType.POINTERMOVE, 20, 30);
+        expect(element.innerHTML).to.be('20,-30');
+
+        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
+        expect(element.innerHTML).to.be('20,-30');
+      });
+
+      it('renders an empty string if undefinedHTML is an empty string and mouse moves outside the viewport', function () {
         const ctrl = new MousePosition({
           undefinedHTML: '',
         });
@@ -125,7 +148,7 @@ describe('ol/control/MousePosition', function () {
         expect(element.innerHTML).to.be('20,-30');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('20,-30');
+        expect(element.innerHTML).to.be('');
       });
     });
   });
