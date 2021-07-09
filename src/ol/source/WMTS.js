@@ -54,6 +54,9 @@ import {find, findIndex, includes} from '../array.js';
  * @property {boolean} [wrapX=false] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -99,6 +102,7 @@ class WMTS extends TileImage {
       urls: urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : false,
       transition: options.transition,
+      zDirection: options.zDirection,
     });
 
     /**

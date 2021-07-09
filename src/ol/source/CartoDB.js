@@ -29,6 +29,9 @@ import {assign} from '../obj.js';
  * @property {string} [account] Username as used to access public Carto dashboard at https://{username}.carto.com/.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -56,6 +59,7 @@ class CartoDB extends XYZ {
       projection: options.projection,
       transition: options.transition,
       wrapX: options.wrapX,
+      zDirection: options.zDirection,
     });
 
     /**
