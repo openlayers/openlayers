@@ -186,14 +186,6 @@ class ImageStyle {
   }
 
   /**
-   * @abstract
-   * @return {import("../size.js").Size} Size of the hit-detection image.
-   */
-  getHitDetectionImageSize() {
-    return abstract();
-  }
-
-  /**
    * Get the origin of the symbolizer.
    * @abstract
    * @return {Array<number>} Origin.

@@ -40,7 +40,6 @@ describe('ol.style.RegularShape', function () {
       // no hit-detection image is created, because no fill style is set
       expect(style.getImage(1)).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([20, 20]);
     });
 
     it('creates a canvas (transparent fill-style)', function () {
@@ -61,7 +60,6 @@ describe('ol.style.RegularShape', function () {
       // hit-detection image is created, because transparent fill style is set
       expect(style.getImage(1)).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([20, 20]);
       expect(style.getHitDetectionImage().width).to.be(20);
     });
 
@@ -80,7 +78,6 @@ describe('ol.style.RegularShape', function () {
       // no hit-detection image is created, because non-transparent fill style is set
       expect(style.getImage(1)).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([20, 20]);
     });
 
     it('sets default displacement [0, 0]', function () {

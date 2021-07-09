@@ -342,13 +342,6 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @return {import("../size.js").Size} Size of the hit-detection image.
-   */
-  getHitDetectionImageSize() {
-    return this.getImageSize();
-  }
-
-  /**
    * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {

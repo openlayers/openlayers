@@ -142,18 +142,6 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {import("../size.js").Size}
-     */
-    this.imageSize_ = null;
-
-    /**
-     * @private
-     * @type {import("../size.js").Size}
-     */
-    this.hitDetectionImageSize_ = null;
-
-    /**
-     * @private
      * @type {RenderOptions}
      */
     this.renderOptions_ = null;
@@ -257,14 +245,7 @@ class RegularShape extends ImageStyle {
    * @return {import("../size.js").Size} Image size.
    */
   getImageSize() {
-    return this.imageSize_;
-  }
-
-  /**
-   * @return {import("../size.js").Size} Size of the hit-detection image.
-   */
-  getHitDetectionImageSize() {
-    return this.hitDetectionImageSize_;
+    return this.size_;
   }
 
   /**
@@ -498,8 +479,6 @@ class RegularShape extends ImageStyle {
     this.canvas_ = {};
     this.anchor_ = [size / 2 - displacement[0], size / 2 + displacement[1]];
     this.size_ = [size, size];
-    this.imageSize_ = [size, size];
-    this.hitDetectionImageSize_ = [size, size];
   }
 
   /**
