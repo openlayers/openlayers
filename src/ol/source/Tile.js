@@ -15,6 +15,15 @@ import {
 } from '../tilegrid.js';
 import {scale as scaleSize, toSize} from '../size.js';
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     import("./TileEventType").TileSourceEventTypes, Return>} TileSourceOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
@@ -36,8 +45,6 @@ import {scale as scaleSize, toSize} from '../size.js';
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing images divided into a tile grid.
- * @template {string} EventTypes
- * @extends Source<EventTypes>
  * @abstract
  * @api
  */
@@ -53,6 +60,21 @@ class TileSource extends Source {
       state: options.state,
       wrapX: options.wrapX,
     });
+
+    /***
+     * @type {TileSourceOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {TileSourceOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {TileSourceOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

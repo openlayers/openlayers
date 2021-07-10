@@ -110,12 +110,21 @@ export class TranslateEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'translateend'|'translatestart'|'translating', Return>} TranslateOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for translating (moving) features.
  *
  * @fires TranslateEvent
- * @extends PointerInteraction<'translateend'|'translatestart'|'translating'>
  * @api
  */
 class Translate extends PointerInteraction {
@@ -126,6 +135,21 @@ class Translate extends PointerInteraction {
     const options = opt_options ? opt_options : {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
+
+    /***
+     * @type {TranslateOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {TranslateOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {TranslateOnSignature<void>}
+     */
+    this.un;
 
     /**
      * The last position we translated to.

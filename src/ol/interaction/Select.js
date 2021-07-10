@@ -134,6 +134,16 @@ export class SelectEvent extends Event {
  */
 const originalFeatureStyles = {};
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'select', SelectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'select', Return>} SelectOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for selecting vector features. By default, selected features are
@@ -147,7 +157,6 @@ const originalFeatureStyles = {};
  * Selected features are added to an internal unmanaged layer.
  *
  * @fires SelectEvent
- * @extends Interaction<'select'>
  * @api
  */
 class Select extends Interaction {
@@ -156,6 +165,21 @@ class Select extends Interaction {
    */
   constructor(opt_options) {
     super();
+
+    /***
+     * @type {SelectOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {SelectOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {SelectOnSignature<void>}
+     */
+    this.un;
 
     const options = opt_options ? opt_options : {};
 

@@ -28,3 +28,7 @@ export default {
    */
   TILELOADERROR: 'tileloaderror',
 };
+
+/**
+ * @typedef {'tileloadstart'|'tileloadend'|'tileloaderror'} TileSourceEventTypes
+ */

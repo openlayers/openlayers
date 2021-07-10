@@ -219,6 +219,17 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 const DEFAULT_MIN_ZOOM = 0;
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
+ */
+
+/**
  * @classdesc
  * A View object represents a simple 2D view of the map.
  *
@@ -288,7 +299,6 @@ const DEFAULT_MIN_ZOOM = 0;
  * the snap angle is 0), an animation will be triggered at the interaction end to
  * put back the view to a stable state;
  *
- * @extends BaseObject<'change:center'|'change:resolution'|'change:rotation'>
  * @api
  */
 class View extends BaseObject {
@@ -297,6 +307,21 @@ class View extends BaseObject {
    */
   constructor(opt_options) {
     super();
+
+    /***
+     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {ViewOnSignature<void>}
+     */
+    this.un;
 
     const options = assign({}, opt_options);
 

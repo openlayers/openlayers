@@ -164,6 +164,16 @@ export class ModifyEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'modifyend'|'modifystart', Return>} ModifyOnSignature
+ */
+
 /**
  * @classdesc
  * Interaction for modifying feature geometries.  To modify features that have
@@ -183,7 +193,6 @@ export class ModifyEvent extends Event {
  * key is pressed.  To configure the interaction with a different condition
  * for deletion, use the `deleteCondition` option.
  * @fires ModifyEvent
- * @extends PointerInteraction<'modifyend'|'modifystart'>
  * @api
  */
 class Modify extends PointerInteraction {
@@ -192,6 +201,21 @@ class Modify extends PointerInteraction {
    */
   constructor(options) {
     super(/** @type {import("./Pointer.js").Options} */ (options));
+
+    /***
+     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {ModifyOnSignature<void>}
+     */
+    this.un;
 
     /** @private */
     this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);

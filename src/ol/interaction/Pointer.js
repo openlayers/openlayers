@@ -41,9 +41,6 @@ import {getValues} from '../obj.js';
  * started. During a drag sequence the `handleDragEvent` user function is
  * called on `move` events. The drag sequence ends when the `handleUpEvent`
  * user function is called and returns `false`.
- *
- * @template {string} EventTypes
- * @extends Interaction<EventTypes>
  * @api
  */
 class PointerInteraction extends Interaction {

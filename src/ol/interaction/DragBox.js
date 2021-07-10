@@ -93,6 +93,16 @@ export class DragBoxEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend', DragBoxEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'boxcancel'|'boxdrag'|'boxend', Return>} DragBoxOnSignature
+ */
+
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
@@ -103,7 +113,6 @@ export class DragBoxEvent extends Event {
  * {@link module:ol/interaction/DragRotateAndZoom}).
  *
  * @fires DragBoxEvent
- * @extends PointerInteraction<'boxcancel'|'boxdrag'|'boxend'>
  * @api
  */
 class DragBox extends PointerInteraction {
@@ -112,6 +121,21 @@ class DragBox extends PointerInteraction {
    */
   constructor(opt_options) {
     super();
+
+    /***
+     * @type {DragBoxOnSignature<import("../Observable").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {DragBoxOnSignature<import("../Observable").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {DragBoxOnSignature<void>}
+     */
+    this.un;
 
     const options = opt_options ? opt_options : {};
 

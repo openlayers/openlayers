@@ -14,6 +14,16 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
  */
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     'change:source', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:source'|
+ *     import("../render/EventType").LayerRenderEventTypes, Return>} LayerOnSignature
+ */
+
 /**
  * @template {import("../source/Source.js").default} SourceType
  * @typedef {Object} Options
@@ -84,8 +94,6 @@ import {listen, unlistenByKey} from '../events.js';
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
  * @template {import("../source/Source.js").default} SourceType
- * @template {string} EventTypes
- * @extends BaseLayer<EventTypes|'postrender'|'prerender'>
  * @api
  */
 class Layer extends BaseLayer {
@@ -97,6 +105,21 @@ class Layer extends BaseLayer {
     delete baseOptions.source;
 
     super(baseOptions);
+
+    /***
+     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {LayerOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

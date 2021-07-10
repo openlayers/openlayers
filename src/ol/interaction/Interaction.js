@@ -5,6 +5,15 @@ import BaseObject from '../Object.js';
 import InteractionProperty from './Property.js';
 import {easeOut, linear} from '../easing.js';
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active', Return>} InteractionOnSignature
+ */
+
 /**
  * Object literal with config options for interactions.
  * @typedef {Object} InteractionOptions
@@ -27,9 +36,6 @@ import {easeOut, linear} from '../easing.js';
  * by a keyboard event not a button element event.
  * Although interactions do not have a DOM element, some of them do render
  * vectors and so are visible on the screen.
- *
- * @template {string} EventTypes
- * @extends BaseObject<EventTypes|'change:active'>
  * @api
  */
 class Interaction extends BaseObject {
@@ -38,6 +44,21 @@ class Interaction extends BaseObject {
    */
   constructor(opt_options) {
     super();
+
+    /***
+     * @type {InteractionOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {InteractionOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {InteractionOnSignature<void>}
+     */
+    this.un;
 
     if (opt_options && opt_options.handleEvent) {
       this.handleEvent = opt_options.handleEvent;

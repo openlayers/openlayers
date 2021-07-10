@@ -2,6 +2,19 @@
 
 ### Next version
 
+#### Included TypeScript declarations
+
+The [ol package](https://npmjs.com/package/ol) now includes TypeScript declarations as `*.d.ts` files.
+
+If desired, e.g. when you don't want to adjust your code after upgrading from a previous version where you used `@types/ol`, you can opt out of the included types and use third-party types by specifying aliases in the `compilerOptions` section of `tsconfig.json`, e.g.
+```json
+    "baseUrl": "./",
+    "paths": {
+      "ol": ["node_modules/@types/ol"],
+      "ol/*": ["node_modules/@types/ol/*"]
+    },
+```
+
 #### Deprecation of `image` render mode for vector tile layers
 
 `renderMode: 'image'` for vector tile layers has been deprecated. Applications continue to work, but a warning will be issued to the console. To get rid of the warning, simply remove the `renderMode` option.

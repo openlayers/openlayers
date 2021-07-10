@@ -37,6 +37,15 @@ const LEADING_DIGITS = [1, 2, 5];
  */
 const DEFAULT_DPI = 25.4 / 0.28;
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:units', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+ *     |'change:units', Return>} ScaleLineOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-scale-line'] CSS Class name.
@@ -68,7 +77,6 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * When specifying `bar` as `true`, a scalebar will be rendered instead
  * of a scaleline.
  *
- * @extends Control<'change:units'>
  * @api
  */
 class ScaleLine extends Control {
@@ -90,6 +98,21 @@ class ScaleLine extends Control {
       render: options.render,
       target: options.target,
     });
+
+    /***
+     * @type {ScaleLineOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {ScaleLineOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {ScaleLineOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

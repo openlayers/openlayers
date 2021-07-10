@@ -41,8 +41,6 @@ import {removeNode} from '../dom.js';
  * You can also extend this base for your own control class. See
  * examples/custom-controls for an example of how to do this.
  *
- * @template {string} EventTypes
- * @extends BaseObject<EventTypes>
  * @api
  */
 class Control extends BaseObject {

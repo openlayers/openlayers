@@ -37,6 +37,13 @@ export class ObjectEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent, Return> &
+ *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types, Return>} ObjectOnSignature
+ */
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -78,8 +85,6 @@ export class ObjectEvent extends Event {
  * object.unset('foo').
  *
  * @fires ObjectEvent
- * @template {string} EventTypes
- * @extends Observable<'propertychange'|EventTypes>
  * @api
  */
 class BaseObject extends Observable {
@@ -88,6 +93,21 @@ class BaseObject extends Observable {
    */
   constructor(opt_values) {
     super();
+
+    /***
+     * @type {ObjectOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {ObjectOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {ObjectOnSignature<void>}
+     */
+    this.un;
 
     // Call {@link module:ol/util.getUid} to ensure that the order of objects' ids is
     // the same as the order in which they were created.  This also helps to

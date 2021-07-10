@@ -87,6 +87,22 @@ import {removeNode} from './dom.js';
  */
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:layergroup'|'change:size'|'change:target'|'change:view'} MapObjectEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *    import("./Observable").OnSignature<MapObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default, Return> &
+ *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default, Return> &
+ *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default, Return> &
+ *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|MapObjectEventTypes|
+ *      import("./MapBrowserEventType").Types|import("./MapEventType").Types|
+ *      import("./render/EventType").MapRenderEventTypes, Return>} PluggableMapOnSignature
+ */
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
@@ -127,12 +143,6 @@ import {removeNode} from './dom.js';
  */
 
 /**
- * @fires import("./MapBrowserEvent.js").MapBrowserEvent
- * @fires import("./MapEvent.js").MapEvent
- * @fires import("./render/Event.js").default#precompose
- * @fires import("./render/Event.js").default#postcompose
- * @fires import("./render/Event.js").default#rendercomplete
- * @extends BaseObject<'change:layergroup'|'change:size'|'change:target'|'change:view'|'precompose'|'singleclick'|'click'|'dblclick'|'pointerdrag'|'pointermove'|'postrender'|'movestart'|'moveend'|'postcompose'|'rendercomplete'>
  * @api
  */
 class PluggableMap extends BaseObject {
@@ -141,6 +151,21 @@ class PluggableMap extends BaseObject {
    */
   constructor(options) {
     super();
+
+    /***
+     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {PluggableMapOnSignature<void>}
+     */
+    this.un;
 
     const optionsInternal = createOptionsInternal(options);
 

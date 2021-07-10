@@ -39,6 +39,10 @@ export const ImageSourceEventType = {
 };
 
 /**
+ * @typedef {'imageloadend'|'imageloaderror'|'imageloadstart'} ImageSourceEventTypes
+ */
+
+/**
  * @classdesc
  * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
  * type.
@@ -60,6 +64,15 @@ export class ImageSourceEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+ *     |ImageSourceEventTypes, Return>} ImageSourceOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
@@ -76,7 +89,6 @@ export class ImageSourceEvent extends Event {
  * Base class for sources providing a single image.
  * @abstract
  * @fires module:ol/source/Image.ImageSourceEvent
- * @extends Source<'imageloadend'|'imageloaderror'|'imageloadstart'>
  * @api
  */
 class ImageSource extends Source {
@@ -89,6 +101,21 @@ class ImageSource extends Source {
       projection: options.projection,
       state: options.state,
     });
+
+    /***
+     * @type {ImageSourceOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {ImageSourceOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {ImageSourceOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

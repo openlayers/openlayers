@@ -9,6 +9,18 @@ import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 
 /**
+ * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
+ *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
+ */
+
+/**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -38,8 +50,6 @@ import {clamp} from '../math.js';
  * the options is set as a {@link module:ol/Object} property on the layer object, so
  * is observable, and has get/set accessors.
  *
- * @template {string} EventTypes
- * @extends BaseObject<EventTypes|'change:extent'|'change:maxResolution'|'change:maxZoom'|'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'>
  * @api
  */
 class BaseLayer extends BaseObject {
@@ -48,6 +58,21 @@ class BaseLayer extends BaseObject {
    */
   constructor(options) {
     super();
+
+    /***
+     * @type {BaseLayerOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {BaseLayerOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {BaseLayerOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @type {Object<string, *>}

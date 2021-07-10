@@ -53,3 +53,7 @@ export default {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel',
 };
+
+/***
+ * @typedef {'singleclick'|'click'|'dblclick'|'pointerdrag'|'pointermove'} Types
+ */

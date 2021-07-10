@@ -105,18 +105,7 @@ The untranspiled sources in the `src/` folder are JSDoc type annotated. For appl
 
 ## TypeScript support
 
-When authoring in TypeScript, we recommend you try out the types that are included in the `ol` package. To use these types, make sure you have the following entry for `@types/ol` in your `package.json`'s `devDependencies` section:
-```
-{
-  ...
-  "devDependencies": {
-    ...
-    "@types/ol": "file:node_modules/ol/types",
-    ...
-  }
-}
-```
-These are auto-generated with the TypeScript compiler, and will be the default in future versions. Alternatively, you can use third-party types from [Definitely Typed](https://definitelytyped.org) (`npm install @types/ol`) or from [hanreev/types-ol](https://github.com/hanreev/types-ol).
+The [ol package](https://npmjs.com/package/ol) includes auto-generated TypeScript declarations as `*.d.ts` files.
 
 ## Supported Browsers
 

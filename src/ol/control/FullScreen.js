@@ -32,6 +32,15 @@ const FullScreenEventType = {
   LEAVEFULLSCREEN: 'leavefullscreen',
 };
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes|
+ *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|
+ *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType").Types, Return>} FullScreenOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-full-screen'] CSS class name.
@@ -66,7 +75,6 @@ const FullScreenEventType = {
  *
  * @fires FullScreenEventType#enterfullscreen
  * @fires FullScreenEventType#leavefullscreen
- * @extends Control<'enterfullscreen'|'leavefullscreen'>
  * @api
  */
 class FullScreen extends Control {
@@ -80,6 +88,21 @@ class FullScreen extends Control {
       element: document.createElement('div'),
       target: options.target,
     });
+
+    /***
+     * @type {FullScreenOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {FullScreenOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {FullScreenOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

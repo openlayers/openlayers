@@ -14,6 +14,14 @@ import {listen, unlistenByKey} from './events.js';
  * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
  */
 
+/***
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:geometry', import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types
+ *     |'change:geometry', Return>} FeatureOnSignature
+ */
+
 /**
  * @classdesc
  * A vector object for geographic features with a geometry and other
@@ -58,7 +66,6 @@ import {listen, unlistenByKey} from './events.js';
  *
  * @api
  * @template {import("./geom/Geometry.js").default} Geometry
- * @extends BaseObject<'change:geometry'>
  */
 class Feature extends BaseObject {
   /**
@@ -69,6 +76,21 @@ class Feature extends BaseObject {
    */
   constructor(opt_geometryOrProperties) {
     super();
+
+    /***
+     * @type {FeatureOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {FeatureOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {FeatureOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private

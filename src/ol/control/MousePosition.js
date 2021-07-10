@@ -22,6 +22,15 @@ const PROJECTION = 'projection';
  */
 const COORDINATE_FORMAT = 'coordinateFormat';
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:coordinateFormat'|'change:projection', Return>} MousePositionOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-mouse-position'] CSS class name.
@@ -49,7 +58,6 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * On touch devices, which usually do not have a mouse cursor, the coordinates
  * of the currently touched position are shown.
  *
- * @extends Control<'change:coordinaetFormat'|'change:projection'>
  * @api
  */
 class MousePosition extends Control {
@@ -68,6 +76,21 @@ class MousePosition extends Control {
       render: options.render,
       target: options.target,
     });
+
+    /***
+     * @type {MousePositionOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {MousePositionOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {MousePositionOnSignature<void>}
+     */
+    this.un;
 
     this.addChangeListener(PROJECTION, this.handleProjectionChanged_);
 

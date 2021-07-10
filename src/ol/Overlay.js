@@ -84,6 +84,18 @@ const Property = {
 };
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:element'|'change:map'|'change:offset'|'change:position'|
+ *   'change:positioning'} OverlayObjectEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes, Return>} OverlayOnSignature
+ */
+
+/**
  * @classdesc
  * An element to be displayed over the map and attached to a single map
  * location.  Like {@link module:ol/control/Control~Control}, Overlays are
@@ -101,7 +113,6 @@ const Property = {
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);
  *
- * @extends BaseObject<'change:element'|'change:map'|'change:offset'|'change:position'|'change:positioning'>
  * @api
  */
 class Overlay extends BaseObject {
@@ -110,6 +121,21 @@ class Overlay extends BaseObject {
    */
   constructor(options) {
     super();
+
+    /***
+     * @type {OverlayOnSignature<import("./Observable").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {OverlayOnSignature<import("./Observable").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {OverlayOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @protected

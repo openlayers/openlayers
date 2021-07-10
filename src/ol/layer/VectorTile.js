@@ -8,6 +8,16 @@ import VectorTileRenderType from './VectorTileRenderType.js';
 import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     'change:source'|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+ *     'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -75,7 +85,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options} [opt_options] Options.
- * @extends BaseVectorLayer<import("../source/VectorTile.js").default,'change:preload'|'change:useInterimTilesOnError'>
+ * @extends {BaseVectorLayer<import("../source/VectorTile.js").default>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -94,6 +104,21 @@ class VectorTileLayer extends BaseVectorLayer {
         baseOptions
       )
     );
+
+    /***
+     * @type {VectorTileLayerOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {VectorTileLayerOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {VectorTileLayerOnSignature<void>}
+     */
+    this.un;
 
     if (options.renderMode === VectorTileRenderType.IMAGE) {
       //FIXME deprecated - remove this check in v7.

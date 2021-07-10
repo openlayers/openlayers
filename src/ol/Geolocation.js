@@ -62,6 +62,21 @@ class GeolocationError extends BaseEvent {
  */
 
 /**
+ * @typedef {import("./ObjectEventType").Types|'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|
+ *    'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|
+ *    'change:trackingOptions'} GeolocationObjectEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ *   import("./Observable").OnSignature<'error', GeolocationError, Return> &
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes|
+ *     'error', Return>} GeolocationOnSignature
+ */
+
+/**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
  * The [Geolocation API](https://www.w3.org/TR/geolocation-API/)
@@ -82,7 +97,6 @@ class GeolocationError extends BaseEvent {
  *     });
  *
  * @fires module:ol/events/Event~BaseEvent#event:error
- * @extends BaseObject<'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|'change:trackingOptions'>
  * @api
  */
 class Geolocation extends BaseObject {
@@ -91,6 +105,21 @@ class Geolocation extends BaseObject {
    */
   constructor(opt_options) {
     super();
+
+    /***
+     * @type {GeolocationOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {GeolocationOnSignature<import("./Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {GeolocationOnSignature<void>}
+     */
+    this.un;
 
     const options = opt_options || {};
 

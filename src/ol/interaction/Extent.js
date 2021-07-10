@@ -74,6 +74,16 @@ export class ExtentEvent extends Event {
   }
 }
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'extentchanged', ExtentEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'extentchanged', Return>} ExtentOnSignature
+ */
+
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map.
@@ -81,7 +91,6 @@ export class ExtentEvent extends Event {
  * This interaction is only supported for mouse devices.
  *
  * @fires ExtentEvent
- * @extends PointerInteraction<'extentchanged'>
  * @api
  */
 class Extent extends PointerInteraction {
@@ -92,6 +101,21 @@ class Extent extends PointerInteraction {
     const options = opt_options || {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
+
+    /***
+     * @type {ExtentOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {ExtentOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {ExtentOnSignature<void>}
+     */
+    this.un;
 
     /**
      * Condition

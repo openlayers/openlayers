@@ -27,3 +27,7 @@ export default {
    */
   MOVEEND: 'moveend',
 };
+
+/***
+ * @typedef {'postrender'|'movestart'|'moveend'} Types
+ */

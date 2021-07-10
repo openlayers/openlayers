@@ -56,3 +56,7 @@ export default {
    */
   FEATURESLOADERROR: 'featuresloaderror',
 };
+
+/**
+ * @typedef {'addfeature'|'clear'|'removefeature'|'featuresloadstart'|'featuresloadend'|'featuresloaderror'} VectorSourceEventTypes
+ */
