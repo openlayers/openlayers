@@ -152,6 +152,12 @@ class RegularShape extends ImageStyle {
      */
     this.hitDetectionImageSize_ = null;
 
+    /**
+     * @private
+     * @type {RenderOptions}
+     */
+    this.renderOptions_ = null;
+
     this.render();
   }
 
@@ -211,9 +217,7 @@ class RegularShape extends ImageStyle {
    */
   getHitDetectionImage() {
     if (!this.hitDetectionCanvas_) {
-      const renderOptions = this.createRenderOptions();
-
-      this.createHitDetectionCanvas_(renderOptions);
+      this.createHitDetectionCanvas_(this.renderOptions_);
     }
     return this.hitDetectionCanvas_;
   }
@@ -227,7 +231,7 @@ class RegularShape extends ImageStyle {
   getImage(pixelRatio) {
     let image = this.canvas_[pixelRatio];
     if (!image) {
-      const renderOptions = this.createRenderOptions();
+      const renderOptions = this.renderOptions_;
       const context = createCanvasContext2D(
         renderOptions.size * pixelRatio,
         renderOptions.size * pixelRatio
@@ -488,8 +492,8 @@ class RegularShape extends ImageStyle {
    * @protected
    */
   render() {
-    const renderOptions = this.createRenderOptions();
-    const size = renderOptions.size;
+    this.renderOptions_ = this.createRenderOptions();
+    const size = this.renderOptions_.size;
     const displacement = this.getDisplacement();
     this.canvas_ = {};
     this.anchor_ = [size / 2 - displacement[0], size / 2 + displacement[1]];
