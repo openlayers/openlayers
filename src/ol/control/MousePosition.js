@@ -41,11 +41,13 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string} [undefinedHTML='&#160;'] Markup to show when coordinates are not
- * available (e.g. when the pointer leaves the map viewport).  By default, the last position
- * will be replaced with `'&#160;'` (`&nbsp;`) when the pointer leaves the viewport.  To
- * retain the last rendered position, set this option to something falsey. An exception is an
- * empty string `''`. It does not count as falsey in this case.
+ * @property {string|boolean} [placeholder] Markup to show when the mouse position is not
+ * available (e.g. when the pointer leaves the map viewport).  By default, a non-breaking space
+ * is rendered when the mouse leaves the viewport.  To render something else, provide a string
+ * to be used as the text content (e.g. 'no position' or '' for an empty string).  Set the placeholder
+ * to `false` to retain the last position when the mouse leaves the viewport.  In a future release, this
+ * will be the default behavior.
+ * @property {string} [undefinedHTML='&#160;'] This option is deprecated.  Use the `placeholder` option instead.
  */
 
 /**
@@ -102,18 +104,41 @@ class MousePosition extends Control {
     }
 
     /**
+     * @type {boolean}
+     * Change this to `false` when removing the deprecated `undefinedHTML` option.
+     */
+    let renderOnMouseOut = true;
+
+    /**
+     * @type {string}
+     */
+    let placeholder = '&#160;';
+
+    if ('undefinedHTML' in options) {
+      // deprecated behavior
+      if (options.undefinedHTML !== undefined) {
+        placeholder = options.undefinedHTML;
+      }
+      renderOnMouseOut = !!placeholder;
+    } else if ('placeholder' in options) {
+      if (options.placeholder === false) {
+        renderOnMouseOut = false;
+      } else {
+        placeholder = String(options.placeholder);
+      }
+    }
+
+    /**
      * @private
      * @type {string}
      */
-    this.undefinedHTML_ =
-      options.undefinedHTML !== undefined ? options.undefinedHTML : '&#160;';
+    this.placeholder_ = placeholder;
 
     /**
      * @private
      * @type {boolean}
      */
-    this.renderOnMouseOut_ =
-      this.undefinedHTML_ === '' || !!this.undefinedHTML_;
+    this.renderOnMouseOut_ = renderOnMouseOut;
 
     /**
      * @private
@@ -204,6 +229,7 @@ class MousePosition extends Control {
           listen(viewport, EventType.POINTEROUT, this.handleMouseOut, this)
         );
       }
+      this.updateHTML_(null);
     }
   }
 
@@ -234,7 +260,7 @@ class MousePosition extends Control {
    * @private
    */
   updateHTML_(pixel) {
-    let html = this.undefinedHTML_;
+    let html = this.placeholder_;
     if (pixel && this.mapProjection_) {
       if (!this.transform_) {
         const projection = this.getProjection();

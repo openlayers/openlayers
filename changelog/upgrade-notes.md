@@ -14,6 +14,17 @@ If desired, e.g. when you don't want to adjust your code after upgrading from a 
       "ol/*": ["node_modules/@types/ol/*"]
     },
 ```
+#### Deprecation of `undefinedHTML` option for the MousePosition control
+
+The `undefinedHTML` option for the MousePosition control has been deprecated and will be removed in a future release.  Use the new `placeholder` option instead.
+
+#### New `placeholder` option for the MousePosition control
+
+When the mouse position is not available, the control renders a non-breaking space.  To render somthing else instead,
+set the `placeholder` option.  If you want to retain the last position when the mouse leaves the viewport, set
+`placeholder: false`.  This will be the default behavior in a future release.
+
+The `placeholder` option has no effect if the deprecated `undefinedHTML` option is also used.  You should use the `placeholder` option instead of `undefinedHTML`.
 
 #### Deprecation of `image` render mode for vector tile layers
 
