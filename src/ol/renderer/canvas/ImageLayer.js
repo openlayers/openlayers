@@ -187,10 +187,10 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       const opacity = layerState.opacity;
       let previousAlpha;
       if (opacity !== 1) {
-        previousAlpha = this.context.globalAlpha;
-        this.context.globalAlpha = opacity;
+        previousAlpha = context.globalAlpha;
+        context.globalAlpha = opacity;
       }
-      this.context.drawImage(
+      context.drawImage(
         img,
         0,
         0,
@@ -202,7 +202,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         Math.round(dh)
       );
       if (opacity !== 1) {
-        this.context.globalAlpha = previousAlpha;
+        context.globalAlpha = previousAlpha;
       }
     }
     this.postRender(context, frameState);

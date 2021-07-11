@@ -1,3 +1,4 @@
+import CanvasImageLayerRenderer from '../../../../../../src/ol/renderer/canvas/ImageLayer.js';
 import Feature from '../../../../../../src/ol/Feature.js';
 import ImageLayer from '../../../../../../src/ol/layer/Image.js';
 import Map from '../../../../../../src/ol/Map.js';
@@ -345,6 +346,92 @@ describe('ol.renderer.canvas.ImageLayer', function () {
         expect(prerender).to.be(1);
         expect(postrender).to.be(1);
         done();
+      });
+    });
+  });
+  describe('renderFrame', function () {
+    const projection = new Projection({
+      code: 'custom-image',
+      units: 'pixels',
+      extent: [0, 0, 256, 256],
+    });
+    let renderer, layer;
+    function createLayerFrameState(extent) {
+      layer = new ImageLayer({
+        source: new Static({
+          url: 'spec/ol/data/osm-0-0-0.png',
+          imageExtent: projection.getExtent(),
+          projection: projection,
+        }),
+        extent: extent,
+      });
+      layer.getSource().image_.load();
+      renderer = layer.getRenderer();
+      renderer.renderWorlds = sinon.spy();
+      renderer.clipUnrotated = sinon.spy();
+      renderer.useContainer = function () {
+        CanvasImageLayerRenderer.prototype.useContainer.apply(this, arguments);
+        this.context = sinon.spy(this.context);
+      };
+      return {
+        pixelRatio: 1,
+        time: 1000000000000,
+        viewState: {
+          center: [0, 0],
+          projection: projection,
+          resolution: 1,
+          rotation: 0,
+        },
+        animate: false,
+        coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+        extent: [0, 0, 100, 100],
+        index: 0,
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        pixelToCoordinateTransform: [1, 0, 0, 1, 0, 0],
+        size: [100, 100],
+        viewHints: [],
+      };
+    }
+    it('does not render if layer extent does not intersect view extent', function (done) {
+      const frameState = createLayerFrameState([200, 200, 300, 300]);
+      layer.getSource().on('imageloadend', function () {
+        try {
+          expect(renderer.prepareFrame(frameState)).to.be(false);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
+    it('renders if layer extent partially intersects view extent', function (done) {
+      const frameState = createLayerFrameState([50, 50, 150, 150]);
+      layer.getSource().on('imageloadend', function () {
+        if (renderer.prepareFrame(frameState)) {
+          renderer.renderFrame(frameState, null);
+        }
+        try {
+          expect(renderer.clipUnrotated.callCount).to.be(1);
+          expect(renderer.context.drawImage.callCount).to.be(1);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
+    it('renders without clipping when layer extent covers view', function (done) {
+      const frameState = createLayerFrameState([0, 0, 100, 100]);
+      layer.getSource().on('imageloadend', function () {
+        if (renderer.prepareFrame(frameState)) {
+          renderer.renderFrame(frameState, null);
+        }
+        try {
+          expect(renderer.clipUnrotated.callCount).to.be(0);
+          expect(renderer.context.drawImage.callCount).to.be(1);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
     });
   });
