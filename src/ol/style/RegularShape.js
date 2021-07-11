@@ -233,7 +233,7 @@ class RegularShape extends ImageStyle {
         renderOptions.size * pixelRatio || 1
       );
 
-      this.draw_(renderOptions, context, 0, 0, pixelRatio || 1);
+      this.draw_(renderOptions, context, pixelRatio || 1);
 
       this.canvas_[pixelRatio || 1] = context.canvas;
     }
@@ -403,7 +403,7 @@ class RegularShape extends ImageStyle {
       renderOptions.size
     );
 
-    this.draw_(renderOptions, context, 0, 0, 1);
+    this.draw_(renderOptions, context, 1);
 
     this.canvas_ = {};
     this.canvas_[1] = context.canvas;
@@ -425,46 +425,14 @@ class RegularShape extends ImageStyle {
    * @private
    * @param {RenderOptions} renderOptions Render options.
    * @param {CanvasRenderingContext2D} context The rendering context.
-   * @param {number} x The origin for the symbol (x).
-   * @param {number} y The origin for the symbol (y).
    * @param {number} pixelRatio The pixel ratio.
    */
-  draw_(renderOptions, context, x, y, pixelRatio) {
-    let i, angle0, radiusC;
+  draw_(renderOptions, context, pixelRatio) {
+    context.scale(pixelRatio, pixelRatio);
+    // set origin to canvas center
+    context.translate(renderOptions.size / 2, renderOptions.size / 2);
 
-    // reset transform
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
-    // then move to (x, y)
-    context.translate(x, y);
-
-    context.beginPath();
-
-    let points = this.points_;
-    if (points === Infinity) {
-      context.arc(
-        renderOptions.size / 2,
-        renderOptions.size / 2,
-        this.radius_,
-        0,
-        2 * Math.PI,
-        true
-      );
-    } else {
-      const radius2 =
-        this.radius2_ !== undefined ? this.radius2_ : this.radius_;
-      if (radius2 !== this.radius_) {
-        points = 2 * points;
-      }
-      for (i = 0; i <= points; i++) {
-        angle0 = (i * 2 * Math.PI) / points - Math.PI / 2 + this.angle_;
-        radiusC = i % 2 === 0 ? this.radius_ : radius2;
-        context.lineTo(
-          renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0)
-        );
-      }
-    }
+    this.createPath_(context);
 
     if (this.fill_) {
       let color = this.fill_.getColor();
@@ -486,7 +454,6 @@ class RegularShape extends ImageStyle {
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
-    context.closePath();
   }
 
   /**
@@ -516,7 +483,7 @@ class RegularShape extends ImageStyle {
         );
         this.hitDetectionCanvas_ = context.canvas;
 
-        this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
+        this.drawHitDetectionCanvas_(renderOptions, context);
       }
     }
     if (!this.hitDetectionCanvas_) {
@@ -526,43 +493,39 @@ class RegularShape extends ImageStyle {
 
   /**
    * @private
+   * @param {CanvasRenderingContext2D} context The context to draw in.
+   */
+  createPath_(context) {
+    let points = this.points_;
+    const radius = this.radius_;
+    if (points === Infinity) {
+      context.arc(0, 0, radius, 0, 2 * Math.PI);
+    } else {
+      const radius2 = this.radius2_ !== undefined ? this.radius2_ : radius;
+      if (radius2 !== radius) {
+        points *= 2;
+      }
+      const startAngle = this.angle_ - Math.PI / 2;
+      const step = (2 * Math.PI) / points;
+      for (let i = 0; i < points; i++) {
+        const angle0 = startAngle + i * step;
+        const radiusC = i % 2 === 0 ? radius : radius2;
+        context.lineTo(radiusC * Math.cos(angle0), radiusC * Math.sin(angle0));
+      }
+      context.closePath();
+    }
+  }
+
+  /**
+   * @private
    * @param {RenderOptions} renderOptions Render options.
    * @param {CanvasRenderingContext2D} context The context.
-   * @param {number} x The origin for the symbol (x).
-   * @param {number} y The origin for the symbol (y).
    */
-  drawHitDetectionCanvas_(renderOptions, context, x, y) {
-    // move to (x, y)
-    context.translate(x, y);
+  drawHitDetectionCanvas_(renderOptions, context) {
+    // set origin to canvas center
+    context.translate(renderOptions.size / 2, renderOptions.size / 2);
 
-    context.beginPath();
-
-    let points = this.points_;
-    if (points === Infinity) {
-      context.arc(
-        renderOptions.size / 2,
-        renderOptions.size / 2,
-        this.radius_,
-        0,
-        2 * Math.PI,
-        true
-      );
-    } else {
-      const radius2 =
-        this.radius2_ !== undefined ? this.radius2_ : this.radius_;
-      if (radius2 !== this.radius_) {
-        points = 2 * points;
-      }
-      let i, radiusC, angle0;
-      for (i = 0; i <= points; i++) {
-        angle0 = (i * 2 * Math.PI) / points - Math.PI / 2 + this.angle_;
-        radiusC = i % 2 === 0 ? this.radius_ : radius2;
-        context.lineTo(
-          renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0)
-        );
-      }
-    }
+    this.createPath_(context);
 
     context.fillStyle = defaultFillStyle;
     context.fill();
@@ -575,7 +538,6 @@ class RegularShape extends ImageStyle {
       }
       context.stroke();
     }
-    context.closePath();
   }
 }
 
