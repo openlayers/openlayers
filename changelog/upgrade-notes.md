@@ -2,6 +2,8 @@
 
 ### Next version
 
+### v6.6.0
+
 #### Included TypeScript declarations
 
 The [ol package](https://npmjs.com/package/ol) now includes TypeScript declarations as `*.d.ts` files.
