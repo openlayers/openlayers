@@ -76,33 +76,6 @@ See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open 
 
 The `ol` package contains a `src/` folder with the sources, authored as [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). To use these untranspiled sources, either import modules from `ol/src` instead of `ol`, or configure your bundler with an alias pointing to `ol/src` for the `ol` package.
 
-## IntelliSense (VS Code) support
-
-The untranspiled sources in the `src/` folder are JSDoc type annotated. For applications authored in JavaScript, VS Code can get type definitions from these sources with a properly configured `jsconfig.json` in the project root:
-
-<details><summary>jsconfig.json</summary>
-
-```json
-{
-  "compilerOptions": {
-    "checkJs": true,
-    "baseUrl": "./",
-    "paths": {
-      "ol": ["node_modules/ol/src"],
-      "ol/*": ["node_modules/ol/src/*"]
-    }
-  },
-  "include": [
-    "**/*.js",
-    "node_modules/ol/**/*.js"
-  ],
-  "typeAcquisition": {
-    "exclude": ["ol"]
-  }
-}
-```
-</details>
-
 ## TypeScript support
 
 The [ol package](https://npmjs.com/package/ol) includes auto-generated TypeScript declarations as `*.d.ts` files.
