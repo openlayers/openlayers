@@ -587,6 +587,8 @@ class RegularShape extends ImageStyle {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
+      context.lineJoin = renderOptions.lineJoin;
+      context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
   }
