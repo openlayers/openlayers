@@ -494,7 +494,6 @@ class RegularShape extends ImageStyle {
    * @param {RenderOptions} renderOptions Render options.
    */
   createHitDetectionCanvas_(renderOptions) {
-    this.hitDetectionCanvas_ = this.getImage(1);
     if (this.fill_) {
       let color = this.fill_.getColor();
 
@@ -519,6 +518,9 @@ class RegularShape extends ImageStyle {
 
         this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
       }
+    }
+    if (!this.hitDetectionCanvas_) {
+      this.hitDetectionCanvas_ = this.getImage(1);
     }
   }
 
