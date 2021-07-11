@@ -23,8 +23,8 @@ import {
  * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
  * @property {number} [radius] Radius of a regular polygon.
- * @property {number} [radius1] Outer radius of a star.
- * @property {number} [radius2] Inner radius of a star.
+ * @property {number} [radius1] First radius of a star. Ignored if radius is set.
+ * @property {number} [radius2] Second radius of a star.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
  * @property {Array<number>} [displacement=[0,0]] Displacement of the shape
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
@@ -77,7 +77,7 @@ class RegularShape extends ImageStyle {
      * @private
      * @type {Object<number, HTMLCanvasElement>}
      */
-    this.canvas_ = {};
+    this.canvas_ = undefined;
 
     /**
      * @private
@@ -142,15 +142,9 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {import("../size.js").Size}
+     * @type {RenderOptions}
      */
-    this.imageSize_ = null;
-
-    /**
-     * @private
-     * @type {import("../size.js").Size}
-     */
-    this.hitDetectionImageSize_ = null;
+    this.renderOptions_ = null;
 
     this.render();
   }
@@ -211,9 +205,7 @@ class RegularShape extends ImageStyle {
    */
   getHitDetectionImage() {
     if (!this.hitDetectionCanvas_) {
-      const renderOptions = this.createRenderOptions();
-
-      this.createHitDetectionCanvas_(renderOptions);
+      this.createHitDetectionCanvas_(this.renderOptions_);
     }
     return this.hitDetectionCanvas_;
   }
@@ -225,19 +217,19 @@ class RegularShape extends ImageStyle {
    * @api
    */
   getImage(pixelRatio) {
-    if (!this.canvas_[pixelRatio || 1]) {
-      const renderOptions = this.createRenderOptions();
-
+    let image = this.canvas_[pixelRatio];
+    if (!image) {
+      const renderOptions = this.renderOptions_;
       const context = createCanvasContext2D(
-        renderOptions.size * pixelRatio || 1,
-        renderOptions.size * pixelRatio || 1
+        renderOptions.size * pixelRatio,
+        renderOptions.size * pixelRatio
       );
+      this.draw_(renderOptions, context, pixelRatio);
 
-      this.draw_(renderOptions, context, 0, 0, pixelRatio || 1);
-
-      this.canvas_[pixelRatio || 1] = context.canvas;
+      image = context.canvas;
+      this.canvas_[pixelRatio] = image;
     }
-    return this.canvas_[pixelRatio || 1];
+    return image;
   }
 
   /**
@@ -253,14 +245,7 @@ class RegularShape extends ImageStyle {
    * @return {import("../size.js").Size} Image size.
    */
   getImageSize() {
-    return this.imageSize_;
-  }
-
-  /**
-   * @return {import("../size.js").Size} Size of the hit-detection image.
-   */
-  getHitDetectionImageSize() {
-    return this.hitDetectionImageSize_;
+    return this.size_;
   }
 
   /**
@@ -340,6 +325,96 @@ class RegularShape extends ImageStyle {
   unlistenImageChange(listener) {}
 
   /**
+   * Calculate additional canvas size needed for the miter.
+   * @param {string} lineJoin Line join
+   * @param {number} strokeWidth Stroke width
+   * @param {number} miterLimit Miter limit
+   * @return {number} Additional canvas size needed
+   * @private
+   */
+  calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit) {
+    if (
+      strokeWidth === 0 ||
+      this.points_ === Infinity ||
+      (lineJoin !== 'bevel' && lineJoin !== 'miter')
+    ) {
+      return strokeWidth;
+    }
+    // m  | ^
+    // i  | |\                  .
+    // t >|  #\
+    // e  | |\ \              .
+    // r      \s\
+    //      |  \t\          .                 .
+    //          \r\                      .   .
+    //      |    \o\      .          .  . . .
+    //          e \k\            .  .    . .
+    //      |      \e\  .    .  .       . .
+    //       d      \ \  .  .          . .
+    //      | _ _a_ _\#  .            . .
+    //   r1          / `             . .
+    //      |                       . .
+    //       b     /               . .
+    //      |                     . .
+    //           / r2            . .
+    //      |                        .   .
+    //         /                           .   .
+    //      |α                                   .   .
+    //       /                                         .   .
+    //      ° center
+    let r1 = this.radius_;
+    let r2 = this.radius2_ === undefined ? r1 : this.radius2_;
+    if (r1 < r2) {
+      const tmp = r1;
+      r1 = r2;
+      r2 = tmp;
+    }
+    const points =
+      this.radius2_ === undefined ? this.points_ : this.points_ * 2;
+    const alpha = (2 * Math.PI) / points;
+    const a = r2 * Math.sin(alpha);
+    const b = Math.sqrt(r2 * r2 - a * a);
+    const d = r1 - b;
+    const e = Math.sqrt(a * a + d * d);
+    const miterRatio = e / a;
+    if (lineJoin === 'miter' && miterRatio <= miterLimit) {
+      return miterRatio * strokeWidth;
+    }
+    // Calculate the distnce from center to the stroke corner where
+    // it was cut short because of the miter limit.
+    //              l
+    //        ----+---- <= distance from center to here is maxr
+    //       /####|k ##\
+    //      /#####^#####\
+    //     /#### /+\# s #\
+    //    /### h/+++\# t #\
+    //   /### t/+++++\# r #\
+    //  /### a/+++++++\# o #\
+    // /### p/++ fill +\# k #\
+    ///#### /+++++^+++++\# e #\
+    //#####/+++++/+\+++++\#####\
+    const k = strokeWidth / 2 / miterRatio;
+    const l = (strokeWidth / 2) * (d / e);
+    const maxr = Math.sqrt((r1 + k) * (r1 + k) + l * l);
+    const bevelAdd = maxr - r1;
+    if (this.radius2_ === undefined || lineJoin === 'bevel') {
+      return bevelAdd * 2;
+    }
+    // If outer miter is over the miter limit the inner miter may reach through the
+    // center and be longer than the bevel, same calculation as above but swap r1 / r2.
+    const aa = r1 * Math.sin(alpha);
+    const bb = Math.sqrt(r1 * r1 - aa * aa);
+    const dd = r2 - bb;
+    const ee = Math.sqrt(aa * aa + dd * dd);
+    const innerMiterRatio = ee / aa;
+    if (innerMiterRatio <= miterLimit) {
+      const innerLength = (innerMiterRatio * strokeWidth) / 2 - r2 - r1;
+      return 2 * Math.max(bevelAdd, innerLength);
+    }
+    return bevelAdd * 2;
+  }
+
+  /**
    * @return {RenderOptions}  The render options
    * @protected
    */
@@ -378,7 +453,9 @@ class RegularShape extends ImageStyle {
       }
     }
 
-    const size = 2 * (this.radius_ + strokeWidth) + 1;
+    const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
+    const maxRadius = Math.max(this.radius_, this.radius2_ || 0);
+    const size = Math.ceil(2 * maxRadius + add);
 
     return {
       strokeStyle: strokeStyle,
@@ -396,75 +473,26 @@ class RegularShape extends ImageStyle {
    * @protected
    */
   render() {
-    const renderOptions = this.createRenderOptions();
-
-    const context = createCanvasContext2D(
-      renderOptions.size,
-      renderOptions.size
-    );
-
-    this.draw_(renderOptions, context, 0, 0, 1);
-
-    this.canvas_ = {};
-    this.canvas_[1] = context.canvas;
-
-    // canvas.width and height are rounded to the closest integer
-    const size = context.canvas.width;
-    const imageSize = size;
+    this.renderOptions_ = this.createRenderOptions();
+    const size = this.renderOptions_.size;
     const displacement = this.getDisplacement();
-
-    this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
-    this.createHitDetectionCanvas_(renderOptions);
-
+    this.canvas_ = {};
     this.anchor_ = [size / 2 - displacement[0], size / 2 + displacement[1]];
     this.size_ = [size, size];
-    this.imageSize_ = [imageSize, imageSize];
   }
 
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
    * @param {CanvasRenderingContext2D} context The rendering context.
-   * @param {number} x The origin for the symbol (x).
-   * @param {number} y The origin for the symbol (y).
    * @param {number} pixelRatio The pixel ratio.
    */
-  draw_(renderOptions, context, x, y, pixelRatio) {
-    let i, angle0, radiusC;
+  draw_(renderOptions, context, pixelRatio) {
+    context.scale(pixelRatio, pixelRatio);
+    // set origin to canvas center
+    context.translate(renderOptions.size / 2, renderOptions.size / 2);
 
-    // reset transform
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
-    // then move to (x, y)
-    context.translate(x, y);
-
-    context.beginPath();
-
-    let points = this.points_;
-    if (points === Infinity) {
-      context.arc(
-        renderOptions.size / 2,
-        renderOptions.size / 2,
-        this.radius_,
-        0,
-        2 * Math.PI,
-        true
-      );
-    } else {
-      const radius2 =
-        this.radius2_ !== undefined ? this.radius2_ : this.radius_;
-      if (radius2 !== this.radius_) {
-        points = 2 * points;
-      }
-      for (i = 0; i <= points; i++) {
-        angle0 = (i * 2 * Math.PI) / points - Math.PI / 2 + this.angle_;
-        radiusC = i % 2 === 0 ? this.radius_ : radius2;
-        context.lineTo(
-          renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0)
-        );
-      }
-    }
+    this.createPath_(context);
 
     if (this.fill_) {
       let color = this.fill_.getColor();
@@ -486,7 +514,6 @@ class RegularShape extends ImageStyle {
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
-    context.closePath();
   }
 
   /**
@@ -494,7 +521,6 @@ class RegularShape extends ImageStyle {
    * @param {RenderOptions} renderOptions Render options.
    */
   createHitDetectionCanvas_(renderOptions) {
-    this.hitDetectionCanvas_ = this.getImage(1);
     if (this.fill_) {
       let color = this.fill_.getColor();
 
@@ -517,8 +543,36 @@ class RegularShape extends ImageStyle {
         );
         this.hitDetectionCanvas_ = context.canvas;
 
-        this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
+        this.drawHitDetectionCanvas_(renderOptions, context);
       }
+    }
+    if (!this.hitDetectionCanvas_) {
+      this.hitDetectionCanvas_ = this.getImage(1);
+    }
+  }
+
+  /**
+   * @private
+   * @param {CanvasRenderingContext2D} context The context to draw in.
+   */
+  createPath_(context) {
+    let points = this.points_;
+    const radius = this.radius_;
+    if (points === Infinity) {
+      context.arc(0, 0, radius, 0, 2 * Math.PI);
+    } else {
+      const radius2 = this.radius2_ === undefined ? radius : this.radius2_;
+      if (this.radius2_ !== undefined) {
+        points *= 2;
+      }
+      const startAngle = this.angle_ - Math.PI / 2;
+      const step = (2 * Math.PI) / points;
+      for (let i = 0; i < points; i++) {
+        const angle0 = startAngle + i * step;
+        const radiusC = i % 2 === 0 ? radius : radius2;
+        context.lineTo(radiusC * Math.cos(angle0), radiusC * Math.sin(angle0));
+      }
+      context.closePath();
     }
   }
 
@@ -526,41 +580,12 @@ class RegularShape extends ImageStyle {
    * @private
    * @param {RenderOptions} renderOptions Render options.
    * @param {CanvasRenderingContext2D} context The context.
-   * @param {number} x The origin for the symbol (x).
-   * @param {number} y The origin for the symbol (y).
    */
-  drawHitDetectionCanvas_(renderOptions, context, x, y) {
-    // move to (x, y)
-    context.translate(x, y);
+  drawHitDetectionCanvas_(renderOptions, context) {
+    // set origin to canvas center
+    context.translate(renderOptions.size / 2, renderOptions.size / 2);
 
-    context.beginPath();
-
-    let points = this.points_;
-    if (points === Infinity) {
-      context.arc(
-        renderOptions.size / 2,
-        renderOptions.size / 2,
-        this.radius_,
-        0,
-        2 * Math.PI,
-        true
-      );
-    } else {
-      const radius2 =
-        this.radius2_ !== undefined ? this.radius2_ : this.radius_;
-      if (radius2 !== this.radius_) {
-        points = 2 * points;
-      }
-      let i, radiusC, angle0;
-      for (i = 0; i <= points; i++) {
-        angle0 = (i * 2 * Math.PI) / points - Math.PI / 2 + this.angle_;
-        radiusC = i % 2 === 0 ? this.radius_ : radius2;
-        context.lineTo(
-          renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0)
-        );
-      }
-    }
+    this.createPath_(context);
 
     context.fillStyle = defaultFillStyle;
     context.fill();
@@ -573,7 +598,6 @@ class RegularShape extends ImageStyle {
       }
       context.stroke();
     }
-    context.closePath();
   }
 }
 

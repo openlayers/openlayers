@@ -1047,34 +1047,24 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {import("../../style/Image.js").default} imageStyle Image style.
    */
   setImageStyle(imageStyle) {
-    if (!imageStyle) {
+    let imageSize;
+    if (!imageStyle || !(imageSize = imageStyle.getSize())) {
       this.image_ = null;
-    } else {
-      const imageSize = imageStyle.getSize();
-      if (!imageSize) {
-        this.image_ = null;
-      } else {
-        const imageAnchor = imageStyle.getAnchor();
-        // FIXME pixel ratio
-        const imageImage = imageStyle.getImage(1);
-        const imageOrigin = imageStyle.getOrigin();
-        const imageScale = imageStyle.getScaleArray();
-        this.imageAnchorX_ = imageAnchor[0];
-        this.imageAnchorY_ = imageAnchor[1];
-        this.imageHeight_ = imageSize[1];
-        this.image_ = imageImage;
-        this.imageOpacity_ = imageStyle.getOpacity();
-        this.imageOriginX_ = imageOrigin[0];
-        this.imageOriginY_ = imageOrigin[1];
-        this.imageRotateWithView_ = imageStyle.getRotateWithView();
-        this.imageRotation_ = imageStyle.getRotation();
-        this.imageScale_ = [
-          this.pixelRatio_ * imageScale[0],
-          this.pixelRatio_ * imageScale[1],
-        ];
-        this.imageWidth_ = imageSize[0];
-      }
+      return;
     }
+    const imageAnchor = imageStyle.getAnchor();
+    const imageOrigin = imageStyle.getOrigin();
+    this.image_ = imageStyle.getImage(this.pixelRatio_);
+    this.imageAnchorX_ = imageAnchor[0] * this.pixelRatio_;
+    this.imageAnchorY_ = imageAnchor[1] * this.pixelRatio_;
+    this.imageHeight_ = imageSize[1] * this.pixelRatio_;
+    this.imageOpacity_ = imageStyle.getOpacity();
+    this.imageOriginX_ = imageOrigin[0];
+    this.imageOriginY_ = imageOrigin[1];
+    this.imageRotateWithView_ = imageStyle.getRotateWithView();
+    this.imageRotation_ = imageStyle.getRotation();
+    this.imageScale_ = imageStyle.getScaleArray();
+    this.imageWidth_ = imageSize[0] * this.pixelRatio_;
   }
 
   /**
