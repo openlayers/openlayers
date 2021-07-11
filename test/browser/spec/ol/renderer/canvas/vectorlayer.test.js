@@ -699,4 +699,62 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       }
     });
   });
+  describe('renderFrame', function () {
+    const projection = getProjection('EPSG:3857');
+    let renderer;
+    function createLayerFrameState(extent) {
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [new Feature(new Point(getCenter(extent)))],
+        }),
+        extent: extent,
+      });
+      renderer = layer.getRenderer();
+      renderer.renderWorlds = sinon.spy();
+      renderer.clipUnrotated = sinon.spy();
+      return {
+        pixelRatio: 1,
+        time: 1000000000000,
+        viewState: {
+          center: [0, 0],
+          projection: projection,
+          resolution: 1,
+          rotation: 0,
+        },
+        animate: false,
+        coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+        extent: [-50, -50, 50, 50],
+        index: 0,
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        pixelToCoordinateTransform: [1, 0, 0, 1, 0, 0],
+        size: [100, 100],
+        viewHints: [],
+      };
+    }
+    it('does not render if layer extent does not intersect view extent', function () {
+      const frameState = createLayerFrameState([100, 100, 200, 200]);
+      if (renderer.prepareFrame(frameState)) {
+        renderer.renderFrame(frameState, null);
+      }
+      expect(renderer.renderWorlds.callCount).to.be(0);
+      expect(renderer.clipUnrotated.callCount).to.be(0);
+    });
+    it('renders if layer extent partially intersects view extent', function () {
+      const frameState = createLayerFrameState([0, 0, 100, 100]);
+      if (renderer.prepareFrame(frameState)) {
+        renderer.renderFrame(frameState, null);
+      }
+      expect(renderer.renderWorlds.callCount).to.be(1);
+      expect(renderer.clipUnrotated.callCount).to.be(1);
+    });
+    it('renders withoutt clipping when layer extent covers view', function () {
+      const frameState = createLayerFrameState([-200, -200, 200, 200]);
+      if (renderer.prepareFrame(frameState)) {
+        renderer.renderFrame(frameState, null);
+      }
+      expect(renderer.renderWorlds.callCount).to.be(1);
+      expect(renderer.clipUnrotated.callCount).to.be(0);
+    });
+  });
 });
