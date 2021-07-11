@@ -22,7 +22,7 @@ The `undefinedHTML` option for the MousePosition control has been deprecated and
 
 #### New `placeholder` option for the MousePosition control
 
-When the mouse position is not available, the control renders a non-breaking space.  To render somthing else instead,
+When the mouse position is not available, the control renders a non-breaking space.  To render something else instead,
 set the `placeholder` option.  If you want to retain the last position when the mouse leaves the viewport, set
 `placeholder: false`.  This will be the default behavior in a future release.
 
