@@ -38,10 +38,20 @@ import {getUid} from '../util.js';
  *   return feature.getGeometry();
  * }
  * ```
- * @property {function(Feature, Array<Feature>):any} [hydrate] Function called after creating
- * cluster feature
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
+ * @property {function(Point, Array<Feature>):Feature} [createClusterFeature]
+ * Function that takes cluster's ceter {@link module:ol/geom/Point} and array
+ * of {@link module:ol/Feature} included in this cluster, must return
+ * {@link module:ol/Feature} that will be used to render. Default implementation is:
+ * ```js
+ * function(point, features) {
+ *   return new Feature({
+ *     geometry: point,
+ *     features: features
+ *   });
+ * }
+ * ```
  * @property {VectorSource} [source] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -111,10 +121,10 @@ class Cluster extends VectorSource {
       };
 
     /**
-     * @type {function(Feature, Array<Feature>):any}
+     * @type {function(Point, Array<Feature>):Feature}
      * @protected
      */
-    this.hydrate = options.hydrate;
+    this.createClusterFeature = options.createClusterFeature;
 
     /**
      * @type {VectorSource}
@@ -186,6 +196,28 @@ class Cluster extends VectorSource {
    */
   setMinDistance(minDistance) {
     this.updateDistance(this.distance, minDistance);
+  }
+
+  /**
+   * Current function used to create cluster features
+   * @return {function(Point, Array<Feature>):Feature | undefined} cluster creation function
+   * @api
+   */
+  getCreateClusterFeature() {
+    return this.createClusterFeature;
+  }
+
+  /**
+   * Set function used to create cluster features
+   * @param {function(Point, Array<Feature>):Feature | undefined} createClusterFeature creation function
+   * @api
+   */
+  setCreateClusterFeature(createClusterFeature) {
+    const changed = this.createClusterFeature != createClusterFeature;
+    this.createClusterFeature = createClusterFeature;
+    if (changed) {
+      this.refresh();
+    }
   }
 
   /**
@@ -302,12 +334,14 @@ class Cluster extends VectorSource {
       centroid[0] * (1 - ratio) + searchCenter[0] * ratio,
       centroid[1] * (1 - ratio) + searchCenter[1] * ratio,
     ]);
-    const cluster = new Feature(geometry);
-    if (this.hydrate) {
-      this.hydrate(cluster, features);
+    if (this.createClusterFeature) {
+      return this.createClusterFeature(geometry, features);
+    } else {
+      return new Feature({
+        geometry,
+        features,
+      });
     }
-    cluster.set('features', features, true);
-    return cluster;
   }
 }
 
