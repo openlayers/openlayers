@@ -21,6 +21,7 @@ import {createCanvasContext2D} from '../../dom.js';
 /**
  * @abstract
  * @template {import("../../layer/Layer.js").default} LayerType
+ * @extends {LayerRenderer<LayerType>}
  */
 class CanvasLayerRenderer extends LayerRenderer {
   /**
