@@ -1480,7 +1480,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Set the target element to render this map into.
-   * @param {HTMLElement|string|undefined} target The Element or id of the Element
+   * @param {HTMLElement|string} [target] The Element or id of the Element
    *     that the map is rendered in.
    * @observable
    * @api
