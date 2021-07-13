@@ -70,6 +70,13 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 <br>
 
+[![ela-compil logo](./sponsor-logos/ela-compil.png)](https://ela.pl/)
+
+> Building systems integrations, PSIM manufacturer.
+> https://ela.pl/
+
+<br>
+
 See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
 ## ES Modules
