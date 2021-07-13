@@ -9,7 +9,6 @@ import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import {
   defaultFillStyle,
-  defaultLineCap,
   defaultLineJoin,
   defaultLineWidth,
   defaultMiterLimit,
@@ -39,7 +38,6 @@ import {
  * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
  * @property {number} strokeWidth StrokeWidth.
  * @property {number} size Size.
- * @property {CanvasLineCap} lineCap LineCap.
  * @property {Array<number>} lineDash LineDash.
  * @property {number} lineDashOffset LineDashOffset.
  * @property {CanvasLineJoin} lineJoin LineJoin.
@@ -419,7 +417,6 @@ class RegularShape extends ImageStyle {
    * @protected
    */
   createRenderOptions() {
-    let lineCap = defaultLineCap;
     let lineJoin = defaultLineJoin;
     let miterLimit = 0;
     let lineDash = null;
@@ -443,10 +440,6 @@ class RegularShape extends ImageStyle {
       if (lineJoin === undefined) {
         lineJoin = defaultLineJoin;
       }
-      lineCap = this.stroke_.getLineCap();
-      if (lineCap === undefined) {
-        lineCap = defaultLineCap;
-      }
       miterLimit = this.stroke_.getMiterLimit();
       if (miterLimit === undefined) {
         miterLimit = defaultMiterLimit;
@@ -461,7 +454,6 @@ class RegularShape extends ImageStyle {
       strokeStyle: strokeStyle,
       strokeWidth: strokeWidth,
       size: size,
-      lineCap: lineCap,
       lineDash: lineDash,
       lineDashOffset: lineDashOffset,
       lineJoin: lineJoin,
@@ -509,7 +501,6 @@ class RegularShape extends ImageStyle {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
-      context.lineCap = renderOptions.lineCap;
       context.lineJoin = renderOptions.lineJoin;
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
@@ -596,6 +587,8 @@ class RegularShape extends ImageStyle {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
+      context.lineJoin = renderOptions.lineJoin;
+      context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
   }
