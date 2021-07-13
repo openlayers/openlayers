@@ -708,7 +708,7 @@ class Draw extends PointerInteraction {
     if (this.finishCoordinate_) {
       this.modifyDrawing_(event.coordinate);
     } else {
-      this.createOrUpdateSketchPoint_(event);
+      this.createOrUpdateSketchPoint_(event.coordinate.slice());
     }
   }
 
@@ -758,11 +758,10 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../coordinate").Coordinate} coordinates Coordinate.
    * @private
    */
-  createOrUpdateSketchPoint_(event) {
-    const coordinates = event.coordinate.slice();
+  createOrUpdateSketchPoint_(coordinates) {
     if (!this.sketchPoint_) {
       this.sketchPoint_ = new Feature(new Point(coordinates));
       this.updateSketchFeatures_();
@@ -916,6 +915,7 @@ class Draw extends PointerInteraction {
       }
       this.geometryFunction_(this.sketchCoords_, geometry, projection);
     }
+    this.createOrUpdateSketchPoint_(coordinate.slice());
     this.updateSketchFeatures_();
     if (done) {
       this.finishDrawing();
@@ -942,7 +942,7 @@ class Draw extends PointerInteraction {
         this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
         const finishCoordinate = this.finishCoordinate_.slice();
         coordinates[coordinates.length - 1] = finishCoordinate;
-        this.sketchPoint_.setGeometry(new Point(finishCoordinate));
+        this.createOrUpdateSketchPoint_(finishCoordinate);
       }
       this.geometryFunction_(coordinates, geometry, projection);
       if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
@@ -955,7 +955,7 @@ class Draw extends PointerInteraction {
       if (coordinates.length >= 2) {
         const finishCoordinate = coordinates[coordinates.length - 2].slice();
         coordinates[coordinates.length - 1] = finishCoordinate;
-        this.sketchPoint_.setGeometry(new Point(finishCoordinate));
+        this.createOrUpdateSketchPoint_(finishCoordinate);
       }
       sketchLineGeom.setCoordinates(coordinates);
       this.geometryFunction_(this.sketchCoords_, geometry, projection);
