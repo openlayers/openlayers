@@ -72,8 +72,9 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 [![ela-compil logo](./sponsor-logos/ela-compil.png)](https://ela.pl/)
 
-> Building systems integrations, PSIM manufacturer.
-> https://ela.pl/
+> We develop leading Physical Security Information Management (PSIM) software.
+> OpenLayers is the core of our map engine and we love it! 
+> https://elacompil.recruitee.com/
 
 <br>
 
