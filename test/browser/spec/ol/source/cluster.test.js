@@ -99,26 +99,6 @@ describe('ol.source.Cluster', function () {
       expect(source.getFeatures().length).to.be(1);
       expect(source.getFeatures()[0].get('sum')).to.be(3);
     });
-    it('reacts setCreateClusterFeature', function () {
-      const feature1 = new Feature(new Point([0, 0]));
-      const feature2 = new Feature(new Point([0, 0]));
-      const source = new Cluster({
-        source: new VectorSource({
-          features: [feature1, feature2],
-        }),
-      });
-      source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('sum')).to.be(undefined);
-      source.setCreateClusterFeature(function (clusterPoint, features) {
-        return new Feature({
-          geometry: clusterPoint,
-          sum: features.length,
-        });
-      });
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('sum')).to.be(2);
-    });
   });
 
   describe('#setDistance', function () {

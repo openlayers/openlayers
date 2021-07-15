@@ -41,8 +41,8 @@ import {getUid} from '../util.js';
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
  * @property {function(Point, Array<Feature>):Feature} [createClusterFeature]
- * Function that takes cluster's ceter {@link module:ol/geom/Point} and array
- * of {@link module:ol/Feature} included in this cluster, must return
+ * Function that takes the cluster's center {@link module:ol/geom/Point} and an array
+ * of {@link module:ol/Feature} included in this cluster. Must return a
  * {@link module:ol/Feature} that will be used to render. Default implementation is:
  * ```js
  * function(point, features) {
@@ -196,28 +196,6 @@ class Cluster extends VectorSource {
    */
   setMinDistance(minDistance) {
     this.updateDistance(this.distance, minDistance);
-  }
-
-  /**
-   * Current function used to create cluster features
-   * @return {function(Point, Array<Feature>):Feature | undefined} cluster creation function
-   * @api
-   */
-  getCreateClusterFeature() {
-    return this.createClusterFeature;
-  }
-
-  /**
-   * Set function used to create cluster features
-   * @param {function(Point, Array<Feature>):Feature | undefined} createClusterFeature creation function
-   * @api
-   */
-  setCreateClusterFeature(createClusterFeature) {
-    const changed = this.createClusterFeature != createClusterFeature;
-    this.createClusterFeature = createClusterFeature;
-    if (changed) {
-      this.refresh();
-    }
   }
 
   /**
