@@ -383,16 +383,6 @@ class PluggableMap extends BaseObject {
     // is "defined" already.
     this.setProperties(optionsInternal.values);
 
-    this.controls.forEach(
-      /**
-       * @param {import("./control/Control.js").default} control Control.
-       * @this {PluggableMap}
-       */
-      function (control) {
-        control.setMap(this);
-      }.bind(this)
-    );
-
     this.controls.addEventListener(
       CollectionEventType.ADD,
       /**
@@ -410,16 +400,6 @@ class PluggableMap extends BaseObject {
        */
       function (event) {
         event.element.setMap(null);
-      }.bind(this)
-    );
-
-    this.interactions.forEach(
-      /**
-       * @param {import("./interaction/Interaction.js").default} interaction Interaction.
-       * @this {PluggableMap}
-       */
-      function (interaction) {
-        interaction.setMap(this);
       }.bind(this)
     );
 
@@ -442,8 +422,6 @@ class PluggableMap extends BaseObject {
         event.element.setMap(null);
       }.bind(this)
     );
-
-    this.overlays_.forEach(this.addOverlayInternal_.bind(this));
 
     this.overlays_.addEventListener(
       CollectionEventType.ADD,
@@ -473,6 +451,28 @@ class PluggableMap extends BaseObject {
         event.element.setMap(null);
       }.bind(this)
     );
+
+    this.controls.forEach(
+      /**
+       * @param {import("./control/Control.js").default} control Control.
+       * @this {PluggableMap}
+       */
+      function (control) {
+        control.setMap(this);
+      }.bind(this)
+    );
+
+    this.interactions.forEach(
+      /**
+       * @param {import("./interaction/Interaction.js").default} interaction Interaction.
+       * @this {PluggableMap}
+       */
+      function (interaction) {
+        interaction.setMap(this);
+      }.bind(this)
+    );
+
+    this.overlays_.forEach(this.addOverlayInternal_.bind(this));
   }
 
   /**
