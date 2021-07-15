@@ -1,3 +1,4 @@
+import Control from '../../../../src/ol/control/Control.js';
 import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
 import DragPan from '../../../../src/ol/interaction/DragPan.js';
 import Feature from '../../../../src/ol/Feature.js';
@@ -65,6 +66,35 @@ describe('ol.Map', function () {
 
       const containerStop = map.getOverlayContainerStopEvent();
       expect(containerStop.className).to.be('ol-overlaycontainer-stopevent');
+    });
+
+    it('calls setMap for controls added by other controls', function () {
+      let subSetMapCalled = false;
+      class SubControl extends Control {
+        setMap(map) {
+          super.setMap(map);
+          subSetMapCalled = true;
+        }
+      }
+      class MainControl extends Control {
+        setMap(map) {
+          super.setMap(map);
+          map.addControl(
+            new SubControl({
+              element: document.createElement('div'),
+            })
+          );
+        }
+      }
+      new Map({
+        target: document.createElement('div'),
+        controls: [
+          new MainControl({
+            element: document.createElement('div'),
+          }),
+        ],
+      });
+      expect(subSetMapCalled).to.be(true);
     });
   });
 
