@@ -40,6 +40,18 @@ import {getUid} from '../util.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
+ * @property {function(Point, Array<Feature>):Feature} [createClusterFeature]
+ * Function that takes the cluster's center {@link module:ol/geom/Point} and an array
+ * of {@link module:ol/Feature} included in this cluster. Must return a
+ * {@link module:ol/Feature} that will be used to render. Default implementation is:
+ * ```js
+ * function(point, features) {
+ *   return new Feature({
+ *     geometry: point,
+ *     features: features
+ *   });
+ * }
+ * ```
  * @property {VectorSource} [source] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -107,6 +119,12 @@ class Cluster extends VectorSource {
         assert(geometry.getType() == GeometryType.POINT, 10); // The default `geometryFunction` can only handle `Point` geometries
         return geometry;
       };
+
+    /**
+     * @type {function(Point, Array<Feature>):Feature}
+     * @protected
+     */
+    this.createClusterFeature = options.createClusterFeature;
 
     /**
      * @type {VectorSource}
@@ -294,9 +312,14 @@ class Cluster extends VectorSource {
       centroid[0] * (1 - ratio) + searchCenter[0] * ratio,
       centroid[1] * (1 - ratio) + searchCenter[1] * ratio,
     ]);
-    const cluster = new Feature(geometry);
-    cluster.set('features', features, true);
-    return cluster;
+    if (this.createClusterFeature) {
+      return this.createClusterFeature(geometry, features);
+    } else {
+      return new Feature({
+        geometry,
+        features,
+      });
+    }
   }
 }
 
