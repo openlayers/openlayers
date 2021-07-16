@@ -40,7 +40,7 @@ import {getUid} from '../util.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {function(Point, Array<Feature>):Feature} [createClusterFeature]
+ * @property {function(Point, Array<Feature>):Feature} [createCluster]
  * Function that takes the cluster's center {@link module:ol/geom/Point} and an array
  * of {@link module:ol/Feature} included in this cluster. Must return a
  * {@link module:ol/Feature} that will be used to render. Default implementation is:
@@ -122,9 +122,9 @@ class Cluster extends VectorSource {
 
     /**
      * @type {function(Point, Array<Feature>):Feature}
-     * @protected
+     * @private
      */
-    this.createClusterFeature = options.createClusterFeature;
+    this.createCustomCluster_ = options.createCluster;
 
     /**
      * @type {VectorSource}
@@ -312,8 +312,8 @@ class Cluster extends VectorSource {
       centroid[0] * (1 - ratio) + searchCenter[0] * ratio,
       centroid[1] * (1 - ratio) + searchCenter[1] * ratio,
     ]);
-    if (this.createClusterFeature) {
-      return this.createClusterFeature(geometry, features);
+    if (this.createCustomCluster_) {
+      return this.createCustomCluster_(geometry, features);
     } else {
       return new Feature({
         geometry,
