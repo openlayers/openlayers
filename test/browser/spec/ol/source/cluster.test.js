@@ -84,7 +84,7 @@ describe('ol.source.Cluster', function () {
         source: new VectorSource({
           features: [feature1, feature2],
         }),
-        createClusterFeature: function (clusterPoint, features) {
+        createCluster: function (clusterPoint, features) {
           let sum = 0;
           for (const ft of features) {
             sum += ft.get('value');
