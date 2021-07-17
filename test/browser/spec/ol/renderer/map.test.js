@@ -125,6 +125,59 @@ describe('ol.renderer.Map', function () {
       expect(hit.layer).to.be(layer);
       expect(hit.geometry).to.be(geometry);
     });
+
+    it('prioritizes closer features when no direct hit is found', function () {
+      map.getView().setResolution(1);
+      map.addLayer(
+        new VectorLayer({
+          style: new Style({
+            image: new Circle({
+              radius: 4,
+              fill: new Fill({
+                color: 'black',
+              }),
+            }),
+          }),
+          source: new VectorSource({
+            features: [
+              [0, -10],
+              [0, 0],
+              [0, 10],
+              [10, 0],
+            ].map((coordinate) => new Feature(new Point(coordinate))),
+          }),
+        })
+      );
+      map.renderSync();
+
+      let feature = map.forEachFeatureAtPixel(
+        map.getPixelFromCoordinate([8, 6]),
+        (feature) => feature,
+        {hitTolerance: 20}
+      );
+      expect(feature.getGeometry().getCoordinates()).to.eql([10, 0]);
+
+      feature = map.forEachFeatureAtPixel(
+        map.getPixelFromCoordinate([6, -8]),
+        (feature) => feature,
+        {hitTolerance: 20}
+      );
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, -10]);
+
+      feature = map.forEachFeatureAtPixel(
+        map.getPixelFromCoordinate([-6, -4]),
+        (feature) => feature,
+        {hitTolerance: 20}
+      );
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+
+      feature = map.forEachFeatureAtPixel(
+        map.getPixelFromCoordinate([-6, 7]),
+        (feature) => feature,
+        {hitTolerance: 20}
+      );
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, 10]);
+    });
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
