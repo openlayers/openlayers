@@ -24,7 +24,8 @@ try {
   hasImageData = false;
 }
 
-const context = document.createElement('canvas').getContext('2d');
+/** @type {CanvasRenderingContext2D} */
+let context;
 
 /**
  * @param {Uint8ClampedArray} data Image data.
@@ -35,11 +36,14 @@ const context = document.createElement('canvas').getContext('2d');
 export function newImageData(data, width, height) {
   if (hasImageData) {
     return new ImageData(data, width, height);
-  } else {
-    const imageData = context.createImageData(width, height);
-    imageData.data.set(data);
-    return imageData;
   }
+
+  if (!context) {
+    context = document.createElement('canvas').getContext('2d');
+  }
+  const imageData = context.createImageData(width, height);
+  imageData.data.set(data);
+  return imageData;
 }
 
 /* istanbul ignore next */
