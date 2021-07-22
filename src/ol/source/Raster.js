@@ -789,13 +789,6 @@ class RasterSource extends ImageSource {
     );
   }
 
-  /**
-   * @return {null} not implemented
-   */
-  getImageInternal() {
-    return null; // not implemented
-  }
-
   disposeInternal() {
     if (this.processor_) {
       this.processor_.dispose();
