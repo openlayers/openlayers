@@ -1059,7 +1059,46 @@ function createFeatureStyleFunction(
           return [nameStyle, baseStyle].concat(featureStyle.slice(1));
         }
         return nameStyle;
+      } 
+      if (style != undefined && style[0].getImage().getSrc() != DEFAULT_IMAGE_STYLE_SRC) {
+        let geometry = feature.getGeometry();
+        if (geometry.getType() == 'Polygon') {
+          geometry = new LineString(geometry.getCoordinates()[0]);
+        }
+
+        if (geometry.getType() == 'LineString') {
+          let nodestyle = style[0];
+          let canberotated = nodestyle.getImage().getSrc().indexOf('rotate') != -1;
+          let styles = [nodestyle];
+          let theEnd;
+          let dir;
+          geometry.forEachSegment(function (start, end) {
+            theEnd = end;
+           let ni;
+            if (canberotated) {
+              ni=nodestyle.getImage().clone();
+              dir = Math.PI / 2 - Math.atan2( end[1] - start[1], end[0] - start[0]);
+              ni.setRotation(dir);
+            } else ni=nodestyle.getImage();
+             
+            let ns = new Style({
+              geometry: new Point(start),
+              image: ni
+            });
+
+            styles.push(ns);
+          });
+          if (!canberotated) {
+          styles.push(new Style({
+            geometry: new Point(theEnd),
+            image: nodestyle.getImage()
+          }));
+        }
+
+          return styles;
+        }
       }
+
       return featureStyle;
     }
   );

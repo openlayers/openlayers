@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
+    <defs>
+        <polygon id="arrow" points="0 0, 5 1.75, 0 3.5" />
+        <marker id="endarrow" markerWidth="5" markerHeight="3.5" refX="0" refY="1.75" orient="auto">
+            <use xlink:href="#arrow" />
+        </marker>
+    </defs>
+    <g stroke-width="2" stroke="black" transform="translate(10,10) scale(0.5)">
+        <line y2="-10" marker-end="url(#endarrow)"/>
+    </g>
+</svg>

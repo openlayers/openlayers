@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document id="root_doc">
+    <name>Krasnaya Polyana Resort</name>
+
+
+    <Style id="easy">
+      <IconStyle>
+        <Icon>
+          <href>../arrow.svg</href>
+        </Icon>
+      </IconStyle>
+      <LineStyle>
+        <color>ffffbf00</color>
+        <width>5</width>
+      </LineStyle>
+
+    </Style>
+
+    <Style id="advanced">
+      <LineStyle>
+        <color>ff000077</color>
+        <width>5</width>
+      </LineStyle>
+    </Style>
+
+    <Style id="expert">
+      <LineStyle>
+        <color>ffFFFFFF</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+
+    <Folder>
+      <name>Pistes</name>
+      <Placemark id="piste.8A">
+        <name>8A</name>
+        <Style id="novice">
+          <IconStyle>
+            <Icon>
+              <href>../arrow.svg?rotate</href>
+            </Icon>
+          </IconStyle>
+          <LineStyle>
+            <color>ff00AA00</color>
+            <width>5</width>
+          </LineStyle>
+        </Style>
+        <LineString>
+          <coordinates>40.2484,43.663482,0 40.2484704,43.6637253,0 40.2501226,43.6644059,0 <!--   -->
+            40.2505896,43.664605,0 40.2509943,43.6647594,0 40.2514523,43.6649071,0
+            40.2527156,43.6653144,0 <!--  --> 40.2531046,43.6657745,0 40.2533131,43.6660667,0
+            40.253261,43.6666509,0 40.2530947,43.667249,0 40.2530987,43.6675655,0
+            40.2537758,43.6680395,0 40.2542169,43.6683094,0 40.2547963,43.6685242,0
+            40.2556156,43.6686923,0 40.2561701,43.6687786,0 40.256425,43.6687823,0
+            40.2576022,43.6687587,0 40.2578162,43.6686957,0 40.2580766,43.6686008,0 </coordinates>
+        </LineString>
+      </Placemark>
+
+
+      <Placemark id="piste.2B">
+        <name>2B</name>
+        <Style>
+          <IconStyle>
+            <Icon>
+              <href>../arrow.svg?rotate=1</href>
+            </Icon>
+          </IconStyle>
+          <LineStyle>
+            <color>ffffbf00</color>
+            <width>5</width>
+          </LineStyle>
+
+        </Style>
+        <LineString>
+          <coordinates> 40.2508227,43.6587085,0 40.2506491,43.6587625,0 40.2504748,43.658917,0
+            40.2504301,43.6589566,0 40.2502703,43.6590653,0 40.2502312,43.6591841,0
+            40.2496505,43.6594124,0 40.2489166,43.6596821,0 40.248866,43.6598039,0
+            40.2488662,43.6599076,0 40.2489071,43.660143,0 40.2490697,43.6602525,0
+            40.2501245,43.6607465,0 40.2510103,43.6611234,0 40.2524479,43.6614364,0
+            40.2529766,43.6614613,0 40.2535876,43.6613733,0 40.254205,43.661262,0
+            40.2547291,43.6611727,0 40.2549287,43.6612025,0 40.2549919,43.6612905,0
+            40.2548686,43.6618893,0 40.2546162,43.6623803,0 40.2543583,43.6626698,0
+            40.2541759,43.6628687,0 40.253959,43.6629586,0 40.2532608,43.6630636,0
+            40.2521651,43.6632065,0 40.2514743,43.6634663,0 40.2508426,43.663713,0
+            40.2501187,43.6639347,0 40.2499637,43.6639909,0 40.2499401,43.6641379,0
+            40.2501226,43.6644059,0 </coordinates>
+        </LineString>
+      </Placemark>
+
+    </Folder>
+
+
+    <Placemark id="K8">
+      <name>К8</name>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>../simplepost.svg</href>
+          </Icon>
+          <hotSpot y="1" x="0.5"/>
+        </IconStyle>
+        <LineStyle>
+          <color>ffff00ff</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <LineString>
+        <coordinates>40.2581816,43.6690594,0 40.2577847,43.6688271,0 40.2566954,43.6681942,0
+          40.2553457,43.6674101,0 40.2544412,43.6668846,0 40.2530346,43.6660674,0
+          40.2521884,43.6655759,0 40.2512082,43.6650064,0 40.2496549,43.6641039,0
+          40.248844,43.6636328,0 40.2485845,43.663482,0 </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark id="K2">
+      <name>К2</name>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>../powerpost.svg</href>
+          </Icon>
+          <hotSpot y="1" x="0.5"/>
+        </IconStyle>
+        <LineStyle>
+          <color>ffff00ff</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <LineString>
+        <coordinates>40.2583712,43.6680284,0 40.2575942,43.6671071,0 40.2566593,43.6659984,0
+          40.2563625,43.6656478,0 40.2557448,43.6649266,0 40.2545212,43.6634945,0
+          40.2522692,43.6608905,0 40.2512948,43.6597412,0 40.2510062,43.6594067,0
+          40.2508546,43.6592327,0</coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark id="K10">
+      <name>К10</name>
+      <Style>
+        <LineStyle>
+          <color>ffff00ff</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <LineString>
+        <coordinates> 40.2592856,43.6682493,0 40.2594409,43.668109,0 40.259785,43.6677925,0
+          40.2613836,43.6663224,0 40.2630364,43.6648025,0 40.2641124,43.663813,0
+          40.264319,43.663623,0 </coordinates>
+      </LineString>
+    </Placemark>
+
+  </Document>
+</kml>
