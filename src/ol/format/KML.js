@@ -1068,21 +1068,29 @@ function createFeatureStyleFunction(
 
         if (geometry.getType() == 'LineString') {
           let nodestyle = style[0];
-          let canberotated = nodestyle.getImage().getSrc().indexOf('rotate') != -1;
+          let imgurl=new URL(nodestyle.getImage().getSrc());
+          let rotate=imgurl.searchParams.get('rotate');
+          let canberotated = rotate != undefined;
+
           let styles = [nodestyle];
           let theEnd;
           let dir;
           geometry.forEachSegment(function (start, end) {
             theEnd = end;
            let ni;
-            if (canberotated) {
+            if (rotate) {
               ni=nodestyle.getImage().clone();
-              dir = Math.PI / 2 - Math.atan2( end[1] - start[1], end[0] - start[0]);
+              let anchor=nodestyle.getImage().getAnchor();
+              anchor=[0.5, 0.5]; // TODO detect center
+              ni.setAnchor(anchor);
+              let addangle = parseInt(rotate); 
+              dir = Math.PI / 2 - Math.atan2( end[1] - start[1], end[0] - start[0]) + addangle * 0.017453292519943295;
+            
               ni.setRotation(dir);
             } else ni=nodestyle.getImage();
              
             let ns = new Style({
-              geometry: new Point(start),
+              geometry: new Point(start), 
               image: ni
             });
 

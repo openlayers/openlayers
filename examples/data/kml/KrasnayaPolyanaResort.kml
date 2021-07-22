@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document id="root_doc">
-    <name>Krasnaya Polyana Resort</name>
+    <name>Krasnaya Polyana Resort</name> 
 
 
     <Style id="easy">
@@ -38,8 +38,9 @@
         <Style id="novice">
           <IconStyle>
             <Icon>
-              <href>../arrow.svg?rotate</href>
+              <href>../arrow.svg?rotate=2</href>
             </Icon>
+            <hotSpot y="0.5" x="0.5"/>
           </IconStyle>
           <LineStyle>
             <color>ff00AA00</color>
@@ -65,6 +66,7 @@
             <Icon>
               <href>../arrow.svg?rotate=1</href>
             </Icon>
+             <hotSpot y="0.5" x="0.5"/>
           </IconStyle>
           <LineStyle>
             <color>ffffbf00</color>
