@@ -13,6 +13,14 @@ import {getIntersection} from '../extent.js';
 import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     'change:layers', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:layers', Return>} GroupOnSignature
+ */
+
 /**
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -63,6 +71,21 @@ class LayerGroup extends BaseLayer {
     let layers = options.layers;
 
     super(baseOptions);
+
+    /***
+     * @type {GroupOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {GroupOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {GroupOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private
