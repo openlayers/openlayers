@@ -4,7 +4,6 @@ import esMain from 'es-main';
 import express from 'express';
 import fs from 'fs';
 import fse from 'fs-extra';
-import globby from 'globby';
 import path from 'path';
 import pixelmatch from 'pixelmatch';
 import png from 'pngjs';
@@ -16,6 +15,7 @@ import yargs from 'yargs';
 import {LogLevel} from 'loglevelnext/dist/LogLevel.js';
 import {dirname} from 'path';
 import {fileURLToPath} from 'url';
+import {globby} from 'globby';
 import {hideBin} from 'yargs/helpers';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
