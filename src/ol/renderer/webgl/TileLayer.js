@@ -161,6 +161,22 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @protected
+   * @param {import("../../Tile.js").default} tile Tile.
+   * @return {boolean} Tile is drawable.
+   */
+  isDrawableTile(tile) {
+    const tileLayer = this.getLayer();
+    const tileState = tile.getState();
+    const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+    return (
+      tileState == TileState.LOADED ||
+      tileState == TileState.EMPTY ||
+      (tileState == TileState.ERROR && !useInterimTilesOnError)
+    );
+  }
+
+  /**
    * Determine whether render should be called.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
@@ -222,30 +238,38 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
         const tileCoordKey = getTileCoordKey(tileCoord);
 
-        let tileTexture;
+        let tileTexture, tile;
         if (tileTextureCache.containsKey(tileCoordKey)) {
           tileTexture = tileTextureCache.get(tileCoordKey);
-        } else {
-          const tile = tileSource.getTile(
+          tile = tileTexture.tile;
+        }
+        if (!tileTexture || tileTexture.tile.key !== tileSource.getKey()) {
+          tile = tileSource.getTile(
             z,
             x,
             y,
             frameState.pixelRatio,
             viewState.projection
           );
-          tileTexture = new TileTexture(tile, tileGrid, this.helper);
-          tileTextureCache.set(tileCoordKey, tileTexture);
+          if (!tileTexture) {
+            tileTexture = new TileTexture(tile, tileGrid, this.helper);
+            tileTextureCache.set(tileCoordKey, tileTexture);
+          } else {
+            tileTexture.setTile(
+              this.isDrawableTile(tile) ? tile : tile.getInterimTile()
+            );
+          }
         }
 
         addTileTextureToLookup(tileTexturesByZ, tileTexture, z);
 
-        const tileQueueKey = tileTexture.tile.getKey();
+        const tileQueueKey = tile.getKey();
         wantedTiles[tileQueueKey] = true;
 
-        if (tileTexture.tile.getState() === TileState.IDLE) {
+        if (tile.getState() === TileState.IDLE) {
           if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
             frameState.tileQueue.enqueue([
-              tileTexture.tile,
+              tile,
               tileSourceKey,
               tileGrid.getTileCoordCenter(tileCoord),
               tileResolution,

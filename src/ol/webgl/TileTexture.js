@@ -83,14 +83,24 @@ class TileTexture extends EventTarget {
   constructor(tile, grid, helper) {
     super();
 
-    this.tile = tile;
+    /**
+     * @type {import("../DataTile.js").default|import("../ImageTile.js").default}
+     */
+    this.tile;
+
+    /**
+     * @type {Array<WebGLTexture>}
+     */
+    this.textures = [];
+    this.handleTileChange_ = this.handleTileChange_.bind(this);
+
+    this.setTile(tile);
+
     this.size = toSize(grid.getTileSize(tile.tileCoord[0]));
-    this.loaded = tile.getState() === TileState.LOADED;
 
     this.bandCount = NaN;
 
     this.helper_ = helper;
-    this.handleTileChange_ = this.handleTileChange_.bind(this);
 
     const coords = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
     coords.fromArray([
@@ -105,16 +115,24 @@ class TileTexture extends EventTarget {
     ]);
     helper.flushBufferData(coords);
     this.coords = coords;
+  }
 
-    /**
-     * @type {Array<WebGLTexture>}
-     */
-    this.textures = [];
-
-    if (this.loaded) {
-      this.uploadTile_();
-    } else {
-      tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
+  /**
+   * @param {import("../DataTile.js").default|import("../ImageTile.js").default} tile Tile.
+   */
+  setTile(tile) {
+    if (tile !== this.tile) {
+      if (this.tile) {
+        this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
+      }
+      this.tile = tile;
+      this.textures.length = 0;
+      this.loaded = tile.getState() === TileState.LOADED;
+      if (this.loaded) {
+        this.uploadTile_();
+      } else {
+        tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
+      }
     }
   }
 
