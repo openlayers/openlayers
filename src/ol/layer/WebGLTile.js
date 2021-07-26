@@ -224,7 +224,9 @@ function parseStyle(style, bandCount) {
         discard;
       }
 
-      gl_FragColor = color * ${Uniforms.TRANSITION_ALPHA};
+      gl_FragColor = color;
+      gl_FragColor.rgb *= gl_FragColor.a;
+      gl_FragColor *= ${Uniforms.TRANSITION_ALPHA};
     }`;
 
   return {
