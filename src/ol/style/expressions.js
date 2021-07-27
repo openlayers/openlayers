@@ -606,6 +606,12 @@ function getEqualOperator(operator) {
         );
       }
 
+      if (type === (ValueTypes.COLOR | ValueTypes.STRING)) {
+        // It's not possible to compare attributes with color values
+        // So force it to be treated as a string
+        type = ValueTypes.STRING;
+      }
+
       return `(${expressionToGlsl(
         context,
         args[0],
