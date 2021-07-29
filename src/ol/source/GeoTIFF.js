@@ -4,8 +4,9 @@
 import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
+import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
+import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
 import {get as getProjection} from '../proj.js';
-import {fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
 import {toSize} from '../size.js';
 
 /**
@@ -18,6 +19,14 @@ import {toSize} from '../size.js';
  * the configured min and max.
  * @property {number} [nodata] Values to discard.
  */
+
+let workerPool;
+function getWorkerPool() {
+  if (!workerPool) {
+    workerPool = new Pool(undefined, createDecoderWorker());
+  }
+  return workerPool;
+}
 
 /**
  * @param {import("geotiff/src/geotiff.js").GeoTIFF|import("geotiff/src/geotiff.js").MultiGeoTIFF} tiff A GeoTIFF.
@@ -317,7 +326,10 @@ class GeoTIFFSource extends DataTile {
     const sourceInfo = this.sourceInfo_;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       const image = this.sourceImagery_[sourceIndex][z];
-      requests[sourceIndex] = image.readRasters({window: pixelBounds});
+      requests[sourceIndex] = image.readRasters({
+        window: pixelBounds,
+        pool: getWorkerPool(),
+      });
       if (sourceInfo[sourceIndex].nodata !== undefined) {
         addAlpha = true;
       }

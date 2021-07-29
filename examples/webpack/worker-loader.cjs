@@ -9,7 +9,12 @@ module.exports = function loader() {
   build(this.resource, {minify})
     .then((chunk) => {
       for (const filePath in chunk.modules) {
-        this.addDependency(filePath);
+        try {
+          const dependency = require.resolve(filePath);
+          this.addDependency(dependency);
+        } catch (e) {
+          // empty catch block
+        }
       }
       callback(null, chunk.code);
     })
