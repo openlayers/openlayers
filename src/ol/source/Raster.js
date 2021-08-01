@@ -412,6 +412,10 @@ const RasterOperationType = {
 };
 
 /**
+ * @typedef {import("./Image.js").ImageSourceEventTypes|'beforeoperations'|'afteroperations'} RasterSourceEventTypes
+ */
+
+/**
  * @classdesc
  * Events emitted by {@link module:ol/source/Raster} instances are instances of this
  * type.
@@ -469,6 +473,16 @@ export class RasterSourceEvent extends Event {
  * be called with an array of ImageData objects from input sources.
  */
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("./Image.js").ImageSourceEventTypes, import("./Image.js").ImageSourceEvent, Return> &
+ *   import("../Observable").OnSignature<RasterSourceEventTypes, RasterSourceEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+ *     |RasterSourceEventTypes, Return>} RasterSourceOnSignature
+ */
+
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an
@@ -486,6 +500,21 @@ class RasterSource extends ImageSource {
     super({
       projection: null,
     });
+
+    /***
+     * @type {RasterSourceOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.on;
+
+    /***
+     * @type {RasterSourceOnSignature<import("../Observable.js").OnReturn>}
+     */
+    this.once;
+
+    /***
+     * @type {RasterSourceOnSignature<void>}
+     */
+    this.un;
 
     /**
      * @private
