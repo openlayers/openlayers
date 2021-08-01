@@ -250,6 +250,9 @@ describe('ol.style.expressions', function () {
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql(
         '(10.0 == a_attr4)'
       );
+      expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr4']])).to.eql(
+        `(${stringToGlsl(context, 'red')} == a_attr4)`
+      );
       expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql(
         '(10.0 != a_attr4)'
       );

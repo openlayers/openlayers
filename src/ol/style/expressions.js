@@ -606,6 +606,10 @@ function getEqualOperator(operator) {
         );
       }
 
+      // Since it's not possible to have color types here, we can leave it out
+      // This fixes issues in case the value type is ambiguously detected as a color (e.g. the string 'red')
+      type = type ^ ValueTypes.COLOR;
+
       return `(${expressionToGlsl(
         context,
         args[0],
