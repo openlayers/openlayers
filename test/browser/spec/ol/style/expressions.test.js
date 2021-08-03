@@ -235,6 +235,12 @@ describe('ol.style.expressions', function () {
       expect(expressionToGlsl(context, ['^', ['%', ['time'], 10], 2])).to.eql(
         'pow(mod(u_time, 10.0), 2.0)'
       );
+      expect(
+        expressionToGlsl(context, [
+          'abs',
+          ['-', ['get', 'attr3'], ['get', 'attr2']],
+        ])
+      ).to.eql('abs((a_attr3 - a_attr2))');
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql(
         '(10.0 > a_attr4)'
       );

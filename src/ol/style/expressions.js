@@ -27,6 +27,7 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
  *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
  *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+ *   * `['abs', value1]` returns the absolute value of `value1`
  *
  * * Transform operators:
  *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
@@ -548,6 +549,17 @@ Operators['^'] = {
       context,
       args[1]
     )})`;
+  },
+};
+
+Operators['abs'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `abs(${expressionToGlsl(context, args[0])})`;
   },
 };
 
