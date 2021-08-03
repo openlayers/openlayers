@@ -244,6 +244,7 @@ function parseStyle(style, bandCount) {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @extends BaseTileLayer<import("../source/DataTile.js").default|import("../source/TileImage.js").default>
  * @api
  */
 class WebGLTileLayer extends BaseTileLayer {
@@ -257,12 +258,10 @@ class WebGLTileLayer extends BaseTileLayer {
     delete options.style;
     super(options);
 
-    const parsedStyle = parseStyle(style || {}, 1); // TODO: get texture count from source
-
-    this.vertexShader_ = parsedStyle.vertexShader;
-    this.fragmentShader_ = parsedStyle.fragmentShader;
-    this.uniforms_ = parsedStyle.uniforms;
-    this.styleVariables_ = style.variables || {};
+    /**
+     * @type {Style}
+     */
+    this.style_ = style;
   }
 
   /**
@@ -271,10 +270,18 @@ class WebGLTileLayer extends BaseTileLayer {
    * @protected
    */
   createRenderer() {
+    const source = this.getSource();
+    const parsedStyle = parseStyle(
+      this.style_,
+      'bandCount' in source ? source.bandCount : 4
+    );
+
+    this.styleVariables_ = this.style_.variables || {};
+
     return new WebGLTileLayerRenderer(this, {
-      vertexShader: this.vertexShader_,
-      fragmentShader: this.fragmentShader_,
-      uniforms: this.uniforms_,
+      vertexShader: parsedStyle.vertexShader,
+      fragmentShader: parsedStyle.fragmentShader,
+      uniforms: parsedStyle.uniforms,
     });
   }
 

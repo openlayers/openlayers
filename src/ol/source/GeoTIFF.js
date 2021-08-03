@@ -6,6 +6,7 @@ import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
 import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
+import {getIntersection} from '../extent.js';
 import {get as getProjection} from '../proj.js';
 import {toSize} from '../size.js';
 
@@ -18,6 +19,8 @@ import {toSize} from '../size.js';
  * @property {number} [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.
  * @property {number} [nodata] Values to discard.
+ * @property {Array<number>} [samples] Indices of the samples to be read from. If not provided, all samples
+ * will be read.
  */
 
 let workerPool;
@@ -59,21 +62,23 @@ function getImagesForSource(source) {
 /**
  * @param {number|Array<number>|Array<Array<number>>} expected Expected value.
  * @param {number|Array<number>|Array<Array<number>>} got Actual value.
+ * @param {number} tolerance Accepted tolerance in fraction of expected between expected and got.
  * @param {string} message The error message.
  */
-function assertEqual(expected, got, message) {
+function assertEqual(expected, got, tolerance, message) {
   if (Array.isArray(expected)) {
     const length = expected.length;
     if (!Array.isArray(got) || length != got.length) {
       throw new Error(message);
     }
     for (let i = 0; i < length; ++i) {
-      assertEqual(expected[i], got[i], message);
+      assertEqual(expected[i], got[i], tolerance, message);
     }
     return;
   }
 
-  if (expected !== got) {
+  got = /** @type {number} */ (got);
+  if (Math.abs(expected - got) > tolerance * expected) {
     throw new Error(message);
   }
 }
@@ -133,6 +138,9 @@ function getMaxForDataType(array) {
 /**
  * @typedef Options
  * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
+ * When using multiple sources, each source must be a single-band source, or the `samples`
+ * option must be configured with a single sample index for each source. Multiple sources
+ * can only be combined when their resolution sets are equal after applying a scale.
  */
 
 /**
@@ -165,10 +173,22 @@ class GeoTIFFSource extends DataTile {
     this.sourceImagery_ = new Array(numSources);
 
     /**
+     * @type {Array<number>}
+     * @private
+     */
+    this.resolutionFactors_ = new Array(numSources);
+
+    /**
      * @type {number}
      * @private
      */
     this.samplesPerPixel_;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.addAlpha_ = false;
 
     /**
      * @type {Error}
@@ -192,7 +212,16 @@ class GeoTIFFSource extends DataTile {
   }
 
   /**
-   * @return {Error} A source loading error.
+   * @return {Error} A source loading error. When the source state is `error`, use this function
+   * to get more information about the error. To debug a faulty configuration, you may want to use
+   * a listener like
+   * ```js
+   * geotiffSource.on('change', () => {
+   *   if (geotiffSource.getState() === 'error') {
+   *     console.error(geotiffSource.getError());
+   *   }
+   * });
+   * ```
    */
   getError() {
     return this.error_;
@@ -203,6 +232,7 @@ class GeoTIFFSource extends DataTile {
    * must have the same internal tiled structure.
    * @param {Array<Array<import("geotiff/src/geotiffimage.js").GeoTIFFImage>>} sources Each source is a list of images
    * from a single GeoTIFF.
+   * @private
    */
   configure_(sources) {
     let extent;
@@ -210,6 +240,7 @@ class GeoTIFFSource extends DataTile {
     let tileSizes;
     let resolutions;
     let samplesPerPixel;
+    let minZoom = 0;
 
     const sourceCount = sources.length;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
@@ -223,12 +254,15 @@ class GeoTIFFSource extends DataTile {
 
       for (let imageIndex = 0; imageIndex < imageCount; ++imageIndex) {
         const image = images[imageIndex];
-        const imageSamplesPerPixel = image.getSamplesPerPixel();
+        const wantedSamples = this.sourceInfo_[sourceIndex].samples;
+        const imageSamplesPerPixel = wantedSamples
+          ? wantedSamples.length
+          : image.getSamplesPerPixel();
         if (!samplesPerPixel) {
           samplesPerPixel = imageSamplesPerPixel;
         } else {
           const message = `Band count mismatch for source ${sourceIndex}, got ${imageSamplesPerPixel} but expected ${samplesPerPixel}`;
-          assertEqual(samplesPerPixel, imageSamplesPerPixel, message);
+          assertEqual(samplesPerPixel, imageSamplesPerPixel, 0, message);
         }
         const level = imageCount - (imageIndex + 1);
 
@@ -247,35 +281,58 @@ class GeoTIFFSource extends DataTile {
       if (!extent) {
         extent = sourceExtent;
       } else {
-        const message = `Extent mismatch for source ${sourceIndex}, got [${sourceExtent}] but expected [${extent}]`;
-        assertEqual(extent, sourceExtent, message);
+        getIntersection(extent, sourceExtent);
       }
 
       if (!origin) {
         origin = sourceOrigin;
       } else {
         const message = `Origin mismatch for source ${sourceIndex}, got [${sourceOrigin}] but expected [${origin}]`;
-        assertEqual(origin, sourceOrigin, message);
+        assertEqual(origin, sourceOrigin, 0, message);
+      }
+
+      if (!resolutions) {
+        resolutions = sourceResolutions;
+        this.resolutionFactors_[sourceIndex] = 1;
+      } else {
+        if (resolutions.length - minZoom > sourceResolutions.length) {
+          minZoom = resolutions.length - sourceResolutions.length;
+        }
+        const resolutionFactor =
+          resolutions[resolutions.length - 1] /
+          sourceResolutions[sourceResolutions.length - 1];
+        this.resolutionFactors_[sourceIndex] = resolutionFactor;
+        const scaledSourceResolutions = sourceResolutions.map(
+          (resolution) => (resolution *= resolutionFactor)
+        );
+        const message = `Resolution mismatch for source ${sourceIndex}, got [${scaledSourceResolutions}] but expected [${resolutions}]`;
+        assertEqual(
+          resolutions.slice(minZoom, resolutions.length),
+          scaledSourceResolutions,
+          0.005,
+          message
+        );
       }
 
       if (!tileSizes) {
         tileSizes = sourceTileSizes;
       } else {
         assertEqual(
-          tileSizes,
+          tileSizes.slice(minZoom, tileSizes.length),
           sourceTileSizes,
+          0,
           `Tile size mismatch for source ${sourceIndex}`
         );
       }
 
-      if (!resolutions) {
-        resolutions = sourceResolutions;
-      } else {
-        const message = `Resolution mismatch for source ${sourceIndex}, got [${sourceResolutions}] but expected [${resolutions}]`;
-        assertEqual(resolutions, sourceResolutions, message);
-      }
-
       this.sourceImagery_[sourceIndex] = images.reverse();
+    }
+
+    for (let i = 0, ii = this.sourceImagery_.length; i < ii; ++i) {
+      const sourceImagery = this.sourceImagery_[i];
+      while (sourceImagery.length < resolutions.length) {
+        sourceImagery.unshift(undefined);
+      }
     }
 
     if (!this.getProjection()) {
@@ -297,9 +354,26 @@ class GeoTIFFSource extends DataTile {
     }
 
     this.samplesPerPixel_ = samplesPerPixel;
+    const sourceInfo = this.sourceInfo_;
+    for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+      if (sourceInfo[sourceIndex].nodata !== undefined) {
+        this.addAlpha_ = true;
+        break;
+      }
+    }
+    let additionalBands = 0;
+    if (this.addAlpha_) {
+      if (sourceCount === 2 && samplesPerPixel === 1) {
+        additionalBands = 2;
+      } else {
+        additionalBands = 1;
+      }
+    }
+    this.bandCount = samplesPerPixel * sourceCount + additionalBands;
 
     const tileGrid = new TileGrid({
       extent: extent,
+      minZoom: minZoom,
       origin: origin,
       resolutions: resolutions,
       tileSizes: tileSizes,
@@ -313,38 +387,32 @@ class GeoTIFFSource extends DataTile {
 
   loadTile_(z, x, y) {
     const size = toSize(this.tileGrid.getTileSize(z));
-    const pixelBounds = [
-      x * size[0],
-      y * size[1],
-      (x + 1) * size[0],
-      (y + 1) * size[1],
-    ];
 
     const sourceCount = this.sourceImagery_.length;
     const requests = new Array(sourceCount);
-    let addAlpha = false;
+    const addAlpha = this.addAlpha_;
+    const bandCount = this.bandCount;
+    const samplesPerPixel = this.samplesPerPixel_;
     const sourceInfo = this.sourceInfo_;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+      const source = sourceInfo[sourceIndex];
+      const resolutionFactor = this.resolutionFactors_[sourceIndex];
+      const pixelBounds = [
+        Math.round(x * (size[0] * resolutionFactor)),
+        Math.round(y * (size[1] * resolutionFactor)),
+        Math.round((x + 1) * (size[0] * resolutionFactor)),
+        Math.round((y + 1) * (size[1] * resolutionFactor)),
+      ];
       const image = this.sourceImagery_[sourceIndex][z];
       requests[sourceIndex] = image.readRasters({
         window: pixelBounds,
+        width: size[0],
+        height: size[1],
+        samples: source.samples,
         pool: getWorkerPool(),
       });
-      if (sourceInfo[sourceIndex].nodata !== undefined) {
-        addAlpha = true;
-      }
     }
 
-    const samplesPerPixel = this.samplesPerPixel_;
-    let additionalBands = 0;
-    if (addAlpha) {
-      if (sourceCount === 2 && samplesPerPixel === 1) {
-        additionalBands = 2;
-      } else {
-        additionalBands = 1;
-      }
-    }
-    const bandCount = samplesPerPixel * sourceCount + additionalBands;
     const pixelCount = size[0] * size[1];
     const dataLength = pixelCount * bandCount;
 

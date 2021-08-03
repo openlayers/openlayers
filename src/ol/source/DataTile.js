@@ -75,6 +75,11 @@ class DataTileSource extends TileSource {
     this.loader_ = options.loader;
 
     this.handleTileChange_ = this.handleTileChange_.bind(this);
+
+    /**
+     * @type {number}
+     */
+    this.bandCount = 4; // assume RGBA
   }
 
   /**
