@@ -639,7 +639,7 @@ class RasterSource extends ImageSource {
     frameState.extent = extent.slice();
     frameState.size[0] = Math.round(getWidth(extent) / resolution);
     frameState.size[1] = Math.round(getHeight(extent) / resolution);
-    frameState.time = Infinity;
+    frameState.time = Date.now();
 
     const viewState = frameState.viewState;
     viewState.center = center;
@@ -783,6 +783,8 @@ class RasterSource extends ImageSource {
     this.dispatchEvent(
       new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
     );
+    
+    requestAnimationFrame(this.changed.bind(this));
   }
 
   /**
