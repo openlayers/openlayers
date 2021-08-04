@@ -94,8 +94,6 @@ class TileTexture extends EventTarget {
     this.textures = [];
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
-    this.setTile(tile);
-
     this.size = toSize(grid.getTileSize(tile.tileCoord[0]));
 
     this.bandCount = NaN;
@@ -114,7 +112,9 @@ class TileTexture extends EventTarget {
       0,
     ]);
     helper.flushBufferData(coords);
+
     this.coords = coords;
+    this.setTile(tile);
   }
 
   /**
