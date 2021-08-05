@@ -783,7 +783,6 @@ class RasterSource extends ImageSource {
     this.dispatchEvent(
       new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
     );
-    
     requestAnimationFrame(this.changed.bind(this));
   }
 
