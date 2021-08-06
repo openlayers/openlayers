@@ -563,7 +563,7 @@ class PluggableMap extends BaseObject {
    * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
-   * @template S,T
+   * @template T
    * @api
    */
   forEachFeatureAtPixel(pixel, callback, opt_options) {
