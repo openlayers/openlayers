@@ -22,6 +22,11 @@ import {listen, unlistenByKey} from './events.js';
  *     |'change:geometry', Return>} FeatureOnSignature
  */
 
+/***
+ * @template Geometry
+ * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
+ */
+
 /**
  * @classdesc
  * A vector object for geographic features with a geometry and other
@@ -69,7 +74,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {Geometry|Object<string, *>} [opt_geometryOrProperties]
+   * @param {Geometry|ObjectWithGeometry<Geometry>} [opt_geometryOrProperties]
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
