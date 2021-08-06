@@ -144,17 +144,17 @@ class Feature extends BaseObject {
   /**
    * Clone this feature. If the original feature has a geometry it
    * is also cloned. The feature id is not set in the clone.
-   * @return {Feature} The clone.
+   * @return {Feature<Geometry>} The clone.
    * @api
    */
   clone() {
-    const clone = new Feature(
-      this.hasProperties() ? this.getProperties() : null
+    const clone = /** @type {Feature<Geometry>} */ (
+      new Feature(this.hasProperties() ? this.getProperties() : null)
     );
     clone.setGeometryName(this.getGeometryName());
     const geometry = this.getGeometry();
     if (geometry) {
-      clone.setGeometry(geometry.clone());
+      clone.setGeometry(/** @type {Geometry} */ (geometry.clone()));
     }
     const style = this.getStyle();
     if (style) {
