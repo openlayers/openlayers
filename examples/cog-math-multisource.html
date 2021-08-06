@@ -6,7 +6,8 @@ docs: >
   The GeoTIFF layer in this example calculates the Normalized Difference Vegetation Index (NDVI)
   and Normalized Difference Water Index (NDWI) from two cloud-optimized Sentinel 2 GeoTIFFs: one
   with 10 m resolution and red and a near infrared bands, and one with 60 m resolution and a short
-  wave infrared channel. The NDVI is shown as green, the NDWI as blue.
+  wave infrared channel. The NDVI is shown as green, the NDWI as blue. The 4th band is the alpha
+  band, which gets added when a source has a `nodata` value configured.
 tags: "cog, ndvi, ndwi, sentinel, geotiff"
 ---
 <div id="map" class="map"></div>

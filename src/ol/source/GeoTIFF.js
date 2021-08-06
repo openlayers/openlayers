@@ -18,9 +18,10 @@ import {toSize} from '../size.js';
  * the configured min and max.
  * @property {number} [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.
- * @property {number} [nodata] Values to discard.
- * @property {Array<number>} [samples] Indices of the samples to be read from. If not provided, all samples
- * will be read.
+ * @property {number} [nodata] Values to discard. When provided, an additional band (alpha) will be added
+ * to the data.
+ * @property {Array<number>} [bands] Indices of the bands to be read from. If not provided, all bands will
+ * be read.
  */
 
 let workerPool;
@@ -179,7 +180,7 @@ class GeoTIFFSource extends DataTile {
     this.resolutionFactors_ = new Array(numSources);
 
     /**
-     * @type {number}
+     * @type {Array<number>}
      * @private
      */
     this.samplesPerPixel_;
@@ -239,7 +240,7 @@ class GeoTIFFSource extends DataTile {
     let origin;
     let tileSizes;
     let resolutions;
-    let samplesPerPixel;
+    const samplesPerPixel = new Array(sources.length);
     let minZoom = 0;
 
     const sourceCount = sources.length;
@@ -254,16 +255,10 @@ class GeoTIFFSource extends DataTile {
 
       for (let imageIndex = 0; imageIndex < imageCount; ++imageIndex) {
         const image = images[imageIndex];
-        const wantedSamples = this.sourceInfo_[sourceIndex].samples;
-        const imageSamplesPerPixel = wantedSamples
+        const wantedSamples = this.sourceInfo_[sourceIndex].bands;
+        samplesPerPixel[sourceIndex] = wantedSamples
           ? wantedSamples.length
           : image.getSamplesPerPixel();
-        if (!samplesPerPixel) {
-          samplesPerPixel = imageSamplesPerPixel;
-        } else {
-          const message = `Band count mismatch for source ${sourceIndex}, got ${imageSamplesPerPixel} but expected ${samplesPerPixel}`;
-          assertEqual(samplesPerPixel, imageSamplesPerPixel, 0, message);
-        }
         const level = imageCount - (imageIndex + 1);
 
         if (!sourceExtent) {
@@ -347,12 +342,6 @@ class GeoTIFFSource extends DataTile {
       }
     }
 
-    if (sourceCount > 1 && samplesPerPixel !== 1) {
-      throw new Error(
-        'Expected single band GeoTIFFs when using multiple sources'
-      );
-    }
-
     this.samplesPerPixel_ = samplesPerPixel;
     const sourceInfo = this.sourceInfo_;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
@@ -361,15 +350,12 @@ class GeoTIFFSource extends DataTile {
         break;
       }
     }
-    let additionalBands = 0;
-    if (this.addAlpha_) {
-      if (sourceCount === 2 && samplesPerPixel === 1) {
-        additionalBands = 2;
-      } else {
-        additionalBands = 1;
-      }
-    }
-    this.bandCount = samplesPerPixel * sourceCount + additionalBands;
+    const additionalBands = this.addAlpha_ ? 1 : 0;
+    this.bandCount =
+      samplesPerPixel.reduce((accumulator, value) => {
+        accumulator += value;
+        return accumulator;
+      }, 0) + additionalBands;
 
     const tileGrid = new TileGrid({
       extent: extent,
@@ -408,7 +394,8 @@ class GeoTIFFSource extends DataTile {
         window: pixelBounds,
         width: size[0],
         height: size[1],
-        samples: source.samples,
+        samples: source.bands,
+        fillValue: source.nodata,
         pool: getWorkerPool(),
       });
     }
@@ -418,9 +405,9 @@ class GeoTIFFSource extends DataTile {
 
     return Promise.all(requests).then(function (sourceSamples) {
       const data = new Uint8ClampedArray(dataLength);
+      let dataIndex = 0;
       for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
         let transparent = addAlpha;
-        const sourceOffset = pixelIndex * bandCount;
         for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
           const source = sourceInfo[sourceIndex];
           let min = source.min;
@@ -437,10 +424,9 @@ class GeoTIFFSource extends DataTile {
 
           const nodata = source.nodata;
 
-          const sampleOffset = sourceOffset + sourceIndex * samplesPerPixel;
           for (
             let sampleIndex = 0;
-            sampleIndex < samplesPerPixel;
+            sampleIndex < samplesPerPixel[sourceIndex];
             ++sampleIndex
           ) {
             const sourceValue =
@@ -448,18 +434,21 @@ class GeoTIFFSource extends DataTile {
 
             const value = gain * sourceValue + bias;
             if (!addAlpha) {
-              data[sampleOffset + sampleIndex] = value;
+              data[dataIndex] = value;
             } else {
               if (sourceValue !== nodata) {
                 transparent = false;
-                data[sampleOffset + sampleIndex] = value;
+                data[dataIndex] = value;
               }
             }
+            dataIndex++;
           }
-
-          if (addAlpha && !transparent) {
-            data[sampleOffset + samplesPerPixel] = 255;
+        }
+        if (addAlpha) {
+          if (!transparent) {
+            data[dataIndex] = 255;
           }
+          dataIndex++;
         }
       }
 

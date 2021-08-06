@@ -7,17 +7,16 @@ const source = new GeoTIFF({
   sources: [
     {
       url: 'https://s2downloads.eox.at/demo/Sentinel-2/3857/R10m.tif',
-      samples: [2],
-      max: 65535,
-    },
-    {
-      url: 'https://s2downloads.eox.at/demo/Sentinel-2/3857/R10m.tif',
-      samples: [3],
+      bands: [2, 3],
+      min: 0,
+      nodata: 0,
       max: 65535,
     },
     {
       url: 'https://s2downloads.eox.at/demo/Sentinel-2/3857/R60m.tif',
-      samples: [8],
+      bands: [8],
+      min: 0,
+      nodata: 0,
       max: 65535,
     },
   ],
@@ -51,6 +50,8 @@ const map = new Map({
           ['*', 255, ndvi],
           // blue: NDWI
           ['*', 255, ndwi],
+          // alpha
+          ['band', 4],
         ],
       },
       source,
