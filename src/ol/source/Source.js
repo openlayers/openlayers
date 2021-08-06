@@ -95,6 +95,7 @@ class Source extends BaseObject {
   /**
    * Get the attribution function for the source.
    * @return {?Attribution} Attribution function.
+   * @api
    */
   getAttributions() {
     return this.attributions_;
@@ -102,6 +103,7 @@ class Source extends BaseObject {
 
   /**
    * @return {boolean} Attributions are collapsible.
+   * @api
    */
   getAttributionsCollapsible() {
     return this.attributionsCollapsible_;
