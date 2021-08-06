@@ -38,7 +38,7 @@ const TranslateEventType = {
  * {@link module:ol/render/Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
  * translated or `false` otherwise.
- * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
  */
 
 /**
@@ -49,7 +49,7 @@ const TranslateEventType = {
  * Default is {@link module:ol/events/condition.always}.
  * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
- * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default): boolean} [layers] A list of layers from which features should be
+ * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
@@ -171,7 +171,7 @@ class Translate extends PointerInteraction {
      */
     this.features_ = options.features !== undefined ? options.features : null;
 
-    /** @type {function(import("../layer/Layer.js").default): boolean} */
+    /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
     let layerFilter;
     if (options.layers) {
       if (typeof options.layers === 'function') {
@@ -188,7 +188,7 @@ class Translate extends PointerInteraction {
 
     /**
      * @private
-     * @type {function(import("../layer/Layer.js").default): boolean}
+     * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
      */
     this.layerFilter_ = layerFilter;
 

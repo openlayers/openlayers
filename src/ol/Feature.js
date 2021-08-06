@@ -11,7 +11,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 
 /**
- * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
+ * @typedef {Feature<import("./geom/Geometry.js").default>|import("./render/Feature.js").default} FeatureLike
  */
 
 /***

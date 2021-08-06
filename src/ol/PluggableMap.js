@@ -66,7 +66,7 @@ import {removeNode} from './dom.js';
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {undefined|function(import("./layer/Layer.js").default): boolean} [layerFilter] Layer filter
+ * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
  * function. The filter function will receive one argument, the
  * {@link module:ol/layer/Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
@@ -553,7 +553,7 @@ class PluggableMap extends BaseObject {
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `opt_options`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
+   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
    *     {@link module:ol/Feature feature} or
    *     {@link module:ol/render/Feature render feature} at the pixel, the second is

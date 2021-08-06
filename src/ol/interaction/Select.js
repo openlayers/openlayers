@@ -30,7 +30,7 @@ const SelectEventType = {
  * {@link module:ol/render/Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
  */
 
 /**
@@ -49,7 +49,7 @@ const SelectEventType = {
  * feature removes all from the selection.
  * See `toggle`, `add`, `remove` options for adding/removing extra features to/
  * from the selection.
- * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default): boolean} [layers]
+ * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} [layers]
  * A list of layers from which features should be selected. Alternatively, a
  * filter function can be provided. The function will be called for each layer
  * in the map and should return `true` for layers that you want to be
@@ -252,7 +252,7 @@ class Select extends Interaction {
      */
     this.features_ = options.features || new Collection();
 
-    /** @type {function(import("../layer/Layer.js").default): boolean} */
+    /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
     let layerFilter;
     if (options.layers) {
       if (typeof options.layers === 'function') {
@@ -269,7 +269,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {function(import("../layer/Layer.js").default): boolean}
+     * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
      */
     this.layerFilter_ = layerFilter;
 
