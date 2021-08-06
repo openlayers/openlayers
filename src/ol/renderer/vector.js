@@ -13,7 +13,7 @@ import {getUid} from '../util.js';
  * unmanaged layers. The third is the {@link module:ol/geom/SimpleGeometry} of the feature. For features
  * with a GeometryCollection geometry, it will be the first detected geometry from the collection.
  * @template T
- * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default, import("../geom/SimpleGeometry.js").default): T} FeatureCallback
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>, import("../geom/SimpleGeometry.js").default): T} FeatureCallback
  */
 
 /**

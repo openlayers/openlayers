@@ -1167,7 +1167,11 @@ class Modify extends PointerInteraction {
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
-          geometry = geometry || feature.getGeometry();
+          geometry =
+            geometry ||
+            /** @type {import("../geom/SimpleGeometry").default} */ (
+              feature.getGeometry()
+            );
           if (
             geometry.getType() === GeometryType.POINT &&
             includes(this.features_.getArray(), feature)

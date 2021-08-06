@@ -11,7 +11,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 
 /**
- * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
+ * @typedef {Feature<import("./geom/Geometry.js").default>|import("./render/Feature.js").default} FeatureLike
  */
 
 /***
@@ -20,6 +20,11 @@ import {listen, unlistenByKey} from './events.js';
  *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:geometry', import("./Object").ObjectEvent, Return> &
  *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types
  *     |'change:geometry', Return>} FeatureOnSignature
+ */
+
+/***
+ * @template Geometry
+ * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
  */
 
 /**
@@ -69,7 +74,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {Geometry|Object<string, *>} [opt_geometryOrProperties]
+   * @param {Geometry|ObjectWithGeometry<Geometry>} [opt_geometryOrProperties]
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
@@ -144,17 +149,17 @@ class Feature extends BaseObject {
   /**
    * Clone this feature. If the original feature has a geometry it
    * is also cloned. The feature id is not set in the clone.
-   * @return {Feature} The clone.
+   * @return {Feature<Geometry>} The clone.
    * @api
    */
   clone() {
-    const clone = new Feature(
-      this.hasProperties() ? this.getProperties() : null
+    const clone = /** @type {Feature<Geometry>} */ (
+      new Feature(this.hasProperties() ? this.getProperties() : null)
     );
     clone.setGeometryName(this.getGeometryName());
     const geometry = this.getGeometry();
     if (geometry) {
-      clone.setGeometry(geometry.clone());
+      clone.setGeometry(/** @type {Geometry} */ (geometry.clone()));
     }
     const style = this.getStyle();
     if (style) {

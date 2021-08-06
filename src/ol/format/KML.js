@@ -1882,8 +1882,12 @@ function readStyle(node, objectStack) {
           const geometry = feature.getGeometry();
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
+            const collection =
+              /** @type {import("../geom/GeometryCollection").default} */ (
+                geometry
+              );
             return new GeometryCollection(
-              geometry
+              collection
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
@@ -1911,8 +1915,12 @@ function readStyle(node, objectStack) {
           const geometry = feature.getGeometry();
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
+            const collection =
+              /** @type {import("../geom/GeometryCollection").default} */ (
+                geometry
+              );
             return new GeometryCollection(
-              geometry
+              collection
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
