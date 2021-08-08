@@ -596,9 +596,9 @@ function getEqualOperator(operator) {
       // find common type
       let type = ValueTypes.ANY;
       for (let i = 0; i < args.length; i++) {
-        type = type & getValueType(args[i]);
+        type &= getValueType(args[i]);
       }
-      if (type === 0) {
+      if (type === ValueTypes.NONE) {
         throw new Error(
           `All arguments should be of compatible type, got ${JSON.stringify(
             args
@@ -608,7 +608,7 @@ function getEqualOperator(operator) {
 
       // Since it's not possible to have color types here, we can leave it out
       // This fixes issues in case the value type is ambiguously detected as a color (e.g. the string 'red')
-      type = type ^ ValueTypes.COLOR;
+      type &= ~ValueTypes.COLOR;
 
       return `(${expressionToGlsl(
         context,
