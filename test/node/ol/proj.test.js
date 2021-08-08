@@ -219,18 +219,17 @@ describe('ol/proj.js', function () {
       _testAllEquivalent(['EPSG:3857', 'EPSG:3857']);
     });
 
-    it(
-      'gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326, ' +
-        'urn:x-ogc:def:crs:EPSG:6.6:4326 are equivalent',
-      function () {
-        _testAllEquivalent([
-          'CRS:84',
-          'urn:ogc:def:crs:EPSG:6.6:4326',
-          'urn:x-ogc:def:crs:EPSG:6.6:4326',
-          'EPSG:4326',
-        ]);
-      }
-    );
+    it('treats EPSG:4326 variants as equivalent', function () {
+      _testAllEquivalent([
+        'CRS:84',
+        'urn:ogc:def:crs:EPSG:6.6:4326',
+        'urn:x-ogc:def:crs:EPSG:6.6:4326',
+        'EPSG:4326',
+        'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+        'http://www.opengis.net/gml/srs/epsg.xml#4326',
+        'http://www.opengis.net/def/crs/EPSG/0/4326',
+      ]);
+    });
 
     it('requires code and units to be equal for projection evquivalence', function () {
       const proj1 = new Projection({
