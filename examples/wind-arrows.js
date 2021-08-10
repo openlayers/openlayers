@@ -41,7 +41,8 @@ const map = new Map({
       source: source,
       style: function (feature) {
         const wind = feature.get('wind');
-        const angle = (wind.deg * Math.PI) / 180;
+        // rotate arrow away from wind origin
+        const angle = ((wind.deg - 180) * Math.PI) / 180;
         const scale = wind.speed / 5;
         shaft.setScale([1, scale]);
         shaft.setRotation(angle);
