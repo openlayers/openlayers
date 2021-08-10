@@ -68,12 +68,25 @@
   display: none;
 }
 .ol-viewport, .ol-unselectable {
+  background: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.ol-viewport canvas {
+  background: transparent;
+  max-height: none;
+  max-width: none;
+  min-height: 0;
+  min-width: 0;
+}
+.ol-viewport div {
+  background: transparent;
+  font-size: medium;
+  font-weight: normal;
 }
 .ol-selectable {
   -webkit-touch-callout: default;
@@ -171,7 +184,6 @@
 .ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
 }
-
 
 .ol-attribution {
   text-align: right;
