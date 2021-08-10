@@ -26,6 +26,7 @@ import {
 import {fromUserExtent} from '../../proj.js';
 import {getIntersection} from '../../extent.js';
 import {getUid} from '../../util.js';
+import {isEmpty} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
 
@@ -206,6 +207,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         extent,
         fromUserExtent(layerState.extent, viewState.projection)
       );
+    }
+    if (isEmpty(extent)) {
+      return;
     }
 
     const tileLayer = this.getLayer();
