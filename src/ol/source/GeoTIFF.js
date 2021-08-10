@@ -197,6 +197,8 @@ class GeoTIFFSource extends DataTile {
      */
     this.error_ = null;
 
+    this.setKey(this.sourceInfo_.map((source) => source.url).join(','));
+
     const self = this;
     const requests = new Array(numSources);
     for (let i = 0; i < numSources; ++i) {
