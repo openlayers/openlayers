@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const EventType = {
   /**
    * Triggered before a layer is rendered.
    * @event module:ol/render/Event~RenderEvent#prerender
@@ -45,6 +45,8 @@ export default {
    */
   RENDERCOMPLETE: 'rendercomplete',
 };
+
+export default EventType;
 
 /**
  * @typedef {'postrender'|'precompose'|'postcompose'|'rendercomplete'} MapRenderEventTypes

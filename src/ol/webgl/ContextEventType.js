@@ -5,7 +5,9 @@
 /**
  * @enum {string}
  */
-export default {
+const ContextEventType = {
   LOST: 'webglcontextlost',
   RESTORED: 'webglcontextrestored',
 };
+
+export default ContextEventType;

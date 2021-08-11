@@ -6,7 +6,9 @@
  * Request encoding. One of 'KVP', 'REST'.
  * @enum {string}
  */
-export default {
+const WMTSRequestEncoding = {
   KVP: 'KVP', // see spec §8
   REST: 'REST', // see spec §10
 };
+
+export default WMTSRequestEncoding;

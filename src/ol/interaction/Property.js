@@ -5,6 +5,8 @@
 /**
  * @enum {string}
  */
-export default {
+const Property = {
   ACTIVE: 'active',
 };
+
+export default Property;

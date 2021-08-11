@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const MapEventType = {
   /**
    * Triggered after a map frame is rendered.
    * @event module:ol/MapEvent~MapEvent#postrender
@@ -27,6 +27,8 @@ export default {
    */
   MOVEEND: 'moveend',
 };
+
+export default MapEventType;
 
 /***
  * @typedef {'postrender'|'movestart'|'moveend'} Types

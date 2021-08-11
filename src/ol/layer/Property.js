@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const Property = {
   OPACITY: 'opacity',
   VISIBLE: 'visible',
   EXTENT: 'extent',
@@ -16,3 +16,5 @@ export default {
   MIN_ZOOM: 'minZoom',
   SOURCE: 'source',
 };
+
+export default Property;

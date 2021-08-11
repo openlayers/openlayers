@@ -6,7 +6,7 @@
  * Icon anchor units. One of 'fraction', 'pixels'.
  * @enum {string}
  */
-export default {
+const IconAnchorUnits = {
   /**
    * Anchor is a fraction
    * @api
@@ -18,3 +18,5 @@ export default {
    */
   PIXELS: 'pixels',
 };
+
+export default IconAnchorUnits;

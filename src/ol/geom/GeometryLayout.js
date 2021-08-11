@@ -8,9 +8,11 @@
  * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
  */
-export default {
+const GeometryLayout = {
   XY: 'XY',
   XYZ: 'XYZ',
   XYM: 'XYM',
   XYZM: 'XYZM',
 };
+
+export default GeometryLayout;

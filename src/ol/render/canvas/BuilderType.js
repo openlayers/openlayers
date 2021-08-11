@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const BuilderType = {
   CIRCLE: 'Circle',
   DEFAULT: 'Default',
   IMAGE: 'Image',
@@ -13,3 +13,5 @@ export default {
   POLYGON: 'Polygon',
   TEXT: 'Text',
 };
+
+export default BuilderType;

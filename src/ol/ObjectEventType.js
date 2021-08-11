@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const ObjectEventType = {
   /**
    * Triggered when a property is changed.
    * @event module:ol/Object.ObjectEvent#propertychange
@@ -13,6 +13,8 @@ export default {
    */
   PROPERTYCHANGE: 'propertychange',
 };
+
+export default ObjectEventType;
 
 /**
  * @typedef {'propertychange'} Types

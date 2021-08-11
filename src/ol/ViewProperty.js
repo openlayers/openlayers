@@ -5,8 +5,10 @@
 /**
  * @enum {string}
  */
-export default {
+const ViewProperty = {
   CENTER: 'center',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation',
 };
+
+export default ViewProperty;
