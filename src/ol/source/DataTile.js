@@ -6,6 +6,7 @@ import EventType from '../events/EventType.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
+import {assign} from '../obj.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
@@ -110,7 +111,9 @@ class DataTileSource extends TileSource {
       return sourceLoader(z, x, y);
     }
 
-    const tile = new DataTile({tileCoord: [z, x, y], loader: loader});
+    const tile = new DataTile(
+      assign({tileCoord: [z, x, y], loader: loader}, this.tileOptions)
+    );
     tile.key = this.getKey();
     tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
 

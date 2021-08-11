@@ -33,6 +33,8 @@ const map = new Map({
           const data = context.getImageData(0, 0, size, size).data;
           return Promise.resolve(data);
         },
+        // disable opacity transition to avoid overlapping labels during tile loading
+        transition: 0,
       }),
     }),
   ],

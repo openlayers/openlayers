@@ -434,9 +434,10 @@ class WebGLHelper extends Disposable {
    * Post process passes will be initialized here, the first one being bound as a render target for
    * subsequent draw calls.
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
    * @api
    */
-  prepareDraw(frameState) {
+  prepareDraw(frameState, opt_disableAlphaBlend) {
     const gl = this.getGL();
     const canvas = this.getCanvas();
     const size = frameState.size;
@@ -459,7 +460,10 @@ class WebGLHelper extends Disposable {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(
+      gl.ONE,
+      opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
+    );
 
     gl.useProgram(this.currentProgram_);
     this.applyFrameState(frameState);

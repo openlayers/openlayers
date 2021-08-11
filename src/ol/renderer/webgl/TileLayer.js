@@ -293,6 +293,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     const uid = getUid(this);
     const time = frameState.time;
+    let blend = false;
 
     // look for cached tiles to use if a target tile is not ready
     const tileTextures = tileTexturesByZ[z];
@@ -308,6 +309,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           tile.endTransition(uid);
           continue;
         }
+        blend = true;
         const tileCoordKey = getTileCoordKey(tileCoord);
         alphaLookup[tileCoordKey] = alpha;
       }
@@ -340,7 +342,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     this.helper.useProgram(this.program_);
-    this.helper.prepareDraw(frameState);
+    this.helper.prepareDraw(frameState, !blend);
 
     const zs = Object.keys(tileTexturesByZ)
       .map(Number)
