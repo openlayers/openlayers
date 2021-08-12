@@ -70,7 +70,7 @@
             <?js if (!param.subparams) {?>
             <td class="type">
             <?js if (param.type && param.type.names) {?>
-                <?js= self.partial('type.tmpl', param.type.names) ?>
+                <?js= self.partial('type.tmpl', param.type.names) + (param.optional && typeof param.defaultvalue === 'undefined' && param.type.names.indexOf('undefined') === -1 ? ' | undefined' : '') ?>
                 <?js if (typeof param.defaultvalue !== 'undefined') { ?>
                     (defaults to <?js= self.htmlsafe(param.defaultvalue) ?>)
                 <?js } ?>
