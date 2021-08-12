@@ -4,6 +4,7 @@ import Map from '../src/ol/Map.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import View from '../src/ol/View.js';
 import WebGLTileLayer from '../src/ol/layer/WebGLTile.js';
+import {getIntersection} from '../src/ol/extent.js';
 
 // Metadata from https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/2019_EOxCloudless_rgb.json
 
@@ -19,11 +20,14 @@ const tileGrid = new TileGrid({
     [4096, 4096],
   ],
 });
-// Add a separate layer for each pyramid tile to a layer group
+
 const pyramid = new LayerGroup();
+const layerForUrl = {};
 const zs = tileGrid.getResolutions().length;
-for (let z = 0; z < zs; ++z) {
-  tileGrid.forEachTileCoord([-180, -90, 180, 90], z, ([z, x, y]) => {
+
+function useLayer(z, x, y) {
+  const url = `https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/${z}/${y}/${x}.tif`;
+  if (!(url in layerForUrl)) {
     pyramid.getLayers().push(
       new WebGLTileLayer({
         minZoom: z,
@@ -32,13 +36,14 @@ for (let z = 0; z < zs; ++z) {
         source: new GeoTIFF({
           sources: [
             {
-              url: `https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/${z}/${y}/${x}.tif`,
+              url: url,
             },
           ],
         }),
       })
     );
-  });
+    layerForUrl[url] = true;
+  }
 }
 
 const map = new Map({
@@ -50,4 +55,17 @@ const map = new Map({
     zoom: 0,
     showFullExtent: true,
   }),
+});
+
+// Add overview layer
+useLayer(0, 0, 0);
+
+// Add layer for specific extent on demand
+map.on('moveend', () => {
+  const view = map.getView();
+  tileGrid.forEachTileCoord(
+    getIntersection([-180, -90, 180, 90], view.calculateExtent()),
+    tileGrid.getZForResolution(view.getResolution()),
+    ([z, x, y]) => useLayer(z, x, y)
+  );
 });
