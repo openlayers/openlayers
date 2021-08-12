@@ -74,6 +74,7 @@ import {asArray, isStringColor} from '../color.js';
  * * {@link module:ol/color~Color}
  *
  * @typedef {Array<*>|import("../color.js").Color|string|number|boolean} ExpressionValue
+ * @api
  */
 
 /**

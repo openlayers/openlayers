@@ -16,6 +16,8 @@ import {assign} from '../obj.js';
 
 /**
  * @typedef {Object} Style
+ * Translates tile data to rendered pixels.
+ *
  * @property {Object<string, number>} [variables] Style variables.  Each variable must hold a number.
  * @property {import("../style/expressions.js").ExpressionValue} [color] An expression applied to color values.
  * @property {import("../style/expressions.js").ExpressionValue} [brightness=0] Value used to decrease or increase
