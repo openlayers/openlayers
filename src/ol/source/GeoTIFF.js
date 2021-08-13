@@ -11,8 +11,8 @@ import {get as getProjection} from '../proj.js';
 import {toSize} from '../size.js';
 
 /**
- * @typedef SourceInfo
- * @property {string} url URL for the source.
+ * @typedef {Object} SourceInfo
+ * @property {string} url URL for the source GeoTIFF.
  * @property {Array<string>} [overviews] List of any overview URLs.
  * @property {number} [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.
@@ -21,7 +21,8 @@ import {toSize} from '../size.js';
  * @property {number} [nodata] Values to discard. When provided, an additional band (alpha) will be added
  * to the data.
  * @property {Array<number>} [bands] Indices of the bands to be read from. If not provided, all bands will
- * be read.
+ * be read. If, for example, a GeoTIFF has red, green, blue and near-infrared bands and you only need the
+ * infrared band, configure `bands: [3]`.
  */
 
 let workerPool;
@@ -137,20 +138,25 @@ function getMaxForDataType(array) {
 }
 
 /**
- * @typedef Options
+ * @typedef {Object} Options
  * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
- * When using multiple sources, each source must be a single-band source, or the `samples`
- * option must be configured with a single sample index for each source. Multiple sources
- * can only be combined when their resolution sets are equal after applying a scale.
+ * Multiple sources can be combined when their resolution sets are equal after applying a scale.
+ * The list of sources defines a mapping between input bands as they are read from each GeoTIFF, and
+ * the output bands that are provided by data tiles. To control which bands to read from each GeoTIFF,
+ * use the {@link import("./GeoTIFF.js").SourceInfo bands} property. If, for example, you spedify two
+ * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
+ * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
+ * band from the first source, and 1 band from the second source.
  */
 
 /**
  * @classdesc
  * A source for working with GeoTIFF data.
+ * @api
  */
 class GeoTIFFSource extends DataTile {
   /**
-   * @param {Options} options Image tile options.
+   * @param {Options} options Data tile options.
    */
   constructor(options) {
     super({

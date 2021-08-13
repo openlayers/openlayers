@@ -14,6 +14,7 @@ import {getUid} from '../util.js';
 /**
  * @typedef {Object} Options
  * @property {function(number, number, number) : Promise<import("../DataTile.js").Data>} [loader] Data loader.  Called with z, x, and y tile coordinates.
+ * Returns a promise that resolves to a {@link import("../DataTile.js").Data}.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the tiles.
@@ -30,9 +31,10 @@ import {getUid} from '../util.js';
 
 /**
  * @classdesc
- * Base class for sources providing tiles divided into a tile grid over http.
+ * Base class for sources providing tiles divided into a tile grid.
  *
  * @fires import("./Tile.js").TileSourceEvent
+ * @api
  */
 class DataTileSource extends TileSource {
   /**

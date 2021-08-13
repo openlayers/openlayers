@@ -7,17 +7,23 @@ import {asArray, isStringColor} from '../color.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
- * which in turns takes {@link ExpressionValue} arguments.
+ * which in turns takes {@link import("./expressions.js").ExpressionValue} arguments.
  *
  * The following operators can be used:
  *
  * * Reading operators:
+ *   * `['band', bandIndex]` fetches a pixel value from band `bandIndex` of the source's data. The first
+ *     `bandIndex` of the source data is `1`. Fetched values are in the 0..1 range.
+ *     {@link import("../source/TileImage.js").default} sources have 4 bands: red, green, blue and alpha.
+ *     {@link import("../source/DataTile.js").default} sources can have any number of bands, depending on
+ *     the underlying data source and
+ *     {@link import("../source/GeoTIFF.js").Options configuration}.
  *   * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
  *     Note: those will be taken from the attributes provided to the renderer
- *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
- *   * `['time']` returns the time in seconds since the creation of the layer
- *   * `['zoom']` returns the current zoom level
  *   * `['resolution']` returns the current resolution
+ *   * `['time']` returns the time in seconds since the creation of the layer
+ *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
+ *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
  *   * `['*', value1, value2]` multiplies `value1` by `value2`

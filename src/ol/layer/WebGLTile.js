@@ -18,7 +18,10 @@ import {assign} from '../obj.js';
  * @typedef {Object} Style
  * Translates tile data to rendered pixels.
  *
- * @property {Object<string, number>} [variables] Style variables.  Each variable must hold a number.
+ * @property {Object<string, number>} [variables] Style variables.  Each variable must hold a number.  These
+ * variables can be used in the `color`, `brightness`, `contrast`, `exposure`, `saturation` and `gamma`
+ * {@link import("../style/expressions.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
+ * To update style variables, use the {@link import("./WebGLTile.js").default#updateStyleVariables} method.
  * @property {import("../style/expressions.js").ExpressionValue} [color] An expression applied to color values.
  * @property {import("../style/expressions.js").ExpressionValue} [brightness=0] Value used to decrease or increase
  * the layer brightness.  Values range from -1 to 1.
@@ -290,6 +293,7 @@ class WebGLTileLayer extends BaseTileLayer {
   /**
    * Update any variables used by the layer style and trigger a re-render.
    * @param {Object<string, number>} variables Variables to update.
+   * @api
    */
   updateStyleVariables(variables) {
     assign(this.styleVariables_, variables);
