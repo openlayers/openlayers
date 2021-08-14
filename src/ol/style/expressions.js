@@ -3,6 +3,7 @@
  * @module ol/style/expressions
  */
 
+import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray, isStringColor} from '../color.js';
 
 /**
@@ -12,12 +13,13 @@ import {asArray, isStringColor} from '../color.js';
  * The following operators can be used:
  *
  * * Reading operators:
- *   * `['band', bandIndex]` fetches a pixel value from band `bandIndex` of the source's data. The first
- *     `bandIndex` of the source data is `1`. Fetched values are in the 0..1 range.
- *     {@link import("../source/TileImage.js").default} sources have 4 bands: red, green, blue and alpha.
- *     {@link import("../source/DataTile.js").default} sources can have any number of bands, depending on
- *     the underlying data source and
- *     {@link import("../source/GeoTIFF.js").Options configuration}.
+ *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+ *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
+ *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
+ *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
+ *     of bands, depending on the underlying data source and
+ *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
+ *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
  *   * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
  *     Note: those will be taken from the attributes provided to the renderer
  *   * `['resolution']` returns the current resolution
@@ -34,6 +36,9 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
  *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
  *   * `['abs', value1]` returns the absolute value of `value1`
+ *   * `['sin', value1]` returns the sine of `value1`
+ *   * `['cos', value1]` returns the cosine of `value1`
+ *   * `['atan', value1, value2]` returns `atan2(value1, value2)`. If `value2` is not provided, returns `atan(value1)`
  *
  * * Transform operators:
  *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
@@ -416,7 +421,8 @@ Operators['band'] = {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
-    assertArgsCount(args, 1);
+    assertArgsMinCount(args, 1);
+    assertArgsMaxCount(args, 3);
     const band = args[0];
     if (typeof band !== 'number') {
       throw new Error('Band index must be a number');
@@ -428,7 +434,22 @@ Operators['band'] = {
       // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
       bandIndex = 3;
     }
-    return `color${colorIndex}[${bandIndex}]`;
+    if (args.length === 1) {
+      return `color${colorIndex}[${bandIndex}]`;
+    } else {
+      const xOffset = args[1];
+      const yOffset = args[2] || 0;
+      assertNumber(xOffset);
+      assertNumber(yOffset);
+      const uniformName = Uniforms.TILE_TEXTURE_PREFIX + colorIndex;
+      return `texture2D(${uniformName}, v_textureCoord + vec2(${expressionToGlsl(
+        context,
+        xOffset
+      )} / ${Uniforms.TEXTURE_PIXEL_WIDTH}, ${expressionToGlsl(
+        context,
+        yOffset
+      )} / ${Uniforms.TEXTURE_PIXEL_HEIGHT}))[${bandIndex}]`;
+    }
   },
 };
 
@@ -567,6 +588,45 @@ Operators['abs'] = {
     assertArgsCount(args, 1);
     assertNumbers(args);
     return `abs(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['sin'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `sin(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['cos'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `cos(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['atan'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsMinCount(args, 1);
+    assertArgsMaxCount(args, 2);
+    assertNumbers(args);
+    return args.length === 2
+      ? `atan(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(
+          context,
+          args[1]
+        )})`
+      : `atan(${expressionToGlsl(context, args[0])})`;
   },
 };
 

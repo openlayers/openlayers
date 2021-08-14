@@ -5,6 +5,8 @@
 export {default as BingMaps} from './source/BingMaps.js';
 export {default as CartoDB} from './source/CartoDB.js';
 export {default as Cluster} from './source/Cluster.js';
+export {default as DataTile} from './source/DataTile.js';
+export {default as GeoTIFF} from './source/GeoTIFF.js';
 export {default as IIIF} from './source/IIIF.js';
 export {default as Image} from './source/Image.js';
 export {default as ImageArcGISRest} from './source/ImageArcGISRest.js';

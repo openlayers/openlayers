@@ -35,6 +35,10 @@ export const Uniforms = {
   TILE_TRANSFORM: 'u_tileTransform',
   TRANSITION_ALPHA: 'u_transitionAlpha',
   DEPTH: 'u_depth',
+  TEXTURE_PIXEL_WIDTH: 'u_texturePixelWidth',
+  TEXTURE_PIXEL_HEIGHT: 'u_texturePixelHeight',
+  RESOLUTION: 'u_resolution',
+  ZOOM: 'u_zoom',
 };
 
 export const Attributes = {
@@ -73,6 +77,23 @@ function addTileTextureToLookup(tileTexturesByZ, tileTexture, z) {
     tileTexturesByZ[z] = [];
   }
   tileTexturesByZ[z].push(tileTexture);
+}
+
+/**
+ *
+ * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+ * @return {import("../../extent.js").Extent} Extent.
+ */
+function getRenderExtent(frameState) {
+  const layerState = frameState.layerStatesArray[frameState.layerIndex];
+  let extent = frameState.extent;
+  if (layerState.extent) {
+    extent = getIntersection(
+      extent,
+      fromUserExtent(layerState.extent, frameState.viewState.projection)
+    );
+  }
+  return extent;
 }
 
 /**
@@ -183,6 +204,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
+    if (isEmpty(getRenderExtent(frameState))) {
+      return false;
+    }
     const source = this.getLayer().getSource();
     if (!source) {
       return false;
@@ -198,20 +222,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   renderFrame(frameState) {
     this.preRender(frameState);
 
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const viewState = frameState.viewState;
-
-    let extent = frameState.extent;
-    if (layerState.extent) {
-      extent = getIntersection(
-        extent,
-        fromUserExtent(layerState.extent, viewState.projection)
-      );
-    }
-    if (isEmpty(extent)) {
-      return;
-    }
-
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    const extent = getRenderExtent(frameState);
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
@@ -421,6 +434,19 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
         this.helper.setUniformFloatValue(Uniforms.TRANSITION_ALPHA, alpha);
         this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_PIXEL_WIDTH,
+          tileSize[0]
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_PIXEL_HEIGHT,
+          tileSize[1]
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.RESOLUTION,
+          viewState.resolution
+        );
+        this.helper.setUniformFloatValue(Uniforms.ZOOM, viewState.zoom);
 
         this.helper.drawElements(0, this.indices_.getSize());
       }

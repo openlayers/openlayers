@@ -215,6 +215,10 @@ function parseStyle(style, bandCount) {
 
     varying vec2 v_textureCoord;
     uniform float ${Uniforms.TRANSITION_ALPHA};
+    uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
+    uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
+    uniform float ${Uniforms.RESOLUTION};
+    uniform float ${Uniforms.ZOOM};
 
     ${uniformDeclarations.join('\n')}
 
