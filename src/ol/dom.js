@@ -19,12 +19,16 @@ export function createCanvasContext2D(
   opt_canvasPool,
   opt_Context2DSettings
 ) {
-  const canvas =
+  const canvas = /** @type {HTMLCanvasElement} */ (
     opt_canvasPool && opt_canvasPool.length
       ? opt_canvasPool.shift()
       : WORKER_OFFSCREEN_CANVAS
       ? new OffscreenCanvas(opt_width || 300, opt_height || 300)
-      : document.createElement('canvas');
+      : document.createElement('canvas')
+  );
+  if (canvas.style) {
+    canvas.style.all = 'initial';
+  }
   if (opt_width) {
     canvas.width = opt_width;
   }
@@ -32,9 +36,7 @@ export function createCanvasContext2D(
     canvas.height = opt_height;
   }
   //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-  return /** @type {CanvasRenderingContext2D} */ (
-    canvas.getContext('2d', opt_Context2DSettings)
-  );
+  return canvas.getContext('2d', opt_Context2DSettings);
 }
 
 /**
