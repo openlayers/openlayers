@@ -19,12 +19,16 @@ export function createCanvasContext2D(
   opt_canvasPool,
   opt_Context2DSettings
 ) {
-  const canvas =
-    opt_canvasPool && opt_canvasPool.length
-      ? opt_canvasPool.shift()
-      : WORKER_OFFSCREEN_CANVAS
-      ? new OffscreenCanvas(opt_width || 300, opt_height || 300)
-      : document.createElement('canvas');
+  /** @type {HTMLCanvasElement|OffscreenCanvas} */
+  let canvas;
+  if (opt_canvasPool && opt_canvasPool.length) {
+    canvas = opt_canvasPool.shift();
+  } else if (WORKER_OFFSCREEN_CANVAS) {
+    canvas = new OffscreenCanvas(opt_width || 300, opt_height || 300);
+  } else {
+    canvas = document.createElement('canvas');
+    canvas.style.all = 'initial';
+  }
   if (opt_width) {
     canvas.width = opt_width;
   }
