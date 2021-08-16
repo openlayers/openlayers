@@ -74,7 +74,7 @@ import {assign} from '../obj.js';
 
 /**
  * @param {Style} style The layer style.
- * @param {number} bandCount The number of bands.
+ * @param {number} [bandCount] The number of bands.
  * @return {ParsedStyle} Shaders and uniforms generated from the style.
  */
 function parseStyle(style, bandCount) {
@@ -291,6 +291,7 @@ class WebGLTileLayer extends BaseTileLayer {
       vertexShader: parsedStyle.vertexShader,
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
+      className: this.getClassName(),
     });
   }
 

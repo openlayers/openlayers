@@ -100,7 +100,7 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../Tile.js").default} Tile.
+   * @return {!DataTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tileCoordKey = getKeyZXY(z, x, y);
