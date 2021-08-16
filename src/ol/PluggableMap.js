@@ -1524,7 +1524,14 @@ class PluggableMap extends BaseObject {
         parseFloat(computedStyle['borderBottomWidth']);
       if (!isNaN(width) && !isNaN(height)) {
         size = [width, height];
-        if (!hasArea(size)) {
+        if (
+          !hasArea(size) &&
+          !!(
+            targetElement.offsetWidth ||
+            targetElement.offsetHeight ||
+            targetElement.getClientRects().length
+          )
+        ) {
           // eslint-disable-next-line
           console.warn(
             "No map visible because the map container's width or height are 0."
