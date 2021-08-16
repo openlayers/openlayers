@@ -19,14 +19,14 @@ export function createCanvasContext2D(
   opt_canvasPool,
   opt_Context2DSettings
 ) {
-  const canvas = /** @type {HTMLCanvasElement} */ (
-    opt_canvasPool && opt_canvasPool.length
-      ? opt_canvasPool.shift()
-      : WORKER_OFFSCREEN_CANVAS
-      ? new OffscreenCanvas(opt_width || 300, opt_height || 300)
-      : document.createElement('canvas')
-  );
-  if (canvas.style) {
+  /** @type {HTMLCanvasElement|OffscreenCanvas} */
+  let canvas;
+  if (opt_canvasPool && opt_canvasPool.length) {
+    canvas = opt_canvasPool.shift();
+  } else if (WORKER_OFFSCREEN_CANVAS) {
+    canvas = new OffscreenCanvas(opt_width || 300, opt_height || 300);
+  } else {
+    canvas = document.createElement('canvas');
     canvas.style.all = 'initial';
   }
   if (opt_width) {
@@ -36,7 +36,9 @@ export function createCanvasContext2D(
     canvas.height = opt_height;
   }
   //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-  return canvas.getContext('2d', opt_Context2DSettings);
+  return /** @type {CanvasRenderingContext2D} */ (
+    canvas.getContext('2d', opt_Context2DSettings)
+  );
 }
 
 /**
