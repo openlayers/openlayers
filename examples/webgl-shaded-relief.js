@@ -41,7 +41,9 @@ const aspect = [
   'case',
   ['>', rawAspect, halfPi],
   ['+', halfPi, ['-', Math.PI * 2, rawAspect]],
+  ['<', rawAspect, 0],
   ['-', halfPi, rawAspect],
+  rawAspect,
 ];
 const sunEl = ['*', Math.PI / 180, ['var', 'sunEl']];
 const sunAz = ['*', Math.PI / 180, ['var', 'sunAz']];
@@ -60,7 +62,12 @@ const shadedRelief = new TileLayer({
   }),
   style: {
     variables: variables,
-    color: ['color', scaled, scaled, scaled],
+    color: [
+      'case',
+      ['>', aspect, 0],
+      ['color', scaled, scaled, scaled],
+      ['color', 0, 0, 0],
+    ],
   },
 });
 
