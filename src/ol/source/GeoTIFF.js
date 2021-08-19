@@ -284,7 +284,7 @@ class GeoTIFFSource extends DataTile {
       if (!extent) {
         extent = sourceExtent;
       } else {
-        getIntersection(extent, sourceExtent);
+        getIntersection(extent, sourceExtent, extent);
       }
 
       if (!origin) {
