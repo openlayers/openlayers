@@ -192,6 +192,12 @@ class GeoTIFFSource extends DataTile {
     this.samplesPerPixel_;
 
     /**
+     * @type {Array<Array<number>>}
+     * @private
+     */
+    this.nodataValues_;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -249,6 +255,7 @@ class GeoTIFFSource extends DataTile {
     let tileSizes;
     let resolutions;
     const samplesPerPixel = new Array(sources.length);
+    const nodataValues = new Array(sources.length);
     let minZoom = 0;
 
     const sourceCount = sources.length;
@@ -261,8 +268,14 @@ class GeoTIFFSource extends DataTile {
       const sourceTileSizes = new Array(imageCount);
       const sourceResolutions = new Array(imageCount);
 
+      nodataValues[sourceIndex] = new Array(imageCount);
+
       for (let imageIndex = 0; imageIndex < imageCount; ++imageIndex) {
         const image = images[imageIndex];
+        const nodataValue = image.getGDALNoData();
+        nodataValues[sourceIndex][imageIndex] =
+          nodataValue === null ? NaN : nodataValue;
+
         const wantedSamples = this.sourceInfo_[sourceIndex].bands;
         samplesPerPixel[sourceIndex] = wantedSamples
           ? wantedSamples.length
@@ -351,13 +364,39 @@ class GeoTIFFSource extends DataTile {
     }
 
     this.samplesPerPixel_ = samplesPerPixel;
-    const sourceInfo = this.sourceInfo_;
-    for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
-      if (sourceInfo[sourceIndex].nodata !== undefined) {
+    this.nodataValues_ = nodataValues;
+
+    // decide if we need to add an alpha band to handle nodata
+    outer: for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+      // option 1: source is configured with a nodata value
+      if (this.sourceInfo_[sourceIndex].nodata !== undefined) {
         this.addAlpha_ = true;
         break;
       }
+
+      const values = nodataValues[sourceIndex];
+
+      // option 2: check image metadata for limited bands
+      const bands = this.sourceInfo_[sourceIndex].bands;
+      if (bands) {
+        for (let i = 0; i < bands.length; ++i) {
+          if (!isNaN(values[bands[i]])) {
+            this.addAlpha_ = true;
+            break outer;
+          }
+        }
+        continue;
+      }
+
+      // option 3: check image metadata for all bands
+      for (let imageIndex = 0; imageIndex < values.length; ++imageIndex) {
+        if (!isNaN(values[imageIndex])) {
+          this.addAlpha_ = true;
+          break outer;
+        }
+      }
     }
+
     const additionalBands = this.addAlpha_ ? 1 : 0;
     this.bandCount =
       samplesPerPixel.reduce((accumulator, value) => {
@@ -410,6 +449,7 @@ class GeoTIFFSource extends DataTile {
 
     const pixelCount = size[0] * size[1];
     const dataLength = pixelCount * bandCount;
+    const nodataValues = this.nodataValues_;
 
     return Promise.all(requests).then(function (sourceSamples) {
       const data = new Uint8ClampedArray(dataLength);
@@ -430,8 +470,6 @@ class GeoTIFFSource extends DataTile {
           const gain = 255 / (max - min);
           const bias = -min * gain;
 
-          const nodata = source.nodata;
-
           for (
             let sampleIndex = 0;
             sampleIndex < samplesPerPixel[sourceIndex];
@@ -444,6 +482,17 @@ class GeoTIFFSource extends DataTile {
             if (!addAlpha) {
               data[dataIndex] = value;
             } else {
+              let nodata = source.nodata;
+              if (nodata === undefined) {
+                let bandIndex;
+                if (source.bands) {
+                  bandIndex = source.bands[sampleIndex];
+                } else {
+                  bandIndex = sampleIndex;
+                }
+                nodata = nodataValues[sourceIndex][bandIndex];
+              }
+
               if (sourceValue !== nodata) {
                 transparent = false;
                 data[dataIndex] = value;

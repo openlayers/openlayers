@@ -59,7 +59,7 @@ const map = new Map({
   ],
   view: new View({
     center: [1900000, 6100000],
-    zoom: 15,
+    zoom: 13,
     minZoom: 10,
   }),
 });
