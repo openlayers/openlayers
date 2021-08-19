@@ -27,7 +27,6 @@ function elevation(xOffset, yOffset) {
 
 // Generates a shaded relief image given elevation data.  Uses a 3x3
 // neighborhood for determining slope and aspect.
-const halfPi = Math.PI / 2;
 const dp = ['*', 2, ['resolution']];
 const z0x = ['*', ['var', 'vert'], elevation(-1, 0)];
 const z1x = ['*', ['var', 'vert'], elevation(1, 0)];
@@ -36,17 +35,10 @@ const z0y = ['*', ['var', 'vert'], elevation(0, -1)];
 const z1y = ['*', ['var', 'vert'], elevation(0, 1)];
 const dzdy = ['/', ['-', z1y, z0y], dp];
 const slope = ['atan', ['^', ['+', ['^', dzdx, 2], ['^', dzdy, 2]], 0.5]];
-const rawAspect = ['atan', dzdy, ['-', 0, dzdx]];
-const aspect = [
-  'case',
-  ['>', rawAspect, halfPi],
-  ['+', halfPi, ['-', Math.PI * 2, rawAspect]],
-  ['<', rawAspect, 0],
-  ['-', halfPi, rawAspect],
-  rawAspect,
-];
+const aspect = ['clamp', ['atan', ['-', 0, dzdx], dzdy], -Math.PI, Math.PI];
 const sunEl = ['*', Math.PI / 180, ['var', 'sunEl']];
 const sunAz = ['*', Math.PI / 180, ['var', 'sunAz']];
+
 const cosIncidence = [
   '+',
   ['*', ['sin', sunEl], ['cos', slope]],
@@ -62,12 +54,7 @@ const shadedRelief = new TileLayer({
   }),
   style: {
     variables: variables,
-    color: [
-      'case',
-      ['>', aspect, 0],
-      ['color', scaled, scaled, scaled],
-      ['color', 0, 0, 0],
-    ],
+    color: ['color', scaled, scaled, scaled],
   },
 });
 
