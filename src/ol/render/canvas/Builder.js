@@ -31,100 +31,100 @@ import {
 
 class CanvasBuilder extends VectorContext {
   /**
-   * @param {number} tolerance Tolerance.
-   * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
-   */
+  * @param {number} tolerance Tolerance.
+  * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
+  * @param {number} resolution Resolution.
+  * @param {number} pixelRatio Pixel ratio.
+  */
   constructor(tolerance, maxExtent, resolution, pixelRatio) {
     super();
 
     /**
-     * @protected
-     * @type {number}
-     */
+    * @protected
+    * @type {number}
+    */
     this.tolerance = tolerance;
 
     /**
-     * @protected
-     * @const
-     * @type {import("../../extent.js").Extent}
-     */
+    * @protected
+    * @const
+    * @type {import("../../extent.js").Extent}
+    */
     this.maxExtent = maxExtent;
 
     /**
-     * @protected
-     * @type {number}
-     */
+    * @protected
+    * @type {number}
+    */
     this.pixelRatio = pixelRatio;
 
     /**
-     * @protected
-     * @type {number}
-     */
+    * @protected
+    * @type {number}
+    */
     this.maxLineWidth = 0;
 
     /**
-     * @protected
-     * @const
-     * @type {number}
-     */
+    * @protected
+    * @const
+    * @type {number}
+    */
     this.resolution = resolution;
 
     /**
-     * @private
-     * @type {Array<*>}
-     */
+    * @private
+    * @type {Array<*>}
+    */
     this.beginGeometryInstruction1_ = null;
 
     /**
-     * @private
-     * @type {Array<*>}
-     */
+    * @private
+    * @type {Array<*>}
+    */
     this.beginGeometryInstruction2_ = null;
 
     /**
-     * @private
-     * @type {import("../../extent.js").Extent}
-     */
+    * @private
+    * @type {import("../../extent.js").Extent}
+    */
     this.bufferedMaxExtent_ = null;
 
     /**
-     * @protected
-     * @type {Array<*>}
-     */
+    * @protected
+    * @type {Array<*>}
+    */
     this.instructions = [];
 
     /**
-     * @protected
-     * @type {Array<number>}
-     */
+    * @protected
+    * @type {Array<number>}
+    */
     this.coordinates = [];
 
     /**
-     * @private
-     * @type {import("../../coordinate.js").Coordinate}
-     */
+    * @private
+    * @type {import("../../coordinate.js").Coordinate}
+    */
     this.tmpCoordinate_ = [];
 
     /**
-     * @protected
-     * @type {Array<*>}
-     */
+    * @protected
+    * @type {Array<*>}
+    */
     this.hitDetectionInstructions = [];
 
     /**
-     * @protected
-     * @type {import("../canvas.js").FillStrokeState}
-     */
+    * @protected
+    * @type {import("../canvas.js").FillStrokeState}
+    */
     this.state = /** @type {import("../canvas.js").FillStrokeState} */ ({});
   }
 
   /**
-   * @protected
-   * @param {Array<number>} dashArray Dash array.
-   * @return {Array<number>} Dash array with pixel ratio applied
-   */
+  * @protected
+  * @param {Array<number>} dashArray Dash array.
+  * @return {Array<number>} Dash array with pixel ratio applied
+  */
   applyPixelRatio(dashArray) {
     const pixelRatio = this.pixelRatio;
     return pixelRatio == 1
@@ -135,11 +135,11 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} stride Stride.
-   * @protected
-   * @return {number} My end
-   */
+  * @param {Array<number>} flatCoordinates Flat coordinates.
+  * @param {number} stride Stride.
+  * @protected
+  * @return {number} My end
+  */
   appendFlatPointCoordinates(flatCoordinates, stride) {
     const extent = this.getBufferedMaxExtent();
     const tmpCoord = this.tmpCoordinate_;
@@ -157,15 +157,15 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {boolean} closed Last input coordinate equals first.
-   * @param {boolean} skipFirst Skip first coordinate.
-   * @protected
-   * @return {number} My end.
-   */
+  * @param {Array<number>} flatCoordinates Flat coordinates.
+  * @param {number} offset Offset.
+  * @param {number} end End.
+  * @param {number} stride Stride.
+  * @param {boolean} closed Last input coordinate equals first.
+  * @param {boolean} skipFirst Skip first coordinate.
+  * @protected
+  * @return {number} My end.
+  */
   appendFlatLineCoordinates(
     flatCoordinates,
     offset,
@@ -219,13 +219,13 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<number>} ends Ends.
-   * @param {number} stride Stride.
-   * @param {Array<number>} builderEnds Builder ends.
-   * @return {number} Offset.
-   */
+  * @param {Array<number>} flatCoordinates Flat coordinates.
+  * @param {number} offset Offset.
+  * @param {Array<number>} ends Ends.
+  * @param {number} stride Stride.
+  * @param {Array<number>} builderEnds Builder ends.
+  * @return {number} Offset.
+  */
   drawCustomCoordinates_(flatCoordinates, offset, ends, stride, builderEnds) {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
@@ -244,100 +244,106 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
-   * @param {import("../../Feature.js").FeatureLike} feature Feature.
-   * @param {Function} renderer Renderer.
-   */
-  drawCustom(geometry, feature, renderer) {
+  * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+  * @param {import("../../Feature.js").FeatureLike} feature Feature.
+  * @param {Function} renderer Renderer.
+  * @param {Function} hitDetectionRenderer Renderer.
+  */
+  drawCustom(geometry, feature, renderer, hitDetectionRenderer) {
     this.beginGeometry(geometry, feature);
+
     const type = geometry.getType();
     const stride = geometry.getStride();
     const builderBegin = this.coordinates.length;
+    
     let flatCoordinates, builderEnd, builderEnds, builderEndss;
     let offset;
-    if (type == GeometryType.MULTI_POLYGON) {
-      flatCoordinates =
-        /** @type {import("../../geom/MultiPolygon.js").default} */ (
-          geometry
-        ).getOrientedFlatCoordinates();
-      builderEndss = [];
-      const endss =
-        /** @type {import("../../geom/MultiPolygon.js").default} */ (
-          geometry
-        ).getEndss();
-      offset = 0;
-      for (let i = 0, ii = endss.length; i < ii; ++i) {
-        const myEnds = [];
+    
+    switch(type) { 
+      case GeometryType.MULTI_POLYGON: 
+        flatCoordinates =
+          /** @type {import("../../geom/MultiPolygon.js").default} */ (
+            geometry
+          ).getOrientedFlatCoordinates();
+        builderEndss = [];
+        const endss =
+          /** @type {import("../../geom/MultiPolygon.js").default} */ (
+            geometry
+          ).getEndss();
+        offset = 0;
+        for (let i = 0, ii = endss.length; i < ii; ++i) {
+          const myEnds = [];
+          offset = this.drawCustomCoordinates_(
+            flatCoordinates,
+            offset,
+            endss[i],
+            stride,
+            myEnds
+          );
+          builderEndss.push(myEnds);
+        }
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEndss,
+          geometry,
+          renderer,
+          inflateMultiCoordinatesArray,
+        ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin, 
+          builderEndss, 
+          geometry, 
+          hitDetectionRenderer || renderer, 
+          inflateMultiCoordinatesArray]);
+        break;
+      case GeometryType.POLYGON:
+      case GeometryType.MULTI_LINE_STRING:
+        builderEnds = [];
+        flatCoordinates =
+          type == GeometryType.POLYGON
+            ? /** @type {import("../../geom/Polygon.js").default} */ (
+                geometry
+              ).getOrientedFlatCoordinates()
+            : geometry.getFlatCoordinates();
         offset = this.drawCustomCoordinates_(
           flatCoordinates,
-          offset,
-          endss[i],
+          0,
+          /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (
+            geometry
+          ).getEnds(),
           stride,
-          myEnds
+          builderEnds
         );
-        builderEndss.push(myEnds);
-      }
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEndss,
-        geometry,
-        renderer,
-        inflateMultiCoordinatesArray,
-      ]);
-    } else if (
-      type == GeometryType.POLYGON ||
-      type == GeometryType.MULTI_LINE_STRING
-    ) {
-      builderEnds = [];
-      flatCoordinates =
-        type == GeometryType.POLYGON
-          ? /** @type {import("../../geom/Polygon.js").default} */ (
-              geometry
-            ).getOrientedFlatCoordinates()
-          : geometry.getFlatCoordinates();
-      offset = this.drawCustomCoordinates_(
-        flatCoordinates,
-        0,
-        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (
-          geometry
-        ).getEnds(),
-        stride,
-        builderEnds
-      );
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEnds,
-        geometry,
-        renderer,
-        inflateCoordinatesArray,
-      ]);
-    } else if (
-      type == GeometryType.LINE_STRING ||
-      type == GeometryType.CIRCLE
-    ) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      builderEnd = this.appendFlatLineCoordinates(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride,
-        false,
-        false
-      );
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEnd,
-        geometry,
-        renderer,
-        inflateCoordinates,
-      ]);
-    } else if (type == GeometryType.MULTI_POINT) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      builderEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
-      if (builderEnd > builderBegin) {
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnds,
+          geometry,
+          renderer,
+          inflateCoordinatesArray,
+        ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin, 
+          builderEnds, 
+          geometry, 
+          hitDetectionRenderer || renderer, 
+          inflateCoordinatesArray
+        ]);
+        break;
+      case GeometryType.LINE_STRING:
+      case GeometryType.CIRCLE:
+        flatCoordinates = geometry.getFlatCoordinates();
+        builderEnd = this.appendFlatLineCoordinates(
+          flatCoordinates,
+          0,
+          flatCoordinates.length,
+          stride,
+          false,
+          false
+        );
         this.instructions.push([
           CanvasInstruction.CUSTOM,
           builderBegin,
@@ -346,27 +352,67 @@ class CanvasBuilder extends VectorContext {
           renderer,
           inflateCoordinates,
         ]);
-      }
-    } else if (type == GeometryType.POINT) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
-      builderEnd = this.coordinates.length;
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEnd,
-        geometry,
-        renderer,
-      ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          hitDetectionRenderer || renderer,
+          inflateCoordinates,
+        ]);
+        break;
+      case GeometryType.MULTI_POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        builderEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
+        
+        if (builderEnd > builderBegin) {
+          this.instructions.push([
+            CanvasInstruction.CUSTOM,
+            builderBegin,
+            builderEnd,
+            geometry,
+            renderer,
+            inflateCoordinates,
+          ]);
+          this.hitDetectionInstructions.push([
+            CanvasInstruction.CUSTOM,
+            builderBegin,
+            builderEnd,
+            geometry,
+            hitDetectionRenderer || renderer,
+            inflateCoordinates,
+          ]);
+        }
+        break;
+      case type == GeometryType.POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
+        builderEnd = this.coordinates.length;
+        
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          renderer,
+        ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          hitDetectionRenderer || renderer,
+        ]);
+        break;
     }
     this.endGeometry(feature);
   }
 
   /**
-   * @protected
-   * @param {import("../../geom/Geometry").default|import("../Feature.js").default} geometry The geometry.
-   * @param {import("../../Feature.js").FeatureLike} feature Feature.
-   */
+  * @protected
+  * @param {import("../../geom/Geometry").default|import("../Feature.js").default} geometry The geometry.
+  * @param {import("../../Feature.js").FeatureLike} feature Feature.
+  */
   beginGeometry(geometry, feature) {
     this.beginGeometryInstruction1_ = [
       CanvasInstruction.BEGIN_GEOMETRY,
@@ -385,8 +431,8 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
-   */
+  * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+  */
   finish() {
     return {
       instructions: this.instructions,
@@ -396,8 +442,8 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * Reverse the hit detection instructions.
-   */
+  * Reverse the hit detection instructions.
+  */
   reverseHitDetectionInstructions() {
     const hitDetectionInstructions = this.hitDetectionInstructions;
     // step 1 - reverse array
@@ -422,9 +468,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
-   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
-   */
+  * @param {import("../../style/Fill.js").default} fillStyle Fill style.
+  * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+  */
   setFillStrokeStyle(fillStyle, strokeStyle) {
     const state = this.state;
     if (fillStyle) {
@@ -482,9 +528,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @return {Array<*>} Fill instruction.
-   */
+  * @param {import("../canvas.js").FillStrokeState} state State.
+  * @return {Array<*>} Fill instruction.
+  */
   createFill(state) {
     const fillStyle = state.fillStyle;
     /** @type {Array<*>} */
@@ -497,16 +543,16 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   */
+  * @param {import("../canvas.js").FillStrokeState} state State.
+  */
   applyStroke(state) {
     this.instructions.push(this.createStroke(state));
   }
 
   /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @return {Array<*>} Stroke instruction.
-   */
+  * @param {import("../canvas.js").FillStrokeState} state State.
+  * @return {Array<*>} Stroke instruction.
+  */
   createStroke(state) {
     return [
       CanvasInstruction.SET_STROKE_STYLE,
@@ -521,9 +567,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState):Array<*>} createFill Create fill.
-   */
+  * @param {import("../canvas.js").FillStrokeState} state State.
+  * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState):Array<*>} createFill Create fill.
+  */
   updateFillStyle(state, createFill) {
     const fillStyle = state.fillStyle;
     if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
@@ -535,9 +581,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState): void} applyStroke Apply stroke.
-   */
+  * @param {import("../canvas.js").FillStrokeState} state State.
+  * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState): void} applyStroke Apply stroke.
+  */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;
     const lineCap = state.lineCap;
@@ -570,8 +616,8 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../Feature.js").FeatureLike} feature Feature.
-   */
+  * @param {import("../../Feature.js").FeatureLike} feature Feature.
+  */
   endGeometry(feature) {
     this.beginGeometryInstruction1_[2] = this.instructions.length;
     this.beginGeometryInstruction1_ = null;
@@ -583,12 +629,12 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * Get the buffered rendering extent.  Rendering will be clipped to the extent
-   * provided to the constructor.  To account for symbolizers that may intersect
-   * this extent, we calculate a buffered extent (e.g. based on stroke width).
-   * @return {import("../../extent.js").Extent} The buffered rendering extent.
-   * @protected
-   */
+  * Get the buffered rendering extent.  Rendering will be clipped to the extent
+  * provided to the constructor.  To account for symbolizers that may intersect
+  * this extent, we calculate a buffered extent (e.g. based on stroke width).
+  * @return {import("../../extent.js").Extent} The buffered rendering extent.
+  * @protected
+  */
   getBufferedMaxExtent() {
     if (!this.bufferedMaxExtent_) {
       this.bufferedMaxExtent_ = clone(this.maxExtent);
