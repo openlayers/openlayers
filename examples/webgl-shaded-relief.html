@@ -1,0 +1,32 @@
+---
+layout: example.html
+title: Shaded Relief (with WebGL)
+shortdesc: Calculate shaded relief from elevation data
+docs: >
+  <p>
+    For the shaded relief, a single tiled source of elevation data is used as input.
+    The shaded relief is calculated by the layer's <code>style</code> with a <code>color</code>
+    expression. The style variables are updated when the user drags one of the sliders. The
+    <code>band</code> operator is used to sample data from neighboring pixels for calculating slope and
+    aspect, which is done with the <code>['band', bandIndex, xOffset, yOffset]</code> syntax.
+  </p>
+tags: "webgl, shaded relief"
+---
+<div id="map" class="map"></div>
+<table class="controls">
+  <tr>
+    <td><label for="vert">vertical exaggeration:</label></td>
+    <td><input id="vert" type="range" min="1" max="5" value="1"/></td>
+    <td><span id="vertOut"></span> x</td>
+  </tr>
+  <tr>
+    <td><label for="sunEl">sun elevation:</label></td>
+    <td><input id="sunEl" type="range" min="0" max="90" value="45"/></td>
+    <td><span id="sunElOut"></span> °</td>
+  </tr>
+  <tr>
+    <td><label for="sunAz">sun azimuth:</label></td>
+    <td><input id="sunAz" type="range" min="0" max="360" value="45"/></td>
+    <td><span id="sunAzOut"></span> °</td>
+  </tr>
+</table>
