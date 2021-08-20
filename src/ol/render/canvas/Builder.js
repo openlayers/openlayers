@@ -384,7 +384,7 @@ class CanvasBuilder extends VectorContext {
           ]);
         }
         break;
-      case type == GeometryType.POINT:
+      case GeometryType.POINT:
         flatCoordinates = geometry.getFlatCoordinates();
         this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
         builderEnd = this.coordinates.length;
