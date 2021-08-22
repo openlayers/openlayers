@@ -47,17 +47,17 @@ const TranslateEventType = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.always}.
- * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
- * not specified, all features on the map will be able to be translated.
+ * @property {Collection<import("../Feature.js").default>} [features] Features contained in this collection will be able to be translated together.
  * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
  * absent, all visible layers will be considered translatable.
+ * Not used if `features` is provided.
  * @property {FilterFunction} [filter] A function
  * that takes an {@link module:ol/Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
- * translated or `false` otherwise.
+ * translated or `false` otherwise. Not used if `features` is provided.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features.
  */
@@ -123,6 +123,9 @@ export class TranslateEvent extends Event {
 /**
  * @classdesc
  * Interaction for translating (moving) features.
+ * If you want to translate multiple features in a single action (for example,
+ * the collection used by a select interaction), construct the interaction with
+ * the `features` option.
  *
  * @fires TranslateEvent
  * @api
@@ -173,7 +176,7 @@ class Translate extends PointerInteraction {
 
     /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
     let layerFilter;
-    if (options.layers) {
+    if (options.layers && !this.features_) {
       if (typeof options.layers === 'function') {
         layerFilter = options.layers;
       } else {
@@ -196,7 +199,7 @@ class Translate extends PointerInteraction {
      * @private
      * @type {FilterFunction}
      */
-    this.filter_ = options.filter ? options.filter : TRUE;
+    this.filter_ = options.filter && !this.features_ ? options.filter : TRUE;
 
     /**
      * @private
