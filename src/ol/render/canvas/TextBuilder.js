@@ -49,8 +49,8 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
-    super(tolerance, maxExtent, resolution, pixelRatio);
+  constructor(tolerance, maxExtent, resolution, finalResolution, pixelRatio) {
+    super(tolerance, maxExtent, resolution, finalResolution, pixelRatio);
 
     /**
      * @private
@@ -238,6 +238,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       this.endGeometry(feature);
     } else {
       let geometryWidths = textState.overflow ? null : [];
+      let geometryWidthsFinal = textState.overflow ? null : [];
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
@@ -271,6 +272,7 @@ class CanvasTextBuilder extends CanvasBuilder {
               geometry
             ).getFlatInteriorPoint();
           if (!textState.overflow) {
+            geometryWidthsFinal.push(flatCoordinates[2] / (this.finalResolution === undefined ? this.resolution : this.finalResolution));
             geometryWidths.push(flatCoordinates[2] / this.resolution);
           }
           stride = 3;
@@ -388,6 +390,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetX_,
         this.textOffsetY_,
         geometryWidths,
+        geometryWidthsFinal
       ]);
       const scale = 1 / pixelRatio;
       this.hitDetectionInstructions.push([

@@ -27,7 +27,7 @@ class BuilderGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, finalResolution, pixelRatio) {
     /**
      * @private
      * @type {number}
@@ -51,6 +51,8 @@ class BuilderGroup {
      * @type {number}
      */
     this.resolution_ = resolution;
+
+    this.finalResolution_ = finalResolution;
 
     /**
      * @private
@@ -94,6 +96,7 @@ class BuilderGroup {
         this.tolerance_,
         this.maxExtent_,
         this.resolution_,
+        this.finalResolution_,
         this.pixelRatio_
       );
       replays[builderType] = replay;

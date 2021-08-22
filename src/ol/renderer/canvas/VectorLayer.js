@@ -543,6 +543,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const resolution = viewState.resolution;
+    const finalResolution = viewState.finalResolution;
     const pixelRatio = frameState.pixelRatio;
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
@@ -625,6 +626,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       getRenderTolerance(resolution, pixelRatio),
       extent,
       resolution,
+      finalResolution,
       pixelRatio
     );
 
@@ -634,6 +636,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         getRenderTolerance(resolution, pixelRatio),
         extent,
         resolution,
+        finalResolution,
         pixelRatio
       );
     }

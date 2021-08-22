@@ -36,7 +36,7 @@ class CanvasBuilder extends VectorContext {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, finalResolution, pixelRatio) {
     super();
 
     /**
@@ -70,6 +70,8 @@ class CanvasBuilder extends VectorContext {
      * @type {number}
      */
     this.resolution = resolution;
+
+    this.finalResolution = finalResolution;
 
     /**
      * @private

@@ -802,6 +802,10 @@ class Executor {
           if (instruction.length > 24) {
             geometryWidths = /** @type {number} */ (instruction[24]);
           }
+          let geometryWidthsFinal = geometryWidths;
+          if (instruction.length > 25) {
+            geometryWidthsFinal = /** @type {number} */ (instruction[25]);
+          }
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 16) {
@@ -823,9 +827,13 @@ class Executor {
           }
           let widthIndex = 0;
           for (; d < dd; d += 2) {
+            const hiddenAtAnimationEnd =
+              geometryWidthsFinal &&
+              geometryWidthsFinal[widthIndex] < width / this.pixelRatio;
             if (
               geometryWidths &&
-              geometryWidths[widthIndex++] < width / this.pixelRatio
+              geometryWidths[widthIndex++] < width / this.pixelRatio &&
+              hiddenAtAnimationEnd
             ) {
               continue;
             }
