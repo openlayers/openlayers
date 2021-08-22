@@ -27,7 +27,7 @@ class BuilderGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    */
-  constructor(tolerance, maxExtent, resolution, finalResolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, startResolution, finalResolution, pixelRatio) {
     /**
      * @private
      * @type {number}
@@ -52,6 +52,7 @@ class BuilderGroup {
      */
     this.resolution_ = resolution;
 
+    this.startResolution_ = startResolution;
     this.finalResolution_ = finalResolution;
 
     /**
@@ -96,6 +97,7 @@ class BuilderGroup {
         this.tolerance_,
         this.maxExtent_,
         this.resolution_,
+        this.startResolution_,
         this.finalResolution_,
         this.pixelRatio_
       );

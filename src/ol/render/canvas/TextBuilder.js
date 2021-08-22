@@ -49,8 +49,8 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    */
-  constructor(tolerance, maxExtent, resolution, finalResolution, pixelRatio) {
-    super(tolerance, maxExtent, resolution, finalResolution, pixelRatio);
+  constructor(tolerance, maxExtent, resolution, startResolution, finalResolution, pixelRatio) {
+    super(tolerance, maxExtent, resolution, startResolution, finalResolution, pixelRatio);
 
     /**
      * @private
@@ -238,6 +238,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       this.endGeometry(feature);
     } else {
       let geometryWidths = textState.overflow ? null : [];
+      let geometryWidthsStart = textState.overflow ? null : [];
       let geometryWidthsFinal = textState.overflow ? null : [];
       switch (geometryType) {
         case GeometryType.POINT:
@@ -272,6 +273,7 @@ class CanvasTextBuilder extends CanvasBuilder {
               geometry
             ).getFlatInteriorPoint();
           if (!textState.overflow) {
+            geometryWidthsStart.push(flatCoordinates[2] / (this.startResolution === undefined ? this.resolution : this.startResolution))
             geometryWidthsFinal.push(flatCoordinates[2] / (this.finalResolution === undefined ? this.resolution : this.finalResolution));
             geometryWidths.push(flatCoordinates[2] / this.resolution);
           }
@@ -390,6 +392,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetX_,
         this.textOffsetY_,
         geometryWidths,
+        geometryWidthsStart,
         geometryWidthsFinal
       ]);
       const scale = 1 / pixelRatio;

@@ -802,9 +802,13 @@ class Executor {
           if (instruction.length > 24) {
             geometryWidths = /** @type {number} */ (instruction[24]);
           }
-          let geometryWidthsFinal = geometryWidths;
+          let geometryWidthsStart = geometryWidths;
           if (instruction.length > 25) {
-            geometryWidthsFinal = /** @type {number} */ (instruction[25]);
+            geometryWidthsStart = /** @type {number} */ (instruction[25]);
+          }
+          let geometryWidthsFinal = geometryWidths;
+          if (instruction.length > 26) {
+            geometryWidthsFinal = /** @type {number} */ (instruction[26]);
           }
 
           let padding, backgroundFill, backgroundStroke;
@@ -827,16 +831,19 @@ class Executor {
           }
           let widthIndex = 0;
           for (; d < dd; d += 2) {
+            const hiddenAtAnimationStart =
+              geometryWidthsStart &&
+              geometryWidthsStart[widthIndex] < width / this.pixelRatio;
             const hiddenAtAnimationEnd =
               geometryWidthsFinal &&
               geometryWidthsFinal[widthIndex] < width / this.pixelRatio;
-            if (
+            const hiddenNow =
               geometryWidths &&
-              geometryWidths[widthIndex++] < width / this.pixelRatio &&
-              hiddenAtAnimationEnd
-            ) {
+              geometryWidths[widthIndex++] < width / this.pixelRatio;
+            if (hiddenNow && hiddenAtAnimationStart === hiddenAtAnimationEnd) {
               continue;
             }
+            const startOpacity = hiddenAtAnimationEnd ? 1 : 0;
             const dimensions = this.calculateImageOrLabelDimensions_(
               image.width,
               image.height,
@@ -861,7 +868,7 @@ class Executor {
               contextScale,
               image,
               dimensions,
-              feature.animationProgress_,
+              hiddenAtAnimationStart === hiddenAtAnimationEnd ? 1 : Math.abs(startOpacity - feature.animationProgress_),
               backgroundFill
                 ? /** @type {Array<*>} */ (lastFillInstruction)
                 : null,

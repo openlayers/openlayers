@@ -368,6 +368,7 @@ class View extends BaseObject {
      */
     this.targetResolution_;
 
+    this.startResolution_;
     this.finalResolution_;
 
     /**
@@ -742,6 +743,7 @@ class View extends BaseObject {
       let seriesComplete = true;
       for (let j = 0, jj = series.length; j < jj; ++j) {
         const animation = series[j];
+        this.startResolution_ = animation.sourceResolution;
         this.finalResolution_ = animation.targetResolution;
         if (animation.complete) {
           continue;
@@ -1223,6 +1225,7 @@ class View extends BaseObject {
       projection: projection !== undefined ? projection : null,
       resolution: resolution,
       rotation: rotation,
+      startResolution: this.startResolution_,
       finalResolution: this.finalResolution_,
       animationProgress: animationProgress,
       zoom: this.getZoom(),
