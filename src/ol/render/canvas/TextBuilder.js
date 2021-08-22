@@ -366,7 +366,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         NaN,
         NaN,
         NaN,
-        1,
+        feature.getAnimationProgress(),
         0,
         0,
         this.textRotateWithView_,

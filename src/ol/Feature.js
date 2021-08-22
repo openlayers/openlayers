@@ -110,6 +110,12 @@ class Feature extends BaseObject {
     this.geometryName_ = 'geometry';
 
     /**
+     * @type {number}
+     * @private
+     */
+    this.animationProgress_ = 1;
+
+    /**
      * User provided style.
      * @private
      * @type {import("./style/Style.js").StyleLike}
@@ -203,6 +209,15 @@ class Feature extends BaseObject {
   }
 
   /**
+   * Get the current animation progress percentage.
+   * @return {number} Progress (fp number between 0 and 1).
+   * @api
+   */
+  getAnimationProgress() {
+    return this.animationProgress_;
+  }
+
+  /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
    * @return {import("./style/Style.js").StyleLike|undefined} The feature style.
@@ -258,6 +273,14 @@ class Feature extends BaseObject {
    */
   setGeometry(geometry) {
     this.set(this.geometryName_, geometry);
+  }
+
+  /**
+   * Set current animation progress.
+   * @param {number} animationProgress Current animation progress.
+   */
+  setAnimationProgress(animationProgress) {
+    this.animationProgress_ = animationProgress;
   }
 
   /**

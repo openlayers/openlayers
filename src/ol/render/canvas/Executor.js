@@ -853,7 +853,7 @@ class Executor {
               contextScale,
               image,
               dimensions,
-              opacity,
+              feature.animationProgress_,
               backgroundFill
                 ? /** @type {Array<*>} */ (lastFillInstruction)
                 : null,

@@ -689,6 +689,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       features.sort(vectorLayerRenderOrder);
     }
     for (let i = 0, ii = features.length; i < ii; ++i) {
+      features[i].setAnimationProgress(viewState.animationProgress);
       render(features[i]);
     }
     this.renderedFeatures_ = features;

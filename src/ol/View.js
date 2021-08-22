@@ -376,6 +376,12 @@ class View extends BaseObject {
 
     /**
      * @private
+     * @type {number|undefined}
+     */
+    this.targetAnimationProgress_;
+
+    /**
+     * @private
      * @type {import("./coordinate.js").Coordinate|undefined}
      */
     this.cancelAnchor_ = undefined;
@@ -747,6 +753,7 @@ class View extends BaseObject {
           seriesComplete = false;
         }
         const progress = animation.easing(fraction);
+        this.targetAnimationProgress_ = progress;
         if (animation.sourceCenter) {
           const x0 = animation.sourceCenter[0];
           const y0 = animation.sourceCenter[1];
@@ -1193,6 +1200,7 @@ class View extends BaseObject {
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
     const rotation = this.getRotation();
+    const animationProgress = this.targetAnimationProgress_;
     let center = /** @type {import("./coordinate.js").Coordinate} */ (
       this.getCenterInternal()
     );
@@ -1212,6 +1220,7 @@ class View extends BaseObject {
       projection: projection !== undefined ? projection : null,
       resolution: resolution,
       rotation: rotation,
+      animationProgress: animationProgress,
       zoom: this.getZoom(),
     };
   }
