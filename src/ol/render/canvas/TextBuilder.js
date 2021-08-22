@@ -287,6 +287,8 @@ class CanvasTextBuilder extends CanvasBuilder {
           flatCoordinates = [];
           for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
             if (!textState.overflow) {
+              geometryWidthsStart.push(interiorPoints[i + 2] / (this.startResolution === undefined ? this.resolution : this.startResolution))
+              geometryWidthsFinal.push(interiorPoints[i + 2] / (this.finalResolution === undefined ? this.resolution : this.finalResolution));
               geometryWidths.push(interiorPoints[i + 2] / this.resolution);
             }
             flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
