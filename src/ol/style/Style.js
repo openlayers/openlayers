@@ -6,7 +6,7 @@ import CircleStyle from './Circle.js';
 import Fill from './Fill.js';
 import GeometryType from '../geom/GeometryType.js';
 import Stroke from './Stroke.js';
-import { assert } from '../asserts.js';
+import {assert} from '../asserts.js';
 
 /**
  * A function that takes an {@link module:ol/Feature} and a `{number}`

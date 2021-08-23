@@ -5,7 +5,7 @@ import CanvasInstruction from './Instruction.js';
 import GeometryType from '../../geom/GeometryType.js';
 import Relationship from '../../extent/Relationship.js';
 import VectorContext from '../VectorContext.js';
-import { asColorLike } from '../../colorlike.js';
+import {asColorLike} from '../../colorlike.js';
 import {
   buffer,
   clone,
@@ -22,7 +22,7 @@ import {
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../canvas.js';
-import { equals, reverseSubArray } from '../../array.js';
+import {equals, reverseSubArray} from '../../array.js';
 import {
   inflateCoordinates,
   inflateCoordinatesArray,
@@ -405,6 +405,8 @@ class CanvasBuilder extends VectorContext {
           hitDetectionRenderer || renderer,
         ]);
         break;
+      default:
+        console.warn(`${type} geometry is not supported by custom drawing.`);
     }
     this.endGeometry(feature);
   }
