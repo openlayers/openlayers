@@ -406,7 +406,6 @@ class CanvasBuilder extends VectorContext {
         ]);
         break;
       default:
-        console.warn(`${type} geometry is not supported by custom drawing.`);
     }
     this.endGeometry(feature);
   }
