@@ -26,7 +26,7 @@ const green =
   'AABAAEAAAICRAEAOw==';
 
 where('Uint8ClampedArray').describe('ol.source.Raster', function () {
-  let map, target, redSource, greenSource, blueSource, raster;
+  let map, target, redSource, greenSource, blueSource, layer, raster;
 
   beforeEach(function () {
     target = document.createElement('div');
@@ -73,6 +73,10 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       },
     });
 
+    layer = new ImageLayer({
+      source: raster,
+    });
+
     map = new Map({
       target: target,
       view: new View({
@@ -83,11 +87,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
           extent: extent,
         }),
       }),
-      layers: [
-        new ImageLayer({
-          source: raster,
-        }),
-      ],
+      layers: [layer],
     });
   });
 
@@ -359,6 +359,32 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
 
       raster.once('afteroperations', function (event) {
         expect(event.data.message).to.equal('hello world');
+        done();
+      });
+
+      const view = map.getView();
+      view.setCenter([0, 0]);
+      view.setZoom(0);
+    });
+
+    it('is passed an array of data if more than one thread', function (done) {
+      const threads = 3;
+
+      raster = new RasterSource({
+        threads: threads,
+        sources: [redSource, greenSource, blueSource],
+        operation: function (inputs, data) {
+          data.prop = 'value';
+          return inputs[0];
+        },
+      });
+
+      layer.setSource(raster);
+
+      raster.once('afteroperations', function (event) {
+        expect(event.data).to.be.an(Array);
+        expect(event.data).to.have.length(threads);
+        expect(event.data[0].prop).to.equal('value');
         done();
       });
 

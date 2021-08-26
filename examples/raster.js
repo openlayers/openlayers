@@ -5,7 +5,7 @@ import XYZ from '../src/ol/source/XYZ.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 
 const minVgi = 0;
-const maxVgi = 0.25;
+const maxVgi = 0.5;
 const bins = 10;
 
 /**
@@ -87,7 +87,7 @@ const raster = new RasterSource({
     summarize: summarize,
   },
 });
-raster.set('threshold', 0.1);
+raster.set('threshold', 0.25);
 
 function createCounts(min, max, num) {
   const values = new Array(num);
