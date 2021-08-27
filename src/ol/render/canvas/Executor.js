@@ -802,6 +802,14 @@ class Executor {
           if (instruction.length > 24) {
             geometryWidths = /** @type {number} */ (instruction[24]);
           }
+          let geometryWidthsStart = geometryWidths;
+          if (instruction.length > 25) {
+            geometryWidthsStart = /** @type {number} */ (instruction[25]);
+          }
+          let geometryWidthsFinal = geometryWidths;
+          if (instruction.length > 26) {
+            geometryWidthsFinal = /** @type {number} */ (instruction[26]);
+          }
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 16) {
@@ -823,12 +831,19 @@ class Executor {
           }
           let widthIndex = 0;
           for (; d < dd; d += 2) {
-            if (
+            const hiddenAtAnimationStart =
+              geometryWidthsStart &&
+              geometryWidthsStart[widthIndex] < width / this.pixelRatio;
+            const hiddenAtAnimationEnd =
+              geometryWidthsFinal &&
+              geometryWidthsFinal[widthIndex] < width / this.pixelRatio;
+            const hiddenNow =
               geometryWidths &&
-              geometryWidths[widthIndex++] < width / this.pixelRatio
-            ) {
+              geometryWidths[widthIndex++] < width / this.pixelRatio;
+            if (hiddenNow && hiddenAtAnimationStart === hiddenAtAnimationEnd) {
               continue;
             }
+            const startOpacity = hiddenAtAnimationEnd ? 1 : 0;
             const dimensions = this.calculateImageOrLabelDimensions_(
               image.width,
               image.height,
@@ -853,7 +868,7 @@ class Executor {
               contextScale,
               image,
               dimensions,
-              opacity,
+              hiddenAtAnimationStart === hiddenAtAnimationEnd ? 1 : Math.abs(startOpacity - feature.animationProgress_),
               backgroundFill
                 ? /** @type {Array<*>} */ (lastFillInstruction)
                 : null,

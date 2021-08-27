@@ -368,11 +368,20 @@ class View extends BaseObject {
      */
     this.targetResolution_;
 
+    this.startResolution_;
+    this.finalResolution_;
+
     /**
      * @private
      * @type {number|undefined}
      */
     this.targetRotation_;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.targetAnimationProgress_;
 
     /**
      * @private
@@ -734,6 +743,8 @@ class View extends BaseObject {
       let seriesComplete = true;
       for (let j = 0, jj = series.length; j < jj; ++j) {
         const animation = series[j];
+        this.startResolution_ = animation.sourceResolution;
+        this.finalResolution_ = animation.targetResolution;
         if (animation.complete) {
           continue;
         }
@@ -747,6 +758,7 @@ class View extends BaseObject {
           seriesComplete = false;
         }
         const progress = animation.easing(fraction);
+        this.targetAnimationProgress_ = progress;
         if (animation.sourceCenter) {
           const x0 = animation.sourceCenter[0];
           const y0 = animation.sourceCenter[1];
@@ -1193,6 +1205,7 @@ class View extends BaseObject {
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
     const rotation = this.getRotation();
+    const animationProgress = this.targetAnimationProgress_;
     let center = /** @type {import("./coordinate.js").Coordinate} */ (
       this.getCenterInternal()
     );
@@ -1212,6 +1225,9 @@ class View extends BaseObject {
       projection: projection !== undefined ? projection : null,
       resolution: resolution,
       rotation: rotation,
+      startResolution: this.startResolution_,
+      finalResolution: this.finalResolution_,
+      animationProgress: animationProgress,
       zoom: this.getZoom(),
     };
   }
