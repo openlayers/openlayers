@@ -1,0 +1,3262 @@
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:se="http://www.openlayers.org"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.3/ogckml23.xsd">
+    <Document>
+        <name>Обстановка №217 по состоянию на 2021-06-09 15:19:29.471532</name>
+        <Placemark id="o6528">
+            <name>Разграничительные линии между соединениями, группировками сил флота, их зонами, районами ответствен</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/разгранка-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009995003305&amp;format=raw&amp;props=01&amp;text[0]=Разграничительные линии между соединениями, группировками сил флота, их зонами, районами ответствен&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009995003305</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6528</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.753540039062493,52.557464086454786,0
+                    41.889667510986321,52.628165956259437,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--009995003305-->
+        <Placemark id="o6547">
+            <name>Разграничительные линии между соединениями, группировками сил флота, их зонами, районами ответствен</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/разгранка-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009995003305&amp;format=raw&amp;props=01&amp;text[0]=Разграничительные линии между соединениями, группировками сил флота, их зонами, районами ответствен&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009995003305</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6547</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.588659286499016,52.703122730447902,0
+                    41.578212372689912,52.693171373062775,0
+                    41.523170471191406,52.653998916315963,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--009995003305-->
+        <Placemark id="o6549">
+            <name>Разграничительные линии между соединениями, группировками сил флота, их зонами, районами ответствен</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/разгранка-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009995003305&amp;format=raw&amp;props=01&amp;text[0]=Разграничительные линии между соединениями, группировками сил флота, их зонами, районами ответствен&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009995003305</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6549</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.636295318603516,52.483329062845414,0
+                    41.673496891791281,52.511503095069493,0
+                    41.725215911865241,52.537891437709774,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--009995003305-->
+        <Placemark id="o6545">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>../arrow.svg</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6545</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.738927364349372,52.572672529588345,0
+                    41.736545562744126,52.572542119389986,0 41.735660433769226,52.573246329853376,0
+                    41.737768650054932,52.573820122609739,0 41.737167835235596,52.574680797665643,0
+                    41.735563874244683,52.574550393440084,0 41.736030578613267,52.575776177848368,0
+                    41.735858917236321,52.5761934583388,0 41.735858917236321,52.576819371628034,0
+                    41.735172271728509,52.577862540586565,0 41.73414230346679,52.579114310573154,0
+                    41.73362731933593,52.579740182163263,0 41.733283996582024,52.580261734996057,0
+                    41.731739044189446,52.581096206621893,0 41.731052398681634,52.581513436478012,0
+                    41.730022430419915,52.581826356263925,0 41.729335784912102,52.58203496821357,0
+                    41.728305816650376,52.582347884276537,0 41.726760864257812,52.582765102219,0
+                    41.725559234619141,52.582973709701086,0 41.724529266357408,52.583078013069802,0
+                    41.722984313964837,52.583078013069802,0 41.722469329833977,52.583078013069802,0
+                    41.722297668457024,52.583078013069802,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6540">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=01&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6540</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.762123107910163,52.563777665279638,0
+                    41.762123107910163,52.563777665279638,0 41.76143646240233,52.564821144520621,0
+                    41.760749816894524,52.566073286842112,0 41.759891510009759,52.567221052568165,0
+                    41.759548187255852,52.567847093940593,0 41.757659912109375,52.569829499331476,0
+                    41.756286621093736,52.570872834596635,0 41.754226684570305,52.571603154512772,0
+                    41.751480102539055,52.572333462265959,0 41.749763488769538,52.572646447579686,0
+                    41.749420166015625,52.572646447579686,0 41.74770355224608,52.572646447579686,0
+                    41.745815277099602,52.572646447579686,0 41.745643615722656,52.572646447579686,0
+                    41.743927001953111,52.572437790952115,0 41.743583679199212,52.572333462265959,0
+                    41.743031144142151,52.57236606500706,0 41.742797132835136,52.572091060022878,0
+                    41.742076277732842,52.572053077692033,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6492">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=02010102&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>02010102</value>
+                </Data>
+                <Data name="id">
+                    <value>6492</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.715543866157525,52.605966596596545,0
+                    41.715774536132812,52.605914472179883,0 41.716117858886712,52.605184723833112,0
+                    41.716289520263665,52.604871970819481,0 41.717319488525398,52.603725190662161,0
+                    41.717491149902351,52.603099661557181,0 41.718006134033217,52.602682637190789,0
+                    41.718521118164077,52.6017443178497,0 41.719036102294929,52.601223020641449,0
+                    41.720752716064453,52.599763355453838,0 41.721096038818359,52.599346299323713,0
+                    41.722640991210938,52.5984079085136,0 41.723670959472663,52.597782303472961,0
+                    41.72813415527343,52.59600970734185,0 41.72916412353517,52.595696888814921,0
+                    41.731395721435547,52.595071245060495,0 41.732095147327378,52.594918294407243,0
+                    41.735687255859382,52.594132762677454,0
+                    41.736202239990241,52.594028485616278,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6494">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=01&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6494</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.65208816528321,52.628218054189574
+                    41.65208816528321,52.628218054189574 41.651916503906257,52.629051612636566
+                    41.651744842529304,52.629676771052068 41.651744842529304,52.629989346910641
+                    41.651401519775398,52.631135439289437 41.650199890136726,52.633010798432217
+                    41.650028228759773,52.633531717262805 41.64934158325196,52.634573536318122
+                    41.648483276367188,52.635406973700903 41.647453308105469,52.636240395206947
+                    41.645565032958984,52.63790719058936 41.644020080566413,52.638740564465969
+                    41.642131805419922,52.639365584454652 41.640586853027351,52.639782259485813
+                    41.637153625488281,52.640407264590642 41.634578704833984,52.640823929699295
+                    41.633205413818366,52.640928095356308 41.630802154541023,52.641240590838962
+                    41.628913879394538,52.641240590838962 41.627368927001953,52.641344755503738
+                    41.626338958740234,52.641344755503738
+                    41.625995635986328,52.641344755503738</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6501">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=02010102&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>02010102</value>
+                </Data>
+                <Data name="id">
+                    <value>6501</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.592521667480497,52.694228339928586,0
+                    41.592521667480497,52.694228339928586,0 41.592521667480497,52.692771775816382,0
+                    41.593551635742202,52.691107071611682,0 41.595096588134801,52.68954635377321,0
+                    41.597328186035199,52.687569364424668,0 41.600246429443402,52.685384166795195,0
+                    41.601276397705099,52.684655743285816,0 41.602649688720703,52.684031370607364,0
+                    41.604709625244105,52.683406989002584,0 41.605052947997997,52.683302924533891,0
+                    41.605396270751903,52.683302924533891,0
+                    41.605739593505902,52.683302924533891,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6505">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=01&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6505</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.599731445312493,52.667794547608921
+                    41.599731445312493,52.667794547608921 41.599903106689446,52.669460140529239
+                    41.599903106689446,52.67018881746835 41.599903106689446,52.67164613489193
+                    41.599731445312493,52.672791135912064 41.598358154296868,52.676225958936428
+                    41.597328186035149,52.678099384945817 41.595611572265611,52.680180875171132
+                    41.594238281249993,52.68163785931241 41.592350006103509,52.682990729640125
+                    41.592178344726555,52.683094794852678 41.589603424072266,52.684343558062437
+                    41.587715148925774,52.685071986778887 41.584110260009759,52.686424750732378
+                    41.582221984863274,52.687049089192939 41.581192016601555,52.687361255075878
+                    41.581020355224602,52.687361255075878 41.579475402832031,52.687465309874284
+                    41.578960418701172,52.687465309874284 41.576557159423814,52.68767341872725
+                    41.576213836669908,52.68767341872725 41.575355529785149,52.687777472781811
+                    41.573638916015618,52.687777472781811</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6518">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=01&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6518</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.724700927734361,52.586624179930922
+                    41.724700927734361,52.586624179930922 41.724700927734361,52.586832769046673
+                    41.724700927734361,52.587667115582192 41.724700927734361,52.588084282893469
+                    41.724529266357408,52.588292865059991 41.724357604980455,52.58871002641483
+                    41.724357604980455,52.589335761001571 41.724014282226555,52.58975291242907
+                    41.724014282226555,52.590378632124889 41.723670959472649,52.591004342886208
+                    41.723327636718743,52.591525761695735 41.722984313964837,52.592464299917737
+                    41.72264099121093,52.593089980897837 41.722297668457024,52.593819930749397
+                    41.721439361572259,52.594654144260858 41.720924377441399,52.595175519640001
+                    41.720581054687493,52.595592615476257 41.720237731933587,52.596009707341835
+                    41.719379425048828,52.59653106659006 41.718864440917969,52.596843879161014
+                    41.718177795410149,52.597052419634146 41.717834472656243,52.597156689498476
+                    41.71714782714843,52.597469497602461 41.716632843017571,52.597469497602461
+                    41.715774536132812,52.597782303472975 41.714229583740227,52.597886571600149
+                    41.713542938232415,52.597886571600149 41.712512969970689,52.597990839479174
+                    41.710624694824212,52.598095107110026 41.709251403808587,52.598095107110026
+                    41.708049774169922,52.598095107110026 41.705646514892571,52.598095107110026
+                    41.704959869384759,52.598095107110026</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6524">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=01&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6524</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.689510345458977,52.601744317849686
+                    41.689510345458977,52.601744317849686 41.689510345458977,52.602682637190817
+                    41.689338684082024,52.603620936431703 41.689167022705071,52.604246458092256
+                    41.688995361328118,52.604663467569665 41.688823699951165,52.605393224601499
+                    41.688137054443359,52.606748455401899 41.687793731689446,52.607269686851026
+                    41.68745040893554,52.608207887826659 41.687107086181634,52.608937585800831
+                    41.686420440673821,52.61008422948052 41.686248779296868,52.610605421227731
+                    41.685733795166009,52.611335079252278 41.684532165527337,52.612481660154501
+                    41.684360504150384,52.612794358826221 41.683330535888665,52.61362821103323
+                    41.681957244873033,52.614670503960745 41.681442260742173,52.615087414184288
+                    41.679897308349602,52.615921222721539 41.679553985595696,52.616129672374647
+                    41.678180694580071,52.61675501537912 41.6766357421875,52.617484570928312
+                    41.674575805664055,52.618526772051581 41.674232482910149,52.618630990799275
+                    41.672687530517571,52.619256298075079 41.671657562255852,52.6197773806485
+                    41.669082641601555,52.620819527187059 41.667366027832024,52.621549015001577
+                    41.664791107177734,52.622486910042305 41.663417816162095,52.623007954159043
+                    41.661357879638665,52.623528992073197 41.661014556884759,52.623633198911719
+                    41.65946960449218,52.623945817938683 41.657409667968743,52.624466844688278
+                    41.656379699707024,52.624675253651411 41.654834747314446,52.624779457760823
+                    41.654663085937493,52.62488366162215 41.654319763183587,52.62488366162215
+                    41.654148101806634,52.62488366162215</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6527">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=02010102&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>02010102</value>
+                </Data>
+                <Data name="id">
+                    <value>6527</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.615867614746087,52.673337603093508,0
+                    41.615867614746087,52.672452843279189,0 41.616554260253899,52.671255786776662,0
+                    41.617069244384759,52.669850504686387,0 41.617412567138665,52.669330018368541,0
+                    41.61827087402343,52.667248011098415,0 41.618871688842766,52.66615491757095,0
+                    41.619472503662109,52.665530280422111,0 41.620073318481438,52.66480152579765,0
+                    41.622133255004876,52.663396036132809,0 41.623334884643548,52.663031642545207,0
+                    41.624622344970696,52.662771359551108,0 41.627281328512638,52.662714773999099,0
+                    41.62951469421386,52.662667245919458,0 41.63226127624511,52.662667245919458,0
+                    41.635351181030273,52.662771359551108,0
+                    41.635437011718743,52.662771359551108,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6530">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=01&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6530</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.628570556640625,52.645615293182402,0
+                    41.628913879394531,52.647073430060473,0 41.628913879394531,52.647385881637717,0
+                    41.628913879394531,52.649364689785642,0 41.628913879394531,52.650614417217049,0
+                    41.628913879394531,52.651968248294956,0 41.628742218017578,52.652905491408767,0
+                    41.628227233886719,52.653946849083304,0 41.627197265625,52.655300576979684,0
+                    41.625215444671952,52.657224038732714,0 41.62376403808593,52.658632651684954,0
+                    41.622562408447259,52.659361509171909,0 41.620674133300781,52.660194474275919,0
+                    41.618270874023438,52.661027423506972,0 41.617240905761719,52.661339775376369,0
+                    41.615524291992188,52.661652125013674,0 41.612949371337884,52.662380932153646,0
+                    41.612262725830071,52.662485046467317,0 41.611576080322259,52.662589160532988,0
+                    41.611061096191399,52.662797387920286,0 41.610374450683594,52.662797387920286,0
+                    41.609172821044922,52.662901501241898,0 41.609001159667969,52.662901501241898,0
+                    41.60797119140625,52.663109727141141,0 41.607284545898438,52.663213839718757,0
+                    41.606254577636719,52.663422064129954,0 41.605567932128906,52.66352617596349,0
+                    41.605224609375,52.66363028754909,0 41.604537963867188,52.66363028754909,0
+                    41.604366302490234,52.66363028754909,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6543">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=02010102&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>02010102</value>
+                </Data>
+                <Data name="id">
+                    <value>6543</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.674693822860711,52.639430690189904,0
+                    41.674747467041023,52.639235372693449,0 41.674747467041023,52.638610350844289,0
+                    41.674919128417976,52.637881147399874,0 41.675434112548835,52.636474792144909,0
+                    41.676292419433601,52.635693464134334,0 41.677150726318359,52.634651671747193,0
+                    41.67938232421875,52.632828475376307,0 41.680068969726562,52.63251591979855,0
+                    41.681785583496094,52.631838708387328,0 41.684188842773445,52.630848919008933,0
+                    41.685390472412109,52.630588444398619,0 41.686420440673835,52.630275872819517,0
+                    41.687965393066413,52.629911203155288,0 41.688823699951172,52.629807011264482,0
+                    41.690282821655273,52.629546530452011,0 41.691312789916985,52.629546530452011,0
+                    41.691484451293945,52.629546530452011,0
+                    41.691570281982422,52.629546530452011,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6552">
+            <name>Рубеж обороны, позиция, занятая войсками</name>
+            <Style>
+                <IconStyle>
+                    <!--Узел/штрих-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=111015000313&amp;format=raw&amp;props=02010102&amp;text[0]=Рубеж обороны, позиция, занятая войсками&amp;rotate=90</href>
+                    </Icon>
+                    <hotSpot/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>111015000313</value>
+                </Data>
+                <Data name="props">
+                    <value>02010102</value>
+                </Data>
+                <Data name="id">
+                    <value>6552</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <LineString>
+                <coordinates>41.739978790283203,52.587562823133894,0
+                    41.739978790283203,52.587562823133894,0 41.739978790283203,52.58662417993088,0
+                    41.740322113037102,52.585685516624586,0 41.741180419921903,52.584121033106285,0
+                    41.742038726806598,52.583078013069802,0 41.742382049560597,52.582765102219,0
+                    41.7437553405762,52.581513436477977,0 41.7453002929688,52.580366044817993,0
+                    41.750450134277408,52.577966856117307,0 41.754741668701193,52.576819371628076,0
+                    41.757659912109403,52.576193458338786,0 41.760749816894496,52.575671857105199,0
+                    41.761951446533196,52.575567536113901,0 41.765384674072301,52.574941604953203,0
+                    41.766242980957003,52.574837282224294,0
+                    41.766929626464901,52.574732959247264,0</coordinates>
+            </LineString>
+        </Placemark>
+        <!--111015000313-->
+        <Placemark id="o6533">
+            <name>1 пбр</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/бригада-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001013&amp;format=raw&amp;props=02010101010202010101&amp;flip=0&amp;text[0]=1 пбр&amp;text[1]=ОКП</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001013</value>
+                </Data>
+                <Data name="props">
+                    <value>02010101010202010101</value>
+                </Data>
+                <Data name="id">
+                    <value>6533</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.702777777777783,52.649999999999999,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001013-->
+        <Placemark id="o6555">
+            <name>25 омсбр</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/бригада-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001013&amp;format=raw&amp;props=01060101010201010101&amp;flip=1&amp;text[0]=25 омсбр</href>
+                    </Icon>
+                    <hotSpot x="0.75" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001013</value>
+                </Data>
+                <Data name="props">
+                    <value>01060101010201010101</value>
+                </Data>
+                <Data name="id">
+                    <value>6555</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.588888888888903,52.610000000000007,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001013-->
+        <Placemark id="o6491">
+            <name>КП 34 адн</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=0107&amp;flip=0&amp;text[0]=КП 34 адн&amp;text[1]=34 адн</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>0107</value>
+                </Data>
+                <Data name="id">
+                    <value>6491</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.602821350097656,52.550627699820744</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6495">
+            <name>18 бСпН</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=18 бСпН</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6495</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.741388888888892,52.657499999999985,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6496">
+            <name>4/34 пп</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=4/34 пп</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6496</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.737222222222222,52.606388888888866,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6498">
+            <name>31 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=010601020201&amp;flip=0&amp;text[0]=31 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>010601020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6498</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.588888888888903,52.610000000000007,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6504">
+            <name>30 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=010601020201&amp;flip=1&amp;text[0]=30 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.75" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>010601020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6504</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.594166666666695,52.667222222222179,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6519">
+            <name>1/68 обркп</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=1/68 обркп</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6519</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.638011932372997,52.687595378023609,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6520">
+            <name>1/17 пп</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=1/17 пп</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6520</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.643333333333302,52.671944444444378,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6522">
+            <name>33 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=01&amp;flip=1&amp;text[0]=33 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.75" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6522</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.690797805786126,52.565760254612968,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6525">
+            <name>2/16 пп</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101&amp;flip=0&amp;text[0]=2/16 пп</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6525</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.654663085937493,52.6967251939204,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6526">
+            <name>1/5 ап</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=1/5 ап</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6526</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.706111111111113,52.638333333333328,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6531">
+            <name>2/5 ап</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=2/5 ап</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6531</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.658055555555556,52.690833333333337,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6534">
+            <name>1/27 пп</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=020101020201&amp;flip=0&amp;text[0]=1/27 пп</href>
+                    </Icon>
+                    <hotSpot x="0.25" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>020101020201</value>
+                </Data>
+                <Data name="id">
+                    <value>6534</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.711111111111101,52.642222222222188,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6536">
+            <name>32 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--КП/батальон-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001017&amp;format=raw&amp;props=01&amp;flip=1&amp;text[0]=32 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.75" y="0"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001017</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6536</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.721944444444404,52.5566666666667,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001017-->
+        <Placemark id="o6487">
+            <name/>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0201010201020100&amp;flip=0&amp;text[1]=пр</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0201010201020100</value>
+                </Data>
+                <Data name="id">
+                    <value>6487</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.760234832763707,52.585894110207775,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6488">
+            <name>32 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0106010201010100&amp;flip=0&amp;text[0]=32 мсб&amp;text[1]=1 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0106010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6488</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.717834472656207,52.591473620093993,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6497">
+            <name>30 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0106010201020100&amp;flip=0&amp;text[0]=30 мсб&amp;text[1]=3 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0106010201020100</value>
+                </Data>
+                <Data name="id">
+                    <value>6497</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.5744113922119,52.670188817468386,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6500">
+            <name>31 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201010100&amp;flip=0&amp;text[0]=31 мсб&amp;text[1]=1 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6500</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.625480651855497,52.631448004728369,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6506">
+            <name>31 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201010100&amp;flip=0&amp;text[0]=31 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6506</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.559906005859403,52.610292706923808,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6508">
+            <name>30 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201010100&amp;flip=0&amp;text[0]=30 мсб&amp;text[1]=2 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6508</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.573982238769503,52.68023291115599,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6512">
+            <name>33 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201020102&amp;flip=0&amp;text[0]=33 мсб&amp;text[1]=2 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201020102</value>
+                </Data>
+                <Data name="id">
+                    <value>6512</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.700325012206996,52.566647173459693,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6513">
+            <name/>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0201010201020100&amp;flip=0&amp;text[1]=рр</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0201010201020100</value>
+                </Data>
+                <Data name="id">
+                    <value>6513</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.684188842773402,52.634781897152187,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6515">
+            <name/>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0208010201020100&amp;flip=0&amp;text[1]=пр</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0208010201020100</value>
+                </Data>
+                <Data name="id">
+                    <value>6515</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.595611572265589,52.692589701885503,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6516">
+            <name>33 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=&amp;flip=0&amp;text[0]=33 мсб&amp;text[1]=1 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color/>
+                    <width/>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color/>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value/>
+                </Data>
+                <Data name="id">
+                    <value>6516</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value/>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.674575805664098,52.56831661910541,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6517">
+            <name/>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0201010201020100&amp;flip=0&amp;text[1]=пр</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0201010201020100</value>
+                </Data>
+                <Data name="id">
+                    <value>6517</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.622734069824197,52.669251944886092,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6538">
+            <name>32 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201010100&amp;flip=0&amp;text[0]=32 мсб&amp;text[1]=3 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6538</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.738777160644531,52.582712950193368</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6539">
+            <name>31 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201010100&amp;flip=0&amp;text[0]=31 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6539</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.653890609741204,52.613263402646666,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6541">
+            <name/>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0201010201020100&amp;flip=0&amp;text[1]=пр</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0201010201020100</value>
+                </Data>
+                <Data name="id">
+                    <value>6541</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.728992462158203,52.600493194127488,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6542">
+            <name>ПУ</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0201010201020101&amp;flip=0&amp;text[0]=ПУ</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ffff0000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0201010201020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6542</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>02</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.670799255371101,52.660506832097703,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6548">
+            <name>30 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201010100&amp;flip=0&amp;text[0]=30 мсб</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201010100</value>
+                </Data>
+                <Data name="id">
+                    <value>6548</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.630630493164105,52.557046627731062,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6554">
+            <name>33 мсб</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=009991001018&amp;format=raw&amp;props=0101010201020102&amp;flip=0&amp;text[0]=33 мсб&amp;text[1]=3 мср</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.35"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>009991001018</value>
+                </Data>
+                <Data name="props">
+                    <value>0101010201020102</value>
+                </Data>
+                <Data name="id">
+                    <value>6554</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.684875488281193,52.557255357589376,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--009991001018-->
+        <Placemark id="o6499">
+            <name>311Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ/передвижное/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312641001004&amp;format=raw&amp;props=01070101&amp;text[0]=311Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312641001004</value>
+                </Data>
+                <Data name="props">
+                    <value>01070101</value>
+                </Data>
+                <Data name="id">
+                    <value>6499</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.550378799438498,52.661027423506972,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312641001004-->
+        <Placemark id="o6511">
+            <name>331Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ/передвижное/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312641001004&amp;format=raw&amp;props=01070101&amp;text[0]=331Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312641001004</value>
+                </Data>
+                <Data name="props">
+                    <value>01070101</value>
+                </Data>
+                <Data name="id">
+                    <value>6511</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.588487625122099,52.662589160532988,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312641001004-->
+        <Placemark id="o6532">
+            <name>331Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ/передвижное/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312641001004&amp;format=raw&amp;props=01070101&amp;text[0]=331Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312641001004</value>
+                </Data>
+                <Data name="props">
+                    <value>01070101</value>
+                </Data>
+                <Data name="id">
+                    <value>6532</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.655092239379897,52.602682637190796,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312641001004-->
+        <Placemark id="o6550">
+            <name>332Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ/передвижное/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312641001004&amp;format=raw&amp;props=01070101&amp;text[0]=332Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312641001004</value>
+                </Data>
+                <Data name="props">
+                    <value>01070101</value>
+                </Data>
+                <Data name="id">
+                    <value>6550</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.605997085571296,52.658216156236037</coordinates>
+            </Point>
+        </Placemark>
+        <!--312641001004-->
+        <Placemark id="o6551">
+            <name>ПУ 125 ор РЭБ</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ/передвижное/ПУ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312641001005&amp;format=raw&amp;props=01070102&amp;text[0]=ПУ 125 ор РЭБ&amp;text[1]=125 ор РЭБ</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312641001005</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102</value>
+                </Data>
+                <Data name="id">
+                    <value>6551</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.586111111111116,52.637777777777792,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312641001005-->
+        <Placemark id="o6489">
+            <name>321Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010201&amp;text[0]=321Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010201</value>
+                </Data>
+                <Data name="id">
+                    <value>6489</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.576642990112298,52.6283222498638,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6490">
+            <name>331Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010201&amp;text[0]=331Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010201</value>
+                </Data>
+                <Data name="id">
+                    <value>6490</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.563940048217802,52.671958410873287,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6493">
+            <name>377У</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=010701020101&amp;text[0]=377У</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>010701020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6493</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.67225837707521,52.580574663717293,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6502">
+            <name>377У</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=010701020101&amp;text[0]=377У</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>010701020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6502</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.592435836791999,52.649156398407904,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6503">
+            <name>321Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010201&amp;text[0]=321Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010201</value>
+                </Data>
+                <Data name="id">
+                    <value>6503</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.701269149780273,52.559707859041886</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6507">
+            <name>311Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010201&amp;text[0]=311Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010201</value>
+                </Data>
+                <Data name="id">
+                    <value>6507</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.549005508422852,52.663422064129939</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6514">
+            <name>377У</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=010701020101&amp;text[0]=377У</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>010701020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6514</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.5689182281494,52.659049143165575,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6521">
+            <name>377У</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010101&amp;text[0]=377У</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010101</value>
+                </Data>
+                <Data name="id">
+                    <value>6521</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.712598800659201,52.550418938432564,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6523">
+            <name>377У</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=010701020101&amp;text[0]=377У</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>010701020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6523</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.591405868530273,52.624466844688257</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6529">
+            <name>331Б</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010201&amp;text[0]=331Б</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010201</value>
+                </Data>
+                <Data name="id">
+                    <value>6529</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.715517044067404,52.566803686688608,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6535">
+            <name>330Ж</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=010701020101&amp;text[0]=330Ж</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>010701020101</value>
+                </Data>
+                <Data name="id">
+                    <value>6535</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.567716598510799,52.649052252346898,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6537">
+            <name>377ЛА</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010101&amp;text[0]=377ЛА</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010101</value>
+                </Data>
+                <Data name="id">
+                    <value>6537</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.617798805236802,52.631369863578016,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6546">
+            <name>377У</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002015&amp;format=raw&amp;props=01070102010101&amp;text[0]=377У</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002015</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010101</value>
+                </Data>
+                <Data name="id">
+                    <value>6546</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.670026779174812,52.561064503075009,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002015-->
+        <Placemark id="o6510">
+            <name>377Л</name>
+            <Style>
+                <IconStyle>
+                    <!--Средство/малогабаритное/РЭБ-->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312643002022&amp;format=raw&amp;props=01070102010101&amp;text[0]=377Л</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>FF000000</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312643002022</value>
+                </Data>
+                <Data name="props">
+                    <value>01070102010101</value>
+                </Data>
+                <Data name="id">
+                    <value>6510</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.562395095825188,52.643532156162387</coordinates>
+            </Point>
+        </Placemark>
+        <!--312643002022-->
+        <Placemark id="o6509">
+            <name>Позиционный район (район сосредоточения) части РЭБ</name>
+            <Style>
+                <IconStyle>
+                    <!-- -->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312645000110&amp;format=raw&amp;props=01&amp;text[0]=Позиционный район (район сосредоточения) части РЭБ</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312645000110</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6509</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.568145751953118,52.679452364874898</coordinates>
+            </Point>
+        </Placemark>
+        <!--312645000110-->
+        <Placemark id="o6544">
+            <name>Позиционный район (район сосредоточения) части РЭБ</name>
+            <Style>
+                <IconStyle>
+                    <!-- -->
+                    <scale>1.0</scale>
+                    <Icon>
+                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312645000110&amp;format=raw&amp;props=01&amp;text[0]=Позиционный район (район сосредоточения) части РЭБ</href>
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312645000110</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6544</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.566944122314453,52.663422064129946,0</coordinates>
+            </Point>
+        </Placemark>
+        <!--312645000110-->
+        <Placemark id="o6553">
+            <name>Позиционный район (район сосредоточения) части РЭБ</name>
+            <Style>
+                <IconStyle>
+                    <!-- -->
+                    <scale>1.0</scale>
+                    <Icon>
+<!--                        <href>http://192.168.0.17/?option=com_keuz&amp;view=symbol&amp;code=312645000110&amp;format=raw&amp;props=01&amp;text[0]=Позиционный район (район сосредоточения) части РЭБ</href>-->
+                        <href>../arrow.svg</href>
+
+                    </Icon>
+                    <hotSpot x="0.5" y="0.3"/>
+                </IconStyle>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>2</width>
+                    <lineDash xmlns="http://www.openlayers.org"/>
+                </LineStyle>
+                <PolyStyle>
+                    <color>00000000</color>
+                </PolyStyle>
+            </Style>
+            <ExtendedData>
+                <Data name="basecode">
+                    <value>312645000110</value>
+                </Data>
+                <Data name="props">
+                    <value>01</value>
+                </Data>
+                <Data name="id">
+                    <value>6553</value>
+                </Data>
+                <Data name="minZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="maxZoom">
+                    <value>0</value>
+                </Data>
+                <Data name="nullstyle">
+                    <value>01</value>
+                </Data>
+            </ExtendedData>
+            <Point>
+                <coordinates>41.572093963623047,52.680597161313649</coordinates>
+            </Point>
+        </Placemark>
+        <!--312645000110-->
+    </Document>
+</kml>
