@@ -54,6 +54,11 @@ describe('ol.renderer.webgl.TileLayer', function () {
     };
   });
 
+  it('maintains a cache on the renderer instead of the source', function () {
+    expect(tileLayer.getSource().tileCache.highWaterMark).to.be(0.1);
+    expect(renderer.tileTextureCache_.highWaterMark).to.be(512);
+  });
+
   it('#prepareFrame()', function () {
     const source = tileLayer.getSource();
     tileLayer.setSource(null);
@@ -73,7 +78,7 @@ describe('ol.renderer.webgl.TileLayer', function () {
     expect(rendered).to.be.a(HTMLCanvasElement);
     expect(frameState.tileQueue.getCount()).to.be(1);
     expect(Object.keys(frameState.wantedTiles).length).to.be(1);
-    expect(frameState.postRenderFunctions.length).to.be(0); // no tile expired
+    expect(frameState.postRenderFunctions.length).to.be(1); // clear source cache (use renderer cache)
     expect(renderer.tileTextureCache_.count_).to.be(1);
   });
 

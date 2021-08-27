@@ -56,6 +56,8 @@ const attributeDescriptions = [
   },
 ];
 
+const empty = {};
+
 /**
  * Transform a zoom level into a depth value ranging from -1 to 1.
  * @param {number} z A zoom level.
@@ -103,6 +105,7 @@ function getRenderExtent(frameState) {
  * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
+ * @property {number} [cacheSize=512] The texture cache size.
  */
 
 /**
@@ -177,7 +180,8 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.helper.flushBufferData(indices);
     this.indices_ = indices;
 
-    this.tileTextureCache_ = new LRUCache(512);
+    const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
+    this.tileTextureCache_ = new LRUCache(cacheSize);
 
     this.renderedOpacity_ = NaN;
   }
@@ -468,23 +472,17 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     // TODO: let the renderers manage their own cache instead of managing the source cache
-    if (tileSource.canExpireCache()) {
-      /**
-       * @param {import("../../PluggableMap.js").default} map Map.
-       * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-       */
-      const postRenderFunction = function (map, frameState) {
-        const tileSourceKey = getUid(tileSource);
-        if (tileSourceKey in frameState.usedTiles) {
-          tileSource.expireCache(
-            frameState.viewState.projection,
-            frameState.usedTiles[tileSourceKey]
-          );
-        }
-      };
+    /**
+     * Here we unconditionally expire the source cache since the renderer maintains
+     * its own cache.
+     * @param {import("../../PluggableMap.js").default} map Map.
+     * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+     */
+    const postRenderFunction = function (map, frameState) {
+      tileSource.expireCache(tileSource.getProjection(), empty);
+    };
 
-      frameState.postRenderFunctions.push(postRenderFunction);
-    }
+    frameState.postRenderFunctions.push(postRenderFunction);
 
     this.postRender(frameState);
     return canvas;
