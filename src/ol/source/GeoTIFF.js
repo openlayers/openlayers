@@ -147,6 +147,9 @@ function getMaxForDataType(array) {
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
+ * @property {boolean} [opaque=false] Whether the layer is opaque.
+ * @property {number} [transition=250] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
  */
 
 /**
@@ -163,6 +166,8 @@ class GeoTIFFSource extends DataTile {
       state: State.LOADING,
       tileGrid: null,
       projection: null,
+      opaque: options.opaque,
+      transition: options.transition,
     });
 
     /**
