@@ -9,7 +9,9 @@
  * {@link module:ol/geom/MultiPolygon~MultiPolygon}.
  * @enum {string}
  */
-export default {
+const TextPlacement = {
   POINT: 'point',
   LINE: 'line',
 };
+
+export default TextPlacement;

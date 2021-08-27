@@ -8,7 +8,7 @@
  * `'top-center'`, `'top-right'`
  * @enum {string}
  */
-export default {
+const OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
   BOTTOM_CENTER: 'bottom-center',
   BOTTOM_RIGHT: 'bottom-right',
@@ -19,3 +19,5 @@ export default {
   TOP_CENTER: 'top-center',
   TOP_RIGHT: 'top-right',
 };
+
+export default OverlayPositioning;

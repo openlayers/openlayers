@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const VectorEventType = {
   /**
    * Triggered when a feature is added to the source.
    * @event module:ol/source/Vector.VectorSourceEvent#addfeature
@@ -56,6 +56,8 @@ export default {
    */
   FEATURESLOADERROR: 'featuresloaderror',
 };
+
+export default VectorEventType;
 
 /**
  * @typedef {'addfeature'|'changefeature'|'clear'|'removefeature'|'featuresloadstart'|'featuresloadend'|'featuresloaderror'} VectorSourceEventTypes

@@ -6,7 +6,7 @@
  * Relationship to an extent.
  * @enum {number}
  */
-export default {
+const Relationship = {
   UNKNOWN: 0,
   INTERSECTING: 1,
   ABOVE: 2,
@@ -14,3 +14,5 @@ export default {
   BELOW: 8,
   LEFT: 16,
 };
+
+export default Relationship;

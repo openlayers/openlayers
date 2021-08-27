@@ -6,7 +6,7 @@
  * Icon origin. One of 'bottom-left', 'bottom-right', 'top-left', 'top-right'.
  * @enum {string}
  */
-export default {
+const IconOrigin = {
   /**
    * Origin is at bottom left
    * @api
@@ -28,3 +28,5 @@ export default {
    */
   TOP_RIGHT: 'top-right',
 };
+
+export default IconOrigin;

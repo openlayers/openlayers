@@ -8,7 +8,7 @@
  *     specification that OpenLayers can make use of.
  * @enum {string}
  */
-export default {
+const WMSServerType = {
   /**
    * HiDPI support for [Carmenta Server](https://www.carmenta.com/en/products/carmenta-server)
    * @api
@@ -30,3 +30,5 @@ export default {
    */
   QGIS: 'qgis',
 };
+
+export default WMSServerType;

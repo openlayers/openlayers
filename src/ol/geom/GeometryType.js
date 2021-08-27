@@ -8,7 +8,7 @@
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
  */
-export default {
+const GeometryType = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   LINEAR_RING: 'LinearRing',
@@ -19,3 +19,5 @@ export default {
   GEOMETRY_COLLECTION: 'GeometryCollection',
   CIRCLE: 'Circle',
 };
+
+export default GeometryType;

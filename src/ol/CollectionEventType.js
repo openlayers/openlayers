@@ -5,7 +5,7 @@
 /**
  * @enum {string}
  */
-export default {
+const CollectionEventType = {
   /**
    * Triggered when an item is added to the collection.
    * @event module:ol/Collection.CollectionEvent#add
@@ -19,3 +19,5 @@ export default {
    */
   REMOVE: 'remove',
 };
+
+export default CollectionEventType;

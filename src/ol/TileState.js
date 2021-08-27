@@ -5,7 +5,7 @@
 /**
  * @enum {number}
  */
-export default {
+const TileState = {
   IDLE: 0,
   LOADING: 1,
   LOADED: 2,
@@ -16,3 +16,5 @@ export default {
   ERROR: 3,
   EMPTY: 4,
 };
+
+export default TileState;
