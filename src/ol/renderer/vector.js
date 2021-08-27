@@ -208,7 +208,8 @@ function renderGeometry(replayGroup, geometry, style, feature) {
   replay.drawCustom(
     /** @type {import("../geom/SimpleGeometry.js").default} */ (geometry),
     feature,
-    style.getRenderer()
+    style.getRenderer(),
+    style.getHitDetectionRenderer()
   );
 }
 

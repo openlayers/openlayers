@@ -49,6 +49,8 @@ import {assert} from '../asserts.js';
  * @property {import("./Image.js").default} [image] Image style.
  * @property {RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
  * ignored, and the provided function will be called with each render frame for each geometry.
+ * @property {RenderFunction} [hitDetectionRenderer] Custom renderer for hit detection. If provided will be used
+ * in hit detection rendering.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {import("./Text.js").default} [text] Text style.
  * @property {number} [zIndex] Z index.
@@ -188,6 +190,15 @@ class Style {
 
     /**
      * @private
+     * @type {RenderFunction|null}
+     */
+    this.hitDetectionRenderer_ =
+      options.hitDetectionRenderer !== undefined
+        ? options.hitDetectionRenderer
+        : null;
+
+    /**
+     * @private
      * @type {import("./Stroke.js").default}
      */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
@@ -246,6 +257,26 @@ class Style {
    */
   setRenderer(renderer) {
     this.renderer_ = renderer;
+  }
+
+  /**
+   * Sets a custom renderer function for this style used
+   * in hit detection.
+   * @param {RenderFunction|null} renderer Custom renderer function.
+   * @api
+   */
+  setHitDetectionRenderer(renderer) {
+    this.hitDetectionRenderer_ = renderer;
+  }
+
+  /**
+   * Get the custom renderer function that was configured with
+   * {@link #setHitDetectionRenderer} or the `hitDetectionRenderer` constructor option.
+   * @return {RenderFunction|null} Custom renderer function.
+   * @api
+   */
+  getHitDetectionRenderer() {
+    return this.hitDetectionRenderer_;
   }
 
   /**
