@@ -318,7 +318,7 @@ function createStyleDefaults() {
     color: DEFAULT_COLOR,
   });
 
-  DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2]; // FIXME maybe [8, 32] ?
+  DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2];
 
   DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = IconAnchorUnits.PIXELS;
 
@@ -1276,14 +1276,21 @@ function iconStyleParser(node, objectStack) {
     anchorXUnits = hotSpot.xunits;
     anchorYUnits = hotSpot.yunits;
     anchorOrigin = hotSpot.origin;
-  } else if (src === DEFAULT_IMAGE_STYLE_SRC) {
-    anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
-    anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
-    anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
-    anchor = [0.5, 0];
-    anchorXUnits = IconAnchorUnits.FRACTION;
-    anchorYUnits = IconAnchorUnits.FRACTION;
+    // Google hotspots from https://kml4earth.appspot.com/icons.html#notes
+    if (/pushpin/.test(src)) {
+      anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    } else if (/arrow-reverse/.test(src)) {
+      anchor = [54, 42];
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    } else if (/paddle/.test(src)) {
+      anchor = [32, 1];
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    }
   }
 
   let offset;
