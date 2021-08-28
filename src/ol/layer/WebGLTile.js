@@ -63,6 +63,8 @@ import {assign} from '../obj.js';
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map#addLayer}.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
+ * two zoom levels worth of tiles.
  */
 
 /**
@@ -265,12 +267,23 @@ class WebGLTileLayer extends BaseTileLayer {
 
     const style = options.style || {};
     delete options.style;
+
+    const cacheSize = options.cacheSize;
+    delete options.cacheSize;
+
     super(options);
 
     /**
      * @type {Style}
+     * @private
      */
     this.style_ = style;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.cacheSize_ = cacheSize;
   }
 
   /**
@@ -292,6 +305,7 @@ class WebGLTileLayer extends BaseTileLayer {
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
       className: this.getClassName(),
+      cacheSize: this.cacheSize_,
     });
   }
 

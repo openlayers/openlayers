@@ -5,7 +5,7 @@ import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 
-describe('ol.layer.Tile', function () {
+describe('ol/layer/WebGLTile', function () {
   /** @type {WebGLTileLayer} */
   let layer;
   /** @type {Map} */
@@ -116,6 +116,17 @@ describe('ol.layer.Tile', function () {
       expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
         255, 0, 255, 255,
       ]);
+      done();
+    });
+  });
+
+  it('tries to expire the source tile cache', (done) => {
+    const source = layer.getSource();
+    const expire = sinon.spy(source, 'expireCache');
+
+    layer.updateStyleVariables({r: 1, g: 2, b: 3});
+    map.once('rendercomplete', () => {
+      expect(expire.called).to.be(true);
       done();
     });
   });
