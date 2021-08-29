@@ -242,6 +242,8 @@ class CanvasImageBuilder extends CanvasBuilder {
     const hitDetectionImage = imageStyle.getHitDetectionImage();
     const image = imageStyle.getImage(this.pixelRatio);
     const origin = imageStyle.getOrigin();
+    const scale = imageStyle.getScaleArray();
+    const resizeScale = imageStyle.getResizeScaleArray();
     this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
@@ -253,7 +255,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.originY_ = origin[1];
     this.rotateWithView_ = imageStyle.getRotateWithView();
     this.rotation_ = imageStyle.getRotation();
-    this.scale_ = imageStyle.getScaleArray();
+    this.scale_ = [scale[0] * resizeScale[0], scale[1] * resizeScale[1]];
     this.width_ = size[0];
     this.declutterImageWithText_ = opt_sharedData;
   }
