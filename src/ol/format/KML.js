@@ -314,7 +314,7 @@ export function getDefaultStyleArray() {
 function resizeScaleFunction(size) {
   const scale = 32 / Math.min(size[0], size[1]);
   return [scale, scale];
-};
+}
 
 function createStyleDefaults() {
   DEFAULT_COLOR = [255, 255, 255, 1];
@@ -1316,7 +1316,7 @@ function iconStyleParser(node, objectStack) {
     rotation = toRadians(heading);
   }
 
-  let scale = /** @type {number|undefined} */ (object['scale']);
+  const scale = /** @type {number|undefined} */ (object['scale']);
 
   const color = /** @type {Array<number>|undefined} */ (object['color']);
 
