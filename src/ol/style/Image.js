@@ -124,6 +124,14 @@ class ImageStyle {
   }
 
   /**
+   * Get the scale needed to normalize the image.
+   * @return {import("../size.js").Size} Scale array.
+   */
+  getResizeScaleArray() {
+    return [1, 1];
+  }
+
+  /**
    * Get the displacement of the shape
    * @return {Array<number>} Shape's center displacement
    * @api
