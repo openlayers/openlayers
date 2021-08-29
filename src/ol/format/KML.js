@@ -232,11 +232,6 @@ let DEFAULT_IMAGE_STYLE_SIZE;
 let DEFAULT_IMAGE_STYLE_SRC;
 
 /**
- * @type {number}
- */
-let DEFAULT_IMAGE_SCALE_MULTIPLIER;
-
-/**
  * @type {import("../style/Image.js").default}
  */
 let DEFAULT_IMAGE_STYLE = null;
@@ -311,6 +306,16 @@ export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
 }
 
+/**
+ * Function that returns the scale needed to normalize an icon image to 32 pixels.
+ * @param {import("../size.js").Size} size Image size.
+ * @return {import("../size.js").Size} Scale array.
+ */
+function resizeScaleFunction(size) {
+  const scale = 32 / Math.min(size[0], size[1]);
+  return [scale, scale];
+};
+
 function createStyleDefaults() {
   DEFAULT_COLOR = [255, 255, 255, 1];
 
@@ -329,16 +334,14 @@ function createStyleDefaults() {
   DEFAULT_IMAGE_STYLE_SRC =
     'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
 
-  DEFAULT_IMAGE_SCALE_MULTIPLIER = 0.5;
-
   DEFAULT_IMAGE_STYLE = new Icon({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
     anchorOrigin: IconOrigin.BOTTOM_LEFT,
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
+    resizeScaleFunction: resizeScaleFunction,
     rotation: 0,
-    scale: DEFAULT_IMAGE_SCALE_MULTIPLIER,
     size: DEFAULT_IMAGE_STYLE_SIZE,
     src: DEFAULT_IMAGE_STYLE_SRC,
   });
@@ -1320,9 +1323,6 @@ function iconStyleParser(node, objectStack) {
   if (drawIcon) {
     if (src == DEFAULT_IMAGE_STYLE_SRC) {
       size = DEFAULT_IMAGE_STYLE_SIZE;
-      if (scale === undefined) {
-        scale = DEFAULT_IMAGE_SCALE_MULTIPLIER;
-      }
     }
 
     const imageStyle = new Icon({
@@ -1333,6 +1333,7 @@ function iconStyleParser(node, objectStack) {
       crossOrigin: this.crossOrigin_,
       offset: offset,
       offsetOrigin: IconOrigin.BOTTOM_LEFT,
+      resizeScaleFunction: resizeScaleFunction,
       rotation: rotation,
       scale: scale,
       size: size,
