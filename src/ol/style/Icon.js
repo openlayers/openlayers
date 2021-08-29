@@ -12,6 +12,15 @@ import {get as getIconImage} from './IconImage.js';
 import {getUid} from '../util.js';
 
 /**
+ * A function that takes an icon image size `{import("../size.js").Size}`
+ * and returns the scale array `{import("../size.js").Size}` needed to
+ * normalize to a standard size, for example for KML.
+ *
+ * @typedef {function(import("../size.js").Size):import("../size.js").Size} ResizeScaleFunction
+ * @api
+ */
+
+/**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./IconOrigin.js").default} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
@@ -43,6 +52,8 @@ import {getUid} from '../util.js';
  * sub-rectangle to use from the origin (sprite) icon image.
  * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
  * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
+ * @property {ResizeScaleFunction} [resizeScaleFunction] Function that takes an icon image size
+ * and returns the scale array needed to normalize to a standard size, for example for KML.
  * @property {string} [src] Image source URI.
  */
 
@@ -207,6 +218,18 @@ class Icon extends ImageStyle {
      * @type {import("../size.js").Size}
      */
     this.size_ = options.size !== undefined ? options.size : null;
+
+    /**
+     * @private
+     * @type {ResizeScaleFunction}
+     */
+    this.resizeScaleFunction_ = option.resizeScaleFunction;
+
+    /**
+     * @private
+     * @type {import("../size.js").Size}
+     */
+    this.resizeScaleArray_ = this.resizeScaleFunction_ ? null : [1, 1];
   }
 
   /**
@@ -232,6 +255,7 @@ class Icon extends ImageStyle {
       size: this.size_ !== null ? this.size_.slice() : undefined,
       opacity: this.getOpacity(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
+      resizeScaleFunction: this.resizeScaleFunction_,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
     });
@@ -406,6 +430,21 @@ class Icon extends ImageStyle {
    */
   getSize() {
     return !this.size_ ? this.iconImage_.getSize() : this.size_;
+  }
+
+  /**
+   * Get the scale needed to normalize the image.
+   * @return {import("../size.js").Size} Scale array.
+   */
+  getResizeScaleArray() {
+    if (!this.resizeScaleArray_) {
+      const size = this.getSize();
+      if (!size) {
+        return [1, 1];
+      }
+      this.resizeScaleArray_ = this.resizeScaleFunction_(size);
+    }
+    return this.resizeScaleArray_;
   }
 
   /**
