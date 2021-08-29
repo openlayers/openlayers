@@ -223,7 +223,7 @@ class Icon extends ImageStyle {
      * @private
      * @type {ResizeScaleFunction}
      */
-    this.resizeScaleFunction_ = option.resizeScaleFunction;
+    this.resizeScaleFunction_ = options.resizeScaleFunction;
 
     /**
      * @private
