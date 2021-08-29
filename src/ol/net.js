@@ -41,3 +41,110 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
   };
   document.getElementsByTagName('head')[0].appendChild(script);
 }
+
+export class ResponseError extends Error {
+  /**
+   * @param {XMLHttpRequest} response The XHR object.
+   */
+  constructor(response) {
+    const message = 'Unexpected response status: ' + response.status;
+    super(message);
+
+    /**
+     * @type {string}
+     */
+    this.name = 'ResponseError';
+
+    /**
+     * @type {XMLHttpRequest}
+     */
+    this.response = response;
+  }
+}
+
+export class ClientError extends Error {
+  /**
+   * @param {XMLHttpRequest} client The XHR object.
+   */
+  constructor(client) {
+    super('Failed to issue request');
+
+    /**
+     * @type {string}
+     */
+    this.name = 'ClientError';
+
+    /**
+     * @type {XMLHttpRequest}
+     */
+    this.client = client;
+  }
+}
+
+/**
+ * @param {string} url The URL.
+ * @return {Promise<Object>} A promise that resolves to the JSON response.
+ */
+export function getJSON(url) {
+  return new Promise(function (resolve, reject) {
+    /**
+     * @param {ProgressEvent<XMLHttpRequest>} event The load event.
+     */
+    function onLoad(event) {
+      const client = event.target;
+      // status will be 0 for file:// urls
+      if (!client.status || (client.status >= 200 && client.status < 300)) {
+        let data;
+        try {
+          data = JSON.parse(client.responseText);
+        } catch (err) {
+          const message = 'Error parsing response text as JSON: ' + err.message;
+          reject(new Error(message));
+          return;
+        }
+        resolve(data);
+        return;
+      }
+
+      reject(new ResponseError(client));
+    }
+
+    /**
+     * @param {ProgressEvent<XMLHttpRequest>} event The error event.
+     */
+    function onError(event) {
+      reject(new ClientError(event.target));
+    }
+
+    const client = new XMLHttpRequest();
+    client.addEventListener('load', onLoad);
+    client.addEventListener('error', onError);
+    client.open('GET', url);
+    client.setRequestHeader('Accept', 'application/json');
+    client.send();
+  });
+}
+
+/**
+ * @param {string} base The base URL.
+ * @param {string} url The potentially relative URL.
+ * @return {string} The full URL.
+ */
+export function resolveUrl(base, url) {
+  if (url.indexOf('://') >= 0) {
+    return url;
+  }
+  return new URL(url, base).href;
+}
+
+let originalXHR;
+export function overrideXHR(xhr) {
+  if (typeof XMLHttpRequest !== 'undefined') {
+    originalXHR = XMLHttpRequest;
+  }
+  global.XMLHttpRequest = xhr;
+}
+
+export function restoreXHR() {
+  global.XMLHttpRequest = originalXHR;
+}

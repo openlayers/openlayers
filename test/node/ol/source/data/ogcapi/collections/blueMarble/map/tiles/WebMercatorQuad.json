@@ -1,0 +1,85 @@
+{
+   "title" : "blueMarble",
+   "dataType" : "map",
+   "tileMatrixSetURI" : "http://www.opengis.net/def/tilematrixset/OGC/1.0/WebMercatorQuad",
+   "tileMatrixSetDefinition" : "https://maps.ecere.com/ogcapi/tileMatrixSets/WebMercatorQuad",
+   "tileMatrixSetLimits" : [
+      { "tileMatrix" : "0", "minTileRow" : 0, "maxTileRow" : 0, "minTileCol" : 0, "maxTileCol" : 0 },
+      { "tileMatrix" : "1", "minTileRow" : 0, "maxTileRow" : 1, "minTileCol" : 0, "maxTileCol" : 1 },
+      { "tileMatrix" : "2", "minTileRow" : 0, "maxTileRow" : 3, "minTileCol" : 0, "maxTileCol" : 3 },
+      { "tileMatrix" : "3", "minTileRow" : 0, "maxTileRow" : 7, "minTileCol" : 0, "maxTileCol" : 7 },
+      { "tileMatrix" : "4", "minTileRow" : 0, "maxTileRow" : 15, "minTileCol" : 0, "maxTileCol" : 15 },
+      { "tileMatrix" : "5", "minTileRow" : 0, "maxTileRow" : 31, "minTileCol" : 0, "maxTileCol" : 31 },
+      { "tileMatrix" : "6", "minTileRow" : 0, "maxTileRow" : 63, "minTileCol" : 0, "maxTileCol" : 63 },
+      { "tileMatrix" : "7", "minTileRow" : 0, "maxTileRow" : 127, "minTileCol" : 0, "maxTileCol" : 127 },
+      { "tileMatrix" : "8", "minTileRow" : 0, "maxTileRow" : 255, "minTileCol" : 0, "maxTileCol" : 255 },
+      { "tileMatrix" : "9", "minTileRow" : 0, "maxTileRow" : 511, "minTileCol" : 0, "maxTileCol" : 511 }
+   ],
+   "centerPoint" : {
+      "coordinates" : [
+         0,
+         0
+      ],
+      "tileMatrix" : "4",
+      "scaleDenominator" : 34942641.501794859767,
+      "cellSize" : 9783.9396205025605
+   },
+   "links" : [
+      {
+         "rel" : "self",
+         "type" : "application/json",
+         "title" : "The JSON representation of the WebMercatorQuad map tileset for blueMarble",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad?f=json"
+      },
+      {
+         "rel" : "alternate",
+         "type" : "text/plain",
+         "title" : "The ECON representation of the WebMercatorQuad map tileset for blueMarble",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad?f=econ"
+      },
+      {
+         "rel" : "alternate",
+         "type" : "text/html",
+         "title" : "The HTML representation of the WebMercatorQuad map tileset for blueMarble",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad?=html"
+      },
+      {
+         "rel" : "alternate",
+         "type" : "application/json+tile",
+         "title" : "The TileJSON representation of the WebMercatorQuad map tileset for blueMarble",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad?f=tilejson"
+      },
+      {
+         "rel" : "http://www.opengis.net/def/rel/ogc/1.0/geodata",
+         "href" : "/ogcapi/collections/blueMarble"
+      },
+      {
+         "rel" : "item",
+         "type" : "application/vnd.gnosis-map-tile",
+         "title" : "WebMercatorQuad map tiles for blueMarble (as GNOSIS Map Tiles)",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.gmt",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "image/png",
+         "title" : "WebMercatorQuad map tiles for blueMarble (as PNG)",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.png",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "image/jpeg",
+         "title" : "WebMercatorQuad map tiles for blueMarble (as JPG)",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.jpg",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "image/tiff; application=geotiff",
+         "title" : "WebMercatorQuad map tiles for blueMarble (as GeoTIFF)",
+         "href" : "/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.tif",
+         "templated" : true
+      }
+   ]
+}

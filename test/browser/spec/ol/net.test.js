@@ -1,7 +1,40 @@
+import {
+  getJSON,
+  jsonp as requestJSONP,
+  resolveUrl,
+} from '../../../../src/ol/net.js';
 import {getUid} from '../../../../src/ol/util.js';
-import {jsonp as requestJSONP} from '../../../../src/ol/net.js';
 
-describe('ol.net', function () {
+describe('ol/net', function () {
+  describe('getJSON()', function () {
+    it('returns a promise that resolves to a parsed JSON object', function (done) {
+      const url = 'spec/ol/data/point.json';
+      const result = getJSON(url);
+      expect(result).to.be.a(Promise);
+      result.then(function (json) {
+        expect(json).to.be.an(Object);
+        expect(json.type).to.be('FeatureCollection');
+        done();
+      });
+      result.catch(done);
+    });
+  });
+
+  describe('resolveUrl()', function () {
+    it('resolves an absolute URL given a base and relative URL', function () {
+      const url = resolveUrl('https://example.com/base/', 'relative/path');
+      expect(url).to.be('https://example.com/base/relative/path');
+    });
+
+    it('returns the second arg if it is an absolute URL', function () {
+      const url = resolveUrl(
+        'https://example.com',
+        'https://other-example.com'
+      );
+      expect(url).to.be('https://other-example.com');
+    });
+  });
+
   describe('jsonp()', function () {
     const head = document.getElementsByTagName('head')[0];
     const origAppendChild = head.appendChild;
