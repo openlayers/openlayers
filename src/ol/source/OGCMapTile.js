@@ -36,10 +36,9 @@ import {getTileSetInfo} from './ogcTileUtil.js';
 
 /**
  * @classdesc
- * Layer source for map tiles from an OGC API - Tiles service that provides "map" type tiles.
+ * Layer source for map tiles from an [OGC API - Tiles](https://ogcapi.ogc.org/tiles/) service that provides "map" type tiles.
  * The service must conform to at least the core (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core)
  * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes.
- * @api
  */
 class OGCMapTile extends TileImage {
   /**
@@ -86,7 +85,7 @@ class OGCMapTile extends TileImage {
    * @param {Error} error The error.
    */
   handleError_(error) {
-    console.error(error); // eslint-disable-line
+    console.error(error); // eslint-disable-line no-console
     this.setState(SourceState.ERROR);
   }
 }

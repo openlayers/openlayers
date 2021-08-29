@@ -36,6 +36,12 @@ import {getTileSetInfo} from './ogcTileUtil.js';
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
+/**
+ * @classdesc
+ * Layer source for map tiles from an [OGC API - Tiles](https://ogcapi.ogc.org/tiles/) service that provides "vector" type tiles.
+ * The service must conform to at least the core (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core)
+ * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes.
+ */
 class OGCVectorTile extends VectorTile {
   /**
    * @param {Options} options OGC vector tile options.
@@ -82,7 +88,7 @@ class OGCVectorTile extends VectorTile {
    * @param {Error} error The error.
    */
   handleError_(error) {
-  console.error(error); // eslint-disable-line
+    console.error(error); // eslint-disable-line no-console
     this.setState(SourceState.ERROR);
   }
 }

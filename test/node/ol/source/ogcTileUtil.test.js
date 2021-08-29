@@ -46,7 +46,7 @@ class MockXHR extends events.EventEmitter {
         this.emit('load', {target: this});
       },
       (err) => {
-        console.error(err); // eslint-disable-line
+        console.error(err); // eslint-disable-line no-console
         this.emit('error', {target: this});
       }
     );
