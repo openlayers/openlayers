@@ -948,10 +948,11 @@ function createNameStyleFunction(foundStyle, name) {
     }
     if (imageSize.length == 2) {
       const imageScale = imageStyle.getScaleArray();
+      const resizeScale = resizeScaleFunction(imageSize);
       // Offset the label to be centered to the right of the icon,
       // if there is one.
-      textOffset[0] = (imageScale[0] * imageSize[0]) / 2;
-      textOffset[1] = (-imageScale[1] * imageSize[1]) / 2;
+      textOffset[0] = (imageScale[0] * resizeScale[0] * imageSize[0]) / 2;
+      textOffset[1] = (-imageScale[1] * resizeScale[1] * imageSize[1]) / 2;
       textAlign = 'left';
     }
   }
