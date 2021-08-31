@@ -42,6 +42,11 @@ export default {
     ],
   },
   resolve: {
+    fallback: {
+      fs: false,
+      http: false,
+      https: false,
+    },
     alias: {
       // ol-mapbox-style imports ol/style/Style etc
       ol: path.join(baseDir, '..', '..', 'src', 'ol'),
