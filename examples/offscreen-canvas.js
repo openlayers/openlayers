@@ -92,7 +92,7 @@ const map = new Map({
   ],
   target: 'map',
   view: new View({
-    resolutions: createXYZ({tileSize: 512}).getResolutions89,
+    resolutions: createXYZ({tileSize: 512}).getResolutions(),
     center: [0, 0],
     zoom: 2,
   }),
