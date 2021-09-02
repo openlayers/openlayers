@@ -16,18 +16,16 @@
  * @template T
  */
 export function forEach(flatCoordinates, offset, end, stride, callback) {
-  const point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-  const point2 = [];
   let ret;
-  for (; offset + stride < end; offset += stride) {
-    point2[0] = flatCoordinates[offset + stride];
-    point2[1] = flatCoordinates[offset + stride + 1];
-    ret = callback(point1, point2);
+  offset += stride;
+  for (; offset < end; offset += stride) {
+    ret = callback(
+      flatCoordinates.slice(offset - stride, offset),
+      flatCoordinates.slice(offset, offset + stride)
+    );
     if (ret) {
       return ret;
     }
-    point1[0] = point2[0];
-    point1[1] = point2[1];
   }
   return false;
 }
