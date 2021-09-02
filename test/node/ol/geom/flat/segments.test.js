@@ -50,5 +50,18 @@ describe('ol/geom/flat/segments.js', function () {
         expect(ret).to.be(true);
       });
     });
+    it('returns coordinates with the correct stride', function () {
+      const spy = sinon.spy();
+      forEachSegment([0, 0, 0, 1, 1, 1, 2, 2, 2], 0, 9, 3, spy);
+      expect(spy.callCount).to.be(2);
+      expect(spy.firstCall.args).to.eql([
+        [0, 0, 0],
+        [1, 1, 1],
+      ]);
+      expect(spy.secondCall.args).to.eql([
+        [1, 1, 1],
+        [2, 2, 2],
+      ]);
+    });
   });
 });
