@@ -237,7 +237,7 @@ class Icon extends ImageStyle {
    */
   clone() {
     const scale = this.getScale();
-    return new Icon({
+    const style = new Icon({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
       anchorXUnits: this.anchorXUnits_,
@@ -253,10 +253,11 @@ class Icon extends ImageStyle {
       size: this.size_ !== null ? this.size_.slice() : undefined,
       opacity: this.getOpacity(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
-      resizeScaleFunction: this.resizeScaleFunction_,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
     });
+    style.setResizeScaleFunction(this.resizeScaleFunction_);
+    return style;
   }
 
   /**
@@ -432,7 +433,7 @@ class Icon extends ImageStyle {
 
   /**
    * Set the resizeScaleFunction.
-   * @param {ResizeScaleFunction} resizeScaleFunction.
+   * @param {ResizeScaleFunction} resizeScaleFunction resizeScaleFunction.
    */
   setResizeScaleFunction(resizeScaleFunction) {
     this.resizeScaleFunction_ = resizeScaleFunction;
