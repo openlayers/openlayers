@@ -340,11 +340,11 @@ function createStyleDefaults() {
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
-    resizeScaleFunction: resizeScaleFunction,
     rotation: 0,
     size: DEFAULT_IMAGE_STYLE_SIZE,
     src: DEFAULT_IMAGE_STYLE_SRC,
   });
+  DEFAULT_IMAGE_STYLE.setResizeScaleFunction(resizeScaleFunction);
 
   DEFAULT_NO_IMAGE_STYLE = 'NO_IMAGE';
 
@@ -1334,13 +1334,13 @@ function iconStyleParser(node, objectStack) {
       crossOrigin: this.crossOrigin_,
       offset: offset,
       offsetOrigin: IconOrigin.BOTTOM_LEFT,
-      resizeScaleFunction: resizeScaleFunction,
       rotation: rotation,
       scale: scale,
       size: size,
       src: this.iconUrlFunction_(src),
       color: color,
     });
+    imageStyle.setResizeScaleFunction(resizeScaleFunction);
     styleObject['imageStyle'] = imageStyle;
   } else {
     // handle the case when we explicitly want to draw no icon.
@@ -2626,7 +2626,17 @@ function writeIconStyle(node, style, objectStack) {
 
   properties['Icon'] = iconProperties;
 
-  const scale = style.getScale();
+  let scale = style.getScaleArray()[0];
+  if (!style.getResizeScaleFunction()) {
+    let imageSize = iconImageSize;
+    if (imageSize === null) {
+      imageSize = DEFAULT_IMAGE_STYLE_SIZE;
+    }
+    if (imageSize.length == 2) {
+      const resizeScale = resizeScaleFunction(imageSize);
+      scale = scale / resizeScale[0];
+    }
+  }
   if (scale !== 1) {
     properties['scale'] = scale;
   }
