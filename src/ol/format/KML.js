@@ -334,7 +334,7 @@ function createStyleDefaults() {
   DEFAULT_IMAGE_STYLE_SRC =
     'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
 
-  DEFAULT_IMAGE_STYLE = new Icon({
+  const imageStyle = new Icon({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
     anchorOrigin: IconOrigin.BOTTOM_LEFT,
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
@@ -344,7 +344,8 @@ function createStyleDefaults() {
     size: DEFAULT_IMAGE_STYLE_SIZE,
     src: DEFAULT_IMAGE_STYLE_SRC,
   });
-  DEFAULT_IMAGE_STYLE.setResizeScaleFunction(resizeScaleFunction);
+  imageStyle.setResizeScaleFunction(resizeScaleFunction);
+  DEFAULT_IMAGE_STYLE = imageStyle;
 
   DEFAULT_NO_IMAGE_STYLE = 'NO_IMAGE';
 
