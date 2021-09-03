@@ -6,6 +6,7 @@ import TileGrid from '../tilegrid/TileGrid.js';
 import {assign} from '../obj.js';
 import {getJSON, resolveUrl} from '../net.js';
 import {get as getProjection} from '../proj.js';
+import {getIntersection as intersectExtents} from '../extent.js';
 
 /**
  * See https://ogcapi.ogc.org/tiles/.
@@ -24,7 +25,7 @@ const TileType = {
  * @property {TileType} dataType Type of data represented in the tileset.
  * @property {string} [tileMatrixSetDefinition] Reference to a tile matrix set definition.
  * @property {TileMatrixSet} [tileMatrixSet] Tile matrix set definition.
- * @property {Array<TileMatrixSetLimits>} [tileMatrixSetLimits] Tile matrix set limits.
+ * @property {Array<TileMatrixSetLimit>} [tileMatrixSetLimits] Tile matrix set limits.
  * @property {Array<Link>} links Tileset links.
  */
 
@@ -36,7 +37,7 @@ const TileType = {
  */
 
 /**
- * @typedef {Object} TileMatrixSetLimits
+ * @typedef {Object} TileMatrixSetLimit
  * @property {string} tileMatrix The tile matrix id.
  * @property {number} minTileRow The minimum tile row.
  * @property {number} maxTileRow The maximum tile row.
@@ -169,13 +170,17 @@ export function getVectorTileUrlTemplate(links, mediaType) {
  * @return {Promise<TileSetInfo>} Tile set info.
  */
 export function getTileSetInfo(sourceInfo) {
-  let tileUrlTemplate;
-
   /**
    * @param {TileMatrixSet} tileMatrixSet Tile matrix set.
+   * @param {string} tileUrlTemplate Tile URL template.
+   * @param {Array<TileMatrixSetLimit>} [tileMatrixSetLimits] Tile matrix set limits.
    * @return {TileSetInfo} Tile set info.
    */
-  function parseTileMatrixSet(tileMatrixSet) {
+  function parseTileMatrixSet(
+    tileMatrixSet,
+    tileUrlTemplate,
+    tileMatrixSetLimits
+  ) {
     let projection = sourceInfo.projection;
     if (!projection) {
       projection = getProjection(tileMatrixSet.crs);
@@ -185,15 +190,51 @@ export function getTileSetInfo(sourceInfo) {
     }
     const backwards = projection.getAxisOrientation().substr(0, 2) !== 'en';
 
-    // TODO: deal with limits
     const matrices = tileMatrixSet.tileMatrices;
-    const length = matrices.length;
+
+    /**
+     * @type {Object<string, TileMatrix>}
+     */
+    const matrixLookup = {};
+    for (let i = 0; i < matrices.length; ++i) {
+      const matrix = matrices[i];
+      matrixLookup[matrix.id] = matrix;
+    }
+
+    /**
+     * @type {Object<string, TileMatrixSetLimit>}
+     */
+    const limitLookup = {};
+
+    /**
+     * @type {Array<string>}
+     */
+    const matrixIds = [];
+
+    if (tileMatrixSetLimits) {
+      for (let i = 0; i < tileMatrixSetLimits.length; ++i) {
+        const limit = tileMatrixSetLimits[i];
+        const id = limit.tileMatrix;
+        matrixIds.push(id);
+        limitLookup[id] = limit;
+      }
+    } else {
+      for (let i = 0; i < matrices.length; ++i) {
+        const id = matrices[i].id;
+        matrixIds.push(id);
+      }
+    }
+
+    const length = matrixIds.length;
     const origins = new Array(length);
     const resolutions = new Array(length);
     const sizes = new Array(length);
     const tileSizes = new Array(length);
-    for (let i = 0; i < matrices.length; ++i) {
-      const matrix = matrices[i];
+    const extent = [-Infinity, -Infinity, Infinity, Infinity];
+
+    for (let i = 0; i < length; ++i) {
+      const id = matrixIds[i];
+      const matrix = matrixLookup[id];
       const origin = matrix.pointOfOrigin;
       if (backwards) {
         origins[i] = [origin[1], origin[0]];
@@ -203,6 +244,27 @@ export function getTileSetInfo(sourceInfo) {
       resolutions[i] = matrix.cellSize;
       sizes[i] = [matrix.matrixWidth, matrix.matrixHeight];
       tileSizes[i] = [matrix.tileWidth, matrix.tileHeight];
+      const limit = limitLookup[id];
+      if (limit) {
+        const tileMapWidth = matrix.cellSize * matrix.tileWidth;
+        const minX = origins[i][0] + limit.minTileCol * tileMapWidth;
+        const maxX = origins[i][0] + (limit.maxTileCol + 1) * tileMapWidth;
+
+        const tileMapHeight = matrix.cellSize * matrix.tileHeight;
+        const upsideDown = matrix.cornerOfOrigin === BOTTOM_LEFT_ORIGIN;
+
+        let minY;
+        let maxY;
+        if (upsideDown) {
+          minY = origins[i][1] + limit.minTileRow * tileMapHeight;
+          maxY = origins[i][1] + (limit.maxTileRow + 1) * tileMapHeight;
+        } else {
+          minY = origins[i][1] - (limit.maxTileRow + 1) * tileMapHeight;
+          maxY = origins[i][1] - limit.minTileRow * tileMapHeight;
+        }
+
+        intersectExtents(extent, [minX, minY, maxX, maxY], extent);
+      }
     }
 
     const tileGrid = new TileGrid({
@@ -210,6 +272,7 @@ export function getTileSetInfo(sourceInfo) {
       resolutions: resolutions,
       sizes: sizes,
       tileSizes: tileSizes,
+      extent: tileMatrixSetLimits ? extent : undefined,
     });
 
     const context = sourceInfo.context;
@@ -220,14 +283,28 @@ export function getTileSetInfo(sourceInfo) {
         return undefined;
       }
 
-      const matrix = matrices[tileCoord[0]];
+      const id = matrixIds[tileCoord[0]];
+      const matrix = matrixLookup[id];
       const upsideDown = matrix.cornerOfOrigin === BOTTOM_LEFT_ORIGIN;
 
       const localContext = {
-        tileMatrix: matrix.id,
+        tileMatrix: id,
         tileCol: tileCoord[1],
         tileRow: upsideDown ? -tileCoord[2] - 1 : tileCoord[2],
       };
+
+      if (tileMatrixSetLimits) {
+        const limit = limitLookup[matrix.id];
+        if (
+          localContext.tileCol < limit.minTileCol ||
+          localContext.tileCol > limit.maxTileCol ||
+          localContext.tileRow < limit.minTileRow ||
+          localContext.tileRow > limit.maxTileRow
+        ) {
+          return undefined;
+        }
+      }
+
       assign(localContext, context);
 
       const url = tileUrlTemplate.replace(/\{(\w+?)\}/g, function (m, p) {
@@ -249,6 +326,9 @@ export function getTileSetInfo(sourceInfo) {
    * @return {TileSetInfo|Promise<TileSetInfo>} Tile set info.
    */
   function parseTileSetMetadata(tileSet) {
+    const tileMatrixSetLimits = tileSet.tileMatrixSetLimits;
+    let tileUrlTemplate;
+
     if (tileSet.dataType === TileType.MAP) {
       tileUrlTemplate = getMapTileUrlTemplate(
         tileSet.links,
@@ -264,7 +344,11 @@ export function getTileSetInfo(sourceInfo) {
     }
 
     if (tileSet.tileMatrixSet) {
-      return parseTileMatrixSet(tileSet.tileMatrixSet);
+      return parseTileMatrixSet(
+        tileSet.tileMatrixSet,
+        tileUrlTemplate,
+        tileMatrixSetLimits
+      );
     }
 
     if (!tileSet.tileMatrixSetDefinition) {
@@ -272,7 +356,13 @@ export function getTileSetInfo(sourceInfo) {
     }
 
     const url = resolveUrl(sourceInfo.url, tileSet.tileMatrixSetDefinition);
-    return getJSON(url).then(parseTileMatrixSet);
+    return getJSON(url).then(function (tileMatrixSet) {
+      return parseTileMatrixSet(
+        tileMatrixSet,
+        tileUrlTemplate,
+        tileMatrixSetLimits
+      );
+    });
   }
 
   return getJSON(sourceInfo.url).then(parseTileSetMetadata);

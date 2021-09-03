@@ -76,11 +76,15 @@ describe('ol/source/ogcTileUtil.js', () => {
       );
       expect(tileInfo.grid).to.be.a(TileGrid);
       expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
-      expect(tileInfo.grid.getResolutions()).to.have.length(30);
+      expect(tileInfo.grid.getResolutions()).to.have.length(10);
       expect(tileInfo.urlFunction).to.be.a(Function);
-      expect(tileInfo.urlFunction([1, 2, 3])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/1/3/2.jpg'
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/3/1/2.jpg'
       );
+      expect(tileInfo.urlFunction([3, -1, 0])).to.be(undefined); // below min x
+      expect(tileInfo.urlFunction([3, 8, 0])).to.be(undefined); // above max x
+      expect(tileInfo.urlFunction([3, 0, -1])).to.be(undefined); // below min y
+      expect(tileInfo.urlFunction([3, 0, 8])).to.be(undefined); // above max y
     });
 
     it('allows preferred media type to be configured', async () => {
@@ -95,8 +99,8 @@ describe('ol/source/ogcTileUtil.js', () => {
         '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.png'
       );
       expect(tileInfo.urlFunction).to.be.a(Function);
-      expect(tileInfo.urlFunction([1, 2, 3])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/1/3/2.png'
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/3/1/2.png'
       );
     });
 
@@ -112,11 +116,15 @@ describe('ol/source/ogcTileUtil.js', () => {
       );
       expect(tileInfo.grid).to.be.a(TileGrid);
       expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
-      expect(tileInfo.grid.getResolutions()).to.have.length(30);
+      expect(tileInfo.grid.getResolutions()).to.have.length(8);
       expect(tileInfo.urlFunction).to.be.a(Function);
-      expect(tileInfo.urlFunction([1, 2, 3])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/1/3/2.json'
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json'
       );
+      expect(tileInfo.urlFunction([2, -1, 0])).to.be(undefined); // below min x
+      expect(tileInfo.urlFunction([2, 4, 0])).to.be(undefined); // above max x
+      expect(tileInfo.urlFunction([2, 0, -1])).to.be(undefined); // below min y
+      expect(tileInfo.urlFunction([2, 0, 4])).to.be(undefined); // above max y
     });
 
     it('allows preferred media type to be configured', async () => {
@@ -131,8 +139,8 @@ describe('ol/source/ogcTileUtil.js', () => {
         '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
       );
       expect(tileInfo.urlFunction).to.be.a(Function);
-      expect(tileInfo.urlFunction([1, 2, 3])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/1/3/2.mvt'
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt'
       );
     });
   });
