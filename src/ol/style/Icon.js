@@ -17,7 +17,6 @@ import {getUid} from '../util.js';
  * normalize to a standard size, for example for KML.
  *
  * @typedef {function(import("../size.js").Size):import("../size.js").Size} ResizeScaleFunction
- * @api
  */
 
 /**
@@ -52,8 +51,6 @@ import {getUid} from '../util.js';
  * sub-rectangle to use from the origin (sprite) icon image.
  * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
  * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
- * @property {ResizeScaleFunction} [resizeScaleFunction] Function that takes an icon image size
- * and returns the scale array needed to normalize to a standard size, for example for KML.
  * @property {string} [src] Image source URI.
  */
 
@@ -198,6 +195,7 @@ class Icon extends ImageStyle {
      * @type {Array<number>}
      */
     this.offset_ = options.offset !== undefined ? options.offset : [0, 0];
+
     /**
      * @private
      * @type {import("./IconOrigin.js").default}
@@ -223,13 +221,13 @@ class Icon extends ImageStyle {
      * @private
      * @type {ResizeScaleFunction}
      */
-    this.resizeScaleFunction_ = options.resizeScaleFunction;
+    this.resizeScaleFunction_ = undefined;
 
     /**
      * @private
      * @type {import("../size.js").Size}
      */
-    this.resizeScaleArray_ = this.resizeScaleFunction_ ? null : [1, 1];
+    this.resizeScaleArray_ = [1, 1];
   }
 
   /**
@@ -430,6 +428,23 @@ class Icon extends ImageStyle {
    */
   getSize() {
     return !this.size_ ? this.iconImage_.getSize() : this.size_;
+  }
+
+  /**
+   * Set the resizeScaleFunction.
+   * @param {ResizeScaleFunction} resizeScaleFunction.
+   */
+  setResizeScaleFunction(resizeScaleFunction) {
+    this.resizeScaleFunction_ = resizeScaleFunction;
+    this.resizeScaleArray_ = this.resizeScaleFunction_ ? null : [1, 1];
+  }
+
+  /**
+   * Get the resizeScaleFunction.
+   * @return {ResizeScaleFunction} resizeScaleFunction.
+   */
+  getResizeScaleFunction() {
+    return this.resizeScaleFunction_;
   }
 
   /**
