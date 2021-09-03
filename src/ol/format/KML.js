@@ -311,7 +311,7 @@ export function getDefaultStyleArray() {
  * @param {import("../size.js").Size} size Image size.
  * @return {import("../size.js").Size} Scale array.
  */
-function resizeScaleFunction(size) {
+export function resizeScaleFunction(size) {
   const scale = 32 / Math.min(size[0], size[1]);
   return [scale, scale];
 }
@@ -943,7 +943,7 @@ function createNameStyleFunction(foundStyle, name) {
   let textAlign = 'start';
   const imageStyle = foundStyle.getImage();
   if (imageStyle) {
-    let imageSize = imageStyle.getImageSize();
+    let imageSize = imageStyle.getSize();
     if (imageSize === null) {
       imageSize = DEFAULT_IMAGE_STYLE_SIZE;
     }
@@ -2629,7 +2629,7 @@ function writeIconStyle(node, style, objectStack) {
 
   let scale = style.getScaleArray()[0];
   if (!style.getResizeScaleFunction()) {
-    let imageSize = iconImageSize;
+    let imageSize = size;
     if (imageSize === null) {
       imageSize = DEFAULT_IMAGE_STYLE_SIZE;
     }
