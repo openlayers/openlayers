@@ -14,6 +14,7 @@ import KML, {
   getDefaultStyleArray,
   getDefaultTextStyle,
   readFlatCoordinates,
+  resizeScaleFunction,
 } from '../../../../../src/ol/format/KML.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../../src/ol/geom/LinearRing.js';
@@ -2996,7 +2997,62 @@ describe('ol.format.KML', function () {
           expect(style.getText().getText()).to.eql("Joe's Test");
         });
 
-        it("can write an feature's icon style", function () {
+        it("can write an feature's icon style from a style using resizeScaleFunction", function () {
+          const style = new Style({
+            image: new Icon({
+              anchor: [0.25, 36],
+              anchorOrigin: 'top-left',
+              anchorXUnits: 'fraction',
+              anchorYUnits: 'pixels',
+              crossOrigin: 'anonymous',
+              offset: [96, 96],
+              offsetOrigin: 'top-left',
+              rotation: 45,
+              scale: 0.5,
+              size: [48, 48],
+              src: 'http://foo.png',
+              color: 'rgba(255,0,0,1)',
+            }),
+          });
+          const imageStyle = style.getImage();
+          imageStyle.setResizeScaleFunction(resizeScaleFunction);
+          imageStyle.iconImage_.size_ = [192, 144]; // sprite de 12 images(4*3)
+          const feature = new Feature();
+          feature.setStyle([style]);
+          const node = format.writeFeaturesNode([feature]);
+          const text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Style>' +
+            '      <IconStyle>' +
+            '        <scale>0.5</scale>' +
+            '        <heading>45</heading>' +
+            '        <Icon>' +
+            '          <href>http://foo.png</href>' +
+            '          <gx:x>96</gx:x>' +
+            '          <gx:y>0</gx:y>' +
+            '          <gx:w>48</gx:w>' +
+            '          <gx:h>48</gx:h>' +
+            '        </Icon>' +
+            '        <color>ff0000ff</color>' +
+            '        <hotSpot x="12" y="12" xunits="pixels" ' +
+            '                 yunits="pixels"/>' +
+            '      </IconStyle>' +
+            '      <PolyStyle>' +
+            '        <fill>0</fill>' +
+            '        <outline>0</outline>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '  </Placemark>' +
+            '</kml>';
+          expect(node).to.xmleql(parse(text));
+        });
+
+        it("can write an feature's icon style from a style without resizeScaleFunction", function () {
           const style = new Style({
             image: new Icon({
               anchor: [0.25, 36],
@@ -3027,7 +3083,7 @@ describe('ol.format.KML', function () {
             '  <Placemark>' +
             '    <Style>' +
             '      <IconStyle>' +
-            '        <scale>0.5</scale>' +
+            '        <scale>0.75</scale>' +
             '        <heading>45</heading>' +
             '        <Icon>' +
             '          <href>http://foo.png</href>' +
