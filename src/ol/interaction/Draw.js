@@ -6,7 +6,6 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import InteractionProperty from './Property.js';
 import LineString from '../geom/LineString.js';
 import MapBrowserEvent from '../MapBrowserEvent.js';
@@ -35,7 +34,7 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("../geom/GeometryType.js").default} type Geometry type of
+ * @property {import("../geom/Geometry.js").Type} type Geometry type of
  * the geometries being drawn with this instance.
  * @property {number} [clickTolerance=6] The maximum distance in pixels between
  * "down" and "up" for a "up" event to be considered a "click" event and
@@ -282,10 +281,10 @@ class Draw extends PointerInteraction {
 
     /**
      * Geometry type.
-     * @type {import("../geom/GeometryType.js").default}
+     * @type {import("../geom/Geometry.js").Type}
      * @private
      */
-    this.type_ = /** @type {import("../geom/GeometryType.js").default} */ (
+    this.type_ = /** @type {import("../geom/Geometry.js").Type} */ (
       options.type
     );
 
@@ -890,10 +889,7 @@ class Draw extends PointerInteraction {
       const sketchPointGeom = this.sketchPoint_.getGeometry();
       sketchPointGeom.setCoordinates(coordinate);
     }
-    if (
-      geometry.getType() === GeometryType.POLYGON &&
-      this.mode_ !== Mode.POLYGON
-    ) {
+    if (geometry.getType() === 'Polygon' && this.mode_ !== Mode.POLYGON) {
       this.createOrUpdateCustomSketchLine_(/** @type {Polygon} */ (geometry));
     } else if (this.sketchLineCoords_) {
       const sketchLineGeom = this.sketchLine_.getGeometry();
@@ -970,7 +966,7 @@ class Draw extends PointerInteraction {
         this.createOrUpdateSketchPoint_(finishCoordinate);
       }
       this.geometryFunction_(coordinates, geometry, projection);
-      if (geometry.getType() === GeometryType.POLYGON && this.sketchLine_) {
+      if (geometry.getType() === 'Polygon' && this.sketchLine_) {
         this.createOrUpdateCustomSketchLine_(/** @type {Polygon} */ (geometry));
       }
     } else if (mode === Mode.POLYGON) {
@@ -1019,15 +1015,15 @@ class Draw extends PointerInteraction {
     }
 
     // cast multi-part geometries
-    if (this.type_ === GeometryType.MULTI_POINT) {
+    if (this.type_ === 'MultiPoint') {
       sketchFeature.setGeometry(
         new MultiPoint([/** @type {PointCoordType} */ (coordinates)])
       );
-    } else if (this.type_ === GeometryType.MULTI_LINE_STRING) {
+    } else if (this.type_ === 'MultiLineString') {
       sketchFeature.setGeometry(
         new MultiLineString([/** @type {LineCoordType} */ (coordinates)])
       );
-    } else if (this.type_ === GeometryType.MULTI_POLYGON) {
+    } else if (this.type_ === 'MultiPolygon') {
       sketchFeature.setGeometry(
         new MultiPolygon([/** @type {PolyCoordType} */ (coordinates)])
       );
@@ -1274,21 +1270,21 @@ export function createBox() {
 /**
  * Get the drawing mode.  The mode for multi-part geometries is the same as for
  * their single-part cousins.
- * @param {import("../geom/GeometryType.js").default} type Geometry type.
+ * @param {import("../geom/Geometry.js").Type} type Geometry type.
  * @return {Mode} Drawing mode.
  */
 function getMode(type) {
   switch (type) {
-    case GeometryType.POINT:
-    case GeometryType.MULTI_POINT:
+    case 'Point':
+    case 'MultiPoint':
       return Mode.POINT;
-    case GeometryType.LINE_STRING:
-    case GeometryType.MULTI_LINE_STRING:
+    case 'LineString':
+    case 'MultiLineString':
       return Mode.LINE_STRING;
-    case GeometryType.POLYGON:
-    case GeometryType.MULTI_POLYGON:
+    case 'Polygon':
+    case 'MultiPolygon':
       return Mode.POLYGON;
-    case GeometryType.CIRCLE:
+    case 'Circle':
       return Mode.CIRCLE;
     default:
       throw new Error('Invalid type: ' + type);

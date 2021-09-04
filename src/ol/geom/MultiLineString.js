@@ -2,7 +2,6 @@
  * @module ol/geom/MultiLineString
  */
 import GeometryLayout from './GeometryLayout.js';
-import GeometryType from './GeometryType.js';
 import LineString from './LineString.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {arrayMaxSquaredDelta, assignClosestArrayPoint} from './flat/closest.js';
@@ -308,11 +307,11 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.MULTI_LINE_STRING;
+    return 'MultiLineString';
   }
 
   /**

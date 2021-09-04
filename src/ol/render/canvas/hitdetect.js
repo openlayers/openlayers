@@ -3,7 +3,6 @@
  */
 
 import CanvasImmediateRenderer from './Immediate.js';
-import GeometryType from '../../geom/GeometryType.js';
 import IconAnchorUnits from '../../style/IconAnchorUnits.js';
 import {Icon} from '../../style.js';
 import {clamp} from '../../math.js';
@@ -121,10 +120,10 @@ export function createHitDetectionImageData(
       if (!byGeometryType) {
         byGeometryType = {};
         featuresByZIndex[zIndex] = byGeometryType;
-        byGeometryType[GeometryType.POLYGON] = [];
-        byGeometryType[GeometryType.CIRCLE] = [];
-        byGeometryType[GeometryType.LINE_STRING] = [];
-        byGeometryType[GeometryType.POINT] = [];
+        byGeometryType['Polygon'] = [];
+        byGeometryType['Circle'] = [];
+        byGeometryType['LineString'] = [];
+        byGeometryType['Point'] = [];
       }
       byGeometryType[geometry.getType().replace('Multi', '')].push(
         geometry,

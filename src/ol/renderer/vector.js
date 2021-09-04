@@ -2,7 +2,6 @@
  * @module ol/renderer/vector
  */
 import BuilderType from '../render/canvas/BuilderType.js';
-import GeometryType from '../geom/GeometryType.js';
 import ImageState from '../ImageState.js';
 import {getUid} from '../util.js';
 
@@ -24,7 +23,7 @@ const SIMPLIFY_TOLERANCE = 0.5;
 
 /**
  * @const
- * @type {Object<import("../geom/GeometryType.js").default,
+ * @type {Object<import("../geom/Geometry.js").Type,
  *                function(import("../render/canvas/BuilderGroup.js").default, import("../geom/Geometry.js").default,
  *                         import("../style/Style.js").default, Object): void>}
  */
@@ -193,7 +192,7 @@ function renderFeatureInternal(
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
-  if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
+  if (geometry.getType() == 'GeometryCollection') {
     const geometries =
       /** @type {import("../geom/GeometryCollection.js").default} */ (
         geometry

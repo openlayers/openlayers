@@ -3,7 +3,6 @@
  */
 import Feature from '../Feature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
@@ -43,27 +42,29 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @const
- * @type {Object<import("../geom/GeometryType.js").default, function(EsriJSONGeometry): import("../geom/Geometry.js").default>}
+ * @type {Object<import("../geom/Geometry.js").Type, function(EsriJSONGeometry): import("../geom/Geometry.js").default>}
  */
-const GEOMETRY_READERS = {};
-GEOMETRY_READERS[GeometryType.POINT] = readPointGeometry;
-GEOMETRY_READERS[GeometryType.LINE_STRING] = readLineStringGeometry;
-GEOMETRY_READERS[GeometryType.POLYGON] = readPolygonGeometry;
-GEOMETRY_READERS[GeometryType.MULTI_POINT] = readMultiPointGeometry;
-GEOMETRY_READERS[GeometryType.MULTI_LINE_STRING] = readMultiLineStringGeometry;
-GEOMETRY_READERS[GeometryType.MULTI_POLYGON] = readMultiPolygonGeometry;
+const GEOMETRY_READERS = {
+  Point: readPointGeometry,
+  LineString: readLineStringGeometry,
+  Polygon: readPolygonGeometry,
+  MultiPoint: readMultiPointGeometry,
+  MultiLineString: readMultiLineStringGeometry,
+  MultiPolygon: readMultiPolygonGeometry,
+};
 
 /**
  * @const
- * @type {Object<string, function(import("../geom/Geometry.js").default, import("./Feature.js").WriteOptions=): (EsriJSONGeometry)>}
+ * @type {Object<import("../geom/Geometry.js").Type, function(import("../geom/Geometry.js").default, import("./Feature.js").WriteOptions=): (EsriJSONGeometry)>}
  */
-const GEOMETRY_WRITERS = {};
-GEOMETRY_WRITERS[GeometryType.POINT] = writePointGeometry;
-GEOMETRY_WRITERS[GeometryType.LINE_STRING] = writeLineStringGeometry;
-GEOMETRY_WRITERS[GeometryType.POLYGON] = writePolygonGeometry;
-GEOMETRY_WRITERS[GeometryType.MULTI_POINT] = writeMultiPointGeometry;
-GEOMETRY_WRITERS[GeometryType.MULTI_LINE_STRING] = writeMultiLineStringGeometry;
-GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
+const GEOMETRY_WRITERS = {
+  Point: writePointGeometry,
+  LineString: writeLineStringGeometry,
+  Polygon: writePolygonGeometry,
+  MultiPoint: writeMultiPointGeometry,
+  MultiLineString: writeMultiLineStringGeometry,
+  MultiPolygon: writeMultiPolygonGeometry,
+};
 
 /**
  * @typedef {Object} Options
@@ -255,28 +256,28 @@ function readGeometry(object, opt_options) {
   if (!object) {
     return null;
   }
-  /** @type {import("../geom/GeometryType.js").default} */
+  /** @type {import("../geom/Geometry.js").Type} */
   let type;
   if (typeof object['x'] === 'number' && typeof object['y'] === 'number') {
-    type = GeometryType.POINT;
+    type = 'Point';
   } else if (object['points']) {
-    type = GeometryType.MULTI_POINT;
+    type = 'MultiPoint';
   } else if (object['paths']) {
     const esriJSONPolyline = /** @type {EsriJSONPolyline} */ (object);
     if (esriJSONPolyline.paths.length === 1) {
-      type = GeometryType.LINE_STRING;
+      type = 'LineString';
     } else {
-      type = GeometryType.MULTI_LINE_STRING;
+      type = 'MultiLineString';
     }
   } else if (object['rings']) {
     const esriJSONPolygon = /** @type {EsriJSONPolygon} */ (object);
     const layout = getGeometryLayout(esriJSONPolygon);
     const rings = convertRings(esriJSONPolygon.rings, layout);
     if (rings.length === 1) {
-      type = GeometryType.POLYGON;
+      type = 'Polygon';
       object = assign({}, object, {['rings']: rings[0]});
     } else {
-      type = GeometryType.MULTI_POLYGON;
+      type = 'MultiPolygon';
       object = assign({}, object, {['rings']: rings});
     }
   }

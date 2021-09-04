@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Builder
  */
 import CanvasInstruction from './Instruction.js';
-import GeometryType from '../../geom/GeometryType.js';
 import Relationship from '../../extent/Relationship.js';
 import VectorContext from '../VectorContext.js';
 import {asColorLike} from '../../colorlike.js';
@@ -260,7 +259,7 @@ class CanvasBuilder extends VectorContext {
     let offset;
 
     switch (type) {
-      case GeometryType.MULTI_POLYGON:
+      case 'MultiPolygon':
         flatCoordinates =
           /** @type {import("../../geom/MultiPolygon.js").default} */ (
             geometry
@@ -299,11 +298,11 @@ class CanvasBuilder extends VectorContext {
           inflateMultiCoordinatesArray,
         ]);
         break;
-      case GeometryType.POLYGON:
-      case GeometryType.MULTI_LINE_STRING:
+      case 'Polygon':
+      case 'MultiLineString':
         builderEnds = [];
         flatCoordinates =
-          type == GeometryType.POLYGON
+          type == 'Polygon'
             ? /** @type {import("../../geom/Polygon.js").default} */ (
                 geometry
               ).getOrientedFlatCoordinates()
@@ -334,8 +333,8 @@ class CanvasBuilder extends VectorContext {
           inflateCoordinatesArray,
         ]);
         break;
-      case GeometryType.LINE_STRING:
-      case GeometryType.CIRCLE:
+      case 'LineString':
+      case 'Circle':
         flatCoordinates = geometry.getFlatCoordinates();
         builderEnd = this.appendFlatLineCoordinates(
           flatCoordinates,
@@ -362,7 +361,7 @@ class CanvasBuilder extends VectorContext {
           inflateCoordinates,
         ]);
         break;
-      case GeometryType.MULTI_POINT:
+      case 'MultiPoint':
         flatCoordinates = geometry.getFlatCoordinates();
         builderEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
 
@@ -385,7 +384,7 @@ class CanvasBuilder extends VectorContext {
           ]);
         }
         break;
-      case GeometryType.POINT:
+      case 'Point':
         flatCoordinates = geometry.getFlatCoordinates();
         this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
         builderEnd = this.coordinates.length;

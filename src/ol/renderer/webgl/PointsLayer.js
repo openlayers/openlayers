@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/PointsLayer
  */
 import BaseVector from '../../layer/BaseVector.js';
-import GeometryType from '../../geom/GeometryType.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
@@ -599,7 +598,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       geometry = /** @type {import("../../geom").Point} */ (
         featureCache.geometry
       );
-      if (!geometry || geometry.getType() !== GeometryType.POINT) {
+      if (!geometry || geometry.getType() !== 'Point') {
         continue;
       }
 
