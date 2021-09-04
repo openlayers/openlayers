@@ -13,12 +13,8 @@ import {getIntersection as intersectExtents} from '../extent.js';
  */
 
 /**
- * @enum {string}
+ * @typedef {'map' | 'vector'} TileType
  */
-const TileType = {
-  MAP: 'map',
-  VECTOR: 'vector',
-};
 
 /**
  * @typedef {Object} TileSet
@@ -327,12 +323,12 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
   const tileMatrixSetLimits = tileSet.tileMatrixSetLimits;
   let tileUrlTemplate;
 
-  if (tileSet.dataType === TileType.MAP) {
+  if (tileSet.dataType === 'map') {
     tileUrlTemplate = getMapTileUrlTemplate(
       tileSet.links,
       sourceInfo.mediaType
     );
-  } else if (tileSet.dataType === TileType.VECTOR) {
+  } else if (tileSet.dataType === 'vector') {
     tileUrlTemplate = getVectorTileUrlTemplate(
       tileSet.links,
       sourceInfo.mediaType
