@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/TileLayer
  */
 import LRUCache from '../../structs/LRUCache.js';
-import State from '../../source/State.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import TileTexture from '../../webgl/TileTexture.js';
@@ -309,7 +308,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     if (isEmpty(getRenderExtent(frameState, frameState.extent))) {
       return false;
     }
-    return source.getState() === State.READY;
+    return source.getState() === 'ready';
   }
 
   /**

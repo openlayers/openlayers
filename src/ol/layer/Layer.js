@@ -5,7 +5,6 @@ import BaseLayer from './Base.js';
 import EventType from '../events/EventType.js';
 import LayerProperty from './Property.js';
 import RenderEventType from '../render/EventType.js';
-import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -213,7 +212,7 @@ class Layer extends BaseLayer {
    */
   getSourceState() {
     const source = this.getSource();
-    return !source ? SourceState.UNDEFINED : source.getState();
+    return !source ? 'undefined' : source.getState();
   }
 
   /**

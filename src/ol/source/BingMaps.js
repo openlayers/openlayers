@@ -2,7 +2,6 @@
  * @module ol/source/BingMaps
  */
 
-import SourceState from './State.js';
 import TileImage from './TileImage.js';
 import {applyTransform, intersects} from '../extent.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
@@ -135,7 +134,7 @@ class BingMaps extends TileImage {
       opaque: true,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      state: SourceState.LOADING,
+      state: 'loading',
       tileLoadFunction: options.tileLoadFunction,
       tilePixelRatio: hidpi ? 2 : 1,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -220,7 +219,7 @@ class BingMaps extends TileImage {
       response.resourceSets.length != 1 ||
       response.resourceSets[0].resources.length != 1
     ) {
-      this.setState(SourceState.ERROR);
+      this.setState('error');
       return;
     }
 
@@ -329,7 +328,7 @@ class BingMaps extends TileImage {
       );
     }
 
-    this.setState(SourceState.READY);
+    this.setState('ready');
   }
 }
 
