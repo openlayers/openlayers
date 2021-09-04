@@ -82,6 +82,11 @@ class GeoJSON extends JSONFeature {
      * @private
      */
     this.extractGeometryName_ = options.extractGeometryName;
+
+    this.supportedMediaTypes = [
+      'application/geo+json',
+      'application/vnd.geo+json',
+    ];
   }
 
   /**

@@ -76,6 +76,12 @@ class FeatureFormat {
      * @type {import("../proj/Projection.js").default|undefined}
      */
     this.defaultFeatureProjection = undefined;
+
+    /**
+     * A list media types supported by the format in descending order of preference.
+     * @type {Array<string>}
+     */
+    this.supportedMediaTypes = null;
   }
 
   /**

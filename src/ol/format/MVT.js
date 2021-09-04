@@ -89,6 +89,11 @@ class MVT extends FeatureFormat {
      * @type {string}
      */
     this.idProperty_ = options.idProperty;
+
+    this.supportedMediaTypes = [
+      'application/vnd.mapbox-vector-tile',
+      'application/x-protobuf',
+    ];
   }
 
   /**
