@@ -312,7 +312,7 @@ export function getDefaultStyleArray() {
  * @param {import("../size.js").Size} size Image size.
  * @return {number} Scale.
  */
-function resizeScaleFunction(size) {
+function scaleForSize(size) {
   return 32 / Math.min(size[0], size[1]);
 }
 
@@ -341,7 +341,7 @@ function createStyleDefaults() {
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
     rotation: 0,
-    scale: resizeScaleFunction(DEFAULT_IMAGE_STYLE_SIZE),
+    scale: scaleForSize(DEFAULT_IMAGE_STYLE_SIZE),
     size: DEFAULT_IMAGE_STYLE_SIZE,
     src: DEFAULT_IMAGE_STYLE_SRC,
   });
@@ -1338,6 +1338,7 @@ function iconStyleParser(node, objectStack) {
       color: color,
     });
 
+    const imageScale = imageStyle.getScaleArray()[0];
     const imageSize = imageStyle.getSize();
     if (imageSize === null) {
       const imageState = imageStyle.getImageState();
@@ -1352,8 +1353,8 @@ function iconStyleParser(node, objectStack) {
           ) {
             const imageSize = imageStyle.getSize();
             if (imageSize && imageSize.length == 2) {
-              const resizeScale = resizeScaleFunction(imageSize);
-              imageStyle.setScale(scale * resizeScale);
+              const resizeScale = scaleForSize(imageSize);
+              imageStyle.setScale(imageScale * resizeScale);
             }
             imageStyle.unlistenImageChange(listener);
           }
@@ -1364,8 +1365,8 @@ function iconStyleParser(node, objectStack) {
         }
       }
     } else if (imageSize.length == 2) {
-      const resizeScale = resizeScaleFunction(imageSize);
-      imageStyle.setScale(scale * resizeScale);
+      const resizeScale = scaleForSize(imageSize);
+      imageStyle.setScale(imageScale * resizeScale);
     }
     styleObject['imageStyle'] = imageStyle;
   } else {
@@ -2658,7 +2659,7 @@ function writeIconStyle(node, style, objectStack) {
     imageSize = DEFAULT_IMAGE_STYLE_SIZE;
   }
   if (imageSize.length == 2) {
-    const resizeScale = resizeScaleFunction(imageSize);
+    const resizeScale = scaleForSize(imageSize);
     scale = scale / resizeScale;
   }
   if (scale !== 1) {
