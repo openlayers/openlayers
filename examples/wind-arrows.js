@@ -43,7 +43,7 @@ const map = new Map({
         const wind = feature.get('wind');
         // rotate arrow away from wind origin
         const angle = ((wind.deg - 180) * Math.PI) / 180;
-        const scale = wind.speed / 5;
+        const scale = wind.speed / 10;
         shaft.setScale([1, scale]);
         shaft.setRotation(angle);
         head.setDisplacement([
