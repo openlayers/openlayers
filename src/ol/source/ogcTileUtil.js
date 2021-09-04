@@ -17,6 +17,10 @@ import {getIntersection as intersectExtents} from '../extent.js';
  */
 
 /**
+ * @typedef {'topLeft' | 'bottomLeft'} CornerOfOrigin
+ */
+
+/**
  * @typedef {Object} TileSet
  * @property {TileType} dataType Type of data represented in the tileset.
  * @property {string} [tileMatrixSetDefinition] Reference to a tile matrix set definition.
@@ -53,7 +57,7 @@ import {getIntersection as intersectExtents} from '../extent.js';
  * @property {string} id The tile matrix identifier.
  * @property {number} cellSize The pixel resolution (map units per pixel).
  * @property {Array<number>} pointOfOrigin The map location of the matrix origin.
- * @property {string} [cornerOfOrigin='topLeft'] The corner of the matrix that represents the origin ('topLeft' or 'bottomLeft').
+ * @property {CornerOfOrigin} [cornerOfOrigin='topLeft'] The corner of the matrix that represents the origin ('topLeft' or 'bottomLeft').
  * @property {number} matrixWidth The number of columns.
  * @property {number} matrixHeight The number of rows.
  * @property {number} tileWidth The pixel width of a tile.
@@ -92,8 +96,6 @@ const knownVectorMediaTypes = {
  * @property {import("../proj/Projection.js").default} projection The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
  */
-
-const BOTTOM_LEFT_ORIGIN = 'bottomLeft';
 
 /**
  * @param {Array<Link>} links Tileset links.
@@ -244,7 +246,7 @@ function parseTileMatrixSet(
       const maxX = origins[i][0] + (limit.maxTileCol + 1) * tileMapWidth;
 
       const tileMapHeight = matrix.cellSize * matrix.tileHeight;
-      const upsideDown = matrix.cornerOfOrigin === BOTTOM_LEFT_ORIGIN;
+      const upsideDown = matrix.cornerOfOrigin === 'bottomLeft';
 
       let minY;
       let maxY;
@@ -278,7 +280,7 @@ function parseTileMatrixSet(
 
     const id = matrixIds[tileCoord[0]];
     const matrix = matrixLookup[id];
-    const upsideDown = matrix.cornerOfOrigin === BOTTOM_LEFT_ORIGIN;
+    const upsideDown = matrix.cornerOfOrigin === 'bottomLeft';
 
     const localContext = {
       tileMatrix: id,
