@@ -10,7 +10,6 @@ const map = new Map({
     new VectorTileLayer({
       source: new OGCVectorTile({
         url: 'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad',
-        mediaType: 'application/vnd.mapbox-vector-tile',
         format: new MVT(),
       }),
     }),

@@ -13,8 +13,7 @@ import {getTileSetInfo} from './ogcTileUtil.js';
  * (zoom level), `{tileRow}`, and `{tileCol}` variables in the URL will always be provided by the source.
  * @property {import("../format/Feature.js").default} format Feature parser for tiles.
  * @property {string} [mediaType] The content type for the tiles (e.g. "application/vnd.mapbox-vector-tile").  If not provided,
- * the source will try to find a link with rel="item" that uses a supported vector type.  The chosen media type
- * must be parseable by the configured format.
+ * the source will try to find a link with rel="item" that uses a vector type supported by the configured format.
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
@@ -41,6 +40,10 @@ import {getTileSetInfo} from './ogcTileUtil.js';
  * Layer source for map tiles from an [OGC API - Tiles](https://ogcapi.ogc.org/tiles/) service that provides "vector" type tiles.
  * The service must conform to at least the core (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core)
  * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes.
+ *
+ * Vector tile sets may come in a variety of formats (e.g. GeoJSON, MVT).  The `format` option is used to determine
+ * which of the advertised media types is used.  If you need to force the use of a particular media type, you can
+ * provide the `mediaType` option.
  */
 class OGCVectorTile extends VectorTile {
   /**
@@ -65,6 +68,7 @@ class OGCVectorTile extends VectorTile {
       url: options.url,
       projection: this.getProjection(),
       mediaType: options.mediaType,
+      supportedMediaTypes: options.format.supportedMediaTypes,
       context: options.context || null,
     };
 

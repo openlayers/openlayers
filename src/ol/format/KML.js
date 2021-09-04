@@ -489,6 +489,8 @@ class KML extends XMLFeature {
     this.iconUrlFunction_ = options.iconUrlFunction
       ? options.iconUrlFunction
       : defaultIconUrlFunction;
+
+    this.supportedMediaTypes = ['application/vnd.google-earth.kml+xml'];
   }
 
   /**

@@ -93,6 +93,7 @@ const knownVectorMediaTypes = {
  * @typedef {Object} SourceInfo
  * @property {string} url The tile set URL.
  * @property {string} mediaType The preferred tile media type.
+ * @property {Array<string>} [supportedMediaTypes] The supported media types.
  * @property {import("../proj/Projection.js").default} projection The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
  */
@@ -134,13 +135,26 @@ export function getMapTileUrlTemplate(links, mediaType) {
 /**
  * @param {Array<Link>} links Tileset links.
  * @param {string} [mediaType] The preferred media type.
+ * @param {Array<string>} [supportedMediaTypes] The media types supported by the parser.
  * @return {string} The tile URL template.
  */
-export function getVectorTileUrlTemplate(links, mediaType) {
+export function getVectorTileUrlTemplate(
+  links,
+  mediaType,
+  supportedMediaTypes
+) {
   let tileUrlTemplate;
   let fallbackUrlTemplate;
+
+  /**
+   * Lookup of URL by media type.
+   * @type {Object<string, string>}
+   */
+  const hrefLookup = {};
+
   for (let i = 0; i < links.length; ++i) {
     const link = links[i];
+    hrefLookup[link.type] = link.href;
     if (link.rel === 'item') {
       if (link.type === mediaType) {
         tileUrlTemplate = link.href;
@@ -148,6 +162,16 @@ export function getVectorTileUrlTemplate(links, mediaType) {
       }
       if (knownVectorMediaTypes[link.type]) {
         fallbackUrlTemplate = link.href;
+      }
+    }
+  }
+
+  if (!tileUrlTemplate && supportedMediaTypes) {
+    for (let i = 0; i < supportedMediaTypes.length; ++i) {
+      const supportedMediaType = supportedMediaTypes[i];
+      if (hrefLookup[supportedMediaType]) {
+        tileUrlTemplate = hrefLookup[supportedMediaType];
+        break;
       }
     }
   }
@@ -333,7 +357,8 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
   } else if (tileSet.dataType === 'vector') {
     tileUrlTemplate = getVectorTileUrlTemplate(
       tileSet.links,
-      sourceInfo.mediaType
+      sourceInfo.mediaType,
+      sourceInfo.supportedMediaTypes
     );
   } else {
     throw new Error('Expected tileset data type to be "map" or "vector"');

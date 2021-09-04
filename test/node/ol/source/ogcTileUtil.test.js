@@ -143,6 +143,48 @@ describe('ol/source/ogcTileUtil.js', () => {
         'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt'
       );
     });
+
+    it('uses supported media types if available', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/ne_10m_admin_0_countries/tiles/WebMercatorQuad',
+        supportedMediaTypes: [
+          'bogus-media-type',
+          'application/vnd.mapbox-vector-tile',
+          'application/geo+json', // should not be used
+        ],
+      };
+      const tileInfo = await getTileSetInfo(sourceInfo);
+      expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.urlTemplate).to.be(
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
+      );
+      expect(tileInfo.urlFunction).to.be.a(Function);
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt'
+      );
+    });
+
+    it('treats supported media types in descending order of priority', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/ne_10m_admin_0_countries/tiles/WebMercatorQuad',
+        supportedMediaTypes: [
+          'bogus-media-type',
+          'application/geo+json', // should be preferred
+          'application/vnd.mapbox-vector-tile',
+        ],
+      };
+      const tileInfo = await getTileSetInfo(sourceInfo);
+      expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.urlTemplate).to.be(
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json'
+      );
+      expect(tileInfo.urlFunction).to.be.a(Function);
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json'
+      );
+    });
   });
 
   describe('getVectorTileUrlTemplate()', () => {
@@ -168,6 +210,15 @@ describe('ol/source/ogcTileUtil.js', () => {
         links,
         'application/vnd.mapbox-vector-tile'
       );
+      expect(urlTemplate).to.be(
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
+      );
+    });
+
+    it('uses supported media types is preferred media type is not given', () => {
+      const urlTemplate = getVectorTileUrlTemplate(links, undefined, [
+        'application/vnd.mapbox-vector-tile',
+      ]);
       expect(urlTemplate).to.be(
         '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
       );

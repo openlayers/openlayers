@@ -132,6 +132,8 @@ class GMLBase extends XMLFeature {
       'featureMember': makeArrayPusher(this.readFeaturesInternal),
       'featureMembers': makeReplacer(this.readFeaturesInternal),
     };
+
+    this.supportedMediaTypes = ['application/gml+xml'];
   }
 
   /**
