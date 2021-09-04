@@ -2,7 +2,6 @@
  * @module ol/source/OGCVectorTile
  */
 
-import SourceState from './State.js';
 import VectorTile from './VectorTile.js';
 import {getTileSetInfo} from './ogcTileUtil.js';
 
@@ -61,7 +60,7 @@ class OGCVectorTile extends VectorTile {
       transition: options.transition,
       wrapX: options.wrapX,
       zDirection: options.zDirection,
-      state: SourceState.LOADING,
+      state: 'loading',
     });
 
     const sourceInfo = {
@@ -84,7 +83,7 @@ class OGCVectorTile extends VectorTile {
   handleTileSetInfo_(tileSetInfo) {
     this.tileGrid = tileSetInfo.grid;
     this.setTileUrlFunction(tileSetInfo.urlFunction, tileSetInfo.urlTemplate);
-    this.setState(SourceState.READY);
+    this.setState('ready');
   }
 
   /**
@@ -93,7 +92,7 @@ class OGCVectorTile extends VectorTile {
    */
   handleError_(error) {
     console.error(error); // eslint-disable-line no-console
-    this.setState(SourceState.ERROR);
+    this.setState('error');
   }
 }
 
