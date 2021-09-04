@@ -2446,7 +2446,7 @@ describe('ol.format.KML', function () {
           expect(imageStyle.getAnchor()).to.eql([24, 36]);
           expect(imageStyle.getOrigin()).to.eql([24, 108]);
           expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getScale()).to.eql(3.0);
+          expect(imageStyle.getScale()).to.eql(2.0); // 3.0 * 32 / 48
           expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
@@ -3027,7 +3027,7 @@ describe('ol.format.KML', function () {
             '  <Placemark>' +
             '    <Style>' +
             '      <IconStyle>' +
-            '        <scale>0.5</scale>' +
+            '        <scale>0.75</scale>' + // 0.5 * 48 / 32
             '        <heading>45</heading>' +
             '        <Icon>' +
             '          <href>http://foo.png</href>' +
