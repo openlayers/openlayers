@@ -8,7 +8,6 @@ import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
 import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
-import OverlayPositioning from '../OverlayPositioning.js';
 import PluggableMap from '../PluggableMap.js';
 import View from '../View.js';
 import ViewProperty from '../ViewProperty.js';
@@ -205,7 +204,7 @@ class OverviewMap extends Control {
      */
     this.boxOverlay_ = new Overlay({
       position: [0, 0],
-      positioning: OverlayPositioning.CENTER_CENTER,
+      positioning: 'center-center',
       element: box,
     });
     this.ovmap_.addOverlay(this.boxOverlay_);
