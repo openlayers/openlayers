@@ -2,7 +2,6 @@
  * @module ol/format/JSONFeature
  */
 import FeatureFormat from './Feature.js';
-import FormatType from './FormatType.js';
 import {abstract} from '../util.js';
 
 /**
@@ -19,10 +18,10 @@ class JSONFeature extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return FormatType.JSON;
+    return 'json';
   }
 
   /**

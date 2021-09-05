@@ -52,6 +52,10 @@ import {
  */
 
 /**
+ * @typedef {'arraybuffer' | 'json' | 'text' | 'xml'} Type
+ */
+
+/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -134,7 +138,7 @@ class FeatureFormat {
 
   /**
    * @abstract
-   * @return {import("./FormatType.js").default} Format.
+   * @return {Type} The format type.
    */
   getType() {
     return abstract();
