@@ -164,7 +164,7 @@ class GeoTIFFSource extends DataTile {
       tileGrid: null,
       projection: null,
     });
-
+    
     /**
      * @type {Array<SourceInfo>}
      * @private
@@ -202,13 +202,16 @@ class GeoTIFFSource extends DataTile {
      * @private
      */
     this.addAlpha_ = false;
-
+    /**
+     * @type {Boolean}
+     * @private
+     */
+    this.test_ = true ? this.sourceInfo_[0]["test"] : false; // To test GeoTiff functionality without breaking existing code 
     /**
      * @type {Error}
      * @private
      */
     this.error_ = null;
-
     this.setKey(this.sourceInfo_.map((source) => source.url).join(','));
 
     const self = this;
@@ -257,7 +260,6 @@ class GeoTIFFSource extends DataTile {
     const samplesPerPixel = new Array(sources.length);
     const nodataValues = new Array(sources.length);
     let minZoom = 0;
-
     const sourceCount = sources.length;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       const images = sources[sourceIndex];
@@ -281,19 +283,33 @@ class GeoTIFFSource extends DataTile {
           ? wantedSamples.length
           : image.getSamplesPerPixel();
         const level = imageCount - (imageIndex + 1);
-
-        if (!sourceExtent) {
+        if (!sourceExtent && !this.test_) {
           sourceExtent = image.getBoundingBox();
+        } else if(this.test_ && !sourceExtent){
+          // Test using the same sourceExtent as the image dimensions. 
+          // This could perhaps also be taken from the source 
+          sourceExtent = [0,
+                          0,
+                          image.fileDirectory.ImageWidth,
+                          image.fileDirectory.ImageLength];
         }
-
-        if (!sourceOrigin) {
+        if (!sourceOrigin && !this.test_) {
           sourceOrigin = image.getOrigin().slice(0, 2);
+        } else if (this.test_ && !sourceOrigin) {
+          // Put the origin in the top left corner, so it works with the image
+          sourceOrigin = [0,image.fileDirectory.ImageLength];
         }
-
-        sourceResolutions[level] = image.getResolution(images[0])[0];
-        sourceTileSizes[level] = [image.getTileWidth(), image.getTileHeight()];
+        
+        if(this.test_){
+          // Grab the resolutions from the tiles inside the fileDirectory. 
+          sourceResolutions[level] = images[0].fileDirectory.ImageWidth / image.fileDirectory.ImageWidth; // 1,1 / (level + 1 )
+          sourceTileSizes[level] = [image.fileDirectory.TileWidth,image.fileDirectory.TileLength] // 1024 ( should work )
+        } else {
+          sourceResolutions[level] = image.getResolution(images[0])[0]; // 1,1 / (level + 1 )
+          sourceTileSizes[level] = [image.getTileWidth(), image.getTileHeight()]; // 1024 ( should work )
+          
+        }
       }
-
       if (!extent) {
         extent = sourceExtent;
       } else {
@@ -413,14 +429,13 @@ class GeoTIFFSource extends DataTile {
     });
 
     this.tileGrid = tileGrid;
-
+  
     this.setLoader(this.loadTile_.bind(this));
     this.setState(State.READY);
   }
 
   loadTile_(z, x, y) {
     const size = toSize(this.tileGrid.getTileSize(z));
-
     const sourceCount = this.sourceImagery_.length;
     const requests = new Array(sourceCount);
     const addAlpha = this.addAlpha_;
