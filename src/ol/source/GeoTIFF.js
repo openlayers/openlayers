@@ -424,7 +424,7 @@ class GeoTIFFSource extends DataTile {
             image.geoKeys.ProjectedCSTypeGeoKey ||
             image.geoKeys.GeographicTypeGeoKey;
           if (code) {
-            this.projection = getProjection(`EPSG:${code}`);
+            this.projection = getProjection('EPSG:' + code);
             break;
           }
         }
