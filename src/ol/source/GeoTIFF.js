@@ -5,10 +5,11 @@ import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
+import {Projection, get as getCachedProjection} from '../proj.js';
 import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
 import {getIntersection} from '../extent.js';
-import {get as getProjection} from '../proj.js';
 import {toSize} from '../size.js';
+import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
  * @typedef {Object} SourceInfo
@@ -26,9 +27,21 @@ import {toSize} from '../size.js';
  */
 
 /**
+ * @typedef {Object} GeoKeys
+ * @property {number} GTModelTypeGeoKey Model type.
+ * @property {number} GTRasterTypeGeoKey Raster type.
+ * @property {number} GeogAngularUnitsGeoKey Angular units.
+ * @property {number} GeogInvFlatteningGeoKey Inverse flattening.
+ * @property {number} GeogSemiMajorAxisGeoKey Semi-major axis.
+ * @property {number} GeographicTypeGeoKey Geographic coordinate system code.
+ * @property {number} ProjLinearUnitsGeoKey Projected linear unit code.
+ * @property {number} ProjectedCSTypeGeoKey Projected coordinate system code.
+ */
+
+/**
  * @typedef {Object} GeoTIFFImage
  * @property {Object} fileDirectory The file directory.
- * @property {Object} geoKeys The parsed geo-keys.
+ * @property {GeoKeys} geoKeys The parsed geo-keys.
  * @property {boolean} littleEndian Uses little endian byte order.
  * @property {Object} tiles The tile cache.
  * @property {boolean} isTiled The image is tiled.
@@ -89,6 +102,49 @@ function getResolution(image, referenceImage) {
       referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth
     );
   }
+}
+
+/**
+ * @param {GeoTIFFImage} image A GeoTIFF.
+ * @return {import("../proj/Projection.js").default} The image projection.
+ */
+function getProjection(image) {
+  const geoKeys = image.geoKeys;
+  if (!geoKeys) {
+    return null;
+  }
+
+  if (geoKeys.ProjectedCSTypeGeoKey) {
+    const code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
+    let projection = getCachedProjection(code);
+    if (!projection) {
+      const units = unitsFromCode(geoKeys.ProjLinearUnitsGeoKey);
+      if (units) {
+        projection = new Projection({
+          code: code,
+          units: units,
+        });
+      }
+    }
+    return projection;
+  }
+
+  if (geoKeys.GeographicTypeGeoKey) {
+    const code = 'EPSG:' + geoKeys.GeographicTypeGeoKey;
+    let projection = getCachedProjection(code);
+    if (!projection) {
+      const units = unitsFromCode(geoKeys.GeogAngularUnitsGeoKey);
+      if (units) {
+        projection = new Projection({
+          code: code,
+          units: units,
+        });
+      }
+    }
+    return projection;
+  }
+
+  return null;
 }
 
 /**
@@ -419,14 +475,10 @@ class GeoTIFFSource extends DataTile {
       const firstSource = sources[0];
       for (let i = firstSource.length - 1; i >= 0; --i) {
         const image = firstSource[i];
-        if (image.geoKeys) {
-          const code =
-            image.geoKeys.ProjectedCSTypeGeoKey ||
-            image.geoKeys.GeographicTypeGeoKey;
-          if (code) {
-            this.projection = getProjection('EPSG:' + code);
-            break;
-          }
+        const projection = getProjection(image);
+        if (projection) {
+          this.projection = projection;
+          break;
         }
       }
     }
