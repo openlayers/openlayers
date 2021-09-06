@@ -20,9 +20,9 @@ import {toSize} from '../size.js';
  * the configured min and max.
  * @property {number} [nodata] Values to discard. When provided, an additional band (alpha) will be added
  * to the data.
- * @property {Array<number>} [bands] Indices of the bands to be read from. If not provided, all bands will
- * be read. If, for example, a GeoTIFF has red, green, blue and near-infrared bands and you only need the
- * infrared band, configure `bands: [3]`.
+ * @property {Array<number>} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
+ * be read. For example, if a GeoTIFF has blue (1), green (2), red (3), and near-infrared (4) bands, and you only need the
+ * near-infrared band, configure `bands: [4]`.
  */
 
 let workerPool;
@@ -385,7 +385,7 @@ class GeoTIFFSource extends DataTile {
       const bands = this.sourceInfo_[sourceIndex].bands;
       if (bands) {
         for (let i = 0; i < bands.length; ++i) {
-          if (!isNaN(values[bands[i]])) {
+          if (!isNaN(values[bands[i] - 1])) {
             this.addAlpha_ = true;
             break outer;
           }
@@ -442,11 +442,17 @@ class GeoTIFFSource extends DataTile {
         Math.round((y + 1) * (size[1] * resolutionFactor)),
       ];
       const image = this.sourceImagery_[sourceIndex][z];
+      let samples;
+      if (source.bands) {
+        samples = source.bands.map(function (bandNumber) {
+          return bandNumber - 1;
+        });
+      }
       requests[sourceIndex] = image.readRasters({
         window: pixelBounds,
         width: size[0],
         height: size[1],
-        samples: source.bands,
+        samples: samples,
         fillValue: source.nodata,
         pool: getWorkerPool(),
       });
@@ -491,7 +497,7 @@ class GeoTIFFSource extends DataTile {
               if (nodata === undefined) {
                 let bandIndex;
                 if (source.bands) {
-                  bandIndex = source.bands[sampleIndex];
+                  bandIndex = source.bands[sampleIndex] - 1;
                 } else {
                   bandIndex = sampleIndex;
                 }
