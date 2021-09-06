@@ -357,13 +357,17 @@ class GeoTIFFSource extends DataTile {
     }
 
     if (!this.getProjection()) {
-      const firstImage = sources[0][0];
-      if (firstImage.geoKeys) {
-        const code =
-          firstImage.geoKeys.ProjectedCSTypeGeoKey ||
-          firstImage.geoKeys.GeographicTypeGeoKey;
-        if (code) {
-          this.projection = getProjection(`EPSG:${code}`);
+      const firstSource = sources[0];
+      for (let i = firstSource.length - 1; i >= 0; --i) {
+        const image = firstSource[i];
+        if (image.geoKeys) {
+          const code =
+            image.geoKeys.ProjectedCSTypeGeoKey ||
+            image.geoKeys.GeographicTypeGeoKey;
+          if (code) {
+            this.projection = getProjection(`EPSG:${code}`);
+            break;
+          }
         }
       }
     }
