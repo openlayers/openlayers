@@ -1,7 +1,6 @@
 /**
  * @module ol/tilegrid
  */
-import Corner from './extent/Corner.js';
 import TileGrid from './tilegrid/TileGrid.js';
 import Units from './proj/Units.js';
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
@@ -57,11 +56,11 @@ export function wrapX(tileGrid, tileCoord, projection) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default} [opt_corner] Extent corner (default is `'top-left'`).
+ * @param {import("./extent.js").Corner} [opt_corner] Extent corner (default is `'top-left'`).
  * @return {!TileGrid} TileGrid instance.
  */
 export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  const corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
+  const corner = opt_corner !== undefined ? opt_corner : 'top-left';
 
   const resolutions = resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize);
 
@@ -153,7 +152,7 @@ function resolutionsFromExtent(
  *     DEFAULT_MAX_ZOOM).
  * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default} [opt_corner] Extent corner (default is `'top-left'`).
+ * @param {import("./extent.js").Corner} [opt_corner] Extent corner (default is `'top-left'`).
  * @return {!TileGrid} TileGrid instance.
  */
 export function createForProjection(
