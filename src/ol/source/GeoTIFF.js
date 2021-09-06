@@ -141,9 +141,9 @@ function getMaxForDataType(array) {
  * @typedef {Object} Options
  * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
  * Multiple sources can be combined when their resolution sets are equal after applying a scale.
- * The list of sources defines a mapping between input bands as they are read from each GeoTIFF, and
+ * The list of sources defines a mapping between input bands as they are read from each GeoTIFF and
  * the output bands that are provided by data tiles. To control which bands to read from each GeoTIFF,
- * use the {@link import("./GeoTIFF.js").SourceInfo bands} property. If, for example, you spedify two
+ * use the {@link import("./GeoTIFF.js").SourceInfo bands} property. If, for example, you specify two
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
