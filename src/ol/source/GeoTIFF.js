@@ -25,12 +25,70 @@ import {toSize} from '../size.js';
  * infrared band, configure `bands: [3]`.
  */
 
+/**
+ * @typedef {Object} GeoTIFFImage
+ * @property {Object} fileDirectory The file directory.
+ * @property {Object} geoKeys The parsed geo-keys.
+ * @property {boolean} littleEndian Uses little endian byte order.
+ * @property {Object} tiles The tile cache.
+ * @property {boolean} isTiled The image is tiled.
+ * @property {function():Array<number>} getBoundingBox Get the image bounding box.
+ * @property {function():Array<number>} getOrigin Get the image origin.
+ * @property {function(GeoTIFFImage):Array<number>} getResolution Get the image resolution.
+ */
+
 let workerPool;
 function getWorkerPool() {
   if (!workerPool) {
     workerPool = new Pool(undefined, createDecoderWorker());
   }
   return workerPool;
+}
+
+/**
+ * Get the bounding box of an image.  If the image does not have an affine transform,
+ * the pixel bounds are returned.
+ * @param {GeoTIFFImage} image The image.
+ * @return {Array<number>} The image bounding box.
+ */
+function getBoundingBox(image) {
+  try {
+    return image.getBoundingBox();
+  } catch (_) {
+    const fileDirectory = image.fileDirectory;
+    return [0, 0, fileDirectory.ImageWidth, fileDirectory.ImageLength];
+  }
+}
+
+/**
+ * Get the origin of an image.  If the image does not have an affine transform,
+ * the top-left corner of the pixel bounds is returned.
+ * @param {GeoTIFFImage} image The image.
+ * @return {Array<number>} The image origin.
+ */
+function getOrigin(image) {
+  try {
+    return image.getOrigin().slice(0, 2);
+  } catch (_) {
+    return [0, image.fileDirectory.ImageLength];
+  }
+}
+
+/**
+ * Get the resolution of an image.  If the image does not have an affine transform,
+ * the width of the image is compared with the reference image.
+ * @param {GeoTIFFImage} image The image.
+ * @param {GeoTIFFImage} referenceImage The reference image.
+ * @return {number} The image resolution.
+ */
+function getResolution(image, referenceImage) {
+  try {
+    return image.getResolution(referenceImage)[0];
+  } catch (_) {
+    return (
+      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth
+    );
+  }
 }
 
 /**
@@ -226,6 +284,7 @@ class GeoTIFFSource extends DataTile {
         self.configure_(sources);
       })
       .catch(function (error) {
+        console.error(error); // eslint-disable-line no-console
         self.error_ = error;
         self.setState(State.ERROR);
       });
@@ -288,14 +347,14 @@ class GeoTIFFSource extends DataTile {
         const level = imageCount - (imageIndex + 1);
 
         if (!sourceExtent) {
-          sourceExtent = image.getBoundingBox();
+          sourceExtent = getBoundingBox(image);
         }
 
         if (!sourceOrigin) {
-          sourceOrigin = image.getOrigin().slice(0, 2);
+          sourceOrigin = getOrigin(image);
         }
 
-        sourceResolutions[level] = image.getResolution(images[0])[0];
+        sourceResolutions[level] = getResolution(image, images[0]);
         sourceTileSizes[level] = [image.getTileWidth(), image.getTileHeight()];
       }
 
