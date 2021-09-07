@@ -261,6 +261,9 @@ function getMaxForDataType(array) {
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
+ * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
+ * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
+ * convert other color spaces (YCbCr, CMYK) to RGB.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
@@ -327,6 +330,11 @@ class GeoTIFFSource extends DataTile {
      * @private
      */
     this.error_ = null;
+
+    /**
+     * @type {'readRasters' | 'readRGB'}
+     */
+    this.readMethod_ = options.convertToRGB ? 'readRGB' : 'readRasters';
 
     this.setKey(this.sourceInfo_.map((source) => source.url).join(','));
 
@@ -563,13 +571,14 @@ class GeoTIFFSource extends DataTile {
           return bandNumber - 1;
         });
       }
-      requests[sourceIndex] = image.readRasters({
+      requests[sourceIndex] = image[this.readMethod_]({
         window: pixelBounds,
         width: size[0],
         height: size[1],
         samples: samples,
         fillValue: source.nodata,
         pool: getWorkerPool(),
+        interleave: false,
       });
     }
 
