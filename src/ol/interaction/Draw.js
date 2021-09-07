@@ -1247,7 +1247,7 @@ export function createBox() {
 }
 
 /**
- * Get the drawing mode.  The mode for mult-part geometries is the same as for
+ * Get the drawing mode.  The mode for multi-part geometries is the same as for
  * their single-part cousins.
  * @param {import("../geom/GeometryType.js").default} type Geometry type.
  * @return {Mode} Drawing mode.

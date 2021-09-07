@@ -74,7 +74,7 @@ export function includes(arr, obj) {
  */
 
 /**
- * @param {Array<number>} arr Array in desccending order.
+ * @param {Array<number>} arr Array in descending order.
  * @param {number} target Target.
  * @param {number|NearestDirectionFunction} direction
  *    0 means return the nearest,
@@ -206,7 +206,7 @@ export function equals(arr1, arr2) {
 }
 
 /**
- * Sort the passed array such that the relative order of equal elements is preverved.
+ * Sort the passed array such that the relative order of equal elements is preserved.
  * See https://en.wikipedia.org/wiki/Sorting_algorithm#Stability for details.
  * @param {Array<*>} arr The array to sort (modifies original).
  * @param {!function(*, *): number} compareFnc Comparison function.
