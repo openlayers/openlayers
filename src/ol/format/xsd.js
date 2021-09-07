@@ -63,7 +63,7 @@ export function readDecimalString(string) {
  * @param {Node} node Node.
  * @return {number|undefined} Non negative integer.
  */
-export function readNonNegativeInteger(node) {
+export function readPositiveInteger(node) {
   const s = getAllTextContent(node, false);
   return readNonNegativeIntegerString(s);
 }

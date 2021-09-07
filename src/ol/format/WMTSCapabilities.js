@@ -11,7 +11,7 @@ import {
   makeStructureNS,
   pushParseAndPop,
 } from '../xml.js';
-import {readDecimal, readNonNegativeInteger, readString} from './xsd.js';
+import {readDecimal, readPositiveInteger, readString} from './xsd.js';
 import {readHref} from './xlink.js';
 
 /**
@@ -150,10 +150,10 @@ const TMS_LIMITS_LIST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 // @ts-ignore
 const TMS_LIMITS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'TileMatrix': makeObjectPropertySetter(readString),
-  'MinTileRow': makeObjectPropertySetter(readNonNegativeInteger),
-  'MaxTileRow': makeObjectPropertySetter(readNonNegativeInteger),
-  'MinTileCol': makeObjectPropertySetter(readNonNegativeInteger),
-  'MaxTileCol': makeObjectPropertySetter(readNonNegativeInteger),
+  'MinTileRow': makeObjectPropertySetter(readPositiveInteger),
+  'MaxTileRow': makeObjectPropertySetter(readPositiveInteger),
+  'MinTileCol': makeObjectPropertySetter(readPositiveInteger),
+  'MaxTileCol': makeObjectPropertySetter(readPositiveInteger),
 });
 
 /**
@@ -210,10 +210,10 @@ const TM_PARSERS = makeStructureNS(
   {
     'TopLeftCorner': makeObjectPropertySetter(readCoordinates),
     'ScaleDenominator': makeObjectPropertySetter(readDecimal),
-    'TileWidth': makeObjectPropertySetter(readNonNegativeInteger),
-    'TileHeight': makeObjectPropertySetter(readNonNegativeInteger),
-    'MatrixWidth': makeObjectPropertySetter(readNonNegativeInteger),
-    'MatrixHeight': makeObjectPropertySetter(readNonNegativeInteger),
+    'TileWidth': makeObjectPropertySetter(readPositiveInteger),
+    'TileHeight': makeObjectPropertySetter(readPositiveInteger),
+    'MatrixWidth': makeObjectPropertySetter(readPositiveInteger),
+    'MatrixHeight': makeObjectPropertySetter(readPositiveInteger),
   },
   makeStructureNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString),
