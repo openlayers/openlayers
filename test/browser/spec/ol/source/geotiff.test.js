@@ -2,7 +2,7 @@ import GeoTIFFSource from '../../../../../src/ol/source/GeoTIFF.js';
 import State from '../../../../../src/ol/source/State.js';
 import TileState from '../../../../../src/ol/TileState.js';
 
-describe('ol.source.GeoTIFF', function () {
+describe('ol/source/GeoTIFF', function () {
   /** @type {GeoTIFFSource} */
   let source;
   beforeEach(function () {
@@ -30,6 +30,7 @@ describe('ol.source.GeoTIFF', function () {
       expect(source.nodataValues_).to.eql([[0]]);
       expect(source.getTileGrid().getResolutions().length).to.be(1);
       expect(source.projection.getCode()).to.be('EPSG:4326');
+      expect(source.projection.getUnits()).to.be('degrees');
       done();
     });
   });
