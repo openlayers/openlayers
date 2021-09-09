@@ -1,6 +1,8 @@
 ## Upgrade notes
 
-### Next version
+### v6.7.0
+
+There should be nothing special required when upgrading from v6.6 to v6.7.
 
 ### v6.6.0
 
