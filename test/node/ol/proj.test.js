@@ -12,6 +12,7 @@ import {
   fromLonLat,
   fromUserCoordinate,
   fromUserExtent,
+  fromUserResolution,
   getPointResolution,
   get as getProjection,
   getTransform,
@@ -21,6 +22,7 @@ import {
   toLonLat,
   toUserCoordinate,
   toUserExtent,
+  toUserResolution,
   transform,
   transformExtent,
   useGeographic,
@@ -148,6 +150,36 @@ describe('ol/proj.js', function () {
       );
       const extent = fromUserExtent(user, 'EPSG:3857');
       expect(extent).to.be(user);
+    });
+  });
+
+  describe('fromUserResolution()', function () {
+    it("adjusts a resolution for the user projection's units", function () {
+      useGeographic();
+      const user = 1 / METERS_PER_UNIT['degrees'];
+      const resolution = fromUserResolution(user, 'EPSG:3857');
+      expect(resolution).to.roughlyEqual(1, 1e-9);
+    });
+
+    it('returns the original if no user projection is set', function () {
+      const user = METERS_PER_UNIT['meters'];
+      const resolution = fromUserResolution(user, 'EPSG:3857');
+      expect(resolution).to.eql(user);
+    });
+  });
+
+  describe('toUserResolution()', function () {
+    it("adjusts a resolution for the user projection's units", function () {
+      useGeographic();
+      const dest = 1;
+      const resolution = toUserResolution(dest, 'EPSG:3857');
+      expect(resolution).to.eql(1 / METERS_PER_UNIT['degrees']);
+    });
+
+    it('returns the original if no user projection is set', function () {
+      const dest = METERS_PER_UNIT['degrees'];
+      const resolution = toUserResolution(dest, 'EPSG:3857');
+      expect(resolution).to.eql(dest);
     });
   });
 
