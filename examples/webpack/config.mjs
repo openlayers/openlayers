@@ -18,7 +18,7 @@ export default {
       .filter((name) => /^(?!index).*\.html$/.test(name))
       .map((name) => name.replace(/\.html$/, ''))
       .forEach((example) => {
-        entry[example] = `./${example}.js`;
+        entry[example] = ['regenerator-runtime/runtime', `./${example}.js`];
       });
     return entry;
   },
@@ -30,7 +30,9 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['@babel/preset-env', {targets: 'ie 11'}]],
+            presets: [
+              ['@babel/preset-env', {targets: 'last 2 versions, not dead'}],
+            ],
           },
         },
       },

@@ -2,7 +2,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import path from 'path';
 
 export default {
-  entry: './build/index.js',
+  entry: ['regenerator-runtime/runtime', './build/index.js'],
   devtool: 'source-map',
   mode: 'production',
   target: ['web', 'es5'],
@@ -13,7 +13,14 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['@babel/preset-env', {targets: 'ie 11'}]],
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: 'last 2 versions, not dead',
+                },
+              ],
+            ],
           },
         },
       },
