@@ -36,6 +36,7 @@ import {
   getTransformFromProjections,
   getUserProjection,
   toUserExtent,
+  toUserResolution,
 } from '../../proj.js';
 import {getUid} from '../../util.js';
 import {wrapX as wrapCoordinateX} from '../../coordinate.js';
@@ -642,9 +643,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     let userTransform;
     if (userProjection) {
       for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
+        const extent = loadExtents[i];
+        const userExtent = toUserExtent(extent, projection);
         vectorSource.loadFeatures(
-          toUserExtent(loadExtents[i], projection),
-          resolution,
+          userExtent,
+          toUserResolution(resolution, projection),
           userProjection
         );
       }
