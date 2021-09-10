@@ -203,12 +203,12 @@ class Modify extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ModifyOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ModifyOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

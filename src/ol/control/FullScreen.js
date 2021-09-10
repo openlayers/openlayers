@@ -90,12 +90,12 @@ class FullScreen extends Control {
     });
 
     /***
-     * @type {FullScreenOnSignature<import("../Observable.js").OnReturn>}
+     * @type {FullScreenOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {FullScreenOnSignature<import("../Observable.js").OnReturn>}
+     * @type {FullScreenOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

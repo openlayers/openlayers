@@ -72,12 +72,12 @@ class BaseTileLayer extends Layer {
     super(baseOptions);
 
     /***
-     * @type {BaseTileLayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {BaseTileLayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

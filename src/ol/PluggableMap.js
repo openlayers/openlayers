@@ -158,12 +158,12 @@ class PluggableMap extends BaseObject {
     super();
 
     /***
-     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
+     * @type {PluggableMapOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
+     * @type {PluggableMapOnSignature<import("./events").EventsKey>}
      */
     this.once;
 

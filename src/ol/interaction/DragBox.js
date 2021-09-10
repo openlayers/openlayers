@@ -123,12 +123,12 @@ class DragBox extends PointerInteraction {
     super();
 
     /***
-     * @type {DragBoxOnSignature<import("../Observable").OnReturn>}
+     * @type {DragBoxOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {DragBoxOnSignature<import("../Observable").OnReturn>}
+     * @type {DragBoxOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

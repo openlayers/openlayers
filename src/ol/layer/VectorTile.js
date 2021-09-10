@@ -106,12 +106,12 @@ class VectorTileLayer extends BaseVectorLayer {
     );
 
     /***
-     * @type {VectorTileLayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {VectorTileLayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

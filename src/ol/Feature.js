@@ -83,12 +83,12 @@ class Feature extends BaseObject {
     super();
 
     /***
-     * @type {FeatureOnSignature<import("./Observable.js").OnReturn>}
+     * @type {FeatureOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {FeatureOnSignature<import("./Observable.js").OnReturn>}
+     * @type {FeatureOnSignature<import("./events").EventsKey>}
      */
     this.once;
 

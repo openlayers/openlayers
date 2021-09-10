@@ -62,12 +62,12 @@ class TileSource extends Source {
     });
 
     /***
-     * @type {TileSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {TileSourceOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {TileSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {TileSourceOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

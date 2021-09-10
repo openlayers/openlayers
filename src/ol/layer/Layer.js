@@ -107,12 +107,12 @@ class Layer extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {LayerOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {LayerOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

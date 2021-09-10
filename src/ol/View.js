@@ -309,12 +309,12 @@ class View extends BaseObject {
     super();
 
     /***
-     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
+     * @type {ViewOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
+     * @type {ViewOnSignature<import("./events").EventsKey>}
      */
     this.once;
 

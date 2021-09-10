@@ -73,12 +73,12 @@ class LayerGroup extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {GroupOnSignature<import("../Observable.js").OnReturn>}
+     * @type {GroupOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {GroupOnSignature<import("../Observable.js").OnReturn>}
+     * @type {GroupOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

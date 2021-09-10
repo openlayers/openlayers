@@ -80,12 +80,12 @@ class MousePosition extends Control {
     });
 
     /***
-     * @type {MousePositionOnSignature<import("../Observable.js").OnReturn>}
+     * @type {MousePositionOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {MousePositionOnSignature<import("../Observable.js").OnReturn>}
+     * @type {MousePositionOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

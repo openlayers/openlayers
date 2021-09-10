@@ -60,12 +60,12 @@ class BaseLayer extends BaseObject {
     super();
 
     /***
-     * @type {BaseLayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {BaseLayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

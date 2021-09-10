@@ -107,12 +107,12 @@ class Geolocation extends BaseObject {
     super();
 
     /***
-     * @type {GeolocationOnSignature<import("./Observable.js").OnReturn>}
+     * @type {GeolocationOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {GeolocationOnSignature<import("./Observable.js").OnReturn>}
+     * @type {GeolocationOnSignature<import("./events").EventsKey>}
      */
     this.once;
 
