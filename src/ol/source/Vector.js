@@ -1019,8 +1019,6 @@ class VectorSource extends Source {
    * at once, use the {@link module:ol/source/Vector~VectorSource#clear #clear()} method
    * instead.
    * @param {import("../Feature.js").default<Geometry>} feature Feature to remove.
-   * @return {import("../Feature.js").default<Geometry>|undefined} The removed feature
-   *     (or undefined if the feature was not found).
    * @api
    */
   removeFeature(feature) {
@@ -1039,7 +1037,9 @@ class VectorSource extends Source {
     if (result) {
       this.changed();
     }
-    return result;
+    // TODO at full version for consistency with other remove methods
+    // (would be breaking change if used as callback in forEachFeatureAtPixel)
+    //return result;
   }
 
   /**
