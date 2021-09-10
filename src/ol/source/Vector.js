@@ -187,12 +187,12 @@ class VectorSource extends Source {
     });
 
     /***
-     * @type {VectorSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {VectorSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

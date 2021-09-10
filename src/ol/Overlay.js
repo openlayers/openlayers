@@ -123,12 +123,12 @@ class Overlay extends BaseObject {
     super();
 
     /***
-     * @type {OverlayOnSignature<import("./Observable").OnReturn>}
+     * @type {OverlayOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {OverlayOnSignature<import("./Observable").OnReturn>}
+     * @type {OverlayOnSignature<import("./events").EventsKey>}
      */
     this.once;
 

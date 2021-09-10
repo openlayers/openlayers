@@ -140,12 +140,12 @@ class Translate extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {TranslateOnSignature<import("../Observable.js").OnReturn>}
+     * @type {TranslateOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {TranslateOnSignature<import("../Observable.js").OnReturn>}
+     * @type {TranslateOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

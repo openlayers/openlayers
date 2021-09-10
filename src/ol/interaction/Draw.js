@@ -204,12 +204,12 @@ class Draw extends PointerInteraction {
     super(pointerOptions);
 
     /***
-     * @type {DrawOnSignature<import("../Observable").OnReturn>}
+     * @type {DrawOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {DrawOnSignature<import("../Observable").OnReturn>}
+     * @type {DrawOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

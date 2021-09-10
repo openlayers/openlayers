@@ -548,12 +548,12 @@ class RasterSource extends ImageSource {
     });
 
     /***
-     * @type {RasterSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {RasterSourceOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {RasterSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {RasterSourceOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

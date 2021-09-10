@@ -108,12 +108,12 @@ class DragAndDrop extends Interaction {
     });
 
     /***
-     * @type {DragAndDropOnSignature<import("../Observable").OnReturn>}
+     * @type {DragAndDropOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {DragAndDropOnSignature<import("../Observable").OnReturn>}
+     * @type {DragAndDropOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

@@ -167,12 +167,12 @@ class Select extends Interaction {
     super();
 
     /***
-     * @type {SelectOnSignature<import("../Observable.js").OnReturn>}
+     * @type {SelectOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {SelectOnSignature<import("../Observable.js").OnReturn>}
+     * @type {SelectOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

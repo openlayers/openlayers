@@ -103,12 +103,12 @@ class Extent extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {ExtentOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ExtentOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ExtentOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ExtentOnSignature<import("../events").EventsKey>}
      */
     this.once;
 
