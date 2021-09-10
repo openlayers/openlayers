@@ -63,8 +63,6 @@
     "@types/pbf": "^3.0.2",
     "@types/topojson-specification": "^1.0.1",
     "babel-loader": "^8.2.2",
-    "buble": "^0.20.0",
-    "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.3.3",
     "copy-webpack-plugin": "^9.0.0",

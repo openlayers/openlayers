@@ -28,25 +28,11 @@ export default {
       {
         test: /^((?!es2015-)[\s\S])*\.js$/,
         use: {
-          loader: 'buble-loader',
+          loader: 'babel-loader',
           options: {
-            transforms: {
-              dangerousForOf: true,
-            },
+            presets: [['@babel/preset-env', {targets: 'ie 11'}]],
           },
         },
-        include: [
-          path.join(baseDir, '..', '..', 'src'),
-          path.join(baseDir, '..'),
-          path.join(
-            baseDir,
-            '..',
-            '..',
-            'node_modules',
-            '@mapbox',
-            'mapbox-gl-style-spec'
-          ),
-        ],
       },
       {
         test: /\.js$/,

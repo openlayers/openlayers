@@ -1,8 +1,5 @@
 import TerserPlugin from 'terser-webpack-plugin';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
-
-const baseDir = dirname(fileURLToPath(import.meta.url));
+import path from 'path';
 
 export default {
   entry: './build/index.js',
@@ -12,22 +9,13 @@ export default {
   module: {
     rules: [
       {
-        test: /^((?!es2015-)[\s\S])*\.js$/,
+        test: /\.m?js$/,
         use: {
-          loader: 'buble-loader',
+          loader: 'babel-loader',
           options: {
-            transforms: {dangerousForOf: true},
+            presets: [['@babel/preset-env', {targets: 'ie 11'}]],
           },
         },
-        include: [
-          path.join(
-            baseDir,
-            '..',
-            'node_modules',
-            '@mapbox',
-            'mapbox-gl-style-spec'
-          ),
-        ],
       },
     ],
   },
