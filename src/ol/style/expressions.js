@@ -5,6 +5,7 @@
 
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray, isStringColor} from '../color.js';
+import {log2} from '../math.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
@@ -173,7 +174,7 @@ export function getValueType(value) {
  * @return {boolean} True if only one type flag is enabled, false if zero or multiple
  */
 export function isTypeUnique(valueType) {
-  return Math.log2(valueType) % 1 === 0;
+  return log2(valueType) % 1 === 0;
 }
 
 /**
