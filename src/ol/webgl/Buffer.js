@@ -73,7 +73,10 @@ class WebGLArrayBuffer {
    * @param {Array<number>} array Numerical array
    */
   fromArray(array) {
-    this.array = getArrayClassForType(this.type).from(array);
+    const arrayClass = getArrayClassForType(this.type);
+    this.array = arrayClass.from
+      ? arrayClass.from(array)
+      : new arrayClass(array);
   }
 
   /**
