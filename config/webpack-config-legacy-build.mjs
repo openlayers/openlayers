@@ -1,33 +1,28 @@
 import TerserPlugin from 'terser-webpack-plugin';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
-
-const baseDir = dirname(fileURLToPath(import.meta.url));
+import path from 'path';
 
 export default {
-  entry: './build/index.js',
+  entry: ['regenerator-runtime/runtime', './build/index.js'],
   devtool: 'source-map',
   mode: 'production',
   target: ['web', 'es5'],
   module: {
     rules: [
       {
-        test: /^((?!es2015-)[\s\S])*\.js$/,
+        test: /\.m?js$/,
         use: {
-          loader: 'buble-loader',
+          loader: 'babel-loader',
           options: {
-            transforms: {dangerousForOf: true},
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: 'last 2 versions, not dead',
+                },
+              ],
+            ],
           },
         },
-        include: [
-          path.join(
-            baseDir,
-            '..',
-            'node_modules',
-            '@mapbox',
-            'mapbox-gl-style-spec'
-          ),
-        ],
       },
     ],
   },

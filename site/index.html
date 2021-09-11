@@ -4,11 +4,32 @@
     <title>OpenLayers</title>
     <link href='https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700' rel='stylesheet' type='text/css'>
     <link href='https://openlayers.org/assets/theme/site.css' rel='stylesheet' type='text/css'>
+    <link href="./legacy/ol.css" rel='stylesheet' type='text/css'>
+    <!-- Pointer events polyfill for old browsers, see https://caniuse.com/#feat=pointer -->
+    <script src="https://unpkg.com/elm-pep"></script>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL,TextDecoder,Number.isInteger"></script>    
   </head>
   <body>
     <ul>
       <li><a href="./apidoc/">API Docs</a></li>
       <li><a href="./examples/">Examples</a></li>
     </ul>
+    <div id="map" style="width:400px;height:400px;"></div>
+    <script src="./legacy/ol.js"></script>
+    <script>
+      new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          })
+        ],
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      })
+    </script>
   </body>
 </html>
