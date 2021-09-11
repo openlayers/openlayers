@@ -56,10 +56,12 @@ imagery.on('prerender', function (evt) {
 
 const control = document.getElementById('opacity');
 const output = document.getElementById('output');
-control.addEventListener('input', function () {
+const listener = function () {
   output.innerText = control.value;
   imagery.setOpacity(control.value / 100);
-});
+};
+control.addEventListener('input', listener);
+control.addEventListener('change', listener);
 output.innerText = control.value;
 imagery.setOpacity(control.value / 100);
 
