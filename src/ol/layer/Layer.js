@@ -79,7 +79,7 @@ import {listen, unlistenByKey} from '../events.js';
  * displayed, irrespective of the source of that data.
  *
  * Layers are usually added to a map with {@link import("../PluggableMap.js").default#addLayer map.addLayer()}. Components
- * like {@link module:ol/interaction/Select~Select} use unmanaged layers
+ * like {@link module:ol/interaction/Draw~Draw} use unmanaged layers
  * internally. These unmanaged layers are associated with the map using
  * {@link module:ol/layer/Layer~Layer#setMap} instead.
  *
