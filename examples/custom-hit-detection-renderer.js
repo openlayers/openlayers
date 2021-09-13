@@ -19,10 +19,7 @@ const renderLabelText = (ctx, x, y, stroke) => {
   ctx.lineWidth = 1;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-
   ctx.font = `bold 30px verdana`;
-  ctx.moveTo(x, y);
-  ctx.lineTo(x, y);
   ctx.filter = 'drop-shadow(7px 7px 2px #e81)';
   ctx.fillText(labelText, x, y);
   ctx.strokeText(labelText, x, y);
@@ -61,8 +58,6 @@ circleFeature.setStyle(
       ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
       ctx.fillStyle = gradient;
       ctx.fill();
-
-      ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
       ctx.strokeStyle = 'rgba(255,0,0,1)';
       ctx.stroke();
 
@@ -107,5 +102,4 @@ map.on('pointermove', (evt) => {
     pointerOverFeature.set('label-color', labelTextStroke);
   }
   pointerOverFeature = featureOver;
-  vectorLayer.getSource().changed();
 });
