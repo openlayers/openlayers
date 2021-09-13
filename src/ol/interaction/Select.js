@@ -154,8 +154,6 @@ const originalFeatureStyles = {};
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
  * further feature filter using the `filter` option.
  *
- * Selected features are added to an internal unmanaged layer.
- *
  * @fires SelectEvent
  * @api
  */
