@@ -26,6 +26,7 @@ import {getUid} from '../util.js';
  * @property {number} [tilePixelRatio] Tile pixel ratio.
  * @property {boolean} [wrapX=true] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
+ * @property {number} [bandCount=4] Number of bands represented in the data.
  */
 
 /**
@@ -81,7 +82,7 @@ class DataTileSource extends TileSource {
     /**
      * @type {number}
      */
-    this.bandCount = 4; // assume RGBA
+    this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
   }
 
   /**
