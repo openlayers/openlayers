@@ -426,7 +426,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           const uniformName = Uniforms.TILE_TEXTURE_PREFIX + textureIndex;
           gl.activeTexture(gl[textureProperty]);
           gl.bindTexture(gl.TEXTURE_2D, tileTexture.textures[textureIndex]);
-          gl.uniform1i(this.helper.getUniformLocation(uniformName), 0);
+          gl.uniform1i(
+            this.helper.getUniformLocation(uniformName),
+            textureIndex
+          );
         }
 
         const alpha =

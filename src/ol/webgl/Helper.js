@@ -284,7 +284,7 @@ class WebGLHelper extends Disposable {
 
     gl.getExtension('OES_element_index_uint');
     gl.getExtension('OES_texture_float');
-    gl.getExtension("OES_texture_float_linear");
+    gl.getExtension('OES_texture_float_linear');
 
     this.canvas_.addEventListener(
       ContextEventType.LOST,
