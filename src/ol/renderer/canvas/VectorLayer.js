@@ -24,6 +24,7 @@ import {
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
 } from '../../extent.js';
+import {cssOpacity} from '../../css.js';
 import {
   defaultOrder as defaultRenderOrder,
   getTolerance as getRenderTolerance,
@@ -301,10 +302,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.postRender(context, frameState);
 
-    const opacity = layerState.opacity;
+    const opacity = cssOpacity(layerState.opacity);
     const container = this.container;
-    if (opacity !== parseFloat(container.style.opacity)) {
-      container.style.opacity = opacity === 1 ? '' : String(opacity);
+    if (opacity !== container.style.opacity) {
+      container.style.opacity = opacity;
     }
 
     if (this.renderedRotation_ !== viewState.rotation) {

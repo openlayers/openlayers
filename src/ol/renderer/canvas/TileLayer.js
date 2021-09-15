@@ -16,6 +16,7 @@ import {
   getIntersection,
   getTopLeft,
 } from '../../extent.js';
+import {cssOpacity} from '../../css.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
@@ -410,8 +411,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           w,
           h,
           tileGutter,
-          transition,
-          layerState.opacity
+          transition
         );
         if (clips && !inTransition) {
           context.restore();
@@ -452,6 +452,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }
+    const opacity = cssOpacity(layerState.opacity);
+    const container = this.container;
+    if (opacity !== container.style.opacity) {
+      container.style.opacity = opacity;
+    }
 
     return this.container;
   }
@@ -465,16 +470,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
-   * @param {number} opacity Opacity.
    */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition, opacity) {
+  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
     const image = this.getTileImage(tile);
     if (!image) {
       return;
     }
     const uid = getUid(this);
-    const tileAlpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-    const alpha = opacity * tileAlpha;
+    const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();
@@ -495,7 +498,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (alphaChanged) {
       this.context.restore();
     }
-    if (tileAlpha !== 1) {
+    if (alpha !== 1) {
       frameState.animate = true;
     } else if (transition) {
       tile.endTransition(uid);
