@@ -71,19 +71,17 @@ circleFeature.setStyle(
   })
 );
 
-const vectorLayer = new VectorLayer({
-  source: new VectorSource({
-    features: [circleFeature],
-  }),
-});
-
 const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM(),
       visible: true,
     }),
-    vectorLayer,
+    new VectorLayer({
+      source: new VectorSource({
+        features: [circleFeature],
+      }),
+    }),
   ],
   target: 'map',
   view: new View({
