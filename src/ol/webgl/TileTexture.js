@@ -15,6 +15,7 @@ function bindAndConfigure(gl, texture) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 }
 
 /**
@@ -61,6 +62,8 @@ function uploadDataTexture(gl, texture, data, size, bandCount) {
     }
   }
 
+  const texType = data instanceof Float32Array ? gl.FLOAT : gl.UNSIGNED_BYTE;
+
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
@@ -69,7 +72,7 @@ function uploadDataTexture(gl, texture, data, size, bandCount) {
     size[1],
     0,
     format,
-    gl.UNSIGNED_BYTE,
+    texType,
     data
   );
 }
@@ -149,8 +152,12 @@ class TileTexture extends EventTarget {
     }
 
     const data = tile.getData();
+    const isFloat = data instanceof Float32Array;
     const pixelCount = this.size[0] * this.size[1];
-    this.bandCount = data.byteLength / pixelCount;
+    // Float arrays feature four bytes per element,
+    //  BYTES_PER_ELEMENT throws a TypeScript exception but would handle
+    //  this better for more varied typed arrays.
+    this.bandCount = data.byteLength / (isFloat ? 4 : 1) / pixelCount;
     const textureCount = Math.ceil(this.bandCount / 4);
 
     if (textureCount === 1) {
@@ -160,6 +167,8 @@ class TileTexture extends EventTarget {
       return;
     }
 
+    const DataType = isFloat ? Float32Array : Uint8Array;
+
     const textureDataArrays = new Array(textureCount);
     for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
       const texture = gl.createTexture();
@@ -167,7 +176,7 @@ class TileTexture extends EventTarget {
 
       const bandCount =
         textureIndex < textureCount - 1 ? 4 : this.bandCount % 4;
-      textureDataArrays[textureIndex] = new Uint8Array(pixelCount * bandCount);
+      textureDataArrays[textureIndex] = new DataType(pixelCount * bandCount);
     }
 
     const valueCount = pixelCount * this.bandCount;
