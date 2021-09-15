@@ -38,18 +38,20 @@ const map = new Map({
   }),
 });
 
-for (const name in variables) {
+let variable;
+for (variable in variables) {
+  const name = variable;
   const element = document.getElementById(name);
   const value = variables[name];
   element.value = value.toString();
-  document.getElementById(`${name}-value`).innerText = `(${value})`;
-
-  element.addEventListener('input', function (event) {
+  document.getElementById(name + '-value').innerText = value.toFixed(2);
+  const listener = function (event) {
     const value = parseFloat(event.target.value);
-    document.getElementById(`${name}-value`).innerText = `(${value})`;
-
+    document.getElementById(name + '-value').innerText = value.toFixed(2);
     const updates = {};
     updates[name] = value;
     layer.updateStyleVariables(updates);
-  });
+  };
+  element.addEventListener('input', listener);
+  element.addEventListener('change', listener);
 }

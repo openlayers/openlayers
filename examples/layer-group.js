@@ -49,7 +49,7 @@ function bindInputs(layerid, layer) {
   visibilityInput.prop('checked', layer.getVisible());
 
   const opacityInput = $(layerid + ' input.opacity');
-  opacityInput.on('input', function () {
+  opacityInput.on('input change', function () {
     layer.setOpacity(parseFloat(this.value));
   });
   opacityInput.val(String(layer.getOpacity()));

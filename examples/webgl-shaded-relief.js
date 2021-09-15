@@ -67,10 +67,12 @@ controlIds.forEach(function (id) {
     variables[id] = Number(control.value);
   }
   updateValues();
-  control.addEventListener('input', () => {
+  const listener = function () {
     updateValues();
     shadedRelief.updateStyleVariables(variables);
-  });
+  };
+  control.addEventListener('input', listener);
+  control.addEventListener('change', listener);
 });
 
 const map = new Map({

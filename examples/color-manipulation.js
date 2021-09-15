@@ -166,10 +166,12 @@ const controlIds = ['hue', 'chroma', 'lightness'];
 controlIds.forEach(function (id) {
   const control = document.getElementById(id);
   const output = document.getElementById(id + 'Out');
-  control.addEventListener('input', function () {
+  const listener = function () {
     output.innerText = control.value;
     raster.changed();
-  });
+  };
+  control.addEventListener('input', listener);
+  control.addEventListener('change', listener);
   output.innerText = control.value;
   controls[id] = control;
 });

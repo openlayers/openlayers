@@ -67,10 +67,12 @@ const map = new Map({
 
 const control = document.getElementById('level');
 const output = document.getElementById('output');
-control.addEventListener('input', function () {
+const listener = function () {
   output.innerText = control.value;
   raster.changed();
-});
+};
+control.addEventListener('input', listener);
+control.addEventListener('change', listener);
 output.innerText = control.value;
 
 raster.on('beforeoperations', function (event) {
