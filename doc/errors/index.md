@@ -235,7 +235,7 @@ A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUF
 
 ### 63
 
-Support for the `OES_element_index_uint` WebGL extension is mandatory for WebGL layers.
+Support for the `OES_element_index_uint`, `OES_texture_float`, and `OES_texture_float_linear` WebGL extensions are mandatory for WebGL layers.
 
 ### 64
 
