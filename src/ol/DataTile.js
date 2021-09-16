@@ -5,7 +5,8 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 
 /**
- * Data that can be used with a DataTile.
+ * Data that can be used with a DataTile.  For increased browser compatibility, use
+ * Uint8Array instead of Uint8ClampedArray where possible.
  * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|DataView} Data
  */
 

@@ -31,7 +31,8 @@ const map = new Map({
           context.fillText(`y: ${y}`, half, half + lineHeight);
           context.strokeRect(0, 0, size, size);
           const data = context.getImageData(0, 0, size, size).data;
-          return Promise.resolve(data);
+          // converting to Uint8Array for increased browser compatibility
+          return Promise.resolve(new Uint8Array(data.buffer));
         },
         // disable opacity transition to avoid overlapping labels during tile loading
         transition: 0,
