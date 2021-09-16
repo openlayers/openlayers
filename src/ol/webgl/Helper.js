@@ -279,7 +279,12 @@ class WebGLHelper extends Disposable {
     this.currentProgram_ = null;
 
     assert(includes(getSupportedExtensions(), 'OES_element_index_uint'), 63);
+    assert(includes(getSupportedExtensions(), 'OES_texture_float'), 63);
+    assert(includes(getSupportedExtensions(), 'OES_texture_float_linear'), 63);
+
     gl.getExtension('OES_element_index_uint');
+    gl.getExtension('OES_texture_float');
+    gl.getExtension('OES_texture_float_linear');
 
     this.canvas_.addEventListener(
       ContextEventType.LOST,

@@ -6,7 +6,7 @@ import TileState from './TileState.js';
 
 /**
  * Data that can be used with a DataTile.
- * @typedef {Uint8Array|Uint8ClampedArray|DataView} Data
+ * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|DataView} Data
  */
 
 /**
