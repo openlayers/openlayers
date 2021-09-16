@@ -3,7 +3,6 @@ import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
 
 import DataTileSource from '../src/ol/source/DataTile.js';
-import OsmSource from '../src/ol/source/OSM.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 // 16-bit COG
@@ -45,25 +44,26 @@ const interpolateBand = (bandIdx) => [
   ['var', 'bMin'],
   0,
   ['var', 'bMax'],
-  1.0,
+  1,
 ];
 
-const createNumpyStyle = (bandMin, bandMax) => ({
-  color: [
-    'array',
-    interpolateBand(3),
-    interpolateBand(2),
-    interpolateBand(1),
-    ['band', 5],
-  ],
-  variables: {
-    'bMin': bandMin,
-    'bMax': bandMax,
-  },
-});
+const initialMin = 3000;
+const initialMax = 18000;
 
 const numpyLayer = new TileLayer({
-  style: createNumpyStyle(3000, 18000),
+  style: {
+    color: [
+      'array',
+      interpolateBand(3),
+      interpolateBand(2),
+      interpolateBand(1),
+      ['band', 5],
+    ],
+    variables: {
+      'bMin': initialMin,
+      'bMax': initialMax,
+    },
+  },
   source: new DataTileSource({
     loader: numpyTileLoader,
     bandCount: 5,
@@ -72,34 +72,35 @@ const numpyLayer = new TileLayer({
 
 const map = new Map({
   target: 'map',
-  layers: [
-    new TileLayer({
-      source: new OsmSource(),
-    }),
-    numpyLayer,
-  ],
+  layers: [numpyLayer],
   view: new View({
     center: fromLonLat([172.933, 1.3567]),
     zoom: 15,
   }),
 });
 
-const configureInputs = () => {
-  const colorFloor = document.getElementById('color-floor');
-  const colorCeil = document.getElementById('color-ceil');
+const inputMin = document.getElementById('input-min');
+const inputMax = document.getElementById('input-max');
+const outputMin = document.getElementById('output-min');
+const outputMax = document.getElementById('output-max');
 
-  colorFloor.addEventListener('input', (evt) => {
-    numpyLayer.updateStyleVariables({
-      'bMin': parseFloat(evt.target.value),
-      'bMax': parseFloat(colorCeil.value),
-    });
+inputMin.addEventListener('input', (evt) => {
+  numpyLayer.updateStyleVariables({
+    'bMin': parseFloat(evt.target.value),
+    'bMax': parseFloat(inputMax.value),
   });
+  outputMin.innerText = evt.target.value;
+});
 
-  colorCeil.addEventListener('input', (evt) => {
-    numpyLayer.updateStyleVariables({
-      'bMin': parseFloat(colorFloor.value),
-      'bMax': parseFloat(evt.target.value),
-    });
+inputMax.addEventListener('input', (evt) => {
+  numpyLayer.updateStyleVariables({
+    'bMin': parseFloat(inputMin.value),
+    'bMax': parseFloat(evt.target.value),
   });
-};
-configureInputs();
+  outputMax.innerText = evt.target.value;
+});
+
+inputMin.value = initialMin;
+inputMax.value = initialMax;
+outputMin.innerText = initialMin;
+outputMax.innerText = initialMax;
