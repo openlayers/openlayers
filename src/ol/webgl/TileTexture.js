@@ -70,7 +70,7 @@ function uploadDataTexture(gl, texture, data, size, bandCount) {
     0,
     format,
     gl.UNSIGNED_BYTE,
-    data
+    data instanceof Uint8Array ? data : new Uint8Array(data.buffer)
   );
 }
 
