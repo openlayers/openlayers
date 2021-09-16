@@ -40,7 +40,7 @@ import {includes} from '../array.js';
  */
 
 /**
- * @typedef {Object<string,string|number|Array<number|string|IiifProfile>|Object<string, number>|TileInfo>}
+ * @typedef {Object<string,string|number|Array<number|string|IiifProfile|Object<string, number>|TileInfo>>}
  *    ImageInformationResponse
  */
 
