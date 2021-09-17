@@ -8,14 +8,18 @@ import ImageTile from '../ImageTile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
 import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import {assert} from '../asserts.js';
 import {toSize} from '../size.js';
+import {validateFloat} from './Helper.js';
 
 function bindAndConfigure(gl, texture) {
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  if (validateFloat()) {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  }
 }
 
 /**
@@ -37,6 +41,11 @@ function uploadImageTexture(gl, texture, image) {
  * @param {number} bandCount The band count.
  */
 function uploadDataTexture(gl, texture, data, size, bandCount) {
+  const texType = data instanceof Float32Array ? gl.FLOAT : gl.UNSIGNED_BYTE;
+  if (texType === gl.FLOAT) {
+    assert(validateFloat(), 69);
+  }
+
   bindAndConfigure(gl, texture);
 
   let format;
@@ -61,8 +70,6 @@ function uploadDataTexture(gl, texture, data, size, bandCount) {
       throw new Error(`Unsupported number of bands: ${bandCount}`);
     }
   }
-
-  const texType = data instanceof Float32Array ? gl.FLOAT : gl.UNSIGNED_BYTE;
 
   gl.texImage2D(
     gl.TEXTURE_2D,

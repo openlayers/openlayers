@@ -278,13 +278,14 @@ class WebGLHelper extends Disposable {
      */
     this.currentProgram_ = null;
 
-    assert(includes(getSupportedExtensions(), 'OES_element_index_uint'), 63);
-    assert(includes(getSupportedExtensions(), 'OES_texture_float'), 63);
-    assert(includes(getSupportedExtensions(), 'OES_texture_float_linear'), 63);
+    assert(validateUint(), 63);
 
     gl.getExtension('OES_element_index_uint');
-    gl.getExtension('OES_texture_float');
-    gl.getExtension('OES_texture_float_linear');
+
+    if (validateFloat()) {
+      gl.getExtension('OES_texture_float');
+      gl.getExtension('OES_texture_float_linear');
+    }
 
     this.canvas_.addEventListener(
       ContextEventType.LOST,
@@ -1000,6 +1001,42 @@ function getByteSizeFromType(type) {
     default:
       return Float32Array.BYTES_PER_ELEMENT;
   }
+}
+
+/**
+ * @type {boolean}
+ */
+let validatedUint;
+
+/**
+ * Validates that gl.UNSIGNED_INT is supported.
+ * @return {boolean} True if supported
+ */
+export function validateUint() {
+  if (validatedUint === undefined) {
+    const extensions = getSupportedExtensions();
+    validatedUint = includes(extensions, 'OES_element_index_uint');
+  }
+  return validatedUint;
+}
+
+/**
+ * @type {boolean}
+ */
+let validatedFloat;
+
+/**
+ * Validates that gl.FLOAT is supported.
+ * @return {boolean} True if supported
+ */
+export function validateFloat() {
+  if (validatedFloat === undefined) {
+    const extensions = getSupportedExtensions();
+    validatedFloat =
+      includes(extensions, 'OES_texture_float') &&
+      includes(extensions, 'OES_texture_float_linear');
+  }
+  return validatedFloat;
 }
 
 export default WebGLHelper;

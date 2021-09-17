@@ -235,7 +235,7 @@ A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUF
 
 ### 63
 
-Support for the `OES_element_index_uint`, `OES_texture_float`, and `OES_texture_float_linear` WebGL extensions are mandatory for WebGL layers.
+Support for the `OES_element_index_uint` WebGL extension is mandatory for WebGL layers.
 
 ### 64
 
@@ -253,3 +253,7 @@ A layer can only be added to the map once. Use either `layer.setMap()` or `map.a
 ### 68
 
 Data from this source can only be rendered if it has a projection compatible with the view projection.
+
+### 69
+
+Data from this source requires support for the `OES_texture_float` and `OES_texture_float_linear` WebGL extensions.
