@@ -6,6 +6,7 @@ import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
 import {Projection, get as getCachedProjection} from '../proj.js';
+import {clamp} from '../math.js';
 import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
 import {getIntersection} from '../extent.js';
 import {toSize} from '../size.js';
@@ -587,7 +588,7 @@ class GeoTIFFSource extends DataTile {
     const nodataValues = this.nodataValues_;
 
     return Promise.all(requests).then(function (sourceSamples) {
-      const data = new Uint8ClampedArray(dataLength);
+      const data = new Uint8Array(dataLength);
       let dataIndex = 0;
       for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
         let transparent = addAlpha;
@@ -613,7 +614,7 @@ class GeoTIFFSource extends DataTile {
             const sourceValue =
               sourceSamples[sourceIndex][sampleIndex][pixelIndex];
 
-            const value = gain * sourceValue + bias;
+            const value = clamp(gain * sourceValue + bias, 0, 255);
             if (!addAlpha) {
               data[dataIndex] = value;
             } else {
