@@ -4,7 +4,6 @@
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
-import EventType from '../../events/EventType.js';
 import ReplayType from '../../render/canvas/BuilderType.js';
 import TileState from '../../TileState.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
@@ -38,7 +37,6 @@ import {
   renderFeature,
 } from '../vector.js';
 import {getUid} from '../../util.js';
-import {listen, unlistenByKey} from '../../events.js';
 import {toSize} from '../../size.js';
 import {wrapX} from '../../coordinate.js';
 
@@ -118,11 +116,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     this.renderTileImageQueue_ = {};
 
     /**
-     * @type {Object<string, import("../../events.js").EventsKey>}
-     */
-    this.tileListenerKeys_ = {};
-
-    /**
      * @private
      * @type {import("../../transform.js").Transform}
      */
@@ -140,13 +133,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     let render;
     const tileUid = getUid(tile);
     const state = tile.getState();
-    if (
-      (state === TileState.LOADED || state === TileState.ERROR) &&
-      tileUid in this.tileListenerKeys_
-    ) {
-      unlistenByKey(this.tileListenerKeys_[tileUid]);
-      delete this.tileListenerKeys_[tileUid];
-    }
     if (state === TileState.LOADED || state === TileState.ERROR) {
       this.updateExecutorGroup_(tile, pixelRatio, projection);
       if (this.tileImageNeedsRender_(tile)) {
@@ -173,29 +159,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const projection = viewState.projection;
     const layer = this.getLayer();
     const tile = layer.getSource().getTile(z, x, y, pixelRatio, projection);
-    if (tile.getState() < TileState.LOADED) {
+    const viewHints = frameState.viewHints;
+    const hifi = !(
+      viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
+    );
+    if (hifi || !tile.wantedResolution) {
       tile.wantedResolution = resolution;
-      const tileUid = getUid(tile);
-      if (!(tileUid in this.tileListenerKeys_)) {
-        const listenerKey = listen(
-          tile,
-          EventType.CHANGE,
-          this.prepareTile.bind(this, tile, pixelRatio, projection, true)
-        );
-        this.tileListenerKeys_[tileUid] = listenerKey;
-      }
-    } else {
-      const viewHints = frameState.viewHints;
-      const hifi = !(
-        viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
-      );
-      if (hifi || !tile.wantedResolution) {
-        tile.wantedResolution = resolution;
-      }
-      const render = this.prepareTile(tile, pixelRatio, projection, false);
-      if (render && layer.getRenderMode() !== VectorTileRenderType.VECTOR) {
-        this.renderTileImage_(tile, frameState);
-      }
+    }
+    const render = this.prepareTile(tile, pixelRatio, projection, false);
+    if (render && layer.getRenderMode() !== VectorTileRenderType.VECTOR) {
+      this.renderTileImage_(tile, frameState);
     }
     return super.getTile(z, x, y, frameState);
   }

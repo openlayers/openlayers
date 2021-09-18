@@ -299,7 +299,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function () {
       layer.changed();
       renderer.renderFrame(frameState, null);
       expect(replayState.renderedTileRevision).to.be(revision + 1);
-      expect(Object.keys(renderer.tileListenerKeys_).length).to.be(0);
     });
   });
 
