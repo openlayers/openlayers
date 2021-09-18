@@ -88,6 +88,9 @@ function loadStyles() {
               this.context = context;
               this.container = {
                 firstElementChild: canvas,
+                style: {
+                  opacity: layer.getOpacity(),
+                },
               };
               rendererTransform = transform;
             };
