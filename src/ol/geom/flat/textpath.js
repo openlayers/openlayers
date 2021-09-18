@@ -54,7 +54,8 @@ export function drawTextOnPath(
     advance();
   } while (offset < end - stride && segmentM + segmentLength < startM);
 
-  let interpolate = (startM - segmentM) / segmentLength;
+  let interpolate =
+    segmentLength === 0 ? 0 : (startM - segmentM) / segmentLength;
   const beginX = lerp(x1, x2, interpolate);
   const beginY = lerp(y1, y2, interpolate);
 
@@ -64,7 +65,7 @@ export function drawTextOnPath(
   while (offset < end - stride && segmentM + segmentLength < endM) {
     advance();
   }
-  interpolate = (endM - segmentM) / segmentLength;
+  interpolate = segmentLength === 0 ? 0 : (endM - segmentM) / segmentLength;
   const endX = lerp(x1, x2, interpolate);
   const endY = lerp(y1, y2, interpolate);
 
@@ -88,11 +89,12 @@ export function drawTextOnPath(
   x2 = flatCoordinates[offset];
   y2 = flatCoordinates[offset + 1];
 
+  let previousAngle;
   // All on the same segment
   if (singleSegment) {
     advance();
 
-    let previousAngle = Math.atan2(y2 - y1, x2 - x1);
+    previousAngle = Math.atan2(y2 - y1, x2 - x1);
     if (reverse) {
       previousAngle += previousAngle > 0 ? -PI : PI;
     }
@@ -102,7 +104,6 @@ export function drawTextOnPath(
     return result;
   }
 
-  let previousAngle;
   for (let i = 0, ii = text.length; i < ii; ) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
@@ -137,7 +138,10 @@ export function drawTextOnPath(
     const chars = reverse
       ? text.substring(ii - iStart, ii - i)
       : text.substring(iStart, i);
-    interpolate = (startM + charLength / 2 - segmentM) / segmentLength;
+    interpolate =
+      segmentLength === 0
+        ? 0
+        : (startM + charLength / 2 - segmentM) / segmentLength;
     const x = lerp(x1, x2, interpolate);
     const y = lerp(y1, y2, interpolate);
     result.push([x, y, charLength / 2, angle, chars]);
