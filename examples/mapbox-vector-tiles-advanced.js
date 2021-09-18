@@ -8,7 +8,7 @@ import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import {get as getProjection} from '../src/ol/proj.js';
 
 const key =
-  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
 // Calculation of resolutions that match zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 const resolutions = [];

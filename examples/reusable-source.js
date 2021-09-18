@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 const key =
-  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 const baseUrl = 'https://{a-c}.tiles.mapbox.com/v4';
 const urls = [
   baseUrl + '/mapbox.blue-marble-topo-jan/{z}/{x}/{y}.png?access_token=' + key,
