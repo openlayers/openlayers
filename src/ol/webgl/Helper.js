@@ -10,9 +10,7 @@ import {
   UNSIGNED_INT,
   UNSIGNED_SHORT,
   getContext,
-  getSupportedExtensions,
 } from '../webgl.js';
-import {assert} from '../asserts.js';
 import {clear} from '../obj.js';
 import {
   compose as composeTransform,
@@ -23,7 +21,6 @@ import {
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import {getUid} from '../util.js';
-import {includes} from '../array.js';
 
 /**
  * @typedef {Object} BufferCacheEntry
@@ -274,17 +271,15 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
+     * @type {Object<string, Object>}
+     */
+    this.extensionCache_ = {};
+
+    /**
+     * @private
      * @type {WebGLProgram}
      */
     this.currentProgram_ = null;
-
-    assert(includes(getSupportedExtensions(), 'OES_element_index_uint'), 63);
-    assert(includes(getSupportedExtensions(), 'OES_texture_float'), 63);
-    assert(includes(getSupportedExtensions(), 'OES_texture_float_linear'), 63);
-
-    gl.getExtension('OES_element_index_uint');
-    gl.getExtension('OES_texture_float');
-    gl.getExtension('OES_texture_float_linear');
 
     this.canvas_.addEventListener(
       ContextEventType.LOST,
@@ -371,6 +366,21 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.startTime_ = Date.now();
+  }
+
+  /**
+   * Get a WebGL extension.  If the extension is not supported, null is returned.
+   * Extensions are cached after they are enabled for the first time.
+   * @param {string} name The extension name.
+   * @return {Object} The extension or null if not supported.
+   */
+  getExtension(name) {
+    if (name in this.extensionCache_) {
+      return this.extensionCache_[name];
+    }
+    const extension = this.gl_.getExtension(name);
+    this.extensionCache_[name] = extension;
+    return extension;
   }
 
   /**
@@ -511,6 +521,8 @@ class WebGLHelper extends Disposable {
    */
   drawElements(start, end) {
     const gl = this.getGL();
+    this.getExtension('OES_element_index_uint');
+
     const elementType = gl.UNSIGNED_INT;
     const elementSize = 4;
 

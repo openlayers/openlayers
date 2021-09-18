@@ -30,13 +30,14 @@ function uploadImageTexture(gl, texture, image) {
 }
 
 /**
- * @param {WebGLRenderingContext} gl The WebGL context.
+ * @param {import("./Helper.js").default} helper The WebGL helper.
  * @param {WebGLTexture} texture The texture.
  * @param {import("../DataTile.js").Data} data The pixel data.
  * @param {import("../size.js").Size} size The pixel size.
  * @param {number} bandCount The band count.
  */
-function uploadDataTexture(gl, texture, data, size, bandCount) {
+function uploadDataTexture(helper, texture, data, size, bandCount) {
+  const gl = helper.getGL();
   bindAndConfigure(gl, texture);
 
   let format;
@@ -62,7 +63,14 @@ function uploadDataTexture(gl, texture, data, size, bandCount) {
     }
   }
 
-  const texType = data instanceof Float32Array ? gl.FLOAT : gl.UNSIGNED_BYTE;
+  let textureType;
+  if (data instanceof Float32Array) {
+    textureType = gl.FLOAT;
+    helper.getExtension('OES_texture_float');
+    helper.getExtension('OES_texture_float_linear');
+  } else {
+    textureType = gl.UNSIGNED_BYTE;
+  }
 
   gl.texImage2D(
     gl.TEXTURE_2D,
@@ -72,7 +80,7 @@ function uploadDataTexture(gl, texture, data, size, bandCount) {
     size[1],
     0,
     format,
-    texType,
+    textureType,
     data
   );
 }
@@ -140,7 +148,8 @@ class TileTexture extends EventTarget {
   }
 
   uploadTile_() {
-    const gl = this.helper_.getGL();
+    const helper = this.helper_;
+    const gl = helper.getGL();
     const tile = this.tile;
 
     if (tile instanceof ImageTile) {
@@ -163,7 +172,7 @@ class TileTexture extends EventTarget {
     if (textureCount === 1) {
       const texture = gl.createTexture();
       this.textures.push(texture);
-      uploadDataTexture(gl, texture, data, this.size, this.bandCount);
+      uploadDataTexture(helper, texture, data, this.size, this.bandCount);
       return;
     }
 
@@ -197,7 +206,7 @@ class TileTexture extends EventTarget {
         textureIndex < textureCount - 1 ? 4 : this.bandCount % 4;
       const texture = this.textures[textureIndex];
       const data = textureDataArrays[textureIndex];
-      uploadDataTexture(gl, texture, data, this.size, bandCount);
+      uploadDataTexture(helper, texture, data, this.size, bandCount);
     }
   }
 

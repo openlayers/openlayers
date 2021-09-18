@@ -233,10 +233,6 @@ Cannot determine IIIF Image API version from provided image information JSON.
 
 A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUFFER`.
 
-### 63
-
-Support for the `OES_element_index_uint`, `OES_texture_float`, and `OES_texture_float_linear` WebGL extensions are mandatory for WebGL layers.
-
 ### 64
 
 Layer opacity must be a number.
