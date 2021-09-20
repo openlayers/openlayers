@@ -102,6 +102,8 @@ For older browsers and platforms (Internet Explorer, Android 4.x, iOS v12 and ol
 * [`Number.isInteger`](https://caniuse.com/isInteger): Available from [polyfill.io](https://polyfill.io/).
 * [Pointer events](https://caniuse.com/pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
 
+[`ol/source/GeoTIFF`](https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF-GeoTIFFSource.html) requires a browser that supports [ECMAScript 6](https://262.ecma-international.org/6.0/). Additionally a polyfill for [`Promise.allSettled`](https://caniuse.com/mdn-javascript_builtins_promise_allsettled) may be needed.
+
 ## Documentation
 
 Check out the [hosted examples](https://openlayers.org/en/latest/examples/), the [workshop](https://openlayers.org/workshop/) or the [API documentation](https://openlayers.org/en/latest/apidoc/).
