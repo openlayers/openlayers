@@ -1,8 +1,7 @@
+import DataTileSource from '../src/ol/source/DataTile.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
-
-import DataTileSource from '../src/ol/source/DataTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 // 16-bit COG
@@ -17,7 +16,7 @@ function numpyTileLoader(z, x, y) {
 
   return fetch(url)
     .then((r) => r.arrayBuffer())
-    .then((buffer) => NumpyLoader.fromArrayBuffer(buffer)) // eslint-disable-line no-undef
+    .then((buffer) => NumpyLoader.fromArrayBuffer(buffer))
     .then((numpyData) => {
       // flatten the numpy data
       const dataTile = new Float32Array(256 * 256 * 5);
@@ -84,21 +83,25 @@ const inputMax = document.getElementById('input-max');
 const outputMin = document.getElementById('output-min');
 const outputMax = document.getElementById('output-max');
 
-inputMin.addEventListener('input', (evt) => {
+const handleMin = (evt) => {
   numpyLayer.updateStyleVariables({
     'bMin': parseFloat(evt.target.value),
     'bMax': parseFloat(inputMax.value),
   });
   outputMin.innerText = evt.target.value;
-});
+};
+inputMin.addEventListener('input', handleMin);
+inputMin.addEventListener('change', handleMin);
 
-inputMax.addEventListener('input', (evt) => {
+const handleMax = (evt) => {
   numpyLayer.updateStyleVariables({
     'bMin': parseFloat(inputMin.value),
     'bMax': parseFloat(evt.target.value),
   });
   outputMax.innerText = evt.target.value;
-});
+};
+inputMax.addEventListener('input', handleMax);
+inputMax.addEventListener('change', handleMax);
 
 inputMin.value = initialMin;
 inputMax.value = initialMax;
