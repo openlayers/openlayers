@@ -1,7 +1,6 @@
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
-import View from '../src/ol/View.js';
 
 const source = new GeoTIFF({
   sources: [
@@ -57,9 +56,5 @@ const map = new Map({
       source,
     }),
   ],
-  view: new View({
-    center: [1900000, 6100000],
-    zoom: 13,
-    minZoom: 10,
-  }),
+  view: source.getView(),
 });
