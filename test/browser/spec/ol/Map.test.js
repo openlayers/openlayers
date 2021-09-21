@@ -1,3 +1,4 @@
+import Collection from '../../../../src/ol/Collection.js';
 import Control from '../../../../src/ol/control/Control.js';
 import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
 import DragPan from '../../../../src/ol/interaction/DragPan.js';
@@ -176,6 +177,42 @@ describe('ol/Map', function () {
         map.addLayer(layer);
       };
       expect(call).to.throwException();
+    });
+  });
+
+  describe('#setLayers()', function () {
+    it('adds an array of layers to the map', function () {
+      const map = new Map({});
+
+      const layer0 = new TileLayer();
+      const layer1 = new TileLayer();
+      map.setLayers([layer0, layer1]);
+
+      const collection = map.getLayers();
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(layer0);
+      expect(collection.item(1)).to.be(layer1);
+    });
+
+    it('clears any existing layers', function () {
+      const map = new Map({layers: [new TileLayer()]});
+
+      map.setLayers([new TileLayer(), new TileLayer()]);
+
+      expect(map.getLayers().getLength()).to.be(2);
+    });
+
+    it('also works with collections', function () {
+      const map = new Map({});
+
+      const layer0 = new TileLayer();
+      const layer1 = new TileLayer();
+      map.setLayers(new Collection([layer0, layer1]));
+
+      const collection = map.getLayers();
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(layer0);
+      expect(collection.item(1)).to.be(layer1);
     });
   });
 
