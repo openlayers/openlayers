@@ -33,11 +33,71 @@ import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 
-describe('ol.Map', function () {
+describe('ol/Map', function () {
   describe('constructor', function () {
     it('creates a new map', function () {
       const map = new Map({});
       expect(map).to.be.a(Map);
+    });
+
+    it('accepts a promise for view options', (done) => {
+      let resolve;
+
+      const map = new Map({
+        view: new Promise((r) => {
+          resolve = r;
+        }),
+      });
+
+      expect(map.getView()).to.be.a(View);
+      expect(map.getView().isDef()).to.be(false);
+
+      map.once('change:view', () => {
+        const view = map.getView();
+        expect(view).to.be.a(View);
+        expect(view.isDef()).to.be(true);
+        expect(view.getCenter()).to.eql([1, 2]);
+        expect(view.getZoom()).to.be(3);
+        done();
+      });
+
+      resolve({
+        center: [1, 2],
+        zoom: 3,
+      });
+    });
+
+    it('allows the view to be set with a promise later after construction', (done) => {
+      const map = new Map({
+        view: new View({zoom: 1, center: [0, 0]}),
+      });
+
+      expect(map.getView()).to.be.a(View);
+      expect(map.getView().isDef()).to.be(true);
+
+      let resolve;
+      map.setView(
+        new Promise((r) => {
+          resolve = r;
+        })
+      );
+
+      expect(map.getView()).to.be.a(View);
+      expect(map.getView().isDef()).to.be(false);
+
+      map.once('change:view', () => {
+        const view = map.getView();
+        expect(view).to.be.a(View);
+        expect(view.isDef()).to.be(true);
+        expect(view.getCenter()).to.eql([1, 2]);
+        expect(view.getZoom()).to.be(3);
+        done();
+      });
+
+      resolve({
+        center: [1, 2],
+        zoom: 3,
+      });
     });
 
     it('creates a set of default interactions', function () {

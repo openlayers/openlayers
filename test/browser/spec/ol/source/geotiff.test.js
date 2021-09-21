@@ -60,6 +60,18 @@ describe('ol/source/GeoTIFF', function () {
       });
     });
 
+    it('resolves view properties', function (done) {
+      source.getView().then((viewOptions) => {
+        const projection = viewOptions.projection;
+        expect(projection.getCode()).to.be('EPSG:4326');
+        expect(projection.getUnits()).to.be('degrees');
+        expect(viewOptions.extent).to.eql([-180, -90, 180, 90]);
+        expect(viewOptions.center).to.eql([0, 0]);
+        expect(viewOptions.resolutions).to.eql([0.703125]);
+        done();
+      });
+    });
+
     it('loads tiles', function (done) {
       source.on('change', () => {
         const tile = source.getTile(0, 0, 0);

@@ -5,10 +5,15 @@ import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
-import {Projection, get as getCachedProjection} from '../proj.js';
+import {
+  Projection,
+  get as getCachedProjection,
+  toUserCoordinate,
+  toUserExtent,
+} from '../proj.js';
 import {clamp} from '../math.js';
 import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
-import {getIntersection} from '../extent.js';
+import {getCenter, getIntersection} from '../extent.js';
 import {toSize} from '../size.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
@@ -181,15 +186,18 @@ function getImagesForSource(source) {
  * @param {number|Array<number>|Array<Array<number>>} got Actual value.
  * @param {number} tolerance Accepted tolerance in fraction of expected between expected and got.
  * @param {string} message The error message.
+ * @param {function(Error):void} rejector A function to be called with any error.
  */
-function assertEqual(expected, got, tolerance, message) {
+function assertEqual(expected, got, tolerance, message, rejector) {
   if (Array.isArray(expected)) {
     const length = expected.length;
     if (!Array.isArray(got) || length != got.length) {
-      throw new Error(message);
+      const error = new Error(message);
+      rejector(error);
+      throw error;
     }
     for (let i = 0; i < length; ++i) {
-      assertEqual(expected[i], got[i], tolerance, message);
+      assertEqual(expected[i], got[i], tolerance, message, rejector);
     }
     return;
   }
@@ -433,7 +441,7 @@ class GeoTIFFSource extends DataTile {
         origin = sourceOrigin;
       } else {
         const message = `Origin mismatch for source ${sourceIndex}, got [${sourceOrigin}] but expected [${origin}]`;
-        assertEqual(origin, sourceOrigin, 0, message);
+        assertEqual(origin, sourceOrigin, 0, message, this.viewRejector);
       }
 
       if (!resolutions) {
@@ -455,7 +463,8 @@ class GeoTIFFSource extends DataTile {
           resolutions.slice(minZoom, resolutions.length),
           scaledSourceResolutions,
           0.005,
-          message
+          message,
+          this.viewRejector
         );
       }
 
@@ -466,7 +475,8 @@ class GeoTIFFSource extends DataTile {
           tileSizes.slice(minZoom, tileSizes.length),
           sourceTileSizes,
           0,
-          `Tile size mismatch for source ${sourceIndex}`
+          `Tile size mismatch for source ${sourceIndex}`,
+          this.viewRejector
         );
       }
 
@@ -545,6 +555,13 @@ class GeoTIFFSource extends DataTile {
 
     this.setLoader(this.loadTile_.bind(this));
     this.setState(State.READY);
+    this.viewResolver({
+      projection: this.projection,
+      resolutions: resolutions,
+      center: toUserCoordinate(getCenter(extent), this.projection),
+      extent: toUserExtent(extent, this.projection),
+      zoom: 0,
+    });
   }
 
   loadTile_(z, x, y) {
@@ -649,5 +666,28 @@ class GeoTIFFSource extends DataTile {
     });
   }
 }
+
+/**
+ * Get a promise for view properties based on the source.  Use the result of this function
+ * as the `view` option in a map constructor.
+ *
+ *     const source = new GeoTIFF(options);
+ *
+ *     const map = new Map({
+ *       target: 'map',
+ *       layers: [
+ *         new TileLayer({
+ *           source: source,
+ *         }),
+ *       ],
+ *       view: source.getView(),
+ *     });
+ *
+ * @function
+ * @return {Promise<import("../View.js").ViewOptions>} A promise for view-related properties.
+ * @api
+ *
+ */
+GeoTIFFSource.prototype.getView;
 
 export default GeoTIFFSource;

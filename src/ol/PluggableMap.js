@@ -137,7 +137,7 @@ import {removeNode} from './dom.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
- * @property {View} [view] The map's view.  No layer sources will be
+ * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
  */
@@ -387,6 +387,13 @@ class PluggableMap extends BaseObject {
     // setProperties will trigger the rendering of the map if the map
     // is "defined" already.
     this.setProperties(optionsInternal.values);
+
+    const map = this;
+    if (options.view && !(options.view instanceof View)) {
+      options.view.then(function (viewOptions) {
+        map.setView(new View(viewOptions));
+      });
+    }
 
     this.controls.addEventListener(
       CollectionEventType.ADD,
@@ -1496,12 +1503,24 @@ class PluggableMap extends BaseObject {
 
   /**
    * Set the view for this map.
-   * @param {View} view The view that controls this map.
+   * @param {View|Promise<import("./View.js").ViewOptions>} view The view that controls this map.
+   * It is also possible to pass a promise that resolves to options for constructing a view.  This
+   * alternative allows view properties to be resolved by sources or other components that load
+   * view-related metadata.
    * @observable
    * @api
    */
   setView(view) {
-    this.set(MapProperty.VIEW, view);
+    if (!view || view instanceof View) {
+      this.set(MapProperty.VIEW, view);
+      return;
+    }
+    this.set(MapProperty.VIEW, new View());
+
+    const map = this;
+    view.then(function (viewOptions) {
+      map.setView(new View(viewOptions));
+    });
   }
 
   /**
@@ -1600,7 +1619,7 @@ function createOptionsInternal(options) {
   values[MapProperty.TARGET] = options.target;
 
   values[MapProperty.VIEW] =
-    options.view !== undefined ? options.view : new View();
+    options.view instanceof View ? options.view : new View();
 
   let controls;
   if (options.controls !== undefined) {
