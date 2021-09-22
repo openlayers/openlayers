@@ -48,6 +48,12 @@ describe('ol.format.WMTSCapabilities', function () {
         'http://www.miramon.uab.es/wmts/Coastlines/' + 'coastlines_darkBlue.png'
       );
       expect(layer.Style[0].LegendURL[0].format).to.be.eql('image/png');
+      expect(layer.Style[0].LegendURL[0].minScaleDenominator).to.be.eql(
+        '2132.0'
+      );
+      expect(layer.Style[0].LegendURL[0].maxScaleDenominator).to.be.eql(
+        '272989.0'
+      );
 
       expect(layer.TileMatrixSetLink).to.be.an('array');
       expect(layer.TileMatrixSetLink).to.have.length(3);

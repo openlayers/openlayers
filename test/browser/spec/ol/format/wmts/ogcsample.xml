@@ -77,7 +77,11 @@ access interface to some TileMatrixSets</ows:Abstract>
 			<Style isDefault="true">
 				<ows:Title>Dark Blue</ows:Title>
 				<ows:Identifier>DarkBlue</ows:Identifier>
-				<LegendURL format="image/png" xlink:href="http://www.miramon.uab.es/wmts/Coastlines/coastlines_darkBlue.png"/>
+				<LegendURL format="image/png"
+                   xlink:href="http://www.miramon.uab.es/wmts/Coastlines/coastlines_darkBlue.png"
+                   minScaleDenominator="2132.0"
+                   maxScaleDenominator="272989.0"
+        />
 			</Style>
 			<Style>
 				<ows:Title>Thick And Red</ows:Title>

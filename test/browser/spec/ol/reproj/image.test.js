@@ -93,7 +93,7 @@ describe('ol.reproj.Image', function () {
   it('has uniform color', function (done) {
     const image = createTranslucentImage(1);
     listen(image, 'change', function () {
-      if (image.getState() == 2) {
+      if (image.getState() === 2) {
         // LOADED
         const canvas = image.getImage();
         expect(canvas.width).to.be(36);

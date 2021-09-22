@@ -328,6 +328,8 @@ function readBoundingBox(node, objectStack) {
 function readLegendUrl(node, objectStack) {
   const legend = {};
   legend['format'] = node.getAttribute('format');
+  legend['minScaleDenominator'] = node.getAttribute('minScaleDenominator');
+  legend['maxScaleDenominator'] = node.getAttribute('maxScaleDenominator');
   legend['href'] = readHref(node);
   return legend;
 }
