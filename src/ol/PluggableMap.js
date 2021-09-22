@@ -848,6 +848,23 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Clear any existing layers and add layers to the map.
+   * @param {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} layers The layers to be added to the map.
+   * @api
+   */
+  setLayers(layers) {
+    const group = this.getLayerGroup();
+    if (layers instanceof Collection) {
+      group.setLayers(layers);
+      return;
+    }
+
+    const collection = group.getLayers();
+    collection.clear();
+    collection.extend(layers);
+  }
+
+  /**
    * Get the collection of layers associated with this map.
    * @return {!Collection<import("./layer/Base.js").default>} Layers.
    * @api
