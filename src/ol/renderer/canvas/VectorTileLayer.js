@@ -31,7 +31,6 @@ import {
   getTopLeft,
   intersects,
 } from '../../extent.js';
-import {clear} from '../../obj.js';
 import {
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
@@ -111,12 +110,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {!Object<string, import("../../VectorRenderTile.js").default>}
-     */
-    this.renderTileImageQueue_ = {};
-
-    /**
-     * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
@@ -126,20 +119,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
-   * @param {boolean} queue Queue tile for rendering.
    * @return {boolean|undefined} Tile needs to be rendered.
    */
-  prepareTile(tile, pixelRatio, projection, queue) {
+  prepareTile(tile, pixelRatio, projection) {
     let render;
-    const tileUid = getUid(tile);
     const state = tile.getState();
     if (state === TileState.LOADED || state === TileState.ERROR) {
       this.updateExecutorGroup_(tile, pixelRatio, projection);
       if (this.tileImageNeedsRender_(tile)) {
         render = true;
-        if (queue) {
-          this.renderTileImageQueue_[tileUid] = tile;
-        }
       }
     }
     return render;
@@ -166,8 +154,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (hifi || !tile.wantedResolution) {
       tile.wantedResolution = resolution;
     }
-    const render = this.prepareTile(tile, pixelRatio, projection, false);
-    if (render && layer.getRenderMode() !== VectorTileRenderType.VECTOR) {
+    const render = this.prepareTile(tile, pixelRatio, projection);
+    if (
+      render &&
+      (hifi || Date.now() - frameState.time < 8) &&
+      layer.getRenderMode() !== VectorTileRenderType.VECTOR
+    ) {
       this.renderTileImage_(tile, frameState);
     }
     return super.getTile(z, x, y, frameState);
@@ -558,7 +550,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * Perform action necessary to get the layer rendered after new fonts have loaded
    */
   handleFontsChanged() {
-    clear(this.renderTileImageQueue_);
     const layer = this.getLayer();
     if (layer.getVisible() && this.renderedLayerRevision_ !== undefined) {
       layer.changed();
@@ -655,7 +646,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
-    this.renderQueuedTileImages_(hifi, frameState);
 
     super.renderFrame(frameState, target);
     this.renderedPixelToCoordinateTransform_ =
@@ -666,16 +656,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       this.getLayer()
     );
     const renderMode = layer.getRenderMode();
-
-    const source = layer.getSource();
-    // Unqueue tiles from the image queue when we don't need any more
-    const usedTiles = frameState.usedTiles[getUid(source)];
-    for (const tileUid in this.renderTileImageQueue_) {
-      if (!usedTiles || !(tileUid in usedTiles)) {
-        delete this.renderTileImageQueue_[tileUid];
-      }
-    }
-
     const context = this.context;
     const alpha = context.globalAlpha;
     context.globalAlpha = layer.getOpacity();
@@ -746,24 +726,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     context.globalAlpha = alpha;
 
     return this.container;
-  }
-
-  /**
-   * @param {boolean} hifi We have time to render a high fidelity map image.
-   * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
-   */
-  renderQueuedTileImages_(hifi, frameState) {
-    // When we don't have time to render hifi, only render tiles until we have used up
-    // half of the frame budget of 16 ms
-    for (const uid in this.renderTileImageQueue_) {
-      if (!hifi && Date.now() - frameState.time > 8) {
-        frameState.animate = true;
-        break;
-      }
-      const tile = this.renderTileImageQueue_[uid];
-      delete this.renderTileImageQueue_[uid];
-      this.renderTileImage_(tile, frameState);
-    }
   }
 
   /**
