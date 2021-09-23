@@ -53,7 +53,11 @@ async function build(input, {minify = true} = {}) {
     },
   });
 
-  const bundle = await rollup.rollup({input, plugins});
+  const bundle = await rollup.rollup({
+    input,
+    plugins,
+    inlineDynamicImports: true,
+  });
   const {output} = await bundle.generate({format: 'es'});
 
   if (output.length !== 1) {
