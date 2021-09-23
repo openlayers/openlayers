@@ -72,6 +72,9 @@ module.exports = function (karma) {
       devtool: 'inline-source-map',
       mode: 'development',
       resolve: {
+        alias: {
+          ol: path.resolve(__dirname, '../../src/ol/'),
+        },
         fallback: {
           fs: false,
           http: false,
