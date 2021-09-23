@@ -256,10 +256,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       (!replayGroup || replayGroup.isEmpty()) &&
       (!declutterExecutorGroup || declutterExecutorGroup.isEmpty())
     ) {
-      if (!this.containerReused && canvas.width > 0) {
-        canvas.width = 0;
-      }
-      return this.container;
+      return null;
     }
 
     // resize and clear
