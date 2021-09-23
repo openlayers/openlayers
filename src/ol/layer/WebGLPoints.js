@@ -113,14 +113,6 @@ class WebGLPointsLayer extends Layer {
       attributes: this.parseResult_.attributes,
     });
   }
-
-  /**
-   * Clean up.
-   */
-  disposeInternal() {
-    this.getRenderer().disposeInternal();
-    super.disposeInternal();
-  }
 }
 
 export default WebGLPointsLayer;
