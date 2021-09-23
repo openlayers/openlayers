@@ -417,6 +417,19 @@ Operators['var'] = {
   },
 };
 
+Operators['func'] = {
+  getReturnType: function (args) {
+    return ValueTypes.ANY;
+  },
+  toGlsl: function (context, args) {
+    const fnName = args[0].toString();
+    const parsedArgs = args.slice(1).map(function (val) {
+      return expressionToGlsl(context, val, ValueTypes.ANY);
+    });
+    return `${fnName}(${parsedArgs.join(', ')})`;
+  },
+};
+
 Operators['band'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;

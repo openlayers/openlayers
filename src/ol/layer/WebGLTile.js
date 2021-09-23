@@ -19,6 +19,7 @@ import {assign} from '../obj.js';
  * Translates tile data to rendered pixels.
  *
  * @property {Object<string, number>} [variables] Style variables.  Each variable must hold a number.  These
+ * @property {Array<string>} [functions] GLSL function text. These are functions that can be added to the fragment shader.
  * variables can be used in the `color`, `brightness`, `contrast`, `exposure`, `saturation` and `gamma`
  * {@link import("../style/expressions.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
  * To update style variables, use the {@link import("./WebGLTile.js").default#updateStyleVariables} method.
@@ -169,6 +170,8 @@ function parseStyle(style, bandCount) {
     );
   }
 
+  const functionDeclarations = style.functions || [];
+
   /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
@@ -223,6 +226,8 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.ZOOM};
 
     ${uniformDeclarations.join('\n')}
+
+    ${functionDeclarations.join('\n')}
 
     void main() {
       ${colorAssignments.join('\n')}
