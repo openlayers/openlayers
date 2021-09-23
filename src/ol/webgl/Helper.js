@@ -442,6 +442,13 @@ class WebGLHelper extends Disposable {
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_
     );
+
+    const extension = this.gl_.getExtension('WEBGL_lose_context');
+    if (extension) {
+      extension.loseContext();
+    }
+    delete this.gl_;
+    delete this.canvas_;
   }
 
   /**

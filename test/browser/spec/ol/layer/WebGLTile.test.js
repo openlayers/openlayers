@@ -50,6 +50,15 @@ describe('ol/layer/WebGLTile', function () {
     document.body.removeChild(target);
   });
 
+  describe('dispose()', () => {
+    it('calls dispose on the renderer', () => {
+      const renderer = layer.getRenderer();
+      const spy = sinon.spy(renderer, 'dispose');
+      layer.dispose();
+      expect(spy.called).to.be(true);
+    });
+  });
+
   it('creates fragment and vertex shaders', function () {
     const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
     layer.createRenderer();

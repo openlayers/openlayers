@@ -348,6 +348,11 @@ class Layer extends BaseLayer {
    * Clean up.
    */
   disposeInternal() {
+    if (this.renderer_) {
+      this.renderer_.dispose();
+      delete this.renderer_;
+    }
+
     this.setSource(null);
     super.disposeInternal();
   }

@@ -77,6 +77,8 @@ class WebGLLayerRenderer extends LayerRenderer {
    */
   disposeInternal() {
     this.helper.dispose();
+    delete this.helper;
+
     super.disposeInternal();
   }
 
