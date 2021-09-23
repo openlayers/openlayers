@@ -181,6 +181,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.indices_ = indices;
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
+
+    /**
+     * @type {import("../../structs/LRUCache.js").default<import("../../webgl/TileTexture.js").default>}
+     * @private
+     */
     this.tileTextureCache_ = new LRUCache(cacheSize);
 
     this.renderedOpacity_ = NaN;
@@ -532,6 +537,29 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
     return covered;
+  }
+
+  /**
+   * Clean up.
+   */
+  disposeInternal() {
+    const helper = this.helper;
+    const gl = helper.getGL();
+
+    helper.deleteBuffer(this.indices_);
+    delete this.indices_;
+
+    gl.deleteProgram(this.program_);
+    delete this.program_;
+
+    const tileTextureCache = this.tileTextureCache_;
+    tileTextureCache.forEach(function (tileTexture) {
+      tileTexture.dispose();
+    });
+    tileTextureCache.clear();
+    delete this.tileTextureCache_;
+
+    super.disposeInternal();
   }
 }
 
