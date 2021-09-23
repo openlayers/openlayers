@@ -45,7 +45,7 @@
     "url": "https://opencollective.com/openlayers"
   },
   "dependencies": {
-    "geotiff": "^1.0.5",
+    "geotiff": "1.0.6",
     "ol-mapbox-style": "^6.5.0",
     "pbf": "3.2.1",
     "rbush": "^3.0.1"
@@ -104,6 +104,7 @@
     "shx": "^0.3.2",
     "sinon": "^11.1.1",
     "terser-webpack-plugin": "^5.1.1",
+    "threads": "^1.6.5",
     "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
