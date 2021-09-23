@@ -12,7 +12,7 @@ import ViewHint from '../../../../src/ol/ViewHint.js';
 import {clearUserProjection, useGeographic} from '../../../../src/ol/proj.js';
 import {createEmpty} from '../../../../src/ol/extent.js';
 
-describe('ol.View', function () {
+describe('ol/View', function () {
   describe('constructor (defaults)', function () {
     let view;
 
@@ -688,13 +688,15 @@ describe('ol.View', function () {
         },
         function (complete) {
           expect(complete).to.be(true);
+          expect(isNaN(view.nextResolution_)).to.be(true);
           expect(view.getCenter()).to.eql([0, 0]);
           expect(view.getZoom()).to.eql(4);
-          expect(view.getAnimating()).to.eql(false);
+          expect(view.getAnimating()).to.be(false);
           done();
         }
       );
       expect(view.getAnimating()).to.eql(true);
+      expect(isNaN(view.nextResolution_)).to.be(false);
     });
 
     it('allows duration to be zero', function (done) {

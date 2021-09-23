@@ -82,13 +82,12 @@ function addTileTextureToLookup(tileTexturesByZ, tileTexture, z) {
 }
 
 /**
- *
  * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
- * @return {import("../../extent.js").Extent} Extent.
+ * @param {import("../../extent.js").Extent} extent The frame extent.
+ * @return {import("../../extent.js").Extent} Frame extent intersected with layer extents.
  */
-function getRenderExtent(frameState) {
+function getRenderExtent(frameState, extent) {
   const layerState = frameState.layerStatesArray[frameState.layerIndex];
-  let extent = frameState.extent;
   if (layerState.extent) {
     extent = getIntersection(
       extent,
@@ -213,7 +212,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
-    if (isEmpty(getRenderExtent(frameState))) {
+    if (isEmpty(getRenderExtent(frameState, frameState.extent))) {
       return false;
     }
     const source = this.getLayer().getSource();
@@ -223,30 +222,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     return source.getState() === State.READY;
   }
 
-  /**
-   * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @return {HTMLElement} The rendered element.
-   */
-  renderFrame(frameState) {
-    this.preRender(frameState);
-
+  enqueueTiles(frameState, extent, z, tileTexturesByZ) {
     const viewState = frameState.viewState;
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    const extent = getRenderExtent(frameState);
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
-    const z = tileGrid.getZForResolution(
-      viewState.resolution,
-      tileSource.zDirection
-    );
-
-    /**
-     * @type {Object<string, Array<import("../../webgl/TileTexture.js").default>>}
-     */
-    const tileTexturesByZ = {};
-
     const tileTextureCache = this.tileTextureCache_;
     const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
@@ -304,6 +284,42 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         }
       }
     }
+  }
+
+  /**
+   * Render the layer.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {HTMLElement} The rendered element.
+   */
+  renderFrame(frameState) {
+    this.preRender(frameState);
+
+    const viewState = frameState.viewState;
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    const extent = getRenderExtent(frameState, frameState.extent);
+    const tileLayer = this.getLayer();
+    const tileSource = tileLayer.getSource();
+    const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
+    const z = tileGrid.getZForResolution(
+      viewState.resolution,
+      tileSource.zDirection
+    );
+
+    /**
+     * @type {Object<string, Array<import("../../webgl/TileTexture.js").default>>}
+     */
+    const tileTexturesByZ = {};
+
+    if (frameState.nextExtent) {
+      const targetZ = tileGrid.getZForResolution(
+        viewState.nextResolution,
+        tileSource.zDirection
+      );
+      const nextExtent = getRenderExtent(frameState, frameState.nextExtent);
+      this.enqueueTiles(frameState, nextExtent, targetZ, tileTexturesByZ);
+    }
+
+    this.enqueueTiles(frameState, extent, z, tileTexturesByZ);
 
     /**
      * A lookup of alpha values for tiles at the target rendering resolution
@@ -474,6 +490,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       this.renderedOpacity_ = opacity;
     }
 
+    const tileTextureCache = this.tileTextureCache_;
     while (tileTextureCache.canExpireCache()) {
       const tileTexture = tileTextureCache.pop();
       tileTexture.dispose();

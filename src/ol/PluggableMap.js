@@ -48,6 +48,7 @@ import {removeNode} from './dom.js';
  * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
  * @property {import("rbush").default} declutterTree DeclutterTree.
  * @property {null|import("./extent.js").Extent} extent Extent.
+ * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
  * @property {number} layerIndex LayerIndex.
@@ -1436,6 +1437,18 @@ class PluggableMap extends BaseObject {
         viewHints: viewHints,
         wantedTiles: {},
       };
+      if (viewState.nextCenter && viewState.nextResolution) {
+        const rotation = isNaN(viewState.nextRotation)
+          ? viewState.rotation
+          : viewState.nextRotation;
+
+        frameState.nextExtent = getForViewAndSize(
+          viewState.nextCenter,
+          viewState.nextResolution,
+          rotation,
+          size
+        );
+      }
     }
 
     this.frameState_ = frameState;
