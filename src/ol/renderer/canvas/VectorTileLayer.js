@@ -31,7 +31,6 @@ import {
   getTopLeft,
   intersects,
 } from '../../extent.js';
-import {clear} from '../../obj.js';
 import {
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
@@ -156,7 +155,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       tile.wantedResolution = resolution;
     }
     const render = this.prepareTile(tile, pixelRatio, projection);
-    if (render && layer.getRenderMode() !== VectorTileRenderType.VECTOR) {
+    if (
+      render &&
+      (hifi || Date.now() - frameState.time < 8) &&
+      layer.getRenderMode() !== VectorTileRenderType.VECTOR
+    ) {
       this.renderTileImage_(tile, frameState);
     }
     return super.getTile(z, x, y, frameState);
