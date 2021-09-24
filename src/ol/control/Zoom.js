@@ -14,7 +14,7 @@ import {easeOut} from '../easing.js';
  * @property {string} [zoomOutClassName=className + '-out'] CSS class name for the zoom-out button.
  * @property {string|HTMLElement} [zoomInLabel='+'] Text label to use for the zoom-in
  * button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|HTMLElement} [zoomOutLabel='-'] Text label to use for the zoom-out button.
+ * @property {string|HTMLElement} [zoomOutLabel='–'] Text label to use for the zoom-out button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [zoomInTipLabel='Zoom in'] Text label to use for the button tip.
  * @property {string} [zoomOutTipLabel='Zoom out'] Text label to use for the button tip.
@@ -61,7 +61,7 @@ class Zoom extends Control {
     const zoomInLabel =
       options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
     const zoomOutLabel =
-      options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
+      options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2013';
 
     const zoomInTipLabel =
       options.zoomInTipLabel !== undefined ? options.zoomInTipLabel : 'Zoom in';
