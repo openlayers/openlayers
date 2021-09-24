@@ -9,7 +9,24 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const elevation = new TileLayer({
+// band math operates on normalized values from 0-1
+// so we scale by 255 to align with the elevation formula
+// from https://cloud.maptiler.com/tiles/terrain-rgb/
+const elevation = [
+  '+',
+  -10000,
+  [
+    '*',
+    0.1 * 255,
+    [
+      '+',
+      ['*', 256 * 256, ['band', 1]],
+      ['+', ['*', 256, ['band', 2]], ['band', 3]],
+    ],
+  ],
+];
+
+const layer = new TileLayer({
   opacity: 0.6,
   source: new XYZ({
     url:
@@ -23,28 +40,10 @@ const elevation = new TileLayer({
       level: 0,
     },
     color: [
-      'interpolate',
-      ['linear'],
-      // band math operates on normalized values from 0-1
-      // so we scale by 255 to align with the elevation formula
-      // from https://cloud.maptiler.com/tiles/terrain-rgb/
-      [
-        '+',
-        -10000,
-        [
-          '*',
-          0.1 * 255,
-          [
-            '+',
-            ['*', 256 * 256, ['band', 1]],
-            ['+', ['*', 256, ['band', 2]], ['band', 3]],
-          ],
-        ],
-      ],
-      // use the `level` style variable as a stop in the color ramp
-      ['var', 'level'],
+      'case',
+      // use the `level` style variable to determine the color
+      ['<=', elevation, ['var', 'level']],
       [139, 212, 255, 1],
-      ['+', 0.01, ['var', 'level']],
       [139, 212, 255, 0],
     ],
   },
@@ -61,7 +60,7 @@ const map = new Map({
         tileSize: 512,
       }),
     }),
-    elevation,
+    layer,
   ],
   view: new View({
     center: fromLonLat([-122.3267, 37.8377]),
@@ -73,7 +72,7 @@ const control = document.getElementById('level');
 const output = document.getElementById('output');
 const listener = function () {
   output.innerText = control.value;
-  elevation.updateStyleVariables({level: parseFloat(control.value)});
+  layer.updateStyleVariables({level: parseFloat(control.value)});
 };
 control.addEventListener('input', listener);
 control.addEventListener('change', listener);
