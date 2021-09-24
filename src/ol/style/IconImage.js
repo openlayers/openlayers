@@ -219,7 +219,11 @@ class IconImage extends EventTarget {
    * @private
    */
   replaceColor_(pixelRatio) {
-    if (!this.color_ || this.canvas_[pixelRatio]) {
+    if (
+      !this.color_ ||
+      this.canvas_[pixelRatio] ||
+      this.imageState_ !== ImageState.LOADED
+    ) {
       return;
     }
 
