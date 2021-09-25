@@ -133,6 +133,7 @@
   color: white;
   font-weight: bold;
   text-decoration: none;
+  font-size: inherit;
   text-align: center;
   height: 1.375em;
   width: 1.375em;
