@@ -120,6 +120,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             ),
           })
         );
+      let emptyImage = true;
       const image = new ImageCanvas(
         renderedExtent,
         viewResolution,
@@ -131,8 +132,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.replayGroupChanged
           ) {
             vectorRenderer.clipping = false;
-            vectorRenderer.renderFrame(imageFrameState, null);
-            vectorRenderer.renderDeclutter(imageFrameState);
+            if (vectorRenderer.renderFrame(imageFrameState, null)) {
+              vectorRenderer.renderDeclutter(imageFrameState);
+              emptyImage = false;
+            }
             callback();
           }
         }
@@ -141,24 +144,25 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       image.addEventListener(
         EventType.CHANGE,
         function () {
-          if (image.getState() === ImageState.LOADED) {
-            this.image_ = image;
-            const imageResolution = image.getResolution();
-            const imagePixelRatio = image.getPixelRatio();
-            const renderedResolution =
-              (imageResolution * pixelRatio) / imagePixelRatio;
-            this.renderedResolution = renderedResolution;
-            this.coordinateToVectorPixelTransform_ = compose(
-              this.coordinateToVectorPixelTransform_,
-              width / 2,
-              height / 2,
-              1 / renderedResolution,
-              -1 / renderedResolution,
-              0,
-              -viewState.center[0],
-              -viewState.center[1]
-            );
+          if (image.getState() !== ImageState.LOADED) {
+            return;
           }
+          this.image_ = emptyImage ? null : image;
+          const imageResolution = image.getResolution();
+          const imagePixelRatio = image.getPixelRatio();
+          const renderedResolution =
+            (imageResolution * pixelRatio) / imagePixelRatio;
+          this.renderedResolution = renderedResolution;
+          this.coordinateToVectorPixelTransform_ = compose(
+            this.coordinateToVectorPixelTransform_,
+            width / 2,
+            height / 2,
+            1 / renderedResolution,
+            -1 / renderedResolution,
+            0,
+            -viewState.center[0],
+            -viewState.center[1]
+          );
         }.bind(this)
       );
       image.load();
