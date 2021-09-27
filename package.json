@@ -92,7 +92,7 @@
     "karma-webpack": "^5.0.0",
     "loglevelnext": "^5.0.5",
     "marked": "3.0.4",
-    "mocha": "9.1.1",
+    "mocha": "9.1.2",
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
     "proj4": "^2.7.5",
