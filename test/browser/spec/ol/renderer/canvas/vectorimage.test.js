@@ -1,4 +1,7 @@
 import CanvasVectorImageLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorImageLayer.js';
+import Feature from '../../../../../../src/ol/Feature.js';
+import ImageCanvas from '../../../../../../src/ol/ImageCanvas.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
 import VectorImageLayer from '../../../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import {create} from '../../../../../../src/ol/transform.js';
@@ -19,12 +22,19 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
   });
 
   describe('#prepareFrame', function () {
-    it('sets correct extent with imageRatio = 2', function () {
-      const layer = new VectorImageLayer({
+    /** @type {VectorImageLayer} */
+    let layer;
+    /** @type {CanvasVectorImageLayerRenderer} */
+    let renderer;
+    let frameState;
+    this.beforeEach(function () {
+      layer = new VectorImageLayer({
         imageRatio: 2,
-        source: new VectorSource(),
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
       });
-      const renderer = new CanvasVectorImageLayerRenderer(layer);
+      renderer = new CanvasVectorImageLayerRenderer(layer);
       const projection = getProjection('EPSG:3857');
       const projExtent = projection.getExtent();
       const extent = [
@@ -33,7 +43,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
         projExtent[0] + 10000,
         10000,
       ];
-      const frameState = {
+      frameState = {
         layerStatesArray: [layer.getLayerState()],
         layerIndex: 0,
         extent: extent,
@@ -46,12 +56,22 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
           rotation: 0,
         },
       };
+    });
+    it('sets image to null if no features are rendered', function () {
       renderer.prepareFrame(frameState);
-      const expected = renderer.image_.getExtent();
+      expect(renderer.image_).to.be.a(ImageCanvas);
 
+      layer.getSource().clear();
+      renderer.prepareFrame(frameState);
+      expect(renderer.image_).to.be(null);
+    });
+    it('sets correct extent with imageRatio = 2', function () {
+      const extent = frameState.extent.slice();
       scaleFromCenter(extent, 2);
 
-      expect(expected).to.eql(extent);
+      renderer.prepareFrame(frameState);
+      const imageExtent = renderer.image_.getExtent();
+      expect(imageExtent).to.eql(extent);
     });
   });
 });
