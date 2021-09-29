@@ -15,8 +15,9 @@ class VectorContext {
    * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {Function} renderer Renderer.
+   * @param {Function} hitDetectionRenderer Renderer.
    */
-  drawCustom(geometry, feature, renderer) {}
+  drawCustom(geometry, feature, renderer, hitDetectionRenderer) {}
 
   /**
    * Render a geometry.
