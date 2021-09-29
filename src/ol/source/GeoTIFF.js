@@ -273,6 +273,10 @@ function getMaxForDataType(array) {
  * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
  * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
  * convert other color spaces (YCbCr, CMYK) to RGB.
+ * @property {boolean} [normalize=true] By default, the source data is normalized to values between
+ * 0 and 1 with scaling factors based on the `min` and `max` properties of each source.  If instead
+ * you want to work with the raw values in a style expression, set this to `false`.  Setting this option
+ * to `false` will make it so any `min` and `max` properties on sources are ignored.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
@@ -327,6 +331,12 @@ class GeoTIFFSource extends DataTile {
      * @private
      */
     this.nodataValues_;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.normalize_ = options.normalize !== false;
 
     /**
      * @type {boolean}
@@ -603,25 +613,37 @@ class GeoTIFFSource extends DataTile {
     const pixelCount = size[0] * size[1];
     const dataLength = pixelCount * bandCount;
     const nodataValues = this.nodataValues_;
+    const normalize = this.normalize_;
 
     return Promise.all(requests).then(function (sourceSamples) {
-      const data = new Uint8Array(dataLength);
+      /** @type {Uint8Array|Float32Array} */
+      let data;
+      if (normalize) {
+        data = new Uint8Array(dataLength);
+      } else {
+        data = new Float32Array(dataLength);
+      }
+
       let dataIndex = 0;
       for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
         let transparent = addAlpha;
         for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
           const source = sourceInfo[sourceIndex];
-          let min = source.min;
-          if (min === undefined) {
-            min = getMinForDataType(sourceSamples[sourceIndex][0]);
-          }
-          let max = source.max;
-          if (max === undefined) {
-            max = getMaxForDataType(sourceSamples[sourceIndex][0]);
-          }
 
-          const gain = 255 / (max - min);
-          const bias = -min * gain;
+          let min = source.min;
+          let max = source.max;
+          let gain, bias;
+          if (normalize) {
+            if (min === undefined) {
+              min = getMinForDataType(sourceSamples[sourceIndex][0]);
+            }
+            if (max === undefined) {
+              max = getMaxForDataType(sourceSamples[sourceIndex][0]);
+            }
+
+            gain = 255 / (max - min);
+            bias = -min * gain;
+          }
 
           for (
             let sampleIndex = 0;
@@ -631,7 +653,13 @@ class GeoTIFFSource extends DataTile {
             const sourceValue =
               sourceSamples[sourceIndex][sampleIndex][pixelIndex];
 
-            const value = clamp(gain * sourceValue + bias, 0, 255);
+            let value;
+            if (normalize) {
+              value = clamp(gain * sourceValue + bias, 0, 255);
+            } else {
+              value = sourceValue;
+            }
+
             if (!addAlpha) {
               data[dataIndex] = value;
             } else {

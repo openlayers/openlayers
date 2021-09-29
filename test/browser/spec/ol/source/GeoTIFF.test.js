@@ -14,6 +14,7 @@ describe('ol/source/GeoTIFF', function () {
       });
       expect(source.readMethod_).to.be('readRasters');
     });
+
     it('configures readMethod_ to read RGB', function () {
       const source = new GeoTIFFSource({
         convertToRGB: true,
@@ -24,6 +25,37 @@ describe('ol/source/GeoTIFF', function () {
         ],
       });
       expect(source.readMethod_).to.be('readRGB');
+    });
+
+    it('generates Float32Array data if normalize is set to false', (done) => {
+      const source = new GeoTIFFSource({
+        normalize: false,
+        sources: [{url: 'spec/ol/source/images/0-0-0.tif'}],
+      });
+      source.on('change', () => {
+        const tile = source.getTile(0, 0, 0);
+        source.on('tileloadend', () => {
+          expect(tile.getState()).to.be(TileState.LOADED);
+          expect(tile.getData()).to.be.a(Float32Array);
+          done();
+        });
+        tile.load();
+      });
+    });
+
+    it('generates Uint8Array data if normalize is not set to false', (done) => {
+      const source = new GeoTIFFSource({
+        sources: [{url: 'spec/ol/source/images/0-0-0.tif'}],
+      });
+      source.on('change', () => {
+        const tile = source.getTile(0, 0, 0);
+        source.on('tileloadend', () => {
+          expect(tile.getState()).to.be(TileState.LOADED);
+          expect(tile.getData()).to.be.a(Uint8Array);
+          done();
+        });
+        tile.load();
+      });
     });
   });
 
