@@ -56,7 +56,12 @@ const mbLayer = new Layer({
     }
     mbMap._render();
 
-    return canvas;
+    const div = document.createElement("div");
+    div.className = "ol-layer"
+    div.style = "position: absolute; width: 100%; height: 100%;"
+    div.appendChild(canvas);
+
+    return div;
   },
   source: new Source({
     attributions: [
