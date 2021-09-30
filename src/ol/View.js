@@ -639,9 +639,39 @@ class View extends BaseObject {
       return;
     }
     let start = Date.now();
-    let center = this.targetCenter_.slice();
-    let resolution = this.targetResolution_;
-    let rotation = this.targetRotation_;
+    let targetCenter, targetResolution, targetRotation;
+    const animations = this.animations_;
+    foundTarget: for (let i = animations.length - 1; i >= 0; --i) {
+      const series = animations[i];
+      for (let j = series.length - 1; j >= 0; --j) {
+        const animation = series[j];
+        if (!targetCenter && animation.targetCenter) {
+          targetCenter = animation.targetCenter.slice();
+        }
+        if (!targetResolution && animation.targetResolution) {
+          targetResolution = animation.targetResolution;
+        }
+        if (
+          targetRotation === undefined &&
+          animation.targetRotation !== undefined
+        ) {
+          targetRotation = animation.targetRotation;
+        }
+        if (targetCenter && targetResolution && targetRotation !== undefined) {
+          break foundTarget;
+        }
+      }
+    }
+    if (!targetCenter) {
+      targetCenter = this.targetCenter_.slice();
+    }
+    if (!targetResolution) {
+      targetResolution = this.targetResolution_;
+    }
+    if (targetRotation === undefined) {
+      targetRotation = this.targetRotation_;
+    }
+
     const series = [];
     for (let i = 0; i < animationCount; ++i) {
       const options = /** @type {AnimationOptions} */ (arguments[i]);
@@ -656,27 +686,28 @@ class View extends BaseObject {
       };
 
       if (options.center) {
-        animation.sourceCenter = center;
+        animation.sourceCenter = targetCenter;
         animation.targetCenter = options.center.slice();
-        center = animation.targetCenter;
+        targetCenter = animation.targetCenter;
       }
 
       if (options.zoom !== undefined) {
-        animation.sourceResolution = resolution;
+        animation.sourceResolution = targetResolution;
         animation.targetResolution = this.getResolutionForZoom(options.zoom);
-        resolution = animation.targetResolution;
+        targetResolution = animation.targetResolution;
       } else if (options.resolution) {
-        animation.sourceResolution = resolution;
+        animation.sourceResolution = targetResolution;
         animation.targetResolution = options.resolution;
-        resolution = animation.targetResolution;
+        targetResolution = animation.targetResolution;
       }
 
       if (options.rotation !== undefined) {
-        animation.sourceRotation = rotation;
+        animation.sourceRotation = targetRotation;
         const delta =
-          modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
-        animation.targetRotation = rotation + delta;
-        rotation = animation.targetRotation;
+          modulo(options.rotation - targetRotation + Math.PI, 2 * Math.PI) -
+          Math.PI;
+        animation.targetRotation = targetRotation + delta;
+        targetRotation = animation.targetRotation;
       }
 
       // check if animation is a no-op
@@ -688,7 +719,7 @@ class View extends BaseObject {
       }
       series.push(animation);
     }
-    this.animations_.push(series);
+    animations.push(series);
     this.setHint(ViewHint.ANIMATING, 1);
     this.updateAnimations_();
   }
