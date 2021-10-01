@@ -200,7 +200,9 @@ function concatenateArcs(indices, arcs) {
       // reverse arc
       arc = arcs[~index].slice().reverse();
     }
-    coordinates.push.apply(coordinates, arc);
+    for (p of arc) {
+      coordinates.push(p);
+    }
   }
   // provide fresh copies of coordinate arrays
   for (let j = 0, jj = coordinates.length; j < jj; ++j) {
