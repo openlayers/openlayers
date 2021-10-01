@@ -582,6 +582,7 @@ class GeoTIFFSource extends DataTile {
     const addAlpha = this.addAlpha_;
     const bandCount = this.bandCount;
     const samplesPerPixel = this.samplesPerPixel_;
+    const nodataValues = this.nodataValues_;
     const sourceInfo = this.sourceInfo_;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       const source = sourceInfo[sourceIndex];
@@ -599,12 +600,27 @@ class GeoTIFFSource extends DataTile {
           return bandNumber - 1;
         });
       }
+
+      /** @type {number|Array<number>} */
+      let fillValue;
+      if (!isNaN(source.nodata)) {
+        fillValue = source.nodata;
+      } else {
+        if (!samples) {
+          fillValue = nodataValues[sourceIndex];
+        } else {
+          fillValue = samples.map(function (sampleIndex) {
+            return nodataValues[sourceIndex][sampleIndex];
+          });
+        }
+      }
+
       requests[sourceIndex] = image[this.readMethod_]({
         window: pixelBounds,
         width: size[0],
         height: size[1],
         samples: samples,
-        fillValue: source.nodata,
+        fillValue: fillValue,
         pool: getWorkerPool(),
         interleave: false,
       });
@@ -612,7 +628,6 @@ class GeoTIFFSource extends DataTile {
 
     const pixelCount = size[0] * size[1];
     const dataLength = pixelCount * bandCount;
-    const nodataValues = this.nodataValues_;
     const normalize = this.normalize_;
 
     return Promise.all(requests).then(function (sourceSamples) {
