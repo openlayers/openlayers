@@ -30,6 +30,8 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * @property {VectorSourceType} [source] Source.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
+ * @property {boolean} [preserveDrawingBuffer] The preserveDrawingBuffer WebGL context attributes.
+ * Must be `true` if you want to access pixel data after rendering.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -79,6 +81,7 @@ class WebGLPointsLayer extends Layer {
   constructor(options) {
     const baseOptions = assign({}, options);
 
+    delete baseOptions.preserveDrawingBuffer;
     super(baseOptions);
 
     /**
@@ -92,6 +95,12 @@ class WebGLPointsLayer extends Layer {
      * @type {boolean}
      */
     this.hitDetectionDisabled_ = !!options.disableHitDetection;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.preserveDrawingBuffer_ = options.preserveDrawingBuffer;
   }
 
   /**
@@ -111,6 +120,9 @@ class WebGLPointsLayer extends Layer {
         this.parseResult_.builder.getSymbolFragmentShader(true),
       uniforms: this.parseResult_.uniforms,
       attributes: this.parseResult_.attributes,
+      contextAttributes: {
+        preserveDrawingBuffer: this.preserveDrawingBuffer_,
+      },
     });
   }
 }

@@ -65,6 +65,9 @@ import {assign} from '../obj.js';
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
  * two zoom levels worth of tiles.
+ * @property {boolean} [preserveDrawingBuffer] The preserveDrawingBuffer WebGL context attributes.
+ * Must be `true` if you want to access pixel data after rendering.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -274,6 +277,9 @@ class WebGLTileLayer extends BaseTileLayer {
     const cacheSize = options.cacheSize;
     delete options.cacheSize;
 
+    const preserveDrawingBuffer = options.preserveDrawingBuffer;
+    delete options.preserveDrawingBuffer;
+
     super(options);
 
     /**
@@ -287,6 +293,12 @@ class WebGLTileLayer extends BaseTileLayer {
      * @private
      */
     this.cacheSize_ = cacheSize;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.preserveDrawingBuffer_ = preserveDrawingBuffer;
   }
 
   /**
@@ -309,6 +321,9 @@ class WebGLTileLayer extends BaseTileLayer {
       uniforms: parsedStyle.uniforms,
       className: this.getClassName(),
       cacheSize: this.cacheSize_,
+      contextAttributes: {
+        preserveDrawingBuffer: this.preserveDrawingBuffer_,
+      },
     });
   }
 

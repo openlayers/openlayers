@@ -34,6 +34,8 @@ import {createCanvasContext2D} from '../dom.js';
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
  * @property {import("../source/Vector.js").default} [source] Source.
+ * @property {boolean} [preserveDrawingBuffer] The preserveDrawingBuffer WebGL context attributes.
+ * Must be `true` if you want to access pixel data after rendering.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -77,6 +79,7 @@ class Heatmap extends VectorLayer {
     delete baseOptions.radius;
     delete baseOptions.blur;
     delete baseOptions.weight;
+    delete baseOptions.preserveDrawingBuffer;
     super(baseOptions);
 
     /**
@@ -84,6 +87,12 @@ class Heatmap extends VectorLayer {
      * @type {HTMLCanvasElement}
      */
     this.gradient_ = null;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.preserveDrawingBuffer_ = options.preserveDrawingBuffer;
 
     this.addChangeListener(Property.GRADIENT, this.handleGradientChanged_);
 
@@ -305,6 +314,9 @@ class Heatmap extends VectorLayer {
           },
         },
       ],
+      contextAttributes: {
+        preserveDrawingBuffer: this.preserveDrawingBuffer_,
+      },
     });
   }
 
