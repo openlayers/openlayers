@@ -97,6 +97,7 @@ export const AttributeType = {
  * @property {Object<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Object} [contextAttributes] WebGL context attributes.
  */
 
 /**
@@ -260,7 +261,7 @@ class WebGLHelper extends Disposable {
      * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = getContext(this.canvas_);
+    this.gl_ = getContext(this.canvas_, options.contextAttributes);
     const gl = this.getGL();
 
     /**

@@ -105,6 +105,7 @@ function getRenderExtent(frameState, extent) {
  * made available to shaders.
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {number} [cacheSize=512] The texture cache size.
+ * @property {Object} [contextAttributes] WebGL context attributes.
  */
 
 /**
@@ -121,6 +122,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     super(tileLayer, {
       uniforms: options.uniforms,
       className: options.className,
+      contextAttributes: options.contextAttributes,
     });
 
     /**
