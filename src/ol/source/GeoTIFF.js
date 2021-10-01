@@ -25,8 +25,10 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
  * the configured min and max.
  * @property {number} [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.
- * @property {number} [nodata] Values to discard. When provided, an additional band (alpha) will be added
- * to the data.
+ * @property {number} [nodata] Values to discard (overriding any nodata values in the metadata).
+ * When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
+ * will include information about nodata values, so you should only need to set this property if
+ * you find that it is not already extracted from the metadata.
  * @property {Array<number>} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
  * be read. For example, if a GeoTIFF has blue (1), green (2), red (3), and near-infrared (4) bands, and you only need the
  * near-infrared band, configure `bands: [4]`.
@@ -582,6 +584,7 @@ class GeoTIFFSource extends DataTile {
     const addAlpha = this.addAlpha_;
     const bandCount = this.bandCount;
     const samplesPerPixel = this.samplesPerPixel_;
+    const nodataValues = this.nodataValues_;
     const sourceInfo = this.sourceInfo_;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       const source = sourceInfo[sourceIndex];
@@ -599,12 +602,27 @@ class GeoTIFFSource extends DataTile {
           return bandNumber - 1;
         });
       }
+
+      /** @type {number|Array<number>} */
+      let fillValue;
+      if (!isNaN(source.nodata)) {
+        fillValue = source.nodata;
+      } else {
+        if (!samples) {
+          fillValue = nodataValues[sourceIndex];
+        } else {
+          fillValue = samples.map(function (sampleIndex) {
+            return nodataValues[sourceIndex][sampleIndex];
+          });
+        }
+      }
+
       requests[sourceIndex] = image[this.readMethod_]({
         window: pixelBounds,
         width: size[0],
         height: size[1],
         samples: samples,
-        fillValue: source.nodata,
+        fillValue: fillValue,
         pool: getWorkerPool(),
         interleave: false,
       });
@@ -612,7 +630,6 @@ class GeoTIFFSource extends DataTile {
 
     const pixelCount = size[0] * size[1];
     const dataLength = pixelCount * bandCount;
-    const nodataValues = this.nodataValues_;
     const normalize = this.normalize_;
 
     return Promise.all(requests).then(function (sourceSamples) {
