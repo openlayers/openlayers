@@ -25,8 +25,10 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
  * the configured min and max.
  * @property {number} [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.
- * @property {number} [nodata] Values to discard. When provided, an additional band (alpha) will be added
- * to the data.
+ * @property {number} [nodata] Values to discard (overriding any nodata values in the metadata).
+ * When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
+ * will include information about nodata values, so you should only need to set this property if
+ * you find that it is not already extracted from the metadata.
  * @property {Array<number>} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
  * be read. For example, if a GeoTIFF has blue (1), green (2), red (3), and near-infrared (4) bands, and you only need the
  * near-infrared band, configure `bands: [4]`.
