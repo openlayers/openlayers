@@ -47,6 +47,18 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
  */
 
 /**
+ * @typedef {Object} GeoTIFF
+ * @property {function():Promise<number>} getImageCount Get the number of internal subfile images.
+ * @property {function(number):Promise<GeoTIFFImage>} getImage Get the image at the specified index.
+ */
+
+/**
+ * @typedef {Object} MultiGeoTIFF
+ * @property {function():Promise<number>} getImageCount Get the number of internal subfile images.
+ * @property {function(number):Promise<GeoTIFFImage>} getImage Get the image at the specified index.
+ */
+
+/**
  * @typedef {Object} GeoTIFFImage
  * @property {Object} fileDirectory The file directory.
  * @property {GeoKeys} geoKeys The parsed geo-keys.
@@ -56,6 +68,12 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
  * @property {function():Array<number>} getBoundingBox Get the image bounding box.
  * @property {function():Array<number>} getOrigin Get the image origin.
  * @property {function(GeoTIFFImage):Array<number>} getResolution Get the image resolution.
+ * @property {function():number} getWidth Get the pixel width of the image.
+ * @property {function():number} getHeight Get the pixel height of the image.
+ * @property {function():number} getTileWidth Get the pixel width of image tiles.
+ * @property {function():number} getTileHeight Get the pixel height of image tiles.
+ * @property {function():number|null} getGDALNoData Get the nodata value (or null if none).
+ * @property {function():number} getSamplesPerPixel Get the number of samples per pixel.
  */
 
 let workerPool;
@@ -156,8 +174,8 @@ function getProjection(image) {
 }
 
 /**
- * @param {import("geotiff/src/geotiff.js").GeoTIFF|import("geotiff/src/geotiff.js").MultiGeoTIFF} tiff A GeoTIFF.
- * @return {Promise<Array<import("geotiff/src/geotiffimage.js").GeoTIFFImage>>} Resolves to a list of images.
+ * @param {GeoTIFF|MultiGeoTIFF} tiff A GeoTIFF.
+ * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
 function getImagesForTIFF(tiff) {
   return tiff.getImageCount().then(function (count) {
@@ -171,7 +189,7 @@ function getImagesForTIFF(tiff) {
 
 /**
  * @param {SourceInfo} source The GeoTIFF source.
- * @return {Promise<Array<import("geotiff/src/geotiffimage.js").GeoTIFFImage>>} Resolves to a list of images.
+ * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
 function getImagesForSource(source) {
   let request;
@@ -311,7 +329,7 @@ class GeoTIFFSource extends DataTile {
     const numSources = this.sourceInfo_.length;
 
     /**
-     * @type {Array<Array<import("geotiff/src/geotiffimage.js").GeoTIFFImage>>}
+     * @type {Array<Array<GeoTIFFImage>>}
      * @private
      */
     this.sourceImagery_ = new Array(numSources);
@@ -394,7 +412,7 @@ class GeoTIFFSource extends DataTile {
   /**
    * Configure the tile grid based on images within the source GeoTIFFs.  Each GeoTIFF
    * must have the same internal tiled structure.
-   * @param {Array<Array<import("geotiff/src/geotiffimage.js").GeoTIFFImage>>} sources Each source is a list of images
+   * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
    * from a single GeoTIFF.
    * @private
    */
