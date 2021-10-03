@@ -734,46 +734,82 @@ describe('ol/View', function () {
       expect(view.getAnimating()).to.eql(false);
     });
 
-    it('immediately completes if view is not defined before', function () {
-      const view = new View();
-      const center = [1, 2];
-      const zoom = 3;
-      const rotation = 0.4;
+    describe('Set final animation state if view is not defined.', function () {
+      it('immediately completes if view is not defined before', function () {
+        const view = new View();
+        const center = [1, 2];
+        const zoom = 3;
+        const rotation = 0.4;
 
-      view.animate({
-        zoom: zoom,
-        center: center,
-        rotation: rotation,
-        duration: 25,
-      });
-      expect(view.getAnimating()).to.eql(false);
-      expect(view.getCenter()).to.eql(center);
-      expect(view.getZoom()).to.eql(zoom);
-      expect(view.getRotation()).to.eql(rotation);
-    });
-
-    it('sets final animation state if view is not defined before', function () {
-      const view = new View();
-
-      const center = [1, 2];
-      const zoom = 3;
-      const rotation = 0.4;
-
-      view.animate(
-        {zoom: 1},
-        {center: [2, 3]},
-        {rotation: 4},
-        {
+        view.animate({
           zoom: zoom,
           center: center,
           rotation: rotation,
           duration: 25,
-        }
-      );
-      expect(view.getAnimating()).to.eql(false);
-      expect(view.getCenter()).to.eql(center);
-      expect(view.getZoom()).to.eql(zoom);
-      expect(view.getRotation()).to.eql(rotation);
+        });
+        expect(view.getAnimating()).to.eql(false);
+        expect(view.getCenter()).to.eql(center);
+        expect(view.getZoom()).to.eql(zoom);
+        expect(view.getRotation()).to.eql(rotation);
+      });
+
+      it('prefers zoom over resolution', function () {
+        const view = new View();
+        const zoom = 1;
+        view.animate({
+          center: [0, 0],
+          zoom: zoom,
+          resolution: 1,
+        });
+        expect(view.getZoom()).to.eql(zoom);
+      });
+
+      it('uses all animation steps to get final state', function () {
+        const view = new View();
+
+        const center = [1, 2];
+        const resolution = 3;
+        const rotation = 0.4;
+
+        view.animate(
+          {center: [2, 3]},
+          {
+            center: center,
+            rotation: 4,
+          },
+          {
+            rotation: rotation,
+          },
+          {resolution: resolution}
+        );
+        expect(view.getAnimating()).to.be(false);
+        expect(view.getCenter()).to.eql(center);
+        expect(view.getResolution()).to.be(resolution);
+        expect(view.getRotation()).to.be(rotation);
+      });
+
+      it('animates remaining steps after it becomes defined', function () {
+        const view = new View();
+
+        const center = [1, 2];
+        const resolution = 3;
+
+        view.animate(
+          {center: [2, 3]},
+          {
+            resolution: resolution,
+            center: center,
+          },
+          {
+            rotation: 2,
+            duration: 25,
+          }
+        );
+        expect(view.getAnimating()).to.be(true);
+        expect(view.getCenter()).to.eql(center);
+        expect(view.getResolution()).to.be(resolution);
+        expect(view.getRotation()).to.be(0);
+      });
     });
 
     it('prefers zoom over resolution', function (done) {

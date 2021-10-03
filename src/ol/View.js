@@ -621,29 +621,36 @@ class View extends BaseObject {
       callback = arguments[animationCount - 1];
       --animationCount;
     }
-    if (!this.isDef()) {
+
+    let i = 0;
+    for (; i < animationCount && !this.isDef(); ++i) {
       // if view properties are not yet set, shortcut to the final state
-      const state = arguments[animationCount - 1];
+      const state = arguments[i];
       if (state.center) {
         this.setCenterInternal(state.center);
       }
       if (state.zoom !== undefined) {
         this.setZoom(state.zoom);
+      } else if (state.resolution) {
+        this.setResolution(state.resolution);
       }
       if (state.rotation !== undefined) {
         this.setRotation(state.rotation);
       }
+    }
+    if (i === animationCount) {
       if (callback) {
         animationCallback(callback, true);
       }
       return;
     }
+
     let start = Date.now();
     let center = this.targetCenter_.slice();
     let resolution = this.targetResolution_;
     let rotation = this.targetRotation_;
     const series = [];
-    for (let i = 0; i < animationCount; ++i) {
+    for (; i < animationCount; ++i) {
       const options = /** @type {AnimationOptions} */ (arguments[i]);
 
       const animation = {
