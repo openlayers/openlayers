@@ -97,7 +97,7 @@ export const AttributeType = {
  * @property {Object<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
- * @property {Object} [contextAttributes] WebGL context attributes.
+ * @property {WebGLContextAttributes} [contextAttributes] WebGL context attributes.
  */
 
 /**

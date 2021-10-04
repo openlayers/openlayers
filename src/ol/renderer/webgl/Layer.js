@@ -40,7 +40,7 @@ export const WebGLWorkerMessageType = {
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
- * @property {Object} [contextAttributes] WebGL context attributes.
+ * @property {WebGLContextAttributes} [contextAttributes] WebGL context attributes.
  */
 
 /**
