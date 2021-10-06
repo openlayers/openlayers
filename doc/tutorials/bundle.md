@@ -15,6 +15,8 @@ Create a new empty directory for your project and navigate to it by running `mkd
 
     npx create-ol-app
 
+*You will need to have `git` installed for the above command to work.  If you receive an error, make that [Git is installed](https://github.com/git-guides/install-git) on your system.*
+
 This will install the `ol` package, set up a development environment with additional dependencies, and give you an `index.html` and `main.js` starting point for your application.  By default, [Parcel](https://parceljs.org) will be used as a module loader and bundler.  See the [`create-ol-app`](https://github.com/openlayers/create-ol-app) documentation for details on using another bundler.
 
 To start the development server
