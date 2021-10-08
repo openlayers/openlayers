@@ -2,6 +2,7 @@
  * @module ol/style/Text
  */
 import Fill from './Fill.js';
+import Stroke from './Stroke.js';
 import TextPlacement from './TextPlacement.js';
 import {toSize} from '../size.js';
 
@@ -33,11 +34,11 @@ const DEFAULT_FILL_COLOR = '#333';
  * placement where `maxAngle` is not exceeded.
  * @property {string} [textBaseline='middle'] Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'.
- * @property {import("./Fill.js").default} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
- * @property {import("./Stroke.js").default} [stroke] Stroke style.
- * @property {import("./Fill.js").default} [backgroundFill] Fill style for the text background when `placement` is
+ * @property {import("./Fill.js").default|import("./Fill.js").Options} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
+ * @property {import("./Stroke.js").default|import("./Stroke.js").Options} [stroke] Stroke style.
+ * @property {import("./Fill.js").default|import("./Fill.js").Options} [backgroundFill] Fill style for the text background when `placement` is
  * `'point'`. Default is no fill.
- * @property {import("./Stroke.js").default} [backgroundStroke] Stroke style for the text background  when `placement`
+ * @property {import("./Stroke.js").default|import("./Stroke.js").Options} [backgroundStroke] Stroke style for the text background  when `placement`
  * is `'point'`. Default is no stroke.
  * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
@@ -103,14 +104,24 @@ class Text {
      */
     this.textBaseline_ = options.textBaseline;
 
+    /** @type {import("./Fill.js").default} */
+    let fill = null;
+
+    if (options.fill) {
+      if (options.fill instanceof Fill) {
+        fill = options.fill;
+      } else {
+        fill = new Fill(options.fill);
+      }
+    } else {
+      fill = new Fill({color: DEFAULT_FILL_COLOR});
+    }
+
     /**
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.fill_ =
-      options.fill !== undefined
-        ? options.fill
-        : new Fill({color: DEFAULT_FILL_COLOR});
+    this.fill_ = fill;
 
     /**
      * @private
@@ -132,11 +143,22 @@ class Text {
      */
     this.overflow_ = !!options.overflow;
 
+    /** @type {import("./Stroke.js").default} */
+    let stroke = null;
+
+    if (options.stroke) {
+      if (options.stroke instanceof Stroke) {
+        stroke = options.stroke;
+      } else {
+        stroke = new Stroke(options.stroke);
+      }
+    }
+
     /**
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+    this.stroke_ = stroke;
 
     /**
      * @private
@@ -150,21 +172,39 @@ class Text {
      */
     this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 
+    /** @type {import("./Fill.js").default} */
+    let backgroundFill = null;
+
+    if (options.backgroundFill) {
+      if (options.backgroundFill instanceof Fill) {
+        backgroundFill = options.backgroundFill;
+      } else {
+        backgroundFill = new Fill(options.backgroundFill);
+      }
+    }
+
     /**
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.backgroundFill_ = options.backgroundFill
-      ? options.backgroundFill
-      : null;
+    this.backgroundFill_ = backgroundFill;
+
+    /** @type {import("./Stroke.js").default} */
+    let backgroundStroke = null;
+
+    if (options.backgroundStroke) {
+      if (options.backgroundStroke instanceof Stroke) {
+        backgroundStroke = options.backgroundStroke;
+      } else {
+        backgroundStroke = new Stroke(options.backgroundStroke);
+      }
+    }
 
     /**
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.backgroundStroke_ = options.backgroundStroke
-      ? options.backgroundStroke
-      : null;
+    this.backgroundStroke_ = backgroundStroke;
 
     /**
      * @private

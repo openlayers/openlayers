@@ -6,9 +6,9 @@ import RegularShape from './RegularShape.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Fill.js").default} [fill] Fill style.
- * @property {number} radius Circle radius.
- * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {import("./Fill.js").default|import("./Fill.js").Options} [fill] Fill style.
+ * @property {number} [radius=5] Circle radius.
+ * @property {import("./Stroke.js").default|import("./Stroke.js").Options} [stroke] Stroke style.
  * @property {Array<number>} [displacement=[0,0]] displacement
  * @property {number|import("../size.js").Size} [scale=1] Scale. A two dimensional scale will produce an ellipse.
  * Unless two dimensional scaling is required a better result may be obtained with an appropriate setting for `radius`.
@@ -28,12 +28,13 @@ class CircleStyle extends RegularShape {
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
+    /** @type {Options} */
     const options = opt_options ? opt_options : {};
 
     super({
       points: Infinity,
       fill: options.fill,
-      radius: options.radius,
+      radius: options.radius !== undefined ? options.radius : 5,
       stroke: options.stroke,
       scale: options.scale !== undefined ? options.scale : 1,
       rotation: options.rotation !== undefined ? options.rotation : 0,

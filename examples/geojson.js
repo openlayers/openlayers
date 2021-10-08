@@ -3,78 +3,65 @@ import Feature from '../src/ol/Feature.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-
-const image = new CircleStyle({
-  radius: 5,
-  fill: null,
-  stroke: new Stroke({color: 'red', width: 1}),
-});
+import {style} from '../src/ol/style.js';
 
 const styles = {
-  'Point': new Style({
-    image: image,
+  Point: style({
+    circle: {radius: 10, stroke: {color: 'red', width: 1}},
   }),
-  'LineString': new Style({
-    stroke: new Stroke({
+  LineString: style({
+    stroke: {
       color: 'green',
-      width: 1,
-    }),
+    },
   }),
-  'MultiLineString': new Style({
-    stroke: new Stroke({
+  MultiLineString: style({
+    stroke: {
       color: 'green',
-      width: 1,
-    }),
+    },
   }),
-  'MultiPoint': new Style({
-    image: image,
-  }),
-  'MultiPolygon': new Style({
-    stroke: new Stroke({
+  MultiPolygon: style({
+    stroke: {
       color: 'yellow',
-      width: 1,
-    }),
-    fill: new Fill({
+    },
+    fill: {
       color: 'rgba(255, 255, 0, 0.1)',
-    }),
+    },
   }),
-  'Polygon': new Style({
-    stroke: new Stroke({
+  Polygon: style({
+    stroke: {
       color: 'blue',
       lineDash: [4],
       width: 3,
-    }),
-    fill: new Fill({
+    },
+    fill: {
       color: 'rgba(0, 0, 255, 0.1)',
-    }),
+    },
   }),
-  'GeometryCollection': new Style({
-    stroke: new Stroke({
+  GeometryCollection: style({
+    stroke: {
       color: 'magenta',
       width: 2,
-    }),
-    fill: new Fill({
+    },
+    fill: {
       color: 'magenta',
-    }),
-    image: new CircleStyle({
-      radius: 10,
-      fill: null,
-      stroke: new Stroke({
+    },
+    circle: {
+      radius: 15,
+      stroke: {
         color: 'magenta',
-      }),
-    }),
+      },
+    },
   }),
-  'Circle': new Style({
-    stroke: new Stroke({
+  Circle: style({
+    stroke: {
       color: 'red',
       width: 2,
-    }),
-    fill: new Fill({
+    },
+    fill: {
       color: 'rgba(255,0,0,0.2)',
-    }),
+    },
   }),
 };
 
@@ -83,46 +70,40 @@ const styleFunction = function (feature) {
 };
 
 const geojsonObject = {
-  'type': 'FeatureCollection',
-  'crs': {
-    'type': 'name',
-    'properties': {
-      'name': 'EPSG:3857',
-    },
-  },
-  'features': [
+  type: 'FeatureCollection',
+  features: [
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'Point',
-        'coordinates': [0, 0],
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [0, 0],
       },
     },
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'LineString',
-        'coordinates': [
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
           [4e6, -2e6],
           [8e6, 2e6],
         ],
       },
     },
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'LineString',
-        'coordinates': [
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
           [4e6, 2e6],
           [8e6, -2e6],
         ],
       },
     },
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'Polygon',
-        'coordinates': [
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
           [
             [-5e6, -1e6],
             [-3e6, -1e6],
@@ -133,10 +114,10 @@ const geojsonObject = {
       },
     },
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'MultiLineString',
-        'coordinates': [
+      type: 'Feature',
+      geometry: {
+        type: 'MultiLineString',
+        coordinates: [
           [
             [-1e6, -7.5e5],
             [-1e6, 7.5e5],
@@ -157,10 +138,10 @@ const geojsonObject = {
       },
     },
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'MultiPolygon',
-        'coordinates': [
+      type: 'Feature',
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates: [
           [
             [
               [-5e6, 6e6],
@@ -192,24 +173,24 @@ const geojsonObject = {
       },
     },
     {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'GeometryCollection',
-        'geometries': [
+      type: 'Feature',
+      geometry: {
+        type: 'GeometryCollection',
+        geometries: [
           {
-            'type': 'LineString',
-            'coordinates': [
+            type: 'LineString',
+            coordinates: [
               [-5e6, -5e6],
               [0, -5e6],
             ],
           },
           {
-            'type': 'Point',
-            'coordinates': [4e6, -5e6],
+            type: 'Point',
+            coordinates: [4e6, -5e6],
           },
           {
-            'type': 'Polygon',
-            'coordinates': [
+            type: 'Polygon',
+            coordinates: [
               [
                 [1e6, -6e6],
                 [3e6, -6e6],

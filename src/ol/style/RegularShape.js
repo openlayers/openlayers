@@ -2,8 +2,10 @@
  * @module ol/style/RegularShape
  */
 
+import Fill from './Fill.js';
 import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
+import Stroke from './Stroke.js';
 import {asArray} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -18,7 +20,7 @@ import {
 /**
  * Specify radius for regular polygons, or radius1 and radius2 for stars.
  * @typedef {Object} Options
- * @property {import("./Fill.js").default} [fill] Fill style.
+ * @property {import("./Fill.js").default|import("./Fill.js").Options} [fill] Fill style.
  * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
  * @property {number} [radius] Radius of a regular polygon.
@@ -26,7 +28,7 @@ import {
  * @property {number} [radius2] Second radius of a star.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
  * @property {Array<number>} [displacement=[0,0]] Displacement of the shape
- * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {import("./Stroke.js").default|import("./Stroke.js").Options} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
@@ -83,11 +85,22 @@ class RegularShape extends ImageStyle {
      */
     this.hitDetectionCanvas_ = null;
 
+    /** @type {import("./Fill.js").default} */
+    let fill = null;
+
+    if (options.fill) {
+      if (options.fill instanceof Fill) {
+        fill = options.fill;
+      } else {
+        fill = new Fill(options.fill);
+      }
+    }
+
     /**
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.fill_ = options.fill !== undefined ? options.fill : null;
+    this.fill_ = fill;
 
     /**
      * @private
@@ -120,11 +133,22 @@ class RegularShape extends ImageStyle {
      */
     this.angle_ = options.angle !== undefined ? options.angle : 0;
 
+    /** @type {import("./Stroke.js").default} */
+    let stroke = null;
+
+    if (options.stroke) {
+      if (options.stroke instanceof Stroke) {
+        stroke = options.stroke;
+      } else {
+        stroke = new Stroke(options.stroke);
+      }
+    }
+
     /**
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+    this.stroke_ = stroke;
 
     /**
      * @private

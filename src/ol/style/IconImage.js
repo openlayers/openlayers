@@ -37,11 +37,13 @@ class IconImage extends EventTarget {
      * @private
      * @type {HTMLImageElement|HTMLCanvasElement}
      */
-    this.image_ = !image ? new Image() : image;
+    this.image_ = image;
 
-    if (crossOrigin !== null) {
-      /** @type {HTMLImageElement} */ (this.image_).crossOrigin = crossOrigin;
-    }
+    /**
+     * @private
+     * @type {string|null}
+     */
+    this.crossOrigin_ = crossOrigin;
 
     /**
      * @private
@@ -199,19 +201,28 @@ class IconImage extends EventTarget {
    * Load not yet loaded URI.
    */
   load() {
-    if (this.imageState_ == ImageState.IDLE) {
-      this.imageState_ = ImageState.LOADING;
-      try {
-        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
-      } catch (e) {
-        this.handleImageError_();
-      }
-      this.unlisten_ = listenImage(
-        this.image_,
-        this.handleImageLoad_.bind(this),
-        this.handleImageError_.bind(this)
-      );
+    if (this.imageState_ !== ImageState.IDLE) {
+      return;
     }
+
+    if (!this.image_) {
+      this.image_ = new Image();
+      if (this.crossOrigin_ !== null) {
+        this.image_.crossOrigin = this.crossOrigin_;
+      }
+    }
+
+    this.imageState_ = ImageState.LOADING;
+    try {
+      /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
+    } catch (e) {
+      this.handleImageError_();
+    }
+    this.unlisten_ = listenImage(
+      this.image_,
+      this.handleImageLoad_.bind(this),
+      this.handleImageError_.bind(this)
+    );
   }
 
   /**
