@@ -52,7 +52,6 @@ const FullScreenEventType = {
  * when full-screen is active.
  * @property {string} [inactiveClassName=className + '-false'] CSS class name for the button
  * when full-screen is inactive.
- * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
  * @property {boolean} [keys=false] Full keyboard access.
  * @property {HTMLElement|string} [target] Specify a target if you want the
