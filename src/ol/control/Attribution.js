@@ -20,7 +20,7 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {boolean} [collapsed=true] Specify if attributions should
  * be collapsed at startup.
  * @property {string} [tipLabel='Attributions'] Text label to use for the button tip.
- * @property {string} [label='i'] Text label to use for the
+ * @property {string|HTMLElement} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [expandClassName=className + '-expand'] CSS class name for the
