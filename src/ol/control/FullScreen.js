@@ -46,8 +46,9 @@ const FullScreenEventType = {
  * @property {string} [className='ol-full-screen'] CSS class name.
  * @property {string|Text|HTMLElement} [label='\u2922'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Text} [labelActive='\u00d7'] Text label to use for the
+ * @property {string|Text|HTMLElement} [labelActive='\u00d7'] Text label to use for the
  * button when full-screen is active.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [activeClassName=className + '-true'] CSS class name for the button
  * when full-screen is active.
  * @property {string} [inactiveClassName=className + '-false'] CSS class name for the button
@@ -142,7 +143,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {Text}
+     * @type {Text|HTMLElement}
      */
     this.labelActiveNode_ =
       typeof labelActive === 'string'
