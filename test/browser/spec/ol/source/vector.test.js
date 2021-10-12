@@ -1,20 +1,20 @@
 import Collection from '../../../../../src/ol/Collection.js';
+import { listen } from '../../../../../src/ol/events.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
-import Map from '../../../../../src/ol/Map.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
-import {bbox as bboxStrategy} from '../../../../../src/ol/loadingstrategy.js';
+import { bbox as bboxStrategy } from '../../../../../src/ol/loadingstrategy.js';
+import Map from '../../../../../src/ol/Map.js';
 import {
   fromLonLat,
   get as getProjection,
-  transformExtent,
+  transformExtent
 } from '../../../../../src/ol/proj.js';
-import {getUid} from '../../../../../src/ol/util.js';
-import {listen} from '../../../../../src/ol/events.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
+import { getUid } from '../../../../../src/ol/util.js';
+import View from '../../../../../src/ol/View.js';
 
 describe('ol.source.Vector', function () {
   let pointFeature;
@@ -710,6 +710,23 @@ describe('ol.source.Vector', function () {
           setTimeout(function () {
             expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
             source.removeLoadedExtent(bbox);
+            expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+            done();
+          }, 0);
+        });
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          getProjection('EPSG:3857')
+        );
+      });
+
+      it('removes all extents with #clearLoadedExtents()', function (done) {
+        const source = new VectorSource();
+        source.setLoader(function (bbox, resolution, projection) {
+          setTimeout(function () {
+            expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
+            source.clearLoadedExtents();
             expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
             done();
           }, 0);
