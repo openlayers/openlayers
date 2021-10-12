@@ -2,24 +2,24 @@
  * @module ol/source/Vector
  */
 
-import { extend } from '../array.js';
-import { assert } from '../asserts.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import { listen, unlistenByKey } from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import { containsExtent, equals } from '../extent.js';
-import { xhr } from '../featureloader.js';
-import { TRUE, VOID } from '../functions.js';
-import { all as allStrategy } from '../loadingstrategy.js';
-import { getValues, isEmpty } from '../obj.js';
 import ObjectEventType from '../ObjectEventType.js';
 import RBush from '../structs/RBush.js';
-import { getUid } from '../util.js';
 import Source from './Source.js';
 import SourceState from './State.js';
 import VectorEventType from './VectorEventType.js';
+import {TRUE, VOID} from '../functions.js';
+import {all as allStrategy} from '../loadingstrategy.js';
+import {assert} from '../asserts.js';
+import {containsExtent, equals} from '../extent.js';
+import {extend} from '../array.js';
+import {getUid} from '../util.js';
+import {getValues, isEmpty} from '../obj.js';
+import {listen, unlistenByKey} from '../events.js';
+import {xhr} from '../featureloader.js';
 
 /**
  * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and

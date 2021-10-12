@@ -1,20 +1,20 @@
 import Collection from '../../../../../src/ol/Collection.js';
-import { listen } from '../../../../../src/ol/events.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
+import Map from '../../../../../src/ol/Map.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import { bbox as bboxStrategy } from '../../../../../src/ol/loadingstrategy.js';
-import Map from '../../../../../src/ol/Map.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
+import View from '../../../../../src/ol/View.js';
+import {bbox as bboxStrategy} from '../../../../../src/ol/loadingstrategy.js';
 import {
   fromLonLat,
   get as getProjection,
-  transformExtent
+  transformExtent,
 } from '../../../../../src/ol/proj.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
-import { getUid } from '../../../../../src/ol/util.js';
-import View from '../../../../../src/ol/View.js';
+import {getUid} from '../../../../../src/ol/util.js';
+import {listen} from '../../../../../src/ol/events.js';
 
 describe('ol.source.Vector', function () {
   let pointFeature;
