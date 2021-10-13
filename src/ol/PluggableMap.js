@@ -1239,6 +1239,11 @@ class PluggableMap extends BaseObject {
         this.handleResize_ = this.updateSize.bind(this);
         window.addEventListener(EventType.RESIZE, this.handleResize_, false);
       }
+	  
+	  if (this.getViewport().getRootNode().defaultView != window ){
+		window.removeEventListener(EventType.RESIZE, this.handleResize_);  	    
+	    this.getViewport().getRootNode().defaultView.addEventListener(EventType.RESIZE, this.handleResize_, false);	
+	  }
     }
 
     this.updateSize();
