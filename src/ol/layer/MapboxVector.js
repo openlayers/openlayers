@@ -380,7 +380,7 @@ class MapboxVectorLayer extends VectorTileLayer {
 
     const source = this.getSource();
     if (
-      styleSource.url.startsWith('mapbox://') ||
+      styleSource.url.indexOf('mapbox://') === 0 ||
       styleSource.url.indexOf('{z}') !== -1
     ) {
       // Tile source url, handle it directly
