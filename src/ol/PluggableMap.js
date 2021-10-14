@@ -1240,9 +1240,20 @@ class PluggableMap extends BaseObject {
         window.addEventListener(EventType.RESIZE, this.handleResize_, false);
       }
       
+      if (this.externView && this.externView != window){
+        this.externView.removeEventListener(EventType.RESIZE, this.handleResize_);
+      }
+
       if (this.getViewport().getRootNode().defaultView != window ){
+      this.externView =  this.getViewport().getRootNode().defaultView; 
         window.removeEventListener(EventType.RESIZE, this.handleResize_);
-        this.getViewport().getRootNode().defaultView.addEventListener(EventType.RESIZE, this.handleResize_, false);
+        this.getViewport()
+          .getRootNode().
+           defaultView.addEventListener(
+             EventType.RESIZE,
+             this.handleResize_,
+             false
+        );
       }
     }
 
