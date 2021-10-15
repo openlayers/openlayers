@@ -13,6 +13,10 @@
     </style>
   </head>
   <body>
+     <script type="text/javascript">
+     if ((window.performance.navigation && window.performance.navigation.type === 1) || window.performance.getEntriesByType('navigation').map((nav) => nav.type).includes('reload'))
+         window.close();
+    </script>
     <div id="map" class="map" tabindex="0"></div>
   </body>
 </html>
