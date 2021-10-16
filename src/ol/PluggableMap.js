@@ -1244,16 +1244,10 @@ class PluggableMap extends BaseObject {
         this.externView.removeEventListener(EventType.RESIZE, this.handleResize_);
       }
 
-      if (this.getViewport().getRootNode().defaultView != window ){
-      this.externView =  this.getViewport().getRootNode().defaultView; 
+      if (this.getOwnerDocument().defaultView != window ){
+      this.externView = this.getOwnerDocument().defaultView; 
         window.removeEventListener(EventType.RESIZE, this.handleResize_);
-        this.getViewport()
-          .getRootNode().
-           defaultView.addEventListener(
-             EventType.RESIZE,
-             this.handleResize_,
-             false
-        );
+        this.getOwnerDocument().defaultView.addEventListener(EventType.RESIZE,this.handleResize_,false);
       }
     }
 
