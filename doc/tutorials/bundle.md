@@ -1,5 +1,5 @@
 ---
-title: Basic project setup using NPM and Parcel
+title: Basic project setup using NPM and Vite
 layout: doc.hbs
 ---
 
@@ -23,7 +23,7 @@ To start the development server
 
     npm start
 
-You can now visit http://localhost:1234/ to view your application.  Begin making changes to the `index.html` and `main.js` files to add additional functionality.
+You can now visit http://localhost:3000/ to view your application.  Begin making changes to the `index.html` and `main.js` files to add additional functionality.
 
 To create a production bundle of your application, simply type
 
