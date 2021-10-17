@@ -36,10 +36,10 @@ new Map({
 
 See the following examples for more detail on bundling OpenLayers with your application:
 
+ * Using [Vite](https://github.com/openlayers/ol-vite)
  * Using [Rollup](https://github.com/openlayers/ol-rollup)
- * Using [Webpack](https://github.com/openlayers/ol-webpack)
+ * Using [webpack](https://github.com/openlayers/ol-webpack)
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
- * Using [Browserify](https://github.com/openlayers/ol-browserify)
 
 ## Sponsors
 
