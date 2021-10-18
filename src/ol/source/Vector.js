@@ -1015,7 +1015,7 @@ class VectorSource extends Source {
    * Removes all extents from the list of loaded extents.
    */
   clearLoadedExtents() {
-    if(this.loadedExtentsRtree_) {
+    if (this.loadedExtentsRtree_) {
       this.loadedExtentsRtree_.clear();
     }
   }
