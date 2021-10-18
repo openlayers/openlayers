@@ -68,7 +68,7 @@
     "coverage-istanbul-loader": "^3.0.5",
     "coveralls": "3.1.1",
     "es-main": "^1.0.2",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.1",
     "eslint-config-openlayers": "^16.0.1",
     "expect.js": "0.3.1",
     "express": "^4.17.1",
