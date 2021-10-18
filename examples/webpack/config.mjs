@@ -26,7 +26,7 @@ export default {
   module: {
     rules: [
       {
-        test: /^((?!es2015-)[\s\S])*\.js$/,
+        test: /^((?!es2015-)[\s\S])*\.m?js$/,
         use: {
           loader: 'babel-loader',
           options: {
