@@ -3,6 +3,7 @@
  */
 import Control from './Control.js';
 import EventType from '../events/EventType.js';
+import MapProperty from '../MapProperty.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {listen, unlistenByKey} from '../events.js';
 import {replaceNode} from '../dom.js';
@@ -187,6 +188,11 @@ class FullScreen extends Control {
      * @type {HTMLElement|string|undefined}
      */
     this.source_ = options.source;
+
+    /**
+     * @private
+     */
+    this.boundHandleMapTargetChange_ = this.handleMapTargetChange_.bind(this);
   }
 
   /**
@@ -271,6 +277,14 @@ class FullScreen extends Control {
    * @api
    */
   setMap(map) {
+    const oldMap = this.getMap();
+    if (oldMap) {
+      oldMap.removeChangeListener(
+        MapProperty.TARGET,
+        this.boundHandleMapTargetChange_
+      );
+    }
+
     super.setMap(map);
 
     this.handleMapTargetChange_();
@@ -283,8 +297,9 @@ class FullScreen extends Control {
       }
       this.setClassName_(this.button_, isFullScreen(doc));
 
-      this.listenerKeys.push(
-        listen(map, 'change:target', this.handleMapTargetChange_, this)
+      map.addChangeListener(
+        MapProperty.TARGET,
+        this.boundHandleMapTargetChange_
       );
     }
   }

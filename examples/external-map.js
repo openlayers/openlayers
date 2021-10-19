@@ -2,8 +2,8 @@ import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import {FullScreen, defaults as defaultControls} from '../src/ol/control.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import {FullScreen, defaults as defaultControls} from 'ol/control';
 
 const map = new Map({
   target: 'map',
@@ -34,18 +34,16 @@ button.addEventListener('click', function () {
   mapWindow.addEventListener('load', function () {
     const extMapDiv = mapWindow.document.getElementById('map');
     map.setTarget(extMapDiv);
-	extMapDiv.focus();
-	
-	mapWindow.addEventListener('beforeunload', function () {
+    extMapDiv.focus();
+
+    mapWindow.addEventListener('beforeunload', function () {
       localMapTarget.style.height = '';
       map.setTarget(localMapTarget);
       button.disabled = false;
-	  
+
       mapWindow = undefined;
     });
-	
   });
-  
 });
 window.addEventListener('beforeunload', function () {
   if (mapWindow) {
