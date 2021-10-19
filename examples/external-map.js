@@ -34,11 +34,13 @@ button.addEventListener('click', function () {
   mapWindow.addEventListener('load', function () {
     const extMapDiv = mapWindow.document.getElementById('map');
     map.setTarget(extMapDiv);
+	extMapDiv.focus();
 	
 	mapWindow.addEventListener('beforeunload', function () {
       localMapTarget.style.height = '';
       map.setTarget(localMapTarget);
       button.disabled = false;
+	  mapWindow.close();
       mapWindow = undefined;
     });
 	
