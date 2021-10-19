@@ -5,8 +5,10 @@ import View from '../src/ol/View.js';
 import {FullScreen, defaults as defaultControls} from '../src/ol/control.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
+const localMapTarget = document.getElementById('map');
+
 const map = new Map({
-  target: 'map',
+  target: localMapTarget,
   controls: defaultControls().extend([new FullScreen()]),
   layers: [
     new TileLayer({
@@ -20,33 +22,54 @@ const map = new Map({
 });
 
 let mapWindow;
-const button = document.getElementById('extMap');
+function closeMapWindow() {
+  if (mapWindow) {
+    mapWindow.close();
+    mapWindow = undefined;
+  }
+}
+// Close external window in case the main page is closed or reloaded
+window.addEventListener('pagehide', closeMapWindow);
+
+const button = document.getElementById('external-map-button');
+
+function resetMapTarget() {
+  localMapTarget.style.height = '';
+  map.setTarget(localMapTarget);
+  button.disabled = false;
+}
+
 button.addEventListener('click', function () {
-  const localMapTarget = document.getElementById('map');
-  localMapTarget.style.height = '0px';
+  const blockerNotice = document.getElementById('blocker-notice');
+  blockerNotice.setAttribute('hidden', 'hidden');
   button.disabled = true;
+
+  // Reset button and map target in case window did not load or open
+  let timeoutKey = setTimeout(function () {
+    closeMapWindow();
+    resetMapTarget();
+    blockerNotice.removeAttribute('hidden');
+    timeoutKey = undefined;
+  }, 3000);
 
   mapWindow = window.open(
     'resources/external-map-map.html',
     'MapWindow',
     'toolbar=0,location=0,menubar=0,width=800,height=600'
   );
-  mapWindow.addEventListener('load', function () {
-    const extMapDiv = mapWindow.document.getElementById('map');
-    map.setTarget(extMapDiv);
-    extMapDiv.focus();
+  mapWindow.addEventListener('DOMContentLoaded', function () {
+    const externalMapTarget = mapWindow.document.getElementById('map');
+    localMapTarget.style.height = '0px';
+    map.setTarget(externalMapTarget);
+    externalMapTarget.focus();
 
-    mapWindow.addEventListener('beforeunload', function () {
-      localMapTarget.style.height = '';
-      map.setTarget(localMapTarget);
-      button.disabled = false;
-
-      mapWindow = undefined;
+    if (timeoutKey) {
+      timeoutKey = clearTimeout(timeoutKey);
+    }
+    mapWindow.addEventListener('pagehide', function () {
+      resetMapTarget();
+      // Close window in case user does a page reload
+      closeMapWindow();
     });
   });
-});
-window.addEventListener('beforeunload', function () {
-  if (mapWindow) {
-    mapWindow.close();
-  }
 });
