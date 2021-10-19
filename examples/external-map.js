@@ -40,7 +40,7 @@ button.addEventListener('click', function () {
       localMapTarget.style.height = '';
       map.setTarget(localMapTarget);
       button.disabled = false;
-	  mapWindow.close();
+	  
       mapWindow = undefined;
     });
 	
