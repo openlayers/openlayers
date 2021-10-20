@@ -190,6 +190,12 @@ class FullScreen extends Control {
     this.source_ = options.source;
 
     /**
+     * @type {boolean}
+     * @private
+     */
+    this.isInFullscreen_ = false;
+
+    /**
      * @private
      */
     this.boundHandleMapTargetChange_ = this.handleMapTargetChange_.bind(this);
@@ -241,16 +247,20 @@ class FullScreen extends Control {
    */
   handleFullScreenChange_() {
     const map = this.getMap();
-    if (isFullScreen(map.getOwnerDocument())) {
-      this.setClassName_(this.button_, true);
-      replaceNode(this.labelActiveNode_, this.labelNode_);
-      this.dispatchEvent(FullScreenEventType.ENTERFULLSCREEN);
-    } else {
-      this.setClassName_(this.button_, false);
-      replaceNode(this.labelNode_, this.labelActiveNode_);
-      this.dispatchEvent(FullScreenEventType.LEAVEFULLSCREEN);
+    if (!map) {
+      return;
     }
-    if (map) {
+    const wasInFullscreen = this.isInFullscreen_;
+    this.isInFullscreen_ = isFullScreen(map.getOwnerDocument());
+    if (wasInFullscreen !== this.isInFullscreen_) {
+      this.setClassName_(this.button_, this.isInFullscreen_);
+      if (this.isInFullscreen_) {
+        replaceNode(this.labelActiveNode_, this.labelNode_);
+        this.dispatchEvent(FullScreenEventType.ENTERFULLSCREEN);
+      } else {
+        replaceNode(this.labelNode_, this.labelActiveNode_);
+        this.dispatchEvent(FullScreenEventType.LEAVEFULLSCREEN);
+      }
       map.updateSize();
     }
   }
@@ -289,14 +299,6 @@ class FullScreen extends Control {
 
     this.handleMapTargetChange_();
     if (map) {
-      const doc = map.getOwnerDocument();
-      if (isFullScreenSupported(doc)) {
-        this.element.classList.remove(CLASS_UNSUPPORTED);
-      } else {
-        this.element.classList.add(CLASS_UNSUPPORTED);
-      }
-      this.setClassName_(this.button_, isFullScreen(doc));
-
       map.addChangeListener(
         MapProperty.TARGET,
         this.boundHandleMapTargetChange_
@@ -317,11 +319,18 @@ class FullScreen extends Control {
     const map = this.getMap();
     if (map) {
       const doc = map.getOwnerDocument();
+      if (isFullScreenSupported(doc)) {
+        this.element.classList.remove(CLASS_UNSUPPORTED);
+      } else {
+        this.element.classList.add(CLASS_UNSUPPORTED);
+      }
+
       for (let i = 0, ii = events.length; i < ii; ++i) {
         listeners.push(
           listen(doc, events[i], this.handleFullScreenChange_, this)
         );
       }
+      this.handleFullScreenChange_();
     }
   }
 }
