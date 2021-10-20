@@ -71,5 +71,19 @@ button.addEventListener('click', function () {
       // Close window in case user does a page reload
       closeMapWindow();
     });
+
+    window.addEventListener('blur', function (evt) {
+        externalMapTarget.style.opacity=0.3;
+    });
+
+    window.addEventListener('focus', function (evt) {
+        externalMapTarget.style.opacity=1.0;
+    });
+  
+    mapWindow.addEventListener('focus', function (evt) {
+      if (!window.document.hidden){	
+        externalMapTarget.style.opacity=1.0;
+      }
+    });
   });
 });
