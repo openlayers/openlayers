@@ -1,0 +1,33 @@
+name: Deploy Preview
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - run: npm install --global netlify-cli
+      - uses: lewagon/wait-on-check-action@v1.1.1
+        with:
+          ref: ${{github.ref}}
+          check-name: 'build-preview'
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          wait-interval: 10
+      - uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: build-preview.yml
+          pr: ${{github.event.number}}
+          name: site
+          path: build/site
+      - env:
+          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
+          NETLIFY_SITE_ID: ${{secrets.NETLIFY_SITE_ID}}
+        run: netlify deploy --dir=build/site --alias=deploy-preview-${{github.event.number}}
