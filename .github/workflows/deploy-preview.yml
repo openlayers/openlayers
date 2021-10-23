@@ -39,6 +39,7 @@ jobs:
           sha: ${{github.event.pull_request.head.sha}}
           state: "success"
           target_url: https://deploy-preview-${{github.event.number}}--ol-site.netlify.app
+          context: "Deploy Preview"
           description: "Preview URL"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
