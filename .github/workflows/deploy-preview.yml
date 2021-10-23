@@ -33,16 +33,12 @@ jobs:
         run: netlify deploy --dir=build/site --alias=deploy-preview-${{github.event.number}}
       - uses: octokit/request-action@v2.x
         with:
-          route: POST /repos/{owner}/{repo}/check-runs
+          route: POST /repos/{owner}/{repo}/statuses/{sha}
           owner: openlayers
           repo: openlayers
-          name: preview-url
-          head_sha: ${{github.event.pull_request.head.sha}}
-          details_url: https://deploy-preview-${{github.event.number}}--ol-site.netlify.app
-          conclusion: "success"
-          status: "completed"
-          output: |
-            title: Preview URL
-            summary: URL of the preview deploy
+          sha: ${{github.event.pull_request.head.sha}}
+          state: "success"
+          target_url: https://deploy-preview-${{github.event.number}}--ol-site.netlify.app
+          description: "Preview URL"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
