@@ -16,7 +16,7 @@ jobs:
       - run: npm install --global netlify-cli
       - uses: lewagon/wait-on-check-action@v1.1.1
         with:
-          ref: ${{github.head_ref}}
+          ref: ${{github.event.pull_request.head.sha}}
           check-name: 'build-preview'
           repo-token: ${{secrets.GITHUB_TOKEN}}
           wait-interval: 10
@@ -32,7 +32,6 @@ jobs:
           NETLIFY_SITE_ID: ${{secrets.NETLIFY_SITE_ID}}
         run: netlify deploy --dir=build/site --alias=deploy-preview-${{github.event.number}}
       - uses: octokit/request-action@v2.x
-        id: create_check_run
         with:
           route: POST /repos/{owner}/{repo}/check-runs
           owner: openlayers
