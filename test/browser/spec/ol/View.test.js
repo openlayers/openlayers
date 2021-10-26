@@ -808,7 +808,7 @@ describe('ol/View', function () {
         expect(view.getAnimating()).to.be(true);
         expect(view.getCenter()).to.eql(center);
         expect(view.getResolution()).to.be(resolution);
-        expect(view.getRotation()).to.be(0);
+        expect(view.getRotation()).to.roughlyEqual(0, 0.02);
       });
     });
 
