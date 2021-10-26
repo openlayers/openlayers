@@ -11,26 +11,29 @@ import {fromLonLat} from '../src/ol/proj.js';
 
 const shaft = new RegularShape({
   points: 2,
-  radius: 20,
+  radius: 5,
   stroke: new Stroke({
     width: 2,
-    color: 'rgba(0,0,0,0.5)',
+    color: 'black',
   }),
   rotateWithView: true,
 });
 
 const head = new RegularShape({
   points: 3,
-  radius: 10,
+  radius: 5,
   fill: new Fill({
-    color: 'rgba(0,0,0,0.5)',
+    color: 'black',
   }),
   rotateWithView: true,
 });
 
 const styles = [new Style({image: shaft}), new Style({image: head})];
 
-const source = new VectorSource();
+const source = new VectorSource({
+  attributions:
+    'Weather data by <a href="https://openweathermap.org/current">OpenWeather</a>',
+});
 
 const map = new Map({
   layers: [
