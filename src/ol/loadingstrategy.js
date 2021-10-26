@@ -2,6 +2,8 @@
  * @module ol/loadingstrategy
  */
 
+import {fromUserExtent, fromUserResolution, toUserExtent} from './proj.js';
+
 /**
  * Strategy function for loading all features with a single request.
  * @param {import("./extent.js").Extent} extent Extent.
@@ -28,7 +30,7 @@ export function bbox(extent, resolution) {
 /**
  * Creates a strategy function for loading features based on a tile grid.
  * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
- * @return {function(import("./extent.js").Extent, number): Array<import("./extent.js").Extent>} Loading strategy.
+ * @return {function(import("./extent.js").Extent, number, import("./proj.js").Projection): Array<import("./extent.js").Extent>} Loading strategy.
  * @api
  */
 export function tile(tileGrid) {
@@ -36,11 +38,17 @@ export function tile(tileGrid) {
     /**
      * @param {import("./extent.js").Extent} extent Extent.
      * @param {number} resolution Resolution.
+     * @param {import("./proj.js").Projection} projection Projection.
      * @return {Array<import("./extent.js").Extent>} Extents.
      */
-    function (extent, resolution) {
-      const z = tileGrid.getZForResolution(resolution);
-      const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+    function (extent, resolution, projection) {
+      const z = tileGrid.getZForResolution(
+        fromUserResolution(resolution, projection)
+      );
+      const tileRange = tileGrid.getTileRangeForExtentAndZ(
+        fromUserExtent(extent, projection),
+        z
+      );
       /** @type {Array<import("./extent.js").Extent>} */
       const extents = [];
       /** @type {import("./tilecoord.js").TileCoord} */
@@ -55,7 +63,9 @@ export function tile(tileGrid) {
           tileCoord[2] <= tileRange.maxY;
           ++tileCoord[2]
         ) {
-          extents.push(tileGrid.getTileCoordExtent(tileCoord));
+          extents.push(
+            toUserExtent(tileGrid.getTileCoordExtent(tileCoord), projection)
+          );
         }
       }
       return extents;

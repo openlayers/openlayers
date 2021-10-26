@@ -80,12 +80,12 @@ class MousePosition extends Control {
     });
 
     /***
-     * @type {MousePositionOnSignature<import("../Observable.js").OnReturn>}
+     * @type {MousePositionOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {MousePositionOnSignature<import("../Observable.js").OnReturn>}
+     * @type {MousePositionOnSignature<import("../events").EventsKey>}
      */
     this.once;
 
@@ -104,8 +104,8 @@ class MousePosition extends Control {
     }
 
     /**
-     * @type {boolean}
      * Change this to `false` when removing the deprecated `undefinedHTML` option.
+     * @type {boolean}
      */
     let renderOnMouseOut = true;
 

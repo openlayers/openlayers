@@ -103,12 +103,12 @@ class ImageSource extends Source {
     });
 
     /***
-     * @type {ImageSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ImageSourceOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ImageSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ImageSourceOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

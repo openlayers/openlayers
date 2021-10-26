@@ -208,6 +208,9 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @property {import("./coordinate.js").Coordinate} center Center.
  * @property {import("./proj/Projection.js").default} projection Projection.
  * @property {number} resolution Resolution.
+ * @property {import("./coordinate.js").Coordinate} [nextCenter] The next center during an animation series.
+ * @property {number} [nextResolution] The next resolution during an animation series.
+ * @property {number} [nextRotation] The next rotation during an animation series.
  * @property {number} rotation Rotation.
  * @property {number} zoom Zoom.
  */
@@ -309,12 +312,12 @@ class View extends BaseObject {
     super();
 
     /***
-     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
+     * @type {ViewOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ViewOnSignature<import("./Observable.js").OnReturn>}
+     * @type {ViewOnSignature<import("./events").EventsKey>}
      */
     this.once;
 
@@ -373,6 +376,24 @@ class View extends BaseObject {
      * @type {number|undefined}
      */
     this.targetRotation_;
+
+    /**
+     * @private
+     * @type {import("./coordinate.js").Coordinate}
+     */
+    this.nextCenter_ = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.nextResolution_;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.nextRotation_;
 
     /**
      * @private
@@ -600,29 +621,36 @@ class View extends BaseObject {
       callback = arguments[animationCount - 1];
       --animationCount;
     }
-    if (!this.isDef()) {
+
+    let i = 0;
+    for (; i < animationCount && !this.isDef(); ++i) {
       // if view properties are not yet set, shortcut to the final state
-      const state = arguments[animationCount - 1];
+      const state = arguments[i];
       if (state.center) {
         this.setCenterInternal(state.center);
       }
       if (state.zoom !== undefined) {
         this.setZoom(state.zoom);
+      } else if (state.resolution) {
+        this.setResolution(state.resolution);
       }
       if (state.rotation !== undefined) {
         this.setRotation(state.rotation);
       }
+    }
+    if (i === animationCount) {
       if (callback) {
         animationCallback(callback, true);
       }
       return;
     }
+
     let start = Date.now();
     let center = this.targetCenter_.slice();
     let resolution = this.targetResolution_;
     let rotation = this.targetRotation_;
     const series = [];
-    for (let i = 0; i < animationCount; ++i) {
+    for (; i < animationCount; ++i) {
       const options = /** @type {AnimationOptions} */ (arguments[i]);
 
       const animation = {
@@ -714,6 +742,9 @@ class View extends BaseObject {
     }
     this.animations_.length = 0;
     this.cancelAnchor_ = anchor;
+    this.nextCenter_ = null;
+    this.nextResolution_ = NaN;
+    this.nextRotation_ = NaN;
   }
 
   /**
@@ -752,6 +783,7 @@ class View extends BaseObject {
           const y0 = animation.sourceCenter[1];
           const x1 = animation.targetCenter[0];
           const y1 = animation.targetCenter[1];
+          this.nextCenter_ = animation.targetCenter;
           const x = x0 + progress * (x1 - x0);
           const y = y0 + progress * (y1 - y0);
           this.targetCenter_ = [x, y];
@@ -776,6 +808,7 @@ class View extends BaseObject {
               animation.anchor
             );
           }
+          this.nextResolution_ = animation.targetResolution;
           this.targetResolution_ = resolution;
           this.applyTargetState_(true);
         }
@@ -800,6 +833,7 @@ class View extends BaseObject {
               animation.anchor
             );
           }
+          this.nextRotation_ = animation.targetRotation;
           this.targetRotation_ = rotation;
         }
         this.applyTargetState_(true);
@@ -811,6 +845,9 @@ class View extends BaseObject {
       if (seriesComplete) {
         this.animations_[i] = null;
         this.setHint(ViewHint.ANIMATING, -1);
+        this.nextCenter_ = null;
+        this.nextResolution_ = NaN;
+        this.nextRotation_ = NaN;
         const callback = series[0].callback;
         if (callback) {
           animationCallback(callback, true);
@@ -1191,7 +1228,7 @@ class View extends BaseObject {
    */
   getState() {
     const projection = this.getProjection();
-    const resolution = /** @type {number} */ (this.getResolution());
+    const resolution = this.getResolution();
     const rotation = this.getRotation();
     let center = /** @type {import("./coordinate.js").Coordinate} */ (
       this.getCenterInternal()
@@ -1211,6 +1248,9 @@ class View extends BaseObject {
       center: center.slice(0),
       projection: projection !== undefined ? projection : null,
       resolution: resolution,
+      nextCenter: this.nextCenter_,
+      nextResolution: this.nextResolution_,
+      nextRotation: this.nextRotation_,
       rotation: rotation,
       zoom: this.getZoom(),
     };

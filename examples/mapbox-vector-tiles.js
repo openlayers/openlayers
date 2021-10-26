@@ -6,7 +6,7 @@ import View from '../src/ol/View.js';
 import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 
 const key =
-  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
 const map = new Map({
   layers: [

@@ -48,12 +48,12 @@ class ControlledMap extends PluggableMap {
  * @typedef {Object} Options
  * @property {string} [className='ol-overviewmap'] CSS class name.
  * @property {boolean} [collapsed=true] Whether the control should start collapsed or not (expanded).
- * @property {string|HTMLElement} [collapseLabel='«'] Text label to use for the
+ * @property {string|HTMLElement} [collapseLabel='‹'] Text label to use for the
  * expanded overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
- * @property {string|HTMLElement} [label='»'] Text label to use for the collapsed
+ * @property {string|HTMLElement} [label='›'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} [layers]
+ * @property {Array<import("../layer/Base.js").default>|import("../Collection.js").default<import("../layer/Base.js").default>} [layers]
  * Layers for the overview map.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
@@ -127,7 +127,7 @@ class OverviewMap extends Control {
       options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
 
     const collapseLabel =
-      options.collapseLabel !== undefined ? options.collapseLabel : '\u00AB';
+      options.collapseLabel !== undefined ? options.collapseLabel : '\u2039';
 
     if (typeof collapseLabel === 'string') {
       /**
@@ -140,7 +140,7 @@ class OverviewMap extends Control {
       this.collapseLabel_ = collapseLabel;
     }
 
-    const label = options.label !== undefined ? options.label : '\u00BB';
+    const label = options.label !== undefined ? options.label : '\u203A';
 
     if (typeof label === 'string') {
       /**

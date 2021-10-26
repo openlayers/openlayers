@@ -9,6 +9,7 @@ import GeometryType from '../geom/GeometryType.js';
 import Icon from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
+import ImageState from '../ImageState.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -232,11 +233,6 @@ let DEFAULT_IMAGE_STYLE_SIZE;
 let DEFAULT_IMAGE_STYLE_SRC;
 
 /**
- * @type {number}
- */
-let DEFAULT_IMAGE_SCALE_MULTIPLIER;
-
-/**
  * @type {import("../style/Image.js").default}
  */
 let DEFAULT_IMAGE_STYLE = null;
@@ -311,6 +307,15 @@ export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
 }
 
+/**
+ * Function that returns the scale needed to normalize an icon image to 32 pixels.
+ * @param {import("../size.js").Size} size Image size.
+ * @return {number} Scale.
+ */
+function scaleForSize(size) {
+  return 32 / Math.min(size[0], size[1]);
+}
+
 function createStyleDefaults() {
   DEFAULT_COLOR = [255, 255, 255, 1];
 
@@ -318,7 +323,7 @@ function createStyleDefaults() {
     color: DEFAULT_COLOR,
   });
 
-  DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2]; // FIXME maybe [8, 32] ?
+  DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2];
 
   DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = IconAnchorUnits.PIXELS;
 
@@ -329,8 +334,6 @@ function createStyleDefaults() {
   DEFAULT_IMAGE_STYLE_SRC =
     'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
 
-  DEFAULT_IMAGE_SCALE_MULTIPLIER = 0.5;
-
   DEFAULT_IMAGE_STYLE = new Icon({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
     anchorOrigin: IconOrigin.BOTTOM_LEFT,
@@ -338,7 +341,7 @@ function createStyleDefaults() {
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
     rotation: 0,
-    scale: DEFAULT_IMAGE_SCALE_MULTIPLIER,
+    scale: scaleForSize(DEFAULT_IMAGE_STYLE_SIZE),
     size: DEFAULT_IMAGE_STYLE_SIZE,
     src: DEFAULT_IMAGE_STYLE_SRC,
   });
@@ -489,6 +492,8 @@ class KML extends XMLFeature {
     this.iconUrlFunction_ = options.iconUrlFunction
       ? options.iconUrlFunction
       : defaultIconUrlFunction;
+
+    this.supportedMediaTypes = ['application/vnd.google-earth.kml+xml'];
   }
 
   /**
@@ -939,16 +944,14 @@ function createNameStyleFunction(foundStyle, name) {
   let textAlign = 'start';
   const imageStyle = foundStyle.getImage();
   if (imageStyle) {
-    let imageSize = imageStyle.getImageSize();
-    if (imageSize === null) {
-      imageSize = DEFAULT_IMAGE_STYLE_SIZE;
-    }
-    if (imageSize.length == 2) {
+    const imageSize = imageStyle.getSize();
+    if (imageSize && imageSize.length == 2) {
       const imageScale = imageStyle.getScaleArray();
+      const anchor = imageStyle.getAnchor();
       // Offset the label to be centered to the right of the icon,
       // if there is one.
-      textOffset[0] = (imageScale[0] * imageSize[0]) / 2;
-      textOffset[1] = (-imageScale[1] * imageSize[1]) / 2;
+      textOffset[0] = imageScale[0] * (imageSize[0] - anchor[0]);
+      textOffset[1] = imageScale[1] * (imageSize[1] / 2 - anchor[1]);
       textAlign = 'left';
     }
   }
@@ -1323,14 +1326,21 @@ function iconStyleParser(node, objectStack) {
     anchorXUnits = hotSpot.xunits;
     anchorYUnits = hotSpot.yunits;
     anchorOrigin = hotSpot.origin;
-  } else if (src === DEFAULT_IMAGE_STYLE_SRC) {
-    anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
-    anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
-    anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
-    anchor = [0.5, 0];
-    anchorXUnits = IconAnchorUnits.FRACTION;
-    anchorYUnits = IconAnchorUnits.FRACTION;
+    // Google hotspots from https://kml4earth.appspot.com/icons.html#notes
+    if (/pushpin/.test(src)) {
+      anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    } else if (/arrow-reverse/.test(src)) {
+      anchor = [54, 42];
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    } else if (/paddle/.test(src)) {
+      anchor = [32, 1];
+      anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+      anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+    }
   }
 
   let offset;
@@ -1353,16 +1363,13 @@ function iconStyleParser(node, objectStack) {
     rotation = toRadians(heading);
   }
 
-  let scale = /** @type {number|undefined} */ (object['scale']);
+  const scale = /** @type {number|undefined} */ (object['scale']);
 
   const color = /** @type {Array<number>|undefined} */ (object['color']);
 
   if (drawIcon) {
     if (src == DEFAULT_IMAGE_STYLE_SRC) {
       size = DEFAULT_IMAGE_STYLE_SIZE;
-      if (scale === undefined) {
-        scale = DEFAULT_IMAGE_SCALE_MULTIPLIER;
-      }
     }
 
     const imageStyle = new Icon({
@@ -1379,6 +1386,37 @@ function iconStyleParser(node, objectStack) {
       src: this.iconUrlFunction_(src),
       color: color,
     });
+
+    const imageScale = imageStyle.getScaleArray()[0];
+    const imageSize = imageStyle.getSize();
+    if (imageSize === null) {
+      const imageState = imageStyle.getImageState();
+      if (imageState === ImageState.IDLE || imageState === ImageState.LOADING) {
+        const listener = function () {
+          const imageState = imageStyle.getImageState();
+          if (
+            !(
+              imageState === ImageState.IDLE ||
+              imageState === ImageState.LOADING
+            )
+          ) {
+            const imageSize = imageStyle.getSize();
+            if (imageSize && imageSize.length == 2) {
+              const resizeScale = scaleForSize(imageSize);
+              imageStyle.setScale(imageScale * resizeScale);
+            }
+            imageStyle.unlistenImageChange(listener);
+          }
+        };
+        imageStyle.listenImageChange(listener);
+        if (imageState === ImageState.IDLE) {
+          imageStyle.load();
+        }
+      }
+    } else if (imageSize.length == 2) {
+      const resizeScale = scaleForSize(imageSize);
+      imageStyle.setScale(imageScale * resizeScale);
+    }
     styleObject['imageStyle'] = imageStyle;
   } else {
     // handle the case when we explicitly want to draw no icon.
@@ -1929,8 +1967,12 @@ function readStyle(node, objectStack) {
           const geometry = feature.getGeometry();
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
+            const collection =
+              /** @type {import("../geom/GeometryCollection").default} */ (
+                geometry
+              );
             return new GeometryCollection(
-              geometry
+              collection
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
@@ -1958,8 +2000,12 @@ function readStyle(node, objectStack) {
           const geometry = feature.getGeometry();
           const type = geometry.getType();
           if (type === GeometryType.GEOMETRY_COLLECTION) {
+            const collection =
+              /** @type {import("../geom/GeometryCollection").default} */ (
+                geometry
+              );
             return new GeometryCollection(
-              geometry
+              collection
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
@@ -2656,7 +2702,15 @@ function writeIconStyle(node, style, objectStack) {
 
   properties['Icon'] = iconProperties;
 
-  const scale = style.getScale();
+  let scale = style.getScaleArray()[0];
+  let imageSize = size;
+  if (imageSize === null) {
+    imageSize = DEFAULT_IMAGE_STYLE_SIZE;
+  }
+  if (imageSize.length == 2) {
+    const resizeScale = scaleForSize(imageSize);
+    scale = scale / resizeScale;
+  }
   if (scale !== 1) {
     properties['scale'] = scale;
   }

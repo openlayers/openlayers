@@ -26,7 +26,7 @@ import {xhr} from '../featureloader.js';
  * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
  * is one of the standard {@link module:ol/loadingstrategy} strategies.
  *
- * @typedef {function(import("../extent.js").Extent, number): Array<import("../extent.js").Extent>} LoadingStrategy
+ * @typedef {function(import("../extent.js").Extent, number, import("../proj/Projection.js").default): Array<import("../extent.js").Extent>} LoadingStrategy
  * @api
  */
 
@@ -187,12 +187,12 @@ class VectorSource extends Source {
     });
 
     /***
-     * @type {VectorSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {VectorSourceOnSignature<import("../Observable.js").OnReturn>}
+     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
      */
     this.once;
 
@@ -939,7 +939,7 @@ class VectorSource extends Source {
    */
   loadFeatures(extent, resolution, projection) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
-    const extentsToLoad = this.strategy_(extent, resolution);
+    const extentsToLoad = this.strategy_(extent, resolution, projection);
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
       const alreadyLoaded = loadedExtentsRtree.forEachInExtent(
@@ -983,7 +983,7 @@ class VectorSource extends Source {
       }
     }
     this.loading =
-      this.loader_ === VOID ? false : this.loadingExtentsCount_ > 0;
+      this.loader_.length < 4 ? false : this.loadingExtentsCount_ > 0;
   }
 
   refresh() {

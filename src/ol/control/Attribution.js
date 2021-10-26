@@ -20,12 +20,12 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {boolean} [collapsed=true] Specify if attributions should
  * be collapsed at startup.
  * @property {string} [tipLabel='Attributions'] Text label to use for the button tip.
- * @property {string} [label='i'] Text label to use for the
+ * @property {string|HTMLElement} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [expandClassName=className + '-expand'] CSS class name for the
  * collapsed attributions button.
- * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
+ * @property {string|HTMLElement} [collapseLabel='›'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [collapseClassName=className + '-collapse'] CSS class name for the
@@ -105,7 +105,7 @@ class Attribution extends Control {
         : className + '-expand';
 
     const collapseLabel =
-      options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
+      options.collapseLabel !== undefined ? options.collapseLabel : '\u203A';
 
     const collapseClassName =
       options.collapseClassName !== undefined

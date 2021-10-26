@@ -90,6 +90,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * is shared with versioned format classes GML2 and GML3.
  *
  * @abstract
+ * @api
  */
 class GMLBase extends XMLFeature {
   /**
@@ -132,6 +133,8 @@ class GMLBase extends XMLFeature {
       'featureMember': makeArrayPusher(this.readFeaturesInternal),
       'featureMembers': makeReplacer(this.readFeaturesInternal),
     };
+
+    this.supportedMediaTypes = ['application/gml+xml'];
   }
 
   /**

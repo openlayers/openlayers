@@ -9,21 +9,22 @@ import {listen, listenOnce, unlistenByKey} from './events.js';
  * @template {string} Type
  * @template {Event|import("./events/Event.js").default} EventClass
  * @template Return
- * @typedef {(type: Type|Type[], listener: (event: EventClass) => ?) => Return} OnSignature
+ * @typedef {(type: Type, listener: (event: EventClass) => ?) => Return} OnSignature
  */
 
 /***
  * @template {string} Type
  * @template Return
- * @typedef {(type: Type[], listener: (event: Event|import("./events/Event").default) => ?) => Return} CombinedOnSignature
- */
-
-/***
- * @typedef {import("./events").EventsKey|Array<import("./events").EventsKey>} OnReturn
+ * @typedef {(type: Type[], listener: (event: Event|import("./events/Event").default) => ?) => Return extends void ? void : Return[]} CombinedOnSignature
  */
 
 /**
  * @typedef {'change'|'error'} EventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {OnSignature<EventTypes, import("./events/Event.js").default, Return> & CombinedOnSignature<EventTypes, Return>} ObservableOnSignature
  */
 
 /**
@@ -41,20 +42,17 @@ class Observable extends EventTarget {
   constructor() {
     super();
 
-    /***
-     * @type {OnSignature<EventTypes, import("./events/Event.js").default, OnReturn>}
-     */
-    this.on = this.onInternal;
+    this.on =
+      /** @type {ObservableOnSignature<import("./events").EventsKey>} */ (
+        this.onInternal
+      );
 
-    /***
-     * @type {OnSignature<EventTypes, import("./events/Event.js").default, OnReturn>}
-     */
-    this.once = this.onceInternal;
+    this.once =
+      /** @type {ObservableOnSignature<import("./events").EventsKey>} */ (
+        this.onceInternal
+      );
 
-    /***
-     * @type {OnSignature<EventTypes, import("./events/Event.js").default, void>}
-     */
-    this.un = this.unInternal;
+    this.un = /** @type {ObservableOnSignature<void>} */ (this.unInternal);
 
     /**
      * @private
@@ -84,7 +82,7 @@ class Observable extends EventTarget {
 
   /**
    * @param {string|Array<string>} type Type.
-   * @param {function(?): ?} listener Listener.
+   * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
    */
@@ -103,7 +101,7 @@ class Observable extends EventTarget {
 
   /**
    * @param {string|Array<string>} type Type.
-   * @param {function(?): ?} listener Listener.
+   * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
    */
@@ -125,7 +123,7 @@ class Observable extends EventTarget {
   /**
    * Unlisten for a certain type of event.
    * @param {string|Array<string>} type Type.
-   * @param {function(?): ?} listener Listener.
+   * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
    * @protected
    */
   unInternal(type, listener) {

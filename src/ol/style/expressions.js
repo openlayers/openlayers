@@ -3,21 +3,30 @@
  * @module ol/style/expressions
  */
 
+import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray, isStringColor} from '../color.js';
+import {log2} from '../math.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
- * which in turns takes {@link ExpressionValue} arguments.
+ * which in turns takes {@link import("./expressions.js").ExpressionValue} arguments.
  *
  * The following operators can be used:
  *
  * * Reading operators:
+ *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+ *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
+ *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
+ *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
+ *     of bands, depending on the underlying data source and
+ *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
+ *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
  *   * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
  *     Note: those will be taken from the attributes provided to the renderer
- *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
- *   * `['time']` returns the time in seconds since the creation of the layer
- *   * `['zoom']` returns the current zoom level
  *   * `['resolution']` returns the current resolution
+ *   * `['time']` returns the time in seconds since the creation of the layer
+ *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
+ *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
  *   * `['*', value1, value2]` multiplies `value1` by `value2`
@@ -27,6 +36,10 @@ import {asArray, isStringColor} from '../color.js';
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
  *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
  *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+ *   * `['abs', value1]` returns the absolute value of `value1`
+ *   * `['sin', value1]` returns the sine of `value1`
+ *   * `['cos', value1]` returns the cosine of `value1`
+ *   * `['atan', value1, value2]` returns `atan2(value1, value2)`. If `value2` is not provided, returns `atan(value1)`
  *
  * * Transform operators:
  *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
@@ -73,6 +86,7 @@ import {asArray, isStringColor} from '../color.js';
  * * {@link module:ol/color~Color}
  *
  * @typedef {Array<*>|import("../color.js").Color|string|number|boolean} ExpressionValue
+ * @api
  */
 
 /**
@@ -160,7 +174,7 @@ export function getValueType(value) {
  * @return {boolean} True if only one type flag is enabled, false if zero or multiple
  */
 export function isTypeUnique(valueType) {
-  return Math.log2(valueType) % 1 === 0;
+  return log2(valueType) % 1 === 0;
 }
 
 /**
@@ -170,6 +184,7 @@ export function isTypeUnique(valueType) {
  * @property {Array<string>} variables List of variables used in the expression; contains **unprefixed names**
  * @property {Array<string>} attributes List of attributes used in the expression; contains **unprefixed names**
  * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
+ * @property {number} [bandCount] Number of bands per pixel.
  */
 
 /**
@@ -402,6 +417,43 @@ Operators['var'] = {
   },
 };
 
+Operators['band'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsMinCount(args, 1);
+    assertArgsMaxCount(args, 3);
+    const band = args[0];
+    if (typeof band !== 'number') {
+      throw new Error('Band index must be a number');
+    }
+    const zeroBasedBand = band - 1;
+    const colorIndex = Math.floor(zeroBasedBand / 4);
+    let bandIndex = zeroBasedBand % 4;
+    if (band === context.bandCount && bandIndex === 1) {
+      // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
+      bandIndex = 3;
+    }
+    if (args.length === 1) {
+      return `color${colorIndex}[${bandIndex}]`;
+    } else {
+      const xOffset = args[1];
+      const yOffset = args[2] || 0;
+      assertNumber(xOffset);
+      assertNumber(yOffset);
+      const uniformName = Uniforms.TILE_TEXTURE_PREFIX + colorIndex;
+      return `texture2D(${uniformName}, v_textureCoord + vec2(${expressionToGlsl(
+        context,
+        xOffset
+      )} / ${Uniforms.TEXTURE_PIXEL_WIDTH}, ${expressionToGlsl(
+        context,
+        yOffset
+      )} / ${Uniforms.TEXTURE_PIXEL_HEIGHT}))[${bandIndex}]`;
+    }
+  },
+};
+
 Operators['time'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -529,6 +581,56 @@ Operators['^'] = {
   },
 };
 
+Operators['abs'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `abs(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['sin'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `sin(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['cos'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `cos(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['atan'] = {
+  getReturnType: function (args) {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsMinCount(args, 1);
+    assertArgsMaxCount(args, 2);
+    assertNumbers(args);
+    return args.length === 2
+      ? `atan(${expressionToGlsl(context, args[0])}, ${expressionToGlsl(
+          context,
+          args[1]
+        )})`
+      : `atan(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
 Operators['>'] = {
   getReturnType: function (args) {
     return ValueTypes.BOOLEAN;
@@ -596,15 +698,19 @@ function getEqualOperator(operator) {
       // find common type
       let type = ValueTypes.ANY;
       for (let i = 0; i < args.length; i++) {
-        type = type & getValueType(args[i]);
+        type &= getValueType(args[i]);
       }
-      if (type === 0) {
+      if (type === ValueTypes.NONE) {
         throw new Error(
           `All arguments should be of compatible type, got ${JSON.stringify(
             args
           )} instead`
         );
       }
+
+      // Since it's not possible to have color types here, we can leave it out
+      // This fixes issues in case the value type is ambiguously detected as a color (e.g. the string 'red')
+      type &= ~ValueTypes.COLOR;
 
       return `(${expressionToGlsl(
         context,
@@ -744,17 +850,16 @@ Operators['interpolate'] = {
     assertUniqueInferredType(args, outputType);
 
     const input = expressionToGlsl(context, args[1]);
-    let result = null;
+    const exponent = numberToGlsl(interpolation);
+
+    let result = '';
     for (let i = 2; i < args.length - 2; i += 2) {
       const stop1 = expressionToGlsl(context, args[i]);
-      const output1 = expressionToGlsl(context, args[i + 1], outputType);
+      const output1 =
+        result || expressionToGlsl(context, args[i + 1], outputType);
       const stop2 = expressionToGlsl(context, args[i + 2]);
       const output2 = expressionToGlsl(context, args[i + 3], outputType);
-      result = `mix(${
-        result || output1
-      }, ${output2}, pow(clamp((${input} - ${stop1}) / (${stop2} - ${stop1}), 0.0, 1.0), ${numberToGlsl(
-        interpolation
-      )}))`;
+      result = `mix(${output1}, ${output2}, pow(clamp((${input} - ${stop1}) / (${stop2} - ${stop1}), 0.0, 1.0), ${exponent}))`;
     }
     return result;
   },

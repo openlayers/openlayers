@@ -632,6 +632,44 @@ export function fromUserExtent(extent, destProjection) {
 }
 
 /**
+ * Return the resolution in user projection units per pixel. If no user projection
+ * is set, or source or user projection are missing units, the original resolution
+ * is returned.
+ * @param {number} resolution Resolution in input projection units per pixel.
+ * @param {ProjectionLike} sourceProjection The input projection.
+ * @return {number} Resolution in user projection units per pixel.
+ */
+export function toUserResolution(resolution, sourceProjection) {
+  if (!userProjection) {
+    return resolution;
+  }
+  const sourceUnits = get(sourceProjection).getUnits();
+  const userUnits = userProjection.getUnits();
+  return sourceUnits && userUnits
+    ? (resolution * METERS_PER_UNIT[sourceUnits]) / METERS_PER_UNIT[userUnits]
+    : resolution;
+}
+
+/**
+ * Return the resolution in user projection units per pixel. If no user projection
+ * is set, or source or user projection are missing units, the original resolution
+ * is returned.
+ * @param {number} resolution Resolution in user projection units per pixel.
+ * @param {ProjectionLike} destProjection The destination projection.
+ * @return {number} Resolution in destination projection units per pixel.
+ */
+export function fromUserResolution(resolution, destProjection) {
+  if (!userProjection) {
+    return resolution;
+  }
+  const sourceUnits = get(destProjection).getUnits();
+  const userUnits = userProjection.getUnits();
+  return sourceUnits && userUnits
+    ? (resolution * METERS_PER_UNIT[userUnits]) / METERS_PER_UNIT[sourceUnits]
+    : resolution;
+}
+
+/**
  * Creates a safe coordinate transform function from a coordinate transform function.
  * "Safe" means that it can handle wrapping of x-coordinates for global projections,
  * and that coordinates exceeding the source projection validity extent's range will be

@@ -13,8 +13,8 @@ import {
   readBooleanString,
   readDecimal,
   readDecimalString,
-  readNonNegativeInteger,
   readNonNegativeIntegerString,
+  readPositiveInteger,
   readString,
 } from './xsd.js';
 import {readHref} from './xlink.js';
@@ -94,9 +94,9 @@ const SERVICE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'ContactInformation': makeObjectPropertySetter(readContactInformation),
   'Fees': makeObjectPropertySetter(readString),
   'AccessConstraints': makeObjectPropertySetter(readString),
-  'LayerLimit': makeObjectPropertySetter(readNonNegativeInteger),
-  'MaxWidth': makeObjectPropertySetter(readNonNegativeInteger),
-  'MaxHeight': makeObjectPropertySetter(readNonNegativeInteger),
+  'LayerLimit': makeObjectPropertySetter(readPositiveInteger),
+  'MaxWidth': makeObjectPropertySetter(readPositiveInteger),
+  'MaxHeight': makeObjectPropertySetter(readPositiveInteger),
 });
 
 /**

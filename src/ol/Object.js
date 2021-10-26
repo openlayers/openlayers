@@ -95,12 +95,12 @@ class BaseObject extends Observable {
     super();
 
     /***
-     * @type {ObjectOnSignature<import("./Observable.js").OnReturn>}
+     * @type {ObjectOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ObjectOnSignature<import("./Observable.js").OnReturn>}
+     * @type {ObjectOnSignature<import("./events").EventsKey>}
      */
     this.once;
 

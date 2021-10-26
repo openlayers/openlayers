@@ -203,12 +203,12 @@ class Modify extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ModifyOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ModifyOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ModifyOnSignature<import("../events").EventsKey>}
      */
     this.once;
 
@@ -1167,7 +1167,11 @@ class Modify extends PointerInteraction {
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
-          geometry = geometry || feature.getGeometry();
+          geometry =
+            geometry ||
+            /** @type {import("../geom/SimpleGeometry").default} */ (
+              feature.getGeometry()
+            );
           if (
             geometry.getType() === GeometryType.POINT &&
             includes(this.features_.getArray(), feature)

@@ -1,0 +1,22 @@
+---
+layout: example.html
+title: Rendering 16-bit NumpyTiles
+shortdesc: Renders a multi-byte depth source image directly using WebGL.
+docs: >
+  This example uses a <code>ol/source/DataTile</code> source to load multi-byte raster data in the
+  <a href="https://github.com/planetlabs/numpytiles-spec/">NumpyTile</a> format.
+  The source is rendered with a <code>ol/layer/WebGLTile</code> layer.  Adjusting the sliders above
+  performs a contrast stretch by adjusting the style variables set on the layer.
+tags: "numpytiles, webgl"
+resources:
+  - https://unpkg.com/@planet/ol-numpytiles@2.0.2/umd/NumpyLoader.js
+---
+<div id="map" class="map"></div>
+
+<div>
+  <h5>Contrast stretch</h5>
+  <ul>
+    <li>Min <input type="range" min="1000" max="10000" id="input-min"/> <span id="output-min"></span></li>
+    <li>Max <input type="range" min="10000" max="50000" id="input-max"/> <span id="output-max"></span></li>
+  </ul>
+</div>

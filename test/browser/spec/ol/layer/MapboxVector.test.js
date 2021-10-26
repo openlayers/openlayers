@@ -1,4 +1,4 @@
-import {
+import MapboxVectorLayer, {
   getMapboxPath,
   normalizeSourceUrl,
   normalizeSpriteUrl,
@@ -90,5 +90,30 @@ describe('ol/layer/MapboxVector', () => {
         expect(normalizeSourceUrl(c.url, token)).to.be(c.expected);
       });
     }
+  });
+
+  describe('TileJSON', function () {
+    it('lets ol-mapbox-style handle TileJSON URLs', function (done) {
+      const layer = new MapboxVectorLayer({
+        styleUrl:
+          'data:,' +
+          encodeURIComponent(
+            JSON.stringify({
+              version: 8,
+              sources: {
+                'foo': {
+                  url: '/spec/ol/data/tilejson.json',
+                  type: 'vector',
+                },
+              },
+            })
+          ),
+      });
+      layer.on('change:source', function () {
+        // we only get here when a new source was set, which is what ol-mapbox-style's
+        // setupVectorSource() does.
+        done();
+      });
+    });
   });
 });

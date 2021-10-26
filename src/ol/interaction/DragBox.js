@@ -98,7 +98,7 @@ export class DragBoxEvent extends Event {
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
  *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend', DragBoxEvent, Return> &
+ *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend'|'boxstart', DragBoxEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
  *     'change:active'|'boxcancel'|'boxdrag'|'boxend', Return>} DragBoxOnSignature
  */
@@ -123,12 +123,12 @@ class DragBox extends PointerInteraction {
     super();
 
     /***
-     * @type {DragBoxOnSignature<import("../Observable").OnReturn>}
+     * @type {DragBoxOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {DragBoxOnSignature<import("../Observable").OnReturn>}
+     * @type {DragBoxOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

@@ -137,7 +137,9 @@ function updateControlValue() {
 }
 updateControlValue();
 
-thresholdControl.addEventListener('input', function () {
+const listener = function () {
   updateControlValue();
   raster.changed();
-});
+};
+thresholdControl.addEventListener('input', listener);
+thresholdControl.addEventListener('change', listener);

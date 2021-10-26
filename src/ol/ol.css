@@ -1,7 +1,8 @@
 .ol-box {
   box-sizing: border-box;
   border-radius: 2px;
-  border: 2px solid blue;
+  border: 1.5px solid rgb(179,197,219);
+  background-color: rgba(255,255,255,0.4);
 }
 
 .ol-mouse-position {
@@ -130,9 +131,9 @@
   margin: 1px;
   padding: 0;
   color: white;
-  font-size: 1.14em;
   font-weight: bold;
   text-decoration: none;
+  font-size: inherit;
   text-align: center;
   height: 1.375em;
   width: 1.375em;
@@ -180,13 +181,18 @@
   max-width: calc(100% - 1.3em);
   display: flex;
   flex-flow: row-reverse;
-  align-items: flex-end;
+  align-items: center;
+}
+.ol-attribution a {
+  color: rgba(0,60,136,0.7);
+  text-decoration: none;
 }
 .ol-attribution ul {
   margin: 0;
   padding: 1px .5em;
   color: #000;
   text-shadow: 0 0 2px #fff;
+  font-size: 12px;
 }
 .ol-attribution li {
   display: inline;

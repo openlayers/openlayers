@@ -247,97 +247,104 @@ class CanvasBuilder extends VectorContext {
    * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {Function} renderer Renderer.
+   * @param {Function} hitDetectionRenderer Renderer.
    */
-  drawCustom(geometry, feature, renderer) {
+  drawCustom(geometry, feature, renderer, hitDetectionRenderer) {
     this.beginGeometry(geometry, feature);
+
     const type = geometry.getType();
     const stride = geometry.getStride();
     const builderBegin = this.coordinates.length;
+
     let flatCoordinates, builderEnd, builderEnds, builderEndss;
     let offset;
-    if (type == GeometryType.MULTI_POLYGON) {
-      flatCoordinates =
-        /** @type {import("../../geom/MultiPolygon.js").default} */ (
-          geometry
-        ).getOrientedFlatCoordinates();
-      builderEndss = [];
-      const endss =
-        /** @type {import("../../geom/MultiPolygon.js").default} */ (
-          geometry
-        ).getEndss();
-      offset = 0;
-      for (let i = 0, ii = endss.length; i < ii; ++i) {
-        const myEnds = [];
+
+    switch (type) {
+      case GeometryType.MULTI_POLYGON:
+        flatCoordinates =
+          /** @type {import("../../geom/MultiPolygon.js").default} */ (
+            geometry
+          ).getOrientedFlatCoordinates();
+        builderEndss = [];
+        const endss =
+          /** @type {import("../../geom/MultiPolygon.js").default} */ (
+            geometry
+          ).getEndss();
+        offset = 0;
+        for (let i = 0, ii = endss.length; i < ii; ++i) {
+          const myEnds = [];
+          offset = this.drawCustomCoordinates_(
+            flatCoordinates,
+            offset,
+            endss[i],
+            stride,
+            myEnds
+          );
+          builderEndss.push(myEnds);
+        }
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEndss,
+          geometry,
+          renderer,
+          inflateMultiCoordinatesArray,
+        ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEndss,
+          geometry,
+          hitDetectionRenderer || renderer,
+          inflateMultiCoordinatesArray,
+        ]);
+        break;
+      case GeometryType.POLYGON:
+      case GeometryType.MULTI_LINE_STRING:
+        builderEnds = [];
+        flatCoordinates =
+          type == GeometryType.POLYGON
+            ? /** @type {import("../../geom/Polygon.js").default} */ (
+                geometry
+              ).getOrientedFlatCoordinates()
+            : geometry.getFlatCoordinates();
         offset = this.drawCustomCoordinates_(
           flatCoordinates,
-          offset,
-          endss[i],
+          0,
+          /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (
+            geometry
+          ).getEnds(),
           stride,
-          myEnds
+          builderEnds
         );
-        builderEndss.push(myEnds);
-      }
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEndss,
-        geometry,
-        renderer,
-        inflateMultiCoordinatesArray,
-      ]);
-    } else if (
-      type == GeometryType.POLYGON ||
-      type == GeometryType.MULTI_LINE_STRING
-    ) {
-      builderEnds = [];
-      flatCoordinates =
-        type == GeometryType.POLYGON
-          ? /** @type {import("../../geom/Polygon.js").default} */ (
-              geometry
-            ).getOrientedFlatCoordinates()
-          : geometry.getFlatCoordinates();
-      offset = this.drawCustomCoordinates_(
-        flatCoordinates,
-        0,
-        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (
-          geometry
-        ).getEnds(),
-        stride,
-        builderEnds
-      );
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEnds,
-        geometry,
-        renderer,
-        inflateCoordinatesArray,
-      ]);
-    } else if (
-      type == GeometryType.LINE_STRING ||
-      type == GeometryType.CIRCLE
-    ) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      builderEnd = this.appendFlatLineCoordinates(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride,
-        false,
-        false
-      );
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEnd,
-        geometry,
-        renderer,
-        inflateCoordinates,
-      ]);
-    } else if (type == GeometryType.MULTI_POINT) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      builderEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
-      if (builderEnd > builderBegin) {
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnds,
+          geometry,
+          renderer,
+          inflateCoordinatesArray,
+        ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnds,
+          geometry,
+          hitDetectionRenderer || renderer,
+          inflateCoordinatesArray,
+        ]);
+        break;
+      case GeometryType.LINE_STRING:
+      case GeometryType.CIRCLE:
+        flatCoordinates = geometry.getFlatCoordinates();
+        builderEnd = this.appendFlatLineCoordinates(
+          flatCoordinates,
+          0,
+          flatCoordinates.length,
+          stride,
+          false,
+          false
+        );
         this.instructions.push([
           CanvasInstruction.CUSTOM,
           builderBegin,
@@ -346,18 +353,59 @@ class CanvasBuilder extends VectorContext {
           renderer,
           inflateCoordinates,
         ]);
-      }
-    } else if (type == GeometryType.POINT) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
-      builderEnd = this.coordinates.length;
-      this.instructions.push([
-        CanvasInstruction.CUSTOM,
-        builderBegin,
-        builderEnd,
-        geometry,
-        renderer,
-      ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          hitDetectionRenderer || renderer,
+          inflateCoordinates,
+        ]);
+        break;
+      case GeometryType.MULTI_POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        builderEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
+
+        if (builderEnd > builderBegin) {
+          this.instructions.push([
+            CanvasInstruction.CUSTOM,
+            builderBegin,
+            builderEnd,
+            geometry,
+            renderer,
+            inflateCoordinates,
+          ]);
+          this.hitDetectionInstructions.push([
+            CanvasInstruction.CUSTOM,
+            builderBegin,
+            builderEnd,
+            geometry,
+            hitDetectionRenderer || renderer,
+            inflateCoordinates,
+          ]);
+        }
+        break;
+      case GeometryType.POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
+        builderEnd = this.coordinates.length;
+
+        this.instructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          renderer,
+        ]);
+        this.hitDetectionInstructions.push([
+          CanvasInstruction.CUSTOM,
+          builderBegin,
+          builderEnd,
+          geometry,
+          hitDetectionRenderer || renderer,
+        ]);
+        break;
+      default:
     }
     this.endGeometry(feature);
   }

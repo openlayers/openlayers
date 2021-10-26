@@ -249,8 +249,8 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.image_ = image;
     this.height_ = size[1];
     this.opacity_ = imageStyle.getOpacity();
-    this.originX_ = origin[0];
-    this.originY_ = origin[1];
+    this.originX_ = origin[0] * this.imagePixelRatio_;
+    this.originY_ = origin[1] * this.imagePixelRatio_;
     this.rotateWithView_ = imageStyle.getRotateWithView();
     this.rotation_ = imageStyle.getRotation();
     this.scale_ = imageStyle.getScaleArray();

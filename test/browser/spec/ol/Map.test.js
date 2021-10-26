@@ -1,3 +1,4 @@
+import Collection from '../../../../src/ol/Collection.js';
 import Control from '../../../../src/ol/control/Control.js';
 import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
 import DragPan from '../../../../src/ol/interaction/DragPan.js';
@@ -33,11 +34,71 @@ import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 
-describe('ol.Map', function () {
+describe('ol/Map', function () {
   describe('constructor', function () {
     it('creates a new map', function () {
       const map = new Map({});
       expect(map).to.be.a(Map);
+    });
+
+    it('accepts a promise for view options', (done) => {
+      let resolve;
+
+      const map = new Map({
+        view: new Promise((r) => {
+          resolve = r;
+        }),
+      });
+
+      expect(map.getView()).to.be.a(View);
+      expect(map.getView().isDef()).to.be(false);
+
+      map.once('change:view', () => {
+        const view = map.getView();
+        expect(view).to.be.a(View);
+        expect(view.isDef()).to.be(true);
+        expect(view.getCenter()).to.eql([1, 2]);
+        expect(view.getZoom()).to.be(3);
+        done();
+      });
+
+      resolve({
+        center: [1, 2],
+        zoom: 3,
+      });
+    });
+
+    it('allows the view to be set with a promise later after construction', (done) => {
+      const map = new Map({
+        view: new View({zoom: 1, center: [0, 0]}),
+      });
+
+      expect(map.getView()).to.be.a(View);
+      expect(map.getView().isDef()).to.be(true);
+
+      let resolve;
+      map.setView(
+        new Promise((r) => {
+          resolve = r;
+        })
+      );
+
+      expect(map.getView()).to.be.a(View);
+      expect(map.getView().isDef()).to.be(false);
+
+      map.once('change:view', () => {
+        const view = map.getView();
+        expect(view).to.be.a(View);
+        expect(view.isDef()).to.be(true);
+        expect(view.getCenter()).to.eql([1, 2]);
+        expect(view.getZoom()).to.be(3);
+        done();
+      });
+
+      resolve({
+        center: [1, 2],
+        zoom: 3,
+      });
     });
 
     it('creates a set of default interactions', function () {
@@ -116,6 +177,42 @@ describe('ol.Map', function () {
         map.addLayer(layer);
       };
       expect(call).to.throwException();
+    });
+  });
+
+  describe('#setLayers()', function () {
+    it('adds an array of layers to the map', function () {
+      const map = new Map({});
+
+      const layer0 = new TileLayer();
+      const layer1 = new TileLayer();
+      map.setLayers([layer0, layer1]);
+
+      const collection = map.getLayers();
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(layer0);
+      expect(collection.item(1)).to.be(layer1);
+    });
+
+    it('clears any existing layers', function () {
+      const map = new Map({layers: [new TileLayer()]});
+
+      map.setLayers([new TileLayer(), new TileLayer()]);
+
+      expect(map.getLayers().getLength()).to.be(2);
+    });
+
+    it('also works with collections', function () {
+      const map = new Map({});
+
+      const layer0 = new TileLayer();
+      const layer1 = new TileLayer();
+      map.setLayers(new Collection([layer0, layer1]));
+
+      const collection = map.getLayers();
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(layer0);
+      expect(collection.item(1)).to.be(layer1);
     });
   });
 
@@ -268,6 +365,13 @@ describe('ol.Map', function () {
           new VectorLayer({
             source: new VectorSource({
               features: [new Feature(new Point([0, 0]))],
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              loader: function (extent, resolution, projection) {
+                this.addFeature(new Feature(new Point([0, 0])));
+              },
             }),
           }),
         ],

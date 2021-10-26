@@ -12,6 +12,7 @@ import {
   fromLonLat,
   fromUserCoordinate,
   fromUserExtent,
+  fromUserResolution,
   getPointResolution,
   get as getProjection,
   getTransform,
@@ -21,6 +22,7 @@ import {
   toLonLat,
   toUserCoordinate,
   toUserExtent,
+  toUserResolution,
   transform,
   transformExtent,
   useGeographic,
@@ -151,6 +153,36 @@ describe('ol/proj.js', function () {
     });
   });
 
+  describe('fromUserResolution()', function () {
+    it("adjusts a resolution for the user projection's units", function () {
+      useGeographic();
+      const user = 1 / METERS_PER_UNIT['degrees'];
+      const resolution = fromUserResolution(user, 'EPSG:3857');
+      expect(resolution).to.roughlyEqual(1, 1e-9);
+    });
+
+    it('returns the original if no user projection is set', function () {
+      const user = METERS_PER_UNIT['meters'];
+      const resolution = fromUserResolution(user, 'EPSG:3857');
+      expect(resolution).to.eql(user);
+    });
+  });
+
+  describe('toUserResolution()', function () {
+    it("adjusts a resolution for the user projection's units", function () {
+      useGeographic();
+      const dest = 1;
+      const resolution = toUserResolution(dest, 'EPSG:3857');
+      expect(resolution).to.eql(1 / METERS_PER_UNIT['degrees']);
+    });
+
+    it('returns the original if no user projection is set', function () {
+      const dest = METERS_PER_UNIT['degrees'];
+      const resolution = toUserResolution(dest, 'EPSG:3857');
+      expect(resolution).to.eql(dest);
+    });
+  });
+
   describe('toLonLat()', function () {
     const cases = [
       {
@@ -190,12 +222,14 @@ describe('ol/proj.js', function () {
       });
     }
 
-    it('gives that 3857, 102100, 102113, 900913 are equivalent ', function () {
+    it('treats EPSG:3857 variants as equivalent', function () {
       _testAllEquivalent([
         'EPSG:3857',
         'EPSG:102100',
         'EPSG:102113',
         'EPSG:900913',
+        'http://www.opengis.net/def/crs/EPSG/0/3857',
+        'http://www.opengis.net/gml/srs/epsg.xml#3857',
       ]);
     });
 
@@ -217,18 +251,17 @@ describe('ol/proj.js', function () {
       _testAllEquivalent(['EPSG:3857', 'EPSG:3857']);
     });
 
-    it(
-      'gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326, ' +
-        'urn:x-ogc:def:crs:EPSG:6.6:4326 are equivalent',
-      function () {
-        _testAllEquivalent([
-          'CRS:84',
-          'urn:ogc:def:crs:EPSG:6.6:4326',
-          'urn:x-ogc:def:crs:EPSG:6.6:4326',
-          'EPSG:4326',
-        ]);
-      }
-    );
+    it('treats EPSG:4326 variants as equivalent', function () {
+      _testAllEquivalent([
+        'CRS:84',
+        'urn:ogc:def:crs:EPSG:6.6:4326',
+        'urn:x-ogc:def:crs:EPSG:6.6:4326',
+        'EPSG:4326',
+        'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+        'http://www.opengis.net/gml/srs/epsg.xml#4326',
+        'http://www.opengis.net/def/crs/EPSG/0/4326',
+      ]);
+    });
 
     it('requires code and units to be equal for projection evquivalence', function () {
       const proj1 = new Projection({

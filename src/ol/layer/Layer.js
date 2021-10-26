@@ -79,7 +79,7 @@ import {listen, unlistenByKey} from '../events.js';
  * displayed, irrespective of the source of that data.
  *
  * Layers are usually added to a map with {@link import("../PluggableMap.js").default#addLayer map.addLayer()}. Components
- * like {@link module:ol/interaction/Select~Select} use unmanaged layers
+ * like {@link module:ol/interaction/Draw~Draw} use unmanaged layers
  * internally. These unmanaged layers are associated with the map using
  * {@link module:ol/layer/Layer~Layer#setMap} instead.
  *
@@ -107,12 +107,12 @@ class Layer extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {LayerOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {LayerOnSignature<import("../Observable.js").OnReturn>}
+     * @type {LayerOnSignature<import("../events").EventsKey>}
      */
     this.once;
 
@@ -348,6 +348,11 @@ class Layer extends BaseLayer {
    * Clean up.
    */
   disposeInternal() {
+    if (this.renderer_) {
+      this.renderer_.dispose();
+      delete this.renderer_;
+    }
+
     this.setSource(null);
     super.disposeInternal();
   }

@@ -27,7 +27,8 @@
         <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a><br>
         <a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a><br>
         <a href="module-ol_layer_Vector-VectorLayer.html">ol/layer/Vector</a><br>
-        <a href="module-ol_layer_VectorTile-VectorTileLayer.html">ol/layer/VectorTile</a>
+        <a href="module-ol_layer_VectorTile-VectorTileLayer.html">ol/layer/VectorTile</a><br>
+        <a href="module-ol_layer_WebGLTile-WebGLTileLayer.html">ol/layer/WebGLTile</a>
       </div>
     </div>
   </div>
@@ -58,7 +59,7 @@
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Sources and formats</h4>
-        <a href="module-ol_source_Tile-TileSource.html">Tile sources</a> for <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a>
+        <a href="module-ol_source_Tile-TileSource.html">Tile sources</a> for <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a> or <a href="module-ol_layer_WebGLTile-WebGLTileLayer.html">ol/layer/WebGLTile</a>
         <br><a href="module-ol_source_Image-ImageSource.html">Image sources</a> for <a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a>
         <br><a href="module-ol_source_Vector-VectorSource.html">Vector sources</a> for <a href="module-ol_layer_Vector-VectorLayer.html">ol/layer/Vector</a>
         <br><a href="module-ol_source_VectorTile-VectorTile.html">Vector tile sources</a> for <a href="module-ol_layer_VectorTile-VectorTileLayer.html">ol/layer/VectorTile</a>
@@ -71,7 +72,7 @@
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Projections</h4>
-          <p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use <a href="module-ol_proj.html#.transform">ol/proj#transform()</a> and <a href="module-ol_proj.html#.transformExtent">ol/proj#transformExtent()</a>.</p>
+          <p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform coordinates from and to geographic, use <a href="module-ol_proj.html#.fromLonLat">ol/proj#fromLonLat()</a> and <a href="module-ol_proj.html#.toLonLat">ol/proj#toLonLat()</a>. For extents and other projections, use <a href="module-ol_proj.html#.transformExtent">ol/proj#transformExtent()</a> and <a href="module-ol_proj.html#.transform">ol/proj#transform()</a>.<p>
           <a href="module-ol_proj.html">ol/proj</a>
       </div>
     </div>

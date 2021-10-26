@@ -24,8 +24,8 @@ import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import {
-  readNonNegativeInteger,
   readNonNegativeIntegerString,
+  readPositiveInteger,
   writeStringTextNode,
 } from './xsd.js';
 
@@ -51,14 +51,14 @@ const FEATURE_COLLECTION_PARSERS = {
  */
 const TRANSACTION_SUMMARY_PARSERS = {
   'http://www.opengis.net/wfs': {
-    'totalInserted': makeObjectPropertySetter(readNonNegativeInteger),
-    'totalUpdated': makeObjectPropertySetter(readNonNegativeInteger),
-    'totalDeleted': makeObjectPropertySetter(readNonNegativeInteger),
+    'totalInserted': makeObjectPropertySetter(readPositiveInteger),
+    'totalUpdated': makeObjectPropertySetter(readPositiveInteger),
+    'totalDeleted': makeObjectPropertySetter(readPositiveInteger),
   },
   'http://www.opengis.net/wfs/2.0': {
-    'totalInserted': makeObjectPropertySetter(readNonNegativeInteger),
-    'totalUpdated': makeObjectPropertySetter(readNonNegativeInteger),
-    'totalDeleted': makeObjectPropertySetter(readNonNegativeInteger),
+    'totalInserted': makeObjectPropertySetter(readPositiveInteger),
+    'totalUpdated': makeObjectPropertySetter(readPositiveInteger),
+    'totalDeleted': makeObjectPropertySetter(readPositiveInteger),
   },
 };
 

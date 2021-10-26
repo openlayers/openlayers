@@ -81,12 +81,12 @@ class Collection extends BaseObject {
     super();
 
     /***
-     * @type {CollectionOnSignature<import("./Observable.js").OnReturn>}
+     * @type {CollectionOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {CollectionOnSignature<import("./Observable.js").OnReturn>}
+     * @type {CollectionOnSignature<import("./events").EventsKey>}
      */
     this.once;
 

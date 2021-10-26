@@ -235,6 +235,18 @@ describe('ol.style.expressions', function () {
       expect(expressionToGlsl(context, ['^', ['%', ['time'], 10], 2])).to.eql(
         'pow(mod(u_time, 10.0), 2.0)'
       );
+      expect(
+        expressionToGlsl(context, [
+          'abs',
+          ['-', ['get', 'attr3'], ['get', 'attr2']],
+        ])
+      ).to.eql('abs((a_attr3 - a_attr2))');
+      expect(expressionToGlsl(context, ['sin', 1])).to.eql('sin(1.0)');
+      expect(expressionToGlsl(context, ['cos', 1])).to.eql('cos(1.0)');
+      expect(expressionToGlsl(context, ['atan', 1])).to.eql('atan(1.0)');
+      expect(expressionToGlsl(context, ['atan', 1, 0.5])).to.eql(
+        'atan(1.0, 0.5)'
+      );
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql(
         '(10.0 > a_attr4)'
       );
@@ -249,6 +261,9 @@ describe('ol.style.expressions', function () {
       );
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql(
         '(10.0 == a_attr4)'
+      );
+      expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr4']])).to.eql(
+        `(${stringToGlsl(context, 'red')} == a_attr4)`
       );
       expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql(
         '(10.0 != a_attr4)'
@@ -274,6 +289,10 @@ describe('ol.style.expressions', function () {
       expect(
         expressionToGlsl(context, ['color', ['get', 'attr4'], 1, 2, 0.5])
       ).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
+      expect(expressionToGlsl(context, ['band', 1])).to.eql('color0[0]');
+      expect(expressionToGlsl(context, ['band', 1, -1, 2])).to.eql(
+        'texture2D(u_tileTexture0, v_textureCoord + vec2(-1.0 / u_texturePixelWidth, 2.0 / u_texturePixelHeight))[0]'
+      );
     });
 
     it('throws if the value does not match the type', function () {

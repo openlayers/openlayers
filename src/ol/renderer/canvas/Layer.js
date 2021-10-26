@@ -17,6 +17,7 @@ import {
   getTopRight,
 } from '../../extent.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {cssOpacity} from '../../css.js';
 
 /**
  * @abstract
@@ -88,7 +89,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     let container, context;
     if (
       target &&
-      target.style.opacity === '' &&
+      target.style.opacity === cssOpacity(opacity) &&
       target.className === layerClassName
     ) {
       const canvas = target.firstElementChild;
@@ -96,11 +97,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         context = canvas.getContext('2d');
       }
     }
-    if (
-      context &&
-      (context.canvas.width === 0 ||
-        context.canvas.style.transform === transform)
-    ) {
+    if (context && context.canvas.style.transform === transform) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;

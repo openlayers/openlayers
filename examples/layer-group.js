@@ -6,7 +6,7 @@ import {Group as LayerGroup, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 const key =
-  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
+  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
 const map = new Map({
   layers: [
@@ -49,7 +49,7 @@ function bindInputs(layerid, layer) {
   visibilityInput.prop('checked', layer.getVisible());
 
   const opacityInput = $(layerid + ' input.opacity');
-  opacityInput.on('input', function () {
+  opacityInput.on('input change', function () {
     layer.setOpacity(parseFloat(this.value));
   });
   opacityInput.val(String(layer.getOpacity()));

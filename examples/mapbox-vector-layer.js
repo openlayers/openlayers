@@ -8,7 +8,7 @@ const map = new Map({
     new MapboxVector({
       styleUrl: 'mapbox://styles/mapbox/bright-v9',
       accessToken:
-        'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q',
+        'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ',
     }),
   ],
   view: new View({

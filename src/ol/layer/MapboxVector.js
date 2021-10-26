@@ -7,7 +7,7 @@ import MVT from '../format/MVT.js';
 import SourceState from '../source/State.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
-import {applyStyle} from 'ol-mapbox-style';
+import {applyStyle, setupVectorSource} from 'ol-mapbox-style';
 
 const mapboxBaseUrl = 'https://api.mapbox.com';
 
@@ -154,7 +154,9 @@ const SourceType = {
  * @property {string} styleUrl The URL of the Mapbox style object to use for this layer.  For a
  * style created with Mapbox Studio and hosted on Mapbox, this will look like
  * 'mapbox://styles/you/your-style'.
- * @property {string} accessToken The access token for your Mapbox style.
+ * @property {string} [accessToken] The access token for your Mapbox style. This has to be provided
+ * for `mapbox://` style urls. For `https://` and other urls, access keys must be part of the style
+ * url.
  * @property {string} [source] If your style uses more than one source, you need to use either the
  * `source` property or the `layers` property to limit rendering to a single vector source.  The
  * `source` property corresponds to the id of a vector source in your Mapbox style.
@@ -377,15 +379,32 @@ class MapboxVectorLayer extends VectorTileLayer {
     }
 
     const source = this.getSource();
-    source.setUrl(normalizeSourceUrl(styleSource.url, this.accessToken));
-
-    applyStyle(this, style, sourceIdOrLayersList)
-      .then(() => {
-        source.setState(SourceState.READY);
-      })
-      .catch((error) => {
-        this.handleError(error);
+    if (
+      styleSource.url.indexOf('mapbox://') === 0 ||
+      styleSource.url.indexOf('{z}') !== -1
+    ) {
+      // Tile source url, handle it directly
+      source.setUrl(normalizeSourceUrl(styleSource.url, this.accessToken));
+      applyStyle(this, style, sourceIdOrLayersList)
+        .then(() => {
+          source.setState(SourceState.READY);
+        })
+        .catch((error) => {
+          this.handleError(error);
+        });
+    } else {
+      // TileJSON url, let ol-mapbox-style handle it
+      setupVectorSource(styleSource, styleSource.url).then((source) => {
+        applyStyle(this, style, sourceIdOrLayersList)
+          .then(() => {
+            this.setSource(source);
+          })
+          .catch((error) => {
+            this.setSource(source);
+            this.handleError(error);
+          });
       });
+    }
   }
 
   /**

@@ -48,6 +48,7 @@ import {removeNode} from './dom.js';
  * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
  * @property {import("rbush").default} declutterTree DeclutterTree.
  * @property {null|import("./extent.js").Extent} extent Extent.
+ * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
  * @property {number} layerIndex LayerIndex.
@@ -66,7 +67,7 @@ import {removeNode} from './dom.js';
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {undefined|function(import("./layer/Layer.js").default): boolean} [layerFilter] Layer filter
+ * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
  * function. The filter function will receive one argument, the
  * {@link module:ol/layer/Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
@@ -137,12 +138,17 @@ import {removeNode} from './dom.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
- * @property {View} [view] The map's view.  No layer sources will be
+ * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
  */
 
 /**
+ * @fires import("./MapBrowserEvent.js").MapBrowserEvent
+ * @fires import("./MapEvent.js").MapEvent
+ * @fires import("./render/Event.js").default#precompose
+ * @fires import("./render/Event.js").default#postcompose
+ * @fires import("./render/Event.js").default#rendercomplete
  * @api
  */
 class PluggableMap extends BaseObject {
@@ -153,12 +159,12 @@ class PluggableMap extends BaseObject {
     super();
 
     /***
-     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
+     * @type {PluggableMapOnSignature<import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {PluggableMapOnSignature<import("./Observable.js").OnReturn>}
+     * @type {PluggableMapOnSignature<import("./events").EventsKey>}
      */
     this.once;
 
@@ -383,6 +389,13 @@ class PluggableMap extends BaseObject {
     // is "defined" already.
     this.setProperties(optionsInternal.values);
 
+    const map = this;
+    if (options.view && !(options.view instanceof View)) {
+      options.view.then(function (viewOptions) {
+        map.setView(new View(viewOptions));
+      });
+    }
+
     this.controls.addEventListener(
       CollectionEventType.ADD,
       /**
@@ -553,7 +566,7 @@ class PluggableMap extends BaseObject {
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `opt_options`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
+   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
    *     {@link module:ol/Feature feature} or
    *     {@link module:ol/render/Feature render feature} at the pixel, the second is
@@ -563,7 +576,7 @@ class PluggableMap extends BaseObject {
    * @param {AtPixelOptions} [opt_options] Optional options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
-   * @template S,T
+   * @template T
    * @api
    */
   forEachFeatureAtPixel(pixel, callback, opt_options) {
@@ -833,6 +846,23 @@ class PluggableMap extends BaseObject {
    */
   getLayerGroup() {
     return /** @type {LayerGroup} */ (this.get(MapProperty.LAYERGROUP));
+  }
+
+  /**
+   * Clear any existing layers and add layers to the map.
+   * @param {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} layers The layers to be added to the map.
+   * @api
+   */
+  setLayers(layers) {
+    const group = this.getLayerGroup();
+    if (layers instanceof Collection) {
+      group.setLayers(layers);
+      return;
+    }
+
+    const collection = group.getLayers();
+    collection.clear();
+    collection.extend(layers);
   }
 
   /**
@@ -1407,6 +1437,18 @@ class PluggableMap extends BaseObject {
         viewHints: viewHints,
         wantedTiles: {},
       };
+      if (viewState.nextCenter && viewState.nextResolution) {
+        const rotation = isNaN(viewState.nextRotation)
+          ? viewState.rotation
+          : viewState.nextRotation;
+
+        frameState.nextExtent = getForViewAndSize(
+          viewState.nextCenter,
+          viewState.nextResolution,
+          rotation,
+          size
+        );
+      }
     }
 
     this.frameState_ = frameState;
@@ -1491,12 +1533,24 @@ class PluggableMap extends BaseObject {
 
   /**
    * Set the view for this map.
-   * @param {View} view The view that controls this map.
+   * @param {View|Promise<import("./View.js").ViewOptions>} view The view that controls this map.
+   * It is also possible to pass a promise that resolves to options for constructing a view.  This
+   * alternative allows view properties to be resolved by sources or other components that load
+   * view-related metadata.
    * @observable
    * @api
    */
   setView(view) {
-    this.set(MapProperty.VIEW, view);
+    if (!view || view instanceof View) {
+      this.set(MapProperty.VIEW, view);
+      return;
+    }
+    this.set(MapProperty.VIEW, new View());
+
+    const map = this;
+    view.then(function (viewOptions) {
+      map.setView(new View(viewOptions));
+    });
   }
 
   /**
@@ -1524,7 +1578,14 @@ class PluggableMap extends BaseObject {
         parseFloat(computedStyle['borderBottomWidth']);
       if (!isNaN(width) && !isNaN(height)) {
         size = [width, height];
-        if (!hasArea(size)) {
+        if (
+          !hasArea(size) &&
+          !!(
+            targetElement.offsetWidth ||
+            targetElement.offsetHeight ||
+            targetElement.getClientRects().length
+          )
+        ) {
           // eslint-disable-next-line
           console.warn(
             "No map visible because the map container's width or height are 0."
@@ -1588,7 +1649,7 @@ function createOptionsInternal(options) {
   values[MapProperty.TARGET] = options.target;
 
   values[MapProperty.VIEW] =
-    options.view !== undefined ? options.view : new View();
+    options.view instanceof View ? options.view : new View();
 
   let controls;
   if (options.controls !== undefined) {

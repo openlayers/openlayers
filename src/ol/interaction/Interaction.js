@@ -46,12 +46,12 @@ class Interaction extends BaseObject {
     super();
 
     /***
-     * @type {InteractionOnSignature<import("../Observable.js").OnReturn>}
+     * @type {InteractionOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {InteractionOnSignature<import("../Observable.js").OnReturn>}
+     * @type {InteractionOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

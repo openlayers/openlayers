@@ -236,87 +236,193 @@ describe('ol.render.canvas.BuilderGroup', function () {
       expect(lineDashOffset).to.be(4);
     });
 
-    it('calls the renderer function configured for the style', function () {
-      const calls = [];
-      const style = new Style({
-        renderer: function (coords, state) {
-          calls.push({
-            coords: coords,
-            geometry: state.geometry,
-            feature: state.feature,
-            context: state.context,
-            pixelRatio: state.pixelRatio,
-            rotation: state.rotation,
-            resolution: state.resolution,
-          });
-        },
+    describe('use renderer and hitDetectionRenderer defined in style', function () {
+      let point, multipoint, linestring, multilinestring;
+      let polygon, multipolygon, geometrycollection;
+
+      /**
+       * @param {BuilderGroup} builder The builder to get instructions from.
+       * @param {number} [pixelRatio] The pixel ratio.
+       * @param {boolean} [overlaps] Whether there is overlaps.
+       * @param {Array<number>} [coordinate] Used for hit detection.
+       */
+      function executeHitDetectionForCoordinate(
+        builder,
+        pixelRatio,
+        overlaps,
+        coordinate
+      ) {
+        const executor = new ExecutorGroup(
+          [-180, -90, 180, 90],
+          1,
+          pixelRatio || 1,
+          !!overlaps,
+          builder.finish()
+        );
+
+        executor.execute(context, 1, transform, 0, false);
+        executor.forEachFeatureAtCoordinate(coordinate, 1, 0, 1, () => {});
+      }
+
+      beforeEach(function () {
+        point = new Feature(new Point([45, 90]));
+        multipoint = new Feature(
+          new MultiPoint([
+            [45, 90],
+            [90, 45],
+          ])
+        );
+        linestring = new Feature(
+          new LineString([
+            [45, 90],
+            [45, 45],
+            [90, 45],
+          ])
+        );
+        multilinestring = new Feature(
+          new MultiLineString([
+            linestring.getGeometry().getCoordinates(),
+            linestring.getGeometry().getCoordinates(),
+          ])
+        );
+        polygon = feature1;
+        multipolygon = new Feature(
+          new MultiPolygon([
+            polygon.getGeometry().getCoordinates(),
+            polygon.getGeometry().getCoordinates(),
+          ])
+        );
+        geometrycollection = new Feature(
+          new GeometryCollection([
+            point.getGeometry(),
+            linestring.getGeometry(),
+            polygon.getGeometry(),
+          ])
+        );
       });
-      const point = new Feature(new Point([45, 90]));
-      const multipoint = new Feature(
-        new MultiPoint([
-          [45, 90],
-          [90, 45],
-        ])
-      );
-      const linestring = new Feature(
-        new LineString([
-          [45, 90],
-          [45, 45],
-          [90, 45],
-        ])
-      );
-      const multilinestring = new Feature(
-        new MultiLineString([
-          linestring.getGeometry().getCoordinates(),
-          linestring.getGeometry().getCoordinates(),
-        ])
-      );
-      const polygon = feature1;
-      const multipolygon = new Feature(
-        new MultiPolygon([
-          polygon.getGeometry().getCoordinates(),
-          polygon.getGeometry().getCoordinates(),
-        ])
-      );
-      const geometrycollection = new Feature(
-        new GeometryCollection([
-          point.getGeometry(),
-          linestring.getGeometry(),
-          polygon.getGeometry(),
-        ])
-      );
-      builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
-      renderFeature(builder, point, style, 1);
-      renderFeature(builder, multipoint, style, 1);
-      renderFeature(builder, linestring, style, 1);
-      renderFeature(builder, multilinestring, style, 1);
-      renderFeature(builder, polygon, style, 1);
-      renderFeature(builder, multipolygon, style, 1);
-      renderFeature(builder, geometrycollection, style, 1);
-      scaleTransform(transform, 0.1, 0.1);
-      execute(builder, 1, true);
-      expect(calls.length).to.be(9);
-      expect(calls[0].geometry).to.be(point.getGeometry());
-      expect(calls[0].feature).to.be(point);
-      expect(calls[0].context).to.be(context);
-      expect(calls[0].pixelRatio).to.be(1);
-      expect(calls[0].rotation).to.be(0);
-      expect(calls[0].resolution).to.be(1);
-      expect(calls[0].coords).to.eql([4.5, 9]);
-      expect(calls[1].feature).to.be(multipoint);
-      expect(calls[1].coords[0]).to.eql([4.5, 9]);
-      expect(calls[2].feature).to.be(linestring);
-      expect(calls[2].coords[0]).to.eql([4.5, 9]);
-      expect(calls[3].feature).to.be(multilinestring);
-      expect(calls[3].coords[0][0]).to.eql([4.5, 9]);
-      expect(calls[4].feature).to.be(polygon);
-      expect(calls[4].coords[0][0]).to.eql([-9, -4.5]);
-      expect(calls[5].feature).to.be(multipolygon);
-      expect(calls[5].coords[0][0][0]).to.eql([-9, -4.5]);
-      expect(calls[6].feature).to.be(geometrycollection);
-      expect(calls[6].geometry.getCoordinates()).to.eql([45, 90]);
-      expect(calls[7].geometry.getCoordinates()[0]).to.eql([45, 90]);
-      expect(calls[8].geometry.getCoordinates()[0][0]).to.eql([-90, -45]);
+      it('calls the renderer function in hit detection', function () {
+        const calls = [];
+        const style = new Style({
+          renderer: function (coords, state) {
+            calls.push({
+              coords: coords,
+              geometry: state.geometry,
+              feature: state.feature,
+              context: state.context,
+              pixelRatio: state.pixelRatio,
+              rotation: state.rotation,
+              resolution: state.resolution,
+            });
+          },
+        });
+
+        builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
+        renderFeature(builder, point, style, 1);
+        renderFeature(builder, multipoint, style, 1);
+        renderFeature(builder, linestring, style, 1);
+        renderFeature(builder, multilinestring, style, 1);
+        renderFeature(builder, polygon, style, 1);
+        renderFeature(builder, multipolygon, style, 1);
+        renderFeature(builder, geometrycollection, style, 1);
+        scaleTransform(transform, 0.1, 0.1);
+        executeHitDetectionForCoordinate(builder, 1, true, [45, 90]);
+
+        // since renderer will be used for rendering and hit detection
+        // expect calls.length to be ass twice was in rendering
+        expect(calls.length).to.be(18);
+      });
+
+      it('calls the hit detection renderer in hit detection', function () {
+        const calls = [];
+        const hitDetectionCalls = [];
+        const style = new Style({
+          renderer: function (coords, state) {
+            calls.push({
+              coords: coords,
+              geometry: state.geometry,
+              feature: state.feature,
+              context: state.context,
+              pixelRatio: state.pixelRatio,
+              rotation: state.rotation,
+              resolution: state.resolution,
+            });
+          },
+          hitDetectionRenderer: function (coords, state) {
+            hitDetectionCalls.push({
+              coords: coords,
+              geometry: state.geometry,
+              feature: state.feature,
+              context: state.context,
+              pixelRatio: state.pixelRatio,
+              rotation: state.rotation,
+              resolution: state.resolution,
+            });
+          },
+        });
+
+        builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
+        renderFeature(builder, point, style, 1);
+        renderFeature(builder, multipoint, style, 1);
+        renderFeature(builder, linestring, style, 1);
+        renderFeature(builder, multilinestring, style, 1);
+        renderFeature(builder, polygon, style, 1);
+        renderFeature(builder, multipolygon, style, 1);
+        renderFeature(builder, geometrycollection, style, 1);
+        scaleTransform(transform, 0.1, 0.1);
+        executeHitDetectionForCoordinate(builder, 1, true, [45, 90]);
+        expect(calls.length).to.be(9);
+        expect(hitDetectionCalls.length).to.be(9);
+      });
+
+      it('calls the renderer function configured for the style', function () {
+        const calls = [];
+        const style = new Style({
+          renderer: function (coords, state) {
+            calls.push({
+              coords: coords,
+              geometry: state.geometry,
+              feature: state.feature,
+              context: state.context,
+              pixelRatio: state.pixelRatio,
+              rotation: state.rotation,
+              resolution: state.resolution,
+            });
+          },
+        });
+
+        builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
+        renderFeature(builder, point, style, 1);
+        renderFeature(builder, multipoint, style, 1);
+        renderFeature(builder, linestring, style, 1);
+        renderFeature(builder, multilinestring, style, 1);
+        renderFeature(builder, polygon, style, 1);
+        renderFeature(builder, multipolygon, style, 1);
+        renderFeature(builder, geometrycollection, style, 1);
+        scaleTransform(transform, 0.1, 0.1);
+        execute(builder, 1, true);
+        expect(calls.length).to.be(9);
+        expect(calls[0].geometry).to.be(point.getGeometry());
+        expect(calls[0].feature).to.be(point);
+        expect(calls[0].context).to.be(context);
+        expect(calls[0].pixelRatio).to.be(1);
+        expect(calls[0].rotation).to.be(0);
+        expect(calls[0].resolution).to.be(1);
+        expect(calls[0].coords).to.eql([4.5, 9]);
+        expect(calls[1].feature).to.be(multipoint);
+        expect(calls[1].coords[0]).to.eql([4.5, 9]);
+        expect(calls[2].feature).to.be(linestring);
+        expect(calls[2].coords[0]).to.eql([4.5, 9]);
+        expect(calls[3].feature).to.be(multilinestring);
+        expect(calls[3].coords[0][0]).to.eql([4.5, 9]);
+        expect(calls[4].feature).to.be(polygon);
+        expect(calls[4].coords[0][0]).to.eql([-9, -4.5]);
+        expect(calls[5].feature).to.be(multipolygon);
+        expect(calls[5].coords[0][0][0]).to.eql([-9, -4.5]);
+        expect(calls[6].feature).to.be(geometrycollection);
+        expect(calls[6].geometry.getCoordinates()).to.eql([45, 90]);
+        expect(calls[7].geometry.getCoordinates()[0]).to.eql([45, 90]);
+        expect(calls[8].geometry.getCoordinates()[0][0]).to.eql([-90, -45]);
+      });
     });
   });
 });

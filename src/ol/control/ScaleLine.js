@@ -100,12 +100,12 @@ class ScaleLine extends Control {
     });
 
     /***
-     * @type {ScaleLineOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ScaleLineOnSignature<import("../events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ScaleLineOnSignature<import("../Observable.js").OnReturn>}
+     * @type {ScaleLineOnSignature<import("../events").EventsKey>}
      */
     this.once;
 

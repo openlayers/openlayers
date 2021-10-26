@@ -1,7 +1,13 @@
 import expect from '../expect.js';
-import {getFontParameters} from '../../../src/ol/css.js';
+import {cssOpacity, getFontParameters} from '../../../src/ol/css.js';
 
 describe('ol.css', function () {
+  describe('cssOpacity()', function () {
+    it('converts number to string, 1 to ""', function () {
+      expect(cssOpacity(0.5)).to.eql('0.5');
+      expect(cssOpacity(1)).to.eql('');
+    });
+  });
   describe('getFontParameters()', function () {
     const cases = [
       {

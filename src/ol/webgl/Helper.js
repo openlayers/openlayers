@@ -10,9 +10,7 @@ import {
   UNSIGNED_INT,
   UNSIGNED_SHORT,
   getContext,
-  getSupportedExtensions,
 } from '../webgl.js';
-import {assert} from '../asserts.js';
 import {clear} from '../obj.js';
 import {
   compose as composeTransform,
@@ -23,7 +21,6 @@ import {
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import {getUid} from '../util.js';
-import {includes} from '../array.js';
 
 /**
  * @typedef {Object} BufferCacheEntry
@@ -274,12 +271,15 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
+     * @type {Object<string, Object>}
+     */
+    this.extensionCache_ = {};
+
+    /**
+     * @private
      * @type {WebGLProgram}
      */
     this.currentProgram_ = null;
-
-    assert(includes(getSupportedExtensions(), 'OES_element_index_uint'), 63);
-    gl.getExtension('OES_element_index_uint');
 
     this.canvas_.addEventListener(
       ContextEventType.LOST,
@@ -369,6 +369,21 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * Get a WebGL extension.  If the extension is not supported, null is returned.
+   * Extensions are cached after they are enabled for the first time.
+   * @param {string} name The extension name.
+   * @return {Object} The extension or null if not supported.
+   */
+  getExtension(name) {
+    if (name in this.extensionCache_) {
+      return this.extensionCache_[name];
+    }
+    const extension = this.gl_.getExtension(name);
+    this.extensionCache_[name] = extension;
+    return extension;
+  }
+
+  /**
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
@@ -427,6 +442,13 @@ class WebGLHelper extends Disposable {
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_
     );
+
+    const extension = this.gl_.getExtension('WEBGL_lose_context');
+    if (extension) {
+      extension.loseContext();
+    }
+    delete this.gl_;
+    delete this.canvas_;
   }
 
   /**
@@ -434,9 +456,10 @@ class WebGLHelper extends Disposable {
    * Post process passes will be initialized here, the first one being bound as a render target for
    * subsequent draw calls.
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
    * @api
    */
-  prepareDraw(frameState) {
+  prepareDraw(frameState, opt_disableAlphaBlend) {
     const gl = this.getGL();
     const canvas = this.getCanvas();
     const size = frameState.size;
@@ -459,7 +482,10 @@ class WebGLHelper extends Disposable {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(
+      gl.ONE,
+      opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
+    );
 
     gl.useProgram(this.currentProgram_);
     this.applyFrameState(frameState);
@@ -502,6 +528,8 @@ class WebGLHelper extends Disposable {
    */
   drawElements(start, end) {
     const gl = this.getGL();
+    this.getExtension('OES_element_index_uint');
+
     const elementType = gl.UNSIGNED_INT;
     const elementSize = 4;
 

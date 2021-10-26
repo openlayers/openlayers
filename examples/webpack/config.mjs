@@ -18,7 +18,7 @@ export default {
       .filter((name) => /^(?!index).*\.html$/.test(name))
       .map((name) => name.replace(/\.html$/, ''))
       .forEach((example) => {
-        entry[example] = `./${example}.js`;
+        entry[example] = ['regenerator-runtime/runtime', `./${example}.js`];
       });
     return entry;
   },
@@ -26,27 +26,15 @@ export default {
   module: {
     rules: [
       {
-        test: /^((?!es2015-)[\s\S])*\.js$/,
+        test: /^((?!es2015-)[\s\S])*\.m?js$/,
         use: {
-          loader: 'buble-loader',
+          loader: 'babel-loader',
           options: {
-            transforms: {
-              dangerousForOf: true,
-            },
+            presets: [
+              ['@babel/preset-env', {targets: 'last 2 versions, not dead'}],
+            ],
           },
         },
-        include: [
-          path.join(baseDir, '..', '..', 'src'),
-          path.join(baseDir, '..'),
-          path.join(
-            baseDir,
-            '..',
-            '..',
-            'node_modules',
-            '@mapbox',
-            'mapbox-gl-style-spec'
-          ),
-        ],
       },
       {
         test: /\.js$/,
@@ -63,10 +51,6 @@ export default {
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/],
         extractComments: false,
-        terserOptions: {
-          // Mangle private members convention with underscore suffix
-          mangle: {properties: {regex: /_$/}},
-        },
       }),
     ],
     runtimeChunk: {
@@ -101,6 +85,8 @@ export default {
   resolve: {
     fallback: {
       fs: false,
+      http: false,
+      https: false,
     },
     alias: {
       // allow imports from 'ol/module' instead of specifiying the source path

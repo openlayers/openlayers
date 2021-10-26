@@ -24,6 +24,7 @@ import {
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
 } from '../../extent.js';
+import {cssOpacity} from '../../css.js';
 import {
   defaultOrder as defaultRenderOrder,
   getTolerance as getRenderTolerance,
@@ -36,6 +37,7 @@ import {
   getTransformFromProjections,
   getUserProjection,
   toUserExtent,
+  toUserResolution,
 } from '../../proj.js';
 import {getUid} from '../../util.js';
 import {wrapX as wrapCoordinateX} from '../../coordinate.js';
@@ -254,10 +256,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       (!replayGroup || replayGroup.isEmpty()) &&
       (!declutterExecutorGroup || declutterExecutorGroup.isEmpty())
     ) {
-      if (!this.containerReused && canvas.width > 0) {
-        canvas.width = 0;
-      }
-      return this.container;
+      return null;
     }
 
     // resize and clear
@@ -300,10 +299,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.postRender(context, frameState);
 
-    const opacity = layerState.opacity;
+    const opacity = cssOpacity(layerState.opacity);
     const container = this.container;
-    if (opacity !== parseFloat(container.style.opacity)) {
-      container.style.opacity = opacity === 1 ? '' : String(opacity);
+    if (opacity !== container.style.opacity) {
+      container.style.opacity = opacity;
     }
 
     if (this.renderedRotation_ !== viewState.rotation) {
@@ -642,9 +641,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     let userTransform;
     if (userProjection) {
       for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
+        const extent = loadExtents[i];
+        const userExtent = toUserExtent(extent, projection);
         vectorSource.loadFeatures(
-          toUserExtent(loadExtents[i], projection),
-          resolution,
+          userExtent,
+          toUserResolution(resolution, projection),
           userProjection
         );
       }

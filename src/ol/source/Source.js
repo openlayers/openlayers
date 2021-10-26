@@ -90,11 +90,34 @@ class Source extends BaseObject {
      * @type {boolean}
      */
     this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
+
+    /**
+     * @protected
+     * @type {function(import("../View.js").ViewOptions):void}
+     */
+    this.viewResolver = null;
+
+    /**
+     * @protected
+     * @type {function(Error):void}
+     */
+    this.viewRejector = null;
+
+    const self = this;
+    /**
+     * @private
+     * @type {Promise<import("../View.js").ViewOptions>}
+     */
+    this.viewPromise_ = new Promise(function (resolve, reject) {
+      self.viewResolver = resolve;
+      self.viewRejector = reject;
+    });
   }
 
   /**
    * Get the attribution function for the source.
    * @return {?Attribution} Attribution function.
+   * @api
    */
   getAttributions() {
     return this.attributions_;
@@ -102,6 +125,7 @@ class Source extends BaseObject {
 
   /**
    * @return {boolean} Attributions are collapsible.
+   * @api
    */
   getAttributionsCollapsible() {
     return this.attributionsCollapsible_;
@@ -122,6 +146,13 @@ class Source extends BaseObject {
    */
   getResolutions() {
     return abstract();
+  }
+
+  /**
+   * @return {Promise<import("../View.js").ViewOptions>} A promise for view-related properties.
+   */
+  getView() {
+    return this.viewPromise_;
   }
 
   /**

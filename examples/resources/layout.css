@@ -122,12 +122,14 @@ ol.inline>li {
   background: url(map-background.jpg) repeat;
   margin-bottom: 10px;
 }
+
+.ol-control {
+  line-height: normal;
+}
+
 .ol-attribution.ol-logo-only,
 .ol-attribution.ol-uncollapsible {
   max-width: calc(100% - 3em);
-}
-.ol-attribution ul {
-  font-size: 14px;
 }
 .iframe-info iframe {
   width: 100%;

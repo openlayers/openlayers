@@ -1,5 +1,6 @@
 import assert from 'assert';
 import frontMatter from 'front-matter';
+import fs from 'fs';
 import fse from 'fs-extra';
 import handlebars from 'handlebars';
 import marked from 'marked';
@@ -16,6 +17,11 @@ const importRegEx = /^import .* from '(.*)';$/;
 const isTemplateJs =
   /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
 const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
+
+const exampleDirContents = fs
+  .readdirSync(path.join(baseDir, '..'))
+  .filter((name) => /^(?!index).*\.html$/.test(name))
+  .map((name) => name.replace(/\.html$/, ''));
 
 let cachedPackageInfo = null;
 async function getPackageInfo() {
@@ -188,7 +194,7 @@ export default class ExampleBuilder {
       }
 
       const name = filename.replace(/\.js$/, '');
-      if (name === 'index' || name === this.common) {
+      if (!exampleDirContents.includes(name)) {
         continue;
       }
 

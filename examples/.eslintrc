@@ -13,6 +13,7 @@
     "jsts": false,
     "JSZip": false,
     "mapboxgl": false,
+    "NumpyLoader": false,
     "saveAs": false,
     "toastr": false,
     "topojson": false,

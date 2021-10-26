@@ -1,0 +1,22 @@
+name: Build Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm run build-site
+      - uses: actions/upload-artifact@v2
+        with:
+          name: site
+          path: build/site

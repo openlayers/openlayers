@@ -130,7 +130,7 @@ class LayerRenderer extends Observable {
    *    returned, and empty array will be returned.
    */
   getDataAtPixel(pixel, frameState, hitTolerance) {
-    return abstract();
+    return null;
   }
 
   /**

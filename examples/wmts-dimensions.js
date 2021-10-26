@@ -61,13 +61,11 @@ const map = new Map({
   ],
 });
 
-const updateSourceDimension = function (source, sliderVal) {
-  source.updateDimensions({'threshold': sliderVal});
-  document.getElementById('theinfo').innerHTML = sliderVal + ' meters';
+const slider = document.getElementById('slider');
+const updateSourceDimension = function () {
+  wmtsSource.updateDimensions({'threshold': slider.value});
+  document.getElementById('theinfo').innerHTML = slider.value + ' meters';
 };
-
-updateSourceDimension(wmtsSource, 10);
-
-document.getElementById('slider').addEventListener('input', function () {
-  updateSourceDimension(wmtsSource, this.value);
-});
+slider.addEventListener('input', updateSourceDimension);
+slider.addEventListener('change', updateSourceDimension);
+updateSourceDimension();
