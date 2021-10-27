@@ -544,10 +544,10 @@ class VectorSource extends Source {
       }
     } else {
       if (this.featuresRtree_) {
-        // use Array forEach to ignore return
-        this.featuresRtree_
-          .getAll()
-          .forEach(this.removeFeatureInternal.bind(this));
+        const removeAndIgnoreReturn = function (feature) {
+          this.removeFeatureInternal(feature);
+        }.bind(this);
+        this.featuresRtree_.forEach(removeAndIgnoreReturn);
         for (const id in this.nullGeometryFeatures_) {
           this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
         }
@@ -1037,9 +1037,6 @@ class VectorSource extends Source {
     if (result) {
       this.changed();
     }
-    // TODO at full version for consistency with other remove methods
-    // (would be breaking change if used as callback in forEachFeatureAtPixel)
-    //return result;
   }
 
   /**
