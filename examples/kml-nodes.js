@@ -30,9 +30,7 @@ const map = new Map({
   })
 });
 
-/**
- * Autoextent
- */
+
 var listenerKey = kml.on('change', function (e) {
   if (e.target.getState() == 'ready') {
     map.getView().fit(e.target.getExtent(), map.getSize());
