@@ -544,7 +544,10 @@ class VectorSource extends Source {
       }
     } else {
       if (this.featuresRtree_) {
-        this.featuresRtree_.forEach(this.removeFeatureInternal.bind(this));
+        const removeAndIgnoreReturn = function (feature) {
+          this.removeFeatureInternal(feature);
+        }.bind(this);
+        this.featuresRtree_.forEach(removeAndIgnoreReturn);
         for (const id in this.nullGeometryFeatures_) {
           this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
         }
@@ -1019,6 +1022,9 @@ class VectorSource extends Source {
    * @api
    */
   removeFeature(feature) {
+    if (!feature) {
+      return;
+    }
     const featureKey = getUid(feature);
     if (featureKey in this.nullGeometryFeatures_) {
       delete this.nullGeometryFeatures_[featureKey];
@@ -1027,18 +1033,26 @@ class VectorSource extends Source {
         this.featuresRtree_.remove(feature);
       }
     }
-    this.removeFeatureInternal(feature);
-    this.changed();
+    const result = this.removeFeatureInternal(feature);
+    if (result) {
+      this.changed();
+    }
   }
 
   /**
    * Remove feature without firing a `change` event.
    * @param {import("../Feature.js").default<Geometry>} feature Feature.
+   * @return {import("../Feature.js").default<Geometry>|undefined} The removed feature
+   *     (or undefined if the feature was not found).
    * @protected
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
-    this.featureChangeKeys_[featureKey].forEach(unlistenByKey);
+    const featureChangeKeys = this.featureChangeKeys_[featureKey];
+    if (!featureChangeKeys) {
+      return;
+    }
+    featureChangeKeys.forEach(unlistenByKey);
     delete this.featureChangeKeys_[featureKey];
     const id = feature.getId();
     if (id !== undefined) {
@@ -1048,6 +1062,7 @@ class VectorSource extends Source {
     this.dispatchEvent(
       new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature)
     );
+    return feature;
   }
 
   /**

@@ -339,6 +339,19 @@ describe('ol.source.Vector', function () {
         vectorSource.removeFeature(features[0]);
         expect(listener.called).to.be(true);
       });
+
+      it('accepts features that are not in the source', function () {
+        const changeListener = sinon.spy();
+        listen(vectorSource, 'change', changeListener);
+
+        const removeFeatureListener = sinon.spy();
+        listen(vectorSource, 'removefeature', removeFeatureListener);
+
+        const feature = new Feature(new Point([0, 0]));
+        vectorSource.removeFeature(feature);
+        expect(changeListener.called).to.be(false);
+        expect(removeFeatureListener.called).to.be(false);
+      });
     });
 
     describe("modifying a feature's geometry", function () {
