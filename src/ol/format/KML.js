@@ -1000,6 +1000,7 @@ function createFeatureStyleFunction(
      * @param {number} resolution Resolution.
      * @return {Array<Style>|Style} Style.
      */
+    // @ts-ignore
     function (feature, resolution) {
       let drawName = showPointNames;
       let name = '';
@@ -1066,6 +1067,7 @@ function createFeatureStyleFunction(
 
       if (
         style != undefined &&
+        // @ts-ignore
         style[0].getImage().getSrc() != DEFAULT_IMAGE_STYLE_SRC
       ) {
         let geometry = feature.getGeometry();
@@ -1075,6 +1077,7 @@ function createFeatureStyleFunction(
 
         if (geometry.getType() == 'LineString') {
           const nodestyle = style[0];
+          // @ts-ignore
           const imgurl = new URL(nodestyle.getImage().getSrc());
           const rotate = imgurl.searchParams.get('rotate');
           const canberotated = rotate != undefined;
@@ -1089,6 +1092,7 @@ function createFeatureStyleFunction(
               ni = nodestyle.getImage().clone();
               let anchor = nodestyle.getImage().getAnchor();
               anchor = [0.5, 0.5]; // TODO detect center
+              // @ts-ignore
               ni.setAnchor(anchor);
               const addangle = parseInt(rotate);
               dir =
@@ -2524,6 +2528,7 @@ const DOCUMENT_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
+// @ts-ignore
 const DOCUMENT_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
   const parentNode = objectStack[objectStack.length - 1].node;
   return createElementNS(parentNode.namespaceURI, 'Placemark');
@@ -2613,6 +2618,7 @@ const ICON_SERIALIZERS = makeStructureNS(
  * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
+// @ts-ignore
 const GX_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
   return createElementNS(GX_NAMESPACE_URIS[0], 'gx:' + opt_nodeName);
 };
@@ -2860,6 +2866,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @param {string} [opt_nodeName] Node name.
  * @return {Node|undefined} Node.
  */
+// @ts-ignore
 const GEOMETRY_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
   if (value) {
     const parentNode = objectStack[objectStack.length - 1].node;

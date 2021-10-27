@@ -19,12 +19,13 @@ const vector = new VectorLayer({
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new OSM(),
+      source: new OSM()
     }),
     vector,
   ],
   target: 'map',
   view: new View({
+    center: [0, 0],
     zoom: 16,
   }),
 });
