@@ -1062,49 +1062,59 @@ function createFeatureStyleFunction(
           return [nameStyle, baseStyle].concat(featureStyle.slice(1));
         }
         return nameStyle;
-      } 
-      if (style != undefined && style[0].getImage().getSrc() != DEFAULT_IMAGE_STYLE_SRC) {
+      }
+
+      if (
+        style != undefined &&
+        style[0].getImage().getSrc() != DEFAULT_IMAGE_STYLE_SRC
+      ) {
         let geometry = feature.getGeometry();
         if (geometry.getType() == 'Polygon') {
           geometry = new LineString(geometry.getCoordinates()[0]);
         }
 
         if (geometry.getType() == 'LineString') {
-          let nodestyle = style[0];
-          let imgurl=new URL(nodestyle.getImage().getSrc());
-          let rotate=imgurl.searchParams.get('rotate');
-          let canberotated = rotate != undefined;
+          const nodestyle = style[0];
+          const imgurl = new URL(nodestyle.getImage().getSrc());
+          const rotate = imgurl.searchParams.get('rotate');
+          const canberotated = rotate != undefined;
 
-          let styles = [nodestyle];
+          const styles = [nodestyle];
           let theEnd;
           let dir;
           geometry.forEachSegment(function (start, end) {
             theEnd = end;
-           let ni;
+            let ni;
             if (rotate) {
-              ni=nodestyle.getImage().clone();
-              let anchor=nodestyle.getImage().getAnchor();
-              anchor=[0.5, 0.5]; // TODO detect center
+              ni = nodestyle.getImage().clone();
+              let anchor = nodestyle.getImage().getAnchor();
+              anchor = [0.5, 0.5]; // TODO detect center
               ni.setAnchor(anchor);
-              let addangle = parseInt(rotate); 
-              dir = Math.PI / 2 - Math.atan2( end[1] - start[1], end[0] - start[0]) + addangle * 0.017453292519943295;
-            
+              const addangle = parseInt(rotate);
+              dir =
+                Math.PI / 2 -
+                Math.atan2(end[1] - start[1], end[0] - start[0]) +
+                addangle * 0.017453292519943295;
               ni.setRotation(dir);
-            } else ni=nodestyle.getImage();
-             
-            let ns = new Style({
-              geometry: new Point(start), 
-              image: ni
+            } else {
+              ni = nodestyle.getImage();
+            }
+
+            const ns = new Style({
+              geometry: new Point(start),
+              image: ni,
             });
 
             styles.push(ns);
           });
           if (!canberotated) {
-          styles.push(new Style({
-            geometry: new Point(theEnd),
-            image: nodestyle.getImage()
-          }));
-        }
+            styles.push(
+              new Style({
+                geometry: new Point(theEnd),
+                image: nodestyle.getImage(),
+              })
+            );
+          }
 
           return styles;
         }
