@@ -1840,6 +1840,10 @@ describe('ol.format.GML3', function () {
       expect(features[0].values_['name']).to.have.length(2);
     });
 
+    it('parses mutliple simple elements to strings', function () {
+      expect(features[0].values_['name'][0]).to.be.a('string');
+    });
+
     it('creates nested property', function () {
       expect(
         features[0].values_['observationMethod']['CGI_TermValue']['value'][
@@ -2900,6 +2904,51 @@ describe('ol.format.GML32', function () {
 
     it('converts XML attribute to text', function () {
       expect(features[0].get('cdata')).to.be('<a>b</a>');
+    });
+  });
+
+  describe('when parsing multiple complex attributes', function () {
+    let features;
+    let gmlFormat;
+    before(function (done) {
+      afterLoadText('spec/ol/format/gml/gml32-complex.xml', function (xml) {
+        try {
+          gmlFormat = new GML32();
+          features = gmlFormat.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 2 features', function () {
+      expect(features).to.have.length(2);
+    });
+
+    it('creates feature with three attributeA properties and two attributeB properties', function () {
+      expect(features[0].values_['attributeA']).to.have.length(3);
+      expect(features[0].values_['attributeB']).to.have.length(2);
+    });
+
+    it('parses mutliple complex elements to an array of objects', function () {
+      expect(features[0].values_['attributeA'][0]).to.be.a('object');
+    });
+
+    it('correctly structures multiple elements with attributes', function () {
+      expect(features[0].values_['attributeA'][0]['xlink:href']).to.be(
+        'http://www.example.com/extern/1'
+      );
+      expect(features[0].values_['attributeA'][0]._content_).to.be(undefined);
+      expect(features[0].values_['attributeA'][1]['xlink:href']).to.be(
+        'http://www.example.com/extern/2'
+      );
+      expect(features[0].values_['attributeA'][2]._content_).to.be(undefined);
+    });
+
+    it('correctly structures multiple elements with complex content', function () {
+      expect(features[0].values_['attributeB'][0].Attribute.value).to.be('foo');
+      expect(features[0].values_['attributeB'][1].Attribute.value).to.be('bar');
     });
   });
 });
