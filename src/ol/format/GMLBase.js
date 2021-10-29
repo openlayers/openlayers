@@ -304,6 +304,15 @@ class GMLBase extends XMLFeature {
         }
       }
 
+      const len = n.attributes.length;
+      if (len > 0) {
+        value = {_content_: value};
+        for (let i = 0; i < len; i++) {
+          const attName = n.attributes[i].name;
+          value[attName] = n.attributes[i].value;
+        }
+      }
+
       if (values[localName]) {
         if (!(values[localName] instanceof Array)) {
           values[localName] = [values[localName]];
@@ -311,15 +320,6 @@ class GMLBase extends XMLFeature {
         values[localName].push(value);
       } else {
         values[localName] = value;
-      }
-
-      const len = n.attributes.length;
-      if (len > 0) {
-        values[localName] = {_content_: values[localName]};
-        for (let i = 0; i < len; i++) {
-          const attName = n.attributes[i].name;
-          values[localName][attName] = n.attributes[i].value;
-        }
       }
     }
     if (!asFeature) {
