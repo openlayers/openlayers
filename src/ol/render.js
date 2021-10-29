@@ -88,6 +88,10 @@ export function toContext(context, opt_options) {
  * @api
  */
 export function getVectorContext(event) {
+  if (!(event.context instanceof CanvasRenderingContext2D)) {
+    throw new Error('Only works for render events from Canvas 2D layers');
+  }
+
   // canvas may be at a different pixel ratio than frameState.pixelRatio
   const canvasPixelRatio = event.inversePixelTransform[0];
   const frameState = event.frameState;
@@ -107,6 +111,7 @@ export function getVectorContext(event) {
       frameState.viewState.projection
     );
   }
+
   return new CanvasImmediateRenderer(
     event.context,
     canvasPixelRatio,
@@ -127,7 +132,5 @@ export function getVectorContext(event) {
  * @api
  */
 export function getRenderPixel(event, pixel) {
-  const result = pixel.slice(0);
-  applyTransform(event.inversePixelTransform.slice(), result);
-  return result;
+  return applyTransform(event.inversePixelTransform, pixel.slice(0));
 }

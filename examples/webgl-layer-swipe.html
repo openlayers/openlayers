@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: Layer Swipe (WebGL)
+shortdesc: Cropping a WebGL tile layer
+docs: >
+  The <code>prerender</code> and <code>postrender</code> events on a WebGL tile layer can be
+  used to manipulate the WebGL context before and after rendering.  In this case, the 
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/scissor"><code>gl.scissor()</code></a>
+  method is called to clip the top layer based on the position of a slider.
+tags: "swipe, webgl"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map"></div>
+<input id="swipe" type="range" style="width: 100%">
