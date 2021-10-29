@@ -3,6 +3,7 @@
     "$": false,
     "arc": false,
     "common": false,
+    "chroma": false,
     "createMapboxStreetsV6Style": false,
     "d3": false,
     "html2canvas": false,

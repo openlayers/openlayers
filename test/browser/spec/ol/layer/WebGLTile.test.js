@@ -110,23 +110,60 @@ describe('ol/layer/WebGLTile', function () {
     );
   });
 
-  it('updates style variables', function (done) {
-    layer.updateStyleVariables({
-      r: 255,
-      g: 0,
-      b: 255,
+  describe('updateStyleVariables()', function () {
+    it('updates style variables', function (done) {
+      layer.updateStyleVariables({
+        r: 255,
+        g: 0,
+        b: 255,
+      });
+      expect(layer.styleVariables_['r']).to.be(255);
+      const targetContext = createCanvasContext2D(100, 100);
+      layer.on('postrender', () => {
+        targetContext.clearRect(0, 0, 100, 100);
+        targetContext.drawImage(target.querySelector('.testlayer'), 0, 0);
+      });
+      map.once('rendercomplete', () => {
+        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
+          255, 0, 255, 255,
+        ]);
+        done();
+      });
     });
-    expect(layer.styleVariables_['r']).to.be(255);
-    const targetContext = createCanvasContext2D(100, 100);
-    layer.on('postrender', () => {
-      targetContext.clearRect(0, 0, 100, 100);
-      targetContext.drawImage(target.querySelector('.testlayer'), 0, 0);
+
+    it('can be called before the layer is rendered', function () {
+      const layer = new WebGLTileLayer({
+        style: {
+          variables: {
+            foo: 'bar',
+          },
+        },
+        source: new DataTileSource({
+          loader(z, x, y) {
+            return new Promise((resolve) => {
+              resolve(new ImageData(256, 256));
+            });
+          },
+        }),
+      });
+
+      layer.updateStyleVariables({foo: 'bam'});
+      expect(layer.styleVariables_.foo).to.be('bam');
     });
-    map.once('rendercomplete', () => {
-      expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
-        255, 0, 255, 255,
-      ]);
-      done();
+
+    it('can be called even if no initial variables are provided', function () {
+      const layer = new WebGLTileLayer({
+        source: new DataTileSource({
+          loader(z, x, y) {
+            return new Promise((resolve) => {
+              resolve(new ImageData(256, 256));
+            });
+          },
+        }),
+      });
+
+      layer.updateStyleVariables({foo: 'bam'});
+      expect(layer.styleVariables_.foo).to.be('bam');
     });
   });
 
