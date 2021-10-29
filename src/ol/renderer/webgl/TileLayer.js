@@ -292,7 +292,8 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
-    this.preRender(frameState);
+    const gl = this.helper.getGL();
+    this.preRender(gl, frameState);
 
     const viewState = frameState.viewState;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
@@ -385,8 +386,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     const zs = Object.keys(tileTexturesByZ)
       .map(Number)
       .sort(numberSafeCompareFunction);
-
-    const gl = this.helper.getGL();
 
     const centerX = viewState.center[0];
     const centerY = viewState.center[1];
@@ -509,7 +508,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     frameState.postRenderFunctions.push(postRenderFunction);
 
-    this.postRender(frameState);
+    this.postRender(gl, frameState);
     return canvas;
   }
 

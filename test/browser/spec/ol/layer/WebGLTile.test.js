@@ -4,6 +4,7 @@ import View from '../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
+import {getRenderPixel} from '../../../../../src/ol/render.js';
 
 describe('ol/layer/WebGLTile', function () {
   /** @type {WebGLTileLayer} */
@@ -127,6 +128,46 @@ describe('ol/layer/WebGLTile', function () {
       ]);
       done();
     });
+  });
+
+  it('dispatches a prerender event with WebGL context and inverse pixel transform', (done) => {
+    let called = false;
+    layer.on('prerender', (event) => {
+      expect(event.context).to.be.a(WebGLRenderingContext);
+      const mapSize = event.frameState.size;
+      const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
+      expect(bottomLeft).to.eql([0, 0]);
+      called = true;
+    });
+
+    map.once('rendercomplete', () => {
+      expect(called).to.be(true);
+      done();
+    });
+
+    map.render();
+  });
+
+  it('dispatches a postrender event with WebGL context and inverse pixel transform', (done) => {
+    let called = false;
+    layer.on('postrender', (event) => {
+      expect(event.context).to.be.a(WebGLRenderingContext);
+      const mapSize = event.frameState.size;
+      const topRight = getRenderPixel(event, [mapSize[1], 0]);
+      const pixelRatio = event.frameState.pixelRatio;
+      expect(topRight).to.eql([
+        mapSize[0] * pixelRatio,
+        mapSize[1] * pixelRatio,
+      ]);
+      called = true;
+    });
+
+    map.once('rendercomplete', () => {
+      expect(called).to.be(true);
+      done();
+    });
+
+    map.render();
   });
 
   it('tries to expire the source tile cache', (done) => {

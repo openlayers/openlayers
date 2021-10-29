@@ -10,7 +10,7 @@ class RenderEvent extends Event {
    * @param {import("../transform.js").Transform} [opt_inversePixelTransform] Transform for
    *     CSS pixels to rendered pixels.
    * @param {import("../PluggableMap.js").FrameState} [opt_frameState] Frame state.
-   * @param {?CanvasRenderingContext2D} [opt_context] Context.
+   * @param {?(CanvasRenderingContext2D|WebGLRenderingContext)} [opt_context] Context.
    */
   constructor(type, opt_inversePixelTransform, opt_frameState, opt_context) {
     super(type);
@@ -31,9 +31,10 @@ class RenderEvent extends Event {
     this.frameState = opt_frameState;
 
     /**
-     * Canvas context. Not available when the event is dispatched by the map. Only available
-     * when a Canvas renderer is used, null otherwise.
-     * @type {CanvasRenderingContext2D|null|undefined}
+     * Canvas context. Not available when the event is dispatched by the map. For Canvas 2D layers,
+     * the context will be the 2D rendering context.  For WebGL layers, the context will be the WebGL
+     * context.
+     * @type {CanvasRenderingContext2D|WebGLRenderingContext|undefined}
      * @api
      */
     this.context = opt_context;

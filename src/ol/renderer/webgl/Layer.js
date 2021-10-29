@@ -5,6 +5,10 @@ import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLHelper from '../../webgl/Helper.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../../transform.js';
 
 /**
  * @enum {string}
@@ -59,6 +63,14 @@ class WebGLLayerRenderer extends LayerRenderer {
     const options = opt_options || {};
 
     /**
+     * The transform for viewport CSS pixels to rendered pixels.  This transform is only
+     * set before dispatching rendering events.
+     * @private
+     * @type {import("../../transform.js").Transform}
+     */
+    this.inversePixelTransform_ = createTransform();
+
+    /**
      * @type {WebGLHelper}
      * @protected
      */
@@ -84,32 +96,50 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {import("../../render/EventType.js").default} type Event type.
+   * @param {WebGLRenderingContext} context The rendering context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @private
    */
-  dispatchRenderEvent_(type, frameState) {
+  dispatchRenderEvent_(type, context, frameState) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      // RenderEvent does not get a context or an inversePixelTransform, because WebGL allows much less direct editing than Canvas2d does.
-      const event = new RenderEvent(type, null, frameState, null);
+      composeTransform(
+        this.inversePixelTransform_,
+        0,
+        0,
+        frameState.pixelRatio,
+        -frameState.pixelRatio,
+        0,
+        0,
+        -frameState.size[1]
+      );
+
+      const event = new RenderEvent(
+        type,
+        this.inversePixelTransform_,
+        frameState,
+        context
+      );
       layer.dispatchEvent(event);
     }
   }
 
   /**
+   * @param {WebGLRenderingContext} context The rendering context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
-  preRender(frameState) {
-    this.dispatchRenderEvent_(RenderEventType.PRERENDER, frameState);
+  preRender(context, frameState) {
+    this.dispatchRenderEvent_(RenderEventType.PRERENDER, context, frameState);
   }
 
   /**
+   * @param {WebGLRenderingContext} context The rendering context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
-  postRender(frameState) {
-    this.dispatchRenderEvent_(RenderEventType.POSTRENDER, frameState);
+  postRender(context, frameState) {
+    this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
   }
 }
 
