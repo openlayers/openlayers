@@ -202,7 +202,6 @@ class TileSource extends Source {
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
-   * @protected
    */
   getKey() {
     return this.key_;

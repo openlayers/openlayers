@@ -15,6 +15,10 @@ import {
 import {assign} from '../obj.js';
 
 /**
+ * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
+ */
+
+/**
  * @typedef {Object} Style
  * Translates tile data to rendered pixels.
  *
@@ -57,7 +61,7 @@ import {assign} from '../obj.js';
  * be visible.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {import("../source/Tile.js").default} [source] Source for this layer.
+ * @property {SourceType} [source] Source for this layer.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -255,7 +259,7 @@ function parseStyle(style, bandCount) {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @extends BaseTileLayer<import("../source/DataTile.js").default|import("../source/TileImage.js").default>
+ * @extends BaseTileLayer<SourceType>
  * @api
  */
 class WebGLTileLayer extends BaseTileLayer {
