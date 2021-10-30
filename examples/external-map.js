@@ -39,6 +39,28 @@ function resetMapTarget() {
   button.disabled = false;
 }
 
+function updateOverlay() {
+  if (!mapWindow) {
+    return;
+  }
+  const container = mapWindow.document.querySelector('.container');
+  if (!container) {
+    return;
+  }
+  const externalMapTarget = mapWindow.document.getElementById('map');
+  if (document.visibilityState === 'visible') {
+    // Show controls and enable keyboard input
+    container.classList.remove('unusable');
+    externalMapTarget.setAttribute('tabindex', '0');
+    externalMapTarget.focus();
+  } else {
+    // Hide all controls and disable keyboard input
+    externalMapTarget.removeAttribute('tabindex');
+    container.classList.add('unusable');
+  }
+}
+window.addEventListener('visibilitychange', updateOverlay);
+
 button.addEventListener('click', function () {
   const blockerNotice = document.getElementById('blocker-notice');
   blockerNotice.setAttribute('hidden', 'hidden');
@@ -61,7 +83,6 @@ button.addEventListener('click', function () {
     const externalMapTarget = mapWindow.document.getElementById('map');
     localMapTarget.style.height = '0px';
     map.setTarget(externalMapTarget);
-    externalMapTarget.focus();
 
     if (timeoutKey) {
       timeoutKey = clearTimeout(timeoutKey);
@@ -72,18 +93,6 @@ button.addEventListener('click', function () {
       closeMapWindow();
     });
 
-    window.addEventListener('blur', function (evt) {
-        externalMapTarget.style.opacity=0.3;
-    });
-
-    window.addEventListener('focus', function (evt) {
-        externalMapTarget.style.opacity=1.0;
-    });
-  
-    mapWindow.addEventListener('focus', function (evt) {
-      if (!window.document.hidden){	
-        externalMapTarget.style.opacity=1.0;
-      }
-    });
+    updateOverlay();
   });
 });

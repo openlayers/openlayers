@@ -6,13 +6,39 @@
       body {
         margin: 0;
       }
-      .map {
+      .container {
+        position: relative;
         height: 100%;
         width: 100%;
       }
+      #unusable-overlay,
+      .map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+      .unusable #unusable-overlay {
+        background-color: rgba(0, 0, 0, .7);
+        font-size: 3rem;
+        font-weight: bold;
+        color: white;
+        display: flex;
+        align-items: center;
+        user-select: none;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .unusable .map .ol-control {
+        display: none;
+      }
     </style>
   </head>
-  <body>
-    <div id="map" class="map" tabindex="0"></div>
+  <body class="container">
+    <div id="map" class="map"></div>
+    <div id="unusable-overlay" hidden>
+      <span>Map not usable</span>
+    </div>
   </body>
 </html>
