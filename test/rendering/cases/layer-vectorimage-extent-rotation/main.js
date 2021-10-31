@@ -16,7 +16,7 @@ new Map({
     new VectorImageLayer({
       extent: transformExtent([-50, -45, 50, 45], 'EPSG:4326', 'EPSG:3857'),
       source: new VectorSource({
-        url: '/data/countries.json',
+        url: '/data/countries.geojson',
         format: new GeoJSON(),
       }),
     }),

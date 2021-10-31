@@ -21,7 +21,7 @@ const map = new Map({
         }),
       }),
       source: new VectorSource({
-        url: '/data/countries.json',
+        url: '/data/countries.geojson',
         format: new GeoJSON(),
       }),
     }),

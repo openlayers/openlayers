@@ -17,7 +17,7 @@ new Map({
     new VectorLayer({
       extent: [-50, -45, 50, 45],
       source: new VectorSource({
-        url: '/data/countries.json',
+        url: '/data/countries.geojson',
         format: new GeoJSON(),
       }),
     }),
