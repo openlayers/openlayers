@@ -45,7 +45,7 @@ const style = new Style({
 
 const vectorLayer = new VectorLayer({
   source: new VectorSource({
-    url: 'https://openlayersbook.github.io/openlayers_book_samples/assets/data/countries.geojson',
+    url: 'data/geojson/countries.geojson',
     format: new GeoJSON(),
   }),
   style: style,
@@ -54,12 +54,15 @@ const vectorLayer = new VectorLayer({
 // Load country flags and set them as `flag` attribute on the country feature
 vectorLayer.getSource().on('addfeature', function (event) {
   const feature = event.feature;
+  const iso2 = feature.get('iso_a2');
+  if (!iso2) {
+    return;
+  }
   const img = new Image();
   img.onload = function () {
     feature.set('flag', img);
   };
-  img.src =
-    'https://flagcdn.com/w320/' + feature.get('iso_a2').toLowerCase() + '.png';
+  img.src = 'https://flagcdn.com/w320/' + iso2.toLowerCase() + '.png';
 });
 
 new Map({

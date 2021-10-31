@@ -349,7 +349,7 @@ describe('ol/format/GeoJSON.js', function () {
         {encoding: 'utf8'}
       );
       const result = format.readFeatures(text);
-      expect(result.length).to.be(179);
+      expect(result.length).to.be(177);
 
       const first = result[0];
       expect(first).to.be.a(Feature);
@@ -364,7 +364,7 @@ describe('ol/format/GeoJSON.js', function () {
         )
       ).to.be(true);
 
-      const last = result[178];
+      const last = result[result.length - 1];
       expect(last).to.be.a(Feature);
       expect(last.get('name')).to.be('Zimbabwe');
       expect(last.getId()).to.be('ZWE');
