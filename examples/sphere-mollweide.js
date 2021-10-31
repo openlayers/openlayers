@@ -31,7 +31,7 @@ const map = new Map({
   layers: [
     new VectorLayer({
       source: new VectorSource({
-        url: 'data/geojson/countries-110m.geojson',
+        url: 'data/geojson/countries.geojson',
         format: new GeoJSON(),
       }),
     }),
