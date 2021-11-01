@@ -311,33 +311,38 @@ export default class ExampleBuilder {
       source: jsSource,
     };
 
-    // check for worker js
-    const workerName = `${data.name}.worker.js`;
-    const workerPath = path.join(data.dir, workerName);
-    let workerSource;
-    try {
-      workerSource = await fse.readFile(workerPath, readOptions);
-    } catch (err) {
-      // pass
-    }
-    if (workerSource) {
-      workerSource = this.transformJsSource(
-        this.cloakSource(workerSource, data.cloak)
+    let jsSources = jsSource;
+    if (data.sources) {
+      data.extraSources = await Promise.all(
+        data.sources.map(async (fileName) => {
+          const as = fileName.split(/ +as +/);
+          fileName = as[0];
+          const extraSourcePath = path.join(data.dir, fileName);
+          let source = await fse.readFile(extraSourcePath, readOptions);
+          let ext = fileName.match(/\.(\w+)$/)[1];
+          if (ext === 'mjs') {
+            ext = 'js';
+          }
+          if (ext === 'js') {
+            source = this.transformJsSource(source);
+            jsSources += '\n' + source;
+          }
+          source = this.cloakSource(source, data.cloak);
+          assets[fileName] = source;
+          return {
+            name: as[1] || fileName,
+            source: source,
+            type: ext,
+          };
+        })
       );
-      data.worker = {
-        source: workerSource,
-      };
-      assets[workerName] = workerSource;
     }
 
     const pkg = await getPackageInfo();
     data.pkgJson = JSON.stringify(
       {
         name: data.name,
-        dependencies: getDependencies(
-          jsSource + (workerSource ? `\n${workerSource}` : ''),
-          pkg
-        ),
+        dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
           parcel: '^2.0.0',
         },
