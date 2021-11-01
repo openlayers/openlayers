@@ -484,7 +484,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         rotation,
         hitTolerance,
         featureCallback,
-        executorGroup === this.declutterExecutorGroup
+        executorGroup === this.declutterExecutorGroup &&
+          frameState.declutterTree
           ? frameState.declutterTree.all().map((item) => item.value)
           : null
       ));
