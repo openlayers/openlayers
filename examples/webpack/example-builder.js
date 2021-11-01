@@ -307,7 +307,10 @@ export default class ExampleBuilder {
       /import Worker from 'worker-loader![^\n]*\n/g,
       ''
     );
-    jsSource = jsSource.replace('new Worker()', "new Worker('./worker.js')");
+    jsSource = jsSource.replace(
+      'new Worker()',
+      "new Worker('./worker.js', {type: 'module'})"
+    );
 
     data.js = {
       tag: `<script src="${this.common}.js"></script>
