@@ -314,9 +314,8 @@ export default class ExampleBuilder {
     let jsSources = jsSource;
     if (data.sources) {
       data.extraSources = await Promise.all(
-        data.sources.map(async (fileName) => {
-          const as = fileName.split(/ +as +/);
-          fileName = as[0];
+        data.sources.map(async (sourceConfig) => {
+          const fileName = sourceConfig.path;
           const extraSourcePath = path.join(data.dir, fileName);
           let source = await fse.readFile(extraSourcePath, readOptions);
           let ext = fileName.match(/\.(\w+)$/)[1];
@@ -330,7 +329,7 @@ export default class ExampleBuilder {
           source = this.cloakSource(source, data.cloak);
           assets[fileName] = source;
           return {
-            name: as[1] || fileName,
+            name: sourceConfig.as ?? fileName,
             source: source,
             type: ext,
           };
