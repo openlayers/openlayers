@@ -2,14 +2,29 @@ import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {FullScreen, defaults as defaultControls} from '../src/ol/control.js';
+import {
+  Control,
+  FullScreen,
+  defaults as defaultControls,
+} from '../src/ol/control.js';
 import {fromLonLat} from '../src/ol/proj.js';
+
+class UnusableMask extends Control {
+  constructor() {
+    super({
+      element: document.createElement('div'),
+    });
+    this.element.setAttribute('hidden', 'hidden');
+    this.element.className = 'ol-mask';
+    this.element.innerHTML = '<div>Map not usable</div>';
+  }
+}
 
 const localMapTarget = document.getElementById('map');
 
 const map = new Map({
   target: localMapTarget,
-  controls: defaultControls().extend([new FullScreen()]),
+  controls: defaultControls().extend([new FullScreen(), new UnusableMask()]),
   layers: [
     new TileLayer({
       source: new OSM(),
@@ -43,20 +58,19 @@ function updateOverlay() {
   if (!mapWindow) {
     return;
   }
-  const container = mapWindow.document.querySelector('.container');
-  if (!container) {
+  const externalMapTarget = mapWindow.document.getElementById('map');
+  if (!externalMapTarget) {
     return;
   }
-  const externalMapTarget = mapWindow.document.getElementById('map');
   if (document.visibilityState === 'visible') {
     // Show controls and enable keyboard input
-    container.classList.remove('unusable');
+    externalMapTarget.classList.remove('unusable');
     externalMapTarget.setAttribute('tabindex', '0');
     externalMapTarget.focus();
   } else {
     // Hide all controls and disable keyboard input
     externalMapTarget.removeAttribute('tabindex');
-    container.classList.add('unusable');
+    externalMapTarget.classList.add('unusable');
   }
 }
 window.addEventListener('visibilitychange', updateOverlay);

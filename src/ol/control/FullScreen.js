@@ -229,7 +229,7 @@ class FullScreen extends Control {
       if (this.source_) {
         element =
           typeof this.source_ === 'string'
-            ? document.getElementById(this.source_)
+            ? doc.getElementById(this.source_)
             : this.source_;
       } else {
         element = map.getTargetElement();
