@@ -211,13 +211,12 @@
 &lt;/html&gt;</code></pre>
       </div>
 
-{{#if worker.source}}
-      <div class="row-fluid">
-        <h5 class="source-heading">worker.js</h5>
-        <pre><code id="example-worker-source" class="language-js">{{ worker.source }}</code></pre>
+{{#each extraSources}}
+      <div class="row-fluid extra-source">
+        <h5 class="source-heading">{{./name}}</h5>
+        <pre><code class="language-{{./type}}">{{ ./source }}</code></pre>
       </div>
-{{/if}}
-
+{{/each}}
       <div class="row-fluid">
         <h5 class="source-heading">package.json</h5>
         <pre><code id="example-pkg-source" class="language-json">{{ pkgJson }}</code></pre>

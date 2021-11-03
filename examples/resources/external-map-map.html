@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <style>
+      body {
+        margin: 0;
+      }
+      .map {
+        height: 100%;
+      }
+      .map.unusable .ol-mask {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        background-color: rgba(0, 0, 0, .7);
+        color: white;
+        font: bold 3rem 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .map.unusable .ol-control {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map" class="map"></div>
+  </body>
+</html>

@@ -13,7 +13,7 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
-const importRegEx = /^import .* from '(.*)';$/;
+const importRegEx = /(?:^|\n)import .* from '(.*)';(?:\n|$)/g;
 const isTemplateJs =
   /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
 const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
@@ -134,26 +134,18 @@ function createWordIndex(exampleData) {
  * @return {Object<string, string>} dependencies
  */
 function getDependencies(jsSource, pkg) {
-  const lines = jsSource.split('\n');
   const dependencies = {
     ol: pkg.version,
   };
-  for (let i = 0, ii = lines.length; i < ii; ++i) {
-    const line = lines[i];
-    const importMatch = line.match(importRegEx);
-    if (importMatch) {
-      const imp = importMatch[1];
-      if (!imp.startsWith('ol/') && imp != 'ol') {
-        const parts = imp.split('/');
-        let dep;
-        if (imp.startsWith('@')) {
-          dep = parts.slice(0, 2).join('/');
-        } else {
-          dep = parts[0];
-        }
-        if (dep in pkg.devDependencies) {
-          dependencies[dep] = pkg.devDependencies[dep];
-        }
+
+  let importMatch;
+  while ((importMatch = importRegEx.exec(jsSource))) {
+    const imp = importMatch[1];
+    if (!imp.startsWith('ol/') && imp != 'ol') {
+      const parts = imp.split('/');
+      const dep = imp.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
+      if (dep in pkg.devDependencies) {
+        dependencies[dep] = pkg.devDependencies[dep];
       }
     }
   }
@@ -279,12 +271,29 @@ export default class ExampleBuilder {
     data.jsSource = jsSource;
 
     // process tags
-    if (data.tags) {
-      data.tags = data.tags.replace(/[\s"]+/g, '').split(',');
-    } else {
-      data.tags = [];
-    }
+    data.tags = data.tags ? data.tags.replace(/[\s"]+/g, '').split(',') : [];
     return data;
+  }
+
+  transformJsSource(source) {
+    return (
+      source
+        // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
+        .replace(/'\.\.\/src\//g, "'")
+        .replace(/\.js';/g, "';")
+        // Remove worker loader import and modify `new Worker()` to add source
+        .replace(/import Worker from 'worker-loader![^\n]*\n/g, '')
+        .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})")
+    );
+  }
+
+  cloakSource(source, cloak) {
+    if (cloak) {
+      for (const entry of cloak) {
+        source = source.replace(new RegExp(entry.key, 'g'), entry.value);
+      }
+    }
+    return source;
   }
 
   async render(data) {
@@ -293,66 +302,48 @@ export default class ExampleBuilder {
 
     // add in script tag
     const jsName = `${data.name}.js`;
-
-    // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
-    let jsSource = data.jsSource.replace(/'\.\.\/src\//g, "'");
-    jsSource = jsSource.replace(/\.js';/g, "';");
-    if (data.cloak) {
-      for (const entry of data.cloak) {
-        jsSource = jsSource.replace(new RegExp(entry.key, 'g'), entry.value);
-      }
-    }
-    // Remove worker loader import and modify `new Worker()` to add source
-    jsSource = jsSource.replace(
-      /import Worker from 'worker-loader![^\n]*\n/g,
-      ''
+    const jsSource = this.transformJsSource(
+      this.cloakSource(data.jsSource, data.cloak)
     );
-    jsSource = jsSource.replace('new Worker()', "new Worker('./worker.js')");
-
     data.js = {
       tag: `<script src="${this.common}.js"></script>
         <script src="${jsName}"></script>`,
       source: jsSource,
     };
 
-    // check for worker js
-    const workerName = `${data.name}.worker.js`;
-    const workerPath = path.join(data.dir, workerName);
-    let workerSource;
-    try {
-      workerSource = await fse.readFile(workerPath, readOptions);
-    } catch (err) {
-      // pass
-    }
-    if (workerSource) {
-      // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
-      workerSource = workerSource.replace(/'\.\.\/src\//g, "'");
-      workerSource = workerSource.replace(/\.js';/g, "';");
-      if (data.cloak) {
-        for (const entry of data.cloak) {
-          workerSource = workerSource.replace(
-            new RegExp(entry.key, 'g'),
-            entry.value
-          );
-        }
-      }
-      data.worker = {
-        source: workerSource,
-      };
-      assets[workerName] = workerSource;
+    let jsSources = jsSource;
+    if (data.sources) {
+      data.extraSources = await Promise.all(
+        data.sources.map(async (sourceConfig) => {
+          const fileName = sourceConfig.path;
+          const extraSourcePath = path.join(data.dir, fileName);
+          let source = await fse.readFile(extraSourcePath, readOptions);
+          let ext = fileName.match(/\.(\w+)$/)[1];
+          if (ext === 'mjs') {
+            ext = 'js';
+          }
+          if (ext === 'js') {
+            source = this.transformJsSource(source);
+            jsSources += '\n' + source;
+          }
+          source = this.cloakSource(source, data.cloak);
+          assets[fileName] = source;
+          return {
+            name: sourceConfig.as ?? fileName,
+            source: source,
+            type: ext,
+          };
+        })
+      );
     }
 
     const pkg = await getPackageInfo();
-
     data.pkgJson = JSON.stringify(
       {
         name: data.name,
-        dependencies: getDependencies(
-          jsSource + (workerSource ? `\n${workerSource}` : ''),
-          pkg
-        ),
+        dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
-          parcel: '^2.0.0-beta.1',
+          parcel: '^2.0.0',
         },
         scripts: {
           start: 'parcel index.html',

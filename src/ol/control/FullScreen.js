@@ -3,8 +3,9 @@
  */
 import Control from './Control.js';
 import EventType from '../events/EventType.js';
+import MapProperty from '../MapProperty.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
-import {listen} from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import {replaceNode} from '../dom.js';
 
 const events = [
@@ -113,6 +114,12 @@ class FullScreen extends Control {
 
     /**
      * @private
+     * @type {Array<import("../events.js").EventsKey>}
+     */
+    this.documentListeners_ = [];
+
+    /**
+     * @private
      * @type {Array<string>}
      */
     this.activeClassName_ =
@@ -157,7 +164,6 @@ class FullScreen extends Control {
     this.button_ = document.createElement('button');
 
     const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-    this.setClassName_(this.button_, isFullScreen());
     this.button_.setAttribute('type', 'button');
     this.button_.title = tipLabel;
     this.button_.appendChild(this.labelNode_);
@@ -168,17 +174,8 @@ class FullScreen extends Control {
       false
     );
 
-    const cssClasses =
-      this.cssClassName_ +
-      ' ' +
-      CLASS_UNSELECTABLE +
-      ' ' +
-      CLASS_CONTROL +
-      ' ' +
-      (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
-    const element = this.element;
-    element.className = cssClasses;
-    element.appendChild(this.button_);
+    this.element.className = `${this.cssClassName_} ${CLASS_UNSELECTABLE} ${CLASS_CONTROL}`;
+    this.element.appendChild(this.button_);
 
     /**
      * @private
@@ -191,6 +188,17 @@ class FullScreen extends Control {
      * @type {HTMLElement|string|undefined}
      */
     this.source_ = options.source;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.isInFullscreen_ = false;
+
+    /**
+     * @private
+     */
+    this.boundHandleMapTargetChange_ = this.handleMapTargetChange_.bind(this);
   }
 
   /**
@@ -206,21 +214,22 @@ class FullScreen extends Control {
    * @private
    */
   handleFullScreen_() {
-    if (!isFullScreenSupported()) {
-      return;
-    }
     const map = this.getMap();
     if (!map) {
       return;
     }
-    if (isFullScreen()) {
-      exitFullScreen();
+    const doc = map.getOwnerDocument();
+    if (!isFullScreenSupported(doc)) {
+      return;
+    }
+    if (isFullScreen(doc)) {
+      exitFullScreen(doc);
     } else {
       let element;
       if (this.source_) {
         element =
           typeof this.source_ === 'string'
-            ? document.getElementById(this.source_)
+            ? doc.getElementById(this.source_)
             : this.source_;
       } else {
         element = map.getTargetElement();
@@ -238,16 +247,20 @@ class FullScreen extends Control {
    */
   handleFullScreenChange_() {
     const map = this.getMap();
-    if (isFullScreen()) {
-      this.setClassName_(this.button_, true);
-      replaceNode(this.labelActiveNode_, this.labelNode_);
-      this.dispatchEvent(FullScreenEventType.ENTERFULLSCREEN);
-    } else {
-      this.setClassName_(this.button_, false);
-      replaceNode(this.labelNode_, this.labelActiveNode_);
-      this.dispatchEvent(FullScreenEventType.LEAVEFULLSCREEN);
+    if (!map) {
+      return;
     }
-    if (map) {
+    const wasInFullscreen = this.isInFullscreen_;
+    this.isInFullscreen_ = isFullScreen(map.getOwnerDocument());
+    if (wasInFullscreen !== this.isInFullscreen_) {
+      this.setClassName_(this.button_, this.isInFullscreen_);
+      if (this.isInFullscreen_) {
+        replaceNode(this.labelActiveNode_, this.labelNode_);
+        this.dispatchEvent(FullScreenEventType.ENTERFULLSCREEN);
+      } else {
+        replaceNode(this.labelNode_, this.labelActiveNode_);
+        this.dispatchEvent(FullScreenEventType.LEAVEFULLSCREEN);
+      }
       map.updateSize();
     }
   }
@@ -274,37 +287,76 @@ class FullScreen extends Control {
    * @api
    */
   setMap(map) {
+    const oldMap = this.getMap();
+    if (oldMap) {
+      oldMap.removeChangeListener(
+        MapProperty.TARGET,
+        this.boundHandleMapTargetChange_
+      );
+    }
+
     super.setMap(map);
+
+    this.handleMapTargetChange_();
     if (map) {
+      map.addChangeListener(
+        MapProperty.TARGET,
+        this.boundHandleMapTargetChange_
+      );
+    }
+  }
+
+  /**
+   * @private
+   */
+  handleMapTargetChange_() {
+    const listeners = this.documentListeners_;
+    for (let i = 0, ii = listeners.length; i < ii; ++i) {
+      unlistenByKey(listeners[i]);
+    }
+    listeners.length = 0;
+
+    const map = this.getMap();
+    if (map) {
+      const doc = map.getOwnerDocument();
+      if (isFullScreenSupported(doc)) {
+        this.element.classList.remove(CLASS_UNSUPPORTED);
+      } else {
+        this.element.classList.add(CLASS_UNSUPPORTED);
+      }
+
       for (let i = 0, ii = events.length; i < ii; ++i) {
-        this.listenerKeys.push(
-          listen(document, events[i], this.handleFullScreenChange_, this)
+        listeners.push(
+          listen(doc, events[i], this.handleFullScreenChange_, this)
         );
       }
+      this.handleFullScreenChange_();
     }
   }
 }
 
 /**
+ * @param {Document} doc The root document to check.
  * @return {boolean} Fullscreen is supported by the current platform.
  */
-function isFullScreenSupported() {
-  const body = document.body;
+function isFullScreenSupported(doc) {
+  const body = doc.body;
   return !!(
     body['webkitRequestFullscreen'] ||
-    (body['msRequestFullscreen'] && document['msFullscreenEnabled']) ||
-    (body.requestFullscreen && document.fullscreenEnabled)
+    (body['msRequestFullscreen'] && doc['msFullscreenEnabled']) ||
+    (body.requestFullscreen && doc.fullscreenEnabled)
   );
 }
 
 /**
+ * @param {Document} doc The root document to check.
  * @return {boolean} Element is currently in fullscreen.
  */
-function isFullScreen() {
+function isFullScreen(doc) {
   return !!(
-    document['webkitIsFullScreen'] ||
-    document['msFullscreenElement'] ||
-    document.fullscreenElement
+    doc['webkitIsFullScreen'] ||
+    doc['msFullscreenElement'] ||
+    doc.fullscreenElement
   );
 }
 
@@ -336,14 +388,15 @@ function requestFullScreenWithKeys(element) {
 
 /**
  * Exit fullscreen.
+ * @param {Document} doc The document to exit fullscren from
  */
-function exitFullScreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document['msExitFullscreen']) {
-    document['msExitFullscreen']();
-  } else if (document['webkitExitFullscreen']) {
-    document['webkitExitFullscreen']();
+function exitFullScreen(doc) {
+  if (doc.exitFullscreen) {
+    doc.exitFullscreen();
+  } else if (doc['msExitFullscreen']) {
+    doc['msExitFullscreen']();
+  } else if (doc['webkitExitFullscreen']) {
+    doc['webkitExitFullscreen']();
   }
 }
 

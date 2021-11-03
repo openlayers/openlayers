@@ -323,7 +323,7 @@ class PluggableMap extends BaseObject {
      * @private
      * @type {?Array<import("./events.js").EventsKey>}
      */
-    this.keyHandlerKeys_ = null;
+    this.targetChangeHandlerKeys_ = null;
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -355,12 +355,6 @@ class PluggableMap extends BaseObject {
      * @private
      */
     this.renderer_ = null;
-
-    /**
-     * @type {undefined|function(Event): void}
-     * @private
-     */
-    this.handleResize_;
 
     /**
      * @private
@@ -1146,21 +1140,11 @@ class PluggableMap extends BaseObject {
    * @private
    */
   handleTargetChanged_() {
-    // target may be undefined, null, a string or an Element.
-    // If it's a string we convert it to an Element before proceeding.
-    // If it's not now an Element we remove the viewport from the DOM.
-    // If it's an Element we append the viewport element to it.
-
-    let targetElement;
-    if (this.getTarget()) {
-      targetElement = this.getTargetElement();
-    }
-
     if (this.mapBrowserEventHandler_) {
-      for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
-        unlistenByKey(this.keyHandlerKeys_[i]);
+      for (let i = 0, ii = this.targetChangeHandlerKeys_.length; i < ii; ++i) {
+        unlistenByKey(this.targetChangeHandlerKeys_[i]);
       }
-      this.keyHandlerKeys_ = null;
+      this.targetChangeHandlerKeys_ = null;
       this.viewport_.removeEventListener(
         EventType.CONTEXTMENU,
         this.boundHandleBrowserEvent_
@@ -1169,15 +1153,17 @@ class PluggableMap extends BaseObject {
         EventType.WHEEL,
         this.boundHandleBrowserEvent_
       );
-      if (this.handleResize_ !== undefined) {
-        removeEventListener(EventType.RESIZE, this.handleResize_, false);
-        this.handleResize_ = undefined;
-      }
       this.mapBrowserEventHandler_.dispose();
       this.mapBrowserEventHandler_ = null;
       removeNode(this.viewport_);
     }
 
+    // target may be undefined, null, a string or an Element.
+    // If it's a string we convert it to an Element before proceeding.
+    // If it's not now an Element we remove the viewport from the DOM.
+    // If it's an Element we append the viewport element to it.
+
+    const targetElement = this.getTargetElement();
     if (!targetElement) {
       if (this.renderer_) {
         clearTimeout(this.postRenderTimeoutHandle_);
@@ -1217,10 +1203,11 @@ class PluggableMap extends BaseObject {
         PASSIVE_EVENT_LISTENERS ? {passive: false} : false
       );
 
+      const defaultView = this.getOwnerDocument().defaultView;
       const keyboardEventTarget = !this.keyboardEventTarget_
         ? targetElement
         : this.keyboardEventTarget_;
-      this.keyHandlerKeys_ = [
+      this.targetChangeHandlerKeys_ = [
         listen(
           keyboardEventTarget,
           EventType.KEYDOWN,
@@ -1233,12 +1220,8 @@ class PluggableMap extends BaseObject {
           this.handleBrowserEvent,
           this
         ),
+        listen(defaultView, EventType.RESIZE, this.updateSize, this),
       ];
-
-      if (!this.handleResize_) {
-        this.handleResize_ = this.updateSize.bind(this);
-        window.addEventListener(EventType.RESIZE, this.handleResize_, false);
-      }
     }
 
     this.updateSize();

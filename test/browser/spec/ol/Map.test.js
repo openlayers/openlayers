@@ -816,7 +816,7 @@ describe('ol/Map', function () {
 
     it('removes window listeners', function () {
       map.dispose();
-      expect(map.handleResize_).to.be(undefined);
+      expect(map.targetChangeHandlerKeys_).to.be(null);
     });
   });
 
@@ -828,7 +828,7 @@ describe('ol/Map', function () {
       map = new Map({
         target: document.createElement('div'),
       });
-      expect(map.handleResize_).to.be.ok();
+      expect(map.targetChangeHandlerKeys_).to.be.ok();
     });
 
     describe('map with target not attached to dom', function () {
@@ -840,7 +840,7 @@ describe('ol/Map', function () {
     describe('call setTarget with null', function () {
       it('unregisters the viewport resize listener', function () {
         map.setTarget(null);
-        expect(map.handleResize_).to.be(undefined);
+        expect(map.targetChangeHandlerKeys_).to.be(null);
       });
     });
 
@@ -848,7 +848,7 @@ describe('ol/Map', function () {
       it('registers a viewport resize listener', function () {
         map.setTarget(null);
         map.setTarget(document.createElement('div'));
-        expect(map.handleResize_).to.be.ok();
+        expect(map.targetChangeHandlerKeys_).to.be.ok();
       });
     });
   });
@@ -877,7 +877,13 @@ describe('ol/Map', function () {
               hasAttribute: function (attribute) {
                 return hasTabIndex;
               },
+              contains: function () {
+                return hasFocus;
+              },
             };
+          },
+          getOwnerDocument: function () {
+            return {};
           },
         },
         originalEvent: {
