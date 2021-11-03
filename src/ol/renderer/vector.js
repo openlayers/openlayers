@@ -37,6 +37,7 @@ const GEOMETRY_RENDERERS = {
   'MultiPolygon': renderMultiPolygonGeometry,
   'GeometryCollection': renderGeometryCollectionGeometry,
   'Circle': renderCircleGeometry,
+  'CircularString': renderCircularStringGeometry,
 };
 
 /**
@@ -255,6 +256,9 @@ function renderLineStringGeometry(
   feature,
   opt_declutterBuilderGroup
 ) {
+  console.log('renderLineStringGeometry');
+  console.log({ builderGroup, geometry, style, feature, opt_declutterBuilderGroup });
+
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
     const lineStringReplay = builderGroup.getBuilder(
@@ -273,6 +277,43 @@ function renderLineStringGeometry(
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
+}
+
+/**
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../geom/CircularString.js").default|import("../render/Feature.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ */
+function renderCircularStringGeometry(
+  builderGroup,
+  geometry,
+  style,
+  feature,
+  opt_declutterBuilderGroup
+) {
+    console.log('renderCircularStringGeometry');
+    console.log({ builderGroup, geometry, style, feature, opt_declutterBuilderGroup });
+
+  // const strokeStyle = style.getStroke();
+  // if (strokeStyle) {
+  //   const lineStringReplay = builderGroup.getBuilder(
+  //     style.getZIndex(),
+  //     BuilderType.LINE_STRING
+  //   );
+  //   lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+  //   lineStringReplay.drawLineString(geometry, feature);
+  // }
+  // const textStyle = style.getText();
+  // if (textStyle && textStyle.getText()) {
+  //   const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+  //     style.getZIndex(),
+  //     BuilderType.TEXT
+  //   );
+  //   textReplay.setTextStyle(textStyle);
+  //   textReplay.drawText(geometry, feature);
+  // }
 }
 
 /**

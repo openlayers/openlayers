@@ -13,6 +13,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
+import CircularString from "../geom/CircularString.js";
 import {get as getProjection} from '../proj.js';
 
 import SimpleGeometry from '../geom/SimpleGeometry.js';
@@ -34,8 +35,8 @@ const WKBGeometryType = {
   MULTI_POLYGON: 6,
   GEOMETRY_COLLECTION: 7,
 
-  /*
   CIRCULAR_STRING: 8,
+  /*
   COMPOUND_CURVE: 9,
   CURVE_POLYGON: 10,
 
@@ -114,6 +115,10 @@ class WkbReader {
     }
 
     return coords;
+  }
+
+  readCircularString() {
+    return this.readLineString();
   }
 
   /**
@@ -226,6 +231,9 @@ class WkbReader {
 
       case WKBGeometryType.GEOMETRY_COLLECTION:
         return this.readGeometryCollection();
+
+      case WKBGeometryType.CIRCULAR_STRING:
+        return this.readCircularString();
 
       default:
         throw new Error(
@@ -349,6 +357,11 @@ class WkbReader {
         return new GeometryCollection(
           /** @type {Array<import('../geom/Geometry.js').default>} */ (result)
         );
+
+      case WKBGeometryType.CIRCULAR_STRING:
+        return new CircularString(result, this.layout_);
+        //return new MultiPoint(result, this.layout_);
+        //return new LineString(result, this.layout_);
 
       default:
         return null;

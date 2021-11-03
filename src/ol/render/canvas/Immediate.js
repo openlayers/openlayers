@@ -686,6 +686,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} geometry LineString geometry.
    */
   drawLineString(geometry) {
+    console.log('CanvasImmediateRenderer::drawLineString(geometry)');
+    console.log(geometry);
+
     if (this.squaredTolerance_) {
       geometry = /** @type {import("../../geom/LineString.js").default} */ (
         geometry.simplifyTransformed(

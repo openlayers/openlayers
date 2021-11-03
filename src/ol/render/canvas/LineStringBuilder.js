@@ -52,6 +52,9 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   drawLineString(lineStringGeometry, feature) {
+    console.log('LineStringBuilder::drawLineString(lineStringGeometry, feature)');
+    console.log({ lineStringGeometry, feature });
+
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
