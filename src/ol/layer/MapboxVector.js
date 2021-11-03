@@ -92,13 +92,19 @@ export function normalizeStyleUrl(url, token) {
  * Turns mapbox:// source URLs into vector tile URL templates.
  * @param {string} url The source URL.
  * @param {string} token The access token.
+ * @param {string} tokenParam The access token key.
  * @return {string} A vector tile template.
  * @private
  */
-export function normalizeSourceUrl(url, token) {
+export function normalizeSourceUrl(url, token, tokenParam) {
   const mapboxPath = getMapboxPath(url);
   if (!mapboxPath) {
-    return url;
+    if (!token) {
+      return url;
+    }
+    const urlObject = new URL(url, location.href);
+    urlObject.searchParams.set(tokenParam, token);
+    return decodeURI(urlObject.href);
   }
   return `https://{a-d}.tiles.mapbox.com/v4/${mapboxPath}/{z}/{x}/{y}.vector.pbf?access_token=${token}`;
 }
@@ -133,6 +139,7 @@ class ErrorEvent extends BaseEvent {
  * @typedef {Object} SourceObject
  * @property {string} url The source URL.
  * @property {SourceType} type The source type.
+ * @property {Array<string>} [tiles] TileJSON tiles.
  */
 
 /**
@@ -155,8 +162,8 @@ const SourceType = {
  * style created with Mapbox Studio and hosted on Mapbox, this will look like
  * 'mapbox://styles/you/your-style'.
  * @property {string} [accessToken] The access token for your Mapbox style. This has to be provided
- * for `mapbox://` style urls. For `https://` and other urls, access keys must be part of the style
- * url.
+ * for `mapbox://` style urls. For `https://` and other urls, any access key must be the last query
+ * parameter of the style url.
  * @property {string} [source] If your style uses more than one source, you need to use either the
  * `source` property or the `layers` property to limit rendering to a single vector source.  The
  * `source` property corresponds to the id of a vector source in your Mapbox style.
@@ -284,7 +291,16 @@ class MapboxVectorLayer extends VectorTileLayer {
 
     this.sourceId = options.source;
     this.layers = options.layers;
-    this.accessToken = options.accessToken;
+    if (options.accessToken) {
+      this.accessToken = options.accessToken;
+    } else {
+      const url = new URL(options.styleUrl, location.href);
+      // The last search parameter is the access token
+      url.searchParams.forEach((value, key) => {
+        this.accessToken = value;
+        this.accessTokenParam_ = key;
+      });
+    }
     this.fetchStyle(options.styleUrl);
   }
 
@@ -384,7 +400,13 @@ class MapboxVectorLayer extends VectorTileLayer {
       styleSource.url.indexOf('{z}') !== -1
     ) {
       // Tile source url, handle it directly
-      source.setUrl(normalizeSourceUrl(styleSource.url, this.accessToken));
+      source.setUrl(
+        normalizeSourceUrl(
+          styleSource.url,
+          this.accessToken,
+          this.accessTokenParam_
+        )
+      );
       applyStyle(this, style, sourceIdOrLayersList)
         .then(() => {
           source.setState(SourceState.READY);
@@ -394,7 +416,19 @@ class MapboxVectorLayer extends VectorTileLayer {
         });
     } else {
       // TileJSON url, let ol-mapbox-style handle it
-      setupVectorSource(styleSource, styleSource.url).then((source) => {
+      if (styleSource.tiles) {
+        styleSource.tiles = styleSource.tiles.map((url) =>
+          normalizeSourceUrl(url, this.accessToken, this.accessTokenParam_)
+        );
+      }
+      setupVectorSource(
+        styleSource,
+        normalizeSourceUrl(
+          styleSource.url,
+          this.accessToken,
+          this.accessTokenParam_
+        )
+      ).then((source) => {
         applyStyle(this, style, sourceIdOrLayersList)
           .then(() => {
             this.setSource(source);

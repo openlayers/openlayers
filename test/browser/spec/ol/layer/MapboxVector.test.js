@@ -80,14 +80,20 @@ describe('ol/layer/MapboxVector', () => {
       },
       {
         url: 'https://example.com/source/{z}/{x}/{y}.pbf',
-        expected: 'https://example.com/source/{z}/{x}/{y}.pbf',
+        expected: 'https://example.com/source/{z}/{x}/{y}.pbf?token=test-token',
+      },
+      {
+        url: 'https://example.com/source/{z}/{x}/{y}.pbf?foo=bar',
+        expected:
+          'https://example.com/source/{z}/{x}/{y}.pbf?foo=bar&token=test-token',
       },
     ];
 
     const token = 'test-token';
+    const tokenParam = 'token';
     for (const c of cases) {
       it(`works for ${c.url}`, () => {
-        expect(normalizeSourceUrl(c.url, token)).to.be(c.expected);
+        expect(normalizeSourceUrl(c.url, token, tokenParam)).to.be(c.expected);
       });
     }
   });
@@ -114,6 +120,24 @@ describe('ol/layer/MapboxVector', () => {
         // setupVectorSource() does.
         done();
       });
+    });
+  });
+
+  describe('Access token', function () {
+    it('applies correct access token from access_token', function () {
+      const layer = new MapboxVectorLayer({
+        styleUrl: 'mapbox://styles/mapbox/streets-v7',
+        accessToken: '123',
+      });
+      expect(layer.accessToken).to.be('123');
+      expect(layer.accessTokenParam_).to.be(undefined);
+    });
+    it('applies correct access token from url', function () {
+      const layer = new MapboxVectorLayer({
+        styleUrl: 'foo?key=123',
+      });
+      expect(layer.accessToken).to.be('123');
+      expect(layer.accessTokenParam_).to.be('key');
     });
   });
 });
