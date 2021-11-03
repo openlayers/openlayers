@@ -134,7 +134,7 @@ describe('ol/layer/MapboxVector', () => {
     });
     it('applies correct access token from url', function () {
       const layer = new MapboxVectorLayer({
-        styleUrl: '?key=123',
+        styleUrl: 'foo?key=123',
       });
       expect(layer.accessToken).to.be('123');
       expect(layer.accessTokenParam_).to.be('key');

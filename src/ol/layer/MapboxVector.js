@@ -99,9 +99,12 @@ export function normalizeStyleUrl(url, token) {
 export function normalizeSourceUrl(url, token, tokenParam) {
   const mapboxPath = getMapboxPath(url);
   if (!mapboxPath) {
-    return token && url.indexOf(token) === -1
-      ? `${url}${url.indexOf('?') === -1 ? '?' : '&'}${tokenParam}=${token}`
-      : url;
+    if (!token) {
+      return url;
+    }
+    const urlObject = new URL(url, location.href);
+    urlObject.searchParams.set(tokenParam, token);
+    return decodeURI(urlObject.href);
   }
   return `https://{a-d}.tiles.mapbox.com/v4/${mapboxPath}/{z}/{x}/{y}.vector.pbf?access_token=${token}`;
 }
@@ -291,12 +294,12 @@ class MapboxVectorLayer extends VectorTileLayer {
     if (options.accessToken) {
       this.accessToken = options.accessToken;
     } else {
-      const parts = options.styleUrl.split(/[?&]/);
-      if (parts.length > 1) {
-        const keyValue = parts[parts.length - 1].split('=');
-        this.accessToken = keyValue[1];
-        this.accessTokenParam_ = keyValue[0];
-      }
+      const url = new URL(options.styleUrl, location.href);
+      // The last search parameter is the access token
+      url.searchParams.forEach((value, key) => {
+        this.accessToken = value;
+        this.accessTokenParam_ = key;
+      });
     }
     this.fetchStyle(options.styleUrl);
   }
