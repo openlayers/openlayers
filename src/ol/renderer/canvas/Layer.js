@@ -17,7 +17,6 @@ import {
   getTopRight,
 } from '../../extent.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {cssOpacity} from '../../css.js';
 
 /**
  * @abstract
@@ -95,8 +94,9 @@ class CanvasLayerRenderer extends LayerRenderer {
     let container, context;
     if (
       target &&
-      target.style.opacity === cssOpacity(opacity) &&
-      target.className === layerClassName
+      target.className === layerClassName &&
+      target.style.opacity === '' &&
+      opacity === 1
     ) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
