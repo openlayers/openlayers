@@ -151,19 +151,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * Get a rendering container from an existing target, if compatible.
-   * @param {HTMLElement} target Potential render target.
-   * @param {string} transform CSS Transform.
-   * @param {number} opacity Opacity.
-   */
-  useContainer(target, transform, opacity) {
-    if (opacity < 1) {
-      target = null;
-    }
-    super.useContainer(target, transform, opacity);
-  }
-
-  /**
    * @param {ExecutorGroup} executorGroup Executor group.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
