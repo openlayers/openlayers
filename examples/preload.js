@@ -13,7 +13,7 @@ const map1 = new Map({
     new TileLayer({
       preload: Infinity,
       source: new BingMaps({
-        key: 'ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp',
+        key: 'AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN',
         imagerySet: 'Aerial',
       }),
     }),
@@ -27,7 +27,7 @@ const map2 = new Map({
     new TileLayer({
       preload: 0, // default value
       source: new BingMaps({
-        key: 'ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp',
+        key: 'AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN',
         imagerySet: 'AerialWithLabelsOnDemand',
       }),
     }),

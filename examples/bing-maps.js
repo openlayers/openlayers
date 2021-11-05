@@ -18,7 +18,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
       visible: false,
       preload: Infinity,
       source: new BingMaps({
-        key: 'ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp',
+        key: 'AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN',
         imagerySet: styles[i],
         // use maxZoom 19 to see stretched tiles instead of the BingMaps
         // "no photos at this zoom level" tiles
