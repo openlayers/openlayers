@@ -453,12 +453,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.finalizeDraw(frameState);
     const canvas = this.helper.getCanvas();
 
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = String(opacity);
-    }
-
     if (this.hitDetectionEnabled_) {
       this.renderHitDetection(frameState);
       this.hitRenderTarget_.clearCachedData();

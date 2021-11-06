@@ -195,12 +195,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.tileTextureCache_ = new LRUCache(cacheSize);
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.renderedOpacity_ = NaN;
   }
 
   afterHelperCreated() {
@@ -318,7 +312,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.preRender(gl, frameState);
 
     const viewState = frameState.viewState;
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const extent = getRenderExtent(frameState, frameState.extent);
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
@@ -504,12 +497,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.helper.finalizeDraw(frameState);
 
     const canvas = this.helper.getCanvas();
-
-    const opacity = layerState.opacity;
-    if (this.renderedOpacity_ !== opacity) {
-      canvas.style.opacity = String(opacity);
-      this.renderedOpacity_ = opacity;
-    }
 
     const tileTextureCache = this.tileTextureCache_;
     while (tileTextureCache.canExpireCache()) {
