@@ -33,7 +33,10 @@ module.exports = function (karma) {
         watched: false,
       },
       {
-        pattern: path.resolve(__dirname, require.resolve('sinon/pkg/sinon.js')),
+        pattern: path.resolve(
+          __dirname,
+          require.resolve('../../node_modules/sinon/pkg/sinon.js')
+        ),
         watched: false,
       },
       {
