@@ -3,10 +3,10 @@ import frontMatter from 'front-matter';
 import fs from 'fs';
 import fse from 'fs-extra';
 import handlebars from 'handlebars';
-import marked from 'marked';
 import path, {dirname} from 'path';
 import sources from 'webpack-sources';
 import {fileURLToPath} from 'url';
+import {marked} from 'marked';
 
 const RawSource = sources.RawSource;
 const baseDir = dirname(fileURLToPath(import.meta.url));
