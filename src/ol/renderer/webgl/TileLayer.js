@@ -503,7 +503,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
      */
     const postRenderFunction = function (map, frameState) {
-      tileSource.expireCache(tileSource.getProjection(), empty);
+      tileSource.expireCache(frameState.viewState.projection, empty);
     };
 
     frameState.postRenderFunctions.push(postRenderFunction);
