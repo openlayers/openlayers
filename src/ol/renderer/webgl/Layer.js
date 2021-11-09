@@ -179,7 +179,11 @@ class WebGLLayerRenderer extends LayerRenderer {
       }
     }
 
-    if (!gl || !gl.getContextAttributes().preserveDrawingBuffer) {
+    if (!gl) {
+      return null;
+    }
+    const attributes = gl.getContextAttributes();
+    if (!attributes || !attributes.preserveDrawingBuffer) {
       // we assume there is data at the given pixel (although there might not be)
       return new Uint8Array();
     }
